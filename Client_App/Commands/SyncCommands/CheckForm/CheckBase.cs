@@ -14,6 +14,8 @@ namespace Client_App.Commands.SyncCommands.CheckForm;
 
 public abstract class CheckBase
 {
+    #region Properties
+    
     protected static bool checkNumPrint = true;
 
     private protected static List<Dictionary<string, string>> OKSM = new();
@@ -86,6 +88,10 @@ public abstract class CheckBase
         "америций-243, нептуний-239"
     };
 
+    #endregion
+
+    #region Methods
+    
     #region CheckRepPeriod
 
     private protected static List<CheckError> CheckRepPeriod(List<Form1> forms, Report rep)
@@ -101,9 +107,9 @@ public abstract class CheckBase
         string[] operationCodeWithDeadline5 = { "73", "74", "75" };
         string[] operationCodeWithDeadline10 =
         {
-            "11", "12", "13", "14", "15", "16", "17", "18", "21", "22", "25", "26", "27", "28", "29", 
-            "31", "32", "35", "37", "38", "39", "41", "42", "43", "44", "45", "46", "47", "48", "49", 
-            "51", "52", "53", "54", "55", "56", "57", "58", "59", "61", "62", "63", "64", "65", "66", 
+            "11", "12", "13", "14", "15", "16", "17", "18", "21", "22", "25", "26", "27", "28", "29",
+            "31", "32", "35", "37", "38", "39", "41", "42", "43", "44", "45", "46", "47", "48", "49",
+            "51", "52", "53", "54", "55", "56", "57", "58", "59", "61", "62", "63", "64", "65", "66",
             "67", "68", "72", "76", "81", "82", "83", "84", "85", "86", "87", "88", "97", "98", "99"
         };
         string[] operationCodeWithDeadline90 = { "01" };
@@ -232,63 +238,45 @@ public abstract class CheckBase
 
     #endregion
 
-    #region ConvertSequenceSetToRangeStringList
-    
-    private protected static List<string> ConvertSequenceSetToRangeStringList(HashSet<int> duplicatesLinesSet)
-    {
-        var duplicatesLinesList = duplicatesLinesSet.ToList();
-        var groups = new List<List<int>>();
-        var singleGroup = new List<int>();
-        for (var lineNum = 0; lineNum < duplicatesLinesList.Count; lineNum++)
-        {
-            singleGroup.Add(duplicatesLinesList[lineNum]);
-            if (lineNum != duplicatesLinesList.Count - 1
-                && duplicatesLinesList[lineNum + 1] >= duplicatesLinesList[lineNum]) continue;
-            groups.Add(new List<int>(singleGroup));
-            singleGroup.Clear();
-        }
+    #region ConvertSequenceSetToRangeString
 
-        var formattedGroups = new List<string>();
-        foreach (var group in groups)
+    private protected static string ConvertSequenceSetToRangeString(HashSet<int> duplicatesLinesSet)
+    {
+        // Отсортируем группу (если она не отсортирована изначально)
+        var sortedGroup = duplicatesLinesSet
+            .OrderBy(x => x)
+            .ToList();
+
+        var start = sortedGroup[0];
+        var end = sortedGroup[0];
+        var ranges = new List<string>();
+        for (var i = 1; i < sortedGroup.Count; i++)
         {
-            // Отсортируем группу (если она не отсортирована изначально)
-            var sortedGroup = group
-                .OrderBy(x => x)
-                .ToList();
-            
-            var start = sortedGroup[0];
-            var end = sortedGroup[0];
-            var ranges = new List<string>();
-            for (var i = 1; i < sortedGroup.Count; i++)
+            if (sortedGroup[i] == end + 1)
             {
-                if (sortedGroup[i] == end + 1)
-                {
-                    end = sortedGroup[i]; // продолжаем диапазон
-                }
-                else
-                {
-                    // добавляем текущий диапазон в список
-                    ranges.Add(start == end
-                        ? start.ToString()
-                        : end == start + 1 
-                            ? $"{start}, {end}"
-                            : $"{start}-{end}");
-                    // начинаем новый диапазон
-                    start = sortedGroup[i];
-                    end = sortedGroup[i];
-                }
+                end = sortedGroup[i]; // продолжаем диапазон
             }
-            // добавляем последний диапазон
-            ranges.Add(start == end
-                ? start.ToString()
-                : end == start + 1
-                    ? $"{start}, {end}"
-                    : $"{start}-{end}");
-            // объединяем диапазоны в строку и добавляем в общий список
-            formattedGroups.Add(string.Join(", ", ranges));
+            else
+            {
+                // добавляем текущий диапазон в список
+                ranges.Add(start == end
+                    ? start.ToString()
+                    : end == start + 1
+                        ? $"{start}, {end}"
+                        : $"{start}-{end}");
+                // начинаем новый диапазон
+                start = sortedGroup[i];
+                end = sortedGroup[i];
+            }
         }
-        // объединяем все группы в одну строку
-        return formattedGroups;
+        // добавляем последний диапазон
+        ranges.Add(start == end
+            ? start.ToString()
+            : end == start + 1
+                ? $"{start}, {end}"
+                : $"{start}-{end}");
+        // объединяем диапазоны в строку и добавляем в общий список
+        return string.Join(", ", ranges);
     }
 
     #endregion
@@ -307,36 +295,30 @@ public abstract class CheckBase
 
     #endregion
 
-    #region StringRemoveSpecials
-
-    protected static string StringRemoveSpecials(string? str) =>
-        (str ?? string.Empty)
-        .Replace("\\", "")
-        .Replace("(", "")
-        .Replace(")", "")
-        .Replace("/", "")
-        .Replace(".", "")
-        .Replace(",", "")
-        .Replace("-", "")
-        .Replace("_", "")
-        .Replace(" ", "")
-        .Replace("`", "")
-        .Replace("'", "")
-        .Replace("\"", "")
-        .Replace("ё", "е")
-        .Replace("—", "");
-
-    #endregion
-
     #region CustomComparator
 
+    //  Performance realisation for Compare with Trim()
     private protected class CustomNullStringWithTrimComparer : IComparer<string>
     {
         public int Compare(string? x, string? y)
         {
-            var strA = (x ?? string.Empty).ToLower().Trim();
-            var strB = (y ?? string.Empty).ToLower().Trim();
-            return string.CompareOrdinal(strA, strB);
+            if (ReferenceEquals(x, y))
+                return 0;
+            if (x is null)
+                return -1;
+            if (y is null)
+                return 1;
+
+            // Memory allocation free trimming
+            var span1 = x.AsSpan().Trim();
+            var span2 = y.AsSpan().Trim();
+
+            return span1.CompareTo(span2, StringComparison.OrdinalIgnoreCase);
+
+            // Old realization
+            //var strA = ReplaceNullAndTrim(x).ToLower();
+            //var strB = ReplaceNullAndTrim(y).ToLower();
+            //return string.CompareOrdinal(strA, strB);
         }
     }
 
@@ -375,7 +357,7 @@ public abstract class CheckBase
 #if DEBUG
             Orgs18_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "Orgs_1.8.xlsx"));
 #else
-            Packs_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Packs.xlsx"));
+            Orgs18_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Orgs_1.8.xlsx.xlsx"));
 #endif
         }
         if (HolidaysSpecific.Count == 0)
@@ -391,7 +373,7 @@ public abstract class CheckBase
     #region  HolidaysFromFile
 
     //функция импорта праздничных и рабочих дат из справочника
-    private protected static void Holidays_Populate_From_File(string fileAddress)
+    private static void Holidays_Populate_From_File(string fileAddress)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         if (!File.Exists(fileAddress)) return;
@@ -427,7 +409,7 @@ public abstract class CheckBase
 
     #region OKSMFromFile
 
-    private protected static void OKSM_Populate_From_File(string fileAddress)
+    private static void OKSM_Populate_From_File(string fileAddress)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         if (!File.Exists(fileAddress)) return;
@@ -454,7 +436,7 @@ public abstract class CheckBase
 
     #region RFromFile
 
-    private protected static void R_Populate_From_File(string filePath)
+    private static void R_Populate_From_File(string filePath)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         if (!File.Exists(filePath)) return;
@@ -493,7 +475,7 @@ public abstract class CheckBase
 
     #region PacksFromFile
 
-    private protected static void Packs_Populate_From_File(string filePath)
+    private static void Packs_Populate_From_File(string filePath)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         if (!File.Exists(filePath)) return;
@@ -521,7 +503,8 @@ public abstract class CheckBase
     #endregion
 
     #region Orgs18FromFile
-    private protected static void Orgs18_Populate_From_File(string filePath)
+
+    private static void Orgs18_Populate_From_File(string filePath)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         if (!File.Exists(filePath)) return;
@@ -542,6 +525,7 @@ public abstract class CheckBase
     #endregion
 
     #region OverdueCalculations
+
     //вычисление нарушения сроков предоставления отчётов с учетом праздников
 
     //кол-во дней между датой операции (документа для 10) и окончанием ОП
@@ -631,32 +615,30 @@ public abstract class CheckBase
 
     #endregion
 
-    #region IsWorkingDay
+    #region ReplaceNullAndTrim
 
-    private static bool IsWorkingDay(DateOnly day)
-    {
-        return WorkDaysSpecific.Any(x => Equals(x, day)) 
-                || !(day.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday 
-                    || HolidaysSpecific.Any(x => Equals(x, day))
-                    || HolidaysGeneric.Any(x => Equals(x.Month, day.Month) && Equals(x.Day, day.Day)));
-    }
+    private protected static string ReplaceNullAndTrim(string? str) => (str ?? string.Empty).Trim();
 
     #endregion
 
-    #region AddNWorkingDays
+    #region StringRemoveSpecials
 
-    private static DateOnly AddNWorkingDays(DateOnly day, int daysNum)
-    {
-        for (var i = 1; i <= daysNum; i++)
-        {
-            while (!IsWorkingDay(day.AddDays(1))) 
-            {
-                day = day.AddDays(1); 
-            }
-            day = day.AddDays(1); 
-        }
-        return day;
-    }
+    protected static string StringRemoveSpecials(string? str) =>
+        (str ?? string.Empty)
+        .Replace("\\", "")
+        .Replace("(", "")
+        .Replace(")", "")
+        .Replace("/", "")
+        .Replace(".", "")
+        .Replace(",", "")
+        .Replace("-", "")
+        .Replace("_", "")
+        .Replace(" ", "")
+        .Replace("`", "")
+        .Replace("'", "")
+        .Replace("\"", "")
+        .Replace("ё", "е")
+        .Replace("—", "");
 
     #endregion
 
@@ -681,6 +663,41 @@ public abstract class CheckBase
             CultureInfo.CreateSpecificCulture("ru-RU"),
             out val);
     }
+
+    #endregion
+
+    #region WorkingDay
+
+    #region AddNWorkingDays
+
+    private static DateOnly AddNWorkingDays(DateOnly day, int daysNum)
+    {
+        for (var i = 1; i <= daysNum; i++)
+        {
+            while (!IsWorkingDay(day.AddDays(1)))
+            {
+                day = day.AddDays(1);
+            }
+            day = day.AddDays(1);
+        }
+        return day;
+    }
+
+    #endregion
+
+    #region IsWorkingDay
+
+    private static bool IsWorkingDay(DateOnly day)
+    {
+        return WorkDaysSpecific.Any(x => Equals(x, day))
+               || !(day.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday
+                    || HolidaysSpecific.Any(x => Equals(x, day))
+                    || HolidaysGeneric.Any(x => Equals(x.Month, day.Month) && Equals(x.Day, day.Day)));
+    }
+
+    #endregion
+
+    #endregion 
 
     #endregion
 }

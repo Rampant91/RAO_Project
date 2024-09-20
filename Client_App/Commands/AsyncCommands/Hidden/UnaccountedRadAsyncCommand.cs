@@ -1,5 +1,4 @@
 ﻿using Client_App.Commands.AsyncCommands.ExcelExport;
-using Client_App.Views;
 using Models.DBRealization;
 using OfficeOpenXml;
 using System;
@@ -18,7 +17,6 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
-        var mainWindow = Desktop.MainWindow as MainWindow;
         var fileName = $"Отсутствующие_радионуклиды_{Assembly.GetExecutingAssembly().GetName().Version}";
         (string fullPath, bool openTemp) result;
         try
@@ -27,7 +25,6 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            cts.Dispose();
             return;
         }
         var fullPath = result.fullPath;

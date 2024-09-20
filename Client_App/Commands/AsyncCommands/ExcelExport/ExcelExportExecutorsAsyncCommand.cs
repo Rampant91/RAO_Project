@@ -13,6 +13,7 @@ using Models.Collections;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 using System.Reflection;
+using Client_App.Views.ProgressBar;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -22,9 +23,12 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
     private Reports CurrentReports;
     private int _currentRow;
 
+    private AnyTaskProgressBar progressBar;
+
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
+        ExportType = "Список_исполнителей";
         var mainWindow = Desktop.MainWindow as MainWindow;
 
         if (ReportsStorage.LocalReports.Reports_Collection.Count == 0)
@@ -35,6 +39,7 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Выгрузка не выполнена, поскольку в базе отсутствуют формы отчетности.",
@@ -48,8 +53,6 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
 
             return;
         }
-
-        ExportType = "Список исполнителей";
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
 
         (string fullPath, bool openTemp) result;
@@ -59,12 +62,19 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            cts.Dispose();
             return;
         }
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
+        var progressBarVM = progressBar.AnyTaskProgressBarVM_DB;
+        progressBarVM.ExportType = ExportType;
+        progressBarVM.ExportName = "Выгрузка списка исполнителей";
+        progressBarVM.ValueBar = 5;
+        var loadStatus = "Обработка форм 1";
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
@@ -91,6 +101,11 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
                 _currentRow++;
             }
         }
+
+        loadStatus = "Обработка форм 2";
+        progressBarVM.ValueBar = 55;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         _currentRow = 2;
         Worksheet = excelPackage.Workbook.Worksheets.Add("Формы 2");
         FillExecutorsHeaders('2');
@@ -107,7 +122,17 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
             }
         }
 
+        loadStatus = "Сохранение";
+        progressBarVM.ValueBar = 95;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
+
+        loadStatus = "Завершение выгрузки";
+        progressBarVM.ValueBar = 100;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 
     #region FillExecutorsHeaders

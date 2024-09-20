@@ -26,7 +26,7 @@ public class Form15DTO
 
     #endregion
 
-    #region Form11Properties
+    #region Form15Properties
 
     public int NumberInOrder { get; set; }
 
@@ -75,6 +75,8 @@ public class Form15DTO
     public string Subsidy { get; set; }
 
     public string FcpNumber { get; set; }
+
+    public string ContractNumber { get; set; }
 
     #endregion
 }

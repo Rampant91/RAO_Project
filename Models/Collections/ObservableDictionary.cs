@@ -38,12 +38,12 @@ public class ObservableDictionary<TKey, TValue> :
         this.dictionary = dictionary;
     }
 
-    void AddWithNotification(KeyValuePair<TKey, TValue> item)
+    private void AddWithNotification(KeyValuePair<TKey, TValue> item)
     {
         AddWithNotification(item.Key, item.Value);
     }
 
-    void AddWithNotification(TKey key, TValue value)
+    private void AddWithNotification(TKey key, TValue value)
     {
         dictionary.Add(key, value);
 
@@ -54,7 +54,7 @@ public class ObservableDictionary<TKey, TValue> :
         PropertyChanged(this, new PropertyChangedEventArgs(nameof(Values)));
     }
 
-    bool RemoveWithNotification(TKey key)
+    private bool RemoveWithNotification(TKey key)
     {
         if (!dictionary.TryGetValue(key, out var value) || !dictionary.Remove(key)) return false;
         CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
@@ -63,10 +63,9 @@ public class ObservableDictionary<TKey, TValue> :
         PropertyChanged(this, new PropertyChangedEventArgs(nameof(Keys)));
         PropertyChanged(this, new PropertyChangedEventArgs(nameof(Values)));
         return true;
-
     }
 
-    void UpdateWithNotification(TKey key, TValue value)
+    private void UpdateWithNotification(TKey key, TValue value)
     {
         if (dictionary.TryGetValue(key, out var existing))
         {
@@ -90,12 +89,14 @@ public class ObservableDictionary<TKey, TValue> :
     {
         PropertyChanged(this, args);
     }
+
     #region IEnumerable<KeyValuePair<TKey,TValue>> Members
 
     public IEnumerator<KeyValuePair<TKey,TValue>> GetEnumerator()
     {
         return dictionary.GetEnumerator();
     }
+
     #endregion
 
     #region IDictionary<TKey,TValue> Members
@@ -167,7 +168,7 @@ public class ObservableDictionary<TKey, TValue> :
     public TValue this[TKey key]
     {
         get => dictionary[key];
-        set { UpdateWithNotification(key, value); }
+        set => UpdateWithNotification(key, value);
     }
     #endregion
 
@@ -204,9 +205,11 @@ public class ObservableDictionary<TKey, TValue> :
     {
         return RemoveWithNotification(item.Key);
     }
+
     #endregion
 
     #region IEnumerable<KeyValuePair<TKey,TValue>> Members
+
     IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
     {
         return dictionary.GetEnumerator();
@@ -216,5 +219,6 @@ public class ObservableDictionary<TKey, TValue> :
     {
         return dictionary.GetEnumerator();
     }
+
     #endregion
 }

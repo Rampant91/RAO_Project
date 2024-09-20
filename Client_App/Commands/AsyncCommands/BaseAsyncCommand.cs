@@ -3,9 +3,13 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Commands.SyncCommands;
+using Client_App.Interfaces.Logger;
 
 namespace Client_App.Commands.AsyncCommands;
 
+/// <summary>
+/// Базовый класс async команды
+/// </summary>
 public abstract class BaseAsyncCommand : BaseCommand
 {
     private protected static readonly IClassicDesktopStyleApplicationLifetime Desktop =
@@ -35,9 +39,11 @@ public abstract class BaseAsyncCommand : BaseCommand
         {
             await AsyncExecute(parameter);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            // ignored
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Warning(msg);
         }
         IsExecute = false;
     }

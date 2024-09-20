@@ -15,6 +15,7 @@ using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.AsyncCommands.Hidden;
+using Client_App.Commands.AsyncCommands.CheckForm;
 
 namespace Client_App.ViewModels;
 
@@ -79,6 +80,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ChangeForm { get; set; }                        //  Открыть окно редактирования выбранной формы
     public ICommand ChangePasFolder { get; set; }                   //  Excel -> Паспорта -> Изменить расположение паспортов по умолчанию
     public ICommand ChangeReports { get; set; }                     //  Изменить Формы организации (1.0 и 2.0)
+    public ICommand ExcelExportCheckAllForms { get; set; }          //  Проверить все формы у организации
+    public ICommand CheckFormFromMain { get; set; }                 //  Проверить форму
     public ICommand DeleteForm { get; set; }                        //  Удалить выбранную форму у выбранной организации
     public ICommand DeleteReports { get; set; }                     //  Удалить выбранную организацию
     public ICommand ExcelExportAll { get; set; }                    //  Excel -> Все формы и Excel -> Выбранная организация -> Все формы
@@ -92,11 +95,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ExcelExportListOfOrgs { get; set; }             //  Excel -> Список организаций
     public ICommand ExcelExportPasWithoutRep { get; set; }          //  Excel -> Паспорта -> Паспорта без отчетов
     public ICommand ExcelExportRepWithoutPas { get; set; }          //  Excel -> Паспорта -> Отчеты без паспортов
-    public ICommand ExportAllReports { get; set; }                  //  Экспорт всех организаций организации в отдельные файлы .raodb
-    //public ICommand ExportAllReportsOneFile { get; set; }           //  Экспорт всех организаций организации в один файл .raodb
-    public ICommand ExportForm { get; set; }                        //  Экспорт формы в файл .raodb
-    public ICommand ExportReports { get; set; }                     //  Экспорт организации в файл .raodb
-    public ICommand ExportReportsWithDateRange { get; set; }        //  Экспорт организации в файл .raodb с указанием диапазона дат выгружаемых форм
+    public static ICommand ExportAllReports => new ExportAllReportsAsyncCommand();                      //  Экспорт всех организаций организации в отдельные файлы .RAODB
+    public static ICommand ExportAllReportsOneFile => new ExportAllReportsOneFileAsyncCommand();        //  Экспорт всех организаций организации в один файл .RAODB
+    public static ICommand ExportForm => new ExportFormAsyncCommand();                                  //  Экспорт формы в файл .RAODB
+    public static ICommand ExportReports => new ExportReportsAsyncCommand();                            //  Экспорт организации в файл .RAODB
+    public static ICommand ExportReportsWithDateRange => new ExportReportsWithDateRangeAsyncCommand();  //  Экспорт организации в файл .RAODB с указанием диапазона дат выгружаемых форм
     public ICommand ImportExcel { get; set; }                       //  Импорт -> Из Excel
     public ICommand ImportJson { get; set; }                        //  Импорт -> Из Json
     public ICommand ImportRaodb { get; set; }                       //  Импорт -> Из RAODB
@@ -115,8 +118,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ChangeForm = new ChangeFormAsyncCommand();
         ChangePasFolder = new ChangePasFolderAsyncCommand();
         ChangeReports = new ChangeReportsAsyncCommand();
+        CheckFormFromMain = new CheckFormFromMainAsyncCommand();
         DeleteForm = new DeleteFormAsyncCommand();
         DeleteReports = new DeleteReportsAsyncCommand();
+        ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand();
         ExcelExportExecutors = new ExcelExportExecutorsAsyncCommand();
         ExcelExportFormAnalysis = new ExcelExportFormAnalysisAsyncCommand();
         ExcelExportFormPrint = new ExcelExportFormPrintAsyncCommand(); 
@@ -128,11 +133,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ExcelExportPasWithoutRep = new ExcelExportPasWithoutRepAsyncCommand();
         ExcelExportRepWithoutPas = new ExcelExportRepWithoutPasAsyncCommand();
         ExcelExportAll = new ExcelExportAllAsyncCommandAsyncCommand();
-        ExportAllReports = new ExportAllReportsAsyncCommand();
-        //ExportAllReportsOneFile = new ExportAllReportsOneFileAsyncCommand();
-        ExportForm = new ExportFormAsyncCommand();
-        ExportReports = new ExportReportsAsyncCommand();
-        ExportReportsWithDateRange = new ExportReportsWithDateRangeAsyncCommand(this);
         ImportExcel = new ImportExcelAsyncCommand();
         ImportJson = new ImportJsonAsyncCommand();
         ImportRaodb = new ImportRaodbAsyncCommand();

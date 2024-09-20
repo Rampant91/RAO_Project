@@ -5,7 +5,11 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Controls;
+using Avalonia.Threading;
 using Client_App.ViewModels;
+using Client_App.Views.ProgressBar;
+using MessageBox.Avalonia.DTO;
 using Models.Collections;
 using OfficeOpenXml;
 
@@ -14,12 +18,14 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 //  Excel -> Список организаций
 public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
 {
+    private AnyTaskProgressBar progressBar;
+
     public override async Task AsyncExecute(object? parameter)
     {
         if (ReportsStorage.LocalReports.Reports_Collection.Count == 0) return;
         var cts = new CancellationTokenSource();
-        ExportType = "Список организаций";
-        
+        ExportType = "Список_организаций";
+
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
         (string fullPath, bool openTemp) result;
         try
@@ -28,12 +34,19 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            cts.Dispose();
             return;
         }
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
+        var progressBarVM = progressBar.AnyTaskProgressBarVM_DB;
+        progressBarVM.ExportType = ExportType;
+        progressBarVM.ExportName = "Выгрузка списка организаций";
+        progressBarVM.ValueBar = 2;
+        var loadStatus = "Выгрузка данных";
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
@@ -41,7 +54,29 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
 
-        if (ReportsStorage.LocalReports.Reports_Collection.Count == 0) return;  //Добавь сообщение
+        if (ReportsStorage.LocalReports.Reports_Collection.Count == 0) 
+        {
+            #region MessageRepsNotFound
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        "Не удалось совершить выгрузку списка организаций," +
+                        $"{Environment.NewLine}поскольку в текущей базе данных отсутствуют отчеты.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            return;  
+        }
         Worksheet = excelPackage.Workbook.Worksheets.Add("Список всех организаций");
 
         #region Headers
@@ -566,6 +601,16 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         }
         Worksheet.View.FreezePanes(2, 1);
 
+        progressBarVM.LoadStatus = "Сохранение";
+        progressBarVM.ValueBar = 95;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
+
+        progressBarVM.LoadStatus = "Завершение выгрузки";
+        progressBarVM.ValueBar = 100;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 }

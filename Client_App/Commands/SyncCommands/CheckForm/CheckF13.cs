@@ -121,8 +121,8 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_002(Report rep)
     {
         List<CheckError> result = new();
-        var stPerStr = (rep.StartPeriod_DB ?? string.Empty).Trim();
-        var endPerStr = (rep.EndPeriod_DB ?? string.Empty).Trim();
+        var stPerStr = ReplaceNullAndTrim(rep.StartPeriod_DB);
+        var endPerStr = ReplaceNullAndTrim(rep.EndPeriod_DB);
         if (!DateOnly.TryParse(stPerStr, out var stPer))
         {
             result.Add(new CheckError
@@ -181,12 +181,16 @@ public abstract class CheckF13 : CheckBase
     {
         List<CheckError> result = new();
         HashSet<int> duplicatesLinesSet = new();
+        List<HashSet<int>> duplicatesGroupsSet = new();
         var comparator = new CustomNullStringWithTrimComparer();
         for (var i = 0; i < forms.Count; i++)
         {
+            if (duplicatesGroupsSet.Any(set => set.Contains(i + 1))) continue;
             var currentForm = forms[i];
+            var hasDuplicate = false;
             for (var j = i + 1; j < forms.Count; j++)
             {
+                if (duplicatesGroupsSet.Any(set => set.Contains(j + 1))) continue;
                 var formToCompare = forms[j];
                 var isDuplicate = comparator.Compare(formToCompare.OperationCode_DB, currentForm.OperationCode_DB) == 0
                                   && comparator.Compare(formToCompare.OperationDate_DB, currentForm.OperationDate_DB) == 0
@@ -205,21 +209,30 @@ public abstract class CheckF13 : CheckBase
                                   && comparator.Compare(formToCompare.DocumentDate_DB, currentForm.DocumentDate_DB) == 0
                                   && comparator.Compare(formToCompare.ProviderOrRecieverOKPO_DB, currentForm.ProviderOrRecieverOKPO_DB) == 0;
                 if (!isDuplicate) continue;
-                duplicatesLinesSet.Add(i + 1);
+                hasDuplicate = true;
                 duplicatesLinesSet.Add(j + 1);
             }
-        }
-        var dupStrByGroups = ConvertSequenceSetToRangeStringList(duplicatesLinesSet);
-        foreach (var group in dupStrByGroups)
-        {
-            result.Add(new CheckError
+            if (hasDuplicate) duplicatesLinesSet.Add(i + 1);
+            if (duplicatesLinesSet.Count > 0)
             {
-                FormNum = "form_13",
-                Row = group,
-                Column = "2 - 17",
-                Value = "",
-                Message = $"Данные граф 2-17 в строках {group} продублированы. Следует проверить правильность предоставления данных."
-            });
+                duplicatesGroupsSet.Add(duplicatesLinesSet.Order().ToHashSet());
+            }
+            duplicatesLinesSet.Clear();
+        }
+        if (duplicatesGroupsSet.Count > 0)
+        {
+            foreach (var group in duplicatesGroupsSet)
+            {
+                var dupStrByGroups = ConvertSequenceSetToRangeString(group);
+                result.Add(new CheckError
+                {
+                    FormNum = "form_13",
+                    Row = dupStrByGroups,
+                    Column = "2 - 17",
+                    Value = "",
+                    Message = $"Данные граф 2-17 в строках {dupStrByGroups} продублированы. Следует проверить правильность предоставления данных."
+                });
+            }
         }
         return result;
     }
@@ -258,7 +271,7 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_006(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var operationCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var operationCodeValid = new[]
         {
             "10", "11", "12", "15", "17", "18", "21", "22", "25", "27", "28", "29", "31", "32", "35", "37", "38", 
@@ -301,8 +314,8 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_008(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var operationCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        var radionuclid = (forms[line].Radionuclids_DB ?? string.Empty).Trim();
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var radionuclid = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
         string[] applicableOperationCodes = { "12", "42" };
         var radionuclidValid = new[]
         {
@@ -340,11 +353,11 @@ public abstract class CheckF13 : CheckBase
         {
             "11", "12", "15", "28", "38", "41", "48", "63", "64", "65", "73", "81", "85", "88"
         };
-        var opCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
+        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         if (!applicableOperationCodes.Contains(opCode)) return result;
-        var owner = forms[line].Owner_DB;
-        var okpoRepJur = (forms10[0].Okpo_DB ?? string.Empty).Trim();
-        var okpoRepTerPodr = (forms10[1].Okpo_DB ?? string.Empty).Trim();
+        var owner = ReplaceNullAndTrim(forms[line].Owner_DB);
+        var okpoRepJur = ReplaceNullAndTrim(forms10[0].Okpo_DB);
+        var okpoRepTerPodr = ReplaceNullAndTrim(forms10[1].Okpo_DB);
         var valid = !string.IsNullOrWhiteSpace(owner) 
                     && (owner == okpoRepTerPodr || owner == okpoRepJur);
         if (!valid)
@@ -396,7 +409,7 @@ public abstract class CheckF13 : CheckBase
     {
         List<CheckError> result = new();
         const byte graphNumber = 2;
-        var opCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
+        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         string[] applicableOperationCodes = { "29", "39", "97", "98", "99" };
         if (!applicableOperationCodes.Contains(opCode)) return result;
         var valid = CheckNotePresence(notes, line, graphNumber);
@@ -461,14 +474,16 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_016(List<Form13> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
-        var opCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        var providerOrRecieverOkpo = (forms[line].ProviderOrRecieverOKPO_DB ?? string.Empty).Trim();
-        var okpo = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
-            ? forms10[1].Okpo_DB.Trim()
-            : (forms10[0].Okpo_DB ?? string.Empty).Trim();
+        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var providerOrRecieverOkpo = ReplaceNullAndTrim(forms[line].ProviderOrRecieverOKPO_DB);
+        var okpoRepJur = ReplaceNullAndTrim(forms10[0].Okpo_DB);
+        var okpoRepTerPodr = ReplaceNullAndTrim(forms10[1].Okpo_DB);
+        var repOkpo = okpoRepTerPodr is not ""
+            ? okpoRepTerPodr
+            : okpoRepJur;
         string[] applicableOperationCodes = { "53" };
         if (!applicableOperationCodes.Contains(opCode)) return result;
-        var valid = providerOrRecieverOkpo != string.Empty && providerOrRecieverOkpo.Equals(okpo);
+        var valid = providerOrRecieverOkpo != string.Empty && providerOrRecieverOkpo.Equals(repOkpo);
         if (!valid)
         {
             result.Add(new CheckError
@@ -493,14 +508,16 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_017(List<Form13> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
-        var opCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        var providerOrRecieverOkpo = (forms[line].ProviderOrRecieverOKPO_DB ?? string.Empty).Trim();
-        var okpo = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
-            ? forms10[1].Okpo_DB.Trim()
-            : (forms10[0].Okpo_DB ?? string.Empty).Trim();
+        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var providerOrRecieverOkpo = ReplaceNullAndTrim(forms[line].ProviderOrRecieverOKPO_DB);
+        var okpoRepJur = ReplaceNullAndTrim(forms10[0].Okpo_DB);
+        var okpoRepTerPodr = ReplaceNullAndTrim(forms10[1].Okpo_DB);
+        var repOkpo = okpoRepTerPodr is not ""
+            ? okpoRepTerPodr
+            : okpoRepJur;
         string[] applicableOperationCodes = { "54" };
         if (!applicableOperationCodes.Contains(opCode)) return result;
-        var valid = providerOrRecieverOkpo != string.Empty && !providerOrRecieverOkpo.Equals(okpo);
+        var valid = providerOrRecieverOkpo != string.Empty && !providerOrRecieverOkpo.Equals(repOkpo);
         if (!valid)
         {
             result.Add(new CheckError
@@ -565,8 +582,8 @@ public abstract class CheckF13 : CheckBase
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "81", "88" };
-        var operationCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        var creatorOkpo = (forms[line].CreatorOKPO_DB ?? string.Empty).Trim();
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var creatorOkpo = ReplaceNullAndTrim(forms[line].CreatorOKPO_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var valid = OkpoRegex.IsMatch(creatorOkpo);
         if (!valid)
@@ -591,8 +608,8 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_022(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var creatorOkpo = (forms[line].CreatorOKPO_DB ?? string.Empty).Trim();
-        var operationCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
+        var creatorOkpo = ReplaceNullAndTrim(forms[line].CreatorOKPO_DB);
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         string[] applicableOperationCodes = { "83", "84", "85", "86" };
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var valid = OKSM.Any(oksmEntry => oksmEntry["shortname"] == creatorOkpo) 
@@ -620,7 +637,7 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_023(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var opDate = (forms[line].OperationDate_DB ?? string.Empty).Trim();
+        var opDate = ReplaceNullAndTrim(forms[line].OperationDate_DB);
         var valid = opDate is not ("" or "-");
         if (!valid)
         {
@@ -655,10 +672,10 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_024(List<Form13> forms, Report rep, int line)
     {
         List<CheckError> result = new();
-        var opCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        var stPerStr = (rep.StartPeriod_DB ?? string.Empty).Trim();
-        var endPerStr = (rep.EndPeriod_DB ?? string.Empty).Trim();
-        var opDateStr = (forms[line].OperationDate_DB ?? string.Empty).Trim();
+        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var stPerStr = ReplaceNullAndTrim(rep.StartPeriod_DB);
+        var endPerStr = ReplaceNullAndTrim(rep.EndPeriod_DB);
+        var opDateStr = ReplaceNullAndTrim(forms[line].OperationDate_DB);
         if (opCode is "10" 
             || !DateOnly.TryParse(stPerStr, out var pStart)
             || !DateOnly.TryParse(endPerStr, out var pEnd)
@@ -686,10 +703,10 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_025(List<Form13> forms, Report rep, int line)
     {
         List<CheckError> result = new();
-        var opCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        var stPerStr = (rep.StartPeriod_DB ?? string.Empty).Trim();
-        var endPerStr = (rep.EndPeriod_DB ?? string.Empty).Trim();
-        var docDateStr = (forms[line].DocumentDate_DB ?? string.Empty).Trim();
+        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var stPerStr = ReplaceNullAndTrim(rep.StartPeriod_DB);
+        var endPerStr = ReplaceNullAndTrim(rep.EndPeriod_DB);
+        var docDateStr = ReplaceNullAndTrim(forms[line].DocumentDate_DB);
         if (opCode is not "10" 
             || !DateOnly.TryParse(docDateStr, out var docDate)
             || !DateOnly.TryParse(stPerStr, out var stDate)
@@ -732,7 +749,7 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_026(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var passportNumber = (forms[line].PassportNumber_DB ?? string.Empty).Trim();
+        var passportNumber = ReplaceNullAndTrim(forms[line].PassportNumber_DB);
         var valid = passportNumber != string.Empty;
         if (!valid)
         {
@@ -757,7 +774,7 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_027(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var type = (forms[line].Type_DB ?? string.Empty).Trim();
+        var type = ReplaceNullAndTrim(forms[line].Type_DB);
         var valid = type != string.Empty;
         if (!valid)
         {
@@ -781,7 +798,7 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_028(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var rads = forms[line].Radionuclids_DB ?? string.Empty;
+        var rads = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
         var radsSet = rads
             .ToLower()
             .Replace(',', ';')
@@ -833,7 +850,7 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_029(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var radionuclids = (forms[line].Radionuclids_DB ?? string.Empty).Trim();
+        var radionuclids = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
         var valid = radionuclids != string.Empty;
         if (!valid)
         {
@@ -857,7 +874,7 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_030(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var rads = (forms[line].Radionuclids_DB ?? string.Empty).Trim();
+        var rads = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
         if (rads is "" or "-") return result;
         var radsSet = rads
             .ToLower()
@@ -906,7 +923,7 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_031(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var rad = (forms[line].Radionuclids_DB ?? string.Empty).Trim().ToLower();
+        var rad = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
 
         if (R.All(x => x["name"] != rad)
@@ -941,7 +958,7 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_032(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var rads = (forms[line].Radionuclids_DB ?? string.Empty).Trim();
+        var rads = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
         var radsSet = rads
             .ToLower()
@@ -1005,7 +1022,7 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_033(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var rads = (forms[line].Radionuclids_DB ?? string.Empty).Trim();
+        var rads = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
         var radsSet = rads
             .ToLower()
@@ -1067,7 +1084,7 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_034(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var factoryNumber = (forms[line].FactoryNumber_DB ?? string.Empty).Trim();
+        var factoryNumber = ReplaceNullAndTrim(forms[line].FactoryNumber_DB);
         var valid = factoryNumber != string.Empty;
         if (!valid)
         {
@@ -1138,12 +1155,14 @@ public abstract class CheckF13 : CheckBase
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "11" };
-        var opCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
+        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         if (!applicableOperationCodes.Contains(opCode)) return result;
-        var creatorOkpo = (forms[line].CreatorOKPO_DB ?? string.Empty).Trim();
-        var repOkpo = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
-            ? forms10[1].Okpo_DB.Trim()
-            : (forms10[0].Okpo_DB ?? string.Empty).Trim();
+        var creatorOkpo = ReplaceNullAndTrim(forms[line].CreatorOKPO_DB);
+        var okpoRepJur = ReplaceNullAndTrim(forms10[0].Okpo_DB);
+        var okpoRepTerPodr = ReplaceNullAndTrim(forms10[1].Okpo_DB);
+        var repOkpo = okpoRepTerPodr is not ""
+            ? okpoRepTerPodr
+            : okpoRepJur;
         var valid = creatorOkpo == repOkpo;
         if (!valid)
         {
@@ -1167,7 +1186,7 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_037(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var creatorOkpo = (forms[line].CreatorOKPO_DB ?? string.Empty).Trim();
+        var creatorOkpo = ReplaceNullAndTrim(forms[line].CreatorOKPO_DB);
         var valid = OkpoRegex.IsMatch(creatorOkpo)
                         || creatorOkpo is "прим."
                         || OKSM.Any(oksmEntry => oksmEntry["shortname"] == creatorOkpo);
@@ -1194,7 +1213,7 @@ public abstract class CheckF13 : CheckBase
     {
         List<CheckError> result = new();
         string[] creatorOkpoValid = { "прим.", "прим", "примечание", "примечания" };
-        var creatorOkpo = (forms[line].CreatorOKPO_DB ?? string.Empty).Trim();
+        var creatorOkpo = ReplaceNullAndTrim(forms[line].CreatorOKPO_DB);
         if (OKSM.All(oksmEntry => oksmEntry["shortname"] != creatorOkpo.ToLower()) 
             && !creatorOkpoValid.Contains(creatorOkpo.ToLower())) return result;
         const byte graphNumber = 9;
@@ -1221,7 +1240,7 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_039(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var creationDate = (forms[line].CreationDate_DB ?? string.Empty).Trim();
+        var creationDate = ReplaceNullAndTrim(forms[line].CreationDate_DB);
         var valid = creationDate is not ("" or "-");
         if (!valid)
         {
@@ -1256,8 +1275,8 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_040(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var opDateStr = (forms[line].OperationDate_DB ?? string.Empty).Trim();
-        var creationDateStr = (forms[line].CreationDate_DB ?? string.Empty).Trim();
+        var opDateStr = ReplaceNullAndTrim(forms[line].OperationDate_DB);
+        var creationDateStr = ReplaceNullAndTrim(forms[line].CreationDate_DB);
         if (!DateOnly.TryParse(opDateStr, out var opDate)
             || !DateOnly.TryParse(creationDateStr, out var createDate))
         {
@@ -1286,7 +1305,7 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_041(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var aggregateState = forms[line].AggregateState_DB;
+        var aggregateState = forms[line].AggregateState_DB ?? 0;
         var valid = aggregateState is >= 1 and <= 3;
         if (!valid)
         {
@@ -1310,7 +1329,7 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_042(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var propertyCode = forms[line].PropertyCode_DB;
+        var propertyCode = forms[line].PropertyCode_DB ?? 0;
         if (propertyCode is not (>= 1 and <= 6 or 9))
         {
             result.Add(new CheckError
@@ -1335,7 +1354,7 @@ public abstract class CheckF13 : CheckBase
     {
         List<CheckError> result = new();
         const byte graphNumber = 12;
-        var propertyCode = forms[line].PropertyCode_DB;
+        var propertyCode = forms[line].PropertyCode_DB ?? 0;
         if (propertyCode is not 2) return result;
         var valid = CheckNotePresence(notes, line, graphNumber);
         if (!valid)
@@ -1362,7 +1381,7 @@ public abstract class CheckF13 : CheckBase
     {
         List<CheckError> result = new();
         const byte graphNumber = 12;
-        var propertyCode = forms[line].PropertyCode_DB;
+        var propertyCode = forms[line].PropertyCode_DB ?? 0;
         if (propertyCode is not 3) return result;
         var valid = CheckNotePresence(notes, line, graphNumber);
         if (!valid)
@@ -1389,7 +1408,7 @@ public abstract class CheckF13 : CheckBase
     {
         List<CheckError> result = new();
         const byte graphNumber = 12;
-        var propertyCode = forms[line].PropertyCode_DB;
+        var propertyCode = forms[line].PropertyCode_DB ?? 0;
         if (propertyCode is not 9) return result;
         var valid = CheckNotePresence(notes, line, graphNumber);
         if (!valid)
@@ -1416,7 +1435,7 @@ public abstract class CheckF13 : CheckBase
     {
         List<CheckError> result = new();
         var owner = (forms[line].Owner_DB ?? string.Empty).Trim();
-        var propertyCode = forms[line].PropertyCode_DB;
+        var propertyCode = forms[line].PropertyCode_DB ?? 0;
         if (propertyCode is < 1 or > 4) return result;
         var valid = OkpoRegex.IsMatch(owner);
         if (!valid)
@@ -1442,8 +1461,8 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_047(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var propertyCode = forms[line].PropertyCode_DB;
-        var owner = (forms[line].Owner_DB ?? string.Empty).Trim();
+        var propertyCode = forms[line].PropertyCode_DB ?? 0;
+        var owner = ReplaceNullAndTrim(forms[line].Owner_DB);
         if (propertyCode is not 5) return result;
         var valid = OKSM.Any(oksmEntry => oksmEntry["shortname"] == owner)
                     && !owner.Equals("россия", StringComparison.CurrentCultureIgnoreCase);
@@ -1472,8 +1491,8 @@ public abstract class CheckF13 : CheckBase
     {
         List<CheckError> result = new();
         const byte graphNumber = 13;
-        var propertyCode = forms[line].PropertyCode_DB;
-        var owner = (forms[line].Owner_DB ?? string.Empty).Trim();
+        var propertyCode = forms[line].PropertyCode_DB ?? 0;
+        var owner = ReplaceNullAndTrim(forms[line].Owner_DB);
         if (propertyCode is not 6) return result;
         if (OKSM.All(oksmEntry => oksmEntry["shortname"] != owner)
             || owner.Equals("россия", StringComparison.CurrentCultureIgnoreCase))
@@ -1512,8 +1531,8 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_049(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var opCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        var documentVid = forms[line].DocumentVid_DB;
+        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var documentVid = forms[line].DocumentVid_DB ?? 0;
         var valid = documentVid is >= 1 and <= 15 or 19;
         if (!valid)
         {
@@ -1551,7 +1570,7 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_050(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var documentNumber = (forms[line].DocumentNumber_DB ?? string.Empty).Trim();
+        var documentNumber = ReplaceNullAndTrim(forms[line].DocumentNumber_DB);
         var valid = documentNumber != string.Empty;
         if (!valid)
         {
@@ -1575,7 +1594,7 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_051(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var docDate = (forms[line].DocumentDate_DB ?? string.Empty).Trim();
+        var docDate = ReplaceNullAndTrim(forms[line].DocumentDate_DB);
         if (docDate is "" or "-")
         {
             result.Add(new CheckError
@@ -1609,9 +1628,9 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_052(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var opCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        var opDateStr = (forms[line].OperationDate_DB ?? string.Empty).Trim();
-        var docDateStr = (forms[line].DocumentDate_DB ?? string.Empty).Trim();
+        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var opDateStr = ReplaceNullAndTrim(forms[line].OperationDate_DB);
+        var docDateStr = ReplaceNullAndTrim(forms[line].DocumentDate_DB);
         if (opCode is "10" or "41"
             || !DateOnly.TryParse(docDateStr, out var docDate)
             || !DateOnly.TryParse(opDateStr, out var opDate))
@@ -1641,9 +1660,9 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_053(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var opCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        var opDateStr = (forms[line].OperationDate_DB ?? string.Empty).Trim();
-        var docDateStr = (forms[line].DocumentDate_DB ?? string.Empty).Trim();
+        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var opDateStr = ReplaceNullAndTrim(forms[line].OperationDate_DB);
+        var docDateStr = ReplaceNullAndTrim(forms[line].DocumentDate_DB);
         if (opCode is not "41"
             || !DateOnly.TryParse(docDateStr, out var docDate)
             || !DateOnly.TryParse(opDateStr, out var opDate))
@@ -1673,9 +1692,9 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_054(List<Form13> forms, Report rep, int line)
     {
         List<CheckError> result = new();
-        var opCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        var pEndStr = (rep.EndPeriod_DB ?? string.Empty).Trim();
-        var docDateStr = (forms[line].DocumentDate_DB ?? string.Empty).Trim();
+        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var pEndStr = ReplaceNullAndTrim(rep.EndPeriod_DB);
+        var docDateStr = ReplaceNullAndTrim(forms[line].DocumentDate_DB);
         if (opCode is not "10"
             || !DateOnly.TryParse(pEndStr, out var pEnd)
             || !DateOnly.TryParse(docDateStr, out var docDate))
@@ -1711,11 +1730,13 @@ public abstract class CheckF13 : CheckBase
             "10", "11", "12", "15", "17", "18", "41", "42", "43", "58", "61", "62",
             "65", "67", "68", "71", "72", "73", "74", "75", "97", "98", "99"
         };
-        var operationCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        var providerOrRecieverOkpo = (forms[line].ProviderOrRecieverOKPO_DB ?? string.Empty).Trim();
-        var repOkpo = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
-            ? forms10[1].Okpo_DB.Trim()
-            : (forms10[0].Okpo_DB ?? string.Empty).Trim();
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var providerOrRecieverOkpo = ReplaceNullAndTrim(forms[line].ProviderOrRecieverOKPO_DB);
+        var okpoRepJur = ReplaceNullAndTrim(forms10[0].Okpo_DB);
+        var okpoRepTerPodr = ReplaceNullAndTrim(forms10[1].Okpo_DB);
+        var repOkpo = okpoRepTerPodr is not ""
+            ? okpoRepTerPodr
+            : okpoRepJur;
         if (!applicableOperationCodes.Contains(operationCode)) return result;
 
         var valid = OkpoRegex.IsMatch(providerOrRecieverOkpo)
@@ -1743,11 +1764,13 @@ public abstract class CheckF13 : CheckBase
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "25", "27", "28", "29", "35", "37", "38", "39", "63", "64" };
-        var operationCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        var providerOrRecieverOkpo = (forms[line].ProviderOrRecieverOKPO_DB ?? string.Empty).Trim();
-        var repOkpo = !string.IsNullOrWhiteSpace(forms10[1].Okpo_DB)
-            ? forms10[1].Okpo_DB.Trim()
-            : (forms10[0].Okpo_DB ?? string.Empty).Trim();
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var providerOrRecieverOkpo = ReplaceNullAndTrim(forms[line].ProviderOrRecieverOKPO_DB);
+        var okpoRepJur = ReplaceNullAndTrim(forms10[0].Okpo_DB);
+        var okpoRepTerPodr = ReplaceNullAndTrim(forms10[1].Okpo_DB);
+        var repOkpo = okpoRepTerPodr is not ""
+            ? okpoRepTerPodr
+            : okpoRepJur;
         if (!applicableOperationCodes.Contains(operationCode)) return result;
 
         var valid = OkpoRegex.IsMatch(providerOrRecieverOkpo)
@@ -1774,8 +1797,8 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_057(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var operationCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        var providerOrRecieverOkpo = (forms[line].ProviderOrRecieverOKPO_DB ?? string.Empty).Trim();
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var providerOrRecieverOkpo = ReplaceNullAndTrim(forms[line].ProviderOrRecieverOKPO_DB);
         if (operationCode is not ("22" or "32")) return result;
         var valid = OkpoRegex.IsMatch(providerOrRecieverOkpo)
                     || providerOrRecieverOkpo.Equals("минобороны", StringComparison.CurrentCultureIgnoreCase);
@@ -1804,8 +1827,8 @@ public abstract class CheckF13 : CheckBase
         List<CheckError> result = new();
         const byte graphNumber = 17;
         string[] applicableOperationCodes = { "81", "82", "83", "84", "85", "86", "87", "88" };
-        var opCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        var providerOrRecieverOkpo = (forms[line].ProviderOrRecieverOKPO_DB ?? string.Empty).Trim();
+        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var providerOrRecieverOkpo = ReplaceNullAndTrim(forms[line].ProviderOrRecieverOKPO_DB);
         if (!applicableOperationCodes.Contains(opCode)) return result;
         var valid = OKSM.Any(oksmEntry => oksmEntry["shortname"] == providerOrRecieverOkpo)
                     && !providerOrRecieverOkpo.Equals("россия", StringComparison.CurrentCultureIgnoreCase);
@@ -1862,9 +1885,9 @@ public abstract class CheckF13 : CheckBase
             "10", "11", "12", "15", "17", "18", "41", "42", "43", "46", "47", "53", "54", 
             "58", "63", "64", "65", "67", "68", "71", "72", "73", "74", "75", "97", "98"
         };
-        var opCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        if (!applicableOperationCodes.Contains(forms[line].OperationCode_DB)) return result;
-        var transporterOkpo = (forms[line].TransporterOKPO_DB ?? string.Empty).Trim();
+        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        if (!applicableOperationCodes.Contains(opCode)) return result;
+        var transporterOkpo = ReplaceNullAndTrim(forms[line].TransporterOKPO_DB);
         var valid = transporterOkpo is "-";
         if (!valid)
         {
@@ -1873,7 +1896,7 @@ public abstract class CheckF13 : CheckBase
                 FormNum = "form_13",
                 Row = (line + 1).ToString(),
                 Column = "TransporterOKPO_DB",
-                Value = Convert.ToString(transporterOkpo),
+                Value = transporterOkpo,
                 Message = "При выбранном коде операции транспортирование не производится."
             });
         }
@@ -1894,8 +1917,8 @@ public abstract class CheckF13 : CheckBase
             "39", "61", "62", "81", "82", "83", "84", "85", "86", "87", "88"
         };
         string[] transporterOkpoValid = { "прим.", "прим", "примечание", "примечания" };
-        var operationCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        var transporterOkpo = (forms[line].TransporterOKPO_DB ?? string.Empty).Trim();
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var transporterOkpo = ReplaceNullAndTrim(forms[line].TransporterOKPO_DB);
         const byte graphNumber = 18;
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var valid = OkpoRegex.IsMatch(transporterOkpo)
@@ -1924,8 +1947,8 @@ public abstract class CheckF13 : CheckBase
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "22", "32" };
-        var operationCode = (forms[line].OperationCode_DB ?? string.Empty).Trim();
-        var transporterOkpo = (forms[line].TransporterOKPO_DB ?? string.Empty).Trim();
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var transporterOkpo = ReplaceNullAndTrim(forms[line].TransporterOKPO_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var valid = OkpoRegex.IsMatch(transporterOkpo)
                     || transporterOkpo.Equals("минобороны", StringComparison.CurrentCultureIgnoreCase);
@@ -1951,7 +1974,7 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_062(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var packName = (forms[line].PackName_DB ?? string.Empty).Trim();
+        var packName = ReplaceNullAndTrim(forms[line].PackName_DB);
         var valid = packName != string.Empty;
         if (!valid)
         {
@@ -1975,7 +1998,7 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_063(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var packType = (forms[line].PackType_DB ?? string.Empty).Trim();
+        var packType = ReplaceNullAndTrim(forms[line].PackType_DB);
         var valid = packType != string.Empty;
         if (!valid)
         {
@@ -1999,7 +2022,7 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_064(List<Form13> forms, int line)
     {
         List<CheckError> result = new();
-        var packNumber = (forms[line].PackNumber_DB ?? string.Empty).Trim();
+        var packNumber = ReplaceNullAndTrim(forms[line].PackNumber_DB);
         var valid = packNumber != string.Empty;
         if (!valid)
         {

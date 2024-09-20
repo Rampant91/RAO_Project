@@ -9,25 +9,28 @@ using static Avalonia.Controls.WindowState;
 
 namespace Client_App.Views.ProgressBar;
 
-public partial class ExcelExportProgressBar : BaseWindow<ExcelExportProgressBarVM>
+public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
 {
-    public ExcelExportProgressBarVM ExcelExportProgressBarVM { get; }
+    public AnyTaskProgressBarVM AnyTaskProgressBarVM_DB { get; }
 
-    public ExcelExportProgressBar()
+    public AnyTaskProgressBar()
     {
 
     }
-    public ExcelExportProgressBar(CancellationTokenSource cts)
+    public AnyTaskProgressBar(CancellationTokenSource cts)
     {
         InitializeComponent();
 #if DEBUG
         this.AttachDevTools();
 #endif
-        DataContext = new ExcelExportProgressBarVM(this, cts, new BackgroundLoader());
-        ExcelExportProgressBarVM = (DataContext as ExcelExportProgressBarVM)!;
+        
+        var vm = new AnyTaskProgressBarVM(this, cts, new BackgroundLoader());
+        DataContext = vm;
+        AnyTaskProgressBarVM_DB = (DataContext as AnyTaskProgressBarVM)!;
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            ShowDialog(desktop.MainWindow);
+            if (AnyTaskProgressBarVM_DB.IsShowDialog) ShowDialog(desktop.MainWindow);
+            else Show(desktop.MainWindow);
         }
     }
 

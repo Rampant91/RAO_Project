@@ -55,7 +55,10 @@ public static partial class EssenceMethods
             if (!CheckType(typeof(T))) return null;
             using var db = new DBModel(StaticConfiguration.DBPath);
             db.Database.Migrate();
-            return db.ReportCollectionDbSet.AsNoTracking().Where(x => x.Id == id).OrderBy(x => x.Order)
+            return db.ReportCollectionDbSet
+                .AsNoTracking()
+                .Where(x => x.Id == id)
+                .OrderBy(x => x.Order)
                 .Include(x => x.Rows10)
                 .Include(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
                 .Include(x => x.Rows12.OrderBy(x => x.NumberInOrder_DB))

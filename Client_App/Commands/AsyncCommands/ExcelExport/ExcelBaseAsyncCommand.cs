@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
-using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
@@ -24,6 +23,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 {
     private protected CancellationTokenSource Cts = new();
+
     private protected ExcelWorksheet Worksheet { get; set; }
 
     private protected ExcelWorksheet WorksheetPrim { get; set; }
@@ -149,13 +149,13 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 fullPath = await dial.ShowAsync(Desktop.MainWindow);
                 if (fullPath is null)
                 {
-                    cts.Cancel();
+                    await cts.CancelAsync();
                     cts.Token.ThrowIfCancellationRequested();
                 }
                 if (!fullPath.EndsWith(".xlsx")) fullPath += ".xlsx"; //В проводнике Linux в имя файла не подставляется расширение из фильтра, добавляю руками если его нет
                 if (string.IsNullOrEmpty(fullPath))
                 {
-                    cts.Cancel();
+                    await cts.CancelAsync();
                     cts.Token.ThrowIfCancellationRequested();
                 }
                 if (File.Exists(fullPath))
@@ -186,7 +186,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
                         #endregion
 
-                        cts.Cancel();
+                        await cts.CancelAsync();
                         cts.Token.ThrowIfCancellationRequested();
                     }
                 }
@@ -200,7 +200,6 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 break;
             }
         }
-
         return (fullPath, openTemp);
     }
 
@@ -318,25 +317,25 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                         break;
                 }
 
-                var mstrep = reps.Master_DB;
+                var masterRep = reps.Master_DB;
 
                 var yu = id
                     ? param.Split('.')[0] == "1"
-                        ? mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != ""
+                        ? masterRep.Rows10[1].RegNo_DB != "" && masterRep.Rows10[1].Okpo_DB != ""
                             ? reps.Master_DB.Rows10[1]
                                 .ExcelRow(worksheet, count, 1, sumNumber: reps.Master_DB.Rows10[1].Id.ToString()) + 1
                             : reps.Master_DB.Rows10[0]
                                 .ExcelRow(worksheet, count, 1, sumNumber: reps.Master_DB.Rows10[0].Id.ToString()) + 1
-                        : mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != ""
+                        : masterRep.Rows20[1].RegNo_DB != "" && masterRep.Rows20[1].Okpo_DB != ""
                             ? reps.Master_DB.Rows20[1]
                                 .ExcelRow(worksheet, count, 1, sumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
                             : reps.Master_DB.Rows20[0]
                                 .ExcelRow(worksheet, count, 1, sumNumber: reps.Master_DB.Rows20[0].Id.ToString()) + 1
                     : param.Split('.')[0] == "1"
-                        ? mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != ""
+                        ? masterRep.Rows10[1].RegNo_DB != "" && masterRep.Rows10[1].Okpo_DB != ""
                             ? reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1) + 1
                             : reps.Master_DB.Rows10[0].ExcelRow(worksheet, count, 1) + 1
-                        : mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != ""
+                        : masterRep.Rows20[1].RegNo_DB != "" && masterRep.Rows20[1].Okpo_DB != ""
                             ? reps.Master_DB.Rows20[1].ExcelRow(worksheet, count, 1) + 1
                             : reps.Master_DB.Rows20[0].ExcelRow(worksheet, count, 1) + 1;
 
@@ -749,7 +748,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         {
             await excelPackage.SaveAsync(cancellationToken: cts.Token);
         }
-        catch (Exception)
+        catch (ObjectDisposedException ex)
+        {
+            return;
+        }
+        catch (Exception ex)
         {
             #region MessageFailedToSaveFile
 
@@ -769,6 +772,10 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
             #endregion
 
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Warning(msg);
+
             return;
         }
 
@@ -784,11 +791,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {
-                    ButtonDefinitions = new[]
-                    {
+                    ButtonDefinitions =
+                    [
                         new ButtonDefinition { Name = "Ок" },
                         new ButtonDefinition { Name = "Открыть выгрузку" }
-                    },
+                    ],
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Выгрузка сохранена по пути:" +

@@ -95,6 +95,7 @@ public class SourceTransmissionAsyncCommand : SourceTransmissionBaseAsyncCommand
         }
 
         await using var db = new DBModel(StaticConfiguration.DBPath);
+        var formIsAdded = false;
         switch (repInRange.Count)
         {
             case > 1:   // У организации по ошибке есть несколько отчётов с нужным периодом
@@ -128,7 +129,7 @@ public class SourceTransmissionAsyncCommand : SourceTransmissionBaseAsyncCommand
             case 1:   // Если есть подходящий отчет, то добавляем форму в него
             {
                 var rep = repInRange.First();
-                await AddNewFormToExistingReport(rep, form, db);
+                formIsAdded = await AddNewFormToExistingReport(rep, form, db);
                 var report = await ReportsStorage.GetReportAsync(rep.Id);
                 if (report.ExportDate_DB != "")
                 {
@@ -161,11 +162,32 @@ public class SourceTransmissionAsyncCommand : SourceTransmissionBaseAsyncCommand
                 }
                 await db.SaveChangesAsync();
                 await CloseWindowAndOpenNew(report);
+
+                #region MessageSourceTransmissionFailed
+
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = "Перевод источника в РАО",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = $"Строчка не была переведена в РАО, в связи с наличием строчек дубликатов. " +
+                                         $"{Environment.NewLine}Проверьте правильность заполнения формы {SelectedReport.FormNum_DB}",
+                        CanResize = true,
+                        MinWidth = 400,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(Desktop.MainWindow));
+
+                #endregion
+
                 break;
             }
             default:    // Если отчета с подходящим периодом нет, создаём новый отчёт и добавляем в него форму 
             {
                 var repId = await CreateReportAndAddNewForm(db, form, opDate);
+                formIsAdded = true;
                 await db.SaveChangesAsync();
                 var report = await ReportsStorage.Api.GetAsync(repId);
                 SelectedReports.Report_Collection.Add(report);

@@ -1,13 +1,8 @@
 ﻿namespace Models.Forms.DataAccess;
 
-public class RefBool : RamAccess
+public class RefBool(bool value) : RamAccess
 {
-    private bool _value;
-
-    public RefBool(bool value)
-    {
-        _value = value;
-    }
+    private bool _value = value;
 
     public bool Get()
     {

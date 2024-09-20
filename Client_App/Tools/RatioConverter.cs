@@ -3,9 +3,14 @@ using System.Drawing;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
+using Client_App.Interfaces.Logger;
 using Client_App.Tools.ConverterType;
+using Size = System.Drawing.Size;
 
 namespace Client_App.Tools;
 
@@ -20,25 +25,41 @@ public partial class RatioConverter : MarkupExtension, IValueConverter
     { // do not let the culture default to local to prevent variable outcome re decimal syntax
         var t = value as Type;
         var isHeight = t == typeof(Height);
-        var par = float.TryParse(parameter?.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out var floatPar)
-            ? floatPar
-            : 1;
+        try
+        {
+            var par = float.TryParse(parameter?.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out var floatPar)
+                ? floatPar
+                : 1;
 
-        if (OperatingSystem.IsWindows())
-        {
-            var scale = DisplayTools.GetScalingFactorOnWindows();
-            var height = System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Height * par / scale);
-            var width = System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Width * par / scale);
-            return isHeight
-                ? height
-                : width;
+            //if (OperatingSystem.IsWindows())
+            {
+                var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime).MainWindow;
+                var screens = mainWindow.Screens;
+                var mainScreen = screens.ScreenFromWindow(mainWindow.PlatformImpl);
+                var scale = mainScreen.PixelDensity;
+                var height = mainScreen.WorkingArea.Height * par / scale;
+                var width = mainScreen.WorkingArea.Width * par / scale;
+                //var scale = DisplayTools.GetScalingFactorOnWindows();
+                //var height = System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Height * par / scale);
+                //var width = System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Width * par / scale);
+                return isHeight
+                    ? height
+                    : width;
+            }
+            //if (OperatingSystem.IsLinux())
+            //{
+            //    return isHeight
+            //        ? System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnLinux().Height * par)
+            //        : System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnLinux().Width * par);
+            //}
         }
-        if (OperatingSystem.IsLinux())
+        catch (Exception ex)
         {
-            return isHeight
-                ? System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnLinux().Height * par)
-                : System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnLinux().Width * par);
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg);
         }
+
         return isHeight ? 600 : 800;
 
         //var size = System.Convert.ToDouble(value) * System.Convert.ToDouble(parameter,CultureInfo.InvariantCulture);
@@ -69,6 +90,11 @@ internal static partial class DisplayTools
 
     public static Size GetDisplaySizeOnWindows()
     {
+        var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime).MainWindow;
+        var screens = mainWindow.Screens;
+        var mainScreen = screens.ScreenFromWindow(mainWindow.PlatformImpl);
+        return new Size(mainScreen.WorkingArea.Width, mainScreen.WorkingArea.Height);
+        ServiceExtension.LoggerManager.Warning($"{mainScreen.WorkingArea.Width}_{mainScreen.WorkingArea.Height}");
         if (!OperatingSystem.IsWindows()) return new Size(600, 800);
         using var g = Graphics.FromHwnd(IntPtr.Zero);
         var desktop = g.GetHdc();

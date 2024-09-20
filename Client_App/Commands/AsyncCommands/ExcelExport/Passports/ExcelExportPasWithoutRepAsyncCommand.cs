@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
+using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
@@ -23,14 +24,16 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 //  Excel -> Паспорта -> Паспорта без отчетов
 public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 {
+    private AnyTaskProgressBar progressBar;
+
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
-        ExportType = "Паспорта без отчетов";
-        List<string> pasNames = new();
-        List<string[]> pasUniqParam = new();
+        ExportType = "Паспорта_без_отчетов";
+        List<string> pasNames = [];
+        List<string[]> pasUniqParam = [];
         DirectoryInfo directory = new(BaseVM.PasFolderPath);
-        List<FileInfo> files = new();
+        List<FileInfo> files = [];
         try
         {
             files.AddRange(directory.GetFiles("*#*#*#*#*.pdf", SearchOption.AllDirectories));
@@ -43,13 +46,13 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Ошибка",
-                    ContentMessage =
-                        "Не удалось открыть сетевое хранилище паспортов:" +
-                        $"{Environment.NewLine}{directory.FullName}",
+                    ContentMessage = $"Не удалось открыть сетевое хранилище паспортов:" +
+                                     $"{Environment.NewLine}{directory.FullName}",
                     MinWidth = 400,
-                    MinHeight = 150,
+                    MinHeight = 170,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
                 .ShowDialog(Desktop.MainWindow));
@@ -79,12 +82,12 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 
         #endregion
 
-        List<short?> categories = new() { 1, 2, 3, 4, 5 };
+        List<short?> categories = [1, 2, 3, 4, 5];
         if (res.Button is null or "Отмена") return;
         try
         {
             categories = Regex
-                .Replace(res.Message, "[^\\d,]", "")
+                .Replace(res.Message, "[^\\d,]", string.Empty)
                 .Split(',')
                 .Select(short.Parse)
                 .Cast<short?>()
@@ -120,10 +123,17 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            cts.Dispose();
             return;
         }
-        
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
+        var progressBarVM = progressBar.AnyTaskProgressBarVM_DB;
+        progressBarVM.ExportType = ExportType;
+        progressBarVM.ExportName = "Выгрузка списка паспортов";
+        progressBarVM.ValueBar = 2;
+        var loadStatus = "Создание временной БД";
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
@@ -139,9 +149,12 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            cts.Dispose();
             return;
         }
+
+        loadStatus = "Определение списка форм";
+        progressBarVM.ValueBar = 8;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
@@ -185,7 +198,10 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                 }))
             .ToListAsync(cancellationToken: cts.Token);
 
-        var i = 0;
+        loadStatus = "Поиск совпадений";
+        progressBarVM.ValueBar = 10;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         ConcurrentBag<FileInfo> filesToRemove = [];
         var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
         try
@@ -203,16 +219,14 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                         file.Name.Remove(file.Name.Length - 4) ==
                         $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
                 }
-                i++;
                 return default;
             });
         }
         catch
         {
-            cts.Dispose();
             return;
         }
-        
+
         foreach (var fileToRemove in filesToRemove.ToArray())
         {
             files.Remove(fileToRemove);
@@ -238,6 +252,16 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         }
         Worksheet.View.FreezePanes(2, 1);
 
+        loadStatus = "Сохранение";
+        progressBarVM.ValueBar = 95;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
+
+        loadStatus = "Завершение выгрузки";
+        progressBarVM.ValueBar = 100;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 }

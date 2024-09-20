@@ -4,16 +4,16 @@ namespace Models.Classes;
 
 public class LetterAlgebra
 {
-    private List<char> _innerNumberRng  = new();
+    private readonly List<char> _innerNumberRng  = [];
 
     public LetterAlgebra(IEnumerable<char> obj)
     {
-        _innerNumberRng = new List<char>(obj);
+        _innerNumberRng = [..obj];
     }
 
     public LetterAlgebra(string obj)
     {
-        _innerNumberRng = new List<char>(obj);
+        _innerNumberRng = [..obj];
     }
 
     public LetterAlgebra(char obj)

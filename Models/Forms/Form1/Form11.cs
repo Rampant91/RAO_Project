@@ -137,7 +137,7 @@ public class Form11 : Form1
         set
         {
             PassportNumber_DB = value.Value;
-            OnPropertyChanged(nameof(PassportNumber));
+            OnPropertyChanged();
         }
     }
 
@@ -184,7 +184,7 @@ public class Form11 : Form1
         set
         {
             Type_DB = value.Value;
-            OnPropertyChanged(nameof(Type));
+            OnPropertyChanged();
         }
     }
 
@@ -240,7 +240,7 @@ public class Form11 : Form1
         set
         {
             Radionuclids_DB = value.Value;
-            OnPropertyChanged(nameof(Radionuclids));
+            OnPropertyChanged();
         }
     }
 
@@ -278,7 +278,7 @@ public class Form11 : Form1
         set
         {
             FactoryNumber_DB = value.Value;
-            OnPropertyChanged(nameof(FactoryNumber));
+            OnPropertyChanged();
         }
     }
 
@@ -670,7 +670,7 @@ public class Form11 : Form1
         set
         {
             Owner_DB = value.Value;
-            OnPropertyChanged(nameof(Owner));
+            OnPropertyChanged();
         }
     }
     //if change this change validation
@@ -935,7 +935,7 @@ public class Form11 : Form1
         set
         {
             PackType_DB = value.Value;
-            OnPropertyChanged(nameof(PackType));
+            OnPropertyChanged();
         }
     }
     //If change this change validation
@@ -989,7 +989,7 @@ public class Form11 : Form1
         set
         {
             PackNumber_DB = value.Value;
-            OnPropertyChanged(nameof(PackNumber));
+            OnPropertyChanged();
         }
     }
     //If change this change validation

@@ -805,8 +805,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 if (SelectedCells.Count is 1)
                 {
                     var cell = (Cell)SelectedCells[0];
-                    var textBox = (TextBox)cell.Control;
-                    if (textBox.SelectedText != textBox.Text)
+                    if (cell.Control is TextBox textBox 
+                        && textBox.SelectedText != textBox.Text)
                     {
                         answ[0] = null;
                     }

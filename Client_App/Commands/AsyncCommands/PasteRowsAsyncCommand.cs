@@ -13,7 +13,7 @@ using Avalonia;
 namespace Client_App.Commands.AsyncCommands;
 
 //  Вставить значения из буфера обмена
-internal class PasteRowsAsyncCommand : BaseAsyncCommand
+public class PasteRowsAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -143,11 +143,11 @@ internal class PasteRowsAsyncCommand : BaseAsyncCommand
         }
     }
 
-    private static string[] ParseInnerTextRows(string text)
+    private static string[] ParseInnerTextRows(string? text)
     {
         List<string> lst = [];
         var comaFlag = false;
-        text = text.Replace("\r\n", "\n");
+        text = (text ?? string.Empty).Replace("\r\n", "\n");
         var txt = "";
         foreach (var item in text)
         {
@@ -180,7 +180,7 @@ internal class PasteRowsAsyncCommand : BaseAsyncCommand
 
     private static string[] ParseInnerTextColumn(string text)
     {
-        List<string> lst = new();
+        List<string> lst = [];
         var comaFlag = false;
         var txt = "";
         foreach (var item in text)

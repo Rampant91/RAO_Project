@@ -4,7 +4,8 @@ using Client_App.Views.ProgressBar;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
-public class ExcelExportCancelAsyncCommand(ExcelExportProgressBar window) : BaseAsyncCommand
+//  Закрывает окно, если операция отменена
+public class ExcelExportCancelAsyncCommand(AnyTaskProgressBar window) : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {

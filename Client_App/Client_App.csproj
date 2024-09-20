@@ -121,6 +121,9 @@
     <Compile Update="Controls\DataGrid\DataGrids\DataGridReports.axaml.cs">
       <DependentUpon>DataGridReports.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\ProgressBar\AnyTaskProgressBar.axaml.cs">
+      <DependentUpon>AnyTaskProgressBar.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\RowNumberIn.axaml.cs">
       <DependentUpon>RowNumberIn.axaml</DependentUpon>
     </Compile>

@@ -18,7 +18,7 @@ public class FormPropertyAttribute : Attribute
         {
             Convert.ToInt32(names[^1]);
             Number = names[^1];
-            List<string> lst = new(names);
+            List<string> lst = [..names];
             if (!isLastEnabled)
             {
                 lst.RemoveAt(lst.Count - 1);
@@ -40,7 +40,7 @@ public class FormPropertyAttribute : Attribute
             {
                 if (Names[1] != Names[0])
                 {
-                    tmp.innertCol = new List<DataGridColumns>();
+                    tmp.innertCol = [];
                 }
             }
             var _tmp = tmp;
@@ -77,7 +77,7 @@ public class FormPropertyAttribute : Attribute
                 {
                     if (Names[i + 1] != null)
                     {
-                        it.innertCol = new List<DataGridColumns>();
+                        it.innertCol = [];
                         _tmp = it;
                     }
                 }
@@ -97,16 +97,16 @@ public class FormPropertyAttribute : Attribute
                     var newTmp = new DataGridColumns
                     {
                         name = "null-n",
-                        innertCol = new List<DataGridColumns> { tmp }
+                        innertCol = [tmp]
                     };
 
                     _tmp.name = prevData.name;
-                    _tmp.innertCol = new List<DataGridColumns> { newTmp };
+                    _tmp.innertCol = [newTmp];
                 }
                 else
                 {
                     _tmp.name = prevData.name;
-                    _tmp.innertCol = new List<DataGridColumns> { tmp };
+                    _tmp.innertCol = [tmp];
                 }
             }
             else

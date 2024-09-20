@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
+using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
 using OfficeOpenXml;
@@ -17,10 +18,12 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 //  Excel -> Разрывы и пересечения
 public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
 {
+    private AnyTaskProgressBar progressBar;
+
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
-        ExportType = "Разрывы и пересечения";
+        ExportType = "Разрывы_и_пересечения";
         var findRep = 0;
 
         #region ReportsCountCheck
@@ -49,7 +52,7 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
                     ContentHeader = "Уведомление",
                     ContentMessage =
                         "Не удалось совершить выгрузку списка разрывов и пересечений дат," +
-                        $"{Environment.NewLine}поскольку в текущей базе отсутствуют отчеты по форме 1",
+                        $"{Environment.NewLine}поскольку в текущей базе отсутствуют отчеты по форме 1.",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -71,12 +74,19 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            cts.Dispose();
             return;
         }
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
+        var progressBarVM = progressBar.AnyTaskProgressBarVM_DB;
+        progressBarVM.ExportType = ExportType;
+        progressBarVM.ExportName = "Выгрузка разрывов и пересечений";
+        progressBarVM.ValueBar = 5;
+        var loadStatus = "Сортировка списка отчётов";
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using ExcelPackage excelPackage = new(new FileInfo(fullPath));
@@ -106,22 +116,21 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
 
         var listSortRep = ReportsStorage.LocalReports.Reports_Collection
             .SelectMany(reps => reps.Report_Collection
-                .Where(rep => DateTime.TryParse(rep.StartPeriod_DB, out _)
-                              && DateTime.TryParse(rep.EndPeriod_DB, out _))
+                .Where(rep => DateOnly.TryParse(rep.StartPeriod_DB, out _)
+                              && DateOnly.TryParse(rep.EndPeriod_DB, out _))
                 .Select(rep =>
                 {
-                    if (true);
-                    var start = DateTime.Parse(rep.StartPeriod_DB);
-                    var end = DateTime.Parse(rep.EndPeriod_DB);
+                    var start = DateOnly.Parse(rep.StartPeriod_DB);
+                    var end = DateOnly.Parse(rep.EndPeriod_DB);
                     return new ReportForSort
-                        {
-                            RegNoRep = reps.Master_DB.RegNoRep.Value ?? "",
-                            OkpoRep = reps.Master_DB.OkpoRep.Value ?? "",
-                            FormNum = rep.FormNum_DB,
-                            StartPeriod = start,
-                            EndPeriod = end,
-                            ShortYr = reps.Master_DB.ShortJurLicoRep.Value
-                        };
+                    {
+                        RegNoRep = reps.Master_DB.RegNoRep.Value ?? "",
+                        OkpoRep = reps.Master_DB.OkpoRep.Value ?? "",
+                        FormNum = rep.FormNum_DB,
+                        StartPeriod = start,
+                        EndPeriod = end,
+                        ShortYr = reps.Master_DB.ShortJurLicoRep.Value
+                    };
                 }))
             .OrderBy(x => x.RegNoRep)
             .ThenBy(x => x.FormNum)
@@ -129,14 +138,19 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
             .ThenBy(x => x.EndPeriod)
             .ToList();
 
+        loadStatus = "Поиск пересечений";
+        progressBarVM.ValueBar = 10;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         var row = 2;
+        double progressBarDoubleValue = progressBarVM.ValueBar;
         for (var i = 0; i < listSortRep.Count; i++)
         {
             var rep = listSortRep[i];
-            var order13Date = new DateTime(2022, 1, 1);
+            var order13Date = new DateOnly(2022, 1, 1);
             var repStart = rep.StartPeriod;
             var repEnd = rep.EndPeriod;
-            var repStartOriginal = new DateTime();
+            var repStartOriginal = new DateOnly();
             if (repStart < order13Date && repEnd < order13Date)
             {
                 repStartOriginal = repStart;
@@ -144,14 +158,16 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
             }
             var listToCompare = listSortRep
                 .Skip(i + 1)
-                .Where(x => x.RegNoRep == rep.RegNoRep && x.OkpoRep == rep.OkpoRep && x.FormNum == rep.FormNum)
+                .Where(x => x.RegNoRep == rep.RegNoRep 
+                            && x.OkpoRep == rep.OkpoRep 
+                            && x.FormNum == rep.FormNum)
                 .ToList();
             var isNext = true;
             foreach (var repToCompare in listToCompare)
             {
                 var repToCompareStart = repToCompare.StartPeriod;
                 var repToCompareEnd = repToCompare.EndPeriod;
-                var repToCompareStartOriginal = new DateTime();
+                var repToCompareStartOriginal = new DateOnly();
                 if (repToCompareStart < order13Date && repToCompareEnd < order13Date)
                 {
                     repToCompareStartOriginal = repToCompareStart;
@@ -165,10 +181,10 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
                      || isNext && repEnd < repToCompareStart)
                     && !(repToCompareStart == order13Date && repEnd.AddDays(1) == repToCompareStart))
                 {
-                    var repStartToExcel = repStartOriginal == new DateTime() || repStartOriginal == repStart
+                    var repStartToExcel = repStartOriginal == new DateOnly() || repStartOriginal == repStart
                         ? repStart
                         : repStartOriginal;
-                    var repToCompareStartToExcel = repToCompareStartOriginal == new DateTime() || repToCompareStartOriginal == repToCompareStart
+                    var repToCompareStartToExcel = repToCompareStartOriginal == new DateOnly() || repToCompareStartOriginal == repToCompareStart
                         ? repToCompareStart
                         : repToCompareStartOriginal;
                     Worksheet.Cells[row, 1].Value = rep.RegNoRep;
@@ -198,6 +214,11 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
                 }
                 isNext = false;
             }
+
+            if (progressBarDoubleValue >= 95) continue;
+            progressBarDoubleValue += ((double)(i + 1) / listSortRep.Count) * 0.85 / 100;
+            progressBarVM.ValueBar = (int)Math.Floor(progressBarDoubleValue);
+            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
         }
 
         for (var col = 1; col <= Worksheet.Dimension.End.Column; col++)
@@ -208,7 +229,17 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
         }
 
         Worksheet.View.FreezePanes(2, 1);
-        
+
+        loadStatus = "Сохранение";
+        progressBarVM.ValueBar = 95;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
+
+        loadStatus = "Завершение выгрузки";
+        progressBarVM.ValueBar = 100;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 }
