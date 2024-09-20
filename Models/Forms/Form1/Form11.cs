@@ -6,6 +6,7 @@ using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using Spravochniki;
 
 namespace Models.Forms.Form1;
@@ -1032,6 +1033,7 @@ public class Form11 : Form1
         Radionuclids_DB = Convert.ToString(worksheet.Cells[row, 6].Value);
         FactoryNumber_DB = Convert.ToString(worksheet.Cells[row, 7].Value);
         Quantity_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 8].Value), out var intValue) ? intValue : null;
+        //worksheet.Cells[row, 9].Style.Numberformat.Format = "0.00E+00";
         Activity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 9].Value);
         CreatorOKPO_DB = Convert.ToString(worksheet.Cells[row, 10].Value);
         CreationDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 11].Text);
