@@ -9,6 +9,7 @@ using Models.Attributes;
 using OfficeOpenXml;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data.SqlTypes;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Models.Forms;
@@ -180,8 +181,8 @@ public class Report : IKey, IDataGridColumn
 
     public virtual Reports Reports { get; set; }
 
-    //[ForeignKey(nameof(Reports))]
-    //public int? ReportsId { get; set; }
+    [ForeignKey(nameof(Reports))]
+    public int? ReportsId { get; set; }
 
     #endregion
 
@@ -2122,15 +2123,18 @@ public class Report : IKey, IDataGridColumn
             value.AddError("Недопустимое значение");
             return false;
         }
-        foreach (var currentRep in Reports.Report_Collection.Where(x => x.FormNum_DB == FormNum_DB && x.Id != Id))
+        if (Reports is not null)
         {
-            if (DateOnly.TryParse(currentRep.StartPeriod_DB, out var currentStartPeriod)
-                && DateOnly.TryParse(currentRep.EndPeriod_DB, out var currentEndPeriod)
-                && DateOnly.TryParse(EndPeriod_DB, out var endPeriod)
-                && startPeriod < currentEndPeriod && endPeriod > currentStartPeriod)
+            foreach (var currentRep in Reports.Report_Collection.Where(x => x.FormNum_DB == FormNum_DB && x.Id != Id))
             {
-                value.AddError("Пересечение с имеющимся отчётом");
-                return false;
+                if (DateOnly.TryParse(currentRep.StartPeriod_DB, out var currentStartPeriod)
+                    && DateOnly.TryParse(currentRep.EndPeriod_DB, out var currentEndPeriod)
+                    && DateOnly.TryParse(EndPeriod_DB, out var endPeriod)
+                    && startPeriod < currentEndPeriod && endPeriod > currentStartPeriod)
+                {
+                    value.AddError("Пересечение с имеющимся отчётом");
+                    return false;
+                }
             }
         }
         return true;
@@ -2212,14 +2216,17 @@ public class Report : IKey, IDataGridColumn
             value.AddError("Начало периода должно быть раньше его конца");
             return false;
         }
-        foreach (var currentRep in Reports.Report_Collection.Where(x => x.FormNum_DB == FormNum_DB && x.Id != Id))
+        if (Reports is not null)
         {
-            if (DateOnly.TryParse(currentRep.StartPeriod_DB, out var currentStartPeriod)
-                && DateOnly.TryParse(currentRep.EndPeriod_DB, out var currentEndPeriod)
-                && startPeriod < currentEndPeriod && endPeriod > currentStartPeriod)
+            foreach (var currentRep in Reports.Report_Collection.Where(x => x.FormNum_DB == FormNum_DB && x.Id != Id))
             {
-                value.AddError("Пересечение с имеющимся отчётом");
-                return false;
+                if (DateOnly.TryParse(currentRep.StartPeriod_DB, out var currentStartPeriod)
+                    && DateOnly.TryParse(currentRep.EndPeriod_DB, out var currentEndPeriod)
+                    && startPeriod < currentEndPeriod && endPeriod > currentStartPeriod)
+                {
+                    value.AddError("Пересечение с имеющимся отчётом");
+                    return false;
+                }
             }
         }
         return true;

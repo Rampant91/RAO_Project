@@ -150,17 +150,17 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             ContextMenuText = ["Выгрузить организацию с указанием диапазона дат"],
-            Command = dataContext.ExportReportsWithDateRange
+            Command = MainWindowVM.ExportReportsWithDateRange
         });
 
-        //grd1.CommandsList.Add(new KeyCommand
-        //{
-        //    IsDoubleTappedCommand = false,
-        //    IsContextMenuCommand = true,
-        //    ParamName = "SelectedItems",
-        //    ContextMenuText = new[] { "Выгрузить все организации в один файл" },
-        //    Command = dataContext.ExportAllReportsOneFile
-        //});
+        grd1.CommandsList.Add(new KeyCommand
+        {
+            IsDoubleTappedCommand = false,
+            IsContextMenuCommand = true,
+            ParamName = "SelectedItems",
+            ContextMenuText = new[] { "Выгрузить все организации в один файл" },
+            Command = MainWindowVM.ExportAllReportsOneFile
+        });
 
         grd1.CommandsList.Add(new KeyCommand
         {
@@ -168,7 +168,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             ContextMenuText = ["Выгрузить все организации в отдельные файлы"],
-            Command = dataContext.ExportAllReports
+            Command = MainWindowVM.ExportAllReports
         });
 
         grd1.CommandsList.Add(new KeyCommand

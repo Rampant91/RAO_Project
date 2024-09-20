@@ -95,11 +95,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ExcelExportListOfOrgs { get; set; }             //  Excel -> Список организаций
     public ICommand ExcelExportPasWithoutRep { get; set; }          //  Excel -> Паспорта -> Паспорта без отчетов
     public ICommand ExcelExportRepWithoutPas { get; set; }          //  Excel -> Паспорта -> Отчеты без паспортов
-    public ICommand ExportAllReports { get; set; }                  //  Экспорт всех организаций организации в отдельные файлы .raodb
-    //public ICommand ExportAllReportsOneFile { get; set; }           //  Экспорт всех организаций организации в один файл .raodb
-    public static ICommand ExportForm => new ExportFormAsyncCommand();          //  Экспорт формы в файл .raodb
-    public static ICommand ExportReports => new ExportReportsAsyncCommand();    //  Экспорт организации в файл .raodb
-    public ICommand ExportReportsWithDateRange { get; set; }        //  Экспорт организации в файл .raodb с указанием диапазона дат выгружаемых форм
+    public static ICommand ExportAllReports => new ExportAllReportsAsyncCommand();                      //  Экспорт всех организаций организации в отдельные файлы .RAODB
+    public static ICommand ExportAllReportsOneFile => new ExportAllReportsOneFileAsyncCommand();        //  Экспорт всех организаций организации в один файл .RAODB
+    public static ICommand ExportForm => new ExportFormAsyncCommand();                                  //  Экспорт формы в файл .RAODB
+    public static ICommand ExportReports => new ExportReportsAsyncCommand();                            //  Экспорт организации в файл .RAODB
+    public static ICommand ExportReportsWithDateRange => new ExportReportsWithDateRangeAsyncCommand();  //  Экспорт организации в файл .RAODB с указанием диапазона дат выгружаемых форм
     public ICommand ImportExcel { get; set; }                       //  Импорт -> Из Excel
     public ICommand ImportJson { get; set; }                        //  Импорт -> Из Json
     public ICommand ImportRaodb { get; set; }                       //  Импорт -> Из RAODB
@@ -133,9 +133,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ExcelExportPasWithoutRep = new ExcelExportPasWithoutRepAsyncCommand();
         ExcelExportRepWithoutPas = new ExcelExportRepWithoutPasAsyncCommand();
         ExcelExportAll = new ExcelExportAllAsyncCommandAsyncCommand();
-        ExportAllReports = new ExportAllReportsAsyncCommand();
-        //ExportAllReportsOneFile = new ExportAllReportsOneFileAsyncCommand();
-        ExportReportsWithDateRange = new ExportReportsWithDateRangeAsyncCommand();
         ImportExcel = new ImportExcelAsyncCommand();
         ImportJson = new ImportJsonAsyncCommand();
         ImportRaodb = new ImportRaodbAsyncCommand();
