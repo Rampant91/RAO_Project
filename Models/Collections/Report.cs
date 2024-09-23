@@ -181,8 +181,8 @@ public class Report : IKey, IDataGridColumn
 
     public virtual Reports Reports { get; set; }
 
-    [ForeignKey(nameof(Reports))]
-    public int? ReportsId { get; set; }
+    //[ForeignKey(nameof(Reports))]
+    //public int? ReportsId { get; set; }
 
     #endregion
 
