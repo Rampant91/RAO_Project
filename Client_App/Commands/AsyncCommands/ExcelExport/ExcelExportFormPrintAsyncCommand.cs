@@ -5,8 +5,11 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
+using Models.DBRealization;
 using Models.Interfaces;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
@@ -32,26 +35,79 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         var loadStatus = "Выгрузка отчёта";
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
-        var exportForm = (Report)forms.First();
-        exportForm = await ReportsStorage.GetReportAsync(exportForm.Id);
-        var orgWithExportForm = ReportsStorage.LocalReports.Reports_Collection
-            .FirstOrDefault(t => t.Report_Collection.Contains(exportForm));
-        var formNum = RemoveForbiddenChars(exportForm.FormNum_DB);
-        if (formNum is "" || forms.Count == 0 || orgWithExportForm is null) return;
+        var exportRepWithOutRows = (Report)forms.First();
+        var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
+        try
+        {
+            if (!StaticConfiguration.IsFileLocked(dbReadOnlyPath))
+            {
+                File.Delete(dbReadOnlyPath);
+                File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), dbReadOnlyPath);
+            }
+        }
+        catch
+        {
+            return;
+        }
 
-        var regNum = RemoveForbiddenChars(orgWithExportForm.Master.RegNoRep.Value);
-        var okpo = RemoveForbiddenChars(orgWithExportForm.Master.OkpoRep.Value);
-        var corNum = Convert.ToString(exportForm.CorrectionNumber_DB);
+        await using var dbReadOnly = new DBModel(dbReadOnlyPath);
+
+        var exportRep = await dbReadOnly.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows12.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows13.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows14.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows15.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows16.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows17.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows18.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows19.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows21.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows22.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows23.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows24.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows25.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows26.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows27.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows28.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows29.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows210.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Notes.OrderBy(x => x.Order))
+            .FirstAsync(x => x.Id == exportRepWithOutRows.Id, cancellationToken: cts.Token);
+
+
+        //var exportForm = (Report)forms.First();
+        //exportRep = await ReportsStorage.GetReportAsync(exportRep.Id);
+        var orgWithExportRep = await dbReadOnly.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+            .Include(reports => reports.Report_Collection)
+            .FirstAsync(x => x.Id == exportRepWithOutRows.ReportsId, cancellationToken: cts.Token);
+
+        var formNum = RemoveForbiddenChars(exportRep.FormNum_DB);
+        if (formNum is "" || forms.Count == 0) return;
+
+        var regNum = RemoveForbiddenChars(orgWithExportRep.Master.RegNoRep.Value);
+        var okpo = RemoveForbiddenChars(orgWithExportRep.Master.OkpoRep.Value);
+        var corNum = Convert.ToString(exportRep.CorrectionNumber_DB);
         string fileName;
         switch (formNum[0])
         {
             case '1':
-                var startPeriod = RemoveForbiddenChars(exportForm.StartPeriod_DB);
-                var endPeriod = RemoveForbiddenChars(exportForm.EndPeriod_DB);
+                var startPeriod = RemoveForbiddenChars(exportRep.StartPeriod_DB);
+                var endPeriod = RemoveForbiddenChars(exportRep.EndPeriod_DB);
                 fileName = $"{ExportType}_{regNum}_{okpo}_{formNum}_{startPeriod}_{endPeriod}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}";
                 break;
             case '2':
-                var year = RemoveForbiddenChars(exportForm.Year_DB);
+                var year = RemoveForbiddenChars(exportRep.Year_DB);
                 fileName = $"{ExportType}_{regNum}_{okpo}_{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}";
                 break;
             default:
@@ -78,16 +134,16 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using ExcelPackage excelPackage = new(new FileInfo(fullPath), new FileInfo(appFolderPath));
-        await exportForm.SortAsync();
+        await exportRep.SortAsync();
         var worksheetTitle = excelPackage.Workbook.Worksheets[$"{formNum.Split('.')[0]}.0"];
         var worksheetMain = excelPackage.Workbook.Worksheets[formNum];
         worksheetTitle.Cells.Style.ShrinkToFit = true;
         worksheetMain.Cells.Style.ShrinkToFit = true;
 
-        ExcelPrintTitleExport(formNum, worksheetTitle, exportForm);
-        ExcelPrintSubMainExport(formNum, worksheetMain, exportForm);
-        ExcelPrintNotesExport(formNum, worksheetMain, exportForm);
-        ExcelPrintRowsExport(formNum, worksheetMain, exportForm);
+        ExcelPrintTitleExport(formNum, worksheetTitle, exportRep);
+        ExcelPrintSubMainExport(formNum, worksheetMain, exportRep);
+        ExcelPrintNotesExport(formNum, worksheetMain, exportRep);
+        ExcelPrintRowsExport(formNum, worksheetMain, exportRep);
 
         loadStatus = "Сохранение";
         progressBarVM.ValueBar = 95;

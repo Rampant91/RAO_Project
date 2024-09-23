@@ -134,67 +134,67 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                 #region 1.1
 
                 case "1.1":
+                {
+                    var form = (Form11)key;
+                    if (string.IsNullOrWhiteSpace(form.OperationCode_DB)
+                        && string.IsNullOrWhiteSpace(form.OperationDate_DB)
+                        && string.IsNullOrWhiteSpace(form.PassportNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.Type_DB)
+                        && string.IsNullOrWhiteSpace(form.Radionuclids_DB)
+                        && string.IsNullOrWhiteSpace(form.FactoryNumber_DB)
+                        && form.Quantity_DB is null
+                        && string.IsNullOrWhiteSpace(form.Activity_DB)
+                        && string.IsNullOrWhiteSpace(form.CreatorOKPO_DB)
+                        && string.IsNullOrWhiteSpace(form.CreationDate_DB)
+                        && form.Category_DB is null
+                        && form.SignedServicePeriod_DB is null
+                        && form.PropertyCode_DB is null
+                        && string.IsNullOrWhiteSpace(form.Owner_DB)
+                        && form.DocumentVid_DB is null
+                        && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
+                        && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
+                        && string.IsNullOrWhiteSpace(form.TransporterOKPO_DB)
+                        && string.IsNullOrWhiteSpace(form.PackName_DB)
+                        && string.IsNullOrWhiteSpace(form.PackType_DB)
+                        && string.IsNullOrWhiteSpace(form.PackNumber_DB))
                     {
-                        var form = (Form11)key;
-                        if (string.IsNullOrWhiteSpace(form.OperationCode_DB)
-                            && string.IsNullOrWhiteSpace(form.OperationDate_DB)
-                            && string.IsNullOrWhiteSpace(form.PassportNumber_DB)
-                            && string.IsNullOrWhiteSpace(form.Type_DB)
-                            && string.IsNullOrWhiteSpace(form.Radionuclids_DB)
-                            && string.IsNullOrWhiteSpace(form.FactoryNumber_DB)
-                            && form.Quantity_DB is null
-                            && string.IsNullOrWhiteSpace(form.Activity_DB)
-                            && string.IsNullOrWhiteSpace(form.CreatorOKPO_DB)
-                            && string.IsNullOrWhiteSpace(form.CreationDate_DB)
-                            && form.Category_DB is null
-                            && form.SignedServicePeriod_DB is null
-                            && form.PropertyCode_DB is null
-                            && string.IsNullOrWhiteSpace(form.Owner_DB)
-                            && form.DocumentVid_DB is null
-                            && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
-                            && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
-                            && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
-                            && string.IsNullOrWhiteSpace(form.TransporterOKPO_DB)
-                            && string.IsNullOrWhiteSpace(form.PackName_DB)
-                            && string.IsNullOrWhiteSpace(form.PackType_DB)
-                            && string.IsNullOrWhiteSpace(form.PackNumber_DB))
-                        {
-                            formToDeleteList.Add(form);
-                        }
-                        break;
+                        formToDeleteList.Add(form);
                     }
+                    break;
+                }
 
                 #endregion
 
                 #region 1.2
 
                 case "1.2":
+                {
+                    var form = (Form12)key;
+                    if (string.IsNullOrWhiteSpace(form.OperationCode_DB)
+                        && string.IsNullOrWhiteSpace(form.OperationDate_DB)
+                        && string.IsNullOrWhiteSpace(form.PassportNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.NameIOU_DB)
+                        && string.IsNullOrWhiteSpace(form.FactoryNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.Mass_DB)
+                        && string.IsNullOrWhiteSpace(form.CreatorOKPO_DB)
+                        && string.IsNullOrWhiteSpace(form.CreationDate_DB)
+                        && string.IsNullOrWhiteSpace(form.SignedServicePeriod_DB)
+                        && form.PropertyCode_DB is null
+                        && string.IsNullOrWhiteSpace(form.Owner_DB)
+                        && form.DocumentVid_DB is null
+                        && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
+                        && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
+                        && string.IsNullOrWhiteSpace(form.TransporterOKPO_DB)
+                        && string.IsNullOrWhiteSpace(form.PackName_DB)
+                        && string.IsNullOrWhiteSpace(form.PackType_DB)
+                        && string.IsNullOrWhiteSpace(form.PackNumber_DB))
                     {
-                        var form = (Form12)key;
-                        if (string.IsNullOrWhiteSpace(form.OperationCode_DB)
-                            && string.IsNullOrWhiteSpace(form.OperationDate_DB)
-                            && string.IsNullOrWhiteSpace(form.PassportNumber_DB)
-                            && string.IsNullOrWhiteSpace(form.NameIOU_DB)
-                            && string.IsNullOrWhiteSpace(form.FactoryNumber_DB)
-                            && string.IsNullOrWhiteSpace(form.Mass_DB)
-                            && string.IsNullOrWhiteSpace(form.CreatorOKPO_DB)
-                            && string.IsNullOrWhiteSpace(form.CreationDate_DB)
-                            && string.IsNullOrWhiteSpace(form.SignedServicePeriod_DB)
-                            && form.PropertyCode_DB is null
-                            && string.IsNullOrWhiteSpace(form.Owner_DB)
-                            && form.DocumentVid_DB is null
-                            && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
-                            && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
-                            && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
-                            && string.IsNullOrWhiteSpace(form.TransporterOKPO_DB)
-                            && string.IsNullOrWhiteSpace(form.PackName_DB)
-                            && string.IsNullOrWhiteSpace(form.PackType_DB)
-                            && string.IsNullOrWhiteSpace(form.PackNumber_DB))
-                        {
-                            formToDeleteList.Add(form);
-                        }
-                        break;
+                        formToDeleteList.Add(form);
                     }
+                    break;
+                }
 
                 #endregion
 
