@@ -19,7 +19,9 @@ using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 
-//  Excel -> Паспорта -> Отчеты без паспортов
+/// <summary>
+/// Excel -> Паспорта -> Отчеты без паспортов
+/// </summary>
 public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
 {
     private AnyTaskProgressBar progressBar;
@@ -160,9 +162,8 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Ошибка",
-                    ContentMessage =
-                        "Не удалось открыть сетевое хранилище паспортов:" +
-                        $"{Environment.NewLine}{directory.FullName}",
+                    ContentMessage = "Не удалось открыть сетевое хранилище паспортов:" +
+                                     $"{Environment.NewLine}{directory.FullName}",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner

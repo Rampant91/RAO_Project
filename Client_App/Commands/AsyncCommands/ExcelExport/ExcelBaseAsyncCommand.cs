@@ -20,6 +20,9 @@ using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
+/// <summary>
+/// Базовый класс выгрузки данных в .xlsx.
+/// </summary>
 public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 {
     private protected CancellationTokenSource Cts = new();
@@ -48,7 +51,17 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelExportNotes
 
-    private protected static int ExcelExportNotes(string param, int startRow, int startColumn, ExcelWorksheet worksheetPrim,
+    /// <summary>
+    /// Выгрузка примечаний в .xlsx.
+    /// </summary>
+    /// <param name="formNum">Номер формы.</param>
+    /// <param name="startRow">Номер начального ряда.</param>
+    /// <param name="startColumn">Номер начальной колонки.</param>
+    /// <param name="worksheetPrim">Лист Excel с примечаниями.</param>
+    /// <param name="forms">Список отчётов.</param>
+    /// <param name="printId"></param>
+    /// <returns></returns>
+    private protected static int ExcelExportNotes(string formNum, int startRow, int startColumn, ExcelWorksheet worksheetPrim,
         List<Report> forms, bool printId = false)
     {
         foreach (var item in forms)
@@ -63,7 +76,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 var mstRep = reps.Master_DB;
                 i.ExcelRow(worksheetPrim, curRow, startColumn + 1);
                 var yu = printId
-                    ? param.Split('.')[0] == "1"
+                    ? formNum.Split('.')[0] == "1"
                         ? mstRep.Rows10[1].RegNo_DB != "" && mstRep.Rows10[1].Okpo_DB != ""
                             ? reps.Master_DB.Rows10[1]
                                 .ExcelRow(worksheetPrim, curRow, 1, sumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
@@ -74,7 +87,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                                 .ExcelRow(worksheetPrim, curRow, 1, sumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
                             : reps.Master_DB.Rows20[0]
                                 .ExcelRow(worksheetPrim, curRow, 1, sumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
-                    : param.Split('.')[0] == "1"
+                    : formNum.Split('.')[0] == "1"
                         ? mstRep.Rows10[1].RegNo_DB != "" && mstRep.Rows10[1].Okpo_DB != ""
                             ? reps.Master_DB.Rows10[1].ExcelRow(worksheetPrim, curRow, 1) + 1
                             : reps.Master_DB.Rows10[0].ExcelRow(worksheetPrim, curRow, 1) + 1
@@ -96,12 +109,17 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelGetFullPath
 
+    /// <summary>
+    /// Выводит сообщение, дающее выбор, открывать временную копию или сохранить файл.
+    /// </summary>
+    /// <param name="fileName">Имя файла.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns>Полный путь до файла и флаг, нужно ли открывать временную копию.</returns>
     private protected static async Task<(string fullPath, bool openTemp)> ExcelGetFullPath(string fileName, CancellationTokenSource cts)
     {
         #region MessageSaveOrOpenTemp
 
-        var res =
-            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams 
             {
                 ButtonDefinitions = new[]
@@ -116,7 +134,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow)).Result;
+            .ShowDialog(Desktop.MainWindow));
 
         #endregion
 
@@ -207,7 +225,17 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelExportRows
 
-    private protected static int ExcelExportRows(string param, int startRow, int startColumn, ExcelWorksheet worksheet,
+    /// <summary>
+    /// Выгрузка строчек форм в .xlsx.
+    /// </summary>
+    /// <param name="formNum">Номер формы.</param>
+    /// <param name="startRow">Номер начального ряда.</param>
+    /// <param name="startColumn">Номер начальной колонки.</param>
+    /// <param name="worksheet">Лист Excel.</param>
+    /// <param name="forms">Список отчётов.</param>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    private protected static int ExcelExportRows(string formNum, int startRow, int startColumn, ExcelWorksheet worksheet,
         List<Report> forms, bool id = false)
     {
         foreach (var item in forms)
@@ -217,30 +245,30 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                     //t.Report_Collection.Contains(item));
             if (reps is null) continue;
             IEnumerable<IKey> t;
-            switch (param)
+            switch (formNum)
             {
                 case "2.1":
-                    t = item[param].ToList<IKey>().Where(x => ((Form21)x).Sum_DB || ((Form21)x).SumGroup_DB);
-                    if (item[param].ToList<IKey>().Any() && !t.Any())
+                    t = item[formNum].ToList<IKey>().Where(x => ((Form21)x).Sum_DB || ((Form21)x).SumGroup_DB);
+                    if (item[formNum].ToList<IKey>().Any() && !t.Any())
                     {
-                        t = item[param].ToList<IKey>();
+                        t = item[formNum].ToList<IKey>();
                     }
                     break;
                 case "2.2":
-                    t = item[param].ToList<IKey>().Where(x => ((Form22)x).Sum_DB || ((Form22)x).SumGroup_DB);
-                    if (item[param].ToList<IKey>().Any() && !t.Any())
+                    t = item[formNum].ToList<IKey>().Where(x => ((Form22)x).Sum_DB || ((Form22)x).SumGroup_DB);
+                    if (item[formNum].ToList<IKey>().Any() && !t.Any())
                     {
-                        t = item[param].ToList<IKey>();
+                        t = item[formNum].ToList<IKey>();
                     }
                     break;
                 default:
-                    t = item[param].ToList<IKey>();
+                    t = item[formNum].ToList<IKey>();
                     break;
             }
 
             var lst = t.Any()
-                ? item[param].ToList<IKey>().ToList()
-                : item[param].ToList<IKey>().OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
+                ? item[formNum].ToList<IKey>().ToList()
+                : item[formNum].ToList<IKey>().OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
             if (lst.Count <= 0) continue;
             var count = startRow;
             startRow--;
@@ -320,7 +348,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 var masterRep = reps.Master_DB;
 
                 var yu = id
-                    ? param.Split('.')[0] == "1"
+                    ? formNum.Split('.')[0] == "1"
                         ? masterRep.Rows10[1].RegNo_DB != "" && masterRep.Rows10[1].Okpo_DB != ""
                             ? reps.Master_DB.Rows10[1]
                                 .ExcelRow(worksheet, count, 1, sumNumber: reps.Master_DB.Rows10[1].Id.ToString()) + 1
@@ -331,7 +359,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                                 .ExcelRow(worksheet, count, 1, sumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
                             : reps.Master_DB.Rows20[0]
                                 .ExcelRow(worksheet, count, 1, sumNumber: reps.Master_DB.Rows20[0].Id.ToString()) + 1
-                    : param.Split('.')[0] == "1"
+                    : formNum.Split('.')[0] == "1"
                         ? masterRep.Rows10[1].RegNo_DB != "" && masterRep.Rows10[1].Okpo_DB != ""
                             ? reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1) + 1
                             : reps.Master_DB.Rows10[0].ExcelRow(worksheet, count, 1) + 1
@@ -343,7 +371,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 count++;
             }
 
-            //if (param.Split('.')[0] == "2")
+            //if (formNum.Split('.')[0] == "2")
             //{
             //    var new_number = 2;
             //    while (worksheet.Cells[new_number, 6].Value != null)
@@ -362,16 +390,20 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelPrintTitulExport
 
-    private protected static void ExcelPrintTitleExport(string param, ExcelWorksheet worksheet, Report form)
+    /// <summary>
+    /// Выгрузка данных титульного листа в .xlsx.
+    /// </summary>
+    /// <param name="formNum">Номер формы.</param>
+    /// <param name="worksheet">Лист Excel.</param>
+    /// <param name="rep">Отчёт.</param>
+    /// <param name="master">Головной отчёт организации.</param>
+    private protected static void ExcelPrintTitleExport(string formNum, ExcelWorksheet worksheet, Report rep, Report master)
     {
-        var master = ReportsStorage.LocalReports.Reports_Collection
-            .First(t => t.Report_Collection.Contains(form))
-            .Master_DB;
-        if (param.Split('.')[0] == "2")
+        if (formNum.Split('.')[0] == "2")
         {
             var frmYur = master.Rows20[0];
             var frmObosob = master.Rows20[1];
-            worksheet.Cells["G10"].Value = form.Year_DB;
+            worksheet.Cells["G10"].Value = rep.Year_DB;
 
             worksheet.Cells["F6"].Value = frmYur.RegNo_DB;
             worksheet.Cells["F15"].Value = frmYur.OrganUprav_DB;
@@ -462,82 +494,94 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelPrintSubMainExport
 
-    private protected static void ExcelPrintSubMainExport(string param, ExcelWorksheet worksheet, Report form)
+    /// <summary>
+    /// Выгрузка дополнительных данных титульного листа в .xlsx.
+    /// </summary>
+    /// <param name="formNum">Номер формы.</param>
+    /// <param name="worksheet">Лист Excel.</param>
+    /// <param name="rep">Отчёт.</param>
+    private protected static void ExcelPrintSubMainExport(string formNum, ExcelWorksheet worksheet, Report rep)
     {
-        if (param.Split('.')[0] == "1")
+        if (formNum.Split('.')[0] == "1")
         {
-            worksheet.Cells["G3"].Value = form.StartPeriod_DB;
-            worksheet.Cells["G4"].Value = form.EndPeriod_DB;
-            worksheet.Cells["G5"].Value = form.CorrectionNumber_DB;
+            worksheet.Cells["G3"].Value = rep.StartPeriod_DB;
+            worksheet.Cells["G4"].Value = rep.EndPeriod_DB;
+            worksheet.Cells["G5"].Value = rep.CorrectionNumber_DB;
         }
         else
         {
-            switch (param)
+            switch (formNum)
             {
                 case "2.6":
                 {
-                    worksheet.Cells["G4"].Value = form.CorrectionNumber_DB;
-                    worksheet.Cells["G5"].Value = form.SourcesQuantity26_DB;
+                    worksheet.Cells["G4"].Value = rep.CorrectionNumber_DB;
+                    worksheet.Cells["G5"].Value = rep.SourcesQuantity26_DB;
                     break;
                 }
                 case "2.7":
                 {
-                    worksheet.Cells["G3"].Value = form.CorrectionNumber_DB;
-                    worksheet.Cells["G4"].Value = form.PermissionNumber27_DB;
-                    worksheet.Cells["G5"].Value = form.ValidBegin27_DB;
-                    worksheet.Cells["J5"].Value = form.ValidThru27_DB;
-                    worksheet.Cells["G6"].Value = form.PermissionDocumentName27_DB;
+                    worksheet.Cells["G3"].Value = rep.CorrectionNumber_DB;
+                    worksheet.Cells["G4"].Value = rep.PermissionNumber27_DB;
+                    worksheet.Cells["G5"].Value = rep.ValidBegin27_DB;
+                    worksheet.Cells["J5"].Value = rep.ValidThru27_DB;
+                    worksheet.Cells["G6"].Value = rep.PermissionDocumentName27_DB;
                     break;
                 }
                 case "2.8":
                 {
-                    worksheet.Cells["G3"].Value = form.CorrectionNumber_DB;
-                    worksheet.Cells["G4"].Value = form.PermissionNumber_28_DB;
-                    worksheet.Cells["K4"].Value = form.ValidBegin_28_DB;
-                    worksheet.Cells["N4"].Value = form.ValidThru_28_DB;
-                    worksheet.Cells["G5"].Value = form.PermissionDocumentName_28_DB;
+                    worksheet.Cells["G3"].Value = rep.CorrectionNumber_DB;
+                    worksheet.Cells["G4"].Value = rep.PermissionNumber_28_DB;
+                    worksheet.Cells["K4"].Value = rep.ValidBegin_28_DB;
+                    worksheet.Cells["N4"].Value = rep.ValidThru_28_DB;
+                    worksheet.Cells["G5"].Value = rep.PermissionDocumentName_28_DB;
 
-                    worksheet.Cells["G6"].Value = form.PermissionNumber1_28_DB;
-                    worksheet.Cells["K6"].Value = form.ValidBegin1_28_DB;
-                    worksheet.Cells["N6"].Value = form.ValidThru1_28_DB;
-                    worksheet.Cells["G7"].Value = form.PermissionDocumentName1_28_DB;
+                    worksheet.Cells["G6"].Value = rep.PermissionNumber1_28_DB;
+                    worksheet.Cells["K6"].Value = rep.ValidBegin1_28_DB;
+                    worksheet.Cells["N6"].Value = rep.ValidThru1_28_DB;
+                    worksheet.Cells["G7"].Value = rep.PermissionDocumentName1_28_DB;
 
-                    worksheet.Cells["G8"].Value = form.ContractNumber_28_DB;
-                    worksheet.Cells["K8"].Value = form.ValidBegin2_28_DB;
-                    worksheet.Cells["N8"].Value = form.ValidThru2_28_DB;
-                    worksheet.Cells["G9"].Value = form.OrganisationReciever_28_DB;
+                    worksheet.Cells["G8"].Value = rep.ContractNumber_28_DB;
+                    worksheet.Cells["K8"].Value = rep.ValidBegin2_28_DB;
+                    worksheet.Cells["N8"].Value = rep.ValidThru2_28_DB;
+                    worksheet.Cells["G9"].Value = rep.OrganisationReciever_28_DB;
 
-                    worksheet.Cells["D21"].Value = form.GradeExecutor_DB;
-                    worksheet.Cells["F21"].Value = form.FIOexecutor_DB;
-                    worksheet.Cells["I21"].Value = form.ExecPhone_DB;
-                    worksheet.Cells["K21"].Value = form.ExecEmail_DB;
+                    worksheet.Cells["D21"].Value = rep.GradeExecutor_DB;
+                    worksheet.Cells["F21"].Value = rep.FIOexecutor_DB;
+                    worksheet.Cells["I21"].Value = rep.ExecPhone_DB;
+                    worksheet.Cells["K21"].Value = rep.ExecEmail_DB;
                     return;
                 }
                 default:
                 {
-                    worksheet.Cells["G4"].Value = form.CorrectionNumber_DB;
+                    worksheet.Cells["G4"].Value = rep.CorrectionNumber_DB;
                     break;
                 }
             }
         }
 
-        worksheet.Cells["D18"].Value = form.GradeExecutor_DB;
-        worksheet.Cells["F18"].Value = form.FIOexecutor_DB;
-        worksheet.Cells["I18"].Value = form.ExecPhone_DB;
-        worksheet.Cells["K18"].Value = form.ExecEmail_DB;
+        worksheet.Cells["D18"].Value = rep.GradeExecutor_DB;
+        worksheet.Cells["F18"].Value = rep.FIOexecutor_DB;
+        worksheet.Cells["I18"].Value = rep.ExecPhone_DB;
+        worksheet.Cells["K18"].Value = rep.ExecEmail_DB;
     }
 
     #endregion
 
     #region ExcelPrintNotesExport
 
-    private protected static void ExcelPrintNotesExport(string param, ExcelWorksheet worksheet, Report form)
+    /// <summary>
+    /// Выгрузка примечаний в шаблон для печати .xlsx.
+    /// </summary>
+    /// <param name="formNum">Номер формы.</param>
+    /// <param name="worksheet">Лист Excel.</param>
+    /// <param name="rep">Отчёт.</param>
+    private protected static void ExcelPrintNotesExport(string formNum, ExcelWorksheet worksheet, Report rep)
     {
-        var start = param is "2.8"
+        var start = formNum is "2.8"
             ? 18
             : 15;
 
-        for (var i = 0; i < form.Notes.Count - 1; i++)
+        for (var i = 0; i < rep.Notes.Count - 1; i++)
         {
             worksheet.InsertRow(start + 1, 1, start);
             var cells = worksheet.Cells[$"A{start + 1}:B{start + 1}"];
@@ -574,7 +618,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         }
 
         var count = start;
-        foreach (var note in form.Notes)
+        foreach (var note in rep.Notes)
         {
             note.ExcelRow(worksheet, count, 1);
             count++;
@@ -585,13 +629,19 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelPrintRowsExport
 
-    private protected static void ExcelPrintRowsExport(string param, ExcelWorksheet worksheet, Report form)
+    /// <summary>
+    /// Выгрузка строчек в шаблон для печати .xlsx.
+    /// </summary>
+    /// <param name="formNum">Номер формы.</param>
+    /// <param name="worksheet">Лист Excel.</param>
+    /// <param name="rep">Отчёт.</param>
+    private protected static void ExcelPrintRowsExport(string formNum, ExcelWorksheet worksheet, Report rep)
     {
-        var start = param is "2.8"
+        var start = formNum is "2.8"
             ? 14
             : 11;
 
-        for (var i = 0; i < form[param].Count - 1; i++)
+        for (var i = 0; i < rep[formNum].Count - 1; i++)
         {
             worksheet.InsertRow(start + 1, 1, start);
             var cells = worksheet.Cells[$"A{start + 1}:B{start + 1}"];
@@ -616,9 +666,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
         #region 2.1 with Sum
 
-        if (param is "2.1" && form[param].ToList<Form21>().Any(form21 => form21.Sum_DB))
+        if (formNum is "2.1" && rep[formNum].ToList<Form21>().Any(form21 => form21.Sum_DB))
         {
-            var forms21 = form[param]
+            var forms21 = rep[formNum]
                 .ToList<Form21>()
                 .GroupBy(x => x.RefineMachineName_DB
                               + x.MachineCode_DB
@@ -640,9 +690,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
         #region 2.2 with Sum
 
-        if (param is "2.2" && form[param].ToList<Form22>().Any(form22 => form22.Sum_DB))
+        if (formNum is "2.2" && rep[formNum].ToList<Form22>().Any(form22 => form22.Sum_DB))
         {
-            var forms22 = form[param]
+            var forms22 = rep[formNum]
                 .ToList<Form22>()
                 .GroupBy(x => x.StoragePlaceName_DB
                               + x.StoragePlaceCode_DB
@@ -664,7 +714,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
         else
         {
-            foreach (var it in form[param])
+            foreach (var it in rep[formNum])
             {
                 switch (it)
                 {
@@ -742,6 +792,14 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelSaveAndOpen
 
+    /// <summary>
+    /// Сохранить изменения в .xlsx и открыть временную копию при необходимости.
+    /// </summary>
+    /// <param name="excelPackage">Пакет данных .xlsx.</param>
+    /// <param name="fullPath">Полный путь к файлу .xlsx.</param>
+    /// <param name="openTemp">Флаг, открывать ли временную копию.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns>Открывает файл выгрузки в .xlsx.</returns>
     private protected static async Task ExcelSaveAndOpen(ExcelPackage excelPackage, string fullPath, bool openTemp, CancellationTokenSource cts)
     {
         try
@@ -818,6 +876,13 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region InventoryCheck
 
+    /// <summary>
+    /// Проверка, является ли отчёт инвентаризационным. Если все строчки с кодом операции 10 - добавляет " (ИНВ)",
+    /// если хотя бы одна - добавляет " (инв)".
+    /// </summary>
+    /// <param name="repRowsCount">Количество строчек в отчёте.</param>
+    /// <param name="countCode10">Количество строчек с кодом операции 10.</param>
+    /// <returns>Строчка, информирующая о том, является ли отчёт инвентаризационным.</returns>
     private protected static string InventoryCheck(int repRowsCount, int countCode10)
     {
         return countCode10 == repRowsCount && repRowsCount > 0

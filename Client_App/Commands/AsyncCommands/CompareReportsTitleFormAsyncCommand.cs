@@ -6,6 +6,12 @@ using Models.Collections;
 
 namespace Client_App.Commands.AsyncCommands;
 
+/// <summary>
+/// Сравнение головных отчётов и открытие соответствующего окна.
+/// </summary>
+/// <param name="baseMasterReport">Имеющийся в БД головной отчёт.</param>
+/// <param name="importMasterReport">Импортируемый головоной отчёт.</param>
+/// <param name="repsWhereTitleFormCheckIsCancel">Список организаций (рег.№, ОКПО), где проверка отменена.</param>
 public class CompareReportsTitleFormAsyncCommand(
     Report baseMasterReport,
     Report importMasterReport,

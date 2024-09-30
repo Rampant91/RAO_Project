@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
@@ -12,7 +13,10 @@ using Models.Interfaces;
 
 namespace Client_App.Commands.AsyncCommands.Delete;
 
-//  Удалить выбранный комментарий
+/// <summary>
+/// Удалить выбранный комментарий.
+/// </summary>
+/// <param name="changeOrCreateViewModel">ViewModel отчёта.</param>
 public class DeleteNoteAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
     private Report Storage => changeOrCreateViewModel.Storage;
@@ -26,7 +30,7 @@ public class DeleteNoteAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : 
             #region MessageDeleteNote
 
             var suffix = param.Length == 1 ? 'у' : 'и';
-            var answer = await MessageBox.Avalonia.MessageBoxManager
+            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
@@ -41,7 +45,7 @@ public class DeleteNoteAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : 
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow);
+                .ShowDialog(Desktop.MainWindow));
 
             #endregion
 

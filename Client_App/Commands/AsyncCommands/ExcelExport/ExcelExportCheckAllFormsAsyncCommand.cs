@@ -23,7 +23,9 @@ using System.Collections.Generic;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
-//  Проверяет все формы организации из главного окна и сохраняет в .xlsx
+/// <summary>
+/// Проверяет все формы организации из главного окна и сохраняет в .xlsx
+/// </summary>
 public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
 {
     private AnyTaskProgressBar progressBar;
@@ -74,7 +76,7 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
             .AsQueryable()
             .AsSplitQuery()
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-            //.Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
             .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
             .Include(x => x.Report_Collection).ThenInclude(x => x.Rows12)
             .Include(x => x.Report_Collection).ThenInclude(x => x.Rows13)
@@ -83,19 +85,19 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
             .Include(x => x.Report_Collection).ThenInclude(x => x.Rows16)
             .Include(x => x.Report_Collection).ThenInclude(x => x.Rows17)
             .Include(x => x.Report_Collection).ThenInclude(x => x.Rows18)
-            //.Include(x => x.Report_Collection).ThenInclude(x => x.Rows19)
-            //.Include(x => x.Report_Collection).ThenInclude(x => x.Rows21)
-            //.Include(x => x.Report_Collection).ThenInclude(x => x.Rows22)
-            //.Include(x => x.Report_Collection).ThenInclude(x => x.Rows23)
-            //.Include(x => x.Report_Collection).ThenInclude(x => x.Rows24)
-            //.Include(x => x.Report_Collection).ThenInclude(x => x.Rows25)
-            //.Include(x => x.Report_Collection).ThenInclude(x => x.Rows26)
-            //.Include(x => x.Report_Collection).ThenInclude(x => x.Rows27)
-            //.Include(x => x.Report_Collection).ThenInclude(x => x.Rows28)
-            //.Include(x => x.Report_Collection).ThenInclude(x => x.Rows29)
-            //.Include(x => x.Report_Collection).ThenInclude(x => x.Rows210)
-            //.Include(x => x.Report_Collection).ThenInclude(x => x.Rows211)
-            //.Include(x => x.Report_Collection).ThenInclude(x => x.Rows212)
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows19)
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows21)
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows22)
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows23)
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows24)
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows25)
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows26)
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows27)
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows28)
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows29)
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows210)
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows211)
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows212)
             .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
             .FirstOrDefaultAsync(x => x.Id == par.Id, cts.Token);
 

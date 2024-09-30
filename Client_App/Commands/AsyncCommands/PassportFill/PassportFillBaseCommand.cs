@@ -115,7 +115,7 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
         var suffix3 = singlePack ? "ки" : "ок";
         var suffix4 = singlePack ? "" : "ы";
         var suffix5 = singlePack ? "а" : "ов";
-        var answer = await MessageBox.Avalonia.MessageBoxManager
+        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
@@ -130,7 +130,7 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
                 MinWidth = 550,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow);
+            .ShowDialog(Desktop.MainWindow));
         if (answer is not "Да") return;
 
         #endregion

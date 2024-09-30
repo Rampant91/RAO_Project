@@ -4,8 +4,11 @@ using Models.Collections;
 
 namespace Client_App.Commands.AsyncCommands;
 
-//  Поменять местами юр. лицо и обособленное подразделение
-internal class ChangeReportOrderAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
+/// <summary>
+/// Поменять местами юр. лицо и обособленное подразделение.
+/// </summary>
+/// <param name="changeOrCreateViewModel">ViewModel головного отчёта.</param>
+public class ChangeReportOrderAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
     private Report Storage => changeOrCreateViewModel.Storage;
 

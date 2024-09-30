@@ -12,7 +12,9 @@ using Avalonia;
 
 namespace Client_App.Commands.AsyncCommands;
 
-//  Вставить значения из буфера обмена
+/// <summary>
+/// Вставить значения из буфера обмена.
+/// </summary>
 public class PasteRowsAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)

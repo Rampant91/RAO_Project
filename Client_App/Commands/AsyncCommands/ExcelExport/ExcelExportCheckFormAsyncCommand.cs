@@ -9,6 +9,9 @@ using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
+/// <summary>
+/// Сохранить список ошибок при проверке отчёта в .xlsx.
+/// </summary>
 public class ExcelExportCheckFormAsyncCommand : ExcelBaseAsyncCommand
 {
     private AnyTaskProgressBar progressBar;

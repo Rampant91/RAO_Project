@@ -21,9 +21,17 @@ using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
-//  Выгрузка в Excel истории движения источника
+/// <summary>
+/// Выгрузка в .xlsx истории движения источника.
+/// </summary>
 public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncCommand
 {
+    /// <summary>
+    /// DTO уникальных данных паспорта.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="facNum">Заводской номер.</param>
+    /// <param name="pasNum">Номер паспорта.</param>
     private class PasUniqDataDTO(int id, string facNum, string pasNum)
     {
         public readonly int Id = id;
@@ -579,6 +587,11 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
 
     #region RemoveForbiddenChars
 
+    /// <summary>
+    /// Удаление запрещённых символов.
+    /// </summary>
+    /// <param name="str">Строчка.</param>
+    /// <returns>Строчка без запрещённых символов.</returns>
     private static string RemoveForbiddenChars(string str)
     {
         str = str.Replace(" ", "").Replace(Environment.NewLine, "");
@@ -586,6 +599,10 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         return str;
     }
 
+    /// <summary>
+    /// Регулярное выражение, находящее запрещённые символы.
+    /// </summary>
+    /// <returns></returns>
     [GeneratedRegex("[\\\\/:*?\"<>|]")]
     private static partial Regex ForbiddenCharsRegex();
 

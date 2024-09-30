@@ -8,7 +8,9 @@ using Client_App.Commands.AsyncCommands.Save;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
-//  Создать и открыть новое окно формы организации (1.0 и 2.0)
+/// <summary>
+/// Создать и открыть новое окно формы организации (1.0 и 2.0).
+/// </summary>
 public class AddReportsAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)

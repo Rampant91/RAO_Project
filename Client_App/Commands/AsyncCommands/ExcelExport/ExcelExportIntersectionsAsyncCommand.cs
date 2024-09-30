@@ -15,7 +15,9 @@ using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
-//  Excel -> Разрывы и пересечения
+/// <summary>
+/// Excel -> Разрывы и пересечения.
+/// </summary>
 public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
 {
     private AnyTaskProgressBar progressBar;

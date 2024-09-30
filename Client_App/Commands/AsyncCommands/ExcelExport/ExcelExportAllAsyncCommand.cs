@@ -7,10 +7,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Interfaces.Logger;
+using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.ViewModels;
 using Client_App.Views;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using OfficeOpenXml;
@@ -18,10 +22,14 @@ using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
-//  Excel -> Все формы & Excel -> Выбранная организация -> Все формы
-public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCommand
+/// <summary>
+/// Excel -> Все формы и Excel -> Выбранная организация -> Все формы.
+/// </summary>
+public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
 {
     private AnyTaskProgressBar progressBar;
+
+    public override bool CanExecute(object? parameter) => true;
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -30,27 +38,86 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
         string fileName;
         var mainWindow = Desktop.MainWindow as MainWindow;
 
-        if (ReportsStorage.LocalReports.Reports_Collection.Count == 0)
-        {
-            #region MessageExcelExportFail
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
+        var progressBarVM = progressBar.AnyTaskProgressBarVM_DB;
+        progressBarVM.ExportType = "Выгрузка в .xlsx";
+        progressBarVM.ExportName = "Выгрузка всех отчётов";
+        progressBarVM.ValueBar = 2;
+        var loadStatus = "Создание временной БД";
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+        var tmpDbPath = CreateTempDataBase();
+        await using var dbReadOnly = new DBModel(tmpDbPath);
+
+        #region CountReports
+        
+        var countReports = await dbReadOnly.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.DBObservable)
+            .Where(x => x.DBObservableId != null)
+            .CountAsync(cancellationToken: cts.Token);
+        switch (countReports)
+        { 
+            case 0:
+            {
+                #region MessageExcelExportFail
+
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = "Выгрузка в Excel",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = "Выгрузка не выполнена, поскольку в базе отсутствуют формы отчетности.",
+                        MinHeight = 150,
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(mainWindow));
+
+                #endregion
+
+                await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
+                return;
+            }
+            case > 10 when !IsSelectedOrg:
+            {
+                #region MessageLongOperation
+
+                var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    {
+                        ButtonDefinitions =
+                        [
+                            new ButtonDefinition { Name = "Да", IsDefault = true },
+                            new ButtonDefinition { Name = "Отменить выгрузку", IsCancel = true }
+                        ],
+                        ContentTitle = "Выгрузка",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = $"Текущая база содержит {countReports} форм организаций," +
+                                         $"{Environment.NewLine}выгрузка может занять длительный период времени. " +
+                                         $"{Environment.NewLine}Продолжить операцию?",
+                        MinWidth = 450,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen
+                    }).ShowDialog(Desktop.MainWindow));
+
+                #endregion
+
+                if (answer is not "Да")
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = "Выгрузка не выполнена, поскольку в базе отсутствуют формы отчетности.",
-                    MinHeight = 150,
-                    MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(mainWindow));
+                    await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
+                    return;
+                }
 
-            #endregion
-
-            return;
+                break;
+            }
         }
+
+        #endregion
+
         if (IsSelectedOrg)
         {
             var selectedReports = (Reports?)mainWindow?.SelectedReports?.FirstOrDefault();
@@ -82,6 +149,11 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
             }
             CurrentReports = selectedReports;
             ExportType = "Выбранная_организация_Все_формы";
+
+            progressBarVM.ExportName = $"Выгрузка всех отчётов " +
+                                       $"{selectedReports.Master.RegNoRep.Value}_{selectedReports.Master.OkpoRep.Value}";
+            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
             var regNum = RemoveForbiddenChars(CurrentReports.Master_DB.RegNoRep.Value);
             var okpo = RemoveForbiddenChars(CurrentReports.Master_DB.OkpoRep.Value);
             fileName = $"{ExportType}_{regNum}_{okpo}_{Assembly.GetExecutingAssembly().GetName().Version}";
@@ -105,29 +177,9 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
         var openTemp = result.openTemp;
         if (string.IsNullOrEmpty(fullPath)) return;
 
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
-        var progressBarVM = progressBar.AnyTaskProgressBarVM_DB;
-        progressBarVM.ExportType = ExportType;
-        progressBarVM.ExportName = "Выгрузка всех форм";
-        progressBarVM.ValueBar = 2;
-        var loadStatus = "Создание временной БД";
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        var operationStart = DateTime.Now;
 
-        var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
-        try
-        {
-            if (!StaticConfiguration.IsFileLocked(dbReadOnlyPath))
-            {
-                File.Delete(dbReadOnlyPath);
-                File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), dbReadOnlyPath);
-            }
-        }
-        catch
-        {
-            return;
-        }
-
-        loadStatus = "Определение списка форм";
+        loadStatus = "Загрузка списка отчётов";
         progressBarVM.ValueBar = 8;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
@@ -144,7 +196,17 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
         }
         else
         {
-            repsList.AddRange(ReportsStorage.LocalReports.Reports_Collection.OrderBy(x => x.Master_DB.RegNoRep.Value));
+            repsList.AddRange(
+                await dbReadOnly.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Include(x => x.DBObservable)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                        .Include(reports => reports.Report_Collection)
+                        .Where(x => x.DBObservable != null)
+                        .ToArrayAsync(cancellationToken: cts.Token));
         }
 
         HashSet<string> formNums = [];
@@ -167,17 +229,27 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
         progressBarVM.ValueBar = 10;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
-
-
-        await using var dbReadOnly = new DBModel(dbReadOnlyPath);
         double progressBarDoubleValue = progressBarVM.ValueBar;
-        foreach (var reps in repsList)
+        foreach (var reps in repsList.OrderBy(x => x.Master_DB.RegNoRep.Value))
         {
-            loadStatus = $"Загрузка форм {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value}";
-            var oldDBPath = new string(StaticConfiguration.DBPath);
-            StaticConfiguration.DBPath = dbReadOnlyPath;
-            var repsWithRows = await Task.Run(() => GetReportsWithForms(reps.Id), cts.Token);
-            StaticConfiguration.DBPath = oldDBPath;
+            progressBarVM.ExportName = $"Загрузка отчётов {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value}";
+            var repsWithRows = new Reports { Master = reps.Master };
+
+            foreach (var rep in reps.Report_Collection
+                         .OrderBy(x => x.FormNum_DB)
+                         .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out _)))
+            {
+                loadStatus = $"Загрузка отчёта {rep.FormNum_DB}_{rep.StartPeriod_DB}_{rep.EndPeriod_DB}";
+                progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+                var repWithRows = await GetReportWithRows(rep.Id, dbReadOnly);
+
+                repsWithRows.Report_Collection.Add(repWithRows);
+
+                progressBarDoubleValue += (double)85 / (repsList.Count * reps.Report_Collection.Count);
+                progressBarVM.ValueBar = (int)Math.Floor(progressBarDoubleValue);
+                progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+            }
             foreach (var formNum in formNums)
             {
                 CurrentReports = repsWithRows;
@@ -187,16 +259,52 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
                 CurrentPrimRow = WorksheetPrim.Dimension.End.Row + 1;
                 FillExportForms(formNum);
             }
-            progressBarDoubleValue += (double)85 / repsList.Count;
-            progressBarVM.ValueBar = (int)Math.Floor(progressBarDoubleValue);
-            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
         }
 
         loadStatus = "Сохранение";
         progressBarVM.ValueBar = 95;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
+        var operationEnd = DateTime.Now;
+        var diffInSeconds = (int)(operationEnd - operationStart).TotalSeconds;
+
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
+
+        loadStatus = "Удаление временных файлов";
+        progressBarVM.ValueBar = 98;
+        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+        if (File.Exists(tmpDbPath))
+        {
+            try
+            {
+                File.Delete(tmpDbPath);
+            }
+            catch (Exception ex)
+            {
+                var msg = $"{Environment.NewLine}Message: {ex.Message}" + 
+                          $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
+            }
+        }
+
+        #region MessageExcelExportFail
+
+        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            {
+                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                CanResize = true,
+                ContentTitle = "Выгрузка в Excel",
+                ContentHeader = "Уведомление",
+                ContentMessage = $"Время выгрузки составило {diffInSeconds} секунд.",
+                MinHeight = 150,
+                MinWidth = 250,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .Show(mainWindow));
+
+        #endregion
 
         loadStatus = "Завершение выгрузки";
         progressBarVM.ValueBar = 100;
@@ -205,5 +313,44 @@ public class ExcelExportAllAsyncCommandAsyncCommand : ExcelExportBaseAllAsyncCom
         await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 
-    private static async Task<Reports> GetReportsWithForms(int repId) => await ReportsStorage.ApiReports.GetAsync(repId);
+    #region GetReportWithRows
+    
+    /// <summary>
+    /// Получение отчёта вместе со строчками из БД.
+    /// </summary>
+    /// <param name="repId">Id отчёта.</param>
+    /// <param name="dbReadOnly">Модель временной БД.</param>
+    /// <returns>Отчёт вместе со строчками.</returns>
+    private static async Task<Report> GetReportWithRows(int repId, DBModel dbReadOnly)
+    {
+        return await dbReadOnly.ReportCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(rep => rep.Rows11.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows12.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows13.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows14.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows15.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows16.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows17.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows18.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows19.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows21.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows22.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows23.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows24.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows25.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows26.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows27.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows28.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows29.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows210.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows211.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows212.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Notes.OrderBy(note => note.Order))
+                .FirstAsync(rep => rep.Id == repId);
+    }
+
+    #endregion
 }

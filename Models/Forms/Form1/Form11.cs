@@ -7,6 +7,7 @@ using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using OfficeOpenXml.Style.XmlAccess;
 using Spravochniki;
 
 namespace Models.Forms.Form1;
@@ -1033,7 +1034,6 @@ public class Form11 : Form1
         Radionuclids_DB = Convert.ToString(worksheet.Cells[row, 6].Value);
         FactoryNumber_DB = Convert.ToString(worksheet.Cells[row, 7].Value);
         Quantity_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 8].Value), out var intValue) ? intValue : null;
-        //worksheet.Cells[row, 9].Style.Numberformat.Format = "0.00E+00";
         Activity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 9].Value);
         CreatorOKPO_DB = Convert.ToString(worksheet.Cells[row, 10].Value);
         CreationDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 11].Text);
@@ -1062,7 +1062,10 @@ public class Form11 : Form1
         worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelString(Radionuclids_DB);
         worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelString(FactoryNumber_DB);
         worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = Quantity_DB is null ? "-" : Quantity_DB;
+
+        worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Style.Numberformat.Format = "0.##E+00";
         worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ConvertToExcelDouble(Activity_DB);
+
         worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = ConvertToExcelString(CreatorOKPO_DB);
         worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = ConvertToExcelDate(CreationDate_DB, worksheet, row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0));
         worksheet.Cells[row + (!transpose ? 8 : 0), column + (transpose ? 8 : 0)].Value = Category_DB is null ? "-" : Category_DB;

@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Threading;
 using Client_App.Resources;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
@@ -11,7 +12,9 @@ using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands;
 
-//  Найти и открыть соответствующий файл паспорта в сетевом хранилище
+/// <summary>
+/// Найти и открыть соответствующий файл паспорта в сетевом хранилище.
+/// </summary>
 public class OpenPasAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
@@ -27,7 +30,7 @@ public class OpenPasAsyncCommand : BaseAsyncCommand
         {
             #region MessageUnableToOpenPassport
 
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow("Уведомление",
                         "Паспорт не может быть открыт, поскольку не заполнены или заполнены некорректно все требуемые поля:"
                         + Environment.NewLine + "- номер паспорта (сертификата);"
@@ -35,7 +38,7 @@ public class OpenPasAsyncCommand : BaseAsyncCommand
                         + Environment.NewLine + "- номер;"
                         + Environment.NewLine + "- код ОКПО изготовителя;"
                         + Environment.NewLine + "- дата выпуска;")
-                    .ShowDialog(Desktop.MainWindow);
+                    .ShowDialog(Desktop.MainWindow));
 
             #endregion
 
@@ -60,7 +63,7 @@ public class OpenPasAsyncCommand : BaseAsyncCommand
         {
             #region MessagePasportFileMissing
 
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
@@ -72,7 +75,7 @@ public class OpenPasAsyncCommand : BaseAsyncCommand
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
-                }).ShowDialog(Desktop.MainWindow);
+                }).ShowDialog(Desktop.MainWindow));
 
             #endregion
         }

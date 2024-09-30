@@ -24,6 +24,10 @@ using Client_App.Interfaces.Logger.EnumLogger;
 
 namespace Client_App.Commands.AsyncCommands;
 
+/// <summary>
+/// Инициализация программы при запуске.
+/// </summary>
+/// <param name="mainWindowViewModel">ViewModel главного окна.</param>
 public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
@@ -31,7 +35,7 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
         var onStartProgressBarVm = parameter as OnStartProgressBarVM;
         onStartProgressBarVm!.LoadStatus = "Поиск системной директории";
         mainWindowViewModel.OnStartProgressBar = 1;
-        GetSystemDirectory();
+        await GetSystemDirectory();
 
         onStartProgressBarVm.LoadStatus = "Создание временных файлов";
         mainWindowViewModel.OnStartProgressBar = 5;
@@ -110,7 +114,10 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
 
     #region GetSystemDirectory
     
-    private static void GetSystemDirectory()
+    /// <summary>
+    /// Определение системной директории
+    /// </summary>
+    private static Task GetSystemDirectory()
     {
         try
         {
@@ -124,12 +131,17 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.System);
         }
+        return Task.CompletedTask;
     }
 
     #endregion
 
     #region ProcessRaoDirectory
     
+    /// <summary>
+    /// Определение внутренних подпапок программы
+    /// </summary>
+    /// <returns></returns>
     private static Task ProcessRaoDirectory()
     {
         try
@@ -161,7 +173,6 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
                 ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.System);
             }
         }
-
         return Task.CompletedTask;
     }
 
@@ -169,6 +180,10 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
 
     #region ProcessSpravochniks
     
+    /// <summary>
+    /// Инициаоизация справочников
+    /// </summary>
+    /// <returns></returns>
     private static Task ProcessSpravochniks()
     {
         var a = Spravochniks.SprRadionuclids;
@@ -180,6 +195,10 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
 
     #region ProcessDataBaseCreate
     
+    /// <summary>
+    /// Создание файла БД, либо чтение имеющегося
+    /// </summary>
+    /// <returns></returns>
     private async Task ProcessDataBaseCreate()
     {
         var i = 0;
@@ -379,6 +398,11 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
 
     #region ProcessDataBaseFillEmpty
 
+    /// <summary>
+    /// Создание головных отчётов организации и сортировка
+    /// </summary>
+    /// <param name="dbm">Контекст</param>
+    /// <returns></returns>
     public static async Task ProcessDataBaseFillEmpty(DataContext dbm)
     {
         if (!dbm.DBObservableDbSet.Any()) dbm.DBObservableDbSet.Add(new DBObservable());
@@ -420,6 +444,10 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
 
     #region ProcessDataBaseFillNullOrder
     
+    /// <summary>
+    /// Выставление порядкового номера и сортировка
+    /// </summary>
+    /// <returns></returns>
     private static async Task ProcessDataBaseFillNullOrder()
     {
         foreach (var key in ReportsStorage.LocalReports.Reports_Collection)
@@ -448,6 +476,11 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
 
     #region GetNumberInOrder
 
+    /// <summary>
+    /// Получить порядковый номер
+    /// </summary>
+    /// <param name="lst">Список элементов</param>
+    /// <returns></returns>
     public static int GetNumberInOrder(IEnumerable lst)
     {
         var maxNum = 0;
@@ -466,7 +499,12 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
     #endregion
 
     #region Local_ReportsChanged
-    
+
+    /// <summary>
+    /// PropertyChanged локального списка организаций
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void Local_ReportsChanged(object sender, PropertyChangedEventArgs e)
     {
         mainWindowViewModel.OnPropertyChanged(nameof(ReportsStorage.LocalReports));

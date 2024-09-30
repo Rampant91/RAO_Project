@@ -21,7 +21,9 @@ using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 
-//  Excel -> Паспорта -> Паспорта без отчетов
+/// <summary>
+/// Excel -> Паспорта -> Паспорта без отчетов
+/// </summary>
 public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 {
     private AnyTaskProgressBar progressBar;

@@ -10,18 +10,15 @@ using ReactiveUI;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
-// Добавить N строк в форму
-internal class AddRowsAsyncCommand : BaseAsyncCommand
+/// <summary>
+/// Добавить N строк в форму.
+/// </summary>
+/// <param name="changeOrCreateViewModel">ViewModel отчёта.</param>
+public class AddRowsAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
-    private readonly ChangeOrCreateVM _changeOrCreateViewModel;
-    private Report Storage => _changeOrCreateViewModel.Storage;
-    private string FormType => _changeOrCreateViewModel.FormType;
-    private Interaction<object, int> ShowDialog => _changeOrCreateViewModel.ShowDialog;
-
-    public AddRowsAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
-    {
-        _changeOrCreateViewModel = changeOrCreateViewModel;
-    }
+    private Report Storage => changeOrCreateViewModel.Storage;
+    private string FormType => changeOrCreateViewModel.FormType;
+    private Interaction<object, int> ShowDialog => changeOrCreateViewModel.ShowDialog;
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -41,11 +38,16 @@ internal class AddRowsAsyncCommand : BaseAsyncCommand
             Storage.Rows.AddRange(lst);
             if (!formContainRowAtStart)
             {
-                await new SaveReportAsyncCommand(_changeOrCreateViewModel).AsyncExecute(null);
+                await new SaveReportAsyncCommand(changeOrCreateViewModel).AsyncExecute(null);
             }
         }
     }
 
+    /// <summary>
+    /// Получить порядковый номер
+    /// </summary>
+    /// <param name="lst">Список элементов</param>
+    /// <returns>Порядковый номер</returns>
     private static int GetNumberInOrder(IKeyCollection lst)
     {
         var maxNum = 0;

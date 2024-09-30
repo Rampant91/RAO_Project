@@ -20,7 +20,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm;
 /// <summary>
 /// Проверяет отчёт из главного окна, не открывая его.
 /// </summary>
-/// <returns>Окно с отчётом об ошибках.</returns>
+/// <returns>Открывает окно с отчётом об ошибках.</returns>
 public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
@@ -36,7 +36,7 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
             .AsQueryable()
             .AsSplitQuery()
             .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
-            //.Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
+            .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
             .Include(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows12.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows13.OrderBy(x => x.NumberInOrder_DB))
@@ -45,19 +45,19 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
             .Include(x => x.Rows16.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows17.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows18.OrderBy(x => x.NumberInOrder_DB))
-            //.Include(x => x.Rows19)
-            //.Include(x => x.Rows21)
-            //.Include(x => x.Rows22)
-            //.Include(x => x.Rows23)
-            //.Include(x => x.Rows24)
-            //.Include(x => x.Rows25)
-            //.Include(x => x.Rows26)
-            //.Include(x => x.Rows27)
-            //.Include(x => x.Rows28)
-            //.Include(x => x.Rows29)
-            //.Include(x => x.Rows210)
-            //.Include(x => x.Rows211)
-            //.Include(x => x.Rows212)
+            .Include(x => x.Rows19.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows21.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows22.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows23.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows24.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows25.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows26.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows27.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows28.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows29.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows210.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Notes.OrderBy(x => x.Order))
             .FirstOrDefaultAsync(x => x.Id == par.Id); 
         

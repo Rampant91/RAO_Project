@@ -22,7 +22,9 @@ using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
-//  Excel -> Формы 1.x, 2.x и Excel -> Выбранная организация-Формы 1.x, 2.x
+/// <summary>
+/// Excel -> Формы 1.x, 2.x и Excel -> Выбранная организация -> Формы 1.x, 2.x.
+/// </summary>
 public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
 {
     private AnyTaskProgressBar progressBar;
@@ -213,6 +215,14 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
         await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 
+    /// <summary>
+    /// Загрузки из БД организации вместе со строчками для определённого номера формы. 
+    /// </summary>
+    /// <param name="formNum">Номер формы.</param>
+    /// <param name="reps">Организация.</param>
+    /// <param name="dbReadOnly">Модель БД.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns>Организацию вместе со строчками определённого номера формы.</returns>
     private static async Task<Reports> GetReportsForms(string formNum, Reports reps, DBModel dbReadOnly, CancellationTokenSource cts)
     {
         return formNum switch
@@ -521,6 +531,10 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
         };
     }
 
+    /// <summary>
+    /// Регулярка проверяющая, что строчка содержит только цифры.
+    /// </summary>
+    /// <returns></returns>
     [GeneratedRegex(@"[^\d.]")]
     private static partial Regex OnlyDigitsRegex();
 }

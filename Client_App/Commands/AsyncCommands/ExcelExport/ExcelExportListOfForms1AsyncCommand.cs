@@ -19,7 +19,9 @@ using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
-//  Excel -> Список форм 1
+/// <summary>
+/// Excel -> Список форм 1.
+/// </summary>
 public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
 {
     private AnyTaskProgressBar progressBar;

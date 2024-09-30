@@ -277,7 +277,7 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в Excel",
+                        ContentTitle = "Выгрузка в .RAODB",
                         ContentHeader = "Ошибка",
                         ContentMessage = "При копировании файла базы данных из временной папки возникла ошибка." +
                                          $"{Environment.NewLine}Экспорт не выполнен.",

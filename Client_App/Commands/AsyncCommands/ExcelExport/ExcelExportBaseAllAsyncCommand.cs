@@ -1,11 +1,15 @@
-﻿using Models.Collections;
+﻿using Client_App.ViewModels;
+using Models.Collections;
 using System;
+using System.IO;
 using System.Linq;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
-//  Абстрактный класс для выгрузки всех форм и форм х.х
+/// <summary>
+/// Абстрактный класс для выгрузки всех форм и форм х.х
+/// </summary>
 public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 {
     private protected Reports CurrentReports;
@@ -16,8 +20,34 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     private protected bool IsSelectedOrg;
 
+    #region CreateTempDataBase
+
+    /// <summary>
+    /// Создание временной копии текущей базы данных.
+    /// </summary>
+    /// <returns>Полный путь до временной БД.</returns>
+    private protected static string CreateTempDataBase()
+    {
+        var count = 0;
+        string tmpDbPath;
+        do 
+        {
+            tmpDbPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + $"_{++count}.RAODB");
+        } 
+        while (File.Exists(tmpDbPath));
+
+        File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), tmpDbPath);
+        return tmpDbPath;
+    }
+
+    #endregion
+
     #region FillExportForms
 
+    /// <summary>
+    /// Вызывает соответствующий метод выгрузки данных в .xlsx, в зависимости от номера формы.
+    /// </summary>
+    /// <param name="formNum">Номер формы.</param>
     private protected void FillExportForms(string formNum)
     {
         switch (formNum)
@@ -94,6 +124,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_11
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 1.1.
+    /// </summary>
     private void ExportForm11Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -172,6 +205,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_12
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 1.2.
+    /// </summary>
     private void ExportForm12Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -248,6 +284,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_13
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 1.3.
+    /// </summary>
     private void ExportForm13Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -325,6 +364,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_14
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 1.4.
+    /// </summary>
     private void ExportForm14Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -403,6 +445,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_15
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 1.5.
+    /// </summary>
     private void ExportForm15Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -484,6 +529,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_16
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 1.6.
+    /// </summary>
     private void ExportForm16Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -568,6 +616,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_17
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 1.7.
+    /// </summary>
     private void ExportForm17Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -657,6 +708,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_18
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 1.8.
+    /// </summary>
     private void ExportForm18Data()
     {
         var form = CurrentReports.Report_Collection
@@ -742,6 +796,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_19
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 1.9.
+    /// </summary>
     private void ExportForm19Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -807,6 +864,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_21
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.1.
+    /// </summary>
     private void ExportForm21Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -884,6 +944,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_22
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.2.
+    /// </summary>
     private void ExportForm22Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -958,6 +1021,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_23
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.3.
+    /// </summary>
     private void ExportForm23Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -1025,6 +1091,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_24
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.4.
+    /// </summary>
     private void ExportForm24Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -1096,6 +1165,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_25
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.5.
+    /// </summary>
     private void ExportForm25Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -1160,6 +1232,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_26
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.6.
+    /// </summary>
     private void ExportForm26Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -1222,6 +1297,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_27
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.7.
+    /// </summary>
     private void ExportForm27Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -1282,6 +1360,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_28
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.8.
+    /// </summary>
     private void ExportForm28Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -1343,6 +1424,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_29
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.9.
+    /// </summary>
     private void ExportForm29Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -1402,6 +1486,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_210
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.10.
+    /// </summary>
     private void ExportForm210Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -1467,6 +1554,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_211
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.11.
+    /// </summary>
     private void ExportForm211Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -1530,6 +1620,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_212
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.12.
+    /// </summary>
     private void ExportForm212Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -1594,6 +1687,10 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region FillHeaders
 
+    /// <summary>
+    /// Заполнение заголовков в .xlsx.
+    /// </summary>
+    /// <param name="formNum">Номер формы.</param>
     private protected void FillHeaders(string formNum)
     {
         switch (formNum)
@@ -2302,6 +2399,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region NotesHeader
 
+    /// <summary>
+    /// Заполнение заголовков примечаний форм 1.x в .xlsx.
+    /// </summary>
     private void NotesHeaders1()
     {
         WorksheetPrim.Cells[1, 1].Value = "ОКПО";
@@ -2316,6 +2416,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
         WorksheetPrim.View.FreezePanes(2, 1);
     }
 
+    /// <summary>
+    /// Заполнение заголовков примечаний форм 2.x в .xlsx.
+    /// </summary>
     private void NotesHeaders2()
     {
         WorksheetPrim.Cells[1, 1].Value = "ОКПО";

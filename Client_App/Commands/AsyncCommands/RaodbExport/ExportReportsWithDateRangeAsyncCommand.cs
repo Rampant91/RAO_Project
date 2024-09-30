@@ -76,7 +76,7 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
         {
             #region MessageErrorAtParseDate
 
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
@@ -86,7 +86,7 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
-                }).ShowDialog(Desktop.MainWindow);
+                }).ShowDialog(Desktop.MainWindow));
 
             #endregion
 

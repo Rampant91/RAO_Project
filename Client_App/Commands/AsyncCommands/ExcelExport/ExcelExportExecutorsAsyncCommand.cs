@@ -17,7 +17,9 @@ using Client_App.Views.ProgressBar;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
-//  Excel -> Список исполнителей
+/// <summary>
+/// Excel -> Список исполнителей.
+/// </summary>
 public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
 {
     private Reports CurrentReports;
@@ -137,6 +139,10 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
 
     #region FillExecutorsHeaders
 
+    /// <summary>
+    /// Заполняет заголовки в выгрузке в .xlsx.
+    /// </summary>
+    /// <param name="formNum">Номер формы (1 - оперативная, 2 - годовая).</param>
     private void FillExecutorsHeaders(char formNum)
     {
         switch (formNum)
@@ -178,6 +184,10 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
 
     #region FillExecutors
 
+    /// <summary>
+    /// Выгрузка строчек данных в .xlsx.
+    /// </summary>
+    /// <param name="rep">Отчёт..</param>
     private void FillExecutors(Report rep)
     {
         switch (rep.FormNum_DB[0])

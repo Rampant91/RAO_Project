@@ -159,7 +159,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             ContextMenuText = new[] { "Выгрузить все организации в один файл" },
-            Command = MainWindowVM.ExportAllReportsOneFile
+            Command = dataContext.ExportAllReportsOneFile
         });
 
         grd1.CommandsList.Add(new KeyCommand
@@ -168,7 +168,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             ContextMenuText = ["Выгрузить все организации в отдельные файлы"],
-            Command = MainWindowVM.ExportAllReports
+            Command = dataContext.ExportAllReports
         });
 
         grd1.CommandsList.Add(new KeyCommand
@@ -217,7 +217,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             ContextMenuText = ["Выгрузка"],
-            Command = MainWindowVM.ExportForm
+            Command = dataContext.ExportForm
         });
         grd2.CommandsList.Add(new KeyCommand
         {

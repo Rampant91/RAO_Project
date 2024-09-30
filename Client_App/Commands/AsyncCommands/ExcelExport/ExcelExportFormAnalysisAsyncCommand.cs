@@ -17,7 +17,9 @@ using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
-//  Выбранная форма -> Выгрузка Excel -> Для анализа
+/// <summary>
+/// Выбранная форма -> Выгрузка Excel -> Для анализа.
+/// </summary>
 public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
 {
     private AnyTaskProgressBar progressBar;

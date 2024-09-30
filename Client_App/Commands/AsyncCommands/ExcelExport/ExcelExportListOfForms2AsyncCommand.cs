@@ -18,7 +18,9 @@ using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
-//  Excel -> Список форм 2
+/// <summary>
+/// Excel -> Список форм 2.
+/// </summary>
 public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
 {
     private AnyTaskProgressBar progressBar;

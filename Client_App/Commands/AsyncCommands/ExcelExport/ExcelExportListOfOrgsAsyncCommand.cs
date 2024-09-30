@@ -15,7 +15,9 @@ using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
-//  Excel -> Список организаций
+/// <summary>
+/// Excel -> Список организаций.
+/// </summary>
 public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
 {
     private AnyTaskProgressBar progressBar;

@@ -8,6 +8,9 @@ using Models.JSON.TableDataMain;
 
 namespace Client_App.Commands.AsyncCommands.Import.ImportJson;
 
+/// <summary>
+/// Статические методы для класса импорта из .json.
+/// </summary>
 public static class ImportJsonMethods
 {
     #region BindFormTableData
@@ -833,6 +836,11 @@ public static class ImportJsonMethods
 
     #region BindFormTopSpecificData
 
+    /// <summary>
+    /// Привязка уникальных данных из верхней части отчёта (только у форм 2.6, 2.7, 2.8).
+    /// </summary>
+    /// <param name="rep">Отчёт.</param>
+    /// <param name="impRep">Импортируемый отчёт.</param>
     internal static void BindFormTopSpecificData(JsonForm rep, Report impRep)
     {
         switch (impRep.FormNum_DB) 
@@ -918,9 +926,15 @@ public static class ImportJsonMethods
 
     #endregion
 
-    #region ColNameToColNum
+    #region ColNameToColNumConvert
 
-    internal static string ColNameToColNum(string formNum, string colName)
+    /// <summary>
+    /// Преобразует название колонки в её номер.
+    /// </summary>
+    /// <param name="formNum">Номер формы.</param>
+    /// <param name="colName">Название колонки.</param>
+    /// <returns>Номер колонки в виде строки.</returns>
+    public static string ColNameToColNumConvert(string formNum, string colName)
     {
         return formNum switch
         {

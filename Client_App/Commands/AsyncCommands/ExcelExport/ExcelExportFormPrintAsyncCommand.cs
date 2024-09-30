@@ -16,7 +16,9 @@ using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
-//  Выбранная форма -> Выгрузка Excel -> Для печати
+/// <summary>
+/// Выбранная форма -> Выгрузка Excel -> Для печати.
+/// </summary>
 public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 {
     private AnyTaskProgressBar progressBar;
@@ -90,7 +92,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
             .Include(reports => reports.Report_Collection)
-            .FirstAsync(x => x.Id == exportRepWithOutRows.ReportsId, cancellationToken: cts.Token);
+            .FirstAsync(x => x.Id == exportRepWithOutRows.Reports.Id, cancellationToken: cts.Token);
 
         var formNum = RemoveForbiddenChars(exportRep.FormNum_DB);
         if (formNum is "" || forms.Count == 0) return;
@@ -140,7 +142,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         worksheetTitle.Cells.Style.ShrinkToFit = true;
         worksheetMain.Cells.Style.ShrinkToFit = true;
 
-        ExcelPrintTitleExport(formNum, worksheetTitle, exportRep);
+        ExcelPrintTitleExport(formNum, worksheetTitle, exportRep, orgWithExportRep.Master);
         ExcelPrintSubMainExport(formNum, worksheetMain, exportRep);
         ExcelPrintNotesExport(formNum, worksheetMain, exportRep);
         ExcelPrintRowsExport(formNum, worksheetMain, exportRep);

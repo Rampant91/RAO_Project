@@ -13,6 +13,7 @@ using Client_App.Interfaces.Logger;
 using MessageBox.Avalonia.Enums;
 using Models.DTO;
 using static Client_App.Resources.StaticStringMethods;
+using Avalonia.Threading;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -48,7 +49,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
             {
                 #region MessageFailedToReadFile
 
-                await MessageBox.Avalonia.MessageBoxManager
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                             {
                                 ButtonDefinitions = ButtonEnum.Ok,
@@ -60,7 +61,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
-                            .ShowDialog(Desktop.MainWindow); 
+                            .ShowDialog(Desktop.MainWindow)); 
 
                 #endregion
 
@@ -119,7 +120,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                         {
                             #region MessageNewOrg
 
-                            an = await MessageBox.Avalonia.MessageBoxManager
+                            an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                 {
                                     ButtonDefinitions =
@@ -142,7 +143,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                     MinWidth = 400,
                                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                                 })
-                                .ShowDialog(Desktop.MainWindow);
+                                .ShowDialog(Desktop.MainWindow));
 
                             #endregion
 
@@ -152,7 +153,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                         {
                             #region MessageNewOrg
 
-                            an = await MessageBox.Avalonia.MessageBoxManager
+                            an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                 {
                                     ButtonDefinitions =
@@ -171,7 +172,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                     MinWidth = 400,
                                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                                 })
-                                .ShowDialog(Desktop.MainWindow);
+                                .ShowDialog(Desktop.MainWindow));
 
                             #endregion
                         }
@@ -243,7 +244,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         {
             #region MessageImportDone
             
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
@@ -254,7 +255,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow);
+                .ShowDialog(Desktop.MainWindow));
 
             #endregion
         }
@@ -262,7 +263,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         {
             #region MessageImportCancel
 
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
@@ -273,7 +274,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow);
+                .ShowDialog(Desktop.MainWindow));
 
             #endregion
         }

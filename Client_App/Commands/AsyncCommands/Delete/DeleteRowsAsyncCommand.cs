@@ -8,10 +8,14 @@ using Models.Interfaces;
 using Client_App.ViewModels;
 using Models.Collections;
 using Models.Forms;
+using Avalonia.Threading;
 
 namespace Client_App.Commands.AsyncCommands.Delete;
 
-//  Удалить выбранные строчки из формы
+/// <summary>
+/// Удалить выбранные строчки из формы.
+/// </summary>
+/// <param name="changeOrCreateViewModel">ViewModel отчёта.</param>
 public class DeleteRowsAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
     private Report Storage => changeOrCreateViewModel.Storage;
@@ -25,7 +29,7 @@ public class DeleteRowsAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : 
             #region MessageDeleteLine
 
             var suffix = param.Length == 1 ? 'у' : 'и';
-            var answer = await MessageBox.Avalonia.MessageBoxManager
+            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
@@ -40,7 +44,7 @@ public class DeleteRowsAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : 
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow);
+                .ShowDialog(Desktop.MainWindow));
 
             #endregion
 

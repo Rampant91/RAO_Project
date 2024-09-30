@@ -12,6 +12,9 @@ using System.Collections.Generic;
 
 namespace Client_App.Commands.AsyncCommands.Hidden;
 
+/// <summary>
+/// Выгрузка в .xlsx списка отсутствующих в справочнике, но присутствующих в БД радионуклидов (скрытая команда).
+/// </summary>
 public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
@@ -398,7 +401,11 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
 
     #region RFromFile
 
-    private HashSet<string> RadsFromFile()
+    /// <summary>
+    /// Список имеющихся в справочнике радионуклидов.
+    /// </summary>
+    /// <returns>Список радионуклидов.</returns>
+    private static HashSet<string> RadsFromFile()
     {
         string filePath;
         HashSet<string> radsFromDictionaryHashSet = [];
@@ -423,6 +430,9 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
 
     #endregion
 
+    /// <summary>
+    /// DTO радионуклида.
+    /// </summary>
     private class UnaccountedRadsDTO
     {
         public string Rad;
