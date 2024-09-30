@@ -40,6 +40,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Spravochniki\Spravochniki.csproj" />
@@ -121,6 +122,11 @@
     <Compile Update="Controls\DataGrid\DataGrids\DataGridReports.axaml.cs">
       <DependentUpon>DataGridReports.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Update="Views\ProgressBar\AnyTaskProgressBar.axaml.cs">
       <DependentUpon>AnyTaskProgressBar.axaml</DependentUpon>
     </Compile>
@@ -130,5 +136,11 @@
     <Compile Update="Views\RowNumber.axaml.cs">
       <DependentUpon>RowNumber.axaml</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 </Project>
