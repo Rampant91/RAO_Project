@@ -16,7 +16,9 @@ using Avalonia.Threading;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
-//  Импорт -> Из Excel
+/// <summary>
+/// Импорт -> Из Excel.
+/// </summary>
 internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
@@ -290,6 +292,11 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
     #region GetBaseReps
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="worksheet0">Лист Excel.</param>
+    /// <returns></returns>
     private static Reports? GetBaseReps(ExcelWorksheet worksheet0)
     {
         var excelOkpo = Convert.ToString(worksheet0.Cells["B36"].Value);

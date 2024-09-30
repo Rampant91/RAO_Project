@@ -4,7 +4,7 @@ namespace Client_App.ViewModels;
 
 public class BaseVM
 {
-    internal static string PasFolderPath = @"Y:\!!! Поручения\Паспорта ЗРИ 2022\Хранилище паспортов ЗРИ";
+    internal static string PasFolderPath = @"Y:\!!! Поручения\Паспорта ЗРИ\Хранилище паспортов ЗРИ";
 
     internal static string DbFileName = "Local_0";
 

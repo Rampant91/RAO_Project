@@ -237,8 +237,8 @@ public static partial class StaticStringMethods
                 : ch));
     }
 
-    [GeneratedRegex("[\\\\/:*?\"<>|]\\s")]
-    private static partial Regex RestrictedSymbolsRegex();
-
     #endregion
+
+    [GeneratedRegex("[\\\\/:*?\"<>|\\s+]")]
+    private static partial Regex RestrictedSymbolsRegex();
 }

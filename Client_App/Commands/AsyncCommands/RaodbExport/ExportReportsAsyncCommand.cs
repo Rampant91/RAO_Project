@@ -270,24 +270,24 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
         {
             File.Copy(fullPathTmp, fullPath);
             File.Delete(fullPathTmp);
+            File.Delete(dbReadOnlyPath);
         }
         catch (Exception ex)
         {
             #region FailedCopyFromTempMessage
 
-            await Dispatcher.UIThread.InvokeAsync(() =>
-                MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка",
-                        ContentHeader = "Ошибка",
-                        ContentMessage = "При копировании файла базы данных из временной папки возникла ошибка." +
-                                         $"{Environment.NewLine}Экспорт не выполнен.",
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterScreen
-                    }).ShowDialog(Desktop.MainWindow));
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = "При копировании файла базы данных из временной папки возникла ошибка." +
+                                     $"{Environment.NewLine}Экспорт не выполнен.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen
+                }).ShowDialog(Desktop.MainWindow));
 
             #endregion
         }
