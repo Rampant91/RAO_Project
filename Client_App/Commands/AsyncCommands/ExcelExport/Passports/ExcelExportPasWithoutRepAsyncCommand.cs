@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Properties;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
@@ -16,7 +16,6 @@ using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.DTO;
-using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
@@ -26,146 +25,31 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 /// </summary>
 public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 {
-    private AnyTaskProgressBar progressBar;
-
     public override async Task AsyncExecute(object? parameter)
     {
-        var cts = new CancellationTokenSource();
+        Cts = new CancellationTokenSource();
         ExportType = "Паспорта_без_отчетов";
-        List<string> pasNames = [];
-        List<string[]> pasUniqParam = [];
-        DirectoryInfo directory = new(BaseVM.PasFolderPath);
-        List<FileInfo> files = [];
-        try
-        {
-            files.AddRange(directory.GetFiles("*#*#*#*#*.pdf", SearchOption.AllDirectories));
-        }
-        catch
-        {
-            #region MessageFailedToOpenPassportDirectory
+        await Dispatcher.UIThread.InvokeAsync(() => ProgressBar = new AnyTaskProgressBar(Cts));
+        var progressBarVM = ProgressBar.AnyTaskProgressBarVM;
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
-                    ContentHeader = "Ошибка",
-                    ContentMessage = $"Не удалось открыть сетевое хранилище паспортов:" +
-                                     $"{Environment.NewLine}{directory.FullName}",
-                    MinWidth = 400,
-                    MinHeight = 170,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
+        progressBarVM.SetProgressBar(2, "Формирование списка файлов", "Выгрузка списка паспортов", ExportType);
+        var files = await GetFilesFromPasDirectory();
 
-            #endregion
+        progressBarVM.SetProgressBar(5, "Запрос списка категорий");
+        var categories = await GetCategories();
 
-            return;
-        }
-
-        #region MessageInputCategoryNums
-
-        var res =
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxInputWindow(new MessageBoxInputParams
-            {
-                ButtonDefinitions = new[]
-                {
-                    new ButtonDefinition { Name = "Ок", IsDefault = true },
-                    new ButtonDefinition { Name = "Отмена", IsCancel = true }
-                },
-                ContentTitle = "Выбор категории",
-                ContentMessage = "Введите через запятую номера категорий (допускается несколько значений)",
-                MinWidth = 600,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(Desktop.MainWindow));
-
-        #endregion
-
-        List<short?> categories = [1, 2, 3, 4, 5];
-        if (res.Button is null or "Отмена") return;
-        try
-        {
-            categories = Regex
-                .Replace(res.Message, "[^\\d,]", string.Empty)
-                .Split(',')
-                .Select(short.Parse)
-                .Cast<short?>()
-                .ToList();
-        }
-        catch
-        {
-            #region MessageInvalidCategoryNums
-
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
-                    ContentHeader = "Уведомление",
-                    ContentMessage =
-                        "Номера категорий не были введены, либо были введены некорректно" +
-                        $"{Environment.NewLine}Выгрузка будет осуществлена по всем категориям (1-5)",
-                    MinWidth = 400,
-                    MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
-
-            #endregion
-        }
-
+        progressBarVM.SetProgressBar(8, "Запрос пути сохранения");
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
-        (string fullPath, bool openTemp) result;
-        try
-        {
-            result = await ExcelGetFullPath(fileName, cts);
-        }
-        catch
-        {
-            return;
-        }
+        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, Cts);
 
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
-        var progressBarVM = progressBar.AnyTaskProgressBarVM_DB;
-        progressBarVM.ExportType = ExportType;
-        progressBarVM.ExportName = "Выгрузка списка паспортов";
-        progressBarVM.ValueBar = 2;
-        var loadStatus = "Создание временной БД";
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        progressBarVM.SetProgressBar(10, "Создание временной БД");
+        var dbReadOnlyPath = CreateTempDb();
 
-        var fullPath = result.fullPath;
-        var openTemp = result.openTemp;
-        if (string.IsNullOrEmpty(fullPath)) return;
+        progressBarVM.SetProgressBar(18, "Инициализация Excel пакета");
+        using var excelPackage = InitializeExcelPackage(fullPath);
+        Worksheet = excelPackage.Workbook.Worksheets.Add("Список паспортов без отчетов");
 
-        var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
-        try
-        {
-            if (!StaticConfiguration.IsFileLocked(dbReadOnlyPath))
-            {
-                File.Delete(dbReadOnlyPath);
-                File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), dbReadOnlyPath);
-            }
-        }
-        catch
-        {
-            return;
-        }
-
-        loadStatus = "Определение списка форм";
-        progressBarVM.ValueBar = 8;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        using ExcelPackage excelPackage = new(new FileInfo(fullPath));
-        excelPackage.Workbook.Properties.Author = "RAO_APP";
-        excelPackage.Workbook.Properties.Title = "Report";
-        excelPackage.Workbook.Properties.Created = DateTime.Now;
-        Worksheet = excelPackage.Workbook.Worksheets.Add($"Список паспортов без отчетов");
-
-        #region Headers
+        #region FillHeaders
 
         Worksheet.Cells[1, 1].Value = "Путь до папки";
         Worksheet.Cells[1, 2].Value = "Имя файла";
@@ -176,64 +60,14 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[1, 7].Value = "Номер";
 
         #endregion
-        
-        pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
-        pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
 
-        await using var dbReadOnly = new DBModel(dbReadOnlyPath);
-        var forms11 = await dbReadOnly.ReportCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Where(x => x.FormNum_DB == "1.1")
-            .Include(x => x.Rows11)
-            .SelectMany(x => x.Rows11
-                .Where(y => (y.OperationCode_DB == "11" || y.OperationCode_DB == "85")
-                            && categories.Contains(y.Category_DB))
-                .Select(form11 => new Form11ShortDTO
-                {
-                    CreatorOKPO = form11.CreatorOKPO_DB,
-                    Type = form11.Type_DB,
-                    CreationDate = form11.CreationDate_DB,
-                    PassportNumber = form11.PassportNumber_DB,
-                    FactoryNumber = form11.FactoryNumber_DB
-                }))
-            .ToListAsync(cancellationToken: cts.Token);
+        progressBarVM.SetProgressBar(20, "Формирование списка форм 1.1");
+        var filteredForm11DtoArray = await GetFilteredForms(dbReadOnlyPath, categories);
 
-        loadStatus = "Поиск совпадений";
-        progressBarVM.ValueBar = 10;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        progressBarVM.SetProgressBar(50, "Поиск совпадений");
+        await FindFilesWithOutReport(files, filteredForm11DtoArray);
 
-        ConcurrentBag<FileInfo> filesToRemove = [];
-        var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
-        try
-        {
-            await Parallel.ForEachAsync(pasUniqParam, parallelOptions, (pasParam, token) =>
-            {
-                if (forms11.Any(form11 =>
-                        ComparePasParam(ConvertPrimToDash(form11.CreatorOKPO), pasParam[0])
-                        && ComparePasParam(ConvertPrimToDash(form11.Type), pasParam[1])
-                        && ComparePasParam(ConvertDateToYear(form11.CreationDate), pasParam[2])
-                        && ComparePasParam(ConvertPrimToDash(form11.PassportNumber), pasParam[3])
-                        && ComparePasParam(ConvertPrimToDash(form11.FactoryNumber), pasParam[4])))
-                {
-                    filesToRemove.Add(files.First(file =>
-                        file.Name.Remove(file.Name.Length - 4) ==
-                        $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
-                }
-                return default;
-            });
-        }
-        catch
-        {
-            return;
-        }
-
-        foreach (var fileToRemove in filesToRemove.ToArray())
-        {
-            files.Remove(fileToRemove);
-        }
-
+        progressBarVM.SetProgressBar(90, "Экспорт данных в .xlsx");
         var currentRow = 2;
         foreach (var file in files)
         {
@@ -254,16 +88,160 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         }
         Worksheet.View.FreezePanes(2, 1);
 
-        loadStatus = "Сохранение";
-        progressBarVM.ValueBar = 95;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        progressBarVM.SetProgressBar(95, "Сохранение");
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, Cts);
 
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
-
-        loadStatus = "Завершение выгрузки";
-        progressBarVM.ValueBar = 100;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
+        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
     }
+
+    #region FindFilesWithOutReport
+
+    /// <summary>
+    /// Для каждого файла из списка проверяет наличие отчёта в БД.
+    /// Удаляет из списка файлов те, для которых совпадение найдено.
+    /// </summary>
+    /// <param name="files">Список файлов паспортов.</param>
+    /// <param name="filteredForm11DtoArray">Отфильтрованный массив DTO'шек форм 1.1.</param>
+    /// <returns></returns>
+    private static async Task FindFilesWithOutReport(List<FileInfo> files, Form11ShortDTO[] filteredForm11DtoArray)
+    {
+        List<string> pasNames = [];
+        List<string[]> pasUniqParam = [];
+        pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
+        pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
+
+        ConcurrentBag<FileInfo> filesToRemove = [];
+        var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
+        await Parallel.ForEachAsync(pasUniqParam, parallelOptions, (pasParam, token) =>
+        {
+            if (filteredForm11DtoArray.Any(form11 =>
+                    ComparePasParam(ConvertPrimToDash(form11.CreatorOKPO), pasParam[0])
+                    && ComparePasParam(ConvertPrimToDash(form11.Type), pasParam[1])
+                    && ComparePasParam(ConvertDateToYear(form11.CreationDate), pasParam[2])
+                    && ComparePasParam(ConvertPrimToDash(form11.PassportNumber), pasParam[3])
+                    && ComparePasParam(ConvertPrimToDash(form11.FactoryNumber), pasParam[4])))
+            {
+                filesToRemove.Add(files.First(file =>
+                    file.Name.Remove(file.Name.Length - 4) ==
+                    $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
+            }
+            return default;
+        });
+
+        foreach (var fileToRemove in filesToRemove.ToArray())
+        {
+            files.Remove(fileToRemove);
+        }
+    }
+
+    #endregion
+
+    #region GetCategories
+
+    /// <summary>
+    /// Выводит сообщение с запросом списка категорий, парсит входные данные и возвращает HashSet.
+    /// </summary>
+    /// <returns>HashSet категорий.</returns>
+    private async Task<HashSet<short?>> GetCategories()
+    {
+        HashSet<short?> categories;
+
+        #region MessageInputCategoryNums
+
+        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxInputWindow(new MessageBoxInputParams
+            {
+                ButtonDefinitions =
+                [
+                    new ButtonDefinition { Name = "Ок", IsDefault = true },
+                    new ButtonDefinition { Name = "Отмена", IsCancel = true }
+                ],
+                CanResize = true,
+                ContentTitle = "Выбор категории",
+                ContentMessage = "Введите через запятую номера категорий " +
+                                 $"{Environment.NewLine}(допускается несколько значений)",
+                MinWidth = 600,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(ProgressBar));
+
+        #endregion
+
+        if (res.Button is null or "Отмена")
+        {
+            await Cts.CancelAsync();
+            Cts.Token.ThrowIfCancellationRequested();
+        }
+
+        var categoryArray = (res.Message ?? string.Empty)
+            .Replace(" ", string.Empty)
+            .Split(',');
+
+        if (!categoryArray.All(category => short.TryParse(category, out _)))
+        {
+            categories = [1, 2, 3, 4, 5];
+
+            #region MessageInvalidCategoryNums
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        "Номера категорий не были введены, либо были введены некорректно. " +
+                        $"{Environment.NewLine}Выгрузка будет осуществлена по всем категориям (1-5).",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+        }
+        else
+        {
+            categories = categoryArray
+                .Select(short.Parse)
+                .Cast<short?>()
+                .ToHashSet();
+        }
+        return categories;
+    }
+
+    #endregion
+
+    #region GetFilteredForms
+
+    /// <summary>
+    /// Загрузка из БД отфильтрованного списка DTO'шек форм 1.1.
+    /// </summary>
+    /// <param name="dbReadOnlyPath">Полный путь до временного файла БД.</param>
+    /// <param name="categories">HashSet категорий.</param>
+    /// <returns>Отфильтрованный массив DTO'шек форм 1.1.</returns>
+    private async Task<Form11ShortDTO[]> GetFilteredForms(string dbReadOnlyPath, HashSet<short?> categories)
+    {
+        await using var dbReadOnly = new DBModel(dbReadOnlyPath);
+        return await dbReadOnly.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.FormNum_DB == "1.1")
+            .Include(x => x.Rows11)
+            .SelectMany(x => x.Rows11
+                .Where(y => (y.OperationCode_DB == "11" || y.OperationCode_DB == "85")
+                            && categories.Contains(y.Category_DB))
+                .Select(form11 => new Form11ShortDTO
+                {
+                    CreatorOKPO = form11.CreatorOKPO_DB,
+                    Type = form11.Type_DB,
+                    CreationDate = form11.CreationDate_DB,
+                    PassportNumber = form11.PassportNumber_DB,
+                    FactoryNumber = form11.FactoryNumber_DB
+                }))
+            .ToArrayAsync(cancellationToken: Cts.Token);
+    }
+
+    #endregion
 }

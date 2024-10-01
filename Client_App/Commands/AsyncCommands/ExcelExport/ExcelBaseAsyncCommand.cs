@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
+using Client_App.Properties;
 using Client_App.ViewModels;
+using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;
@@ -33,21 +35,30 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     private protected string ExportType;
 
+    private protected AnyTaskProgressBar? ProgressBar;
+
     public override async void Execute(object? parameter)
     {
         IsExecute = true;
         try
         {
-            await Task.Run(() => AsyncExecute(parameter), Cts.Token);
+            await Task.Run(() => AsyncExecute(parameter));
         }
+        catch (OperationCanceledException) { }
         catch (Exception ex)
         {
-            var msg = $"{Environment.NewLine}Message: {ex.Message}" + 
-                            $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Error(msg);
         }
-        IsExecute = false;
+        finally
+        {
+            if (ProgressBar is not null) await ProgressBar.CloseAsync();
+            IsExecute = false;
+        }
     }
+
+    public abstract override Task AsyncExecute(object? parameter);
 
     #region ExcelExportNotes
 
@@ -122,11 +133,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams 
             {
-                ButtonDefinitions = new[]
-                {
+                ButtonDefinitions =
+                [
                     new ButtonDefinition { Name = "Сохранить" },
                     new ButtonDefinition { Name = "Открыть временную копию" }
-                },
+                ],
                 ContentTitle = "Выгрузка в Excel",
                 ContentHeader = "Уведомление",
                 ContentMessage = "Что бы вы хотели сделать" +
@@ -870,6 +881,97 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
             }
         }
+    }
+
+    #endregion
+
+    #region CreateTempDb
+
+    /// <summary>
+    /// Создание временной копии БД.
+    /// </summary>
+    /// <returns>Полный путь до файла временной копии БД.</returns>
+    private protected static string CreateTempDb()
+    {
+        var tmpFolder = new DirectoryInfo(Path.Combine(BaseVM.SystemDirectory, "RAO", "temp"));
+        var tmpDbPath = Path.Combine(tmpFolder.FullName, BaseVM.DbFileName + ".RAODB");
+
+        //var count = 0;
+        //string tmpDbPath;
+        //do
+        //{
+        //    tmpDbPath = Path.Combine(tmpFolder.FullName, BaseVM.DbFileName + $"_{++count}.RAODB");
+        //} 
+        //while (File.Exists(tmpDbPath));
+
+        if (!File.Exists(tmpDbPath))
+        {
+            File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), tmpDbPath);
+        }
+
+        return tmpDbPath;
+    }
+
+    #endregion
+
+    #region GetFilesFromPasDirectory
+
+    /// <summary>
+    /// Получение списка файлов из папки хранилища паспортов.
+    /// </summary>
+    /// <returns>Список файлов из папки хранилища паспортов.</returns>
+    private protected async Task<List<FileInfo>> GetFilesFromPasDirectory()
+    {
+        var pasFolderDirectory = new DirectoryInfo(Settings.Default.PasFolderDefaultPath);
+        List<FileInfo> files = [];
+        try
+        {
+            files.AddRange(pasFolderDirectory.GetFiles("*#*#*#*#*.pdf", SearchOption.AllDirectories));
+        }
+        catch
+        {
+            #region MessageFailedToOpenPassportDirectory
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = $"Не удалось открыть сетевое хранилище паспортов:" +
+                                     $"{Environment.NewLine}{pasFolderDirectory.FullName}",
+                    MinWidth = 400,
+                    MinHeight = 170,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(ProgressBar));
+
+            #endregion
+
+            await Cts.CancelAsync();
+            Cts.Token.ThrowIfCancellationRequested();
+        }
+        return files;
+    }
+
+    #endregion
+
+    #region InitializeExcelPackage
+
+    /// <summary>
+    /// Инициализация Excel пакета.
+    /// </summary>
+    /// <param name="fullPath">Полный путь до .xlsx файла.</param>
+    /// <returns>Пакет Excel.</returns>
+    private protected static ExcelPackage InitializeExcelPackage(string fullPath)
+    {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        ExcelPackage excelPackage = new(new FileInfo(fullPath));
+        excelPackage.Workbook.Properties.Author = "RAO_APP";
+        excelPackage.Workbook.Properties.Title = "Report";
+        excelPackage.Workbook.Properties.Created = DateTime.Now;
+        return excelPackage;
     }
 
     #endregion

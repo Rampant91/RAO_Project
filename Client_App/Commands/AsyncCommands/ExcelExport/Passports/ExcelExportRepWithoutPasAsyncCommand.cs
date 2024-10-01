@@ -6,104 +6,43 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.DTO;
-using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 
 /// <summary>
-/// Excel -> Паспорта -> Отчеты без паспортов
+/// Excel -> Паспорта -> Отчеты без паспортов.
 /// </summary>
 public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
 {
-    private AnyTaskProgressBar progressBar;
-
     public override async Task AsyncExecute(object? parameter)
     {
-        var cts = new CancellationTokenSource();
+        Cts = new CancellationTokenSource();
         ExportType = "Отчеты_без_паспортов";
-        DirectoryInfo directory = new(BaseVM.PasFolderPath);
-        if (!directory.Exists)
-        {
-            #region MessageFailedToOpenPassportDirectory
+        await Dispatcher.UIThread.InvokeAsync(() => ProgressBar = new AnyTaskProgressBar(Cts));
+        var progressBarVM = ProgressBar.AnyTaskProgressBarVM;
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
-                    ContentHeader = "Ошибка",
-                    ContentMessage =
-                        "Не удалось открыть сетевое хранилище паспортов:" +
-                        $"{Environment.NewLine}{directory.FullName}",
-                    MinWidth = 400,
-                    MinHeight = 170,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
+        progressBarVM.SetProgressBar(2, "Проверка списка файлов", "Выгрузка списка отчётов", ExportType);
+        var files = await GetFilesFromPasDirectory();
 
-            #endregion
-
-            return;
-        }
+        progressBarVM.SetProgressBar(7, "Запрос пути сохранения");
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
-        (string fullPath, bool openTemp) result;
-        try
-        {
-            result = await ExcelGetFullPath(fileName, cts);
-        }
-        catch
-        {
-            return;
-        }
-        
-        var fullPath = result.fullPath;
-        var openTemp = result.openTemp;
-        if (string.IsNullOrEmpty(fullPath)) return;
+        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, Cts);
 
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
-        var progressBarVM = progressBar.AnyTaskProgressBarVM_DB;
-        progressBarVM.ExportType = ExportType;
-        progressBarVM.ExportName = "Выгрузка списка отчётов";
-        progressBarVM.ValueBar = 2;
-        var loadStatus = "Создание временной БД";
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        progressBarVM.SetProgressBar(10, "Создание временной БД");
+        var dbReadOnlyPath = CreateTempDb();
 
-        var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
-        try
-        {
-            if (!StaticConfiguration.IsFileLocked(dbReadOnlyPath))
-            {
-                File.Delete(dbReadOnlyPath);
-                File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), dbReadOnlyPath);
-            }
-        }
-        catch
-        {
-            return;
-        }
-
-        loadStatus = "Определение списка файлов";
-        progressBarVM.ValueBar = 5;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        using ExcelPackage excelPackage = new(new FileInfo(fullPath));
-        excelPackage.Workbook.Properties.Author = "RAO_APP";
-        excelPackage.Workbook.Properties.Title = "Report";
-        excelPackage.Workbook.Properties.Created = DateTime.Now;
+        progressBarVM.SetProgressBar(18, "Инициализация Excel пакета");
+        using var excelPackage = InitializeExcelPackage(fullPath);
         Worksheet = excelPackage.Workbook.Worksheets.Add("Список отчётов без файла паспорта");
 
-        #region ColumnHeaders
+        #region FillHeaders
 
         Worksheet.Cells[1, 1].Value = "Рег. №";
         Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
@@ -145,46 +84,113 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
 
         #endregion
 
-        List<string> pasNames = [];
+        progressBarVM.SetProgressBar(20, "Формирование списка форм 1.1");
         List<string[]> pasUniqParam = [];
-        List<FileInfo> files = [];
-        try
-        {
-            files.AddRange(directory.GetFiles("*#*#*#*#*.pdf", SearchOption.AllDirectories));
-        }
-        catch (Exception)
-        {
-            #region MessageFailedToOpenPassportDirectory
+        var dtoList = await GetFilteredForms(dbReadOnlyPath, files, pasUniqParam);
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
-                    ContentHeader = "Ошибка",
-                    ContentMessage = "Не удалось открыть сетевое хранилище паспортов:" +
-                                     $"{Environment.NewLine}{directory.FullName}",
-                    MinWidth = 400,
-                    MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
+        progressBarVM.SetProgressBar(70, "Поиск совпадений");
+        ConcurrentBag<Form11DTO> dtoToExcelThreadSafe = [];
+        await FindFilesWithOutReport(pasUniqParam, dtoList, dtoToExcelThreadSafe);
+
+        progressBarVM.SetProgressBar(90, "Экспорт данных в .xlsx");
+        var currentRow = 2;
+        foreach (var dto in dtoToExcelThreadSafe)
+        {
+            #region BindingCells
+
+            Worksheet.Cells[currentRow, 1].Value = dto.RegNoRep;
+            Worksheet.Cells[currentRow, 2].Value = dto.ShortJurLico;
+            Worksheet.Cells[currentRow, 3].Value = dto.OkpoRep;
+            Worksheet.Cells[currentRow, 4].Value = dto.FormNum;
+            Worksheet.Cells[currentRow, 5].Value = ConvertToExcelDate(dto.StartPeriod, Worksheet, currentRow, 5);
+            Worksheet.Cells[currentRow, 6].Value = ConvertToExcelDate(dto.EndPeriod, Worksheet, currentRow, 6);
+            Worksheet.Cells[currentRow, 7].Value = dto.CorrectionNumber;
+            Worksheet.Cells[currentRow, 8].Value = dto.RowCount;
+            Worksheet.Cells[currentRow, 9].Value = dto.NumberInOrder;
+            Worksheet.Cells[currentRow, 10].Value = ConvertToExcelString(dto.OperationCode);
+            Worksheet.Cells[currentRow, 11].Value = ConvertToExcelDate(dto.OperationDate, Worksheet, currentRow, 11);
+            Worksheet.Cells[currentRow, 12].Value = ConvertToExcelString(dto.PassportNumber);
+            Worksheet.Cells[currentRow, 13].Value = ConvertToExcelString(dto.Type);
+            Worksheet.Cells[currentRow, 14].Value = ConvertToExcelString(dto.Radionuclids);
+            Worksheet.Cells[currentRow, 15].Value = ConvertToExcelString(dto.FactoryNumber);
+            Worksheet.Cells[currentRow, 16].Value = dto.Quantity is null ? "-" : dto.Quantity;
+            Worksheet.Cells[currentRow, 17].Value = ConvertToExcelDouble(dto.Activity);
+            Worksheet.Cells[currentRow, 18].Value = ConvertToExcelString(dto.CreatorOKPO);
+            Worksheet.Cells[currentRow, 19].Value = ConvertToExcelDate(dto.CreationDate, Worksheet, currentRow, 19);
+            Worksheet.Cells[currentRow, 20].Value = dto.Category is null ? "-" : dto.Category;
+            Worksheet.Cells[currentRow, 21].Value = dto.SignedServicePeriod is null ? "-" : dto.SignedServicePeriod;
+            Worksheet.Cells[currentRow, 22].Value = dto.PropertyCode is null ? "-" : dto.PropertyCode;
+            Worksheet.Cells[currentRow, 23].Value = ConvertToExcelString(dto.Owner);
+            Worksheet.Cells[currentRow, 24].Value = dto.DocumentVid is null ? "-" : dto.DocumentVid;
+            Worksheet.Cells[currentRow, 25].Value = ConvertToExcelString(dto.DocumentNumber);
+            Worksheet.Cells[currentRow, 26].Value = ConvertToExcelDate(dto.DocumentDate, Worksheet, currentRow, 26);
+            Worksheet.Cells[currentRow, 27].Value = ConvertToExcelString(dto.ProviderOrRecieverOKPO);
+            Worksheet.Cells[currentRow, 28].Value = ConvertToExcelString(dto.TransporterOKPO);
+            Worksheet.Cells[currentRow, 29].Value = ConvertToExcelString(dto.PackName);
+            Worksheet.Cells[currentRow, 30].Value = ConvertToExcelString(dto.PackType);
+            Worksheet.Cells[currentRow, 31].Value = ConvertToExcelString(dto.PackNumber);
 
             #endregion
 
-            return;
+            currentRow++;
         }
+        Worksheet.View.FreezePanes(2, 1);
 
+        progressBarVM.SetProgressBar(95, "Сохранение");
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, Cts);
+
+        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+    }
+
+    #region FindFilesWithOutReport
+
+    /// <summary>
+    /// Для каждого файла из списка проверяет наличие отчёта в БД.
+    /// Удаляет из списка файлов те, для которых совпадение найдено.
+    /// </summary>
+    /// <param name="pasUniqParam">Список массивов уникальных параметров паспортов, полученный из названий файлов паспортов.</param>
+    /// <param name="dtoList">Список DTO'шек форм 1.1.</param>
+    /// <param name="dtoToExcelThreadSafe">Потокобезопасный список отфильтрованных DTO'шек форм 1.1.</param>
+    /// <returns></returns>
+    private static async Task FindFilesWithOutReport(List<string[]> pasUniqParam, List<Form11DTO> dtoList, ConcurrentBag<Form11DTO> dtoToExcelThreadSafe)
+    {
+        var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
+        await Parallel.ForEachAsync(dtoList, parallelOptions, (dto, token) =>
+        {
+            var findPasFile = pasUniqParam.Any(pasParam =>
+                ComparePasParam(ConvertPrimToDash(dto.CreatorOKPO), pasParam[0])
+                && ComparePasParam(ConvertPrimToDash(dto.Type), pasParam[1])
+                && ComparePasParam(ConvertDateToYear(dto.CreationDate), pasParam[2])
+                && ComparePasParam(ConvertPrimToDash(dto.PassportNumber), pasParam[3])
+                && ComparePasParam(ConvertPrimToDash(dto.FactoryNumber), pasParam[4]));
+            if (!findPasFile)
+            {
+                dtoToExcelThreadSafe.Add(dto);
+            }
+            return default;
+        });
+    }
+
+    #endregion
+
+    #region GetFilteredForms
+
+    /// <summary>
+    /// Загрузка из БД отфильтрованного списка DTO'шек форм 1.1.
+    /// </summary>
+    /// <param name="dbReadOnlyPath">Полный путь до временного файла БД.</param>
+    /// <param name="files">Список файлов паспортов.</param>
+    /// <param name="pasUniqParam">Список массивов уникальных параметров паспортов, полученный из названий файлов паспортов.</param>
+    /// <returns>Отфильтрованный массив DTO'шек форм 1.1.</returns>
+    private static async Task<List<Form11DTO>> GetFilteredForms(string dbReadOnlyPath, List<FileInfo> files, List<string[]> pasUniqParam)
+    {
+        List<string> pasNames = [];
         pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
         pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
 
-        loadStatus = "Загрузка форм 1.1";
-        progressBarVM.ValueBar = 10;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
 
-        var dtoList = dbReadOnly.ReportsCollectionDbSet //TODO
+        return dbReadOnly.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -230,80 +236,7 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
                         PackNumber = form11.PackNumber_DB
                     })))
             .ToList();
-
-        loadStatus = "Сравнение с паспортами";
-        progressBarVM.ValueBar = 70;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
-        var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
-        ConcurrentBag<Form11DTO> dtoToExcelThreadSafe = [];
-        await Parallel.ForEachAsync(dtoList, parallelOptions, (dto, token) =>
-        {
-            var findPasFile = pasUniqParam.Any(pasParam =>
-                ComparePasParam(ConvertPrimToDash(dto.CreatorOKPO), pasParam[0])
-                && ComparePasParam(ConvertPrimToDash(dto.Type), pasParam[1])
-                && ComparePasParam(ConvertDateToYear(dto.CreationDate), pasParam[2])
-                && ComparePasParam(ConvertPrimToDash(dto.PassportNumber), pasParam[3])
-                && ComparePasParam(ConvertPrimToDash(dto.FactoryNumber), pasParam[4]));
-            if (!findPasFile)
-            {
-                dtoToExcelThreadSafe.Add(dto);
-            }
-            return default;
-        });
-
-        var currentRow = 2;
-        foreach (var dto in dtoToExcelThreadSafe)
-        {
-            #region BindingCells
-
-            Worksheet.Cells[currentRow, 1].Value = dto.RegNoRep;
-            Worksheet.Cells[currentRow, 2].Value = dto.ShortJurLico;
-            Worksheet.Cells[currentRow, 3].Value = dto.OkpoRep;
-            Worksheet.Cells[currentRow, 4].Value = dto.FormNum;
-            Worksheet.Cells[currentRow, 5].Value = ConvertToExcelDate(dto.StartPeriod, Worksheet, currentRow, 5);
-            Worksheet.Cells[currentRow, 6].Value = ConvertToExcelDate(dto.EndPeriod, Worksheet, currentRow, 6);
-            Worksheet.Cells[currentRow, 7].Value = dto.CorrectionNumber;
-            Worksheet.Cells[currentRow, 8].Value = dto.RowCount;
-            Worksheet.Cells[currentRow, 9].Value = dto.NumberInOrder;
-            Worksheet.Cells[currentRow, 10].Value = ConvertToExcelString(dto.OperationCode);
-            Worksheet.Cells[currentRow, 11].Value = ConvertToExcelDate(dto.OperationDate, Worksheet, currentRow, 11);
-            Worksheet.Cells[currentRow, 12].Value = ConvertToExcelString(dto.PassportNumber);
-            Worksheet.Cells[currentRow, 13].Value = ConvertToExcelString(dto.Type);
-            Worksheet.Cells[currentRow, 14].Value = ConvertToExcelString(dto.Radionuclids);
-            Worksheet.Cells[currentRow, 15].Value = ConvertToExcelString(dto.FactoryNumber);
-            Worksheet.Cells[currentRow, 16].Value = dto.Quantity is null ? "-" : dto.Quantity;
-            Worksheet.Cells[currentRow, 17].Value = ConvertToExcelDouble(dto.Activity);
-            Worksheet.Cells[currentRow, 18].Value = ConvertToExcelString(dto.CreatorOKPO);
-            Worksheet.Cells[currentRow, 19].Value = ConvertToExcelDate(dto.CreationDate, Worksheet, currentRow, 19);
-            Worksheet.Cells[currentRow, 20].Value = dto.Category is null ? "-" : dto.Category;
-            Worksheet.Cells[currentRow, 21].Value = dto.SignedServicePeriod is null ? "-" : dto.SignedServicePeriod;
-            Worksheet.Cells[currentRow, 22].Value = dto.PropertyCode is null ? "-" : dto.PropertyCode;
-            Worksheet.Cells[currentRow, 23].Value = ConvertToExcelString(dto.Owner);
-            Worksheet.Cells[currentRow, 24].Value = dto.DocumentVid is null ? "-" : dto.DocumentVid;
-            Worksheet.Cells[currentRow, 25].Value = ConvertToExcelString(dto.DocumentNumber);
-            Worksheet.Cells[currentRow, 26].Value = ConvertToExcelDate(dto.DocumentDate, Worksheet, currentRow, 26);
-            Worksheet.Cells[currentRow, 27].Value = ConvertToExcelString(dto.ProviderOrRecieverOKPO);
-            Worksheet.Cells[currentRow, 28].Value = ConvertToExcelString(dto.TransporterOKPO);
-            Worksheet.Cells[currentRow, 29].Value = ConvertToExcelString(dto.PackName);
-            Worksheet.Cells[currentRow, 30].Value = ConvertToExcelString(dto.PackType);
-            Worksheet.Cells[currentRow, 31].Value = ConvertToExcelString(dto.PackNumber);
-
-            #endregion
-
-            currentRow++;
-        }
-        Worksheet.View.FreezePanes(2, 1);
-
-        loadStatus = "Сохранение";
-        progressBarVM.ValueBar = 95;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
-
-        loadStatus = "Завершение выгрузки";
-        progressBarVM.ValueBar = 100;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
+
+    #endregion
 }

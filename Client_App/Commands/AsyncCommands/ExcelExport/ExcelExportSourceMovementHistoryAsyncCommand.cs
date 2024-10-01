@@ -88,7 +88,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         if (string.IsNullOrEmpty(fullPath)) return;
 
         await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
-        var progressBarVM = progressBar.AnyTaskProgressBarVM_DB;
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
         progressBarVM.ExportType = ExportType;
         progressBarVM.ExportName = $"Выгрузка движения источника{Environment.NewLine}" + $"{pasNum}_{factoryNum}";
         var loadStatus = "Создание временной БД";

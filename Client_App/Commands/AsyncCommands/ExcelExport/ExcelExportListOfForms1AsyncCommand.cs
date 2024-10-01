@@ -131,7 +131,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         if (string.IsNullOrEmpty(fullPath)) return;
 
         await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
-        var progressBarVM = progressBar.AnyTaskProgressBarVM_DB;
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
         progressBarVM.ExportType = ExportType;
         progressBarVM.ExportName = "Выгрузка списка форм 1";
         progressBarVM.ValueBar = 5;

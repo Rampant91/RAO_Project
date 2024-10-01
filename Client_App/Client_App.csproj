@@ -34,7 +34,7 @@
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.22" />
     <PackageReference Include="EPPlus" Version="7.0.8" />
     <PackageReference Include="JsonSubTypes" Version="2.0.1" />
-    <PackageReference Include="MessageBox.Avalonia" Version="1.7.1" />
+    <PackageReference Include="MessageBox.Avalonia" Version="2.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.20">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

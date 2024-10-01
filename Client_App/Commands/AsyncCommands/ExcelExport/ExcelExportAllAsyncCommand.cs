@@ -39,7 +39,7 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
         var mainWindow = Desktop.MainWindow as MainWindow;
 
         await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
-        var progressBarVM = progressBar.AnyTaskProgressBarVM_DB;
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
         progressBarVM.ExportType = "Выгрузка в .xlsx";
         progressBarVM.ExportName = "Выгрузка всех отчётов";
         progressBarVM.ValueBar = 2;

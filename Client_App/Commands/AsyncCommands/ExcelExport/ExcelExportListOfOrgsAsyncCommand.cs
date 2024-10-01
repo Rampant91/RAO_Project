@@ -43,7 +43,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         if (string.IsNullOrEmpty(fullPath)) return;
 
         await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
-        var progressBarVM = progressBar.AnyTaskProgressBarVM_DB;
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
         progressBarVM.ExportType = ExportType;
         progressBarVM.ExportName = "Выгрузка списка организаций";
         progressBarVM.ValueBar = 2;

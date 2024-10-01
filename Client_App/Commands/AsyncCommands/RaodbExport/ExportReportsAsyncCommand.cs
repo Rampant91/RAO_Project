@@ -60,7 +60,7 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 
         await Dispatcher.UIThread.InvokeAsync(() => ProgressBar = new AnyTaskProgressBar(cts));
         var progressBar = ProgressBar;
-        var progressBarVM = progressBar.AnyTaskProgressBarVM_DB;
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
         progressBarVM.ExportType = "Экспорт_RAODB";
         progressBarVM.ExportName = $"Выгрузка организации";
         progressBarVM.ValueBar = 5;

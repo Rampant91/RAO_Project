@@ -1,7 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Properties;
 using Client_App.Resources;
-using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using System;
 using System.Diagnostics;
@@ -49,7 +49,8 @@ public class OpenPasAsyncCommand : BaseAsyncCommand
         uniqPasName = Regex.Replace(uniqPasName, "[\\\\/:*?\"<>|]", "_");
         uniqPasName = Regex.Replace(uniqPasName, @"\s+", "");
 
-        if (!Path.Exists(BaseVM.PasFolderPath))
+        var pasFolderPath = Settings.Default.PasFolderDefaultPath;
+        if (!Path.Exists(Settings.Default.PasFolderDefaultPath))
         {
             #region MessagePasportFileMissing
 
@@ -61,7 +62,7 @@ public class OpenPasAsyncCommand : BaseAsyncCommand
                     ContentTitle = "Поиск файла паспорта",
                     ContentHeader = "Уведомление",
                     ContentMessage = $"Сетевое хранилище недоступно:" +
-                                     $"{Environment.NewLine}{BaseVM.PasFolderPath}" +
+                                     $"{Environment.NewLine}{pasFolderPath}" +
                                      $"{Environment.NewLine}Для изменения пути по умолчанию, воспользуйтесь кнопкой " +
                                      $"{Environment.NewLine}\"Excel -> Паспорта -> Изменить расположение паспортов по умолчанию\".",
                     MinWidth = 475,
@@ -72,11 +73,11 @@ public class OpenPasAsyncCommand : BaseAsyncCommand
             #endregion
         }
 
-        var pasFullPath = Directory.EnumerateFiles(BaseVM.PasFolderPath, uniqPasName, SearchOption.AllDirectories).FirstOrDefault() is not null
-            ? Directory.EnumerateFiles(BaseVM.PasFolderPath, uniqPasName, SearchOption.AllDirectories).FirstOrDefault()
-            : Directory.EnumerateFiles(BaseVM.PasFolderPath, StaticStringMethods.TranslateToEng(uniqPasName), SearchOption.AllDirectories).FirstOrDefault() is not null
-                ? Directory.EnumerateFiles(BaseVM.PasFolderPath, StaticStringMethods.TranslateToEng(uniqPasName), SearchOption.AllDirectories).FirstOrDefault()
-                : Directory.EnumerateFiles(BaseVM.PasFolderPath, StaticStringMethods.TranslateToRus(uniqPasName)).FirstOrDefault();
+        var pasFullPath = Directory.EnumerateFiles(pasFolderPath, uniqPasName, SearchOption.AllDirectories).FirstOrDefault() is not null
+            ? Directory.EnumerateFiles(pasFolderPath, uniqPasName, SearchOption.AllDirectories).FirstOrDefault()
+            : Directory.EnumerateFiles(pasFolderPath, StaticStringMethods.TranslateToEng(uniqPasName), SearchOption.AllDirectories).FirstOrDefault() is not null
+                ? Directory.EnumerateFiles(pasFolderPath, StaticStringMethods.TranslateToEng(uniqPasName), SearchOption.AllDirectories).FirstOrDefault()
+                : Directory.EnumerateFiles(pasFolderPath, StaticStringMethods.TranslateToRus(uniqPasName)).FirstOrDefault();
 
         if (pasFullPath is not null)
         {
@@ -94,7 +95,7 @@ public class OpenPasAsyncCommand : BaseAsyncCommand
                     ContentHeader = "Уведомление",
                     ContentMessage = $"Паспорт {uniqPasName}" +
                                      $"{Environment.NewLine}отсутствует в сетевом хранилище:" +
-                                     $"{Environment.NewLine}{BaseVM.PasFolderPath}",
+                                     $"{Environment.NewLine}{Settings.Default.PasFolderDefaultPath}",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen

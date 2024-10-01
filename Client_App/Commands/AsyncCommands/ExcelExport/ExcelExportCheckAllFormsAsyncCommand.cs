@@ -41,7 +41,7 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
         if (folderPath is null) return;
 
         await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
-        var progressBarVM = progressBar.AnyTaskProgressBarVM_DB;
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
         progressBarVM.ExportType = ExportType;
         progressBarVM.ExportName = "Проверка всех форм";
         progressBarVM.ValueBar = 5;

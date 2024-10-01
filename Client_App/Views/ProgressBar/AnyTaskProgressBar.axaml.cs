@@ -1,8 +1,10 @@
 using System.Threading;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using Client_App.Interfaces.BackgroundLoader;
 using Client_App.ViewModels.ProgressBar;
 using static Avalonia.Controls.WindowState;
@@ -11,7 +13,7 @@ namespace Client_App.Views.ProgressBar;
 
 public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
 {
-    public AnyTaskProgressBarVM AnyTaskProgressBarVM_DB { get; }
+    public AnyTaskProgressBarVM AnyTaskProgressBarVM { get; }
 
     public AnyTaskProgressBar()
     {
@@ -26,10 +28,10 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
         
         var vm = new AnyTaskProgressBarVM(this, cts, new BackgroundLoader());
         DataContext = vm;
-        AnyTaskProgressBarVM_DB = (DataContext as AnyTaskProgressBarVM)!;
+        AnyTaskProgressBarVM = (DataContext as AnyTaskProgressBarVM)!;
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            if (AnyTaskProgressBarVM_DB.IsShowDialog) ShowDialog(desktop.MainWindow);
+            if (AnyTaskProgressBarVM.IsShowDialog) ShowDialog(desktop.MainWindow);
             else Show(desktop.MainWindow);
         }
     }
@@ -79,4 +81,9 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
     #endregion
 
     #endregion
+
+    public async Task CloseAsync()
+    {
+        await Dispatcher.UIThread.InvokeAsync(Close);
+    }
 }

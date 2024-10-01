@@ -30,7 +30,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         ExportType = "Для_печати";
 
         await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
-        var progressBarVM = progressBar.AnyTaskProgressBarVM_DB;
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
         progressBarVM.ExportType = ExportType;
         progressBarVM.ExportName = "Выгрузка отчёта на печать";
         progressBarVM.ValueBar = 5;
@@ -82,9 +82,6 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
             .Include(x => x.Notes.OrderBy(x => x.Order))
             .FirstAsync(x => x.Id == exportRepWithOutRows.Id, cancellationToken: cts.Token);
 
-
-        //var exportForm = (Report)forms.First();
-        //exportRep = await ReportsStorage.GetReportAsync(exportRep.Id);
         var orgWithExportRep = await dbReadOnly.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
@@ -122,11 +119,16 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
+            await progressBar.CloseAsync();
             return;
         }
         var fullPath = result.fullPath;
         var openTemp = result.openTemp;
-        if (string.IsNullOrEmpty(fullPath)) return; 
+        if (string.IsNullOrEmpty(fullPath))
+        {
+            await progressBar.CloseAsync();
+            return;
+        } 
 
 #if DEBUG
         var appFolderPath = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Excel", $"{formNum}.xlsx");
@@ -147,16 +149,12 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         ExcelPrintNotesExport(formNum, worksheetMain, exportRep);
         ExcelPrintRowsExport(formNum, worksheetMain, exportRep);
 
-        loadStatus = "Сохранение";
-        progressBarVM.ValueBar = 95;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        progressBarVM.SetProgressBar(95, "Сохранение");
 
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
 
-        loadStatus = "Завершение выгрузки";
-        progressBarVM.ValueBar = 100;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
 
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
+        await progressBar.CloseAsync();
     }
 }

@@ -31,7 +31,7 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
         ExportType = "Для_анализа";
 
         await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
-        var progressBarVM = progressBar.AnyTaskProgressBarVM_DB;
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
         progressBarVM.ExportType = ExportType;
         progressBarVM.ExportName = "Выгрузка отчёта для анализа";
         progressBarVM.ValueBar = 5;

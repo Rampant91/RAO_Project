@@ -7,11 +7,13 @@ using System.Windows.Input;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Interfaces.BackgroundLoader;
 using Client_App.Views.ProgressBar;
-using Models.DBRealization;
 using ReactiveUI;
 
 namespace Client_App.ViewModels.ProgressBar;
 
+/// <summary>
+/// Прогрессбар для различных задач.
+/// </summary>
 public class AnyTaskProgressBarVM : BaseVM, INotifyPropertyChanged
 {
     private IBackgroundLoader _backgroundWorker;
@@ -113,6 +115,36 @@ public class AnyTaskProgressBarVM : BaseVM, INotifyPropertyChanged
     private void OnPropertyChanged([CallerMemberName] string prop = "")
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+    }
+
+    #endregion
+
+    #region SetProgressBar
+
+    /// <summary>
+    /// Устанавливает прогресс и статус операции у прогрессбара.
+    /// </summary>
+    /// <param name="percentValue">Процент выполнения операции.</param>
+    /// <param name="loadStatus">Статус операции.</param>
+    public void SetProgressBar(int percentValue, string loadStatus)
+    {
+        ValueBar = percentValue;
+        LoadStatus = $"{percentValue}% ({loadStatus})";
+    }
+
+    /// <summary>
+    /// Устанавливает прогресс, статус, имя и тип операции у прогрессбара.
+    /// </summary>
+    /// <param name="percentValue">Процент выполнения операции.</param>
+    /// <param name="loadStatus">Статус операции.</param>
+    /// <param name="exportName">Имя операции.</param>
+    /// <param name="exportType">Тип операции.</param>
+    public void SetProgressBar(int percentValue, string loadStatus, string exportName, string exportType)
+    {
+        ExportName = exportName;
+        ExportType = exportType;
+        ValueBar = percentValue;
+        LoadStatus = $"{percentValue}% ({loadStatus})";
     }
 
     #endregion
