@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
+using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
@@ -66,7 +67,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         var filteredForm11DtoArray = await GetFilteredForms(dbReadOnlyPath, categories);
 
         progressBarVM.SetProgressBar(50, "Поиск совпадений");
-        await FindFilesWithOutReport(files, filteredForm11DtoArray);
+        await FindFilesWithOutReport(files, filteredForm11DtoArray, progressBarVM);
 
         progressBarVM.SetProgressBar(90, "Экспорт данных в .xlsx");
         var currentRow = 2;
@@ -109,8 +110,9 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
     /// </summary>
     /// <param name="files">Список файлов паспортов.</param>
     /// <param name="filteredForm11DtoArray">Отфильтрованный массив DTO'шек форм 1.1.</param>
+    /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <returns></returns>
-    private static async Task FindFilesWithOutReport(List<FileInfo> files, Form11ShortDTO[] filteredForm11DtoArray)
+    private static async Task FindFilesWithOutReport(List<FileInfo> files, Form11ShortDTO[] filteredForm11DtoArray, AnyTaskProgressBarVM progressBarVM)
     {
         List<string> pasNames = [];
         List<string[]> pasUniqParam = [];
@@ -119,19 +121,31 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 
         ConcurrentBag<FileInfo> filesToRemove = [];
         var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
+        var count = 0;
+        double progressBarDoubleValue = progressBarVM.ValueBar;
         await Parallel.ForEachAsync(pasUniqParam, parallelOptions, (pasParam, token) =>
         {
-            if (filteredForm11DtoArray.Any(form11 =>
-                    ComparePasParam(ConvertPrimToDash(form11.CreatorOKPO), pasParam[0])
-                    && ComparePasParam(ConvertPrimToDash(form11.Type), pasParam[1])
-                    && ComparePasParam(ConvertDateToYear(form11.CreationDate), pasParam[2])
-                    && ComparePasParam(ConvertPrimToDash(form11.PassportNumber), pasParam[3])
-                    && ComparePasParam(ConvertPrimToDash(form11.FactoryNumber), pasParam[4])))
+            if (filteredForm11DtoArray.Any(form11 => ComparePasParam(
+                        ConvertPrimToDash(form11.CreatorOKPO) 
+                        + ConvertPrimToDash(form11.Type) 
+                        + ConvertDateToYear(form11.CreationDate) 
+                        + ConvertPrimToDash(form11.PassportNumber) 
+                        + ConvertPrimToDash(form11.FactoryNumber),
+                        pasParam[0] + pasParam[1] + pasParam[2] + pasParam[3] + pasParam[4])))
+                //ComparePasParam(ConvertPrimToDash(form11.CreatorOKPO), pasParam[0])
+                //&& ComparePasParam(ConvertPrimToDash(form11.Type), pasParam[1])
+                //&& ComparePasParam(ConvertDateToYear(form11.CreationDate), pasParam[2])
+                //&& ComparePasParam(ConvertPrimToDash(form11.PassportNumber), pasParam[3])
+                //&& ComparePasParam(ConvertPrimToDash(form11.FactoryNumber), pasParam[4])
             {
                 filesToRemove.Add(files.First(file =>
                     file.Name.Remove(file.Name.Length - 4) ==
                     $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
             }
+            count++;
+            progressBarDoubleValue += (double)40 / pasUniqParam.Count;
+            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+                $"Проверено {count} из {pasUniqParam.Count} паспортов");
             return default;
         });
 
@@ -203,7 +217,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowDialog(ProgressBar));
 
             #endregion
         }

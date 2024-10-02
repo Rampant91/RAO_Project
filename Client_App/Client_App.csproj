@@ -5,9 +5,9 @@
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU;x86</Platforms>
     <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
-    <AssemblyVersion>1.2.3.16</AssemblyVersion>
-    <FileVersion>1.2.3.16</FileVersion>
-    <Version>1.2.3.16</Version>
+    <AssemblyVersion>1.2.3.17</AssemblyVersion>
+    <FileVersion>1.2.3.17</FileVersion>
+    <Version>1.2.3.17</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
