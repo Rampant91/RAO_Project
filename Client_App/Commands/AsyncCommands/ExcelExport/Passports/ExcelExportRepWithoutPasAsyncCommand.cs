@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.ViewModels.ProgressBar;
@@ -93,7 +94,7 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
 
         progressBarVM.SetProgressBar(40, "Поиск совпадений");
         ConcurrentBag<Form11ShortDTO> dtoToExcelThreadSafe = [];
-        await FindFilesWithOutReport(pasUniqParam, dtoList, dtoToExcelThreadSafe);
+        await FindFilesWithOutReport(pasUniqParam, dtoList, dtoToExcelThreadSafe, progressBarVM);
 
         progressBarVM.SetProgressBar(60, "Загрузка совпавших форм");
         var matchedFormsList = await LoadMatchedForms(dtoToExcelThreadSafe.ToList(), dbReadOnlyPath, progressBarVM);
@@ -110,29 +111,36 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
     #region FindFilesWithOutReport
 
     /// <summary>
-    /// Для каждого файла из списка проверяет наличие отчёта в БД.
-    /// Удаляет из списка файлов те, для которых совпадение найдено.
+    /// Для каждой формы из списка проверяет соответствие уникальных параметров файла паспорта.
+    /// Добавляет в выходной список те, для которых совпадение не найдено.
     /// </summary>
     /// <param name="pasUniqParam">Список массивов уникальных параметров паспортов, полученный из названий файлов паспортов.</param>
     /// <param name="dtoList">Список DTO'шек форм 1.1.</param>
     /// <param name="dtoToExcelThreadSafe">Потокобезопасный список отфильтрованных DTO'шек форм 1.1.</param>
     /// <returns>Обновление потокобезопасного списка.</returns>
-    private static async Task FindFilesWithOutReport(List<string[]> pasUniqParam, IEnumerable<Form11ShortDTO> dtoList, 
-        ConcurrentBag<Form11ShortDTO> dtoToExcelThreadSafe)
+    private static async Task FindFilesWithOutReport(List<string[]> pasUniqParam, List<Form11ShortDTO> dtoList, 
+        ConcurrentBag<Form11ShortDTO> dtoToExcelThreadSafe, AnyTaskProgressBarVM progressBarVM)
     {
         var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
+        var count = 0;
+        double progressBarDoubleValue = progressBarVM.ValueBar;
         await Parallel.ForEachAsync(dtoList, parallelOptions, (dto, token) =>
         {
-            var findPasFile = pasUniqParam.Any(pasParam =>
-                ComparePasParam(ConvertPrimToDash(dto.CreatorOKPO), pasParam[0])
-                && ComparePasParam(ConvertPrimToDash(dto.Type), pasParam[1])
-                && ComparePasParam(ConvertDateToYear(dto.CreationDate), pasParam[2])
-                && ComparePasParam(ConvertPrimToDash(dto.PassportNumber), pasParam[3])
-                && ComparePasParam(ConvertPrimToDash(dto.FactoryNumber), pasParam[4]));
+            var findPasFile = pasUniqParam.Any(pasParam => ComparePasParam(
+                ConvertPrimToDash(dto.CreatorOKPO) 
+                + ConvertPrimToDash(dto.Type)
+                + ConvertDateToYear(dto.CreationDate)
+                + ConvertPrimToDash(dto.PassportNumber)
+                + ConvertPrimToDash(dto.FactoryNumber), 
+                pasParam[0] + pasParam[1] + pasParam[2] + pasParam[3] + pasParam[4]));
             if (!findPasFile)
             {
                 dtoToExcelThreadSafe.Add(dto);
             }
+            count++;
+            progressBarDoubleValue += (double)20 / dtoList.Count;
+            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+                $"Проверено {count} из {dtoList.Count} форм");
             return default;
         });
     }
@@ -210,7 +218,7 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="files">Список файлов паспортов.</param>
     /// <param name="pasUniqParam">Список массивов уникальных параметров паспортов, полученный из названий файлов паспортов.</param>
     /// <returns>Отфильтрованный массив DTO'шек форм 1.1.</returns>
-    private async Task<IEnumerable<Form11ShortDTO>> GetFilteredForms(string dbReadOnlyPath, List<FileInfo> files, List<string[]> pasUniqParam)
+    private async Task<List<Form11ShortDTO>> GetFilteredForms(string dbReadOnlyPath, List<FileInfo> files, List<string[]> pasUniqParam)
     {
         List<string> pasNames = [];
         pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
@@ -237,7 +245,9 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
                         form11.Type_DB))))
             .ToListAsync(cancellationToken: cts.Token);
 
-        return form11ShortList.Where(x => x.Category is 1 or 2 or 3 && x.OperationCode is "11" or "85");
+        return form11ShortList
+            .Where(x => x.Category is 1 or 2 or 3 && x.OperationCode is "11" or "85")
+            .ToList();
     }
 
     #endregion

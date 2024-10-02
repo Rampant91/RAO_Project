@@ -132,11 +132,6 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                         + ConvertPrimToDash(form11.PassportNumber) 
                         + ConvertPrimToDash(form11.FactoryNumber),
                         pasParam[0] + pasParam[1] + pasParam[2] + pasParam[3] + pasParam[4])))
-                //ComparePasParam(ConvertPrimToDash(form11.CreatorOKPO), pasParam[0])
-                //&& ComparePasParam(ConvertPrimToDash(form11.Type), pasParam[1])
-                //&& ComparePasParam(ConvertDateToYear(form11.CreationDate), pasParam[2])
-                //&& ComparePasParam(ConvertPrimToDash(form11.PassportNumber), pasParam[3])
-                //&& ComparePasParam(ConvertPrimToDash(form11.FactoryNumber), pasParam[4])
             {
                 filesToRemove.Add(files.First(file =>
                     file.Name.Remove(file.Name.Length - 4) ==
