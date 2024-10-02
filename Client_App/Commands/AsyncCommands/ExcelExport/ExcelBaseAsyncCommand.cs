@@ -27,7 +27,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 /// </summary>
 public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 {
-    private protected CancellationTokenSource Cts = new();
+    private readonly CancellationTokenSource _cts = new();
 
     private protected ExcelWorksheet Worksheet { get; set; }
 
@@ -949,8 +949,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
             #endregion
 
-            await Cts.CancelAsync();
-            Cts.Token.ThrowIfCancellationRequested();
+            await _cts.CancelAsync();
+            _cts.Token.ThrowIfCancellationRequested();
         }
         return files;
     }

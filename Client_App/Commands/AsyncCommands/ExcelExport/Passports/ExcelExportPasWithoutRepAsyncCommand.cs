@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using Client_App.Properties;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
@@ -25,11 +24,13 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 /// </summary>
 public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 {
+    private CancellationTokenSource cts;
+
     public override async Task AsyncExecute(object? parameter)
     {
-        Cts = new CancellationTokenSource();
+        cts = new CancellationTokenSource();
         ExportType = "Паспорта_без_отчетов";
-        await Dispatcher.UIThread.InvokeAsync(() => ProgressBar = new AnyTaskProgressBar(Cts));
+        await Dispatcher.UIThread.InvokeAsync(() => ProgressBar = new AnyTaskProgressBar(cts));
         var progressBarVM = ProgressBar.AnyTaskProgressBarVM;
 
         progressBarVM.SetProgressBar(2, "Формирование списка файлов", "Выгрузка списка паспортов", ExportType);
@@ -40,7 +41,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 
         progressBarVM.SetProgressBar(8, "Запрос пути сохранения");
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
-        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, Cts);
+        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts);
 
         progressBarVM.SetProgressBar(10, "Создание временной БД");
         var dbReadOnlyPath = CreateTempDb();
@@ -72,13 +73,19 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         foreach (var file in files)
         {
             var pasName = file.Name.TrimEnd(".pdf".ToCharArray());
+
+            #region FillRows
+
             Worksheet.Cells[currentRow, 1].Value = file.DirectoryName;
             Worksheet.Cells[currentRow, 2].Value = pasName;
             Worksheet.Cells[currentRow, 3].Value = ConvertToExcelString(pasName.Split('#')[0]);
             Worksheet.Cells[currentRow, 4].Value = ConvertToExcelString(pasName.Split('#')[1]);
             Worksheet.Cells[currentRow, 5].Value = ConvertToExcelDate(pasName.Split('#')[2], Worksheet, currentRow, 5);
             Worksheet.Cells[currentRow, 6].Value = ConvertToExcelString(pasName.Split('#')[3]);
-            Worksheet.Cells[currentRow, 7].Value = ConvertToExcelString(pasName.Split('#')[4]);
+            Worksheet.Cells[currentRow, 7].Value = ConvertToExcelString(pasName.Split('#')[4]); 
+            
+            #endregion
+
             currentRow++;
         }
 
@@ -89,7 +96,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.View.FreezePanes(2, 1);
 
         progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, Cts);
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
 
         progressBarVM.SetProgressBar(100, "Завершение выгрузки");
     }
@@ -169,8 +176,8 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 
         if (res.Button is null or "Отмена")
         {
-            await Cts.CancelAsync();
-            Cts.Token.ThrowIfCancellationRequested();
+            await cts.CancelAsync();
+            cts.Token.ThrowIfCancellationRequested();
         }
 
         var categoryArray = (res.Message ?? string.Empty)
@@ -240,7 +247,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                     PassportNumber = form11.PassportNumber_DB,
                     FactoryNumber = form11.FactoryNumber_DB
                 }))
-            .ToArrayAsync(cancellationToken: Cts.Token);
+            .ToArrayAsync(cancellationToken: cts.Token);
     }
 
     #endregion
