@@ -10,11 +10,9 @@ using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.ProgressBar;
-using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.DTO;
-using Models.Forms.Form1;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
@@ -91,8 +89,7 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
 
         progressBarVM.SetProgressBar(20, "Формирование списка форм 1.1");
         List<string[]> pasUniqParam = [];
-        var dtoList = await Task.Run(async () => await GetFilteredForms(dbReadOnlyPath, files, pasUniqParam), cts.Token);
-        //var dtoList = await GetFilteredForms(dbReadOnlyPath, files, pasUniqParam);
+        var dtoList = await GetFilteredForms(dbReadOnlyPath, files, pasUniqParam);
 
         progressBarVM.SetProgressBar(40, "Поиск совпадений");
         ConcurrentBag<Form11ShortDTO> dtoToExcelThreadSafe = [];
@@ -102,8 +99,63 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
         var matchedFormsList = await LoadMatchedForms(dtoToExcelThreadSafe.ToList(), dbReadOnlyPath, progressBarVM);
 
         progressBarVM.SetProgressBar(90, "Экспорт данных в .xlsx");
+        await Task.Run(async () => await ExportToExcel(matchedFormsList), cts.Token);
+
+        progressBarVM.SetProgressBar(95, "Сохранение");
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
+
+        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+    }
+
+    #region FindFilesWithOutReport
+
+    /// <summary>
+    /// Для каждого файла из списка проверяет наличие отчёта в БД.
+    /// Удаляет из списка файлов те, для которых совпадение найдено.
+    /// </summary>
+    /// <param name="pasUniqParam">Список массивов уникальных параметров паспортов, полученный из названий файлов паспортов.</param>
+    /// <param name="dtoList">Список DTO'шек форм 1.1.</param>
+    /// <param name="dtoToExcelThreadSafe">Потокобезопасный список отфильтрованных DTO'шек форм 1.1.</param>
+    /// <returns>Обновление потокобезопасного списка.</returns>
+    private static async Task FindFilesWithOutReport(List<string[]> pasUniqParam, IEnumerable<Form11ShortDTO> dtoList, 
+        ConcurrentBag<Form11ShortDTO> dtoToExcelThreadSafe)
+    {
+        var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
+        await Parallel.ForEachAsync(dtoList, parallelOptions, (dto, token) =>
+        {
+            var findPasFile = pasUniqParam.Any(pasParam =>
+                ComparePasParam(ConvertPrimToDash(dto.CreatorOKPO), pasParam[0])
+                && ComparePasParam(ConvertPrimToDash(dto.Type), pasParam[1])
+                && ComparePasParam(ConvertDateToYear(dto.CreationDate), pasParam[2])
+                && ComparePasParam(ConvertPrimToDash(dto.PassportNumber), pasParam[3])
+                && ComparePasParam(ConvertPrimToDash(dto.FactoryNumber), pasParam[4]));
+            if (!findPasFile)
+            {
+                dtoToExcelThreadSafe.Add(dto);
+            }
+            return default;
+        });
+    }
+
+    #endregion
+
+    #region ExportToExcel
+
+    /// <summary>
+    /// Экспорт отсортированного списка форм в .xlsx.
+    /// </summary>
+    /// <param name="matchedFormsList">Неотсортированный список форм.</param>
+    /// <returns></returns>
+    private Task ExportToExcel(List<Form11ExtendedDTO> matchedFormsList)
+    {
         var currentRow = 2;
-        foreach (var dto in matchedFormsList)
+        foreach (var dto in matchedFormsList
+                     .OrderBy(x => x.RegNoRep)
+                     .ThenBy(x => x.OkpoRep)
+                     .ThenBy(x => x.FormNum)
+                     .ThenBy(x => StringReverse(x.StartPeriod))
+                     .ThenBy(x => StringReverse(x.EndPeriod))
+                     .ThenBy(x => x.NumberInOrder))
         {
             #region BindingCells
 
@@ -144,41 +196,7 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
             currentRow++;
         }
         Worksheet.View.FreezePanes(2, 1);
-
-        progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
-
-        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-    }
-
-    #region FindFilesWithOutReport
-
-    /// <summary>
-    /// Для каждого файла из списка проверяет наличие отчёта в БД.
-    /// Удаляет из списка файлов те, для которых совпадение найдено.
-    /// </summary>
-    /// <param name="pasUniqParam">Список массивов уникальных параметров паспортов, полученный из названий файлов паспортов.</param>
-    /// <param name="dtoList">Список DTO'шек форм 1.1.</param>
-    /// <param name="dtoToExcelThreadSafe">Потокобезопасный список отфильтрованных DTO'шек форм 1.1.</param>
-    /// <returns></returns>
-    private static async Task FindFilesWithOutReport(List<string[]> pasUniqParam, IEnumerable<Form11ShortDTO> dtoList, 
-        ConcurrentBag<Form11ShortDTO> dtoToExcelThreadSafe)
-    {
-        var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
-        await Parallel.ForEachAsync(dtoList, parallelOptions, (dto, token) =>
-        {
-            var findPasFile = pasUniqParam.Any(pasParam =>
-                ComparePasParam(ConvertPrimToDash(dto.CreatorOKPO), pasParam[0])
-                && ComparePasParam(ConvertPrimToDash(dto.Type), pasParam[1])
-                && ComparePasParam(ConvertDateToYear(dto.CreationDate), pasParam[2])
-                && ComparePasParam(ConvertPrimToDash(dto.PassportNumber), pasParam[3])
-                && ComparePasParam(ConvertPrimToDash(dto.FactoryNumber), pasParam[4]));
-            if (!findPasFile)
-            {
-                dtoToExcelThreadSafe.Add(dto);
-            }
-            return default;
-        });
+        return Task.CompletedTask;
     }
 
     #endregion
@@ -226,16 +244,21 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
 
     #region LoadMatchedForms
 
-    private async Task<List<Form11DTO>> LoadMatchedForms(List<Form11ShortDTO> form11DtoList, string dbReadOnlyPath, AnyTaskProgressBarVM progressBarVM)
+    /// <summary>
+    /// Загрузка из БД полных строчек форм 1.1 вместе с данными организации.
+    /// </summary>
+    /// <param name="form11DtoList">Список dto'шек форм 1.1, для которых нужно загрузить полные строчки.</param>
+    /// <param name="dbReadOnlyPath">Полный путь к временному файлу БД.</param>
+    /// <param name="progressBarVM">ViewModel прогрессбара.</param>
+    /// <returns>Список полных строчек форм 1.1 вместе с данными организации.</returns>
+    private async Task<List<Form11ExtendedDTO>> LoadMatchedForms(List<Form11ShortDTO> form11DtoList, string dbReadOnlyPath, AnyTaskProgressBarVM progressBarVM)
     {
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
-        var dto11List = new List<Form11DTO>();
+        var form11ExtendedList = new List<Form11ExtendedDTO>();
 
         var count = 0;
         double progressBarDoubleValue = progressBarVM.ValueBar;
-
-        var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
-        await Parallel.ForEachAsync(form11DtoList, parallelOptions, async (dto, token) =>
+        foreach (var dto in form11DtoList)
         {
             var form11 = await dbReadOnly.form_11
                 .AsSplitQuery()
@@ -243,10 +266,10 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
                 .Include(form11 => form11.Report).ThenInclude(rep => rep.Rows11)
                 .AsQueryable()
                 .FirstAsync(form11 => form11.Id == dto.Id, cancellationToken: cts.Token);
-            if (form11.Report?.Reports is null) return;
+            if (form11.Report?.Reports is null) continue;
             var rep = form11.Report;
             var reps = form11.Report.Reports;
-            dto11List.Add(new Form11DTO
+            form11ExtendedList.Add(new Form11ExtendedDTO
             {
                 RegNoRep = reps.Master.RegNoRep.Value,
                 ShortJurLico = reps.Master.ShortJurLicoRep.Value,
@@ -284,111 +307,13 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
             progressBarDoubleValue += (double)30 / form11DtoList.Count;
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
                 $"Загружено {count} из {form11DtoList.Count} форм");
-        });
-
-        //foreach (var dto in form11DtoList)
-        //{
-        //    var form11 = await dbReadOnly.form_11
-        //        .AsSplitQuery()
-        //        .Include(form11 => form11.Report).ThenInclude(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
-        //        .Include(form11 => form11.Report).ThenInclude(rep => rep.Rows11)
-        //        .AsQueryable()
-        //        .FirstAsync(form11 => form11.Id == dto.Id, cancellationToken: cts.Token);
-        //    if (form11.Report?.Reports is null) continue;
-        //    var rep = form11.Report;
-        //    var reps = form11.Report.Reports;
-        //    dto11List.Add(new Form11DTO
-        //    {
-        //        RegNoRep = reps.Master.RegNoRep.Value,
-        //        ShortJurLico = reps.Master.ShortJurLicoRep.Value,
-        //        OkpoRep = reps.Master.OkpoRep.Value,
-        //        FormNum = rep.FormNum_DB,
-        //        StartPeriod = rep.StartPeriod_DB,
-        //        EndPeriod = rep.EndPeriod_DB,
-        //        CorrectionNumber = rep.CorrectionNumber_DB,
-        //        RowCount = rep.Rows11.Count,
-        //        NumberInOrder = form11.NumberInOrder_DB,
-        //        OperationCode = form11.OperationCode_DB,
-        //        OperationDate = form11.OperationDate_DB,
-        //        PassportNumber = form11.PassportNumber_DB,
-        //        Type = form11.Type_DB,
-        //        Radionuclids = form11.Radionuclids_DB,
-        //        FactoryNumber = form11.FactoryNumber_DB,
-        //        Activity = form11.Activity_DB,
-        //        Quantity = form11.Quantity_DB,
-        //        CreatorOKPO = form11.CreatorOKPO_DB,
-        //        CreationDate = form11.CreationDate_DB,
-        //        Category = form11.Category_DB,
-        //        SignedServicePeriod = form11.SignedServicePeriod_DB,
-        //        PropertyCode = form11.PropertyCode_DB,
-        //        Owner = form11.Owner_DB,
-        //        DocumentVid = form11.DocumentVid_DB,
-        //        DocumentNumber = form11.DocumentNumber_DB,
-        //        DocumentDate = form11.DocumentDate_DB,
-        //        ProviderOrRecieverOKPO = form11.ProviderOrRecieverOKPO_DB,
-        //        TransporterOKPO = form11.TransporterOKPO_DB,
-        //        PackName = form11.PackName_DB,
-        //        PackType = form11.PackType_DB,
-        //        PackNumber = form11.PackNumber_DB
-        //    });
-        //    count++;
-        //    progressBarDoubleValue += (double)30 / form11DtoList.Count;
-        //    progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue), 
-        //        $"Загружено {count} из {form11DtoList.Count} форм");
-        //}
-
-        //foreach (var form11 in await form11DtoList.Select(async form => await dbReadOnly.form_11
-        //             .AsSplitQuery()
-        //             .Include(form11 => form11.Report).ThenInclude(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
-        //             .Include(form11 => form11.Report).ThenInclude(rep => rep.Rows11)
-        //             .AsQueryable()
-        //             .FirstAsync(form11 => form11.Id == form.Id)))
-        //{
-        //    if (form11.Report?.Reports is null) continue;
-        //    var rep = form11.Report;
-        //    var reps = form11.Report.Reports;
-        //    dto11List.Add(new Form11DTO
-        //    {
-        //        RegNoRep = reps.Master.RegNoRep.Value,
-        //        ShortJurLico = reps.Master.ShortJurLicoRep.Value,
-        //        OkpoRep = reps.Master.OkpoRep.Value,
-        //        FormNum = rep.FormNum_DB,
-        //        StartPeriod = rep.StartPeriod_DB,
-        //        EndPeriod = rep.EndPeriod_DB,
-        //        CorrectionNumber = rep.CorrectionNumber_DB,
-        //        RowCount = rep.Rows11.Count,
-        //        NumberInOrder = form11.NumberInOrder_DB,
-        //        OperationCode = form11.OperationCode_DB,
-        //        OperationDate = form11.OperationDate_DB,
-        //        PassportNumber = form11.PassportNumber_DB,
-        //        Type = form11.Type_DB,
-        //        Radionuclids = form11.Radionuclids_DB,
-        //        FactoryNumber = form11.FactoryNumber_DB,
-        //        Activity = form11.Activity_DB,
-        //        Quantity = form11.Quantity_DB,
-        //        CreatorOKPO = form11.CreatorOKPO_DB,
-        //        CreationDate = form11.CreationDate_DB,
-        //        Category = form11.Category_DB,
-        //        SignedServicePeriod = form11.SignedServicePeriod_DB,
-        //        PropertyCode = form11.PropertyCode_DB,
-        //        Owner = form11.Owner_DB,
-        //        DocumentVid = form11.DocumentVid_DB,
-        //        DocumentNumber = form11.DocumentNumber_DB,
-        //        DocumentDate = form11.DocumentDate_DB,
-        //        ProviderOrRecieverOKPO = form11.ProviderOrRecieverOKPO_DB,
-        //        TransporterOKPO = form11.TransporterOKPO_DB,
-        //        PackName = form11.PackName_DB,
-        //        PackType = form11.PackType_DB,
-        //        PackNumber = form11.PackNumber_DB
-        //    });
-        //    count++;
-        //    progressBarDoubleValue += (double)30 / form11DtoList.Count;
-        //    progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue), $"Загружено {count} из {form11DtoList.Count} форм");
-        //}
-        return dto11List;
+        }
+        return form11ExtendedList;
     }
 
     #endregion
+
+    #region Form11ShortDTO
 
     private class Form11ShortDTO(int id, short? category, string creationDate, string creatorOkpo, string factoryNumber, string opCode, string passportNumber, string type)
     {
@@ -408,4 +333,6 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
 
         public readonly string Type = type;
     }
+
+    #endregion
 }

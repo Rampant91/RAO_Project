@@ -1,6 +1,6 @@
 ﻿namespace Models.DTO;
 
-public class Form11DTO
+public class Form11ExtendedDTO
 {
     #region ReportsProperties
 

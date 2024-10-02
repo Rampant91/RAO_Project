@@ -184,7 +184,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
             .Where(form11 => ComparePasParam(form11.PasNum + form11.FacNum, pasNum + factoryNum))
             .ToList();
 
-        var dto11List = new List<Form11DTO>();
+        var dto11List = new List<Form11ExtendedDTO>();
         foreach (var form11 in filteredForm11.Select(form => dbReadOnly.form_11
                      .AsSplitQuery()
                      .Include(form11 => form11.Report).ThenInclude(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
@@ -195,7 +195,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
             if (form11.Report?.Reports is null) continue;
             var rep = form11.Report;
             var reps = form11.Report.Reports;
-            dto11List.Add(new Form11DTO
+            dto11List.Add(new Form11ExtendedDTO
             {
                 RegNoRep = reps.Master.RegNoRep.Value,
                 ShortJurLico = reps.Master.ShortJurLicoRep.Value,
