@@ -133,6 +133,19 @@ public class AnyTaskProgressBarVM : BaseVM, INotifyPropertyChanged
     }
 
     /// <summary>
+    /// Устанавливает прогресс, статус, и имя операции у прогрессбара.
+    /// </summary>
+    /// <param name="percentValue">Процент выполнения операции.</param>
+    /// <param name="loadStatus">Статус операции.</param>
+    /// <param name="exportName">Имя операции.</param>
+    public void SetProgressBar(int percentValue, string loadStatus, string exportName)
+    {
+        ExportName = exportName;
+        ValueBar = percentValue;
+        LoadStatus = $"{percentValue}% ({loadStatus})";
+    }
+
+    /// <summary>
     /// Устанавливает прогресс, статус, имя и тип операции у прогрессбара.
     /// </summary>
     /// <param name="percentValue">Процент выполнения операции.</param>

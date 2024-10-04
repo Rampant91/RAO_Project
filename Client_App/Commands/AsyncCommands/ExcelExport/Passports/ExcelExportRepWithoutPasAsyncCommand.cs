@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.ViewModels.ProgressBar;
@@ -40,10 +39,10 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
         var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts);
 
         progressBarVM.SetProgressBar(10, "Создание временной БД");
-        var dbReadOnlyPath = CreateTempDb();
+        var dbReadOnlyPath = await CreateTempDb();
 
         progressBarVM.SetProgressBar(18, "Инициализация Excel пакета");
-        using var excelPackage = InitializeExcelPackage(fullPath);
+        using var excelPackage = await InitializeExcelPackage(fullPath);
         Worksheet = excelPackage.Workbook.Worksheets.Add("Список отчётов без файла паспорта");
 
         #region FillHeaders

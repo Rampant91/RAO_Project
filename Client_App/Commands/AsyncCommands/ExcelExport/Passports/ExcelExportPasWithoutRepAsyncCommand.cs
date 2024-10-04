@@ -45,10 +45,10 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts);
 
         progressBarVM.SetProgressBar(10, "Создание временной БД");
-        var dbReadOnlyPath = CreateTempDb();
+        var dbReadOnlyPath = await CreateTempDb();
 
         progressBarVM.SetProgressBar(18, "Инициализация Excel пакета");
-        using var excelPackage = InitializeExcelPackage(fullPath);
+        using var excelPackage = await InitializeExcelPackage(fullPath);
         Worksheet = excelPackage.Workbook.Worksheets.Add("Список паспортов без отчетов");
 
         #region FillHeaders

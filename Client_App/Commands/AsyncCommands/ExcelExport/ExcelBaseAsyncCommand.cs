@@ -891,7 +891,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     /// Создание временной копии БД.
     /// </summary>
     /// <returns>Полный путь до файла временной копии БД.</returns>
-    private protected static string CreateTempDb()
+    private protected static Task<string> CreateTempDb()
     {
         var tmpFolder = new DirectoryInfo(Path.Combine(BaseVM.SystemDirectory, "RAO", "temp"));
         var tmpDbPath = Path.Combine(tmpFolder.FullName, BaseVM.DbFileName + ".RAODB");
@@ -909,7 +909,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), tmpDbPath);
         }
 
-        return tmpDbPath;
+        return Task.FromResult(tmpDbPath);
     }
 
     #endregion
@@ -964,14 +964,14 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     /// </summary>
     /// <param name="fullPath">Полный путь до .xlsx файла.</param>
     /// <returns>Пакет Excel.</returns>
-    private protected static ExcelPackage InitializeExcelPackage(string fullPath)
+    private protected static Task<ExcelPackage> InitializeExcelPackage(string fullPath)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         ExcelPackage excelPackage = new(new FileInfo(fullPath));
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
-        return excelPackage;
+        return Task.FromResult(excelPackage);
     }
 
     #endregion
