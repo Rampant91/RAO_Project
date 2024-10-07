@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Threading;
+using Client_App.Resources;
 using Client_App.ViewModels;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.ProgressBar;
@@ -20,7 +23,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 /// <summary>
 /// Excel -> Паспорта -> Отчеты без паспортов.
 /// </summary>
-public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
+public partial class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
 {
     private CancellationTokenSource cts;
 
@@ -243,10 +246,23 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
                         form11.PassportNumber_DB,
                         form11.Type_DB))))
             .ToListAsync(cancellationToken: cts.Token);
-
         return form11ShortList
             .Where(x => x.Category is 1 or 2 or 3 && x.OperationCode is "11" or "85")
+            .Select(x => new Form11ShortDTO(
+                x.Id,
+                x.Category,
+                ReplaceRestrictedSymbols(x.CreationDate),
+                ReplaceRestrictedSymbols(x.CreatorOKPO),
+                ReplaceRestrictedSymbols(x.FactoryNumber),
+                x.OperationCode,
+                ReplaceRestrictedSymbols(x.PassportNumber),
+                ReplaceRestrictedSymbols(x.Type)))
             .ToList();
+    }
+
+    private static string ReplaceRestrictedSymbols(string str)
+    {
+        return new Regex("[\\\\/:*?\"<>|\\s+]").Replace(str, "_");
     }
 
     #endregion
@@ -333,7 +349,7 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
         public readonly string CreationDate = creationDate;
 
         public readonly string CreatorOKPO = creatorOkpo;
-
+        
         public readonly string FactoryNumber = factoryNumber;
 
         public readonly string OperationCode = opCode;
