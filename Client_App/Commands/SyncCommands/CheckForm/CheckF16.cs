@@ -857,14 +857,15 @@ public abstract class CheckF16 : CheckBase
             var validTypeCodeSolid = new List<string>();
             var validTypeCodeSolid7Not0 = new List<string>();
             var validTypeCodeGaseous = new List<string>();
-            //liquids: symbols 9-10 are 11-39, 99.
+            //liquids: symbols 9-10 are 11-39, 84, 99.
             for (var i = 11; i <= 39; i++)
             {
                 validTypeCodeLiquid.Add(i.ToString("D2"));
             }
+            validTypeCodeLiquid.Add(84.ToString("D2"));
             validTypeCodeLiquid.Add(99.ToString("D2"));
-            //solids: symbols 9-10 are 41-99; 11-39 if symbol 7 is not 0.
-            for (var i = 41; i <= 99; i++)
+            //solids: symbols 9-10 are 31-99; 11-39,84 if symbol 7 is not 0. (Изменил 41 на 31 по результатам тестирования)
+            for (var i = 31; i <= 99; i++)
             {
                 validTypeCodeSolid.Add(i.ToString("D2"));
             }
@@ -872,6 +873,7 @@ public abstract class CheckF16 : CheckBase
             {
                 validTypeCodeSolid7Not0.Add(i.ToString("D2"));
             }
+            validTypeCodeSolid7Not0.Add(84.ToString("D2"));
             //gases: symbols 9-10 are strictly 01.
             for (var i = 1; i <= 1; i++)
             {
@@ -925,6 +927,7 @@ public abstract class CheckF16 : CheckBase
                     break;
             }
         }
+
         #endregion
 
         #region symbol 2

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -239,7 +240,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
     private async Task<Form11ShortDTO[]> GetFilteredForms(string dbReadOnlyPath, HashSet<short?> categories)
     {
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
-        return await dbReadOnly.ReportCollectionDbSet
+        var filteredForms = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -257,6 +258,26 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                     FactoryNumber = form11.FactoryNumber_DB
                 }))
             .ToArrayAsync(cancellationToken: cts.Token);
+
+        return filteredForms.Select(x => new Form11ShortDTO
+            {
+                CreatorOKPO = ReplaceRestrictedSymbols(x.CreatorOKPO),
+                Type = ReplaceRestrictedSymbols(x.Type),
+                CreationDate = ReplaceRestrictedSymbols(x.CreationDate),
+                PassportNumber = ReplaceRestrictedSymbols(x.PassportNumber),
+                FactoryNumber = ReplaceRestrictedSymbols(x.FactoryNumber)
+            })
+            .ToArray();
+    }
+
+    /// <summary>
+    /// Заменяет в строчке запрещённые символы на "_".
+    /// </summary>
+    /// <param name="str">Входная строчка.</param>
+    /// <returns>Строчка, в которой заменены запрещённые символы.</returns>
+    private static string ReplaceRestrictedSymbols(string str)
+    {
+        return new Regex("[\\\\/:*?\"<>|]").Replace(str, "_");
     }
 
     #endregion

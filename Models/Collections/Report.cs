@@ -9,7 +9,6 @@ using Models.Attributes;
 using OfficeOpenXml;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Data.SqlTypes;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Models.Forms;
@@ -181,8 +180,8 @@ public class Report : IKey, IDataGridColumn
 
     public virtual Reports Reports { get; set; }
 
-    [ForeignKey(nameof(Reports))]
-    public int? ReportsId { get; set; }
+    //[ForeignKey(nameof(Reports))]
+    //public int? ReportsId { get; set; }
 
     #endregion
 

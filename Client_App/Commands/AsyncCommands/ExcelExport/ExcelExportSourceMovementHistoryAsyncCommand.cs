@@ -161,7 +161,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         progressBarVM.ValueBar = 5;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
-        var form11PasList = dbReadOnly.ReportsCollectionDbSet
+        var form11PasList = await dbReadOnly.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -173,8 +173,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
                         new PasUniqDataDTO(form11.Id, 
                             form11.FactoryNumber_DB, 
                             form11.PassportNumber_DB))))
-            .ToListAsync(cancellationToken: cts.Token)
-            .Result;
+            .ToListAsync(cancellationToken: cts.Token);
 
         loadStatus = "Загрузка отчётов 1.1";
         progressBarVM.ValueBar = 45;
