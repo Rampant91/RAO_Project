@@ -1,12 +1,12 @@
 ﻿using Models.CheckForm;
 using Models.Collections;
-using Models.Forms.Form1;
-using System.Collections.Generic;
 using Models.Forms;
+using Models.Forms.Form1;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using System;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
 
@@ -76,6 +76,7 @@ public abstract class CheckF18 : CheckBase
             packLines.Add(currentFormLine);
             currentFormLine++;
             if (currentFormLine >= formsList.Count) break;
+
             while (string.IsNullOrWhiteSpace(formsList[currentFormLine].IndividualNumberZHRO_DB) 
                    || formsList[currentFormLine].IndividualNumberZHRO_DB.Trim() == "-")
             {
@@ -156,6 +157,7 @@ public abstract class CheckF18 : CheckBase
     private static List<CheckError> Check_002(List<Form10> forms10)
     {
         List<CheckError> result = new();
+
         var regNo = !string.IsNullOrWhiteSpace(forms10[1].RegNo_DB)
             ? forms10[1].RegNo_DB
             : forms10[0].RegNo_DB;
@@ -167,6 +169,7 @@ public abstract class CheckF18 : CheckBase
                 FormNum = "form_18",
                 Row = "-",
                 Column = "-",
+
                 Value = regNo,
                 Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
                           "Жидкие РАО должны быть отверждены. Сведения об отвержденных РАО, " +

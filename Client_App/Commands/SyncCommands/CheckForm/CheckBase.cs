@@ -16,7 +16,7 @@ public abstract class CheckBase
 {
     #region Properties
     
-    protected static bool checkNumPrint = false;
+    protected static bool checkNumPrint = true;
 
     private protected static List<Dictionary<string, string>> OKSM = new();
 
@@ -352,11 +352,14 @@ public abstract class CheckBase
             Packs_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Packs.xlsx"));
 #endif
         }
+        if (Orgs18.Count == 0)
+        {
 #if DEBUG
             Orgs18_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "Orgs_1.8.xlsx"));
 #else
             Orgs18_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Orgs_1.8.xlsx.xlsx"));
 #endif
+        }
         if (HolidaysSpecific.Count == 0)
         {
 #if DEBUG

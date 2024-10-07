@@ -164,7 +164,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     /// Экспорт организации в файл .RAODB с указанием диапазона дат выгружаемых форм
     /// </summary>
     public static ICommand ExportReportsWithDateRange => new ExportReportsWithDateRangeAsyncCommand();
-
     public ICommand ImportExcel { get; set; }                       //  Импорт -> Из Excel
     public ICommand ImportJson { get; set; }                        //  Импорт -> Из Json
     public ICommand ImportRaodb { get; set; }                       //  Импорт -> Из RAODB

@@ -813,10 +813,9 @@ public abstract class CheckF17 : CheckBase
         }
 
         if (Packs.All(phEntry => comparator.Compare(phEntry["name"], packName) != 0)) return result;
-        var packVolume = Packs.First(phEntry => comparator.Compare(phEntry["name"], packName) == 0)["volume"];
-        if (!TryParseFloatExtended(volume, out var volumeReal) ||
-            !TryParseFloatExtended(packVolume, out var packVolumeReal)) return result;
-        if (volumeReal > packVolumeReal * 1.1f || volumeReal < packVolumeReal * 0.9f)
+        if (!TryParseFloatExtended(volume, out var volumeReal)) return result;
+        var packVolumes = Packs.Where(phEntry => comparator.Compare(phEntry["name"], packName) == 0).ToList();
+        if (packVolumes.All(pack => !TryParseFloatExtended(pack["volume"], out var packVolumeReal) || volumeReal > packVolumeReal * 1.1f || volumeReal < packVolumeReal * 0.9f))
         {
             result.Add(new CheckError
             {
