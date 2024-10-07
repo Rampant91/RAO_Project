@@ -7,9 +7,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Threading;
-using Client_App.Resources;
 using Client_App.ViewModels;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.ProgressBar;
@@ -236,6 +234,8 @@ public partial class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncComman
             .SelectMany(reps => reps.Report_Collection
                 .Where(rep => rep.FormNum_DB == "1.1")
                 .SelectMany(rep => rep.Rows11
+                    .Where(x => (x.Category_DB == 1 || x.Category_DB == 2 || x.Category_DB == 3) 
+                                && (x.OperationCode_DB == "11" || x.OperationCode_DB == "85"))
                     .Select(form11 => new Form11ShortDTO(
                         form11.Id, 
                         form11.Category_DB, 
@@ -246,8 +246,8 @@ public partial class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncComman
                         form11.PassportNumber_DB,
                         form11.Type_DB))))
             .ToListAsync(cancellationToken: cts.Token);
+
         return form11ShortList
-            .Where(x => x.Category is 1 or 2 or 3 && x.OperationCode is "11" or "85")
             .Select(x => new Form11ShortDTO(
                 x.Id,
                 x.Category,
@@ -260,9 +260,14 @@ public partial class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncComman
             .ToList();
     }
 
+    /// <summary>
+    /// Заменяет в строчке запрещённые символы на "_".
+    /// </summary>
+    /// <param name="str">Входная строчка.</param>
+    /// <returns>Строчка, в которой заменены запрещённые символы.</returns>
     private static string ReplaceRestrictedSymbols(string str)
     {
-        return new Regex("[\\\\/:*?\"<>|\\s+]").Replace(str, "_");
+        return new Regex("[\\\\/:*?\"<>|]").Replace(str, "_");
     }
 
     #endregion

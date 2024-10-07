@@ -829,12 +829,13 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Ошибка",
                     ContentMessage = "Не удалось сохранить файл по указанному пути:" +
                                      $"{Environment.NewLine}{fullPath}",
                     MinWidth = 400,
-                    MinHeight = 150,
+                    MinHeight = 175,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
                 .ShowDialog(Desktop.MainWindow));
