@@ -34,5 +34,16 @@ namespace Client_App.Properties {
                 this["PasFolderDefaultPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.DateTime LastDbBackupDate {
+            get {
+                return ((global::System.DateTime)(this["LastDbBackupDate"]));
+            }
+            set {
+                this["LastDbBackupDate"] = value;
+            }
+        }
     }
 }

@@ -15,6 +15,8 @@ public class BaseVM
 
     internal static string RaoDirectory = "";
 
+    internal static string ReserveDirectory = "";
+
     internal static string TmpDirectory = "";
 
     #region RunCommandInBush

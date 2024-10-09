@@ -1454,21 +1454,9 @@ public abstract class CheckF16 : CheckBase
 
         #region symbol 7
 
-        if (!codeRao7Valid)
+        if (operationCode is not ("71" or "72" or "73" or "74" or "79"))
         {
-            result.Add(new CheckError
-            {
-                FormNum = "form_16",
-                Row = forms[line].NumberInOrder_DB.ToString(),
-                Column = "CodeRAO_DB",
-                Value = $"{codeRao7RecycleMethod} (7-ой символ кода РАО)",
-                Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                          "Недопустимое значение 7-го символа кода РАО."
-            });
-        }
-        else
-        {
-            if (codeRao1MatterState == "1" && codeRao7RecycleMethod != "0")
+            if (!codeRao7Valid)
             {
                 result.Add(new CheckError
                 {
@@ -1476,65 +1464,13 @@ public abstract class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
                     Value = $"{codeRao7RecycleMethod} (7-ой символ кода РАО)",
-                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                              "Для жидких РАО 7-ой символ кода РАО не может быть равным 1, 2, 3, 4, 9."
+                    Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                              "Недопустимое значение 7-го символа кода РАО."
                 });
             }
-            else if (codeRao1MatterState == "2" && recyclingTypes.Contains(codeRao910TypeCode) && codeRao7RecycleMethod is "0" or "1")
+            else switch (codeRao1MatterState)
             {
-                result.Add(new CheckError
-                {
-                    FormNum = "form_16",
-                    Row = forms[line].NumberInOrder_DB.ToString(),
-                    Column = "CodeRAO_DB",
-                    Value = $"{codeRao7RecycleMethod} (7-ой символ кода РАО)",
-                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                              "Сочетание агрегатного состояния 2 (твердые РАО) и кодов типа РАО 11-39 (жидкие РАО) " +
-                              "возможно только для кодов переработки (7-ой символ кода РАО) 2-9."
-                });
-            }
-            else if (forms[line].OperationCode_DB == "56")
-            {
-                Dictionary<string, string[]> validRecycles = new() {
-                    { "0", new[]
-                        {
-                            "11","12","13","14","15","16","17",
-                            "19",
-                            "21","22","23","24",
-                            "29",
-                            "51","52","53","54","55",
-                            "61",
-                            "72","73","74",
-                            "99","-"
-                        }
-                    },
-                    { "1", new[]
-                        {
-                            "31","32","39"
-                        }
-                    },
-                    { "2", new[]
-                        {
-                            "41"
-                        }
-                    },
-                    { "3", new[]
-                        {
-                            "42","71"
-                        }
-                    },
-                    { "4", new[]
-                        {
-                            "43"
-                        }
-                    },
-                    { "9", new[]
-                        {
-                            "49"
-                        }
-                    }
-                };
-                if (!validRecycles[codeRao7RecycleMethod].Contains(forms[line].RefineOrSortRAOCode_DB))
+                case "1" when codeRao7RecycleMethod != "0":
                 {
                     result.Add(new CheckError
                     {
@@ -1542,9 +1478,84 @@ public abstract class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
                         Value = $"{codeRao7RecycleMethod} (7-ой символ кода РАО)",
-                        Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                                  "7-ой символ кода РАО не соответствует коду переработки/сортировки, указанному в графе 22."
+                        Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                                  "Для жидких РАО 7-ой символ кода РАО не может быть равным 1, 2, 3, 4, 9."
                     });
+                    break;
+                }
+                case "2" when recyclingTypes.Contains(codeRao910TypeCode) && codeRao7RecycleMethod is "0" or "1":
+                {
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_16",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "CodeRAO_DB",
+                        Value = $"{codeRao7RecycleMethod} (7-ой символ кода РАО)",
+                        Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                                  "Сочетание агрегатного состояния 2 (твердые РАО) и кодов типа РАО 11-39 (жидкие РАО) " +
+                                  "возможно только для кодов переработки (7-ой символ кода РАО) 2-9."
+                    });
+                    break;
+                }
+                default:
+                {
+                    if (forms[line].OperationCode_DB == "56")
+                    {
+                        Dictionary<string, string[]> validRecycles = new()
+                        {
+                            { "0", new[]
+                                {
+                                    "11","12","13","14","15","16","17",
+                                    "19",
+                                    "21","22","23","24",
+                                    "29",
+                                    "51","52","53","54","55",
+                                    "61",
+                                    "72","73","74",
+                                    "99","-"
+                                }
+                            },
+                            { "1", new[]
+                                {
+                                    "31","32","39"
+                                }
+                            },
+                            { "2", new[]
+                                {
+                                    "41"
+                                }
+                            },
+                            { "3", new[]
+                                {
+                                    "42","71"
+                                }
+                            },
+                            { "4", new[]
+                                {
+                                    "43"
+                                }
+                            },
+                            { "9", new[]
+                                {
+                                    "49"
+                                }
+                            }
+                        };
+                        if (!validRecycles[codeRao7RecycleMethod].Contains(forms[line].RefineOrSortRAOCode_DB))
+                        {
+                            result.Add(new CheckError
+                            {
+                                FormNum = "form_16",
+                                Row = forms[line].NumberInOrder_DB.ToString(),
+                                Column = "CodeRAO_DB",
+                                Value = $"{codeRao7RecycleMethod} (7-ой символ кода РАО)",
+                                Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                                          "7-ой символ кода РАО не соответствует коду переработки/сортировки, указанному в графе 22."
+                            });
+                        }
+                    }
+
+                    break;
                 }
             }
         }
@@ -2204,7 +2215,8 @@ public abstract class CheckF16 : CheckBase
                 .Any(rad => R
                     .Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "т")))
         {
-            if (TryParseFloatExtended(tritiumActivity, out _))
+            if (TryParseFloatExtended(tritiumActivity, out var activityFloatValue)
+                && activityFloatValue != 0)
             {
                 result.Add(new CheckError
                 {
@@ -2288,7 +2300,8 @@ public abstract class CheckF16 : CheckBase
                 .Any(rad => R
                     .Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "б")))
         {
-            if (TryParseFloatExtended(betaActivity.Trim(), out _))
+            if (TryParseFloatExtended(betaActivity, out var activityFloatValue)
+                && activityFloatValue != 0)
             {
                 result.Add(new CheckError
                 {
@@ -2372,7 +2385,8 @@ public abstract class CheckF16 : CheckBase
                 .Any(rad => R
                     .Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "а")))
         {
-            if (TryParseFloatExtended(activity, out _))
+            if (TryParseFloatExtended(activity, out var activityFloatValue)
+                && activityFloatValue != 0)
             {
                 result.Add(new CheckError
                 {
@@ -2455,7 +2469,8 @@ public abstract class CheckF16 : CheckBase
                 .Any(rad => R
                     .Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "у")))
         {
-            if (TryParseFloatExtended(activity.Trim(), out _))
+            if (TryParseFloatExtended(activity, out var activityFloatValue)
+                && activityFloatValue != 0)
             {
                 result.Add(new CheckError
                 {

@@ -5,5 +5,8 @@
     <Setting Name="PasFolderDefaultPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">Y:\!!! Поручения\Паспорта ЗРИ\Хранилище паспортов ЗРИ</Value>
     </Setting>
+    <Setting Name="LastDbBackupDate" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

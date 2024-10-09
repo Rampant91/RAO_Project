@@ -2042,9 +2042,49 @@ public abstract class CheckF17 : CheckBase
                               "Недопустимое значение 3-го символа кода РАО."
                 });
             }
+            else if (codeRao3NuclidTypes == "0")
+            {
+                result.Add(new CheckError
+                {
+                    FormNum = "form_17",
+                    Row = forms[line].NumberInOrder_DB.ToString(),
+                    Column = "CodeRAO_DB",
+                    Value = $"{codeRao3NuclidTypes} (3-ий символ кода РАО)",
+                    Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
+                              "Укажите 3-й символ кода РАО в соответствии с радионуклидным составом."
+                });
+            }
             else
             {
-                if (codeRao3NuclidTypes == "0")
+                var containsB = nuclidsExistB 
+                                && radArray
+                                    .Any(x => R
+                                        .Any(y => comparator.Compare(y["name"], x.Item1) == 0 
+                                                  && comparator.Compare(y["code"], "б") == 0));
+                var containsA = nuclidsExistA 
+                                && radArray
+                                    .Any(x => R
+                                        .Any(y => comparator.Compare(y["name"], x.Item1) == 0 
+                                                  && comparator.Compare(y["code"], "а") == 0));
+                var containsU = nuclidsExistU 
+                                && radArray
+                                    .Any(x => R
+                                        .Any(y => comparator.Compare(y["name"], x.Item1) == 0 
+                                                  && comparator.Compare(y["code"], "у") == 0));
+                var containsT = nuclidsExistT 
+                                && radArray
+                                    .Any(x => R
+                                        .Any(y => comparator.Compare(y["name"], x.Item1) == 0 
+                                                  && comparator.Compare(y["code"], "т") == 0));
+                var expectedValue = "0";
+                if (!containsT && !containsB && !containsA && containsU) expectedValue = "1";
+                else if (!containsT && !containsB && containsA && !containsU) expectedValue = "2";
+                else if (!containsT && !containsB && containsA && containsU) expectedValue = "3";
+                else if ((containsT || containsB) && !containsA && !containsU) expectedValue = "4";
+                else if (!containsT && containsB && containsA && !containsU) expectedValue = "5";
+                else if (containsT && containsB && containsA && !containsU) expectedValue = "5";
+                else if (containsU) expectedValue = "6";
+                if (expectedValue != codeRao3NuclidTypes)
                 {
                     result.Add(new CheckError
                     {
@@ -2053,53 +2093,9 @@ public abstract class CheckF17 : CheckBase
                         Column = "CodeRAO_DB",
                         Value = $"{codeRao3NuclidTypes} (3-ий символ кода РАО)",
                         Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
-                                  "Укажите 3-й символ кода РАО в соответствии с радионуклидным составом."
+                                  "Радионуклиды, указанные в графе 12 не соответствуют 3-му символу кода РАО."
                     });
                 }
-                else
-                {
-                    var containsB = nuclidsExistB 
-                                     && radArray
-                                         .Any(x => R
-                                             .Any(y => comparator.Compare(y["name"], x.Item1) == 0 
-                                                       && comparator.Compare(y["code"], "б") == 0));
-                    var containsA = nuclidsExistA 
-                                    && radArray
-                                        .Any(x => R
-                                            .Any(y => comparator.Compare(y["name"], x.Item1) == 0 
-                                                      && comparator.Compare(y["code"], "а") == 0));
-                    var containsU = nuclidsExistU 
-                                    && radArray
-                                        .Any(x => R
-                                            .Any(y => comparator.Compare(y["name"], x.Item1) == 0 
-                                                      && comparator.Compare(y["code"], "у") == 0));
-                    var containsT = nuclidsExistT 
-                                    && radArray
-                                        .Any(x => R
-                                            .Any(y => comparator.Compare(y["name"], x.Item1) == 0 
-                                                      && comparator.Compare(y["code"], "т") == 0));
-                    var expectedValue = "0";
-                    if (!containsT && !containsB && !containsA && containsU) expectedValue = "1";
-                    else if (!containsT && !containsB && containsA && !containsU) expectedValue = "2";
-                    else if (!containsT && !containsB && containsA && containsU) expectedValue = "3";
-                    else if ((containsT || containsB) && !containsA && !containsU) expectedValue = "4";
-                    else if (!containsT && containsB && containsA && !containsU) expectedValue = "5";
-                    else if (containsT && containsB && containsA && !containsU) expectedValue = "5";
-                    else if (containsU) expectedValue = "6";
-                    if (expectedValue != codeRao3NuclidTypes)
-                    {
-                        result.Add(new CheckError
-                        {
-                            FormNum = "form_17",
-                            Row = forms[line].NumberInOrder_DB.ToString(),
-                            Column = "CodeRAO_DB",
-                            Value = $"{codeRao3NuclidTypes} (3-ий символ кода РАО)",
-                            Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
-                                      "Радионуклиды, указанные в графе 12 не соответствуют 3-му символу кода РАО."
-                        });
-                    }
-                }
-
             }
 
             #endregion
@@ -2761,7 +2757,7 @@ public abstract class CheckF17 : CheckBase
     private static List<CheckError> Check_023_26(List<Form17> forms, List<Form10> forms10, List<int> lines)
     {
         List<CheckError> result = new();
-        var applicableOperationCodes = new[] { "26", "28", "63" };
+        var applicableOperationCodes = new[] { "28", "63" };
         var operationCode = ReplaceNullAndTrim(forms[lines[0]].OperationCode_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var repOkpoList = forms10
@@ -2867,7 +2863,7 @@ public abstract class CheckF17 : CheckBase
     private static List<CheckError> Check_023_22(List<Form17> forms, List<int> lines)
     {
         List<CheckError> result = new();
-        var applicableOperationCodes = new[] { "22", "32" };
+        var applicableOperationCodes = new[] { "22", "26", "32" };
         var applicableRaoStatuses = new[] { "1" };
         var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
         var operationCode = ReplaceNullAndTrim(forms[lines[0]].OperationCode_DB);

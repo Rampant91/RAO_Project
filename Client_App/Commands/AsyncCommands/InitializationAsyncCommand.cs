@@ -21,6 +21,8 @@ using static Client_App.ViewModels.BaseVM;
 using System.Reflection;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
+using Client_App.Properties;
+using MessageBox.Avalonia.Models;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -48,6 +50,10 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
         onStartProgressBarVm.LoadStatus = "Создание базы данных";
         mainWindowViewModel.OnStartProgressBar = 15;
         await ProcessDataBaseCreate();
+
+        onStartProgressBarVm.LoadStatus = "Создание резервной копии БД";
+        mainWindowViewModel.OnStartProgressBar = 18;
+        await ProcessDataBaseBackup();
 
         onStartProgressBarVm.LoadStatus = "Загрузка таблиц";
         mainWindowViewModel.OnStartProgressBar = 20;
@@ -148,8 +154,10 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
         {
             RaoDirectory = Path.Combine(SystemDirectory, "RAO");
             LogsDirectory = Path.Combine(RaoDirectory, "logs");
+            ReserveDirectory = Path.Combine(RaoDirectory, "reserve");
             TmpDirectory = Path.Combine(RaoDirectory, "temp");
             Directory.CreateDirectory(LogsDirectory);
+            Directory.CreateDirectory(ReserveDirectory);
             Directory.CreateDirectory(TmpDirectory);
         }
         catch (Exception ex)
@@ -193,8 +201,107 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
 
     #endregion
 
+    #region ProcessDataBaseBackup
+
+    /// <summary>
+    /// Создание резервной копии БД раз в месяц.
+    /// </summary>
+    /// <returns></returns>
+    private static Task ProcessDataBaseBackup()
+    {
+        //Settings.Default.LastDbBackupDate = DateTime.MinValue;    //Сброс даты для тестирования
+        //Settings.Default.Save();
+        if ((DateTime.Now - Settings.Default.LastDbBackupDate).TotalDays < 30) return Task.CompletedTask;
+
+        #region MessageInputCategoryNums
+
+        var lastBackupTime = Settings.Default.LastDbBackupDate == DateTime.MinValue
+            ? string.Empty
+            : $" ({Settings.Default.LastDbBackupDate})";
+        var res = Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxInputParams
+            {
+                ButtonDefinitions =
+                [
+                    new ButtonDefinition { Name = "Сохранить в папку по умолчанию", IsDefault = true },
+                    new ButtonDefinition { Name = "Выбрать папку и сохранить" },
+                    new ButtonDefinition { Name = "Не сохранять", IsCancel = true }
+                ],
+                CanResize = true,
+                ContentTitle = "Резервное копирование",
+                ContentMessage = $"Последняя резервная копия базы данных создавалась более месяца назад{lastBackupTime}." +
+                                 $"{Environment.NewLine}Хотите выполнить резервное копирование?",
+                MinWidth = 450,
+                MinHeight = 150,
+                SizeToContent = SizeToContent.Width,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(Desktop.Windows[0])).GetAwaiter().GetResult();
+
+        #endregion
+
+        switch (res)
+        {
+            case "Сохранить в папку по умолчанию":
+            {
+                var count = 0; 
+                string reserveDbPath;
+                do
+                {
+                    reserveDbPath = Path.Combine(ReserveDirectory, DbFileName + $"_{++count}.RAODB");
+                } while (File.Exists(reserveDbPath));
+
+                try
+                {
+                    File.Copy(Path.Combine(RaoDirectory, DbFileName + ".RAODB"), reserveDbPath);
+                }
+                catch (Exception ex)
+                {
+                    var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                              $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                    ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
+                }
+                Settings.Default.LastDbBackupDate = DateTime.Now;
+                Settings.Default.Save();
+                break;
+            }
+            case "Выбрать место сохранения":
+            {
+                SaveFileDialog dial = new();
+                var filter = new FileDialogFilter
+                {
+                    Name = "RAODB",
+                    Extensions = { "RAODB" }
+                };
+                dial.Filters?.Add(filter);
+                dial.Directory = ReserveDirectory;
+                dial.InitialFileName = DbFileName + ".RAODB";
+                var fullPath = dial.ShowAsync(Desktop.Windows[0]).GetAwaiter().GetResult();
+                if (fullPath is not null)
+                {
+                    try
+                    {
+                        File.Copy(Path.Combine(RaoDirectory, DbFileName + ".RAODB"), fullPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                                  $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                        ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
+                    }
+                }
+                Settings.Default.LastDbBackupDate = DateTime.Now;
+                Settings.Default.Save();
+                break;
+            }
+        }
+        return Task.CompletedTask;
+    }
+
+    #endregion
+
     #region ProcessDataBaseCreate
-    
+
     /// <summary>
     /// Создание файла БД, либо чтение имеющегося
     /// </summary>
@@ -249,14 +356,12 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
         {
             try
             {
-                var reservePath = Path.Combine(RaoDirectory, "reserve");
-                Directory.CreateDirectory(reservePath);
                 foreach (var fileInfo in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly)
                              .Where(x => x.Name.ToLower().EndsWith(".raodb")))
                 {
                     if (!File.Exists(fileInfo.FullName)) continue;
                     File.Copy(fileInfo.FullName, 
-                        Path.Combine(reservePath, Path.GetFileNameWithoutExtension(fileInfo.Name)) + $"_{DateTime.Now.Ticks}.RAODB");
+                        Path.Combine(ReserveDirectory, Path.GetFileNameWithoutExtension(fileInfo.Name)) + $"_{DateTime.Now.Ticks}.RAODB");
                     File.Delete(fileInfo.FullName);
                 }
                 
