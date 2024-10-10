@@ -297,8 +297,9 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="form11DtoList">Список dto'шек форм 1.1, для которых нужно загрузить полные строчки.</param>
     /// <param name="dbReadOnlyPath">Полный путь к временному файлу БД.</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
     /// <returns>Список полных строчек форм 1.1 вместе с данными организации.</returns>
-    private async Task<List<Form11ExtendedDTO>> LoadMatchedForms(List<Form11ShortDTO> form11DtoList, string dbReadOnlyPath, 
+    private static async Task<List<Form11ExtendedDTO>> LoadMatchedForms(List<Form11ShortDTO> form11DtoList, string dbReadOnlyPath, 
         AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
@@ -363,7 +364,8 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
 
     #region Form11ShortDTO
 
-    private class Form11ShortDTO(int id, short? category, string creationDate, string creatorOkpo, string factoryNumber, string opCode, string passportNumber, string type)
+    private class Form11ShortDTO(int id, short? category, string creationDate, string creatorOkpo, string factoryNumber, string opCode, 
+        string passportNumber, string type)
     {
         public readonly int Id = id;
 

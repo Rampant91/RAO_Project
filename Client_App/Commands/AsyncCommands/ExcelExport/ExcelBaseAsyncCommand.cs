@@ -36,8 +36,6 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     private protected string ExportType;
 
-    private protected AnyTaskProgressBar? ProgressBar;
-
     public override async void Execute(object? parameter)
     {
         IsExecute = true;
@@ -52,11 +50,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Error(msg);
         }
-        finally
-        {
-            if (ProgressBar is not null) await ProgressBar.CloseAsync();
-            IsExecute = false;
-        }
+        IsExecute = false;
     }
 
     public abstract override Task AsyncExecute(object? parameter);
@@ -821,12 +815,12 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     /// <param name="cts">Токен.</param>
     /// <param name="progressBar">Окно прогрессбара.</param>
     /// <returns>Открывает файл выгрузки в .xlsx.</returns>
-    private protected static async Task ExcelSaveAndOpen(ExcelPackage excelPackage, string fullPath, bool openTemp, CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null)
+    private protected static async Task ExcelSaveAndOpen(ExcelPackage excelPackage, string fullPath, bool openTemp, 
+        CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null)
     {
         try
         {
             await excelPackage.SaveAsync(cancellationToken: cts.Token);
-            throw new Exception();
         }
         catch (ObjectDisposedException ex)
         {
