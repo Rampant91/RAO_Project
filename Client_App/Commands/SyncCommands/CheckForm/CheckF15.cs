@@ -846,11 +846,12 @@ public abstract class CheckF15 : CheckBase
             });
             return result;
         }
-        var valid = factoryNum != string.Empty
+        var valid = factoryNum == "-" 
+                    || (factoryNum != string.Empty
                     && !factoryNum.Contains(',')
                     && (quantity == 1 
                         ? !factoryNum.Contains(';') 
-                        : factoryNum.Contains(';'));
+                        : factoryNum.Contains(';')));
         if (!valid)
         {
             result.Add(new CheckError

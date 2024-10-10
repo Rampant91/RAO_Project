@@ -25,16 +25,14 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 /// </summary>
 public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
 {
-    private CancellationTokenSource cts;
-
     public override bool CanExecute(object? parameter) => true;
 
     public override async Task AsyncExecute(object? parameter)
     {
-        cts = new CancellationTokenSource();
+        var cts = new CancellationTokenSource();
         IsSelectedOrg = parameter is "SelectedOrg";
-        await Dispatcher.UIThread.InvokeAsync(() => ProgressBar = new AnyTaskProgressBar(cts));
-        var progressBarVM = ProgressBar.AnyTaskProgressBarVM;
+        var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
         progressBarVM.SetProgressBar(2, "Создание временной БД", 
             "Выгрузка всех отчётов", "Выгрузка в .xlsx");
@@ -42,26 +40,26 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
         await using var dbReadOnly = new DBModel(tmpDbPath);
 
         progressBarVM.SetProgressBar(5, "Подсчёт количества организаций");
-        await CountReports(dbReadOnly);
+        await CountReports(dbReadOnly, progressBar, cts);
 
         progressBarVM.SetProgressBar(7, "Определение имени файла");
-        var fileName = await GetFileName(progressBarVM);
+        var fileName = await GetFileName(progressBar, cts);
         
-        progressBarVM.SetProgressBar(7, "Запрос пути сохранения");
-        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts);
+        progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
+        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
         var operationStart = DateTime.Now;
 
-        progressBarVM.SetProgressBar(10, "Инициализация Excel пакета");
+        progressBarVM.SetProgressBar(12, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath);
 
-        progressBarVM.SetProgressBar(12, "Загрузка списка отчётов");
-        var repsList = await GetReportsList(dbReadOnly);
+        progressBarVM.SetProgressBar(15, "Загрузка списка отчётов");
+        var repsList = await GetReportsList(dbReadOnly, cts);
 
         progressBarVM.SetProgressBar(17, "Создание страниц и заполнение заголовков");
         var formNums = await CreateWorksheetsAndFillHeaders(excelPackage, repsList);
 
         progressBarVM.SetProgressBar(20, "Загрузка форм");
-        await GetFullReportForeachReps(dbReadOnly, repsList, formNums, progressBarVM, excelPackage);
+        await GetFullReportForeachReps(dbReadOnly, repsList, formNums, progressBarVM, excelPackage, cts);
 
         progressBarVM.SetProgressBar(95, "Сохранение");
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
@@ -82,12 +80,12 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
                 MinWidth = 250,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .Show(ProgressBar));
+            .Show(progressBar));
 
         #endregion
 
         progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-        await ProgressBar.CloseAsync();
+        await progressBar.CloseAsync();
     }
 
     #region CountReports
@@ -96,8 +94,10 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
     /// Подсчёт количества организаций. При = 0 || > 10 выводит сообщение и завершает операцию.
     /// </summary>
     /// <param name="dbReadOnly">Модель временной БД.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
     /// <returns></returns>
-    private async Task CountReports(DBModel dbReadOnly)
+    private async Task CountReports(DBModel dbReadOnly, AnyTaskProgressBar? progressBar, CancellationTokenSource cts)
     {
         var countReports = await dbReadOnly.ReportsCollectionDbSet
             .AsNoTracking()
@@ -113,23 +113,22 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
             {
                 #region MessageExcelExportFail
 
-                    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                        {
-                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                            ContentTitle = "Выгрузка в Excel",
-                            ContentHeader = "Уведомление",
-                            ContentMessage = "Выгрузка не выполнена, поскольку в базе отсутствуют формы отчетности.",
-                            MinHeight = 150,
-                            MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(ProgressBar));
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = "Выгрузка в Excel",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = "Выгрузка не выполнена, поскольку в базе отсутствуют формы отчетности.",
+                        MinHeight = 150,
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(progressBar ?? Desktop.MainWindow));
 
                     #endregion
 
-                await cts.CancelAsync();
-                cts.Token.ThrowIfCancellationRequested();
+                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
                 break;
             }
             case > 10 when !IsSelectedOrg:
@@ -142,7 +141,7 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
                         ButtonDefinitions =
                         [
                             new ButtonDefinition { Name = "Да", IsDefault = true },
-                        new ButtonDefinition { Name = "Отменить выгрузку", IsCancel = true }
+                            new ButtonDefinition { Name = "Отменить выгрузку", IsCancel = true }
                         ],
                         ContentTitle = "Выгрузка",
                         ContentHeader = "Уведомление",
@@ -152,15 +151,11 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
                         MinWidth = 450,
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterScreen
-                    }).ShowDialog(ProgressBar));
+                    }).ShowDialog(progressBar ?? Desktop.MainWindow));
 
                 #endregion
 
-                if (answer is not "Да")
-                {
-                    await cts.CancelAsync();
-                    cts.Token.ThrowIfCancellationRequested();
-                }
+                if (answer is not "Да") await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
                 break;
             }
         }
@@ -228,9 +223,10 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
     /// <summary>
     /// Определение имени файла.
     /// </summary>
-    /// <param name="progressBarVM">ViewModel прогрессбара.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
     /// <returns>Имя файла.</returns>
-    private async Task<string> GetFileName(AnyTaskProgressBarVM progressBarVM)
+    private async Task<string> GetFileName(AnyTaskProgressBar? progressBar, CancellationTokenSource cts)
     {
         string fileName;
         if (!IsSelectedOrg)
@@ -261,16 +257,15 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(ProgressBar));
+                .ShowDialog(progressBar ?? Desktop.MainWindow));
 
             #endregion
 
-            await cts.CancelAsync();
-            cts.Token.ThrowIfCancellationRequested();
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
         CurrentReports = selectedReports;
         ExportType = "Выбранная_организация_Все_формы";
-
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
         progressBarVM.ExportName = $"Выгрузка всех отчётов " +
                                    $"{selectedReports.Master.RegNoRep.Value}_{selectedReports.Master.OkpoRep.Value}";
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% (Определение имени файла)";
@@ -293,9 +288,10 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
     /// <param name="formNums">HashSet имеющихся номеров отчётов.</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <param name="excelPackage">Пакет Excel.</param>
+    /// <param name="cts">Токен.</param>
     /// <returns></returns>
     private async Task GetFullReportForeachReps(DBModel dbReadOnly, List<Reports> repsList, HashSet<string> formNums, 
-        AnyTaskProgressBarVM progressBarVM, ExcelPackage excelPackage)
+        AnyTaskProgressBarVM progressBarVM, ExcelPackage excelPackage, CancellationTokenSource cts)
     {
         double progressBarDoubleValue = progressBarVM.ValueBar;
         foreach (var reps in repsList.OrderBy(x => x.Master_DB.RegNoRep.Value))
@@ -306,7 +302,7 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
                          .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
                          .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue))
             {
-                var repWithRows = await GetReportWithRows(rep.Id, dbReadOnly);
+                var repWithRows = await GetReportWithRows(rep.Id, dbReadOnly, cts);
                 repsWithRows.Report_Collection.Add(repWithRows);
                 progressBarDoubleValue += (double)75 / (repsList.Count * reps.Report_Collection.Count);
                 progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
@@ -326,8 +322,9 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
     /// </summary>
     /// <param name="repId">Id отчёта.</param>
     /// <param name="dbReadOnly">Модель временной БД.</param>
+    /// <param name="cts">Токен.</param>
     /// <returns>Отчёт вместе со строчками.</returns>
-    private static async Task<Report> GetReportWithRows(int repId, DBModel dbReadOnly)
+    private static async Task<Report> GetReportWithRows(int repId, DBModel dbReadOnly, CancellationTokenSource cts)
     {
         return await dbReadOnly.ReportCollectionDbSet
                 .AsNoTracking()
@@ -355,7 +352,7 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
                 .Include(rep => rep.Rows211.OrderBy(form => form.NumberInOrder_DB))
                 .Include(rep => rep.Rows212.OrderBy(form => form.NumberInOrder_DB))
                 .Include(rep => rep.Notes.OrderBy(note => note.Order))
-                .FirstAsync(rep => rep.Id == repId);
+                .FirstAsync(rep => rep.Id == repId, cts.Token);
     }
 
     #endregion
@@ -366,8 +363,9 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
     /// Загружает и БД список организаций вместе с их отчётностью (без строчек).
     /// </summary>
     /// <param name="dbReadOnly">Модель временной БД.</param>
+    /// <param name="cts">Токен.</param>
     /// <returns>Список организаций.</returns>
-    private async Task<List<Reports>> GetReportsList(DBModel dbReadOnly)
+    private async Task<List<Reports>> GetReportsList(DBModel dbReadOnly, CancellationTokenSource cts)
     {
         var repsList = new List<Reports>();
         if (IsSelectedOrg)

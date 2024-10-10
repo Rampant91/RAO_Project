@@ -71,6 +71,23 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         await FindFilesWithOutReport(files, filteredForm11DtoArray, progressBarVM);
 
         progressBarVM.SetProgressBar(90, "Экспорт данных в .xlsx");
+        await FillRows(files);
+
+        progressBarVM.SetProgressBar(95, "Сохранение");
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
+
+        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+    }
+
+    #region FillRows
+
+    /// <summary>
+    /// Заполняет выгрузку в Excel данными.
+    /// </summary>
+    /// <param name="files">Список имён паспортов без отчетов.</param>
+    /// <returns></returns>
+    private Task FillRows(List<FileInfo> files)
+    {
         var currentRow = 2;
         foreach (var file in files)
         {
@@ -84,24 +101,22 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
             Worksheet.Cells[currentRow, 4].Value = ConvertToExcelString(pasName.Split('#')[1]);
             Worksheet.Cells[currentRow, 5].Value = ConvertToExcelDate(pasName.Split('#')[2], Worksheet, currentRow, 5);
             Worksheet.Cells[currentRow, 6].Value = ConvertToExcelString(pasName.Split('#')[3]);
-            Worksheet.Cells[currentRow, 7].Value = ConvertToExcelString(pasName.Split('#')[4]); 
-            
+            Worksheet.Cells[currentRow, 7].Value = ConvertToExcelString(pasName.Split('#')[4]);
+
             #endregion
 
             currentRow++;
         }
-
         if (OperatingSystem.IsWindows()) // Под Astra Linux эта команда крашит программу без GDI дров
         {
             Worksheet.Cells.AutoFitColumns();
         }
         Worksheet.View.FreezePanes(2, 1);
 
-        progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
-
-        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+        return Task.CompletedTask;
     }
+
+    #endregion
 
     #region FindFilesWithOutReport
 

@@ -60,6 +60,13 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     public abstract override Task AsyncExecute(object? parameter);
 
+    private protected static async Task CancelCommandAndCloseProgressBarWindow(CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null)
+    {
+        await cts.CancelAsync();
+        if (progressBar is not null) await progressBar.CloseAsync();
+        cts.Token.ThrowIfCancellationRequested();
+    }
+
     #region ExcelExportNotes
 
     /// <summary>
@@ -125,8 +132,10 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     /// </summary>
     /// <param name="fileName">Имя файла.</param>
     /// <param name="cts">Токен.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
     /// <returns>Полный путь до файла и флаг, нужно ли открывать временную копию.</returns>
-    private protected static async Task<(string fullPath, bool openTemp)> ExcelGetFullPath(string fileName, CancellationTokenSource cts)
+    private protected static async Task<(string fullPath, bool openTemp)> ExcelGetFullPath(string fileName, CancellationTokenSource cts, 
+        AnyTaskProgressBar? progressBar = null)
     {
         #region MessageSaveOrOpenTemp
 
@@ -176,17 +185,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 dial.Filters.Add(filter);
                 dial.InitialFileName = fileName;
                 fullPath = await dial.ShowAsync(Desktop.MainWindow);
-                if (fullPath is null)
-                {
-                    await cts.CancelAsync();
-                    cts.Token.ThrowIfCancellationRequested();
-                }
+                if (string.IsNullOrEmpty(fullPath)) await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
                 if (!fullPath.EndsWith(".xlsx")) fullPath += ".xlsx"; //В проводнике Linux в имя файла не подставляется расширение из фильтра, добавляю руками если его нет
-                if (string.IsNullOrEmpty(fullPath))
-                {
-                    await cts.CancelAsync();
-                    cts.Token.ThrowIfCancellationRequested();
-                }
                 if (File.Exists(fullPath))
                 {
                     try
@@ -213,10 +213,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                             })
                             .ShowDialog(Desktop.MainWindow));
 
-                        #endregion
+                            #endregion
 
-                        await cts.CancelAsync();
-                        cts.Token.ThrowIfCancellationRequested();
+                        await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
                     }
                 }
 
@@ -224,8 +223,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             }
             default:
             {
-                await cts.CancelAsync();
-                cts.Token.ThrowIfCancellationRequested();
+                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
                 break;
             }
         }
@@ -811,7 +809,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     /// <param name="openTemp">Флаг, открывать ли временную копию.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Открывает файл выгрузки в .xlsx.</returns>
-    private protected static async Task ExcelSaveAndOpen(ExcelPackage excelPackage, string fullPath, bool openTemp, CancellationTokenSource cts)
+    private protected static async Task ExcelSaveAndOpen(ExcelPackage excelPackage, string fullPath, bool openTemp, 
+        CancellationTokenSource cts)
     {
         try
         {

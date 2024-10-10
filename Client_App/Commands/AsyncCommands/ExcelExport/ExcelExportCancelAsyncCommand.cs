@@ -15,7 +15,7 @@ public class ExcelExportCancelAsyncCommand(AnyTaskProgressBar progressBarWindow)
         if (parameter is null) return;
         var cts = (CancellationTokenSource)parameter;
         await cts.CancelAsync();
-        progressBarWindow.Close();
+        await progressBarWindow.CloseAsync();
         cts.Token.ThrowIfCancellationRequested();
     }
 }
