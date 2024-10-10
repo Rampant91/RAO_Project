@@ -27,7 +27,7 @@ public class DeleteFormAsyncCommand : BaseAsyncCommand
                 ButtonDefinitions =
                 [
                     new ButtonDefinition { Name = "Да", IsDefault = true },
-                    new ButtonDefinition { Name = "Нет", IsCancel = false }
+                    new ButtonDefinition { Name = "Нет", IsCancel = true }
                 ],
                 ContentTitle = "Уведомление",
                 ContentHeader = "Уведомление",

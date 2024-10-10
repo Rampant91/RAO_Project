@@ -371,7 +371,7 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
     #region GetReportsList
 
     /// <summary>
-    /// Загружает и БД список организаций вместе с их отчётностью (без строчек).
+    /// Загружает из БД список организаций вместе с их отчётностью (без строчек).
     /// </summary>
     /// <param name="dbReadOnly">Модель временной БД.</param>
     /// <param name="cts">Токен.</param>

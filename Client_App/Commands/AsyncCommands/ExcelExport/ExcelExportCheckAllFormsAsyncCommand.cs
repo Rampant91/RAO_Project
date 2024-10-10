@@ -28,25 +28,24 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 /// </summary>
 public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
 {
-    private AnyTaskProgressBar progressBar;
+    public override bool CanExecute(object? parameter) => true;
 
     public override async Task AsyncExecute(object? parameter)
     {
         if (parameter is not IKeyCollection collection) return;
-        var cts = new CancellationTokenSource();
-        ExportType = "Проверка форм";
         var par = collection.ToList<Reports>().First();
-        await using var db = new DBModel(StaticConfiguration.DBPath);
-        var folderPath = await new OpenFolderDialog().ShowAsync(Desktop.MainWindow);
-        if (folderPath is null) return;
-
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
+        var cts = new CancellationTokenSource();
+        ExportType = "Проверка отчётов";
+        var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
-        progressBarVM.ExportType = ExportType;
-        progressBarVM.ExportName = "Проверка всех форм";
-        progressBarVM.ValueBar = 5;
-        var loadStatus = "Создание временной БД";
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+        progressBarVM.SetProgressBar(5, "Создание временной БД",
+            "Проверка отчётов на ошибки", "Выгрузка в .xlsx");
+        var tmpDbPath = await CreateTempDataBase(progressBar, cts);
+        await using var db = new DBModel(tmpDbPath);
+
+        progressBarVM.SetProgressBar(10, "Выбор папки для отчётов");
+        var folderPath = await SelectFolder(progressBar, cts);
 
         var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
         try
@@ -65,9 +64,7 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
             return;
         }
 
-        loadStatus = "Загрузка форм";
-        progressBarVM.ValueBar = 10;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        progressBarVM.SetProgressBar(10, "Загрузка форм");
 
         #region GetReportsFormDB
 
@@ -103,9 +100,7 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
 
         #endregion
 
-        loadStatus = "Создание отчётов";
-        progressBarVM.ValueBar = 50;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        progressBarVM.SetProgressBar(50, "Создание отчётов");
 
         if (reps is null) return;
         var countRep = 0;
@@ -114,8 +109,7 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
                      .OrderBy(x => x.FormNum_DB)
                      .ThenBy(x => StaticStringMethods.StringDateReverse(x.StartPeriod_DB)))
         {
-            loadStatus = $"Проверка формы {rep.FormNum_DB}_{rep.StartPeriod_DB}-{rep.EndPeriod_DB}";
-            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+            progressBarVM.SetProgressBar($"Проверка формы {rep.FormNum_DB}_{rep.StartPeriod_DB}-{rep.EndPeriod_DB}");
             List<CheckError> errorList = [];
             try
             {
@@ -159,8 +153,7 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
                 continue;
             }
 
-            loadStatus = $"Сохранение {rep.FormNum_DB}_{rep.StartPeriod_DB}-{rep.EndPeriod_DB}";
-            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+            progressBarVM.SetProgressBar($"Сохранение {rep.FormNum_DB}_{rep.StartPeriod_DB}-{rep.EndPeriod_DB}");
 
             var checkFormVM = new CheckFormVM(new ChangeOrCreateVM(rep.FormNum_DB, rep), errorList);
             var fileName = checkFormVM.TitleName;
@@ -207,8 +200,9 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
             await excelPackage.SaveAsync(cancellationToken: cts.Token);
             countRep++;
             progressBarDoubleValue += (double)50 / reps.Report_Collection.Count;
-            progressBarVM.ValueBar = (int)Math.Floor(progressBarDoubleValue);
-            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+
+            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+                $"Сохранение {rep.FormNum_DB}_{rep.StartPeriod_DB}-{rep.EndPeriod_DB}");
         }
 
         #region MessageCheckComplete
@@ -238,10 +232,43 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
             Process.Start("explorer", folderPath);
         }
 
-        loadStatus = "Завершение выгрузки";
-        progressBarVM.ValueBar = 100;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+        await progressBar.CloseAsync();
+    }
 
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
+    /// <summary>
+    /// Выбор папки для сохранения отчётов.
+    /// </summary>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns>Полный путь к папке сохранения отчётов о найденных ошибках.</returns>
+    private static async Task<string> SelectFolder(AnyTaskProgressBar? progressBar, CancellationTokenSource cts)
+    {
+        #region MessageGetSaveReportFolderPath
+
+        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions =
+                [
+                    new ButtonDefinition { Name = "Выбрать папку для сохранения отчётов", IsDefault = true },
+                            new ButtonDefinition { Name = "Отмена", IsCancel = true }
+                ],
+                ContentTitle = "Проверка форм",
+                ContentHeader = "Уведомление",
+                ContentMessage = $"Для данной организации будет выполнена проверка всех имеющихся форм отчётности." +
+                                 $"{Environment.NewLine}Отчёты о найденных ошибках будут сохранены в выбранной папке в формате .xlsx.",
+                MinWidth = 450,
+                MinHeight = 150,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(progressBar ?? Desktop.MainWindow));
+
+        #endregion
+
+        if (res is not "Выбрать папку для сохранения отчётов") await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        var folderPath = await new OpenFolderDialog().ShowAsync(progressBar ?? Desktop.MainWindow);
+        if (folderPath is null) await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        return folderPath!;
     }
 }
