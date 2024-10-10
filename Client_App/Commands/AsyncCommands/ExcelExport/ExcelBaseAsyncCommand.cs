@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
+using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.Properties;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
@@ -60,12 +61,22 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     public abstract override Task AsyncExecute(object? parameter);
 
+    #region CancelCommandAndCloseProgressBarWindow
+
+    /// <summary>
+    /// Отмена исполняемой команды и закрытие окна прогрессбара.
+    /// </summary>
+    /// <param name="cts">Токен.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <returns></returns>
     private protected static async Task CancelCommandAndCloseProgressBarWindow(CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null)
     {
         await cts.CancelAsync();
         if (progressBar is not null) await progressBar.CloseAsync();
         cts.Token.ThrowIfCancellationRequested();
     }
+
+    #endregion
 
     #region ExcelExportNotes
 
@@ -808,13 +819,14 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     /// <param name="fullPath">Полный путь к файлу .xlsx.</param>
     /// <param name="openTemp">Флаг, открывать ли временную копию.</param>
     /// <param name="cts">Токен.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
     /// <returns>Открывает файл выгрузки в .xlsx.</returns>
-    private protected static async Task ExcelSaveAndOpen(ExcelPackage excelPackage, string fullPath, bool openTemp, 
-        CancellationTokenSource cts)
+    private protected static async Task ExcelSaveAndOpen(ExcelPackage excelPackage, string fullPath, bool openTemp, CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null)
     {
         try
         {
             await excelPackage.SaveAsync(cancellationToken: cts.Token);
+            throw new Exception();
         }
         catch (ObjectDisposedException ex)
         {
@@ -845,7 +857,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Warning(msg);
 
-            return;
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
 
         if (openTemp)
@@ -885,31 +897,56 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #endregion
 
-    #region CreateTempDb
+    #region CreateTempDataBase
 
     /// <summary>
-    /// Создание временной копии БД.
+    /// Создание временной копии текущей базы данных.
     /// </summary>
-    /// <returns>Полный путь до файла временной копии БД.</returns>
-    private protected static Task<string> CreateTempDb()
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns>Полный путь до временной БД.</returns>
+    private protected static async Task<string> CreateTempDataBase(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
-        var tmpFolder = new DirectoryInfo(Path.Combine(BaseVM.SystemDirectory, "RAO", "temp"));
-        var tmpDbPath = Path.Combine(tmpFolder.FullName, BaseVM.DbFileName + ".RAODB");
+        var count = 0;
+        string tmpDbPath;
+        do
+        {
+            tmpDbPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + $"_{++count}.RAODB");
+        }
+        while (File.Exists(tmpDbPath));
 
-        //var count = 0;
-        //string tmpDbPath;
-        //do
-        //{
-        //    tmpDbPath = Path.Combine(tmpFolder.FullName, BaseVM.DbFileName + $"_{++count}.RAODB");
-        //} 
-        //while (File.Exists(tmpDbPath));
-
-        if (!File.Exists(tmpDbPath))
+        try
         {
             File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), tmpDbPath);
         }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.System);
 
-        return Task.FromResult(tmpDbPath);
+            #region MessageDbCreationError
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        CanResize = true,
+                        ContentTitle = "Выгрузка в Excel",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = "При создании файла временной БД возникла ошибка." +
+                                         $"{Environment.NewLine}Операция выгрузки принудительно завершена.",
+                        MinHeight = 150,
+                        MinWidth = 250,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(progressBar ?? Desktop.MainWindow));
+
+            #endregion
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+        return tmpDbPath;
     }
 
     #endregion
@@ -919,8 +956,10 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     /// <summary>
     /// Получение списка файлов из папки хранилища паспортов.
     /// </summary>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
     /// <returns>Список файлов из папки хранилища паспортов.</returns>
-    private protected async Task<List<FileInfo>> GetFilesFromPasDirectory()
+    private protected static async Task<List<FileInfo>> GetFilesFromPasDirectory(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
         var pasFolderDirectory = new DirectoryInfo(Settings.Default.PasFolderDefaultPath);
         List<FileInfo> files = [];
@@ -945,12 +984,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                     MinHeight = 170,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(ProgressBar));
+                .ShowDialog(progressBar ?? Desktop.MainWindow));
 
             #endregion
 
-            await _cts.CancelAsync();
-            _cts.Token.ThrowIfCancellationRequested();
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
         return files;
     }

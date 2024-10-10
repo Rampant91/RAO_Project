@@ -1,7 +1,5 @@
-﻿using Client_App.ViewModels;
-using Models.Collections;
+﻿using Models.Collections;
 using System;
-using System.IO;
 using System.Linq;
 using static Client_App.Resources.StaticStringMethods;
 
@@ -19,28 +17,6 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     private protected int CurrentPrimRow;
 
     private protected bool IsSelectedOrg;
-
-    #region CreateTempDataBase
-
-    /// <summary>
-    /// Создание временной копии текущей базы данных.
-    /// </summary>
-    /// <returns>Полный путь до временной БД.</returns>
-    private protected static string CreateTempDataBase()
-    {
-        var count = 0;
-        string tmpDbPath;
-        do 
-        {
-            tmpDbPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + $"_{++count}.RAODB");
-        } 
-        while (File.Exists(tmpDbPath));
-
-        File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), tmpDbPath);
-        return tmpDbPath;
-    }
-
-    #endregion
 
     #region FillExportForms
 

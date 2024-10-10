@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -36,7 +37,7 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
 
         progressBarVM.SetProgressBar(2, "Создание временной БД", 
             "Выгрузка всех отчётов", "Выгрузка в .xlsx");
-        var tmpDbPath = CreateTempDataBase();
+        var tmpDbPath = await CreateTempDataBase(progressBar, cts);
         await using var dbReadOnly = new DBModel(tmpDbPath);
 
         progressBarVM.SetProgressBar(5, "Подсчёт количества организаций");
@@ -62,9 +63,19 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
         await GetFullReportForeachReps(dbReadOnly, repsList, formNums, progressBarVM, excelPackage, cts);
 
         progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
 
-        #region MessageExcelExportTime
+        progressBarVM.SetProgressBar(98, "Очистка временных данных");
+        try
+        {
+            File.Delete(tmpDbPath);
+        }
+        catch
+        {
+            // ignored
+        }
+
+        #region MessageExcelExportExecutionTime
 
         var operationEnd = DateTime.Now;
         var diffInSeconds = (int)(operationEnd - operationStart).TotalSeconds;
@@ -80,7 +91,7 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
                 MinWidth = 250,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .Show(progressBar));
+            .Show(progressBar ?? Desktop.MainWindow));
 
         #endregion
 
@@ -384,7 +395,7 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
                     .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
                     .Include(reports => reports.Report_Collection)
                     .Where(x => x.DBObservable != null)
-                    .ToListAsync(cancellationToken: cts.Token));
+                    .ToListAsync(cts.Token));
         }
         return repsList;
     }

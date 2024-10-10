@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using Models.Collections;
 using System.Threading.Tasks;
@@ -104,8 +105,33 @@ public class MainWindow : BaseWindow<MainWindowVM>
 
     protected override void OnClosing(CancelEventArgs e)
     {
+        RemoveTmpData();
         base.OnClosing(e);
     }
+
+    #region RemoveTmpData
+
+    /// <summary>
+    /// Перед закрытием программы очищает папку tmp.
+    /// </summary>
+    private static void RemoveTmpData()
+    {
+        DirectoryInfo tmpDirInfo = new(BaseVM.TmpDirectory);
+        foreach (var fileInfo in tmpDirInfo.GetFiles("*.*", SearchOption.AllDirectories))
+        {
+            try
+            {
+                File.Delete(fileInfo.FullName);
+            }
+            catch
+            {
+                // ignore
+            }
+
+        }
+    }
+
+    #endregion
 
     #endregion
 

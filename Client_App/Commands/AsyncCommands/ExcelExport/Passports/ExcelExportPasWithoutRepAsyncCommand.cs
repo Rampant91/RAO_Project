@@ -26,27 +26,25 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 /// </summary>
 public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 {
-    private CancellationTokenSource cts;
-
     public override async Task AsyncExecute(object? parameter)
     {
-        cts = new CancellationTokenSource();
+        var cts = new CancellationTokenSource();
         ExportType = "Паспорта_без_отчетов";
-        await Dispatcher.UIThread.InvokeAsync(() => ProgressBar = new AnyTaskProgressBar(cts));
-        var progressBarVM = ProgressBar.AnyTaskProgressBarVM;
+        var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
         progressBarVM.SetProgressBar(2, "Формирование списка файлов", "Выгрузка списка паспортов", ExportType);
-        var files = await GetFilesFromPasDirectory();
+        var files = await GetFilesFromPasDirectory(progressBar, cts);
 
         progressBarVM.SetProgressBar(5, "Запрос списка категорий");
-        var categories = await GetCategories();
+        var categories = await GetCategories(progressBar, cts);
 
         progressBarVM.SetProgressBar(8, "Запрос пути сохранения");
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
-        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts);
+        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
 
         progressBarVM.SetProgressBar(10, "Создание временной БД");
-        var dbReadOnlyPath = await CreateTempDb();
+        var tmpDbPath = await CreateTempDataBase(progressBar, cts);
 
         progressBarVM.SetProgressBar(18, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath);
@@ -65,18 +63,29 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         progressBarVM.SetProgressBar(20, "Формирование списка форм 1.1");
-        var filteredForm11DtoArray = await GetFilteredForms(dbReadOnlyPath, categories);
+        var filteredForm11DtoArray = await GetFilteredForms(tmpDbPath, categories, cts);
 
         progressBarVM.SetProgressBar(50, "Поиск совпадений");
-        await FindFilesWithOutReport(files, filteredForm11DtoArray, progressBarVM);
+        await FindFilesWithOutReport(files, filteredForm11DtoArray, progressBarVM, cts);
 
         progressBarVM.SetProgressBar(90, "Экспорт данных в .xlsx");
         await FillRows(files);
 
         progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+
+        progressBarVM.SetProgressBar(98, "Очистка временных данных");
+        try
+        {
+            File.Delete(tmpDbPath);
+        }
+        catch
+        {
+            // ignored
+        }
 
         progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+        await progressBar.CloseAsync();
     }
 
     #region FillRows
@@ -127,8 +136,10 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="files">Список файлов паспортов.</param>
     /// <param name="filteredForm11DtoArray">Отфильтрованный массив DTO'шек форм 1.1.</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
     /// <returns></returns>
-    private static async Task FindFilesWithOutReport(List<FileInfo> files, Form11ShortDTO[] filteredForm11DtoArray, AnyTaskProgressBarVM progressBarVM)
+    private static async Task FindFilesWithOutReport(List<FileInfo> files, Form11ShortDTO[] filteredForm11DtoArray, 
+        AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
         List<string> pasNames = [];
         List<string[]> pasUniqParam = [];
@@ -136,7 +147,11 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
 
         ConcurrentBag<FileInfo> filesToRemove = [];
-        var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20 };
+        ParallelOptions parallelOptions = new()
+        {
+            CancellationToken = cts.Token,
+            MaxDegreeOfParallelism = Environment.ProcessorCount
+        };
         var count = 0;
         double progressBarDoubleValue = progressBarVM.ValueBar;
         await Parallel.ForEachAsync(pasUniqParam, parallelOptions, (pasParam, token) =>
@@ -173,8 +188,11 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
     /// <summary>
     /// Выводит сообщение с запросом списка категорий, парсит входные данные и возвращает HashSet.
     /// </summary>
+    /// ///
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
     /// <returns>HashSet категорий.</returns>
-    private async Task<HashSet<short?>> GetCategories()
+    private async Task<HashSet<short?>> GetCategories(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
         HashSet<short?> categories;
 
@@ -195,14 +213,13 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                 MinWidth = 600,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(ProgressBar));
+            .ShowDialog(progressBar ?? Desktop.MainWindow));
 
         #endregion
 
         if (res.Button is null or "Отмена")
         {
-            await cts.CancelAsync();
-            cts.Token.ThrowIfCancellationRequested();
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
 
         var categoryArray = (res.Message ?? string.Empty)
@@ -219,6 +236,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Уведомление",
                     ContentMessage =
@@ -228,7 +246,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(ProgressBar));
+                .ShowDialog(progressBar ?? Desktop.MainWindow));
 
             #endregion
         }
@@ -251,8 +269,10 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
     /// </summary>
     /// <param name="dbReadOnlyPath">Полный путь до временного файла БД.</param>
     /// <param name="categories">HashSet категорий.</param>
+    /// <param name="cts">Токен.</param>
     /// <returns>Отфильтрованный массив DTO'шек форм 1.1.</returns>
-    private async Task<Form11ShortDTO[]> GetFilteredForms(string dbReadOnlyPath, HashSet<short?> categories)
+    private static async Task<Form11ShortDTO[]> GetFilteredForms(string dbReadOnlyPath, HashSet<short?> categories, 
+        CancellationTokenSource cts)
     {
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
         var filteredForms = await dbReadOnly.ReportCollectionDbSet
@@ -272,7 +292,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                     PassportNumber = form11.PassportNumber_DB,
                     FactoryNumber = form11.FactoryNumber_DB
                 }))
-            .ToArrayAsync(cancellationToken: cts.Token);
+            .ToArrayAsync(cts.Token);
 
         return filteredForms.Select(x => new Form11ShortDTO
             {
