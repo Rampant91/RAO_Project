@@ -1,11 +1,11 @@
 ﻿using System;
-using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using Client_App.ViewModels;
+using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.ProgressBar;
-using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -14,42 +14,42 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 /// </summary>
 public class ExcelExportCheckFormAsyncCommand : ExcelBaseAsyncCommand
 {
-    private AnyTaskProgressBar progressBar;
+    public override bool CanExecute(object? parameter) => true;
 
     public override async Task AsyncExecute(object? parameter)
     {
         if (parameter is not CheckFormVM checkFormVM) return;
         var cts = new CancellationTokenSource();
         ExportType = "Список_ошибок";
-        var fileName = checkFormVM.TitleName;
-        (string fullPath, bool openTemp) result;
-        try
-        {
-            result = await ExcelGetFullPath(fileName, cts);
-        }
-        catch
-        {
-            return;
-        }
-        var fullPath = result.fullPath;
-        var openTmp = result.openTemp;
-        if (string.IsNullOrEmpty(fullPath)) return;
-
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
+        var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
-        progressBarVM.ExportType = ExportType;
-        progressBarVM.ExportName = "Выгрузка списка ошибок";
-        progressBarVM.ValueBar = 5;
-        var loadStatus = "Выгрузка ошибок";
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        using ExcelPackage excelPackage = new(new FileInfo(fullPath));
-        excelPackage.Workbook.Properties.Author = "RAO_APP";
-        excelPackage.Workbook.Properties.Title = "ReportCheck";
-        excelPackage.Workbook.Properties.Created = DateTime.Now;
+        progressBarVM.SetProgressBar(5, "Запрос пути сохранения", "Выгрузка списка ошибок", ExportType);
+        var fileName = $"{checkFormVM.TitleName}_{Assembly.GetExecutingAssembly().GetName().Version}";
+        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+
+        progressBarVM.SetProgressBar(10, "Инициализация Excel пакета");
+        using var excelPackage = await InitializeExcelPackage(fullPath);
         Worksheet = excelPackage.Workbook.Worksheets.Add("Проверка формы");
 
+        progressBarVM.SetProgressBar(15, "Выгрузка ошибок");
+        await FillExcel(checkFormVM, progressBarVM);
+
+        progressBarVM.SetProgressBar(95, "Сохранение");
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
+
+        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+        await progressBar.CloseAsync();
+    }
+
+    /// <summary>
+    /// Заполняет Excel пакет данными.
+    /// </summary>
+    /// <param name="checkFormVM">ViewModel окна проверки отчёта.</param>
+    /// <param name="progressBarVM">ViewModel прогрессбара.</param>
+    /// <returns>Task.CompletedTask</returns>
+    private Task FillExcel(CheckFormVM checkFormVM, AnyTaskProgressBarVM progressBarVM)
+    {
         #region FillHeaders
 
         Worksheet.Cells[1, 1].Value = "№ п/п";
@@ -61,7 +61,7 @@ public class ExcelExportCheckFormAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         #region FillData
-        
+
         var currentRow = 2;
         double progressBarDoubleValue = progressBarVM.ValueBar;
         foreach (var error in checkFormVM.CheckError)
@@ -71,10 +71,10 @@ public class ExcelExportCheckFormAsyncCommand : ExcelBaseAsyncCommand
             Worksheet.Cells[currentRow, 3].Value = error.Column;
             Worksheet.Cells[currentRow, 4].Value = error.Value;
             Worksheet.Cells[currentRow, 5].Value = error.Message;
-            progressBarDoubleValue += (double)90 / checkFormVM.CheckError.Count;
-            progressBarVM.ValueBar = (int)Math.Floor(progressBarDoubleValue);
-            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
             currentRow++;
+
+            progressBarDoubleValue += (double)90 / checkFormVM.CheckError.Count;
+            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue), "Выгрузка ошибок");
         }
 
         #endregion
@@ -84,17 +84,6 @@ public class ExcelExportCheckFormAsyncCommand : ExcelBaseAsyncCommand
             if (OperatingSystem.IsWindows()) Worksheet.Column(col).AutoFit();
         }
         Worksheet.View.FreezePanes(2, 1);
-
-        loadStatus = "Сохранение";
-        progressBarVM.ValueBar = 95;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTmp, cts);
-
-        loadStatus = "Завершение выгрузки";
-        progressBarVM.ValueBar = 100;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
+        return Task.CompletedTask;
     }
 }

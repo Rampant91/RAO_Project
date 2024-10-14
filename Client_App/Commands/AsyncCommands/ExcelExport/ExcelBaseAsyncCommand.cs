@@ -14,6 +14,7 @@ using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -172,10 +173,12 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             {
                 DirectoryInfo tmpFolder = new(Path.Combine(BaseVM.SystemDirectory, "RAO", "temp"));
                 var count = 0;
-                do
+
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + ".xlsx");
+                while (File.Exists(fullPath))
                 {
                     fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{++count}.xlsx");
-                } while (File.Exists(fullPath));
+                }
 
                 break;
             }
