@@ -236,7 +236,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
 
         var lastRow = 1;
         foreach (var dto in dto11List
-                     .OrderBy(x => StringDateReverse(x.OperationDate))
+                     .OrderBy(x => DateOnly.TryParse(x.OperationDate, out var opDate) ? opDate : DateOnly.MaxValue)
                      .ThenBy(x => x.RegNoRep))
         {
             if (lastRow == 1)
