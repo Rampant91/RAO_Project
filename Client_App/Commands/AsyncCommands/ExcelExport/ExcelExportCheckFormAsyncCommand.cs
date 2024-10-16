@@ -36,7 +36,7 @@ public class ExcelExportCheckFormAsyncCommand : ExcelBaseAsyncCommand
         await FillExcel(checkFormVM, progressBarVM);
 
         progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
 
         progressBarVM.SetProgressBar(100, "Завершение выгрузки");
         await progressBar.CloseAsync();
@@ -47,7 +47,7 @@ public class ExcelExportCheckFormAsyncCommand : ExcelBaseAsyncCommand
     /// </summary>
     /// <param name="checkFormVM">ViewModel окна проверки отчёта.</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
-    /// <returns>Task.CompletedTask</returns>
+    /// <returns>Успешно выполненная Task.</returns>
     private Task FillExcel(CheckFormVM checkFormVM, AnyTaskProgressBarVM progressBarVM)
     {
         #region FillHeaders

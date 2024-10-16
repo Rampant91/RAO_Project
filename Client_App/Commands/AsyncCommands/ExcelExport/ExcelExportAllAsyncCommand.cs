@@ -75,6 +75,8 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
             // ignored
         }
 
+        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+
         #region MessageExcelExportExecutionTime
 
         var operationEnd = DateTime.Now;
@@ -95,7 +97,6 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
 
         #endregion
 
-        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
         await progressBar.CloseAsync();
     }
 
@@ -116,7 +117,7 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
             .AsQueryable()
             .Include(x => x.DBObservable)
             .Where(x => x.DBObservableId != null)
-            .CountAsync(cancellationToken: cts.Token);
+            .CountAsync(cts.Token);
 
         switch (countReports)
         {
@@ -130,7 +131,7 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                         ContentTitle = "Выгрузка в Excel",
                         ContentHeader = "Уведомление",
-                        ContentMessage = "Выгрузка не выполнена, поскольку в базе отсутствуют формы отчетности.",
+                        ContentMessage = "Выгрузка не выполнена, поскольку в базе отсутствуют формы отчетности организаций.",
                         MinHeight = 150,
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner

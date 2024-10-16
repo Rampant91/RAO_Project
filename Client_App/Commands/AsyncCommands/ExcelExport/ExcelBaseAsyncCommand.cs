@@ -73,64 +73,6 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #endregion
 
-    #region ExcelExportNotes
-
-    /// <summary>
-    /// Выгрузка примечаний в .xlsx.
-    /// </summary>
-    /// <param name="formNum">Номер формы.</param>
-    /// <param name="startRow">Номер начального ряда.</param>
-    /// <param name="startColumn">Номер начальной колонки.</param>
-    /// <param name="worksheetPrim">Лист Excel с примечаниями.</param>
-    /// <param name="forms">Список отчётов.</param>
-    /// <param name="printId"></param>
-    /// <returns></returns>
-    private protected static int ExcelExportNotes(string formNum, int startRow, int startColumn, ExcelWorksheet worksheetPrim,
-        List<Report> forms, bool printId = false)
-    {
-        foreach (var item in forms)
-        {
-            var findReports = ReportsStorage.LocalReports.Reports_Collection
-                .Where(t => t.Report_Collection.Contains(item));
-            var reps = findReports.FirstOrDefault();
-            if (reps == null) continue;
-            var curRow = startRow;
-            foreach (var i in item.Notes)
-            {
-                var mstRep = reps.Master_DB;
-                i.ExcelRow(worksheetPrim, curRow, startColumn + 1);
-                var yu = printId
-                    ? formNum.Split('.')[0] == "1"
-                        ? mstRep.Rows10[1].RegNo_DB != "" && mstRep.Rows10[1].Okpo_DB != ""
-                            ? reps.Master_DB.Rows10[1]
-                                .ExcelRow(worksheetPrim, curRow, 1, sumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
-                            : reps.Master_DB.Rows10[0]
-                                .ExcelRow(worksheetPrim, curRow, 1, sumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
-                        : mstRep.Rows20[1].RegNo_DB != "" && mstRep.Rows20[1].Okpo_DB != ""
-                            ? reps.Master_DB.Rows20[1]
-                                .ExcelRow(worksheetPrim, curRow, 1, sumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
-                            : reps.Master_DB.Rows20[0]
-                                .ExcelRow(worksheetPrim, curRow, 1, sumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
-                    : formNum.Split('.')[0] == "1"
-                        ? mstRep.Rows10[1].RegNo_DB != "" && mstRep.Rows10[1].Okpo_DB != ""
-                            ? reps.Master_DB.Rows10[1].ExcelRow(worksheetPrim, curRow, 1) + 1
-                            : reps.Master_DB.Rows10[0].ExcelRow(worksheetPrim, curRow, 1) + 1
-                        : mstRep.Rows20[1].RegNo_DB != "" && mstRep.Rows20[1].Okpo_DB != ""
-                            ? reps.Master_DB.Rows20[1].ExcelRow(worksheetPrim, curRow, 1) + 1
-                            : reps.Master_DB.Rows20[0].ExcelRow(worksheetPrim, curRow, 1) + 1;
-
-                item.ExcelRow(worksheetPrim, curRow, yu);
-                curRow++;
-            }
-
-            startRow = curRow;
-        }
-
-        return startRow;
-    }
-
-    #endregion
-
     #region ExcelGetFullPath
 
     /// <summary>
@@ -153,10 +95,10 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                     new ButtonDefinition { Name = "Сохранить" },
                     new ButtonDefinition { Name = "Открыть временную копию" }
                 ],
+                CanResize = true,
                 ContentTitle = "Выгрузка в Excel",
                 ContentHeader = "Уведомление",
-                ContentMessage = "Что бы вы хотели сделать" +
-                                 $"{Environment.NewLine} с данной выгрузкой?",
+                ContentMessage = "Что бы вы хотели сделать с данной выгрузкой?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
@@ -236,171 +178,6 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             }
         }
         return (fullPath, openTemp);
-    }
-
-    #endregion
-
-    #region ExcelExportRows
-
-    /// <summary>
-    /// Выгрузка строчек форм в .xlsx.
-    /// </summary>
-    /// <param name="formNum">Номер формы.</param>
-    /// <param name="startRow">Номер начального ряда.</param>
-    /// <param name="startColumn">Номер начальной колонки.</param>
-    /// <param name="worksheet">Лист Excel.</param>
-    /// <param name="forms">Список отчётов.</param>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    private protected static int ExcelExportRows(string formNum, int startRow, int startColumn, ExcelWorksheet worksheet,
-        List<Report> forms, bool id = false)
-    {
-        foreach (var item in forms)
-        {
-            var reps = ReportsStorage.LocalReports.Reports_Collection
-                .FirstOrDefault(t => t.Report_Collection.Any(x => x.Id == item.Id));
-                    //t.Report_Collection.Contains(item));
-            if (reps is null) continue;
-            IEnumerable<IKey> t;
-            switch (formNum)
-            {
-                case "2.1":
-                    t = item[formNum].ToList<IKey>().Where(x => ((Form21)x).Sum_DB || ((Form21)x).SumGroup_DB);
-                    if (item[formNum].ToList<IKey>().Any() && !t.Any())
-                    {
-                        t = item[formNum].ToList<IKey>();
-                    }
-                    break;
-                case "2.2":
-                    t = item[formNum].ToList<IKey>().Where(x => ((Form22)x).Sum_DB || ((Form22)x).SumGroup_DB);
-                    if (item[formNum].ToList<IKey>().Any() && !t.Any())
-                    {
-                        t = item[formNum].ToList<IKey>();
-                    }
-                    break;
-                default:
-                    t = item[formNum].ToList<IKey>();
-                    break;
-            }
-
-            var lst = t.Any()
-                ? item[formNum].ToList<IKey>().ToList()
-                : item[formNum].ToList<IKey>().OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
-            if (lst.Count <= 0) continue;
-            var count = startRow;
-            startRow--;
-            lst = lst
-                .Where(it => it != null)
-                .OrderBy(x => x.Order)
-                .ToList();
-            foreach (var it in lst)
-            {
-                switch (it)
-                {
-                    case Form11 form11:
-                        form11.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form12 form12:
-                        form12.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form13 form13:
-                        form13.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form14 form14:
-                        form14.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form15 form15:
-                        form15.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form16 form16:
-                        form16.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form17 form17:
-                        form17.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form18 form18:
-                        form18.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form19 form19:
-                        form19.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form21 form21:
-                        form21.ExcelRow(worksheet, count, startColumn + 1, sumNumber: form21.NumberInOrderSum_DB);
-                        break;
-                    case Form22 form22:
-                        form22.ExcelRow(worksheet, count, startColumn + 1, sumNumber: form22.NumberInOrderSum_DB);
-                        break;
-                    case Form23 form23:
-                        form23.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form24 form24:
-                        form24.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form25 form25:
-                        form25.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form26 form26:
-                        form26.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form27 form27:
-                        form27.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form28 form28:
-                        form28.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form29 form29:
-                        form29.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form210 form210:
-                        form210.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form211 form211:
-                        form211.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form212 form212:
-                        form212.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                }
-
-                var masterRep = reps.Master_DB;
-
-                var yu = id
-                    ? formNum.Split('.')[0] == "1"
-                        ? masterRep.Rows10[1].RegNo_DB != "" && masterRep.Rows10[1].Okpo_DB != ""
-                            ? reps.Master_DB.Rows10[1]
-                                .ExcelRow(worksheet, count, 1, sumNumber: reps.Master_DB.Rows10[1].Id.ToString()) + 1
-                            : reps.Master_DB.Rows10[0]
-                                .ExcelRow(worksheet, count, 1, sumNumber: reps.Master_DB.Rows10[0].Id.ToString()) + 1
-                        : masterRep.Rows20[1].RegNo_DB != "" && masterRep.Rows20[1].Okpo_DB != ""
-                            ? reps.Master_DB.Rows20[1]
-                                .ExcelRow(worksheet, count, 1, sumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
-                            : reps.Master_DB.Rows20[0]
-                                .ExcelRow(worksheet, count, 1, sumNumber: reps.Master_DB.Rows20[0].Id.ToString()) + 1
-                    : formNum.Split('.')[0] == "1"
-                        ? masterRep.Rows10[1].RegNo_DB != "" && masterRep.Rows10[1].Okpo_DB != ""
-                            ? reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1) + 1
-                            : reps.Master_DB.Rows10[0].ExcelRow(worksheet, count, 1) + 1
-                        : masterRep.Rows20[1].RegNo_DB != "" && masterRep.Rows20[1].Okpo_DB != ""
-                            ? reps.Master_DB.Rows20[1].ExcelRow(worksheet, count, 1) + 1
-                            : reps.Master_DB.Rows20[0].ExcelRow(worksheet, count, 1) + 1;
-
-                item.ExcelRow(worksheet, count, yu);
-                count++;
-            }
-
-            //if (formNum.Split('.')[0] == "2")
-            //{
-            //    var new_number = 2;
-            //    while (worksheet.Cells[new_number, 6].Value != null)
-            //    {
-            //        worksheet.Cells[new_number, 6].Value = new_number - 1;
-            //        new_number++;
-            //    }
-            //}
-            startRow = count;
-        }
-
-        return startRow;
     }
 
     #endregion
@@ -904,13 +681,12 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     /// <returns>Полный путь до временной БД.</returns>
     private protected static async Task<string> CreateTempDataBase(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
-        var count = 0;
-        string tmpDbPath;
-        do
+        var index = 0;
+        var tmpDbPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
+        while (File.Exists(tmpDbPath))
         {
-            tmpDbPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + $"_{++count}.RAODB");
+            tmpDbPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + $"_{++index}.RAODB");
         }
-        while (File.Exists(tmpDbPath));
 
         try
         {

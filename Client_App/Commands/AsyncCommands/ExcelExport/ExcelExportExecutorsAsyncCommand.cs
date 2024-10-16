@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Avalonia.Threading;
-using Client_App.Views;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -14,6 +12,8 @@ using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 using System.Reflection;
 using Client_App.Views.ProgressBar;
+using Microsoft.EntityFrameworkCore;
+using Models.DBRealization;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -25,15 +25,71 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
     private Reports CurrentReports;
     private int _currentRow;
 
-    private AnyTaskProgressBar progressBar;
-
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
         ExportType = "Список_исполнителей";
-        var mainWindow = Desktop.MainWindow as MainWindow;
+        var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
-        if (ReportsStorage.LocalReports.Reports_Collection.Count == 0)
+        progressBarVM.SetProgressBar(2, "Создание временной БД",
+            "Выгрузка списка исполнителей", "Выгрузка в .xlsx");
+        var tmpDbPath = await CreateTempDataBase(progressBar, cts);
+        await using var db = new DBModel(tmpDbPath);
+
+        progressBarVM.SetProgressBar(8, "Подсчёт количества организаций");
+        await CountReports(db, progressBar, cts);
+
+        progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
+        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
+        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+
+        progressBarVM.SetProgressBar(12, "Инициализация Excel пакета");
+        using var excelPackage = await InitializeExcelPackage(fullPath);
+
+        progressBarVM.SetProgressBar(15, "Обработка форм 1");
+        await GetExecutorsList1(db, excelPackage, cts);
+
+        progressBarVM.SetProgressBar(55, "Обработка форм 2");
+        await GetExecutorsList2(db, excelPackage, cts);
+
+        progressBarVM.SetProgressBar(95, "Сохранение");
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+
+        progressBarVM.SetProgressBar(98, "Очистка временных данных");
+        try
+        {
+            File.Delete(tmpDbPath);
+        }
+        catch
+        {
+            // ignored
+        }
+
+        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+        await progressBar.CloseAsync();
+    }
+
+    #region CountReports
+
+    /// <summary>
+    /// Подсчёт количества организаций. При = 0 выводит сообщение и завершает операцию.
+    /// </summary>
+    /// <param name="db">Модель временной БД.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns></returns>
+    private static async Task CountReports(DBModel db, AnyTaskProgressBar? progressBar, CancellationTokenSource cts)
+    {
+        var countReports = await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.DBObservable)
+            .Where(x => x.DBObservableId != null)
+            .CountAsync(cts.Token);
+
+        if (countReports == 0)
         {
             #region MessageExcelExportFail
 
@@ -44,98 +100,20 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
                     CanResize = true,
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Уведомление",
-                    ContentMessage = "Выгрузка не выполнена, поскольку в базе отсутствуют формы отчетности.",
+                    ContentMessage = "Выгрузка не выполнена, поскольку в базе отсутствуют формы отчетности организаций.",
                     MinHeight = 150,
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(mainWindow));
+                .ShowDialog(progressBar ?? Desktop.MainWindow));
 
             #endregion
 
-            return;
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
-        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
-
-        (string fullPath, bool openTemp) result;
-        try
-        {
-            result = await ExcelGetFullPath(fileName, cts);
-        }
-        catch
-        {
-            return;
-        }
-        var fullPath = result.fullPath;
-        var openTemp = result.openTemp;
-        if (string.IsNullOrEmpty(fullPath)) return;
-
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
-        var progressBarVM = progressBar.AnyTaskProgressBarVM;
-        progressBarVM.ExportType = ExportType;
-        progressBarVM.ExportName = "Выгрузка списка исполнителей";
-        progressBarVM.ValueBar = 5;
-        var loadStatus = "Обработка форм 1";
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        using ExcelPackage excelPackage = new(new FileInfo(fullPath));
-        excelPackage.Workbook.Properties.Author = "RAO_APP";
-        excelPackage.Workbook.Properties.Title = "Report";
-        excelPackage.Workbook.Properties.Created = DateTime.Now;
-
-        var repsList = new List<Reports>();
-        repsList.AddRange(ReportsStorage.LocalReports.Reports_Collection
-            .OrderBy(x => x.Master.RegNoRep.Value));
-        
-        _currentRow = 2;
-        Worksheet = excelPackage.Workbook.Worksheets.Add("Формы 1");
-        FillExecutorsHeaders('1');
-        foreach (var reps in repsList)
-        {
-            CurrentReports = reps;
-            foreach (var rep in CurrentReports.Report_Collection
-                         .Where(x => x.FormNum_DB.Split('.')[0] == "1")
-                         .OrderBy(x => x.FormNum_DB.Split('.')[1])
-                         .ThenByDescending(x => StringReverse(x.StartPeriod_DB)))
-            {
-                FillExecutors(rep);
-                _currentRow++;
-            }
-        }
-
-        loadStatus = "Обработка форм 2";
-        progressBarVM.ValueBar = 55;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
-        _currentRow = 2;
-        Worksheet = excelPackage.Workbook.Worksheets.Add("Формы 2");
-        FillExecutorsHeaders('2');
-        foreach (var reps in repsList)
-        {
-            CurrentReports = reps;
-            foreach (var rep in CurrentReports.Report_Collection
-                         .Where(x => x.FormNum_DB.Split('.')[0] == "2")
-                         .OrderBy(x => x.FormNum_DB.Split('.')[1])
-                         .ThenByDescending(x => StringReverse(x.StartPeriod_DB)))
-            {
-                FillExecutors(rep);
-                _currentRow++;
-            }
-        }
-
-        loadStatus = "Сохранение";
-        progressBarVM.ValueBar = 95;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
-
-        loadStatus = "Завершение выгрузки";
-        progressBarVM.ValueBar = 100;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
+
+    #endregion
 
     #region FillExecutorsHeaders
 
@@ -143,7 +121,7 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
     /// Заполняет заголовки в выгрузке в .xlsx.
     /// </summary>
     /// <param name="formNum">Номер формы (1 - оперативная, 2 - годовая).</param>
-    private void FillExecutorsHeaders(char formNum)
+    private Task FillExecutorsHeaders(char formNum)
     {
         switch (formNum)
         {
@@ -178,6 +156,7 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
             Worksheet.Cells.AutoFitColumns(); // Под Astra Linux эта команда крашит программу без GDI дров
         }
         Worksheet.View.FreezePanes(2, 1);
+        return Task.CompletedTask;
     }
 
     #endregion
@@ -187,8 +166,8 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
     /// <summary>
     /// Выгрузка строчек данных в .xlsx.
     /// </summary>
-    /// <param name="rep">Отчёт..</param>
-    private void FillExecutors(Report rep)
+    /// <param name="rep">Отчёт.</param>
+    private Task FillExecutors(Report rep)
     {
         switch (rep.FormNum_DB[0])
         {
@@ -217,6 +196,94 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[_currentRow, 9].Value = rep.ExecPhone_DB;
                 Worksheet.Cells[_currentRow, 10].Value = rep.ExecEmail_DB;
                 break;
+        }
+        return Task.CompletedTask;
+    }
+
+    #endregion
+
+    #region GetExecutorsList1
+
+    /// <summary>
+    /// Получение списка исполнителей по формам отчётности 1.х.
+    /// </summary>
+    /// <param name="db">Модель БД.</param>
+    /// <param name="excelPackage">Excel пакет.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns></returns>
+    private async Task GetExecutorsList1(DBModel db, ExcelPackage excelPackage, CancellationTokenSource cts)
+    {
+        var repsList =  await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.DBObservable)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+            .Include(reports => reports.Report_Collection)
+            .Where(x => x.DBObservable != null)
+            .ToListAsync(cts.Token);
+
+        _currentRow = 2;
+        Worksheet = excelPackage.Workbook.Worksheets.Add("Формы 1");
+        await FillExecutorsHeaders('1');
+        foreach (var reps in repsList)
+        {
+            CurrentReports = reps;
+            foreach (var rep in CurrentReports.Report_Collection
+                         .Where(x => x.FormNum_DB.Split('.')[0] == "1")
+                         .OrderBy(x => x.FormNum_DB.Split('.')[1])
+                         .ThenByDescending(x => DateOnly.TryParse(x.StartPeriod_DB, out var stPer) 
+                             ? stPer 
+                             : DateOnly.MaxValue)
+                         .ThenByDescending(x => DateOnly.TryParse(x.EndPeriod_DB, out var endPer)
+                             ? endPer
+                             : DateOnly.MaxValue))
+            {
+                await FillExecutors(rep);
+                _currentRow++;
+            }
+        }
+    }
+
+    #endregion
+
+    #region GetExecutorsList2
+
+    /// <summary>
+    /// Получение списка исполнителей по формам отчётности 2.х.
+    /// </summary>
+    /// <param name="db">Модель БД.</param>
+    /// <param name="excelPackage">Excel пакет.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns></returns>
+    private async Task GetExecutorsList2(DBModel db, ExcelPackage excelPackage, CancellationTokenSource cts)
+    {
+        var repsList = await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.DBObservable)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+            .Include(reports => reports.Report_Collection)
+            .Where(x => x.DBObservable != null)
+            .ToListAsync(cts.Token);
+
+        _currentRow = 2;
+        Worksheet = excelPackage.Workbook.Worksheets.Add("Формы 2");
+        await FillExecutorsHeaders('2');
+        foreach (var reps in repsList)
+        {
+            CurrentReports = reps;
+            foreach (var rep in CurrentReports.Report_Collection
+                         .Where(x => x.FormNum_DB.Split('.')[0] == "2")
+                         .OrderBy(x => x.FormNum_DB.Split('.')[1])
+                         .ThenByDescending(x => DateOnly.TryParse(x.Year_DB, out var year) 
+                             ? year 
+                             : DateOnly.MaxValue))
+            {
+                await FillExecutors(rep);
+                _currentRow++;
+            }
         }
     }
 

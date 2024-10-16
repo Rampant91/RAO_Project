@@ -46,14 +46,24 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
         progressBarVM.SetProgressBar(10, "Выбор папки для отчётов");
         var folderPath = await SelectFolder(progressBar, cts);
 
-        progressBarVM.SetProgressBar(15, "Загрузка отчётов");
+        progressBarVM.SetProgressBar(13, "Загрузка отчётов");
         var reps = await GetReportsWithRows(tmpDbPath, par, progressBarVM, cts);
 
-        progressBarVM.SetProgressBar(65, "Проверка отчётов");
-        var errorsList = await CheckReportCollection(reps, progressBarVM, cts);
+        progressBarVM.SetProgressBar(63, "Проверка отчётов");
+        var errorsList = await CheckReportCollection(reps, progressBarVM);
 
-        progressBarVM.SetProgressBar(85, "Сохранение отчётов");
+        progressBarVM.SetProgressBar(83, "Сохранение отчётов");
         var countCheckedRep = await SaveErrorsList(errorsList, folderPath, progressBarVM, cts);
+
+        progressBarVM.SetProgressBar(98, "Очистка временных данных");
+        try
+        {
+            File.Delete(tmpDbPath);
+        }
+        catch
+        {
+            // ignored
+        }
 
         progressBarVM.SetProgressBar(100, "Завершение выгрузки");
 
@@ -75,7 +85,7 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
                 MinHeight = 170,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow));
+            .ShowDialog(progressBar ?? Desktop.MainWindow));
 
         #endregion
 
@@ -93,10 +103,8 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
     /// </summary>
     /// <param name="reps">Организация.</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
-    /// <param name="cts">Токен.</param>
     /// <returns>Словарь отчётов и списков их ошибок.</returns>
-    private static async Task<Dictionary<Report, List<CheckError>?>> CheckReportCollection(Reports reps, AnyTaskProgressBarVM progressBarVM, 
-        CancellationTokenSource cts)
+    private static async Task<Dictionary<Report, List<CheckError>?>> CheckReportCollection(Reports reps, AnyTaskProgressBarVM progressBarVM)
     {
         double progressBarDoubleValue = progressBarVM.ValueBar;
         Dictionary<Report, List<CheckError>?> errorsDictionary = [];
@@ -297,11 +305,11 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
     /// <summary>
     /// Сохраняет в отдельный .xlsx файл каждый список ошибок из словаря.
     /// </summary>
-    /// <param name="errorsDictionary">Словарь из отчётов и списков ошибок</param>
+    /// <param name="errorsDictionary">Словарь из отчётов и списков ошибок.</param>
     /// <param name="folderPath">Путь к папке сохранения.</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <param name="cts">Токен.</param>
-    /// <returns></returns>
+    /// <returns>Количество успешно проверенных отчётов.</returns>
     private async Task<int> SaveErrorsList(Dictionary<Report, List<CheckError>?> errorsDictionary, string folderPath, AnyTaskProgressBarVM progressBarVM, 
         CancellationTokenSource cts)
     {
