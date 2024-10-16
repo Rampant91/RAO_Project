@@ -380,7 +380,7 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
     private async Task<string> GetFileName(Report rep, AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
         string fileName;
-        var formNum = rep.FormNum_DB;
+        var formNum = RemoveForbiddenChars(rep.FormNum_DB);
         var regNum = RemoveForbiddenChars(rep.Reports.Master.RegNoRep.Value);
         var okpo = RemoveForbiddenChars(rep.Reports.Master.OkpoRep.Value);
         var corNum = Convert.ToString(rep.CorrectionNumber_DB);
