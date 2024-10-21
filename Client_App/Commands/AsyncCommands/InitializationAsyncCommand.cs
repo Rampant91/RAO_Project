@@ -127,9 +127,11 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
     {
         try
         {
-            SystemDirectory = OperatingSystem.IsWindows()
-                ? Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System))!
-                : SystemDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            SystemDirectory = Settings.Default.SystemFolderDefaultPath is "default"
+                ? OperatingSystem.IsWindows()
+                    ? Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System))!
+                    : SystemDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
+                : Settings.Default.SystemFolderDefaultPath;
         }
         catch (Exception ex)
         {

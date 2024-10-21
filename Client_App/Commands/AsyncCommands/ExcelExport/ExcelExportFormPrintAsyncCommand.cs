@@ -46,10 +46,10 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
 
         progressBarVM.SetProgressBar(40, "Инициализация Excel пакета");
-        var (excelPackage, worksheetTitle, worksheetMain) = await InitializeExcelPackage(fullPath, rep);
+        using var excelPackage = await InitializeExcelPackage(fullPath, rep);
 
         progressBarVM.SetProgressBar(50, "Выгрузка данных");
-        await FillExcel(worksheetTitle, worksheetMain, rep);
+        await FillExcel(excelPackage, rep);
 
         progressBarVM.SetProgressBar(90, "Сохранение");
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
@@ -65,8 +65,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         }
 
         progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-
-        excelPackage.Dispose();
+        GC.Collect();
         await progressBar.CloseAsync();
     }
 
@@ -75,12 +74,14 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
     /// <summary>
     /// Заполняет .xlsx строчками данных.
     /// </summary>
-    /// <param name="worksheetTitle">Титульный лист.</param>
-    /// <param name="worksheetMain">Лист с данными.</param>
+    /// <param name="excelPackage">Пакет Excel.</param>
     /// <param name="rep">Отчёт.</param>
     /// <returns>Успешно выполненная Task.</returns>
-    private static Task FillExcel(ExcelWorksheet worksheetTitle, ExcelWorksheet worksheetMain, Report rep)
+    private static Task FillExcel(ExcelPackage excelPackage, Report rep)
     {
+        var worksheetTitle = excelPackage.Workbook.Worksheets[0];
+        var worksheetMain = excelPackage.Workbook.Worksheets[1];
+
         ExcelPrintTitleExport(rep.FormNum_DB, worksheetTitle, rep, rep.Reports.Master);
         ExcelPrintSubMainExport(rep.FormNum_DB, worksheetMain, rep);
         ExcelPrintNotesExport(rep.FormNum_DB, worksheetMain, rep);
@@ -111,11 +112,11 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
             case '1':
                 var startPeriod = RemoveForbiddenChars(rep.StartPeriod_DB);
                 var endPeriod = RemoveForbiddenChars(rep.EndPeriod_DB);
-                fileName = $"{ExportType}_{regNum}_{okpo}_{formNum}_{startPeriod}_{endPeriod}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}";
+                fileName = $"{regNum}_{okpo}_{formNum}_{startPeriod}_{endPeriod}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
                 break;
             case '2':
                 var year = RemoveForbiddenChars(rep.Year_DB);
-                fileName = $"{ExportType}_{regNum}_{okpo}_{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}";
+                fileName = $"{regNum}_{okpo}_{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
                 break;
             default:
                 await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
@@ -182,8 +183,8 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
     /// </summary>
     /// <param name="fullPath">Полный путь до .xlsx файла.</param>
     /// <param name="rep">Отчёт.</param>
-    /// <returns>Пакет Excel, титульный лист, лист с данными.</returns>
-    private static Task<(ExcelPackage, ExcelWorksheet, ExcelWorksheet)> InitializeExcelPackage(string fullPath, Report rep)
+    /// <returns>Пакет Excel.</returns>
+    private static Task<ExcelPackage> InitializeExcelPackage(string fullPath, Report rep)
     {
 #if DEBUG
         var appFolderPath = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Excel", $"{rep.FormNum_DB}.xlsx");
@@ -197,7 +198,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         var worksheetMain = excelPackage.Workbook.Worksheets[rep.FormNum_DB];
         worksheetTitle.Cells.Style.ShrinkToFit = true;
         worksheetMain.Cells.Style.ShrinkToFit = true;
-        return Task.FromResult((excelPackage, worksheetTitle, worksheetMain));
+        return Task.FromResult(excelPackage);
     }
 
     #endregion

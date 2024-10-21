@@ -30,18 +30,18 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
+        if (parameter is null) return;
         var cts = new CancellationTokenSource();
         IsSelectedOrg = parameter is "SelectedOrg";
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
-        progressBarVM.SetProgressBar(2, "Создание временной БД", 
-            "Выгрузка всех отчётов", "Выгрузка в .xlsx");
+        progressBarVM.SetProgressBar(2, "Создание временной БД", "Выгрузка всех отчётов", "Выгрузка в .xlsx");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-        await using var dbReadOnly = new DBModel(tmpDbPath);
+        await using var db = new DBModel(tmpDbPath);
 
         progressBarVM.SetProgressBar(5, "Подсчёт количества организаций");
-        await CountReports(dbReadOnly, progressBar, cts);
+        await CountReports(db, progressBar, cts);
 
         progressBarVM.SetProgressBar(7, "Определение имени файла");
         var fileName = await GetFileName(progressBar, cts);
@@ -54,13 +54,13 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
         using var excelPackage = await InitializeExcelPackage(fullPath);
 
         progressBarVM.SetProgressBar(15, "Загрузка списка отчётов");
-        var repsList = await GetReportsList(dbReadOnly, cts);
+        var repsList = await GetReportsList(db, cts);
 
         progressBarVM.SetProgressBar(17, "Создание страниц и заполнение заголовков");
         var formNums = await CreateWorksheetsAndFillHeaders(excelPackage, repsList);
 
         progressBarVM.SetProgressBar(20, "Загрузка форм");
-        await GetFullReportForeachReps(dbReadOnly, repsList, formNums, progressBarVM, excelPackage, cts);
+        await GetFullReportForeachReps(db, repsList, formNums, progressBarVM, excelPackage, cts);
 
         progressBarVM.SetProgressBar(95, "Сохранение");
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
@@ -238,9 +238,10 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
     /// <param name="progressBar">Окно прогрессбара.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Имя файла.</returns>
-    private async Task<string> GetFileName(AnyTaskProgressBar? progressBar, CancellationTokenSource cts)
+    private async Task<string> GetFileName(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
         string fileName;
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
         if (!IsSelectedOrg)
         {
             ExportType = "Все_формы";
@@ -275,11 +276,10 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
 
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
-        CurrentReports = selectedReports;
+        CurrentReports = selectedReports!;
         ExportType = "Выбранная_организация_Все_формы";
-        var progressBarVM = progressBar.AnyTaskProgressBarVM;
         progressBarVM.ExportName = $"Выгрузка всех отчётов " +
-                                   $"{selectedReports.Master.RegNoRep.Value}_{selectedReports.Master.OkpoRep.Value}";
+                                   $"{selectedReports!.Master.RegNoRep.Value}_{selectedReports.Master.OkpoRep.Value}";
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% (Определение имени файла)";
 
         var regNum = RemoveForbiddenChars(CurrentReports.Master_DB.RegNoRep.Value);
@@ -301,7 +301,6 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <param name="excelPackage">Пакет Excel.</param>
     /// <param name="cts">Токен.</param>
-    /// <returns></returns>
     private async Task GetFullReportForeachReps(DBModel dbReadOnly, List<Reports> repsList, HashSet<string> formNums, 
         AnyTaskProgressBarVM progressBarVM, ExcelPackage excelPackage, CancellationTokenSource cts)
     {

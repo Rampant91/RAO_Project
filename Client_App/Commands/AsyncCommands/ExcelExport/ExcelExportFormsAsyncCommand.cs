@@ -10,6 +10,7 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Resources;
 using Client_App.ViewModels;
+using Client_App.ViewModels.ProgressBar;
 using Client_App.Views;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
@@ -27,17 +28,83 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 /// </summary>
 public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
 {
-    private AnyTaskProgressBar progressBar;
+    public override bool CanExecute(object? parameter) => true;
 
     public override async Task AsyncExecute(object? parameter)
     {
         var mainWindow = Desktop.MainWindow as MainWindow;
         var cts = new CancellationTokenSource();
-        string fileName;
-        var forSelectedOrg = parameter.ToString()!.Contains("Org");
-        var selectedReports = (Reports?)mainWindow?.SelectedReports?.FirstOrDefault();
-        var param = OnlyDigitsRegex().Replace(parameter.ToString(), "");
+        var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
+        var forSelectedOrg = parameter!.ToString()!.Contains("Org");
+        var selectedReports = (Reports?)mainWindow?.SelectedReports?.FirstOrDefault();
+        var formNum = OnlyDigitsRegex().Replace(parameter.ToString()!, "");
+        ExportType = $"Выгрузка форм {formNum}";
+
+        progressBarVM.SetProgressBar(5, "Создание временной БД", "Выгрузка форм", ExportType);
+        var tmpDbPath = await CreateTempDataBase(progressBar, cts);
+        await using var db = new DBModel(tmpDbPath);
+
+        progressBarVM.SetProgressBar(10, "Проверка наличия отчётов");
+        await CheckRepsAndRepPresence(db, formNum, forSelectedOrg, selectedReports, progressBar, cts);
+
+        progressBarVM.SetProgressBar(12, "Определение имени файла");
+        var fileName = await GetFileName(formNum, forSelectedOrg, selectedReports!);
+
+        progressBarVM.SetProgressBar(15, "Запрос пути сохранения");
+        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+
+        progressBarVM.SetProgressBar(18, "Инициализация Excel пакета");
+        using var excelPackage = await InitializeExcelPackage(fullPath, formNum, progressBar, cts);
+
+        progressBarVM.SetProgressBar(20, "Заполнение заголовков");
+        await FillExcelHeaders(formNum);
+
+        progressBarVM.SetProgressBar(22, "Получение списка организаций");
+        var repsList = await GetReportsList(db, forSelectedOrg, selectedReports!, formNum, cts);
+
+        progressBarVM.SetProgressBar(25, "Загрузка форм");
+        await GetReportRowsAndFillExcel(repsList, db, progressBarVM, formNum, cts);
+
+        progressBarVM.SetProgressBar(95, "Сохранение");
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+
+        progressBarVM.SetProgressBar(98, "Очистка временных данных");
+        try
+        {
+            File.Delete(tmpDbPath);
+        }
+        catch
+        {
+            // ignored
+        }
+
+        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+        await progressBar.CloseAsync();
+    }
+
+    #region CheckRepsAndRepPresence
+
+    /// <summary>
+    /// Проверяет наличие выбранной организации, в случае если запущена команда для неё.
+    /// Проверяет наличие хотя бы одного отчёта, с выбранным номером формы. В случае отсутствия выводит соответствующее сообщение и закрывает команду.
+    /// </summary>
+    /// <param name="db">Модель БД.</param>
+    /// <param name="formNum">Номер формы отчётности.</param>
+    /// <param name="forSelectedOrg">Флаг, выполняется ли команда для выбранной организации или для всех организаций в БД.</param>
+    /// <param name="selectedReports">Выбранная организация.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
+    private static async Task CheckRepsAndRepPresence(DBModel db, string formNum, bool forSelectedOrg, Reports? selectedReports, 
+        AnyTaskProgressBar progressBar, CancellationTokenSource cts)
+    {
+        var isAnyRepWithSameFormNum = db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Any(reps => reps.Report_Collection
+                .Any(rep => rep.FormNum_DB == formNum));
         switch (forSelectedOrg)
         {
             case true when selectedReports is null:
@@ -53,16 +120,16 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(mainWindow));
+                    .ShowDialog(Desktop.MainWindow));
 
                 #endregion
 
+                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+
                 return;
             }
-            case true when selectedReports.Report_Collection.All(rep => rep.FormNum_DB != param):
-            case false when !ReportsStorage.LocalReports.Reports_Collection
-                .Any(reps => reps.Report_Collection
-                    .Any(rep => rep.FormNum_DB == param)):
+            case true when selectedReports.Report_Collection.All(rep => rep.FormNum_DB != formNum):
+            case false when !isAnyRepWithSameFormNum:
             {
                 #region MessageRepsNotFound
 
@@ -73,78 +140,36 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
                         ContentTitle = "Выгрузка в Excel",
                         ContentHeader = "Уведомление",
                         ContentMessage =
-                            $"Не удалось совершить выгрузку форм {param}," +
+                            $"Не удалось совершить выгрузку форм {formNum}," +
                             $"{Environment.NewLine}поскольку эти формы отсутствуют в текущей базе.",
                         MinWidth = 400,
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(mainWindow));
+                    .ShowDialog(Desktop.MainWindow));
 
                 #endregion
-
+                
+                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                
                 return;
             }
-            case true:
-            {
-                ExportType = $"Выбранная_организация_Формы_{param}";
-                var regNum = StaticStringMethods.RemoveForbiddenChars(selectedReports.Master.RegNoRep.Value);
-                var okpo = StaticStringMethods.RemoveForbiddenChars(selectedReports.Master.OkpoRep.Value);
-                fileName = $"{ExportType}_{regNum}_{okpo}_{Assembly.GetExecutingAssembly().GetName().Version}";
-                break;
-            }
-            default:
-            {
-                ExportType = $"Формы_{param}";
-                fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
-                break;
-            }
         }
-        (string fullPath, bool openTemp) result;
-        try
-        {
-            result = await ExcelGetFullPath(fileName, cts);
-        }
-        catch
-        {
-            return;
-        }
-        var fullPath = result.fullPath;
-        var openTemp = result.openTemp;
-        if (string.IsNullOrEmpty(fullPath)) return;
+    }
 
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
-        var progressBarVM = progressBar.AnyTaskProgressBarVM;
-        progressBarVM.ExportType = ExportType;
-        progressBarVM.ExportName = $"Выгрузка {ExportType.ToLower()}";
-        progressBarVM.ValueBar = 2;
-        var loadStatus = "Создание временной БД";
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+    #endregion
 
-        var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
-        try
-        {
-            if (!StaticConfiguration.IsFileLocked(dbReadOnlyPath))
-            {
-                File.Delete(dbReadOnlyPath);
-                File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), dbReadOnlyPath);
-            }
-        }
-        catch
-        {
-            return;
-        }
+    #region FillExcelHeaders
 
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        using ExcelPackage excelPackage = new(new FileInfo(fullPath));
-        excelPackage.Workbook.Properties.Author = "RAO_APP";
-        excelPackage.Workbook.Properties.Title = "Report";
-        excelPackage.Workbook.Properties.Created = DateTime.Now;
-        if (ReportsStorage.LocalReports.Reports_Collection.Count == 0) return;
-        Worksheet = excelPackage.Workbook.Worksheets.Add($"Отчеты {param}");
-        WorksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {param}");
+    /// <summary>
+    /// Заполнение заголовков Excel.
+    /// </summary>
+    /// <param name="formNum">Номер формы отчётности.</param>
+    /// <returns>Успешно выполненная Task.</returns>
+    private Task FillExcelHeaders(string formNum)
+    {
         int masterHeaderLength;
-        if (param.Split('.')[0] == "1")
+        if (formNum.Split('.')[0] == "1")
         {
             masterHeaderLength = Form10.ExcelHeader(Worksheet, 1, 1, id: "ID") + 1;
             masterHeaderLength = Form10.ExcelHeader(WorksheetPrim, 1, 1, id: "ID") + 1;
@@ -155,386 +180,213 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
             masterHeaderLength = Form20.ExcelHeader(WorksheetPrim, 1, 1, id: "ID") + 1;
         }
 
-        var t = Report.ExcelHeader(Worksheet, param, 1, masterHeaderLength);
-        Report.ExcelHeader(WorksheetPrim, param, 1, masterHeaderLength);
+        var t = Report.ExcelHeader(Worksheet, formNum, 1, masterHeaderLength);
+        Report.ExcelHeader(WorksheetPrim, formNum, 1, masterHeaderLength);
         masterHeaderLength += t;
         masterHeaderLength--;
 
-        FillHeaders(param);
+        FillHeaders(formNum);
         if (OperatingSystem.IsWindows())
         {
             Worksheet.Cells.AutoFitColumns();
             WorksheetPrim.Cells.AutoFitColumns();
         }
+        return Task.CompletedTask;
+    }
 
-        await using var dbReadOnly = new DBModel(dbReadOnlyPath);
+    #endregion
 
+    #region GetFileName
+
+    /// <summary>
+    /// Формирование имени файла.
+    /// </summary>
+    /// <param name="formNum">Номер формы отчётности.</param>
+    /// <param name="forSelectedOrg">Флаг, выполняется ли команда для выбранной организации или для всех организаций в БД.</param>
+    /// <param name="selectedReports">Выбранная организация.</param>
+    /// <returns>Имя файла.</returns>
+    private Task<string> GetFileName(string formNum, bool forSelectedOrg, Reports selectedReports)
+    {
+        string fileName;
+        switch (forSelectedOrg)
+        {
+            case true:
+            {
+                ExportType = $"Выбранная_организация_Формы_{formNum}";
+                var regNum = StaticStringMethods.RemoveForbiddenChars(selectedReports.Master.RegNoRep.Value);
+                var okpo = StaticStringMethods.RemoveForbiddenChars(selectedReports.Master.OkpoRep.Value);
+                fileName = $"{ExportType}_{regNum}_{okpo}_{Assembly.GetExecutingAssembly().GetName().Version}";
+                break;
+            }
+            case false:
+            {
+                ExportType = $"Формы_{formNum}";
+                fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
+                break;
+            }
+
+        }
+        return Task.FromResult(fileName);
+    }
+
+    #endregion
+
+    #region GetReportWithRows
+
+    /// <summary>
+    /// Получение отчёта вместе со строчками из БД.
+    /// </summary>
+    /// <param name="repId">Id отчёта.</param>
+    /// <param name="dbReadOnly">Модель временной БД.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns>Отчёт вместе со строчками.</returns>
+    private static async Task<Report> GetReportWithRows(int repId, DBModel dbReadOnly, CancellationTokenSource cts)
+    {
+        return await dbReadOnly.ReportCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(rep => rep.Rows11.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows12.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows13.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows14.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows15.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows16.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows17.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows18.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows19.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows21.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows22.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows23.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows24.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows25.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows26.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows27.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows28.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows29.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows210.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows211.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows212.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Notes.OrderBy(note => note.Order))
+                .FirstAsync(rep => rep.Id == repId, cts.Token);
+    }
+
+    #endregion
+
+    #region GetReportsList
+
+    /// <summary>
+    /// Формирование списка организаций без строчек форм отчётности.
+    /// </summary>
+    /// <param name="db">Модель БД.</param>
+    /// <param name="forSelectedOrg">Флаг, выполняется ли команда для выбранной организации или всех организаций в БД.</param>
+    /// <param name="selectedReports">Выбранная организация.</param>
+    /// <param name="formNum">Номер формы отчётности.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns>Список организаций без строчек форм отчётности.</returns>
+    private static async Task<List<Reports>> GetReportsList(DBModel db, bool forSelectedOrg, Reports selectedReports, string formNum, 
+        CancellationTokenSource cts)
+    {
         var repsList = new List<Reports>();
         if (forSelectedOrg)
         {
-            repsList.Add(selectedReports!);
+            repsList.Add(selectedReports);
         }
         else
         {
-            repsList.AddRange(ReportsStorage.LocalReports.Reports_Collection
-                .Where(reps => reps.Report_Collection
-                    .Any(rep => rep.FormNum_DB == param)));
+            repsList.AddRange(
+                await db.ReportsCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Include(x => x.DBObservable)
+                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                    .Include(reports => reports.Report_Collection)
+                    .Where(reps => reps.DBObservable != null 
+                                && reps.Report_Collection
+                                    .Any(rep => rep.FormNum_DB == formNum))
+                    .ToListAsync(cts.Token));
         }
+        return repsList;
+    }
 
-        loadStatus = "Загрузка форм";
-        progressBarVM.ValueBar = 5;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+    #endregion
 
+    #region GetReportRowsAndFillExcel
+
+    /// <summary>
+    /// Загрузка из БД строчек форм отчётности для всех организаций из списка.
+    /// </summary>
+    /// <param name="repsList">Список организаций.</param>
+    /// <param name="db">Модель БД.</param>
+    /// <param name="progressBarVM">ViewModel прогрессбара.</param>
+    /// <param name="formNum">Номер формы отчётности.</param>
+    /// <param name="cts">Токен.</param>
+    private async Task GetReportRowsAndFillExcel(List<Reports> repsList, DBModel db, AnyTaskProgressBarVM progressBarVM, string formNum,
+        CancellationTokenSource cts)
+    {
         double progressBarDoubleValue = progressBarVM.ValueBar;
-
-        foreach (var reps in repsList)
+        foreach (var reps in repsList.OrderBy(x => x.Master_DB.RegNoRep.Value))
         {
-            loadStatus = $"Загрузка форм {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value}";
-            var repsWithRows = await GetReportsForms(param, reps, dbReadOnly, cts);
+            var repsWithRows = new Reports { Master = reps.Master };
+            foreach (var rep in reps.Report_Collection
+                         .OrderBy(x => x.FormNum_DB)
+                         .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+                         .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue))
+            {
+                var repWithRows = await GetReportWithRows(rep.Id, db, cts);
+                repsWithRows.Report_Collection.Add(repWithRows);
+                progressBarDoubleValue += (double)70 / (repsList.Count * reps.Report_Collection.Count);
+                progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+                    $"Загрузка отчёта {rep.FormNum_DB}_{rep.StartPeriod_DB}_{rep.EndPeriod_DB}",
+                    $"Загрузка отчётов {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value}");
+            }
             CurrentReports = repsWithRows;
             CurrentRow = Worksheet.Dimension.End.Row + 1;
             CurrentPrimRow = WorksheetPrim.Dimension.End.Row + 1;
-            FillExportForms(param);
-
-            progressBarDoubleValue += (double)90 / repsList.Count;
-            progressBarVM.ValueBar = (int)Math.Floor(progressBarDoubleValue);
-            progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+            FillExportForms(formNum);
         }
-        Worksheet.View.FreezePanes(2, 1);
-
-        loadStatus = "Сохранение";
-        progressBarVM.ValueBar = 95;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
-
-        loadStatus = "Завершение выгрузки";
-        progressBarVM.ValueBar = 100;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 
+    #endregion
+
+    #region InitializeExcelPackage
+
     /// <summary>
-    /// Загрузки из БД организации вместе со строчками для определённого номера формы. 
+    /// Инициализация Excel пакета.
     /// </summary>
-    /// <param name="formNum">Номер формы.</param>
-    /// <param name="reps">Организация.</param>
-    /// <param name="dbReadOnly">Модель БД.</param>
+    /// <param name="fullPath">Полный путь к файлу.</param>
+    /// <param name="formNum">Номер формы отчётности.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
     /// <param name="cts">Токен.</param>
-    /// <returns>Организацию вместе со строчками определённого номера формы.</returns>
-    private static async Task<Reports> GetReportsForms(string formNum, Reports reps, DBModel dbReadOnly, CancellationTokenSource cts)
+    /// <returns>Excel пакет.</returns>
+    private async Task<ExcelPackage> InitializeExcelPackage(string fullPath, string formNum, AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
-        return formNum switch
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        ExcelPackage excelPackage = new(new FileInfo(fullPath));
+        excelPackage.Workbook.Properties.Author = "RAO_APP";
+        excelPackage.Workbook.Properties.Title = "Report";
+        excelPackage.Workbook.Properties.Created = DateTime.Now;
+        if (ReportsStorage.LocalReports.Reports_Collection.Count == 0)
         {
-            #region GetForms1FromDb
-
-            #region 1.1
-
-            "1.1" => await dbReadOnly.ReportsCollectionDbSet
-                        .AsNoTracking()
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Where(x => x.Id == reps.Id)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                        .FirstAsync(cancellationToken: cts.Token),
-
-            #endregion
-
-            #region 1.2
-
-            "1.2" => await dbReadOnly.ReportsCollectionDbSet
-                        .AsNoTracking()
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Where(x => x.Id == reps.Id)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows12)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                        .FirstAsync(cancellationToken: cts.Token),
-
-            #endregion
-
-            #region 1.3
-
-            "1.3" => await dbReadOnly.ReportsCollectionDbSet
-                        .AsNoTracking()
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Where(x => x.Id == reps.Id)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows13)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                        .FirstAsync(cancellationToken: cts.Token),
-
-            #endregion
-
-            #region 1.4
-
-            "1.4" => await dbReadOnly.ReportsCollectionDbSet
-                        .AsNoTracking()
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Where(x => x.Id == reps.Id)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows14)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                        .FirstAsync(cancellationToken: cts.Token),
-
-            #endregion
-
-            #region 1.5
-
-            "1.5" => await dbReadOnly.ReportsCollectionDbSet
-                        .AsNoTracking()
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Where(x => x.Id == reps.Id)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                        .FirstAsync(cancellationToken: cts.Token),
-
-            #endregion
-
-            #region 1.6
-
-            "1.6" => await dbReadOnly.ReportsCollectionDbSet
-                        .AsNoTracking()
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Where(x => x.Id == reps.Id)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows16)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                        .FirstAsync(cancellationToken: cts.Token),
-
-            #endregion
-
-            #region 1.7
-
-            "1.7" => await dbReadOnly.ReportsCollectionDbSet
-                        .AsNoTracking()
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Where(x => x.Id == reps.Id)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows17)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                        .FirstAsync(cancellationToken: cts.Token),
-
-            #endregion
-
-            #region 1.8
-
-            "1.8" => await dbReadOnly.ReportsCollectionDbSet
-                        .AsNoTracking()
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Where(x => x.Id == reps.Id)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows18)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                        .FirstAsync(cancellationToken: cts.Token),
-
-            #endregion
-
-            #region 1.9
-
-            "1.9" => await dbReadOnly.ReportsCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Where(x => x.Id == reps.Id)
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows19)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                .FirstAsync(cancellationToken: cts.Token),
-
-            #endregion
-
-            #endregion
-
-            #region GetForms2FromDb
-
-            #region 2.1
-
-            "2.1" => await dbReadOnly.ReportsCollectionDbSet
-                        .AsNoTracking()
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Where(x => x.Id == reps.Id)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows21)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                        .FirstAsync(cancellationToken: cts.Token),
-
-            #endregion
-
-            #region 2.2
-
-            "2.2" => await dbReadOnly.ReportsCollectionDbSet
-                        .AsNoTracking()
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Where(x => x.Id == reps.Id)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows22)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                        .FirstAsync(cancellationToken: cts.Token),
-
-            #endregion
-
-            #region 2.3
-
-            "2.3" => await dbReadOnly.ReportsCollectionDbSet
-                        .AsNoTracking()
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Where(x => x.Id == reps.Id)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows23)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                        .FirstAsync(cancellationToken: cts.Token),
-
-            #endregion
-
-            #region 2.4
-
-            "2.4" => await dbReadOnly.ReportsCollectionDbSet
-                        .AsNoTracking()
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Where(x => x.Id == reps.Id)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows24)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                        .FirstAsync(cancellationToken: cts.Token),
-
-            #endregion
-
-            #region 2.5
-
-            "2.5" => await dbReadOnly.ReportsCollectionDbSet
-                        .AsNoTracking()
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Where(x => x.Id == reps.Id)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows25)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                        .FirstAsync(cancellationToken: cts.Token),
-
-            #endregion
-
-            #region 2.6
-
-            "2.6" => await dbReadOnly.ReportsCollectionDbSet
-                        .AsNoTracking()
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Where(x => x.Id == reps.Id)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows26)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                        .FirstAsync(cancellationToken: cts.Token),
-
-            #endregion
-
-            #region 2.7
-
-            "2.7" => await dbReadOnly.ReportsCollectionDbSet
-                        .AsNoTracking()
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Where(x => x.Id == reps.Id)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows27)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                        .FirstAsync(cancellationToken: cts.Token),
-
-            #endregion
-
-            #region 2.8
-
-            "2.8" => await dbReadOnly.ReportsCollectionDbSet
-                        .AsNoTracking()
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Where(x => x.Id == reps.Id)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Rows28)
-                        .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                        .FirstAsync(cancellationToken: cts.Token),
-
-            #endregion
-
-            #region 2.9
-
-            "2.9" => await dbReadOnly.ReportsCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Where(x => x.Id == reps.Id)
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows29)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                .FirstAsync(cancellationToken: cts.Token),
-
-            #endregion
-
-            #region 2.10
-
-            "2.10" => await dbReadOnly.ReportsCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Where(x => x.Id == reps.Id)
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows210)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                .FirstAsync(cancellationToken: cts.Token),
-
-            #endregion
-
-            #region 2.11
-
-            "2.11" => await dbReadOnly.ReportsCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Where(x => x.Id == reps.Id)
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows211)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                .FirstAsync(cancellationToken: cts.Token),
-
-            #endregion
-
-            #region 2.12
-
-            "2.12" => await dbReadOnly.ReportsCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Where(x => x.Id == reps.Id)
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Rows212)
-                .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
-                .FirstAsync(cancellationToken: cts.Token)
-
-            #endregion
-
-            #endregion
-        };
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+        Worksheet = excelPackage.Workbook.Worksheets.Add($"Отчеты {formNum}");
+        WorksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {formNum}");
+        Worksheet.View.FreezePanes(2, 1);
+        return excelPackage;
     }
 
+    #endregion
+
+    #region Regex
+    
     /// <summary>
-    /// Регулярка проверяющая, что строчка содержит только цифры.
+    /// Проверяет, что строчка содержит только цифры.
     /// </summary>
-    /// <returns></returns>
     [GeneratedRegex(@"[^\d.]")]
     private static partial Regex OnlyDigitsRegex();
+
+    #endregion
 }

@@ -45,5 +45,29 @@ namespace Client_App.Properties {
                 this["LastDbBackupDate"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("default")]
+        public string SystemFolderDefaultPath {
+            get {
+                return ((string)(this["SystemFolderDefaultPath"]));
+            }
+            set {
+                this["SystemFolderDefaultPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool OnlyOneAppInstanceAllowed {
+            get {
+                return ((bool)(this["OnlyOneAppInstanceAllowed"]));
+            }
+            set {
+                this["OnlyOneAppInstanceAllowed"] = value;
+            }
+        }
     }
 }
