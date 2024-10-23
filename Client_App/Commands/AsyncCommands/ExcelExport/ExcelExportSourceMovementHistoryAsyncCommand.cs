@@ -56,22 +56,22 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         await FillExcelHeaders(excelPackage);
 
         progressBarVM.SetProgressBar(15, "Загрузка паспортов форм 1.1");
-        var pasUniqData11 = await GetPasUniqData11(db, cts);
+        var pasUniqList11 = await GetPasUniqData11(db, cts);
 
-        progressBarVM.SetProgressBar(30, "Загрузка форм 1.1");
-        var filteredForm11 = await GetFilteredForm11(db, pasUniqData11, pasNum!, factoryNum!, cts);
+        progressBarVM.SetProgressBar(40, "Загрузка форм 1.1");
+        var filteredForm11 = await GetFilteredForm11(db, pasUniqList11, pasNum!, factoryNum!, cts);
 
         progressBarVM.SetProgressBar(50, "Заполнение строчек форм 1.1");
-        await FillExcel_11(filteredForm11);
+        await FillExcel_11(filteredForm11, excelPackage);
 
         progressBarVM.SetProgressBar(55, "Загрузка паспортов форм 1.5");
         var pasUniqList15 = await GetPasUniqData15(db, cts);
 
-        progressBarVM.SetProgressBar(70, "Фильтрация форм 1.5");
+        progressBarVM.SetProgressBar(80, "Загрузка форм 1.5");
         var filteredForm15 = await GetFilteredForm15(db, pasUniqList15, pasNum!, factoryNum!, cts);
 
         progressBarVM.SetProgressBar(90, "Заполнение строчек форм 1.5");
-        await FillExcel_15(filteredForm15);
+        await FillExcel_15(filteredForm15, excelPackage);
 
         progressBarVM.SetProgressBar(95, "Сохранение");
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
@@ -135,7 +135,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
     /// Заполняет строчки в .xlsx файле.
     /// </summary>
     /// <param name="filteredForm11">Отфильтрованный список форм отчётности 1.1.</param>
-    private Task FillExcel_11(IEnumerable<Form11> filteredForm11)
+    private Task FillExcel_11(IEnumerable<Form11> filteredForm11, ExcelPackage excelPackage)
     {
         var dto11List = new List<Form11ExtendedDTO>();
 
@@ -185,6 +185,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         #endregion
 
         var lastRow = 1;
+        Worksheet = excelPackage.Workbook.Worksheets.First(x => x.Name is "Операции по форме 1.1");
         foreach (var dto in dto11List
                      .OrderBy(x => DateOnly.TryParse(x.OperationDate, out var opDate) ? opDate : DateOnly.MaxValue)
                      .ThenBy(x => x.RegNoRep))
@@ -300,7 +301,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
     /// Заполняет строчки в .xlsx файле.
     /// </summary>
     /// <param name="filteredForm15">Отфильтрованный список форм отчётности 1.5.</param>
-    private Task FillExcel_15(IEnumerable<Form15> filteredForm15)
+    private Task FillExcel_15(IEnumerable<Form15> filteredForm15, ExcelPackage excelPackage)
     {
         var dto15List = new List<Form15ExtendedDTO>();
 
@@ -352,6 +353,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         #endregion
 
         var lastRow = 1;
+        Worksheet = excelPackage.Workbook.Worksheets.First(x => x.Name is "Операции по форме 1.5");
         foreach (var dto in dto15List
                      .OrderBy(x => DateOnly.TryParse(x.OperationDate, out var opDate) ? opDate : DateOnly.MaxValue)
                      .ThenBy(x => x.RegNoRep))
