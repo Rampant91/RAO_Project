@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Client_App.Resources;
@@ -13,11 +14,10 @@ internal partial class CustomStringDateComparer : IComparer<string>
         if (string.IsNullOrEmpty(date2) || date2 is "-")
             return -1;
         var r = DateStringRegex();
-        if (r.IsMatch(date1) && r.IsMatch(date2))
+
+        if (DateOnly.TryParse(date1, out var dateOnly1) && DateOnly.TryParse(date2, out var dateOnly2))
         {
-            date1 = StaticStringMethods.StringDateReverse(date1);
-            date2 = StaticStringMethods.StringDateReverse(date2);
-            return string.CompareOrdinal(date1, date2);
+            return string.CompareOrdinal(dateOnly1.ToShortDateString(), dateOnly2.ToShortDateString());
         }
         if (!r.IsMatch(date1) && !r.IsMatch(date2))
             return string.CompareOrdinal(date1, date2);

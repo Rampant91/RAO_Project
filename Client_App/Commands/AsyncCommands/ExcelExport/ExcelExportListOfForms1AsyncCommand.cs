@@ -135,10 +135,10 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
                     if (!DateOnly.TryParse(x.EndPeriod_DB, out var repEndDateTime)) return false;
                     return repEndDateTime >= startDate && repEndDateTime <= endDate;
                 })
-                
                 .OrderBy(x => x.FormNum_DB)
                 .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDateOnly) ? stDateOnly : DateOnly.MaxValue)
                 .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDateOnly) ? endDateOnly : DateOnly.MaxValue)
+                .ThenBy(x => x.CorrectionNumber_DB)
                 .ToList();
             foreach (var rep in repList)
             {
@@ -171,6 +171,34 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
             Worksheet.Cells.AutoFitColumns(); // Под Astra Linux эта команда крашит программу без GDI дров
         }
         Worksheet.View.FreezePanes(2, 1);
+        return Task.CompletedTask;
+    }
+
+    #endregion
+
+    #region FillExcelHeaders
+
+    /// <summary>
+    /// Заполнение заголовков в .xlsx.
+    /// </summary>
+    /// <param name="excelPackage">Excel пакет.</param>
+    private Task FillExcelHeaders(ExcelPackage excelPackage)
+    {
+        Worksheet = excelPackage.Workbook.Worksheets.Add("Список всех форм 1");
+
+        #region Headers
+
+        Worksheet.Cells[1, 1].Value = "Рег.№";
+        Worksheet.Cells[1, 2].Value = "ОКПО";
+        Worksheet.Cells[1, 3].Value = "Форма";
+        Worksheet.Cells[1, 4].Value = "Дата начала";
+        Worksheet.Cells[1, 5].Value = "Дата конца";
+        Worksheet.Cells[1, 6].Value = "Номер кор.";
+        Worksheet.Cells[1, 7].Value = "Количество строк";
+        Worksheet.Cells[1, 8].Value = "Инвентаризация";
+
+        #endregion
+
         return Task.CompletedTask;
     }
 
@@ -412,7 +440,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
     /// </summary>
     /// <param name="db">Модель БД.</param>
     /// <param name="cts">Токен.</param>
-    /// <returns>Список организаций, с головным отчётом по форме 1.0, отсортированный по рег.№.</returns>
+    /// <returns>Список организаций, с головным отчётом по форме 1.0.</returns>
     private static async Task<List<Reports>> GetReportsList(DBModel db, CancellationTokenSource cts)
     {
         return await db.ReportsCollectionDbSet
@@ -424,34 +452,6 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
             .Include(reps => reps.Report_Collection)
             .Where(reps => reps.DBObservableId != null && reps.Master_DB.FormNum_DB == "1.0")
             .ToListAsync(cts.Token);
-    }
-
-    #endregion
-
-    #region FillExcelHeaders
-
-    /// <summary>
-    /// Заполнение заголовков в .xlsx.
-    /// </summary>
-    /// <param name="excelPackage">Excel пакет.</param>
-    private Task FillExcelHeaders(ExcelPackage excelPackage)
-    {
-        Worksheet = excelPackage.Workbook.Worksheets.Add("Список всех форм 1");
-
-        #region Headers
-
-        Worksheet.Cells[1, 1].Value = "Рег.№";
-        Worksheet.Cells[1, 2].Value = "ОКПО";
-        Worksheet.Cells[1, 3].Value = "Форма";
-        Worksheet.Cells[1, 4].Value = "Дата начала";
-        Worksheet.Cells[1, 5].Value = "Дата конца";
-        Worksheet.Cells[1, 6].Value = "Номер кор.";
-        Worksheet.Cells[1, 7].Value = "Количество строк";
-        Worksheet.Cells[1, 8].Value = "Инвентаризация";
-
-        #endregion
-
-        return Task.CompletedTask;
     }
 
     #endregion
@@ -543,7 +543,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
                     ContentHeader = "Уведомление",
                     ContentMessage =
                         "Не удалось совершить выгрузку списка всех отчетов по форме 1 с указанием количества строк," +
-                        $"{Environment.NewLine}поскольку в текущей базе отсутствует отчетность по формам 1/",
+                        $"{Environment.NewLine}поскольку в текущей базе отсутствует отчетность по формам 1./",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner

@@ -34,13 +34,14 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
     {
         var mainWindow = Desktop.MainWindow as MainWindow;
         var cts = new CancellationTokenSource();
-        var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
-        var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
         var forSelectedOrg = parameter!.ToString()!.Contains("Org");
         var selectedReports = (Reports?)mainWindow?.SelectedReports?.FirstOrDefault();
         var formNum = OnlyDigitsRegex().Replace(parameter.ToString()!, "");
         ExportType = $"Выгрузка форм {formNum}";
+
+        var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
         progressBarVM.SetProgressBar(5, "Создание временной БД", "Выгрузка форм", ExportType);
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);

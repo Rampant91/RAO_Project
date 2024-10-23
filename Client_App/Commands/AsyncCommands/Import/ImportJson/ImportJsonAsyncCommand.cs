@@ -297,18 +297,20 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     .ToList();
 
                 orgListToAdd.ForEach(reps =>
-                    {
-                        var newRepCol = reps.Report_Collection
-                            .OrderBy(rep => byte.Parse(rep.FormNum_DB.Split('.')[0]))
-                            .ThenBy(rep => byte.Parse(rep.FormNum_DB.Split('.')[1]))
-                            .ThenByDescending(rep => reps.Master_DB.FormNum_DB.StartsWith('1')
-                                ? DateTime.TryParse(rep.StartPeriod_DB, out var dateTimeValue)
-                                    ? StringDateReverse(dateTimeValue.ToShortDateString())
-                                    : rep.StartPeriod_DB
-                                : rep.Year_DB);
-                        reps.Report_Collection = [];
-                        reps.Report_Collection.AddRange(newRepCol);
-                    });
+                {
+                    var newRepCol = reps.Report_Collection
+                        .OrderBy(rep => byte.Parse(rep.FormNum_DB.Split('.')[0]))
+                        .ThenBy(rep => byte.Parse(rep.FormNum_DB.Split('.')[1]))
+                        .ThenByDescending(rep => reps.Master_DB.FormNum_DB.StartsWith('1')
+                            ? DateOnly.TryParse(rep.StartPeriod_DB, out var stDate) 
+                                ? stDate 
+                                : DateOnly.MaxValue
+                            : DateOnly.TryParse(rep.Year_DB, out var year)
+                                ? year
+                                : DateOnly.MaxValue);
+                    reps.Report_Collection = [];
+                    reps.Report_Collection.AddRange(newRepCol);
+                });
 
                 foreach (var impReps in orgListToAdd)
                 {
@@ -423,7 +425,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
 
                             var sortedRepList = impReps.Report_Collection
                                 .OrderBy(x => x.FormNum_DB)
-                                .ThenBy(x => StringReverse(x.StartPeriod_DB))
+                                .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+                                .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
                                 .ToList();
                             foreach (var rep in sortedRepList)
                             {

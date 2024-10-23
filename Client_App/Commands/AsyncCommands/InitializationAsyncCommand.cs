@@ -208,7 +208,6 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
     /// <summary>
     /// Создание резервной копии БД раз в месяц.
     /// </summary>
-    /// <returns></returns>
     private static Task ProcessDataBaseBackup()
     {
         //Settings.Default.LastDbBackupDate = DateTime.MinValue;    //Сброс даты для тестирования

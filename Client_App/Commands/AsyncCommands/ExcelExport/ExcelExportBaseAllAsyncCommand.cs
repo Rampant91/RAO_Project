@@ -107,7 +107,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null)
-            .OrderBy(x => StringReverse(x.StartPeriod_DB))
+            .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
         foreach (var rep in repList)
         {
@@ -188,7 +189,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.2") && x.Rows12 != null)
-            .OrderBy(x => StringReverse(x.StartPeriod_DB))
+            .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
         foreach (var rep in repList)
         {
@@ -267,7 +269,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.3") && x.Rows13 != null)
-            .OrderBy(x => StringReverse(x.StartPeriod_DB))
+            .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
         foreach (var rep in repList)
         {
@@ -347,7 +350,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.4") && x.Rows14 != null)
-            .OrderBy(x => StringReverse(x.StartPeriod_DB))
+            .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
         foreach (var rep in repList)
         {
@@ -428,7 +432,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.5") && x.Rows15 != null)
-            .OrderBy(x => StringReverse(x.StartPeriod_DB))
+            .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
         foreach (var rep in repList)
         {
@@ -512,7 +517,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.6") && x.Rows16 != null)
-            .OrderBy(x => StringReverse(x.StartPeriod_DB))
+            .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
         foreach (var rep in repList)
         {
@@ -599,7 +605,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.7") && x.Rows17 != null)
-            .OrderBy(x => StringReverse(x.StartPeriod_DB))
+            .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
         foreach (var rep in repList)
         {
@@ -691,7 +698,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     {
         var form = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.8") && x.Rows18 != null)
-            .OrderBy(x => StringReverse(x.StartPeriod_DB))
+            .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
         foreach (var rep in form)
         {
@@ -779,7 +787,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.9") && x.Rows19 != null)
-            .OrderBy(x => StringReverse(x.StartPeriod_DB))
+            .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
         foreach (var rep in repList)
         {

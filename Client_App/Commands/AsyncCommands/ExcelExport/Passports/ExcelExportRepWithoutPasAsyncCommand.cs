@@ -176,8 +176,8 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
                      .OrderBy(x => x.RegNoRep)
                      .ThenBy(x => x.OkpoRep)
                      .ThenBy(x => x.FormNum)
-                     .ThenBy(x => StringReverse(x.StartPeriod))
-                     .ThenBy(x => StringReverse(x.EndPeriod))
+                     .ThenBy(x => DateOnly.TryParse(x.StartPeriod, out var stDate) ? stDate : DateOnly.MaxValue)
+                     .ThenBy(x => DateOnly.TryParse(x.EndPeriod, out var endDate) ? endDate : DateOnly.MaxValue)
                      .ThenBy(x => x.NumberInOrder))
         {
             #region BindingCells

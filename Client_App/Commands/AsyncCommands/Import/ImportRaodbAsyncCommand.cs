@@ -12,7 +12,6 @@ using System.Linq;
 using Client_App.Interfaces.Logger;
 using MessageBox.Avalonia.Enums;
 using Models.DTO;
-using static Client_App.Resources.StaticStringMethods;
 using Avalonia.Threading;
 
 namespace Client_App.Commands.AsyncCommands.Import;
@@ -50,18 +49,18 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 #region MessageFailedToReadFile
 
                 await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                            {
-                                ButtonDefinitions = ButtonEnum.Ok,
-                                ContentTitle = "Импорт из .raodb",
-                                ContentHeader = "Ошибка",
-                                ContentMessage =
-                                    $"Не удалось прочесть файл {path}," +
-                                    $"{Environment.NewLine}файл поврежден или не содержит данных.",
-                                MinWidth = 400,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(Desktop.MainWindow)); 
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = ButtonEnum.Ok,
+                        ContentTitle = "Импорт из .raodb",
+                        ContentHeader = "Ошибка",
+                        ContentMessage =
+                            $"Не удалось прочесть файл {path}," +
+                            $"{Environment.NewLine}файл поврежден или не содержит данных.",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(Desktop.MainWindow)); 
 
                 #endregion
 
@@ -186,9 +185,10 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                         #region LoggerImport
 
                         var sortedRepList = impReps.Report_Collection
-                                            .OrderBy(x => x.FormNum_DB)
-                                            .ThenBy(x => StringReverse(x.StartPeriod_DB))
-                                            .ToList();
+                            .OrderBy(x => x.FormNum_DB)
+                            .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+                            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
+                            .ToList();
                         foreach (var rep in sortedRepList)
                         {
                             ImpRepCorNum = rep.CorrectionNumber_DB;

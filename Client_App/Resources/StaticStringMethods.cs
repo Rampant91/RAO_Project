@@ -176,35 +176,6 @@ public static partial class StaticStringMethods
 
     #endregion
 
-    #region StringDateReverse
-
-    internal static string StringDateReverse(string date)
-    {
-        var charArray = date.Replace("_", "0").Replace("/", ".").Split(".");
-        if (charArray[0].Length == 1)
-            charArray[0] = $"0{charArray[0]}";
-        if (charArray[1].Length == 1)
-            charArray[1] = $"0{charArray[0]}";
-        if (charArray[2].Length == 2)
-            charArray[2] = $"20{charArray[0]}";
-        Array.Reverse(charArray);
-        return string.Join("", charArray);
-    }
-
-    #endregion
-
-    #region StringReverse
-
-    internal static string? StringReverse(string? str)
-    {
-        if (str is null) return null;
-        var charArray = str.Replace("_", "0").Replace("/", ".").Split(".");
-        Array.Reverse(charArray);
-        return string.Join("", charArray);
-    }
-
-    #endregion
-
     #region TranslateToEng
 
     internal static string TranslateToEng(string pasName)

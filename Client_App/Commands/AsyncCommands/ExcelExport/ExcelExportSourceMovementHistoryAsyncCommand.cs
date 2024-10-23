@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Resources;
-using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.DTO;
+using Models.Forms.Form1;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
@@ -26,170 +26,122 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 /// </summary>
 public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsyncCommand
 {
-    /// <summary>
-    /// DTO уникальных данных паспорта.
-    /// </summary>
-    /// <param name="id"></param>
-    /// <param name="facNum">Заводской номер.</param>
-    /// <param name="pasNum">Номер паспорта.</param>
-    private class PasUniqDataDTO(int id, string facNum, string pasNum)
-    {
-        public readonly int Id = id;
-
-        public readonly string FacNum = facNum;
-
-        public readonly string PasNum = pasNum;
-    }
-
-    private AnyTaskProgressBar progressBar;
+    public override bool CanExecute(object? parameter) => true;
 
     public override async Task AsyncExecute(object? parameter)
     {
         if (parameter is null) return;
         var cts = new CancellationTokenSource();
         ExportType = "История_движения_источника";
+        var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
+
+        progressBarVM.SetProgressBar(5, "Проверка правильности заполнения паспорта", "Выгрузка в .xlsx", ExportType);
         StaticMethods.PassportUniqParam(parameter, out _, out _, out _, out var pasNum, out var factoryNum);
+        await CheckPasParam(pasNum, factoryNum, progressBar, cts);
+
+        progressBarVM.SetProgressBar(7, "Запрос пути сохранения");
+        var fileName = $"{ExportType}_{RemoveForbiddenChars(pasNum!)}_{RemoveForbiddenChars(factoryNum!)}_{Assembly.GetExecutingAssembly().GetName().Version}";
+        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+
+        progressBarVM.SetProgressBar(9, "Создание временной БД", 
+            $"Выгрузка движения источника{Environment.NewLine}" + $"{pasNum}_{factoryNum}", ExportType);
+        var tmpDbPath = await CreateTempDataBase(progressBar, cts);
+        await using var db = new DBModel(tmpDbPath);
+
+        progressBarVM.SetProgressBar(11, "Инициализация Excel пакета");
+        using var excelPackage = await InitializeExcelPackage(fullPath);
+
+        progressBarVM.SetProgressBar(13, "Заполнение заголовков");
+        await FillExcelHeaders(excelPackage);
+
+        progressBarVM.SetProgressBar(15, "Загрузка паспортов форм 1.1");
+        var pasUniqData11 = await GetPasUniqData11(db, cts);
+
+        progressBarVM.SetProgressBar(30, "Загрузка форм 1.1");
+        var filteredForm11 = await GetFilteredForm11(db, pasUniqData11, pasNum!, factoryNum!, cts);
+
+        progressBarVM.SetProgressBar(50, "Заполнение строчек форм 1.1");
+        await FillExcel_11(filteredForm11);
+
+        progressBarVM.SetProgressBar(55, "Загрузка паспортов форм 1.5");
+        var pasUniqList15 = await GetPasUniqData15(db, cts);
+
+        progressBarVM.SetProgressBar(70, "Фильтрация форм 1.5");
+        var filteredForm15 = await GetFilteredForm15(db, pasUniqList15, pasNum!, factoryNum!, cts);
+
+        progressBarVM.SetProgressBar(90, "Заполнение строчек форм 1.5");
+        await FillExcel_15(filteredForm15);
+
+        progressBarVM.SetProgressBar(95, "Сохранение");
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+
+        progressBarVM.SetProgressBar(98, "Очистка временных данных");
+        try
+        {
+            File.Delete(tmpDbPath);
+        }
+        catch
+        {
+            // ignored
+        }
+
+        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+        await progressBar.CloseAsync();
+    }
+
+    #region CheckPasParam
+
+    /// <summary>
+    /// Проверяет корректность номера паспорта и заводского номера и в случае некорректных значений выводит сообщение и завершает выполнение команды.
+    /// </summary>
+    /// <param name="pasNum">Номер паспорта.</param>
+    /// <param name="factoryNum">Заводской номер.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
+    private static async Task CheckPasParam(string? pasNum, string? factoryNum, AnyTaskProgressBar progressBar, CancellationTokenSource cts)
+    {
         if (string.IsNullOrEmpty(pasNum) || string.IsNullOrEmpty(factoryNum) || pasNum is "-" && factoryNum is "-")
         {
             #region MessageFailedToLoadPassportUniqParam
 
             await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в Excel",
-                        ContentMessage = "Не удалось выполнить выгрузку в Excel истории движения источника,"
-                        + $"{Environment.NewLine}поскольку не заполнено одно из следующих полей:" +
-                        $"{Environment.NewLine}- номер паспорта (сертификата);" +
-                        $"{Environment.NewLine}- номер источника.",
-                        MinHeight = 100,
-                        MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = ButtonEnum.Ok,
+                    CanResize = true,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentMessage = "Не удалось выполнить выгрузку в Excel истории движения источника,"
+                                     + $"{Environment.NewLine}поскольку не заполнено одно из следующих полей:" +
+                                     $"{Environment.NewLine}- номер паспорта (сертификата);" +
+                                     $"{Environment.NewLine}- номер источника.",
+                    MinHeight = 100,
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(progressBar ?? Desktop.MainWindow));
 
-                #endregion
+            #endregion
 
-            return;
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
+    }
 
-        var fileName = $"{ExportType}_{RemoveForbiddenChars(pasNum)}_{RemoveForbiddenChars(factoryNum)}_{Assembly.GetExecutingAssembly().GetName().Version}";
-        (string fullPath, bool openTemp) result;
-        try
-        {
-            result = await ExcelGetFullPath(fileName, cts);
-        }
-        catch
-        {
-            return;
-        }
-        var fullPath = result.fullPath;
-        var openTemp = result.openTemp;
-        if (string.IsNullOrEmpty(fullPath)) return;
+    #endregion
 
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar = new AnyTaskProgressBar(cts));
-        var progressBarVM = progressBar.AnyTaskProgressBarVM;
-        progressBarVM.ExportType = ExportType;
-        progressBarVM.ExportName = $"Выгрузка движения источника{Environment.NewLine}" + $"{pasNum}_{factoryNum}";
-        var loadStatus = "Создание временной БД";
-        progressBarVM.ValueBar = 2;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+    #region FillExcel_11
 
-        var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
-        try
-        {
-            if (!StaticConfiguration.IsFileLocked(dbReadOnlyPath))
-            {
-                File.Delete(dbReadOnlyPath);
-                File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), dbReadOnlyPath);
-            }
-        }
-        catch
-        {
-            return;
-        }
-
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        using ExcelPackage excelPackage = new(new FileInfo(fullPath));
-        excelPackage.Workbook.Properties.Author = "RAO_APP";
-        excelPackage.Workbook.Properties.Title = "Report";
-        excelPackage.Workbook.Properties.Created = DateTime.Now;
-
-        #region FillForm_1.1
-
-        Worksheet = excelPackage.Workbook.Worksheets.Add("Операции по форме 1.1");
-
-        #region ColumnHeaders
-
-        Worksheet.Cells[1, 1].Value = "Рег. №";
-        Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-        Worksheet.Cells[1, 3].Value = "ОКПО";
-        Worksheet.Cells[1, 4].Value = "Форма";
-        Worksheet.Cells[1, 5].Value = "Дата начала периода";
-        Worksheet.Cells[1, 6].Value = "Дата конца периода";
-        Worksheet.Cells[1, 7].Value = "Номер корректировки";
-        Worksheet.Cells[1, 8].Value = "Количество строк";
-        Worksheet.Cells[1, 9].Value = "№ п/п";
-        Worksheet.Cells[1, 10].Value = "код";
-        Worksheet.Cells[1, 11].Value = "дата";
-        Worksheet.Cells[1, 12].Value = "номер паспорта (сертификата)";
-        Worksheet.Cells[1, 13].Value = "тип";
-        Worksheet.Cells[1, 14].Value = "радионуклиды";
-        Worksheet.Cells[1, 15].Value = "номер";
-        Worksheet.Cells[1, 16].Value = "количество, шт";
-        Worksheet.Cells[1, 17].Value = "суммарная активность, Бк";
-        Worksheet.Cells[1, 18].Value = "код ОКПО изготовителя";
-        Worksheet.Cells[1, 19].Value = "дата выпуска";
-        Worksheet.Cells[1, 20].Value = "категория";
-        Worksheet.Cells[1, 21].Value = "НСС, мес";
-        Worksheet.Cells[1, 22].Value = "код формы собственности";
-        Worksheet.Cells[1, 23].Value = "код ОКПО правообладателя";
-        Worksheet.Cells[1, 24].Value = "вид";
-        Worksheet.Cells[1, 25].Value = "номер";
-        Worksheet.Cells[1, 26].Value = "дата";
-        Worksheet.Cells[1, 27].Value = "поставщика или получателя";
-        Worksheet.Cells[1, 28].Value = "перевозчика";
-        Worksheet.Cells[1, 29].Value = "наименование";
-        Worksheet.Cells[1, 30].Value = "тип";
-        Worksheet.Cells[1, 31].Value = "номер";
-
-        #endregion
-
-        await using var dbReadOnly = new DBModel(dbReadOnlyPath);
-
-        loadStatus = "Загрузка паспортов форм 1.1";
-        progressBarVM.ValueBar = 5;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
-        var form11PasList = await dbReadOnly.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
-            .SelectMany(reps => reps.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.1")
-                .SelectMany(rep => rep.Rows11
-                    .Select(form11 => 
-                        new PasUniqDataDTO(form11.Id, 
-                            form11.FactoryNumber_DB, 
-                            form11.PassportNumber_DB))))
-            .ToListAsync(cancellationToken: cts.Token);
-
-        loadStatus = "Загрузка отчётов 1.1";
-        progressBarVM.ValueBar = 45;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
-        var filteredForm11 = form11PasList
-            .Where(form11 => ComparePasParam(form11.PasNum + form11.FacNum, pasNum + factoryNum))
-            .ToList();
-
+    /// <summary>
+    /// Заполняет строчки в .xlsx файле.
+    /// </summary>
+    /// <param name="filteredForm11">Отфильтрованный список форм отчётности 1.1.</param>
+    private Task FillExcel_11(IEnumerable<Form11> filteredForm11)
+    {
         var dto11List = new List<Form11ExtendedDTO>();
-        foreach (var form11 in filteredForm11.Select(form => dbReadOnly.form_11
-                     .AsSplitQuery()
-                     .Include(form11 => form11.Report).ThenInclude(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
-                     .Include(form11 => form11.Report).ThenInclude(rep => rep.Rows11)
-                     .AsQueryable()
-                     .First(form11 => form11.Id == form.Id)))
+
+        #region BindDtoList
+
+        foreach (var form11 in filteredForm11)
         {
             if (form11.Report?.Reports is null) continue;
             var rep = form11.Report;
@@ -230,9 +182,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
             });
         }
 
-        progressBarVM.LoadStatus = "Заполнение форм 1.1";
-        progressBarVM.ValueBar = 47;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        #endregion
 
         var lastRow = 1;
         foreach (var dto in dto11List
@@ -339,88 +289,29 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         Worksheet.Cells[headersCellsString].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
         Worksheet.Cells[headersCellsString].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
-        #endregion
+        return Task.CompletedTask;
+    }
 
-        #region FillForm_1.5
+    #endregion
 
-        Worksheet = excelPackage.Workbook.Worksheets.Add("Операции по форме 1.5");
+    #region FillExcel_15
 
-        #region ColumnHeaders
+    /// <summary>
+    /// Заполняет строчки в .xlsx файле.
+    /// </summary>
+    /// <param name="filteredForm15">Отфильтрованный список форм отчётности 1.5.</param>
+    private Task FillExcel_15(IEnumerable<Form15> filteredForm15)
+    {
+        var dto15List = new List<Form15ExtendedDTO>();
 
-        Worksheet.Cells[1, 1].Value = "Рег. №";
-        Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-        Worksheet.Cells[1, 3].Value = "ОКПО";
-        Worksheet.Cells[1, 4].Value = "Форма";
-        Worksheet.Cells[1, 5].Value = "Дата начала периода";
-        Worksheet.Cells[1, 6].Value = "Дата конца периода";
-        Worksheet.Cells[1, 7].Value = "Номер корректировки";
-        Worksheet.Cells[1, 8].Value = "Количество строк";
-        Worksheet.Cells[1, 9].Value = "№ п/п";
-        Worksheet.Cells[1, 10].Value = "код";
-        Worksheet.Cells[1, 11].Value = "дата";
-        Worksheet.Cells[1, 12].Value = $"номер паспорта (сертификата) ЗРИ,{Environment.NewLine}акта определения характеристик ОЗИИ";
-        Worksheet.Cells[1, 13].Value = "тип";
-        Worksheet.Cells[1, 14].Value = "радионуклиды";
-        Worksheet.Cells[1, 15].Value = "номер";
-        Worksheet.Cells[1, 16].Value = "количество, шт";
-        Worksheet.Cells[1, 17].Value = "суммарная активность, Бк";
-        Worksheet.Cells[1, 18].Value = "дата выпуска";
-        Worksheet.Cells[1, 19].Value = "статус РАО";
-        Worksheet.Cells[1, 20].Value = "вид";
-        Worksheet.Cells[1, 21].Value = "номер";
-        Worksheet.Cells[1, 22].Value = "дата";
-        Worksheet.Cells[1, 23].Value = "поставщика или получателя";
-        Worksheet.Cells[1, 24].Value = "перевозчика";
-        Worksheet.Cells[1, 25].Value = "наименование";
-        Worksheet.Cells[1, 26].Value = "тип";
-        Worksheet.Cells[1, 27].Value = "заводской номер";
-        Worksheet.Cells[1, 28].Value = "наименование";
-        Worksheet.Cells[1, 29].Value = "код";
-        Worksheet.Cells[1, 30].Value = "Код переработки / сортировки РАО";
-        Worksheet.Cells[1, 31].Value = "Субсидия, %";
-        Worksheet.Cells[1, 32].Value = "Номер мероприятия ФЦП";
-        Worksheet.Cells[1, 33].Value = "Номер договора";
+        #region BindDtoList
 
-        #endregion
-
-        progressBarVM.LoadStatus = "Загрузка паспортов форм 1.5";
-        progressBarVM.ValueBar = 50;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
-        var form15PasList = dbReadOnly.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
-            .SelectMany(reps => reps.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.5")
-                .SelectMany(rep => rep.Rows15
-                    .Select(form15 => new PasUniqDataDTO(form15.Id,
-                        form15.FactoryNumber_DB,
-                        form15.PassportNumber_DB))))
-            .ToListAsync(cancellationToken: cts.Token)
-            .Result;
-
-        loadStatus = "Загрузка отчётов 1.5";
-        progressBarVM.ValueBar = 90;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-
-        var filteredForm15 = form15PasList
-            .Where(form15 => ComparePasParam(form15.PasNum + form15.FacNum, pasNum + factoryNum))
-            .ToList();
-
-        var dto15List = new List<Form15DTO>();
-        foreach (var form15 in filteredForm15.Select(form => dbReadOnly.form_15
-                     .AsSplitQuery()
-                     .Include(form15 => form15.Report).ThenInclude(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
-                     .Include(form15 => form15.Report).ThenInclude(rep => rep.Rows15)
-                     .AsQueryable()
-                     .First(form11 => form11.Id == form.Id)))
+        foreach (var form15 in filteredForm15)
         {
             if (form15.Report?.Reports is null) continue;
             var rep = form15.Report;
             var reps = form15.Report.Reports;
-            dto15List.Add(new Form15DTO
+            dto15List.Add(new Form15ExtendedDTO
             {
                 RegNoRep = reps.Master.RegNoRep.Value,
                 ShortJurLico = reps.Master.ShortJurLicoRep.Value,
@@ -458,13 +349,11 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
             });
         }
 
-        progressBarVM.LoadStatus = "Заполнение форм 1.5";
-        progressBarVM.ValueBar = 93;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        #endregion
 
-        lastRow = 1;
+        var lastRow = 1;
         foreach (var dto in dto15List
-                     .OrderBy(x => StringDateReverse(x.OperationDate))
+                     .OrderBy(x => DateOnly.TryParse(x.OperationDate, out var opDate) ? opDate : DateOnly.MaxValue)
                      .ThenBy(x => x.RegNoRep))
         {
             if (lastRow == 1)
@@ -565,24 +454,218 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         {
             Worksheet.Cells.AutoFitColumns();
         }
-        headersCellsString = "A1:A" + Worksheet.Dimension.End.Column;
+        var headersCellsString = "A1:A" + Worksheet.Dimension.End.Column;
         Worksheet.Cells[headersCellsString].Style.WrapText = true;
         Worksheet.Cells[headersCellsString].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
         Worksheet.Cells[headersCellsString].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
+        return Task.CompletedTask;
+    }
+
+    #endregion
+
+    #region FillExcelHeaders
+
+    /// <summary>
+    /// Заполняет заголовки в .xlsx файле.
+    /// </summary>
+    /// <param name="excelPackage">Excel пакет.</param>
+    private Task FillExcelHeaders(ExcelPackage excelPackage)
+    {
+        #region 1.1
+
+        Worksheet = excelPackage.Workbook.Worksheets.Add("Операции по форме 1.1");
+
+        Worksheet.Cells[1, 1].Value = "Рег. №";
+        Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+        Worksheet.Cells[1, 3].Value = "ОКПО";
+        Worksheet.Cells[1, 4].Value = "Форма";
+        Worksheet.Cells[1, 5].Value = "Дата начала периода";
+        Worksheet.Cells[1, 6].Value = "Дата конца периода";
+        Worksheet.Cells[1, 7].Value = "Номер корректировки";
+        Worksheet.Cells[1, 8].Value = "Количество строк";
+        Worksheet.Cells[1, 9].Value = "№ п/п";
+        Worksheet.Cells[1, 10].Value = "код";
+        Worksheet.Cells[1, 11].Value = "дата";
+        Worksheet.Cells[1, 12].Value = "номер паспорта (сертификата)";
+        Worksheet.Cells[1, 13].Value = "тип";
+        Worksheet.Cells[1, 14].Value = "радионуклиды";
+        Worksheet.Cells[1, 15].Value = "номер";
+        Worksheet.Cells[1, 16].Value = "количество, шт";
+        Worksheet.Cells[1, 17].Value = "суммарная активность, Бк";
+        Worksheet.Cells[1, 18].Value = "код ОКПО изготовителя";
+        Worksheet.Cells[1, 19].Value = "дата выпуска";
+        Worksheet.Cells[1, 20].Value = "категория";
+        Worksheet.Cells[1, 21].Value = "НСС, мес";
+        Worksheet.Cells[1, 22].Value = "код формы собственности";
+        Worksheet.Cells[1, 23].Value = "код ОКПО правообладателя";
+        Worksheet.Cells[1, 24].Value = "вид";
+        Worksheet.Cells[1, 25].Value = "номер";
+        Worksheet.Cells[1, 26].Value = "дата";
+        Worksheet.Cells[1, 27].Value = "поставщика или получателя";
+        Worksheet.Cells[1, 28].Value = "перевозчика";
+        Worksheet.Cells[1, 29].Value = "наименование";
+        Worksheet.Cells[1, 30].Value = "тип";
+        Worksheet.Cells[1, 31].Value = "номер";
+
         #endregion
 
-        progressBarVM.LoadStatus = "Сохранение";
-        progressBarVM.ValueBar = 95;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        #region 1.5
 
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
+        Worksheet = excelPackage.Workbook.Worksheets.Add("Операции по форме 1.5");
 
-        progressBarVM.LoadStatus = "Завершение выгрузки";
-        progressBarVM.ValueBar = 100;
-        progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
+        Worksheet.Cells[1, 1].Value = "Рег. №";
+        Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+        Worksheet.Cells[1, 3].Value = "ОКПО";
+        Worksheet.Cells[1, 4].Value = "Форма";
+        Worksheet.Cells[1, 5].Value = "Дата начала периода";
+        Worksheet.Cells[1, 6].Value = "Дата конца периода";
+        Worksheet.Cells[1, 7].Value = "Номер корректировки";
+        Worksheet.Cells[1, 8].Value = "Количество строк";
+        Worksheet.Cells[1, 9].Value = "№ п/п";
+        Worksheet.Cells[1, 10].Value = "код";
+        Worksheet.Cells[1, 11].Value = "дата";
+        Worksheet.Cells[1, 12].Value = $"номер паспорта (сертификата) ЗРИ,{Environment.NewLine}акта определения характеристик ОЗИИ";
+        Worksheet.Cells[1, 13].Value = "тип";
+        Worksheet.Cells[1, 14].Value = "радионуклиды";
+        Worksheet.Cells[1, 15].Value = "номер";
+        Worksheet.Cells[1, 16].Value = "количество, шт";
+        Worksheet.Cells[1, 17].Value = "суммарная активность, Бк";
+        Worksheet.Cells[1, 18].Value = "дата выпуска";
+        Worksheet.Cells[1, 19].Value = "статус РАО";
+        Worksheet.Cells[1, 20].Value = "вид";
+        Worksheet.Cells[1, 21].Value = "номер";
+        Worksheet.Cells[1, 22].Value = "дата";
+        Worksheet.Cells[1, 23].Value = "поставщика или получателя";
+        Worksheet.Cells[1, 24].Value = "перевозчика";
+        Worksheet.Cells[1, 25].Value = "наименование";
+        Worksheet.Cells[1, 26].Value = "тип";
+        Worksheet.Cells[1, 27].Value = "заводской номер";
+        Worksheet.Cells[1, 28].Value = "наименование";
+        Worksheet.Cells[1, 29].Value = "код";
+        Worksheet.Cells[1, 30].Value = "Код переработки / сортировки РАО";
+        Worksheet.Cells[1, 31].Value = "Субсидия, %";
+        Worksheet.Cells[1, 32].Value = "Номер мероприятия ФЦП";
+        Worksheet.Cells[1, 33].Value = "Номер договора";
+
+        #endregion
+
+        return Task.CompletedTask;
     }
+
+    #endregion
+
+    #region GetFilteredForm11
+
+    /// <summary>
+    /// Получение отфильтрованного списка форм отчётности 1.1.
+    /// </summary>
+    /// <param name="db">Модель БД.</param>
+    /// <param name="form11PasList">Список уникальных параметров паспортов.</param>
+    /// <param name="pasNum">Искомый номер паспорта.</param>
+    /// <param name="factoryNum">Искомый заводской номер.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns>Отфильтрованный список форм отчётности 1.1.</returns>
+    private static async Task<IEnumerable<Form11>> GetFilteredForm11(DBModel db, List<PasUniqDataDTO> form11PasList, string pasNum, string factoryNum, CancellationTokenSource cts)
+    {
+        List<Form11> filteredForm11 = [];
+        foreach (var form in form11PasList
+                    .Where(form11 => ComparePasParam(form11.PasNum + form11.FacNum, pasNum + factoryNum)))
+        {
+            filteredForm11.Add(await db.form_11
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(form11 => form11.Report).ThenInclude(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
+                .Include(form11 => form11.Report).ThenInclude(rep => rep.Rows11)
+                .FirstAsync(form11 => form11.Id == form.Id, cts.Token));
+        }
+        return filteredForm11;
+    }
+
+    #endregion
+
+    #region GetFilteredForm15
+
+    /// <summary>
+    /// Получение отфильтрованного списка форм отчётности 1.5.
+    /// </summary>
+    /// <param name="db">Модель БД.</param>
+    /// <param name="form15PasList">Список уникальных параметров паспортов.</param>
+    /// <param name="pasNum">Искомый номер паспорта.</param>
+    /// <param name="factoryNum">Искомый заводской номер.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns>Отфильтрованный список форм отчётности 1.5.</returns>
+    private static async Task<IEnumerable<Form15>> GetFilteredForm15(DBModel db, List<PasUniqDataDTO> form15PasList, string pasNum, string factoryNum, CancellationTokenSource cts)
+    {
+        List<Form15> filteredForm15 = [];
+        foreach (var form in form15PasList
+                     .Where(form15 => ComparePasParam(form15.PasNum + form15.FacNum, pasNum + factoryNum)))
+        {
+            filteredForm15.Add(await db.form_15
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(form15 => form15.Report).ThenInclude(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
+                .Include(form15 => form15.Report).ThenInclude(rep => rep.Rows15)
+                .FirstAsync(form15 => form15.Id == form.Id, cts.Token));
+        }
+        return filteredForm15;
+    }
+
+    #endregion
+
+    #region GetPasUniqData11
+
+    /// <summary>
+    /// Получение списка уникальных параметров паспортов для форм отчётности 1.1.
+    /// </summary>
+    /// <param name="db">Модель БД.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns>Список уникальных параметров паспортов.</returns>
+    private static async Task<List<PasUniqDataDTO>> GetPasUniqData11(DBModel db, CancellationTokenSource cts)
+    {
+        return await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+            .SelectMany(reps => reps.Report_Collection
+                .Where(rep => rep.FormNum_DB == "1.1")
+                .SelectMany(rep => rep.Rows11
+                    .Select(form11 =>
+                        new PasUniqDataDTO(form11.Id,
+                            form11.FactoryNumber_DB,
+                            form11.PassportNumber_DB))))
+            .ToListAsync(cts.Token);
+    }
+
+    #endregion
+
+    #region GetPasUniqData15
+
+    /// <summary>
+    /// Получение списка уникальных параметров паспортов для форм отчётности 1.5.
+    /// </summary>
+    /// <param name="db">Модель БД.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns>Список уникальных параметров паспортов.</returns>
+    private static async Task<List<PasUniqDataDTO>> GetPasUniqData15(DBModel db, CancellationTokenSource cts)
+    {
+        return await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
+            .SelectMany(reps => reps.Report_Collection
+                .Where(rep => rep.FormNum_DB == "1.5")
+                .SelectMany(rep => rep.Rows15
+                    .Select(form15 =>
+                        new PasUniqDataDTO(form15.Id,
+                            form15.FactoryNumber_DB,
+                            form15.PassportNumber_DB))))
+            .ToListAsync(cts.Token);
+    }
+
+    #endregion
 
     #region RemoveForbiddenChars
 
@@ -604,6 +687,25 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
     /// <returns></returns>
     [GeneratedRegex("[\\\\/:*?\"<>|]")]
     private static partial Regex ForbiddenCharsRegex();
+
+    #endregion
+
+    #region PasUniqDataDTO
+
+    /// <summary>
+    /// DTO уникальных данных паспорта.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="facNum">Заводской номер.</param>
+    /// <param name="pasNum">Номер паспорта.</param>
+    private class PasUniqDataDTO(int id, string facNum, string pasNum)
+    {
+        public readonly int Id = id;
+
+        public readonly string FacNum = facNum;
+
+        public readonly string PasNum = pasNum;
+    }
 
     #endregion
 }
