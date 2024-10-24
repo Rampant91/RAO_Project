@@ -703,18 +703,20 @@ public abstract class CheckF13 : CheckBase
     private static List<CheckError> Check_025(List<Form13> forms, Report rep, int line)
     {
         List<CheckError> result = new();
+        var docDateStr = ReplaceNullAndTrim(forms[line].DocumentDate_DB);
         var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var opDateStr = ReplaceNullAndTrim(forms[line].OperationDate_DB);
         var stPerStr = ReplaceNullAndTrim(rep.StartPeriod_DB);
         var endPerStr = ReplaceNullAndTrim(rep.EndPeriod_DB);
-        var docDateStr = ReplaceNullAndTrim(forms[line].DocumentDate_DB);
-        if (opCode is not "10" 
+        if (opCode is not "10"
             || !DateOnly.TryParse(docDateStr, out var docDate)
-            || !DateOnly.TryParse(stPerStr, out var stDate)
-            || !DateOnly.TryParse(endPerStr, out var endDate))
+            || !DateOnly.TryParse(stPerStr, out var stPer)
+            || !DateOnly.TryParse(opDateStr, out var opDate)
+            || !DateOnly.TryParse(endPerStr, out var dateEndReal))
         {
             return result;
         }
-        if (docDate < stDate)
+        if (opDate > docDate)
         {
             result.Add(new CheckError
             {
@@ -722,11 +724,10 @@ public abstract class CheckF13 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentDate_DB",
                 Value = docDateStr,
-                Message = $"Дата документа не входит в отчетный период. " +
-                          $"Дата документа ({docDate} не может быть ранее даты начала отчётного периода {stDate}.)"
+                Message = "Для операции инвентаризации дата операции не может превышать даты утверждения акта инвентаризации."
             });
         }
-        if (docDate > endDate)
+        if (docDate < stPer)
         {
             result.Add(new CheckError
             {
@@ -735,7 +736,19 @@ public abstract class CheckF13 : CheckBase
                 Column = "DocumentDate_DB",
                 Value = docDateStr,
                 Message = $"Дата документа не входит в отчетный период. " +
-                          $"Дата документа ({docDate} не может быть позднее даты окончания отчётного периода {endDate}.)"
+                          $"Дата документа ({docDate} не может быть ранее даты начала отчётного периода {stPerStr}.)"
+            });
+        }
+        if (docDate > dateEndReal)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_13",
+                Row = (line + 1).ToString(),
+                Column = "DocumentDate_DB",
+                Value = docDateStr,
+                Message = $"Дата документа не входит в отчетный период. " +
+                          $"Дата документа ({docDate} не может быть позднее даты окончания отчётного периода {endPerStr}.)"
             });
         }
         return result;

@@ -651,16 +651,29 @@ public abstract class CheckF14 : CheckBase
     private static List<CheckError> Check_023(List<Form14> forms, Report rep, int line)
     {
         List<CheckError> result = new();
-        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var docDateStr = ReplaceNullAndTrim(forms[line].DocumentDate_DB);
+        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var opDateStr = ReplaceNullAndTrim(forms[line].OperationDate_DB);
         var stPerStr = ReplaceNullAndTrim(rep.StartPeriod_DB);
         var endPerStr = ReplaceNullAndTrim(rep.EndPeriod_DB);
         if (opCode is not "10"
             || !DateOnly.TryParse(docDateStr, out var docDate)
             || !DateOnly.TryParse(stPerStr, out var stPer)
-            || !DateOnly.TryParse(endPerStr, out var endPer))
+            || !DateOnly.TryParse(opDateStr, out var opDate)
+            || !DateOnly.TryParse(endPerStr, out var dateEndReal))
         {
             return result;
+        }
+        if (opDate > docDate)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_14",
+                Row = (line + 1).ToString(),
+                Column = "DocumentDate_DB",
+                Value = docDateStr,
+                Message = "Для операции инвентаризации дата операции не может превышать даты утверждения акта инвентаризации."
+            });
         }
         if (docDate < stPer)
         {
@@ -674,7 +687,7 @@ public abstract class CheckF14 : CheckBase
                           $"Дата документа ({docDateStr} не может быть ранее даты начала отчётного периода {stPerStr}.)"
             });
         }
-        if (docDate > endPer)
+        if (docDate > dateEndReal)
         {
             result.Add(new CheckError
             {

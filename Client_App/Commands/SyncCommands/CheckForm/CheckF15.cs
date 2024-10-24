@@ -618,25 +618,37 @@ public abstract class CheckF15 : CheckBase
 
     #endregion
 
-    #region Check006
+    #region Check006_03
 
     //Дата документа входит в отчетный период (колонка 3)
     private static List<CheckError> Check_006_03(List<Form15> forms, Report rep, int line)
     {
         List<CheckError> result = new();
-        string[] applicableOperationCodes = { "10" };
-        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var docDateStr = ReplaceNullAndTrim(forms[line].DocumentDate_DB);
+        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var opDateStr = ReplaceNullAndTrim(forms[line].OperationDate_DB);
         var stPerStr = ReplaceNullAndTrim(rep.StartPeriod_DB);
         var endPerStr = ReplaceNullAndTrim(rep.EndPeriod_DB);
-        if (!applicableOperationCodes.Contains(opCode)
-            || !DateOnly.TryParse(stPerStr, out var pStart)
-            || !DateOnly.TryParse(endPerStr, out var pEnd)
-            || !DateOnly.TryParse(docDateStr, out var docDate))
+        if (opCode is not "10"
+            || !DateOnly.TryParse(docDateStr, out var docDate)
+            || !DateOnly.TryParse(stPerStr, out var stPer)
+            || !DateOnly.TryParse(opDateStr, out var opDate)
+            || !DateOnly.TryParse(endPerStr, out var dateEndReal))
         {
             return result;
         }
-        var valid = docDate >= pStart && docDate <= pEnd;
+        if (opDate > docDate)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_15",
+                Row = (line + 1).ToString(),
+                Column = "DocumentDate_DB",
+                Value = docDateStr,
+                Message = "Для операции инвентаризации дата операции не может превышать даты утверждения акта инвентаризации."
+            });
+        }
+        var valid = docDate >= stPer && docDate <= dateEndReal;
         if (!valid)
         {
             result.Add(new CheckError

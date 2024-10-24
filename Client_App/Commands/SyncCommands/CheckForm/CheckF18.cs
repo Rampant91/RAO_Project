@@ -471,15 +471,31 @@ public abstract class CheckF18 : CheckBase
     private static List<CheckError> Check_006_10(List<Form18> forms, Report rep, int line)
     {
         List<CheckError> result = new();
-        string[] applicableOperationCodes = { "10" };
-        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
-        var documentDate = ReplaceNullAndTrim(forms[line].DocumentDate_DB);
-        if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var valid = rep is { StartPeriod_DB: not null, EndPeriod_DB: not null } 
-                    && DateOnly.TryParse(rep.StartPeriod_DB, out var pStart)
-                    && DateOnly.TryParse(rep.EndPeriod_DB, out var pEnd)
-                    && DateOnly.TryParse(documentDate, out var pMid)
-                    && pMid >= pStart && pMid <= pEnd;
+        var docDateStr = ReplaceNullAndTrim(forms[line].DocumentDate_DB);
+        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
+        var opDateStr = ReplaceNullAndTrim(forms[line].OperationDate_DB);
+        var stPerStr = ReplaceNullAndTrim(rep.StartPeriod_DB);
+        var endPerStr = ReplaceNullAndTrim(rep.EndPeriod_DB);
+        if (opCode is not "10"
+            || !DateOnly.TryParse(docDateStr, out var docDate)
+            || !DateOnly.TryParse(stPerStr, out var stPer)
+            || !DateOnly.TryParse(opDateStr, out var opDate)
+            || !DateOnly.TryParse(endPerStr, out var dateEndReal))
+        {
+            return result;
+        }
+        if (opDate > docDate)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_18",
+                Row = (line + 1).ToString(),
+                Column = "DocumentDate_DB",
+                Value = docDateStr,
+                Message = "Для операции инвентаризации дата операции не может превышать даты утверждения акта инвентаризации."
+            });
+        }
+        var valid = docDate >= stPer && docDate <= dateEndReal;
         if (!valid)
         {
             result.Add(new CheckError
@@ -487,7 +503,7 @@ public abstract class CheckF18 : CheckBase
                 FormNum = "form_18",
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "DocumentDate_DB",
-                Value = Convert.ToString(documentDate),
+                Value = docDateStr,
                 Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
                           "Дата документа не входит в отчетный период. " +
                           "Для операции инвентаризации срок предоставления отчета исчисляется с даты утверждения акта инвентаризации."
