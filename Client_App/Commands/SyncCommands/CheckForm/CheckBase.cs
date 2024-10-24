@@ -16,7 +16,7 @@ public abstract class CheckBase
 {
     #region Properties
     
-    protected static bool checkNumPrint = true;
+    protected static bool checkNumPrint = false;
 
     private protected static List<Dictionary<string, string>> OKSM = new();
 

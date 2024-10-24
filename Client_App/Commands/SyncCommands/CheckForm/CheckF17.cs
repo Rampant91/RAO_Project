@@ -132,7 +132,7 @@ public abstract class CheckF17 : CheckBase
                     errorList.AddRange(Check_025(formsList, packLines[line]));
                     errorList.AddRange(Check_026(formsList, packLines));
                     errorList.AddRange(Check_027_029(formsList, packLines));
-                    errorList.AddRange(Check_028_55(formsList, packLines[line]));
+                    errorList.AddRange(Check_028_55(formsList, packLines[line], packLines));
                     errorList.AddRange(Check_028_10(formsList, packLines[line]));
                     errorList.AddRange(Check_029(formsList, packLines[line]));
                     errorList.AddRange(Check_030(formsList, packLines[line]));
@@ -1742,14 +1742,6 @@ public abstract class CheckF17 : CheckBase
 
         #endregion
 
-        List<string> codeRaoDBs = new();
-        foreach (var line in lines)
-        {
-            var codeRaoDB = (forms[line].CodeRAO_DB ?? string.Empty).Trim();
-            if (codeRaoDB is "" or "-") continue;
-            codeRaoDBs.Add(codeRaoDB);
-        }
-
         #endregion
 
         foreach (var line in lines)
@@ -1759,16 +1751,75 @@ public abstract class CheckF17 : CheckBase
             var nuclidActivityB = ConvertStringToExponential(forms[line].BetaGammaActivity_DB);
             var nuclidActivityU = ConvertStringToExponential(forms[line].TransuraniumActivity_DB);
             var nuclidMassOutOfPack = ConvertStringToExponential(forms[line].MassOutOfPack_DB);
+            var volumeOutOfPack = ConvertStringToExponential(forms[line].VolumeOutOfPack_DB);
             var refineOrSortRaoCode = ReplaceNullAndTrim(forms[line].RefineOrSortRAOCode_DB);
             var nuclidsExistT = TryParseFloatExtended(nuclidActivityT, out var nuclidActivityTReal);
             var nuclidsExistA = TryParseFloatExtended(nuclidActivityA, out var nuclidActivityAReal);
             var nuclidsExistB = TryParseFloatExtended(nuclidActivityB, out var nuclidActivityBReal);
             var nuclidsExistU = TryParseFloatExtended(nuclidActivityU, out var nuclidActivityUReal);
             var nuclidMassExists = TryParseFloatExtended(nuclidMassOutOfPack, out var nuclidMassOutOfPackReal);
+            var nuclidVolumeExists = TryParseFloatExtended(volumeOutOfPack, out var nuclidVolumeOutOfPackReal);
             const byte graphNumber = 21;
             var noteExists = CheckNotePresence(notes, line, graphNumber);
             var codeRaoDB = ReplaceNullAndTrim(forms[line].CodeRAO_DB);
             if (codeRaoDB is "" or "-") continue;
+
+            var massVolumeAndActivityExist = true;
+            if (!(nuclidsExistT || nuclidsExistA || nuclidsExistB || nuclidsExistU))
+            {
+                result.Add(new CheckError
+                {
+                    FormNum = "form_17",
+                    Row = forms[line].NumberInOrder_DB.ToString(),
+                    Column = "26-29 (Активность)",
+                    Value = "",
+                    Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                              "Должна быть заполнена хотя бы одна из граф активностей (26-29). Проверьте правильность заполнения."
+                });
+                massVolumeAndActivityExist = false;
+            }
+            if (!nuclidMassExists)
+            {
+                result.Add(new CheckError
+                {
+                    FormNum = "form_17",
+                    Row = forms[line].NumberInOrder_DB.ToString(),
+                    Column = "MassOutOfPack_DB",
+                    Value = nuclidMassOutOfPack,
+                    Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                              "Должна быть заполнена графа 24 (масса без упаковки). Проверьте правильность заполнения."
+                });
+                massVolumeAndActivityExist = false;
+            }
+            if (!nuclidVolumeExists)
+            {
+                result.Add(new CheckError
+                {
+                    FormNum = "form_17",
+                    Row = forms[line].NumberInOrder_DB.ToString(),
+                    Column = "VolumeOutOfPack_DB",
+                    Value = volumeOutOfPack,
+                    Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                              "Должна быть заполнена графа 23 (объём без упаковки). Проверьте правильность заполнения."
+                });
+                massVolumeAndActivityExist = false;
+            }
+            if (!massVolumeAndActivityExist) continue;
+
+            if (forms[line].RefineOrSortRAOCode_DB is ("" or "-") &&
+                forms[lines[0]].RefineOrSortRAOCode_DB is not ("" or "-"))
+            {
+                result.Add(new CheckError
+                {
+                    FormNum = "form_17",
+                    Row = forms[line].NumberInOrder_DB.ToString(),
+                    Column = "RefineOrSortRAOCode_DB",
+                    Value = codeRaoDB,
+                    Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                              "Проверьте правильность заполнения кода РАО."
+                });
+            }
+
             var valid = codeRaoDB.Length == 11 && codeRaoDB.All(char.IsDigit);
             if (!valid)
             {
@@ -1890,10 +1941,7 @@ public abstract class CheckF17 : CheckBase
             #endregion
 
             #region symbol 2
-            if (line == 24811)
-            {
 
-            }
             if (!codeRao2Valid)
             {
                 result.Add(new CheckError
@@ -1905,10 +1953,6 @@ public abstract class CheckF17 : CheckBase
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") + 
                               "Недопустимое значение 2-го символа кода РАО."
                 });
-            }
-            else if (codeRaoDBs.Count > 1)
-            {
-
             }
             else switch (codeRao2RaoCategory)
             {
@@ -3159,7 +3203,7 @@ public abstract class CheckF17 : CheckBase
 
     #region Check028_55
 
-    private static List<CheckError> Check_028_55(List<Form17> forms, int line)
+    private static List<CheckError> Check_028_55(List<Form17> forms, int line, List<int> lines)
     {
         List<CheckError> result = new();
         var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
@@ -3188,6 +3232,29 @@ public abstract class CheckF17 : CheckBase
                           "укажите символ «-» без кавычек."
             });
         }
+
+        foreach (var currentLine in lines)
+        {
+            if (currentLine == lines[0]) continue;
+            var currentForm = forms[currentLine];
+            if (forms[lines[0]].OperationCode_DB is "55"
+                && forms[lines[0]].RefineOrSortRAOCode_DB is not ("" or "-")
+                && currentForm.RefineOrSortRAOCode_DB is "" or "-")
+            {
+                result.Add(new CheckError
+                {
+                    FormNum = "form_17",
+                    Row = forms[currentLine].NumberInOrder_DB.ToString(),
+                    Column = "RefineOrSortRAOCode_DB",
+                    Value = forms[currentLine].RefineOrSortRAOCode_DB,
+                    Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                              $"Для головной строчки ({lines[0] + 1}) контейнера, указан код переработки {forms[lines[0]].RefineOrSortRAOCode_DB}, " +
+                              $"а для строчки {currentLine + 1} код переработки не указан. " +
+                              "Проверьте правильность заполнения кода переработки."
+                });
+            }
+        }
+        
         return result;
     }
 
