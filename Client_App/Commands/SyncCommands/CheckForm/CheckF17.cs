@@ -1758,7 +1758,7 @@ public abstract class CheckF17 : CheckBase
             var nuclidsExistB = TryParseFloatExtended(nuclidActivityB, out var nuclidActivityBReal);
             var nuclidsExistU = TryParseFloatExtended(nuclidActivityU, out var nuclidActivityUReal);
             var nuclidMassExists = TryParseFloatExtended(nuclidMassOutOfPack, out var nuclidMassOutOfPackReal);
-            var nuclidVolumeExists = TryParseFloatExtended(volumeOutOfPack, out var nuclidVolumeOutOfPackReal);
+            var nuclidVolumeExists = TryParseFloatExtended(volumeOutOfPack, out _);
             const byte graphNumber = 21;
             var noteExists = CheckNotePresence(notes, line, graphNumber);
             var codeRaoDB = ReplaceNullAndTrim(forms[line].CodeRAO_DB);
@@ -1814,9 +1814,10 @@ public abstract class CheckF17 : CheckBase
                     FormNum = "form_17",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "RefineOrSortRAOCode_DB",
-                    Value = codeRaoDB,
+                    Value = forms[line].RefineOrSortRAOCode_DB,
                     Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
-                              "Проверьте правильность заполнения кода РАО."
+                              $"В головной строчке ({lines[0]}) указан код переработки {forms[lines[0]].RefineOrSortRAOCode_DB}, " +
+                              $"а в строчке {line} код переработки не указан. Проверьте правильность заполнения кода переработки."
                 });
             }
 
@@ -1846,7 +1847,7 @@ public abstract class CheckF17 : CheckBase
             var codeRao7RecycleMethod = codeRaoDB.Substring(6, 1);
             var codeRao8RaoClass = codeRaoDB.Substring(7, 1);
             var codeRao910TypeCode = codeRaoDB.Substring(8, 2);
-            var codeRao11Flammability = codeRaoDB.Substring(10, 1);
+            //var codeRao11Flammability = codeRaoDB.Substring(10, 1);
             var codeRao1Allowed = new [] { "2" };
             var codeRao2Allowed = new [] { "0", "1", "2", "3", "4" };
             var codeRao3Allowed = new [] { "1", "2", "3", "4", "5", "6" };
@@ -1868,7 +1869,7 @@ public abstract class CheckF17 : CheckBase
                 "81","82","83","84","85","86","87","88","89",
                 "91","92","93","94","95","96","97","98","99"
             };
-            var codeRao11Allowed = new [] { "1", "2" };
+            //var codeRao11Allowed = new [] { "1", "2" };
 
             var codeRao1Valid = codeRao1Allowed.Contains(codeRao1MatterState);
             var codeRao2Valid = codeRao2Allowed.Contains(codeRao2RaoCategory);
@@ -1879,14 +1880,14 @@ public abstract class CheckF17 : CheckBase
             var codeRao7Valid = codeRao7Allowed.Contains(codeRao7RecycleMethod);
             var codeRao8Valid = codeRao8Allowed.Contains(codeRao8RaoClass);
             var codeRao910Valid = codeRao910Allowed.Contains(codeRao910TypeCode);
-            var codeRao11Valid = codeRao11Allowed.Contains(codeRao11Flammability);
+            //var codeRao11Valid = codeRao11Allowed.Contains(codeRao11Flammability);
 
-            var recyclingTypes = new [] 
-            { 
-                     "11","12","13","14","15","16","17","18","19",
-                "20","21","22","23","24","25","26","27","28","29",
-                "30","31","32","33","34","35","36","37","38","39"
-            };
+            //var recyclingTypes = new [] 
+            //{ 
+            //         "11","12","13","14","15","16","17","18","19",
+            //    "20","21","22","23","24","25","26","27","28","29",
+            //    "30","31","32","33","34","35","36","37","38","39"
+            //};
 
             #endregion
 
@@ -3232,7 +3233,6 @@ public abstract class CheckF17 : CheckBase
                           "укажите символ «-» без кавычек."
             });
         }
-
         foreach (var currentLine in lines)
         {
             if (currentLine == lines[0]) continue;
@@ -3254,7 +3254,6 @@ public abstract class CheckF17 : CheckBase
                 });
             }
         }
-        
         return result;
     }
 
