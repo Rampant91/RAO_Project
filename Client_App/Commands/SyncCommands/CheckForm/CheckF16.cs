@@ -898,50 +898,47 @@ public abstract class CheckF16 : CheckBase
             }
             switch (codeRao1MatterState)
             {
-                case "1":
-                    if (!validTypeCodeLiquid.Contains(codeRao910TypeCode))
+                case "1" when !validTypeCodeLiquid.Contains(codeRao910TypeCode):
+                {
+                    result.Add(new CheckError
                     {
-                        result.Add(new CheckError
-                        {
-                            FormNum = "form_16",
-                            Row = forms[line].NumberInOrder_DB.ToString(),
-                            Column = "CodeRAO_DB",
-                            Value = $"{codeRao1MatterState} (1-ый символ кода РАО), {codeRao910TypeCode} (9-10 символы кода РАО)",
-                            Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                                      "Агрегатное состояние (символ №1) не соответствует типу выбранных РАО (символы №9-10)."
-                        });
-                    }
+                        FormNum = "form_16",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "CodeRAO_DB",
+                        Value = $"{codeRao1MatterState} (1-ый символ кода РАО), {codeRao910TypeCode} (9-10 символы кода РАО)",
+                        Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
+                                  "Агрегатное состояние (символ №1) не соответствует типу выбранных РАО (символы №9-10)."
+                    });
                     break;
-                case "2":
-                    if (!(validTypeCodeSolid.Contains(codeRao910TypeCode) 
-                          || (validTypeCodeSolid7Not0.Contains(codeRao910TypeCode) 
-                              && codeRao7RecycleMethod != "0")))
+                }
+                case "2" when !(validTypeCodeSolid.Contains(codeRao910TypeCode)
+                                || (validTypeCodeSolid7Not0.Contains(codeRao910TypeCode)
+                                    && codeRao7RecycleMethod != "0")):
+                {
+                    result.Add(new CheckError
                     {
-                        result.Add(new CheckError
-                        {
-                            FormNum = "form_16",
-                            Row = forms[line].NumberInOrder_DB.ToString(),
-                            Column = "CodeRAO_DB",
-                            Value = $"{codeRao1MatterState} (1-ый символ кода РАО), {codeRao910TypeCode} (9-10 символы кода РАО)",
-                            Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
+                        FormNum = "form_16",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "CodeRAO_DB",
+                        Value = $"{codeRao1MatterState} (1-ый символ кода РАО), {codeRao910TypeCode} (9-10 символы кода РАО)",
+                        Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
                                       "Агрегатное состояние (символ №1) не соответствует типу выбранных РАО (символы №9-10)."
-                        });
-                    }
+                    });
                     break;
-                case "3":
-                    if (!validTypeCodeGaseous.Contains(codeRao910TypeCode))
+                }
+                case "3" when !validTypeCodeGaseous.Contains(codeRao910TypeCode):
+                {
+                    result.Add(new CheckError
                     {
-                        result.Add(new CheckError
-                        {
-                            FormNum = "form_16",
-                            Row = forms[line].NumberInOrder_DB.ToString(),
-                            Column = "CodeRAO_DB",
-                            Value = $"{codeRao1MatterState} (1-ый символ кода РАО), {codeRao910TypeCode} (9-10 символы кода РАО)",
-                            Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                                      "Агрегатное состояние (символ №1) не соответствует типу выбранных РАО (символы №9-10)."
-                        });
-                    }
+                        FormNum = "form_16",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "CodeRAO_DB",
+                        Value = $"{codeRao1MatterState} (1-ый символ кода РАО), {codeRao910TypeCode} (9-10 символы кода РАО)",
+                        Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
+                                  "Агрегатное состояние (символ №1) не соответствует типу выбранных РАО (символы №9-10)."
+                    });
                     break;
+                }
             }
         }
 
