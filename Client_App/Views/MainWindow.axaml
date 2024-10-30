@@ -135,7 +135,7 @@
                         CommandParameter="2.12"
                         Header="Форма 2.12"/>
                 </MenuItem>
-                <MenuItem Command="{Binding ExcelExportAll}" Header="Все формы"/>
+                <MenuItem Command="{Binding ExcelExportAll}" Header="Все формы" CommandParameter="AllReps"/>
                 <MenuItem
                     Command="{Binding ExcelExportExecutors}"
                     CommandParameter="Executors"

@@ -129,10 +129,11 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        CanResize = true,
                         ContentTitle = "Выгрузка в Excel",
                         ContentHeader = "Уведомление",
                         ContentMessage = "Выгрузка не выполнена, поскольку в базе отсутствуют формы отчетности организаций.",
-                        MinHeight = 150,
+                        MinHeight = 175,
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
