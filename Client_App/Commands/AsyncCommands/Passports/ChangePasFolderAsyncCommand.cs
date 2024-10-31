@@ -12,7 +12,7 @@ public class ChangePasFolderAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
-        OpenFolderDialog openFolderDialog = new() { Directory = Settings.Default.Properties["PasFolderDefaultPath"].DefaultValue.ToString() };
+        OpenFolderDialog openFolderDialog = new() { Directory = Settings.Default.PasFolderDefaultPath };
         Settings.Default.PasFolderDefaultPath = await openFolderDialog.ShowAsync(Desktop.MainWindow);
         Settings.Default.Save();
     }
