@@ -50,7 +50,7 @@ public class OpenPasAsyncCommand : BaseAsyncCommand
         uniqPasName = Regex.Replace(uniqPasName, @"\s+", "");
 
         var pasFolderPath = Settings.Default.PasFolderDefaultPath;
-        if (!Path.Exists(Settings.Default.PasFolderDefaultPath))
+        if (!Path.Exists(pasFolderPath))
         {
             #region MessagePasportFileMissing
 

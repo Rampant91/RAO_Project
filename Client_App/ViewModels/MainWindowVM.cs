@@ -96,6 +96,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ExcelExportExecutors => new ExcelExportExecutorsAsyncCommand();
 
     /// <summary>
+    /// Экспорт формы в файл .RAODB
+    /// </summary>
+    public ICommand ExportForm => new ExportFormAsyncCommand();
+
+    /// <summary>
     /// Выбранная форма -> Выгрузка Excel -> Для анализа
     /// </summary>
     public ICommand ExcelExportFormAnalysis => new ExcelExportFormAnalysisAsyncCommand();
@@ -141,6 +146,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ExcelExportRepWithoutPas => new ExcelExportRepWithoutPasAsyncCommand();
 
     /// <summary>
+    /// Excel -> Выбранная организация -> СНК
+    /// </summary>
+    public ICommand ExcelExportSnk => new ExcelExportSnkAsyncCommand();
+    
+    /// <summary>
     /// Экспорт всех организаций организации в отдельные файлы .RAODB
     /// </summary>
     public ICommand ExportAllReports => new ExportAllReportsAsyncCommand();
@@ -149,11 +159,6 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     /// Экспорт всех организаций организации в один файл .RAODB
     /// </summary>
     public ICommand ExportAllReportsOneFile => new ExportAllReportsOneFileAsyncCommand();
-
-    /// <summary>
-    /// Экспорт формы в файл .RAODB
-    /// </summary>
-    public ICommand ExportForm => new ExportFormAsyncCommand();
 
     /// <summary>
     /// Экспорт организации в файл .RAODB

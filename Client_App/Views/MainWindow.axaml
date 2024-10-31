@@ -233,6 +233,24 @@
                         Command="{Binding ExcelExportAll}"
                         CommandParameter="SelectedOrg"
                         Header="Все формы"/>
+                    <MenuItem Header="СНК">
+                        <MenuItem
+                            Command="{Binding  ExcelExportSnk}"
+                            CommandParameter="1.1"
+                            Header="Форма 1.1"/>
+                        <MenuItem
+                            Command="{Binding  ExcelExportSnk}"
+                            CommandParameter="1.2"
+                            Header="Форма 1.2"/>
+                        <MenuItem
+                            Command="{Binding  ExcelExportSnk}"
+                            CommandParameter="1.3"
+                            Header="Форма 1.3"/>
+                        <MenuItem
+                            Command="{Binding  ExcelExportSnk}"
+                            CommandParameter="1.5"
+                            Header="Форма 1.5"/>
+                    </MenuItem>
                 </MenuItem>
                 <!--
                 <MenuItem Command="{Binding MaxGraphsLength, Mode=OneTime}"
