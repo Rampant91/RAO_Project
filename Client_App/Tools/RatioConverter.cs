@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
+using Avalonia.Platform;
 using Client_App.Interfaces.Logger;
 using Client_App.Tools.ConverterType;
 using Size = System.Drawing.Size;
@@ -35,8 +36,8 @@ public partial class RatioConverter : MarkupExtension, IValueConverter
             {
                 var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime).MainWindow;
                 var screens = mainWindow.Screens;
-                var mainScreen = screens.ScreenFromWindow(mainWindow.PlatformImpl);
-                var scale = mainScreen.PixelDensity;
+                var mainScreen = screens.ScreenFromWindow(mainWindow);
+                var scale = mainScreen.Scaling;
                 var height = mainScreen.WorkingArea.Height * par / scale;
                 var width = mainScreen.WorkingArea.Width * par / scale;
                 //var scale = DisplayTools.GetScalingFactorOnWindows();
@@ -92,7 +93,7 @@ internal static partial class DisplayTools
     {
         var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime).MainWindow;
         var screens = mainWindow.Screens;
-        var mainScreen = screens.ScreenFromWindow(mainWindow.PlatformImpl);
+        var mainScreen = screens.ScreenFromWindow(mainWindow);
         return new Size(mainScreen.WorkingArea.Width, mainScreen.WorkingArea.Height);
         ServiceExtension.LoggerManager.Warning($"{mainScreen.WorkingArea.Width}_{mainScreen.WorkingArea.Height}");
         if (!OperatingSystem.IsWindows()) return new Size(600, 800);

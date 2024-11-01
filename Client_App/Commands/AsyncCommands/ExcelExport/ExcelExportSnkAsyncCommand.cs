@@ -9,9 +9,9 @@ using Client_App.Views.ProgressBar;
 using Models.Collections;
 using Models.DBRealization;
 using Avalonia.Controls;
-using MessageBox.Avalonia.DTO;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using MsBox.Avalonia.Dto;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -32,17 +32,17 @@ public class ExcelExportSnkAsyncCommand : ExcelBaseAsyncCommand
         {
             #region MessageExcelExportFail
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
                     ContentTitle = "Выгрузка в Excel",
                     ContentMessage = "Выгрузка не выполнена, поскольку не выбрана организация.",
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(progressBar ?? Desktop.MainWindow));
+                .ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow));
 
             #endregion
 

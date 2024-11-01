@@ -1,12 +1,12 @@
 ﻿using Client_App.Resources;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Client_App.ViewModels;
 using Models.Collections;
 using Avalonia.Threading;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -65,14 +65,14 @@ public class CopyExecutorDataAsyncCommand(ChangeOrCreateVM changeOrCreateViewMod
                 ? $"У {orgName}" + Environment.NewLine + $"отсутствуют другие формы {FormType}"
                 : $"У {orgName}" + Environment.NewLine + $"в формах {FormType} не заполнены данные исполнителя";
             
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
                     ContentHeader = "Уведомление",
                     ContentMessage = msg
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 

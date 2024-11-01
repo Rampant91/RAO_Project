@@ -12,11 +12,11 @@ using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.DTO;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
@@ -198,8 +198,8 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 
         #region MessageInputCategoryNums
 
-        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxInputWindow(new MessageBoxInputParams
+        var res = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -213,16 +213,16 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                 MinWidth = 600,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(progressBar ?? Desktop.MainWindow));
+            .ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow));
 
         #endregion
 
-        if (res.Button is null or "Отмена")
+        if (res is "Отмена")
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
 
-        var categoryArray = (res.Message ?? string.Empty)
+        var categoryArray = (res ?? string.Empty)
             .Replace(" ", string.Empty)
             .Split(',');
 
@@ -232,10 +232,10 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 
             #region MessageInvalidCategoryNums
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Уведомление",
@@ -246,7 +246,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(progressBar ?? Desktop.MainWindow));
+                .ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow));
 
             #endregion
         }

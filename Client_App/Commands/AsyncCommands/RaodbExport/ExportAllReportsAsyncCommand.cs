@@ -13,11 +13,11 @@ using Client_App.Resources;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
 using FirebirdSql.Data.FirebirdClient;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
@@ -57,8 +57,8 @@ public partial class ExportAllReportsAsyncCommand : ExportRaodbBaseAsyncCommand
         {
             #region ExportDoneMessage
 
-            answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            answer = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
@@ -73,7 +73,7 @@ public partial class ExportAllReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
-                }).ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -179,10 +179,10 @@ public partial class ExportAllReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                     {
                         #region FailedCopyFromTempMessage
 
-                        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxStandard(new MessageBoxStandardParams
                             {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                                 ContentTitle = "Выгрузка",
                                 ContentHeader = "Ошибка",
                                 ContentMessage =
@@ -193,7 +193,7 @@ public partial class ExportAllReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                                 MinHeight = 150,
                                 WindowStartupLocation = WindowStartupLocation.CenterScreen
                             })
-                            .ShowDialog(Desktop.MainWindow));
+                            .ShowWindowDialogAsync(Desktop.MainWindow));
 
                         #endregion
 
@@ -227,8 +227,8 @@ public partial class ExportAllReportsAsyncCommand : ExportRaodbBaseAsyncCommand
         {
             #region ExportDoneMessage
 
-            answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            answer = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
@@ -243,7 +243,7 @@ public partial class ExportAllReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 

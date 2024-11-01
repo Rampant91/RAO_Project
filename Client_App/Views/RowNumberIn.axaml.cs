@@ -8,7 +8,7 @@ using Client_App.ViewModels;
 
 namespace Client_App.Views;
 
-public class RowNumberIn : BaseWindow<ChangeOrCreateVM>, INotifyPropertyChanged
+public partial class RowNumberIn : BaseWindow<ChangeOrCreateVM>, INotifyPropertyChanged
 {
     #region Number1
     public static readonly DirectProperty<RowNumberIn, string> NumberProperty1 =
@@ -98,7 +98,7 @@ public class RowNumberIn : BaseWindow<ChangeOrCreateVM>, INotifyPropertyChanged
     #endregion
 
     bool flag;
-    protected override void OnClosing(CancelEventArgs e)
+    protected override void OnClosing(WindowClosingEventArgs e)
     {
         if(!flag)
         {

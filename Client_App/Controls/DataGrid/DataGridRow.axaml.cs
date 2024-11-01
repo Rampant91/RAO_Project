@@ -5,7 +5,7 @@ using Avalonia.Media;
 
 namespace Client_App.Controls.DataGrid;
 
-public class DataGridRow : Grid
+public partial class DataGridRow : Grid
 {
     #region Row
 

@@ -1,14 +1,14 @@
 ﻿using System.Collections;
+using System.Linq;
 using Client_App.Views;
 using Models.Collections;
 using Models.DBRealization;
-using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
 using Models.Interfaces;
 using Avalonia.Threading;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 
 namespace Client_App.Commands.AsyncCommands.Delete;
 
@@ -21,8 +21,8 @@ public class DeleteFormAsyncCommand : BaseAsyncCommand
     {
         #region MessageDeleteReport
 
-        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var answer = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -35,7 +35,7 @@ public class DeleteFormAsyncCommand : BaseAsyncCommand
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow));
+            .ShowWindowDialogAsync(Desktop.MainWindow));
 
         #endregion
 

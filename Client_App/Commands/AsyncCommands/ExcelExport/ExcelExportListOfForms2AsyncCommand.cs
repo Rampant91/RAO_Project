@@ -9,11 +9,11 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
@@ -516,8 +516,8 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
     {
         #region MessageInputYearRange
 
-        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxInputWindow(new MessageBoxInputParams
+        var res = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
@@ -531,30 +531,30 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
                     MinWidth = 600,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(progressBar ?? Desktop.MainWindow));
+                .ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow));
 
         #endregion
 
-        if (res.Button is null or "Отмена")
+        if (res is "Отмена")
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
         var minYear = 0;
         var maxYear = 9999;
-        if (res.Message != null)
+        if (res != null)
         {
-            if (!res.Message.Contains('-'))
+            if (!res.Contains('-'))
             {
-                if (int.TryParse(res.Message, out var parseYear) && parseYear.ToString().Length == 4)
+                if (int.TryParse(res, out var parseYear) && parseYear.ToString().Length == 4)
                 {
                     minYear = parseYear;
                     maxYear = parseYear;
                 }
             }
-            else if (res.Message.Length > 4)
+            else if (res.Length > 4)
             {
-                var firstResHalf = res.Message.Split('-')[0].Trim();
-                var secondResHalf = res.Message.Split('-')[1].Trim();
+                var firstResHalf = res.Split('-')[0].Trim();
+                var secondResHalf = res.Split('-')[1].Trim();
                 if (int.TryParse(firstResHalf, out var minYearParse) && minYearParse.ToString().Length == 4)
                 {
                     minYear = minYearParse;
@@ -593,10 +593,10 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
         {
             #region MessageRepsNotFound
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Уведомление",
@@ -607,7 +607,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(progressBar ?? Desktop.MainWindow));
+                .ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow));
 
             #endregion
 

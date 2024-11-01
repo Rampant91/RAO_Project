@@ -36,7 +36,7 @@
             CanUserSortColumns="True"
             GridLinesVisibility="All"
             IsReadOnly="True"
-            Items="{Binding Path=CheckError, Mode=OneWay}">
+            ItemsSource="{Binding Path=CheckError, Mode=OneWay}">
             <DataGrid.Styles>
                 <Style Selector="TextBlock">
                     <Setter Property="TextWrapping" Value="WrapWithOverflow"/>

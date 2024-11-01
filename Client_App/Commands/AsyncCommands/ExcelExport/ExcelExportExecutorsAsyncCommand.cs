@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Client_App.ViewModels;
-using MessageBox.Avalonia.DTO;
 using Models.Collections;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
@@ -14,6 +13,7 @@ using System.Reflection;
 using Client_App.Views.ProgressBar;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
+using MsBox.Avalonia.Dto;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -93,10 +93,10 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
         {
             #region MessageExcelExportFail
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Уведомление",
@@ -105,7 +105,7 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(progressBar ?? Desktop.MainWindow));
+                .ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow));
 
             #endregion
 

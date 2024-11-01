@@ -3,7 +3,7 @@ using Models.Collections;
 
 namespace Client_App.Controls.DataGrid.DataGrids;
 
-public class DataGridReports : DataGrid<Reports>
+public partial class DataGridReports : DataGrid<Reports>
 {
     public DataGridReports()
     {

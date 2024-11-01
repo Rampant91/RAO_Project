@@ -1,6 +1,4 @@
 ﻿using Avalonia.Controls;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
 using Models.DBRealization;
 using System;
 using System.Diagnostics;
@@ -14,6 +12,8 @@ using Client_App.Interfaces.Logger;
 using Client_App.Views.ProgressBar;
 using Models.Collections;
 using FirebirdSql.Data.FirebirdClient;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
@@ -64,8 +64,8 @@ public partial class ExportAllReportsOneFileAsyncCommand : ExportRaodbBaseAsyncC
         {
             #region ExportDoneMessage
 
-            answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            answer = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
@@ -80,7 +80,7 @@ public partial class ExportAllReportsOneFileAsyncCommand : ExportRaodbBaseAsyncC
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
-                }).ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -198,8 +198,8 @@ public partial class ExportAllReportsOneFileAsyncCommand : ExportRaodbBaseAsyncC
         {
             #region ExportDoneMessage
 
-            answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            answer = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
@@ -214,7 +214,7 @@ public partial class ExportAllReportsOneFileAsyncCommand : ExportRaodbBaseAsyncC
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 

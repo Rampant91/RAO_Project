@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using Client_App.ViewModels;
 using Client_App.Views;
-using MessageBox.Avalonia.DTO;
 using Models.Collections;
 using System;
 using System.Linq;
@@ -10,6 +9,7 @@ using System.Threading.Tasks;
 using Client_App.VisualRealization.Long_Visual;
 using Models.Interfaces;
 using Avalonia.Threading;
+using MsBox.Avalonia.Dto;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
@@ -29,10 +29,10 @@ public class AddFormAsyncCommand : BaseAsyncCommand
             {
                 #region MessageFailedToOpenForm
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                         ContentTitle = $"Создание формы {param}",
                         ContentHeader = "Ошибка",
                         ContentMessage =
@@ -42,7 +42,7 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(Desktop.MainWindow));
+                    .ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
 

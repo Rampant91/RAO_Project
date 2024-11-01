@@ -5,12 +5,12 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using MessageBox.Avalonia.DTO;
 using Models.Forms.Form1;
 using Models.DBRealization;
 using Models.Classes;
 using System.Collections.Generic;
 using Models.Interfaces;
+using MsBox.Avalonia.Dto;
 
 namespace Client_App.Commands.AsyncCommands.SourceTransmission;
 
@@ -36,10 +36,10 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
             #region MessageSourceTransmissionFailed
 
             var suffix1 = linesWithCorruptOpDate.Length == 1 ? "чке" : "ках";
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                     ContentTitle = "Перевод источников",
                     ContentHeader = "Ошибка",
                     ContentMessage = $"Некорректно введена дата операции в стро{suffix1} {string.Join(", ", linesWithCorruptOpDate)}.",
@@ -47,7 +47,7 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
              
@@ -57,10 +57,10 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
         {
             #region MessageSourceTransmissionFailed
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                     ContentTitle = "Перевод источников",
                     ContentHeader = "Ошибка",
                     ContentMessage = "В данной форме отсутствуют записи с кодом операции 41.",
@@ -68,7 +68,7 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -101,10 +101,10 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
             {
                 #region MessageSourceTransmissionFailed
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                         ContentTitle = "Перевод источника в РАО",
                         ContentHeader = "Ошибка",
                         ContentMessage =
@@ -114,7 +114,7 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(Desktop.MainWindow));
+                    .ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
 
@@ -184,10 +184,10 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
         {
             #region MessageSourceTransmissionFailed
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                     ContentTitle = "Перевод источника в РАО",
                     ContentHeader = "Уведомление",
                     ContentMessage = $"В связи с наличием строчек дубликатов, " +
@@ -198,7 +198,7 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
                     MinHeight = 175,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
         }

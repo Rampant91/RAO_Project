@@ -1,6 +1,4 @@
 ﻿using Avalonia.Controls;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.Forms.Form1;
 using System;
@@ -18,6 +16,8 @@ using Models.DBRealization;
 using Models.Forms;
 using Client_App.Resources;
 using Avalonia.Threading;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -662,8 +662,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                         #region MessageImportReportHasLowerCorrectionNumber
 
-                        res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        res = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxCustom(new MessageBoxCustomParams
                             {
                                 ButtonDefinitions =
                                 [
@@ -695,7 +695,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
-                            .ShowDialog(Desktop.MainWindow));
+                            .ShowWindowDialogAsync(Desktop.MainWindow));
 
                         #endregion
 
@@ -721,8 +721,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     {
                         #region MessageImportReportHasSamePeriodCorrectionNumberAndExportDate
 
-                        res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        res = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxCustom(new MessageBoxCustomParams
                             {
                                 ButtonDefinitions =
                                 [
@@ -751,7 +751,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
-                            .ShowDialog(Desktop.MainWindow));
+                            .ShowWindowDialogAsync(Desktop.MainWindow));
 
                         #endregion
 
@@ -770,8 +770,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         {
                             #region MessageImportReportHasHigherCorrectionNumber
 
-                            res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                            res = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                                .GetMessageBoxCustom(new MessageBoxCustomParams
                                 {
                                     ButtonDefinitions =
                                     [
@@ -804,7 +804,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                     MinWidth = 400,
                                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                                 })
-                                .ShowDialog(Desktop.MainWindow));
+                                .ShowWindowDialogAsync(Desktop.MainWindow));
 
                             #endregion
 
@@ -814,8 +814,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         {
                             #region MessageImportReportHasHigherCorrectionNumber
 
-                            res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                            res = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                                .GetMessageBoxCustom(new MessageBoxCustomParams
                                 {
                                     ButtonDefinitions =
                                     [
@@ -844,7 +844,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                     MinWidth = 400,
                                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                                 })
-                                .ShowDialog(Desktop.MainWindow));
+                                .ShowWindowDialogAsync(Desktop.MainWindow));
 
                             #endregion
                         }
@@ -868,8 +868,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                     #region MessagePeriodsIntersect
 
-                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    res = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustom(new MessageBoxCustomParams
                         {
                             ButtonDefinitions =
                             [
@@ -900,7 +900,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(Desktop.MainWindow));
+                        .ShowWindowDialogAsync(Desktop.MainWindow));
 
                     #endregion
 
@@ -919,8 +919,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                 #region MessageNewReport
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustom(new MessageBoxCustomParams
                     {
                         ButtonDefinitions =
                         [
@@ -937,7 +937,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(Desktop.MainWindow));
+                    .ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
             }
@@ -955,8 +955,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 {
                     #region MessageNewReport
 
-                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    res = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustom(new MessageBoxCustomParams
                         {
                             ButtonDefinitions =
                             [
@@ -985,7 +985,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(Desktop.MainWindow));
+                        .ShowWindowDialogAsync(Desktop.MainWindow));
 
                     #endregion
 
@@ -995,8 +995,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 {
                     #region MessageNewReport
 
-                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    res = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustom(new MessageBoxCustomParams
                         {
                             ButtonDefinitions =
                             [
@@ -1021,7 +1021,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(Desktop.MainWindow));
+                        .ShowWindowDialogAsync(Desktop.MainWindow));
 
                     #endregion
                 }
@@ -1085,8 +1085,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                     #region MessageImportReportHasLowerCorrectionNumber
 
-                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    res = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustom(new MessageBoxCustomParams
                         {
                             ButtonDefinitions =
                             [
@@ -1117,7 +1117,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(Desktop.MainWindow));
+                        .ShowWindowDialogAsync(Desktop.MainWindow));
 
                     #endregion
 
@@ -1143,8 +1143,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 {
                     #region MessageImportReportHasSameYearCorrectionNumberAndExportDate
 
-                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    res = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustom(new MessageBoxCustomParams
                         {
                             ButtonDefinitions =
                             [
@@ -1172,7 +1172,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(Desktop.MainWindow));
+                        .ShowWindowDialogAsync(Desktop.MainWindow));
 
                     #endregion
 
@@ -1195,8 +1195,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     {
                         #region MessageImportReportHasHigherCorrectionNumber
 
-                        res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        res = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxCustom(new MessageBoxCustomParams
                             {
                                 ButtonDefinitions =
                                 [
@@ -1228,7 +1228,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
-                            .ShowDialog(Desktop.MainWindow));
+                            .ShowWindowDialogAsync(Desktop.MainWindow));
 
                         #endregion
 
@@ -1238,8 +1238,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     {
                         #region MessageImportReportHasHigherCorrectionNumber
 
-                        res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        res = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxCustom(new MessageBoxCustomParams
                             {
                                 ButtonDefinitions =
                                 [
@@ -1267,7 +1267,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
-                            .ShowDialog(Desktop.MainWindow));
+                            .ShowWindowDialogAsync(Desktop.MainWindow));
 
                         #endregion
                     }
@@ -1290,8 +1290,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                 #region MessageNewReport
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustom(new MessageBoxCustomParams
                     {
                         ButtonDefinitions =
                         [
@@ -1308,7 +1308,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(Desktop.MainWindow));
+                    .ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
 
@@ -1337,8 +1337,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 {
                     #region MessageNewReport
 
-                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    res = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustom(new MessageBoxCustomParams
                         {
                             ButtonDefinitions =
                             [
@@ -1366,7 +1366,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(Desktop.MainWindow));
+                        .ShowWindowDialogAsync(Desktop.MainWindow));
 
                     #endregion
 
@@ -1376,8 +1376,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 {
                     #region MessageNewReport
 
-                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    res = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustom(new MessageBoxCustomParams
                         {
                             ButtonDefinitions =
                             [
@@ -1401,7 +1401,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(Desktop.MainWindow));
+                        .ShowWindowDialogAsync(Desktop.MainWindow));
 
                     #endregion
                 }

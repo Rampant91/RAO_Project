@@ -53,8 +53,8 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
         if (!_mouseDownForWindowMoving) return;
 
         var currentPoint = e.GetCurrentPoint(this);
-        Position = new PixelPoint(Position.X + (int)(currentPoint.Position.X - _originalPoint!.Position.X),
-            Position.Y + (int)(currentPoint.Position.Y - _originalPoint.Position.Y));
+        Position = new PixelPoint(Position.X + (int)(currentPoint.Position.X - _originalPoint!.Value.Position.X),
+            Position.Y + (int)(currentPoint.Position.Y - _originalPoint.Value.Position.Y));
     }
 
     #endregion

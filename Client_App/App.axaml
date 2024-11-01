@@ -23,8 +23,8 @@
         <Style Selector="DataGridCell.cell_tooltip">
             <Setter Property="ToolTip.Tip" Value="{Binding Content.Text, Mode=OneWay, RelativeSource={RelativeSource Self}}"/>
         </Style>
-        <StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml"/>
+        <!--<StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml"/>
         <StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseLight.xaml"/>
-        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Default.xaml"/>
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Default.xaml"/>-->
     </Application.Styles>
 </Application>

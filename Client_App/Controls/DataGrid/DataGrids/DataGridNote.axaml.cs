@@ -4,7 +4,7 @@ using Models.Forms;
 
 namespace Client_App.Controls.DataGrid.DataGrids;
 
-public class DataGridNote : DataGrid<Note>
+public partial class DataGridNote : DataGrid<Note>
 {
     public DataGridNote()
     {

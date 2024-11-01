@@ -1714,12 +1714,14 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                         tmp.Tapped += CommandTapped;
                         inlr.Add(tmp);
                     }
-                    lr.Add(new MenuItem { Header = item.Key, Items = inlr });
+                    lr.Add(new MenuItem { Header = item.Key
+                        //, Items = inlr
+                    });
                     break;
                 }
             }
         }
-        menu.Items = lr;
+        //menu.Items = lr;
         ContextMenu = menu;
     }
 
@@ -2143,9 +2145,9 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 Content = centerPanel
             };
 
-            bar[!RangeBase.MaximumProperty] = centerScrollViewer[!ScrollViewer.VerticalScrollBarMaximumProperty];
+            //bar[!RangeBase.MaximumProperty] = centerScrollViewer[!ScrollViewer.VerticalScrollBarMaximumProperty];
 
-            centerScrollViewer[!ScrollViewer.VerticalScrollBarValueProperty] = b;
+            //centerScrollViewer[!ScrollViewer.VerticalScrollBarValueProperty] = b;
             centerCanvas.Children.Add(centerScrollViewer);
 
             pnl.Children.Add(centerCanvas);

@@ -6,14 +6,17 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Base;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
@@ -468,8 +471,8 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
     {
         #region MessageInputDateRange
 
-        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxInputWindow(new MessageBoxInputParams
+        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams()
                 {
                     ButtonDefinitions =
                     [
@@ -481,22 +484,25 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
                                      $"{Environment.NewLine}Если даты незаполненны или введены некорректно," +
                                      $"{Environment.NewLine}то выгрузка будет осуществляться без фильтра по датам.",
                     MinWidth = 600,
+                    InputParams = new InputParams { Label = "" },
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowWindowDialogAsync(Desktop.MainWindow));
 
         #endregion
 
-        if (res.Button is null or "Отмена")
+        
+
+        if (res is "Отмена")
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
         var startDate = DateOnly.MinValue;
         var endDate = DateOnly.MaxValue;
-        if (res.Message != null && res.Message.Contains('-') && res.Message.Length > 6)
+        if (res != null && res.Contains('-') && res.Length > 6)
         {
-            var firstPeriodHalf = res.Message.Split('-')[0].Trim();
-            var secondPeriodHalf = res.Message.Split('-')[1].Trim();
+            var firstPeriodHalf = res.Split('-')[0].Trim();
+            var secondPeriodHalf = res.Split('-')[1].Trim();
             if (DateOnly.TryParse(firstPeriodHalf, out var parseStartDate))
             {
                 startDate = parseStartDate;
@@ -534,10 +540,10 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         {
             #region MessageRepsNotFound
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Уведомление",
@@ -548,7 +554,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(progressBar ?? Desktop.MainWindow));
+                .ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow));
 
             #endregion
 

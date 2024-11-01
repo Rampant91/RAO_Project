@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms.Form1;
@@ -22,7 +20,9 @@ using System.Reflection;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.Properties;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
+using MsBox.Avalonia.Models;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -219,8 +219,8 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
         var lastBackupTime = Settings.Default.LastDbBackupDate == DateTime.MinValue
             ? string.Empty
             : $" ({Settings.Default.LastDbBackupDate})";
-        var res = Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxInputParams
+        var res = Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams()
             {
                 ButtonDefinitions =
                 [
@@ -237,7 +237,7 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
                 SizeToContent = SizeToContent.Width,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.Windows[0])).GetAwaiter().GetResult();
+            .ShowWindowDialogAsync(Desktop.Windows[0])).GetAwaiter().GetResult();
 
         #endregion
 
@@ -370,8 +370,8 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
 
                 #region MessageFailedToReadFile
 
-                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Ошибка при чтении файла .raodb",
@@ -383,7 +383,7 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult(); 
+                    .ShowWindowDialogAsync(Desktop.MainWindow)).GetAwaiter().GetResult(); 
 
                 #endregion
             }
@@ -391,8 +391,8 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
             {
                 #region MessageFailedToCreateFile
 
-                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Импорт из .raodb",
@@ -402,7 +402,7 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
+                    .ShowWindowDialogAsync(Desktop.MainWindow)).GetAwaiter().GetResult();
 
                 #endregion
 
@@ -418,8 +418,8 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
             {
                 #region MessageFailedToCreateFile
 
-                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Импорт из .raodb",
@@ -429,7 +429,7 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
+                    .ShowWindowDialogAsync(Desktop.MainWindow)).GetAwaiter().GetResult();
 
                 #endregion
 
@@ -449,8 +449,8 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
         {
             #region MessageFailedToCreateFile
 
-            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Импорт из .raodb",
@@ -460,7 +460,7 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
+                .ShowWindowDialogAsync(Desktop.MainWindow)).GetAwaiter().GetResult();
 
             #endregion
 
@@ -477,8 +477,8 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
 
             #region MessageFailedToCreateFile
 
-            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Импорт из .raodb",
@@ -488,7 +488,7 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
+                .ShowWindowDialogAsync(Desktop.MainWindow)).GetAwaiter().GetResult();
 
             #endregion
             

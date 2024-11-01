@@ -12,14 +12,11 @@ using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.Properties;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Models.Collections;
-using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
-using Models.Interfaces;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
@@ -87,8 +84,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     {
         #region MessageSaveOrOpenTemp
 
-        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams 
+        var res = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams 
             {
                 ButtonDefinitions =
                 [
@@ -102,7 +99,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow));
+            .ShowWindowDialogAsync(Desktop.MainWindow));
 
         #endregion
 
@@ -147,10 +144,10 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                     {
                         #region MessageFailedToSaveFile
 
-                        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxStandard(new MessageBoxStandardParams
                             {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                                 ContentTitle = "Выгрузка в Excel",
                                 ContentHeader = "Ошибка",
                                 ContentMessage =
@@ -161,7 +158,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                                 MinHeight = 150,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
-                            .ShowDialog(Desktop.MainWindow));
+                            .ShowWindowDialogAsync(Desktop.MainWindow));
 
                             #endregion
 
@@ -610,10 +607,10 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         {
             #region MessageFailedToSaveFile
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Ошибка",
@@ -623,7 +620,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                     MinHeight = 175,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -643,8 +640,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             #region MessageExcelExportComplete
 
             var answer =
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
@@ -658,7 +655,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -700,10 +697,10 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
             #region MessageDbCreationError
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                         CanResize = true,
                         ContentTitle = "Выгрузка в Excel",
                         ContentHeader = "Уведомление",
@@ -713,7 +710,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                         MinWidth = 250,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(progressBar ?? Desktop.MainWindow));
+                    .ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow));
 
             #endregion
 
@@ -744,10 +741,10 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         {
             #region MessageFailedToOpenPassportDirectory
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Ошибка",
@@ -757,7 +754,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                     MinHeight = 170,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(progressBar ?? Desktop.MainWindow));
+                .ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow));
 
             #endregion
 

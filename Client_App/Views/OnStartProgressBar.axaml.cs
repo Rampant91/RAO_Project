@@ -23,15 +23,15 @@ public partial class OnStartProgressBar : BaseWindow<OnStartProgressBarVM>
         });
     }
 
-    private async Task DoShowDialogAsync(InteractionContext<MainWindowVM, object> interaction)
+    private async Task DoShowDialogAsync(IInteractionContext<MainWindowVM, object> interactionContext)
     {
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow(interaction.Input);
+            desktop.MainWindow = new MainWindow(interactionContext.Input);
             desktop.MainWindow.Show();
             Close();
         }
-        interaction.SetOutput(null);
+        interactionContext.SetOutput(null);
     }
 
     private void InitializeComponent()

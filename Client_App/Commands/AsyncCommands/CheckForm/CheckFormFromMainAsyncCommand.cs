@@ -8,12 +8,12 @@ using Client_App.Commands.SyncCommands.CheckForm;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels;
 using DynamicData;
-using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
 using Models.CheckForm;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Interfaces;
+using MsBox.Avalonia.Dto;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -71,10 +71,10 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
             {
                 #region MessageCheckFailed
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                         ContentTitle = $"Проверка формы {rep.FormNum_DB}",
                         ContentHeader = "Уведомление",
                         ContentMessage = $"Функция проверки форм {rep.FormNum_DB} находится в режиме тестирования и может содержать ошибки.",
@@ -83,7 +83,7 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
                         
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(Desktop.MainWindow));
+                    .ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
             }
@@ -104,10 +104,10 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
         {
             #region MessageCheckFailed
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                     ContentTitle = $"Проверка формы {rep.FormNum_DB}",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Функция проверки данных форм находится в процессе реализации.",
@@ -115,7 +115,7 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -129,10 +129,10 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
 
             #region MessageCheckFailed
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                     ContentTitle = $"Проверка формы {rep.FormNum_DB}",
                     ContentHeader = "Уведомление",
                     ContentMessage = "В ходе выполнения проверки формы возникла непредвиденная ошибка.",
@@ -140,7 +140,7 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -150,10 +150,10 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
         {
             #region MessageSourceTransmissionFailed
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                         ContentTitle = $"Проверка формы {rep.FormNum_DB}",
                         ContentHeader = "Уведомление",
                         ContentMessage = "По результатам проверки формы, ошибок не выявлено.",
@@ -161,7 +161,7 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(Desktop.MainWindow));
+                    .ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
         }

@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.Interfaces;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
@@ -22,8 +22,8 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
 
         #region MessageAskStartDate
 
-        var startDate = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxInputWindow(new MessageBoxInputParams
+        var startDate = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -38,16 +38,16 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
                 MinWidth = 600,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow));
+            .ShowWindowDialogAsync(Desktop.MainWindow));
         
         #endregion
 
-        if (startDate.Button is null or "Отменить экспорт") return;
+        if (startDate is "Отменить экспорт") return;
 
         #region MessageAskEndDate
 
-        var endDate = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxInputWindow(new MessageBoxInputParams
+        var endDate = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams()
             {
                 ButtonDefinitions =
                 [
@@ -61,32 +61,32 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
                 MinWidth = 600,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow));
+            .ShowWindowDialogAsync(Desktop.MainWindow));
         
         #endregion
 
-        if (endDate.Button is null or "Отменить экспорт") return;
+        if (endDate is "Отменить экспорт") return;
 
         var canParseDateRange =
-            (DateOnly.TryParse(startDate.Message, out var startDateTime) | string.IsNullOrEmpty(startDate.Message))
-            & (DateOnly.TryParse(endDate.Message, out var endDateTime) | string.IsNullOrEmpty(endDate.Message));
+            (DateOnly.TryParse(startDate, out var startDateTime) | string.IsNullOrEmpty(startDate))
+            & (DateOnly.TryParse(endDate, out var endDateTime) | string.IsNullOrEmpty(endDate));
         if (endDateTime == DateOnly.MinValue) endDateTime = DateOnly.MaxValue;
 
         if (!canParseDateRange || startDateTime > endDateTime)
         {
             #region MessageErrorAtParseDate
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                     ContentTitle = "Выгрузка",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Экспорт не будет выполнен, поскольку период дат введён некорректно.",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
-                }).ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 

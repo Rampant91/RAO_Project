@@ -1,6 +1,4 @@
 ﻿using Avalonia.Controls;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
@@ -13,6 +11,8 @@ using System.Threading.Tasks;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Avalonia.Threading;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -59,8 +59,8 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             {
                 #region InvalidDataFormatMessage
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustom(new MessageBoxCustomParams
                     {
                         ButtonDefinitions = 
                         [
@@ -73,7 +73,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(Desktop.MainWindow));
+                    .ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
 
@@ -181,8 +181,8 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     {
                         #region MessageNewOrg
 
-                        an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        an = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxCustom(new MessageBoxCustomParams
                             {
                                 ButtonDefinitions =
                                 [
@@ -204,7 +204,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
-                            .ShowDialog(Desktop.MainWindow));
+                            .ShowWindowDialogAsync(Desktop.MainWindow));
 
                         #endregion
 
@@ -214,8 +214,8 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     {
                         #region MessageNewOrg
 
-                        an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        an = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxCustom(new MessageBoxCustomParams
                             {
                                 ButtonDefinitions =
                                 [
@@ -232,7 +232,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
-                            .ShowDialog(Desktop.MainWindow));
+                            .ShowWindowDialogAsync(Desktop.MainWindow));
 
                         #endregion
                     }
@@ -254,10 +254,10 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         {
             #region MessageImportDone
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                     ContentTitle = "Импорт из .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage = $"Импорт из файл{suffix} .xlsx успешно завершен.",
@@ -265,7 +265,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
         }
@@ -273,10 +273,10 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         {
             #region MessageImportCancel
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                     ContentTitle = "Импорт из .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage = $"Импорт из файл{suffix} .xlsx был отменен.",
@@ -284,7 +284,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
         }

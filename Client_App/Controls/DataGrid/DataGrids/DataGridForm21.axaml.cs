@@ -4,7 +4,7 @@ using Models.Forms.Form2;
 
 namespace Client_App.Controls.DataGrid.DataGrids;
 
-public class DataGridForm21 : DataGrid<Form21>
+public partial class DataGridForm21 : DataGrid<Form21>
 {
     public DataGridForm21()
     {

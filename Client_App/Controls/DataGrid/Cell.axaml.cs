@@ -5,14 +5,14 @@ using Avalonia.Media;
 
 namespace Client_App.Controls.DataGrid;
 
-public class Cell : UserControl
+public partial class Cell : UserControl
 {
     public Cell()
     {
         InitializeComponent();
     }
 
-    public Cell(IControl ctrl)
+    public Cell(Control ctrl)
     {
         Control = ctrl;
         InitializeComponent();
@@ -96,9 +96,9 @@ public class Cell : UserControl
 
     #region Control
 
-    IControl _Control;
+    Control _Control;
 
-    public IControl Control 
+    public Control Control 
     {
         get => _Control;
         set 

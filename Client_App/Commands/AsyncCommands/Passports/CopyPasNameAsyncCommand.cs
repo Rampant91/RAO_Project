@@ -5,7 +5,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Resources;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Dto;
 
 namespace Client_App.Commands.AsyncCommands.Passports;
 
@@ -25,10 +26,10 @@ internal class CopyPasNameAsyncCommand : BaseAsyncCommand
         {
             #region MessageFailedToCopyPasName
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                     ContentTitle = "Копирование",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Имя паспорта не было скопировано, не заполнены все требуемые поля:"
@@ -40,8 +41,7 @@ internal class CopyPasNameAsyncCommand : BaseAsyncCommand
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -50,6 +50,6 @@ internal class CopyPasNameAsyncCommand : BaseAsyncCommand
         var uniqPasName = $"{okpo}#{type}#{year}#{pasNum}#{factoryNum}";
         uniqPasName = Regex.Replace(uniqPasName, "[\\\\/:*?\"<>|]", "_");
         uniqPasName = Regex.Replace(uniqPasName, "\\s+", "");
-        await Application.Current.Clipboard.SetTextAsync(uniqPasName);
+        await Desktop.MainWindow.Clipboard.SetTextAsync(uniqPasName);
     }
 }

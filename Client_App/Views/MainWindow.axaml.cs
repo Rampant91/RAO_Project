@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using Models.Collections;
@@ -12,12 +11,12 @@ using ReactiveUI;
 using Client_App.Controls.DataGrid;
 using Client_App.ViewModels;
 using Client_App.VisualRealization.Short_Visual;
-using MessageBox.Avalonia.Models;
 using Models.Interfaces;
+using MsBox.Avalonia.Models;
 
 namespace Client_App.Views;
 
-public class MainWindow : BaseWindow<MainWindowVM>
+public partial class MainWindow : BaseWindow<MainWindowVM>
 {
     #region SelectedReports
 
@@ -67,30 +66,30 @@ public class MainWindow : BaseWindow<MainWindowVM>
 
     #region ShowDialog
 
-    private async Task DoShowDialogAsync(InteractionContext<ChangeOrCreateVM, object> interaction)
+    private async Task DoShowDialogAsync(IInteractionContext<ChangeOrCreateVM, object> interactionContext)
     {
-        FormChangeOrCreate frm = new(interaction.Input);
+        FormChangeOrCreate frm = new(interactionContext.Input);
         WindowState = WindowState.Minimized;
         await frm.ShowDialog(this);
-        interaction.SetOutput(null);
+        interactionContext.SetOutput(null);
     }
 
-    private async Task DoShowDialogAsyncT(InteractionContext<List<string>, string> interaction)
+    private async Task DoShowDialogAsyncT(IInteractionContext<List<string>, string> interactionContext)
     {
-        MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new() { ContentMessage = interaction.Input[0] };
-        interaction.Input.RemoveAt(0);
-        par.ContentHeader = interaction.Input[0];
-        interaction.Input.RemoveAt(0);
-        var lt = interaction.Input
+        MsBox.Avalonia.Dto.MessageBoxCustomParams par = new() { ContentMessage = interactionContext.Input[0] };
+        interactionContext.Input.RemoveAt(0);
+        par.ContentHeader = interactionContext.Input[0];
+        interactionContext.Input.RemoveAt(0);
+        var lt = interactionContext.Input
             .Select(elem => new ButtonDefinition { Name = elem })
             .ToList();
         par.ButtonDefinitions = lt;
         par.ContentTitle = "Уведомление";
             
-        var msg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
-        var answer = await msg.ShowDialog(this);
-            
-        interaction.SetOutput(answer);
+        var msg = MsBox.Avalonia.MessageBoxManager.GetMessageBoxCustom(par);
+        var answer = await msg.ShowWindowDialogAsync(this);
+
+        interactionContext.SetOutput(answer);
     }
 
     #endregion
@@ -103,7 +102,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
         ShowInit();
     }
 
-    protected override void OnClosing(CancelEventArgs e)
+    protected override void OnClosing(WindowClosingEventArgs e)
     {
         RemoveTmpData();
         base.OnClosing(e);

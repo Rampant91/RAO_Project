@@ -14,7 +14,7 @@
     MinHeight="200"
     x:CompileBindings="True"
     x:DataType="vm:MainWindowVM"
-    x:Name="MainWindow"
+    x:Name="MainWindowView"
     Background="#ffffff"
     Icon="/Assets/logo.png"
     WindowStartupLocation="CenterScreen"

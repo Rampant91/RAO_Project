@@ -11,12 +11,12 @@ using Client_App.Resources;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
 using FirebirdSql.Data.FirebirdClient;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Interfaces;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
@@ -191,23 +191,22 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
             {
                 #region FailedToSaveFileMessage
 
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                    MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                        {
-                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                            ContentTitle = "Выгрузка",
-                            ContentHeader = "Ошибка",
-                            ContentMessage =
-                                "Не удалось сохранить файл по пути:" +
-                                $"{Environment.NewLine}{fullPath}" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
-                                $"{Environment.NewLine}и используется другим процессом.",
-                            MinWidth = 400,
-                            MinHeight = 150,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        }).ShowDialog(Desktop.MainWindow));
+                await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = "Выгрузка",
+                        ContentHeader = "Ошибка",
+                        ContentMessage =
+                            "Не удалось сохранить файл по пути:" +
+                            $"{Environment.NewLine}{fullPath}" +
+                            $"{Environment.NewLine}" +
+                            $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                            $"{Environment.NewLine}и используется другим процессом.",
+                        MinWidth = 400,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
 
@@ -276,10 +275,10 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
         {
             #region FailedCopyFromTempMessage
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                     ContentTitle = "Выгрузка",
                     ContentHeader = "Ошибка",
                     ContentMessage = "При копировании файла базы данных из временной папки возникла ошибка." +
@@ -287,7 +286,7 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
-                }).ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
         }
@@ -304,8 +303,8 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
         {
             #region ExportDoneMessage
 
-            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            var answer = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
@@ -324,7 +323,7 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
-                }).ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 

@@ -17,17 +17,18 @@ using Client_App.Controls.DataGrid;
 using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.Interfaces.Logger;
 using Client_App.VisualRealization.Long_Visual;
-using MessageBox.Avalonia.Models;
 using Models.Forms;
 using Client_App.ViewModels;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
+using MsBox.Avalonia.Models;
 
 namespace Client_App.Views;
 
-public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
+public partial class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
 {
     private readonly string _param = "";
 
@@ -51,9 +52,9 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
         this.WhenActivated(d =>
         {
             var vm = (ChangeOrCreateVM)ViewModel!;
-            d(vm.ShowDialogIn.RegisterHandler(DoShowDialogAsync));
-            d(vm.ShowDialog.RegisterHandler(DoShowDialogAsync));
-            d(vm.ShowMessageT.RegisterHandler(DoShowDialogAsyncT));
+            //d(vm.ShowDialogIn.RegisterHandler(DoShowDialogAsync));
+            //d(vm.ShowDialog.RegisterHandler(DoShowDialogAsync));
+            //d(vm.ShowMessageT.RegisterHandler(DoShowDialogAsyncT));
         });
 
         Closing += OnStandardClosing;
@@ -88,8 +89,8 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                 {
                     #region MessageFindIntersection
 
-                    await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams()
+                    await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+                        .GetMessageBoxStandard(new MessageBoxStandardParams()
                         {
                             ButtonDefinitions = ButtonEnum.Ok,
                             ContentTitle = "Пересечение",
@@ -103,7 +104,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                             MinHeight = 170,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(desktop.MainWindow));
+                        .ShowWindowDialogAsync(desktop.MainWindow));
 
                     #endregion
 
@@ -731,8 +732,8 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
         {
             #region MessageRemoveEmptyForms
 
-            var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            var res = await Dispatcher.UIThread.InvokeAsync(async () => await MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
@@ -746,7 +747,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(desktop.MainWindow));
+                .ShowWindowDialogAsync(desktop.MainWindow));
 
             #endregion
 
@@ -809,8 +810,8 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                 Name = elem
             });
 
-        var message = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
-        var answer = await message.ShowDialog(this);
+        var message = MsBox.Avalonia.MessageBoxManager.GetMessageBoxCustom(par);
+        var answer = await message.ShowWindowDialogAsync(this);
 
         interaction.SetOutput(answer);
     }
@@ -4787,8 +4788,8 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
 
         #region MessageRemoveEmptyForms
 
-        var res = Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var res = Dispatcher.UIThread.InvokeAsync(async () => await MsBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -4801,7 +4802,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(desktop.MainWindow));
+            .ShowWindowDialogAsync(desktop.MainWindow));
 
         #endregion
 

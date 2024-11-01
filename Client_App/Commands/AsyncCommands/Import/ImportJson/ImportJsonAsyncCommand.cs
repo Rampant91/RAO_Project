@@ -9,14 +9,13 @@ using Models.JSON;
 using Newtonsoft.Json;
 using Avalonia.Controls;
 using Client_App.Interfaces.Logger;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
-using MessageBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.DTO;
 using static Client_App.Commands.AsyncCommands.Import.ImportJson.ImportJsonMethods;
-using static Client_App.Resources.StaticStringMethods;
 using Avalonia.Threading;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
+using MsBox.Avalonia.Models;
 
 namespace Client_App.Commands.AsyncCommands.Import.ImportJson;
 
@@ -268,8 +267,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                 {
                     #region MessageFailedToReadFile
 
-                    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandard(new MessageBoxStandardParams
                         {
                             ButtonDefinitions = ButtonEnum.Ok,
                             ContentTitle = "Импорт из .json",
@@ -280,7 +279,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(Desktop.MainWindow));
+                        .ShowWindowDialogAsync(Desktop.MainWindow));
 
                     #endregion
 
@@ -358,8 +357,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                             {
                                 #region MessageNewOrg
 
-                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                an = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                                    .GetMessageBoxCustom(new MessageBoxCustomParams
                                     {
                                         ButtonDefinitions =
                                         [
@@ -381,7 +380,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                                         MinWidth = 400,
                                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                                     })
-                                    .ShowDialog(Desktop.MainWindow));
+                                    .ShowWindowDialogAsync(Desktop.MainWindow));
 
                                 #endregion
 
@@ -391,8 +390,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                             {
                                 #region MessageNewOrg
 
-                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                an = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                                    .GetMessageBoxCustom(new MessageBoxCustomParams
                                     {
                                         ButtonDefinitions =
                                         [
@@ -410,7 +409,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                                         MinWidth = 400,
                                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                                     })
-                                    .ShowDialog(Desktop.MainWindow));
+                                    .ShowWindowDialogAsync(Desktop.MainWindow));
 
                                 #endregion
                             }
@@ -501,8 +500,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
         {
             #region MessageImportDone
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Импорт из .json",
@@ -513,7 +512,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
         }
@@ -521,8 +520,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
         {
             #region MessageImportCancel
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Импорт из .json",
@@ -532,7 +531,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
         }

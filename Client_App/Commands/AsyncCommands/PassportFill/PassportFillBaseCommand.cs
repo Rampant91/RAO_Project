@@ -1,8 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.Forms.Form1;
 using OfficeOpenXml;
@@ -12,6 +10,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 
 namespace Client_App.Commands.AsyncCommands.PassportFill;
 
@@ -92,10 +92,10 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
         }
         if (packageData.Count == 0)
         {
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                     ContentTitle = MsgTitle,
                     ContentHeader = "Ошибка",
                     ContentMessage = ErrOpsNotFound,
@@ -103,7 +103,7 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowWindowDialogAsync(Desktop.MainWindow));
             return;
         }
 
@@ -115,8 +115,8 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
         var suffix3 = singlePack ? "ки" : "ок";
         var suffix4 = singlePack ? "" : "ы";
         var suffix5 = singlePack ? "а" : "ов";
-        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var answer = await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -130,7 +130,7 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
                 MinWidth = 550,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow));
+            .ShowWindowDialogAsync(Desktop.MainWindow));
         if (answer is not "Да") return;
 
         #endregion
@@ -170,10 +170,10 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
                     {
                         #region MessageFailedToSaveFile
 
-                        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxStandard(new MessageBoxStandardParams
                             {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                                 ContentTitle = "Выгрузка в Excel",
                                 ContentHeader = "Ошибка",
                                 ContentMessage =
@@ -184,7 +184,7 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
                                 MinHeight = 150,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
-                            .ShowDialog(Desktop.MainWindow));
+                            .ShowWindowDialogAsync(Desktop.MainWindow));
                         continue;
 
                         #endregion
@@ -456,10 +456,10 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
                 //ignore
             }
         }
-        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+        await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+            .GetMessageBoxStandard(new MessageBoxStandardParams
             {
-                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                 ContentTitle = MsgTitle,
                 ContentHeader = "Уведомление",
                 ContentMessage =
@@ -469,11 +469,12 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
                 MinHeight = 150,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow));
-        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            .ShowWindowDialogAsync(Desktop.MainWindow));
+
+        await Dispatcher.UIThread.InvokeAsync(() => MsBox.Avalonia.MessageBoxManager
+            .GetMessageBoxStandard(new MessageBoxStandardParams
             {
-                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                ButtonDefinitions = MsBox.Avalonia.Enums.ButtonEnum.Ok,
                 ContentTitle = MsgTitle,
                 ContentHeader = "Уведомление",
                 ContentMessage = $"Необходимо закончить заполнение паспорт{suffix5} вручную." +
@@ -482,7 +483,7 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
                 MinHeight = 150,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow));
+            .ShowWindowDialogAsync(Desktop.MainWindow));
     }
 
     private static string ToExpString(double val)

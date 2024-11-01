@@ -5,9 +5,9 @@ using Avalonia.Markup.Xaml;
 using Client_App.Views;
 using System.Threading;
 using Avalonia.Controls;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
 using Client_App.Properties;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
 
 namespace Client_App;
 
@@ -26,8 +26,8 @@ public class App : Application
             if (!InstanceCheck())
             {
                 #region MessageAppAlreadyOpen
-                await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                await MsBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Запуск программы",
@@ -38,7 +38,7 @@ public class App : Application
                         MinHeight = 120,
                         WindowStartupLocation = WindowStartupLocation.CenterScreen
                     })
-                    .Show();
+                    .ShowWindowAsync();
                 #endregion
 
                 Environment.Exit(0);
