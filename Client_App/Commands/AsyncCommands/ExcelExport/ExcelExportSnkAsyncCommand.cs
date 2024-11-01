@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Client_App.Views;
@@ -67,26 +65,27 @@ public class ExcelExportSnkAsyncCommand : ExcelBaseAsyncCommand
 
         var forms11DtoList = await GetForms11DtoList(db, selectedReports.Id, cts);
 
+        
     }
 
     private static async Task<IEnumerable<ShortForm11DTO>> GetForms11DtoList(DBModel db, int id, CancellationTokenSource cts)
     {
-        var tatata = await db.ReportsCollectionDbSet
+        var repDtoList = await db.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
             .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows11)
             .Where(reps => reps.Id == id)
             .SelectMany(reps => reps.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.1"))
-            .Where(rep => rep.Rows11
-                .Any(form => form.OperationCode_DB == "10"))
+                .Where(rep => rep.Rows11
+                    .Any(form => form.OperationCode_DB == "10"))
+                .Select(rep => new ShortReportDTO(rep.Id, rep.FormNum_DB, rep.StartPeriod_DB, rep.EndPeriod_DB))
+                .Where(repDto => repDto.FormNum == "1.1"))
             .ToListAsync(cts.Token);
 
-        var tatata2 = tatata
-            .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
-            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
-            .Take(1)
+        var firstRepWithCode10Dto = repDtoList
+            .OrderBy(x => DateOnly.TryParse(x.StartPeriod, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod, out var endDate) ? endDate : DateOnly.MaxValue)
             .First();
 
 
@@ -123,5 +122,16 @@ public class ExcelExportSnkAsyncCommand : ExcelBaseAsyncCommand
         public readonly string PasNum = pasNum;
 
         public readonly string Type = type;
+    }
+
+    private class ShortReportDTO(int id, string formNum, string startPeriod, string endPeriod)
+    {
+        public readonly int Id = id;
+
+        public readonly string FormNum = formNum;
+
+        public readonly string StartPeriod = startPeriod;
+
+        public readonly string EndPeriod = endPeriod;
     }
 }

@@ -81,7 +81,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                         {
                             FormNum_DB = formNumReps
                         },
-                        Id = reps[0].Id
+                        Id = reps.Length > 1 ? reps[1].Id : reps[0].Id
                     };
                     switch (formNumReps)
                     {
