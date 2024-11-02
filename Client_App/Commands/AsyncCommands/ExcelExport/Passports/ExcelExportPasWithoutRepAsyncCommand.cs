@@ -17,6 +17,7 @@ using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.DTO;
+using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
@@ -46,21 +47,14 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         progressBarVM.SetProgressBar(10, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
 
-        progressBarVM.SetProgressBar(18, "Инициализация Excel пакета");
+        progressBarVM.SetProgressBar(15, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath);
-        Worksheet = excelPackage.Workbook.Worksheets.Add("Список паспортов без отчетов");
 
-        #region FillHeaders
+        progressBarVM.SetProgressBar(17, "Заполнение заголовков");
+        await FillExcelHeaders(files, excelPackage);
 
-        Worksheet.Cells[1, 1].Value = "Путь до папки";
-        Worksheet.Cells[1, 2].Value = "Имя файла";
-        Worksheet.Cells[1, 3].Value = "Код ОКПО изготовителя";
-        Worksheet.Cells[1, 4].Value = "Тип";
-        Worksheet.Cells[1, 5].Value = "Год выпуска";
-        Worksheet.Cells[1, 6].Value = "Номер паспорта";
-        Worksheet.Cells[1, 7].Value = "Номер";
-
-        #endregion
+        progressBarVM.SetProgressBar(18, "Заполнение дубликатов");
+        await FillExcelDuplicates(files, excelPackage);
 
         progressBarVM.SetProgressBar(20, "Формирование списка форм 1.1");
         var filteredForm11DtoArray = await GetFilteredForms(tmpDbPath, categories, cts);
@@ -87,6 +81,57 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         progressBarVM.SetProgressBar(100, "Завершение выгрузки");
         await progressBar.CloseAsync();
     }
+
+    #region FillExcelDuplicates
+
+    private Task FillExcelDuplicates(List<FileInfo> files, ExcelPackage excelPackage)
+    {
+        var worksheet = excelPackage.Workbook.Worksheets.First(x => x.Name == "Список дубликатов файлов паспортов");
+        List<FileInfo> checkedFiles = [];
+        var currentRow = 2;
+        foreach (var file in files)
+        {
+            var filesWithCurrentName = files
+                .Where(x => x.Name == file.Name)
+                .ToArray();
+            if (filesWithCurrentName.Length > 1 && !checkedFiles.Contains(file))
+            {
+                foreach (var duplicateFile in filesWithCurrentName)
+                {
+                    worksheet.Cells[currentRow, 1].Value = duplicateFile.DirectoryName;
+                    worksheet.Cells[currentRow, 2].Value = duplicateFile.Name;
+                    currentRow++;
+                }
+            }
+            checkedFiles.AddRange(filesWithCurrentName);
+        }
+        return Task.CompletedTask;
+    }
+
+    #endregion
+
+    #region FillExcelHeaders
+
+    private Task FillExcelHeaders(IEnumerable<FileInfo> files, ExcelPackage excelPackage)
+    {
+        Worksheet = excelPackage.Workbook.Worksheets.Add("Список паспортов без отчетов");
+        var duplicatePasFiles = excelPackage.Workbook.Worksheets.Add("Список дубликатов файлов паспортов");
+
+        Worksheet.Cells[1, 1].Value = "Путь до папки";
+        Worksheet.Cells[1, 2].Value = "Имя файла";
+        Worksheet.Cells[1, 3].Value = "Код ОКПО изготовителя";
+        Worksheet.Cells[1, 4].Value = "Тип";
+        Worksheet.Cells[1, 5].Value = "Год выпуска";
+        Worksheet.Cells[1, 6].Value = "Номер паспорта";
+        Worksheet.Cells[1, 7].Value = "Номер";
+
+        duplicatePasFiles.Cells[1, 1].Value = "Путь до папки";
+        duplicatePasFiles.Cells[1, 2].Value = "Имя файла";
+
+        return Task.CompletedTask;
+    }
+
+    #endregion
 
     #region FillRows
 
@@ -164,9 +209,12 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
                         + ConvertPrimToDash(form11.FactoryNumber),
                         pasParam[0] + pasParam[1] + pasParam[2] + pasParam[3] + pasParam[4])))
             {
-                filesToRemove.Add(files.First(file =>
-                    file.Name.Remove(file.Name.Length - 4) ==
-                    $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}"));
+                var allFilesWithThisName = files.Where(file =>
+                    file.Name.Remove(file.Name.Length - 4) == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}");
+                foreach (var file in allFilesWithThisName)
+                {
+                    filesToRemove.Add(file);
+                }
             }
             count++;
             progressBarDoubleValue += (double)40 / pasUniqParam.Count;
