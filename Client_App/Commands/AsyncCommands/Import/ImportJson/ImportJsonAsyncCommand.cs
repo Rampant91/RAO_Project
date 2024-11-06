@@ -72,8 +72,10 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
 
                     var ty1 = FormCreator.Create(formNumReps);
                     ty1.NumberInOrder_DB = 1;
+                    ty1.Id = reps[0].Id;
                     var ty2 = FormCreator.Create(formNumReps);
                     ty2.NumberInOrder_DB = 2;
+                    ty2.Id = reps[1].Id;
 
                     var impReps = new Reports
                     {
@@ -202,7 +204,13 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                 {
                     #region GetImpFormsAndAddToRepsCollection
 
-                    var currentOrg = reportsJsonCollection.FirstOrDefault(reps => reps.Id == rep.ReportsId);
+                    var currentOrg = reportsJsonCollection.FirstOrDefault(reps =>
+                    {
+                        var id = reps.Master_DB.FormNum_DB is "1.0"
+                            ? new[] { reps.Master_DB.Rows10[0].Id, reps.Master_DB.Rows10[1].Id }
+                            : [ reps.Master_DB.Rows20[0].Id, reps.Master_DB.Rows20[1].Id ];
+                        return id.Contains(reps.Id);
+                    });
                     if (currentOrg is null) continue;
 
                     #region GetCreationTime
@@ -262,7 +270,6 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
 
                     #endregion
                 }
-
 
                 if (reportsJsonCollection.Count == 0)
                 {

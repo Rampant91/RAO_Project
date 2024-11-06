@@ -820,8 +820,8 @@ public abstract class CheckF15 : CheckBase
     {
         List<CheckError> result = new();
         var factoryNumber = ReplaceNullAndTrim(forms[line].FactoryNumber_DB);
-        var valid = factoryNumber != string.Empty;
-        if (!valid)
+        var quantity = forms[line].Quantity_DB ?? 0;
+        if (factoryNumber == string.Empty)
         {
             result.Add(new CheckError
             {
@@ -831,6 +831,18 @@ public abstract class CheckF15 : CheckBase
                 Value = factoryNumber,
                 Message = "Заполните сведения о заводском номере ЗРИ, который переведен в ОЗИИИ. Если номер отсутствует, " +
                           "в ячейке следует указать символ \"-\" без кавычек."
+            });
+        }
+        else if (quantity > 1 && factoryNumber != "-" && !factoryNumber.Contains(';'))
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_15",
+                Row = (line + 1).ToString(),
+                Column = "FactoryNumber_DB",
+                Value = factoryNumber,
+                Message = "Убедитесь в правильности заполнения графы. При перечислении (количество более 1), " +
+                          "номера ЗРИ должны быть разделены точкой с запятой."
             });
         }
         return result;
@@ -844,10 +856,11 @@ public abstract class CheckF15 : CheckBase
     private static List<CheckError> Check_011(List<Form15> forms, int line)
     {
         List<CheckError> result = new();
-        var factoryNum = ReplaceNullAndTrim(forms[line].FactoryNumber_DB);
         var quantity = forms[line].Quantity_DB ?? 0;
         if (quantity <= 0)
         {
+
+        
             result.Add(new CheckError
             {
                 FormNum = "form_15",
@@ -855,24 +868,6 @@ public abstract class CheckF15 : CheckBase
                 Column = "Quantity_DB",
                 Value = Convert.ToString(quantity),
                 Message = "Заполните сведения о количестве ЗРИ, переведенных в ОЗИИИ."
-            });
-            return result;
-        }
-        var valid = factoryNum == "-" 
-                    || (factoryNum != string.Empty
-                    && !factoryNum.Contains(',')
-                    && (quantity == 1 
-                        ? !factoryNum.Contains(';') 
-                        : factoryNum.Contains(';')));
-        if (!valid)
-        {
-            result.Add(new CheckError
-            {
-                FormNum = "form_15",
-                Row = (line + 1).ToString(),
-                Column = "Quantity_DB",
-                Value = quantity.ToString(),
-                Message = "Формат ввода данных не соответствует приказу. Номера ЗРИ должны быть разделены точкой с запятой."
             });
         }
         return result;
