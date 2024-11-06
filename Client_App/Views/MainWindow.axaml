@@ -253,6 +253,7 @@
                             Header="Форма 1.5"/>
                     </MenuItem>
                     -->
+
                 </MenuItem>
                 <!--
                 <MenuItem Command="{Binding MaxGraphsLength, Mode=OneTime}"
