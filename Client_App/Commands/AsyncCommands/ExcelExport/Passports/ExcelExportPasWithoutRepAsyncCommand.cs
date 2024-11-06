@@ -86,7 +86,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 
     private Task FillExcelDuplicates(List<FileInfo> files, ExcelPackage excelPackage)
     {
-        var worksheet = excelPackage.Workbook.Worksheets.First(x => x.Name == "Список дубликатов файлов паспортов");
+        var worksheet = excelPackage.Workbook.Worksheets.First(x => x.Name == "Список дубликатов файлов");
         List<FileInfo> checkedFiles = [];
         var currentRow = 2;
         foreach (var file in files)
@@ -115,7 +115,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
     private Task FillExcelHeaders(IEnumerable<FileInfo> files, ExcelPackage excelPackage)
     {
         Worksheet = excelPackage.Workbook.Worksheets.Add("Список паспортов без отчетов");
-        var duplicatePasFiles = excelPackage.Workbook.Worksheets.Add("Список дубликатов файлов паспортов");
+        var duplicatePasFiles = excelPackage.Workbook.Worksheets.Add("Список дубликатов файлов");
 
         Worksheet.Cells[1, 1].Value = "Путь до папки";
         Worksheet.Cells[1, 2].Value = "Имя файла";
