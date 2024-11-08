@@ -67,7 +67,8 @@ public class ExcelExportSnkAsyncCommand : ExcelBaseAsyncCommand
         var okpo = selectedReports.Master_DB.OkpoRep.Value;
         ExportType = $"СНК_{formNum}_{regNum}_{okpo}";
 
-        progressBarVM.SetProgressBar(9, "Создание временной БД", $"Выгрузка СНК {formNum} {regNum}_{okpo}", ExportType);
+        progressBarVM.SetProgressBar(9, "Создание временной БД", 
+        $"Выгрузка СНК {formNum} {regNum}_{okpo}", ExportType);
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
         await using var db = new DBModel(tmpDbPath);
 
@@ -96,31 +97,25 @@ public class ExcelExportSnkAsyncCommand : ExcelBaseAsyncCommand
                 .Select(rep => new ShortReportDTO(rep.Id, rep.StartPeriod_DB, rep.EndPeriod_DB)))
             .ToListAsync(cts.Token);
 
-        var firstRepWithCode10Id = repDtoList
+        var firstInventoryReportDto = repDtoList
             .OrderBy(x => DateOnly.TryParse(x.StartPeriod, out var stDate) ? stDate : DateOnly.MaxValue)
             .ThenBy(x => DateOnly.TryParse(x.EndPeriod, out var endDate) ? endDate : DateOnly.MaxValue)
-            .First().Id;
+            .First();
+
+        DateOnly.TryParse(firstInventoryReportDto.StartPeriod, out var firstInventoryDate);
 
         var inventoryList = await db.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(rep => rep.Id == firstRepWithCode10Id)
+            .Where(rep => rep.Id == firstInventoryReportDto.Id)
             .SelectMany(x => x.Rows11
                 .Where(x => x.OperationCode_DB == "10")
                 .Select(form => new ShortForm11DTO(form.Id, form.FactoryNumber_DB, form.OperationCode_DB, 
-                        form.PassportNumber_DB, form.Type_DB)))
+                    form.OperationDate_DB, form.PassportNumber_DB, form.Type_DB)))
             .ToListAsync(cts.Token);
-
-        List<ShortForm11DTO> uniqueAccountingUnitList = [];
-        foreach (var formDto in inventoryList
-                     .Where(formDto => uniqueAccountingUnitList
-                         .All(x => x.FacNum + x.Type + x.PasNum != formDto.FacNum + formDto.Type + formDto.PasNum)))
-        {
-            uniqueAccountingUnitList.Add(formDto);
-        }
         
-        var allForm11Operation = await db.ReportsCollectionDbSet
+        var formPlusMinusOperationList = await db.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -128,21 +123,56 @@ public class ExcelExportSnkAsyncCommand : ExcelBaseAsyncCommand
             .SelectMany(reps => reps.Report_Collection)
             .SelectMany(rep => rep.Rows11
                 .Where(form => PlusOperation.Contains(form.OperationCode_DB) || MinusOperation.Contains(form.OperationCode_DB))
-                .Select(form => new ShortForm11DTO2(form.Id, form.FactoryNumber_DB, form.OperationCode_DB, 
+                .Select(form => new ShortForm11DTO(form.Id, form.FactoryNumber_DB, form.OperationCode_DB, 
                     form.OperationDate_DB, form.PassportNumber_DB, form.Type_DB)))
             .ToListAsync(cts.Token);
 
-        List<ShortForm11DTO> unitInStockList = [];
-        foreach (var unit in uniqueAccountingUnitList)
-        {
-            var inStock = true;
-            foreach (var operation in allForm11Operation
-                         .Where(x => DateOnly.TryParse(x.OpDate, out _) 
-                                     && x.FacNum + x.Type + x.PasNum == unit.FacNum + unit.Type + unit.PasNum)
-                         .OrderBy(x => DateOnly.TryParse(x.OpDate, out var opDate) ? opDate : DateOnly.MaxValue))
+        var filteredForm11OperationList = inventoryList.Union(formPlusMinusOperationList)
+            .Where(x =>
             {
-                if (MinusOperation.Contains(operation.OpCode)) inStock = false;
-                else if (PlusOperation.Contains(operation.OpCode)) inStock = true;
+                    var date = DateOnly.TryParse(x.OpDate, out var opDate) ? opDate : DateOnly.MaxValue;
+                    return date >= firstInventoryDate;
+            })
+            .ToList();
+
+        List<ShortForm11DTO> uniqueAccountingUnitList = [];
+        foreach (var formDto in inventoryList.Union(filteredForm11OperationList)
+                     .Where(formDto => uniqueAccountingUnitList
+                         .All(dto => dto.FacNum + dto.Type + dto.PasNum != formDto.FacNum + formDto.Type + formDto.PasNum)))
+        {
+            uniqueAccountingUnitList.Add(formDto);
+        }
+
+        var uniqueAccountingUnitSortedList = uniqueAccountingUnitList
+            .OrderBy(dto => dto.FacNum + dto.Type + dto.PasNum)
+            .ThenBy(dto => DateOnly.TryParse(dto.OpDate, out var opDate) ? opDate : DateOnly.MaxValue)
+            .ToList();
+
+        List<ShortForm11DTO> unitDoubleMinusList = [];
+        List<ShortForm11DTO> unitDoublePlusList = [];
+        List<ShortForm11DTO> unitInStockList = [];
+        var countUnit = 0;
+        foreach (var unit in uniqueAccountingUnitSortedList)
+        {
+            countUnit++;
+            var inStock = false;
+            var operationWithCurrentUnit = formPlusMinusOperationList
+                .Where(x => DateOnly.TryParse(x.OpDate, out _)
+                            && x.FacNum + x.Type + x.PasNum == unit.FacNum + unit.Type + unit.PasNum)
+                .OrderBy(x => DateOnly.Parse(x.OpDate))
+                .ToArray();
+            foreach (var operation in operationWithCurrentUnit)
+            {
+                if (MinusOperation.Contains(operation.OpCode))
+                {
+                    if (!inStock) unitDoubleMinusList.Add(operation);
+                    else inStock = false;
+                }
+                else if (PlusOperation.Contains(operation.OpCode))
+                {
+                    if (inStock) unitDoublePlusList.Add(operation);
+                    inStock = true;
+                }
             }
             if (inStock) unitInStockList.Add(unit);
         }
@@ -204,20 +234,7 @@ public class ExcelExportSnkAsyncCommand : ExcelBaseAsyncCommand
 
     #endregion
 
-    private class ShortForm11DTO(int id, string facNum, string opCode , string pasNum, string type)
-    {
-        public readonly int Id = id;
-
-        public readonly string FacNum = facNum;
-
-        public readonly string OpCode = opCode;
-
-        public readonly string PasNum = pasNum;
-
-        public readonly string Type = type;
-    }
-
-    private class ShortForm11DTO2(int id, string facNum, string opCode, string opDate, string pasNum, string type)
+    private class ShortForm11DTO(int id, string facNum, string opCode, string opDate, string pasNum, string type)
     {
         public readonly int Id = id;
 
