@@ -212,7 +212,11 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
     {
         //Settings.Default.LastDbBackupDate = DateTime.MinValue;    //Сброс даты для тестирования
         //Settings.Default.Save();
-        if ((DateTime.Now - Settings.Default.LastDbBackupDate).TotalDays < 30) return Task.CompletedTask;
+        if ((DateTime.Now - Settings.Default.LastDbBackupDate).TotalDays < 30
+            || Settings.Default.AppStartupParameters == string.Empty)
+        {
+            return Task.CompletedTask;
+        }
 
         #region MessageInputCategoryNums
 
