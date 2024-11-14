@@ -12,7 +12,6 @@ using Avalonia.Controls;
 using MessageBox.Avalonia.DTO;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using Client_App.ViewModels.ProgressBar;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -239,13 +238,6 @@ public class ExcelExportSnkAsyncCommand : ExcelBaseAsyncCommand
             countUnit++;
             var inStock = false;
 
-            var operationsWithCurrentUnitGroupedByReport = plusMinusFormsDtoList
-                .Where(x => DateOnly.TryParse(x.OpDate, out _)
-                            && x.FacNum + x.Type + x.PasNum == unit.FacNum + unit.Type + unit.PasNum)
-                .OrderBy(x => DateOnly.Parse(x.OpDate))
-                .GroupBy(x => x.RepDto.Id)
-                .ToArray();
-
             var inventoryWithCurrentUnitGroupedByReport = inventoryFormsDtoList
                 .Where(x => DateOnly.TryParse(x.OpDate, out _)
                             && x.FacNum + x.Type + x.PasNum == unit.FacNum + unit.Type + unit.PasNum)
@@ -254,7 +246,22 @@ public class ExcelExportSnkAsyncCommand : ExcelBaseAsyncCommand
                 .GroupBy(x => x.RepDto.Id)
                 .ToArray();
 
-            foreach(var inventoryGroup in inventoryWithCurrentUnitGroupedByReport)
+            var firstUnitInventoryDateString = inventoryWithCurrentUnitGroupedByReport
+                .First()
+                .Select(x => x.OpDate)
+                .First();
+            var firstUnitInventoryDate = DateOnly.Parse(firstUnitInventoryDateString);
+
+            var operationsWithCurrentUnitGroupedByReport = plusMinusFormsDtoList
+                .Where(x => DateOnly.TryParse(x.OpDate, out _) 
+                            && DateOnly.TryParse(x.RepDto.EndPeriod, out var endRepDate)
+                            && endRepDate >= firstUnitInventoryDate
+                            && x.FacNum + x.Type + x.PasNum == unit.FacNum + unit.Type + unit.PasNum)
+                .OrderBy(x => DateOnly.Parse(x.OpDate))
+                .GroupBy(x => x.RepDto.Id)
+                .ToArray();
+
+            foreach (var inventoryGroup in inventoryWithCurrentUnitGroupedByReport)
             {
                 var repId = inventoryGroup.Key;
                 var repDto = await db.ReportCollectionDbSet

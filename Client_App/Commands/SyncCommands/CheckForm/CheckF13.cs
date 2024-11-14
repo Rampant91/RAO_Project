@@ -320,7 +320,7 @@ public abstract class CheckF13 : CheckBase
         var radionuclidValid = new[]
         {
             "плутоний-238", "плутоний-239", "плутоний-240", "уран-233", "уран-235", "уран-238", "нептуний-237",
-            "америций-241", "америций 243", "калифорний-252", "торий-232", "литий-6", "дейтерий", "тритий"
+            "америций-241", "америций-243", "калифорний-252", "торий-232", "литий-6", "дейтерий", "тритий"
         };
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var valid = radionuclidValid
