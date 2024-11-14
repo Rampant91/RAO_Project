@@ -208,7 +208,7 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
 
                 #endregion
 
-                return;
+                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
             }
         }
 
@@ -287,6 +287,8 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
                     }).ShowDialog(Desktop.MainWindow));
 
             #endregion
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
 
         #region Progress = 100
@@ -339,6 +341,23 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
 
         await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
+
+    #region CancelCommandAndCloseProgressBarWindow
+
+    /// <summary>
+    /// Отмена исполняемой команды и закрытие окна прогрессбара.
+    /// </summary>
+    /// <param name="cts">Токен.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <returns></returns>
+    private static async Task CancelCommandAndCloseProgressBarWindow(CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null)
+    {
+        await cts.CancelAsync();
+        if (progressBar is not null) await progressBar.CloseAsync();
+        cts.Token.ThrowIfCancellationRequested();
+    }
+
+    #endregion
 
     #region InventoryCheck
 

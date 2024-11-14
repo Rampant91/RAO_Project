@@ -18,7 +18,7 @@ namespace Models.Forms.Form1;
 public partial class Form15 : Form1
 {
     #region Constructor
-    
+
     public Form15()
     {
         FormNum.Value = "1.5";
@@ -401,6 +401,7 @@ public partial class Form15 : Form1
     [FormProperty(true, "Сведения об отработавших закрытых источниках ионизирующего излучения", "дата выпуска", "10")]
     public RamAccess<string> CreationDate
     {
+
         get
         {
             if (Dictionary.TryGetValue(nameof(CreationDate), out var value))

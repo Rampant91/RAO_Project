@@ -14,12 +14,9 @@ using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Models.Collections;
-using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
-using Models.Interfaces;
 using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
@@ -55,6 +52,26 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     }
 
     public abstract override Task AsyncExecute(object? parameter);
+
+    #region CheckAppParameter
+
+    /// <summary>
+    /// Проверяет переданный параметр при запуске программы и если он имеет вид "-p, *folderPath*", то возвращает путь к папке.
+    /// </summary>
+    /// <returns>Полный путь к папке сохранения, если параметр заполнен, иначе пустую строку.</returns>
+    private protected static async Task<string> CheckAppParameter()
+    {
+        var parameters = Settings.Default.AppStartupParameters.Split(',');
+        if (parameters.Length != 2 || !Directory.Exists(parameters[1])) return string.Empty;
+        var key = parameters[0].Trim();
+        var folderPath = key is "-p"
+            ? parameters[1]
+            : string.Empty;
+
+        return await Task.FromResult(folderPath);
+    }
+
+    #endregion
 
     #region CancelCommandAndCloseProgressBarWindow
 
@@ -594,9 +611,10 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     /// <param name="openTemp">Флаг, открывать ли временную копию.</param>
     /// <param name="cts">Токен.</param>
     /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <param name="isBackground">Признак выполнения команды в фоне.</param>
     /// <returns>Открывает файл выгрузки в .xlsx.</returns>
-    private protected static async Task ExcelSaveAndOpen(ExcelPackage excelPackage, string fullPath, bool openTemp, 
-        CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null)
+    private protected static async Task ExcelSaveAndOpen(ExcelPackage excelPackage, string fullPath, bool openTemp,
+        CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null, bool isBackground = false)
     {
         try
         {
@@ -633,7 +651,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
-
+        if (isBackground) return;
         if (openTemp)
         {
             Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });

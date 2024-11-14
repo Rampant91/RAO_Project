@@ -1,11 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using ReactiveUI;
 using System.Reactive.Linq;
 using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Interfaces.BackgroundLoader;
 using Client_App.Interfaces.Logger;
+using Client_App.Properties;
 
 namespace Client_App.ViewModels;
 
@@ -59,6 +62,20 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
         VMDataContext = new MainWindowVM();
         VMDataContext.PropertyChanged += OnVMPropertyChanged;
         await new InitializationAsyncCommand(VMDataContext).AsyncExecute(this);
+
+        if (Settings.Default.AppStartupParameters.Split(',')[0].Trim() is "-p")
+        {
+            await BackgroundWorkThenAppLaunchedWithParameter();
+            Environment.Exit(0);
+        }
+    }
+
+    private async Task BackgroundWorkThenAppLaunchedWithParameter()
+    {
+        await new ExcelExportListOfOrgsAsyncCommand().AsyncExecute(this);
+        await new ExcelExportExecutorsAsyncCommand().AsyncExecute(this);
+        await new ExcelExportIntersectionsAsyncCommand().AsyncExecute(this);
+        await new ExcelExportAllAsyncCommand().AsyncExecute(this);
     }
 
     private void OnVMPropertyChanged(object sender,PropertyChangedEventArgs args)

@@ -356,7 +356,9 @@ public abstract class Form : IKey, IDataGridColumn
         var tmp = (value ?? string.Empty).Trim();
         return DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var date) 
             ? date.ToShortDateString()
-            : tmp;
+            : tmp is not ("" or "-" or "прим.") 
+                ? "" 
+                : tmp;
     }
 
     private protected static string ReplaceDashes(string value) =>

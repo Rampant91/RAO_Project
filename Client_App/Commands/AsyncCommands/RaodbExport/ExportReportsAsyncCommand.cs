@@ -37,22 +37,31 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
         switch (parameter)
         {
             case ObservableCollectionWithItemPropertyChanged<IKey> param:
-                foreach (var item in param)
+            {
+                var reps = (Reports)param.First();
+                var aDay = dt.Day.ToString();
+                var aMonth = dt.Month.ToString();
+                if (aDay.Length < 2) aDay = $"0{aDay}";
+                if (aMonth.Length < 2) aMonth = $"0{aMonth}";
+                foreach (var key in reps.Report_Collection)
                 {
-                    ((Reports)item).Master.ExportDate.Value = dt.Date.ToShortDateString();
+                    var rep = (Report)key;
+                    rep.ExportDate.Value = $"{aDay}.{aMonth}.{dt.Year}";
                 }
                 fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
                 exportOrg = (Reports)param.First();
                 await StaticConfiguration.DBModel.SaveChangesAsync(cts.Token);
                 break;
+            }
             case Reports reps:
+            {
                 fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
                 exportOrg = reps;
                 exportOrg.Master.ExportDate.Value = dt.Date.ToShortDateString();
                 await StaticConfiguration.DBModel.SaveChangesAsync(cts.Token);
                 break;
-            default:
-                return;
+            }
+            default: return;
         }
         var repsId = exportOrg.Id;
 
@@ -166,6 +175,7 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 
             #endregion
 
+            rep.ExportDate.Value = DateTime.Now.ToShortDateString();
             repsFull.Report_Collection.Add(rep);
 
             progressBarDoubleValue += (double)35 / repsReportIds.Length;

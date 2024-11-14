@@ -36,18 +36,35 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
-        progressBarVM.SetProgressBar(2, "Создание временной БД", "Выгрузка всех отчётов", "Выгрузка в .xlsx");
+        progressBarVM.SetProgressBar(2, "Проверка параметров", "Выгрузка всех отчётов", ExportType);
+        var folderPath = await CheckAppParameter();
+        var isBackgroundCommand = folderPath != string.Empty;
+
+        progressBarVM.SetProgressBar(3, "Создание временной БД", "Выгрузка всех отчётов", "Выгрузка в .xlsx");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
         await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(5, "Подсчёт количества организаций");
-        await CountReports(db, progressBar, cts);
+        if (!isBackgroundCommand)
+        {
+            progressBarVM.SetProgressBar(5, "Подсчёт количества организаций");
+            await CountReports(db, progressBar, cts);
+        }
 
         progressBarVM.SetProgressBar(7, "Определение имени файла");
         var fileName = await GetFileName(progressBar, cts);
         
         progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
-        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+        var (fullPath, openTemp) = !isBackgroundCommand
+            ? await ExcelGetFullPath(fileName, cts, progressBar)
+            : (Path.Combine(folderPath, $"{fileName}.xlsx"), true);
+
+        var count = 0;
+        while (File.Exists(fullPath))
+        {
+            fullPath = Path.Combine(folderPath, fileName + $"_{++count}.xlsx");
+        }
+
+        //var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
         var operationStart = DateTime.Now;
 
         progressBarVM.SetProgressBar(12, "Инициализация Excel пакета");
@@ -63,7 +80,7 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
         await GetFullReportForeachReps(db, repsList, formNums, progressBarVM, excelPackage, cts);
 
         progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
 
         progressBarVM.SetProgressBar(98, "Очистка временных данных");
         try
@@ -77,25 +94,28 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
 
         progressBarVM.SetProgressBar(100, "Завершение выгрузки");
 
-        #region MessageExcelExportExecutionTime
+        if (folderPath == string.Empty)
+        {
+            #region MessageExcelExportExecutionTime
 
-        var operationEnd = DateTime.Now;
-        var diffInSeconds = (int)(operationEnd - operationStart).TotalSeconds;
-        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-            {
-                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                CanResize = true,
-                ContentTitle = "Выгрузка в Excel",
-                ContentHeader = "Уведомление",
-                ContentMessage = $"Время выгрузки составило {diffInSeconds} секунд.",
-                MinHeight = 150,
-                MinWidth = 250,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .Show(progressBar ?? Desktop.MainWindow));
+            var operationEnd = DateTime.Now;
+            var diffInSeconds = (int)(operationEnd - operationStart).TotalSeconds;
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"Время выгрузки составило {diffInSeconds} секунд.",
+                    MinHeight = 150,
+                    MinWidth = 250,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .Show(progressBar ?? Desktop.MainWindow));
 
-        #endregion
+            #endregion
+        }
 
         await progressBar.CloseAsync();
     }

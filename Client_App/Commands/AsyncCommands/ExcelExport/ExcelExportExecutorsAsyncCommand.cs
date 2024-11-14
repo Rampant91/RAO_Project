@@ -32,8 +32,12 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
-        progressBarVM.SetProgressBar(2, "Создание временной БД",
+        progressBarVM.SetProgressBar(2, "Проверка параметров", 
             "Выгрузка списка исполнителей", "Выгрузка в .xlsx");
+        var folderPath = await CheckAppParameter();
+        var isBackgroundCommand = folderPath != string.Empty;
+
+        progressBarVM.SetProgressBar(3, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
         await using var db = new DBModel(tmpDbPath);
 
@@ -42,7 +46,17 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
 
         progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
-        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+        var (fullPath, openTemp) = !isBackgroundCommand
+            ? await ExcelGetFullPath(fileName, cts, progressBar)
+            : (Path.Combine(folderPath, $"{fileName}.xlsx"), true);
+
+        var count = 0;
+        while (File.Exists(fullPath))
+        {
+            fullPath = Path.Combine(folderPath, fileName + $"_{++count}.xlsx");
+        }
+
+        //var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
 
         progressBarVM.SetProgressBar(12, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath);
@@ -54,7 +68,7 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
         await GetExecutorsList2(db, excelPackage, cts);
 
         progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
 
         progressBarVM.SetProgressBar(98, "Очистка временных данных");
         try

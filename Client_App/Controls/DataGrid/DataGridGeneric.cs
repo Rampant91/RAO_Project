@@ -1870,7 +1870,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             {
                                 [!DataContextProperty] = new Binding(item.Binding),
                                 [!TextBox.TextProperty] = new Binding("Value"),
-                                [!BackgroundProperty] = cell[!Cell.ChooseColorProperty],
+                                [!BackgroundProperty] = cell[!Cell.ChooseColorProperty]
                             };
                             ((TextBox)textBox).TextAlignment = TextAlignment.Left;
                             textBox.VerticalAlignment = VerticalAlignment.Stretch;
@@ -1926,7 +1926,6 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 }
                 else
                 {
-                    
                     textBox = new TextBox
                         {
                             [!DataContextProperty] = new Binding(item.Binding),

@@ -99,7 +99,7 @@ public class Form1_Visual
             Path = "SelectedItems",
             ElementName = "Form10AllDataGrid_",
             NameScope = new WeakReference<INameScope>(scp),
-            Converter = new ReportsToReportConverter(),
+            Converter = new ReportsToReportConverter()
         };
         grd.Bind(DataGridReport.ItemsProperty, b);
 
