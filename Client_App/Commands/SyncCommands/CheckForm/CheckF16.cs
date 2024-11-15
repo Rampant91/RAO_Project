@@ -1892,8 +1892,7 @@ public abstract class CheckF16 : CheckBase
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var applicableRaoStatuses = new [] { "1" };
         var statusRao = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
-        var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
-        var valid = okpoRegex.IsMatch(statusRao) || applicableRaoStatuses.Contains(statusRao);
+        var valid = OkpoRegex.IsMatch(statusRao) || applicableRaoStatuses.Contains(statusRao);
         if (!valid)
         {
             result.Add(new CheckError
@@ -1921,8 +1920,7 @@ public abstract class CheckF16 : CheckBase
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var applicableRaoStatuses = new[] { "2" };
         var statusRao = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
-        var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
-        var valid = okpoRegex.IsMatch(statusRao) || applicableRaoStatuses.Contains(statusRao);
+        var valid = OkpoRegex.IsMatch(statusRao) || applicableRaoStatuses.Contains(statusRao);
         if (!valid)
         {
             result.Add(new CheckError
@@ -1981,8 +1979,7 @@ public abstract class CheckF16 : CheckBase
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var applicableRaoStatuses = new [] { "1", "2", "3", "4", "6", "9" };
         var statusRao = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
-        var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
-        var valid = okpoRegex.IsMatch(statusRao) || applicableRaoStatuses.Contains(statusRao);
+        var valid = OkpoRegex.IsMatch(statusRao) || applicableRaoStatuses.Contains(statusRao);
         if (!valid)
         {
             result.Add(new CheckError
@@ -2770,8 +2767,7 @@ public abstract class CheckF16 : CheckBase
             : forms10[0].Okpo_DB;
         if (!applicableOperationCodes.Contains(operationCode)) return result;
 
-        var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
-        var valid = okpoRegex.IsMatch(providerOrRecieverOKPO);
+        var valid = OkpoRegex.IsMatch(providerOrRecieverOKPO);
         if (!valid)
         {
             result.Add(new CheckError
@@ -2810,9 +2806,8 @@ public abstract class CheckF16 : CheckBase
         List<CheckError> result = new();
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var providerOrRecieverOKPO = ReplaceNullAndTrim(forms[line].ProviderOrRecieverOKPO_DB);
-        var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
         if (operationCode is not ("22" or "32")) return result;
-        var valid = okpoRegex.IsMatch(providerOrRecieverOKPO)
+        var valid = OkpoRegex.IsMatch(providerOrRecieverOKPO)
                     || providerOrRecieverOKPO.Equals("минобороны", StringComparison.CurrentCultureIgnoreCase);
         if (!valid)
         {
@@ -2874,10 +2869,9 @@ public abstract class CheckF16 : CheckBase
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var transporterOKPO = ReplaceNullAndTrim(forms[line].TransporterOKPO_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
         const byte graphNumber = 19;
         var noteExists = CheckNotePresence(notes, line, graphNumber);
-        var valid = okpoRegex.IsMatch(transporterOKPO) 
+        var valid = OkpoRegex.IsMatch(transporterOKPO) 
                     || transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase);
         if (!valid)
         {
@@ -2917,11 +2911,10 @@ public abstract class CheckF16 : CheckBase
         string[] applicableOperationCodes = { "22", "32" };
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var transporterOKPO = ReplaceNullAndTrim(forms[line].TransporterOKPO_DB);
-        var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         const byte graphNumber = 19;
         var noteExists = CheckNotePresence(notes, line, graphNumber);
-        var valid = okpoRegex.IsMatch(transporterOKPO)
+        var valid = OkpoRegex.IsMatch(transporterOKPO)
                     || transporterOKPO.Equals("минобороны", StringComparison.CurrentCultureIgnoreCase)
                     || transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase);
         if (!valid)
@@ -2962,11 +2955,10 @@ public abstract class CheckF16 : CheckBase
         string[] applicableOperationCodes = { "29", "39" };
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var transporterOKPO = ReplaceNullAndTrim(forms[line].TransporterOKPO_DB);
-        var okpoRegex = new Regex(@"^\d{8}([0123456789_]\d{5})?$");
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         const byte graphNumber = 19;
         var noteExists = CheckNotePresence(notes, line, graphNumber);
-        var valid = okpoRegex.IsMatch(transporterOKPO)
+        var valid = OkpoRegex.IsMatch(transporterOKPO)
                     || transporterOKPO.Equals("-", StringComparison.CurrentCultureIgnoreCase)
                     || transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase);
         if (!valid)

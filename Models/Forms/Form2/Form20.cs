@@ -78,7 +78,7 @@ public partial class Form20 : Form
             value.AddError("Недопустимое значение");
             return false;
         }
-        if (!FiveNumRegex().IsMatch(value.Value))
+        if (!RegNoRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -1098,9 +1098,9 @@ public partial class Form20 : Form
     #endregion
 
     #region GeneratedRegex
-    
-    [GeneratedRegex(@"^\d{5}$")]
-    private static partial Regex FiveNumRegex();
+
+    [GeneratedRegex(@"^[Мм\d]\d{4}$")]
+    private static partial Regex RegNoRegex();
 
     [GeneratedRegex(@"^\d{10}$")]
     private static partial Regex InnRegex();
@@ -1116,9 +1116,6 @@ public partial class Form20 : Form
 
     [GeneratedRegex(@"^\d{5}$")]
     private static partial Regex OkopfRegex();
-
-    [GeneratedRegex(@"^\d{8}([0123456789_]\d{5})?$")]
-    private static partial Regex OkpoRegex();
 
     [GeneratedRegex(@"^\d{11}$")]
     private static partial Regex OktmoRegex();

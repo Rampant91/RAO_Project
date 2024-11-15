@@ -15,7 +15,7 @@ using Spravochniki;
 
 namespace Models.Forms;
 
-public abstract class Form : IKey, IDataGridColumn
+public abstract partial class Form : IKey, IDataGridColumn
 {
     #region Properties
 
@@ -365,7 +365,7 @@ public abstract class Form : IKey, IDataGridColumn
         value switch
         {
             null => string.Empty,
-            _ => Regex.Replace(value, "[-᠆‐‑‒–—―⸺⸻－﹘﹣－]", "-")
+            _ => DashesRegex().Replace(value, "-")
         };
 
     #endregion
@@ -481,6 +481,16 @@ public abstract class Form : IKey, IDataGridColumn
     {
         return null;
     }
+
+    #endregion
+
+    #region GeneratedRegex
+
+    [GeneratedRegex("[-᠆‐‑‒–—―⸺⸻－﹘﹣－]")]
+    protected static partial Regex DashesRegex();
+
+    [GeneratedRegex(@"^\d{8}([\d_][Мм\d]\d{4})?$")]
+    protected static partial Regex OkpoRegex();
 
     #endregion
 }

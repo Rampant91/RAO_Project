@@ -89,17 +89,4 @@ public abstract partial class Form2 : Form
     }
 
     #endregion
-
-    #region GeneratedRegex
-
-    [GeneratedRegex(@"^\d{2}\.\d{2}\.\d{2}$")]
-    protected static partial Regex Date6NumRegex();
-
-    [GeneratedRegex(@"^\d{2}\.\d{2}\.\d{4}$")]
-    protected static partial Regex Date8NumRegex();
-
-    [GeneratedRegex(@"^\d{8}([0123456789_]\d{5})?$")]
-    protected static partial Regex OkpoRegex();
-
-    #endregion
 }

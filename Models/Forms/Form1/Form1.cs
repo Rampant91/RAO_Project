@@ -364,11 +364,4 @@ public abstract partial class Form1 : Form
     }
 
     #endregion
-
-    #region GeneratedRegex
-
-    [GeneratedRegex(@"^\d{8}([0123456789_]\d{5})?$")]
-    protected static partial Regex OkpoRegex();
-
-    #endregion
 }

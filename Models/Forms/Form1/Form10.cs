@@ -1075,16 +1075,13 @@ public partial class Form10 : Form
     [GeneratedRegex(@"^\d{5}$")]
     private static partial Regex OkopfRegex();
 
-    [GeneratedRegex(@"^\d{8}([0123456789_]\d{5})?$")]
-    private static partial Regex OkpoRegex();
-
     [GeneratedRegex(@"^\d{11}$")]
     private static partial Regex OktmoRegex();
 
     [GeneratedRegex(@"^\d{2}(|\.\d{1,2})(|\.\d{1,2})$")]
     private static partial Regex OkvedRegex();
 
-    [GeneratedRegex(@"^\d{5}$")]
+    [GeneratedRegex(@"^[Мм\d]\d{4}$")]
     private static partial Regex RegNoRegex();
     
     #endregion
