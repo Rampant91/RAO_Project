@@ -265,7 +265,7 @@ public abstract partial class Form : IKey, IDataGridColumn
     #region NuclidString
 
     private protected static bool NuclidString_Validation(RamAccess<string> value)
-    {
+   {
         value.ClearErrors();
         var tmp = value.Value;
         tmp = ReplaceDashes(tmp);
