@@ -1218,14 +1218,8 @@ public abstract class CheckF11 : CheckBase
             .Split(';')
             .Select(x => x.Trim())
             .ToHashSet();
-        var isEqRads = EquilibriumRadionuclids.Any(x =>
-        {
-            x = x.Replace(" ", string.Empty);
-            var eqRadsArray = x.Split(',');
-            return radsSet
-                .All(rad => eqRadsArray
-                    .Contains(rad) && radsSet.Count == eqRadsArray.Length);
-        });
+
+        var isEqRads = CheckEquilibriumRads(radsSet);
 
         if (radsSet.Count == 1
             || isEqRads
@@ -1284,16 +1278,10 @@ public abstract class CheckF11 : CheckBase
             .Split(';')
             .Select(x => x.Trim())
             .ToHashSet();
-        var isEqRads = EquilibriumRadionuclids.Any(x =>
-        {
-            x = x.Replace(" ", "");
-            var eqSet = x.Split(',');
 
-            return radsSet.All(rad => eqSet.Contains(rad));
-        });
+        var isEqRads = CheckEquilibriumRads(radsSet);
 
-        if (radsSet.Count == 1
-            || !isEqRads
+        if (!isEqRads
             || quantity <= 0
             || !TryParseDoubleExtended(activity, out var activityDoubleValue)
             || activityDoubleValue <= 0
@@ -1541,36 +1529,42 @@ public abstract class CheckF11 : CheckBase
     private static List<CheckError> Check_042(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
-        var dbBounds = new Dictionary<short, (double, double)>
+        var dbBounds = new Dictionary<short, (decimal, decimal)>
         {
-            { 1, (1000, double.MaxValue) },
+            { 1, (1000, decimal.MaxValue) },
             { 2, (10, 1000) },
             { 3, (1, 10) },
-            { 4, (0.01, 1) },
-            { 5, (0, 0.01) }
+            { 4, (0.01m, 1) },
+            { 5, (0, 0.01m) }
         };
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
         var category = forms[line].Category_DB ?? 0;
         var quantity = forms[line].Quantity_DB ?? 0;
         var radionuclids = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
-        List<double> dValueList = new();
-        var nuclidsList = radionuclids
+
+        List<decimal> dValueList = new();
+
+        var radsSet = radionuclids
             .ToLower()
-            .Replace(" ", string.Empty)
-            .Split(';');
-        var valid = category != null
-                    && dbBounds.ContainsKey((short)category)
-                    && nuclidsList.Length > 0;
+            .Replace(',', ';')
+            .Split(';')
+            .Select(x => x.Trim())
+            .ToHashSet();
+
+        _ = CheckEquilibriumRads(radsSet);
+
+        var valid = dbBounds.ContainsKey(category)
+                    && radsSet.Count > 0;
         if (valid)
         {
-            foreach (var nuclid in nuclidsList)
+            foreach (var nuclid in radsSet)
             {
                 var nuclidFromR = R.FirstOrDefault(x => x["name"] == nuclid);
                 if (nuclidFromR is null) continue;
                 var expFromR = ConvertStringToExponential(nuclidFromR["D"]);
-                if (float.TryParse(expFromR, out var value))
+                if (decimal.TryParse(expFromR, out var value))
                 {
-                    dValueList.Add(value * 1e12);
+                    dValueList.Add(decimal.Multiply(value, 1e12m));
                 }
             }
             //if (dValueList.Count == 0)
@@ -1600,20 +1594,23 @@ public abstract class CheckF11 : CheckBase
             }
             var dMinValue = dValueList.Min();
             var dMaxValue = dValueList.Max();
-            valid = TryParseDoubleExtended(activity, out var aValue);
+            valid = decimal.TryParse(ConvertStringToExponential(activity),
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
+                CultureInfo.CreateSpecificCulture("ru-RU"),
+                out var aValue);
             aValue /= quantity != 0 
-                ? (double)quantity 
-                : 1.0;
+                ? quantity 
+                : 1.0m;
             if (valid)
             {
-                var adMinBound = dMaxValue == 0.0
-                    ? double.MaxValue
+                var adMinBound = dMaxValue == 0.0m
+                    ? decimal.MaxValue
                     : aValue / dMaxValue;
-                var adMaxBound = dMinValue == 0.0
-                    ? double.MaxValue
+                var adMaxBound = dMinValue == 0.0m
+                    ? decimal.MaxValue
                     : aValue / dMinValue;
-                valid = dbBounds[(short)category!].Item1 <= adMinBound
-                        && dbBounds[(short)category].Item2 > adMaxBound;
+                valid = dbBounds[category].Item1 <= adMinBound
+                        && dbBounds[category].Item2 > adMaxBound;
             }
         }
         if (!valid)
@@ -2587,6 +2584,32 @@ public abstract class CheckF11 : CheckBase
 
     #endregion
 
+    #region CheckEquilibriumRads
+
+    /// <summary>
+    /// Проверяет сет радионуклидов на равновесные, оставляет в нём только главные и возвращает флаг, были ли в сете равновесные радионуклиды.
+    /// </summary>
+    /// <param name="radsSet">Сет радионуклидов.</param>
+    /// <returns>Флаг, были ли в сете равновесные радионуклиды.</returns>
+    private static bool CheckEquilibriumRads(HashSet<string> radsSet)
+    {
+        var isEqRads = false;
+        isEqRads = EquilibriumRadionuclids.All(x =>
+        {
+            x = x.Replace(" ", string.Empty);
+            var eqSet = x.Split(',').ToHashSet();
+            if (radsSet.Intersect(eqSet).Any())
+            {
+                isEqRads = true;
+                radsSet.ExceptWith(eqSet.Skip(1));
+            }
+            return isEqRads;
+        });
+        return isEqRads;
+    }
+
+    #endregion
+
     #region GraphsList
 
     private static readonly Dictionary<string, string> GraphsList = new()
@@ -2623,7 +2646,7 @@ public abstract class CheckF11 : CheckBase
     private static readonly string[] OperationCode_DB_Check021 =
     {
         "11", "12", "15", "28", "38", "41", "63", "64", "65", "73", "81", "85", "88"
-    };  //Заслужили собственную константу т.к. используется в нескольких проверках (21, 48, 49 и 50).
+    };  //Заслужил собственную константу, поскольку используется в нескольких проверках (21, 48, 49 и 50).
 
     private static readonly string[] Radionuclids_DB_Valids =
     {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -40,7 +41,8 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
         var folderPath = await CheckAppParameter();
         var isBackgroundCommand = folderPath != string.Empty;
 
-        progressBarVM.SetProgressBar(3, "Создание временной БД", "Выгрузка всех отчётов", "Выгрузка в .xlsx");
+        progressBarVM.SetProgressBar(3, "Создание временной БД", 
+            "Выгрузка всех отчётов", "Выгрузка в .xlsx");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
         await using var db = new DBModel(tmpDbPath);
 
@@ -64,7 +66,6 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
             fullPath = Path.Combine(folderPath, fileName + $"_{++count}.xlsx");
         }
 
-        //var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
         var operationStart = DateTime.Now;
 
         progressBarVM.SetProgressBar(12, "Инициализация Excel пакета");
@@ -342,6 +343,8 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
                     $"Загрузка отчётов {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value}");
             }
             await FillExcel(formNums, repsWithRows, excelPackage);
+
+            repsWithRows.ClearAll();    // Выгрузка ObservableCollection из памяти
         }
     }
 

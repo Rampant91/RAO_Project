@@ -332,8 +332,8 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
         {
             var repsWithRows = new Reports { Master = reps.Master };
             foreach (var rep in reps.Report_Collection
-                         .OrderBy(x => x.FormNum_DB)
-                         .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+                         .Where(x => x.FormNum_DB == formNum)
+                         .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
                          .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue))
             {
                 var repWithRows = await GetReportWithRows(rep.Id, db, cts);

@@ -1,37 +1,30 @@
 ﻿using Avalonia.Threading;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Client_App.Views;
 using Client_App.Views.ProgressBar;
-using Models.Collections;
-using Models.DBRealization;
+using System.Threading;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Models;
+using Client_App.Views;
+using Models.Collections;
+using Models.DBRealization;
 using System.Reflection;
+using System.Collections.Generic;
+using OfficeOpenXml;
+using Models.Forms.Form1;
 using Microsoft.EntityFrameworkCore;
-using DynamicData;
+using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
-public class ExcelExportSnkAsyncCommand : ExcelBaseAsyncCommand
+/// <summary>
+/// Выгрузка в .xlsx СНК на дату.
+/// </summary>
+public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
 {
-    #region Properties
-    
-    private static readonly string[] MinusOperation =
-    [
-        "21", "22", "25", "27", "28", "29", "41", "42", "43", "46", "47", "65", "67", "71", "72", "81", "82", "83", "84", "98"
-    ];
-
-    private static readonly string[] PlusOperation =
-    [
-        "11", "12", "17", "31", "32", "35", "37", "38", "39", "58", "73", "74", "75", "85", "86", "87", "88", "97"
-    ];
-
-    #endregion
-
     public override bool CanExecute(object? parameter) => true;
 
     public override async Task AsyncExecute(object? parameter)
@@ -39,11 +32,124 @@ public class ExcelExportSnkAsyncCommand : ExcelBaseAsyncCommand
         var cts = new CancellationTokenSource();
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
-        var formNum = parameter as string;
-
         var mainWindow = Desktop.MainWindow as MainWindow;
         var selectedReports = mainWindow!.SelectedReports.First() as Reports;
-        if (selectedReports is null)
+
+        var formNum = (parameter as string)!;
+        var regNum = selectedReports!.Master_DB.RegNoRep.Value;
+        var okpo = selectedReports.Master_DB.OkpoRep.Value;
+        ExportType = $"СНК_{formNum}_{regNum}_{okpo}";
+
+        progressBarVM.SetProgressBar(5, "Проверка наличия отчётов",
+            $"Выгрузка СНК {formNum} {regNum}_{okpo}", ExportType);
+        await CheckRepsAndRepPresence(selectedReports, formNum, progressBar, cts);
+
+        progressBarVM.SetProgressBar(10, "Запрос даты формирования СНК");
+        var endSnkDate = await AskSnkEndDate(progressBar, cts);
+
+        progressBarVM.SetProgressBar(15, "Создание временной БД");
+        var tmpDbPath = await CreateTempDataBase(progressBar, cts);
+        await using var db = new DBModel(tmpDbPath);
+
+        progressBarVM.SetProgressBar(20, "Запрос пути сохранения");
+        var fileName = $"{ExportType}_{Assembly.GetExecutingAssembly().GetName().Version}";
+        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+
+        progressBarVM.SetProgressBar(25, "Инициализация Excel пакета");
+        using var excelPackage = await InitializeExcelPackage(fullPath);
+
+        progressBarVM.SetProgressBar(27, "Заполнение заголовков");
+        await FillExcelHeaders(excelPackage, endSnkDate);
+
+        progressBarVM.SetProgressBar(30, "Формирование списка инвентаризационных отчётов");
+        var inventoryReportDtoList = await GetInventoryReportDtoList(db, selectedReports.Id, endSnkDate, cts);
+
+        var firstInventoryDate = inventoryReportDtoList.Count == 0 
+            ? DateOnly.MinValue 
+            : inventoryReportDtoList
+                .OrderBy(x => x.StartPeriod)
+                .ThenBy(x => x.EndPeriod)
+                .First()
+                .StartPeriod;
+
+        progressBarVM.SetProgressBar(40, "Формирование списка операций инвентаризации");
+        var inventoryFormsDtoList = await GetInventoryFormsDtoList(db, inventoryReportDtoList, endSnkDate, cts);
+
+        progressBarVM.SetProgressBar(55, "Формирование списка операций передачи/получения");
+        var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, selectedReports.Id, endSnkDate, cts);
+
+        progressBarVM.SetProgressBar(70, "Формирование списка всех операций");
+        var unionFormsDtoList = await GetUnionFormsDtoList(inventoryFormsDtoList, plusMinusFormsDtoList, firstInventoryDate);
+
+        progressBarVM.SetProgressBar(72, "Формирование списка уникальных учётных единиц");
+        var uniqueAccountingUnitDtoList = await GetUniqueAccountingUnitDtoList(unionFormsDtoList);
+
+        progressBarVM.SetProgressBar(75, "Формирование СНК");
+        var unitInStockDtoList = await GetUnitInStockDtoList(inventoryFormsDtoList, plusMinusFormsDtoList, uniqueAccountingUnitDtoList);
+
+        progressBarVM.SetProgressBar(80, "Загрузка форм");
+        var fullFormsSnkList = await GetFullFormsSnkList(db, unitInStockDtoList, cts);
+
+        progressBarVM.SetProgressBar(85, "Проверка наличия");
+        await CheckPresenceInSnk(fullFormsSnkList, endSnkDate, progressBar, cts);
+
+        progressBarVM.SetProgressBar(90, "Заполнение строчек в .xlsx");
+        await FillExcel(fullFormsSnkList);
+
+        progressBarVM.SetProgressBar(95, "Сохранение");
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+
+        progressBarVM.SetProgressBar(98, "Очистка временных данных");
+        try
+        {
+            File.Delete(tmpDbPath);
+        }
+        catch
+        {
+            // ignored
+        }
+
+        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+        await progressBar.CloseAsync();
+    }
+
+    #region AskSnkEndDate
+
+    /// <summary>
+    /// Запрос ввода даты формирования СНК.
+    /// </summary>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns>Дата, на которую необходимо сформировать СНК.</returns>
+    private static async Task<DateOnly> AskSnkEndDate(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
+    {
+        var date = DateOnly.MinValue;
+
+        #region MessageInputSnkEndDate
+
+        var result = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxInputWindow(new MessageBoxInputParams
+            {
+                ButtonDefinitions =
+                [
+                    new ButtonDefinition { Name = "Ок", IsDefault = true },
+                    new ButtonDefinition { Name = "Отмена", IsCancel = true }
+                ],
+                CanResize = true,
+                ContentTitle = "Запрос даты",
+                ContentMessage = "Введите дату окончания формирования выгрузки СНК.",
+                MinWidth = 450,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(Desktop.MainWindow));
+
+        #endregion
+
+        if (result.Button is "Отмена")
+        {
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+        else if (!DateOnly.TryParse(result.Message, out date))
         {
             #region MessageExcelExportFail
 
@@ -53,465 +159,360 @@ public class ExcelExportSnkAsyncCommand : ExcelBaseAsyncCommand
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
                     ContentTitle = "Выгрузка в Excel",
-                    ContentMessage = "Выгрузка не выполнена, поскольку не выбрана организация.",
+                    ContentMessage = "Не удалось распознать введённую дату, " +
+                                     $"{Environment.NewLine}выгрузка будет выполнена на текущую системную дату.",
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(progressBar ?? Desktop.MainWindow));
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            date = DateOnly.Parse(DateTime.Now.ToShortDateString());
+        }
+        return date;
+
+    }
+
+    #endregion
+
+    #region CheckPresenceInSnk
+
+    /// <summary>
+    /// Проверяет наличие учётных единиц и при их отсутствии выводит сообщение
+    /// </summary>
+    /// <param name="fullFormsSnkList"></param>
+    /// <param name="endSnkDate"></param>
+    /// <param name="progressBar"></param>
+    /// <param name="cts"></param>
+    private static async Task CheckPresenceInSnk(List<Form11> fullFormsSnkList, DateOnly endSnkDate, 
+        AnyTaskProgressBar progressBar, CancellationTokenSource cts)
+    {
+        if (fullFormsSnkList.Count == 0)
+        {
+            #region MessageExcelExportFail
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentMessage = $"На {endSnkDate.ToShortDateString()} учётные единицы в наличии отсутствуют.",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
 
             #endregion
 
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
-        var regNum = selectedReports!.Master_DB.RegNoRep.Value;
-        var okpo = selectedReports.Master_DB.OkpoRep.Value;
-        ExportType = $"СНК_{formNum}_{regNum}_{okpo}";
-
-        progressBarVM.SetProgressBar(9, "Создание временной БД", 
-        $"Выгрузка СНК {formNum} {regNum}_{okpo}", ExportType);
-        var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-        await using var db = new DBModel(tmpDbPath);
-
-        progressBarVM.SetProgressBar(7, "Запрос пути сохранения");
-        var fileName = $"{ExportType}_{Assembly.GetExecutingAssembly().GetName().Version}";
-        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
-
-        progressBarVM.SetProgressBar(11, "Инициализация Excel пакета");
-        using var excelPackage = await InitializeExcelPackage(fullPath);
-
-        progressBarVM.SetProgressBar(13, "Формирование списка инвентаризационных отчётов");
-        var inventoryReportDtoList = await GetInventoryReportDtoList(db, selectedReports.Id, cts);
-
-        var firstInventoryReportDto = inventoryReportDtoList
-            .OrderBy(x => x.StartPeriod)
-            .ThenBy(x => x.EndPeriod)
-            .First();
-        var firstInventoryDate = firstInventoryReportDto.StartPeriod;
-
-        progressBarVM.SetProgressBar(15, "Формирование списка операций инвентаризации");
-        var inventoryFormsDtoList = await GetInventoryFormsDtoList(db, inventoryReportDtoList, cts);
-
-        progressBarVM.SetProgressBar(17, "Формирование списка операций передачи/получения");
-        var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, selectedReports.Id, cts);
-
-        progressBarVM.SetProgressBar(19, "Формирование списка всех операций");
-        var unionFormsDtoList = await GetUnionFormsDtoList(inventoryFormsDtoList, plusMinusFormsDtoList, firstInventoryDate);
-
-        progressBarVM.SetProgressBar(21, "Формирование списка уникальных учётных единиц");
-        var uniqueAccountingUnitDtoList = await GetUniqueAccountingUnitDtoList(unionFormsDtoList);
-
-        var forms11DtoList = await GetForms11DtoList(db, inventoryFormsDtoList, plusMinusFormsDtoList, uniqueAccountingUnitDtoList, cts);
     }
 
-    #region GetInventoryFormsDtoList
+    #endregion
+
+    #region CheckRepsAndRepPresence
 
     /// <summary>
-    /// Получение списка DTO операций инвентаризации.
+    /// Проверяет наличие выбранной организации, в случае если запущена команда для неё.
+    /// Проверяет наличие хотя бы одного отчёта, с выбранным номером формы. В случае отсутствия выводит соответствующее сообщение и закрывает команду.
     /// </summary>
-    /// <param name="db">Модель БД.</param>
-    /// <param name="inventoryReportDtoList">Список DTO отчётов, содержащих операцию инвентаризации.</param>
+    /// <param name="formNum">Номер формы отчётности.</param>
+    /// <param name="selectedReports">Выбранная организация.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
     /// <param name="cts">Токен.</param>
-    /// <returns>Список DTO операций инвентаризации.</returns>
-    private static async Task<List<ShortForm11DTO>> GetInventoryFormsDtoList(DBModel db, List<ShortReportDTO> inventoryReportDtoList, 
-        CancellationTokenSource cts)
+    private static async Task CheckRepsAndRepPresence(Reports? selectedReports, string formNum,
+        AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
-        List<ShortForm11DTO> inventoryFormsDtoList = [];
-        foreach (var reportDto in inventoryReportDtoList)
+        if (selectedReports is null)
         {
-            var currentInventoryFormsStringDateDtoList = await db.ReportCollectionDbSet
+            #region MessageExcelExportFail
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentMessage = "Выгрузка не выполнена, поскольку не выбрана организация.",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+        else if (selectedReports.Report_Collection.All(rep => rep.FormNum_DB != formNum))
+        {
+            #region MessageRepsNotFound
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        $"Не удалось совершить выгрузку СНК," +
+                        $"{Environment.NewLine}поскольку у выбранной организации отсутствуют отчёты по форме {formNum}.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+    }
+
+    #endregion
+
+    #region FillExcelHeaders
+
+    /// <summary>
+    /// Заполняет заголовки Excel пакета.
+    /// </summary>
+    /// <param name="excelPackage">Excel пакет.</param>
+    /// <param name="date">Дата, на которую формируется СНК.</param>
+    private async Task FillExcelHeaders(ExcelPackage excelPackage, DateOnly date)
+    {
+        Worksheet = excelPackage.Workbook.Worksheets.Add($"СНК на {date.ToShortDateString()}");
+
+        #region Headers
+
+        Worksheet.Cells[1, 1].Value = "ОКПО";
+        Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+        Worksheet.Cells[1, 3].Value = "Рег.№";
+        Worksheet.Cells[1, 4].Value = "Номер корректировки";
+        Worksheet.Cells[1, 5].Value = "Дата начала периода";
+        Worksheet.Cells[1, 6].Value = "Дата конца периода";
+        Worksheet.Cells[1, 7].Value = "№ п/п";
+        Worksheet.Cells[1, 8].Value = "Код";
+        Worksheet.Cells[1, 9].Value = "Дата операции";
+        Worksheet.Cells[1, 10].Value = "Номер паспорта (сертификата)";
+        Worksheet.Cells[1, 11].Value = "тип";
+        Worksheet.Cells[1, 12].Value = "радионуклиды";
+        Worksheet.Cells[1, 13].Value = "номер";
+        Worksheet.Cells[1, 14].Value = "количество, шт.";
+        Worksheet.Cells[1, 15].Value = "суммарная активность, Бк";
+        Worksheet.Cells[1, 16].Value = "код ОКПО изготовителя";
+        Worksheet.Cells[1, 17].Value = "дата выпуска";
+        Worksheet.Cells[1, 18].Value = "категория";
+        Worksheet.Cells[1, 19].Value = "НСС, мес";
+        Worksheet.Cells[1, 20].Value = "код формы собственности";
+        Worksheet.Cells[1, 21].Value = "код ОКПО правообладателя";
+        Worksheet.Cells[1, 22].Value = "вид";
+        Worksheet.Cells[1, 23].Value = "номер2";
+        Worksheet.Cells[1, 24].Value = "дата3";
+        Worksheet.Cells[1, 25].Value = "поставщика или получателя";
+        Worksheet.Cells[1, 26].Value = "перевозчика";
+        Worksheet.Cells[1, 27].Value = "наименование";
+        Worksheet.Cells[1, 28].Value = "тип4";
+        Worksheet.Cells[1, 29].Value = "номер5";
+
+        #endregion
+
+        await AutoFitColumns();
+    }
+
+    #region AutoFitColumns
+
+    /// <summary>
+    /// Для текущей страницы Excel пакета подбирает ширину колонок и замораживает первую строчку.
+    /// </summary>
+    private Task AutoFitColumns()
+    {
+        for (var col = 1; col <= Worksheet.Dimension.End.Column; col++)
+        {
+            if (OperatingSystem.IsWindows()) Worksheet.Column(col).AutoFit();
+        }
+        Worksheet.View.FreezePanes(2, 1);
+        return Task.CompletedTask;
+    }
+
+    #endregion
+
+    #endregion
+
+    #region FillExcel
+
+    /// <summary>
+    /// Заполняет заголовки Excel пакета.
+    /// </summary>
+    /// <param name="fullFormsSnkList">Список полных форм СНК.</param>
+    private Task FillExcel(List<Form11> fullFormsSnkList)
+    {
+        var currentRow = 2;
+        foreach (var form in fullFormsSnkList)
+        {
+            if (form.Report?.Reports == null) continue;
+
+            Worksheet.Cells[currentRow, 1].Value = form.Report.Reports.Master_DB.OkpoRep.Value;
+            Worksheet.Cells[currentRow, 2].Value = form.Report.Reports.Master_DB.ShortJurLicoRep.Value;
+            Worksheet.Cells[currentRow, 3].Value = form.Report.Reports.Master_DB.RegNoRep.Value;
+            Worksheet.Cells[currentRow, 4].Value = form.Report.CorrectionNumber_DB;
+            Worksheet.Cells[currentRow, 5].Value = ConvertToExcelDate(form.Report.StartPeriod_DB, Worksheet, currentRow, 5);
+            Worksheet.Cells[currentRow, 6].Value = ConvertToExcelDate(form.Report.EndPeriod_DB, Worksheet, currentRow, 6);
+            Worksheet.Cells[currentRow, 7].Value = form.NumberInOrder_DB;
+            Worksheet.Cells[currentRow, 8].Value = ConvertToExcelString(form.OperationCode_DB);
+            Worksheet.Cells[currentRow, 9].Value = ConvertToExcelDate(form.OperationDate_DB, Worksheet, currentRow, 9);
+            Worksheet.Cells[currentRow, 10].Value = ConvertToExcelString(form.PassportNumber_DB);
+            Worksheet.Cells[currentRow, 11].Value = ConvertToExcelString(form.Type_DB);
+            Worksheet.Cells[currentRow, 12].Value = ConvertToExcelString(form.Radionuclids_DB);
+            Worksheet.Cells[currentRow, 13].Value = ConvertToExcelString(form.FactoryNumber_DB);
+            Worksheet.Cells[currentRow, 14].Value = form.Quantity_DB is null ? "-" : form.Quantity_DB;
+            Worksheet.Cells[currentRow, 15].Value = ConvertToExcelDouble(form.Activity_DB);
+            Worksheet.Cells[currentRow, 16].Value = ConvertToExcelString(form.CreatorOKPO_DB);
+            Worksheet.Cells[currentRow, 17].Value = ConvertToExcelDate(form.CreationDate_DB, Worksheet, currentRow, 17);
+            Worksheet.Cells[currentRow, 18].Value = form.Category_DB is null ? "-" : form.Category_DB;
+            Worksheet.Cells[currentRow, 19].Value = form.SignedServicePeriod_DB is null ? "-" : form.SignedServicePeriod_DB;
+            Worksheet.Cells[currentRow, 20].Value = form.PropertyCode_DB is null ? "-" : form.PropertyCode_DB;
+            Worksheet.Cells[currentRow, 21].Value = ConvertToExcelString(form.Owner_DB);
+            Worksheet.Cells[currentRow, 22].Value = form.DocumentVid_DB is null ? "-" : form.DocumentVid_DB;
+            Worksheet.Cells[currentRow, 23].Value = ConvertToExcelString(form.DocumentNumber_DB);
+            Worksheet.Cells[currentRow, 24].Value = ConvertToExcelDate(form.DocumentDate_DB, Worksheet, currentRow, 24);
+            Worksheet.Cells[currentRow, 25].Value = ConvertToExcelString(form.ProviderOrRecieverOKPO_DB);
+            Worksheet.Cells[currentRow, 26].Value = ConvertToExcelString(form.TransporterOKPO_DB);
+            Worksheet.Cells[currentRow, 27].Value = ConvertToExcelString(form.PackName_DB);
+            Worksheet.Cells[currentRow, 28].Value = ConvertToExcelString(form.PackType_DB);
+            Worksheet.Cells[currentRow, 29].Value = ConvertToExcelString(form.PackNumber_DB);
+            currentRow++;
+        }
+        return Task.CompletedTask;
+    }
+
+    #endregion
+
+    #region GetFullForm
+
+    /// <summary>
+    /// Загрузка из БД полных форм вместе с данными отчётов и организации.
+    /// </summary>
+    /// <param name="db"></param>
+    /// <param name="unitInStockDtoList"></param>
+    /// <param name="cts"></param>
+    /// <returns>Список форм с данными отчётов и организации.</returns>
+    private static async Task<List<Form11>> GetFullFormsSnkList(DBModel db, List<ShortForm11DTO> unitInStockDtoList, CancellationTokenSource cts)
+    {
+        List<Form11> formsList = [];
+        foreach (var unit in unitInStockDtoList)
+        {
+            var form = await db.form_11
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Include(x => x.Rows11)
-                .Where(rep => rep.Id == reportDto.Id)
-                .SelectMany(rep => rep.Rows11
-                    .Where(form => form.OperationCode_DB == "10")
-                    .Select(form11 => new ShortForm11StringDateDTO
-                    {
-                        Id = form11.Id,
-                        RepId = reportDto.Id,
-                        StDate = reportDto.StartPeriod,
-                        EndDate = reportDto.EndPeriod,
-                        FacNum = form11.FactoryNumber_DB,
-                        OpCode = form11.OperationCode_DB,
-                        OpDate = form11.OperationDate_DB,
-                        PasNum = form11.PassportNumber_DB,
-                        Type = form11.Type_DB
-                    }))
-                .ToListAsync(cts.Token);
-
-            var currentInventoryFormsDtoList = currentInventoryFormsStringDateDtoList
-                .Where(x => DateOnly.TryParse(x.OpDate, out _))
-                .Select(x => new ShortForm11DTO(
-                    x.Id,
-                    reportDto,
-                    x.FacNum,
-                    x.OpCode,
-                    DateOnly.Parse(x.OpDate),
-                    x.PasNum,
-                    x.Type))
-                .ToList();
-
-            inventoryFormsDtoList.AddRange(currentInventoryFormsDtoList);
+                .Include(x => x.Report)
+                .ThenInclude(x => x.Reports)
+                .ThenInclude(x => x.Master_DB)
+                .ThenInclude(x => x.Rows10)
+                .FirstAsync(x => x.Id == unit.Id, cts.Token);
+            formsList.Add(form);
         }
-        return inventoryFormsDtoList
-            .OrderBy(x => x.RepDto.StartPeriod)
-            .ThenBy(x => x.RepDto.EndPeriod)
-            .ThenBy(x => x.OpDate)
-            .ToList();
+        return formsList;
+
     }
 
     #endregion
 
-    #region GetInventaryReportDtoList
+    #region GetUnitInStockDtoList
 
     /// <summary>
-    /// Получение списка DTO отчётов по форме 1.1, содержащих хотя бы одну операцию с кодом 10.
+    /// Формирует список DTO учётных единиц в наличии на дату.
     /// </summary>
-    /// <param name="db">Модель БД.</param>
-    /// <param name="repsId">Id выбранной организации.</param>
-    /// <param name="cts">Токен.</param>
-    /// <returns>Список DTO отчётов по форме 1.1.</returns>
-    private static async Task<List<ShortReportDTO>> GetInventoryReportDtoList(DBModel db, int repsId, CancellationTokenSource cts)
+    /// <param name="inventoryFormsDtoList">Список DTO инвентаризационных операций.</param>
+    /// <param name="plusMinusFormsDtoList">Список DTO операций приёма-передачи.</param>
+    /// <param name="uniqueAccountingUnitDtoList">Список DTO уникальных учётных единиц.</param>
+    /// <returns>Список DTO учётных единиц в наличии на дату.</returns>
+    private static Task<List<ShortForm11DTO>> GetUnitInStockDtoList(List<ShortForm11DTO> inventoryFormsDtoList,
+    List<ShortForm11DTO> plusMinusFormsDtoList, List<ShortForm11DTO> uniqueAccountingUnitDtoList)
     {
-        var inventoryReportDtoList = await db.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows11)
-            .Where(reps => reps.Id == repsId)
-            .SelectMany(reps => reps.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.1" && rep.Rows11.Any(form => form.OperationCode_DB == "10"))
-                .Select(rep => new ShortReportStringDateDTO(rep.Id, rep.StartPeriod_DB, rep.EndPeriod_DB)))
-            .ToListAsync(cts.Token);
-
-        return inventoryReportDtoList
-            .Where(x => DateOnly.TryParse(x.StartPeriod, out _) 
-                        && DateOnly.TryParse(x.EndPeriod, out _))
-            .Select(x => new ShortReportDTO(
-                x.Id,
-                DateOnly.Parse(x.StartPeriod),
-                DateOnly.Parse(x.EndPeriod)))
-            .OrderBy(x => x.StartPeriod)
-            .ThenBy(x => x.EndPeriod)
-            .ToList();
-    }
-
-    #endregion
-
-    #region GetPlusMinusFormsDtoList
-
-    /// <summary>
-    /// Получение списка DTO форм с операциями приёма передачи.
-    /// </summary>
-    /// <param name="db">Модель БД.</param>
-    /// <param name="repsId">Id организации.</param>
-    /// <param name="cts">Токен.</param>
-    /// <returns>Список DTO форм с операциями приёма передачи.</returns>
-    private static async Task<List<ShortForm11DTO>> GetPlusMinusFormsDtoList(DBModel db, int repsId, CancellationTokenSource cts)
-    {
-        var plusMinusOperationDtoList = await db.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
-            .Where(reps => reps.Id == repsId)
-            .SelectMany(reps => reps.Report_Collection
-                .SelectMany(rep => rep.Rows11
-                    .Where(form => form.Report != null 
-                                   && (PlusOperation.Contains(form.OperationCode_DB) 
-                                       || MinusOperation.Contains(form.OperationCode_DB)))))
-                .Select(form11 => new ShortForm11StringDatesDTO
-                {
-                    Id = form11.Id,
-                    RepId = form11.Report.Id,
-                    StDate = form11.Report.StartPeriod_DB,
-                    EndDate = form11.Report.EndPeriod_DB,
-                    FacNum = form11.FactoryNumber_DB,
-                    OpCode = form11.OperationCode_DB,
-                    OpDate = form11.OperationDate_DB,
-                    PasNum = form11.PassportNumber_DB,
-                    Type = form11.Type_DB
-                })
-            .ToListAsync(cts.Token);
-
-        return plusMinusOperationDtoList
-            .Where(x => DateOnly.TryParse(x.OpDate, out _)
-                                             && DateOnly.TryParse(x.StDate, out _)
-                                             && DateOnly.TryParse(x.EndDate, out _))
-            .Select(x => new ShortForm11DTO(
-                x.Id,
-                new ShortReportDTO(x.RepId, DateOnly.Parse(x.StDate), DateOnly.Parse(x.EndDate)),
-                x.FacNum,
-                x.OpCode,
-                DateOnly.Parse(x.OpDate),
-                x.PasNum,
-                x.Type))
-            .OrderBy(x => x.RepDto.StartPeriod)
-            .ThenBy(x => x.RepDto.EndPeriod)
-            .ThenBy(x => x.OpDate)
-            .ToList();
-    }
-
-    #endregion
-
-    #region GetUniqueAccountingUnitDtoList
-
-    /// <summary>
-    /// Получение отсортированного списка DTO уникальных учётных единиц с операциями инвентаризации, приёма или передачи.
-    /// </summary>
-    /// <param name="unionFormsDtoList">Список DTO всех операций инвентаризации, приёма или передачи.</param>
-    /// <returns>Список DTO уникальных учётных единиц с операциями инвентаризации, приёма или передачи.</returns>
-    private static Task<List<ShortForm11DTO>> GetUniqueAccountingUnitDtoList(List<ShortForm11DTO> unionFormsDtoList)
-    {
-        var uniqueAccountingUnitDtoList = unionFormsDtoList
-            .DistinctBy(x => x.FacNum + x.Type + x.PasNum)
-            .OrderBy(x => x.FacNum + x.Type + x.PasNum)
-            .ToList();
-
-        return Task.FromResult(uniqueAccountingUnitDtoList);
-    }
-
-    #endregion
-
-    #region GetUnionFormsDtoList
-
-    private static Task<List<ShortForm11DTO>> GetUnionFormsDtoList(List<ShortForm11DTO> inventoryFormsDtoList, 
-        List<ShortForm11DTO> plusMinusFormsDtoList, DateOnly firstInventoryDate)
-    {
-        var unionFormsDtoList = inventoryFormsDtoList
-            .Union(plusMinusFormsDtoList)
-            .Where(x => x.OpDate >= firstInventoryDate)
-            .ToList();
-
-        return Task.FromResult(unionFormsDtoList);
-    }
-
-    #endregion
-
-    private static async Task<List<ShortForm11DTO>> GetForms11DtoList(DBModel db, List<ShortForm11DTO> inventoryFormsDtoList, 
-        List<ShortForm11DTO> plusMinusFormsDtoList, List<ShortForm11DTO> uniqueAccountingUnitDtoList, CancellationTokenSource cts)
-    {
-        var inventoryDates = inventoryFormsDtoList
-            .Select(x => x.OpDate)
-            .Distinct()
-            .Order()
-            .ToList();
-        inventoryDates.Add(DateOnly.FromDateTime(DateTime.Now));
-
-        List<(DateOnly, DateOnly)> inventoryDatesTupleList = [];
-        for (var i = 0; i < inventoryDates.Count - 1; i++)
-        {
-            inventoryDatesTupleList.Add((inventoryDates[i], inventoryDates[i+1]));
-        }
-
         List<ShortForm11DTO> unitInStockList = [];
 
-        //ЗРИ, отсутствующие на момент операции передачи
-        List<ShortForm11DTO> incorrectlyTransferredUnitsList = [];
+        var firstInventoryDate = inventoryFormsDtoList.Count == 0
+            ? DateOnly.MinValue
+            : inventoryFormsDtoList
+                .OrderBy(x => x.OpDate)
+                .Select(x => x.OpDate)
+                .First();
 
-        //ЗРИ, уже присутствующие на момент получения
-        List<ShortForm11DTO> incorrectlyReceivedUnitsList = [];
-
-        //ЗРИ, указанные в предыдущей инвентаризации, не снятые с учёта и не отражённые в следующей инвентаризации
-        List<ShortForm11DTO> erroneouslyMissingUnitsList = [];
-
-        //ЗРИ, указанные в предыдущей инвентаризации, снятые с учёта и отражённые в следующей инвентаризации
-        List<ShortForm11DTO> mistakenlyPresentUnitsList = [];
-
-        //ЗРИ, не указанные в предыдущей инвентаризации, без операций учёта и отражённые в следующей инвентаризации
-        List<ShortForm11DTO> missingRegistrationUnitsList = [];
-
-        //ЗРИ, отсутствующие на момент следующей инвентаризации и отражённые в ней
-        List<ShortForm11DTO> erroneousInventoryPreviouslyTransferredUnitsList = [];
-
-        //ЗРИ, указанные в предыдущей инвентаризации, повторно полученные и не проинвентаризированные
-        List<ShortForm11DTO> previouslyInventoriedReobtainedNotInventoriedUnitsList = [];
+        unitInStockList.AddRange(inventoryFormsDtoList
+            .Where(x => x.OpDate == firstInventoryDate)
+            .DistinctBy(x => x.FacNum + x.Type + x.PasNum));
 
         foreach (var unit in uniqueAccountingUnitDtoList)
         {
-            foreach (var (firstInventoryDate, secondInventoryDate) in inventoryDatesTupleList)
+            var inStock = unitInStockList
+                .Any(x => x.FacNum + x.Type + x.PasNum == unit.FacNum + unit.Type + unit.PasNum);
+
+            var inventoryWithCurrentUnit = inventoryFormsDtoList
+                .Where(x => x.FacNum + x.Type + x.PasNum == unit.FacNum + unit.Type + unit.PasNum
+                            && x.OpDate >= firstInventoryDate)
+                .DistinctBy(x => x.OpDate)
+                .OrderBy(x => x.OpDate)
+                .ToList();
+
+            var operationsWithCurrentUnit = plusMinusFormsDtoList
+                .Where(x => x.FacNum + x.Type + x.PasNum == unit.FacNum + unit.Type + unit.PasNum
+                            && x.OpDate >= firstInventoryDate)
+                .OrderBy(x => x.OpDate)
+                .ToList();
+
+            List<ShortForm11DTO> operationsWithCurrentUnitWithoutDuplicates = [];
+            foreach (var group in operationsWithCurrentUnit.GroupBy(x => x.OpDate))
             {
-                var isLastInventory = secondInventoryDate == inventoryDates[^1];
+                var countMinus = group.Count(x => MinusOperation.Contains(x.OpCode));
+                var countPlus = group.Count(x => PlusOperation.Contains(x.OpCode));
+                var countStock = (inStock ? 1 : 0) + countPlus - countMinus;
 
-                if (firstInventoryDate == inventoryDates[0])
+                switch (countStock)
                 {
-                    unitInStockList
-                        .AddRange(inventoryFormsDtoList
-                            .Where(x => x.OpDate == firstInventoryDate)
-                            .DistinctBy(x => x.FacNum + x.Type + x.PasNum));
-                }
-
-                var inventoryWithCurrentUnit = inventoryFormsDtoList
-                    .Where(x => x.FacNum + x.Type + x.PasNum == unit.FacNum + unit.Type + unit.PasNum
-                                && x.OpDate >= firstInventoryDate && x.OpDate <= secondInventoryDate)
-                    .DistinctBy(x => x.OpDate)
-                    .OrderBy(x => x.OpDate)
-                    .ToList();
-
-                var inStock = unitInStockList.Any(x => x.FacNum + x.Type + x.PasNum == unit.FacNum + unit.Type + unit.PasNum);
-
-                var operationsWithCurrentUnit = plusMinusFormsDtoList
-                    .Where(x => x.FacNum + x.Type + x.PasNum == unit.FacNum + unit.Type + unit.PasNum
-                                && x.OpDate >= firstInventoryDate && x.OpDate <= secondInventoryDate)
-                    .OrderBy(x => x.OpDate)
-                    .ToList();
-
-                if (inventoryWithCurrentUnit.Count == 0 && operationsWithCurrentUnit.Count == 0) continue;
-
-                var isReobtained = false;
-                foreach (var operation in operationsWithCurrentUnit)
-                {
-                    switch (inStock)
-                    {
-                        case true when PlusOperation.Contains(operation.OpCode):
-                            incorrectlyReceivedUnitsList.Add(operation);
-                            isReobtained = true;
+                    case >= 1:
+                        {
+                            operationsWithCurrentUnitWithoutDuplicates
+                                .Add(group
+                                    .Last(x => PlusOperation.Contains(x.OpCode)));
                             break;
-                        case false when PlusOperation.Contains(operation.OpCode):
-                            inStock = true;
+                        }
+                    case < 1:
+                        {
+                            operationsWithCurrentUnitWithoutDuplicates
+                                .Add(group
+                                    .Last(x => MinusOperation.Contains(x.OpCode)));
                             break;
-                        case false when MinusOperation.Contains(operation.OpCode):
-                            incorrectlyTransferredUnitsList.Add(operation);
-                            break;
-                        case true when MinusOperation.Contains(operation.OpCode):
-                            inStock = false;
-                            break;
-                    }
-                }
-
-                var lastOperationWithUnit = operationsWithCurrentUnit
-                    .Union(inventoryWithCurrentUnit
-                        .Where(x => x.OpDate >= firstInventoryDate || x.OpDate == secondInventoryDate))
-                    .OrderByDescending(x => x.OpDate)
-                    .First();
-
-                if (inventoryWithCurrentUnit.Exists(x => x.OpDate == firstInventoryDate)
-                    && !inventoryWithCurrentUnit.Exists(x => x.OpDate == secondInventoryDate)
-                    && inStock
-                    && !isLastInventory)
-                {
-                    erroneouslyMissingUnitsList.Add(lastOperationWithUnit);
-                }
-
-                if (inventoryWithCurrentUnit.Exists(x => x.OpDate == firstInventoryDate)
-                    && inventoryWithCurrentUnit.Exists(x => x.OpDate == secondInventoryDate)
-                    && !inStock
-                    && !isLastInventory)
-                {
-                    mistakenlyPresentUnitsList.Add(lastOperationWithUnit);
-                }
-
-                if (inventoryWithCurrentUnit.Exists(x => x.OpDate == secondInventoryDate)
-                    && !inStock
-                    && !isLastInventory)
-                {
-                    missingRegistrationUnitsList.Add(lastOperationWithUnit);
-                }
-
-                if (inventoryWithCurrentUnit.Exists(x => x.OpDate == secondInventoryDate)
-                    && !inStock
-                    && !isLastInventory)
-                {
-                    erroneousInventoryPreviouslyTransferredUnitsList.Add(lastOperationWithUnit);
-                }
-
-                if (inventoryWithCurrentUnit.Exists(x => x.OpDate == firstInventoryDate)
-                    && !inventoryWithCurrentUnit.Exists(x => x.OpDate == secondInventoryDate)
-                    && isReobtained
-                    && !isLastInventory)
-                {
-                    previouslyInventoriedReobtainedNotInventoriedUnitsList.Add(lastOperationWithUnit);
-                }
-
-                unitInStockList.Remove(unit);
-                if (inStock)
-                {
-                    unitInStockList.Add(lastOperationWithUnit);
+                        }
                 }
             }
 
+            foreach (var operation in operationsWithCurrentUnitWithoutDuplicates)
+            {
+                inStock = inStock switch
+                {
+                    false when PlusOperation.Contains(operation.OpCode) => true,
+                    true when MinusOperation.Contains(operation.OpCode) => false,
+                    _ => inStock
+                };
+            }
+
+            var lastOperationWithUnit = operationsWithCurrentUnit
+                .Union(inventoryWithCurrentUnit
+                    .Where(x => x.OpDate >= firstInventoryDate))
+                .OrderByDescending(x => x.OpDate)
+                .FirstOrDefault();
+
+            if (lastOperationWithUnit == null) continue;
+
+            var currentUnit = unitInStockList
+                .FirstOrDefault(x => x.FacNum + x.Type + x.PasNum == unit.FacNum + unit.Type + unit.PasNum);
+            if (currentUnit != null) unitInStockList.Remove(currentUnit);
+            if (inStock)
+            {
+                unitInStockList.Add(lastOperationWithUnit);
+            }
         }
-        return unitInStockList;
-    }
-
-    #region DTO
-
-    private class ShortForm11DTO(int id, ShortReportDTO repDto, string facNum, string opCode, DateOnly opDate, string pasNum, string type)
-    {
-        public readonly int Id = id;
-
-        public readonly ShortReportDTO RepDto = repDto;
-
-        public readonly string FacNum = facNum;
-
-        public readonly string OpCode = opCode;
-
-        public readonly DateOnly OpDate = opDate;
-
-        public readonly string PasNum = pasNum;
-
-        public readonly string Type = type;
-    }
-
-    private class ShortForm11StringDateDTO
-    {
-        public int Id { get; set; }
-
-        public int RepId { get; set; }
-
-        public DateOnly StDate { get; set; }
-
-        public DateOnly EndDate { get; set; }
-
-        public string FacNum { get; set; }
-
-        public string OpCode { get; set; }
-
-        public string OpDate { get; set; }
-
-        public string PasNum { get; set; }
-
-        public string Type { get; set; }
-    }
-
-    private class ShortForm11StringDatesDTO
-    {
-        public int Id { get; set; }
-
-        public int RepId { get; set; }
-
-        public string StDate { get; set; }
-
-        public string EndDate { get; set; }
-
-        public string FacNum { get; set; }
-
-        public string OpCode { get; set; }
-
-        public string OpDate { get; set; }
-
-        public string PasNum { get; set; }
-
-        public string Type { get; set; }
-    }
-
-    private class ShortReportStringDateDTO(int id, string startPeriod, string endPeriod)
-    {
-        public readonly int Id = id;
-
-        public readonly string StartPeriod = startPeriod;
-
-        public readonly string EndPeriod = endPeriod;
-    }
-
-    private class ShortReportDTO(int id, DateOnly startPeriod, DateOnly endPeriod)
-    {
-        public readonly int Id = id;
-
-        public readonly DateOnly StartPeriod = startPeriod;
-
-        public readonly DateOnly EndPeriod = endPeriod;
+        return Task.FromResult(unitInStockList);
     }
 
     #endregion
