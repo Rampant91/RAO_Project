@@ -56,12 +56,6 @@ public class ExcelExportInventoryCheckAsyncCommand : ExcelExportSnkBaseAsyncComm
         progressBarVM.SetProgressBar(14, "Проверка наличия инвентаризации");
         await CheckInventoryFormPresence(inventoryReportDtoList, formNum, progressBar, cts);
 
-        var firstInventoryDate = inventoryReportDtoList
-            .OrderBy(x => x.StartPeriod)
-            .ThenBy(x => x.EndPeriod)
-            .First()
-            .StartPeriod;
-
         progressBarVM.SetProgressBar(15, "Формирование списка операций инвентаризации");
         var inventoryFormsDtoList = await GetInventoryFormsDtoList(db, inventoryReportDtoList, endSnkDate, cts);
 
@@ -81,7 +75,7 @@ public class ExcelExportInventoryCheckAsyncCommand : ExcelExportSnkBaseAsyncComm
         var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, selectedReports.Id, endSnkDate, cts);
 
         progressBarVM.SetProgressBar(22, "Формирование списка всех операций");
-        var unionFormsDtoList = await GetUnionFormsDtoList(inventoryFormsDtoList, plusMinusFormsDtoList, firstInventoryDate);
+        var unionFormsDtoList = await GetUnionFormsDtoList(inventoryFormsDtoList, plusMinusFormsDtoList);
 
         progressBarVM.SetProgressBar(24, "Формирование списка уникальных учётных единиц");
         var uniqueAccountingUnitDtoList = await GetUniqueAccountingUnitDtoList(unionFormsDtoList);
@@ -418,7 +412,7 @@ public class ExcelExportInventoryCheckAsyncCommand : ExcelExportSnkBaseAsyncComm
     #endregion
 
     private static async Task<List<ShortForm11DTO>> GetForms11DtoList(List<ShortForm11DTO> inventoryFormsDtoList,
-        List<ShortForm11DTO> plusMinusFormsDtoList, List<ShortForm11DTO> uniqueAccountingUnitDtoList,
+        List<ShortForm11DTO> plusMinusFormsDtoList, List<UniqueAccountingUnitDTO> uniqueAccountingUnitDtoList,
         List<DateOnly> inventoryDatesList, List<(DateOnly, DateOnly)> inventoryDatesTupleList, CancellationTokenSource cts)
     {
         List<ShortForm11DTO> unitInStockList = [];

@@ -17,6 +17,7 @@ using OfficeOpenXml;
 using Models.Forms.Form1;
 using Microsoft.EntityFrameworkCore;
 using static Client_App.Resources.StaticStringMethods;
+using Client_App.ViewModels.ProgressBar;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -44,51 +45,43 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
             $"Выгрузка СНК {formNum} {regNum}_{okpo}", ExportType);
         await CheckRepsAndRepPresence(selectedReports, formNum, progressBar, cts);
 
-        progressBarVM.SetProgressBar(10, "Запрос даты формирования СНК");
+        progressBarVM.SetProgressBar(6, "Запрос даты формирования СНК");
         var endSnkDate = await AskSnkEndDate(progressBar, cts);
 
-        progressBarVM.SetProgressBar(15, "Создание временной БД");
+        progressBarVM.SetProgressBar(8, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
         await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(20, "Запрос пути сохранения");
+        progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
         var fileName = $"{ExportType}_{Assembly.GetExecutingAssembly().GetName().Version}";
         var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
 
-        progressBarVM.SetProgressBar(25, "Инициализация Excel пакета");
+        progressBarVM.SetProgressBar(12, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath);
 
-        progressBarVM.SetProgressBar(27, "Заполнение заголовков");
+        progressBarVM.SetProgressBar(13, "Заполнение заголовков");
         await FillExcelHeaders(excelPackage, endSnkDate);
 
-        progressBarVM.SetProgressBar(30, "Формирование списка инвентаризационных отчётов");
+        progressBarVM.SetProgressBar(15, "Загрузка инвентаризационных отчётов");
         var inventoryReportDtoList = await GetInventoryReportDtoList(db, selectedReports.Id, endSnkDate, cts);
 
-        var firstInventoryDate = inventoryReportDtoList.Count == 0 
-            ? DateOnly.MinValue 
-            : inventoryReportDtoList
-                .OrderBy(x => x.StartPeriod)
-                .ThenBy(x => x.EndPeriod)
-                .First()
-                .StartPeriod;
-
-        progressBarVM.SetProgressBar(40, "Формирование списка операций инвентаризации");
+        progressBarVM.SetProgressBar(17, "Загрузка операций инвентаризации");
         var inventoryFormsDtoList = await GetInventoryFormsDtoList(db, inventoryReportDtoList, endSnkDate, cts);
 
-        progressBarVM.SetProgressBar(55, "Формирование списка операций передачи/получения");
+        progressBarVM.SetProgressBar(20, "Загрузка операций передачи/получения");
         var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, selectedReports.Id, endSnkDate, cts);
 
-        progressBarVM.SetProgressBar(70, "Формирование списка всех операций");
-        var unionFormsDtoList = await GetUnionFormsDtoList(inventoryFormsDtoList, plusMinusFormsDtoList, firstInventoryDate);
+        progressBarVM.SetProgressBar(23, "Формирование списка всех операций");
+        var unionFormsDtoList = await GetUnionFormsDtoList(inventoryFormsDtoList, plusMinusFormsDtoList);
 
-        progressBarVM.SetProgressBar(72, "Формирование списка уникальных учётных единиц");
+        progressBarVM.SetProgressBar(25, "Формирование списка уникальных учётных единиц");
         var uniqueAccountingUnitDtoList = await GetUniqueAccountingUnitDtoList(unionFormsDtoList);
 
-        progressBarVM.SetProgressBar(75, "Формирование СНК");
-        var unitInStockDtoList = await GetUnitInStockDtoList(inventoryFormsDtoList, plusMinusFormsDtoList, uniqueAccountingUnitDtoList);
+        progressBarVM.SetProgressBar(30, "Формирование СНК");
+        var unitInStockDtoList = await GetUnitInStockDtoList(inventoryFormsDtoList, plusMinusFormsDtoList, uniqueAccountingUnitDtoList, progressBarVM);
 
-        progressBarVM.SetProgressBar(80, "Загрузка форм");
-        var fullFormsSnkList = await GetFullFormsSnkList(db, unitInStockDtoList, cts);
+        progressBarVM.SetProgressBar(60, "Загрузка форм");
+        var fullFormsSnkList = await GetFullFormsSnkList(db, unitInStockDtoList, progressBarVM, cts);
 
         progressBarVM.SetProgressBar(85, "Проверка наличия");
         await CheckPresenceInSnk(fullFormsSnkList, endSnkDate, progressBar, cts);
@@ -179,12 +172,12 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
     #region CheckPresenceInSnk
 
     /// <summary>
-    /// Проверяет наличие учётных единиц и при их отсутствии выводит сообщение
+    /// Проверяет наличие учётных единиц и при их отсутствии выводит сообщение.
     /// </summary>
-    /// <param name="fullFormsSnkList"></param>
-    /// <param name="endSnkDate"></param>
-    /// <param name="progressBar"></param>
-    /// <param name="cts"></param>
+    /// <param name="fullFormsSnkList">Список форм с данными отчётов и организации.</param>
+    /// <param name="endSnkDate">Дата, на которую нужно сформировать СНК.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
     private static async Task CheckPresenceInSnk(List<Form11> fullFormsSnkList, DateOnly endSnkDate, 
         AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
@@ -214,8 +207,8 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
     #region CheckRepsAndRepPresence
 
     /// <summary>
-    /// Проверяет наличие выбранной организации, в случае если запущена команда для неё.
-    /// Проверяет наличие хотя бы одного отчёта, с выбранным номером формы. В случае отсутствия выводит соответствующее сообщение и закрывает команду.
+    /// Проверяет наличие выбранной организации. Проверяет наличие хотя бы одного отчёта, с выбранным номером формы.
+    /// В случае отсутствия выводит соответствующее сообщение и закрывает команду.
     /// </summary>
     /// <param name="formNum">Номер формы отчётности.</param>
     /// <param name="selectedReports">Выбранная организация.</param>
@@ -391,13 +384,18 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
     /// <summary>
     /// Загрузка из БД полных форм вместе с данными отчётов и организации.
     /// </summary>
-    /// <param name="db"></param>
-    /// <param name="unitInStockDtoList"></param>
-    /// <param name="cts"></param>
+    /// <param name="db">Модель БД.</param>
+    /// <param name="unitInStockDtoList">Список DTO учётных единиц в наличии на дату.</param>
+    /// <param name="progressBarVM">ViewModel прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
     /// <returns>Список форм с данными отчётов и организации.</returns>
-    private static async Task<List<Form11>> GetFullFormsSnkList(DBModel db, List<ShortForm11DTO> unitInStockDtoList, CancellationTokenSource cts)
+    private static async Task<List<Form11>> GetFullFormsSnkList(DBModel db, List<ShortForm11DTO> unitInStockDtoList, 
+        AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
         List<Form11> formsList = [];
+
+        double progressBarDoubleValue = progressBarVM.ValueBar;
+        var currentUnitNum = 1;
         foreach (var unit in unitInStockDtoList)
         {
             var form = await db.form_11
@@ -405,11 +403,17 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
                 .AsSplitQuery()
                 .AsQueryable()
                 .Include(x => x.Report)
-                .ThenInclude(x => x.Reports)
+                .ThenInclude(x =>x.Reports)
                 .ThenInclude(x => x.Master_DB)
                 .ThenInclude(x => x.Rows10)
                 .FirstAsync(x => x.Id == unit.Id, cts.Token);
             formsList.Add(form);
+
+            progressBarDoubleValue += (double)30 / unitInStockDtoList.Count;
+            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+                $"Загрузка {currentUnitNum} формы из {unitInStockDtoList.Count}",
+                "Загрузка форм");
+            currentUnitNum++;
         }
         return formsList;
 
@@ -425,9 +429,11 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
     /// <param name="inventoryFormsDtoList">Список DTO инвентаризационных операций.</param>
     /// <param name="plusMinusFormsDtoList">Список DTO операций приёма-передачи.</param>
     /// <param name="uniqueAccountingUnitDtoList">Список DTO уникальных учётных единиц.</param>
+    /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <returns>Список DTO учётных единиц в наличии на дату.</returns>
     private static Task<List<ShortForm11DTO>> GetUnitInStockDtoList(List<ShortForm11DTO> inventoryFormsDtoList,
-    List<ShortForm11DTO> plusMinusFormsDtoList, List<ShortForm11DTO> uniqueAccountingUnitDtoList)
+    List<ShortForm11DTO> plusMinusFormsDtoList, List<UniqueAccountingUnitDTO> uniqueAccountingUnitDtoList, 
+    AnyTaskProgressBarVM progressBarVM)
     {
         List<ShortForm11DTO> unitInStockList = [];
 
@@ -440,22 +446,27 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
 
         unitInStockList.AddRange(inventoryFormsDtoList
             .Where(x => x.OpDate == firstInventoryDate)
-            .DistinctBy(x => x.FacNum + x.Type + x.PasNum));
+            .DistinctBy(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type));
 
+        double progressBarDoubleValue = progressBarVM.ValueBar;
+        var currentUnitNum = 1;
         foreach (var unit in uniqueAccountingUnitDtoList)
         {
             var inStock = unitInStockList
-                .Any(x => x.FacNum + x.Type + x.PasNum == unit.FacNum + unit.Type + unit.PasNum);
+                .Any(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type 
+                          == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type);
 
             var inventoryWithCurrentUnit = inventoryFormsDtoList
-                .Where(x => x.FacNum + x.Type + x.PasNum == unit.FacNum + unit.Type + unit.PasNum
+                .Where(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
+                            == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type
                             && x.OpDate >= firstInventoryDate)
                 .DistinctBy(x => x.OpDate)
                 .OrderBy(x => x.OpDate)
                 .ToList();
 
             var operationsWithCurrentUnit = plusMinusFormsDtoList
-                .Where(x => x.FacNum + x.Type + x.PasNum == unit.FacNum + unit.Type + unit.PasNum
+                .Where(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
+                            == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type
                             && x.OpDate >= firstInventoryDate)
                 .OrderBy(x => x.OpDate)
                 .ToList();
@@ -470,19 +481,19 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
                 switch (countStock)
                 {
                     case >= 1:
-                        {
-                            operationsWithCurrentUnitWithoutDuplicates
-                                .Add(group
-                                    .Last(x => PlusOperation.Contains(x.OpCode)));
-                            break;
-                        }
+                    {
+                        operationsWithCurrentUnitWithoutDuplicates
+                            .Add(group
+                                .Last(x => PlusOperation.Contains(x.OpCode)));
+                        break;
+                    }
                     case < 1:
-                        {
-                            operationsWithCurrentUnitWithoutDuplicates
-                                .Add(group
-                                    .Last(x => MinusOperation.Contains(x.OpCode)));
-                            break;
-                        }
+                    {
+                        operationsWithCurrentUnitWithoutDuplicates
+                            .Add(group
+                                .Last(x => MinusOperation.Contains(x.OpCode)));
+                        break;
+                    }
                 }
             }
 
@@ -505,12 +516,18 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
             if (lastOperationWithUnit == null) continue;
 
             var currentUnit = unitInStockList
-                .FirstOrDefault(x => x.FacNum + x.Type + x.PasNum == unit.FacNum + unit.Type + unit.PasNum);
+                .FirstOrDefault(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
+                                     == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type);
             if (currentUnit != null) unitInStockList.Remove(currentUnit);
             if (inStock)
             {
                 unitInStockList.Add(lastOperationWithUnit);
             }
+            progressBarDoubleValue += (double)30 / uniqueAccountingUnitDtoList.Count;
+            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+                $"Проверено {currentUnitNum} единиц из {uniqueAccountingUnitDtoList.Count}",
+                "Проверка наличия");
+            currentUnitNum++;
         }
         return Task.FromResult(unitInStockList);
     }
