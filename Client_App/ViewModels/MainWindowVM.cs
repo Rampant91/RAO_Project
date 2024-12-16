@@ -101,6 +101,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ExportForm => new ExportFormAsyncCommand();
 
     /// <summary>
+    /// Excel -> Проверка последней инвентаризации.
+    /// </summary>
+    public ICommand ExcelExportCheckLastInventoryDate => new ExcelExportCheckLastInventoryDateAsyncCommand();
+
+    /// <summary>
     /// Выбранная форма -> Выгрузка Excel -> Для анализа
     /// </summary>
     public ICommand ExcelExportFormAnalysis => new ExcelExportFormAnalysisAsyncCommand();

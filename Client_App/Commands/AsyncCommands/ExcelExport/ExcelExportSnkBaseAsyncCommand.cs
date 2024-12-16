@@ -134,8 +134,9 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 
     private static string AutoReplaceSimilarChars(string str)
     {
-        return new Regex(@"[\\/:*?""<>|.,\-;\s+]")
+        return new Regex(@"[\\/:*?""<>|.,_\-;:\s+]")
             .Replace(str, "")
+            .ToLower()
             .Replace('а', 'a')
             .Replace('б', 'b')
             .Replace('в', 'b')
