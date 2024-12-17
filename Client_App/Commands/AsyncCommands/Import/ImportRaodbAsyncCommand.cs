@@ -13,6 +13,10 @@ using Client_App.Interfaces.Logger;
 using MessageBox.Avalonia.Enums;
 using Models.DTO;
 using Avalonia.Threading;
+using Client_App.ViewModels;
+using Models.Forms;
+using System.Collections.Specialized;
+using Client_App.Resources;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -227,7 +231,16 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
             }
         }
 
-        await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
+        var comparator = new CustomReportsComparer();
+        var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+        ReportsStorage.LocalReports.Reports_Collection.Clear();
+        ReportsStorage.LocalReports.Reports_Collection
+            .AddRange(tmpReportsList
+                .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
+                .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
+
+        //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
+
         try
         {
             await StaticConfiguration.DBModel.SaveChangesAsync();

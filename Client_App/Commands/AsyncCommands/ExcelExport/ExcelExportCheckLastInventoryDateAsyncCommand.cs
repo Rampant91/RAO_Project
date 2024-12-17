@@ -14,6 +14,7 @@ using Client_App.ViewModels.ProgressBar;
 using OfficeOpenXml;
 using System.Reflection;
 using static Client_App.Resources.StaticStringMethods;
+using System.Collections.Concurrent;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -50,10 +51,10 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
         var repsDtoList = await GetReportsDtoList(db, cts);
 
         progressBarVM.SetProgressBar(20, "Проверка даты инвентаризации");
-        var filteredRepsDtoList = await CheckRepsInventoryDate(db, repsDtoList, progressBarVM, cts);
+        var filteredRepsDtoList = await CheckRepsInventoryDate(tmpDbPath, repsDtoList, progressBarVM, cts);
 
         progressBarVM.SetProgressBar(50, "Проверка наличия СНК");
-        var repsWithUnitsDtoList = await CheckSnk(db, filteredRepsDtoList, progressBarVM, cts);
+        var repsWithUnitsDtoList = await CheckSnk(db, filteredRepsDtoList, progressBarVM, cts, tmpDbPath);
 
         progressBarVM.SetProgressBar(90, "Заполнение строчек в .xlsx");
         await FillExcel(repsWithUnitsDtoList);
@@ -147,15 +148,22 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
 
     #region CheckRepsInventoryDate
 
-    private static async Task<List<ShortReportsDto>> CheckRepsInventoryDate(DBModel db, List<ShortReportsDto> repsDtoList, 
+    private static async Task<List<ShortReportsDto>> CheckRepsInventoryDate(string tmpDbPath, List<ShortReportsDto> repsDtoList, 
         AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
-        List<ShortReportsDto> repsWithExpiredInventory = [];
+        List<ShortReportsDto> repsWithExpiredInventory2 = [];
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentRepNum = 0;
-        foreach (var repsDto in repsDtoList)
+
+        ConcurrentBag<ShortReportsDto> repsWithExpiredInventory = [];
+        ParallelOptions parallelOptions = new()
         {
-            currentRepNum++;
+            CancellationToken = cts.Token,
+            MaxDegreeOfParallelism = Environment.ProcessorCount
+        };
+        await Parallel.ForEachAsync(repsDtoList, parallelOptions, async (repsDto, token) =>
+        {
+            await using var db = new DBModel(tmpDbPath);
             var inventoryReportIdList = await db.ReportsCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
@@ -186,7 +194,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
             if (inventoryFormsDtoList.Count == 0)
             {
                 repsWithExpiredInventory.Add(repsDto);
-                continue;
+                return;
             }
 
             var lastInventoryDate = inventoryFormsDtoList
@@ -199,12 +207,13 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
                 repsDto.LastInventoryDate = lastInventoryDate;
                 repsWithExpiredInventory.Add(repsDto);
             }
+            currentRepNum++;
             progressBarDoubleValue += (double)30 / repsDtoList.Count;
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
                 $"Проверено {currentRepNum} из {repsDtoList.Count} дат инвентаризации",
                 "Проверка последней инвентаризации");
-        }
-        return repsWithExpiredInventory;
+        });
+        return repsWithExpiredInventory.ToList();
     }
 
     #endregion
@@ -212,9 +221,41 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
     #region CheckSnk
 
     private static async Task<List<ShortReportsDto>> CheckSnk(DBModel db, List<ShortReportsDto> dtoList, 
-        AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
+        AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts, string tmpDbPath)
     {
         var currentDate = DateOnly.FromDateTime(DateTime.Now);
+
+        //ConcurrentBag<ShortReportsDto> dtoBug = new (dtoList);
+        //ParallelOptions parallelOptions = new()
+        //{
+        //    CancellationToken = cts.Token,
+        //    MaxDegreeOfParallelism = Environment.ProcessorCount
+        //};
+        //double progressBarDoubleValue = progressBarVM.ValueBar;
+        //var currentRepsNum = 0;
+
+        //Parallel.ForEach(dtoBug, parallelOptions, async (dto, token) =>
+        //{
+        //    await using var db = new DBModel(tmpDbPath);
+
+        //    var inventoryReportDtoList = await GetInventoryReportDtoList(db, dto.Id, currentDate, cts);
+
+        //    var inventoryFormsDtoList = await GetInventoryFormsDtoList(db, inventoryReportDtoList, currentDate, cts);
+
+        //    var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, dto.Id, currentDate, cts);
+
+        //    var unionFormsDtoList = await GetUnionFormsDtoList(inventoryFormsDtoList, plusMinusFormsDtoList);
+
+        //    var uniqueAccountingUnitDtoList = await GetUniqueAccountingUnitDtoList(unionFormsDtoList);
+
+        //    dto.CountUnits = await GetUnitInStockCount(inventoryFormsDtoList, plusMinusFormsDtoList, uniqueAccountingUnitDtoList);
+
+        //    currentRepsNum++;
+        //    progressBarDoubleValue += (double)40 / dtoList.Count;
+        //    progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+        //        $"Проверено {currentRepsNum} из {dtoList.Count} СНК организаций",
+        //        "Проверка последней инвентаризации");
+        //});
 
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentRepsNum = 0;
@@ -349,7 +390,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
 
     #region GetUnitInStockCount
 
-    private static Task<int> GetUnitInStockCount(List<ShortForm11DTO> inventoryFormsDtoList,
+    private static async Task<int> GetUnitInStockCount(List<ShortForm11DTO> inventoryFormsDtoList,
         List<ShortForm11DTO> plusMinusFormsDtoList, List<UniqueAccountingUnitDTO> uniqueAccountingUnitDtoList)
     {
         List<ShortForm11DTO> unitInStockList = [];
@@ -365,7 +406,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
             .Where(x => x.OpDate == firstInventoryDate)
             .DistinctBy(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type));
 
-        foreach (var unit in uniqueAccountingUnitDtoList)
+        foreach (var unit in uniqueAccountingUnitDtoList)   //Использование Parallel.ForEach() тут выигрыша по времени не даёт.
         {
             var inStock = unitInStockList
                 .Any(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
@@ -396,19 +437,19 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
                 switch (countStock)
                 {
                     case >= 1:
-                    {
-                        operationsWithCurrentUnitWithoutDuplicates
-                            .Add(group
-                                .Last(x => PlusOperation.Contains(x.OpCode)));
-                        break;
-                    }
+                        {
+                            operationsWithCurrentUnitWithoutDuplicates
+                                .Add(group
+                                    .Last(x => PlusOperation.Contains(x.OpCode)));
+                            break;
+                        }
                     case < 1:
-                    {
-                        operationsWithCurrentUnitWithoutDuplicates
-                            .Add(group
-                                .Last(x => MinusOperation.Contains(x.OpCode)));
-                        break;
-                    }
+                        {
+                            operationsWithCurrentUnitWithoutDuplicates
+                                .Add(group
+                                    .Last(x => MinusOperation.Contains(x.OpCode)));
+                            break;
+                        }
                 }
             }
 
@@ -439,7 +480,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
                 unitInStockList.Add(lastOperationWithUnit);
             }
         }
-        return Task.FromResult(unitInStockList.Count);
+        return unitInStockList.Count;
     }
 
     #endregion

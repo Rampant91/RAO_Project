@@ -5,6 +5,9 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Models.Interfaces;
 using Client_App.Commands.AsyncCommands.Save;
+using Client_App.Resources;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
@@ -24,6 +27,15 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
             mainWindow.SelectedReports = mainWindow.SelectedReports is null
                 ? []
                 : new ObservableCollectionWithItemPropertyChanged<IKey>(mainWindow.SelectedReports);
+
+            var comparator = new CustomReportsComparer();
+            var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+            ReportsStorage.LocalReports.Reports_Collection.Clear();
+            ReportsStorage.LocalReports.Reports_Collection
+                .AddRange(tmpReportsList
+                    .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
+                    .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
+
             await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
         }
     }

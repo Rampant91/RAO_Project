@@ -132,10 +132,10 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 
     #region AutoReplaceSimilarChars
 
-    private static string AutoReplaceSimilarChars(string str)
+    private static string AutoReplaceSimilarChars(string? str)
     {
         return new Regex(@"[\\/:*?""<>|.,_\-;:\s+]")
-            .Replace(str, "")
+            .Replace(str ?? string.Empty, "")
             .ToLower()
             .Replace('а', 'a')
             .Replace('б', 'b')
@@ -276,31 +276,40 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     private protected static async Task<List<ShortForm11DTO>> GetPlusMinusFormsDtoList(DBModel db, int repsId, DateOnly endSnkDate, 
         CancellationTokenSource cts)
     {
-        var plusMinusOperationDtoList = await db.ReportsCollectionDbSet
+        var reportIds = await db.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+            .Include(x => x.Report_Collection)
             .Where(reps => reps.Id == repsId)
             .SelectMany(reps => reps.Report_Collection
-                .SelectMany(rep => rep.Rows11
-                    .Where(form => form.Report != null
-                                   && (PlusOperation.Contains(form.OperationCode_DB)
-                                       || MinusOperation.Contains(form.OperationCode_DB)))))
-                .Select(form11 => new ShortForm11StringDatesDTO
-                {
-                    Id = form11.Id,
-                    RepId = form11.Report!.Id,
-                    StDate = form11.Report.StartPeriod_DB,
-                    EndDate = form11.Report.EndPeriod_DB,
-                    FacNum = form11.FactoryNumber_DB,
-                    OpCode = form11.OperationCode_DB,
-                    OpDate = form11.OperationDate_DB,
-                    PackNumber = form11.PackNumber_DB,
-                    PasNum = form11.PassportNumber_DB,
-                    Radionuclids = form11.Radionuclids_DB,
-                    Type = form11.Type_DB
-                })
+                .Where(rep => rep.FormNum_DB == "1.1"))
+            .Select(rep => rep.Id)
+            .ToListAsync(cts.Token);
+
+        var plusMinusOperationDtoList = await db.form_11
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.Report)
+            .Where(x => x.Report != null 
+                        && reportIds.Contains(x.Report.Id)
+                        && (PlusOperation.Contains(x.OperationCode_DB) 
+                            || MinusOperation.Contains(x.OperationCode_DB)))
+            .Select(form => new ShortForm11StringDatesDTO
+            {
+                Id = form.Id,
+                RepId = form.Report!.Id,
+                StDate = form.Report.StartPeriod_DB,
+                EndDate = form.Report.EndPeriod_DB,
+                FacNum = form.FactoryNumber_DB,
+                OpCode = form.OperationCode_DB,
+                OpDate = form.OperationDate_DB,
+                PackNumber = form.PackNumber_DB,
+                PasNum = form.PassportNumber_DB,
+                Radionuclids = form.Radionuclids_DB,
+                Type = form.Type_DB
+            })
             .ToListAsync(cts.Token);
 
         return plusMinusOperationDtoList
