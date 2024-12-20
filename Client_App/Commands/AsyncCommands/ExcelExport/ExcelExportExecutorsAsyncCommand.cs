@@ -37,26 +37,24 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
         var folderPath = await CheckAppParameter();
         var isBackgroundCommand = folderPath != string.Empty;
 
-        progressBarVM.SetProgressBar(3, "Создание временной БД");
-        var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-        await using var db = new DBModel(tmpDbPath);
-
-        progressBarVM.SetProgressBar(8, "Подсчёт количества организаций");
-        await CountReports(db, progressBar, cts);
-
-        progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
+        progressBarVM.SetProgressBar(3, "Запрос пути сохранения");
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
         var (fullPath, openTemp) = !isBackgroundCommand
             ? await ExcelGetFullPath(fileName, cts, progressBar)
             : (Path.Combine(folderPath, $"{fileName}.xlsx"), true);
+
+        progressBarVM.SetProgressBar(5, "Создание временной БД");
+        var tmpDbPath = await CreateTempDataBase(progressBar, cts);
+        await using var db = new DBModel(tmpDbPath);
+
+        progressBarVM.SetProgressBar(10, "Подсчёт количества организаций");
+        await CountReports(db, progressBar, cts);
 
         var count = 0;
         while (File.Exists(fullPath))
         {
             fullPath = Path.Combine(folderPath, fileName + $"_{++count}.xlsx");
         }
-
-        //var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
 
         progressBarVM.SetProgressBar(12, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath);
@@ -92,7 +90,6 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="db">Модель временной БД.</param>
     /// <param name="progressBar">Окно прогрессбара.</param>
     /// <param name="cts">Токен.</param>
-    /// <returns></returns>
     private static async Task CountReports(DBModel db, AnyTaskProgressBar? progressBar, CancellationTokenSource cts)
     {
         var countReports = await db.ReportsCollectionDbSet
@@ -224,7 +221,6 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="db">Модель БД.</param>
     /// <param name="excelPackage">Excel пакет.</param>
     /// <param name="cts">Токен.</param>
-    /// <returns></returns>
     private async Task GetExecutorsList1(DBModel db, ExcelPackage excelPackage, CancellationTokenSource cts)
     {
         var repsList =  await db.ReportsCollectionDbSet
@@ -269,7 +265,6 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="db">Модель БД.</param>
     /// <param name="excelPackage">Excel пакет.</param>
     /// <param name="cts">Токен.</param>
-    /// <returns></returns>
     private async Task GetExecutorsList2(DBModel db, ExcelPackage excelPackage, CancellationTokenSource cts)
     {
         var repsList = await db.ReportsCollectionDbSet

@@ -14,6 +14,7 @@ using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Avalonia.Threading;
 using Client_App.Resources;
+using Client_App.Controls.DataGrid.DataGrids;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -40,6 +41,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         HasMultipleReport = false;
         AtLeastOneImportDone = false;
 
+        var impReportsList = new List<Reports>();
         foreach (var res in answer) // Для каждого импортируемого файла
         {
             ExcelImportNewReps = false;
@@ -100,6 +102,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
             var baseReps = GetBaseReps(worksheet0);
             var impReps = GetImportReps(worksheet0);
+            impReportsList.Add(impReps);
             if (baseReps is null)
             {
                 ExcelImportNewReps = true;
@@ -256,6 +259,8 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
 
         await StaticConfiguration.DBModel.SaveChangesAsync();
+
+        await SetDataGridPage(impReportsList);
 
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"

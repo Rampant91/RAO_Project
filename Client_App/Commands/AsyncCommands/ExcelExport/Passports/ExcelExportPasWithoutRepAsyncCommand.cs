@@ -25,7 +25,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 /// <summary>
 /// Excel -> Паспорта -> Паспорта без отчетов.
 /// </summary>
-public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
+public partial class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -34,15 +34,15 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
-        progressBarVM.SetProgressBar(2, "Формирование списка файлов", "Выгрузка списка паспортов", ExportType);
-        var files = await GetFilesFromPasDirectory(progressBar, cts);
-
-        progressBarVM.SetProgressBar(5, "Запрос списка категорий");
-        var categories = await GetCategories(progressBar, cts);
-
-        progressBarVM.SetProgressBar(8, "Запрос пути сохранения");
+        progressBarVM.SetProgressBar(2, "Запрос пути сохранения", "Выгрузка списка паспортов", ExportType);
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
         var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+
+        progressBarVM.SetProgressBar(4, "Формирование списка файлов");
+        var files = await GetFilesFromPasDirectory(progressBar, cts);
+
+        progressBarVM.SetProgressBar(7, "Запрос списка категорий");
+        var categories = await GetCategories(progressBar, cts);
 
         progressBarVM.SetProgressBar(10, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
@@ -51,7 +51,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
         using var excelPackage = await InitializeExcelPackage(fullPath);
 
         progressBarVM.SetProgressBar(17, "Заполнение заголовков");
-        await FillExcelHeaders(files, excelPackage);
+        await FillExcelHeaders(excelPackage);
 
         progressBarVM.SetProgressBar(18, "Заполнение дубликатов");
         await FillExcelDuplicates(files, excelPackage);
@@ -84,7 +84,12 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 
     #region FillExcelDuplicates
 
-    private Task FillExcelDuplicates(List<FileInfo> files, ExcelPackage excelPackage)
+    /// <summary>
+    /// Формирование и заполнение списка файлов-дубликатов.
+    /// </summary>
+    /// <param name="files">Список файлов паспортов.</param>
+    /// <param name="excelPackage">Excel пакет.</param>
+    private static Task FillExcelDuplicates(List<FileInfo> files, ExcelPackage excelPackage)
     {
         var worksheet = excelPackage.Workbook.Worksheets.First(x => x.Name == "Список дубликатов файлов");
         List<FileInfo> checkedFiles = [];
@@ -112,7 +117,11 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
 
     #region FillExcelHeaders
 
-    private Task FillExcelHeaders(IEnumerable<FileInfo> files, ExcelPackage excelPackage)
+    /// <summary>
+    /// Заполнение заголовков Excel.
+    /// </summary>
+    /// <param name="excelPackage">Excel пакет.</param>
+    private Task FillExcelHeaders(ExcelPackage excelPackage)
     {
         Worksheet = excelPackage.Workbook.Worksheets.Add("Список паспортов без отчетов");
         var duplicatePasFiles = excelPackage.Workbook.Worksheets.Add("Список дубликатов файлов");
@@ -139,7 +148,6 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
     /// Заполняет выгрузку в Excel данными.
     /// </summary>
     /// <param name="files">Список имён паспортов без отчетов.</param>
-    /// <returns></returns>
     private Task FillRows(List<FileInfo> files)
     {
         var currentRow = 2;
@@ -182,7 +190,6 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="filteredForm11DtoArray">Отфильтрованный массив DTO'шек форм 1.1.</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <param name="cts">Токен.</param>
-    /// <returns></returns>
     private static async Task FindFilesWithOutReport(List<FileInfo> files, Form11ShortDTO[] filteredForm11DtoArray, 
         AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
@@ -240,7 +247,7 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="progressBar">Окно прогрессбара.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>HashSet категорий.</returns>
-    private async Task<HashSet<short?>> GetCategories(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
+    private static async Task<HashSet<short?>> GetCategories(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
         HashSet<short?> categories;
 
@@ -353,6 +360,8 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
             .ToArray();
     }
 
+    #region ReplaceRestrictedSymbols
+
     /// <summary>
     /// Заменяет в строчке запрещённые символы на "_".
     /// </summary>
@@ -360,8 +369,13 @@ public class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncCommand
     /// <returns>Строчка, в которой заменены запрещённые символы.</returns>
     private static string ReplaceRestrictedSymbols(string str)
     {
-        return new Regex("[\\\\/:*?\"<>|]").Replace(str, "_");
+        return RestrictedSymbolsRegex().Replace(str, "_");
     }
+
+    [GeneratedRegex("[\\\\/:*?\"<>|]")]
+    private static partial Regex RestrictedSymbolsRegex();
+
+    #endregion
 
     #endregion
 }

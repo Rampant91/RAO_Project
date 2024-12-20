@@ -34,15 +34,15 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         var folderPath = await CheckAppParameter();
         var isBackgroundCommand = folderPath != string.Empty;
 
-        progressBarVM.SetProgressBar(5, "Создание временной БД");
+        progressBarVM.SetProgressBar(5, "Запрос пути сохранения");
+        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
+
+        progressBarVM.SetProgressBar(7, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
         await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(10, "Подсчёт количества организаций");
+        progressBarVM.SetProgressBar(12, "Подсчёт количества организаций");
         await ReportsCountCheck(db, progressBar, cts);
-
-        progressBarVM.SetProgressBar(12, "Запрос пути сохранения");
-        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
 
         var (fullPath, openTemp) = !isBackgroundCommand
             ? await ExcelGetFullPath(fileName, cts, progressBar)

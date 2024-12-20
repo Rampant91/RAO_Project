@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 {
     #region Properties
@@ -26,7 +26,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 
     #region DTO
 
-    private protected class ShortForm11DTO(int id, ShortReportDTO repDto, string facNum, string opCode, DateOnly opDate, string packNumber, string pasNum, string radionuclids, string type)
+    private protected class ShortForm11DTO(int id, ShortReportDTO repDto, string facNum, string opCode, DateOnly opDate, string packNumber, string pasNum, int? quantity, string radionuclids, string type)
     {
         public readonly int Id = id;
 
@@ -42,12 +42,14 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 
         public readonly string PasNum = pasNum;
 
+        public int Quantity = quantity ?? 0;
+
         public readonly string Radionuclids = radionuclids;
 
         public readonly string Type = type;
     }
 
-    private protected class ShortForm11StringDateDTO
+    private class ShortForm11StringDateDTO
     {
         public int Id { get; set; }
 
@@ -67,12 +69,14 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 
         public string PasNum { get; set; }
 
+        public int? Quantity { get; set; }
+
         public string Radionuclids { get; set; }
 
         public string Type { get; set; }
     }
 
-    private protected class ShortForm11StringDatesDTO
+    private class ShortForm11StringDatesDTO
     {
         public int Id { get; set; }
 
@@ -92,12 +96,14 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 
         public string PasNum { get; set; }
 
+        public int? Quantity { get; set; }
+
         public string Radionuclids { get; set; }
 
         public string Type { get; set; }
     }
 
-    private protected class ShortReportStringDateDTO(int id, string startPeriod, string endPeriod)
+    private class ShortReportStringDateDTO(int id, string startPeriod, string endPeriod)
     {
         public readonly int Id = id;
 
@@ -191,6 +197,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                         OpDate = form11.OperationDate_DB,
                         PackNumber = form11.PackNumber_DB,
                         PasNum = form11.PassportNumber_DB,
+                        Quantity = form11.Quantity_DB,
                         Radionuclids = form11.Radionuclids_DB,
                         Type = form11.Type_DB
                     }))
@@ -208,6 +215,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                     DateOnly.Parse(x.OpDate),
                     AutoReplaceSimilarChars(x.PackNumber),
                     AutoReplaceSimilarChars(x.PasNum),
+                    x.Quantity,
                     AutoReplaceSimilarChars(x.Radionuclids),
                     AutoReplaceSimilarChars(x.Type)))
                 .ToList();
@@ -270,10 +278,10 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// </summary>
     /// <param name="db">Модель БД.</param>
     /// <param name="repsId">Id организации.</param>
-    /// /// <param name="endSnkDate">Дата, на которую нужно сформировать СНК.</param>
+    /// <param name="endSnkDate">Дата, на которую нужно сформировать СНК.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Список DTO форм с операциями приёма передачи, отсортированный по датам.</returns>
-    private protected static async Task<List<ShortForm11DTO>> GetPlusMinusFormsDtoList(DBModel db, int repsId, DateOnly endSnkDate, 
+    private protected static async Task<List<ShortForm11DTO>> GetPlusMinusFormsDtoList(DBModel db, int repsId, DateOnly endSnkDate,
         CancellationTokenSource cts)
     {
         var reportIds = await db.ReportsCollectionDbSet
@@ -292,9 +300,9 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             .AsSplitQuery()
             .AsQueryable()
             .Include(x => x.Report)
-            .Where(x => x.Report != null 
+            .Where(x => x.Report != null
                         && reportIds.Contains(x.Report.Id)
-                        && (PlusOperation.Contains(x.OperationCode_DB) 
+                        && (PlusOperation.Contains(x.OperationCode_DB)
                             || MinusOperation.Contains(x.OperationCode_DB)))
             .Select(form => new ShortForm11StringDatesDTO
             {
@@ -307,6 +315,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                 OpDate = form.OperationDate_DB,
                 PackNumber = form.PackNumber_DB,
                 PasNum = form.PassportNumber_DB,
+                Quantity = form.Quantity_DB,
                 Radionuclids = form.Radionuclids_DB,
                 Type = form.Type_DB
             })
@@ -326,6 +335,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                 DateOnly.Parse(x.OpDate),
                 AutoReplaceSimilarChars(x.PackNumber),
                 AutoReplaceSimilarChars(x.PasNum),
+                x.Quantity,
                 AutoReplaceSimilarChars(x.Radionuclids),
                 AutoReplaceSimilarChars(x.Type)))
             .OrderBy(x => x.OpDate)

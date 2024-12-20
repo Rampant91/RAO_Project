@@ -16,7 +16,7 @@ using System.Reflection;
 using static Client_App.Resources.StaticStringMethods;
 using System.Collections.Concurrent;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
 /// <summary>
 /// Excel -> Проверка последней инвентаризации
@@ -28,7 +28,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
         var cts = new CancellationTokenSource();
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
-        ExportType = $"Просроченная_инвентаризация_1.1";
+        ExportType = "Просроченная_инвентаризация_1.1";
 
         progressBarVM.SetProgressBar(5, "Создание временной БД", "Выгрузка списка организаций", ExportType);
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
@@ -53,7 +53,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
         progressBarVM.SetProgressBar(20, "Проверка даты инвентаризации");
         var filteredRepsDtoList = await CheckRepsInventoryDate(tmpDbPath, repsDtoList, progressBarVM, cts);
 
-        progressBarVM.SetProgressBar(50, "Проверка наличия СНК");
+        progressBarVM.SetProgressBar(40, "Проверка наличия СНК");
         var repsWithUnitsDtoList = await CheckSnk(db, filteredRepsDtoList, progressBarVM, cts, tmpDbPath);
 
         progressBarVM.SetProgressBar(90, "Заполнение строчек в .xlsx");
@@ -148,7 +148,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
 
     #region CheckRepsInventoryDate
 
-    private static async Task<List<ShortReportsDto>> CheckRepsInventoryDate(string tmpDbPath, List<ShortReportsDto> repsDtoList, 
+    private static async Task<List<ShortReportsDto>> CheckRepsInventoryDate(string tmpDbPath, List<ShortReportsDto> repsDtoList,
         AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
         List<ShortReportsDto> repsWithExpiredInventory2 = [];
@@ -220,42 +220,10 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
 
     #region CheckSnk
 
-    private static async Task<List<ShortReportsDto>> CheckSnk(DBModel db, List<ShortReportsDto> dtoList, 
+    private static async Task<List<ShortReportsDto>> CheckSnk(DBModel db, List<ShortReportsDto> dtoList,
         AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts, string tmpDbPath)
     {
         var currentDate = DateOnly.FromDateTime(DateTime.Now);
-
-        //ConcurrentBag<ShortReportsDto> dtoBug = new (dtoList);
-        //ParallelOptions parallelOptions = new()
-        //{
-        //    CancellationToken = cts.Token,
-        //    MaxDegreeOfParallelism = Environment.ProcessorCount
-        //};
-        //double progressBarDoubleValue = progressBarVM.ValueBar;
-        //var currentRepsNum = 0;
-
-        //Parallel.ForEach(dtoBug, parallelOptions, async (dto, token) =>
-        //{
-        //    await using var db = new DBModel(tmpDbPath);
-
-        //    var inventoryReportDtoList = await GetInventoryReportDtoList(db, dto.Id, currentDate, cts);
-
-        //    var inventoryFormsDtoList = await GetInventoryFormsDtoList(db, inventoryReportDtoList, currentDate, cts);
-
-        //    var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, dto.Id, currentDate, cts);
-
-        //    var unionFormsDtoList = await GetUnionFormsDtoList(inventoryFormsDtoList, plusMinusFormsDtoList);
-
-        //    var uniqueAccountingUnitDtoList = await GetUniqueAccountingUnitDtoList(unionFormsDtoList);
-
-        //    dto.CountUnits = await GetUnitInStockCount(inventoryFormsDtoList, plusMinusFormsDtoList, uniqueAccountingUnitDtoList);
-
-        //    currentRepsNum++;
-        //    progressBarDoubleValue += (double)40 / dtoList.Count;
-        //    progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-        //        $"Проверено {currentRepsNum} из {dtoList.Count} СНК организаций",
-        //        "Проверка последней инвентаризации");
-        //});
 
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentRepsNum = 0;
@@ -275,7 +243,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
 
             dto.CountUnits = await GetUnitInStockCount(inventoryFormsDtoList, plusMinusFormsDtoList, uniqueAccountingUnitDtoList);
 
-            progressBarDoubleValue += (double)40 / dtoList.Count;
+            progressBarDoubleValue += (double)50 / dtoList.Count;
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
                 $"Проверено {currentRepsNum} из {dtoList.Count} СНК организаций",
                 "Проверка последней инвентаризации");
@@ -283,6 +251,8 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
 
         return dtoList
             .Where(x => x.CountUnits != 0)
+            .OrderBy(x => x.RegNum)
+            .ThenBy(x => x.Okpo)
             .ToList();
     }
 
@@ -345,9 +315,9 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
             Worksheet.Cells[currentRow, 1].Value = ConvertToExcelString(repsDto.Okpo);
             Worksheet.Cells[currentRow, 2].Value = ConvertToExcelString(repsDto.ShortName);
             Worksheet.Cells[currentRow, 3].Value = ConvertToExcelString(repsDto.RegNum);
-            Worksheet.Cells[currentRow, 4].Value = repsDto.Id;  //перебинди!!!
-            Worksheet.Cells[currentRow, 5].Value = repsDto.LastInventoryDate == DateOnly.MinValue 
-                ? "-" 
+            Worksheet.Cells[currentRow, 4].Value = repsDto.CountUnits;
+            Worksheet.Cells[currentRow, 5].Value = repsDto.LastInventoryDate == DateOnly.MinValue
+                ? "-"
                 : ConvertToExcelDate(repsDto.LastInventoryDate.ToShortDateString(), Worksheet, currentRow, 5);
 
             currentRow++;
@@ -437,19 +407,19 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
                 switch (countStock)
                 {
                     case >= 1:
-                        {
-                            operationsWithCurrentUnitWithoutDuplicates
-                                .Add(group
-                                    .Last(x => PlusOperation.Contains(x.OpCode)));
-                            break;
-                        }
+                    {
+                        operationsWithCurrentUnitWithoutDuplicates
+                            .Add(group
+                                .Last(x => PlusOperation.Contains(x.OpCode)));
+                        break;
+                    }
                     case < 1:
-                        {
-                            operationsWithCurrentUnitWithoutDuplicates
-                                .Add(group
-                                    .Last(x => MinusOperation.Contains(x.OpCode)));
-                            break;
-                        }
+                    {
+                        operationsWithCurrentUnitWithoutDuplicates
+                            .Add(group
+                                .Last(x => MinusOperation.Contains(x.OpCode)));
+                        break;
+                    }
                 }
             }
 

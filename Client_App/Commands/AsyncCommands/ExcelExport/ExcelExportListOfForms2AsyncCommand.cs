@@ -30,19 +30,19 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
-        progressBarVM.SetProgressBar(5, "Создание временной БД", "Выгрузка в .xlsx", ExportType);
+        progressBarVM.SetProgressBar(5, "Запрос пути сохранения", "Выгрузка в .xlsx", ExportType);
+        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
+        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+
+        progressBarVM.SetProgressBar(7, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
         await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(7, "Подсчёт количества организаций");
+        progressBarVM.SetProgressBar(11, "Подсчёт количества организаций");
         await ReportsCountCheck(db, progressBar, cts);
 
-        progressBarVM.SetProgressBar(10, "Запрос периода");
+        progressBarVM.SetProgressBar(13, "Запрос периода");
         var (minYear, maxYear) = await InputDateRange(progressBar, cts);
-
-        progressBarVM.SetProgressBar(12, "Запрос пути сохранения");
-        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
-        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
 
         progressBarVM.SetProgressBar(15, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath);

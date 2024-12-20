@@ -36,7 +36,7 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
                     .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
                     .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
 
-            await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
+            //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
         }
     }
 }

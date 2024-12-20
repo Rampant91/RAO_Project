@@ -43,18 +43,18 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
-        progressBarVM.SetProgressBar(5, "Создание временной БД", "Выгрузка форм", ExportType);
+        progressBarVM.SetProgressBar(5, "Определение имени файла");
+        var fileName = await GetFileName(formNum, forSelectedOrg, selectedReports!);
+
+        progressBarVM.SetProgressBar(7, "Запрос пути сохранения");
+        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+
+        progressBarVM.SetProgressBar(10, "Создание временной БД", "Выгрузка форм", ExportType);
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
         await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(10, "Проверка наличия отчётов");
+        progressBarVM.SetProgressBar(15, "Проверка наличия отчётов");
         await CheckRepsAndRepPresence(db, formNum, forSelectedOrg, selectedReports, progressBar, cts);
-
-        progressBarVM.SetProgressBar(12, "Определение имени файла");
-        var fileName = await GetFileName(formNum, forSelectedOrg, selectedReports!);
-
-        progressBarVM.SetProgressBar(15, "Запрос пути сохранения");
-        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
 
         progressBarVM.SetProgressBar(18, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath, formNum, progressBar, cts);

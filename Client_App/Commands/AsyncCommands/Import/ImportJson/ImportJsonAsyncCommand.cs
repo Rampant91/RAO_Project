@@ -17,6 +17,7 @@ using Models.DTO;
 using static Client_App.Commands.AsyncCommands.Import.ImportJson.ImportJsonMethods;
 using static Client_App.Resources.StaticStringMethods;
 using Avalonia.Threading;
+using Client_App.Resources;
 
 namespace Client_App.Commands.AsyncCommands.Import.ImportJson;
 
@@ -480,6 +481,15 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                 //ignore
             }
         }
+
+        var comparator = new CustomReportsComparer();
+        var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+        ReportsStorage.LocalReports.Reports_Collection.Clear();
+        ReportsStorage.LocalReports.Reports_Collection
+            .AddRange(tmpReportsList
+                .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
+                .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
+
         await StaticConfiguration.DBModel.SaveChangesAsync().ConfigureAwait(false);
 
         #region Suffix

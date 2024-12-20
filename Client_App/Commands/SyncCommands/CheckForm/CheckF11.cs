@@ -2594,6 +2594,7 @@ public abstract class CheckF11 : CheckBase
     private static bool CheckEquilibriumRads(HashSet<string> radsSet)
     {
         var isEqRads = false;
+        if (radsSet.Count <= 1) return isEqRads;
         isEqRads = EquilibriumRadionuclids.All(x =>
         {
             x = x.Replace(" ", string.Empty);

@@ -13,12 +13,14 @@ using Avalonia.Controls;
 using MessageBox.Avalonia.DTO;
 using System.Reflection;
 using MessageBox.Avalonia.Models;
-using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
-public class ExcelExportInventoryCheckAsyncCommand : ExcelExportSnkBaseAsyncCommand
+/// <summary>
+/// Excel -> Проверка инвентаризаций.
+/// </summary>
+public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCommand
 {
     public override bool CanExecute(object? parameter) => true;
 
@@ -496,41 +498,41 @@ public class ExcelExportInventoryCheckAsyncCommand : ExcelExportSnkBaseAsyncComm
                     switch (countStock)
                     {
                         case > 1:
-                        {
-                            var reReceivedFormDto = group
-                                .Where(x => PlusOperation.Contains(x.OpCode))
-                                .TakeLast(countStock);
-                            reReceivedUnitsList.AddRange(reReceivedFormDto);
-                            operationsWithCurrentUnitWithoutDuplicates
-                                .Add(group
-                                    .Last(x => PlusOperation.Contains(x.OpCode)));
-                            break;
-                        }
+                            {
+                                var reReceivedFormDto = group
+                                    .Where(x => PlusOperation.Contains(x.OpCode))
+                                    .TakeLast(countStock);
+                                reReceivedUnitsList.AddRange(reReceivedFormDto);
+                                operationsWithCurrentUnitWithoutDuplicates
+                                    .Add(group
+                                        .Last(x => PlusOperation.Contains(x.OpCode)));
+                                break;
+                            }
                         case 1:
-                        {
-                            operationsWithCurrentUnitWithoutDuplicates
-                                .Add(group
-                                    .Last(x => PlusOperation.Contains(x.OpCode)));
-                            break;
-                        }
+                            {
+                                operationsWithCurrentUnitWithoutDuplicates
+                                    .Add(group
+                                        .Last(x => PlusOperation.Contains(x.OpCode)));
+                                break;
+                            }
                         case 0:
-                        {
-                            operationsWithCurrentUnitWithoutDuplicates
-                                .Add(group
-                                    .Last(x => MinusOperation.Contains(x.OpCode)));
-                            break;
-                        }
+                            {
+                                operationsWithCurrentUnitWithoutDuplicates
+                                    .Add(group
+                                        .Last(x => MinusOperation.Contains(x.OpCode)));
+                                break;
+                            }
                         case < 0:
-                        {
-                            var reTransferredFormDto = group
-                                .Where(x => MinusOperation.Contains(x.OpCode))
-                                .TakeLast(Math.Abs(countStock));
-                            reTransferredUnitsList.AddRange(reTransferredFormDto);
-                            operationsWithCurrentUnitWithoutDuplicates
-                                .Add(group
-                                    .Last(x => MinusOperation.Contains(x.OpCode)));
-                            break;
-                        }
+                            {
+                                var reTransferredFormDto = group
+                                    .Where(x => MinusOperation.Contains(x.OpCode))
+                                    .TakeLast(Math.Abs(countStock));
+                                reTransferredUnitsList.AddRange(reTransferredFormDto);
+                                operationsWithCurrentUnitWithoutDuplicates
+                                    .Add(group
+                                        .Last(x => MinusOperation.Contains(x.OpCode)));
+                                break;
+                            }
                     }
                 }
 
@@ -539,25 +541,25 @@ public class ExcelExportInventoryCheckAsyncCommand : ExcelExportSnkBaseAsyncComm
                     switch (inStock)
                     {
                         case true when PlusOperation.Contains(operation.OpCode):
-                        {
-                            reReceivedUnitsList.Add(operation);
-                            break;
-                        }
+                            {
+                                reReceivedUnitsList.Add(operation);
+                                break;
+                            }
                         case false when PlusOperation.Contains(operation.OpCode):
-                        {
-                            inStock = true;
-                            break;
-                        }
+                            {
+                                inStock = true;
+                                break;
+                            }
                         case false when MinusOperation.Contains(operation.OpCode):
-                        {
-                            reTransferredUnitsList.Add(operation);
-                            break;
-                        }
+                            {
+                                reTransferredUnitsList.Add(operation);
+                                break;
+                            }
                         case true when MinusOperation.Contains(operation.OpCode):
-                        {
-                            inStock = false;
-                            break;
-                        }
+                            {
+                                inStock = false;
+                                break;
+                            }
                     }
                 }
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Metrics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -41,24 +40,24 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
         var folderPath = await CheckAppParameter();
         var isBackgroundCommand = folderPath != string.Empty;
 
-        progressBarVM.SetProgressBar(3, "Создание временной БД", 
+        progressBarVM.SetProgressBar(3, "Определение имени файла");
+        var fileName = await GetFileName(progressBar, cts);
+
+        progressBarVM.SetProgressBar(5, "Запрос пути сохранения");
+        var (fullPath, openTemp) = !isBackgroundCommand
+            ? await ExcelGetFullPath(fileName, cts, progressBar)
+            : (Path.Combine(folderPath, $"{fileName}.xlsx"), true);
+
+        progressBarVM.SetProgressBar(7, "Создание временной БД", 
             "Выгрузка всех отчётов", "Выгрузка в .xlsx");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
         await using var db = new DBModel(tmpDbPath);
 
         if (!isBackgroundCommand)
         {
-            progressBarVM.SetProgressBar(5, "Подсчёт количества организаций");
+            progressBarVM.SetProgressBar(10, "Подсчёт количества организаций");
             await CountReports(db, progressBar, cts);
         }
-
-        progressBarVM.SetProgressBar(7, "Определение имени файла");
-        var fileName = await GetFileName(progressBar, cts);
-        
-        progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
-        var (fullPath, openTemp) = !isBackgroundCommand
-            ? await ExcelGetFullPath(fileName, cts, progressBar)
-            : (Path.Combine(folderPath, $"{fileName}.xlsx"), true);
 
         var count = 0;
         while (File.Exists(fullPath))
@@ -129,7 +128,6 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
     /// <param name="dbReadOnly">Модель временной БД.</param>
     /// <param name="progressBar">Окно прогрессбара.</param>
     /// <param name="cts">Токен.</param>
-    /// <returns></returns>
     private async Task CountReports(DBModel dbReadOnly, AnyTaskProgressBar? progressBar, CancellationTokenSource cts)
     {
         var countReports = await dbReadOnly.ReportsCollectionDbSet
@@ -235,7 +233,6 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
     /// <param name="formNums">HashSet имеющихся номеров отчётов.</param>
     /// <param name="repsWithRows">Организация вместе с коллекцией отчётов со строчками.</param>
     /// <param name="excelPackage">Пакет Excel.</param>
-    /// <returns></returns>
     private Task FillExcel(HashSet<string> formNums, Reports repsWithRows, ExcelPackage excelPackage)
     {
         foreach (var formNum in formNums)

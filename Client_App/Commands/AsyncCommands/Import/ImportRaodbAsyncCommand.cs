@@ -13,15 +13,12 @@ using Client_App.Interfaces.Logger;
 using MessageBox.Avalonia.Enums;
 using Models.DTO;
 using Avalonia.Threading;
-using Client_App.ViewModels;
-using Models.Forms;
-using System.Collections.Specialized;
 using Client_App.Resources;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
 //  Импорт -> Из RAODB
-internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
+public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -41,6 +38,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
         var countReadFiles = answer.Length;
 
+        var impReportsList = new List<Reports>();
         foreach (var path in answer) // Для каждого импортируемого файла
         {
             if (path == "") continue;
@@ -78,6 +76,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
             foreach (var impReps in reportsCollection) // Для каждой импортируемой организации
             {
+                impReportsList.Add(impReps);
                 await impReps.SortAsync();
                 await RestoreReportsOrders(impReps);
                 if (impReps.Master.Rows10.Count != 0)
@@ -233,6 +232,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
         var comparator = new CustomReportsComparer();
         var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+
         ReportsStorage.LocalReports.Reports_Collection.Clear();
         ReportsStorage.LocalReports.Reports_Collection
             .AddRange(tmpReportsList
@@ -249,6 +249,8 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         {
 
         }
+
+        await SetDataGridPage(impReportsList);
 
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"

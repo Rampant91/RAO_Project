@@ -35,26 +35,24 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
         var folderPath = await CheckAppParameter();
         var isBackgroundCommand = folderPath != string.Empty;
 
-        progressBarVM.SetProgressBar(5, "Создание временной БД", "Выгрузка в .xlsx", ExportType);
-        var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-        await using var db = new DBModel(tmpDbPath);
-
-        progressBarVM.SetProgressBar(10, "Подсчёт количества организаций");
-        await ReportsCountCheck(db, progressBar, cts);
-
-        progressBarVM.SetProgressBar(12, "Запрос пути сохранения");
+        progressBarVM.SetProgressBar(5, "Запрос пути сохранения");
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
         var (fullPath, openTemp) = !isBackgroundCommand
             ? await ExcelGetFullPath(fileName, cts, progressBar)
             : (Path.Combine(folderPath, $"{fileName}.xlsx"), true);
+
+        progressBarVM.SetProgressBar(7, "Создание временной БД");
+        var tmpDbPath = await CreateTempDataBase(progressBar, cts);
+        await using var db = new DBModel(tmpDbPath);
+
+        progressBarVM.SetProgressBar(12, "Подсчёт количества организаций");
+        await ReportsCountCheck(db, progressBar, cts);
 
         var count = 0;
         while (File.Exists(fullPath))
         {
             fullPath = Path.Combine(folderPath, fileName + $"_{++count}.xlsx");
         }
-
-        //var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
 
         progressBarVM.SetProgressBar(15, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath);
@@ -251,7 +249,7 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="db">Модель БД.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Отсортированный список DTO отчётов.</returns>
-    private async Task<List<ReportForSort>> GetSortedRepList(DBModel db, CancellationTokenSource cts)
+    private static async Task<List<ReportForSort>> GetSortedRepList(DBModel db, CancellationTokenSource cts)
     {
         var listSortRep = await db.ReportCollectionDbSet
             .AsNoTracking()
@@ -269,7 +267,8 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
                 rep.Reports.Master_DB.ShortJurLicoRep.Value))
             .ToListAsync(cts.Token);
 
-        return listSortRep.Where(rep => DateOnly.TryParse(rep.StartPeriod, out _) 
+        return listSortRep
+            .Where(rep => DateOnly.TryParse(rep.StartPeriod, out _) 
                                         && DateOnly.TryParse(rep.EndPeriod, out _))
             .Select(rep =>
             {

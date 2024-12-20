@@ -13,13 +13,13 @@ using System.IO;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
-using System.Diagnostics;
 using Client_App.Interfaces.Logger;
 using Client_App.Views.ProgressBar;
 using Models.CheckForm;
 using System.Collections.Generic;
+using System.Reflection;
 using Client_App.ViewModels.ProgressBar;
+using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -35,25 +35,36 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
         if (parameter is not IKeyCollection collection) return;
         var par = collection.ToList<Reports>().First();
         var cts = new CancellationTokenSource();
-        ExportType = "Проверка отчётов";
+        ExportType = $"Проверка_отчётов_{par.Master_DB.RegNoRep.Value}_{par.Master_DB.OkpoRep.Value}";
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
-        progressBarVM.SetProgressBar(5, "Создание временной БД",
+        progressBarVM.SetProgressBar(5, "Запрос пути сохранения",
+            $"Проверка отчётов {par.Master_DB.RegNoRep.Value}_{par.Master_DB.OkpoRep.Value}", ExportType);
+        var fileName = $"{ExportType}_{Assembly.GetExecutingAssembly().GetName().Version}";
+        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+
+        progressBarVM.SetProgressBar(10, "Создание временной БД",
             "Проверка отчётов на ошибки", "Выгрузка в .xlsx");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
 
-        progressBarVM.SetProgressBar(10, "Выбор папки для отчётов");
-        var folderPath = await SelectFolder(progressBar, cts);
+        progressBarVM.SetProgressBar(12, "Инициализация Excel пакета");
+        using var excelPackage = await InitializeExcelPackage(fullPath);
 
-        progressBarVM.SetProgressBar(13, "Загрузка отчётов");
+        progressBarVM.SetProgressBar(13, "Заполнение заголовков");
+        await FillExcelHeaders(excelPackage);
+
+        progressBarVM.SetProgressBar(15, "Загрузка отчётов");
         var reps = await GetReportsWithRows(tmpDbPath, par, progressBarVM, cts);
 
-        progressBarVM.SetProgressBar(63, "Проверка отчётов");
+        progressBarVM.SetProgressBar(45, "Проверка отчётов");
         var errorsList = await CheckReportCollection(reps, progressBarVM);
 
-        progressBarVM.SetProgressBar(83, "Сохранение отчётов");
-        var countCheckedRep = await SaveErrorsList(errorsList, folderPath, progressBarVM, cts);
+        progressBarVM.SetProgressBar(55, "Заполнение строчек отчёта");
+        var countCheckedRep = await FillExcel(errorsList, progressBarVM);
+
+        progressBarVM.SetProgressBar(95, "Сохранение");
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
 
         progressBarVM.SetProgressBar(98, "Очистка временных данных");
         try
@@ -65,34 +76,29 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
             // ignored
         }
 
-        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-
         #region MessageCheckComplete
 
         var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+
+            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
             {
-                ButtonDefinitions =
-                [
-                    new ButtonDefinition { Name = "Ок", IsDefault = true },
-                    new ButtonDefinition { Name = "Открыть папку с выгрузкой" }
-                ],
+                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                CanResize = true,
                 ContentTitle = "Проверка форм",
                 ContentHeader = "Уведомление",
-                ContentMessage = $"Проверка форм организации {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value} завершена." +
-                                 $"{Environment.NewLine}Проверено {countCheckedRep} из {reps.Report_Collection.Count} отчётов.",
+                ContentMessage =
+                    $"Проверка форм организации {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value} завершена." +
+                    $"{Environment.NewLine}Проверено {countCheckedRep} из {reps.Report_Collection.Count} отчётов.",
                 MinWidth = 400,
                 MinHeight = 170,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(progressBar ?? Desktop.MainWindow));
+            .Show(progressBar ?? Desktop.MainWindow)
+        );
 
         #endregion
 
-        if (answer is "Открыть папку с выгрузкой")
-        {
-            Process.Start("explorer", folderPath);
-        }
+        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
         await progressBar.CloseAsync();
     }
     
@@ -159,12 +165,104 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
                 continue;
             }
             errorsDictionary.Add(rep, errorList);
-            progressBarDoubleValue += (double)20 / (reps.Report_Collection.Count);
+            progressBarDoubleValue += (double)10 / (reps.Report_Collection.Count);
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
                 $"Проверка отчёта {rep.FormNum_DB}_{rep.StartPeriod_DB}_{rep.EndPeriod_DB}",
                 $"Проверка отчётов {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value}");
         }
         return errorsDictionary;
+    }
+
+    #endregion
+
+    #region FillExcel
+
+    /// <summary>
+    /// Заполняет в один .xlsx файл каждый список ошибок из словаря.
+    /// </summary>
+    /// <param name="errorsDictionary">Словарь из отчётов и списков ошибок.</param>
+    /// <param name="progressBarVM">ViewModel прогрессбара.</param>
+    /// <returns>Количество успешно проверенных отчётов.</returns>
+    private async Task<int> FillExcel(Dictionary<Report, List<CheckError>?> errorsDictionary, AnyTaskProgressBarVM progressBarVM)
+    {
+        var currentRow = 2;
+        var countCheckedRep = 0;
+        double progressBarDoubleValue = progressBarVM.ValueBar;
+        foreach (var (rep, errorList) in errorsDictionary)
+        {
+            progressBarVM.SetProgressBar($"Сохранение {rep.FormNum_DB}_{rep.StartPeriod_DB}_{rep.EndPeriod_DB}");
+
+            if (errorList is null)
+            {
+                countCheckedRep++;
+                continue;
+            }
+            var checkFormVM = new CheckFormVM(new ChangeOrCreateVM(rep.FormNum_DB, rep), errorList);
+            foreach (var error in checkFormVM.CheckError)
+            {
+                Worksheet.Cells[currentRow, 1].Value = currentRow - 1;
+                Worksheet.Cells[currentRow, 2].Value = rep.Reports.Master_DB.RegNoRep.Value;
+                Worksheet.Cells[currentRow, 3].Value = rep.FormNum_DB;
+                Worksheet.Cells[currentRow, 4].Value = ConvertToExcelDate(rep.StartPeriod_DB, Worksheet, currentRow, 4);
+                Worksheet.Cells[currentRow, 5].Value = ConvertToExcelDate(rep.EndPeriod_DB, Worksheet, currentRow, 5);
+                Worksheet.Cells[currentRow, 6].Value = error.Row;
+                Worksheet.Cells[currentRow, 7].Value = error.Column;
+                Worksheet.Cells[currentRow, 8].Value = error.Value;
+                Worksheet.Cells[currentRow, 9].Value = error.Message;
+                currentRow++;
+            }
+            countCheckedRep++;
+
+            progressBarDoubleValue += (double)40 / errorsDictionary.Count;
+            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue), 
+                $"Сохранение {rep.FormNum_DB}_{rep.StartPeriod_DB}_{rep.EndPeriod_DB}");
+        }
+
+        await AutoFitColumns();
+
+        return countCheckedRep;
+    }
+
+    #region AutoFitColumns
+
+    /// <summary>
+    /// Для текущей страницы Excel пакета подбирает ширину колонок и замораживает первую строчку.
+    /// </summary>
+    private Task AutoFitColumns()
+    {
+        for (var col = 1; col <= Worksheet.Dimension.End.Column; col++)
+        {
+            if (OperatingSystem.IsWindows()) Worksheet.Column(col).AutoFit();
+        }
+        Worksheet.View.FreezePanes(2, 1);
+        return Task.CompletedTask;
+    }
+
+    #endregion
+
+    #endregion
+
+    #region FillExcelHeaders
+
+    private Task FillExcelHeaders(ExcelPackage excelPackage)
+    {
+        Worksheet = excelPackage.Workbook.Worksheets.Add("Проверка всех форм");
+
+        #region FillHeaders
+
+        Worksheet.Cells[1, 1].Value = "№ п/п";
+        Worksheet.Cells[1, 2].Value = "Рег.№";
+        Worksheet.Cells[1, 3].Value = "№ формы";
+        Worksheet.Cells[1, 4].Value = "Дата начала периода";
+        Worksheet.Cells[1, 5].Value = "Дата конца периода";
+        Worksheet.Cells[1, 6].Value = "№ строки";
+        Worksheet.Cells[1, 7].Value = "Графа";
+        Worksheet.Cells[1, 8].Value = "Значение";
+        Worksheet.Cells[1, 9].Value = "Сообщение";
+
+        #endregion
+
+        return Task.CompletedTask;
     }
 
     #endregion
@@ -223,8 +321,8 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Организацию вместе с коллекцией отчётов со строчками форм.</returns>
-    private static async Task<Reports> GetReportsWithRows(string tmpDbPath, Reports repsWithOutRows, AnyTaskProgressBarVM progressBarVM, 
-        CancellationTokenSource cts)
+    private static async Task<Reports> GetReportsWithRows(string tmpDbPath, Reports repsWithOutRows, 
+        AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
         await using var db = new DBModel(tmpDbPath);
         double progressBarDoubleValue = progressBarVM.ValueBar;
@@ -236,149 +334,12 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
         {
             var repWithRows = await GetReportWithRows(rep.Id, db, cts);
             repsWithRows.Report_Collection.Add(repWithRows);
-            progressBarDoubleValue += (double)50 / repsWithOutRows.Report_Collection.Count;
+            progressBarDoubleValue += (double)30 / repsWithOutRows.Report_Collection.Count;
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
                 $"Загрузка отчёта {rep.FormNum_DB}_{rep.StartPeriod_DB}_{rep.EndPeriod_DB}",
                 $"Загрузка отчётов {repsWithOutRows.Master_DB.RegNoRep.Value}_{repsWithOutRows.Master_DB.OkpoRep.Value}");
         }
         return repsWithRows;
-    }
-
-    #endregion
-
-    #region InitializeAndFillExcelPackage
-
-    /// <summary>
-    /// Инициализация и заполнение Excel пакета.
-    /// </summary>
-    /// <param name="checkFormVM">ViewModel проверки отчёта.</param>
-    /// <param name="fullPath">Полный путь до .xlsx файла.</param>
-    /// <param name="formNum">Номер формы отчётности.</param>
-    /// <param name="cts">Токен.</param>
-    /// <returns></returns>
-    private async Task FillExcelPackage(CheckFormVM checkFormVM, string fullPath, string formNum, CancellationTokenSource cts)
-    {
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        ExcelPackage excelPackage = new(new FileInfo(fullPath));
-        excelPackage.Workbook.Properties.Author = "RAO_APP";
-        excelPackage.Workbook.Properties.Title = "Report";
-        excelPackage.Workbook.Properties.Created = DateTime.Now;
-        Worksheet = excelPackage.Workbook.Worksheets.Add($"Проверка формы {formNum}");
-
-        #region FillHeaders
-
-        Worksheet.Cells[1, 1].Value = "№ п/п";
-        Worksheet.Cells[1, 2].Value = "Стр.";
-        Worksheet.Cells[1, 3].Value = "Графа";
-        Worksheet.Cells[1, 4].Value = "Значение";
-        Worksheet.Cells[1, 5].Value = "Сообщение";
-
-        #endregion
-
-        #region FillData
-
-        var currentRow = 2;
-        foreach (var error in checkFormVM.CheckError)
-        {
-            Worksheet.Cells[currentRow, 1].Value = error.Index;
-            Worksheet.Cells[currentRow, 2].Value = error.Row;
-            Worksheet.Cells[currentRow, 3].Value = error.Column;
-            Worksheet.Cells[currentRow, 4].Value = error.Value;
-            Worksheet.Cells[currentRow, 5].Value = error.Message;
-            currentRow++;
-        }
-
-        #endregion
-
-        for (var col = 1; col <= Worksheet.Dimension.End.Column; col++)
-        {
-            if (OperatingSystem.IsWindows()) Worksheet.Column(col).AutoFit();
-        }
-        Worksheet.View.FreezePanes(2, 1);
-        await excelPackage.SaveAsync(cts.Token);
-    }
-
-    #endregion
-
-    #region SaveErrorsReports
-
-    /// <summary>
-    /// Сохраняет в отдельный .xlsx файл каждый список ошибок из словаря.
-    /// </summary>
-    /// <param name="errorsDictionary">Словарь из отчётов и списков ошибок.</param>
-    /// <param name="folderPath">Путь к папке сохранения.</param>
-    /// <param name="progressBarVM">ViewModel прогрессбара.</param>
-    /// <param name="cts">Токен.</param>
-    /// <returns>Количество успешно проверенных отчётов.</returns>
-    private async Task<int> SaveErrorsList(Dictionary<Report, List<CheckError>?> errorsDictionary, string folderPath, AnyTaskProgressBarVM progressBarVM, 
-        CancellationTokenSource cts)
-    {
-        double progressBarDoubleValue = progressBarVM.ValueBar;
-        var count = 0;
-        foreach (var (rep, errorList) in errorsDictionary)
-        {
-            if (errorList is null) continue;
-            progressBarVM.SetProgressBar($"Сохранение {rep.FormNum_DB}_{rep.StartPeriod_DB}-{rep.EndPeriod_DB}");
-
-            var checkFormVM = new CheckFormVM(new ChangeOrCreateVM(rep.FormNum_DB, rep), errorList);
-            var fileName = checkFormVM.TitleName;
-
-            var index = 0;
-            var fullPath = Path.Combine(folderPath, fileName + ".xlsx");
-            while (File.Exists(fullPath))
-            {
-                fullPath = Path.Combine(folderPath, fileName + $"_{++index}.xlsx");
-            }
-
-            await FillExcelPackage(checkFormVM, fullPath, rep.FormNum_DB, cts);
-
-            progressBarDoubleValue += (double)15 / errorsDictionary.Count;
-
-            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-                $"Сохранение {rep.FormNum_DB} {rep.StartPeriod_DB}-{rep.EndPeriod_DB}");
-            count++;
-        }
-        return count;
-    }
-
-    #endregion
-
-    #region SelectFolder
-
-    /// <summary>
-    /// Выбор папки для сохранения отчётов.
-    /// </summary>
-    /// <param name="progressBar">Окно прогрессбара.</param>
-    /// <param name="cts">Токен.</param>
-    /// <returns>Полный путь к папке сохранения отчётов о найденных ошибках.</returns>
-    private static async Task<string> SelectFolder(AnyTaskProgressBar? progressBar, CancellationTokenSource cts)
-    {
-        #region MessageGetSaveReportFolderPath
-
-        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-            {
-                ButtonDefinitions =
-                [
-                    new ButtonDefinition { Name = "Выбрать папку для сохранения отчётов", IsDefault = true },
-                            new ButtonDefinition { Name = "Отмена", IsCancel = true }
-                ],
-                ContentTitle = "Проверка форм",
-                ContentHeader = "Уведомление",
-                ContentMessage = $"Для данной организации будет выполнена проверка всех имеющихся форм отчётности." +
-                                 $"{Environment.NewLine}Отчёты о найденных ошибках будут сохранены в выбранной папке в формате .xlsx.",
-                MinWidth = 450,
-                MinHeight = 150,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(progressBar ?? Desktop.MainWindow));
-
-        #endregion
-
-        if (res is not "Выбрать папку для сохранения отчётов") await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-        var folderPath = await new OpenFolderDialog().ShowAsync(progressBar ?? Desktop.MainWindow);
-        if (folderPath is null) await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-        return folderPath!;
     }
 
     #endregion

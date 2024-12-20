@@ -33,22 +33,22 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
-        progressBarVM.SetProgressBar(5, "Создание временной БД", "Выгрузка отчёта для печати", ExportType);
-        var tmpDbPath = await CreateTempDataBase(progressBar, cts);
+        progressBarVM.SetProgressBar(5, "Определение имени файла");
+        var fileName = await GetFileName(repParam, progressBar, cts);
 
-        progressBarVM.SetProgressBar(15, "Загрузка отчёта");
-        var rep = await GetReportWithRows(repId, tmpDbPath, cts);
-
-        progressBarVM.SetProgressBar(30, "Определение имени файла");
-        var fileName = await GetFileName(rep, progressBar, cts);
-
-        progressBarVM.SetProgressBar(35, "Запрос пути сохранения");
+        progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
         var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
 
-        progressBarVM.SetProgressBar(40, "Инициализация Excel пакета");
+        progressBarVM.SetProgressBar(15, "Создание временной БД", "Выгрузка отчёта для печати", ExportType);
+        var tmpDbPath = await CreateTempDataBase(progressBar, cts);
+
+        progressBarVM.SetProgressBar(30, "Загрузка отчёта");
+        var rep = await GetReportWithRows(repId, tmpDbPath, cts);
+
+        progressBarVM.SetProgressBar(70, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath, rep);
 
-        progressBarVM.SetProgressBar(50, "Выгрузка данных");
+        progressBarVM.SetProgressBar(80, "Выгрузка данных");
         await FillExcel(excelPackage, rep);
 
         progressBarVM.SetProgressBar(90, "Сохранение");

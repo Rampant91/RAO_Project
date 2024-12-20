@@ -23,6 +23,8 @@ using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.Properties;
 using MessageBox.Avalonia.Models;
+using Client_App.Resources;
+using System.Collections.Generic;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -579,7 +581,15 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
             await item.SortAsync();
         }
 
-        await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync().ConfigureAwait(false);
+        var comparator = new CustomReportsComparer();
+        var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+        ReportsStorage.LocalReports.Reports_Collection.Clear();
+        ReportsStorage.LocalReports.Reports_Collection
+            .AddRange(tmpReportsList
+                .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
+                .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
+
+        //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
     }
 
     #endregion

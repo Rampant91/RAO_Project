@@ -21,7 +21,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 /// <summary>
 /// Excel -> Паспорта -> Отчеты без паспортов.
 /// </summary>
-public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
+public partial class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -30,12 +30,12 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
-        progressBarVM.SetProgressBar(2, "Проверка списка файлов", "Выгрузка списка отчётов", ExportType);
-        var files = await GetFilesFromPasDirectory(progressBar, cts);
-
-        progressBarVM.SetProgressBar(7, "Запрос пути сохранения");
+        progressBarVM.SetProgressBar(2, "Запрос пути сохранения", "Выгрузка списка отчётов", ExportType);
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
         var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+
+        progressBarVM.SetProgressBar(6, "Проверка списка файлов");
+        var files = await GetFilesFromPasDirectory(progressBar, cts);
 
         progressBarVM.SetProgressBar(10, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
@@ -168,7 +168,6 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
     /// Экспорт отсортированного списка форм в .xlsx.
     /// </summary>
     /// <param name="matchedFormsList">Неотсортированный список форм.</param>
-    /// <returns></returns>
     private Task ExportToExcel(List<Form11ExtendedDTO> matchedFormsList)
     {
         var currentRow = 2;
@@ -277,6 +276,8 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
     }
 
+    #region ReplaceRestrictedSymbols
+
     /// <summary>
     /// Заменяет в строчке запрещённые символы на "_".
     /// </summary>
@@ -284,8 +285,13 @@ public class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
     /// <returns>Строчка, в которой заменены запрещённые символы.</returns>
     private static string ReplaceRestrictedSymbols(string str)
     {
-        return new Regex("[\\\\/:*?\"<>|]").Replace(str, "_");
+        return RestrictedSymbolsRegex().Replace(str, "_");
     }
+
+    [GeneratedRegex("[\\\\/:*?\"<>|]")]
+    private static partial Regex RestrictedSymbolsRegex();
+
+    #endregion
 
     #endregion
 

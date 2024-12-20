@@ -18,6 +18,7 @@ using Models.DBRealization;
 using Models.Forms;
 using Client_App.Resources;
 using Avalonia.Threading;
+using Client_App.Controls.DataGrid.DataGrids;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -1437,6 +1438,41 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 }
             }
         }
+    }
+
+    #endregion
+
+    #region SetDataGridPage
+
+    /// <summary>
+    /// Изменяет номер страницы таблицы организаций, чтобы отображалась добавленная организация (только для одной добавленной организации).
+    /// </summary>
+    /// <param name="impReportsList">Список организаций, добавленных в ходе импорта.</param>
+    private protected static Task SetDataGridPage(List<Reports> impReportsList)
+    {
+        try
+        {
+            if (impReportsList.Count > 0
+                && impReportsList.All(x => x.Master_DB.RegNoRep.Value == impReportsList.First().Master_DB.RegNoRep.Value
+                                           && x.Master_DB.OkpoRep.Value == impReportsList.First().Master_DB.OkpoRep.Value))
+            {
+                var impReports = impReportsList.First();
+                var repsDataGrid = (Desktop.MainWindow.FindControl<Panel>("Forms_p1_0").Children[0] as DataGridReports)!;
+                var repsIndex = ReportsStorage.LocalReports.Reports_Collection
+                    .ToList()
+                    .FindIndex(x => x.Master_DB.RegNoRep.Value == impReports.Master_DB.RegNoRep.Value
+                                    && x.Master_DB.OkpoRep.Value == impReports.Master_DB.OkpoRep.Value);
+                if (repsIndex != -1)
+                {
+                    repsDataGrid.NowPage = ((repsIndex + 1) / 5 + 1).ToString();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            //ignore
+        }
+        return Task.CompletedTask;
     }
 
     #endregion
