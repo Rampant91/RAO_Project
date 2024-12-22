@@ -54,7 +54,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
         var filteredRepsDtoList = await CheckRepsInventoryDate(tmpDbPath, repsDtoList, progressBarVM, cts);
 
         progressBarVM.SetProgressBar(40, "Проверка наличия СНК");
-        var repsWithUnitsDtoList = await CheckSnk(db, filteredRepsDtoList, progressBarVM, cts, tmpDbPath);
+        var repsWithUnitsDtoList = await CheckSnk(db, filteredRepsDtoList, progressBarVM, cts);
 
         progressBarVM.SetProgressBar(90, "Заполнение строчек в .xlsx");
         await FillExcel(repsWithUnitsDtoList);
@@ -151,7 +151,6 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
     private static async Task<List<ShortReportsDto>> CheckRepsInventoryDate(string tmpDbPath, List<ShortReportsDto> repsDtoList,
         AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
-        List<ShortReportsDto> repsWithExpiredInventory2 = [];
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentRepNum = 0;
 
@@ -221,7 +220,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
     #region CheckSnk
 
     private static async Task<List<ShortReportsDto>> CheckSnk(DBModel db, List<ShortReportsDto> dtoList,
-        AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts, string tmpDbPath)
+        AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
         var currentDate = DateOnly.FromDateTime(DateTime.Now);
 
@@ -241,7 +240,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
 
             var uniqueAccountingUnitDtoList = await GetUniqueAccountingUnitDtoList(unionFormsDtoList);
 
-            dto.CountUnits = await GetUnitInStockCount(inventoryFormsDtoList, plusMinusFormsDtoList, uniqueAccountingUnitDtoList);
+            dto.CountUnits = await GetUnitInStockCount(inventoryFormsDtoList, plusMinusFormsDtoList, uniqueAccountingUnitDtoList, cts);
 
             progressBarDoubleValue += (double)50 / dtoList.Count;
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
@@ -270,11 +269,12 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
 
         #region Headers
 
-        Worksheet.Cells[1, 1].Value = "ОКПО";
-        Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-        Worksheet.Cells[1, 3].Value = "Рег.№";
-        Worksheet.Cells[1, 4].Value = "Количество учётных единиц в наличии";
-        Worksheet.Cells[1, 5].Value = "Дата последней инвентаризации";
+        Worksheet.Cells[1, 1].Value = "№ п/п";
+        Worksheet.Cells[1, 2].Value = "ОКПО";
+        Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
+        Worksheet.Cells[1, 4].Value = "Рег.№";
+        Worksheet.Cells[1, 5].Value = "Количество учётных единиц в наличии";
+        Worksheet.Cells[1, 6].Value = "Дата последней инвентаризации";
 
         #endregion
 
@@ -309,18 +309,20 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
     private Task FillExcel(List<ShortReportsDto> filteredRepsDtoList)
     {
         var currentRow = 2;
-
+        var currentReps = 1;
         foreach (var repsDto in filteredRepsDtoList)
         {
-            Worksheet.Cells[currentRow, 1].Value = ConvertToExcelString(repsDto.Okpo);
-            Worksheet.Cells[currentRow, 2].Value = ConvertToExcelString(repsDto.ShortName);
-            Worksheet.Cells[currentRow, 3].Value = ConvertToExcelString(repsDto.RegNum);
-            Worksheet.Cells[currentRow, 4].Value = repsDto.CountUnits;
-            Worksheet.Cells[currentRow, 5].Value = repsDto.LastInventoryDate == DateOnly.MinValue
+            Worksheet.Cells[currentRow, 1].Value = currentReps;
+            Worksheet.Cells[currentRow, 2].Value = ConvertToExcelString(repsDto.Okpo);
+            Worksheet.Cells[currentRow, 3].Value = ConvertToExcelString(repsDto.ShortName);
+            Worksheet.Cells[currentRow, 4].Value = ConvertToExcelString(repsDto.RegNum);
+            Worksheet.Cells[currentRow, 5].Value = repsDto.CountUnits;
+            Worksheet.Cells[currentRow, 6].Value = repsDto.LastInventoryDate == DateOnly.MinValue
                 ? "-"
-                : ConvertToExcelDate(repsDto.LastInventoryDate.ToShortDateString(), Worksheet, currentRow, 5);
+                : ConvertToExcelDate(repsDto.LastInventoryDate.ToShortDateString(), Worksheet, currentRow, 6);
 
             currentRow++;
+            currentReps++;
         }
 
         return Task.CompletedTask;
@@ -361,10 +363,8 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
     #region GetUnitInStockCount
 
     private static async Task<int> GetUnitInStockCount(List<ShortForm11DTO> inventoryFormsDtoList,
-        List<ShortForm11DTO> plusMinusFormsDtoList, List<UniqueAccountingUnitDTO> uniqueAccountingUnitDtoList)
+        List<ShortForm11DTO> plusMinusFormsDtoList, List<UniqueAccountingUnitDTO> uniqueAccountingUnitDtoList, CancellationTokenSource cts)
     {
-        List<ShortForm11DTO> unitInStockList = [];
-
         var firstInventoryDate = inventoryFormsDtoList.Count == 0
             ? DateOnly.MinValue
             : inventoryFormsDtoList
@@ -372,13 +372,29 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
                 .Select(x => x.OpDate)
                 .First();
 
-        unitInStockList.AddRange(inventoryFormsDtoList
+        var groupList = inventoryFormsDtoList
             .Where(x => x.OpDate == firstInventoryDate)
-            .DistinctBy(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type));
+            .GroupBy(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type)
+            .ToList();
 
-        foreach (var unit in uniqueAccountingUnitDtoList)   //Использование Parallel.ForEach() тут выигрыша по времени не даёт.
+        List<ShortForm11DTO> unitInStockList = [];
+        foreach (var group in groupList)
         {
-            var inStock = unitInStockList
+            var quantity = group.Sum(dto => dto.Quantity);
+            var summedDto = group.First();
+            summedDto.Quantity = quantity;
+            unitInStockList.Add(summedDto);
+        }
+
+        var unitInStockBag = new ConcurrentBag<ShortForm11DTO>(unitInStockList);
+        ParallelOptions parallelOptions = new()
+        {
+            CancellationToken = cts.Token,
+            MaxDegreeOfParallelism = Environment.ProcessorCount
+        };
+        await Parallel.ForEachAsync(uniqueAccountingUnitDtoList, parallelOptions, (unit, token) =>
+        {
+            var inStock = unitInStockBag
                 .Any(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
                           == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type);
 
@@ -422,7 +438,6 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
                     }
                 }
             }
-
             foreach (var operation in operationsWithCurrentUnitWithoutDuplicates)
             {
                 inStock = inStock switch
@@ -432,25 +447,25 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
                     _ => inStock
                 };
             }
-
             var lastOperationWithUnit = operationsWithCurrentUnit
                 .Union(inventoryWithCurrentUnit
                     .Where(x => x.OpDate >= firstInventoryDate))
                 .OrderByDescending(x => x.OpDate)
                 .FirstOrDefault();
 
-            if (lastOperationWithUnit == null) continue;
+            if (lastOperationWithUnit == null) return default;
 
-            var currentUnit = unitInStockList
+            var currentUnit = unitInStockBag
                 .FirstOrDefault(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
                                      == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type);
-            if (currentUnit != null) unitInStockList.Remove(currentUnit);
+            if (currentUnit != null) unitInStockBag.TryTake(out currentUnit);
             if (inStock)
             {
-                unitInStockList.Add(lastOperationWithUnit);
+                unitInStockBag.Add(lastOperationWithUnit);
             }
-        }
-        return unitInStockList.Count;
+            return default;
+        });
+        return unitInStockBag.Count;
     }
 
     #endregion

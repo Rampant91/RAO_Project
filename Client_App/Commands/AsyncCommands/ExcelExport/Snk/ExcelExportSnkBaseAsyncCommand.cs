@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using System.Reflection.Emit;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
@@ -26,7 +27,32 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 
     #region DTO
 
-    private protected class ShortForm11DTO(int id, ShortReportDTO repDto, string facNum, string opCode, DateOnly opDate, string packNumber, string pasNum, int? quantity, string radionuclids, string type)
+    private protected class SnkForm11DTO(string facNum, string pasNum, int quantity, string radionuclids, string type, string activity,
+        string creatorOKPO, string creationDate, short? category, float? signedServicePeriod)
+    {
+        public readonly string PasNum = pasNum;
+
+        public readonly string Type = type;
+
+        public readonly string Radionuclids = radionuclids;
+
+        public readonly string FacNum = facNum;
+
+        public int Quantity = quantity;
+
+        public readonly string Activity = activity;
+
+        public readonly string CreatorOKPO = creatorOKPO;
+
+        public readonly string CreationDate = creationDate;
+
+        public readonly short? Category = category;
+
+        public readonly float? SignedServicePeriod = signedServicePeriod;
+    }
+
+    private protected class ShortForm11DTO(int id, ShortReportDTO repDto, string facNum, string opCode, DateOnly opDate, string packNumber, 
+        string pasNum, int quantity, string radionuclids, string type)
     {
         public readonly int Id = id;
 
@@ -42,7 +68,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 
         public readonly string PasNum = pasNum;
 
-        public int Quantity = quantity ?? 0;
+        public int Quantity = quantity;
 
         public readonly string Radionuclids = radionuclids;
 
@@ -215,19 +241,59 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                     DateOnly.Parse(x.OpDate),
                     AutoReplaceSimilarChars(x.PackNumber),
                     AutoReplaceSimilarChars(x.PasNum),
-                    x.Quantity,
+                    x.Quantity ?? 0,
                     AutoReplaceSimilarChars(x.Radionuclids),
                     AutoReplaceSimilarChars(x.Type)))
                 .ToList();
 
             inventoryFormsDtoList.AddRange(currentInventoryFormsDtoList);
         }
+        inventoryFormsDtoList = await GetSummedInventoryDtoList(inventoryFormsDtoList);
+
         return inventoryFormsDtoList
             .OrderBy(x => x.OpDate)
             .ThenBy(x => x.RepDto.StartPeriod)
             .ThenBy(x => x.RepDto.EndPeriod)
             .ToList();
     }
+
+    #region GetSummedInventoryDtoList
+
+    /// <summary>
+    /// Суммирует операции инвентаризации для первой даты по количеству и возвращает список DTO.
+    /// </summary>
+    /// <param name="inventoryFormsDtoList">Список DTO операций инвентаризации.</param>
+    /// <returns>Список DTO операций инвентаризации, просуммированный по количеству для первой даты.</returns>
+    private static Task<List<ShortForm11DTO>> GetSummedInventoryDtoList(List<ShortForm11DTO> inventoryFormsDtoList)
+    {
+        var firstInventoryDate = inventoryFormsDtoList.Count == 0
+            ? DateOnly.MinValue
+            : inventoryFormsDtoList
+                .OrderBy(x => x.OpDate)
+                .Select(x => x.OpDate)
+                .First();
+
+        var groupList = inventoryFormsDtoList
+            .Where(x => x.OpDate == firstInventoryDate)
+            .GroupBy(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type)
+            .ToList();
+
+        foreach (var group in groupList)
+        {
+            if (!group.Any()) continue;
+            var summedDto = group.First();
+            summedDto.Quantity = group.Sum(x => x.Quantity);
+
+            foreach (var invDto in group)
+            {
+                inventoryFormsDtoList.Remove(invDto);
+            }
+            inventoryFormsDtoList.Add(summedDto);
+        }
+        return Task.FromResult(inventoryFormsDtoList);
+    }
+
+    #endregion
 
     #endregion
 
@@ -335,7 +401,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                 DateOnly.Parse(x.OpDate),
                 AutoReplaceSimilarChars(x.PackNumber),
                 AutoReplaceSimilarChars(x.PasNum),
-                x.Quantity,
+                x.Quantity ?? 0,
                 AutoReplaceSimilarChars(x.Radionuclids),
                 AutoReplaceSimilarChars(x.Type)))
             .OrderBy(x => x.OpDate)

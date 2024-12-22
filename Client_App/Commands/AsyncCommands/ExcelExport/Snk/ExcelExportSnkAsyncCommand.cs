@@ -14,7 +14,6 @@ using Models.DBRealization;
 using System.Reflection;
 using System.Collections.Generic;
 using OfficeOpenXml;
-using Models.Forms.Form1;
 using Microsoft.EntityFrameworkCore;
 using static Client_App.Resources.StaticStringMethods;
 using Client_App.ViewModels.ProgressBar;
@@ -167,6 +166,27 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
 
             date = DateOnly.Parse(DateTime.Now.ToShortDateString());
         }
+        else if (date < DateOnly.Parse("01.01.2022"))
+        {
+            #region MessageExcelExportFail
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentMessage = "Выгрузка не выполнена, поскольку введена дата ранее вступления в силу приказа.",
+                    MinWidth = 400,
+                    MinHeight = 115,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
         return date;
 
     }
@@ -182,7 +202,7 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
     /// <param name="endSnkDate">Дата, на которую нужно сформировать СНК.</param>
     /// <param name="progressBar">Окно прогрессбара.</param>
     /// <param name="cts">Токен.</param>
-    private static async Task CheckPresenceInSnk(List<Form11> fullFormsSnkList, DateOnly endSnkDate,
+    private static async Task CheckPresenceInSnk(List<SnkForm11DTO> fullFormsSnkList, DateOnly endSnkDate,
         AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
         if (fullFormsSnkList.Count == 0)
@@ -222,7 +242,7 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
         var mainWindow = Desktop.MainWindow as MainWindow;
 
         //Аннотации врут, не убирай
-        if (mainWindow!.SelectedReports is null || mainWindow!.SelectedReports.First() is not Reports selectedReports)  
+        if (mainWindow!.SelectedReports is null || mainWindow.SelectedReports.First() is not Reports selectedReports)  
         {
             #region MessageExcelExportFail
 
@@ -281,35 +301,17 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
 
         #region Headers
 
-        Worksheet.Cells[1, 1].Value = "ОКПО";
-        Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-        Worksheet.Cells[1, 3].Value = "Рег.№";
-        Worksheet.Cells[1, 4].Value = "Номер корректировки";
-        Worksheet.Cells[1, 5].Value = "Дата начала периода";
-        Worksheet.Cells[1, 6].Value = "Дата конца периода";
-        Worksheet.Cells[1, 7].Value = "№ п/п";
-        Worksheet.Cells[1, 8].Value = "Код";
-        Worksheet.Cells[1, 9].Value = "Дата операции";
-        Worksheet.Cells[1, 10].Value = "Номер паспорта (сертификата)";
-        Worksheet.Cells[1, 11].Value = "тип";
-        Worksheet.Cells[1, 12].Value = "радионуклиды";
-        Worksheet.Cells[1, 13].Value = "номер";
-        Worksheet.Cells[1, 14].Value = "количество, шт.";
-        Worksheet.Cells[1, 15].Value = "суммарная активность, Бк";
-        Worksheet.Cells[1, 16].Value = "код ОКПО изготовителя";
-        Worksheet.Cells[1, 17].Value = "дата выпуска";
-        Worksheet.Cells[1, 18].Value = "категория";
-        Worksheet.Cells[1, 19].Value = "НСС, мес";
-        Worksheet.Cells[1, 20].Value = "код формы собственности";
-        Worksheet.Cells[1, 21].Value = "код ОКПО правообладателя";
-        Worksheet.Cells[1, 22].Value = "вид";
-        Worksheet.Cells[1, 23].Value = "номер2";
-        Worksheet.Cells[1, 24].Value = "дата3";
-        Worksheet.Cells[1, 25].Value = "поставщика или получателя";
-        Worksheet.Cells[1, 26].Value = "перевозчика";
-        Worksheet.Cells[1, 27].Value = "наименование";
-        Worksheet.Cells[1, 28].Value = "тип4";
-        Worksheet.Cells[1, 29].Value = "номер5";
+        Worksheet.Cells[1, 1].Value = "№ п/п";
+        Worksheet.Cells[1, 2].Value = "Номер паспорта (сертификата)";
+        Worksheet.Cells[1, 3].Value = "тип";
+        Worksheet.Cells[1, 4].Value = "радионуклиды";
+        Worksheet.Cells[1, 5].Value = "номер";
+        Worksheet.Cells[1, 6].Value = "количество, шт.";
+        Worksheet.Cells[1, 7].Value = "суммарная активность, Бк";
+        Worksheet.Cells[1, 8].Value = "код ОКПО изготовителя";
+        Worksheet.Cells[1, 9].Value = "дата выпуска";
+        Worksheet.Cells[1, 10].Value = "категория";
+        Worksheet.Cells[1, 11].Value = "НСС, мес";
 
         #endregion
 
@@ -341,42 +343,24 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
     /// Заполняет заголовки Excel пакета.
     /// </summary>
     /// <param name="fullFormsSnkList">Список полных форм СНК.</param>
-    private Task FillExcel(List<Form11> fullFormsSnkList)
+    private Task FillExcel(List<SnkForm11DTO> fullFormsSnkList)
     {
         var currentRow = 2;
+        var currentForm = 1;
         foreach (var form in fullFormsSnkList)
         {
-            if (form.Report?.Reports == null) continue;
-
-            Worksheet.Cells[currentRow, 1].Value = form.Report.Reports.Master_DB.OkpoRep.Value;
-            Worksheet.Cells[currentRow, 2].Value = form.Report.Reports.Master_DB.ShortJurLicoRep.Value;
-            Worksheet.Cells[currentRow, 3].Value = form.Report.Reports.Master_DB.RegNoRep.Value;
-            Worksheet.Cells[currentRow, 4].Value = form.Report.CorrectionNumber_DB;
-            Worksheet.Cells[currentRow, 5].Value = ConvertToExcelDate(form.Report.StartPeriod_DB, Worksheet, currentRow, 5);
-            Worksheet.Cells[currentRow, 6].Value = ConvertToExcelDate(form.Report.EndPeriod_DB, Worksheet, currentRow, 6);
-            Worksheet.Cells[currentRow, 7].Value = form.NumberInOrder_DB;
-            Worksheet.Cells[currentRow, 8].Value = ConvertToExcelString(form.OperationCode_DB);
-            Worksheet.Cells[currentRow, 9].Value = ConvertToExcelDate(form.OperationDate_DB, Worksheet, currentRow, 9);
-            Worksheet.Cells[currentRow, 10].Value = ConvertToExcelString(form.PassportNumber_DB);
-            Worksheet.Cells[currentRow, 11].Value = ConvertToExcelString(form.Type_DB);
-            Worksheet.Cells[currentRow, 12].Value = ConvertToExcelString(form.Radionuclids_DB);
-            Worksheet.Cells[currentRow, 13].Value = ConvertToExcelString(form.FactoryNumber_DB);
-            Worksheet.Cells[currentRow, 14].Value = form.Quantity_DB is null ? "-" : form.Quantity_DB;
-            Worksheet.Cells[currentRow, 15].Value = ConvertToExcelDouble(form.Activity_DB);
-            Worksheet.Cells[currentRow, 16].Value = ConvertToExcelString(form.CreatorOKPO_DB);
-            Worksheet.Cells[currentRow, 17].Value = ConvertToExcelDate(form.CreationDate_DB, Worksheet, currentRow, 17);
-            Worksheet.Cells[currentRow, 18].Value = form.Category_DB is null ? "-" : form.Category_DB;
-            Worksheet.Cells[currentRow, 19].Value = form.SignedServicePeriod_DB is null ? "-" : form.SignedServicePeriod_DB;
-            Worksheet.Cells[currentRow, 20].Value = form.PropertyCode_DB is null ? "-" : form.PropertyCode_DB;
-            Worksheet.Cells[currentRow, 21].Value = ConvertToExcelString(form.Owner_DB);
-            Worksheet.Cells[currentRow, 22].Value = form.DocumentVid_DB is null ? "-" : form.DocumentVid_DB;
-            Worksheet.Cells[currentRow, 23].Value = ConvertToExcelString(form.DocumentNumber_DB);
-            Worksheet.Cells[currentRow, 24].Value = ConvertToExcelDate(form.DocumentDate_DB, Worksheet, currentRow, 24);
-            Worksheet.Cells[currentRow, 25].Value = ConvertToExcelString(form.ProviderOrRecieverOKPO_DB);
-            Worksheet.Cells[currentRow, 26].Value = ConvertToExcelString(form.TransporterOKPO_DB);
-            Worksheet.Cells[currentRow, 27].Value = ConvertToExcelString(form.PackName_DB);
-            Worksheet.Cells[currentRow, 28].Value = ConvertToExcelString(form.PackType_DB);
-            Worksheet.Cells[currentRow, 29].Value = ConvertToExcelString(form.PackNumber_DB);
+            Worksheet.Cells[currentRow, 1].Value = currentForm;
+            Worksheet.Cells[currentRow, 2].Value = ConvertToExcelString(form.PasNum);
+            Worksheet.Cells[currentRow, 3].Value = ConvertToExcelString(form.Type);
+            Worksheet.Cells[currentRow, 4].Value = ConvertToExcelString(form.Radionuclids);
+            Worksheet.Cells[currentRow, 5].Value = ConvertToExcelString(form.FacNum);
+            Worksheet.Cells[currentRow, 6].Value = form.Quantity is 0 ? "-" : form.Quantity;
+            Worksheet.Cells[currentRow, 7].Value = ConvertToExcelDouble(form.Activity);
+            Worksheet.Cells[currentRow, 8].Value = ConvertToExcelString(form.CreatorOKPO);
+            Worksheet.Cells[currentRow, 9].Value = ConvertToExcelDate(form.CreationDate, Worksheet, currentRow, 8);
+            Worksheet.Cells[currentRow, 10].Value = form.Category is 0 ? "-" : form.Category;
+            Worksheet.Cells[currentRow, 11].Value = form.SignedServicePeriod is 0 ? "-" : form.SignedServicePeriod;
+            currentForm++;
             currentRow++;
         }
         return Task.CompletedTask;
@@ -394,11 +378,10 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Список форм с данными отчётов и организации.</returns>
-    private static async Task<List<Form11>> GetFullFormsSnkList(DBModel db, List<ShortForm11DTO> unitInStockDtoList,
+    private static async Task<List<SnkForm11DTO>> GetFullFormsSnkList(DBModel db, List<ShortForm11DTO> unitInStockDtoList,
         AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
-        List<Form11> formsList = [];
-
+        List<SnkForm11DTO> formsList = [];
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentUnitNum = 1;
         foreach (var unit in unitInStockDtoList)
@@ -407,11 +390,20 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Include(x => x.Report)
-                .ThenInclude(x => x.Reports)
-                .ThenInclude(x => x.Master_DB)
-                .ThenInclude(x => x.Rows10)
-                .FirstAsync(x => x.Id == unit.Id, cts.Token);
+                .Where(x => x.Id == unit.Id && x.Report != null && x.Report.Reports != null)
+                .Select(x => new SnkForm11DTO(
+                    x.FactoryNumber_DB, 
+                    x.PassportNumber_DB,
+                    unit.Quantity,
+                    x.Radionuclids_DB, 
+                    x.Type_DB, 
+                    x.Activity_DB, 
+                    x.CreatorOKPO_DB, 
+                    x.CreationDate_DB, 
+                    x.Category_DB, 
+                    x.SignedServicePeriod_DB))
+                .FirstAsync(cts.Token);
+
             formsList.Add(form);
 
             progressBarDoubleValue += (double)30 / unitInStockDtoList.Count;
@@ -441,8 +433,6 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
     List<ShortForm11DTO> plusMinusFormsDtoList, List<UniqueAccountingUnitDTO> uniqueAccountingUnitDtoList,
     AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
-        List<ShortForm11DTO> unitInStockList = [];
-
         var firstInventoryDate = inventoryFormsDtoList.Count == 0
             ? DateOnly.MinValue
             : inventoryFormsDtoList
@@ -450,9 +440,9 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
                 .Select(x => x.OpDate)
                 .First();
 
-        unitInStockList.AddRange(inventoryFormsDtoList
+        var unitInStockList = inventoryFormsDtoList
             .Where(x => x.OpDate == firstInventoryDate)
-            .DistinctBy(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type));
+            .ToList(); ;
 
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentUnitNum = 1;
@@ -471,17 +461,17 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
                 ?.Quantity ?? 0;
 
             var inventoryWithCurrentUnit = inventoryFormsDtoList
-                .Where(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
-                            == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type
-                            && x.OpDate >= firstInventoryDate)
+                .Where(x => x.OpDate >= firstInventoryDate 
+                            && x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
+                            == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type)
                 .DistinctBy(x => x.OpDate)
                 .OrderBy(x => x.OpDate)
                 .ToList();
 
             var operationsWithCurrentUnit = plusMinusFormsDtoList
-                .Where(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
-                            == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type
-                            && x.OpDate >= firstInventoryDate)
+                .Where(x => x.OpDate >= firstInventoryDate 
+                            && x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
+                            == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type)
                 .OrderBy(x => x.OpDate)
                 .ToList();
 
@@ -520,7 +510,6 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
                     }
                 }
             }
-
             foreach (var operation in operationsWithCurrentUnitWithoutDuplicates)
             {
                 if (PlusOperation.Contains(operation.OpCode))
@@ -533,7 +522,6 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
                     quantity = Math.Max(0, quantity);
                 }
             }
-
             var lastOperationWithUnit = operationsWithCurrentUnit
                 .Union(inventoryWithCurrentUnit
                     .Where(x => x.OpDate >= firstInventoryDate))
@@ -548,6 +536,7 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
             if (currentUnit != null) unitInStockBag.TryTake(out currentUnit);
             if (quantity > 0)
             {
+                lastOperationWithUnit.Quantity = quantity;
                 unitInStockBag.Add(lastOperationWithUnit);
             }
             progressBarDoubleValue += (double)30 / uniqueAccountingUnitDtoList.Count;
