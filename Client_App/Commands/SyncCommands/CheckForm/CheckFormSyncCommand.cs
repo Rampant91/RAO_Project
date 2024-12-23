@@ -9,6 +9,7 @@ using Client_App.Commands.AsyncCommands;
 using MessageBox.Avalonia.DTO;
 using Models.CheckForm;
 using Client_App.Interfaces.Logger;
+using Models.DBRealization;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
 
@@ -82,6 +83,9 @@ public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
                 //case "1.9":
                 //    result.AddRange(CheckF19.Check_Total(reps, rep));
                 //    break;
+                case "2.1":
+                    result.AddRange(CheckF21.Check_Total(StaticConfiguration.DBPath, rep.Id));
+                    break;
                 default:
                 {
                     #region MessageCheckFailed
