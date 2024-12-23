@@ -97,6 +97,7 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
                 "1.6" => CheckF16.Check_Total(rep.Reports, rep),
                 "1.7" => CheckF17.Check_Total(rep.Reports, rep),
                 "1.8" => CheckF18.Check_Total(rep.Reports, rep),
+                "2.1" => CheckF21.Check_Total(db,rep),
                 _ => throw new NotImplementedException()
             });
         }
