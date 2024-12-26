@@ -2,14 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="700"
              x:Class="Client_App.Views.RadionuclideCalculation"
              xmlns:vm="using:Client_App.ViewModels"
              x:DataType="vm:RadionuclideCalculationVM">
-  
-  <Design.DataContext>
-    <vm:RadionuclideCalculationVM/>
-  </Design.DataContext>
   
   <Grid HorizontalAlignment="Center" VerticalAlignment="Top">
     <Grid.RowDefinitions>
@@ -40,18 +36,39 @@
     </Border>
 
     <Border Grid.Row="2" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0 20 0 0"
-        CornerRadius="5" BorderBrush="Black" BorderThickness="0.5" Height="50">
-      <StackPanel Orientation="Horizontal" Margin="20 0 20 0" VerticalAlignment="Center">
-        <StackPanel Orientation="Horizontal" Margin="0 0 20 0">
-          <TextBlock Text="Укажите начальную активность " FontSize="17"/>
-          <TextBox Text="{Binding InitialActivity}" FontSize="17"/>
-        </StackPanel>
+        CornerRadius="5" BorderBrush="Black" BorderThickness="0.5" MaxHeight="550">
+      <Grid Margin="10 20 10 20">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Margin="20 0 0 0">
-          <TextBlock Text="{Binding RadionuclideHalfLife}" FontSize="17" Margin="0 0 5 0"/>
-          <TextBlock Text="{Binding RadionuclideUnit}" FontSize="17"/>
-        </StackPanel>
-      </StackPanel>
+        <WrapPanel Grid.Row="0" Orientation="Horizontal" Margin="20 0 20 0" VerticalAlignment="Center">
+          <TextBlock Text="Укажите начальную активность " FontSize="17"/>
+          <TextBox Text="{Binding InitialActivity}" FontSize="17" Margin="10 -5 0 0" Width="50" TextWrapping="Wrap"/>
+        </WrapPanel>
+
+        <WrapPanel Grid.Row="1" Orientation="Horizontal" Margin="20 10 0 0" VerticalAlignment="Center">
+          <TextBlock Text="Укажите прошедшее время " FontSize="17"/>
+          <TextBox Text="{Binding ElapsedTime}" FontSize="17" Margin="10 -5 0 0" Width="50" TextWrapping="Wrap"/>
+          <ComboBox SelectedItem="{Binding SelectedTimeUnit}" FontSize="17" MinWidth="100" Margin="10 0 0 0" Items="{Binding TimeUnits}">
+            <ComboBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding DisplayName}" />
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
+        </WrapPanel>
+
+        <Button Grid.Row="2" Content="Рассчитать" Command="{Binding CalculateCommand}" FontSize="17" HorizontalAlignment="Center" Margin="0 20 0 0"/>
+
+        <WrapPanel Grid.Row="3" Orientation="Horizontal" Margin="20 40 0 0" VerticalAlignment="Center">
+          <TextBlock Text="Остаточная активность:" FontSize="17"/>
+          <TextBlock Text="{Binding Result}" Margin="10 0 0 0" FontSize="17" HorizontalAlignment="Right"/>
+        </WrapPanel>
+      </Grid>
     </Border>
   </Grid>
 </UserControl>

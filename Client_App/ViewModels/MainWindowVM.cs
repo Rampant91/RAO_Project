@@ -17,10 +17,13 @@ using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.AsyncCommands.Hidden;
 using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.ExcelExport.Snk;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Client_App.Service;
 
 namespace Client_App.ViewModels;
 
-public class MainWindowVM : BaseVM, INotifyPropertyChanged
+public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 {
     #region Current_Db
 
@@ -55,6 +58,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         }
     }
 
+    #endregion
+
+    #region DialogService
+    private readonly DialogService _dialogService;
     #endregion
 
     #region OnStartProgressBar
@@ -181,6 +188,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand MaxGraphsLength { get; set; }                   //  Excel -> Максимальное число символов в каждой колонке
     public ICommand SaveReports { get; set; }                       //  Сохраняет текущую базу, используется только для сохранения комментария формы
     //public ICommand UnaccountedRad { get; set; }                    //  Радионуклиды, отсутствующие в справочнике
+    public RelayCommand CalculatorOpenCommand { get; set; }
 
     #endregion
 
@@ -188,6 +196,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
 
     public MainWindowVM()
     {
+        _dialogService = new DialogService();
+
         AddForm = new AddFormAsyncCommand();
         AddReports = new AddReportsAsyncCommand();
         ChangeForm = new ChangeFormAsyncCommand();
@@ -202,7 +212,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ImportRaodb = new ImportRaodbAsyncCommand();
         MaxGraphsLength = new MaxGraphsLengthAsyncCommand();
         SaveReports = new SaveReportsAsyncCommand();
-        //UnaccountedRad = new UnaccountedRadAsyncCommand();
+        //UnaccountedRad = new UnaccountedRadAsyncCommand(); 
+        CalculatorOpenCommand = new RelayCommand(CalculatorOpen);
     }
 
     #endregion
@@ -224,4 +235,9 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
+
+    private void CalculatorOpen()
+    {
+        _dialogService.ShowDialogAsync();
+    }
 }

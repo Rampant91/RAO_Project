@@ -215,6 +215,9 @@
                 <MenuItem Command="{Binding UnaccountedRad, Mode=OneTime}"
                           Header="Радионуклиды отсутствующие в справочнике"/>-->
             </MenuItem>
+          <MenuItem FontSize="14" Header="Сервисы">
+            <MenuItem Command="{Binding CalculatorOpenCommand}" Header="Калькулятор"/>
+          </MenuItem>
         </Menu>
         <Panel x:Name="MainPanel"
                Margin="5,5,5,5"

@@ -4,7 +4,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MessageBox.Avalonia;
 using Models.DTO;
+using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,7 +16,6 @@ namespace Client_App.ViewModels
     {
         private readonly CalculatorVM _calculator;
 
-        private const string _filePath = @"C:\Users\shaih\RiderProjects\RAO_Project\data\Spravochniki\R.xlsx";
         private ObservableCollection<RadionuclidDTO> _allRadionuclidList;
         private ObservableCollection<RadionuclidDTO> _filteredRadionuclidList;
         private string _searchText;
@@ -46,12 +47,19 @@ namespace Client_App.ViewModels
 
             SelectRadionuclidCommand = new AsyncRelayCommand<object>(SelectRadionuclid);
 
-            LoadFromExcel(_filePath);
+            LoadFromExcel();
         }
 
-        private void LoadFromExcel(string filePath)
+        private void LoadFromExcel()
         {
-            var parsedData = ExcelParser.ParseRadionuclides(filePath);
+#if DEBUG
+            string relativePath = @"C:\Users\shaih\source\repos\RAO_Project\data\Spravochniki\R.xlsx";
+#else
+string baseDirectory = AppContext.BaseDirectory;
+string relativePath = Path.Combine(baseDirectory, "data", "Spravochniki", "R.xlsx");
+#endif
+
+            var parsedData = ExcelParser.ParseRadionuclides(relativePath);
             _allRadionuclidList = new ObservableCollection<RadionuclidDTO>(parsedData);
             UpdateFilteredRadionuclides();
         }
