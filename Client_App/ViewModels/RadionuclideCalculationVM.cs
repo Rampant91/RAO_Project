@@ -145,7 +145,6 @@ namespace Client_App.ViewModels
                         _ => throw new ArgumentException("Недопустимые единицы периода полураспада")
                     };
 
-
                     // Преобразуем прошедшее время в дни
                     double elapsedTimeInDays = SelectedTimeUnit?.Tag?.ToLower().Trim() switch
                     {
@@ -170,9 +169,29 @@ namespace Client_App.ViewModels
                     msBox.Show();
                 }
             }
+            catch (FormatException)
+            {
+                var msBox = MessageBoxManager.GetMessageBoxStandardWindow("Калькулятор", "Ошибка формата данных. Проверьте введенные значения.");
+                msBox.Show();
+            }
+            catch (OverflowException)
+            {
+                var msBox = MessageBoxManager.GetMessageBoxStandardWindow("Калькулятор", "Число слишком велико или мало для обработки. Проверьте введенные значения.");
+                msBox.Show();
+            }
+            catch (ArgumentNullException ex)
+            {
+                var msBox = MessageBoxManager.GetMessageBoxStandardWindow("Калькулятор", $"Отсутствуют необходимые данные: {ex.Message}");
+                msBox.Show();
+            }
+            catch (ArgumentException ex)
+            {
+                var msBox = MessageBoxManager.GetMessageBoxStandardWindow("Калькулятор", $"Ошибка аргумента: {ex.Message}");
+                msBox.Show();
+            }
             catch (Exception ex)
             {
-                var msBox = MessageBoxManager.GetMessageBoxStandardWindow("Калькулятор", $"Возникла ошибка: {ex.Message}");
+                var msBox = MessageBoxManager.GetMessageBoxStandardWindow("Калькулятор", $"Возникла непредвиденная ошибка: {ex.Message}");
                 msBox.Show();
             }
         }
@@ -208,15 +227,35 @@ namespace Client_App.ViewModels
                 Result = $"{remainingActivity.ToString("0.000e+00", culture)} Bq";
                 VisibleResult = true;
             }
+            catch (FormatException)
+            {
+                var msBox = MessageBoxManager.GetMessageBoxStandardWindow("Калькулятор", "Ошибка формата данных. Проверьте введенные значения.");
+                msBox.Show();
+            }
+            catch (OverflowException)
+            {
+                var msBox = MessageBoxManager.GetMessageBoxStandardWindow("Калькулятор", "Число слишком велико или мало для обработки. Проверьте введенные значения.");
+                msBox.Show();
+            }
+            catch (ArgumentNullException ex)
+            {
+                var msBox = MessageBoxManager.GetMessageBoxStandardWindow("Калькулятор", $"Отсутствуют необходимые данные: {ex.Message}");
+                msBox.Show();
+            }
+            catch (ArgumentException ex)
+            {
+                var msBox = MessageBoxManager.GetMessageBoxStandardWindow("Калькулятор", $"Ошибка аргумента: {ex.Message}");
+                msBox.Show();
+            }
             catch (Exception ex)
             {
-                var msBox = MessageBoxManager.GetMessageBoxStandardWindow("Калькулятор", $"Возникла ошибка: {ex.Message}");
+                var msBox = MessageBoxManager.GetMessageBoxStandardWindow("Калькулятор", $"Возникла непредвиденная ошибка: {ex.Message}");
                 msBox.Show();
             }
         }
     }
 
-    public class TimeUnit
+    public class TimeUnit //По какой-то причине Combobox не хочет мне возвращать выбранное значение корректно, поэтому заполняю его через DTO
     {
         public string? DisplayName { get; set; }
         public string? Tag { get; set; }

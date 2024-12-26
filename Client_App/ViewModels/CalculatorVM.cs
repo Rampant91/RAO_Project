@@ -4,6 +4,7 @@ namespace Client_App.ViewModels
 {
     public class CalculatorVM : ObservableObject
     {
+        #region Properties
         private object _currentView;
         private string _windowTitleName;
 
@@ -17,7 +18,8 @@ namespace Client_App.ViewModels
             get => _windowTitleName;
             set => SetProperty(ref _windowTitleName, value);
         }
-        
+        #endregion
+
         private RadionuclideSelectionCalculatorVM RadionuclideSelectionVM { get; set; }
 
         public CalculatorVM()

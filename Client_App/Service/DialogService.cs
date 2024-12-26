@@ -6,7 +6,7 @@ namespace Client_App.Service
 {
     public class DialogService : IDialogService
     {
-        public Task ShowDialogAsync()
+        public Task ShowDialogAsync() // При вызове метода, создаем и выводим окно
         {
             var dialogWindow = new Calculator
             {

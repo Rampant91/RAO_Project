@@ -14,6 +14,7 @@ namespace Client_App.ViewModels
 {
     public class RadionuclideSelectionCalculatorVM : ObservableObject
     {
+        #region Properties
         private readonly CalculatorVM _calculator;
 
         private ObservableCollection<RadionuclidDTO> _allRadionuclidList;
@@ -36,6 +37,8 @@ namespace Client_App.ViewModels
             get => _filteredRadionuclidList;
             private set => SetProperty(ref _filteredRadionuclidList, value);
         }
+        #endregion
+
         public AsyncRelayCommand<object> SelectRadionuclidCommand { get; set; }
 
         public RadionuclideSelectionCalculatorVM(CalculatorVM calculator)
@@ -50,7 +53,7 @@ namespace Client_App.ViewModels
             LoadFromExcel();
         }
 
-        private void LoadFromExcel()
+        private void LoadFromExcel() //Подгрузка данных из excel и заполнение коллекции
         {
 #if DEBUG
             string relativePath = @"C:\Users\shaih\source\repos\RAO_Project\data\Spravochniki\R.xlsx";
@@ -63,7 +66,7 @@ string relativePath = Path.Combine(baseDirectory, "data", "Spravochniki", "R.xls
             _allRadionuclidList = new ObservableCollection<RadionuclidDTO>(parsedData);
             UpdateFilteredRadionuclides();
         }
-        private void UpdateFilteredRadionuclides()
+        private void UpdateFilteredRadionuclides() //Фильтрация заполненной коллекции по определённым параметрам
         {
             if (string.IsNullOrEmpty(SearchText))
             {
@@ -71,14 +74,14 @@ string relativePath = Path.Combine(baseDirectory, "data", "Spravochniki", "R.xls
             }
             else
             {
-                var filtered = _allRadionuclidList.Where(r => r.Name.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) ||
-                                r.CodeNumber.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase)).ToList();
+                var filtered = _allRadionuclidList.Where(r => r.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+                                r.CodeNumber.Contains(SearchText, StringComparison.OrdinalIgnoreCase)).ToList();
 
                 FilteredRadionuclidList = new ObservableCollection<RadionuclidDTO>(filtered);
             }
         }
-        private async Task SelectRadionuclid(object parameter)
-        {
+        private async Task SelectRadionuclid(object parameter) // Тут с помощью оператора is смотрим является ли выбранный элемент RadionuclidDTO, если да, то передаем его 
+        {                                                       //и устанавливаем в Calculator window свойство CurrentView на новый UserControl
             if(parameter is RadionuclidDTO currentRadionuclid)
             {
                 _calculator.CurrentView = new RadionuclideCalculationVM(currentRadionuclid.Name, currentRadionuclid.CodeNumber, currentRadionuclid.HalfLife!, currentRadionuclid.Unit!);
