@@ -20,10 +20,7 @@ namespace Client_App.Commands.SyncCommands.CheckForm;
 /// <returns>Открывает окно с отчетом об ошибках.</returns>
 public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
-    public override bool CanExecute(object? parameter)
-    {
-        return true;
-    }
+    public override bool CanExecute(object? parameter) => true;
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -57,32 +54,8 @@ public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
                     result.AddRange(CheckF17.Check_Total(reps, rep));
                     break;
                 case "1.8":
-                {
-                    #region MessageCheckFailed
-
-                    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                        {
-                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                            ContentTitle = $"Проверка формы {rep.FormNum_DB}",
-                            ContentHeader = "Уведомление",
-                            ContentMessage = $"Функция проверки форм {rep.FormNum_DB} находится в режиме тестирования и может содержать ошибки.",
-                            MinWidth = 400,
-                            MinHeight = 150,
-                            
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(Desktop.MainWindow));
-
-                    #endregion
-
                     result.AddRange(CheckF18.Check_Total(reps, rep));
                     break;
-                }
-
-                //case "1.9":
-                //    result.AddRange(CheckF19.Check_Total(reps, rep));
-                //    break;
                 case "2.1":
                     result.AddRange(await CheckF21.Check_Total(StaticConfiguration.DBPath, rep.Id));
                     break;

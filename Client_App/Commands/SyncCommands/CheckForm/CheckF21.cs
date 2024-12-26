@@ -496,7 +496,7 @@ public abstract class CheckF21 : CheckBase
             .Where(x => x.FormNum_DB == "1.0")
             .ToList()
             .SingleOrDefault(x => x.Rows10.Count > 0);    //isolate form 1.0 that matches our form 2.0
-        Reports? forms1;
+        Reports? reps1;
         if (form10 == null)
         {
             var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
@@ -543,10 +543,11 @@ public abstract class CheckF21 : CheckBase
                     .Where(x => x.FormNum_DB == "1.0")
                     .ToList()
                     .SingleOrDefault(x => x.Rows10.Count > 0);    //isolate form 1.0 that matches our form 2.0
+
                 await db2.ReportsCollectionDbSet.Where(x => x.Master_DBId == form10.Id).LoadAsync();
-                forms1 = db2.ReportsCollectionDbSet.SingleOrDefault(x => x.Master_DBId == form10.Id);
+                reps1 = db2.ReportsCollectionDbSet.SingleOrDefault(x => x.Master_DBId == form10.Id);
                 await db2.ReportCollectionDbSet
-                    .Where(x => x.Reports.Master_DBId == forms1.Master_DBId
+                    .Where(x => x.Reports.Master_DBId == reps1.Master_DBId
                                 && (x.FormNum_DB == "1.5"
                                     || x.FormNum_DB == "1.6"
                                     || x.FormNum_DB == "1.7"
@@ -556,16 +557,24 @@ public abstract class CheckF21 : CheckBase
                                     || x.EndPeriod_DB.Length >= 4
                                     && x.EndPeriod_DB.Substring(x.EndPeriod_DB.Length - 4) == rep.Year_DB))
                     .LoadAsync(); //load reports themselves
+
+                foreach (var report in reps1.Report_Collection)
+                {
+                    await db2.form_15.Where(x => x.ReportId == report.Id).LoadAsync();  //load rows for reports 1.5
+                    await db2.form_16.Where(x => x.ReportId == report.Id).LoadAsync();  //load rows for reports 1.6
+                    await db2.form_17.Where(x => x.ReportId == report.Id).LoadAsync();  //load rows for reports 1.7
+                    await db2.form_18.Where(x => x.ReportId == report.Id).LoadAsync();  //load rows for reports 1.8
+                }
             }
             else return errorList;
         }
         else
         {
             await db.ReportsCollectionDbSet.Where(x => x.Master_DBId == form10.Id).LoadAsync();    //load the report collection that corresponds to the isolated form 1.0
-            forms1 = db.ReportsCollectionDbSet.SingleOrDefault(x => x.Master_DBId == form10.Id);    //isolate this report collection
-            if (forms1 == null) return errorList;
+            reps1 = db.ReportsCollectionDbSet.SingleOrDefault(x => x.Master_DBId == form10.Id);    //isolate this report collection
+            if (reps1 == null) return errorList;
             await db.ReportCollectionDbSet
-                .Where(x => x.Reports.Master_DBId == forms1.Master_DBId
+                .Where(x => x.Reports.Master_DBId == reps1.Master_DBId
                             && (x.FormNum_DB == "1.5"
                                 || x.FormNum_DB == "1.6"
                                 || x.FormNum_DB == "1.7"
@@ -575,22 +584,23 @@ public abstract class CheckF21 : CheckBase
                                 || x.EndPeriod_DB.Length >= 4
                                 && x.EndPeriod_DB.Substring(x.EndPeriod_DB.Length - 4) == rep.Year_DB))
                 .LoadAsync(); //load reports themselves
+
+            foreach (var report in reps1.Report_Collection)
+            {
+                await db.form_15.Where(x => x.ReportId == report.Id).LoadAsync();  //load rows for reports 1.5
+                await db.form_16.Where(x => x.ReportId == report.Id).LoadAsync();  //load rows for reports 1.6
+                await db.form_17.Where(x => x.ReportId == report.Id).LoadAsync();  //load rows for reports 1.7
+                await db.form_18.Where(x => x.ReportId == report.Id).LoadAsync();  //load rows for reports 1.8
+            }
         }
         
-        foreach (var report in forms1.Report_Collection)
-        {
-            await db.form_15.Where(x => x.ReportId == report.Id).LoadAsync();  //load rows for reports 1.5
-            await db.form_16.Where(x => x.ReportId == report.Id).LoadAsync();  //load rows for reports 1.6
-            await db.form_17.Where(x => x.ReportId == report.Id).LoadAsync();  //load rows for reports 1.7
-            await db.form_18.Where(x => x.ReportId == report.Id).LoadAsync();  //load rows for reports 1.8
-        }
         //at this point forms1 contains everything that we need to convert.
 
         List<Form21> forms21ExpectedBase = [];
         List<(string, string, string, string)> forms21MetadataBase = [];
         Form17? formHeader17 = null;
         Form18? formHeader18 = null;
-        foreach (var key in forms1.Report_Collection)
+        foreach (var key in reps1.Report_Collection)
         {
             var report = (Report)key;
             Form21? form21New;
@@ -1003,6 +1013,18 @@ public abstract class CheckF21 : CheckBase
             && int.TryParse(j.Row, out var jRowReal) 
                 ? iRowReal - jRowReal 
                 : string.Compare(i.Row, j.Row));
+        foreach (var formExpected in forms21ExpectedOut)
+        {
+            errorList.Insert(0, new CheckError
+            {
+                FormNum = "form_21",
+                Row = "-",
+                Column = "15 - 23",
+                Value = $"код РАО {formExpected.Item1.CodeRAOout_DB}, статус РАО {formExpected.Item1.StatusRAOout_DB}, " +
+                        $"код переработки/сортировки {formExpected.Item1.MachineCode_DB}\n - {formExpected.Item2}",
+                Message = "В форме 2.1 не найдена информация об указанных РАО, образовавшихся после переработки/кондиционирования."
+            });
+        }
         var index = 0;
         foreach (var error in errorList)
         {
@@ -1012,18 +1034,6 @@ public abstract class CheckF21 : CheckBase
             }
             index++;
             error.Index = index;
-        }
-        foreach (var formExpected in forms21ExpectedOut)
-        {
-            errorList.Add(new CheckError
-            {
-                FormNum = "form_21",
-                Row = "-",
-                Column = "15 - 23",
-                Value = $"код РАО {formExpected.Item1.CodeRAOout_DB}, статус РАО {formExpected.Item1.StatusRAOout_DB}, " +
-                        $"код переработки/сортировки {formExpected.Item1.MachineCode_DB}\n - {formExpected.Item2}",
-                Message = "В форме 2.1 не найдена информация об указанных РАО, образовавшихся после переработки/кондиционирования."
-            });
         }
         return errorList;
     }
