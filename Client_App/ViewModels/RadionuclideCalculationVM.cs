@@ -9,10 +9,16 @@ namespace Client_App.ViewModels
 {
     public class RadionuclideCalculationVM : ObservableObject
     {
+        #region Properties
         private string _radionuclideName;
         private string _radionuclideType;
         private string _radionuclideHalfLife;
         private string _radionuclideUnit;
+        private bool _visibleResult = false;
+        private bool _visibleBorderOne = false;
+        private bool _visibleBorderTwo = false;
+        private DateTimeOffset? _startDate;
+        private DateTimeOffset? _endDate;
 
         private double _initialActivity;
         private double _elapsedTime;
@@ -59,6 +65,32 @@ namespace Client_App.ViewModels
             get => _result;
             set => SetProperty(ref _result, value);
         }
+        public bool VisibleResult
+        {
+            get => _visibleResult;
+            set => SetProperty(ref _visibleResult, value);
+        }
+        public bool VisibleBorderOne
+        {
+            get => _visibleBorderOne;
+            set => SetProperty(ref _visibleBorderOne, value);
+        }
+        public bool VisibleBorderTwo
+        {
+            get => _visibleBorderTwo;
+            set => SetProperty(ref _visibleBorderTwo, value);
+        }
+        public DateTimeOffset? StartDate
+        {
+            get => _startDate;
+            set => SetProperty(ref _startDate, value);
+        }
+        public DateTimeOffset? EndDate
+        {
+            get => _endDate;
+            set => SetProperty(ref _endDate, value);
+        }
+
         public ObservableCollection<TimeUnit> TimeUnits { get; } =
         [
             new TimeUnit { DisplayName = "минуты", Tag = "мин" },
@@ -66,8 +98,14 @@ namespace Client_App.ViewModels
             new TimeUnit { DisplayName = "сутки", Tag = "сут" },
             new TimeUnit { DisplayName = "года", Tag = "лет" }
         ];
+        #endregion
 
-        public RelayCommand CalculateCommand { get; }
+        #region RelayCommand
+        public RelayCommand CalculateOneCommand { get; }
+        public RelayCommand CalculateTwoCommand { get; }
+        public RelayCommand BorderOneVisibleCommand { get; set; }
+        public RelayCommand BorderTwoVisibleCommand { get; set; }
+        #endregion
 
         public RadionuclideCalculationVM(string radionuclideName, string codeNumber, string halfLife, string unit)
         {
@@ -76,7 +114,19 @@ namespace Client_App.ViewModels
             RadionuclideHalfLife = halfLife;
             RadionuclideUnit = unit;
 
-            CalculateCommand = new RelayCommand(CalculateActivity);
+            CalculateOneCommand = new RelayCommand(CalculateActivity);
+            CalculateTwoCommand = new RelayCommand(CalculateActivityByDates);
+            BorderOneVisibleCommand = new RelayCommand(() =>
+            {
+                VisibleBorderOne = true;
+                VisibleBorderTwo = false;
+            });
+            BorderTwoVisibleCommand = new RelayCommand(() =>
+            {
+                VisibleBorderOne = false;
+                VisibleBorderTwo = true;
+            });
+
         }
 
         private void CalculateActivity()
@@ -112,12 +162,51 @@ namespace Client_App.ViewModels
 
                     var culture = new CultureInfo("ru-RU") { NumberFormat = { NumberDecimalDigits = 3 } };
                     Result = $"{remainingActivity.ToString("0.000e+00", culture)} Bq";
+                    VisibleResult = true;
                 }
                 else
                 {
                     var msBox = MessageBoxManager.GetMessageBoxStandardWindow("Калькулятор", "Пожалуйста, укажите корректное время");
                     msBox.Show();
                 }
+            }
+            catch (Exception ex)
+            {
+                var msBox = MessageBoxManager.GetMessageBoxStandardWindow("Калькулятор", $"Возникла ошибка: {ex.Message}");
+                msBox.Show();
+            }
+        }
+        private void CalculateActivityByDates()
+        {
+            try
+            {
+                if (StartDate == null || EndDate == null || StartDate > EndDate)
+                {
+                    var msBox = MessageBoxManager.GetMessageBoxStandardWindow("Калькулятор", "Пожалуйста, укажите корректные даты");
+                    msBox.Show();
+                    return;
+                }
+
+                // Преобразуем период полураспада в дни
+                double halfLifeInDays = Convert.ToString(RadionuclideUnit.ToLower().Trim(), new CultureInfo("ru-RU")) switch
+                {
+                    "мин" => double.Parse(RadionuclideHalfLife, new CultureInfo("ru-RU")) / (24 * 60),
+                    "час" => double.Parse(RadionuclideHalfLife, new CultureInfo("ru-RU")) / 24,
+                    "сут" => double.Parse(RadionuclideHalfLife, new CultureInfo("ru-RU")),
+                    "лет" => double.Parse(RadionuclideHalfLife, new CultureInfo("ru-RU")) * 365,
+                    _ => throw new ArgumentException("Недопустимые единицы периода полураспада")
+                };
+
+                // Рассчитываем разницу в днях между датами
+                double elapsedTimeInDays = (EndDate - StartDate).Value.TotalDays;
+
+                // Рассчитываем оставшуюся активность
+                double decayConstant = Math.Log(2) / halfLifeInDays;
+                double remainingActivity = InitialActivity * Math.Exp(-decayConstant * elapsedTimeInDays);
+
+                var culture = new CultureInfo("ru-RU") { NumberFormat = { NumberDecimalDigits = 3 } };
+                Result = $"{remainingActivity.ToString("0.000e+00", culture)} Bq";
+                VisibleResult = true;
             }
             catch (Exception ex)
             {
