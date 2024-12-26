@@ -240,7 +240,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
 
             var uniqueAccountingUnitDtoList = await GetUniqueAccountingUnitDtoList(unionFormsDtoList);
 
-            dto.CountUnits = await GetUnitInStockCount(inventoryFormsDtoList, plusMinusFormsDtoList, uniqueAccountingUnitDtoList, cts);
+            dto.CountUnits = await GetUnitInStockCount(inventoryFormsDtoList, plusMinusFormsDtoList, uniqueAccountingUnitDtoList);
 
             progressBarDoubleValue += (double)50 / dtoList.Count;
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
@@ -362,8 +362,8 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
 
     #region GetUnitInStockCount
 
-    private static async Task<int> GetUnitInStockCount(List<ShortForm11DTO> inventoryFormsDtoList,
-        List<ShortForm11DTO> plusMinusFormsDtoList, List<UniqueAccountingUnitDTO> uniqueAccountingUnitDtoList, CancellationTokenSource cts)
+    private static Task<int> GetUnitInStockCount(List<ShortForm11DTO> inventoryFormsDtoList,
+        List<ShortForm11DTO> plusMinusFormsDtoList, List<UniqueAccountingUnitDTO> uniqueAccountingUnitDtoList)
     {
         var firstInventoryDate = inventoryFormsDtoList.Count == 0
             ? DateOnly.MinValue
@@ -386,29 +386,23 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
             unitInStockList.Add(summedDto);
         }
 
-        var unitInStockBag = new ConcurrentBag<ShortForm11DTO>(unitInStockList);
-        ParallelOptions parallelOptions = new()
+        foreach (var unit in uniqueAccountingUnitDtoList)
         {
-            CancellationToken = cts.Token,
-            MaxDegreeOfParallelism = Environment.ProcessorCount
-        };
-        await Parallel.ForEachAsync(uniqueAccountingUnitDtoList, parallelOptions, (unit, token) =>
-        {
-            var inStock = unitInStockBag
-                .Any(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
+            var inStock = unitInStockList
+                .Any(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type 
                           == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type);
 
             var inventoryWithCurrentUnit = inventoryFormsDtoList
-                .Where(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
-                            == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type
+                .Where(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type 
+                            == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type 
                             && x.OpDate >= firstInventoryDate)
                 .DistinctBy(x => x.OpDate)
                 .OrderBy(x => x.OpDate)
                 .ToList();
 
             var operationsWithCurrentUnit = plusMinusFormsDtoList
-                .Where(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
-                            == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type
+                .Where(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type 
+                            == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type 
                             && x.OpDate >= firstInventoryDate)
                 .OrderBy(x => x.OpDate)
                 .ToList();
@@ -447,25 +441,26 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
                     _ => inStock
                 };
             }
+
             var lastOperationWithUnit = operationsWithCurrentUnit
                 .Union(inventoryWithCurrentUnit
                     .Where(x => x.OpDate >= firstInventoryDate))
                 .OrderByDescending(x => x.OpDate)
                 .FirstOrDefault();
 
-            if (lastOperationWithUnit == null) return default;
+            if (lastOperationWithUnit == null) continue;
 
-            var currentUnit = unitInStockBag
+            var currentUnit = unitInStockList
                 .FirstOrDefault(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
                                      == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type);
-            if (currentUnit != null) unitInStockBag.TryTake(out currentUnit);
+
+            if (currentUnit != null) unitInStockList.Remove(currentUnit);
             if (inStock)
             {
-                unitInStockBag.Add(lastOperationWithUnit);
+                unitInStockList.Add(lastOperationWithUnit);
             }
-            return default;
-        });
-        return unitInStockBag.Count;
+        }
+        return Task.FromResult(unitInStockList.Count);
     }
 
     #endregion

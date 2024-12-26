@@ -1737,7 +1737,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[1, 11].Value = "номер паспорта";
                 Worksheet.Cells[1, 12].Value = "наименование";
                 Worksheet.Cells[1, 13].Value = "номер";
-                Worksheet.Cells[1, 14].Value = "масса объединенного урана, кг";
+                Worksheet.Cells[1, 14].Value = "масса обедненного урана, кг";
                 Worksheet.Cells[1, 15].Value = "код ОКПО изготовителя";
                 Worksheet.Cells[1, 16].Value = "дата выпуска";
                 Worksheet.Cells[1, 17].Value = "НСС, мес";

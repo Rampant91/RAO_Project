@@ -84,7 +84,7 @@ public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
                 //    result.AddRange(CheckF19.Check_Total(reps, rep));
                 //    break;
                 case "2.1":
-                    result.AddRange(CheckF21.Check_Total(StaticConfiguration.DBPath, rep.Id));
+                    result.AddRange(await CheckF21.Check_Total(StaticConfiguration.DBPath, rep.Id));
                     break;
                 default:
                 {

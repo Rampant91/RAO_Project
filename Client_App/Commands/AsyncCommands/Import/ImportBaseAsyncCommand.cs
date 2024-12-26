@@ -1450,27 +1450,31 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     /// <param name="impReportsList">Список организаций, добавленных в ходе импорта.</param>
     private protected static Task SetDataGridPage(List<Reports> impReportsList)
     {
-        try
+        if (impReportsList.Count > 0
+            && impReportsList.All(x => x.Master_DB.RegNoRep.Value == impReportsList.First().Master_DB.RegNoRep.Value
+                                       && x.Master_DB.OkpoRep.Value == impReportsList.First().Master_DB.OkpoRep.Value))
         {
-            if (impReportsList.Count > 0
-                && impReportsList.All(x => x.Master_DB.RegNoRep.Value == impReportsList.First().Master_DB.RegNoRep.Value
-                                           && x.Master_DB.OkpoRep.Value == impReportsList.First().Master_DB.OkpoRep.Value))
+            var impReports = impReportsList.First();
+            var repsDataGrid = impReports.Master_DB.FormNum_DB is "1.0" 
+                ? (Desktop.MainWindow.FindControl<Panel>("Forms_p1_0").Children[0] as DataGridReports)!
+                : (Desktop.MainWindow.FindControl<Panel>("Forms_p2_0").Children[0] as DataGridReports)!;
+
+            var repsList = !string.IsNullOrWhiteSpace(repsDataGrid.SearchText) 
+                ? repsDataGrid.ItemsWithSearch!.ToList<Reports>() 
+                : repsDataGrid.Items.ToList<Reports>();
+
+            var repsIndex = repsList.FindIndex(x => x.Master_DB.RegNoRep.Value == impReports.Master_DB.RegNoRep.Value 
+                                                    && x.Master_DB.OkpoRep.Value == impReports.Master_DB.OkpoRep.Value);
+
+            if (repsIndex != -1)
             {
-                var impReports = impReportsList.First();
-                var repsDataGrid = (Desktop.MainWindow.FindControl<Panel>("Forms_p1_0").Children[0] as DataGridReports)!;
-                var repsIndex = ReportsStorage.LocalReports.Reports_Collection
-                    .ToList()
-                    .FindIndex(x => x.Master_DB.RegNoRep.Value == impReports.Master_DB.RegNoRep.Value
-                                    && x.Master_DB.OkpoRep.Value == impReports.Master_DB.OkpoRep.Value);
-                if (repsIndex != -1)
+                repsDataGrid.NowPage = impReports.Master_DB.FormNum_DB switch
                 {
-                    repsDataGrid.NowPage = ((repsIndex + 1) / 5 + 1).ToString();
-                }
+                    "1.0" => ((repsIndex + 1) / 5 + 1).ToString(),
+                    "2.0" => ((repsIndex + 1) / 8 + 1).ToString(),
+                    _ => repsDataGrid.NowPage
+                };
             }
-        }
-        catch (Exception ex)
-        {
-            //ignore
         }
         return Task.CompletedTask;
     }

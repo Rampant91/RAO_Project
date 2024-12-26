@@ -199,7 +199,7 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand();
         ImportExcel = new ImportExcelAsyncCommand();
         ImportJson = new ImportJsonAsyncCommand();
-        ImportRaodb = new ImportRaodbAsyncCommand();
+        ImportRaodb = new ImportRaodbAsyncCommand(this);
         MaxGraphsLength = new MaxGraphsLengthAsyncCommand();
         SaveReports = new SaveReportsAsyncCommand();
         //UnaccountedRad = new UnaccountedRadAsyncCommand();

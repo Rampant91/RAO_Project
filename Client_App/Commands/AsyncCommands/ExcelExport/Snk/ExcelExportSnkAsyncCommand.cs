@@ -17,7 +17,6 @@ using OfficeOpenXml;
 using Microsoft.EntityFrameworkCore;
 using static Client_App.Resources.StaticStringMethods;
 using Client_App.ViewModels.ProgressBar;
-using System.Collections.Concurrent;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
@@ -80,8 +79,7 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
         var uniqueAccountingUnitDtoList = await GetUniqueAccountingUnitDtoList(unionFormsDtoList);
 
         progressBarVM.SetProgressBar(30, "Формирование СНК");
-        var unitInStockDtoList = await GetUnitInStockDtoList(inventoryFormsDtoList, plusMinusFormsDtoList, uniqueAccountingUnitDtoList, 
-            progressBarVM, cts);
+        var unitInStockDtoList = await GetUnitInStockDtoList(inventoryFormsDtoList, plusMinusFormsDtoList, uniqueAccountingUnitDtoList, progressBarVM);
 
         progressBarVM.SetProgressBar(60, "Загрузка форм");
         var fullFormsSnkList = await GetFullFormsSnkList(db, unitInStockDtoList, progressBarVM, cts);
@@ -429,9 +427,9 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Список DTO учётных единиц в наличии на дату.</returns>
-    private static async Task<List<ShortForm11DTO>> GetUnitInStockDtoList(List<ShortForm11DTO> inventoryFormsDtoList,
-    List<ShortForm11DTO> plusMinusFormsDtoList, List<UniqueAccountingUnitDTO> uniqueAccountingUnitDtoList,
-    AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
+    private static Task<List<ShortForm11DTO>> GetUnitInStockDtoList(List<ShortForm11DTO> inventoryFormsDtoList, 
+        List<ShortForm11DTO> plusMinusFormsDtoList, List<UniqueAccountingUnitDTO> uniqueAccountingUnitDtoList, 
+        AnyTaskProgressBarVM progressBarVM)
     {
         var firstInventoryDate = inventoryFormsDtoList.Count == 0
             ? DateOnly.MinValue
@@ -447,33 +445,27 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentUnitNum = 1;
 
-        var unitInStockBag = new ConcurrentBag<ShortForm11DTO>(unitInStockList);
-        ParallelOptions parallelOptions = new()
+        foreach (var unit in uniqueAccountingUnitDtoList)
         {
-            CancellationToken = cts.Token,
-            MaxDegreeOfParallelism = Environment.ProcessorCount
-        };
-        await Parallel.ForEachAsync(uniqueAccountingUnitDtoList, parallelOptions, (unit, token) =>
-        {
-            var quantity = unitInStockBag
-                .FirstOrDefault(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
-                                      == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type)
+            var quantity = unitInStockList
+                .FirstOrDefault(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type 
+                                     == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type)
                 ?.Quantity ?? 0;
-
+            
             var inventoryWithCurrentUnit = inventoryFormsDtoList
                 .Where(x => x.OpDate >= firstInventoryDate 
-                            && x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
+                            && x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type 
                             == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type)
-                .DistinctBy(x => x.OpDate)
-                .OrderBy(x => x.OpDate)
-                .ToList();
+            .DistinctBy(x => x.OpDate)
+            .OrderBy(x => x.OpDate)
+            .ToList();
 
             var operationsWithCurrentUnit = plusMinusFormsDtoList
                 .Where(x => x.OpDate >= firstInventoryDate 
-                            && x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
+                            && x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type 
                             == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type)
-                .OrderBy(x => x.OpDate)
-                .ToList();
+            .OrderBy(x => x.OpDate)
+            .ToList();
 
             List<ShortForm11DTO> operationsWithCurrentUnitWithoutDuplicates = [];
             foreach (var group in operationsWithCurrentUnit.GroupBy(x => x.OpDate))
@@ -528,25 +520,25 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
                 .OrderByDescending(x => x.OpDate)
                 .FirstOrDefault();
 
-            if (lastOperationWithUnit == null) return default;
+            if (lastOperationWithUnit == null) continue;
 
-            var currentUnit = unitInStockBag
+            var currentUnit = unitInStockList
                 .FirstOrDefault(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
                                      == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type);
-            if (currentUnit != null) unitInStockBag.TryTake(out currentUnit);
+
+            if (currentUnit != null) unitInStockList.Remove(currentUnit);
             if (quantity > 0)
             {
                 lastOperationWithUnit.Quantity = quantity;
-                unitInStockBag.Add(lastOperationWithUnit);
+                unitInStockList.Add(lastOperationWithUnit);
             }
             progressBarDoubleValue += (double)30 / uniqueAccountingUnitDtoList.Count;
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-                $"Проверено {currentUnitNum} единиц из {uniqueAccountingUnitDtoList.Count}",
+            $"Проверено {currentUnitNum} единиц из {uniqueAccountingUnitDtoList.Count}",
                 "Проверка наличия");
             currentUnitNum++;
-            return default;
-        });
-        return unitInStockBag.ToList();
+        }
+        return Task.FromResult(unitInStockList);
     }
 
     #endregion

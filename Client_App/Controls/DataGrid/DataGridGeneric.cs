@@ -570,8 +570,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
             var val = searchText == "" 
                 ? Items.Count 
-                : _itemsWithSearch != null 
-                    ? _itemsWithSearch.Count 
+                : ItemsWithSearch != null 
+                    ? ItemsWithSearch.Count 
                     : 0;
             SetAndRaise(ItemsCountProperty, ref _ItemsCount, val.ToString());
         }
@@ -598,14 +598,14 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     ? Items.Count % PageSize == 0
                         ? Items.Count / PageSize
                         : Items.Count / PageSize + 1
-                    : _itemsWithSearch != null
-                        ? _itemsWithSearch.Count == 0
+                    : ItemsWithSearch != null
+                        ? ItemsWithSearch.Count == 0
                             ? 0
-                            : _itemsWithSearch.Count <= PageSize
+                            : ItemsWithSearch.Count <= PageSize
                                 ? 1
-                                : _itemsWithSearch.Count % PageSize == 0
-                                    ? _itemsWithSearch.Count / PageSize
-                                    : _itemsWithSearch.Count / PageSize + 1
+                                : ItemsWithSearch.Count % PageSize == 0
+                                    ? ItemsWithSearch.Count / PageSize
+                                    : ItemsWithSearch.Count / PageSize + 1
                         : Items.Count % PageSize == 0
                             ? Items.Count / PageSize
                             : Items.Count / PageSize + 1
@@ -633,7 +633,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             if (Items == null) return;
             var countR = 0;
             var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
-            foreach (var item in searchText != "" && _itemsWithSearch != null ? _itemsWithSearch : Items)
+            foreach (var item in searchText != "" && ItemsWithSearch != null ? ItemsWithSearch : Items)
             {
                 var reps = (Reports)item;
                 countR += reps.Report_Collection.Count;
@@ -706,12 +706,12 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             ? Items.Count / PageSize
                             : Items.Count / PageSize + 1
                         : 1
-                    : _itemsWithSearch != null
-                        ? _itemsWithSearch.Count == 0
+                    : ItemsWithSearch != null
+                        ? ItemsWithSearch.Count == 0
                             ? 1
-                            : _itemsWithSearch.Count % PageSize == 0
-                                ? _itemsWithSearch.Count / PageSize
-                                : _itemsWithSearch.Count / PageSize + 1
+                            : ItemsWithSearch.Count % PageSize == 0
+                                ? ItemsWithSearch.Count / PageSize
+                                : ItemsWithSearch.Count / PageSize + 1
                         : 1;
                 if (maxPage == 0) maxPage = 1;
                 if (val.ToString() == _nowPage) return;
@@ -898,7 +898,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     }
     #endregion
 
-    private IKeyCollection _itemsWithSearch;
+    public IKeyCollection? ItemsWithSearch;
 
     #region SearchText
     public static readonly DirectProperty<DataGrid<T>, string> SearchTextProperty =
@@ -1440,14 +1440,20 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     searchText = Regex.Replace(searchText.ToLower(), "[-.?!)(,: ]", "");
                     if (searchText != "")
                     {
-                        foreach (var it in tmpColl)
+                        foreach (var key in tmpColl)
                         {
-                            var rowsText = ((Reports)it).Master_DB.OkpoRep.Value +
-                                           ((Reports)it).Master_DB.ShortJurLicoRep.Value +
-                                           ((Reports)it).Master_DB.RegNoRep.Value;
-                            rowsText = rowsText.ToLower();
-                            rowsText = Regex.Replace(rowsText, "[-.?!)(,: ]", "");
-                            if (rowsText.Contains(searchText))
+                            var it = (Reports)key;
+
+                            var okpo = Regex.Replace(it.Master_DB.OkpoRep.Value.ToLower(), 
+                                "[-.?!)(,: ]", "");
+
+                            var shortJurLico = Regex.Replace(it.Master_DB.ShortJurLicoRep.Value.ToLower(),
+                                "[-.?!)(,: ]", "");
+
+                            var regNo = Regex.Replace(it.Master_DB.RegNoRep.Value.ToLower(),
+                                "[-.?!)(,: ]", "");
+
+                            if (okpo.Contains(searchText) || shortJurLico.Contains(searchText) || regNo.Contains(searchText))
                             {
                                 tmp2Coll.Add(it);
                             }
@@ -1460,7 +1466,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             UpdateCells();
                         }
                         tmpColl = tmp2Coll;
-                        _itemsWithSearch = tmp2Coll;
+                        ItemsWithSearch = tmp2Coll;
                     }
                 }
             }

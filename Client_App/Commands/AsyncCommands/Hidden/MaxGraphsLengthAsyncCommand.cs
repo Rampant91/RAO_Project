@@ -2279,7 +2279,7 @@ public class MaxGraphsLengthAsyncCommand : ExcelBaseAsyncCommand
                     Worksheet.Cells[1, 4].Value = "номер паспорта";
                     Worksheet.Cells[1, 5].Value = "наименование";
                     Worksheet.Cells[1, 6].Value = "номер";
-                    Worksheet.Cells[1, 7].Value = "масса объединенного урана, кг";
+                    Worksheet.Cells[1, 7].Value = "масса обедненного урана, кг";
                     Worksheet.Cells[1, 8].Value = "код ОКПО изготовителя";
                     Worksheet.Cells[1, 9].Value = "дата выпуска";
                     Worksheet.Cells[1, 10].Value = "НСС, мес";
