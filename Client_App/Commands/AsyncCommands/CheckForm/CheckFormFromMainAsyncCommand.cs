@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
@@ -28,6 +29,8 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
         if (parameter is not IKeyCollection collection) return;
         var par = collection.ToList<Report>().First();
         await using var db = new DBModel(StaticConfiguration.DBPath);
+
+        var cts = new CancellationTokenSource();
 
         #region GetReportFromDB
 
@@ -77,7 +80,7 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
                 "1.6" => CheckF16.Check_Total(rep.Reports, rep),
                 "1.7" => CheckF17.Check_Total(rep.Reports, rep),
                 "1.8" => CheckF18.Check_Total(rep.Reports, rep),
-                "2.1" => await CheckF21.Check_Total(db,rep),
+                "2.1" => await CheckF21.Check_Total(db, rep, cts),
                 _ => throw new NotImplementedException()
             });
         }

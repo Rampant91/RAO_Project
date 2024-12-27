@@ -9,7 +9,7 @@ using Client_App.Commands.AsyncCommands;
 using MessageBox.Avalonia.DTO;
 using Models.CheckForm;
 using Client_App.Interfaces.Logger;
-using Models.DBRealization;
+using System.Threading;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
 
@@ -24,6 +24,8 @@ public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
 
     public override async Task AsyncExecute(object? parameter)
     {
+        var cts = new CancellationTokenSource();
+
         var reps = changeOrCreateViewModel.Storages;
         var rep = changeOrCreateViewModel.Storage;
 
@@ -57,7 +59,7 @@ public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
                     result.AddRange(CheckF18.Check_Total(reps, rep));
                     break;
                 case "2.1":
-                    result.AddRange(await CheckF21.Check_Total(StaticConfiguration.DBPath, rep.Id));
+                    result.AddRange(await CheckF21.Check_Total(rep.Id, cts));
                     break;
                 default:
                 {

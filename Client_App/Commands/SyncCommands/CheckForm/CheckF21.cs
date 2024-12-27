@@ -7,6 +7,7 @@ using Models.Forms.Form1;
 using Models.Forms.Form2;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -15,6 +16,7 @@ using Avalonia.Threading;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using System.Xml.Linq;
+using Client_App.Views.ProgressBar;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
 
@@ -479,25 +481,30 @@ public abstract class CheckF21 : CheckBase
 
     #region CheckTotal
 
-    public static async Task<List<CheckError>> Check_Total(DBModel db, Report? rep)
+    public static async Task<List<CheckError>> Check_Total(DBModel db, Report? rep, CancellationTokenSource cts)
     {
         List<CheckError> errorList = [];
         if (rep == null) return errorList;
-        var form20Id = !string.IsNullOrWhiteSpace(rep.Reports.Master_DB.Rows20[0].RegNo_DB) 
-            ? 0 
-            : !string.IsNullOrWhiteSpace(rep.Reports.Master_DB.Rows20[1].RegNo_DB) 
-                ? 1 
-                : -1;
-        if (form20Id == -1) return errorList;
+        var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
-        await db.form_20.Where(x => x.RegNo_DB == rep.Reports.Master_DB.Rows20[form20Id].RegNo_DB).LoadAsync();   //load forms 2.0 that correspond to the selected report
-        await db.form_10.Where(x => x.RegNo_DB == rep.Reports.Master_DB.Rows20[form20Id].RegNo_DB).LoadAsync();   //load forms 1.0 that correspond to the selected report
-        var form10 = db.ReportCollectionDbSet
-            .Where(x => x.FormNum_DB == "1.0")
-            .ToList()
-            .SingleOrDefault(x => x.Rows10.Count > 0);    //isolate form 1.0 that matches our form 2.0
-        Reports? reps1;
-        if (form10 == null)
+        var form20RegNo = rep.Reports.Master_DB.RegNoRep.Value;
+        if (string.IsNullOrWhiteSpace(form20RegNo))
+        {
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+
+        progressBarVM.SetProgressBar(5, "Поиск соответствующей формы 1.0",
+            $"Проверка {rep.Reports.Master_DB.RegNoRep.Value}_{rep.Reports.Master_DB.OkpoRep.Value}", "Проверка отчёта");
+
+        var form10 = await db.form_10
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Where(x => x.Report != null && x.Report.Reports != null && x.Report.Id == rep.Id)
+            .FirstOrDefaultAsync(cts.Token);
+
+        if (form10 is null)
         {
             var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
 
@@ -525,82 +532,55 @@ public abstract class CheckF21 : CheckBase
 
             #endregion
 
-            if (answer is "Выбрать файл БД")
+            if (answer is not "Выбрать файл БД")
             {
-                OpenFileDialog dial = new() { AllowMultiple = false };
-                var filter = new FileDialogFilter
-                {
-                    Extensions = { "RAODB" }
-                };
-                dial.Filters = [filter];
-                var dbWithForm1 = await dial.ShowAsync(desktop.MainWindow);
-                if (dbWithForm1 is null) return errorList;
-                var dbWithForm1FullPath = dbWithForm1[0];
-                await using DBModel db2 = new(dbWithForm1FullPath);
-
-                await db2.form_10.Where(x => x.RegNo_DB == rep.Reports.Master_DB.Rows20[form20Id].RegNo_DB).LoadAsync();
-                form10 = db2.ReportCollectionDbSet
-                    .Where(x => x.FormNum_DB == "1.0")
-                    .ToList()
-                    .SingleOrDefault(x => x.Rows10.Count > 0);    //isolate form 1.0 that matches our form 2.0
-
-                await db2.ReportsCollectionDbSet.Where(x => x.Master_DBId == form10.Id).LoadAsync();
-                reps1 = db2.ReportsCollectionDbSet.SingleOrDefault(x => x.Master_DBId == form10.Id);
-                await db2.ReportCollectionDbSet
-                    .Where(x => x.Reports.Master_DBId == reps1.Master_DBId
-                                && (x.FormNum_DB == "1.5"
-                                    || x.FormNum_DB == "1.6"
-                                    || x.FormNum_DB == "1.7"
-                                    || x.FormNum_DB == "1.8")
-                                && (x.StartPeriod_DB.Length >= 4
-                                    && x.StartPeriod_DB.Substring(x.StartPeriod_DB.Length - 4) == rep.Year_DB
-                                    || x.EndPeriod_DB.Length >= 4
-                                    && x.EndPeriod_DB.Substring(x.EndPeriod_DB.Length - 4) == rep.Year_DB))
-                    .LoadAsync(); //load reports themselves
-
-                foreach (var report in reps1.Report_Collection)
-                {
-                    await db2.form_15.Where(x => x.ReportId == report.Id).LoadAsync();  //load rows for reports 1.5
-                    await db2.form_16.Where(x => x.ReportId == report.Id).LoadAsync();  //load rows for reports 1.6
-                    await db2.form_17.Where(x => x.ReportId == report.Id).LoadAsync();  //load rows for reports 1.7
-                    await db2.form_18.Where(x => x.ReportId == report.Id).LoadAsync();  //load rows for reports 1.8
-                }
+                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
             }
-            else return errorList;
+
+            OpenFileDialog dial = new() { AllowMultiple = false };
+            var filter = new FileDialogFilter
+            {
+                Extensions = { "RAODB" }
+            };
+            dial.Filters = [filter];
+
+            var dbWithForm1 = await dial.ShowAsync(desktop.MainWindow);
+            if (dbWithForm1 is null)
+            {
+                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+            }
+            var dbWithForm1FullPath = dbWithForm1![0];
+            db = new DBModel(dbWithForm1FullPath);
         }
-        else
+
+        var repsWithForm1 = await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+            .Include(x => x.Report_Collection
+                .Where(report => 
+                    (report.FormNum_DB == "1.5" || report.FormNum_DB == "1.6" || report.FormNum_DB == "1.7" || report.FormNum_DB == "1.8") 
+                    && (report.StartPeriod_DB.Length >= 4 
+                        && report.StartPeriod_DB.Substring(report.StartPeriod_DB.Length - 4) == rep.Year_DB 
+                        || report.EndPeriod_DB.Length >= 4 
+                        && report.EndPeriod_DB.Substring(report.EndPeriod_DB.Length - 4) == rep.Year_DB)))
+            .ThenInclude(x => x.Rows15)
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows16)
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows17)
+            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows18)
+            .FirstOrDefaultAsync(x => x.Master_DB.Rows10.Any(y => y.RegNo_DB == form20RegNo), cts.Token);
+
+        if (repsWithForm1 is null)
         {
-            await db.ReportsCollectionDbSet.Where(x => x.Master_DBId == form10.Id).LoadAsync();    //load the report collection that corresponds to the isolated form 1.0
-            reps1 = db.ReportsCollectionDbSet.SingleOrDefault(x => x.Master_DBId == form10.Id);    //isolate this report collection
-            if (reps1 == null) return errorList;
-            await db.ReportCollectionDbSet
-                .Where(x => x.Reports.Master_DBId == reps1.Master_DBId
-                            && (x.FormNum_DB == "1.5"
-                                || x.FormNum_DB == "1.6"
-                                || x.FormNum_DB == "1.7"
-                                || x.FormNum_DB == "1.8")
-                            && (x.StartPeriod_DB.Length >= 4
-                                && x.StartPeriod_DB.Substring(x.StartPeriod_DB.Length - 4) == rep.Year_DB
-                                || x.EndPeriod_DB.Length >= 4
-                                && x.EndPeriod_DB.Substring(x.EndPeriod_DB.Length - 4) == rep.Year_DB))
-                .LoadAsync(); //load reports themselves
-
-            foreach (var report in reps1.Report_Collection)
-            {
-                await db.form_15.Where(x => x.ReportId == report.Id).LoadAsync();  //load rows for reports 1.5
-                await db.form_16.Where(x => x.ReportId == report.Id).LoadAsync();  //load rows for reports 1.6
-                await db.form_17.Where(x => x.ReportId == report.Id).LoadAsync();  //load rows for reports 1.7
-                await db.form_18.Where(x => x.ReportId == report.Id).LoadAsync();  //load rows for reports 1.8
-            }
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
-        
-        //at this point forms1 contains everything that we need to convert.
 
         List<Form21> forms21ExpectedBase = [];
         List<(string, string, string, string)> forms21MetadataBase = [];
         Form17? formHeader17 = null;
         Form18? formHeader18 = null;
-        foreach (var key in reps1.Report_Collection)
+        foreach (var key in repsWithForm1!.Report_Collection)
         {
             var report = (Report)key;
             Form21? form21New;
@@ -1035,13 +1015,18 @@ public abstract class CheckF21 : CheckBase
             index++;
             error.Index = index;
         }
+
+        progressBarVM.SetProgressBar(100, "Завершение проверки");
+        await progressBar.CloseAsync();
+
         return errorList;
     }
 
-    public static async Task<List<CheckError>> Check_Total(string dbAddress, int repId)
+    public static async Task<List<CheckError>> Check_Total(int repId, CancellationTokenSource cts)
     {
-        await using var db = new DBModel(dbAddress);
-        var rep = db.ReportCollectionDbSet
+
+        await using var db = new DBModel(StaticConfiguration.DBPath);
+        var rep = await db.ReportCollectionDbSet
             .AsNoTracking()
             .AsQueryable()
             .AsSplitQuery()
@@ -1049,8 +1034,25 @@ public abstract class CheckF21 : CheckBase
             .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
             .Include(x => x.Rows21.OrderBy(form => form.NumberInOrder_DB))
             .Include(x => x.Notes.OrderBy(note => note.Order))
-            .FirstOrDefault(x => x.Id == repId);
-        return await Check_Total(db, rep);
+            .FirstOrDefaultAsync(x => x.Id == repId);
+        return await Check_Total(db, rep, cts);
+    }
+
+    #endregion
+
+    #region CancelCommandAndCloseProgressBarWindow
+
+    /// <summary>
+    /// Отмена исполняемой команды и закрытие окна прогрессбара.
+    /// </summary>
+    /// <param name="cts">Токен.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <returns></returns>
+    private protected static async Task CancelCommandAndCloseProgressBarWindow(CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null)
+    {
+        await cts.CancelAsync();
+        if (progressBar is not null) await progressBar.CloseAsync();
+        cts.Token.ThrowIfCancellationRequested();
     }
 
     #endregion
