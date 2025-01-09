@@ -47,17 +47,17 @@ public class CheckF21 : CheckBase
         progressBarVM.SetProgressBar(5, "Поиск соответствующей формы 1.0",
             $"Проверка {rep.Reports.Master_DB.RegNoRep.Value}_{rep.Reports.Master_DB.OkpoRep.Value}", "Проверка отчёта");
 
-        var repsWithForm1 = await db.ReportsCollectionDbSet
+        var repsWithForm1Exist = await db.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
             .Include(reps => reps.DBObservable)
             .Include(reps => reps.Master_DB).ThenInclude(report => report.Rows10)
             .Where(reps => reps.DBObservable != null)
-            .FirstOrDefaultAsync(reps => reps.Master_DB.Rows10
+            .AnyAsync(reps => reps.Master_DB.Rows10
                 .Any(form10 => form10.RegNo_DB == form20RegNo), cts.Token);
 
-        if (repsWithForm1 is null)
+        if (!repsWithForm1Exist)
         {
             var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
 
@@ -106,7 +106,7 @@ public class CheckF21 : CheckBase
             db = new DBModel(dbWithForm1FullPath);
         }
 
-        repsWithForm1 = await db.ReportsCollectionDbSet
+        var repsWithForm1 = await db.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
