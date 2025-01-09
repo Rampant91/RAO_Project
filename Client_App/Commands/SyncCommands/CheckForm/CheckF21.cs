@@ -15,7 +15,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
-using System.Xml.Linq;
 using Client_App.Views.ProgressBar;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
@@ -481,8 +480,9 @@ public abstract class CheckF21 : CheckBase
 
     #region CheckTotal
 
-    public static async Task<List<CheckError>> Check_Total(DBModel db, Report? rep, CancellationTokenSource cts)
+    public static async Task<List<CheckError>> Check_Total(DBModel db, Report? rep, CancellationTokenSource cts2)
     {
+        var cts = new CancellationTokenSource();
         List<CheckError> errorList = [];
         if (rep == null) return errorList;
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
@@ -497,14 +497,25 @@ public abstract class CheckF21 : CheckBase
         progressBarVM.SetProgressBar(5, "Поиск соответствующей формы 1.0",
             $"Проверка {rep.Reports.Master_DB.RegNoRep.Value}_{rep.Reports.Master_DB.OkpoRep.Value}", "Проверка отчёта");
 
-        var form10 = await db.form_10
+        var reps1 = await db.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.Report != null && x.Report.Reports != null && x.Report.Id == rep.Id)
-            .FirstOrDefaultAsync(cts.Token);
+            .Include(x => x.DBObservable)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+            .Where(x => x.DBObservable != null)
+            .FirstOrDefaultAsync(x => x.Master_DB.Rows10
+                .Any(y => y.RegNo_DB == form20RegNo), cts.Token);
 
-        if (form10 is null)
+        //var reps1 = await dbTmp.ReportsCollectionDbSet
+        //    .AsNoTracking()
+        //    .AsSplitQuery()
+        //    .AsQueryable()
+        //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+        //    .FirstOrDefaultAsync(x => x.Master_DB.Rows10
+        //        .Any(y => y.RegNo_DB == form20RegNo), cts.Token);
+
+        if (reps1 is null)
         {
             var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
 
@@ -1024,7 +1035,6 @@ public abstract class CheckF21 : CheckBase
 
     public static async Task<List<CheckError>> Check_Total(int repId, CancellationTokenSource cts)
     {
-
         await using var db = new DBModel(StaticConfiguration.DBPath);
         var rep = await db.ReportCollectionDbSet
             .AsNoTracking()
@@ -1035,6 +1045,7 @@ public abstract class CheckF21 : CheckBase
             .Include(x => x.Rows21.OrderBy(form => form.NumberInOrder_DB))
             .Include(x => x.Notes.OrderBy(note => note.Order))
             .FirstOrDefaultAsync(x => x.Id == repId);
+
         return await Check_Total(db, rep, cts);
     }
 
@@ -1048,7 +1059,7 @@ public abstract class CheckF21 : CheckBase
     /// <param name="cts">Токен.</param>
     /// <param name="progressBar">Окно прогрессбара.</param>
     /// <returns></returns>
-    private protected static async Task CancelCommandAndCloseProgressBarWindow(CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null)
+    private static async Task CancelCommandAndCloseProgressBarWindow(CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null)
     {
         await cts.CancelAsync();
         if (progressBar is not null) await progressBar.CloseAsync();
