@@ -10,6 +10,10 @@ using MessageBox.Avalonia.DTO;
 using Models.CheckForm;
 using Client_App.Interfaces.Logger;
 using System.Threading;
+using Microsoft.EntityFrameworkCore;
+using Models.DBRealization;
+using Client_App.Commands.AsyncCommands.Save;
+using Models.Forms;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
 
@@ -29,6 +33,7 @@ public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
         var reps = changeOrCreateViewModel.Storages;
         var rep = changeOrCreateViewModel.Storage;
 
+        await using var db = new DBModel(StaticConfiguration.DBPath);
         List<CheckError> result = [];
         try
         {
@@ -59,7 +64,17 @@ public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
                     result.AddRange(CheckF18.Check_Total(reps, rep));
                     break;
                 case "2.1":
-                    result.AddRange(await CheckF21.Check_Total(rep.Id, cts));
+                    var rep21 = await db.ReportCollectionDbSet
+                        .AsNoTracking()
+                        .AsQueryable()
+                        .AsSplitQuery()
+                        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                        .Include(x => x.Rows21.OrderBy(form => form.NumberInOrder_DB))
+                        .Include(x => x.Notes.OrderBy(note => note.Order))
+                    .FirstOrDefaultAsync(x => x.Id == rep.Id, cts.Token);
+
+                    result.AddRange(await new CheckF21().AsyncExecute(rep21));
                     break;
                 default:
                 {

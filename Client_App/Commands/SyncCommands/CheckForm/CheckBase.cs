@@ -9,10 +9,11 @@ using System.Text.RegularExpressions;
 using Models.CheckForm;
 using Models.Collections;
 using Models.Forms.Form1;
+using Client_App.Commands.AsyncCommands;
 
 namespace Client_App.Commands.SyncCommands.CheckForm;
 
-public abstract class CheckBase
+public abstract class CheckBase : BaseAsyncCommand
 {
     #region Properties
     

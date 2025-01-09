@@ -22,471 +22,21 @@ namespace Client_App.Commands.SyncCommands.CheckForm;
 /// <summary>
 /// Проверка отчётов по форме 2.1. 
 /// </summary>
-public abstract class CheckF21 : CheckBase
+public class CheckF21 : CheckBase
 {
-    #region Properties
+    public override bool CanExecute(object? parameter) => true;
 
-    private static readonly Dictionary<string, string> GraphsList = new()
-    {
-        { "NumberInOrder_DB", "01 - № п/п" },
-        { "RefineMachineName_DB", "02 - Установки переработки - наименование" },
-        { "MachineCode_DB", "03 - Установки переработки - код" },
-        { "MachinePower_DB", "04 - Установки переработки - мощность, куб.м/год" },
-        { "NumberOfHoursPerYear_DB", "05 - Установки переработки - количество часов работы за год" },
-        { "CodeRAOIn_DB", "06 - Поступило РАО - код" },
-        { "StatusRAOIn_DB", "07 - Поступило РАО - статус" },
-        { "VolumeIn_DB", "08 - Поступило РАО - количество - объём без упаковки, куб.м" },
-        { "MassIn_DB", "09 - Поступило РАО - количество - масса без упаковки (нетто), т" },
-        { "QuantityIn_DB", "10 - Поступило РАО - количество - ОЗИИИ, шт." },
-        { "TritiumActivityIn_DB", "11 - Поступило РАО - суммарная активность, Бк - тритий" },
-        { "BetaGammaActivityIn_DB", "12 - Поступило РАО - суммарная активность, Бк - бета-, гамма- излучающие радионуклиды (исключая трансурановые)" },
-        { "AlphaActivityIn_DB", "13 - Поступило РАО - суммарная активность, Бк - альфа-излучающий радионуклиды (исключая трансурановые)" },
-        { "TransuraniumActivityIn_DB", "14 - Поступило РАО - суммарная активность, Бк - трансурановые радионуклиды" },
-        { "CodeRAOout_DB", "15 - Образовалось РАО - код" },
-        { "StatusRAOout_DB", "16 - Образовалось РАО - статус" },
-        { "VolumeOut_DB", "17 - Образовалось РАО - количество - объём без упаковки, куб.м" },
-        { "MassOut_DB", "18 - Образовалось РАО - количество - масса без упаковки (нетто), т" },
-        { "QuantityOZIIIout_DB", "19 - Образовалось РАО - количество - ОЗИИИ, шт." },
-        { "TritiumActivityOut_DB", "20 - Образовалось РАО - суммарная активность, Бк - тритий" },
-        { "BetaGammaActivityOut_DB", "21 - Образовалось РАО - суммарная активность, Бк - бета-, гамма- излучающие радионуклиды (исключая трансурановые)" },
-        { "AlphaActivityOut_DB", "22 - Образовалось РАО - суммарная активность, Бк - альфа-излучающий радионуклиды (исключая трансурановые)" },
-        { "TransuraniumActivityOut_DB", "23 - Образовалось РАО - суммарная активность, Бк - трансурановые радионуклиды" }
-    };
+    #region AsyncExecute
 
-    #endregion
-
-    #region FormConvert
-
-    private static Form21? FormConvert(Form15 form)
-    {
-        if (form.RefineOrSortRAOCode_DB.Length == 0
-            || form.RefineOrSortRAOCode_DB == "-"
-            || string.IsNullOrWhiteSpace(form.RefineOrSortRAOCode_DB)   //refine code doesn't exist
-            || form.RefineOrSortRAOCode_DB[0] == '7')                   //7x refine codes are ignored
-        {
-            return null;
-        }
-        Form21 res = new()
-        {
-            FormNum_DB = form.FormNum_DB,
-            NumberInOrder_DB = form.NumberInOrder_DB
-        };
-        switch (form.OperationCode_DB)
-        {
-            case "44":
-            {
-                //left
-                res.RefineMachineName_DB = "in";
-                if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
-                res.CodeRAOIn_DB = "-";
-                res.StatusRAOIn_DB = form.StatusRAO_DB;
-                res.VolumeIn_DB = "-";
-                res.MassIn_DB = "-";
-                res.QuantityIn_DB = form.Quantity_DB.ToString();
-                return res;
-            }
-            case "56":
-            {
-                //right
-                res.RefineMachineName_DB = "out";
-                if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
-                res.CodeRAOout_DB = "-";
-                res.StatusRAOout_DB = form.StatusRAO_DB;
-                res.VolumeOut_DB = "-";
-                res.MassOut_DB = "-";
-                res.QuantityOZIIIout_DB = form.Quantity_DB.ToString();
-                return res;
-            }
-            default: return null;
-        }
-    }
-
-    private static Form21? FormConvert(Form16 form)
-    {
-        if (form.RefineOrSortRAOCode_DB.Length == 0
-            || form.RefineOrSortRAOCode_DB == "-"
-            || string.IsNullOrWhiteSpace(form.RefineOrSortRAOCode_DB)   //refine code doesn't exist
-            || form.RefineOrSortRAOCode_DB[0] == '7')                   //7x refine codes are ignored
-        {
-            return null;
-        }
-        Form21 res = new()
-        {
-            FormNum_DB = form.FormNum_DB,
-            NumberInOrder_DB = form.NumberInOrder_DB
-        };
-        switch (form.OperationCode_DB)
-        {
-            case "44":
-            {
-                //left
-                res.RefineMachineName_DB = "in";
-                if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
-                res.CodeRAOIn_DB = form.CodeRAO_DB;
-                res.StatusRAOIn_DB = form.StatusRAO_DB;
-                res.VolumeIn_DB = form.Volume_DB;
-                res.MassIn_DB = form.Mass_DB;
-                res.QuantityIn_DB = form.QuantityOZIII_DB;
-                res.TritiumActivityIn_DB = form.TritiumActivity_DB;
-                res.BetaGammaActivityIn_DB = form.BetaGammaActivity_DB;
-                res.AlphaActivityIn_DB = form.AlphaActivity_DB;
-                res.TransuraniumActivityIn_DB = form.TransuraniumActivity_DB;
-                return res;
-            }
-            case "56":
-            {
-                //right
-                res.RefineMachineName_DB = "out";
-                if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
-                res.CodeRAOout_DB = form.CodeRAO_DB;
-                res.StatusRAOout_DB = form.StatusRAO_DB;
-                res.VolumeOut_DB = form.Volume_DB;
-                res.MassOut_DB = form.Mass_DB;
-                res.QuantityOZIIIout_DB = form.QuantityOZIII_DB;
-                res.TritiumActivityOut_DB = form.TritiumActivity_DB;
-                res.BetaGammaActivityOut_DB = form.BetaGammaActivity_DB;
-                res.AlphaActivityOut_DB = form.AlphaActivity_DB;
-                res.TransuraniumActivityOut_DB = form.TransuraniumActivity_DB;
-                return res;
-            }
-            default: return null;
-        }
-    }
-
-    private static Form21? FormConvert(Form17 form, Form17? formHeader = null)
-    {
-        var formTrue = formHeader ?? form;
-        if (formTrue.RefineOrSortRAOCode_DB.Length == 0
-            || formTrue.RefineOrSortRAOCode_DB == "-"
-            || string.IsNullOrWhiteSpace(formTrue.RefineOrSortRAOCode_DB) //refine code doesn't exist
-            || formTrue.RefineOrSortRAOCode_DB[0] == '7' //7x refine codes are ignored
-            || form.CodeRAO_DB == "-"
-            || string.IsNullOrWhiteSpace(form.CodeRAO_DB))
-        {
-            return null;
-        }
-        Form21 res = new()
-        {
-            FormNum_DB = form.FormNum_DB,
-            NumberInOrder_DB = form.NumberInOrder_DB
-        };
-        switch (formTrue.OperationCode_DB)
-        {
-            case "44":
-            {
-                //left
-                res.RefineMachineName_DB = "in";
-                if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
-                res.CodeRAOIn_DB = form.CodeRAO_DB;
-                res.StatusRAOIn_DB = form.StatusRAO_DB;
-                res.VolumeIn_DB = form.VolumeOutOfPack_DB;
-                res.MassIn_DB = form.MassOutOfPack_DB;
-                res.QuantityIn_DB = form.Quantity_DB;
-                res.TritiumActivityIn_DB = form.TritiumActivity_DB;
-                res.BetaGammaActivityIn_DB = form.BetaGammaActivity_DB;
-                res.AlphaActivityIn_DB = form.AlphaActivity_DB;
-                res.TransuraniumActivityIn_DB = form.TransuraniumActivity_DB;
-                return res;
-            }
-            case "55":
-            {
-                //right
-                res.RefineMachineName_DB = "out";
-                if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
-                res.CodeRAOout_DB = form.CodeRAO_DB;
-                res.StatusRAOout_DB = form.StatusRAO_DB;
-                res.VolumeOut_DB = form.VolumeOutOfPack_DB;
-                res.MassOut_DB = form.MassOutOfPack_DB;
-                res.QuantityOZIIIout_DB = form.Quantity_DB;
-                res.TritiumActivityOut_DB = form.TritiumActivity_DB;
-                res.BetaGammaActivityOut_DB = form.BetaGammaActivity_DB;
-                res.AlphaActivityOut_DB = form.AlphaActivity_DB;
-                res.TransuraniumActivityOut_DB = form.TransuraniumActivity_DB;
-                return res;
-            }
-            default: return null;
-        }
-    }
-
-    private static Form21? FormConvert(Form18 form, Form18? formHeader = null)
-    {
-        var formTrue = formHeader ?? form;
-        if (formTrue.RefineOrSortRAOCode_DB.Length == 0
-            || formTrue.RefineOrSortRAOCode_DB == "-"
-            || string.IsNullOrWhiteSpace(formTrue.RefineOrSortRAOCode_DB)   //refine code doesn't exist
-            || formTrue.RefineOrSortRAOCode_DB[0] == '7'                    //7x refine codes are ignored
-            || form.CodeRAO_DB == "-" 
-            || string.IsNullOrWhiteSpace(form.CodeRAO_DB))
-        {
-            return null;
-        }
-        Form21 res = new()
-        {
-            FormNum_DB = form.FormNum_DB,
-            NumberInOrder_DB = form.NumberInOrder_DB
-        };
-        switch (formTrue.OperationCode_DB)
-        {
-            case "44":
-            {
-                //left
-                res.RefineMachineName_DB = "in";
-                if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
-                res.CodeRAOIn_DB = form.CodeRAO_DB;
-                res.StatusRAOIn_DB = form.StatusRAO_DB;
-                res.VolumeIn_DB = form.Volume20_DB;
-                res.MassIn_DB = form.Mass21_DB;
-                res.QuantityIn_DB = "1";
-                res.TritiumActivityIn_DB = form.TritiumActivity_DB;
-                res.BetaGammaActivityIn_DB = form.BetaGammaActivity_DB;
-                res.AlphaActivityIn_DB = form.AlphaActivity_DB;
-                res.TransuraniumActivityIn_DB = form.TransuraniumActivity_DB;
-                return res;
-            }
-            case "55":
-            {
-                //right
-                res.RefineMachineName_DB = "out";
-                if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
-                res.CodeRAOout_DB = form.CodeRAO_DB;
-                res.StatusRAOout_DB = form.StatusRAO_DB;
-                res.VolumeOut_DB = form.Volume20_DB;
-                res.MassOut_DB = form.Mass21_DB;
-                res.QuantityOZIIIout_DB = "1";
-                res.TritiumActivityOut_DB = form.TritiumActivity_DB;
-                res.BetaGammaActivityOut_DB = form.BetaGammaActivity_DB;
-                res.AlphaActivityOut_DB = form.AlphaActivity_DB;
-                res.TransuraniumActivityOut_DB = form.TransuraniumActivity_DB;
-                return res;
-            }
-            default: return null;
-        }
-    }
-
-    #endregion
-
-    #region Form21_Copy
-
-    private static Form21 Form21_Copy(Form21 form, string? inOrOutParam = null)
-    {
-        Form21 res = new()
-        {
-            NumberInOrder_DB = form.NumberInOrder_DB,
-            RefineMachineName_DB = form.RefineMachineName_DB,
-            MachineCode_DB = form.MachineCode_DB,
-            FormNum_DB = form.FormNum_DB
-        };
-        var inOrOut = inOrOutParam ?? res.RefineMachineName_DB;
-        if (inOrOut is not ("in" or "out")) inOrOut = res.RefineMachineName_DB;
-        if (inOrOut == "in")
-        {
-            res.CodeRAOIn_DB = form.CodeRAOIn_DB;
-            res.StatusRAOIn_DB = form.StatusRAOIn_DB;
-            res.VolumeIn_DB = form.VolumeIn_DB;
-            res.MassIn_DB = form.MassIn_DB;
-            res.QuantityIn_DB = form.QuantityIn_DB;
-            res.TritiumActivityIn_DB = form.TritiumActivityIn_DB;
-            res.BetaGammaActivityIn_DB = form.BetaGammaActivityIn_DB;
-            res.AlphaActivityIn_DB = form.AlphaActivityIn_DB;
-            res.TransuraniumActivityIn_DB = form.TransuraniumActivityIn_DB;
-            res.QuantityOZIIIout_DB = form.QuantityOZIIIout_DB;
-        }
-        else
-        {
-            res.CodeRAOout_DB = form.CodeRAOout_DB;
-            res.StatusRAOout_DB = form.StatusRAOout_DB;
-            res.VolumeOut_DB = form.VolumeOut_DB;
-            res.MassOut_DB = form.MassOut_DB;
-            res.QuantityOZIIIout_DB = form.QuantityOZIIIout_DB;
-            res.TritiumActivityOut_DB = form.TritiumActivityOut_DB;
-            res.BetaGammaActivityOut_DB = form.BetaGammaActivityOut_DB;
-            res.AlphaActivityOut_DB = form.AlphaActivityOut_DB;
-            res.TransuraniumActivityOut_DB = form.TransuraniumActivityOut_DB;
-            res.QuantityIn_DB = form.QuantityIn_DB;
-        }
-        return res;
-    }
-
-    private static Form21 Form21_Copy_In(Form21 form)
-    {
-        Form21 res = new()
-        {
-            NumberInOrder_DB = form.NumberInOrder_DB,
-            RefineMachineName_DB = form.RefineMachineName_DB,
-            MachineCode_DB = form.MachineCode_DB,
-            FormNum_DB = form.FormNum_DB,
-            CodeRAOIn_DB = form.CodeRAOIn_DB,
-            StatusRAOIn_DB = form.StatusRAOIn_DB,
-            VolumeIn_DB = form.VolumeIn_DB,
-            MassIn_DB = form.MassIn_DB,
-            QuantityIn_DB = form.QuantityIn_DB,
-            TritiumActivityIn_DB = form.TritiumActivityIn_DB,
-            BetaGammaActivityIn_DB = form.BetaGammaActivityIn_DB,
-            AlphaActivityIn_DB = form.AlphaActivityIn_DB,
-            TransuraniumActivityIn_DB = form.TransuraniumActivityIn_DB,
-            QuantityOZIIIout_DB = form.QuantityOZIIIout_DB
-        };
-        return res;
-    }
-
-    private static Form21 Form21_Copy_Out(Form21 form)
-    {
-        Form21 res = new()
-        {
-            NumberInOrder_DB = form.NumberInOrder_DB,
-            RefineMachineName_DB = form.RefineMachineName_DB,
-            MachineCode_DB = form.MachineCode_DB,
-            FormNum_DB = form.FormNum_DB,
-            CodeRAOout_DB = form.CodeRAOout_DB,
-            StatusRAOout_DB = form.StatusRAOout_DB,
-            VolumeOut_DB = form.VolumeOut_DB,
-            MassOut_DB = form.MassOut_DB,
-            QuantityOZIIIout_DB = form.QuantityOZIIIout_DB,
-            TritiumActivityOut_DB = form.TritiumActivityOut_DB,
-            BetaGammaActivityOut_DB = form.BetaGammaActivityOut_DB,
-            AlphaActivityOut_DB = form.AlphaActivityOut_DB,
-            TransuraniumActivityOut_DB = form.TransuraniumActivityOut_DB,
-            QuantityIn_DB = form.QuantityIn_DB
-        };
-        return res;
-    }
-
-    #endregion
-
-    #region Form21_Add
-
-    private static void Form21_Add(Form21 receiver, Form21 giver, string? direction = null)
-    {
-        var directionReal = direction ?? receiver.RefineMachineName_DB;
-        switch (directionReal)
-        {
-            case "in":
-            {
-                receiver.VolumeIn_DB = Form21_SubAdd(receiver.VolumeIn_DB, giver.VolumeIn_DB);
-                receiver.MassIn_DB = Form21_SubAdd(receiver.MassIn_DB, giver.MassIn_DB);
-                receiver.QuantityIn_DB = Form21_SubAdd(receiver.QuantityIn_DB, giver.QuantityIn_DB);
-                receiver.TritiumActivityIn_DB = Form21_SubAdd(receiver.TritiumActivityIn_DB, giver.TritiumActivityIn_DB);
-                receiver.BetaGammaActivityIn_DB = Form21_SubAdd(receiver.BetaGammaActivityIn_DB, giver.BetaGammaActivityIn_DB);
-                receiver.AlphaActivityIn_DB = Form21_SubAdd(receiver.AlphaActivityIn_DB, giver.AlphaActivityIn_DB);
-                receiver.TransuraniumActivityIn_DB = Form21_SubAdd(receiver.TransuraniumActivityIn_DB, giver.TransuraniumActivityIn_DB);
-                break;
-            }
-            case "out":
-            {
-                receiver.VolumeOut_DB = Form21_SubAdd(receiver.VolumeOut_DB, giver.VolumeOut_DB);
-                receiver.MassOut_DB = Form21_SubAdd(receiver.MassOut_DB, giver.MassOut_DB);
-                receiver.QuantityOZIIIout_DB = Form21_SubAdd(receiver.QuantityOZIIIout_DB, giver.QuantityOZIIIout_DB);
-                receiver.TritiumActivityOut_DB = Form21_SubAdd(receiver.TritiumActivityOut_DB, giver.TritiumActivityOut_DB);
-                receiver.BetaGammaActivityOut_DB = Form21_SubAdd(receiver.BetaGammaActivityOut_DB, giver.BetaGammaActivityOut_DB);
-                receiver.AlphaActivityOut_DB = Form21_SubAdd(receiver.AlphaActivityOut_DB, giver.AlphaActivityOut_DB);
-                receiver.TransuraniumActivityOut_DB = Form21_SubAdd(receiver.TransuraniumActivityOut_DB, giver.TransuraniumActivityOut_DB);
-                break;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Tries parsing the two parameters and assigning their sum to the return value, converting it back to string afterward.
-    /// If the parsing fails, returns the first parameter as is.
-    /// </summary>
-    /// <param name="receiver">The first parameter</param>
-    /// <param name="giver">The second parameter</param>
-    /// <returns>A string representation of the sum of the parameters. If the summation fails, returns the first parameter.</returns>
-    private static string Form21_SubAdd(string receiver, string giver)
-    {
-        var res = receiver;
-        var receiverReal = receiver == "-" || string.IsNullOrWhiteSpace(receiver) 
-            ? "0" 
-            : receiver;
-        var giverReal = giver == "-" || string.IsNullOrWhiteSpace(giver) 
-            ? "0" 
-            : giver;
-        if (TryParseDoubleExtended(receiverReal, out var receiverTrue) 
-            && TryParseDoubleExtended(giverReal, out var giverTrue))
-        {
-            res = (receiverTrue + giverTrue).ToString("e2").Replace("+0","+");
-        }
-        return res;
-    }
-
-    #endregion
-
-    #region Form21_SubMatch
-
-    private static void Form21_SubMatch(string form1Val, string form2Val, string humanName, double valB, List<(int, string, string, string)> res, int columnNum, string forms1, string forms2)
-    {
-        TryParseDoubleExtended(form1Val, out var val1);
-        TryParseDoubleExtended(form2Val, out var val2);
-        if (!((form1Val == "-" && form2Val == "-") 
-              || (val1 < 0.001 && form2Val == "-") 
-              || (form1Val == "-" && val2 < 0.001) 
-              || val1 >= val2 * (1.0 - valB) 
-              && val2 >= val1 * (1.0 - valB)))
-        {
-            res.Add((columnNum, $"{humanName}", $"{forms1}: {form1Val}", $"{forms2}: {form2Val}"));
-        }
-    }
-
-    #endregion
-
-    #region Form21_Match
-
-    private static List<(int,string,string,string)>? Form21_Match(Form21 form1, Form21 form2, string forms1, string forms2)
-    {
-        const double valB = 0.1;
-        List<(int, string, string, string)> res = [];
-        if (form1.CodeRAOIn_DB == form2.CodeRAOIn_DB 
-            && form1.CodeRAOIn_DB != "-" 
-            && !string.IsNullOrWhiteSpace(form1.CodeRAOIn_DB))
-        {
-            if (form1.StatusRAOIn_DB == form2.StatusRAOIn_DB
-                && form1.CodeRAOIn_DB == form2.CodeRAOIn_DB
-                && form1.MachineCode_DB == form2.MachineCode_DB)
-            {
-                Form21_SubMatch(form1.VolumeIn_DB, form2.VolumeIn_DB, "Объем без упаковки, куб. м", valB, res, 8, forms1, forms2);
-                Form21_SubMatch(form1.MassIn_DB, form2.MassIn_DB, "Масса без упаковки (нетто), т", valB, res, 9, forms1, forms2);
-                Form21_SubMatch(form1.QuantityIn_DB, form2.QuantityIn_DB, "кол-во ОЗИИИ, шт.", valB, res, 10, forms1, forms2);
-                Form21_SubMatch(form1.TritiumActivityIn_DB, form2.TritiumActivityIn_DB, "суммарная активность (тритий), Бк", valB, res, 11, forms1, forms2);
-                Form21_SubMatch(form1.BetaGammaActivityIn_DB, form2.BetaGammaActivityIn_DB, "суммарная активность (бета, гамма), Бк", valB, res, 12, forms1, forms2);
-                Form21_SubMatch(form1.AlphaActivityIn_DB, form2.AlphaActivityIn_DB, "суммарная активность (альфа), Бк", valB, res, 13, forms1, forms2);
-                Form21_SubMatch(form1.TransuraniumActivityIn_DB, form2.TransuraniumActivityIn_DB, "суммарная активность (трансурановые), Бк", valB, res, 14, forms1, forms2);
-                return res;
-            }
-            return null;
-        }
-        if (form1.CodeRAOout_DB == form2.CodeRAOout_DB 
-            && form1.CodeRAOout_DB != "-" 
-            && !string.IsNullOrWhiteSpace(form1.CodeRAOout_DB))
-        {
-            if (form1.StatusRAOout_DB == form2.StatusRAOout_DB
-                && form1.CodeRAOout_DB == form2.CodeRAOout_DB
-                && form1.MachineCode_DB == form2.MachineCode_DB)
-            {
-                Form21_SubMatch(form1.VolumeOut_DB, form2.VolumeOut_DB, "Объем без упаковки, куб. м", valB, res, 17, forms1, forms2);
-                Form21_SubMatch(form1.MassOut_DB, form2.MassOut_DB, "Масса без упаковки (нетто), т", valB, res, 18, forms1, forms2);
-                Form21_SubMatch(form1.QuantityOZIIIout_DB, form2.QuantityOZIIIout_DB, "кол-во ОЗИИИ, шт.", valB, res, 19, forms1, forms2);
-                Form21_SubMatch(form1.TritiumActivityOut_DB, form2.TritiumActivityOut_DB, "суммарная активность (тритий), Бк", valB, res, 20, forms1, forms2);
-                Form21_SubMatch(form1.BetaGammaActivityOut_DB, form2.BetaGammaActivityOut_DB, "суммарная активность (бета, гамма), Бк", valB, res, 21, forms1, forms2);
-                Form21_SubMatch(form1.AlphaActivityOut_DB, form2.AlphaActivityOut_DB, "суммарная активность (альфа), Бк", valB, res, 22, forms1, forms2);
-                Form21_SubMatch(form1.TransuraniumActivityOut_DB, form2.TransuraniumActivityOut_DB, "суммарная активность (трансурановые), Бк", valB, res, 23, forms1, forms2);
-                return res;
-            }
-            return null;
-        }
-        return null;
-    }
-
-    #endregion
-
-    #region CheckTotal
-
-    public static async Task<List<CheckError>> Check_Total(DBModel db, Report? rep, CancellationTokenSource cts2)
+    public override async Task<List<CheckError>> AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
         List<CheckError> errorList = [];
-        if (rep == null) return errorList;
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
+        if (parameter is not Report) await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        var rep = parameter as Report;
+        var db = new DBModel(StaticConfiguration.DBPath);
 
         var form20RegNo = rep.Reports.Master_DB.RegNoRep.Value;
         if (string.IsNullOrWhiteSpace(form20RegNo))
@@ -497,25 +47,17 @@ public abstract class CheckF21 : CheckBase
         progressBarVM.SetProgressBar(5, "Поиск соответствующей формы 1.0",
             $"Проверка {rep.Reports.Master_DB.RegNoRep.Value}_{rep.Reports.Master_DB.OkpoRep.Value}", "Проверка отчёта");
 
-        var reps1 = await db.ReportsCollectionDbSet
+        var repsWithForm1 = await db.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Include(x => x.DBObservable)
-            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-            .Where(x => x.DBObservable != null)
-            .FirstOrDefaultAsync(x => x.Master_DB.Rows10
-                .Any(y => y.RegNo_DB == form20RegNo), cts.Token);
+            .Include(reps => reps.DBObservable)
+            .Include(reps => reps.Master_DB).ThenInclude(report => report.Rows10)
+            .Where(reps => reps.DBObservable != null)
+            .FirstOrDefaultAsync(reps => reps.Master_DB.Rows10
+                .Any(form10 => form10.RegNo_DB == form20RegNo), cts.Token);
 
-        //var reps1 = await dbTmp.ReportsCollectionDbSet
-        //    .AsNoTracking()
-        //    .AsSplitQuery()
-        //    .AsQueryable()
-        //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-        //    .FirstOrDefaultAsync(x => x.Master_DB.Rows10
-        //        .Any(y => y.RegNo_DB == form20RegNo), cts.Token);
-
-        if (reps1 is null)
+        if (repsWithForm1 is null)
         {
             var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
 
@@ -564,12 +106,12 @@ public abstract class CheckF21 : CheckBase
             db = new DBModel(dbWithForm1FullPath);
         }
 
-        var repsWithForm1 = await db.ReportsCollectionDbSet
+        repsWithForm1 = await db.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-            .Include(x => x.Report_Collection
+            .Include(reps => reps.Master_DB).ThenInclude(report => report.Rows10)
+            .Include(reps => reps.Report_Collection
                 .Where(report => 
                     (report.FormNum_DB == "1.5" || report.FormNum_DB == "1.6" || report.FormNum_DB == "1.7" || report.FormNum_DB == "1.8") 
                     && (report.StartPeriod_DB.Length >= 4 
@@ -577,10 +119,11 @@ public abstract class CheckF21 : CheckBase
                         || report.EndPeriod_DB.Length >= 4 
                         && report.EndPeriod_DB.Substring(report.EndPeriod_DB.Length - 4) == rep.Year_DB)))
             .ThenInclude(x => x.Rows15)
-            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows16)
-            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows17)
-            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows18)
-            .FirstOrDefaultAsync(x => x.Master_DB.Rows10.Any(y => y.RegNo_DB == form20RegNo), cts.Token);
+            .Include(reps => reps.Report_Collection).ThenInclude(report => report.Rows16)
+            .Include(reps => reps.Report_Collection).ThenInclude(report => report.Rows17)
+            .Include(reps => reps.Report_Collection).ThenInclude(report => report.Rows18)
+            .FirstOrDefaultAsync(reps => reps.Master_DB.Rows10
+                .Any(form10 => form10.RegNo_DB == form20RegNo), cts.Token);
 
         if (repsWithForm1 is null)
         {
@@ -1033,22 +576,6 @@ public abstract class CheckF21 : CheckBase
         return errorList;
     }
 
-    public static async Task<List<CheckError>> Check_Total(int repId, CancellationTokenSource cts)
-    {
-        await using var db = new DBModel(StaticConfiguration.DBPath);
-        var rep = await db.ReportCollectionDbSet
-            .AsNoTracking()
-            .AsQueryable()
-            .AsSplitQuery()
-            .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
-            .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
-            .Include(x => x.Rows21.OrderBy(form => form.NumberInOrder_DB))
-            .Include(x => x.Notes.OrderBy(note => note.Order))
-            .FirstOrDefaultAsync(x => x.Id == repId);
-
-        return await Check_Total(db, rep, cts);
-    }
-
     #endregion
 
     #region CancelCommandAndCloseProgressBarWindow
@@ -1064,6 +591,460 @@ public abstract class CheckF21 : CheckBase
         await cts.CancelAsync();
         if (progressBar is not null) await progressBar.CloseAsync();
         cts.Token.ThrowIfCancellationRequested();
+    }
+
+    #endregion
+
+    #region Properties
+
+    private static readonly Dictionary<string, string> GraphsList = new()
+    {
+        { "NumberInOrder_DB", "01 - № п/п" },
+        { "RefineMachineName_DB", "02 - Установки переработки - наименование" },
+        { "MachineCode_DB", "03 - Установки переработки - код" },
+        { "MachinePower_DB", "04 - Установки переработки - мощность, куб.м/год" },
+        { "NumberOfHoursPerYear_DB", "05 - Установки переработки - количество часов работы за год" },
+        { "CodeRAOIn_DB", "06 - Поступило РАО - код" },
+        { "StatusRAOIn_DB", "07 - Поступило РАО - статус" },
+        { "VolumeIn_DB", "08 - Поступило РАО - количество - объём без упаковки, куб.м" },
+        { "MassIn_DB", "09 - Поступило РАО - количество - масса без упаковки (нетто), т" },
+        { "QuantityIn_DB", "10 - Поступило РАО - количество - ОЗИИИ, шт." },
+        { "TritiumActivityIn_DB", "11 - Поступило РАО - суммарная активность, Бк - тритий" },
+        { "BetaGammaActivityIn_DB", "12 - Поступило РАО - суммарная активность, Бк - бета-, гамма- излучающие радионуклиды (исключая трансурановые)" },
+        { "AlphaActivityIn_DB", "13 - Поступило РАО - суммарная активность, Бк - альфа-излучающий радионуклиды (исключая трансурановые)" },
+        { "TransuraniumActivityIn_DB", "14 - Поступило РАО - суммарная активность, Бк - трансурановые радионуклиды" },
+        { "CodeRAOout_DB", "15 - Образовалось РАО - код" },
+        { "StatusRAOout_DB", "16 - Образовалось РАО - статус" },
+        { "VolumeOut_DB", "17 - Образовалось РАО - количество - объём без упаковки, куб.м" },
+        { "MassOut_DB", "18 - Образовалось РАО - количество - масса без упаковки (нетто), т" },
+        { "QuantityOZIIIout_DB", "19 - Образовалось РАО - количество - ОЗИИИ, шт." },
+        { "TritiumActivityOut_DB", "20 - Образовалось РАО - суммарная активность, Бк - тритий" },
+        { "BetaGammaActivityOut_DB", "21 - Образовалось РАО - суммарная активность, Бк - бета-, гамма- излучающие радионуклиды (исключая трансурановые)" },
+        { "AlphaActivityOut_DB", "22 - Образовалось РАО - суммарная активность, Бк - альфа-излучающий радионуклиды (исключая трансурановые)" },
+        { "TransuraniumActivityOut_DB", "23 - Образовалось РАО - суммарная активность, Бк - трансурановые радионуклиды" }
+    };
+
+    #endregion
+
+    #region FormConvert
+
+    private static Form21? FormConvert(Form15 form)
+    {
+        if (form.RefineOrSortRAOCode_DB.Length == 0
+            || form.RefineOrSortRAOCode_DB == "-"
+            || string.IsNullOrWhiteSpace(form.RefineOrSortRAOCode_DB)   //refine code doesn't exist
+            || form.RefineOrSortRAOCode_DB[0] == '7')                   //7x refine codes are ignored
+        {
+            return null;
+        }
+        Form21 res = new()
+        {
+            FormNum_DB = form.FormNum_DB,
+            NumberInOrder_DB = form.NumberInOrder_DB
+        };
+        switch (form.OperationCode_DB)
+        {
+            case "44":
+                {
+                    //left
+                    res.RefineMachineName_DB = "in";
+                    if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
+                    res.CodeRAOIn_DB = "-";
+                    res.StatusRAOIn_DB = form.StatusRAO_DB;
+                    res.VolumeIn_DB = "-";
+                    res.MassIn_DB = "-";
+                    res.QuantityIn_DB = form.Quantity_DB.ToString();
+                    return res;
+                }
+            case "56":
+                {
+                    //right
+                    res.RefineMachineName_DB = "out";
+                    if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
+                    res.CodeRAOout_DB = "-";
+                    res.StatusRAOout_DB = form.StatusRAO_DB;
+                    res.VolumeOut_DB = "-";
+                    res.MassOut_DB = "-";
+                    res.QuantityOZIIIout_DB = form.Quantity_DB.ToString();
+                    return res;
+                }
+            default: return null;
+        }
+    }
+
+    private static Form21? FormConvert(Form16 form)
+    {
+        if (form.RefineOrSortRAOCode_DB.Length == 0
+            || form.RefineOrSortRAOCode_DB == "-"
+            || string.IsNullOrWhiteSpace(form.RefineOrSortRAOCode_DB)   //refine code doesn't exist
+            || form.RefineOrSortRAOCode_DB[0] == '7')                   //7x refine codes are ignored
+        {
+            return null;
+        }
+        Form21 res = new()
+        {
+            FormNum_DB = form.FormNum_DB,
+            NumberInOrder_DB = form.NumberInOrder_DB
+        };
+        switch (form.OperationCode_DB)
+        {
+            case "44":
+                {
+                    //left
+                    res.RefineMachineName_DB = "in";
+                    if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
+                    res.CodeRAOIn_DB = form.CodeRAO_DB;
+                    res.StatusRAOIn_DB = form.StatusRAO_DB;
+                    res.VolumeIn_DB = form.Volume_DB;
+                    res.MassIn_DB = form.Mass_DB;
+                    res.QuantityIn_DB = form.QuantityOZIII_DB;
+                    res.TritiumActivityIn_DB = form.TritiumActivity_DB;
+                    res.BetaGammaActivityIn_DB = form.BetaGammaActivity_DB;
+                    res.AlphaActivityIn_DB = form.AlphaActivity_DB;
+                    res.TransuraniumActivityIn_DB = form.TransuraniumActivity_DB;
+                    return res;
+                }
+            case "56":
+                {
+                    //right
+                    res.RefineMachineName_DB = "out";
+                    if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
+                    res.CodeRAOout_DB = form.CodeRAO_DB;
+                    res.StatusRAOout_DB = form.StatusRAO_DB;
+                    res.VolumeOut_DB = form.Volume_DB;
+                    res.MassOut_DB = form.Mass_DB;
+                    res.QuantityOZIIIout_DB = form.QuantityOZIII_DB;
+                    res.TritiumActivityOut_DB = form.TritiumActivity_DB;
+                    res.BetaGammaActivityOut_DB = form.BetaGammaActivity_DB;
+                    res.AlphaActivityOut_DB = form.AlphaActivity_DB;
+                    res.TransuraniumActivityOut_DB = form.TransuraniumActivity_DB;
+                    return res;
+                }
+            default: return null;
+        }
+    }
+
+    private static Form21? FormConvert(Form17 form, Form17? formHeader = null)
+    {
+        var formTrue = formHeader ?? form;
+        if (formTrue.RefineOrSortRAOCode_DB.Length == 0
+            || formTrue.RefineOrSortRAOCode_DB == "-"
+            || string.IsNullOrWhiteSpace(formTrue.RefineOrSortRAOCode_DB) //refine code doesn't exist
+            || formTrue.RefineOrSortRAOCode_DB[0] == '7' //7x refine codes are ignored
+            || form.CodeRAO_DB == "-"
+            || string.IsNullOrWhiteSpace(form.CodeRAO_DB))
+        {
+            return null;
+        }
+        Form21 res = new()
+        {
+            FormNum_DB = form.FormNum_DB,
+            NumberInOrder_DB = form.NumberInOrder_DB
+        };
+        switch (formTrue.OperationCode_DB)
+        {
+            case "44":
+                {
+                    //left
+                    res.RefineMachineName_DB = "in";
+                    if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
+                    res.CodeRAOIn_DB = form.CodeRAO_DB;
+                    res.StatusRAOIn_DB = form.StatusRAO_DB;
+                    res.VolumeIn_DB = form.VolumeOutOfPack_DB;
+                    res.MassIn_DB = form.MassOutOfPack_DB;
+                    res.QuantityIn_DB = form.Quantity_DB;
+                    res.TritiumActivityIn_DB = form.TritiumActivity_DB;
+                    res.BetaGammaActivityIn_DB = form.BetaGammaActivity_DB;
+                    res.AlphaActivityIn_DB = form.AlphaActivity_DB;
+                    res.TransuraniumActivityIn_DB = form.TransuraniumActivity_DB;
+                    return res;
+                }
+            case "55":
+                {
+                    //right
+                    res.RefineMachineName_DB = "out";
+                    if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
+                    res.CodeRAOout_DB = form.CodeRAO_DB;
+                    res.StatusRAOout_DB = form.StatusRAO_DB;
+                    res.VolumeOut_DB = form.VolumeOutOfPack_DB;
+                    res.MassOut_DB = form.MassOutOfPack_DB;
+                    res.QuantityOZIIIout_DB = form.Quantity_DB;
+                    res.TritiumActivityOut_DB = form.TritiumActivity_DB;
+                    res.BetaGammaActivityOut_DB = form.BetaGammaActivity_DB;
+                    res.AlphaActivityOut_DB = form.AlphaActivity_DB;
+                    res.TransuraniumActivityOut_DB = form.TransuraniumActivity_DB;
+                    return res;
+                }
+            default: return null;
+        }
+    }
+
+    private static Form21? FormConvert(Form18 form, Form18? formHeader = null)
+    {
+        var formTrue = formHeader ?? form;
+        if (formTrue.RefineOrSortRAOCode_DB.Length == 0
+            || formTrue.RefineOrSortRAOCode_DB == "-"
+            || string.IsNullOrWhiteSpace(formTrue.RefineOrSortRAOCode_DB)   //refine code doesn't exist
+            || formTrue.RefineOrSortRAOCode_DB[0] == '7'                    //7x refine codes are ignored
+            || form.CodeRAO_DB == "-"
+            || string.IsNullOrWhiteSpace(form.CodeRAO_DB))
+        {
+            return null;
+        }
+        Form21 res = new()
+        {
+            FormNum_DB = form.FormNum_DB,
+            NumberInOrder_DB = form.NumberInOrder_DB
+        };
+        switch (formTrue.OperationCode_DB)
+        {
+            case "44":
+                {
+                    //left
+                    res.RefineMachineName_DB = "in";
+                    if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
+                    res.CodeRAOIn_DB = form.CodeRAO_DB;
+                    res.StatusRAOIn_DB = form.StatusRAO_DB;
+                    res.VolumeIn_DB = form.Volume20_DB;
+                    res.MassIn_DB = form.Mass21_DB;
+                    res.QuantityIn_DB = "1";
+                    res.TritiumActivityIn_DB = form.TritiumActivity_DB;
+                    res.BetaGammaActivityIn_DB = form.BetaGammaActivity_DB;
+                    res.AlphaActivityIn_DB = form.AlphaActivity_DB;
+                    res.TransuraniumActivityIn_DB = form.TransuraniumActivity_DB;
+                    return res;
+                }
+            case "55":
+                {
+                    //right
+                    res.RefineMachineName_DB = "out";
+                    if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
+                    res.CodeRAOout_DB = form.CodeRAO_DB;
+                    res.StatusRAOout_DB = form.StatusRAO_DB;
+                    res.VolumeOut_DB = form.Volume20_DB;
+                    res.MassOut_DB = form.Mass21_DB;
+                    res.QuantityOZIIIout_DB = "1";
+                    res.TritiumActivityOut_DB = form.TritiumActivity_DB;
+                    res.BetaGammaActivityOut_DB = form.BetaGammaActivity_DB;
+                    res.AlphaActivityOut_DB = form.AlphaActivity_DB;
+                    res.TransuraniumActivityOut_DB = form.TransuraniumActivity_DB;
+                    return res;
+                }
+            default: return null;
+        }
+    }
+
+    #endregion
+
+    #region Form21_Copy
+
+    private static Form21 Form21_Copy(Form21 form, string? inOrOutParam = null)
+    {
+        Form21 res = new()
+        {
+            NumberInOrder_DB = form.NumberInOrder_DB,
+            RefineMachineName_DB = form.RefineMachineName_DB,
+            MachineCode_DB = form.MachineCode_DB,
+            FormNum_DB = form.FormNum_DB
+        };
+        var inOrOut = inOrOutParam ?? res.RefineMachineName_DB;
+        if (inOrOut is not ("in" or "out")) inOrOut = res.RefineMachineName_DB;
+        if (inOrOut == "in")
+        {
+            res.CodeRAOIn_DB = form.CodeRAOIn_DB;
+            res.StatusRAOIn_DB = form.StatusRAOIn_DB;
+            res.VolumeIn_DB = form.VolumeIn_DB;
+            res.MassIn_DB = form.MassIn_DB;
+            res.QuantityIn_DB = form.QuantityIn_DB;
+            res.TritiumActivityIn_DB = form.TritiumActivityIn_DB;
+            res.BetaGammaActivityIn_DB = form.BetaGammaActivityIn_DB;
+            res.AlphaActivityIn_DB = form.AlphaActivityIn_DB;
+            res.TransuraniumActivityIn_DB = form.TransuraniumActivityIn_DB;
+            res.QuantityOZIIIout_DB = form.QuantityOZIIIout_DB;
+        }
+        else
+        {
+            res.CodeRAOout_DB = form.CodeRAOout_DB;
+            res.StatusRAOout_DB = form.StatusRAOout_DB;
+            res.VolumeOut_DB = form.VolumeOut_DB;
+            res.MassOut_DB = form.MassOut_DB;
+            res.QuantityOZIIIout_DB = form.QuantityOZIIIout_DB;
+            res.TritiumActivityOut_DB = form.TritiumActivityOut_DB;
+            res.BetaGammaActivityOut_DB = form.BetaGammaActivityOut_DB;
+            res.AlphaActivityOut_DB = form.AlphaActivityOut_DB;
+            res.TransuraniumActivityOut_DB = form.TransuraniumActivityOut_DB;
+            res.QuantityIn_DB = form.QuantityIn_DB;
+        }
+        return res;
+    }
+
+    private static Form21 Form21_Copy_In(Form21 form)
+    {
+        Form21 res = new()
+        {
+            NumberInOrder_DB = form.NumberInOrder_DB,
+            RefineMachineName_DB = form.RefineMachineName_DB,
+            MachineCode_DB = form.MachineCode_DB,
+            FormNum_DB = form.FormNum_DB,
+            CodeRAOIn_DB = form.CodeRAOIn_DB,
+            StatusRAOIn_DB = form.StatusRAOIn_DB,
+            VolumeIn_DB = form.VolumeIn_DB,
+            MassIn_DB = form.MassIn_DB,
+            QuantityIn_DB = form.QuantityIn_DB,
+            TritiumActivityIn_DB = form.TritiumActivityIn_DB,
+            BetaGammaActivityIn_DB = form.BetaGammaActivityIn_DB,
+            AlphaActivityIn_DB = form.AlphaActivityIn_DB,
+            TransuraniumActivityIn_DB = form.TransuraniumActivityIn_DB,
+            QuantityOZIIIout_DB = form.QuantityOZIIIout_DB
+        };
+        return res;
+    }
+
+    private static Form21 Form21_Copy_Out(Form21 form)
+    {
+        Form21 res = new()
+        {
+            NumberInOrder_DB = form.NumberInOrder_DB,
+            RefineMachineName_DB = form.RefineMachineName_DB,
+            MachineCode_DB = form.MachineCode_DB,
+            FormNum_DB = form.FormNum_DB,
+            CodeRAOout_DB = form.CodeRAOout_DB,
+            StatusRAOout_DB = form.StatusRAOout_DB,
+            VolumeOut_DB = form.VolumeOut_DB,
+            MassOut_DB = form.MassOut_DB,
+            QuantityOZIIIout_DB = form.QuantityOZIIIout_DB,
+            TritiumActivityOut_DB = form.TritiumActivityOut_DB,
+            BetaGammaActivityOut_DB = form.BetaGammaActivityOut_DB,
+            AlphaActivityOut_DB = form.AlphaActivityOut_DB,
+            TransuraniumActivityOut_DB = form.TransuraniumActivityOut_DB,
+            QuantityIn_DB = form.QuantityIn_DB
+        };
+        return res;
+    }
+
+    #endregion
+
+    #region Form21_Add
+
+    private static void Form21_Add(Form21 receiver, Form21 giver, string? direction = null)
+    {
+        var directionReal = direction ?? receiver.RefineMachineName_DB;
+        switch (directionReal)
+        {
+            case "in":
+                {
+                    receiver.VolumeIn_DB = Form21_SubAdd(receiver.VolumeIn_DB, giver.VolumeIn_DB);
+                    receiver.MassIn_DB = Form21_SubAdd(receiver.MassIn_DB, giver.MassIn_DB);
+                    receiver.QuantityIn_DB = Form21_SubAdd(receiver.QuantityIn_DB, giver.QuantityIn_DB);
+                    receiver.TritiumActivityIn_DB = Form21_SubAdd(receiver.TritiumActivityIn_DB, giver.TritiumActivityIn_DB);
+                    receiver.BetaGammaActivityIn_DB = Form21_SubAdd(receiver.BetaGammaActivityIn_DB, giver.BetaGammaActivityIn_DB);
+                    receiver.AlphaActivityIn_DB = Form21_SubAdd(receiver.AlphaActivityIn_DB, giver.AlphaActivityIn_DB);
+                    receiver.TransuraniumActivityIn_DB = Form21_SubAdd(receiver.TransuraniumActivityIn_DB, giver.TransuraniumActivityIn_DB);
+                    break;
+                }
+            case "out":
+                {
+                    receiver.VolumeOut_DB = Form21_SubAdd(receiver.VolumeOut_DB, giver.VolumeOut_DB);
+                    receiver.MassOut_DB = Form21_SubAdd(receiver.MassOut_DB, giver.MassOut_DB);
+                    receiver.QuantityOZIIIout_DB = Form21_SubAdd(receiver.QuantityOZIIIout_DB, giver.QuantityOZIIIout_DB);
+                    receiver.TritiumActivityOut_DB = Form21_SubAdd(receiver.TritiumActivityOut_DB, giver.TritiumActivityOut_DB);
+                    receiver.BetaGammaActivityOut_DB = Form21_SubAdd(receiver.BetaGammaActivityOut_DB, giver.BetaGammaActivityOut_DB);
+                    receiver.AlphaActivityOut_DB = Form21_SubAdd(receiver.AlphaActivityOut_DB, giver.AlphaActivityOut_DB);
+                    receiver.TransuraniumActivityOut_DB = Form21_SubAdd(receiver.TransuraniumActivityOut_DB, giver.TransuraniumActivityOut_DB);
+                    break;
+                }
+        }
+    }
+
+    /// <summary>
+    /// Tries parsing the two parameters and assigning their sum to the return value, converting it back to string afterward.
+    /// If the parsing fails, returns the first parameter as is.
+    /// </summary>
+    /// <param name="receiver">The first parameter</param>
+    /// <param name="giver">The second parameter</param>
+    /// <returns>A string representation of the sum of the parameters. If the summation fails, returns the first parameter.</returns>
+    private static string Form21_SubAdd(string receiver, string giver)
+    {
+        var res = receiver;
+        var receiverReal = receiver == "-" || string.IsNullOrWhiteSpace(receiver)
+            ? "0"
+            : receiver;
+        var giverReal = giver == "-" || string.IsNullOrWhiteSpace(giver)
+            ? "0"
+            : giver;
+        if (TryParseDoubleExtended(receiverReal, out var receiverTrue)
+            && TryParseDoubleExtended(giverReal, out var giverTrue))
+        {
+            res = (receiverTrue + giverTrue).ToString("e2").Replace("+0", "+");
+        }
+        return res;
+    }
+
+    #endregion
+
+    #region Form21_SubMatch
+
+    private static void Form21_SubMatch(string form1Val, string form2Val, string humanName, double valB, List<(int, string, string, string)> res, int columnNum, string forms1, string forms2)
+    {
+        TryParseDoubleExtended(form1Val, out var val1);
+        TryParseDoubleExtended(form2Val, out var val2);
+        if (!((form1Val == "-" && form2Val == "-")
+              || (val1 < 0.001 && form2Val == "-")
+              || (form1Val == "-" && val2 < 0.001)
+              || val1 >= val2 * (1.0 - valB)
+              && val2 >= val1 * (1.0 - valB)))
+        {
+            res.Add((columnNum, $"{humanName}", $"{forms1}: {form1Val}", $"{forms2}: {form2Val}"));
+        }
+    }
+
+    #endregion
+
+    #region Form21_Match
+
+    private static List<(int, string, string, string)>? Form21_Match(Form21 form1, Form21 form2, string forms1, string forms2)
+    {
+        const double valB = 0.1;
+        List<(int, string, string, string)> res = [];
+        if (form1.CodeRAOIn_DB == form2.CodeRAOIn_DB
+            && form1.CodeRAOIn_DB != "-"
+            && !string.IsNullOrWhiteSpace(form1.CodeRAOIn_DB))
+        {
+            if (form1.StatusRAOIn_DB == form2.StatusRAOIn_DB
+                && form1.CodeRAOIn_DB == form2.CodeRAOIn_DB
+                && form1.MachineCode_DB == form2.MachineCode_DB)
+            {
+                Form21_SubMatch(form1.VolumeIn_DB, form2.VolumeIn_DB, "Объем без упаковки, куб. м", valB, res, 8, forms1, forms2);
+                Form21_SubMatch(form1.MassIn_DB, form2.MassIn_DB, "Масса без упаковки (нетто), т", valB, res, 9, forms1, forms2);
+                Form21_SubMatch(form1.QuantityIn_DB, form2.QuantityIn_DB, "кол-во ОЗИИИ, шт.", valB, res, 10, forms1, forms2);
+                Form21_SubMatch(form1.TritiumActivityIn_DB, form2.TritiumActivityIn_DB, "суммарная активность (тритий), Бк", valB, res, 11, forms1, forms2);
+                Form21_SubMatch(form1.BetaGammaActivityIn_DB, form2.BetaGammaActivityIn_DB, "суммарная активность (бета, гамма), Бк", valB, res, 12, forms1, forms2);
+                Form21_SubMatch(form1.AlphaActivityIn_DB, form2.AlphaActivityIn_DB, "суммарная активность (альфа), Бк", valB, res, 13, forms1, forms2);
+                Form21_SubMatch(form1.TransuraniumActivityIn_DB, form2.TransuraniumActivityIn_DB, "суммарная активность (трансурановые), Бк", valB, res, 14, forms1, forms2);
+                return res;
+            }
+            return null;
+        }
+        if (form1.CodeRAOout_DB == form2.CodeRAOout_DB
+            && form1.CodeRAOout_DB != "-"
+            && !string.IsNullOrWhiteSpace(form1.CodeRAOout_DB))
+        {
+            if (form1.StatusRAOout_DB == form2.StatusRAOout_DB
+                && form1.CodeRAOout_DB == form2.CodeRAOout_DB
+                && form1.MachineCode_DB == form2.MachineCode_DB)
+            {
+                Form21_SubMatch(form1.VolumeOut_DB, form2.VolumeOut_DB, "Объем без упаковки, куб. м", valB, res, 17, forms1, forms2);
+                Form21_SubMatch(form1.MassOut_DB, form2.MassOut_DB, "Масса без упаковки (нетто), т", valB, res, 18, forms1, forms2);
+                Form21_SubMatch(form1.QuantityOZIIIout_DB, form2.QuantityOZIIIout_DB, "кол-во ОЗИИИ, шт.", valB, res, 19, forms1, forms2);
+                Form21_SubMatch(form1.TritiumActivityOut_DB, form2.TritiumActivityOut_DB, "суммарная активность (тритий), Бк", valB, res, 20, forms1, forms2);
+                Form21_SubMatch(form1.BetaGammaActivityOut_DB, form2.BetaGammaActivityOut_DB, "суммарная активность (бета, гамма), Бк", valB, res, 21, forms1, forms2);
+                Form21_SubMatch(form1.AlphaActivityOut_DB, form2.AlphaActivityOut_DB, "суммарная активность (альфа), Бк", valB, res, 22, forms1, forms2);
+                Form21_SubMatch(form1.TransuraniumActivityOut_DB, form2.TransuraniumActivityOut_DB, "суммарная активность (трансурановые), Бк", valB, res, 23, forms1, forms2);
+                return res;
+            }
+            return null;
+        }
+        return null;
     }
 
     #endregion
