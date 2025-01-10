@@ -34,11 +34,12 @@ public class CheckF21 : CheckBase
         List<CheckError> errorList = [];
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
-        if (parameter is not Report) await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         var rep = parameter as Report;
+        if (rep is null) await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+
         var db = new DBModel(StaticConfiguration.DBPath);
 
-        var form20RegNo = rep.Reports.Master_DB.RegNoRep.Value;
+        var form20RegNo = rep!.Reports.Master_DB.RegNoRep.Value;
         if (string.IsNullOrWhiteSpace(form20RegNo))
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
@@ -124,6 +125,8 @@ public class CheckF21 : CheckBase
             .Include(reps => reps.Report_Collection).ThenInclude(report => report.Rows18)
             .FirstOrDefaultAsync(reps => reps.Master_DB.Rows10
                 .Any(form10 => form10.RegNo_DB == form20RegNo), cts.Token);
+
+        await db.DisposeAsync();
 
         if (repsWithForm1 is null)
         {

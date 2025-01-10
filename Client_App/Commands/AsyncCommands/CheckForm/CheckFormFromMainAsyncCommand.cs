@@ -24,8 +24,26 @@ namespace Client_App.Commands.AsyncCommands.CheckForm;
 /// <returns>Открывает окно с отчётом об ошибках.</returns>
 public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
 {
+    public override async void Execute(object? parameter)
+    {
+        IsExecute = true;
+        try
+        {
+            await Task.Run(() => AsyncExecute(parameter));
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg);
+        }
+        IsExecute = false;
+    }
+
     public override async Task AsyncExecute(object? parameter)
     {
+        Thread.Sleep(10000);
         if (parameter is not IKeyCollection collection) return;
         var par = collection.ToList<Report>().First();
         await using var db = new DBModel(StaticConfiguration.DBPath);
@@ -62,14 +80,18 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
             .Include(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Notes.OrderBy(x => x.Order))
-            .FirstOrDefaultAsync(x => x.Id == par.Id, cts.Token); 
-        
+            .FirstOrDefaultAsync(x => x.Id == par.Id, cts.Token);
+
         #endregion
+
+        Thread.Sleep(10000);
 
         if (rep is null) return;
         List<CheckError> errorList = [];
         try
         {
+            async Task<List<CheckError>> Check21AsyncTask() => await new CheckF21().AsyncExecute(rep);
+
             errorList.Add(rep.FormNum_DB switch
             {
                 "1.1" => CheckF11.Check_Total(rep.Reports, rep),
@@ -80,8 +102,7 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
                 "1.6" => CheckF16.Check_Total(rep.Reports, rep),
                 "1.7" => CheckF17.Check_Total(rep.Reports, rep),
                 "1.8" => CheckF18.Check_Total(rep.Reports, rep),
-                "2.1" => await new CheckF21().AsyncExecute(rep),
-                    //await //CheckF21.Check_Total(db, rep, cts),
+                "2.1" => await Check21AsyncTask(),
                 _ => throw new NotImplementedException()
             });
         }
