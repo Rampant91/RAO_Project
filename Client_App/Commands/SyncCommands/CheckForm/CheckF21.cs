@@ -148,7 +148,7 @@ public class CheckF21 : CheckBase
                     foreach (var key1 in report.Rows15)
                     {
                         var form = (Form15)key1;
-                        form21New = FormConvert(form);
+                        form21New = FormConvert(form, rep.Year_DB);
                         if (form21New != null)
                         {
                             forms21MetadataBase.Add((form21New.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, form21New.NumberInOrder_DB.ToString()));
@@ -162,7 +162,7 @@ public class CheckF21 : CheckBase
                     foreach (var key1 in report.Rows16)
                     {
                         var form = (Form16)key1;
-                        form21New = FormConvert(form);
+                        form21New = FormConvert(form, rep.Year_DB);
                         if (form21New != null)
                         {
                             forms21MetadataBase.Add((form21New.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, form21New.NumberInOrder_DB.ToString()));
@@ -177,7 +177,7 @@ public class CheckF21 : CheckBase
                     {
                         var form = (Form17)key1;
                         if (form.OperationCode_DB != "-") formHeader17 = form;
-                        form21New = FormConvert(form, formHeader17);
+                        form21New = FormConvert(form, formHeader17, rep.Year_DB);
                         if (form21New != null)
                         {
                             forms21MetadataBase.Add((form21New.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, form21New.NumberInOrder_DB.ToString()));
@@ -192,7 +192,7 @@ public class CheckF21 : CheckBase
                     {
                         var form = (Form18)key1;
                         if (form.OperationCode_DB != "-") formHeader18 = form;
-                        form21New = FormConvert(form, formHeader18);
+                        form21New = FormConvert(form, formHeader18, rep.Year_DB);
                         if (form21New != null)
                         {
                             forms21MetadataBase.Add((form21New.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, form21New.NumberInOrder_DB.ToString()));
@@ -329,6 +329,7 @@ public class CheckF21 : CheckBase
         List<(Form21,string,string)> forms21ExpectedOut = [];
         foreach (var key in forms21ExpectedInDict.Keys)
         {
+            Form21_ToExp(forms21ExpectedInDict[key]);
             List<string> addressSubstrings = [];
             List<string> formsSubstrings = [];
             foreach (var keyForm in forms21MetadataInDict[key].Keys)
@@ -387,6 +388,7 @@ public class CheckF21 : CheckBase
         }
         foreach (var key in forms21ExpectedOutDict.Keys)
         {
+            Form21_ToExp(forms21ExpectedOutDict[key]);
             List<string> addressSubstrings = [];
             List<string> formsSubstrings = [];
             foreach (var keyForm in forms21MetadataOutDict[key].Keys)
@@ -631,14 +633,19 @@ public class CheckF21 : CheckBase
 
     #region FormConvert
 
-    private static Form21? FormConvert(Form15 form)
+    private static Form21? FormConvert(Form15 form, string year)
     {
         if (form.RefineOrSortRAOCode_DB.Length == 0
             || form.RefineOrSortRAOCode_DB == "-"
-            || string.IsNullOrWhiteSpace(form.RefineOrSortRAOCode_DB)   //refine code doesn't exist
-            || form.RefineOrSortRAOCode_DB[0] == '7')                   //7x refine codes are ignored
+            || string.IsNullOrWhiteSpace(form.RefineOrSortRAOCode_DB)                           //refine code doesn't exist
+            || form.RefineOrSortRAOCode_DB[0] == '7'                                            //7x refine codes are ignored
+            || form.OperationCode_DB is "49" or "59" && form.RefineOrSortRAOCode_DB != "52")    //registration with code other than 52 is ignored
         {
             return null;
+        }
+        if (!(form.OperationDate_DB.Length >= 4 && form.OperationDate_DB.Substring(form.OperationDate_DB.Length - 4) == year))
+        {
+            return null;    //the operation isn't from this year
         }
         Form21 res = new()
         {
@@ -648,6 +655,7 @@ public class CheckF21 : CheckBase
         switch (form.OperationCode_DB)
         {
             case "44":
+            case "49":
                 {
                     //left
                     res.RefineMachineName_DB = "in";
@@ -660,6 +668,7 @@ public class CheckF21 : CheckBase
                     return res;
                 }
             case "56":
+            case "59":
                 {
                     //right
                     res.RefineMachineName_DB = "out";
@@ -675,14 +684,19 @@ public class CheckF21 : CheckBase
         }
     }
 
-    private static Form21? FormConvert(Form16 form)
+    private static Form21? FormConvert(Form16 form, string year)
     {
         if (form.RefineOrSortRAOCode_DB.Length == 0
             || form.RefineOrSortRAOCode_DB == "-"
-            || string.IsNullOrWhiteSpace(form.RefineOrSortRAOCode_DB)   //refine code doesn't exist
-            || form.RefineOrSortRAOCode_DB[0] == '7')                   //7x refine codes are ignored
+            || string.IsNullOrWhiteSpace(form.RefineOrSortRAOCode_DB)                           //refine code doesn't exist
+            || form.RefineOrSortRAOCode_DB[0] == '7'                                            //7x refine codes are ignored
+            || form.OperationCode_DB is "49" or "59" && form.RefineOrSortRAOCode_DB != "52")    //registration with code other than 52 is ignored
         {
             return null;
+        }
+        if (!(form.OperationDate_DB.Length >= 4 && form.OperationDate_DB.Substring(form.OperationDate_DB.Length - 4) == year))
+        {
+            return null;    //the operation isn't from this year
         }
         Form21 res = new()
         {
@@ -692,6 +706,7 @@ public class CheckF21 : CheckBase
         switch (form.OperationCode_DB)
         {
             case "44":
+            case "49":
                 {
                     //left
                     res.RefineMachineName_DB = "in";
@@ -708,6 +723,7 @@ public class CheckF21 : CheckBase
                     return res;
                 }
             case "56":
+            case "59":
                 {
                     //right
                     res.RefineMachineName_DB = "out";
@@ -727,7 +743,7 @@ public class CheckF21 : CheckBase
         }
     }
 
-    private static Form21? FormConvert(Form17 form, Form17? formHeader = null)
+    private static Form21? FormConvert(Form17 form, Form17? formHeader, string year)
     {
         var formTrue = formHeader ?? form;
         if (formTrue.RefineOrSortRAOCode_DB.Length == 0
@@ -738,6 +754,10 @@ public class CheckF21 : CheckBase
             || string.IsNullOrWhiteSpace(form.CodeRAO_DB))
         {
             return null;
+        }
+        if (!(formTrue.OperationDate_DB.Length >= 4 && form.OperationDate_DB.Substring(formTrue.OperationDate_DB.Length - 4) == year))
+        {
+            return null;    //the operation isn't from this year
         }
         Form21 res = new()
         {
@@ -782,7 +802,7 @@ public class CheckF21 : CheckBase
         }
     }
 
-    private static Form21? FormConvert(Form18 form, Form18? formHeader = null)
+    private static Form21? FormConvert(Form18 form, Form18? formHeader, string year)
     {
         var formTrue = formHeader ?? form;
         if (formTrue.RefineOrSortRAOCode_DB.Length == 0
@@ -793,6 +813,10 @@ public class CheckF21 : CheckBase
             || string.IsNullOrWhiteSpace(form.CodeRAO_DB))
         {
             return null;
+        }
+        if (!(formTrue.OperationDate_DB.Length >= 4 && form.OperationDate_DB.Substring(formTrue.OperationDate_DB.Length - 4) == year))
+        {
+            return null;    //the operation isn't from this year
         }
         Form21 res = new()
         {
@@ -978,9 +1002,47 @@ public class CheckF21 : CheckBase
         if (TryParseDoubleExtended(receiverReal, out var receiverTrue)
             && TryParseDoubleExtended(giverReal, out var giverTrue))
         {
-            res = (receiverTrue + giverTrue).ToString("e2").Replace("+0", "+");
+            res = (receiverTrue + giverTrue).ToString();
         }
         return res;
+    }
+    private static void Form21_ToExp(Form21 form, string? direction = null)
+    {
+        var directionReal = direction ?? form.RefineMachineName_DB;
+        switch (directionReal)
+        {
+            case "in":
+                {
+                    form.VolumeIn_DB = Form21_SubToExp(form.VolumeIn_DB);
+                    form.MassIn_DB = Form21_SubToExp(form.MassIn_DB);
+                    form.TritiumActivityIn_DB = Form21_SubToExp(form.TritiumActivityIn_DB);
+                    form.BetaGammaActivityIn_DB = Form21_SubToExp(form.BetaGammaActivityIn_DB);
+                    form.AlphaActivityIn_DB = Form21_SubToExp(form.AlphaActivityIn_DB);
+                    form.TransuraniumActivityIn_DB = Form21_SubToExp(form.TransuraniumActivityIn_DB);
+                    break;
+                }
+            case "out":
+                {
+                    form.VolumeOut_DB = Form21_SubToExp(form.VolumeOut_DB);
+                    form.MassOut_DB = Form21_SubToExp(form.MassOut_DB);
+                    form.TritiumActivityOut_DB = Form21_SubToExp(form.TritiumActivityOut_DB);
+                    form.BetaGammaActivityOut_DB = Form21_SubToExp(form.BetaGammaActivityOut_DB);
+                    form.AlphaActivityOut_DB = Form21_SubToExp(form.AlphaActivityOut_DB);
+                    form.TransuraniumActivityOut_DB = Form21_SubToExp(form.TransuraniumActivityOut_DB);
+                    break;
+                }
+        }
+    }
+    private static string Form21_SubToExp(string input)
+    {
+        if (TryParseDoubleExtended(input, out var inputValue))
+        {
+            return inputValue.ToString("e2").Replace("+0", "+");
+        }
+        else
+        {
+            return input;
+        }
     }
 
     #endregion
