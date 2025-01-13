@@ -20,6 +20,7 @@ using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
 using Models.DBRealization;
 using System.Threading;
+using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.Commands.SyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.PassportFill;
@@ -335,7 +336,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         AddRows = new AddRowsAsyncCommand(this);
         AddRowsIn = new AddRowsInAsyncCommand(this);
         ChangeReportOrder = new ChangeReportOrderAsyncCommand(this);
-        CheckReport = new CheckFormSyncCommand(this);
+        CheckReport = new CheckFormAsyncCommand(this);
         CopyExecutorData = new CopyExecutorDataAsyncCommand(this);
         CopyPasName = new CopyPasNameAsyncCommand();
         CopyRows = new CopyRowsAsyncCommand();

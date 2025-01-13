@@ -1,10 +1,4 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Models.CheckForm;
-using Models.Collections;
-using Models.DBRealization;
-using Models.Forms.Form1;
-using Models.Forms.Form2;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -13,11 +7,17 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
-using Client_App.Views.ProgressBar;
+using Microsoft.EntityFrameworkCore;
+using Models.CheckForm;
+using Models.Collections;
+using Models.DBRealization;
+using Models.Forms.Form1;
+using Models.Forms.Form2;
 
-namespace Client_App.Commands.SyncCommands.CheckForm;
+namespace Client_App.Commands.AsyncCommands.CheckForm;
 
 /// <summary>
 /// Проверка отчётов по форме 2.1. 

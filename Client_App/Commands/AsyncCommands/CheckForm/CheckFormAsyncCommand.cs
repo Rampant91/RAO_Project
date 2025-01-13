@@ -1,26 +1,26 @@
 ﻿using System;
-using Client_App.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using Client_App.Commands.AsyncCommands;
-using MessageBox.Avalonia.DTO;
-using Models.CheckForm;
+using Client_App.Commands.SyncCommands.CheckForm;
 using Client_App.Interfaces.Logger;
-using System.Threading;
+using Client_App.ViewModels;
+using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
+using Models.CheckForm;
 using Models.DBRealization;
 
-namespace Client_App.Commands.SyncCommands.CheckForm;
+namespace Client_App.Commands.AsyncCommands.CheckForm;
 
 /// <summary>
 /// Проверяет открытую форму, активируется при нажатии кнопки "Проверить".
 /// </summary>
 /// <param name="changeOrCreateViewModel">Модель открытого отчёта.</param>
 /// <returns>Открывает окно с отчетом об ошибках.</returns>
-public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
+public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
     public override async void Execute(object? parameter)
     {
