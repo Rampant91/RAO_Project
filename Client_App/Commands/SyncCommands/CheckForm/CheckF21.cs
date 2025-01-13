@@ -40,6 +40,7 @@ public class CheckF21 : CheckBase
         var db = new DBModel(StaticConfiguration.DBPath);
 
         var form20RegNo = rep!.Reports.Master_DB.RegNoRep.Value;
+        var form20Okpo = rep!.Reports.Master_DB.OkpoRep.Value;
         if (string.IsNullOrWhiteSpace(form20RegNo))
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
@@ -130,6 +131,23 @@ public class CheckF21 : CheckBase
 
         if (repsWithForm1 is null)
         {
+            #region MessageCheckFailed
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = $"Проверка формы {rep.FormNum_DB}",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"Не удалось проверить форму, поскольку в выбранном файле БД отсутствуют записи для организации {form20RegNo}_{form20Okpo}.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
 

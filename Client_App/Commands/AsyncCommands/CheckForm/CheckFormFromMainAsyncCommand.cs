@@ -43,7 +43,6 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
-        Thread.Sleep(10000);
         if (parameter is not IKeyCollection collection) return;
         var par = collection.ToList<Report>().First();
         await using var db = new DBModel(StaticConfiguration.DBPath);
@@ -84,14 +83,10 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
 
         #endregion
 
-        Thread.Sleep(10000);
-
         if (rep is null) return;
         List<CheckError> errorList = [];
         try
         {
-            async Task<List<CheckError>> Check21AsyncTask() => await new CheckF21().AsyncExecute(rep);
-
             errorList.Add(rep.FormNum_DB switch
             {
                 "1.1" => CheckF11.Check_Total(rep.Reports, rep),
@@ -102,7 +97,7 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
                 "1.6" => CheckF16.Check_Total(rep.Reports, rep),
                 "1.7" => CheckF17.Check_Total(rep.Reports, rep),
                 "1.8" => CheckF18.Check_Total(rep.Reports, rep),
-                "2.1" => await Check21AsyncTask(),
+                "2.1" => await new CheckF21().AsyncExecute(rep),
                 _ => throw new NotImplementedException()
             });
         }
@@ -177,7 +172,7 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
             {
                 Desktop.Windows.First(x => x.Name == "FormCheckerWindow").Close();
             }
-            _ = new Views.CheckForm(new ChangeOrCreateVM(rep.FormNum_DB, rep), errorList);
+            await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(new ChangeOrCreateVM(rep.FormNum_DB, rep), errorList));
         }
     }
 }

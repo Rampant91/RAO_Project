@@ -32,6 +32,8 @@ public abstract class BaseAsyncCommand : BaseCommand
         return !_isExecute;
     }
 
+    //Команда выполняется синхронно, чтобы работало асинхронно, нужно заменить на await Task.Run(() => AsyncExecute(parameter));
+    //Асинхронную работу нужно добавлять по отдельности для каждой команды, тестируя. Сейчас асинхронность работает у всех команд выгрузки в excel и .RAODB
     public override async void Execute(object? parameter)
     {
         IsExecute = true;

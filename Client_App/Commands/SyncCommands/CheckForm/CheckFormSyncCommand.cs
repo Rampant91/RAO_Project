@@ -22,6 +22,23 @@ namespace Client_App.Commands.SyncCommands.CheckForm;
 /// <returns>Открывает окно с отчетом об ошибках.</returns>
 public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
+    public override async void Execute(object? parameter)
+    {
+        IsExecute = true;
+        try
+        {
+            await Task.Run(() => AsyncExecute(parameter));
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg);
+        }
+        IsExecute = false;
+    }
+
     public override bool CanExecute(object? parameter) => true;
 
     public override async Task AsyncExecute(object? parameter)
@@ -148,7 +165,7 @@ public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
             {
                 Desktop.Windows.First(x => x.Name == "FormCheckerWindow").Close();
             }
-            _ = new Views.CheckForm(changeOrCreateViewModel, result);
+            await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(changeOrCreateViewModel, result));
         }
     }
 }
