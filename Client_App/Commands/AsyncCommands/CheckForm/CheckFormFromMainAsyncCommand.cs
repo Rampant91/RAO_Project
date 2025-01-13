@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using Client_App.Commands.SyncCommands.CheckForm;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels;
 using DynamicData;
