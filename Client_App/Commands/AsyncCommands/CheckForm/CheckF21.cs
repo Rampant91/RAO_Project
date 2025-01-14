@@ -28,6 +28,7 @@ public class CheckF21 : CheckBase
     public override bool CanExecute(object? parameter) => true;
 
     const string form15Plug = "!1.5";
+    const string formGenericPlug = "!1.X";
 
     #region AsyncExecute
 
@@ -937,7 +938,7 @@ public class CheckF21 : CheckBase
                     res.StatusRAOIn_DB = form.StatusRAO_DB;
                     res.VolumeIn_DB = form.Volume20_DB;
                     res.MassIn_DB = form.Mass21_DB;
-                    res.QuantityIn_DB = "1";
+                    res.QuantityIn_DB = formGenericPlug;
                     res.TritiumActivityIn_DB = form.TritiumActivity_DB;
                     res.BetaGammaActivityIn_DB = form.BetaGammaActivity_DB;
                     res.AlphaActivityIn_DB = form.AlphaActivity_DB;
@@ -953,7 +954,7 @@ public class CheckF21 : CheckBase
                     res.StatusRAOout_DB = form.StatusRAO_DB;
                     res.VolumeOut_DB = form.Volume20_DB;
                     res.MassOut_DB = form.Mass21_DB;
-                    res.QuantityOZIIIout_DB = "1";
+                    res.QuantityOZIIIout_DB = formGenericPlug;
                     res.TritiumActivityOut_DB = form.TritiumActivity_DB;
                     res.BetaGammaActivityOut_DB = form.BetaGammaActivity_DB;
                     res.AlphaActivityOut_DB = form.AlphaActivity_DB;
@@ -1095,6 +1096,8 @@ public class CheckF21 : CheckBase
     /// <returns>A string representation of the sum of the parameters. If the summation fails, returns the first parameter.</returns>
     private static string Form21_SubAdd(string receiver, string giver)
     {
+        if (receiver == form15Plug || giver == form15Plug) return form15Plug;
+        if (receiver == formGenericPlug || giver == formGenericPlug) return formGenericPlug;
         var res = receiver;
         var receiverReal = receiver == "-" || string.IsNullOrWhiteSpace(receiver)
             ? "0"
@@ -1155,6 +1158,7 @@ public class CheckF21 : CheckBase
     private static void Form21_SubMatch(string form1Val, string form2Val, string humanName, double valB, List<(int, string, string, string)> res, int columnNum, string forms1, string forms2)
     {
         if (form1Val == form15Plug || form2Val == form15Plug) return;
+        if (form1Val == formGenericPlug || form2Val == formGenericPlug) return;
         TryParseDoubleExtended(form1Val, out var val1);
         TryParseDoubleExtended(form2Val, out var val2);
         if (!((form1Val == "-" && form2Val == "-")
