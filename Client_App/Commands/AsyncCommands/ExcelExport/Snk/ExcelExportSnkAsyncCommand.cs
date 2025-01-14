@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
 using Client_App.Views;
 using Models.Collections;
 using Models.DBRealization;

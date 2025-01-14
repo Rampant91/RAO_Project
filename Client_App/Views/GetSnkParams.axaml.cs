@@ -1,6 +1,3 @@
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Client_App.ViewModels;
@@ -39,22 +36,6 @@ public class GetSnkParams : BaseWindow<GetSnkParamsVM>
 
     #endregion
 
-    #region SelectAllCheckBoxClick
-
-    private void SelectAllCheckBoxClick(object? sender, RoutedEventArgs e)
-    {
-        //if (_vm is { CheckPasNum: true, CheckType: true, CheckRadionuclids: true, CheckFacNum: true, CheckPackNumber: true })
-        //{
-        //    _vm.CheckPasNum = _vm.CheckType = _vm.CheckRadionuclids = _vm.CheckFacNum = _vm.CheckPackNumber = false;
-        //}
-        //else
-        //{
-        //    _vm.CheckPasNum = _vm.CheckType = _vm.CheckRadionuclids = _vm.CheckFacNum = _vm.CheckPackNumber = true;
-        //}
-    }
-
-    #endregion
-
     private void checkBox_Checked(object sender, RoutedEventArgs e)
     {
         if (_vm != null)
@@ -69,10 +50,6 @@ public class GetSnkParams : BaseWindow<GetSnkParamsVM>
         {
             _vm.CheckPasNum = _vm.CheckType = _vm.CheckRadionuclids = _vm.CheckFacNum = _vm.CheckPackNumber = false;
         }
-    }
-
-    private void checkBox_Indeterminate(object sender, RoutedEventArgs e)
-    {
     }
 
     #endregion
