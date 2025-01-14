@@ -8,6 +8,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Client_App.Controls.DataGrid;
 using Client_App.Controls.DataGrid.DataGrids;
+using Client_App.Controls.MaskedTextBox;
 using Client_App.VisualRealization.Converters;
 using Models.Attributes;
 
@@ -68,7 +69,7 @@ public class Form1_Visual
         }
         if (_flag == "date")
         {
-            textCell.Control = new MaskedTextBox()
+            textCell.Control = new MaskedTextBoxForDate()
             {
                 [!StyledElement.DataContextProperty] = b,
                 [!TextBox.TextProperty] = new Binding("Value"),

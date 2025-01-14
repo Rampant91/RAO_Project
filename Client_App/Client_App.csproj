@@ -129,6 +129,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Update="Views\GetSnkParams.axaml.cs">
+      <DependentUpon>GetSnkParams.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\ProgressBar\AnyTaskProgressBar.axaml.cs">
       <DependentUpon>AnyTaskProgressBar.axaml</DependentUpon>
     </Compile>

@@ -320,7 +320,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                                 }
                                 //try
                                 //{
-                                //    _value = _value.ToString().Replace("е", "e").Replace("Е", "E").Replace(".", ",");
+                                //    _value = _value.ToString().Ok("е", "e").Ok("Е", "E").Ok(".", ",");
                                 //    _s += Convert.ToDouble(_value);
                                 //    var stackPanel = (StackPanel)((StackPanel)((Border)((Grid)((Panel)Content).Children[0]).Children[2]).Child).Children[0];
                                 //    stackPanel.Children[0].IsVisible = true;
