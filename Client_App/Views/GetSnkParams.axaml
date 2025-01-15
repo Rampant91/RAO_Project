@@ -104,7 +104,6 @@
                             VerticalAlignment="Center"
                             Checked ="checkBox_Checked"
                             Unchecked="checkBox_Unchecked"
-                            Click="SelectAllCheckBoxClick"
                             IsChecked="True"/>
                         <CheckBox
                             Name="PasNum"
