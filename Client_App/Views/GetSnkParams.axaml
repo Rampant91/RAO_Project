@@ -102,34 +102,40 @@
                             Margin="5, 8, 5, 15"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Checked ="checkBox_Checked"
-                            Unchecked="checkBox_Unchecked"
-                            IsChecked="True"/>
+                            IsThreeState="True"
+                            Checked ="AllCheckBox_Checked"
+                            Unchecked="AllCheckBox_Unchecked"
+                            IsChecked="{Binding CheckAll, Mode=TwoWay}"/>
                         <CheckBox
+                            Click="AnyCheckBox_Clicked"
                             Name="PasNum"
                             Margin="5, 15"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             IsChecked="{Binding CheckPasNum, Mode=TwoWay}"/>
                         <CheckBox
+                            Click="AnyCheckBox_Clicked"
                             Name="Type"
                             Margin="5, 15"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             IsChecked="{Binding CheckType, Mode=TwoWay}"/>
                         <CheckBox
+                            Click="AnyCheckBox_Clicked"
                             Name="Radionuclids"
                             Margin="5, 15"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             IsChecked="{Binding CheckRadionuclids, Mode=TwoWay}"/>
                         <CheckBox
+                            Click="AnyCheckBox_Clicked"
                             Name="FacNum"
                             Margin="5, 15"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             IsChecked="{Binding CheckFacNum, Mode=TwoWay}"/>
                         <CheckBox
+                            Click="AnyCheckBox_Clicked"
                             Name="PackNumber"
                             Margin="5, 15"
                             HorizontalAlignment="Center"
@@ -159,7 +165,8 @@
                     Name="Cancel"
                     Width="80"
                     Height="30"
-                    Content="Отмена"/>
+                    Content="Отмена"
+                    Click="CancelButtonClick"/>
             </Grid>
         </WrapPanel>
     </Grid>

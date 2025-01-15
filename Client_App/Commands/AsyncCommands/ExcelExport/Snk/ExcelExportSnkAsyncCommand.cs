@@ -115,24 +115,24 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
     /// <param name="progressBar">Окно прогрессбара.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Дата, на которую необходимо сформировать СНК.</returns>
-    private static async Task<(DateOnly, GetSnkParamsVM)> AskSnkEndDate(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
+    private static async Task<(DateOnly, SnkParamsDto)> AskSnkEndDate(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
         var date = DateOnly.MinValue;
 
-        var getSnkParamsWindowVM = new GetSnkParamsVM();
+        var vm = new GetSnkParamsVM();
         await Dispatcher.UIThread.InvokeAsync(async () =>
         {
             var getSnkParamsWindow = new GetSnkParams();
             await getSnkParamsWindow.ShowDialog(Desktop.MainWindow);
-            getSnkParamsWindowVM = getSnkParamsWindow._vm;
+            vm = getSnkParamsWindow._vm;
         });
 
-        if (!getSnkParamsWindowVM.Ok)
+        if (!vm.Ok)
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         } 
         
-        else if (!DateOnly.TryParse(getSnkParamsWindowVM.Date, out date))
+        else if (!DateOnly.TryParse(vm.Date, out date))
         {
             #region MessageExcelExportFail
 
@@ -174,7 +174,34 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
 
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
-        return (date, getSnkParamsWindowVM);
+        else if (vm is { CheckPasNum: false, CheckType: false, CheckRadionuclids: false, CheckFacNum: false, CheckPackNumber: false })
+        {
+            #region MessageExcelExportFail
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentMessage = "Выгрузка не выполнена, поскольку не выбран ни один из параметров, для определения учётной единицы.",
+                    MinWidth = 400,
+                    MinHeight = 115,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+        var snkParamsDto = new SnkParamsDto(
+            vm.CheckPasNum,
+            vm.CheckType,
+            vm.CheckRadionuclids,
+            vm.CheckFacNum,
+            vm.CheckPackNumber);
+        return (date, snkParamsDto);
     }
 
     #endregion

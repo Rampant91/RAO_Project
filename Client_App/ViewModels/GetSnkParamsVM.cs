@@ -6,13 +6,19 @@ namespace Client_App.ViewModels;
 
 public class GetSnkParamsVM : INotifyPropertyChanged
 {
+    /// <summary>
+    /// Была ли нажата пользователем кнопка "Ок".
+    /// </summary>
     public bool Ok = false;
 
     #region Properties
 
     #region Date
 
-    private string _date;
+    /// <summary>
+    /// Поле для вводимой даты. По умолчанию равно текущей дате.
+    /// </summary>
+    private string _date = DateTime.Now.ToShortDateString();
     public string Date
     {
         get => _date;
@@ -26,8 +32,30 @@ public class GetSnkParamsVM : INotifyPropertyChanged
 
     #endregion
 
+    #region All
+
+    /// <summary>
+    /// Поле чекбокса, позволяющего выбрать/отменить выбор для всех остальных чекбоксов. Может быть null (третье состояние чекбокса).
+    /// </summary>
+    private bool? _checkAll = true;
+    public bool? CheckAll
+    {
+        get => _checkAll;
+        set
+        {
+            if (_checkAll == value) return;
+            _checkAll = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
+
     #region PasNum
 
+    /// <summary>
+    /// Поле чекбокса для номера паспорта.
+    /// </summary>
     private bool _checkPasNum = true;
     public bool CheckPasNum
     {
@@ -44,6 +72,9 @@ public class GetSnkParamsVM : INotifyPropertyChanged
 
     #region Type
 
+    /// <summary>
+    /// Поле чекбокса для типа.
+    /// </summary>
     private bool _checkType = true;
     public bool CheckType
     {
@@ -60,6 +91,9 @@ public class GetSnkParamsVM : INotifyPropertyChanged
 
     #region Radionuclids
 
+    /// <summary>
+    /// Поле чекбокса для радионуклидов.
+    /// </summary>
     private bool _checkRadionuclids = true;
     public bool CheckRadionuclids
     {
@@ -76,6 +110,9 @@ public class GetSnkParamsVM : INotifyPropertyChanged
 
     #region FacNum
 
+    /// <summary>
+    /// Поле чекбокса для заводского номера.
+    /// </summary>
     private bool _checkFacNum = true;
     public bool CheckFacNum
     {
@@ -92,6 +129,9 @@ public class GetSnkParamsVM : INotifyPropertyChanged
 
     #region PackNumber
 
+    /// <summary>
+    /// Поле чекбокса для номера паспорта.
+    /// </summary>
     private bool _checkPackNumber = true;
     public bool CheckPackNumber
     {

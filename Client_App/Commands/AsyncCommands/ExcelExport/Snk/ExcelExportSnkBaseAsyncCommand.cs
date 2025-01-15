@@ -200,7 +200,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="cts">Токен.</param>
     /// <returns>Список DTO операций инвентаризации, отсортированный по датам.</returns>
     private protected static async Task<List<ShortForm11DTO>> GetInventoryFormsDtoList(DBModel db, List<ShortReportDTO> inventoryReportDtoList, 
-        DateOnly endSnkDate, CancellationTokenSource cts, GetSnkParamsVM? snkParams = null)
+        DateOnly endSnkDate, CancellationTokenSource cts, SnkParamsDto? snkParams = null)
     {
         List<ShortForm11DTO> inventoryFormsDtoList = [];
         foreach (var reportDto in inventoryReportDtoList)
@@ -219,14 +219,14 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                         RepId = reportDto.Id,
                         StDate = reportDto.StartPeriod,
                         EndDate = reportDto.EndPeriod,
-                        FacNum = snkParams == null || !snkParams.CheckFacNum ? string.Empty : form11.FactoryNumber_DB,
+                        FacNum = snkParams == null || snkParams.CheckFacNum ? form11.FactoryNumber_DB : string.Empty,
                         OpCode = form11.OperationCode_DB,
                         OpDate = form11.OperationDate_DB,
-                        PackNumber = snkParams == null || !snkParams.CheckPackNumber ? string.Empty : form11.PackNumber_DB,
-                        PasNum = snkParams == null || !snkParams.CheckPasNum ? string.Empty : form11.PassportNumber_DB,
+                        PackNumber = snkParams == null || snkParams.CheckPackNumber ? form11.PackNumber_DB : string.Empty,
+                        PasNum = snkParams == null || snkParams.CheckPasNum ? form11.PassportNumber_DB : string.Empty,
                         Quantity = form11.Quantity_DB,
-                        Radionuclids = snkParams == null || !snkParams.CheckRadionuclids ? string.Empty : form11.Radionuclids_DB,
-                        Type = snkParams == null || !snkParams.CheckType ? string.Empty : form11.Type_DB
+                        Radionuclids = snkParams == null || snkParams.CheckRadionuclids ? form11.Radionuclids_DB : string.Empty,
+                        Type = snkParams == null || snkParams.CheckType ? form11.Type_DB : string.Empty
                     }))
                 .ToListAsync(cts.Token);
 
@@ -349,7 +349,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="cts">Токен.</param>
     /// <returns>Список DTO форм с операциями приёма передачи, отсортированный по датам.</returns>
     private protected static async Task<List<ShortForm11DTO>> GetPlusMinusFormsDtoList(DBModel db, int repsId, DateOnly endSnkDate,
-        CancellationTokenSource cts, GetSnkParamsVM? snkParams = null)
+        CancellationTokenSource cts, SnkParamsDto? snkParams = null)
     {
         var reportIds = await db.ReportsCollectionDbSet
             .AsNoTracking()
@@ -377,14 +377,14 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                 RepId = form.Report!.Id,
                 StDate = form.Report.StartPeriod_DB,
                 EndDate = form.Report.EndPeriod_DB,
-                FacNum = snkParams == null || !snkParams.CheckFacNum ? string.Empty : form.FactoryNumber_DB,
+                FacNum = snkParams == null || snkParams.CheckFacNum ? form.FactoryNumber_DB : string.Empty,
                 OpCode = form.OperationCode_DB,
                 OpDate = form.OperationDate_DB,
-                PackNumber = snkParams == null || !snkParams.CheckPackNumber ? string.Empty : form.PackNumber_DB,
-                PasNum = snkParams == null || !snkParams.CheckPasNum ? string.Empty : form.PassportNumber_DB,
+                PackNumber = snkParams == null || snkParams.CheckPackNumber ? form.PackNumber_DB : string.Empty,
+                PasNum = snkParams == null || snkParams.CheckPasNum ? form.PassportNumber_DB : string.Empty,
                 Quantity = form.Quantity_DB,
-                Radionuclids = snkParams == null || !snkParams.CheckRadionuclids ? string.Empty : form.Radionuclids_DB,
-                Type = snkParams == null || !snkParams.CheckType ? string.Empty : form.Type_DB
+                Radionuclids = snkParams == null || snkParams.CheckRadionuclids ? form.Radionuclids_DB : string.Empty,
+                Type = snkParams == null || snkParams.CheckType ? form.Type_DB : string.Empty
             })
             .ToListAsync(cts.Token);
 
@@ -450,6 +450,23 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
 
         return Task.FromResult(unionFormsDtoList);
+    }
+
+    #endregion
+
+    #region DTO
+
+    private protected class SnkParamsDto(bool pasNum, bool type, bool radionuclids, bool facNum, bool packNum)
+    {
+        public readonly bool CheckPasNum = pasNum;
+
+        public readonly bool CheckType = type;
+
+        public readonly bool CheckRadionuclids = radionuclids;
+
+        public readonly bool CheckFacNum = facNum;
+
+        public readonly bool CheckPackNumber = packNum;
     }
 
     #endregion
