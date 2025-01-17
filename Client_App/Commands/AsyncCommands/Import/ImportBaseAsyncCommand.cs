@@ -159,7 +159,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
             #endregion
 
-            #region Replace
+            #region Ok
             
             case "Заменить" or "Заменять все формы":
                 if (!RepsWhereTitleFormCheckIsCancel.Contains((BaseRepsRegNum, BaseRepsOkpo)))

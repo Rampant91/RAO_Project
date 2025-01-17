@@ -7,12 +7,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
 using Client_App.Views;
 using Models.Collections;
 using Models.DBRealization;
 using System.Reflection;
 using System.Collections.Generic;
+using Client_App.ViewModels;
 using OfficeOpenXml;
 using Microsoft.EntityFrameworkCore;
 using static Client_App.Resources.StaticStringMethods;
@@ -51,7 +51,7 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
         var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
 
         progressBarVM.SetProgressBar(8, "Запрос даты формирования СНК");
-        var endSnkDate = await AskSnkEndDate(progressBar, cts);
+        var (endSnkDate, snkParams) = await AskSnkEndDate(progressBar, cts);
 
         progressBarVM.SetProgressBar(10, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
@@ -67,10 +67,10 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
         var inventoryReportDtoList = await GetInventoryReportDtoList(db, selectedReports.Id, endSnkDate, cts);
 
         progressBarVM.SetProgressBar(17, "Загрузка операций инвентаризации");
-        var inventoryFormsDtoList = await GetInventoryFormsDtoList(db, inventoryReportDtoList, endSnkDate, cts);
+        var inventoryFormsDtoList = await GetInventoryFormsDtoList(db, inventoryReportDtoList, endSnkDate, cts, snkParams);
 
         progressBarVM.SetProgressBar(20, "Загрузка операций передачи/получения");
-        var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, selectedReports.Id, endSnkDate, cts);
+        var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, selectedReports.Id, endSnkDate, cts, snkParams);
 
         progressBarVM.SetProgressBar(23, "Формирование списка всех операций");
         var unionFormsDtoList = await GetUnionFormsDtoList(inventoryFormsDtoList, plusMinusFormsDtoList);
@@ -115,35 +115,24 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
     /// <param name="progressBar">Окно прогрессбара.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Дата, на которую необходимо сформировать СНК.</returns>
-    private static async Task<DateOnly> AskSnkEndDate(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
+    private static async Task<(DateOnly, SnkParamsDto)> AskSnkEndDate(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
         var date = DateOnly.MinValue;
 
-        #region MessageInputSnkEndDate
+        var vm = new GetSnkParamsVM();
+        await Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            var getSnkParamsWindow = new GetSnkParams();
+            await getSnkParamsWindow.ShowDialog(Desktop.MainWindow);
+            vm = getSnkParamsWindow._vm;
+        });
 
-        var result = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxInputWindow(new MessageBoxInputParams
-            {
-                ButtonDefinitions =
-                [
-                    new ButtonDefinition { Name = "Ок", IsDefault = true },
-                    new ButtonDefinition { Name = "Отмена", IsCancel = true }
-                ],
-                CanResize = true,
-                ContentTitle = "Запрос даты",
-                ContentMessage = "Введите дату окончания формирования выгрузки СНК.",
-                MinWidth = 450,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(Desktop.MainWindow));
-
-        #endregion
-
-        if (result.Button is "Отмена")
+        if (!vm.Ok)
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-        }
-        else if (!DateOnly.TryParse(result.Message, out date))
+        } 
+        
+        else if (!DateOnly.TryParse(vm.Date, out date))
         {
             #region MessageExcelExportFail
 
@@ -185,8 +174,34 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
 
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
-        return date;
+        else if (vm is { CheckPasNum: false, CheckType: false, CheckRadionuclids: false, CheckFacNum: false, CheckPackNumber: false })
+        {
+            #region MessageExcelExportFail
 
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentMessage = "Выгрузка не выполнена, поскольку не выбран ни один из параметров, для определения учётной единицы.",
+                    MinWidth = 400,
+                    MinHeight = 115,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+        var snkParamsDto = new SnkParamsDto(
+            vm.CheckPasNum,
+            vm.CheckType,
+            vm.CheckRadionuclids,
+            vm.CheckFacNum,
+            vm.CheckPackNumber);
+        return (date, snkParamsDto);
     }
 
     #endregion
@@ -425,7 +440,6 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
     /// <param name="plusMinusFormsDtoList">Список DTO операций приёма-передачи.</param>
     /// <param name="uniqueAccountingUnitDtoList">Список DTO уникальных учётных единиц.</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
-    /// <param name="cts">Токен.</param>
     /// <returns>Список DTO учётных единиц в наличии на дату.</returns>
     private static Task<List<ShortForm11DTO>> GetUnitInStockDtoList(List<ShortForm11DTO> inventoryFormsDtoList, 
         List<ShortForm11DTO> plusMinusFormsDtoList, List<UniqueAccountingUnitDTO> uniqueAccountingUnitDtoList, 
@@ -542,4 +556,12 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
     }
 
     #endregion
+
+    private static Task<object> ShowPopup<TPopup>(TPopup popup) where TPopup : Window
+    {
+        var task = new TaskCompletionSource<object>();
+        popup.ShowDialog(Desktop.MainWindow);
+        popup.Focus();
+        return task.Task;
+    }
 }

@@ -1267,7 +1267,7 @@ public partial class Form22 : Form2, IBaseColor
     private void TritiumActivity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
+        TritiumActivity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
     private bool TritiumActivity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
