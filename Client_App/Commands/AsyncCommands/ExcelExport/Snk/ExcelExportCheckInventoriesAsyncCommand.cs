@@ -12,7 +12,6 @@ using Models.DBRealization;
 using Avalonia.Controls;
 using MessageBox.Avalonia.DTO;
 using System.Reflection;
-using MessageBox.Avalonia.Models;
 using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
@@ -42,7 +41,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         await CheckRepsAndRepPresence(selectedReports, formNum, progressBar, cts);
 
         progressBarVM.SetProgressBar(6, "Запрос даты формирования СНК");
-        var endSnkDate = await AskSnkEndDate(progressBar, cts);
+        var(endSnkDate, snkParams) = await AskSnkEndDate(progressBar, cts);
 
         progressBarVM.SetProgressBar(8, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
@@ -59,7 +58,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         await CheckInventoryFormPresence(inventoryReportDtoList, formNum, progressBar, cts);
 
         progressBarVM.SetProgressBar(15, "Формирование списка операций инвентаризации");
-        var inventoryFormsDtoList = await GetInventoryFormsDtoList(db, inventoryReportDtoList, endSnkDate, cts);
+        var inventoryFormsDtoList = await GetInventoryFormsDtoList(db, inventoryReportDtoList, endSnkDate, cts, snkParams);
 
         progressBarVM.SetProgressBar(16, "Получение списка дат инвентаризаций");
         var inventoryDatesList = await GetInventoryDatesList(inventoryFormsDtoList);
@@ -74,7 +73,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         await FillExcelHeaders(excelPackage, inventoryDatesList);
 
         progressBarVM.SetProgressBar(20, "Формирование списка операций передачи/получения");
-        var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, selectedReports.Id, endSnkDate, cts);
+        var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, selectedReports.Id, endSnkDate, cts, snkParams);
 
         progressBarVM.SetProgressBar(22, "Формирование списка всех операций");
         var unionFormsDtoList = await GetUnionFormsDtoList(inventoryFormsDtoList, plusMinusFormsDtoList);
@@ -101,69 +100,6 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         progressBarVM.SetProgressBar(100, "Завершение выгрузки");
         await progressBar.CloseAsync();
     }
-
-    #region AskSnkEndDate
-
-    /// <summary>
-    /// Запрос ввода даты формирования СНК.
-    /// </summary>
-    /// <param name="progressBar">Окно прогрессбара.</param>
-    /// <param name="cts">Токен.</param>
-    /// <returns>Дата, на которую необходимо сформировать СНК.</returns>
-    private static async Task<DateOnly> AskSnkEndDate(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
-    {
-        var date = DateOnly.MinValue;
-
-        #region MessageInputSnkEndDate
-
-        var result = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxInputWindow(new MessageBoxInputParams
-            {
-                ButtonDefinitions =
-                [
-                    new ButtonDefinition { Name = "Ок", IsDefault = true },
-                    new ButtonDefinition { Name = "Отмена", IsCancel = true }
-                ],
-                CanResize = true,
-                ContentTitle = "Запрос даты",
-                ContentMessage = "Введите дату окончания формирования выгрузки СНК.",
-                MinWidth = 450,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(Desktop.MainWindow));
-
-        #endregion
-
-        if (result.Button is "Отмена")
-        {
-            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-        }
-        else if (!DateOnly.TryParse(result.Message, out date))
-        {
-            #region MessageExcelExportFail
-
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
-                    ContentMessage = "Не удалось распознать введённую дату, " +
-                                     $"{Environment.NewLine}выгрузка будет выполнена на текущую системную дату.",
-                    MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
-
-            #endregion
-
-            date = DateOnly.Parse(DateTime.Now.ToShortDateString());
-        }
-        return date;
-
-    }
-
-    #endregion
 
     #region CheckInventoryFormPresence
 
@@ -269,43 +205,41 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
     /// <param name="inventoryDatesList">Список дат инвентаризации вместе с текущей датой/датой введённой пользователем.</param>
     private async Task FillExcelHeaders(ExcelPackage excelPackage, List<DateOnly> inventoryDatesList)
     {
+        //ws.Cells["A1:C1"].Merge = true;
+
         foreach (var date in inventoryDatesList)
         {
             Worksheet = excelPackage.Workbook.Worksheets.Add($"СНК на {date.ToShortDateString()}");
 
-            #region Headers
+            Worksheet.Cells[1, 1, 1, 11].Merge = true;
+            Worksheet.Cells[1, 1].Value = $"СНК на {date.ToShortDateString()}";
 
-            Worksheet.Cells[1, 1].Value = "ОКПО";
-            Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-            Worksheet.Cells[1, 3].Value = "Рег.№";
-            Worksheet.Cells[1, 4].Value = "Номер корректировки";
-            Worksheet.Cells[1, 5].Value = "Дата начала периода";
-            Worksheet.Cells[1, 6].Value = "Дата конца периода";
-            Worksheet.Cells[1, 7].Value = "№ п/п";
-            Worksheet.Cells[1, 8].Value = "Код";
-            Worksheet.Cells[1, 9].Value = "Дата операции";
-            Worksheet.Cells[1, 10].Value = "Номер паспорта (сертификата)";
-            Worksheet.Cells[1, 11].Value = "тип";
-            Worksheet.Cells[1, 12].Value = "радионуклиды";
-            Worksheet.Cells[1, 13].Value = "номер";
-            Worksheet.Cells[1, 14].Value = "количество, шт.";
-            Worksheet.Cells[1, 15].Value = "суммарная активность, Бк";
-            Worksheet.Cells[1, 16].Value = "код ОКПО изготовителя";
-            Worksheet.Cells[1, 17].Value = "дата выпуска";
-            Worksheet.Cells[1, 18].Value = "категория";
-            Worksheet.Cells[1, 19].Value = "НСС, мес";
-            Worksheet.Cells[1, 20].Value = "код формы собственности";
-            Worksheet.Cells[1, 21].Value = "код ОКПО правообладателя";
-            Worksheet.Cells[1, 22].Value = "вид";
-            Worksheet.Cells[1, 23].Value = "номер2";
-            Worksheet.Cells[1, 24].Value = "дата3";
-            Worksheet.Cells[1, 25].Value = "поставщика или получателя";
-            Worksheet.Cells[1, 26].Value = "перевозчика";
-            Worksheet.Cells[1, 27].Value = "наименование";
-            Worksheet.Cells[1, 28].Value = "тип4";
-            Worksheet.Cells[1, 29].Value = "номер5";
+            Worksheet.Cells[2, 1].Value = "№ п/п";
+            Worksheet.Cells[2, 2].Value = "Номер паспорта (сертификата)";
+            Worksheet.Cells[2, 3].Value = "тип";
+            Worksheet.Cells[2, 4].Value = "радионуклиды";
+            Worksheet.Cells[2, 5].Value = "номер";
+            Worksheet.Cells[2, 6].Value = "количество, шт.";
+            Worksheet.Cells[2, 7].Value = "суммарная активность, Бк";
+            Worksheet.Cells[2, 8].Value = "код ОКПО изготовителя";
+            Worksheet.Cells[2, 9].Value = "дата выпуска";
+            Worksheet.Cells[2, 10].Value = "категория";
+            Worksheet.Cells[2, 11].Value = "НСС, мес";
 
-            #endregion
+            Worksheet.Cells[1, 12, 1, 22].Merge = true;
+            Worksheet.Cells[1, 12].Value = $"Инвентаризация на {date.ToShortDateString()}";
+
+            Worksheet.Cells[2, 12].Value = "№ п/п";
+            Worksheet.Cells[2, 13].Value = "Номер паспорта (сертификата)";
+            Worksheet.Cells[2, 14].Value = "тип";
+            Worksheet.Cells[2, 15].Value = "радионуклиды";
+            Worksheet.Cells[2, 16].Value = "номер";
+            Worksheet.Cells[2, 17].Value = "количество, шт.";
+            Worksheet.Cells[2, 18].Value = "суммарная активность, Бк";
+            Worksheet.Cells[2, 19].Value = "код ОКПО изготовителя";
+            Worksheet.Cells[2, 20].Value = "дата выпуска";
+            Worksheet.Cells[2, 21].Value = "категория";
+            Worksheet.Cells[2, 22].Value = "НСС, мес";
 
             await AutoFitColumns();
 
@@ -365,6 +299,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
             if (OperatingSystem.IsWindows()) Worksheet.Column(col).AutoFit();
         }
         Worksheet.View.FreezePanes(2, 1);
+        Worksheet.View.FreezePanes(3, 1);
         return Task.CompletedTask;
     }
 
@@ -460,22 +395,27 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     firstInventoryUnitList
                         .AddRange(inventoryFormsDtoList
                             .Where(x => x.OpDate == firstInventoryDate)
-                            .DistinctBy(x => x.FacNum + x.Type + x.PasNum));
+                            .DistinctBy(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type));
                 }
 
                 var inventoryWithCurrentUnit = inventoryFormsDtoList
-                    .Where(x => x.FacNum + x.Type + x.PasNum == unit.FacNum + unit.Type + unit.PasNum
-                                && x.OpDate >= firstInventoryDate && x.OpDate <= secondInventoryDate)
+                    .Where(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type 
+                                == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type
+                                && x.OpDate >= firstInventoryDate 
+                                && x.OpDate <= secondInventoryDate)
                     .DistinctBy(x => x.OpDate)
                     .OrderBy(x => x.OpDate)
                     .ToList();
 
                 var inStock = firstInventoryUnitList
-                    .Any(x => x.FacNum + x.Type + x.PasNum == unit.FacNum + unit.Type + unit.PasNum);
+                    .Any(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
+                              == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type);
 
                 var operationsWithCurrentUnit = plusMinusFormsDtoList
-                    .Where(x => x.FacNum + x.Type + x.PasNum == unit.FacNum + unit.Type + unit.PasNum
-                                && x.OpDate >= firstInventoryDate && x.OpDate <= secondInventoryDate)
+                    .Where(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
+                                == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type
+                                && x.OpDate >= firstInventoryDate 
+                                && x.OpDate <= secondInventoryDate)
                     .OrderBy(x => x.OpDate)
                     .ToList();
 
@@ -483,8 +423,10 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
                 var hasTransferOperations = operationsWithCurrentUnit.Any(x => MinusOperation.Contains(x.OpCode));
                 var hasReceiveOperations = operationsWithCurrentUnit.Any(x => PlusOperation.Contains(x.OpCode));
+
                 var firstOperationIsTransfer = operationsWithCurrentUnit.Count > 0
                                                && MinusOperation.Contains(operationsWithCurrentUnit.First().OpCode);
+
                 var firstOperationIsReceive = operationsWithCurrentUnit.Count > 0
                                               && PlusOperation.Contains(operationsWithCurrentUnit.First().OpCode);
 
@@ -498,41 +440,41 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     switch (countStock)
                     {
                         case > 1:
-                            {
-                                var reReceivedFormDto = group
-                                    .Where(x => PlusOperation.Contains(x.OpCode))
-                                    .TakeLast(countStock);
-                                reReceivedUnitsList.AddRange(reReceivedFormDto);
-                                operationsWithCurrentUnitWithoutDuplicates
-                                    .Add(group
-                                        .Last(x => PlusOperation.Contains(x.OpCode)));
-                                break;
-                            }
+                        {
+                            var reReceivedFormDto = group
+                                .Where(x => PlusOperation.Contains(x.OpCode))
+                                .TakeLast(countStock);
+                            reReceivedUnitsList.AddRange(reReceivedFormDto);
+                            operationsWithCurrentUnitWithoutDuplicates
+                                .Add(group
+                                    .Last(x => PlusOperation.Contains(x.OpCode)));
+                            break;
+                        }
                         case 1:
-                            {
-                                operationsWithCurrentUnitWithoutDuplicates
-                                    .Add(group
-                                        .Last(x => PlusOperation.Contains(x.OpCode)));
-                                break;
-                            }
+                        {
+                            operationsWithCurrentUnitWithoutDuplicates
+                                .Add(group
+                                    .Last(x => PlusOperation.Contains(x.OpCode)));
+                            break;
+                        }
                         case 0:
-                            {
-                                operationsWithCurrentUnitWithoutDuplicates
-                                    .Add(group
-                                        .Last(x => MinusOperation.Contains(x.OpCode)));
-                                break;
-                            }
+                        {
+                            operationsWithCurrentUnitWithoutDuplicates
+                                .Add(group
+                                    .Last(x => MinusOperation.Contains(x.OpCode)));
+                            break;
+                        }
                         case < 0:
-                            {
-                                var reTransferredFormDto = group
-                                    .Where(x => MinusOperation.Contains(x.OpCode))
-                                    .TakeLast(Math.Abs(countStock));
-                                reTransferredUnitsList.AddRange(reTransferredFormDto);
-                                operationsWithCurrentUnitWithoutDuplicates
-                                    .Add(group
-                                        .Last(x => MinusOperation.Contains(x.OpCode)));
-                                break;
-                            }
+                        {
+                            var reTransferredFormDto = group
+                                .Where(x => MinusOperation.Contains(x.OpCode))
+                                .TakeLast(Math.Abs(countStock));
+                            reTransferredUnitsList.AddRange(reTransferredFormDto);
+                            operationsWithCurrentUnitWithoutDuplicates
+                                .Add(group
+                                    .Last(x => MinusOperation.Contains(x.OpCode)));
+                            break;
+                        }
                     }
                 }
 
@@ -623,7 +565,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
                 unitInStockList
                     .Remove(unitInStockList
-                        .First(x => x.FacNum + x.Type + x.PasNum == unit.FacNum + unit.Type + unit.PasNum));
+                        .First(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
+                                    == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type));
                 if (inStock)
                 {
                     unitInStockList.Add(lastOperationWithUnit);

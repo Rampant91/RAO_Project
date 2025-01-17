@@ -155,7 +155,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     /// Excel -> Выбранная организация -> СНК
     /// </summary>
     public ICommand ExcelExportSnk => new ExcelExportSnkAsyncCommand();
-    
+
+    /// <summary>
+    /// Excel -> Выбранная организация -> Проверка инвентаризаций
+    /// </summary>
+    public ICommand ExcelExportCheckInventories => new ExcelExportCheckInventoriesAsyncCommand();
+
     /// <summary>
     /// Экспорт всех организаций организации в отдельные файлы .RAODB
     /// </summary>

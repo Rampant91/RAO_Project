@@ -6,10 +6,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using Avalonia.Controls;
+using Avalonia.Threading;
 using Client_App.ViewModels;
-using Models.Forms.Form1;
+using Client_App.Views;
+using Client_App.Views.ProgressBar;
+using MessageBox.Avalonia.DTO;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
+
 public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 {
     #region Properties
@@ -130,6 +135,19 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
         public string Type { get; set; }
     }
 
+    private protected class SnkParamsDto(bool pasNum, bool type, bool radionuclids, bool facNum, bool packNum)
+    {
+        public readonly bool CheckPasNum = pasNum;
+
+        public readonly bool CheckType = type;
+
+        public readonly bool CheckRadionuclids = radionuclids;
+
+        public readonly bool CheckFacNum = facNum;
+
+        public readonly bool CheckPackNumber = packNum;
+    }
+
     private class ShortReportStringDateDTO(int id, string startPeriod, string endPeriod)
     {
         public readonly int Id = id;
@@ -159,6 +177,107 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
         public string Radionuclids { get; set; }
 
         public string Type { get; set; }
+    }
+
+    #endregion
+
+    #region Methods
+
+    #region AskSnkEndDate
+
+    /// <summary>
+    /// Запрос ввода даты формирования СНК.
+    /// </summary>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns>Кортеж из даты, на которую необходимо сформировать СНК и dto bool флагов, по каким параметрам определять учётную единицу.</returns>
+    private protected static async Task<(DateOnly, SnkParamsDto)> AskSnkEndDate(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
+    {
+        var date = DateOnly.MinValue;
+
+        var vm = new GetSnkParamsVM();
+        await Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            var getSnkParamsWindow = new GetSnkParams();
+            await getSnkParamsWindow.ShowDialog(Desktop.MainWindow);
+            vm = getSnkParamsWindow._vm;
+        });
+
+        if (!vm.Ok)
+        {
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+
+        else if (!DateOnly.TryParse(vm.Date, out date))
+        {
+            #region MessageExcelExportFail
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentMessage = "Не удалось распознать введённую дату, " +
+                                     $"{Environment.NewLine}выгрузка будет выполнена на текущую системную дату.",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            date = DateOnly.Parse(DateTime.Now.ToShortDateString());
+        }
+        else if (date < DateOnly.Parse("01.01.2022"))
+        {
+            #region MessageExcelExportFail
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentMessage = "Выгрузка не выполнена, поскольку введена дата ранее вступления в силу приказа.",
+                    MinWidth = 400,
+                    MinHeight = 115,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+        else if (vm is { CheckPasNum: false, CheckType: false, CheckRadionuclids: false, CheckFacNum: false, CheckPackNumber: false })
+        {
+            #region MessageExcelExportFail
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentMessage = "Выгрузка не выполнена, поскольку не выбран ни один из параметров, для определения учётной единицы.",
+                    MinWidth = 400,
+                    MinHeight = 115,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+        var snkParamsDto = new SnkParamsDto(
+            vm.CheckPasNum,
+            vm.CheckType,
+            vm.CheckRadionuclids,
+            vm.CheckFacNum,
+            vm.CheckPackNumber);
+        return (date, snkParamsDto);
     }
 
     #endregion
@@ -198,8 +317,10 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="inventoryReportDtoList">Список DTO отчётов, содержащих операцию инвентаризации.</param>
     /// <param name="endSnkDate">Дата, на которую нужно сформировать СНК.</param>
     /// <param name="cts">Токен.</param>
+    /// <param name="snkParams">DTO состоящий из bool флагов, показывающих, по каким параметрам необходимо выполнять поиск учётной единицы.
+    /// Может быть null, тогда поиск ведётся по всем параметрам.</param>
     /// <returns>Список DTO операций инвентаризации, отсортированный по датам.</returns>
-    private protected static async Task<List<ShortForm11DTO>> GetInventoryFormsDtoList(DBModel db, List<ShortReportDTO> inventoryReportDtoList, 
+    private protected static async Task<List<ShortForm11DTO>> GetInventoryFormsDtoList(DBModel db, List<ShortReportDTO> inventoryReportDtoList,
         DateOnly endSnkDate, CancellationTokenSource cts, SnkParamsDto? snkParams = null)
     {
         List<ShortForm11DTO> inventoryFormsDtoList = [];
@@ -347,6 +468,8 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="repsId">Id организации.</param>
     /// <param name="endSnkDate">Дата, на которую нужно сформировать СНК.</param>
     /// <param name="cts">Токен.</param>
+    /// <param name="snkParams">DTO состоящий из bool флагов, показывающих, по каким параметрам необходимо выполнять поиск учётной единицы.
+    /// Может быть null, тогда поиск ведётся по всем параметрам.</param>
     /// <returns>Список DTO форм с операциями приёма передачи, отсортированный по датам.</returns>
     private protected static async Task<List<ShortForm11DTO>> GetPlusMinusFormsDtoList(DBModel db, int repsId, DateOnly endSnkDate,
         CancellationTokenSource cts, SnkParamsDto? snkParams = null)
@@ -453,21 +576,6 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     }
 
     #endregion
-
-    #region DTO
-
-    private protected class SnkParamsDto(bool pasNum, bool type, bool radionuclids, bool facNum, bool packNum)
-    {
-        public readonly bool CheckPasNum = pasNum;
-
-        public readonly bool CheckType = type;
-
-        public readonly bool CheckRadionuclids = radionuclids;
-
-        public readonly bool CheckFacNum = facNum;
-
-        public readonly bool CheckPackNumber = packNum;
-    }
 
     #endregion
 }
