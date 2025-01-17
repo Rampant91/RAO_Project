@@ -357,7 +357,7 @@ public class CheckF21 : CheckBase
         List<(Form21,string,string)> forms21ExpectedOut15 = [];
         foreach (var key in forms21ExpectedInDict.Keys)
         {
-            Form21_ToExp(forms21ExpectedInDict[key]);
+            Form21_ToDec(forms21ExpectedInDict[key]);
             List<string> addressSubstrings = [];
             List<string> formsSubstrings = [];
             foreach (var keyForm in forms21MetadataInDict[key].Keys)
@@ -416,7 +416,7 @@ public class CheckF21 : CheckBase
         }
         foreach (var key in forms21ExpectedOutDict.Keys)
         {
-            Form21_ToExp(forms21ExpectedOutDict[key]);
+            Form21_ToDec(forms21ExpectedOutDict[key]);
             List<string> addressSubstrings = [];
             List<string> formsSubstrings = [];
             foreach (var keyForm in forms21MetadataOutDict[key].Keys)
@@ -478,7 +478,7 @@ public class CheckF21 : CheckBase
             for (int i = forms21ExpectedIn.Count - 1; i >= 0; i--)
             {
                 (Form21, string, string) form21ExpectedIn = forms21ExpectedIn[i];
-                var mismatches = Form21_Match(form21ExpectedIn.Item1, formReal, $"форм{(form21ExpectedIn.Item3.Contains(',') ? "ы":"а")} {form21ExpectedIn.Item3}", "форма 2.1");
+                var mismatches = Form21_Match(form21ExpectedIn.Item1, formReal, $"форм{(form21ExpectedIn.Item3.Contains(',') ? "ы":"а")} {form21ExpectedIn.Item3}", "форма 2.1", form21ExpectedIn.Item1.CodeRAOout_DB == form15Plug);
                 if (mismatches == null) continue;
                 forms21ExpectedIn.RemoveAt(i);
                 matchFound = true;
@@ -498,7 +498,7 @@ public class CheckF21 : CheckBase
                         FormNum = "form_21",
                         Row = formReal.NumberInOrder_DB.ToString(),
                         Column = columns,
-                        Value = $"код РАО {formReal.CodeRAOIn_DB}, статус РАО {formReal.StatusRAOIn_DB}, " +
+                        Value = $"код РАО {(formReal.CodeRAOIn_DB == form15Plug || formReal.CodeRAOIn_DB == formGenericPlug ? "-" : formReal.CodeRAOIn_DB)}, статус РАО {formReal.StatusRAOIn_DB}, " +
                                 $"код переработки/сортировки {formReal.MachineCode_DB}\n - {form21ExpectedIn.Item2}",
                         Message = $"Сведения о РАО, поступивших на переработку, не совпадают:\n\n{hints}"
                     });
@@ -510,7 +510,7 @@ public class CheckF21 : CheckBase
                 for (int i = forms21ExpectedIn.Count - 1; i >= 0; i--)
                 {
                     (Form21, string, string) form21ExpectedIn = forms21ExpectedIn[i];
-                    var mismatches = Form21_Match(form21ExpectedIn.Item1, formReal, $"форм{(forms21ExpectedIn[i].Item3.Contains(',') ? "ы" : "а")} {form21ExpectedIn.Item3}", "форма 2.1", true);
+                    var mismatches = Form21_Match(form21ExpectedIn.Item1, formReal, $"форм{(forms21ExpectedIn[i].Item3.Contains(',') ? "ы" : "а")} {form21ExpectedIn.Item3}", "форма 2.1", form21ExpectedIn.Item1.CodeRAOout_DB == form15Plug, true);
                     if (mismatches == null) continue;
                     forms21ExpectedIn.RemoveAt(i);
                     matchFound = true;
@@ -530,7 +530,7 @@ public class CheckF21 : CheckBase
                             FormNum = "form_21",
                             Row = formReal.NumberInOrder_DB.ToString(),
                             Column = columns,
-                            Value = $"код РАО {formReal.CodeRAOIn_DB}, статус РАО {formReal.StatusRAOIn_DB}, " +
+                            Value = $"код РАО {(formReal.CodeRAOIn_DB == form15Plug || formReal.CodeRAOIn_DB == formGenericPlug ? "-" : formReal.CodeRAOIn_DB)}, статус РАО {formReal.StatusRAOIn_DB}, " +
                                     $"код переработки/сортировки {formReal.MachineCode_DB}\n - {form21ExpectedIn.Item2}",
                             Message = $"Сведения о РАО, поступивших на переработку, не совпадают:\n\n{hints}"
                         });
@@ -545,7 +545,7 @@ public class CheckF21 : CheckBase
                     FormNum = "form_21",
                     Row = formReal.NumberInOrder_DB.ToString(),
                     Column = "6 - 14",
-                    Value = $"код РАО {formReal.CodeRAOIn_DB}, статус РАО {formReal.StatusRAOIn_DB}, " +
+                    Value = $"код РАО {(formReal.CodeRAOIn_DB == form15Plug || formReal.CodeRAOIn_DB == formGenericPlug ? "-" : formReal.CodeRAOIn_DB)}, статус РАО {formReal.StatusRAOIn_DB}, " +
                             $"код переработки/сортировки {formReal.MachineCode_DB}",
                     Message = "В формах 1.5 - 1.8 не найдена информация об указанных РАО, поступивших на переработку/кондиционирование."
                 });
@@ -558,7 +558,7 @@ public class CheckF21 : CheckBase
                 FormNum = "form_21",
                 Row = "-",
                 Column = "6 - 14",
-                Value = $"код РАО {formExpected.Item1.CodeRAOIn_DB}, статус РАО {formExpected.Item1.StatusRAOIn_DB}, " +
+                Value = $"код РАО {(formExpected.Item1.CodeRAOIn_DB == form15Plug || formExpected.Item1.CodeRAOIn_DB == formGenericPlug ? "-" : formExpected.Item1.CodeRAOIn_DB)}, статус РАО {formExpected.Item1.StatusRAOIn_DB}, " +
                         $"код переработки/сортировки {formExpected.Item1.MachineCode_DB}\n - {formExpected.Item2}",
                 Message = "В форме 2.1 не найдена информация об указанных РАО, поступивших на переработку/кондиционирование."
             });
@@ -569,7 +569,7 @@ public class CheckF21 : CheckBase
             for (int i = forms21ExpectedOut.Count - 1; i >= 0; i--)
             {
                 (Form21, string, string) form21ExpectedOut = forms21ExpectedOut[i];
-                var mismatches = Form21_Match(forms21ExpectedOut[i].Item1, formReal, $"форм{(form21ExpectedOut.Item3.Contains(',') ? "ы" : "а")} {form21ExpectedOut.Item3}", "форма 2.1");
+                var mismatches = Form21_Match(forms21ExpectedOut[i].Item1, formReal, $"форм{(form21ExpectedOut.Item3.Contains(',') ? "ы" : "а")} {form21ExpectedOut.Item3}", "форма 2.1", form21ExpectedOut.Item1.CodeRAOIn_DB == form15Plug);
                 if (mismatches == null) continue;
                 forms21ExpectedOut.RemoveAt(i);
                 matchFound = true;
@@ -589,7 +589,7 @@ public class CheckF21 : CheckBase
                         FormNum = "form_21",
                         Row = formReal.NumberInOrder_DB.ToString(),
                         Column = columns,
-                        Value = $"код РАО {formReal.CodeRAOout_DB}, статус РАО {formReal.StatusRAOout_DB}, " +
+                        Value = $"код РАО {(formReal.CodeRAOout_DB == form15Plug || formReal.CodeRAOout_DB == formGenericPlug ? "-" : formReal.CodeRAOout_DB)}, статус РАО {formReal.StatusRAOout_DB}, " +
                                 $"код переработки/сортировки {formReal.MachineCode_DB}\n - {form21ExpectedOut.Item2}",
                         Message = $"Сведения о РАО, образовавшихся после переработки, не совпадают:\n\n{hints}"
                     });
@@ -601,7 +601,7 @@ public class CheckF21 : CheckBase
                 for (int i = forms21ExpectedOut.Count - 1; i >= 0; i--)
                 {
                     (Form21, string, string) form21ExpectedOut = forms21ExpectedOut[i];
-                    var mismatches = Form21_Match(forms21ExpectedOut[i].Item1, formReal, $"форм{(form21ExpectedOut.Item3.Contains(',') ? "ы" : "а")} {form21ExpectedOut.Item3}", "форма 2.1", true);
+                    var mismatches = Form21_Match(forms21ExpectedOut[i].Item1, formReal, $"форм{(form21ExpectedOut.Item3.Contains(',') ? "ы" : "а")} {form21ExpectedOut.Item3}", "форма 2.1", form21ExpectedOut.Item1.CodeRAOIn_DB == form15Plug, true);
                     if (mismatches == null) continue;
                     forms21ExpectedOut.RemoveAt(i);
                     matchFound = true;
@@ -621,7 +621,7 @@ public class CheckF21 : CheckBase
                             FormNum = "form_21",
                             Row = formReal.NumberInOrder_DB.ToString(),
                             Column = columns,
-                            Value = $"код РАО {formReal.CodeRAOout_DB}, статус РАО {formReal.StatusRAOout_DB}, " +
+                            Value = $"код РАО {(formReal.CodeRAOout_DB == form15Plug || formReal.CodeRAOout_DB == formGenericPlug ? "-" : formReal.CodeRAOout_DB)}, статус РАО {formReal.StatusRAOout_DB}, " +
                                     $"код переработки/сортировки {formReal.MachineCode_DB}\n - {form21ExpectedOut.Item2}",
                             Message = $"Сведения о РАО, образовавшихся после переработки, не совпадают:\n\n{hints}"
                         });
@@ -636,7 +636,7 @@ public class CheckF21 : CheckBase
                     FormNum = "form_21",
                     Row = formReal.NumberInOrder_DB.ToString(),
                     Column = "15 - 23",
-                    Value = $"код РАО {formReal.CodeRAOout_DB}, " +
+                    Value = $"код РАО {(formReal.CodeRAOout_DB == form15Plug || formReal.CodeRAOout_DB == formGenericPlug ? "-" : formReal.CodeRAOout_DB)}, " +
                             $"статус РАО {formReal.StatusRAOout_DB}, код переработки/сортировки {formReal.MachineCode_DB}",
                     Message = "В формах 1.5 - 1.8 не найдена информация об указанных РАО, " +
                               "образовавшихся после переработки/кондиционирования."
@@ -650,7 +650,7 @@ public class CheckF21 : CheckBase
                 FormNum = "form_21",
                 Row = "-",
                 Column = "15 - 23",
-                Value = $"код РАО {formExpected.Item1.CodeRAOout_DB}, статус РАО {formExpected.Item1.StatusRAOout_DB}, " +
+                Value = $"код РАО {(formExpected.Item1.CodeRAOout_DB == form15Plug || formExpected.Item1.CodeRAOout_DB == formGenericPlug ? "-" : formExpected.Item1.CodeRAOout_DB)}, статус РАО {formExpected.Item1.StatusRAOout_DB}, " +
                     $"код переработки/сортировки {formExpected.Item1.MachineCode_DB}\n - {formExpected.Item2}",
                 Message = "В форме 2.1 не найдена информация об указанных РАО, образовавшихся после переработки/кондиционирования."
             });
@@ -757,6 +757,7 @@ public class CheckF21 : CheckBase
                     res.RefineMachineName_DB = "in";
                     if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
                     res.CodeRAOIn_DB = form15Plug;
+                    res.CodeRAOout_DB = form15Plug; //used for later allowances of the values being less than expected
                     res.StatusRAOIn_DB = form.StatusRAO_DB;
                     res.VolumeIn_DB = form15Plug;
                     res.MassIn_DB = form15Plug;
@@ -774,6 +775,7 @@ public class CheckF21 : CheckBase
                     res.RefineMachineName_DB = "out";
                     if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
                     res.CodeRAOout_DB = form15Plug;
+                    res.CodeRAOIn_DB = form15Plug; //used for later allowances of the values being less than expected
                     res.StatusRAOout_DB = form.StatusRAO_DB;
                     res.VolumeOut_DB = form15Plug;
                     res.MassOut_DB = form15Plug;
@@ -816,6 +818,7 @@ public class CheckF21 : CheckBase
                     res.RefineMachineName_DB = "in";
                     if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
                     res.CodeRAOIn_DB = form.CodeRAO_DB;
+                    res.CodeRAOout_DB = "-";
                     res.StatusRAOIn_DB = form.StatusRAO_DB;
                     res.VolumeIn_DB = form.Volume_DB;
                     res.MassIn_DB = form.Mass_DB;
@@ -833,6 +836,7 @@ public class CheckF21 : CheckBase
                     res.RefineMachineName_DB = "out";
                     if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
                     res.CodeRAOout_DB = form.CodeRAO_DB;
+                    res.CodeRAOIn_DB = "-";
                     res.StatusRAOout_DB = form.StatusRAO_DB;
                     res.VolumeOut_DB = form.Volume_DB;
                     res.MassOut_DB = form.Mass_DB;
@@ -876,6 +880,7 @@ public class CheckF21 : CheckBase
                     res.RefineMachineName_DB = "in";
                     if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
                     res.CodeRAOIn_DB = form.CodeRAO_DB;
+                    res.CodeRAOout_DB = "-";
                     res.StatusRAOIn_DB = form.StatusRAO_DB;
                     res.VolumeIn_DB = form.VolumeOutOfPack_DB;
                     res.MassIn_DB = form.MassOutOfPack_DB;
@@ -892,6 +897,7 @@ public class CheckF21 : CheckBase
                     res.RefineMachineName_DB = "out";
                     if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
                     res.CodeRAOout_DB = form.CodeRAO_DB;
+                    res.CodeRAOIn_DB = "-";
                     res.StatusRAOout_DB = form.StatusRAO_DB;
                     res.VolumeOut_DB = form.VolumeOutOfPack_DB;
                     res.MassOut_DB = form.MassOutOfPack_DB;
@@ -935,6 +941,7 @@ public class CheckF21 : CheckBase
                     res.RefineMachineName_DB = "in";
                     if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
                     res.CodeRAOIn_DB = form.CodeRAO_DB;
+                    res.CodeRAOout_DB = "-";
                     res.StatusRAOIn_DB = form.StatusRAO_DB;
                     res.VolumeIn_DB = form.Volume20_DB;
                     res.MassIn_DB = form.Mass21_DB;
@@ -951,6 +958,7 @@ public class CheckF21 : CheckBase
                     res.RefineMachineName_DB = "out";
                     if (byte.TryParse(form.RefineOrSortRAOCode_DB, out var machineCode)) res.MachineCode_DB = machineCode;
                     res.CodeRAOout_DB = form.CodeRAO_DB;
+                    res.CodeRAOIn_DB = "-";
                     res.StatusRAOout_DB = form.StatusRAO_DB;
                     res.VolumeOut_DB = form.Volume20_DB;
                     res.MassOut_DB = form.Mass21_DB;
@@ -983,6 +991,7 @@ public class CheckF21 : CheckBase
         if (inOrOut == "in")
         {
             res.CodeRAOIn_DB = form.CodeRAOIn_DB;
+            res.CodeRAOout_DB = form.CodeRAOout_DB;
             res.StatusRAOIn_DB = form.StatusRAOIn_DB;
             res.VolumeIn_DB = form.VolumeIn_DB;
             res.MassIn_DB = form.MassIn_DB;
@@ -995,6 +1004,7 @@ public class CheckF21 : CheckBase
         }
         else
         {
+            res.CodeRAOIn_DB = form.CodeRAOIn_DB;
             res.CodeRAOout_DB = form.CodeRAOout_DB;
             res.StatusRAOout_DB = form.StatusRAOout_DB;
             res.VolumeOut_DB = form.VolumeOut_DB;
@@ -1018,6 +1028,7 @@ public class CheckF21 : CheckBase
             MachineCode_DB = form.MachineCode_DB,
             FormNum_DB = form.FormNum_DB,
             CodeRAOIn_DB = form.CodeRAOIn_DB,
+            CodeRAOout_DB = form.CodeRAOout_DB,
             StatusRAOIn_DB = form.StatusRAOIn_DB,
             VolumeIn_DB = form.VolumeIn_DB,
             MassIn_DB = form.MassIn_DB,
@@ -1039,6 +1050,7 @@ public class CheckF21 : CheckBase
             RefineMachineName_DB = form.RefineMachineName_DB,
             MachineCode_DB = form.MachineCode_DB,
             FormNum_DB = form.FormNum_DB,
+            CodeRAOIn_DB = form.CodeRAOIn_DB,
             CodeRAOout_DB = form.CodeRAOout_DB,
             StatusRAOout_DB = form.StatusRAOout_DB,
             VolumeOut_DB = form.VolumeOut_DB,
@@ -1060,10 +1072,13 @@ public class CheckF21 : CheckBase
     private static void Form21_Add(Form21 receiver, Form21 giver, string? direction = null)
     {
         var directionReal = direction ?? receiver.RefineMachineName_DB;
+        bool form15Touch = false;
         switch (directionReal)
         {
             case "in":
                 {
+                    form15Touch = receiver.CodeRAOIn_DB == form15Plug || giver.CodeRAOIn_DB == form15Plug;
+                    if (form15Touch) receiver.CodeRAOout_DB = form15Plug;
                     receiver.VolumeIn_DB = Form21_SubAdd(receiver.VolumeIn_DB, giver.VolumeIn_DB);
                     receiver.MassIn_DB = Form21_SubAdd(receiver.MassIn_DB, giver.MassIn_DB);
                     receiver.QuantityIn_DB = Form21_SubAdd(receiver.QuantityIn_DB, giver.QuantityIn_DB);
@@ -1075,6 +1090,8 @@ public class CheckF21 : CheckBase
                 }
             case "out":
                 {
+                    form15Touch = receiver.CodeRAOout_DB == form15Plug || giver.CodeRAOout_DB == form15Plug;
+                    if (form15Touch) receiver.CodeRAOIn_DB = form15Plug;
                     receiver.VolumeOut_DB = Form21_SubAdd(receiver.VolumeOut_DB, giver.VolumeOut_DB);
                     receiver.MassOut_DB = Form21_SubAdd(receiver.MassOut_DB, giver.MassOut_DB);
                     receiver.QuantityOZIIIout_DB = Form21_SubAdd(receiver.QuantityOZIIIout_DB, giver.QuantityOZIIIout_DB);
@@ -1096,16 +1113,20 @@ public class CheckF21 : CheckBase
     /// <returns>A string representation of the sum of the parameters. If the summation fails, returns the first parameter.</returns>
     private static string Form21_SubAdd(string receiver, string giver)
     {
-        if (receiver == form15Plug || giver == form15Plug) return form15Plug;
         if (receiver == formGenericPlug || giver == formGenericPlug) return formGenericPlug;
         var res = receiver;
-        var receiverReal = receiver == "-" || string.IsNullOrWhiteSpace(receiver)
+        var receiverReal = receiver == "-" || string.IsNullOrWhiteSpace(receiver) || receiver == form15Plug
             ? "0"
             : receiver;
-        var giverReal = giver == "-" || string.IsNullOrWhiteSpace(giver)
+        var giverReal = giver == "-" || string.IsNullOrWhiteSpace(giver) || giver == form15Plug
             ? "0"
             : giver;
-        if (TryParseDoubleExtended(receiverReal, out var receiverTrue)
+        if (decimal.TryParse(receiverReal, out var receiverDecimal)
+            && decimal.TryParse(giverReal, out var giverDecimal))
+        {
+            res = decimal.Add(receiverDecimal, giverDecimal).ToString();
+        }
+        else if (TryParseDoubleExtended(receiverReal, out var receiverTrue)
             && TryParseDoubleExtended(giverReal, out var giverTrue))
         {
             res = (receiverTrue + giverTrue).ToString();
@@ -1150,15 +1171,70 @@ public class CheckF21 : CheckBase
             return input;
         }
     }
+    private static void Form21_ToDec(Form21 form, string? direction = null)
+    {
+        var directionReal = direction ?? form.RefineMachineName_DB;
+        switch (directionReal)
+        {
+            case "in":
+                {
+                    form.VolumeIn_DB = Form21_SubToDec(form.VolumeIn_DB);
+                    form.MassIn_DB = Form21_SubToDec(form.MassIn_DB);
+                    form.TritiumActivityIn_DB = Form21_SubToDec(form.TritiumActivityIn_DB);
+                    form.BetaGammaActivityIn_DB = Form21_SubToDec(form.BetaGammaActivityIn_DB);
+                    form.AlphaActivityIn_DB = Form21_SubToDec(form.AlphaActivityIn_DB);
+                    form.TransuraniumActivityIn_DB = Form21_SubToDec(form.TransuraniumActivityIn_DB);
+                    break;
+                }
+            case "out":
+                {
+                    form.VolumeOut_DB = Form21_SubToDec(form.VolumeOut_DB);
+                    form.MassOut_DB = Form21_SubToDec(form.MassOut_DB);
+                    form.TritiumActivityOut_DB = Form21_SubToDec(form.TritiumActivityOut_DB);
+                    form.BetaGammaActivityOut_DB = Form21_SubToDec(form.BetaGammaActivityOut_DB);
+                    form.AlphaActivityOut_DB = Form21_SubToDec(form.AlphaActivityOut_DB);
+                    form.TransuraniumActivityOut_DB = Form21_SubToDec(form.TransuraniumActivityOut_DB);
+                    break;
+                }
+        }
+    }
+    private static string Form21_SubToDec(string input)
+    {
+        if (input.Contains(',') && TryParseDoubleExtended(input, out var inputValueFloat))
+        {
+            return inputValueFloat.ToString("e5").Replace("+0", "+");
+        }
+        if (decimal.TryParse(input, out var inputValueDecimal))
+        {
+            return inputValueDecimal.ToString();
+        }
+        else
+        {
+            return input;
+        }
+    }
 
     #endregion
 
     #region Form21_SubMatch
 
-    private static void Form21_SubMatch(string form1Val, string form2Val, string humanName, double valB, List<(int, string, string, string)> res, int columnNum, string forms1, string forms2)
+    private static void Form21_SubMatch(string form1Val, string form2Val, string humanName, double valB, List<(int, string, string, string)> res, int columnNum, string forms1, string forms2, bool form15Fix)
     {
         if (form1Val == form15Plug || form2Val == form15Plug) return;
         if (form1Val == formGenericPlug || form2Val == formGenericPlug) return;
+        if (decimal.TryParse(form1Val, out var val1Dec)
+            && decimal.TryParse(form2Val, out var val2Dec))
+        {
+            if (!decimal.Equals(val1Dec, val2Dec) && !(form15Fix && decimal.Compare(val1Dec,val2Dec)<0))
+            {
+                res.Add((columnNum, $"{humanName}", $"{forms1}: {form1Val}", $"{forms2}: {form2Val}"));
+                return;
+            }
+            else
+            {
+                return;
+            }
+        }
         TryParseDoubleExtended(form1Val, out var val1);
         TryParseDoubleExtended(form2Val, out var val2);
         if (!((form1Val == "-" && form2Val == "-")
@@ -1175,44 +1251,46 @@ public class CheckF21 : CheckBase
 
     #region Form21_Match
 
-    private static List<(int, string, string, string)>? Form21_Match(Form21 form1, Form21 form2, string forms1, string forms2, bool form15PlugLeftover = false)
+    private static List<(int, string, string, string)>? Form21_Match(Form21 form1, Form21 form2, string forms1, string forms2, bool form15Fix, bool form15PlugLeftover = false)
     {
         const double valB = 0.1;
         List<(int, string, string, string)> res = [];
         if ((form1.CodeRAOIn_DB == form2.CodeRAOIn_DB || (form15PlugLeftover && (form1.CodeRAOIn_DB == form15Plug || form2.CodeRAOIn_DB == form15Plug)))
             && form1.CodeRAOIn_DB != "-"
+            && form1.CodeRAOout_DB == "-" || form1.CodeRAOout_DB == form15Plug
             && !string.IsNullOrWhiteSpace(form1.CodeRAOIn_DB))
         {
             if (form1.StatusRAOIn_DB == form2.StatusRAOIn_DB
                 && (form1.CodeRAOIn_DB == form2.CodeRAOIn_DB || (form15PlugLeftover && (form1.CodeRAOIn_DB == form15Plug || form2.CodeRAOIn_DB == form15Plug)))
                 && form1.MachineCode_DB == form2.MachineCode_DB)
             {
-                Form21_SubMatch(form1.VolumeIn_DB, form2.VolumeIn_DB, "Объем без упаковки, куб. м", valB, res, 8, forms1, forms2);
-                Form21_SubMatch(form1.MassIn_DB, form2.MassIn_DB, "Масса без упаковки (нетто), т", valB, res, 9, forms1, forms2);
-                Form21_SubMatch(form1.QuantityIn_DB, form2.QuantityIn_DB, "кол-во ОЗИИИ, шт.", valB, res, 10, forms1, forms2);
-                Form21_SubMatch(form1.TritiumActivityIn_DB, form2.TritiumActivityIn_DB, "суммарная активность (тритий), Бк", valB, res, 11, forms1, forms2);
-                Form21_SubMatch(form1.BetaGammaActivityIn_DB, form2.BetaGammaActivityIn_DB, "суммарная активность (бета, гамма), Бк", valB, res, 12, forms1, forms2);
-                Form21_SubMatch(form1.AlphaActivityIn_DB, form2.AlphaActivityIn_DB, "суммарная активность (альфа), Бк", valB, res, 13, forms1, forms2);
-                Form21_SubMatch(form1.TransuraniumActivityIn_DB, form2.TransuraniumActivityIn_DB, "суммарная активность (трансурановые), Бк", valB, res, 14, forms1, forms2);
+                Form21_SubMatch(form1.VolumeIn_DB, form2.VolumeIn_DB, "Объем без упаковки, куб. м", valB, res, 8, forms1, forms2, form15Fix);
+                Form21_SubMatch(form1.MassIn_DB, form2.MassIn_DB, "Масса без упаковки (нетто), т", valB, res, 9, forms1, forms2, form15Fix);
+                Form21_SubMatch(form1.QuantityIn_DB, form2.QuantityIn_DB, "кол-во ОЗИИИ, шт.", valB, res, 10, forms1, forms2, form15Fix);
+                Form21_SubMatch(form1.TritiumActivityIn_DB, form2.TritiumActivityIn_DB, "суммарная активность (тритий), Бк", valB, res, 11, forms1, forms2, form15Fix);
+                Form21_SubMatch(form1.BetaGammaActivityIn_DB, form2.BetaGammaActivityIn_DB, "суммарная активность (бета, гамма), Бк", valB, res, 12, forms1, forms2, form15Fix);
+                Form21_SubMatch(form1.AlphaActivityIn_DB, form2.AlphaActivityIn_DB, "суммарная активность (альфа), Бк", valB, res, 13, forms1, forms2, form15Fix);
+                Form21_SubMatch(form1.TransuraniumActivityIn_DB, form2.TransuraniumActivityIn_DB, "суммарная активность (трансурановые), Бк", valB, res, 14, forms1, forms2, form15Fix);
                 return res;
             }
             return res;
         }
         if ((form1.CodeRAOout_DB == form2.CodeRAOout_DB || (form15PlugLeftover && (form1.CodeRAOout_DB == form15Plug || form2.CodeRAOout_DB == form15Plug)))
             && form1.CodeRAOout_DB != "-"
+            && form1.CodeRAOIn_DB == "-" || form1.CodeRAOIn_DB == form15Plug
             && !string.IsNullOrWhiteSpace(form1.CodeRAOout_DB))
         {
             if (form1.StatusRAOout_DB == form2.StatusRAOout_DB
                 && (form1.CodeRAOout_DB == form2.CodeRAOout_DB || (form15PlugLeftover && (form1.CodeRAOout_DB == form15Plug || form2.CodeRAOout_DB == form15Plug)))
                 && form1.MachineCode_DB == form2.MachineCode_DB)
             {
-                Form21_SubMatch(form1.VolumeOut_DB, form2.VolumeOut_DB, "Объем без упаковки, куб. м", valB, res, 17, forms1, forms2);
-                Form21_SubMatch(form1.MassOut_DB, form2.MassOut_DB, "Масса без упаковки (нетто), т", valB, res, 18, forms1, forms2);
-                Form21_SubMatch(form1.QuantityOZIIIout_DB, form2.QuantityOZIIIout_DB, "кол-во ОЗИИИ, шт.", valB, res, 19, forms1, forms2);
-                Form21_SubMatch(form1.TritiumActivityOut_DB, form2.TritiumActivityOut_DB, "суммарная активность (тритий), Бк", valB, res, 20, forms1, forms2);
-                Form21_SubMatch(form1.BetaGammaActivityOut_DB, form2.BetaGammaActivityOut_DB, "суммарная активность (бета, гамма), Бк", valB, res, 21, forms1, forms2);
-                Form21_SubMatch(form1.AlphaActivityOut_DB, form2.AlphaActivityOut_DB, "суммарная активность (альфа), Бк", valB, res, 22, forms1, forms2);
-                Form21_SubMatch(form1.TransuraniumActivityOut_DB, form2.TransuraniumActivityOut_DB, "суммарная активность (трансурановые), Бк", valB, res, 23, forms1, forms2);
+                Form21_SubMatch(form1.VolumeOut_DB, form2.VolumeOut_DB, "Объем без упаковки, куб. м", valB, res, 17, forms1, forms2, form15Fix);
+                Form21_SubMatch(form1.MassOut_DB, form2.MassOut_DB, "Масса без упаковки (нетто), т", valB, res, 18, forms1, forms2, form15Fix);
+                Form21_SubMatch(form1.QuantityOZIIIout_DB, form2.QuantityOZIIIout_DB, "кол-во ОЗИИИ, шт.", valB, res, 19, forms1, forms2, form15Fix);
+                Form21_SubMatch(form1.TritiumActivityOut_DB, form2.TritiumActivityOut_DB, "суммарная активность (тритий), Бк", valB, res, 20, forms1, forms2, form15Fix);
+                Form21_SubMatch(form1.BetaGammaActivityOut_DB, form2.BetaGammaActivityOut_DB, "суммарная активность (бета, гамма), Бк", valB, res, 21, forms1, forms2, form15Fix);
+                Form21_SubMatch(form1.AlphaActivityOut_DB, form2.AlphaActivityOut_DB, "суммарная активность (альфа), Бк", valB, res, 22, forms1, forms2, form15Fix);
+                Form21_SubMatch(form1.TransuraniumActivityOut_DB, form2.TransuraniumActivityOut_DB, "суммарная активность (трансурановые), Бк", valB, res, 23, forms1, forms2, form15Fix);
                 return res;
             }
             return res;
