@@ -229,6 +229,15 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                         break;
                 }
             }
+
+            try
+            {
+                await StaticConfiguration.DBModel.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         var comparator = new CustomReportsComparer();

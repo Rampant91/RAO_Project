@@ -19,11 +19,18 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 {
     #region Properties
 
+    /// <summary>
+    /// Коды операций снятия с учёта.
+    /// </summary>
     private protected static readonly string[] MinusOperation =
     [
         "21", "22", "25", "27", "28", "29", "41", "42", "43", "46", "47", "65", "67", "71", "72", "81", "82", "83", "84", "98"
     ];
 
+
+    /// <summary>
+    /// Коды операций постановки на учёт.
+    /// </summary>
     private protected static readonly string[] PlusOperation =
     [
         "11", "12", "17", "31", "32", "35", "37", "38", "39", "58", "73", "74", "75", "85", "86", "87", "88", "97"

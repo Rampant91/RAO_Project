@@ -354,50 +354,41 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
     {
         List<ShortForm11DTO> unitInStockList = [];
 
-        //ЗРИ, имеются в предыдущей инвентаризации, отсутствующие в следующий и не имеющие ни одной операции передачи
-        List<ShortForm11DTO> missingInventoryUnitsList = [];
+        //  1. Не указаны в обеих инвентаризациях, последняя операция - постановка на учёт.
+        List<ShortForm11DTO> missingInventoryReceivedUnitsList = [];
 
-        //ЗРИ, присутствующие в обеих инвентаризациях, но снятые с учёта
-        List<ShortForm11DTO> mistakenlyPresentUnitsList = [];
+        //  2. Присутствуют в первой инвентаризации, отсутствуют в последующей, нет операций по снятию/постановке на учёт.
+        List<ShortForm11DTO> missingInventoryPreviouslyRegisteredUnitsList = [];
 
-        //ЗРИ, не указанные в предыдущей инвентаризации, отражённые в следующей инвентаризации, у которых последняя операция не на получение
-        List<ShortForm11DTO> missingRegistrationUnitsList = [];
+        //  3. Присутствуют в последующей инвентаризации, последняя операция - не постановка на учёт.
+        List<ShortForm11DTO> registeredWithOutReceivingUnitsList = [];
 
-        //ЗРИ, не указанные в предыдущей инвентаризации, у которых первая операция на передачу
-        List<ShortForm11DTO> incorrectlyTransferredUnitsList = [];
+        //  4. Отсутствуют в первой инвентаризации, первая операция - снятие с учёта.
+        List<ShortForm11DTO> transferredWithOutPreviosRegistrationUnitsList = [];
 
-        //ЗРИ, не указанные в предыдущей инвентаризации, отражённые в следующей, снятые с учёта
-        List<ShortForm11DTO> erroneousInventoryPreviouslyTransferredUnitsList = [];
+        //  5. Две операции снятия подряд
+        List<ShortForm11DTO> reTransferredUnitsList = [];
 
-        //ЗРИ, отсутствующие на момент следующей инвентаризации и отражённые в ней
-        List<ShortForm11DTO> previouslyInventoriedReobtainedNotInventoriedUnitsList = [];
-
-        //ЗРИ, полученные дважды подряд
+        //  6. Две операции получения подряд
         List<ShortForm11DTO> reReceivedUnitsList = [];
 
-        //ЗРИ, отданные дважды подряд
-        List<ShortForm11DTO> reTransferredUnitsList = [];
+        //  7. Не указаны в обеих инвентаризациях, первая операция нулевая.
+        List<ShortForm11DTO> zeroOperationWithOutInventoriesUnitsList = [];
 
         unitInStockList.AddRange(inventoryFormsDtoList
             .Where(x => x.OpDate == inventoryDatesList[0])
-            .DistinctBy(x => x.FacNum + x.Type + x.PasNum));
+            .DistinctBy(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type));
 
-        foreach (var unit in uniqueAccountingUnitDtoList)
+
+        //foreach (var unit in uniqueAccountingUnitDtoList)
+        //foreach (var (firstInventoryDate, secondInventoryDate) in inventoryDatesTupleList)
+
+        foreach (var (firstInventoryDate, secondInventoryDate) in inventoryDatesTupleList)
         {
-            //var inStock2 = unitInStockList.Any(x => x.)
-            List<ShortForm11DTO> firstInventoryUnitList = [];
-            foreach (var (firstInventoryDate, secondInventoryDate) in inventoryDatesTupleList)
+            var isLastInventory = secondInventoryDate == inventoryDatesList[^1];
+
+            foreach (var unit in uniqueAccountingUnitDtoList)
             {
-                var isLastInventory = secondInventoryDate == inventoryDatesList[^1];
-
-                if (firstInventoryDate == inventoryDatesList[0])
-                {
-                    firstInventoryUnitList
-                        .AddRange(inventoryFormsDtoList
-                            .Where(x => x.OpDate == firstInventoryDate)
-                            .DistinctBy(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type));
-                }
-
                 var inventoryWithCurrentUnit = inventoryFormsDtoList
                     .Where(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type 
                                 == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type
@@ -407,17 +398,17 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     .OrderBy(x => x.OpDate)
                     .ToList();
 
-                var inStock = firstInventoryUnitList
-                    .Any(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
-                              == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type);
-
                 var operationsWithCurrentUnit = plusMinusFormsDtoList
                     .Where(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
                                 == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type
-                                && x.OpDate >= firstInventoryDate 
+                                && x.OpDate >= firstInventoryDate
                                 && x.OpDate <= secondInventoryDate)
                     .OrderBy(x => x.OpDate)
                     .ToList();
+
+                var inStock = unitInStockList
+                    .Any(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
+                              == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type);
 
                 if (inventoryWithCurrentUnit.Count == 0 && operationsWithCurrentUnit.Count == 0) continue;
 
@@ -435,6 +426,11 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                 {
                     var countMinus = group.Count(x => MinusOperation.Contains(x.OpCode));
                     var countPlus = group.Count(x => PlusOperation.Contains(x.OpCode));
+
+
+
+
+
                     var countStock = (inStock ? 1 : 0) + countPlus - countMinus;
 
                     switch (countStock)
@@ -443,11 +439,11 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                         {
                             var reReceivedFormDto = group
                                 .Where(x => PlusOperation.Contains(x.OpCode))
-                                .TakeLast(countStock);
+                                .TakeLast(countStock - 1);
                             reReceivedUnitsList.AddRange(reReceivedFormDto);
                             operationsWithCurrentUnitWithoutDuplicates
                                 .Add(group
-                                    .Last(x => PlusOperation.Contains(x.OpCode)));
+                                    .First(x => PlusOperation.Contains(x.OpCode)));
                             break;
                         }
                         case 1:
@@ -517,7 +513,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     && !hasTransferOperations
                     && !isLastInventory)
                 {
-                    missingInventoryUnitsList.Add(lastOperationWithUnit);
+                    missingInventoryReceivedUnitsList.Add(lastOperationWithUnit);
                 }
 
                 //2
@@ -526,7 +522,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     && !inStock
                     && !isLastInventory)
                 {
-                    mistakenlyPresentUnitsList.Add(lastOperationWithUnit);
+                    missingInventoryPreviouslyRegisteredUnitsList.Add(lastOperationWithUnit);
                 }
 
                 //3
@@ -535,14 +531,14 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     && !isLastInventory
                     && (!hasReceiveOperations || !inStock))
                 {
-                    missingRegistrationUnitsList.Add(lastOperationWithUnit);
+                    registeredWithOutReceivingUnitsList.Add(lastOperationWithUnit);
                 }
 
                 //4
                 if (!inventoryWithCurrentUnit.Exists(x => x.OpDate == firstInventoryDate)
                     && firstOperationIsTransfer)
                 {
-                    incorrectlyTransferredUnitsList.Add(lastOperationWithUnit);
+                    transferredWithOutPreviosRegistrationUnitsList.Add(lastOperationWithUnit);
                 }
 
                 //5
@@ -551,16 +547,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     && !inStock
                     && !isLastInventory)
                 {
-                    erroneousInventoryPreviouslyTransferredUnitsList.Add(lastOperationWithUnit);
-                }
-
-                //6
-                if (inventoryWithCurrentUnit.Exists(x => x.OpDate == firstInventoryDate)
-                    && !inventoryWithCurrentUnit.Exists(x => x.OpDate == secondInventoryDate)
-                    && firstOperationIsReceive
-                    && !isLastInventory)
-                {
-                    previouslyInventoriedReobtainedNotInventoriedUnitsList.Add(lastOperationWithUnit);
+                    zeroOperationWithOutInventoriesUnitsList.Add(lastOperationWithUnit);
                 }
 
                 unitInStockList

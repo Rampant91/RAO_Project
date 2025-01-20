@@ -272,7 +272,7 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
                 Settings.Default.Save();
                 break;
             }
-            case "Выбрать место сохранения":
+            case "Выбрать папку и сохранить":
             {
                 SaveFileDialog dial = new();
                 var filter = new FileDialogFilter
