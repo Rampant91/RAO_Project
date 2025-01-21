@@ -230,6 +230,8 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                 }
             }
 
+            // Если убрать сохранение, то не перезаписывается базовый отчёт (номер корректировки) и при импорте нескольких файлов одинакового отчёта,
+            // но с разными номерами, в организации появлялись дубли, вместо перезаписи имеющегося отчёта.
             try
             {
                 await StaticConfiguration.DBModel.SaveChangesAsync();
