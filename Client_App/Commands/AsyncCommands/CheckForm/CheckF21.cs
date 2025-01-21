@@ -116,6 +116,7 @@ public class CheckF21 : CheckBase
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
+            .Include(reps => reps.DBObservable)
             .Include(reps => reps.Master_DB).ThenInclude(report => report.Rows10)
             .Include(reps => reps.Report_Collection
                 .Where(report => 
@@ -128,6 +129,7 @@ public class CheckF21 : CheckBase
             .Include(reps => reps.Report_Collection).ThenInclude(report => report.Rows16)
             .Include(reps => reps.Report_Collection).ThenInclude(report => report.Rows17)
             .Include(reps => reps.Report_Collection).ThenInclude(report => report.Rows18)
+            .Where(reps => reps.DBObservable != null)
             .FirstOrDefaultAsync(reps => reps.Master_DB.Rows10
                 .Any(form10 => form10.RegNo_DB == form20RegNo), cts.Token);
 

@@ -37,8 +37,9 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
-                    .Where(x => x.Id == rep.Id)
+                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                     .Include(x => x.Rows15)
+                    .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Id == rep.Id)
                     .SelectMany(x => x.Rows15)
                     .CountAsync() + 1;
                 var newForm15 = new Form15
@@ -93,8 +94,9 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
-                    .Where(x => x.Id == rep.Id)
+                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                     .Include(x => x.Rows16)
+                    .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Id == rep.Id)
                     .SelectMany(x => x.Rows16)
                     .CountAsync() + 1;
                 var massTmp = (form12.Mass_DB ?? "")
@@ -174,8 +176,9 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
-                    .Where(x => x.Id == rep.Id)
+                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                     .Include(x => x.Rows16)
+                    .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Id == rep.Id)
                     .SelectMany(x => x.Rows16)
                     .CountAsync() + 1;
                 var nuclidsArray = form13.Radionuclids_DB
@@ -245,8 +248,9 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
-                    .Where(x => x.Id == rep.Id)
+                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                     .Include(x => x.Rows16)
+                    .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Id == rep.Id)
                     .SelectMany(x => x.Rows16)
                     .CountAsync() + 1;
                 var nuclidsArray = form14.Radionuclids_DB
@@ -346,8 +350,9 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
-                    .Where(x => x.Id == repId)
+                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                     .Include(x => x.Rows15)
+                    .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Id == repId)
                     .SelectMany(x => x.Rows15)
                     .CountAsync() + 1;
                 var newForm15 = new Form15
@@ -400,8 +405,9 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
-                    .Where(x => x.Id == repId)
+                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                     .Include(x => x.Rows16)
+                    .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Id == repId)
                     .SelectMany(x => x.Rows16)
                     .CountAsync() + 1;
                 var massTmp = (form12.Mass_DB ?? "")
@@ -478,8 +484,9 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
-                    .Where(x => x.Id == repId)
+                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                     .Include(x => x.Rows16)
+                    .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Id == repId)
                     .SelectMany(x => x.Rows16)
                     .CountAsync() + 1;
                 var nuclidsArray = form13.Radionuclids_DB
@@ -542,13 +549,13 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 var entityEntry = db.ReportCollectionDbSet.Add(newRep16);
                 await db.SaveChangesAsync();
                 repId = entityEntry.Entity.Id;    //id обновляется после сохранения БД.
-
                 var numberInOrder = await db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
-                    .Where(x => x.Id == repId)
+                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                     .Include(x => x.Rows16)
+                    .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Id == repId)
                     .SelectMany(x => x.Rows16)
                     .CountAsync() + 1;
                 var nuclidsArray = form14.Radionuclids_DB

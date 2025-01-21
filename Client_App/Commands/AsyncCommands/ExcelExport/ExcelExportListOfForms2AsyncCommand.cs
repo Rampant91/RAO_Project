@@ -230,7 +230,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
             .Include(reps => reps.DBObservable)
             .Include(reps => reps.Master_DB).ThenInclude(x => x.Rows20)
             .Include(reps => reps.Report_Collection)
-            .Where(reps => reps.DBObservableId != null && reps.Master_DB.FormNum_DB == "2.0")
+            .Where(reps => reps.DBObservable != null && reps.Master_DB.FormNum_DB == "2.0")
             .ToListAsync(cts.Token);
     }
 
@@ -252,8 +252,9 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "2.1")
+            .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
             .Include(x => x.Rows21)
+            .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == "2.1")
             .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows21.Count))
             .ToListAsync(cts.Token);
     }
@@ -274,8 +275,9 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "2.2")
+            .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
             .Include(x => x.Rows22)
+            .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == "2.2")
             .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows22.Count))
             .ToListAsync(cts.Token);
     }
@@ -296,8 +298,9 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "2.3")
+            .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
             .Include(x => x.Rows23)
+            .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == "2.3")
             .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows23.Count))
             .ToListAsync(cts.Token);
     }
@@ -318,8 +321,9 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "2.4")
+            .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
             .Include(x => x.Rows24)
+            .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == "2.4")
             .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows24.Count))
             .ToListAsync(cts.Token);
     }
@@ -340,8 +344,9 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "2.5")
+            .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
             .Include(x => x.Rows25)
+            .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == "2.5")
             .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows25.Count))
             .ToListAsync(cts.Token);
     }
@@ -362,8 +367,9 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "2.6")
+            .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
             .Include(x => x.Rows26)
+            .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == "2.6")
             .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows26.Count))
             .ToListAsync(cts.Token);
     }
@@ -384,8 +390,9 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "2.7")
+            .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
             .Include(x => x.Rows27)
+            .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == "2.7")
             .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows27.Count))
             .ToListAsync(cts.Token);
     }
@@ -406,8 +413,9 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "2.8")
+            .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
             .Include(x => x.Rows28)
+            .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == "2.8")
             .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows28.Count))
             .ToListAsync(cts.Token);
     }
@@ -428,8 +436,9 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "2.9")
+            .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
             .Include(x => x.Rows29)
+            .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == "2.9")
             .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows29.Count))
             .ToListAsync(cts.Token);
     }
@@ -450,8 +459,9 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "2.10")
+            .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
             .Include(x => x.Rows210)
+            .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == "2.10")
             .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows210.Count))
             .ToListAsync(cts.Token);
     }
@@ -472,8 +482,9 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "2.11")
+            .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
             .Include(x => x.Rows211)
+            .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == "2.11")
             .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows211.Count))
             .ToListAsync(cts.Token);
     }
@@ -494,8 +505,9 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "2.12")
+            .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
             .Include(x => x.Rows212)
+            .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == "2.12")
             .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows212.Count))
             .ToListAsync(cts.Token);
     }
@@ -586,7 +598,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelBaseAsyncCommand
             .AsQueryable()
             .Include(x => x.DBObservable)
             .Include(x => x.Master_DB)
-            .Where(x => x.DBObservableId != null && x.Master_DB.FormNum_DB == "2.0")
+            .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "2.0")
             .CountAsync(cts.Token);
 
         if (countReports == 0)

@@ -54,6 +54,7 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
             .AsNoTracking()
             .AsQueryable()
             .AsSplitQuery()
+            .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
             .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
             .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
             .Include(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
@@ -78,6 +79,7 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
             .Include(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Notes.OrderBy(x => x.Order))
+            .Where(x => x.Reports != null && x.Reports.DBObservable != null)
             .FirstOrDefaultAsync(x => x.Id == par.Id, cts.Token);
 
         #endregion

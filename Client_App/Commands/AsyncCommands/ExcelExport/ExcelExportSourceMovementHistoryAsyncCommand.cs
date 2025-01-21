@@ -629,7 +629,9 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
+            .Include(x => x.DBObservable)
             .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+            .Where(x => x.DBObservable != null)
             .SelectMany(reps => reps.Report_Collection
                 .Where(rep => rep.FormNum_DB == "1.1")
                 .SelectMany(rep => rep.Rows11
@@ -656,7 +658,9 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
+            .Include(x => x.DBObservable)
             .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
+            .Where(x => x.DBObservable != null)
             .SelectMany(reps => reps.Report_Collection
                 .Where(rep => rep.FormNum_DB == "1.5")
                 .SelectMany(rep => rep.Rows15

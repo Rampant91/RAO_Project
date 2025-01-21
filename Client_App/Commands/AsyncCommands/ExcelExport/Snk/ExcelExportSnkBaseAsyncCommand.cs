@@ -337,8 +337,9 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows11)
-                .Where(rep => rep.Id == reportDto.Id)
+                .Where(rep => rep.Reports != null && rep.Reports.DBObservable != null && rep.Id == reportDto.Id)
                 .SelectMany(rep => rep.Rows11
                     .Where(form => form.OperationCode_DB == "10")
                     .Select(form11 => new ShortForm11StringDateDTO
@@ -443,8 +444,9 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
+            .Include(x => x.DBObservable)
             .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows11)
-            .Where(reps => reps.Id == repsId)
+            .Where(reps => reps.DBObservable != null && reps.Id == repsId)
             .SelectMany(reps => reps.Report_Collection
                 .Where(rep => rep.FormNum_DB == "1.1" && rep.Rows11.Any(form => form.OperationCode_DB == "10"))
                 .Select(rep => new ShortReportStringDateDTO(rep.Id, rep.StartPeriod_DB, rep.EndPeriod_DB)))
@@ -485,8 +487,9 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
+            .Include(x => x.DBObservable)
             .Include(x => x.Report_Collection)
-            .Where(reps => reps.Id == repsId)
+            .Where(reps => reps.DBObservable != null && reps.Id == repsId)
             .SelectMany(reps => reps.Report_Collection
                 .Where(rep => rep.FormNum_DB == "1.1"))
             .Select(rep => rep.Id)

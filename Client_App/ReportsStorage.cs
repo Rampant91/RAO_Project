@@ -79,168 +79,189 @@ public static class ReportsStorage
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows11)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows11)
                 .CountAsync(),
             "1.2" => await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows12)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows12)
                 .CountAsync(),
             "1.3" => await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows13)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows13)
                 .CountAsync(),
             "1.4" => await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows14)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows14)
                 .CountAsync(),
             "1.5" => await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows15)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows15)
                 .CountAsync(),
             "1.6" => await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows16)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows16)
                 .CountAsync(),
             "1.7" => await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows17)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows17)
                 .CountAsync(),
             "1.8" => await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows18)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows18)
                 .CountAsync(),
             "1.9" => await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows19)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows19)
                 .CountAsync(),
             "2.1" => await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows21)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows21)
                 .CountAsync(),
             "2.2" => await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows22)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows22)
                 .CountAsync(),
             "2.3" => await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows23)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows23)
                 .CountAsync(),
             "2.4" => await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows24)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows24)
                 .CountAsync(),
             "2.5" => await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows25)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows25)
                 .CountAsync(),
             "2.6" => await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows26)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows26)
                 .CountAsync(),
             "2.7" => await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows27)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows27)
                 .CountAsync(),
             "2.8" => await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows28)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows28)
                 .CountAsync(),
             "2.9" => await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows29)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows29)
                 .CountAsync(),
             "2.10" => await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows210)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows210)
                 .CountAsync(),
             "2.11" => await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows211)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows211)
                 .CountAsync(),
             "2.12" => await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(report => report.Id == rep.Id)
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Rows212)
+                .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id)
                 .SelectMany(x => x.Rows212)
                 .CountAsync(),
             _ => 0

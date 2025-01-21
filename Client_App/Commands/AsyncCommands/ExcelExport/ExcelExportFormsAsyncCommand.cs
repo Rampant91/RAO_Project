@@ -104,6 +104,8 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
+            .Include(x => x.DBObservable)
+            .Where(x => x.DBObservable != null)
             .Any(reps => reps.Report_Collection
                 .Any(rep => rep.FormNum_DB == formNum));
         switch (forSelectedOrg)

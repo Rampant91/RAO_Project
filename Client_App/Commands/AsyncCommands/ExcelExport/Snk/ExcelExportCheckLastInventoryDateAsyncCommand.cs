@@ -91,13 +91,16 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
+            .Include(x => x.DBObservable)
+            .Where(x => x.DBObservable != null)
             .CountAsync(cts.Token);
 
         var countRep = await db.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Where(x => x.FormNum_DB == "1.1")
+            .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
+            .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == "1.1")
             .CountAsync(cts.Token);
 
         if (countReps == 0)
@@ -167,8 +170,9 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
+                .Include(reps => reps.DBObservable)
                 .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows11)
-                .Where(reps => reps.Id == repsDto.Id)
+                .Where(reps => reps.DBObservable != null && reps.Id == repsDto.Id)
                 .SelectMany(reps => reps.Report_Collection
                     .Where(rep => rep.FormNum_DB == "1.1" && rep.Rows11.Any(form => form.OperationCode_DB == "10"))
                     .Select(rep => rep.Id))
@@ -181,8 +185,9 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
+                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                     .Include(x => x.Rows11)
-                    .Where(rep => rep.Id == reportId)
+                    .Where(rep => rep.Reports != null && rep.Reports.DBObservable != null && rep.Id == reportId)
                     .SelectMany(rep => rep.Rows11
                         .Where(form => form.OperationCode_DB == "10")
                         .Select(form11 => form11.OperationDate_DB))
@@ -342,9 +347,10 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
+            .Include(x => x.DBObservable)
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
             .Include(x => x.Report_Collection)
-            .Where(reps => reps.Report_Collection
+            .Where(reps => reps.DBObservable != null && reps.Report_Collection
                 .Any(rep => rep.FormNum_DB == "1.1"))
             .Select(x => new ShortReportsDto
             {
