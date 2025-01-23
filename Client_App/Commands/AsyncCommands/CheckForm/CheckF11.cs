@@ -1562,7 +1562,10 @@ public abstract class CheckF11 : CheckBase
                 var nuclidFromR = R.FirstOrDefault(x => x["name"] == nuclid);
                 if (nuclidFromR is null) continue;
                 var expFromR = ConvertStringToExponential(nuclidFromR["D"]);
-                if (decimal.TryParse(expFromR, out var value))
+                if (decimal.TryParse(ConvertStringToExponential(expFromR),
+                        NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
+                        CultureInfo.CreateSpecificCulture("ru-RU"),
+                        out var value))
                 {
                     dValueList.Add(decimal.Multiply(value, 1e12m));
                 }
