@@ -41,7 +41,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     #region DTO
 
     private protected class SnkForm11DTO(string facNum, string pasNum, int quantity, string radionuclids, string type, string activity,
-        string creatorOKPO, string creationDate, short? category, float? signedServicePeriod)
+        string creatorOKPO, string creationDate, short? category, float? signedServicePeriod, string packNumber)
     {
         public readonly string PasNum = pasNum;
 
@@ -62,6 +62,8 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
         public readonly short? Category = category;
 
         public readonly float? SignedServicePeriod = signedServicePeriod;
+
+        public readonly string PackNumber = packNumber;
     }
 
     private protected class ShortForm11DTO(int id, ShortReportDTO repDto, string facNum, string opCode, DateOnly opDate, string packNumber, 
@@ -291,7 +293,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 
     #region AutoReplaceSimilarChars
 
-    private static string AutoReplaceSimilarChars(string? str)
+    private protected static string AutoReplaceSimilarChars(string? str)
     {
         return new Regex(@"[\\/:*?""<>|.,_\-;:\s+]")
             .Replace(str ?? string.Empty, "")
@@ -522,6 +524,83 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             .ToListAsync(cts.Token);
 
         return plusMinusOperationDtoList
+            .Where(x => DateOnly.TryParse(x.OpDate, out var opDateOnly)
+                                             && DateOnly.TryParse(x.StDate, out _)
+                                             && DateOnly.TryParse(x.EndDate, out _)
+                                             && opDateOnly >= DateOnly.Parse("01.01.2022")
+                                             && opDateOnly <= endSnkDate)
+            .Select(x => new ShortForm11DTO(
+                x.Id,
+                new ShortReportDTO(x.RepId, DateOnly.Parse(x.StDate), DateOnly.Parse(x.EndDate)),
+                AutoReplaceSimilarChars(x.FacNum),
+                x.OpCode,
+                DateOnly.Parse(x.OpDate),
+                AutoReplaceSimilarChars(x.PackNumber),
+                AutoReplaceSimilarChars(x.PasNum),
+                x.Quantity ?? 0,
+                AutoReplaceSimilarChars(x.Radionuclids),
+                AutoReplaceSimilarChars(x.Type)))
+            .OrderBy(x => x.OpDate)
+            .ThenBy(x => x.RepDto.StartPeriod)
+            .ThenBy(x => x.RepDto.EndPeriod)
+            .ToList();
+    }
+
+    #endregion
+
+    #region GetRechargeFormsDtoList
+
+    /// <summary>
+    /// Получение списка DTO форм с операциями перезарядки.
+    /// </summary>
+    /// <param name="db">Модель БД.</param>
+    /// <param name="repsId">Id организации.</param>
+    /// <param name="endSnkDate">Дата, на которую нужно сформировать СНК.</param>
+    /// <param name="cts">Токен.</param>
+    /// <param name="snkParams">DTO состоящий из bool флагов, показывающих, по каким параметрам необходимо выполнять поиск учётной единицы.
+    /// Может быть null, тогда поиск ведётся по всем параметрам.</param>
+    /// <returns>Список DTO форм с операциями перезарядки, отсортированный по датам.</returns>
+    private protected static async Task<List<ShortForm11DTO>> GetRechargeFormsDtoList(DBModel db, int repsId, DateOnly endSnkDate,
+        CancellationTokenSource cts, SnkParamsDto? snkParams = null)
+    {
+        var reportIds = await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.DBObservable)
+            .Include(x => x.Report_Collection)
+            .Where(reps => reps.DBObservable != null && reps.Id == repsId)
+            .SelectMany(reps => reps.Report_Collection
+                .Where(rep => rep.FormNum_DB == "1.1"))
+            .Select(rep => rep.Id)
+            .ToListAsync(cts.Token);
+
+        var rechargeOperationDtoList = await db.form_11
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.Report)
+            .Where(x => x.Report != null
+                        && reportIds.Contains(x.Report.Id)
+                        && (x.OperationCode_DB == "53" || x.OperationCode_DB == "54"))
+            .Select(form => new ShortForm11StringDatesDTO
+            {
+                Id = form.Id,
+                RepId = form.Report!.Id,
+                StDate = form.Report.StartPeriod_DB,
+                EndDate = form.Report.EndPeriod_DB,
+                FacNum = snkParams == null || snkParams.CheckFacNum ? form.FactoryNumber_DB : string.Empty,
+                OpCode = form.OperationCode_DB,
+                OpDate = form.OperationDate_DB,
+                PackNumber = snkParams == null || snkParams.CheckPackNumber ? form.PackNumber_DB : string.Empty,
+                PasNum = snkParams == null || snkParams.CheckPasNum ? form.PassportNumber_DB : string.Empty,
+                Quantity = form.Quantity_DB,
+                Radionuclids = snkParams == null || snkParams.CheckRadionuclids ? form.Radionuclids_DB : string.Empty,
+                Type = snkParams == null || snkParams.CheckType ? form.Type_DB : string.Empty
+            })
+            .ToListAsync(cts.Token);
+
+        return rechargeOperationDtoList
             .Where(x => DateOnly.TryParse(x.OpDate, out var opDateOnly)
                                              && DateOnly.TryParse(x.StDate, out _)
                                              && DateOnly.TryParse(x.EndDate, out _)
