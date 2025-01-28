@@ -51,7 +51,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 
         public readonly string FacNum = facNum;
 
-        public int Quantity = quantity;
+        public readonly int Quantity = quantity;
 
         public readonly string Activity = activity;
 
@@ -329,7 +329,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="snkParams">DTO состоящий из bool флагов, показывающих, по каким параметрам необходимо выполнять поиск учётной единицы.
     /// Может быть null, тогда поиск ведётся по всем параметрам.</param>
     /// <returns>Список DTO операций инвентаризации, отсортированный по датам.</returns>
-    private protected static async Task<List<ShortForm11DTO>> GetInventoryFormsDtoList(DBModel db, List<ShortReportDTO> inventoryReportDtoList,
+    private protected static async Task<(DateOnly, List<ShortForm11DTO>)> GetInventoryFormsDtoList(DBModel db, List<ShortReportDTO> inventoryReportDtoList,
         DateOnly endSnkDate, CancellationTokenSource cts, SnkParamsDto? snkParams = null)
     {
         List<ShortForm11DTO> inventoryFormsDtoList = [];
@@ -382,11 +382,20 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
         }
         inventoryFormsDtoList = await GetSummedInventoryDtoList(inventoryFormsDtoList);
 
-        return inventoryFormsDtoList
+        var firstInventoryDate = inventoryFormsDtoList.Count == 0
+            ? new DateOnly(2022, 1, 1)
+            : inventoryFormsDtoList
+                .OrderBy(x => x.OpDate)
+                .Select(x => x.OpDate)
+                .First();
+
+        var orderedInventoryFormsDtoList = inventoryFormsDtoList
             .OrderBy(x => x.OpDate)
             .ThenBy(x => x.RepDto.StartPeriod)
             .ThenBy(x => x.RepDto.EndPeriod)
             .ToList();
+
+        return (firstInventoryDate, orderedInventoryFormsDtoList);
     }
 
     #region GetSummedInventoryDtoList
@@ -398,31 +407,34 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// <returns>Список DTO операций инвентаризации, просуммированный по количеству для первой даты.</returns>
     private static Task<List<ShortForm11DTO>> GetSummedInventoryDtoList(List<ShortForm11DTO> inventoryFormsDtoList)
     {
-        var firstInventoryDate = inventoryFormsDtoList.Count == 0
+        List<ShortForm11DTO> newInventoryFormsDtoList = [];
+
+        var firstDate = inventoryFormsDtoList.Count == 0
             ? DateOnly.MinValue
             : inventoryFormsDtoList
                 .OrderBy(x => x.OpDate)
                 .Select(x => x.OpDate)
                 .First();
 
-        var groupList = inventoryFormsDtoList
-            .Where(x => x.OpDate == firstInventoryDate)
-            .GroupBy(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type)
-            .ToList();
-
-        foreach (var group in groupList)
+        foreach (var form in inventoryFormsDtoList)
         {
-            if (!group.Any()) continue;
-            var summedDto = group.First();
-            summedDto.Quantity = group.Sum(x => x.Quantity);
+            var matchingForm = newInventoryFormsDtoList.FirstOrDefault(x =>
+                x.OpDate == firstDate
+                && SerialNumbersIsEmpty(form.PasNum, form.FacNum)
+                && x.Radionuclids == form.Radionuclids
+                && x.Type == form.Type
+                && x.PackNumber == form.PackNumber);
 
-            foreach (var invDto in group)
+            if (matchingForm != null)
             {
-                inventoryFormsDtoList.Remove(invDto);
+                matchingForm.Quantity += form.Quantity;
             }
-            inventoryFormsDtoList.Add(summedDto);
+            else
+            {
+                newInventoryFormsDtoList.Add(form);
+            }
         }
-        return Task.FromResult(inventoryFormsDtoList);
+        return Task.FromResult(newInventoryFormsDtoList);
     }
 
     #endregion
@@ -482,7 +494,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="snkParams">DTO состоящий из bool флагов, показывающих, по каким параметрам необходимо выполнять поиск учётной единицы.
     /// Может быть null, тогда поиск ведётся по всем параметрам.</param>
     /// <returns>Список DTO форм с операциями приёма передачи, отсортированный по датам.</returns>
-    private protected static async Task<List<ShortForm11DTO>> GetPlusMinusFormsDtoList(DBModel db, int repsId, DateOnly endSnkDate,
+    private protected static async Task<List<ShortForm11DTO>> GetPlusMinusFormsDtoList(DBModel db, int repsId, DateOnly firstSnkDate, DateOnly endSnkDate,
         CancellationTokenSource cts, SnkParamsDto? snkParams = null)
     {
         var reportIds = await db.ReportsCollectionDbSet
@@ -527,7 +539,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             .Where(x => DateOnly.TryParse(x.OpDate, out var opDateOnly)
                                              && DateOnly.TryParse(x.StDate, out _)
                                              && DateOnly.TryParse(x.EndDate, out _)
-                                             && opDateOnly >= DateOnly.Parse("01.01.2022")
+                                             && opDateOnly >= firstSnkDate
                                              && opDateOnly <= endSnkDate)
             .Select(x => new ShortForm11DTO(
                 x.Id,
@@ -560,7 +572,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="snkParams">DTO состоящий из bool флагов, показывающих, по каким параметрам необходимо выполнять поиск учётной единицы.
     /// Может быть null, тогда поиск ведётся по всем параметрам.</param>
     /// <returns>Список DTO форм с операциями перезарядки, отсортированный по датам.</returns>
-    private protected static async Task<List<ShortForm11DTO>> GetRechargeFormsDtoList(DBModel db, int repsId, DateOnly endSnkDate,
+    private protected static async Task<List<ShortForm11DTO>> GetRechargeFormsDtoList(DBModel db, int repsId, DateOnly firstSnkDate, DateOnly endSnkDate,
         CancellationTokenSource cts, SnkParamsDto? snkParams = null)
     {
         var reportIds = await db.ReportsCollectionDbSet
@@ -604,7 +616,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             .Where(x => DateOnly.TryParse(x.OpDate, out var opDateOnly)
                                              && DateOnly.TryParse(x.StDate, out _)
                                              && DateOnly.TryParse(x.EndDate, out _)
-                                             && opDateOnly >= DateOnly.Parse("01.01.2022")
+                                             && opDateOnly >= firstSnkDate
                                              && opDateOnly <= endSnkDate)
             .Select(x => new ShortForm11DTO(
                 x.Id,
@@ -664,6 +676,42 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
         return Task.FromResult(unionFormsDtoList);
     }
 
+    #endregion
+
+    #region SerialNumbersIsEmpty
+    
+    private protected static bool SerialNumbersIsEmpty(string? pasNum, string? facNum)
+    {
+        var regex = new Regex("[-᠆‐‑‒–—―⸺⸻－﹘﹣－]");
+        var num1 = (pasNum ?? string.Empty)
+            .ToLower()
+            .Replace(" ", "")
+            .Replace(".", "")
+            .Replace(",", "")
+            .Replace("/", "")
+            .Replace("\\", "");
+        num1 = regex.Replace(num1, "");
+
+        var num2 = (facNum ?? string.Empty)
+            .ToLower()
+            .Replace(" ", "")
+            .Replace(".", "")
+            .Replace(",", "")
+            .Replace("/", "")
+            .Replace("\\", "");
+        num2 = regex.Replace(num2, "");
+        List<string> validStrings =
+        [
+            "",
+            "-",
+            AutoReplaceSimilarChars("бн"),
+            AutoReplaceSimilarChars("без номера"),
+            AutoReplaceSimilarChars("прим"),
+            AutoReplaceSimilarChars("примечание"),
+        ];
+        return validStrings.Contains(num1) && validStrings.Contains(num2);
+    } 
+    
     #endregion
 
     #endregion

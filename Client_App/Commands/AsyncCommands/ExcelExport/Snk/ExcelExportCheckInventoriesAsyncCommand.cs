@@ -58,7 +58,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         await CheckInventoryFormPresence(inventoryReportDtoList, formNum, progressBar, cts);
 
         progressBarVM.SetProgressBar(15, "Формирование списка операций инвентаризации");
-        var inventoryFormsDtoList = await GetInventoryFormsDtoList(db, inventoryReportDtoList, endSnkDate, cts, snkParams);
+        var (firstSnkDate, inventoryFormsDtoList) = await GetInventoryFormsDtoList(db, inventoryReportDtoList, endSnkDate, cts, snkParams);
 
         progressBarVM.SetProgressBar(16, "Получение списка дат инвентаризаций");
         var inventoryDatesList = await GetInventoryDatesList(inventoryFormsDtoList);
@@ -73,7 +73,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         await FillExcelHeaders(excelPackage, inventoryDatesList);
 
         progressBarVM.SetProgressBar(20, "Формирование списка операций передачи/получения");
-        var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, selectedReports.Id, endSnkDate, cts, snkParams);
+        var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, selectedReports.Id, firstSnkDate, endSnkDate, cts, snkParams);
 
         progressBarVM.SetProgressBar(22, "Формирование списка всех операций");
         var unionFormsDtoList = await GetUnionFormsDtoList(inventoryFormsDtoList, plusMinusFormsDtoList);
