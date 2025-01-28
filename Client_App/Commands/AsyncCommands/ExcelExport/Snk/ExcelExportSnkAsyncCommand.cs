@@ -367,7 +367,7 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
         List<List<ShortForm11DTO>> groupedOperationList = [];
         List<ShortForm11DTO> currentGroup = [];
         var opCount = 0;
-        foreach (var form in unionOperationList.OrderBy(x => x.OpDate).ThenBy(x => x.OpCode is not ("53" or "54")))
+        foreach (var form in unionOperationList.OrderBy(x => x.OpDate).ThenByDescending(x => PlusOperation.Contains(x.OpCode)).ThenByDescending(x => x.OpCode is "53" or "54"))
         {
             opCount++;
             if (form.OpCode is not ("53" or "54"))
@@ -387,9 +387,9 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
         Dictionary<UniqueUnitDto, List<ShortForm11DTO>> uniqueUnitWithAllOperationDictionary = [];
         foreach (var group in groupedOperationList)
         {
-            foreach (var form in group.OrderBy(x => x.OpDate).ThenBy(x => x.OpCode is not ("53" or "54")))
+            foreach (var form in group)
             {
-                if (form.OpCode is not ("53" or "54"))
+                if (form.OpCode is not "53" and not "54")
                 {
                     if (!uniqueUnitWithAllOperationDictionary
                             .Any(keyValuePair => keyValuePair.Key.PasNum == form.PasNum
@@ -426,6 +426,13 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
                                                && (SerialNumbersIsEmpty(keyValuePair.Key.PasNum, keyValuePair.Key.FacNum)
                                                    || keyValuePair.Key.Quantity == form.Quantity))
                         .ToDictionary();
+
+                    if (filteredDictionary.Count == 0)
+                    {
+                        var dto = new UniqueUnitDto(form.FacNum, form.PasNum, form.Radionuclids, form.Type, form.Quantity, form.PackNumber);
+                        uniqueUnitWithAllOperationDictionary.Add(dto, [form]);
+                        continue;
+                    }
 
                     var lastForm = filteredDictionary
                         .SelectMany(x => x.Value)
