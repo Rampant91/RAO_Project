@@ -367,7 +367,7 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
         List<List<ShortForm11DTO>> groupedOperationList = [];
         List<ShortForm11DTO> currentGroup = [];
         var opCount = 0;
-        foreach (var form in unionOperationList.OrderBy(x => x.OpDate))
+        foreach (var form in unionOperationList.OrderBy(x => x.OpDate).ThenBy(x => x.OpCode is not ("53" or "54")))
         {
             opCount++;
             if (form.OpCode is not ("53" or "54"))
