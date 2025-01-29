@@ -305,7 +305,7 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
-                .Where(x => x.Id == unit.Id && x.Report != null && x.Report.Reports != null)
+                .Where(x => x.Id == unit.Id && x.Report != null && x.Report.Reports != null && x.Report.Reports.DBObservable != null)
                 .Select(x => new SnkForm11DTO(
                     x.FactoryNumber_DB, 
                     x.PassportNumber_DB,
@@ -364,10 +364,75 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
             .Union(rechargeFormsDtoList)
             .ToList();
 
+        var groupedOperationList = await GetGroupedOperationList(unionOperationList);
+
+        Dictionary<UniqueUnitDto, List<ShortForm11DTO>> uniqueUnitWithAllOperationDictionary = [];
+        foreach (var group in groupedOperationList)
+        {
+            foreach (var form in group)
+            {
+                var dto = new UniqueUnitDto(form.FacNum, form.PasNum, form.Radionuclids, form.Type, form.Quantity, form.PackNumber);
+
+                var filteredDictionary = uniqueUnitWithAllOperationDictionary
+                    .Where(keyValuePair => keyValuePair.Key.PasNum == form.PasNum
+                                           && keyValuePair.Key.FacNum == form.FacNum
+                                           && keyValuePair.Key.Radionuclids == form.Radionuclids
+                                           && keyValuePair.Key.Type == form.Type
+                                           && (SerialNumbersIsEmpty(keyValuePair.Key.PasNum, keyValuePair.Key.FacNum)
+                                               || keyValuePair.Key.Quantity == form.Quantity))
+                    .ToDictionary();
+                
+                // Если запись в словаре отсутствует, то добавляем новую и переходим к следующей форме.
+                if (filteredDictionary.Count == 0)
+                {
+                    uniqueUnitWithAllOperationDictionary.Add(dto, [form]);
+                    continue;
+                }
+                // Если операция приема/передачи/инвентаризации, то добавляем операцию к уже имеющейся в словаре.
+                if (form.OpCode is not "53" and not "54")
+                {
+                    filteredDictionary.First().Value.Add(form);
+                }
+                // Если операция перезарядки, то суммируем количество, если серийные номера пусты и 
+                else
+                {
+                    var lastForm = filteredDictionary
+                        .SelectMany(x => x.Value)
+                        .OrderByDescending(y => y.OpDate)
+                        .First();
+                    var pairWithLastOpDate = filteredDictionary
+                        .First(x => x.Value.Contains(lastForm));
+
+                    if (SerialNumbersIsEmpty(pairWithLastOpDate.Key.PasNum, pairWithLastOpDate.Key.FacNum))
+                    {
+                        var quantity = await SumQuantityForEmptySerialNums(pairWithLastOpDate);
+                        if (form.Quantity != quantity) continue;
+                    }
+                    pairWithLastOpDate.Value.Add(form);
+                    uniqueUnitWithAllOperationDictionary.Remove(pairWithLastOpDate.Key);
+                    uniqueUnitWithAllOperationDictionary.Add(dto, pairWithLastOpDate.Value);
+                }
+            }
+        }
+        return await Task.FromResult(uniqueUnitWithAllOperationDictionary);
+    }
+
+    #region GetGroupedOperationList
+
+    /// <summary>
+    /// Группирует список DTO операций, каждая группа заканчивается операцией перезарядки с кодом 53/54, возвращает список таких групп операций.
+    /// </summary>
+    /// <param name="unionOperationList">Список DTO операций.</param>
+    /// <returns>Список сгруппированных DTO операций.</returns>
+    private static Task<List<List<ShortForm11DTO>>> GetGroupedOperationList(List<ShortForm11DTO> unionOperationList)
+    {
         List<List<ShortForm11DTO>> groupedOperationList = [];
         List<ShortForm11DTO> currentGroup = [];
         var opCount = 0;
-        foreach (var form in unionOperationList.OrderBy(x => x.OpDate).ThenByDescending(x => PlusOperation.Contains(x.OpCode)).ThenByDescending(x => x.OpCode is "53" or "54"))
+        foreach (var form in unionOperationList
+                     .OrderBy(x => x.OpDate)
+                     .ThenByDescending(x => PlusOperation.Contains(x.OpCode))
+                     .ThenByDescending(x => x.OpCode is "53" or "54"))
         {
             opCount++;
             if (form.OpCode is not ("53" or "54"))
@@ -383,102 +448,39 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
             }
         }
         if (groupedOperationList.Count == 0) groupedOperationList.Add(currentGroup);
+        return Task.FromResult(groupedOperationList);
+    }
 
-        Dictionary<UniqueUnitDto, List<ShortForm11DTO>> uniqueUnitWithAllOperationDictionary = [];
-        foreach (var group in groupedOperationList)
+    #endregion
+
+    #region SumQuantityForEmptySerialNums
+
+    /// <summary>
+    /// Рассчитывает количество, путём сложения количества в первой операции инвентаризации и операциях приёма/передачи.
+    /// </summary>
+    /// <param name="pairWithLastOpDate">Пара ключ-значение из DTO уникальной учётной единицы и списка операций с ней.</param>
+    /// <returns>Суммированное количество.</returns>
+    private static Task<int> SumQuantityForEmptySerialNums(KeyValuePair<UniqueUnitDto, List<ShortForm11DTO>> pairWithLastOpDate)
+    {
+        var quantity = pairWithLastOpDate.Value
+            .FirstOrDefault(x => x.OpCode == "10")
+            ?.Quantity ?? 0; ;
+        foreach (var form11Dto in pairWithLastOpDate.Value)
         {
-            foreach (var form in group)
+            if (PlusOperation.Contains(form11Dto.OpCode))
             {
-                if (form.OpCode is not "53" and not "54")
-                {
-                    if (!uniqueUnitWithAllOperationDictionary
-                            .Any(keyValuePair => keyValuePair.Key.PasNum == form.PasNum
-                                                 && keyValuePair.Key.FacNum == form.FacNum
-                                                 && keyValuePair.Key.Radionuclids == form.Radionuclids
-                                                 && keyValuePair.Key.Type == form.Type
-                                                 && keyValuePair.Key.PackNumber == form.PackNumber
-                                                 && (SerialNumbersIsEmpty(keyValuePair.Key.PasNum, keyValuePair.Key.FacNum)
-                                                     || keyValuePair.Key.Quantity == form.Quantity)))
-                    {
-                        var dto = new UniqueUnitDto(form.FacNum, form.PasNum, form.Radionuclids, form.Type, form.Quantity, form.PackNumber);
-                        uniqueUnitWithAllOperationDictionary.Add(dto, [form]);
-                    }
-                    else
-                    {
-                        uniqueUnitWithAllOperationDictionary
-                            .First(keyValuePair => keyValuePair.Key.PasNum == form.PasNum
-                                                   && keyValuePair.Key.FacNum == form.FacNum
-                                                   && keyValuePair.Key.Radionuclids == form.Radionuclids
-                                                   && keyValuePair.Key.Type == form.Type
-                                                   && keyValuePair.Key.PackNumber == form.PackNumber
-                                                   && (SerialNumbersIsEmpty(keyValuePair.Key.PasNum, keyValuePair.Key.FacNum)
-                                                       || keyValuePair.Key.Quantity == form.Quantity))
-                            .Value.Add(form);
-                    }
-                }
-                else
-                {
-                    var filteredDictionary = uniqueUnitWithAllOperationDictionary
-                        .Where(keyValuePair => keyValuePair.Key.PasNum == form.PasNum
-                                               && keyValuePair.Key.FacNum == form.FacNum
-                                               && keyValuePair.Key.Radionuclids == form.Radionuclids
-                                               && keyValuePair.Key.Type == form.Type
-                                               && (SerialNumbersIsEmpty(keyValuePair.Key.PasNum, keyValuePair.Key.FacNum)
-                                                   || keyValuePair.Key.Quantity == form.Quantity))
-                        .ToDictionary();
-
-                    if (filteredDictionary.Count == 0)
-                    {
-                        var dto = new UniqueUnitDto(form.FacNum, form.PasNum, form.Radionuclids, form.Type, form.Quantity, form.PackNumber);
-                        uniqueUnitWithAllOperationDictionary.Add(dto, [form]);
-                        continue;
-                    }
-
-                    var lastForm = filteredDictionary
-                        .SelectMany(x => x.Value)
-                        .OrderByDescending(y => y.OpDate)
-                        .First();
-                    var pairWithLastOpDate = filteredDictionary
-                        .First(x => x.Value.Contains(lastForm));
-
-                    if (SerialNumbersIsEmpty(pairWithLastOpDate.Key.PasNum, pairWithLastOpDate.Key.FacNum))
-                    {
-                        var quantity = pairWithLastOpDate.Value
-                            .FirstOrDefault(x => x.OpCode == "10")
-                            ?.Quantity ?? 0; ;
-                        foreach (var form11Dto in pairWithLastOpDate.Value)
-                        {
-                            if (PlusOperation.Contains(form11Dto.OpCode))
-                            {
-                                quantity += form11Dto.Quantity;
-                            }
-                            else if (MinusOperation.Contains(form11Dto.OpCode))
-                            {
-                                quantity -= form11Dto.Quantity;
-                                quantity = Math.Max(0, quantity);
-                            }
-                        }
-                        if (form.Quantity == quantity)
-                        {
-                            pairWithLastOpDate.Value.Add(form);
-                            var dto = new UniqueUnitDto(form.FacNum, form.PasNum, form.Radionuclids, form.Type, form.Quantity, form.PackNumber);
-                            uniqueUnitWithAllOperationDictionary.Remove(pairWithLastOpDate.Key);
-                            uniqueUnitWithAllOperationDictionary.Add(dto, pairWithLastOpDate.Value);
-                        }
-                    }
-                    else
-                    {
-                        pairWithLastOpDate.Value.Add(form);
-                        var dto = new UniqueUnitDto(form.FacNum, form.PasNum, form.Radionuclids, form.Type, form.Quantity, form.PackNumber);
-                        uniqueUnitWithAllOperationDictionary.Remove(pairWithLastOpDate.Key);
-                        uniqueUnitWithAllOperationDictionary.Add(dto, pairWithLastOpDate.Value);
-                    }
-
-                }
+                quantity += form11Dto.Quantity;
+            }
+            else if (MinusOperation.Contains(form11Dto.OpCode))
+            {
+                quantity -= form11Dto.Quantity;
+                quantity = Math.Max(0, quantity);
             }
         }
-        return await Task.FromResult(uniqueUnitWithAllOperationDictionary);
+        return Task.FromResult(quantity);
     }
+
+    #endregion
 
     #endregion
 
@@ -490,7 +492,7 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
     /// <param name="uniqueUnitWithAllOperationDictionary">Словарь из уникальной учётной единицы и списка всех операций с ней.</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <returns>Список DTO учётных единиц в наличии (СНК).</returns>
-    private static Task<List<ShortForm11DTO>> GetUnitInStockDtoList(Dictionary<UniqueUnitDto, List<ShortForm11DTO>> uniqueUnitWithAllOperationDictionary, 
+    private static async Task<List<ShortForm11DTO>> GetUnitInStockDtoList(Dictionary<UniqueUnitDto, List<ShortForm11DTO>> uniqueUnitWithAllOperationDictionary, 
         AnyTaskProgressBarVM progressBarVM)
     {
         List<ShortForm11DTO> unitInStockList = [];
@@ -504,43 +506,9 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
                     .FirstOrDefault(x => x.OpCode == "10")
                     ?.Quantity ?? 0;
 
-                List<ShortForm11DTO> operationsWithCurrentUnitWithoutDuplicates = [];
-                foreach (var group in unit.Value.GroupBy(x => x.OpDate))
-                {
-                    var countPlus = group
-                        .Where(x => PlusOperation.Contains(x.OpCode))
-                        .Sum(x => x.Quantity);
+                var operationsWithoutDuplicates = await GetOperationsWithoutDuplicates(unit.Value);
 
-                    var countMinus = group
-                        .Where(x => MinusOperation.Contains(x.OpCode))
-                        .Sum(x => x.Quantity);
-
-                    var givenReceivedPerDayAmount = countPlus - countMinus;
-
-                    switch (givenReceivedPerDayAmount)
-                    {
-                        case > 0:
-                        {
-                            var lastOp = group.Last(x => PlusOperation.Contains(x.OpCode));
-                            lastOp.Quantity = givenReceivedPerDayAmount;
-                            operationsWithCurrentUnitWithoutDuplicates.Add(lastOp);
-                            break;
-                        }
-                        case 0:
-                        {
-                            break;
-                        }
-                        case < 0:
-                        {
-                            var lastOp = group.Last(x => MinusOperation.Contains(x.OpCode));
-                            lastOp.Quantity = int.Abs(givenReceivedPerDayAmount);
-                            operationsWithCurrentUnitWithoutDuplicates.Add(lastOp);
-                            break;
-                        }
-                    }
-                }
-
-                foreach (var operation in operationsWithCurrentUnitWithoutDuplicates)
+                foreach (var operation in operationsWithoutDuplicates)
                 {
                     if (PlusOperation.Contains(operation.OpCode))
                     {
@@ -585,13 +553,15 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
                 }
                 if (inStock)
                 {
+
                     var lastOperationWithUnit = unit.Value
                         .OrderByDescending(x => x.OpDate)
                         .FirstOrDefault();
 
-                    if (lastOperationWithUnit == null) continue;
-
-                    unitInStockList.Add(lastOperationWithUnit);
+                    if (lastOperationWithUnit != null)
+                    {
+                        unitInStockList.Add(lastOperationWithUnit);
+                    }
                 }
 
             }
@@ -601,8 +571,47 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
                 "Проверка наличия");
             currentUnitNum++;
         }
+        return unitInStockList;
+    }
 
-        return Task.FromResult(unitInStockList);
+    private static Task<List<ShortForm11DTO>> GetOperationsWithoutDuplicates(List<ShortForm11DTO> operationList)
+    {
+        List<ShortForm11DTO> operationsWithoutDuplicates = [];
+        foreach (var group in operationList.GroupBy(x => x.OpDate))
+        {
+            var countPlus = group
+                .Where(x => PlusOperation.Contains(x.OpCode))
+                .Sum(x => x.Quantity);
+
+            var countMinus = group
+                .Where(x => MinusOperation.Contains(x.OpCode))
+                .Sum(x => x.Quantity);
+
+            var givenReceivedPerDayAmount = countPlus - countMinus;
+
+            switch (givenReceivedPerDayAmount)
+            {
+                case > 0:
+                {
+                    var lastOp = group.Last(x => PlusOperation.Contains(x.OpCode));
+                    lastOp.Quantity = givenReceivedPerDayAmount;
+                    operationsWithoutDuplicates.Add(lastOp);
+                    break;
+                }
+                case 0:
+                {
+                    break;
+                }
+                case < 0:
+                {
+                    var lastOp = group.Last(x => MinusOperation.Contains(x.OpCode));
+                    lastOp.Quantity = int.Abs(givenReceivedPerDayAmount);
+                    operationsWithoutDuplicates.Add(lastOp);
+                    break;
+                }
+            }
+        }
+        return Task.FromResult(operationsWithoutDuplicates);
     }
 
     #endregion

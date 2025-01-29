@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using OfficeOpenXml;
 
 namespace Client_App.Resources;
-
+ 
 public static partial class StaticStringMethods
 {
     #region ComparePasParam

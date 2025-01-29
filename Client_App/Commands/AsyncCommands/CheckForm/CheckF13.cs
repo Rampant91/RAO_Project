@@ -176,7 +176,7 @@ public abstract class CheckF13 : CheckBase
 
     #region Check004
 
-    //Наличие строк дубликатов (графы 2-17)
+    //Наличие строк дубликатов (графы 2 - 17, 21)
     private static List<CheckError> Check_004(List<Form13> forms)
     {
         List<CheckError> result = new();
@@ -207,7 +207,8 @@ public abstract class CheckF13 : CheckBase
                                   && formToCompare.DocumentVid_DB == currentForm.DocumentVid_DB
                                   && comparator.Compare(formToCompare.DocumentNumber_DB, currentForm.DocumentNumber_DB) == 0
                                   && comparator.Compare(formToCompare.DocumentDate_DB, currentForm.DocumentDate_DB) == 0
-                                  && comparator.Compare(formToCompare.ProviderOrRecieverOKPO_DB, currentForm.ProviderOrRecieverOKPO_DB) == 0;
+                                  && comparator.Compare(formToCompare.ProviderOrRecieverOKPO_DB, currentForm.ProviderOrRecieverOKPO_DB) == 0
+                                  && comparator.Compare(formToCompare.PackNumber_DB, currentForm.PackNumber_DB) == 0;
                 if (!isDuplicate) continue;
                 hasDuplicate = true;
                 duplicatesLinesSet.Add(j + 1);
@@ -228,9 +229,9 @@ public abstract class CheckF13 : CheckBase
                 {
                     FormNum = "form_13",
                     Row = dupStrByGroups,
-                    Column = "2 - 17",
+                    Column = "2 - 17, 21",
                     Value = "",
-                    Message = $"Данные граф 2-17 в строках {dupStrByGroups} продублированы. Следует проверить правильность предоставления данных."
+                    Message = $"Данные граф 2 - 17, 21 в строках {dupStrByGroups} продублированы. Следует проверить правильность предоставления данных."
                 });
             }
         }

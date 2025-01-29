@@ -362,15 +362,15 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                 .ToListAsync(cts.Token);
 
             var currentInventoryFormsDtoList = currentInventoryFormsStringDateDtoList
-                .Where(x => DateOnly.TryParse(x.OpDate, out var opDateOnly)
-                            && opDateOnly >= DateOnly.Parse("01.01.2022")
-                            && opDateOnly <= endSnkDate)
+                .Where(x => DateTime.TryParse(x.OpDate, out var opDateTime) 
+                            && DateOnly.FromDateTime(opDateTime) >= DateOnly.Parse("01.01.2022")
+                            && DateOnly.FromDateTime(opDateTime) <= endSnkDate)
                 .Select(x => new ShortForm11DTO(
                     x.Id,
                     reportDto,
                     AutoReplaceSimilarChars(x.FacNum),
                     x.OpCode,
-                    DateOnly.Parse(x.OpDate),
+                    DateOnly.FromDateTime(DateTime.Parse(x.OpDate)),
                     AutoReplaceSimilarChars(x.PackNumber),
                     AutoReplaceSimilarChars(x.PasNum),
                     x.Quantity ?? 0,
@@ -536,17 +536,17 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             .ToListAsync(cts.Token);
 
         return plusMinusOperationDtoList
-            .Where(x => DateOnly.TryParse(x.OpDate, out var opDateOnly)
+            .Where(x => DateTime.TryParse(x.OpDate, out var opDateTime)
                                              && DateOnly.TryParse(x.StDate, out _)
                                              && DateOnly.TryParse(x.EndDate, out _)
-                                             && opDateOnly >= firstSnkDate
-                                             && opDateOnly <= endSnkDate)
+                                             && DateOnly.FromDateTime(opDateTime) >= firstSnkDate
+                                             && DateOnly.FromDateTime(opDateTime) <= endSnkDate)
             .Select(x => new ShortForm11DTO(
                 x.Id,
                 new ShortReportDTO(x.RepId, DateOnly.Parse(x.StDate), DateOnly.Parse(x.EndDate)),
                 AutoReplaceSimilarChars(x.FacNum),
                 x.OpCode,
-                DateOnly.Parse(x.OpDate),
+                DateOnly.FromDateTime(DateTime.Parse(x.OpDate)),
                 AutoReplaceSimilarChars(x.PackNumber),
                 AutoReplaceSimilarChars(x.PasNum),
                 x.Quantity ?? 0,
@@ -613,17 +613,17 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             .ToListAsync(cts.Token);
 
         return rechargeOperationDtoList
-            .Where(x => DateOnly.TryParse(x.OpDate, out var opDateOnly)
+            .Where(x => DateTime.TryParse(x.OpDate, out var opDateTime)
                                              && DateOnly.TryParse(x.StDate, out _)
                                              && DateOnly.TryParse(x.EndDate, out _)
-                                             && opDateOnly >= firstSnkDate
-                                             && opDateOnly <= endSnkDate)
+                                             && DateOnly.FromDateTime(opDateTime) >= firstSnkDate
+                                             && DateOnly.FromDateTime(opDateTime) <= endSnkDate)
             .Select(x => new ShortForm11DTO(
                 x.Id,
                 new ShortReportDTO(x.RepId, DateOnly.Parse(x.StDate), DateOnly.Parse(x.EndDate)),
                 AutoReplaceSimilarChars(x.FacNum),
                 x.OpCode,
-                DateOnly.Parse(x.OpDate),
+                DateOnly.FromDateTime(DateTime.Parse(x.OpDate)),
                 AutoReplaceSimilarChars(x.PackNumber),
                 AutoReplaceSimilarChars(x.PasNum),
                 x.Quantity ?? 0,
