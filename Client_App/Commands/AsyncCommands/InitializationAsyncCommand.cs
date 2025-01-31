@@ -25,6 +25,8 @@ using Client_App.Properties;
 using MessageBox.Avalonia.Models;
 using Client_App.Resources;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using static Models.Collections.Report;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -32,7 +34,7 @@ namespace Client_App.Commands.AsyncCommands;
 /// Инициализация программы при запуске.
 /// </summary>
 /// <param name="mainWindowViewModel">ViewModel главного окна.</param>
-public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : BaseAsyncCommand
+public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -52,6 +54,10 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
         onStartProgressBarVm.LoadStatus = "Создание базы данных";
         mainWindowViewModel.OnStartProgressBar = 15;
         await ProcessDataBaseCreate();
+
+        onStartProgressBarVm.LoadStatus = "Очистка";
+        mainWindowViewModel.OnStartProgressBar = 17;
+        await CleanUpMasterRep();
 
         onStartProgressBarVm.LoadStatus = "Создание резервной копии БД";
         mainWindowViewModel.OnStartProgressBar = 18;
@@ -210,14 +216,14 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
     /// <summary>
     /// Создание резервной копии БД раз в месяц.
     /// </summary>
-    private static Task ProcessDataBaseBackup()
+    private static async Task ProcessDataBaseBackup()
     {
         //Settings.Default.LastDbBackupDate = DateTime.MinValue;    //Сброс даты для тестирования
         //Settings.Default.Save();
         if ((DateTime.Now - Settings.Default.LastDbBackupDate).TotalDays < 30
             || Settings.Default.AppStartupParameters != string.Empty)
         {
-            return Task.CompletedTask;
+            return;
         }
 
         #region MessageInputCategoryNums
@@ -302,7 +308,108 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
                 break;
             }
         }
-        return Task.CompletedTask;
+    }
+
+    #endregion
+
+    #region CleanUpMasterRep
+    
+    private static async Task CleanUpMasterRep()
+    {
+        await using var db = new DBModel(StaticConfiguration.DBPath);
+
+        var masterRepRows10List = db.ReportsCollectionDbSet
+            .Include(x => x.DBObservable)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+            .Where(x => x.DBObservable != null)
+            .SelectMany(x => x.Master_DB.Rows10)
+            .ToList();
+
+        var masterRepRows20List = db.ReportsCollectionDbSet
+            .Include(x => x.DBObservable)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+            .Where(x => x.DBObservable != null)
+            .SelectMany(x => x.Master_DB.Rows10)
+            .ToList();
+
+        foreach (var form10 in masterRepRows10List)
+        {
+            form10.RegNo_DB = CustomTrim(form10.RegNo_DB);
+            form10.OrganUprav_DB = CustomTrim(form10.OrganUprav_DB);
+            form10.SubjectRF_DB = CustomTrim(form10.SubjectRF_DB);
+            form10.JurLico_DB = CustomTrim(form10.JurLico_DB);
+            form10.ShortJurLico_DB = CustomTrim(form10.ShortJurLico_DB);
+            form10.JurLicoAddress_DB = CustomTrim(form10.JurLicoAddress_DB);
+            form10.JurLicoFactAddress_DB = CustomTrim(form10.JurLicoFactAddress_DB);
+            form10.GradeFIO_DB = CustomTrim(form10.GradeFIO_DB);
+            form10.Telephone_DB = CustomTrim(form10.Telephone_DB);
+            form10.Fax_DB = CustomTrim(form10.Fax_DB);
+            form10.Email_DB = CustomTrim(form10.Email_DB);
+            form10.Okpo_DB = CustomTrim(form10.Okpo_DB);
+            form10.Okved_DB = CustomTrim(form10.Okved_DB);
+            form10.Okogu_DB = CustomTrim(form10.Okogu_DB);
+            form10.Oktmo_DB = CustomTrim(form10.Oktmo_DB);
+            form10.Inn_DB = CustomTrim(form10.Inn_DB);
+            form10.Kpp_DB = CustomTrim(form10.Kpp_DB);
+            form10.Okopf_DB = CustomTrim(form10.Okopf_DB);
+            form10.Okfs_DB = CustomTrim(form10.Okfs_DB);
+        }
+        foreach (var form20 in masterRepRows20List)
+        {
+            form20.RegNo_DB = CustomTrim(form20.RegNo_DB);
+            form20.OrganUprav_DB = CustomTrim(form20.OrganUprav_DB);
+            form20.SubjectRF_DB = CustomTrim(form20.SubjectRF_DB);
+            form20.JurLico_DB = CustomTrim(form20.JurLico_DB);
+            form20.ShortJurLico_DB = CustomTrim(form20.ShortJurLico_DB);
+            form20.JurLicoAddress_DB = CustomTrim(form20.JurLicoAddress_DB);
+            form20.JurLicoFactAddress_DB = CustomTrim(form20.JurLicoFactAddress_DB);
+            form20.GradeFIO_DB = CustomTrim(form20.GradeFIO_DB);
+            form20.Telephone_DB = CustomTrim(form20.Telephone_DB);
+            form20.Fax_DB = CustomTrim(form20.Fax_DB);
+            form20.Email_DB = CustomTrim(form20.Email_DB);
+            form20.Okpo_DB = CustomTrim(form20.Okpo_DB);
+            form20.Okved_DB = CustomTrim(form20.Okved_DB);
+            form20.Okogu_DB = CustomTrim(form20.Okogu_DB);
+            form20.Oktmo_DB = CustomTrim(form20.Oktmo_DB);
+            form20.Inn_DB = CustomTrim(form20.Inn_DB);
+            form20.Kpp_DB = CustomTrim(form20.Kpp_DB);
+            form20.Okopf_DB = CustomTrim(form20.Okopf_DB);
+            form20.Okfs_DB = CustomTrim(form20.Okfs_DB);
+        }
+        await db.SaveChangesAsync();
+    }
+
+    private static string CustomTrim(string? str)
+    {
+        if (string.IsNullOrEmpty(str))
+            return string.Empty;
+
+        // Use Span to avoid allocations
+        var span = str.AsSpan();
+
+        // Trim leading and trailing whitespace
+        span = span.Trim();
+
+        // Allocate a buffer to build the result
+        var buffer = new char[span.Length];
+        var bufferIndex = 0;
+
+        // Iterate through the span and skip newline characters
+        foreach (var currentChar in span)
+        {
+            if (currentChar != '\r' && currentChar != '\n')
+            {
+                buffer[bufferIndex++] = currentChar;
+            }
+        }
+
+        // Return the new string with the correct length
+        return new string(buffer, 0, bufferIndex);
+    }
+
+    private static string CustomTrim2(string? str)
+    {
+        return string.Join(string.Empty, new Regex(@"(?:\r\n|\n|\r)").Split(str ?? string.Empty)).Trim();
     }
 
     #endregion

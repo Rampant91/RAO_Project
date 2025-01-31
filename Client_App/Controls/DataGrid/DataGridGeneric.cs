@@ -1356,7 +1356,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         var paramPos = args.GetCurrentPoint(CenterStackPanel).Position;
 
         if (paramKey != PointerUpdateKind.LeftButtonReleased) return;
-        var paramRowColumn = FindMousePress(new[] { paramPos.Y, paramPos.X });
+        var paramRowColumn = FindMousePress([paramPos.Y, paramPos.X]);
         //if (LastPressedItem[0] != paramRowColumn[0] || LastPressedItem[1] != paramRowColumn[1])
         {
             LastPressedItem = paramRowColumn;
@@ -1699,7 +1699,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         if (IsReadableSum)
             lst = lst.Where(item => item.First().Key is Key.A or Key.C);
         ContextMenu menu = new();
-        List<MenuItem> lr = new();
+        List<MenuItem> lr = [];
         foreach (var item in lst)
         {
             switch (item.Count())
@@ -1713,7 +1713,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 }
                 case 2:
                 {
-                    List<MenuItem> inlr = new();
+                    List<MenuItem> inlr = [];
                     foreach (var it in item)
                     {
                         var tmp = new MenuItem { Header = it.ContextMenuText[1] };
@@ -1729,7 +1729,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         ContextMenu = menu;
     }
 
-    readonly List<ColumnDefinition> HeadersColumns = new();
+    readonly List<ColumnDefinition> HeadersColumns = [];
     readonly int GridSplitterSize = 2;
     private void MakeHeaderInner(DataGridColumns ls)
     {
@@ -1933,14 +1933,14 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 else
                 {
                     textBox = new TextBox
-                        {
-                            [!DataContextProperty] = new Binding(item.Binding),
-                            [!TextBox.TextProperty] = new Binding("Value"),
-                            [!BackgroundProperty] = cell[!Cell.ChooseColorProperty],
-                            VerticalAlignment = VerticalAlignment.Stretch,
-                            HorizontalAlignment = HorizontalAlignment.Stretch,
-                            ContextMenu = new ContextMenu { Width = 0, Height = 0 }
-                        };
+                    {
+                        [!DataContextProperty] = new Binding(item.Binding),
+                        [!TextBox.TextProperty] = new Binding("Value"),
+                        [!BackgroundProperty] = cell[!Cell.ChooseColorProperty],
+                        VerticalAlignment = VerticalAlignment.Stretch,
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        ContextMenu = new ContextMenu { Width = 0, Height = 0 }
+                    };
                     ((TextBox)textBox).TextAlignment = TextAlignment.Left;
                     if (item.IsTextWrapping)
                     {
@@ -2230,16 +2230,16 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             Orientation = Orientation.Horizontal
         };
         middleFooterStackPanel2.Children.Add(new TextBlock 
-            {
-                Text = Type is nameof(Form11) or nameof(Form12) or nameof(Form13) or nameof(Form14) or nameof(Form15)
-                           or nameof(Form16) or nameof(Form17) or nameof(Form18) or nameof(Form19) or nameof(Form21)
-                           or nameof(Form22) or nameof(Form23) or nameof(Form24) or nameof(Form25) or nameof(Form26)
-                           or nameof(Form27) or nameof(Form28) or nameof(Form29) or nameof(Form210) or nameof(Form211)
-                           or nameof(Form212) or nameof(Note) || ShowAllReport
-                    ? "Кол-во строчек:"
-                    : "Кол-во отчетов",
-                Margin = Thickness.Parse("5,0,0,0"), FontSize = 13
-            });
+        {
+            Text = Type is nameof(Form11) or nameof(Form12) or nameof(Form13) or nameof(Form14) or nameof(Form15)
+                       or nameof(Form16) or nameof(Form17) or nameof(Form18) or nameof(Form19) or nameof(Form21)
+                       or nameof(Form22) or nameof(Form23) or nameof(Form24) or nameof(Form25) or nameof(Form26)
+                       or nameof(Form27) or nameof(Form28) or nameof(Form29) or nameof(Form210) or nameof(Form211)
+                       or nameof(Form212) or nameof(Note) || ShowAllReport
+                ? "Кол-во строчек:"
+                : "Кол-во отчетов",
+            Margin = Thickness.Parse("5,0,0,0"), FontSize = 13
+        });
         middleFooterStackPanel2.Children.Add(new TextBlock
         {
             [!TextBox.TextProperty] = this[!ItemsCountProperty], Margin = Thickness.Parse("5,0,0,0"), FontSize = 13

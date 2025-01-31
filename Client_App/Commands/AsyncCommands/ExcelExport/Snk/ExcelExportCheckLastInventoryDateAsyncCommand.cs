@@ -30,16 +30,16 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
         ExportType = "Просроченная_инвентаризация_1.1";
 
-        progressBarVM.SetProgressBar(5, "Создание временной БД", "Выгрузка списка организаций", ExportType);
+        progressBarVM.SetProgressBar(5, "Запрос пути сохранения");
+        var fileName = $"{ExportType}_{Assembly.GetExecutingAssembly().GetName().Version}";
+        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+
+        progressBarVM.SetProgressBar(7, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
         await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(8, "Проверка наличия отчётов");
+        progressBarVM.SetProgressBar(10, "Проверка наличия отчётов", "Выгрузка списка организаций", ExportType);
         await CheckRepsAndRepPresence(db, progressBar, cts);
-
-        progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
-        var fileName = $"{ExportType}_{Assembly.GetExecutingAssembly().GetName().Version}";
-        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
 
         progressBarVM.SetProgressBar(12, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath);
@@ -87,23 +87,23 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
     /// <param name="cts">Токен.</param>
     private static async Task CheckRepsAndRepPresence(DBModel db, AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
-        var countReps = await db.ReportsCollectionDbSet
+        var anyReps = await db.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
             .Include(x => x.DBObservable)
             .Where(x => x.DBObservable != null)
-            .CountAsync(cts.Token);
+            .AnyAsync(cts.Token);
 
-        var countRep = await db.ReportCollectionDbSet
+        var anyRep = await db.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
             .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
             .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == "1.1")
-            .CountAsync(cts.Token);
+            .AnyAsync(cts.Token);
 
-        if (countReps == 0)
+        if (!anyReps)
         {
             #region MessageRepsNotFound
 
@@ -124,7 +124,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
 
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
-        else if (countRep == 0)
+        else if (!anyRep)
         {
             #region MessageRepsNotFound
 
@@ -151,6 +151,15 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
 
     #region CheckRepsInventoryDate
 
+    /// <summary>
+    /// Для каждой организации из списка, загружаются даты операций инвентаризации, определяется последняя дата и сравнивается с текущей.
+    /// Если разница превышает год и 2 недели, то добавляем данную организацию в список организаций с просроченной инвентаризацией.
+    /// </summary>
+    /// <param name="tmpDbPath">Полный путь к временному файлу БД.</param>
+    /// <param name="repsDtoList">Список DTO организаций.</param>
+    /// <param name="progressBarVM">ViewModel прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns>Список DTO организаций с просроченной инвентаризацией.</returns>
     private static async Task<List<ShortReportsDto>> CheckRepsInventoryDate(string tmpDbPath, List<ShortReportsDto> repsDtoList,
         AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
@@ -181,7 +190,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
             List<string> inventoryFormsDtoList = [];
             foreach (var reportId in inventoryReportIdList)
             {
-                var currentInventoryFormsStringDateDtoList = await db.ReportCollectionDbSet
+                var currentInventoryFormsStringDateList = await db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -192,7 +201,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
                         .Where(form => form.OperationCode_DB == "10")
                         .Select(form11 => form11.OperationDate_DB))
                     .ToListAsync(cts.Token);
-                inventoryFormsDtoList.AddRange(currentInventoryFormsStringDateDtoList);
+                inventoryFormsDtoList.AddRange(currentInventoryFormsStringDateList);
             }
 
             if (inventoryFormsDtoList.Count == 0)
@@ -212,7 +221,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
                 repsWithExpiredInventory.Add(repsDto);
             }
             currentRepNum++;
-            progressBarDoubleValue += (double)30 / repsDtoList.Count;
+            progressBarDoubleValue += (double)20 / repsDtoList.Count;
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
                 $"Проверено {currentRepNum} из {repsDtoList.Count} дат инвентаризации",
                 "Проверка последней инвентаризации");
@@ -224,6 +233,14 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
 
     #region CheckSnk
 
+    /// <summary>
+    /// Проверяет наличие учётных единиц у организаций из списка, возвращает список DTO организаций, у которых есть учётные единицы в наличии.
+    /// </summary>
+    /// <param name="db">Модель БД.</param>
+    /// <param name="dtoList">Список DTO организаций.</param>
+    /// <param name="progressBarVM">ViewModel прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns>Список DTO организаций, у которых есть учётные единицы в наличии.</returns>
     private static async Task<List<ShortReportsDto>> CheckSnk(DBModel db, List<ShortReportsDto> dtoList,
         AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
@@ -308,9 +325,9 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
     #region FillExcel
 
     /// <summary>
-    /// Заполняет заголовки Excel пакета.
+    /// Заполняет строчки Excel пакета.
     /// </summary>
-    /// <param name="filteredRepsDtoList"></param>
+    /// <param name="filteredRepsDtoList">Список DTO организаций, с просроченной инвентаризацией.</param>
     private Task FillExcel(List<ShortReportsDto> filteredRepsDtoList)
     {
         var currentRow = 2;
@@ -338,12 +355,14 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
     #region GetReportsDtoList
 
     /// <summary>
+    /// Получение списка DTO организаций, имеющих отчёты по форме 1.1.
     /// </summary>
     /// <param name="db">Модель БД.</param>
-    /// <param name="cts">Токен.</param>
+    /// <param name="cts">Токен.</param>,
+    /// <returns>Список DTO организаций, имеющих отчёты по форме 1.1.</returns>
     private static async Task<List<ShortReportsDto>> GetReportsDtoList(DBModel db, CancellationTokenSource cts)
     {
-        var repsDtoList = await db.ReportsCollectionDbSet
+        return await db.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -360,14 +379,19 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
                 RegNum = x.Master_DB.RegNoRep.Value
             })
             .ToListAsync(cts.Token);
-
-        return repsDtoList;
     }
 
     #endregion
 
     #region GetUnitInStockCount
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="inventoryFormsDtoList">Список DTO операций инвентаризации.</param>
+    /// <param name="plusMinusFormsDtoList">Список DTO операций приёма/передачи.</param>
+    /// <param name="uniqueAccountingUnitDtoList">Список DTO уникальных учётных единиц.</param>
+    /// <returns>Количество </returns>
     private static Task<int> GetUnitInStockCount(List<ShortForm11DTO> inventoryFormsDtoList,
         List<ShortForm11DTO> plusMinusFormsDtoList, List<UniqueAccountingUnitDTO> uniqueAccountingUnitDtoList)
     {

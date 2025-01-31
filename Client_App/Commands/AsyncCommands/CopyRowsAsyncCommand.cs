@@ -82,7 +82,7 @@ public class CopyRowsAsyncCommand : BaseAsyncCommand
                                     dic[item.Order][newNum] = value.ToString();
                                 }
                             }
-                            catch
+                            catch (Exception ex)
                             {
                                 dic[item.Order].Add(newNum, value.ToString());
                             }
@@ -93,7 +93,7 @@ public class CopyRowsAsyncCommand : BaseAsyncCommand
                         }
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
                     //ignored
                 }
