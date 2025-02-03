@@ -13,6 +13,9 @@ using Avalonia.Controls;
 using MessageBox.Avalonia.DTO;
 using System.Reflection;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using OfficeOpenXml.Table;
+using Models.Forms;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
@@ -29,16 +32,16 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
         var mainWindow = Desktop.MainWindow as MainWindow;
-        var selectedReports = mainWindow!.SelectedReports.First() as Reports;
-
         var formNum = (parameter as string)!;
+
+        progressBarVM.SetProgressBar(5, "Проверка наличия отчётов",
+            $"Проверка инвентаризаций", ExportType);
+        await CheckRepsAndRepPresence(formNum, progressBar, cts);
+
+        var selectedReports = mainWindow!.SelectedReports.First() as Reports;
         var regNum = selectedReports!.Master_DB.RegNoRep.Value;
         var okpo = selectedReports.Master_DB.OkpoRep.Value;
         ExportType = $"СНК_{formNum}_{regNum}_{okpo}";
-
-        progressBarVM.SetProgressBar(5, "Проверка наличия отчётов",
-            $"Выгрузка СНК {formNum} {regNum}_{okpo}", ExportType);
-        await CheckRepsAndRepPresence(selectedReports, formNum, progressBar, cts);
 
         progressBarVM.SetProgressBar(6, "Запрос даты формирования СНК");
         var(endSnkDate, snkParams) = await AskSnkEndDate(progressBar, cts);
@@ -58,7 +61,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         await CheckInventoryFormPresence(inventoryReportDtoList, formNum, progressBar, cts);
 
         progressBarVM.SetProgressBar(15, "Формирование списка операций инвентаризации");
-        var (firstSnkDate, inventoryFormsDtoList) = await GetInventoryFormsDtoList(db, inventoryReportDtoList, endSnkDate, cts, snkParams);
+        var (firstSnkDate, inventoryFormsDtoList, inventoryDuplicateErrors) = await GetInventoryFormsDtoList(db, inventoryReportDtoList, endSnkDate, cts, snkParams);
 
         progressBarVM.SetProgressBar(16, "Получение списка дат инвентаризаций");
         var inventoryDatesList = await GetInventoryDatesList(inventoryFormsDtoList);
@@ -75,14 +78,23 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         progressBarVM.SetProgressBar(20, "Формирование списка операций передачи/получения");
         var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, selectedReports.Id, firstSnkDate, endSnkDate, cts, snkParams);
 
+        progressBarVM.SetProgressBar(25, "Загрузка операций перезарядки");
+        var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, selectedReports.Id, firstSnkDate, endSnkDate, cts, snkParams);
+
+        await GetInventoryErrorsAndSnk(inventoryDatesTupleList, inventoryFormsDtoList, plusMinusFormsDtoList, rechargeFormsDtoList);
+
+
+
+
+
         progressBarVM.SetProgressBar(22, "Формирование списка всех операций");
         var unionFormsDtoList = await GetUnionFormsDtoList(inventoryFormsDtoList, plusMinusFormsDtoList);
 
         progressBarVM.SetProgressBar(24, "Формирование списка уникальных учётных единиц");
         var uniqueAccountingUnitDtoList = await GetUniqueAccountingUnitDtoList(unionFormsDtoList);
 
-        var forms11DtoList = await GetForms11DtoList(inventoryFormsDtoList, plusMinusFormsDtoList, uniqueAccountingUnitDtoList,
-            inventoryDatesList, inventoryDatesTupleList, cts);
+        //var forms11DtoList = await GetForms11DtoList(inventoryFormsDtoList, plusMinusFormsDtoList, uniqueAccountingUnitDtoList,
+        //    inventoryDatesList, inventoryDatesTupleList, cts);
 
         progressBarVM.SetProgressBar(95, "Сохранение");
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
@@ -99,6 +111,44 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
         progressBarVM.SetProgressBar(100, "Завершение выгрузки");
         await progressBar.CloseAsync();
+    }
+
+    private static async Task GetInventoryErrorsAndSnk(
+        List<(DateOnly, DateOnly)> inventoryDatesTupleList,
+        List<ShortForm11DTO> inventoryFormsDtoList,
+        List<ShortForm11DTO> plusMinusFormsDtoList,
+        List<ShortForm11DTO> rechargeFormsDtoList)
+    {
+        var firstInventoryDate = inventoryDatesTupleList[0].Item1;
+
+        List<ShortForm11DTO> newInventoryFormsDtoList = [];
+        List<ShortForm11DTO> inventoryDuplicateErrors = [];
+        foreach (var form in inventoryFormsDtoList
+                     .Where(x => x.OpDate == firstInventoryDate))
+        {
+            var matchingForm = newInventoryFormsDtoList.FirstOrDefault(x =>
+                x.PasNum == form.PasNum
+                && x.FacNum == form.FacNum
+                && x.Radionuclids == form.Radionuclids
+                && x.Type == form.Type
+                && x.PackNumber == form.PackNumber);
+
+            if (matchingForm != null)
+            {
+                if (SerialNumbersIsEmpty(form.PasNum, form.FacNum))
+                {
+                    matchingForm.Quantity += form.Quantity;
+                }
+                else
+                {
+                    inventoryDuplicateErrors.Add(matchingForm);
+                }
+            }
+            else
+            {
+                newInventoryFormsDtoList.Add(form);
+            }
+        }
     }
 
     #region CheckInventoryFormPresence
@@ -137,65 +187,6 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
     #endregion
 
-    #region CheckRepsAndRepPresence
-
-    /// <summary>
-    /// Проверяет наличие выбранной организации, в случае если запущена команда для неё.
-    /// Проверяет наличие хотя бы одного отчёта, с выбранным номером формы. В случае отсутствия выводит соответствующее сообщение и закрывает команду.
-    /// </summary>
-    /// <param name="formNum">Номер формы отчётности.</param>
-    /// <param name="selectedReports">Выбранная организация.</param>
-    /// <param name="progressBar">Окно прогрессбара.</param>
-    /// <param name="cts">Токен.</param>
-    private static async Task CheckRepsAndRepPresence(Reports? selectedReports, string formNum,
-        AnyTaskProgressBar progressBar, CancellationTokenSource cts)
-    {
-        if (selectedReports is null)
-        {
-            #region MessageExcelExportFail
-
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
-                    ContentMessage = "Выгрузка не выполнена, поскольку не выбрана организация.",
-                    MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
-
-            #endregion
-
-            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-        }
-        else if (selectedReports.Report_Collection.All(rep => rep.FormNum_DB != formNum))
-        {
-            #region MessageRepsNotFound
-
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
-                    ContentHeader = "Уведомление",
-                    ContentMessage =
-                        $"Не удалось совершить выгрузку СНК," +
-                        $"{Environment.NewLine}поскольку у выбранной организации отсутствуют отчёты по форме {formNum}.",
-                    MinWidth = 400,
-                    MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
-
-            #endregion
-
-            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-        }
-    }
-
-    #endregion
-
     #region FillExcelHeaders
 
     /// <summary>
@@ -205,13 +196,19 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
     /// <param name="inventoryDatesList">Список дат инвентаризации вместе с текущей датой/датой введённой пользователем.</param>
     private async Task FillExcelHeaders(ExcelPackage excelPackage, List<DateOnly> inventoryDatesList)
     {
-        //ws.Cells["A1:C1"].Merge = true;
-
+        var count = 0;
         foreach (var date in inventoryDatesList)
         {
+            count++;
+
+            #region SNK_On_Date_Page
+            
+            #region SNK_Table
+
             Worksheet = excelPackage.Workbook.Worksheets.Add($"СНК на {date.ToShortDateString()}");
 
             Worksheet.Cells[1, 1, 1, 11].Merge = true;
+            Worksheet.Cells[1, 1, 1, 11].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
             Worksheet.Cells[1, 1].Value = $"СНК на {date.ToShortDateString()}";
 
             Worksheet.Cells[2, 1].Value = "№ п/п";
@@ -226,7 +223,17 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
             Worksheet.Cells[2, 10].Value = "категория";
             Worksheet.Cells[2, 11].Value = "НСС, мес";
 
+            var range = Worksheet.Cells[2, 1, 50, 11];
+            var tab = Worksheet.Tables.Add(range, $"Table{count}_1");
+            tab.TableStyle = TableStyles.Medium2;
+            Worksheet.Cells[1, 1, 50, 11].Style.Border.BorderAround(ExcelBorderStyle.Thick);
+
+            #endregion
+
+            #region Inventory_Table
+
             Worksheet.Cells[1, 12, 1, 22].Merge = true;
+            Worksheet.Cells[1, 12, 1, 22].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
             Worksheet.Cells[1, 12].Value = $"Инвентаризация на {date.ToShortDateString()}";
 
             Worksheet.Cells[2, 12].Value = "№ п/п";
@@ -241,7 +248,18 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
             Worksheet.Cells[2, 21].Value = "категория";
             Worksheet.Cells[2, 22].Value = "НСС, мес";
 
-            await AutoFitColumns();
+            var range2 = Worksheet.Cells[2, 12, 50, 22];
+            var tab2 = Worksheet.Tables.Add(range2, $"Table{count}_2");
+            tab2.TableStyle = TableStyles.Medium2;
+            Worksheet.Cells[1, 12, 50, 22].Style.Border.BorderAround(ExcelBorderStyle.Thick);
+
+            #endregion
+
+            await AutoFitColumnsAndFreezeRows(2); 
+            
+            #endregion
+
+            #region Errors_On_Date_Page
 
             if (date != inventoryDatesList[0])
             {
@@ -249,57 +267,49 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
                 #region Headers
 
-                Worksheet.Cells[1, 1].Value = "Описание";
-                Worksheet.Cells[1, 2].Value = "ОКПО";
-                Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 4].Value = "Рег.№";
-                Worksheet.Cells[1, 5].Value = "Номер корректировки";
-                Worksheet.Cells[1, 6].Value = "Дата начала периода";
-                Worksheet.Cells[1, 7].Value = "Дата конца периода";
-                Worksheet.Cells[1, 8].Value = "№ п/п";
-                Worksheet.Cells[1, 9].Value = "Код";
-                Worksheet.Cells[1, 10].Value = "Дата операции";
-                Worksheet.Cells[1, 11].Value = "Номер паспорта (сертификата)";
-                Worksheet.Cells[1, 12].Value = "тип";
-                Worksheet.Cells[1, 13].Value = "радионуклиды";
-                Worksheet.Cells[1, 14].Value = "номер";
-                Worksheet.Cells[1, 15].Value = "количество, шт.";
-                Worksheet.Cells[1, 16].Value = "суммарная активность, Бк";
-                Worksheet.Cells[1, 17].Value = "код ОКПО изготовителя";
-                Worksheet.Cells[1, 18].Value = "дата выпуска";
-                Worksheet.Cells[1, 19].Value = "категория";
-                Worksheet.Cells[1, 20].Value = "НСС, мес";
-                Worksheet.Cells[1, 21].Value = "код формы собственности";
-                Worksheet.Cells[1, 22].Value = "код ОКПО правообладателя";
-                Worksheet.Cells[1, 23].Value = "вид";
-                Worksheet.Cells[1, 24].Value = "номер2";
-                Worksheet.Cells[1, 25].Value = "дата3";
-                Worksheet.Cells[1, 26].Value = "поставщика или получателя";
-                Worksheet.Cells[1, 27].Value = "перевозчика";
-                Worksheet.Cells[1, 28].Value = "наименование";
-                Worksheet.Cells[1, 29].Value = "тип4";
-                Worksheet.Cells[1, 30].Value = "номер5";
+                Worksheet.Cells[1, 1].Value = "№ п/п";
+                Worksheet.Cells[1, 2].Value = "Описание ошибки";
+                Worksheet.Cells[1, 3].Value = "№ п/п";
+                Worksheet.Cells[1, 4].Value = "Номер паспорта (сертификата)";
+                Worksheet.Cells[1, 5].Value = "тип";
+                Worksheet.Cells[1, 6].Value = "радионуклиды";
+                Worksheet.Cells[1, 7].Value = "номер";
+                Worksheet.Cells[1, 8].Value = "количество, шт.";
+                Worksheet.Cells[1, 9].Value = "суммарная активность, Бк";
+                Worksheet.Cells[1, 10].Value = "код ОКПО изготовителя";
+                Worksheet.Cells[1, 11].Value = "дата выпуска";
+                Worksheet.Cells[1, 12].Value = "категория";
+                Worksheet.Cells[1, 13].Value = "НСС, мес";
 
                 #endregion
 
-                await AutoFitColumns();
+                var range3 = Worksheet.Cells[1, 1, 50, 13];
+                var tab3 = Worksheet.Tables.Add(range3, $"Table{count}");
+                tab3.TableStyle = TableStyles.Medium2;
+                range3.Style.Border.BorderAround(ExcelBorderStyle.Thick);
+
+                await AutoFitColumnsAndFreezeRows(1); 
             }
+            
+            #endregion
         }
     }
 
     #region AutoFitColumns
 
     /// <summary>
-    /// Для текущей страницы Excel пакета подбирает ширину колонок и замораживает первую строчку.
+    /// Для текущей страницы Excel пакета подбирает ширину колонок и замораживает n строчек.
     /// </summary>
-    private Task AutoFitColumns()
+    private Task AutoFitColumnsAndFreezeRows(byte numberOfRowsToFreeze)
     {
         for (var col = 1; col <= Worksheet.Dimension.End.Column; col++)
         {
             if (OperatingSystem.IsWindows()) Worksheet.Column(col).AutoFit();
         }
-        Worksheet.View.FreezePanes(2, 1);
-        Worksheet.View.FreezePanes(3, 1);
+        for (var row = 2; row <= numberOfRowsToFreeze + 1; row++)
+        {
+            Worksheet.View.FreezePanes(row, 1);
+        }
         return Task.CompletedTask;
     }
 

@@ -25,8 +25,6 @@ using Client_App.Properties;
 using MessageBox.Avalonia.Models;
 using Client_App.Resources;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using static Models.Collections.Report;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -327,9 +325,9 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
         var masterRepRows20List = db.ReportsCollectionDbSet
             .Include(x => x.DBObservable)
-            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
             .Where(x => x.DBObservable != null)
-            .SelectMany(x => x.Master_DB.Rows10)
+            .SelectMany(x => x.Master_DB.Rows20)
             .ToList();
 
         foreach (var form10 in masterRepRows10List)
@@ -381,8 +379,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
     private static string CustomTrim(string? str)
     {
-        if (string.IsNullOrEmpty(str))
-            return string.Empty;
+        if (string.IsNullOrEmpty(str)) return string.Empty;
 
         // Use Span to avoid allocations
         var span = str.AsSpan();
@@ -405,11 +402,6 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
         // Return the new string with the correct length
         return new string(buffer, 0, bufferIndex);
-    }
-
-    private static string CustomTrim2(string? str)
-    {
-        return string.Join(string.Empty, new Regex(@"(?:\r\n|\n|\r)").Split(str ?? string.Empty)).Trim();
     }
 
     #endregion

@@ -54,7 +54,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
         var filteredRepsDtoList = await CheckRepsInventoryDate(tmpDbPath, repsDtoList, progressBarVM, cts);
 
         progressBarVM.SetProgressBar(40, "Проверка наличия СНК");
-        var repsWithUnitsDtoList = await CheckSnk(db, filteredRepsDtoList, progressBarVM, cts);
+        var repsWithUnitsDtoList = await CheckSnk(tmpDbPath, filteredRepsDtoList, progressBarVM, cts);
 
         progressBarVM.SetProgressBar(90, "Заполнение строчек в .xlsx");
         await FillExcel(repsWithUnitsDtoList);
@@ -236,40 +236,100 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
     /// <summary>
     /// Проверяет наличие учётных единиц у организаций из списка, возвращает список DTO организаций, у которых есть учётные единицы в наличии.
     /// </summary>
-    /// <param name="db">Модель БД.</param>
+    /// <param name="tmpDbPath">Путь к временному файлу БД.</param>
     /// <param name="dtoList">Список DTO организаций.</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Список DTO организаций, у которых есть учётные единицы в наличии.</returns>
-    private static async Task<List<ShortReportsDto>> CheckSnk(DBModel db, List<ShortReportsDto> dtoList,
+    private static async Task<List<ShortReportsDto>> CheckSnk(string tmpDbPath, List<ShortReportsDto> dtoList,
         AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
         var currentDate = DateOnly.FromDateTime(DateTime.Now);
 
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentRepsNum = 0;
+
+        #region TestParallelRealization
+
+        //var dtoBag = new ConcurrentBag<ShortReportsDto>(dtoList);
+        //ParallelOptions parallelOptions = new()
+        //{
+        //    CancellationToken = cts.Token,
+        //    MaxDegreeOfParallelism = Environment.ProcessorCount
+        //};
+        //progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+        //    $"Проверено 0 из {dtoList.Count} СНК организаций",
+        //    "Проверка последней инвентаризации");
+        //Parallel.ForEach(dtoBag, parallelOptions, async (dto, token) =>
+        //{
+        //    await using var db = new DBModel(tmpDbPath);
+        //    currentRepsNum++;
+
+        //    var inventoryReportDtoList = await GetInventoryReportDtoList(db, dto.Id, currentDate, cts);
+
+        //    var (firstSnkDate, inventoryFormsDtoList) = await GetInventoryFormsDtoList(db, inventoryReportDtoList, currentDate, cts);
+
+        //    var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, dto.Id, firstSnkDate, currentDate, cts);
+
+        //    var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, dto.Id, firstSnkDate, currentDate, cts);
+
+        //    var uniqueUnitWithAllOperationDictionary = await GetDictionary_UniqueUnitsWithOperations(inventoryFormsDtoList, plusMinusFormsDtoList, rechargeFormsDtoList);
+
+        //    dto.CountUnits = (await GetUnitInStockDtoList(uniqueUnitWithAllOperationDictionary, progressBarVM)).Count;
+
+        //    progressBarDoubleValue += (double)50 / dtoList.Count;
+        //    progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+        //        $"Проверено {currentRepsNum} из {dtoList.Count} СНК организаций",
+        //        "Проверка последней инвентаризации");
+        //});
+
+        //await Parallel.ForEachAsync(dtoBag, parallelOptions, async (dto, token) =>
+        //{
+        //    await using var db = new DBModel(tmpDbPath);
+        //    currentRepsNum++;
+
+        //    var inventoryReportDtoList = await GetInventoryReportDtoList(db, dto.Id, currentDate, cts);
+
+        //    var (firstSnkDate, inventoryFormsDtoList) = await GetInventoryFormsDtoList(db, inventoryReportDtoList, currentDate, cts);
+
+        //    var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, dto.Id, firstSnkDate, currentDate, cts);
+
+        //    var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, dto.Id, firstSnkDate, currentDate, cts);
+
+        //    var uniqueUnitWithAllOperationDictionary = await GetDictionary_UniqueUnitsWithOperations(inventoryFormsDtoList, plusMinusFormsDtoList, rechargeFormsDtoList);
+
+        //    dto.CountUnits = (await GetUnitInStockDtoList(uniqueUnitWithAllOperationDictionary, progressBarVM)).Count;
+
+        //    progressBarDoubleValue += (double)50 / dtoList.Count;
+        //    progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+        //        $"Проверено {currentRepsNum} из {dtoList.Count} СНК организаций",
+        //        "Проверка последней инвентаризации");
+        //});
+
+        #endregion
+
+        await using var db = new DBModel(tmpDbPath);
         foreach (var dto in dtoList)
         {
             currentRepsNum++;
 
             var inventoryReportDtoList = await GetInventoryReportDtoList(db, dto.Id, currentDate, cts);
 
-            var (firstSnkDate, inventoryFormsDtoList) = await GetInventoryFormsDtoList(db, inventoryReportDtoList, currentDate, cts);
+            var (firstSnkDate, inventoryFormsDtoList, _) = await GetInventoryFormsDtoList(db, inventoryReportDtoList, currentDate, cts);
 
             var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, dto.Id, firstSnkDate, currentDate, cts);
 
-            var unionFormsDtoList = await GetUnionFormsDtoList(inventoryFormsDtoList, plusMinusFormsDtoList);
+            var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, dto.Id, firstSnkDate, currentDate, cts);
 
-            var uniqueAccountingUnitDtoList = await GetUniqueAccountingUnitDtoList(unionFormsDtoList);
+            var uniqueUnitWithAllOperationDictionary = await GetDictionary_UniqueUnitsWithOperations(inventoryFormsDtoList, plusMinusFormsDtoList, rechargeFormsDtoList);
 
-            dto.CountUnits = await GetUnitInStockCount(inventoryFormsDtoList, plusMinusFormsDtoList, uniqueAccountingUnitDtoList);
+            dto.CountUnits = (await GetUnitInStockDtoList(uniqueUnitWithAllOperationDictionary, progressBarVM)).Count;
 
             progressBarDoubleValue += (double)50 / dtoList.Count;
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
                 $"Проверено {currentRepsNum} из {dtoList.Count} СНК организаций",
                 "Проверка последней инвентаризации");
         }
-
         return dtoList
             .Where(x => x.CountUnits != 0)
             .OrderBy(x => x.RegNum)
@@ -379,118 +439,6 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
                 RegNum = x.Master_DB.RegNoRep.Value
             })
             .ToListAsync(cts.Token);
-    }
-
-    #endregion
-
-    #region GetUnitInStockCount
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="inventoryFormsDtoList">Список DTO операций инвентаризации.</param>
-    /// <param name="plusMinusFormsDtoList">Список DTO операций приёма/передачи.</param>
-    /// <param name="uniqueAccountingUnitDtoList">Список DTO уникальных учётных единиц.</param>
-    /// <returns>Количество </returns>
-    private static Task<int> GetUnitInStockCount(List<ShortForm11DTO> inventoryFormsDtoList,
-        List<ShortForm11DTO> plusMinusFormsDtoList, List<UniqueAccountingUnitDTO> uniqueAccountingUnitDtoList)
-    {
-        var firstInventoryDate = inventoryFormsDtoList.Count == 0
-            ? DateOnly.MinValue
-            : inventoryFormsDtoList
-                .OrderBy(x => x.OpDate)
-                .Select(x => x.OpDate)
-                .First();
-
-        var groupList = inventoryFormsDtoList
-            .Where(x => x.OpDate == firstInventoryDate)
-            .GroupBy(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type)
-            .ToList();
-
-        List<ShortForm11DTO> unitInStockList = [];
-        foreach (var group in groupList)
-        {
-            var quantity = group.Sum(dto => dto.Quantity);
-            var summedDto = group.First();
-            summedDto.Quantity = quantity;
-            unitInStockList.Add(summedDto);
-        }
-
-        foreach (var unit in uniqueAccountingUnitDtoList)
-        {
-            var inStock = unitInStockList
-                .Any(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type 
-                          == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type);
-
-            var inventoryWithCurrentUnit = inventoryFormsDtoList
-                .Where(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type 
-                            == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type 
-                            && x.OpDate >= firstInventoryDate)
-                .DistinctBy(x => x.OpDate)
-                .OrderBy(x => x.OpDate)
-                .ToList();
-
-            var operationsWithCurrentUnit = plusMinusFormsDtoList
-                .Where(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type 
-                            == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type 
-                            && x.OpDate >= firstInventoryDate)
-                .OrderBy(x => x.OpDate)
-                .ToList();
-
-            List<ShortForm11DTO> operationsWithCurrentUnitWithoutDuplicates = [];
-            foreach (var group in operationsWithCurrentUnit.GroupBy(x => x.OpDate))
-            {
-                var countMinus = group.Count(x => MinusOperation.Contains(x.OpCode));
-                var countPlus = group.Count(x => PlusOperation.Contains(x.OpCode));
-                var countStock = (inStock ? 1 : 0) + countPlus - countMinus;
-
-                switch (countStock)
-                {
-                    case >= 1:
-                    {
-                        operationsWithCurrentUnitWithoutDuplicates
-                            .Add(group
-                                .Last(x => PlusOperation.Contains(x.OpCode)));
-                        break;
-                    }
-                    case < 1:
-                    {
-                        operationsWithCurrentUnitWithoutDuplicates
-                            .Add(group
-                                .Last(x => MinusOperation.Contains(x.OpCode)));
-                        break;
-                    }
-                }
-            }
-            foreach (var operation in operationsWithCurrentUnitWithoutDuplicates)
-            {
-                inStock = inStock switch
-                {
-                    false when PlusOperation.Contains(operation.OpCode) => true,
-                    true when MinusOperation.Contains(operation.OpCode) => false,
-                    _ => inStock
-                };
-            }
-
-            var lastOperationWithUnit = operationsWithCurrentUnit
-                .Union(inventoryWithCurrentUnit
-                    .Where(x => x.OpDate >= firstInventoryDate))
-                .OrderByDescending(x => x.OpDate)
-                .FirstOrDefault();
-
-            if (lastOperationWithUnit == null) continue;
-
-            var currentUnit = unitInStockList
-                .FirstOrDefault(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type
-                                     == unit.FacNum + unit.PackNumber + unit.PasNum + unit.Radionuclids + unit.Type);
-
-            if (currentUnit != null) unitInStockList.Remove(currentUnit);
-            if (inStock)
-            {
-                unitInStockList.Add(lastOperationWithUnit);
-            }
-        }
-        return Task.FromResult(unitInStockList.Count);
     }
 
     #endregion
