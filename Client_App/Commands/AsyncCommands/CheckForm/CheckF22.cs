@@ -497,7 +497,7 @@ public class CheckF22 : CheckBase
                     Row = formReal.NumberInOrder_DB.ToString(),
                     Column = "-",
                     Value = $"код РАО {formReal.CodeRAO_DB}, статус РАО {formReal.StatusRAO_DB}, наименование пункта хранения {formReal.StoragePlaceName_DB}, код пункта хранения {formReal.StoragePlaceCode_DB}, номер мероприятия ФЦП {formReal.FcpNumber_DB}, тип упаковки {formReal.PackType_DB}",
-                    Message = "В формах 1.5 - 1.8 не найдена информация об указанных РАО."
+                    Message = $"В форме 2.2 ({yearPrevious}) и в формах 1.5 - 1.8 ({yearRealCurrent}) не найдена информация об указанных РАО."
                 });
             }
         }
@@ -511,7 +511,7 @@ public class CheckF22 : CheckBase
                 Row = "-",
                 Column = "-",
                 Value = $"код РАО {(formExpected.Item1.CodeRAO_DB == form15Plug || formExpected.Item1.CodeRAO_DB == formGenericPlug ? "-" : formExpected.Item1.CodeRAO_DB)}, статус РАО {formExpected.Item1.StatusRAO_DB}, наименование пункта хранения {formExpected.Item1.StoragePlaceName_DB}, код пункта хранения {formExpected.Item1.StoragePlaceCode_DB}, номер мероприятия ФЦП {formExpected.Item1.FcpNumber_DB}, тип упаковки {formExpected.Item1.PackType_DB}\n{formExpected.Item2}",
-                Message = "В форме 2.2 не найдена информация об указанных РАО."
+                Message = $"В форме 2.2 ({yearRealCurrent}) не найдена информация об указанных РАО."
             });
         }
         errorList.Sort((i, j) =>
@@ -615,7 +615,7 @@ public class CheckF22 : CheckBase
             StoragePlaceName_DB = form.StoragePlaceName_DB.Trim(),
             PackName_DB = form.PackName_DB.Trim(),
             PackType_DB = form.PackType_DB.Trim(),
-            PackQuantity_DB = form.PackNumber_DB.Trim(),
+            PackQuantity_DB = "1",
             VolumeOutOfPack_DB = form15Plug.Trim(),
             VolumeInPack_DB = form15Plug.Trim(),
             MassOutOfPack_DB = form15Plug.Trim(),
@@ -679,7 +679,7 @@ public class CheckF22 : CheckBase
             StoragePlaceName_DB = form.StoragePlaceName_DB.Trim(),
             PackName_DB = form.PackName_DB.Trim(),
             PackType_DB = form.PackType_DB.Trim(),
-            PackQuantity_DB = form.PackNumber_DB.Trim(),
+            PackQuantity_DB = "1",
             VolumeOutOfPack_DB = form.Volume_DB.Trim(),
             VolumeInPack_DB = formGenericPlug.Trim(),
             MassOutOfPack_DB = form.Mass_DB.Trim(),
@@ -803,7 +803,7 @@ public class CheckF22 : CheckBase
             StoragePlaceName_DB = form.StoragePlaceName_DB.Trim(),
             PackName_DB = formGenericPlug.Trim(),
             PackType_DB = formGenericPlug.Trim(),
-            PackQuantity_DB = formGenericPlug.Trim(),
+            PackQuantity_DB = "1",
             VolumeOutOfPack_DB = form.Volume20_DB.Trim(),
             VolumeInPack_DB = form.Volume6_DB.Trim(),
             MassOutOfPack_DB = form.Mass21_DB.Trim(),
