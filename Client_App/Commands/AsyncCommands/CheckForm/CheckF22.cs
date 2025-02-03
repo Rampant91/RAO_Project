@@ -292,12 +292,12 @@ public class CheckF22 : CheckBase
             }
             break;
         }
-        Dictionary<(string, string, string, string, string), Form22> forms22ExpectedDict = new();
-        Dictionary<(string, string, string, string, string), Form22> forms22RealDict = new();
-        Dictionary<(string, string, string, string, string), Dictionary<string, Dictionary<string, List<string>>>> forms22MetadataDict = new();
+        Dictionary<(string, string, string, string, string, string), Form22> forms22ExpectedDict = new();
+        Dictionary<(string, string, string, string, string, string), Form22> forms22RealDict = new();
+        Dictionary<(string, string, string, string, string, string), Dictionary<string, Dictionary<string, List<string>>>> forms22MetadataDict = new();
         for (var i = 0; i < forms22ExpectedBase.Count; i++)
         {
-            (string, string, string, string, string) key = (forms22ExpectedBase[i].CodeRAO_DB, forms22ExpectedBase[i].StatusRAO_DB, forms22ExpectedBase[i].StoragePlaceCode_DB, forms22ExpectedBase[i].FcpNumber_DB, forms22ExpectedBase[i].PackType_DB.Replace(" ", "").ToLower());
+            (string, string, string, string, string, string) key = (forms22ExpectedBase[i].CodeRAO_DB, forms22ExpectedBase[i].StatusRAO_DB, forms22ExpectedBase[i].StoragePlaceName_DB.Replace(" ", "").ToLower(), forms22ExpectedBase[i].StoragePlaceCode_DB, forms22ExpectedBase[i].FcpNumber_DB, forms22ExpectedBase[i].PackType_DB.Replace(" ", "").ToLower());
 
             if (!forms22ExpectedDict.TryGetValue(key, out var form22))
             {
@@ -334,7 +334,7 @@ public class CheckF22 : CheckBase
             var form = (Form22)key1;
             if (form.CodeRAO_DB != "-" && !string.IsNullOrWhiteSpace(form.CodeRAO_DB))
             {
-                var key = (form.CodeRAO_DB, form.StatusRAO_DB, form.StoragePlaceCode_DB, form.FcpNumber_DB, form.PackType_DB.Replace(" ", "").ToLower());
+                var key = (form.CodeRAO_DB, form.StatusRAO_DB, form.StoragePlaceName_DB.Replace(" ", "").ToLower(), form.StoragePlaceCode_DB, form.FcpNumber_DB, form.PackType_DB.Replace(" ", "").ToLower());
                 if (!forms22RealDict.ContainsKey(key))
                 {
                     forms22RealDict[key] = Form22_Copy(form);
@@ -347,7 +347,7 @@ public class CheckF22 : CheckBase
                         FormNum = "form_22",
                         Row = form.NumberInOrder_DB.ToString(),
                         Column = "-",
-                        Value = $"код РАО {form.CodeRAO_DB}, статус РАО {form.StatusRAO_DB}, код пункта хранения {form.StoragePlaceCode_DB}, номер мероприятия ФЦП {form.FcpNumber_DB}, тип упаковки {form.PackType_DB}",
+                        Value = $"код РАО {form.CodeRAO_DB}, статус РАО {form.StatusRAO_DB}, наименование пункта хранения {form.StoragePlaceName_DB}, код пункта хранения {form.StoragePlaceCode_DB}, номер мероприятия ФЦП {form.FcpNumber_DB}, тип упаковки {form.PackType_DB}",
                         Message = $"В форме 2.2 уже присутствует строка с указанными РАО (строка {forms22RealDict[key].NumberInOrder_DB}). В данной проверке значения текущей строки объединены со значениями уже присутствующей строки."
                     });
                 }
@@ -426,31 +426,11 @@ public class CheckF22 : CheckBase
         }
         foreach (var formReal in forms22Real)
         {
-            if (formReal.StatusRAO_DB == "25798559" && formReal.CodeRAO_DB == "20412214932" && formReal.StoragePlaceCode_DB == "31111218" && formReal.FcpNumber_DB == "-" && formReal.PackType_DB == "НЗК-РАДОН")
-            {
-
-            }
             Form22_ToDecExp(formReal);
             var matchFound = false;
             for (int i = forms22Expected.Count - 1; i >= 0; i--)
             {
                 (Form22, string, string) form22Expected = forms22Expected[i];
-                if (formReal.CodeRAO_DB == "20412214932" && form22Expected.Item1.CodeRAO_DB == formReal.CodeRAO_DB)
-                {
-
-                }
-                if (formReal.CodeRAO_DB == "20412214932" && form22Expected.Item1.CodeRAO_DB == formReal.CodeRAO_DB && formReal.StatusRAO_DB == "25798559" && form22Expected.Item1.StatusRAO_DB == formReal.StatusRAO_DB)
-                {
-
-                }
-                if (formReal.CodeRAO_DB == "20412214932" && form22Expected.Item1.CodeRAO_DB == formReal.CodeRAO_DB && formReal.StatusRAO_DB == "25798559" && form22Expected.Item1.StatusRAO_DB == formReal.StatusRAO_DB && formReal.StoragePlaceCode_DB == "31111218" && form22Expected.Item1.StoragePlaceCode_DB == formReal.StoragePlaceCode_DB)
-                {
-
-                }
-                if (formReal.CodeRAO_DB == "20412214932" && form22Expected.Item1.CodeRAO_DB == formReal.CodeRAO_DB && formReal.StatusRAO_DB == "25798559" && form22Expected.Item1.StatusRAO_DB == formReal.StatusRAO_DB && formReal.StoragePlaceCode_DB == "31111218" && form22Expected.Item1.StoragePlaceCode_DB == formReal.StoragePlaceCode_DB && formReal.PackType_DB == "НЗК-РАДОН" && form22Expected.Item1.PackType_DB == formReal.PackType_DB)
-                {
-
-                }
                 var mismatches = Form22_Match(form22Expected.Item1, formReal, $"форм{(form22Expected.Item3.Contains(',') ? "ы":"а")} {form22Expected.Item3}{(form22Expected.Item3 == "2.2" ? " (" + yearPrevious + ")" : "")}", $"форма 2.2 ({yearRealCurrent})", form22Expected.Item1.CodeRAO_DB == form15Plug);
                 if (mismatches == null) continue;
                 matchFound = true;
@@ -470,7 +450,7 @@ public class CheckF22 : CheckBase
                         FormNum = "form_22",
                         Row = formReal.NumberInOrder_DB.ToString(),
                         Column = columns,
-                        Value = $"код РАО {formReal.CodeRAO_DB}, статус РАО {formReal.StatusRAO_DB}, код пункта хранения {formReal.StoragePlaceCode_DB}, номер мероприятия ФЦП {formReal.FcpNumber_DB}, тип упаковки {formReal.PackType_DB}\n{forms22Expected[i].Item2}",
+                        Value = $"код РАО {formReal.CodeRAO_DB}, статус РАО {formReal.StatusRAO_DB}, наименование пункта хранения {formReal.StoragePlaceName_DB}, код пункта хранения {formReal.StoragePlaceCode_DB}, номер мероприятия ФЦП {formReal.FcpNumber_DB}, тип упаковки {formReal.PackType_DB}\n{forms22Expected[i].Item2}",
                         Message = $"Сведения о РАО не совпадают:\n\n{hints}"
                     });
                 }
@@ -501,7 +481,7 @@ public class CheckF22 : CheckBase
                             FormNum = "form_22",
                             Row = formReal.NumberInOrder_DB.ToString(),
                             Column = columns,
-                            Value = $"код РАО {formReal.CodeRAO_DB}, статус РАО {formReal.StatusRAO_DB}, код пункта хранения {formReal.StoragePlaceCode_DB}, номер мероприятия ФЦП {formReal.FcpNumber_DB}\n{{forms22Expected[i].Item2",
+                            Value = $"код РАО {formReal.CodeRAO_DB}, статус РАО {formReal.StatusRAO_DB}, наименование пункта хранения {formReal.StoragePlaceName_DB}, код пункта хранения {formReal.StoragePlaceCode_DB}, номер мероприятия ФЦП {formReal.FcpNumber_DB}\n{{forms22Expected[i].Item2",
                             Message = $"Сведения о РАО не совпадают:\n\n{hints}"
                         });
                     }
@@ -516,7 +496,7 @@ public class CheckF22 : CheckBase
                     FormNum = "form_22",
                     Row = formReal.NumberInOrder_DB.ToString(),
                     Column = "-",
-                    Value = $"код РАО {formReal.CodeRAO_DB}, статус РАО {formReal.StatusRAO_DB}, код пункта хранения {formReal.StoragePlaceCode_DB}, номер мероприятия ФЦП {formReal.FcpNumber_DB}, тип упаковки {formReal.PackType_DB}",
+                    Value = $"код РАО {formReal.CodeRAO_DB}, статус РАО {formReal.StatusRAO_DB}, наименование пункта хранения {formReal.StoragePlaceName_DB}, код пункта хранения {formReal.StoragePlaceCode_DB}, номер мероприятия ФЦП {formReal.FcpNumber_DB}, тип упаковки {formReal.PackType_DB}",
                     Message = "В формах 1.5 - 1.8 не найдена информация об указанных РАО."
                 });
             }
@@ -524,13 +504,13 @@ public class CheckF22 : CheckBase
         foreach (var formExpected in forms22Expected)
         {
             if (int.TryParse(formExpected.Item1.PackQuantity_DB, out int packQuantity) && packQuantity == 0) continue;
-            if (float.TryParse(formExpected.Item1.QuantityOZIII_DB, out float quantityOZIII) && quantityOZIII <= 1e-5) continue;
+            if (float.TryParse(formExpected.Item1.QuantityOZIII_DB, out float quantityOZIII) && quantityOZIII <= 1e-6) continue;
             errorList.Add(new CheckError
             {
                 FormNum = "form_22",
                 Row = "-",
                 Column = "-",
-                Value = $"код РАО {(formExpected.Item1.CodeRAO_DB == form15Plug || formExpected.Item1.CodeRAO_DB == formGenericPlug ? "-" : formExpected.Item1.CodeRAO_DB)}, статус РАО {formExpected.Item1.StatusRAO_DB}, код пункта хранения {formExpected.Item1.StoragePlaceCode_DB}, номер мероприятия ФЦП {formExpected.Item1.FcpNumber_DB}, тип упаковки {formExpected.Item1.PackType_DB}\n{formExpected.Item2}",
+                Value = $"код РАО {(formExpected.Item1.CodeRAO_DB == form15Plug || formExpected.Item1.CodeRAO_DB == formGenericPlug ? "-" : formExpected.Item1.CodeRAO_DB)}, статус РАО {formExpected.Item1.StatusRAO_DB}, наименование пункта хранения {formExpected.Item1.StoragePlaceName_DB}, код пункта хранения {formExpected.Item1.StoragePlaceCode_DB}, номер мероприятия ФЦП {formExpected.Item1.FcpNumber_DB}, тип упаковки {formExpected.Item1.PackType_DB}\n{formExpected.Item2}",
                 Message = "В форме 2.2 не найдена информация об указанных РАО."
             });
         }
@@ -1159,6 +1139,7 @@ public class CheckF22 : CheckBase
            )
         {
             if (form1.StatusRAO_DB.Trim() == form2.StatusRAO_DB.Trim()
+                && form1.StoragePlaceName_DB.Replace(" ", "").ToLower() == form2.StoragePlaceName_DB.Replace(" ", "").ToLower()
                 && form1.StoragePlaceCode_DB.Trim() == form2.StoragePlaceCode_DB.Trim()
                 && form1.PackType_DB.Replace(" ","").ToLower() == form2.PackType_DB.Replace(" ", "").ToLower()
                 && form1.FcpNumber_DB.Replace('-',' ').Trim().TrimEnd('0') == form2.FcpNumber_DB.Replace('-', ' ').Trim().TrimEnd('0'))
