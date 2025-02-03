@@ -315,7 +315,7 @@ public abstract class CheckBase : BaseAsyncCommand
 
             return span1.CompareTo(span2, StringComparison.OrdinalIgnoreCase);
 
-            // Old realization
+            // Old realisation
             //var strA = ReplaceNullAndTrim(x).ToLower();
             //var strB = ReplaceNullAndTrim(y).ToLower();
             //return string.CompareOrdinal(strA, strB);

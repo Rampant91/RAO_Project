@@ -1190,7 +1190,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
     #region FindMousePressed
 
-    private int[] FindMousePress(IReadOnlyList<double> mouse)
+    private int[] FindMousePress(double[] mouse)
     {
         var tmp = new int[2];
         var sumy = 0.0;
@@ -1360,7 +1360,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         //if (LastPressedItem[0] != paramRowColumn[0] || LastPressedItem[1] != paramRowColumn[1])
         {
             LastPressedItem = paramRowColumn;
-            ScrollLeftRight = 0;
+            //ScrollLeftRight = 0;
             SetSelectedControls();
         }
     }
@@ -1375,7 +1375,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         var paramPos = args.GetCurrentPoint(CenterStackPanel).Position;
 
         if (!paramKey.IsLeftButtonPressed) return;
-        var paramRowColumn = FindMousePress(new[] { paramPos.Y, paramPos.X });
+        var paramRowColumn = FindMousePress([paramPos.Y, paramPos.X]);
         if (LastPressedItem[0] == paramRowColumn[0] && LastPressedItem[1] == paramRowColumn[1]) return;
         var pr = ((Panel)Content).Bounds.Width;
         if (LastPressedItem[1] < paramRowColumn[1] && paramPos.X > pr / 4)
@@ -1390,15 +1390,15 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         SetSelectedControls();
         //else
         //{
-        //var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
-        //if (paramPos.X > 100)
-        //{
-        //    FixedContentN += 20;
-        //}
-        //if (paramPos.X < 0)
-        //{
-        //    FixedContentN -= 20;
-        //}
+        //    paramRowColumn = FindMousePress([paramPos.Y, paramPos.X]);
+        //    if (paramPos.X > 100)
+        //    {
+        //        ScrollLeftRight += 20;
+        //    }
+        //    if (paramPos.X < 0)
+        //    {
+        //        ScrollLeftRight -= 20;
+        //    }
         //}
     }
 
