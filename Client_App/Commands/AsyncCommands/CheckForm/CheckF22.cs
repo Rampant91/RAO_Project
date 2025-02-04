@@ -29,8 +29,8 @@ public class CheckF22 : CheckBase
 {
     public override bool CanExecute(object? parameter) => true;
 
-    const string form15Plug = "!1.5";
-    const string formGenericPlug = "!1.X";
+    const string form15Plug = "!1,5";
+    const string formGenericPlug = "!1,X";
 
     #region AsyncExecute
 
@@ -302,8 +302,9 @@ public class CheckF22 : CheckBase
             if (!forms22ExpectedDict.TryGetValue(key, out var form22))
             {
                 forms22ExpectedDict[key] = Form22_Copy(forms22ExpectedBase[i]);
+                Form22_Subtract(forms22ExpectedDict[key], forms22ExpectedBase[i]);
             }
-            else
+            if (forms22ExpectedDict.TryGetValue(key, out form22))
             {
                 if (forms22ExpectedBase[i].NumberOfFields_DB < 0)
                 {
@@ -504,7 +505,6 @@ public class CheckF22 : CheckBase
         foreach (var formExpected in forms22Expected)
         {
             if (int.TryParse(formExpected.Item1.PackQuantity_DB, out int packQuantity) && packQuantity == 0) continue;
-            if (float.TryParse(formExpected.Item1.QuantityOZIII_DB, out float quantityOZIII) && quantityOZIII <= 1e-6) continue;
             errorList.Add(new CheckError
             {
                 FormNum = "form_22",
@@ -594,7 +594,7 @@ public class CheckF22 : CheckBase
         ]);
         List<string> validOperationCodesMinus = new([
             "21", "22", "23", "24", "25", "26", "27", "28", "29",
-            "44", "45", "49", "51", "71", "98"
+            "44", "45", "49", "51", "68", "71", "98"
         ]);
         if (!validOperationCodesPlus.Contains(form.OperationCode_DB) && !validOperationCodesMinus.Contains(form.OperationCode_DB))    //filter out operation codes
         {
@@ -620,13 +620,13 @@ public class CheckF22 : CheckBase
             VolumeInPack_DB = form15Plug.Trim(),
             MassOutOfPack_DB = form15Plug.Trim(),
             MassInPack_DB = form15Plug.Trim(),
-            QuantityOZIII_DB = form.Quantity_DB?.ToString().Trim(),
+            QuantityOZIII_DB = form.Quantity_DB?.ToString().Replace('.', ',').Trim(),
             TritiumActivity_DB = form15Plug.Trim(),
             BetaGammaActivity_DB = form15Plug.Trim(),
             AlphaActivity_DB = form15Plug.Trim(),
             TransuraniumActivity_DB = form15Plug.Trim(),
             MainRadionuclids_DB = form.Radionuclids_DB.Trim(),
-            Subsidy_DB = form.Subsidy_DB.Trim(),
+            Subsidy_DB = form.Subsidy_DB.Replace('.', ',').Trim(),
         };
         if (string.IsNullOrWhiteSpace(res.FcpNumber_DB)) res.FcpNumber_DB = "-";
         int.TryParse(form.OperationCode_DB, out var directionMarker);
@@ -654,7 +654,7 @@ public class CheckF22 : CheckBase
         ]);
         List<string> validOperationCodesMinus = new([
             "21", "22", "23", "24", "25", "26", "27", "28", "29",
-            "44", "45", "49", "51", "71", "98"
+            "44", "45", "49", "51", "68", "71", "98"
         ]);
         if (!validOperationCodesPlus.Contains(form.OperationCode_DB) && !validOperationCodesMinus.Contains(form.OperationCode_DB))    //filter out operation codes
         {
@@ -680,17 +680,17 @@ public class CheckF22 : CheckBase
             PackName_DB = form.PackName_DB.Trim(),
             PackType_DB = form.PackType_DB.Trim(),
             PackQuantity_DB = "1",
-            VolumeOutOfPack_DB = form.Volume_DB.Trim(),
+            VolumeOutOfPack_DB = form.Volume_DB.Replace('.', ',').Trim(),
             VolumeInPack_DB = formGenericPlug.Trim(),
-            MassOutOfPack_DB = form.Mass_DB.Trim(),
+            MassOutOfPack_DB = form.Mass_DB.Replace('.', ',').Trim(),
             MassInPack_DB = formGenericPlug.Trim(),
-            QuantityOZIII_DB = form.QuantityOZIII_DB.Trim(),
-            TritiumActivity_DB = form.TritiumActivity_DB.Trim(),
-            BetaGammaActivity_DB = form.BetaGammaActivity_DB.Trim(),
-            AlphaActivity_DB = form.AlphaActivity_DB.Trim(),
-            TransuraniumActivity_DB = form.TransuraniumActivity_DB.Trim(),
+            QuantityOZIII_DB = form.QuantityOZIII_DB.Replace('.', ',').Trim(),
+            TritiumActivity_DB = form.TritiumActivity_DB.Replace('.', ',').Trim(),
+            BetaGammaActivity_DB = form.BetaGammaActivity_DB.Replace('.', ',').Trim(),
+            AlphaActivity_DB = form.AlphaActivity_DB.Replace('.', ',').Trim(),
+            TransuraniumActivity_DB = form.TransuraniumActivity_DB.Replace('.', ',').Trim(),
             MainRadionuclids_DB = form.MainRadionuclids_DB.Trim(),
-            Subsidy_DB = form.Subsidy_DB.Trim(),
+            Subsidy_DB = form.Subsidy_DB.Replace('.', ',').Trim(),
         };
         if (string.IsNullOrWhiteSpace(res.FcpNumber_DB)) res.FcpNumber_DB = "-";
         int.TryParse(form.OperationCode_DB, out var directionMarker);
@@ -712,7 +712,7 @@ public class CheckF22 : CheckBase
     private static Form22? FormConvert(Form17 form, Form17? formHeader, string year)
     {
         var formTrue = formHeader ?? form;
-        List<string> validOperationCodesPlus = new(["31", "32", "33", "34", "35", "36", "37", "38", "39", "52", "55"]);
+        List<string> validOperationCodesPlus = new(["18", "31", "32", "33", "34", "35", "36", "37", "38", "39", "52", "55"]);
         List<string> validOperationCodesMinus = new(["21", "22", "23", "24", "25", "26", "27", "28", "29", "51"]);
         if (form.CodeRAO_DB == "-" || string.IsNullOrWhiteSpace(form.CodeRAO_DB))
         {
@@ -742,17 +742,17 @@ public class CheckF22 : CheckBase
             PackName_DB = form.PackName_DB.Trim(),
             PackType_DB = form.PackType_DB.Trim(),
             PackQuantity_DB = "1",
-            VolumeOutOfPack_DB = form.VolumeOutOfPack_DB.Trim(),
-            VolumeInPack_DB = form.Volume_DB.Trim(),
-            MassOutOfPack_DB = form.MassOutOfPack_DB.Trim(),
-            MassInPack_DB = form.Mass_DB.Trim(),
-            QuantityOZIII_DB = form.Quantity_DB.Trim(),
-            TritiumActivity_DB = form.TritiumActivity_DB.Trim(),
-            BetaGammaActivity_DB = form.BetaGammaActivity_DB.Trim(),
-            AlphaActivity_DB = form.AlphaActivity_DB.Trim(),
-            TransuraniumActivity_DB = form.TransuraniumActivity_DB.Trim(),
+            VolumeOutOfPack_DB = form.VolumeOutOfPack_DB.Replace('.', ',').Trim(),
+            VolumeInPack_DB = form.Volume_DB.Replace('.', ',').Trim(),
+            MassOutOfPack_DB = form.MassOutOfPack_DB.Replace('.', ',').Trim(),
+            MassInPack_DB = form.Mass_DB.Replace('.', ',').Trim(),
+            QuantityOZIII_DB = form.Quantity_DB.Replace('.', ',').Trim(),
+            TritiumActivity_DB = form.TritiumActivity_DB.Replace('.', ',').Trim(),
+            BetaGammaActivity_DB = form.BetaGammaActivity_DB.Replace('.', ',').Trim(),
+            AlphaActivity_DB = form.AlphaActivity_DB.Replace('.', ',').Trim(),
+            TransuraniumActivity_DB = form.TransuraniumActivity_DB.Replace('.', ',').Trim(),
             MainRadionuclids_DB = form.Radionuclids_DB.Trim(),
-            Subsidy_DB = form.Subsidy_DB.Trim(),
+            Subsidy_DB = form.Subsidy_DB.Replace('.', ',').Trim(),
         };
         if (string.IsNullOrWhiteSpace(res.FcpNumber_DB)) res.FcpNumber_DB = "-";
         int.TryParse(formTrue.OperationCode_DB, out var directionMarker);
@@ -774,7 +774,7 @@ public class CheckF22 : CheckBase
     private static Form22? FormConvert(Form18 form, Form18? formHeader, string year)
     {
         var formTrue = formHeader ?? form;
-        List<string> validOperationCodesPlus = new(["31", "32", "33", "34", "35", "36", "37", "38", "39", "52", "55"]);
+        List<string> validOperationCodesPlus = new(["18", "31", "32", "33", "34", "35", "36", "37", "38", "39", "52", "55"]);
         List<string> validOperationCodesMinus = new(["21", "22", "23", "24", "25", "26", "27", "28", "29", "51"]);
         if (form.CodeRAO_DB == "-" || string.IsNullOrWhiteSpace(form.CodeRAO_DB))
         {
@@ -804,17 +804,17 @@ public class CheckF22 : CheckBase
             PackName_DB = formGenericPlug.Trim(),
             PackType_DB = formGenericPlug.Trim(),
             PackQuantity_DB = "1",
-            VolumeOutOfPack_DB = form.Volume20_DB.Trim(),
-            VolumeInPack_DB = form.Volume6_DB.Trim(),
-            MassOutOfPack_DB = form.Mass21_DB.Trim(),
-            MassInPack_DB = form.Mass7_DB.Trim(),
+            VolumeOutOfPack_DB = form.Volume20_DB.Replace('.', ',').Trim(),
+            VolumeInPack_DB = form.Volume6_DB.Replace('.', ',').Trim(),
+            MassOutOfPack_DB = form.Mass21_DB.Replace('.', ',').Trim(),
+            MassInPack_DB = form.Mass7_DB.Replace('.', ',').Trim(),
             QuantityOZIII_DB = formGenericPlug.Trim(),
-            TritiumActivity_DB = form.TritiumActivity_DB.Trim(),
-            BetaGammaActivity_DB = form.BetaGammaActivity_DB.Trim(),
-            AlphaActivity_DB = form.AlphaActivity_DB.Trim(),
-            TransuraniumActivity_DB = form.TransuraniumActivity_DB.Trim(),
+            TritiumActivity_DB = form.TritiumActivity_DB.Replace('.', ',').Trim(),
+            BetaGammaActivity_DB = form.BetaGammaActivity_DB.Replace('.', ',').Trim(),
+            AlphaActivity_DB = form.AlphaActivity_DB.Replace('.', ',').Trim(),
+            TransuraniumActivity_DB = form.TransuraniumActivity_DB.Replace('.', ',').Trim(),
             MainRadionuclids_DB = form.Radionuclids_DB.Trim(),
-            Subsidy_DB = form.Subsidy_DB.Trim(),
+            Subsidy_DB = form.Subsidy_DB.Replace('.', ',').Trim(),
         };
         if (string.IsNullOrWhiteSpace(res.FcpNumber_DB)) res.FcpNumber_DB = "-";
         int.TryParse(formTrue.OperationCode_DB, out var directionMarker);
@@ -1015,7 +1015,7 @@ public class CheckF22 : CheckBase
         string inputReal = input.Replace('.', ',').Trim();
         if (TryParseDoubleExtended(inputReal, out var inputValueFloat))
         {
-            return inputValueFloat.ToString("E5").Replace("+0", "+");
+            return inputValueFloat.ToString("E5").Replace("+0", "+").Replace("-0", "-");
         }
         else
         {
@@ -1041,23 +1041,23 @@ public class CheckF22 : CheckBase
         form.VolumeInPack_DB = Form22_SubToDec(form.VolumeInPack_DB);
         form.MassOutOfPack_DB = Form22_SubToDec(form.MassOutOfPack_DB);
         form.MassInPack_DB = Form22_SubToDec(form.MassInPack_DB);
-        form.QuantityOZIII_DB = Form22_SubToDec(form.QuantityOZIII_DB);
+        form.QuantityOZIII_DB = Form22_SubToDec(form.QuantityOZIII_DB,0);
         form.TritiumActivity_DB = Form22_SubToExp(form.TritiumActivity_DB);
         form.BetaGammaActivity_DB = Form22_SubToExp(form.BetaGammaActivity_DB);
         form.AlphaActivity_DB = Form22_SubToExp(form.AlphaActivity_DB);
         form.TransuraniumActivity_DB = Form22_SubToExp(form.TransuraniumActivity_DB);
-        form.PackQuantity_DB = Form22_SubToDec(form.PackQuantity_DB);
+        form.PackQuantity_DB = Form22_SubToDec(form.PackQuantity_DB,0);
     }
-    private static string Form22_SubToDec(string input)
+    private static string Form22_SubToDec(string input,int precision = 5)
     {
         string inputReal = input.Replace('.', ',').Trim();
         if (decimal.TryParse(inputReal, out var inputValueDecimal))
         {
-            return inputValueDecimal.ToString("F5");
+            return inputValueDecimal.ToString($"F{precision}");
         }
         if (input.Contains(',') && TryParseDoubleExtended(inputReal, out var inputValueFloat))
         {
-            return inputValueFloat.ToString("E5").Replace("+0", "+");
+            return inputValueFloat.ToString($"E{precision}").Replace("+0", "+");
         }
         else
         {
@@ -1089,8 +1089,8 @@ public class CheckF22 : CheckBase
         TryParseDoubleExtended(form1Val, out var val1);
         TryParseDoubleExtended(form2Val, out var val2);
         if (!((form1Val == "-" && form2Val == "-")
-              || (val1 < 0.001 && form2Val == "-")
-              || (form1Val == "-" && val2 < 0.001)
+              || (val1 < 0.00001 && form2Val == "-")
+              || (form1Val == "-" && val2 < 0.00001)
               || val1 >= val2 * (1.0 - valB)
               && val2 >= val1 * (1.0 - valB)))
         {
@@ -1133,7 +1133,7 @@ public class CheckF22 : CheckBase
 
     private static List<(int, string, string, string)>? Form22_Match(Form22 form1, Form22 form2, string forms1, string forms2, bool form15Fix, bool form15PlugLeftover = false)
     {
-        const double valB = 0.1;
+        const double valB = 0.00001;
         List<(int, string, string, string)> res = [];
         if ((form1.CodeRAO_DB == form2.CodeRAO_DB || (form15PlugLeftover && (form1.CodeRAO_DB == form15Plug || form2.CodeRAO_DB == form15Plug)))
            )
