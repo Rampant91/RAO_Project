@@ -69,9 +69,11 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     }
 
     private protected class ShortForm11DTO(int id, ShortReportDTO repDto, string facNum, string opCode, DateOnly opDate, string packNumber, 
-        string pasNum, int quantity, string radionuclids, string type)
+        string pasNum, int quantity, string radionuclids, string type, int? numberInOrder = null)
     {
         public readonly int Id = id;
+
+        public readonly int NumberInOrder = numberInOrder ?? 0;
 
         public readonly ShortReportDTO RepDto = repDto;
 
@@ -119,7 +121,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
         public string Type { get; set; }
     }
 
-    private class ShortForm11StringDatesDTO
+    private protected class ShortForm11StringDatesDTO
     {
         public int Id { get; set; }
 
@@ -314,7 +316,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 
     #region AutoReplaceSimilarChars
 
-    private static string AutoReplaceSimilarChars(string? str)
+    private protected static string AutoReplaceSimilarChars(string? str)
     {
         return new Regex(@"[\\/:*?""<>|.,_\-;:\s+]")
             .Replace(str ?? string.Empty, "")
@@ -410,7 +412,8 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     private protected static async Task<Dictionary<UniqueUnitDto, List<ShortForm11DTO>>> GetDictionary_UniqueUnitsWithOperations(
         List<ShortForm11DTO> inventoryFormsDtoList,
         List<ShortForm11DTO> plusMinusFormsDtoList,
-        List<ShortForm11DTO> rechargeFormsDtoList)
+        List<ShortForm11DTO> rechargeFormsDtoList,
+        List<ShortForm11DTO>? zeroFormsFtoList = null)
     {
         var firstInventoryDate = inventoryFormsDtoList.Count == 0
             ? DateOnly.MinValue
@@ -423,10 +426,22 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             .Where(x => x.OpDate == firstInventoryDate)
             .ToList();
 
-        var unionOperationList = firstDateInventoryList
-            .Union(plusMinusFormsDtoList)
-            .Union(rechargeFormsDtoList)
-            .ToList();
+        List<ShortForm11DTO> unionOperationList = [];
+        if (zeroFormsFtoList is null)
+        {
+            unionOperationList = firstDateInventoryList
+                .Union(plusMinusFormsDtoList)
+                .Union(rechargeFormsDtoList)
+                .ToList();
+        }
+        else
+        {
+            unionOperationList = firstDateInventoryList
+                .Union(plusMinusFormsDtoList)
+                .Union(rechargeFormsDtoList)
+                .Union(zeroFormsFtoList)
+                .ToList();
+        }
 
         var groupedOperationList = await GetGroupedOperationList(unionOperationList);
 
@@ -457,7 +472,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                 {
                     filteredDictionary.First().Value.Add(form);
                 }
-                // Если операция перезарядки, то суммируем количество, если серийные номера пусты и 
+                // Если операция перезарядки, то суммируем количество, если серийные номера пусты и заменяем запись в словаре
                 else
                 {
                     var lastForm = filteredDictionary
@@ -734,21 +749,9 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="snkParams">DTO состоящий из bool флагов, показывающих, по каким параметрам необходимо выполнять поиск учётной единицы.
     /// Может быть null, тогда поиск ведётся по всем параметрам.</param>
     /// <returns>Список DTO форм с операциями приёма передачи, отсортированный по датам.</returns>
-    private protected static async Task<List<ShortForm11DTO>> GetPlusMinusFormsDtoList(DBModel db, int repsId, DateOnly firstSnkDate, DateOnly endSnkDate,
+    private protected static async Task<List<ShortForm11DTO>> GetPlusMinusFormsDtoList(DBModel db, List<int> reportIds, DateOnly firstSnkDate, DateOnly endSnkDate,
         CancellationTokenSource cts, SnkParamsDto? snkParams = null)
     {
-        var reportIds = await db.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.DBObservable)
-            .Include(x => x.Report_Collection)
-            .Where(reps => reps.DBObservable != null && reps.Id == repsId)
-            .SelectMany(reps => reps.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.1"))
-            .Select(rep => rep.Id)
-            .ToListAsync(cts.Token);
-
         var plusMinusOperationDtoList = await db.form_11
             .AsNoTracking()
             .AsSplitQuery()
@@ -799,6 +802,21 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     }
 
     #endregion
+
+    private protected static async Task<List<int>> GetReportIds(DBModel db, int repsId, CancellationTokenSource cts)
+    {
+        return await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.DBObservable)
+            .Include(x => x.Report_Collection)
+            .Where(reps => reps.DBObservable != null && reps.Id == repsId)
+            .SelectMany(reps => reps.Report_Collection
+                .Where(rep => rep.FormNum_DB == "1.1"))
+            .Select(rep => rep.Id)
+            .ToListAsync(cts.Token);
+    }
 
     #region GetRechargeFormsDtoList
 
@@ -894,15 +912,15 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
         List<ShortForm11DTO> unitInStockList = [];
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentUnitNum = 1;
-        foreach (var unit in uniqueUnitWithAllOperationDictionary)
+        foreach (var (unit, operations) in uniqueUnitWithAllOperationDictionary)
         {
-            if (SerialNumbersIsEmpty(unit.Key.PasNum, unit.Key.FacNum))
+            if (SerialNumbersIsEmpty(unit.PasNum, unit.FacNum))
             {
-                var quantity = unit.Value
+                var quantity = operations
                     .FirstOrDefault(x => x.OpCode == "10")
                     ?.Quantity ?? 0;
 
-                var operationsWithoutDuplicates = await GetOperationsWithoutDuplicates(unit.Value);
+                var operationsWithoutDuplicates = await GetOperationsWithoutDuplicates(operations);
 
                 foreach (var operation in operationsWithoutDuplicates)
                 {
@@ -917,18 +935,18 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                     }
                 }
 
-                var lastOperationWithUnit = unit.Value
+                var lastOperationWithUnit = operations
                     .OrderByDescending(x => x.OpDate)
                     .FirstOrDefault();
 
                 if (lastOperationWithUnit == null) continue;
 
                 var currentUnit = unitInStockList
-                    .FirstOrDefault(x => x.PasNum == unit.Key.PasNum
-                                         && x.FacNum == unit.Key.FacNum
-                                         && x.Radionuclids == unit.Key.Radionuclids
-                                         && x.Type == unit.Key.Type
-                                         && x.PackNumber == unit.Key.PackNumber);
+                    .FirstOrDefault(x => x.PasNum == unit.PasNum
+                                         && x.FacNum == unit.FacNum
+                                         && x.Radionuclids == unit.Radionuclids
+                                         && x.Type == unit.Type
+                                         && x.PackNumber == unit.PackNumber);
 
                 if (currentUnit != null) unitInStockList.Remove(currentUnit);
 
@@ -940,17 +958,16 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             }
             else
             {
-                var inStock = unit.Value
+                var inStock = operations
                     .Any(x => x.OpCode == "10");
-                foreach (var form in unit.Value)
+                foreach (var form in operations)
                 {
                     if (PlusOperation.Contains(form.OpCode)) inStock = true;
                     else if (MinusOperation.Contains(form.OpCode)) inStock = false;
                 }
                 if (inStock)
                 {
-
-                    var lastOperationWithUnit = unit.Value
+                    var lastOperationWithUnit = operations
                         .OrderByDescending(x => x.OpDate)
                         .FirstOrDefault();
 
