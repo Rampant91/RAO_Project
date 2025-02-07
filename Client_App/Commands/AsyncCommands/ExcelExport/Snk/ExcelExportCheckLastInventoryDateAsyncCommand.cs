@@ -317,7 +317,9 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
 
             var (firstSnkDate, inventoryFormsDtoList, _) = await GetInventoryFormsDtoList(db, inventoryReportDtoList, currentDate, cts);
 
-            var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, dto.Id, firstSnkDate, currentDate, cts);
+            var reportIds = await GetReportIds(db, dto.Id, cts);
+
+            var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, reportIds, firstSnkDate, currentDate, cts);
 
             var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, dto.Id, firstSnkDate, currentDate, cts);
 

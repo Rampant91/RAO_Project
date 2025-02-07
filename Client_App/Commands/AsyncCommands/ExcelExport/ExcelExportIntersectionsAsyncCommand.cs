@@ -257,7 +257,7 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
             .AsQueryable()
             .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
             .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
-            .Where(x => x.Reports != null && x.Reports.DBObservable != null)
+            .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Reports.Master_DB.FormNum_DB == "1.0")
             .Select(rep => new ReportForSortDTO
             (
                 rep.Reports.Master_DB.RegNoRep.Value,
