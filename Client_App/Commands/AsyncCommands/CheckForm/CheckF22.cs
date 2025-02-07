@@ -19,6 +19,7 @@ using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
+using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -532,25 +533,81 @@ public class CheckF22 : CheckBase
         {
             //if (int.TryParse(formExpected.Item1.PackQuantity_DB, out int packQuantity) && packQuantity == 0) continue;
             float zeroCheck;
+            List<string> negatives = new();
             int nonZero = 0;
-            if (TryParseFloatExtended(formExpected.Item1.VolumeOutOfPack_DB, out zeroCheck)) nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
-            if (TryParseFloatExtended(formExpected.Item1.VolumeInPack_DB, out zeroCheck)) nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
-            if (TryParseFloatExtended(formExpected.Item1.MassOutOfPack_DB, out zeroCheck)) nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
-            if (TryParseFloatExtended(formExpected.Item1.MassInPack_DB, out zeroCheck)) nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
-            if (TryParseFloatExtended(formExpected.Item1.TritiumActivity_DB, out zeroCheck)) nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
-            if (TryParseFloatExtended(formExpected.Item1.BetaGammaActivity_DB, out zeroCheck)) nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
-            if (TryParseFloatExtended(formExpected.Item1.AlphaActivity_DB, out zeroCheck)) nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
-            if (TryParseFloatExtended(formExpected.Item1.TransuraniumActivity_DB, out zeroCheck)) nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
-            if (nonZero == 0) continue;
-            errorList.Add(new CheckError
+            if (TryParseFloatExtended(formExpected.Item1.VolumeOutOfPack_DB, out zeroCheck))
             {
-                FormNum = "form_22",
-                Row = "-",
-                Column = "-",
-                Value = ItemName(formExpected.Item1) +
-                $"\n\n{formExpected.Item2}",
-                Message = $"В форме 2.2 ({yearRealCurrent}) не найдена информация об указанных РАО."
-            });
+                nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
+                if (zeroCheck < 0)
+                    negatives.Add($"Объем без упаковки, куб. м: {zeroCheck}");
+            }
+            if (TryParseFloatExtended(formExpected.Item1.VolumeInPack_DB, out zeroCheck))
+            {
+                nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
+                if (zeroCheck < 0)
+                    negatives.Add($"Объем с упаковкой, куб. м: {zeroCheck}");
+            }
+            if (TryParseFloatExtended(formExpected.Item1.MassOutOfPack_DB, out zeroCheck))
+            {
+                nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
+                if (zeroCheck < 0)
+                    negatives.Add($"Масса без упаковки (нетто), т: {zeroCheck}");
+            }
+            if (TryParseFloatExtended(formExpected.Item1.MassInPack_DB, out zeroCheck))
+            {
+                nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
+                if (zeroCheck < 0)
+                    negatives.Add($"Масса с упаковкой (брутто), т: {zeroCheck}");
+            }
+            if (TryParseFloatExtended(formExpected.Item1.TritiumActivity_DB, out zeroCheck))
+            {
+                nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
+                if (zeroCheck < 0)
+                    negatives.Add($"Суммарная активность, Бк - тритий: {zeroCheck}");
+            }
+            if (TryParseFloatExtended(formExpected.Item1.BetaGammaActivity_DB, out zeroCheck))
+            {
+                nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
+                if (zeroCheck < 0)
+                    negatives.Add($"Суммарная активность, Бк - бета-, гамма- излучающие радионуклиды (исключая тритий): {zeroCheck}");
+            }
+            if (TryParseFloatExtended(formExpected.Item1.AlphaActivity_DB, out zeroCheck))
+            {
+                nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
+                if (zeroCheck < 0)
+                    negatives.Add($"Суммарная активность, Бк - альфа-излучающие радионуклиды (исключая трансурановые): {zeroCheck}");
+            }
+            if (TryParseFloatExtended(formExpected.Item1.TransuraniumActivity_DB, out zeroCheck))
+            {
+                nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
+                if (zeroCheck < 0)
+                    negatives.Add($"Суммарная активность, Бк - трансурановые: {zeroCheck}");
+            }
+            if (nonZero == 0) continue;
+            if (negatives.Count > 0)
+            {
+                errorList.Add(new CheckError
+                {
+                    FormNum = "form_22",
+                    Row = "-",
+                    Column = "-",
+                    Value = ItemName(formExpected.Item1) +
+                    $"\n\n{formExpected.Item2}",
+                    Message = $"Для указанных РАО обнаружен отрицательный баланс на конец {yearRealCurrent} года:\n\n{string.Join(";\n",negatives)}"
+                });
+            }
+            else
+            {
+                errorList.Add(new CheckError
+                {
+                    FormNum = "form_22",
+                    Row = "-",
+                    Column = "-",
+                    Value = ItemName(formExpected.Item1) +
+                    $"\n\n{formExpected.Item2}",
+                    Message = $"В форме 2.2 ({yearRealCurrent}) не найдена информация об указанных РАО."
+                });
+            }
         }
         errorList.Sort((i, j) =>
             int.TryParse(i.Row.Split(',')[0], out var iRowReal)
@@ -986,6 +1043,7 @@ public class CheckF22 : CheckBase
     private static string Form22_SubAdd(string receiver, string giver)
     {
         if (receiver == formGenericPlug || giver == formGenericPlug) return formGenericPlug;
+        if (receiver == form15Plug || giver == form15Plug) return form15Plug;
         var res = receiver;
         var receiverReal = receiver == "-" || string.IsNullOrWhiteSpace(receiver) || receiver == form15Plug
             ? "0"
@@ -1016,6 +1074,7 @@ public class CheckF22 : CheckBase
     private static string Form22_SubSubtract(string giver, string taker)
     {
         if (giver == formGenericPlug || taker == formGenericPlug) return formGenericPlug;
+        if (giver == form15Plug || taker == form15Plug) return form15Plug;
         var res = giver;
         var giverReal = giver == "-" || string.IsNullOrWhiteSpace(giver) || giver == form15Plug
             ? "0"
@@ -1035,19 +1094,6 @@ public class CheckF22 : CheckBase
         }
         return res;
     }
-    private static void Form22_ToExp(Form22 form, string? direction = null)
-    {
-        form.VolumeOutOfPack_DB = Form22_SubToExp(form.VolumeOutOfPack_DB);
-        form.VolumeInPack_DB = Form22_SubToExp(form.VolumeInPack_DB);
-        form.MassOutOfPack_DB = Form22_SubToExp(form.MassOutOfPack_DB);
-        form.MassInPack_DB = Form22_SubToExp(form.MassInPack_DB);
-        form.QuantityOZIII_DB = Form22_SubToExp(form.QuantityOZIII_DB);
-        form.TritiumActivity_DB = Form22_SubToExp(form.TritiumActivity_DB);
-        form.BetaGammaActivity_DB = Form22_SubToExp(form.BetaGammaActivity_DB);
-        form.AlphaActivity_DB = Form22_SubToExp(form.AlphaActivity_DB);
-        form.TransuraniumActivity_DB = Form22_SubToExp(form.TransuraniumActivity_DB);
-        form.PackQuantity_DB = Form22_SubToExp(form.PackQuantity_DB);
-    }
     private static string Form22_SubToExp(string input)
     {
         string inputReal = input.Replace('.', ',').Trim();
@@ -1059,19 +1105,6 @@ public class CheckF22 : CheckBase
         {
             return inputReal;
         }
-    }
-    private static void Form22_ToDec(Form22 form, string? direction = null)
-    {
-        form.VolumeOutOfPack_DB = Form22_SubToDec(form.VolumeOutOfPack_DB);
-        form.VolumeInPack_DB = Form22_SubToDec(form.VolumeInPack_DB);
-        form.MassOutOfPack_DB = Form22_SubToDec(form.MassOutOfPack_DB);
-        form.MassInPack_DB = Form22_SubToDec(form.MassInPack_DB);
-        form.QuantityOZIII_DB = Form22_SubToDec(form.QuantityOZIII_DB);
-        form.TritiumActivity_DB = Form22_SubToDec(form.TritiumActivity_DB);
-        form.BetaGammaActivity_DB = Form22_SubToDec(form.BetaGammaActivity_DB);
-        form.AlphaActivity_DB = Form22_SubToDec(form.AlphaActivity_DB);
-        form.TransuraniumActivity_DB = Form22_SubToDec(form.TransuraniumActivity_DB);
-        form.PackQuantity_DB = Form22_SubToDec(form.PackQuantity_DB);
     }
     private static void Form22_ToDecExp(Form22 form, string? direction = null)
     {
@@ -1210,12 +1243,15 @@ public class CheckF22 : CheckBase
 
     private static string ItemName(Form22 item)
     {
-        return (keyInclude1 ? $"Наименование пункта хранения {item.StoragePlaceName_DB}, " : "") +
-               (keyInclude2 ? $"код пункта хранения {item.StoragePlaceCode_DB}, ":"") +
-               (keyInclude3 ? $"тип упаковки {item.PackType_DB}, ":"") +
-               (keyInclude4 ? $"код РАО {(item.CodeRAO_DB == form15Plug || item.CodeRAO_DB == formGenericPlug ? "-" : item.CodeRAO_DB)}, ":"") +
-               (keyInclude5 ? $"статус РАО {item.StatusRAO_DB}, ":"") +
-               (keyInclude6 ? $"номер мероприятия ФЦП {item.FcpNumber_DB}":"");
+        List<string> result = new();
+        if (keyInclude1) result.Add($"наименование пункта хранения {item.StoragePlaceName_DB}");
+        if (keyInclude2) result.Add($"код пункта хранения {item.StoragePlaceCode_DB}");
+        if (keyInclude3) result.Add($"тип упаковки {item.PackType_DB}");
+        if (keyInclude4) result.Add($"код РАО {(item.CodeRAO_DB == form15Plug || item.CodeRAO_DB == formGenericPlug ? "-" : item.CodeRAO_DB)}");
+        if (keyInclude5) result.Add($"статус РАО {item.StatusRAO_DB}");
+        if (keyInclude6) result.Add($"номер мероприятия ФЦП {item.FcpNumber_DB}");
+        if (result.Count > 0) result[0] = $"{result[0].Substring(0,1).ToUpper()}{result[0].Substring(1)}";
+        return string.Join(", ", result);
     }
 
     #endregion
