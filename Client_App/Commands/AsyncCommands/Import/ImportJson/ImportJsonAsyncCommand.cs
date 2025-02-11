@@ -15,7 +15,6 @@ using MessageBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.DTO;
 using static Client_App.Commands.AsyncCommands.Import.ImportJson.ImportJsonMethods;
-using static Client_App.Resources.StaticStringMethods;
 using Avalonia.Threading;
 using Client_App.Resources;
 
