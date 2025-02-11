@@ -186,7 +186,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             {
                 var msg = $"{Environment.NewLine}Message: {ex.Message}" +
                            $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-                ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.System);
+                ServiceExtension.LoggerManager.Warning(msg, ErrorCodeLogger.System);
             }
         }
         return Task.CompletedTask;

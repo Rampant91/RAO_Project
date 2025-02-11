@@ -325,7 +325,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
 
             var uniqueUnitWithAllOperationDictionary = await GetDictionary_UniqueUnitsWithOperations(inventoryFormsDtoList, plusMinusFormsDtoList, rechargeFormsDtoList);
 
-            dto.CountUnits = (await GetUnitInStockDtoList(uniqueUnitWithAllOperationDictionary, progressBarVM)).Count;
+            dto.CountUnits = (await GetUnitInStockDtoList(uniqueUnitWithAllOperationDictionary, firstSnkDate, progressBarVM)).Count;
 
             progressBarDoubleValue += (double)50 / dtoList.Count;
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),

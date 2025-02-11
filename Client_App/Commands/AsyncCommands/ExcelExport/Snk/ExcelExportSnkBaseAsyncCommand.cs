@@ -68,30 +68,30 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
         public readonly string PackNumber = packNumber;
     }
 
-    private protected class ShortForm11DTO(int id, ShortReportDTO repDto, string facNum, string opCode, DateOnly opDate, string packNumber, 
-        string pasNum, int quantity, string radionuclids, string type, int? numberInOrder = null)
+    private protected class ShortForm11DTO(int id, int  numberInOrder, ShortReportDTO repDto, string opCode, DateOnly opDate, string pasNum, string type, 
+        string radionuclids, string facNum, int quantity, string packNumber)
     {
         public readonly int Id = id;
 
-        public readonly int NumberInOrder = numberInOrder ?? 0;
+        public readonly int NumberInOrder = numberInOrder;
 
         public readonly ShortReportDTO RepDto = repDto;
-
-        public readonly string FacNum = facNum;
 
         public readonly string OpCode = opCode;
 
         public readonly DateOnly OpDate = opDate;
 
-        public readonly string PackNumber = packNumber;
-
         public readonly string PasNum = pasNum;
 
-        public int Quantity = quantity;
+        public readonly string Type = type;
 
         public readonly string Radionuclids = radionuclids;
 
-        public readonly string Type = type;
+        public readonly string FacNum = facNum;
+
+        public int Quantity = quantity;
+
+        public readonly string PackNumber = packNumber;
     }
 
     private class ShortForm11StringDateDTO
@@ -104,26 +104,30 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 
         public DateOnly EndDate { get; set; }
 
-        public string FacNum { get; set; }
+        public int NumberInOrder { get; set; }
 
         public string OpCode { get; set; }
 
         public string OpDate { get; set; }
 
-        public string PackNumber { get; set; }
-
         public string PasNum { get; set; }
 
-        public int? Quantity { get; set; }
+        public string Type { get; set; }
 
         public string Radionuclids { get; set; }
 
-        public string Type { get; set; }
+        public string FacNum { get; set; }
+
+        public int? Quantity { get; set; }
+
+        public string PackNumber { get; set; }
     }
 
     private protected class ShortForm11StringDatesDTO
     {
         public int Id { get; set; }
+
+        public int NumberInOrder { get; set; }
 
         public int RepId { get; set; }
 
@@ -408,6 +412,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="inventoryFormsDtoList">Список DTO операций инвентаризации.</param>
     /// <param name="plusMinusFormsDtoList">Список DTO операций приема/передачи.</param>
     /// <param name="rechargeFormsDtoList">Список DTO операций перезарядки.</param>
+    /// <param name="zeroFormsFtoList">Список DTO нулевых операций (не приёма-передача и не инвентаризация).</param>
     /// <returns>Словарь из уникальных учётных единиц и списков операций с ними.</returns>
     private protected static async Task<Dictionary<UniqueUnitDto, List<ShortForm11DTO>>> GetDictionary_UniqueUnitsWithOperations(
         List<ShortForm11DTO> inventoryFormsDtoList,
@@ -436,7 +441,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
         }
         else
         {
-            unionOperationList = firstDateInventoryList
+            unionOperationList = inventoryFormsDtoList
                 .Union(plusMinusFormsDtoList)
                 .Union(rechargeFormsDtoList)
                 .Union(zeroFormsFtoList)
@@ -467,7 +472,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                     uniqueUnitWithAllOperationDictionary.Add(dto, [form]);
                     continue;
                 }
-                // Если операция приема/передачи/инвентаризации, то добавляем операцию к уже имеющейся в словаре.
+                // Если операция приема/передачи/инвентаризации/нулевая и есть совпадение с имеющейся, то добавляем операцию к уже имеющейся в словаре.
                 if (form.OpCode is not "53" and not "54")
                 {
                     filteredDictionary.First().Value.Add(form);
@@ -510,8 +515,12 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
         var opCount = 0;
         foreach (var form in unionOperationList
                      .OrderBy(x => x.OpDate)
-                     .ThenByDescending(x => PlusOperation.Contains(x.OpCode))
-                     .ThenByDescending(x => x.OpCode is "53" or "54"))
+                     .ThenBy(x => x.RepDto.StartPeriod)
+                     .ThenBy(x => x.RepDto.EndPeriod)
+                     .ThenBy(x => x.NumberInOrder))
+                     
+                     //ThenByDescending(x => PlusOperation.Contains(x.OpCode))
+                     //.ThenByDescending(x => x.OpCode is "53" or "54"))
         {
             opCount++;
             if (form.OpCode is not ("53" or "54"))
@@ -596,14 +605,15 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                         RepId = reportDto.Id,
                         StDate = reportDto.StartPeriod,
                         EndDate = reportDto.EndPeriod,
-                        FacNum = snkParams == null || snkParams.CheckFacNum ? form11.FactoryNumber_DB : string.Empty,
+                        NumberInOrder = form11.NumberInOrder_DB,
                         OpCode = form11.OperationCode_DB,
                         OpDate = form11.OperationDate_DB,
-                        PackNumber = snkParams == null || snkParams.CheckPackNumber ? form11.PackNumber_DB : string.Empty,
                         PasNum = snkParams == null || snkParams.CheckPasNum ? form11.PassportNumber_DB : string.Empty,
-                        Quantity = form11.Quantity_DB,
+                        Type = snkParams == null || snkParams.CheckType ? form11.Type_DB : string.Empty,
                         Radionuclids = snkParams == null || snkParams.CheckRadionuclids ? form11.Radionuclids_DB : string.Empty,
-                        Type = snkParams == null || snkParams.CheckType ? form11.Type_DB : string.Empty
+                        FacNum = snkParams == null || snkParams.CheckFacNum ? form11.FactoryNumber_DB : string.Empty,
+                        Quantity = form11.Quantity_DB,
+                        PackNumber = snkParams == null || snkParams.CheckPackNumber ? form11.PackNumber_DB : string.Empty
                     }))
                 .ToListAsync(cts.Token);
 
@@ -613,15 +623,17 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                             && DateOnly.FromDateTime(opDateTime) <= endSnkDate)
                 .Select(x => new ShortForm11DTO(
                     x.Id,
+                    x.NumberInOrder,
                     reportDto,
-                    AutoReplaceSimilarChars(x.FacNum),
                     x.OpCode,
                     DateOnly.FromDateTime(DateTime.Parse(x.OpDate)),
-                    AutoReplaceSimilarChars(x.PackNumber),
                     AutoReplaceSimilarChars(x.PasNum),
-                    x.Quantity ?? 0,
+                    AutoReplaceSimilarChars(x.Type),
                     AutoReplaceSimilarChars(x.Radionuclids),
-                    AutoReplaceSimilarChars(x.Type)));
+                    AutoReplaceSimilarChars(x.FacNum),
+                    x.Quantity ?? 0,
+                    AutoReplaceSimilarChars(x.PackNumber)
+                    ));
 
             inventoryFormsDtoList.AddRange(currentInventoryFormsDtoList);
         }
@@ -654,13 +666,6 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     {
         List<ShortForm11DTO> newInventoryFormsDtoList = [];
         List<ShortForm11DTO> inventoryDuplicateErrors = [];
-
-        //var firstDate = inventoryFormsDtoList.Count == 0
-        //    ? DateOnly.MinValue
-        //    : inventoryFormsDtoList
-        //        .OrderBy(x => x.OpDate)
-        //        .Select(x => x.OpDate)
-        //        .First();
 
         foreach (var form in inventoryFormsDtoList)
         {
@@ -764,6 +769,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             .Select(form => new ShortForm11StringDatesDTO
             {
                 Id = form.Id,
+                NumberInOrder = form.NumberInOrder_DB,
                 RepId = form.Report!.Id,
                 StDate = form.Report.StartPeriod_DB,
                 EndDate = form.Report.EndPeriod_DB,
@@ -786,15 +792,17 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                                              && DateOnly.FromDateTime(opDateTime) <= endSnkDate)
             .Select(x => new ShortForm11DTO(
                 x.Id,
+                x.NumberInOrder,
                 new ShortReportDTO(x.RepId, DateOnly.Parse(x.StDate), DateOnly.Parse(x.EndDate)),
-                AutoReplaceSimilarChars(x.FacNum),
                 x.OpCode,
                 DateOnly.FromDateTime(DateTime.Parse(x.OpDate)),
-                AutoReplaceSimilarChars(x.PackNumber),
                 AutoReplaceSimilarChars(x.PasNum),
-                x.Quantity ?? 0,
+                AutoReplaceSimilarChars(x.Type),
                 AutoReplaceSimilarChars(x.Radionuclids),
-                AutoReplaceSimilarChars(x.Type)))
+                AutoReplaceSimilarChars(x.FacNum),
+                x.Quantity ?? 0,
+                AutoReplaceSimilarChars(x.PackNumber)
+                ))
             .OrderBy(x => x.OpDate)
             .ThenBy(x => x.RepDto.StartPeriod)
             .ThenBy(x => x.RepDto.EndPeriod)
@@ -859,6 +867,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             .Select(form => new ShortForm11StringDatesDTO
             {
                 Id = form.Id,
+                NumberInOrder = form.NumberInOrder_DB,
                 RepId = form.Report!.Id,
                 StDate = form.Report.StartPeriod_DB,
                 EndDate = form.Report.EndPeriod_DB,
@@ -881,15 +890,18 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                                              && DateOnly.FromDateTime(opDateTime) <= endSnkDate)
             .Select(x => new ShortForm11DTO(
                 x.Id,
+                x.NumberInOrder,
                 new ShortReportDTO(x.RepId, DateOnly.Parse(x.StDate), DateOnly.Parse(x.EndDate)),
-                AutoReplaceSimilarChars(x.FacNum),
                 x.OpCode,
+
                 DateOnly.FromDateTime(DateTime.Parse(x.OpDate)),
-                AutoReplaceSimilarChars(x.PackNumber),
                 AutoReplaceSimilarChars(x.PasNum),
-                x.Quantity ?? 0,
+                AutoReplaceSimilarChars(x.Type),
                 AutoReplaceSimilarChars(x.Radionuclids),
-                AutoReplaceSimilarChars(x.Type)))
+                AutoReplaceSimilarChars(x.FacNum),
+                x.Quantity ?? 0,
+                AutoReplaceSimilarChars(x.PackNumber)
+                ))
             .OrderBy(x => x.OpDate)
             .ThenBy(x => x.RepDto.StartPeriod)
             .ThenBy(x => x.RepDto.EndPeriod)
@@ -904,20 +916,23 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// Для каждой учётной единицы из словаря проверяется её наличие и выводится в общий список наличного количества (СНК).
     /// </summary>
     /// <param name="uniqueUnitWithAllOperationDictionary">Словарь из уникальной учётной единицы и списка всех операций с ней.</param>
+    /// <param name="firstInventoryDate">Дата первой инвентаризации.</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <returns>Список DTO учётных единиц в наличии (СНК).</returns>
-    private protected static async Task<List<ShortForm11DTO>> GetUnitInStockDtoList(Dictionary<UniqueUnitDto, List<ShortForm11DTO>> uniqueUnitWithAllOperationDictionary,
-        AnyTaskProgressBarVM progressBarVM)
+    private protected static async Task<List<ShortForm11DTO>> GetUnitInStockDtoList(Dictionary<UniqueUnitDto, List<ShortForm11DTO>> uniqueUnitWithAllOperationDictionary, 
+        DateOnly firstInventoryDate, AnyTaskProgressBarVM progressBarVM)
     {
         List<ShortForm11DTO> unitInStockList = [];
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentUnitNum = 1;
         foreach (var (unit, operations) in uniqueUnitWithAllOperationDictionary)
         {
+            #region SerialNumEmpty
+            
             if (SerialNumbersIsEmpty(unit.PasNum, unit.FacNum))
             {
                 var quantity = operations
-                    .FirstOrDefault(x => x.OpCode == "10")
+                    .FirstOrDefault(x => x.OpCode == "10" && x.OpDate == firstInventoryDate)
                     ?.Quantity ?? 0;
 
                 var operationsWithoutDuplicates = await GetOperationsWithoutDuplicates(operations);
@@ -956,10 +971,15 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                     unitInStockList.Add(lastOperationWithUnit);
                 }
             }
+
+            #endregion
+
+            #region SerialNumNotEmpty
+            
             else
             {
                 var inStock = operations
-                    .Any(x => x.OpCode == "10");
+                    .Any(x => x.OpCode == "10" && x.OpDate == firstInventoryDate);
                 foreach (var form in operations)
                 {
                     if (PlusOperation.Contains(form.OpCode)) inStock = true;
@@ -978,6 +998,9 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                 }
 
             }
+
+            #endregion
+
             progressBarDoubleValue += (double)10 / uniqueUnitWithAllOperationDictionary.Count;
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
                 $"Проверено {currentUnitNum} единиц из {uniqueUnitWithAllOperationDictionary.Count}",
@@ -1052,20 +1075,6 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             .ToList();
 
         return Task.FromResult(uniqueAccountingUnitDtoList);
-    }
-
-    #endregion
-
-    #region GetUnionFormsDtoList
-
-    private protected static Task<List<ShortForm11DTO>> GetUnionFormsDtoList(List<ShortForm11DTO> inventoryFormsDtoList,
-        List<ShortForm11DTO> plusMinusFormsDtoList)
-    {
-        var unionFormsDtoList = inventoryFormsDtoList
-            .Union(plusMinusFormsDtoList)
-            .ToList();
-
-        return Task.FromResult(unionFormsDtoList);
     }
 
     #endregion
