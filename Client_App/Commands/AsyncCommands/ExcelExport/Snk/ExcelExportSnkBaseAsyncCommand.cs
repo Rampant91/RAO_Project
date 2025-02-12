@@ -747,7 +747,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// Получение списка DTO форм с операциями приёма передачи.
     /// </summary>
     /// <param name="db">Модель БД.</param>
-    /// <param name="repsId">Id организации.</param>
+    /// <param name="reportIds">Id отчётов по форме 1.1 у выбранной организации.</param>
     /// <param name="firstSnkDate">>Дата первой инвентаризации после 01.01.2022, либо эта дата.</param>
     /// <param name="endSnkDate">Дата, на которую нужно сформировать СНК.</param>
     /// <param name="cts">Токен.</param>

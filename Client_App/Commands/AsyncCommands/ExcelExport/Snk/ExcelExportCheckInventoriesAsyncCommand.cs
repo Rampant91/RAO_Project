@@ -76,9 +76,10 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         progressBarVM.SetProgressBar(19, "Заполнение заголовков");
         await FillExcelHeaders(excelPackage, inventoryDatesList);
 
+        progressBarVM.SetProgressBar(20, "Загрузка списка отчётов");
         var reportIds = await GetReportIds(db, selectedReports.Id, cts);
 
-        progressBarVM.SetProgressBar(20, "Формирование списка операций передачи/получения");
+        progressBarVM.SetProgressBar(21, "Формирование списка операций передачи/получения");
         var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, reportIds, firstSnkDate, endSnkDate, cts, snkParams);
 
         progressBarVM.SetProgressBar(25, "Загрузка операций перезарядки");
@@ -447,13 +448,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                 $"Загрузка полных форм на {inventoryDate}",
                 "Загрузка полных форм");
 
-            var fullFormsSnkList = await GetFullFormsSnkList(db, unitInStockOnDateDtoList, progressBarVM, cts);
-            var fullFormsInventoryList = await GetFullFormsSnkList(db, currentInventoryDtoList, progressBarVM, cts);
-
-            progressBarDoubleValue += (double)30 / unitInStockByDateDictionary.Count;
-            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-                $"Загрузка полных форм на {inventoryDate}",
-                "Загрузка полных форм");
+            var fullFormsSnkList = await GetFullFormsSnkList(db, unitInStockOnDateDtoList, inventoryDate, progressBarVM, cts);
+            var fullFormsInventoryList = await GetFullFormsSnkList(db, currentInventoryDtoList, inventoryDate, progressBarVM, cts);
 
             #region SnkTable
 
@@ -563,6 +559,10 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
             }
 
             #endregion
+
+            progressBarDoubleValue += (double)30 / unitInStockByDateDictionary.Count;
+            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+                $"Загрузка полных форм на {inventoryDate}");
         }
 
         #endregion
@@ -572,15 +572,9 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         foreach (var (inventoryDate, inventoryErrorsDtoList) in inventoryErrorsByDateDictionary)
         {
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-                $"Загрузка полных форм ошибок на {inventoryDate}",
-                "Загрузка полных форм");
+                $"Загрузка полных форм ошибок на {inventoryDate}");
 
             var fullFormsErrorsList = await GetFullFormsSnkList(db, inventoryErrorsDtoList, progressBarVM, cts);
-
-            progressBarDoubleValue += (double)20 / inventoryErrorsByDateDictionary.Count;
-            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-                $"Загрузка полных форм ошибок на {inventoryDate}",
-                "Загрузка полных форм");
 
             var errorsWorksheet = excelPackage.Workbook.Worksheets
                 .First(x => x.Name == $"Ошибки на {inventoryDate:dd.MM.yy}");
@@ -623,6 +617,10 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                 .Add(errorsWorksheet.Cells[1, 1, errorsWorksheet.Dimension.Rows, errorsWorksheet.Dimension.Columns], $"Ошибки_{inventoryDate}");
             errorsTable.TableStyle = TableStyles.Medium2;
             errorsWorksheet.Cells[1, 1, errorsWorksheet.Dimension.Rows, errorsWorksheet.Dimension.Columns].Style.Border.BorderAround(ExcelBorderStyle.Thick);
+
+            progressBarDoubleValue += (double)20 / inventoryErrorsByDateDictionary.Count;
+            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+                $"Загрузка полных форм ошибок на {inventoryDate}");
         }
 
         #endregion
@@ -647,10 +645,11 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
     /// </summary>
     /// <param name="db">Модель БД.</param>
     /// <param name="unitInStockDtoList">Список DTO учётных единиц в наличии на дату.</param>
+    /// <param name="inventoryDate">Дата инвентаризации, на которую загружаются формы.</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Список форм с данными отчётов и организации.</returns>
-    private static async Task<List<SnkForm11DTO>> GetFullFormsSnkList(DBModel db, List<ShortForm11DTO> unitInStockDtoList,
+    private static async Task<List<SnkForm11DTO>> GetFullFormsSnkList(DBModel db, List<ShortForm11DTO> unitInStockDtoList, DateOnly inventoryDate,
         AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
         List<SnkForm11DTO> formsList = [];
@@ -668,24 +667,24 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                             && x.Report.Reports != null 
                             && x.Report.Reports.DBObservable != null)
                 .Select(x => new SnkForm11DTO(
-                    unit.FacNum,
-                    unit.PasNum,
+                    x.FactoryNumber_DB,
+                    x.PassportNumber_DB,
                     unit.Quantity,
-                    unit.Radionuclids,
-                    unit.Type,
+                    x.Radionuclids_DB,
+                    x.Type_DB,
                     x.Activity_DB,
                     x.CreatorOKPO_DB,
                     x.CreationDate_DB,
                     x.Category_DB,
                     x.SignedServicePeriod_DB,
-                    unit.PackNumber))
+                    x.PackNumber_DB))
                 .FirstAsync(cts.Token);
 
             formsList.Add(form);
 
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
                 $"Загрузка {currentUnitNum} формы из {unitInStockDtoList.Count}",
-                "Загрузка форм");
+                $"Загрузка форм на {inventoryDate}");
             currentUnitNum++;
         }
         return formsList;
