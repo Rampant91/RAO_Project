@@ -74,15 +74,32 @@ public class ExcelExportCheckFormAsyncCommand : ExcelBaseAsyncCommand
             currentRow++;
 
             progressBarDoubleValue += (double)90 / checkFormVM.CheckError.Count;
-            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue), "Выгрузка ошибок");
+            progressBarVM.SetProgressBar((int)Math.Floor(double.Clamp(progressBarDoubleValue,0,100)), "Выгрузка ошибок");
         }
 
         #endregion
 
-        for (var col = 1; col <= Worksheet.Dimension.End.Column; col++)
+        #region FormatCells
+        if (OperatingSystem.IsWindows())
         {
-            if (OperatingSystem.IsWindows()) Worksheet.Column(col).AutoFit();
+            for (var col = 1; col <= Worksheet.Dimension.End.Column; col++)
+            {
+                Worksheet.Column(col).AutoFit();
+                for (var row = 2; row < currentRow; row++)
+                {
+                    Worksheet.Cells[row, col].Style.WrapText = true;
+                    Worksheet.Cells[row, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Left;
+                    Worksheet.Cells[row, col].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Top;
+                }
+            }
+            Worksheet.Column(2).Width = 2 * Worksheet.Column(1).Width;
+            Worksheet.Column(3).Width = 2 * Worksheet.Column(1).Width;
+            Worksheet.Column(4).Width = 11 * Worksheet.Column(1).Width;
+            Worksheet.Column(5).Width = 11 * Worksheet.Column(1).Width;
         }
+
+        #endregion
+
         Worksheet.View.FreezePanes(2, 1);
         return Task.CompletedTask;
     }

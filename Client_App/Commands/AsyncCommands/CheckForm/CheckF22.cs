@@ -30,6 +30,8 @@ public class CheckF22 : CheckBase
 {
     public override bool CanExecute(object? parameter) => true;
 
+    private static string? dbWithForm1Prev = null;
+
     const string form15Plug = "!1,5";
     const string formGenericPlug = "!1,X";
 
@@ -45,7 +47,7 @@ public class CheckF22 : CheckBase
     //each unit is identified as a unique combination of these values (keys); setting any one to false ignores it when generating the unified key
     static bool keyInclude1 = true;     //storage name
     static bool keyInclude2 = true;     //storage code
-    static bool keyInclude3 = false;    //pack type
+    static bool keyInclude3 = true;    //pack type
     static bool keyInclude4 = true;     //code RAO
     static bool keyInclude5 = true;     //status RAO
     static bool keyInclude6 = false;     //FCP
@@ -93,8 +95,13 @@ public class CheckF22 : CheckBase
             var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {
-                    ButtonDefinitions =
+                    ButtonDefinitions = dbWithForm1Prev == null ?
                     [
+                        new ButtonDefinition { Name = "Выбрать файл БД", IsDefault = true },
+                        new ButtonDefinition { Name = "Отмена", IsCancel = true }
+                    ] :
+                    [
+                        new ButtonDefinition { Name = "Использовать ранее выбранный файл БД", IsDefault = true },
                         new ButtonDefinition { Name = "Выбрать файл БД", IsDefault = true },
                         new ButtonDefinition { Name = "Отмена", IsCancel = true }
                     ],
@@ -112,7 +119,7 @@ public class CheckF22 : CheckBase
 
             #endregion
 
-            if (answer is not "Выбрать файл БД")
+            if (answer is not "Выбрать файл БД" and not "Использовать ранее выбранный файл БД")
             {
                 await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
             }
@@ -124,12 +131,22 @@ public class CheckF22 : CheckBase
             };
             dial.Filters = [filter];
 
-            var dbWithForm1 = await dial.ShowAsync(desktop.MainWindow);
-            if (dbWithForm1 is null)
+            string[]? dbWithForm1 = null;
+            string dbWithForm1FullPath;
+            if (answer is "Использовать ранее выбранный файл БД" && dbWithForm1Prev != null)
             {
-                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                dbWithForm1 = [dbWithForm1Prev];
             }
-            var dbWithForm1FullPath = dbWithForm1![0];
+            else
+            {
+                dbWithForm1 = await dial.ShowAsync(desktop.MainWindow);
+                if (dbWithForm1 is null)
+                {
+                    await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                }
+            }
+            dbWithForm1FullPath = dbWithForm1![0];
+            dbWithForm1Prev = dbWithForm1FullPath;
             db = new DBModel(dbWithForm1FullPath);
         }
 
@@ -538,49 +555,49 @@ public class CheckF22 : CheckBase
             if (TryParseFloatExtended(formExpected.Item1.VolumeOutOfPack_DB, out zeroCheck))
             {
                 nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
-                if (zeroCheck < 0)
+                if (zeroCheck < -0.00001f)
                     negatives.Add($"Объем без упаковки, куб. м: {zeroCheck}");
             }
             if (TryParseFloatExtended(formExpected.Item1.VolumeInPack_DB, out zeroCheck))
             {
                 nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
-                if (zeroCheck < 0)
+                if (zeroCheck < -0.00001f)
                     negatives.Add($"Объем с упаковкой, куб. м: {zeroCheck}");
             }
             if (TryParseFloatExtended(formExpected.Item1.MassOutOfPack_DB, out zeroCheck))
             {
                 nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
-                if (zeroCheck < 0)
+                if (zeroCheck < -0.00001f)
                     negatives.Add($"Масса без упаковки (нетто), т: {zeroCheck}");
             }
             if (TryParseFloatExtended(formExpected.Item1.MassInPack_DB, out zeroCheck))
             {
                 nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
-                if (zeroCheck < 0)
+                if (zeroCheck < -0.00001f)
                     negatives.Add($"Масса с упаковкой (брутто), т: {zeroCheck}");
             }
             if (TryParseFloatExtended(formExpected.Item1.TritiumActivity_DB, out zeroCheck))
             {
                 nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
-                if (zeroCheck < 0)
+                if (zeroCheck < -0.00001f)
                     negatives.Add($"Суммарная активность, Бк - тритий: {zeroCheck}");
             }
             if (TryParseFloatExtended(formExpected.Item1.BetaGammaActivity_DB, out zeroCheck))
             {
                 nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
-                if (zeroCheck < 0)
+                if (zeroCheck < -0.00001f)
                     negatives.Add($"Суммарная активность, Бк - бета-, гамма- излучающие радионуклиды (исключая тритий): {zeroCheck}");
             }
             if (TryParseFloatExtended(formExpected.Item1.AlphaActivity_DB, out zeroCheck))
             {
                 nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
-                if (zeroCheck < 0)
+                if (zeroCheck < -0.00001f)
                     negatives.Add($"Суммарная активность, Бк - альфа-излучающие радионуклиды (исключая трансурановые): {zeroCheck}");
             }
             if (TryParseFloatExtended(formExpected.Item1.TransuraniumActivity_DB, out zeroCheck))
             {
                 nonZero += (Math.Abs(zeroCheck) > 0.00001f) ? 1 : 0;
-                if (zeroCheck < 0)
+                if (zeroCheck < -0.00001f)
                     negatives.Add($"Суммарная активность, Бк - трансурановые: {zeroCheck}");
             }
             if (nonZero == 0) continue;
