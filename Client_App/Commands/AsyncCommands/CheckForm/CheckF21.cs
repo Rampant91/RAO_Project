@@ -167,67 +167,67 @@ public class CheckF21 : CheckBase
             switch (report.FormNum_DB)
             {
                 case "1.5":
+                {
+                    report.Rows15 = new ObservableCollectionWithItemPropertyChanged<Form15>(report.Rows15.OrderBy(x => x.NumberInOrder_DB));
+                    foreach (var key1 in report.Rows15)
                     {
-                        report.Rows15 = new ObservableCollectionWithItemPropertyChanged<Form15>(report.Rows15.OrderBy(x => x.NumberInOrder_DB));
-                        foreach (var key1 in report.Rows15)
+                        var form = (Form15)key1;
+                        form21New = FormConvert(form, rep.Year_DB);
+                        if (form21New != null)
                         {
-                            var form = (Form15)key1;
-                            form21New = FormConvert(form, rep.Year_DB);
-                            if (form21New != null)
-                            {
-                                forms21MetadataBase.Add((form21New.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, form21New.NumberInOrder_DB.ToString()));
-                                forms21ExpectedBase.Add(form21New);
-                            }
+                            forms21MetadataBase.Add((form21New.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, form21New.NumberInOrder_DB.ToString()));
+                            forms21ExpectedBase.Add(form21New);
                         }
-                        break;
+                    }
+                    break;
                 }
                 case "1.6":
+                {
+                    report.Rows16 = new ObservableCollectionWithItemPropertyChanged<Form16>(report.Rows16.OrderBy(x => x.NumberInOrder_DB));
+                    foreach (var key1 in report.Rows16)
                     {
-                        report.Rows16 = new ObservableCollectionWithItemPropertyChanged<Form16>(report.Rows16.OrderBy(x => x.NumberInOrder_DB));
-                        foreach (var key1 in report.Rows16)
+                        var form = (Form16)key1;
+                        form21New = FormConvert(form, rep.Year_DB);
+                        if (form21New != null)
                         {
-                            var form = (Form16)key1;
-                            form21New = FormConvert(form, rep.Year_DB);
-                            if (form21New != null)
-                            {
-                                forms21MetadataBase.Add((form21New.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, form21New.NumberInOrder_DB.ToString()));
-                                forms21ExpectedBase.Add(form21New);
-                            }
+                            forms21MetadataBase.Add((form21New.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, form21New.NumberInOrder_DB.ToString()));
+                            forms21ExpectedBase.Add(form21New);
                         }
-                        break;
                     }
+                    break;
+                }
                 case "1.7":
+                {
+                    report.Rows17 = new ObservableCollectionWithItemPropertyChanged<Form17>(report.Rows17.OrderBy(x => x.NumberInOrder_DB));
+                    foreach (var key1 in report.Rows17)
                     {
-                        report.Rows17 = new ObservableCollectionWithItemPropertyChanged<Form17>(report.Rows17.OrderBy(x => x.NumberInOrder_DB));
-                        foreach (var key1 in report.Rows17)
+                        var form = (Form17)key1;
+                        if (form.OperationCode_DB != "-" && !string.IsNullOrWhiteSpace(form.OperationCode_DB)) formHeader17 = form;
+                        form21New = FormConvert(form, formHeader17, rep.Year_DB);
+                        if (form21New != null)
                         {
-                            var form = (Form17)key1;
-                            if (form.OperationCode_DB != "-" && !string.IsNullOrWhiteSpace(form.OperationCode_DB)) formHeader17 = form;
-                            form21New = FormConvert(form, formHeader17, rep.Year_DB);
-                            if (form21New != null)
-                            {
-                                forms21MetadataBase.Add((form21New.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, form21New.NumberInOrder_DB.ToString()));
-                                forms21ExpectedBase.Add(form21New);
-                            }
+                            forms21MetadataBase.Add((form21New.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, form21New.NumberInOrder_DB.ToString()));
+                            forms21ExpectedBase.Add(form21New);
                         }
-                        break;
                     }
+                    break;
+                }
                 case "1.8":
+                {
+                    report.Rows18 = new ObservableCollectionWithItemPropertyChanged<Form18>(report.Rows18.OrderBy(x => x.NumberInOrder_DB));
+                    foreach (var key1 in report.Rows18)
                     {
-                        report.Rows18 = new ObservableCollectionWithItemPropertyChanged<Form18>(report.Rows18.OrderBy(x => x.NumberInOrder_DB));
-                        foreach (var key1 in report.Rows18)
+                        var form = (Form18)key1;
+                        if (form.OperationCode_DB != "-" && !string.IsNullOrWhiteSpace(form.OperationCode_DB)) formHeader18 = form;
+                        form21New = FormConvert(form, formHeader18, rep.Year_DB);
+                        if (form21New != null)
                         {
-                            var form = (Form18)key1;
-                            if (form.OperationCode_DB != "-" && !string.IsNullOrWhiteSpace(form.OperationCode_DB)) formHeader18 = form;
-                            form21New = FormConvert(form, formHeader18, rep.Year_DB);
-                            if (form21New != null)
-                            {
-                                forms21MetadataBase.Add((form21New.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, form21New.NumberInOrder_DB.ToString()));
-                                forms21ExpectedBase.Add(form21New);
-                            }
+                            forms21MetadataBase.Add((form21New.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, form21New.NumberInOrder_DB.ToString()));
+                            forms21ExpectedBase.Add(form21New);
                         }
-                        break;
                     }
+                    break;
+                }
             }
         }
         Dictionary<(byte?, string, string), Form21> forms21ExpectedInDict = new();
