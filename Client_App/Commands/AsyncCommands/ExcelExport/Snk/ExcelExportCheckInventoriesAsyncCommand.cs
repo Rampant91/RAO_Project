@@ -19,6 +19,7 @@ using Client_App.ViewModels.ProgressBar;
 using Microsoft.EntityFrameworkCore;
 using DynamicData;
 using static Client_App.Resources.StaticStringMethods;
+using System.Reactive;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
@@ -711,18 +712,18 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     error.ErrorTypeEnum,
                     error.Dto.RepDto.StartPeriod,
                     error.Dto.RepDto.EndPeriod,
-                    error.Dto.NumberInOrder,
-                    error.Dto.FacNum,
-                    error.Dto.PasNum,
+                    x.NumberInOrder_DB,
+                    x.FactoryNumber_DB,
+                x.PassportNumber_DB,
                     error.Dto.Quantity,
-                    error.Dto.Radionuclids,
-                    error.Dto.Type,
+                    x.Radionuclids_DB,
+                    x.Type_DB,
                     x.Activity_DB,
                     x.CreatorOKPO_DB,
                     x.CreationDate_DB,
                     x.Category_DB,
                     x.SignedServicePeriod_DB,
-                    error.Dto.PackNumber))
+                    x.PackNumber_DB))
                 .FirstAsync(cts.Token);
 
             formsList.Add(form);

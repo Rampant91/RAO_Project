@@ -2226,19 +2226,33 @@ public abstract class CheckF16 : CheckBase
                 .Any(rad => R
                     .Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "т")))
         {
-            if (TryParseFloatExtended(tritiumActivity, out var activityFloatValue)
-                && activityFloatValue != 0)
+            if (TryParseFloatExtended(tritiumActivity, out var activityFloatValue))
             {
-                result.Add(new CheckError
+                if (activityFloatValue == 0)
                 {
-                    FormNum = "form_16",
-                    Row = forms[line].NumberInOrder_DB.ToString(),
-                    Column = "TritiumActivity_DB",
-                    Value = tritiumActivity,
-                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                              "Проверьте перечень основных радионуклидов: указана суммарная активность для трития, " +
-                              "но тритий не приведен в перечне радионуклидов."
-                });
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_16",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "TritiumActivity_DB",
+                        Value = tritiumActivity,
+                        Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                                  "В случае, если в радионуклидном составе отсутствует тритий, то в графу 10 необходимо заносить прочерк вместо нуля."
+                    });
+                }
+                else
+                {
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_16",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "TritiumActivity_DB",
+                        Value = tritiumActivity,
+                        Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                                  "Проверьте перечень основных радионуклидов: указана суммарная активность для трития, " +
+                                  "но тритий не приведен в перечне радионуклидов."
+                    });
+                }
             }
             return result;
         }
@@ -2311,19 +2325,34 @@ public abstract class CheckF16 : CheckBase
                 .Any(rad => R
                     .Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "б")))
         {
-            if (TryParseFloatExtended(betaActivity, out var activityFloatValue)
-                && activityFloatValue != 0)
+            if (TryParseFloatExtended(betaActivity, out var activityFloatValue))
             {
-                result.Add(new CheckError
+                if (activityFloatValue == 0)
                 {
-                    FormNum = "form_16",
-                    Row = forms[line].NumberInOrder_DB.ToString(),
-                    Column = "BetaGammaActivity_DB",
-                    Value = betaActivity,
-                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                              "Проверьте перечень основных радионуклидов: указана суммарная активность для бета-, " +
-                              "гамма-излучающих радионуклидов, но бета-, гамма-излучающие радионуклиды не приведены в перечне радионуклидов."
-                });
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_16",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "BetaGammaActivity_DB",
+                        Value = betaActivity,
+                        Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                                  "В случае, если в радионуклидном составе отсутствуют бета-, гамма-излучающие радионуклиды, " +
+                                  "то в графу 11 необходимо заносить прочерк вместо нуля."
+                    });
+                }
+                else
+                {
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_16",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "BetaGammaActivity_DB",
+                        Value = betaActivity,
+                        Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
+                                  "Проверьте перечень основных радионуклидов: указана суммарная активность для бета-, " +
+                                  "гамма-излучающих радионуклидов, но бета-, гамма-излучающие радионуклиды не приведены в перечне радионуклидов."
+                    });
+                }
             }
             return result;
         }
@@ -2396,19 +2425,34 @@ public abstract class CheckF16 : CheckBase
                 .Any(rad => R
                     .Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "а")))
         {
-            if (TryParseFloatExtended(activity, out var activityFloatValue)
-                && activityFloatValue != 0)
+            if (TryParseFloatExtended(activity, out var activityFloatValue))
             {
-                result.Add(new CheckError
+                if (activityFloatValue == 0)
                 {
-                    FormNum = "form_16",
-                    Row = forms[line].NumberInOrder_DB.ToString(),
-                    Column = "AlphaActivity_DB",
-                    Value = activity,
-                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                              "Проверьте перечень основных радионуклидов: указана суммарная активность для альфа-излучающих радионуклидов, " +
-                              "но альфа-излучающие радионуклиды не приведены в перечне радионуклидов."
-                });
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_16",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "AlphaActivity_DB",
+                        Value = activity,
+                        Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                                  "В случае, если в радионуклидном составе отсутствуют альфа-излучающие радионуклиды, " +
+                                  "то в графу 12 необходимо заносить прочерк вместо нуля."
+                    });
+                }
+                else 
+                { 
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_16",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "AlphaActivity_DB",
+                        Value = activity,
+                        Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                                  "Проверьте перечень основных радионуклидов: указана суммарная активность для альфа-излучающих радионуклидов, " +
+                                  "но альфа-излучающие радионуклиды не приведены в перечне радионуклидов."
+                    });
+                }
             }
             return result;
         }
@@ -2480,19 +2524,34 @@ public abstract class CheckF16 : CheckBase
                 .Any(rad => R
                     .Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "у")))
         {
-            if (TryParseFloatExtended(activity, out var activityFloatValue)
-                && activityFloatValue != 0)
+            if (TryParseFloatExtended(activity, out var activityFloatValue))
             {
-                result.Add(new CheckError
+                if (activityFloatValue == 0)
                 {
-                    FormNum = "form_16",
-                    Row = forms[line].NumberInOrder_DB.ToString(),
-                    Column = "TransuraniumActivity_DB",
-                    Value = activity,
-                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                              "Проверьте перечень основных радионуклидов: указана суммарная активность для трансурановых радионуклидов, " +
-                              "но трансурановые радионуклиды не приведены в перечне радионуклидов."
-                });
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_16",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "TransuraniumActivity_DB",
+                        Value = activity,
+                        Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                                  "В случае, если в радионуклидном составе отсутствуют трансурановые радионуклиды, " +
+                                  "то в графу 13 необходимо заносить прочерк вместо нуля."
+                    });
+                }
+                else
+                {
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_16",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "TransuraniumActivity_DB",
+                        Value = activity,
+                        Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                                  "Проверьте перечень основных радионуклидов: указана суммарная активность для трансурановых радионуклидов, " +
+                                  "но трансурановые радионуклиды не приведены в перечне радионуклидов."
+                    });
+                }
             }
             return result;
         }
