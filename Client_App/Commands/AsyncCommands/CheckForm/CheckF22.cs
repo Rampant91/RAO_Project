@@ -4,25 +4,20 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
-using AvaloniaEdit.Utils;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 using Models.CheckForm;
 using Models.Collections;
 using Models.DBRealization;
-using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using OfficeOpenXml;
-using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -46,7 +41,6 @@ public class CheckF22 : CheckBase
     {
         "21", "22", "23", "24", "25", "26", "27", "28", "29", "42", "43", "44", "45", "46", "47", "48", "49", "51", "68", "71", "72", "84", "98"
     };
-
     //each unit is identified as a unique combination of these values (keys); setting any one to false ignores it when generating the unified key
     static bool keyInclude1 = true;     //storage name
     static bool keyInclude2 = true;     //storage code
@@ -153,26 +147,97 @@ public class CheckF22 : CheckBase
             db = new DBModel(dbWithForm1FullPath);
         }
 
-        var repsWithForm1 = await db.ReportsCollectionDbSet
+
+        var repsWithForm1Base = db.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
             .Include(reps => reps.DBObservable)
             .Include(reps => reps.Master_DB).ThenInclude(report => report.Rows10)
             .Include(reps => reps.Report_Collection
-                .Where(report => 
-                    (report.FormNum_DB == "1.5" || report.FormNum_DB == "1.6" || report.FormNum_DB == "1.7" || report.FormNum_DB == "1.8") 
-                    && (report.StartPeriod_DB.Length >= 4 
-                        && report.StartPeriod_DB.Substring(report.StartPeriod_DB.Length - 4) == rep.Year_DB 
-                        || report.EndPeriod_DB.Length >= 4 
+                .Where(report =>
+                    (report.FormNum_DB == "1.5" || report.FormNum_DB == "1.6" || report.FormNum_DB == "1.7" || report.FormNum_DB == "1.8")
+                    && (report.StartPeriod_DB.Length >= 4
+                        && report.StartPeriod_DB.Substring(report.StartPeriod_DB.Length - 4) == rep.Year_DB
+                        || report.EndPeriod_DB.Length >= 4
                         && report.EndPeriod_DB.Substring(report.EndPeriod_DB.Length - 4) == rep.Year_DB)))
             .ThenInclude(x => x.Rows15)
             .Include(reps => reps.Report_Collection).ThenInclude(report => report.Rows16)
             .Include(reps => reps.Report_Collection).ThenInclude(report => report.Rows17)
             .Include(reps => reps.Report_Collection).ThenInclude(report => report.Rows18)
-            .Where(reps => reps.DBObservable != null)
-            .FirstOrDefaultAsync(reps => reps.Master_DB.Rows10
-                .Any(form10 => form10.RegNo_DB == form20RegNo), cts.Token);
+            .Where(reps => reps.DBObservable != null);
+
+        var forms1 = repsWithForm1Base.Where(reps=>reps.Master_DB.Rows10.Any(form10 => form10.RegNo_DB == form20RegNo)).ToList();
+
+        Reports? repsWithForm1;
+
+        if (forms1.Count > 1)
+        {
+            List<string> okpoList = new();
+            foreach (var form in forms1)
+            {
+                okpoList.Add(form.Master_DB.Rows10.Last().Okpo_DB);
+            }
+            bool fusion = true;
+            if (fusion)
+            {
+                repsWithForm1 = new();
+                foreach (var okpo in okpoList) {
+                    repsWithForm1.Report_Collection.AddRange(repsWithForm1Base
+                            .FirstOrDefaultAsync(reps => reps.Master_DB.Rows10
+                                .Any(form10 => form10.RegNo_DB == form20RegNo && form10.Okpo_DB == okpo), cts.Token).Result!.Report_Collection);
+                }
+            }
+            else
+            {
+                var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
+
+                List<ButtonDefinition> buttons = new List<ButtonDefinition>();
+                foreach (var okpo in okpoList)
+                {
+                    buttons.Add(new ButtonDefinition { Name = okpo, IsDefault = true });
+                }
+
+                #region MessageMoreThanOneOrgFound
+
+                var messageBoxCustomParams = new MessageBoxCustomParams
+                {
+                    ButtonDefinitions = buttons,
+                    CanResize = true,
+                    ContentTitle = "Проверка формы",
+                    ContentHeader = "Внимание",
+                    ContentMessage = $"Найдено более одной организации с регистрационным номером {form20RegNo}." +
+                                         $"{Environment.NewLine}Пожалуйста, выберите нужную организацию по коду ОКПО.",
+                    MinWidth = 400,
+                    MinHeight = 200,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+
+                var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(messageBoxCustomParams)
+                    .ShowDialog(desktop.MainWindow));
+
+                if (answer != null)
+                {
+                    repsWithForm1 = await repsWithForm1Base
+                        .FirstOrDefaultAsync(reps => reps.Master_DB.Rows10
+                            .Any(form10 => form10.RegNo_DB == form20RegNo && form10.Okpo_DB == answer), cts.Token);
+                }
+                else
+                {
+                    repsWithForm1 = await repsWithForm1Base
+                        .FirstOrDefaultAsync(reps => reps.Master_DB.Rows10
+                            .Any(form10 => form10.RegNo_DB == form20RegNo), cts.Token);
+                }
+            }
+            #endregion
+        }
+        else
+        {
+            repsWithForm1 = await repsWithForm1Base
+                .FirstOrDefaultAsync(reps => reps.Master_DB.Rows10
+                    .Any(form10 => form10.RegNo_DB == form20RegNo), cts.Token);
+        }
 
         int yearRealCurrent;
         int.TryParse(rep.Year_DB, out yearRealCurrent);
