@@ -762,7 +762,7 @@ public abstract class CheckF16 : CheckBase
             .ToLower()
             .Replace(',', ';')
             .Split(';')
-            .Select(x => x.Trim())
+            .Select(x => x.Trim().Replace(" -", "-").Replace("- ", "-"))
             .ToHashSet();
         var halflife_max = 0.0f;
         var halflife_max_id = -1;
@@ -2151,7 +2151,7 @@ public abstract class CheckF16 : CheckBase
             {
                 FormNum = "form_16",
                 Row = forms[line].NumberInOrder_DB.ToString(),
-                Column = "Radionuclids_DB",
+                Column = "MainRadionuclids_DB",
                 Value = Convert.ToString(rads),
                 Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
                           "Заполните графу 9 «Основные радионуклиды»."
@@ -2174,7 +2174,7 @@ public abstract class CheckF16 : CheckBase
                 {
                     FormNum = "form_16",
                     Row = forms[line].NumberInOrder_DB.ToString(),
-                    Column = "Radionuclids_DB",
+                    Column = "MainRadionuclids_DB",
                     Value = rads,
                     Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
                               "Заполните графу 9 «Основные радионуклиды»"
@@ -2197,7 +2197,7 @@ public abstract class CheckF16 : CheckBase
                 {
                     FormNum = "form_16",
                     Row = forms[line].NumberInOrder_DB.ToString(),
-                    Column = "Radionuclids_DB",
+                    Column = "MainRadionuclids_DB",
                     Value = rads,
                     Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
                               "Формат ввода данных не соответствует приказу. " +
