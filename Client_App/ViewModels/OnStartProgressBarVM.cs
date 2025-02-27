@@ -68,6 +68,11 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
             await BackgroundWorkThenAppLaunchedWithParameter();
             Environment.Exit(0);
         }
+        else if (Settings.Default.AppStartupParameters.Split(',')[0].Trim() is "-y")
+        {
+            await BackgroundWorkThenAppLaunchedWithYearParameter();
+            Environment.Exit(0);
+        }
     }
 
     private async Task BackgroundWorkThenAppLaunchedWithParameter()
@@ -75,6 +80,13 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
         await new ExcelExportListOfOrgsAsyncCommand().AsyncExecute(this);
         await new ExcelExportExecutorsAsyncCommand().AsyncExecute(this);
         await new ExcelExportIntersectionsAsyncCommand().AsyncExecute(this);
+        await new ExcelExportAllAsyncCommand().AsyncExecute(this);
+    }
+
+    private async Task BackgroundWorkThenAppLaunchedWithYearParameter()
+    {
+        await new ExcelExportListOfOrgsAsyncCommand().AsyncExecute(this);
+        await new ExcelExportExecutorsAsyncCommand().AsyncExecute(this);
         await new ExcelExportAllAsyncCommand().AsyncExecute(this);
     }
 
