@@ -19,7 +19,6 @@ using Client_App.ViewModels.ProgressBar;
 using Microsoft.EntityFrameworkCore;
 using DynamicData;
 using static Client_App.Resources.StaticStringMethods;
-using System.Reactive;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
@@ -261,7 +260,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     if (firstInventoryOperation is null
                         && secondInventoryOperation is null
                         && lastNotInventoryOperation is not null
-                        && PlusOperation.Contains(lastNotInventoryOperation.OpCode))
+                        && PlusOperation.Contains(lastNotInventoryOperation.OpCode)
+                        && inventoryDate != inventoryDatesList[^1])
                     {
                         errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.RegisteredAndNotInventoriedUnit, currentOperations.Last()));
                     }
@@ -269,8 +269,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     //2. Есть в первой инвентаризации, нет во второй, нет минусовых операций.
                     if (firstInventoryOperation is not null
                         && secondInventoryOperation is null
-                        && inventoryDate != inventoryDatesList[^1]
-                        && !currentOperations.Any(x => MinusOperation.Contains(x.OpCode)))
+                        && !currentOperations.Any(x => MinusOperation.Contains(x.OpCode))
+                        && inventoryDate != inventoryDatesList[^1])
                     {
                         errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.MissingFromInventoryUnit, firstInventoryOperation));
                     }
@@ -278,7 +278,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     //3. Есть во второй инвентаризации, последняя операция не плюсовая.
                     if (secondInventoryOperation is not null
                         && (lastPlusMinusOperation is null
-                            || !PlusOperation.Contains(lastPlusMinusOperation.OpCode)))
+                            || !PlusOperation.Contains(lastPlusMinusOperation.OpCode))
+                        && inventoryDate != inventoryDatesList[^1])
                     {
                         errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.GivenUnitIsInventoried, secondInventoryOperation));
                     }
@@ -575,7 +576,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
                 $"Загрузка полных форм ошибок на {inventoryDate}");
 
-            var fullFormsErrorsList = await GetFullFormsSnkList(db, inventoryErrorsDtoList, progressBarVM, cts);
+            var fullFormsErrorsList = 
+                await GetFullFormsSnkList(db, inventoryErrorsDtoList, inventoryErrorsByDateDictionary.Count, progressBarVM, cts);
 
             var errorsWorksheet = excelPackage.Workbook.Worksheets
                 .First(x => x.Name == $"Ошибки на {inventoryDate:dd.MM.yy}");
@@ -600,17 +602,19 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                 errorsWorksheet.Cells[errorsRow, 3].Value = ConvertToExcelDate(form.StPer.ToShortDateString(), errorsWorksheet, errorsRow, 3);
                 errorsWorksheet.Cells[errorsRow, 4].Value = ConvertToExcelDate(form.EndPer.ToShortDateString(), errorsWorksheet, errorsRow, 4);
                 errorsWorksheet.Cells[errorsRow, 5].Value = form.RowNumber;
-                errorsWorksheet.Cells[errorsRow, 6].Value = form.PasNum;
-                errorsWorksheet.Cells[errorsRow, 7].Value = form.Type;
-                errorsWorksheet.Cells[errorsRow, 8].Value = form.Radionuclids;
-                errorsWorksheet.Cells[errorsRow, 9].Value = form.FacNum;
-                errorsWorksheet.Cells[errorsRow, 10].Value = form.Quantity;
-                errorsWorksheet.Cells[errorsRow, 11].Value = form.Activity;
-                errorsWorksheet.Cells[errorsRow, 12].Value = form.CreatorOKPO;
-                errorsWorksheet.Cells[errorsRow, 13].Value = ConvertToExcelDate(form.CreationDate, errorsWorksheet, errorsRow, 13);
-                errorsWorksheet.Cells[errorsRow, 14].Value = form.Category;
-                errorsWorksheet.Cells[errorsRow, 15].Value = form.SignedServicePeriod;
-                errorsWorksheet.Cells[errorsRow, 16].Value = form.PackNumber;
+                errorsWorksheet.Cells[errorsRow, 6].Value = form.OpCode;
+                errorsWorksheet.Cells[errorsRow, 7].Value = form.OpDate;
+                errorsWorksheet.Cells[errorsRow, 8].Value = form.PasNum;
+                errorsWorksheet.Cells[errorsRow, 9].Value = form.Type;
+                errorsWorksheet.Cells[errorsRow, 10].Value = form.Radionuclids;
+                errorsWorksheet.Cells[errorsRow, 11].Value = form.FacNum;
+                errorsWorksheet.Cells[errorsRow, 12].Value = form.Quantity;
+                errorsWorksheet.Cells[errorsRow, 13].Value = form.Activity;
+                errorsWorksheet.Cells[errorsRow, 14].Value = form.CreatorOKPO;
+                errorsWorksheet.Cells[errorsRow, 15].Value = ConvertToExcelDate(form.CreationDate, errorsWorksheet, errorsRow, 15);
+                errorsWorksheet.Cells[errorsRow, 16].Value = form.Category;
+                errorsWorksheet.Cells[errorsRow, 17].Value = form.SignedServicePeriod;
+                errorsWorksheet.Cells[errorsRow, 18].Value = form.PackNumber;
                 errorsRow++;
             }
 
@@ -692,8 +696,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
     }
 
-    private static async Task<List<InventoryErrorForm11DTO>> GetFullFormsSnkList(DBModel db, List<InventoryErrorsShortDto> inventoryErrorsDtoList,
-        AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
+    private static async Task<List<InventoryErrorForm11DTO>> GetFullFormsSnkList(DBModel db, 
+        List<InventoryErrorsShortDto> inventoryErrorsDtoList, int datesCount, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
         List<InventoryErrorForm11DTO> formsList = [];
         double progressBarDoubleValue = progressBarVM.ValueBar;
@@ -714,6 +718,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     error.Dto.RepDto.EndPeriod,
                     x.NumberInOrder_DB,
                     x.FactoryNumber_DB,
+                    x.OperationCode_DB,
+                    x.OperationDate_DB,
                 x.PassportNumber_DB,
                     error.Dto.Quantity,
                     x.Radionuclids_DB,
@@ -728,7 +734,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
             formsList.Add(form);
 
-            progressBarDoubleValue += (double)25 / inventoryErrorsDtoList.Count;
+            progressBarDoubleValue += (double)25 / inventoryErrorsDtoList.Count / datesCount;
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
                 $"Загрузка {currentUnitNum} формы из {inventoryErrorsDtoList.Count}",
                 "Загрузка форм");
@@ -974,8 +980,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
     #endregion
 
     private class InventoryErrorForm11DTO(InventoryErrorTypeEnum errorType, DateOnly stPer, DateOnly endPer, int rowNumber, string facNum, 
-        string pasNum, int quantity, string radionuclids, string type, string activity, string creatorOKPO, string creationDate, 
-        short? category, float? signedServicePeriod, string packNumber)
+        string opCode, string opDate, string pasNum, int quantity, string radionuclids, string type, string activity, string creatorOKPO, 
+        string creationDate, short? category, float? signedServicePeriod, string packNumber)
     {
         public readonly InventoryErrorTypeEnum ErrorType = errorType;
 
@@ -986,6 +992,10 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         public readonly int RowNumber = rowNumber;
 
         public readonly string PasNum = pasNum;
+
+        public readonly string OpCode = opCode;
+
+        public readonly string OpDate = opDate;
 
         public readonly string Type = type;
 

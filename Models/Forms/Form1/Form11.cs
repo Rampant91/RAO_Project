@@ -942,9 +942,8 @@ public class Form11 : Form1
 
     private void PackType_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        PackType_DB = tmp.Trim();
+        if (args.PropertyName != "Value" || ((RamAccess<string>)value).Value is null) return;
+        PackType_DB = ((RamAccess<string>)value).Value.Trim();
     }
 
     private bool PackType_Validation(RamAccess<string> value)//Ready
