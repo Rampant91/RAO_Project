@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
@@ -167,9 +166,12 @@ public class CheckF22 : CheckBase
             .Include(reps => reps.Report_Collection).ThenInclude(report => report.Rows18)
             .Where(reps => reps.DBObservable != null);
 
-        var forms1 = repsWithForm1Base.Where(reps=>reps.Master_DB.Rows10.Any(form10 => form10.RegNo_DB == form20RegNo)).ToList();
+        var forms1 = repsWithForm1Base
+            .Where(reps=>reps.Master_DB.Rows10
+                .Any(form10 => form10.RegNo_DB == form20RegNo))
+            .ToList();
 
-        Reports? repsWithForm1;
+        Reports repsWithForm1;
 
         if (forms1.Count > 1)
         {

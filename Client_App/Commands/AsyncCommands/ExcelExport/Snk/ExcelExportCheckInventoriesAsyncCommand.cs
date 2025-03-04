@@ -19,6 +19,7 @@ using Client_App.ViewModels.ProgressBar;
 using Microsoft.EntityFrameworkCore;
 using DynamicData;
 using static Client_App.Resources.StaticStringMethods;
+using Models.Forms;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
@@ -276,10 +277,14 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     }
 
                     //3. Есть во второй инвентаризации, последняя операция не плюсовая.
-                    if (secondInventoryOperation is not null
-                        && (lastPlusMinusOperation is null
-                            || !PlusOperation.Contains(lastPlusMinusOperation.OpCode))
-                        && inventoryDate != inventoryDatesList[^1])
+                    if (secondInventoryOperation is not null 
+                        && (currentOperations.Any(x => MinusOperation.Contains(x.OpCode))
+                            && !PlusOperation.Contains(lastPlusMinusOperation!.OpCode) 
+                            
+                            || firstInventoryOperation is null && lastPlusMinusOperation is null 
+
+                            || firstInventoryOperation is null && lastPlusMinusOperation is not null 
+                                                               && !PlusOperation.Contains(lastPlusMinusOperation.OpCode)))
                     {
                         errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.GivenUnitIsInventoried, secondInventoryOperation));
                     }
@@ -292,7 +297,15 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                         errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.UnInventoriedUnitGivenAway, firstPlusMinusOperation));
                     }
 
-                    //7. Все нулевые операции, идущие сразу после отсутствующей инвентаризации.
+                    //6. Постановка на учёт ранее проинвентаризированного ЗРИ.
+                    if (firstInventoryOperation is not null
+                        && firstPlusMinusOperation is not null
+                        && PlusOperation.Contains(firstPlusMinusOperation.OpCode))
+                    {
+                        errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.InventoriedUnitReceived, firstPlusMinusOperation));
+                    }
+
+                    //8. Все нулевые операции, идущие сразу после отсутствующей инвентаризации.
                     if (firstInventoryOperation is null
                         && currentOperations.Count > 0
                         && currentOperations.FirstOrDefault(x => x.OpCode != "10") != null
@@ -332,7 +345,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                             }
                             else if (MinusOperation.Contains(operation.OpCode))
                             {
-                                //8. Для пустых зав.№ и № паспорта, отдано большее количество, чем было на момент операции.
+                                //9. Для пустых зав.№ и № паспорта, отдано большее количество, чем было на момент операции.
                                 if (quantity < operation.Quantity)
                                 {
                                     errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.QuantityGivenExceedsAvailable, operation));
@@ -386,27 +399,58 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                             unitInStockDtoList.Remove(unitInStock!);
                         }
 
-                        foreach (var form in currentOperations)
+                        for (var i = 0; i < currentOperations.Count; i++)
                         {
-                            if (PlusOperation.Contains(form.OpCode))
+                            var currentForm = currentOperations[i];
+                            var previousPlusMinusOperation = currentOperations
+                                .GetRange(0, i)
+                                .Where(x => PlusOperation.Contains(x.OpCode) || MinusOperation.Contains(x.OpCode))
+                                .Reverse()
+                                .FirstOrDefault();
+
+                            if (MinusOperation.Contains(currentForm.OpCode))
                             {
-                                //6. Двойная постановка на учёт
-                                if (inStock)
+                                if (previousPlusMinusOperation is not null &&
+                                    MinusOperation.Contains(previousPlusMinusOperation.OpCode))
                                 {
-                                    errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.ReRegistration, form));
+                                    //5. Двойное снятие с учёта
+                                    errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.ReDeRegistration, currentForm));
+                                }
+                                inStock = false;
+                            }
+                            else if (PlusOperation.Contains(currentForm.OpCode))
+                            {
+                                if (previousPlusMinusOperation is not null &&
+                                    PlusOperation.Contains(previousPlusMinusOperation.OpCode))
+                                {
+                                    //6. Двойная постановка на учёт
+                                    errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.ReRegistration, currentForm));
                                 }
                                 else inStock = true;
                             }
-                            else if (MinusOperation.Contains(form.OpCode))
-                            {
-                                //5. Двойное снятие с учёта
-                                if (!inStock)
-                                {
-                                    errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.ReDeRegistration, form));
-                                }
-                                else inStock = false;
-                            }
                         }
+
+                        //foreach (var form in currentOperations)
+                        //{
+                        //    if (PlusOperation.Contains(form.OpCode))
+                        //    {
+                        //        //6. Двойная постановка на учёт
+                        //        if (inStock)
+                        //        {
+                        //            errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.ReRegistration, form));
+                        //        }
+                        //        else inStock = true;
+                        //    }
+                        //    else if (MinusOperation.Contains(form.OpCode))
+                        //    {
+                        //        //5. Двойное снятие с учёта
+                        //        if (!inStock)
+                        //        {
+                        //            errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.ReDeRegistration, form));
+                        //        }
+                        //        else inStock = false;
+                        //    }
+                        //}
 
                         if (inStock)
                         {
@@ -911,17 +955,19 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
             Worksheet.Cells[1, 3].Value = "Дата начала периода";
             Worksheet.Cells[1, 4].Value = "Дата конца периода";
             Worksheet.Cells[1, 5].Value = "Номер строки";
-            Worksheet.Cells[1, 6].Value = "Номер паспорта (сертификата)";
-            Worksheet.Cells[1, 7].Value = "тип";
-            Worksheet.Cells[1, 8].Value = "радионуклиды";
-            Worksheet.Cells[1, 9].Value = "номер";
-            Worksheet.Cells[1, 10].Value = "количество, шт.";
-            Worksheet.Cells[1, 11].Value = "суммарная активность, Бк";
-            Worksheet.Cells[1, 12].Value = "код ОКПО изготовителя";
-            Worksheet.Cells[1, 13].Value = "дата выпуска";
-            Worksheet.Cells[1, 14].Value = "категория";
-            Worksheet.Cells[1, 15].Value = "НСС, мес";
-            Worksheet.Cells[1, 16].Value = "Номер УКТ";
+            Worksheet.Cells[1, 6].Value = "Код операции";
+            Worksheet.Cells[1, 7].Value = "Дата операции";
+            Worksheet.Cells[1, 8].Value = "Номер паспорта (сертификата)";
+            Worksheet.Cells[1, 9].Value = "тип";
+            Worksheet.Cells[1, 10].Value = "радионуклиды";
+            Worksheet.Cells[1, 11].Value = "номер";
+            Worksheet.Cells[1, 12].Value = "количество, шт.";
+            Worksheet.Cells[1, 13].Value = "суммарная активность, Бк";
+            Worksheet.Cells[1, 14].Value = "код ОКПО изготовителя";
+            Worksheet.Cells[1, 15].Value = "дата выпуска";
+            Worksheet.Cells[1, 16].Value = "категория";
+            Worksheet.Cells[1, 17].Value = "НСС, мес";
+            Worksheet.Cells[1, 18].Value = "Номер УКТ";
 
             #endregion
 
@@ -1056,24 +1102,29 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         UnInventoriedUnitGivenAway = 4,
 
         /// <summary>
-        /// 5. Двойное снятие с учёта
+        /// 5. Двойное снятие с учёта.
         /// </summary>
         ReDeRegistration = 5,
 
         /// <summary>
-        /// 6. Двойная постановка на учёт
+        /// 6. Постановка на учёт ранее проинвентаризированного ЗРИ.
         /// </summary>
-        ReRegistration = 6,
+        InventoriedUnitReceived = 6,
 
         /// <summary>
-        /// 7. Все нулевые операции, идущие сразу после отсутствующей инвентаризации.
+        /// 7. Двойная постановка на учёт
         /// </summary>
-        ZeroOperationWithUnInventoriedUnit = 7,
+        ReRegistration = 7,
 
         /// <summary>
-        /// 8. Для пустых зав.№ и № паспорта, отдано большее количество, чем было на момент операции.
+        /// 8. Все нулевые операции, идущие сразу после отсутствующей инвентаризации.
         /// </summary>
-        QuantityGivenExceedsAvailable = 8
+        ZeroOperationWithUnInventoriedUnit = 8,
+
+        /// <summary>
+        /// 9. Для пустых зав.№ и № паспорта, отдано большее количество, чем было на момент операции.
+        /// </summary>
+        QuantityGivenExceedsAvailable = 9
     }
 
     private static string GetErrorDescriptionByType(InventoryErrorTypeEnum type)
@@ -1085,10 +1136,11 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
             InventoryErrorTypeEnum.MissingFromInventoryUnit => "В инвентаризации отсутствует ранее стоявший на учёте ЗРИ (был в прошлой инвентаризации). (2)",
             InventoryErrorTypeEnum.GivenUnitIsInventoried => "Проинвентаризирован ЗРИ, который был ранее снят с учёта или не был получен. (3)",
             InventoryErrorTypeEnum.UnInventoriedUnitGivenAway => "Снят с учёта не стоявший на учёте ЗРИ. (4)",
-            InventoryErrorTypeEnum.ReDeRegistration => "Повторная операция постановки ЗРИ на учёт. (5)",
-            InventoryErrorTypeEnum.ReRegistration => "Повторная операция снятия ЗРИ с учёта. (6)",
-            InventoryErrorTypeEnum.ZeroOperationWithUnInventoriedUnit => "Операция с не проинвентаризированным ЗРИ. (нулевая) (7)",
-            InventoryErrorTypeEnum.QuantityGivenExceedsAvailable => "Снятие с учёта большего количества ЗРИ, чем было в наличии. (8)",
+            InventoryErrorTypeEnum.ReDeRegistration => "Повторная операция снятия ЗРИ с учёта. (5)",
+            InventoryErrorTypeEnum.InventoriedUnitReceived => "Постановка на учёт ранее проинвентаризированного ЗРИ. (6)",
+            InventoryErrorTypeEnum.ReRegistration => "Повторная операция постановки ЗРИ на учёт. (7)",
+            InventoryErrorTypeEnum.ZeroOperationWithUnInventoriedUnit => "Операция с не проинвентаризированным ЗРИ. (нулевая) (8)",
+            InventoryErrorTypeEnum.QuantityGivenExceedsAvailable => "Снятие с учёта большего количества ЗРИ, чем было в наличии. (9)",
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }

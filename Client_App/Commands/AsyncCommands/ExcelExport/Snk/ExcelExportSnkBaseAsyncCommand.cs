@@ -462,6 +462,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                                            && keyValuePair.Key.FacNum == form.FacNum
                                            && keyValuePair.Key.Radionuclids == form.Radionuclids
                                            && keyValuePair.Key.Type == form.Type
+                                           && (keyValuePair.Key.PackNumber == form.PackNumber || form.OpCode is "53" or "54")
                                            && (SerialNumbersIsEmpty(keyValuePair.Key.PasNum, keyValuePair.Key.FacNum)
                                                || keyValuePair.Key.Quantity == form.Quantity))
                     .ToDictionary();
@@ -472,11 +473,13 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                     uniqueUnitWithAllOperationDictionary.Add(dto, [form]);
                     continue;
                 }
+
                 // Если операция приема/передачи/инвентаризации/нулевая и есть совпадение с имеющейся, то добавляем операцию к уже имеющейся в словаре.
                 if (form.OpCode is not "53" and not "54")
                 {
                     filteredDictionary.First().Value.Add(form);
                 }
+
                 // Если операция перезарядки, то суммируем количество, если серийные номера пусты и заменяем запись в словаре
                 else
                 {

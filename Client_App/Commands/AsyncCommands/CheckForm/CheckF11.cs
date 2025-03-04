@@ -95,6 +95,8 @@ public abstract class CheckF11 : CheckBase
             errorList.AddRange(Check_069(formsList, currentFormLine));
             errorList.AddRange(Check_070(formsList, currentFormLine));
             errorList.AddRange(Check_071(formsList, currentFormLine));
+            errorList.AddRange(Check_072(formsList, currentFormLine));
+            errorList.AddRange(Check_073(formsList, currentFormLine));
             currentFormLine++;
         }
         var index = 0;
@@ -2579,6 +2581,66 @@ public abstract class CheckF11 : CheckBase
                 Column = "PackNumber_DB",
                 Value = packNumber,
                 Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой."
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check072
+
+    //Не пустое поле (колонка 23)
+    private static List<CheckError> Check_072(List<Form11> forms, int line)
+    {
+        List<CheckError> result = new();
+        var packNumber = ReplaceNullAndTrim(forms[line].PackNumber_DB);
+        var valid = !string.IsNullOrWhiteSpace(packNumber);
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line + 1).ToString(),
+                Column = "PackNumber_DB",
+                Value = packNumber,
+                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой."
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check073
+
+    //Если значение из списка, то необходимо заполнить форму 1.2 (колонки 21 и 22)
+    private static List<CheckError> Check_073(List<Form11> forms, int line)
+    {
+        List<CheckError> result = new();
+        var packName = ReplaceNullAndTrim(forms[line].PackName_DB);
+        var packType = ReplaceNullAndTrim(forms[line].PackType_DB);
+
+        if (IOU11.Any(x => string.Equals(x, packName, StringComparison.OrdinalIgnoreCase)))
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line + 1).ToString(),
+                Column = "PackName_DB",
+                Value = packName,
+                Message = "Для данного наименования упаковки, должна быть заполнена форма 1.2 (информационное сообщение, не ошибка)."
+            });
+        }
+        else if (IOU11.Any(x => string.Equals(x, packType, StringComparison.OrdinalIgnoreCase)))
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line + 1).ToString(),
+                Column = "PackType_DB",
+                Value = packType,
+                Message = "Для данного типа упаковки, должна быть заполнена форма 1.2 (информационное сообщение, не ошибка)."
             });
         }
         return result;

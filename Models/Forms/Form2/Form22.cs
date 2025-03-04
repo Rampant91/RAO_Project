@@ -1002,6 +1002,8 @@ public partial class Form22 : Form2, IBaseColor
 
     public string VolumeInPack_DB { get; set; } = "";
 
+    #region Hidden
+
     public bool VolumeInPack_Hidden_Priv { get; set; }
 
     [NotMapped]
@@ -1019,6 +1021,8 @@ public partial class Form22 : Form2, IBaseColor
         get => VolumeInPack_Hidden_Priv2;
         set => VolumeInPack_Hidden_Priv2 = value;
     }
+
+    #endregion
 
     [NotMapped]
     [FormProperty(true, "Объем, куб. м", "РАО с упаковкой", "10")]
