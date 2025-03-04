@@ -209,11 +209,11 @@
                                   CommandParameter="1.5"
                                   Header="Форма 1.5"/>-->
                     </MenuItem>
-                    <MenuItem Header="Проверка инвентаризации">
+                    <!--<MenuItem Header="Проверка инвентаризации">
                         <MenuItem Command="{Binding  ExcelExportCheckInventories}"
                                   CommandParameter="1.1"
                                   Header="Форма 1.1"/>
-                    </MenuItem> 
+                    </MenuItem>-->
                 </MenuItem>
                 <!--
                 <MenuItem Command="{Binding MaxGraphsLength, Mode=OneTime}"
