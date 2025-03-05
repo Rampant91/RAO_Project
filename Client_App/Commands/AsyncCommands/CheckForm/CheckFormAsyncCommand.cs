@@ -92,21 +92,21 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
 
                     result.AddRange(await new CheckF21().AsyncExecute(rep21));
                     break;
-                //case "2.2":
-                //    var rep22 = await db.ReportCollectionDbSet
-                //        .AsNoTracking()
-                //        .AsQueryable()
-                //        .AsSplitQuery()
-                //        .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                //        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                //        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                //        .Include(x => x.Rows22.OrderBy(form => form.NumberInOrder_DB))
-                //        .Include(x => x.Notes.OrderBy(note => note.Order))
-                //        .Where(x => x.Reports != null && x.Reports.DBObservable != null)
-                //    .FirstOrDefaultAsync(x => x.Id == rep.Id, cts.Token);
+                case "2.2":
+                    var rep22 = await db.ReportCollectionDbSet
+                        .AsNoTracking()
+                        .AsQueryable()
+                        .AsSplitQuery()
+                        .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
+                        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                        .Include(x => x.Rows22.OrderBy(form => form.NumberInOrder_DB))
+                        .Include(x => x.Notes.OrderBy(note => note.Order))
+                        .Where(x => x.Reports != null && x.Reports.DBObservable != null)
+                    .FirstOrDefaultAsync(x => x.Id == rep.Id, cts.Token);
 
-                //    result.AddRange(await new CheckF22().AsyncExecute(rep22));
-                //    break;
+                    result.AddRange(await new CheckF22().AsyncExecute(rep22));
+                    break;
                 default:
                 {
                     #region MessageCheckFailed
