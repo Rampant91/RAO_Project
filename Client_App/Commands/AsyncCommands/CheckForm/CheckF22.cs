@@ -636,7 +636,21 @@ public class CheckF22 : CheckBase
                 Form22_ToDecExp(form22ExpectedPure);
                 (Form22, string, string) form22Expected = (form22ExpectedPure, forms22Expected[i].Item2, forms22Expected[i].Item3);
                 var mismatches = Form22_Match(form22Expected.Item1, form22RealPure, $"форм{(form22Expected.Item3.Contains(',') ? "ы" : "а")} {form22Expected.Item3}{(form22Expected.Item3 == "2.2" ? " (" + yearPrevious + ")" : "")}", $"форма 2.2 ({yearRealCurrent})", form22Expected.Item1.CodeRAO_DB == form15Plug);
-                if (mismatches == null) continue;
+                if (mismatches == null)
+                {
+                    if (TryParseDoubleExtended(form22ExpectedPure.QuantityOZIII_DB, out var quantityVal) && Math.Abs(quantityVal) <= 1e-14
+                    && TryParseDoubleExtended(form22ExpectedPure.VolumeOutOfPack_DB, out var VolumeOutOfPackVal) && Math.Abs(VolumeOutOfPackVal) <= 1e-14
+                    && TryParseDoubleExtended(form22ExpectedPure.VolumeInPack_DB, out var VolumeInPack_DB) && Math.Abs(VolumeInPack_DB) <= 1e-14)
+                    {
+                        forms22Expected.RemoveAt(i);
+                        matchFound = true;
+                        break;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
                 matchFound = true;
                 if (mismatches.Count > 0)
                 {
