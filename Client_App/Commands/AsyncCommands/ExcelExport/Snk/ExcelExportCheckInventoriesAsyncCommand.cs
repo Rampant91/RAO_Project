@@ -19,7 +19,6 @@ using Client_App.ViewModels.ProgressBar;
 using Microsoft.EntityFrameworkCore;
 using DynamicData;
 using static Client_App.Resources.StaticStringMethods;
-using Models.Forms;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
@@ -93,7 +92,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         var uniqueUnitWithAllOperationDictionary = await GetDictionary_UniqueUnitsWithOperations(inventoryFormsDtoList, plusMinusFormsDtoList, rechargeFormsDtoList, zeroFormsDtoList);
 
         progressBarVM.SetProgressBar(40, "Формирование списков СНК и ошибок");
-        await GetInventoryErrorsAndSnk(db, uniqueUnitWithAllOperationDictionary, inventoryFormsDtoList, inventoryDatesList, inventoryDuplicateErrors, excelPackage, progressBarVM, cts);
+        await GetInventoryErrorsAndSnk(db, uniqueUnitWithAllOperationDictionary, inventoryFormsDtoList, inventoryDatesList, inventoryDuplicateErrors, firstSnkDate, excelPackage, progressBarVM, cts);
 
         progressBarVM.SetProgressBar(95, "Сохранение");
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
@@ -184,7 +183,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
     private static async Task GetInventoryErrorsAndSnk(DBModel db, Dictionary<UniqueUnitDto, List<ShortForm11DTO>> uniqueUnitWithAllOperationDictionary, 
         List<ShortForm11DTO> inventoryFormsDtoList, List<DateOnly> inventoryDatesList, List<ShortForm11DTO> inventoryDuplicateErrorsDtoList,
-        ExcelPackage excelPackage, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
+        DateOnly firstInventoryDate, ExcelPackage excelPackage, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
         List<ShortForm11DTO> unitInStockDtoList = [];
 
@@ -204,7 +203,6 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                 inventoryDuplicateErrorsDtoList
                     .Where(x => x.OpDate == inventoryDate)
                     .Select(dto => new InventoryErrorsShortDto(InventoryErrorTypeEnum.InventoryDuplicate, dto))
-
             };
 
             // Если есть операции инвентаризации (кроме текущей даты, которая есть всегда), добавляем для первой инвентаризации СНК.
@@ -212,10 +210,10 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
             {
                 //Добавляем в СНК учётные единицы из первой инвентаризации
                 unitInStockDtoList.AddRange(uniqueUnitWithAllOperationDictionary
-                    .Where(unit => Enumerable
-                        .Any(unit.Value, x =>
-                            x.OpCode == "10" && x.OpDate == inventoryDate))
-                    .Select(unit => unit.Value.First()));
+                     .Where(unit => Enumerable
+                         .Any(unit.Value, x =>
+                             x.OpCode == "10" && x.OpDate == inventoryDate))
+                     .Select(unit => unit.Value.First()));
             }
             else
             {
@@ -240,7 +238,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                         .ThenBy(x => x.NumberInOrder)
                         .ToList();
 
-                    #region GetErrors 1-4, 7
+                    #region GetErrors
 
                     var lastNotInventoryOperation = currentOperations
                         .LastOrDefault(x => x.OpCode != "10");
@@ -264,7 +262,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                         && PlusOperation.Contains(lastNotInventoryOperation.OpCode)
                         && inventoryDate != inventoryDatesList[^1])
                     {
-                        errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.RegisteredAndNotInventoriedUnit, currentOperations.Last()));
+                        errorsDtoList
+                            .Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.RegisteredAndNotInventoriedUnit, currentOperations.Last()));
                     }
 
                     //2. Есть в первой инвентаризации, нет во второй, нет минусовых операций.
@@ -289,40 +288,11 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                         errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.GivenUnitIsInventoried, secondInventoryOperation));
                     }
 
-                    //4. Нет в первой инвентаризации, первая +- операция на передачу.
-                    if (firstInventoryOperation is null
-                        && firstPlusMinusOperation is not null
-                        && MinusOperation.Contains(firstPlusMinusOperation.OpCode))
-                    {
-                        errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.UnInventoriedUnitGivenAway, firstPlusMinusOperation));
-                    }
-
-                    //6. Постановка на учёт ранее проинвентаризированного ЗРИ.
-                    if (firstInventoryOperation is not null
-                        && firstPlusMinusOperation is not null
-                        && PlusOperation.Contains(firstPlusMinusOperation.OpCode))
-                    {
-                        errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.InventoriedUnitReceived, firstPlusMinusOperation));
-                    }
-
-                    //8. Все нулевые операции, идущие сразу после отсутствующей инвентаризации.
-                    if (firstInventoryOperation is null
-                        && currentOperations.Count > 0
-                        && currentOperations.FirstOrDefault(x => x.OpCode != "10") != null
-                        && IsZeroOperation(currentOperations.FirstOrDefault(x => x.OpCode != "10")))
-                    {
-                        errorsDtoList
-                            .AddRange(currentOperations
-                                .Where(x => x.OpCode != "10")
-                                .TakeWhile(IsZeroOperation)
-                                .Select(x => new InventoryErrorsShortDto(InventoryErrorTypeEnum.ZeroOperationWithUnInventoriedUnit, x)));
-                    }
-
                     #endregion
 
                     #region GetInStock
 
-                    #region EmptySerialNum
+                    #region SerialNumIsEmpty
 
                     if (SerialNumbersIsEmpty(unit.PasNum, unit.FacNum))
                     {
@@ -345,8 +315,13 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                             }
                             else if (MinusOperation.Contains(operation.OpCode))
                             {
+                                //4. Снят с учёта не стоявший на учёте ЗРИ.
+                                if (quantity == 0)
+                                {
+                                    errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.UnInventoriedUnitGivenAway, firstPlusMinusOperation!));
+                                }
                                 //9. Для пустых зав.№ и № паспорта, отдано большее количество, чем было на момент операции.
-                                if (quantity < operation.Quantity)
+                                else if (quantity < operation.Quantity)
                                 {
                                     errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.QuantityGivenExceedsAvailable, operation));
                                 }
@@ -363,14 +338,19 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
                         if (lastOperationWithUnit == null) continue;
 
+                        var currentPackNumber = currentOperations.FirstOrDefault()?.PackNumber ?? unit.PackNumber;
+
                         var currentUnit = unitInStockDtoList
                             .FirstOrDefault(x => x.PasNum == unit.PasNum
                                                  && x.FacNum == unit.FacNum
                                                  && x.Radionuclids == unit.Radionuclids
                                                  && x.Type == unit.Type
-                                                 && x.PackNumber == unit.PackNumber);
+                                                 && x.PackNumber == currentPackNumber);
 
-                        if (currentUnit != null) unitInStockDtoList.Remove(currentUnit);
+                        if (currentUnit is not null)
+                        {
+                            unitInStockDtoList.Remove(currentUnit);
+                        }
 
                         if (quantity > 0)
                         {
@@ -381,23 +361,27 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
                     #endregion
 
-                    #region NotEmptySerialNum
+                    #region SerialNumIsNotEmpty
 
                     else
                     {
-                        var unitInStock = unitInStockDtoList.FirstOrDefault(x => x.PasNum == unit.PasNum
-                                                                      && x.FacNum == unit.FacNum
-                                                                      && x.Radionuclids == unit.Radionuclids
-                                                                      && x.Type == unit.Type
-                                                                      && x.PackNumber == unit.PackNumber
-                                                                      && x.Quantity == unit.Quantity);
-
-                        var inStock = unitInStock is not null;
-
-                        if (inStock)
+                        //4. Снят с учёта не стоявший на учёте ЗРИ.
+                        if (firstInventoryOperation is null
+                            && firstPlusMinusOperation is not null
+                            && MinusOperation.Contains(firstPlusMinusOperation.OpCode))
                         {
-                            unitInStockDtoList.Remove(unitInStock!);
+                            errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.UnInventoriedUnitGivenAway, firstPlusMinusOperation));
                         }
+
+                        //6. Постановка на учёт ранее проинвентаризированного ЗРИ.
+                        if (firstInventoryOperation is not null
+                            && firstPlusMinusOperation is not null
+                            && PlusOperation.Contains(firstPlusMinusOperation.OpCode))
+                        {
+                            errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.InventoriedUnitReceived, firstPlusMinusOperation));
+                        }
+
+                        #region GetErrors
 
                         for (var i = 0; i < currentOperations.Count; i++)
                         {
@@ -416,53 +400,64 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                                     //5. Двойное снятие с учёта
                                     errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.ReDeRegistration, currentForm));
                                 }
-                                inStock = false;
                             }
                             else if (PlusOperation.Contains(currentForm.OpCode))
                             {
                                 if (previousPlusMinusOperation is not null &&
                                     PlusOperation.Contains(previousPlusMinusOperation.OpCode))
                                 {
-                                    //6. Двойная постановка на учёт
+                                    //7. Двойная постановка на учёт
                                     errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.ReRegistration, currentForm));
                                 }
-                                else inStock = true;
                             }
                         }
 
-                        //foreach (var form in currentOperations)
-                        //{
-                        //    if (PlusOperation.Contains(form.OpCode))
-                        //    {
-                        //        //6. Двойная постановка на учёт
-                        //        if (inStock)
-                        //        {
-                        //            errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.ReRegistration, form));
-                        //        }
-                        //        else inStock = true;
-                        //    }
-                        //    else if (MinusOperation.Contains(form.OpCode))
-                        //    {
-                        //        //5. Двойное снятие с учёта
-                        //        if (!inStock)
-                        //        {
-                        //            errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.ReDeRegistration, form));
-                        //        }
-                        //        else inStock = false;
-                        //    }
-                        //}
+                        #endregion
+
+                        #region GetInStock
+
+                        var inStock = allOperations.Any(x => x.OpCode == "10" && x.OpDate == firstInventoryDate);
+                        foreach (var form in allOperations.Where(x => x.OpDate <= inventoryDate))
+                        {
+                            if (IsZeroOperation(form) 
+                                && !inStock 
+                                && form.OpDate >= previousInventoryDate 
+                                && form.OpDate <= inventoryDate
+                                && form.OpDate >= firstInventoryDate)
+                            {
+                                //8. Нулевые операции с отсутствующим в наличии ЗРИ.
+                                errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.ZeroOperationWithUnInventoriedUnit, form));
+                            }
+                            if (PlusOperation.Contains(form.OpCode)) inStock = true;
+                            else if (MinusOperation.Contains(form.OpCode)) inStock = false;
+                        }
+
+                        var lastOperationWithUnit = currentOperations
+                            .OrderByDescending(x => x.OpDate)
+                            .FirstOrDefault();
+
+                        if (lastOperationWithUnit == null) continue;
+
+                        var currentPackNumber = currentOperations.FirstOrDefault()?.PackNumber ?? unit.PackNumber;
+
+                        var unitInStock = unitInStockDtoList.FirstOrDefault(x => x.PasNum == unit.PasNum
+                                                                      && x.FacNum == unit.FacNum
+                                                                      && x.Radionuclids == unit.Radionuclids
+                                                                      && x.Type == unit.Type
+                                                                      && x.PackNumber == currentPackNumber
+                                                                      && x.Quantity == unit.Quantity);
+
+                        if (unitInStock is not null)
+                        {
+                            unitInStockDtoList.Remove(unitInStock!);
+                        }
 
                         if (inStock)
                         {
-                            var lastOperationWithUnit = currentOperations
-                                .OrderByDescending(x => x.OpDate)
-                                .FirstOrDefault();
-
-                            if (lastOperationWithUnit != null)
-                            {
-                                unitInStockDtoList.Add(lastOperationWithUnit);
-                            }
+                            unitInStockDtoList.Add(lastOperationWithUnit);
                         }
+
+                        #endregion
                     }
 
                     #endregion
@@ -544,7 +539,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
             #region InventoryTable
             
             var fullFormsInventoryOrderedList = fullFormsInventoryList
-                    .OrderByDescending(x => fullFormsInventoryList
+                    .OrderByDescending(x => fullFormsSnkList
                         .Any(y => x.PasNum == y.PasNum
                                   && x.Type == y.Type
                                   && x.Radionuclids == y.Radionuclids
@@ -682,7 +677,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         if (dto is null) return false;
 
         return !PlusOperation.Contains(dto.OpCode)
-               && !MinusOperation.Contains(dto.OpCode);
+               && !MinusOperation.Contains(dto.OpCode)
+               && dto.OpCode != "10";
     }
 
     #endregion
@@ -858,6 +854,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     ContentTitle = "Выгрузка в Excel",
                     ContentMessage = $"Выгрузка не выполнена, поскольку у организации отсутствуют формы {formNum} с кодом операции 10.",
                     MinWidth = 400,
+                    MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
                 .ShowDialog(Desktop.MainWindow));
@@ -1117,7 +1114,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         ReRegistration = 7,
 
         /// <summary>
-        /// 8. Все нулевые операции, идущие сразу после отсутствующей инвентаризации.
+        /// 8. Нулевые операции с отсутствующим в наличии ЗРИ.
         /// </summary>
         ZeroOperationWithUnInventoriedUnit = 8,
 
@@ -1139,7 +1136,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
             InventoryErrorTypeEnum.ReDeRegistration => "Повторная операция снятия ЗРИ с учёта. (5)",
             InventoryErrorTypeEnum.InventoriedUnitReceived => "Постановка на учёт ранее проинвентаризированного ЗРИ. (6)",
             InventoryErrorTypeEnum.ReRegistration => "Повторная операция постановки ЗРИ на учёт. (7)",
-            InventoryErrorTypeEnum.ZeroOperationWithUnInventoriedUnit => "Операция с не проинвентаризированным ЗРИ. (нулевая) (8)",
+            InventoryErrorTypeEnum.ZeroOperationWithUnInventoriedUnit => "Операция с отсутствующим в наличии ЗРИ. (нулевая) (8)",
             InventoryErrorTypeEnum.QuantityGivenExceedsAvailable => "Снятие с учёта большего количества ЗРИ, чем было в наличии. (9)",
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };

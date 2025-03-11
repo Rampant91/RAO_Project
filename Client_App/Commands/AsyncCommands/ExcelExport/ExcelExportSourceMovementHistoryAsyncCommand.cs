@@ -56,7 +56,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         await FillExcelHeaders(excelPackage);
 
         progressBarVM.SetProgressBar(15, "Загрузка паспортов форм 1.1");
-        var pasUniqList11 = await GetPasUniqData("1.1", db, cts);
+        var pasUniqList11 = await GetPasUniqData(db, "1.1", cts);
 
         progressBarVM.SetProgressBar(40, "Загрузка форм 1.1");
         var filteredForm11 = (await GetFilteredForm(db, pasUniqList11, "1.1", pasNum!, factoryNum!, cts)).Cast<Form11>();
@@ -65,7 +65,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         await FillExcel_11(filteredForm11, excelPackage);
 
         progressBarVM.SetProgressBar(55, "Загрузка паспортов форм 1.5");
-        var pasUniqList15 = await GetPasUniqData("1.5", db, cts);
+        var pasUniqList15 = await GetPasUniqData(db, "1.5", cts);
 
         progressBarVM.SetProgressBar(80, "Загрузка форм 1.5");
         var filteredForm15 = (await GetFilteredForm(db, pasUniqList15, "1.5", pasNum!, factoryNum!, cts)).Cast<Form15>();
@@ -128,6 +128,8 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
     }
 
     #endregion
+
+    #region FillExcel
 
     #region FillExcel_11
 
@@ -556,6 +558,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
     }
 
     #endregion
+    #endregion
 
     #region GetFilteredForm
 
@@ -612,7 +615,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
     /// <param name="db">Модель БД.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Список уникальных параметров паспортов.</returns>
-    private static async Task<List<PasUniqDataDTO>> GetPasUniqData(string formNum, DBModel db, CancellationTokenSource cts)
+    private static async Task<List<PasUniqDataDTO>> GetPasUniqData(DBModel db, string formNum, CancellationTokenSource cts)
     {
         var query = db.ReportsCollectionDbSet
             .AsNoTracking()

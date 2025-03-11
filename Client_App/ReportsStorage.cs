@@ -51,7 +51,7 @@ public static class ReportsStorage
             newRep = await Api.GetAsync(Convert.ToInt32(id));   //загружаем отчет из БД
             db.Entry(checkedRep).State = EntityState.Detached; //убираем отчет из локального хранилища из отслеживания
             db.Set<Report>().Attach(newRep); //добавляем новый отчет в отслеживание
-            //db.Entry(newRep).State = EntityState.Modified;  //устанавливаем флаг, что этот отчет был изменен и требует перезаписи в БД
+            //db.Entry(newRep).State = EntityState.Modified; //устанавливаем флаг, что этот отчет был изменен и требует перезаписи в БД
             //await db.SaveChangesAsync();
             reps.Report_Collection.Replace(checkedRep, newRep); //заменяем отчет в локальном хранилище на тот, в котором загружены формы
         }
@@ -70,6 +70,11 @@ public static class ReportsStorage
 
     #region GetReportRowsCount
 
+    /// <summary>
+    /// Возвращает количество строчек форм у отчёта.
+    /// </summary>
+    /// <param name="rep">Отчёт, у которого нужно посчитать количество строчек форм.</param>
+    /// <returns>Количество строчек форм.</returns>
     public static async Task<int> GetReportRowsCount(Report rep)
     {
         while (StaticConfiguration.IsFileLocked(null)) Thread.Sleep(50);

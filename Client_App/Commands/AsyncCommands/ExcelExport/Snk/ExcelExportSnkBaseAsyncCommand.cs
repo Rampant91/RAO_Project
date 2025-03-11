@@ -391,7 +391,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                         $"Не удалось совершить выгрузку СНК," +
                         $"{Environment.NewLine}поскольку у выбранной организации отсутствуют отчёты по форме {formNum}.",
                     MinWidth = 400,
-                    MinHeight = 150,
+                    MinHeight = 100,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
                 .ShowDialog(Desktop.MainWindow));
