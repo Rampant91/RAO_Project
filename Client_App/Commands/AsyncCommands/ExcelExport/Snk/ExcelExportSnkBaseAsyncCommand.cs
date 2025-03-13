@@ -26,7 +26,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// </summary>
     private protected static readonly string[] MinusOperation =
     [
-        "21", "22", "25", "27", "28", "29", "41", "42", "43", "46", "47", "65", "67", "71", "72", "81", "82", "83", "84", "98"
+        "21", "22", "25", "27", "28", "29", "41", "42", "43", "46", "47", "65", "67", "68", "71", "72", "81", "82", "83", "84", "98"
     ];
 
 
@@ -35,7 +35,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// </summary>
     private protected static readonly string[] PlusOperation =
     [
-        "11", "12", "17", "31", "32", "35", "37", "38", "39", "58", "73", "74", "75", "85", "86", "87", "88", "97"
+        "11", "12", "17", "18", "31", "32", "35", "37", "38", "39", "58", "73", "74", "75", "85", "86", "87", "88", "97"
     ];
 
     #endregion
@@ -324,22 +324,33 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     {
         return new Regex(@"[\\/:*?""<>|.,_\-;:\s+]")
             .Replace(str ?? string.Empty, "")
-            .ToLower()
+            .Replace('А', 'A')
             .Replace('а', 'a')
             .Replace('б', 'b')
-            .Replace('в', 'b')
+            .Replace('В', 'B')
             .Replace('г', 'r')
+            .Replace('Е', 'E')
             .Replace('е', 'e')
+            .Replace('Ё', 'E')
             .Replace('ё', 'e')
+            .Replace('К', 'K')
             .Replace('к', 'k')
+            .Replace('М', 'M')
             .Replace('м', 'm')
+            .Replace('Н', 'H')
+            .Replace('О', 'O')
             .Replace('о', 'o')
-            .Replace('0', 'o')
+            .Replace('0', 'O')
+            .Replace('Р', 'P')
             .Replace('р', 'p')
+            .Replace('С', 'C')
             .Replace('с', 'c')
-            .Replace('т', 't')
+            .Replace('Т', 'T')
+            .Replace('У', 'Y')
             .Replace('у', 'y')
-            .Replace('х', 'x');
+            .Replace('Х', 'X')
+            .Replace('х', 'x')
+            .ToLower();
     }
 
     #endregion
@@ -521,9 +532,6 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                      .ThenBy(x => x.RepDto.StartPeriod)
                      .ThenBy(x => x.RepDto.EndPeriod)
                      .ThenBy(x => x.NumberInOrder))
-                     
-                     //ThenByDescending(x => PlusOperation.Contains(x.OpCode))
-                     //.ThenByDescending(x => x.OpCode is "53" or "54"))
         {
             opCount++;
             if (form.OpCode is not ("53" or "54"))
@@ -981,16 +989,17 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             
             else
             {
-                var inStock = operations
-                    .Any(x => x.OpCode == "10" && x.OpDate == firstInventoryDate);
-                foreach (var form in operations)
+                var inStock = operations.Any(x => x.OpCode == "10" && x.OpDate == firstInventoryDate);
+
+                var currentOperationsWithoutMutuallyExclusive = await GetOperationsWithoutMutuallyExclusive(operations);
+                foreach (var form in currentOperationsWithoutMutuallyExclusive)
                 {
                     if (PlusOperation.Contains(form.OpCode)) inStock = true;
                     else if (MinusOperation.Contains(form.OpCode)) inStock = false;
                 }
                 if (inStock)
                 {
-                    var lastOperationWithUnit = operations
+                    var lastOperationWithUnit = currentOperationsWithoutMutuallyExclusive
                         .OrderByDescending(x => x.OpDate)
                         .FirstOrDefault();
 
@@ -1051,6 +1060,41 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             }
         }
         return Task.FromResult(operationsWithoutDuplicates);
+    }
+
+    private protected static Task<List<ShortForm11DTO>> GetOperationsWithoutMutuallyExclusive(List<ShortForm11DTO> currentOperations)
+    {
+        var currentOperationsGroupedByDate = currentOperations.Where(x =>
+                !PlusOperation.Contains(x.OpCode) && !MinusOperation.Contains(x.OpCode)
+                || PlusOperation.Contains(x.OpCode) || MinusOperation.Contains(x.OpCode))
+            .GroupBy(x => x.OpDate)
+            .ToList();
+
+        var currentOperationWithoutMutuallyExclusive = new List<ShortForm11DTO>();
+        foreach (var group in currentOperationsGroupedByDate)
+        {
+            var formsList = group.ToList();
+            foreach (var form in formsList)
+            {
+                var currentFormIsPlus = PlusOperation.Contains(form.OpCode);
+                var currentFormIsMinus = MinusOperation.Contains(form.OpCode);
+
+                var duplicate = currentOperationWithoutMutuallyExclusive.FirstOrDefault(x =>
+                    x.OpDate == form.OpDate
+                    && (currentFormIsMinus && MinusOperation.Contains(x.OpCode)
+                        || currentFormIsPlus && PlusOperation.Contains(x.OpCode)));
+
+                if (duplicate is not null)
+                {
+                    currentOperationWithoutMutuallyExclusive.Remove(duplicate);
+                }
+                else
+                {
+                    currentOperationWithoutMutuallyExclusive.Add(form);
+                }
+            }
+        }
+        return Task.FromResult(currentOperationWithoutMutuallyExclusive);
     }
 
     #endregion

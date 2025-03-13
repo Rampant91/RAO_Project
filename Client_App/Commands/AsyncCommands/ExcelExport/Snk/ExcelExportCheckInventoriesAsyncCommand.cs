@@ -18,6 +18,7 @@ using OfficeOpenXml.Table;
 using Client_App.ViewModels.ProgressBar;
 using Microsoft.EntityFrameworkCore;
 using DynamicData;
+using ReactiveUI;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
@@ -183,7 +184,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
     private static async Task GetInventoryErrorsAndSnk(DBModel db, Dictionary<UniqueUnitDto, List<ShortForm11DTO>> uniqueUnitWithAllOperationDictionary, 
         List<ShortForm11DTO> inventoryFormsDtoList, List<DateOnly> inventoryDatesList, List<ShortForm11DTO> inventoryDuplicateErrorsDtoList,
-        DateOnly firstInventoryDate, ExcelPackage excelPackage, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
+        DateOnly primaryInventoryDate, ExcelPackage excelPackage, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
         List<ShortForm11DTO> unitInStockDtoList = [];
 
@@ -193,10 +194,6 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         var currentInventoryDateIndex = 0;
         foreach (var inventoryDate in inventoryDatesList)
         {
-            var previousInventoryDate = currentInventoryDateIndex > 0
-                ? inventoryDatesList[currentInventoryDateIndex - 1]
-                : DateOnly.MinValue;
-
             // Инициализируем список ошибок, сразу добавляя в него повторные операции инвентаризации.
             var errorsDtoList = new List<InventoryErrorsShortDto>()
             {
@@ -205,265 +202,274 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     .Select(dto => new InventoryErrorsShortDto(InventoryErrorTypeEnum.InventoryDuplicate, dto))
             };
 
+            #region FirstInventory
+            
             // Если есть операции инвентаризации (кроме текущей даты, которая есть всегда), добавляем для первой инвентаризации СНК.
             if (currentInventoryDateIndex == 0)
             {
                 //Добавляем в СНК учётные единицы из первой инвентаризации
                 unitInStockDtoList.AddRange(uniqueUnitWithAllOperationDictionary
-                     .Where(unit => Enumerable
-                         .Any(unit.Value, x =>
-                             x.OpCode == "10" && x.OpDate == inventoryDate))
-                     .Select(unit => unit.Value.First()));
+                    .Where(unit => Enumerable
+                        .Any(unit.Value, x =>
+                            x.OpCode == "10" && x.OpDate == inventoryDate))
+                    .Select(unit => unit.Value.First()));
+
+                // Добавляем в словарь СНК текущую дату инвентаризации и СНК на эту дату.
+                unitInStockByDateDictionary.Add(inventoryDate, unitInStockDtoList.ToList());
+
+                // Добавляем в словарь ошибок текущую дату и список ошибок на эту дату.
+                inventoryErrorsByDateDictionary.Add(inventoryDate, errorsDtoList.ToList());
+
+                currentInventoryDateIndex++;
+
+                continue;
             }
-            else
+
+            #endregion
+
+            var previousInventoryDate = inventoryDatesList[currentInventoryDateIndex - 1];
+
+            foreach (var (unit, allOperations) in uniqueUnitWithAllOperationDictionary)
             {
-                foreach (var (unit, allOperations) in uniqueUnitWithAllOperationDictionary)
+                var currentOperations = allOperations
+                    .Where(x => x.OpDate >= previousInventoryDate && x.OpDate <= inventoryDate)
+                    .OrderBy(x => x.OpDate)
+                    .ThenBy(x => x.RepDto.StartPeriod)
+                    .ThenBy(x => x.NumberInOrder)
+                    .ToList();
+
+                #region GetErrors
+
+                var firstPlusMinusOperation = currentOperations
+                    .FirstOrDefault(x => PlusOperation.Contains(x.OpCode) || MinusOperation.Contains(x.OpCode));
+
+                var lastPlusMinusOperation = currentOperations
+                    .LastOrDefault(x => PlusOperation.Contains(x.OpCode) || MinusOperation.Contains(x.OpCode));
+
+                var firstInventoryOperation = currentOperations
+                    .FirstOrDefault(x => x.OpCode == "10" && x.OpDate == previousInventoryDate);
+
+                var secondInventoryOperation = currentOperations
+                    .FirstOrDefault(x => x.OpCode == "10" && x.OpDate == inventoryDate);
+
+                //1. Нет во второй инвентаризации, но последняя +- операция плюсовая.
+                if (secondInventoryOperation is null
+                    && lastPlusMinusOperation is not null
+                    && PlusOperation.Contains(lastPlusMinusOperation.OpCode)
+                    && inventoryDate != inventoryDatesList[^1])
                 {
-                    var currentOperations = allOperations
-                        .Where(x => x.OpDate >= previousInventoryDate && x.OpDate <= inventoryDate)
-                        //.Where(x =>
-                        //{
-                        //    var currentInventory = allOperations
-                        //        .FirstOrDefault(y => y.OpDate == inventoryDate && x.OpCode == "10");
+                    errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.RegisteredAndNotInventoriedUnit, lastPlusMinusOperation));
+                }
 
-                        //    if (currentInventory is null) return false;
+                #endregion
 
-                        //    return (x.OpDate >= previousInventoryDate && x.OpDate <= inventoryDate && x.OpCode == "10")
-                        //           || (x.OpDate >= previousInventoryDate && x.OpDate < inventoryDate)
-                        //           || (x.OpDate == inventoryDate && x.RepDto.StartPeriod < currentInventory.RepDto.StartPeriod)
-                        //           || (x.OpDate == inventoryDate && x.NumberInOrder < currentInventory.NumberInOrder);
-                        //})
-                        .OrderBy(x => x.OpDate)
-                        .ThenBy(x => x.RepDto.StartPeriod)
-                        .ThenBy(x => x.NumberInOrder)
-                        .ToList();
+                #region GetInStock
 
-                    #region GetErrors
+                #region SerialNumIsEmpty
 
-                    var lastNotInventoryOperation = currentOperations
-                        .LastOrDefault(x => x.OpCode != "10");
+                if (SerialNumbersIsEmpty(unit.PasNum, unit.FacNum))
+                {
+                    var currentPackNumber = currentOperations.FirstOrDefault()?.PackNumber ?? unit.PackNumber;
 
-                    var firstPlusMinusOperation = currentOperations
-                        .FirstOrDefault(x => PlusOperation.Contains(x.OpCode) || MinusOperation.Contains(x.OpCode));
+                    var currentUnitInStock = unitInStockDtoList
+                        .FirstOrDefault(x =>
+                            x.PasNum == unit.PasNum
+                            && x.FacNum == unit.FacNum
+                            && x.Radionuclids == unit.Radionuclids
+                            && x.Type == unit.Type
+                            && x.PackNumber == currentPackNumber);
 
-                    var lastPlusMinusOperation = currentOperations
-                        .LastOrDefault(x => PlusOperation.Contains(x.OpCode) || MinusOperation.Contains(x.OpCode));
+                    var quantity = currentUnitInStock?.Quantity ?? 0;
 
-                    var firstInventoryOperation = currentOperations
-                        .FirstOrDefault(x => x.OpCode == "10" && x.OpDate == previousInventoryDate);
-
-                    var secondInventoryOperation = currentOperations
-                        .FirstOrDefault(x => x.OpCode == "10" && x.OpDate == inventoryDate);
-
-                    //1. Нет в инвентаризациях, но последняя операция - плюсовая.
-                    if (firstInventoryOperation is null
-                        && secondInventoryOperation is null
-                        && lastNotInventoryOperation is not null
-                        && PlusOperation.Contains(lastNotInventoryOperation.OpCode)
-                        && inventoryDate != inventoryDatesList[^1])
-                    {
-                        errorsDtoList
-                            .Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.RegisteredAndNotInventoriedUnit, currentOperations.Last()));
-                    }
-
-                    //2. Есть в первой инвентаризации, нет во второй, нет минусовых операций.
-                    if (firstInventoryOperation is not null
+                    //2. Есть в СНК на первую инвентаризацию, нет второй инвентаризации, нет минусовых операций.
+                    if (currentUnitInStock != null 
+                        && quantity != 0 
                         && secondInventoryOperation is null
                         && !currentOperations.Any(x => MinusOperation.Contains(x.OpCode))
                         && inventoryDate != inventoryDatesList[^1])
                     {
-                        errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.MissingFromInventoryUnit, firstInventoryOperation));
+                        errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.MissingFromInventoryUnit, currentUnitInStock));
                     }
 
-                    //3. Есть во второй инвентаризации, последняя операция не плюсовая.
-                    if (secondInventoryOperation is not null 
-                        && (currentOperations.Any(x => MinusOperation.Contains(x.OpCode))
-                            && !PlusOperation.Contains(lastPlusMinusOperation!.OpCode) 
-                            
-                            || firstInventoryOperation is null && lastPlusMinusOperation is null 
+                    var operationsWithoutDuplicates = await GetOperationsWithoutDuplicates(currentOperations);
 
-                            || firstInventoryOperation is null && lastPlusMinusOperation is not null 
-                                                               && !PlusOperation.Contains(lastPlusMinusOperation.OpCode)))
+                    foreach (var operation in operationsWithoutDuplicates)
+                    {
+                        if (PlusOperation.Contains(operation.OpCode))
+                        {
+                            quantity += operation.Quantity;
+                        }
+                        else if (MinusOperation.Contains(operation.OpCode))
+                        {
+                            //4. Снятие с учёта не стоявшего на учёте ЗРИ.
+                            if (quantity == 0)
+                            {
+                                errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.UnInventoriedUnitGivenAway, firstPlusMinusOperation!));
+                            }
+                            //9. Для пустых зав.№ и № паспорта, отдано большее количество, чем было на момент операции.
+                            else if (quantity < operation.Quantity)
+                            {
+                                errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.QuantityGivenExceedsAvailable, operation));
+                            }
+                            else
+                            {
+                                quantity -= operation.Quantity;
+                            }
+                        }
+                    }
+
+                    var lastOperationWithUnit = currentOperations
+                        .OrderByDescending(x => x.OpDate)
+                        .FirstOrDefault();
+
+                    if (lastOperationWithUnit == null) continue;
+
+                    //3. Есть во второй инвентаризации, но отсутствует в СНК на дату второй инвентаризации.
+                    if (secondInventoryOperation is not null
+                        && (currentUnitInStock is null || quantity == 0))
                     {
                         errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.GivenUnitIsInventoried, secondInventoryOperation));
+                    }
+
+                    if (currentUnitInStock is not null)
+                    {
+                        unitInStockDtoList.Remove(currentUnitInStock);
+                    }
+
+                    if (quantity > 0)
+                    {
+                        lastOperationWithUnit.Quantity = quantity;
+                        unitInStockDtoList.Add(lastOperationWithUnit);
+                    }
+                }
+
+                #endregion
+
+                #region SerialNumIsNotEmpty
+
+                else
+                {
+                    var operationsWithoutMutuallyExclusive = await GetOperationsWithoutMutuallyExclusive(currentOperations);
+
+                    #region GetErrors
+
+                    for (var i = 0; i < operationsWithoutMutuallyExclusive.Count; i++)
+                    {
+                        var currentForm = operationsWithoutMutuallyExclusive[i];
+                        var previousPlusMinusOperation = operationsWithoutMutuallyExclusive
+                            .GetRange(0, i)
+                            .Where(x => PlusOperation.Contains(x.OpCode) || MinusOperation.Contains(x.OpCode))
+                            .Reverse()
+                            .FirstOrDefault();
+
+                        if (MinusOperation.Contains(currentForm.OpCode) 
+                            && previousPlusMinusOperation is not null 
+                            && MinusOperation.Contains(previousPlusMinusOperation.OpCode))
+                        {
+                            //5. Двойное снятие с учёта
+                            errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.ReDeRegistration, currentForm));
+                        }
+                        else if (PlusOperation.Contains(currentForm.OpCode) 
+                                 && previousPlusMinusOperation is not null &&
+                                 PlusOperation.Contains(previousPlusMinusOperation.OpCode))
+                        {
+                            //7. Двойная постановка на учёт
+                            errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.ReRegistration, currentForm));
+                        }
                     }
 
                     #endregion
 
                     #region GetInStock
 
-                    #region SerialNumIsEmpty
+                    var inStock = allOperations.Any(x => x.OpCode == "10" && x.OpDate == primaryInventoryDate);
+                    var  inStockOnPreviousInventoryDate = inStock;
 
-                    if (SerialNumbersIsEmpty(unit.PasNum, unit.FacNum))
+                    foreach (var form in allOperations.Where(x => x.OpDate <= previousInventoryDate))
                     {
-                        var quantity = unitInStockDtoList
-                            .FirstOrDefault(x => 
-                                x.PasNum == unit.PasNum 
-                                && x.FacNum == unit.FacNum
-                                && x.Radionuclids == unit.Radionuclids
-                                && x.Type == unit.Type
-                                && x.PackNumber == unit.PackNumber)
-                            ?.Quantity ?? 0;
-
-                        var operationsWithoutDuplicates = await GetOperationsWithoutDuplicates(currentOperations);
-
-                        foreach (var operation in operationsWithoutDuplicates)
-                        {
-                            if (PlusOperation.Contains(operation.OpCode))
-                            {
-                                quantity += operation.Quantity;
-                            }
-                            else if (MinusOperation.Contains(operation.OpCode))
-                            {
-                                //4. Снят с учёта не стоявший на учёте ЗРИ.
-                                if (quantity == 0)
-                                {
-                                    errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.UnInventoriedUnitGivenAway, firstPlusMinusOperation!));
-                                }
-                                //9. Для пустых зав.№ и № паспорта, отдано большее количество, чем было на момент операции.
-                                else if (quantity < operation.Quantity)
-                                {
-                                    errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.QuantityGivenExceedsAvailable, operation));
-                                }
-                                else
-                                {
-                                    quantity -= operation.Quantity;
-                                }
-                            }
-                        }
-
-                        var lastOperationWithUnit = currentOperations
-                            .OrderByDescending(x => x.OpDate)
-                            .FirstOrDefault();
-
-                        if (lastOperationWithUnit == null) continue;
-
-                        var currentPackNumber = currentOperations.FirstOrDefault()?.PackNumber ?? unit.PackNumber;
-
-                        var currentUnit = unitInStockDtoList
-                            .FirstOrDefault(x => x.PasNum == unit.PasNum
-                                                 && x.FacNum == unit.FacNum
-                                                 && x.Radionuclids == unit.Radionuclids
-                                                 && x.Type == unit.Type
-                                                 && x.PackNumber == currentPackNumber);
-
-                        if (currentUnit is not null)
-                        {
-                            unitInStockDtoList.Remove(currentUnit);
-                        }
-
-                        if (quantity > 0)
-                        {
-                            lastOperationWithUnit.Quantity = quantity;
-                            unitInStockDtoList.Add(lastOperationWithUnit);
-                        }
+                        if (PlusOperation.Contains(form.OpCode)) inStockOnPreviousInventoryDate = true;
+                        else if (MinusOperation.Contains(form.OpCode)) inStockOnPreviousInventoryDate = false;
                     }
 
-                    #endregion
-
-                    #region SerialNumIsNotEmpty
-
-                    else
+                    //2. Есть в СНК на первую инвентаризацию, нет второй инвентаризации, нет минусовых операций.
+                    if (inStockOnPreviousInventoryDate
+                        && secondInventoryOperation is null
+                        && !currentOperations.Any(x => MinusOperation.Contains(x.OpCode))
+                        && inventoryDate != inventoryDatesList[^1])
                     {
-                        //4. Снят с учёта не стоявший на учёте ЗРИ.
-                        if (firstInventoryOperation is null
-                            && firstPlusMinusOperation is not null
-                            && MinusOperation.Contains(firstPlusMinusOperation.OpCode))
-                        {
-                            errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.UnInventoriedUnitGivenAway, firstPlusMinusOperation));
-                        }
-
-                        //6. Постановка на учёт ранее проинвентаризированного ЗРИ.
-                        if (firstInventoryOperation is not null
-                            && firstPlusMinusOperation is not null
-                            && PlusOperation.Contains(firstPlusMinusOperation.OpCode))
-                        {
-                            errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.InventoriedUnitReceived, firstPlusMinusOperation));
-                        }
-
-                        #region GetErrors
-
-                        for (var i = 0; i < currentOperations.Count; i++)
-                        {
-                            var currentForm = currentOperations[i];
-                            var previousPlusMinusOperation = currentOperations
-                                .GetRange(0, i)
-                                .Where(x => PlusOperation.Contains(x.OpCode) || MinusOperation.Contains(x.OpCode))
-                                .Reverse()
-                                .FirstOrDefault();
-
-                            if (MinusOperation.Contains(currentForm.OpCode))
-                            {
-                                if (previousPlusMinusOperation is not null &&
-                                    MinusOperation.Contains(previousPlusMinusOperation.OpCode))
-                                {
-                                    //5. Двойное снятие с учёта
-                                    errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.ReDeRegistration, currentForm));
-                                }
-                            }
-                            else if (PlusOperation.Contains(currentForm.OpCode))
-                            {
-                                if (previousPlusMinusOperation is not null &&
-                                    PlusOperation.Contains(previousPlusMinusOperation.OpCode))
-                                {
-                                    //7. Двойная постановка на учёт
-                                    errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.ReRegistration, currentForm));
-                                }
-                            }
-                        }
-
-                        #endregion
-
-                        #region GetInStock
-
-                        var inStock = allOperations.Any(x => x.OpCode == "10" && x.OpDate == firstInventoryDate);
-                        foreach (var form in allOperations.Where(x => x.OpDate <= inventoryDate))
-                        {
-                            if (IsZeroOperation(form) 
-                                && !inStock 
-                                && form.OpDate >= previousInventoryDate 
-                                && form.OpDate <= inventoryDate
-                                && form.OpDate >= firstInventoryDate)
-                            {
-                                //8. Нулевые операции с отсутствующим в наличии ЗРИ.
-                                errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.ZeroOperationWithUnInventoriedUnit, form));
-                            }
-                            if (PlusOperation.Contains(form.OpCode)) inStock = true;
-                            else if (MinusOperation.Contains(form.OpCode)) inStock = false;
-                        }
-
-                        var lastOperationWithUnit = currentOperations
-                            .OrderByDescending(x => x.OpDate)
-                            .FirstOrDefault();
-
-                        if (lastOperationWithUnit == null) continue;
-
-                        var currentPackNumber = currentOperations.FirstOrDefault()?.PackNumber ?? unit.PackNumber;
-
-                        var unitInStock = unitInStockDtoList.FirstOrDefault(x => x.PasNum == unit.PasNum
-                                                                      && x.FacNum == unit.FacNum
-                                                                      && x.Radionuclids == unit.Radionuclids
-                                                                      && x.Type == unit.Type
-                                                                      && x.PackNumber == currentPackNumber
-                                                                      && x.Quantity == unit.Quantity);
-
-                        if (unitInStock is not null)
-                        {
-                            unitInStockDtoList.Remove(unitInStock!);
-                        }
-
-                        if (inStock)
-                        {
-                            unitInStockDtoList.Add(lastOperationWithUnit);
-                        }
-
-                        #endregion
+                        errorsDtoList.Add(new InventoryErrorsShortDto(
+                            InventoryErrorTypeEnum.MissingFromInventoryUnit, allOperations.Last(x => x.OpDate <= inventoryDate)));
                     }
 
-                    #endregion
+                    //4. Снятие с учёта не стоявшего на учёте ЗРИ.
+                    if (!inStockOnPreviousInventoryDate
+                        && firstPlusMinusOperation is not null
+                        && MinusOperation.Contains(firstPlusMinusOperation.OpCode))
+                    {
+                        errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.UnInventoriedUnitGivenAway, firstPlusMinusOperation));
+                    }
+
+                    //6. Постановка на учёт имеющегося в наличии ЗРИ.
+                    if (inStockOnPreviousInventoryDate
+                        && firstPlusMinusOperation is not null
+                        && PlusOperation.Contains(firstPlusMinusOperation.OpCode))
+                    {
+                        errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.InventoriedUnitReceived, firstPlusMinusOperation));
+                    }
+
+                    foreach (var form in allOperations.Where(x => x.OpDate <= inventoryDate))
+                    {
+                        if (IsZeroOperation(form) 
+                            && !inStock 
+                            && form.OpDate >= previousInventoryDate 
+                            && form.OpDate <= inventoryDate
+                            && form.OpDate >= primaryInventoryDate)
+                        {
+                            //8. Нулевые операции с отсутствующим в наличии ЗРИ.
+                            errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.ZeroOperationWithUnInventoriedUnit, form));
+                        }
+                        if (PlusOperation.Contains(form.OpCode)) inStock = true;
+                        else if (MinusOperation.Contains(form.OpCode)) inStock = false;
+                    }
+
+                    var lastOperationWithUnit = operationsWithoutMutuallyExclusive
+                        .OrderByDescending(x => x.OpDate)
+                        .FirstOrDefault();
+
+                    if (lastOperationWithUnit == null) continue;
+
+                    var currentPackNumber = operationsWithoutMutuallyExclusive.FirstOrDefault()?.PackNumber ?? unit.PackNumber;
+
+                    var unitInStock = unitInStockDtoList.FirstOrDefault(x => x.PasNum == unit.PasNum
+                                                                             && x.FacNum == unit.FacNum
+                                                                             && x.Radionuclids == unit.Radionuclids
+                                                                             && x.Type == unit.Type
+                                                                             && x.PackNumber == currentPackNumber
+                                                                             && x.Quantity == unit.Quantity);
+
+                    //3. Есть во второй инвентаризации, но отсутствует в СНК на дату второй инвентаризации.
+                    if (secondInventoryOperation is not null
+                        && !inStock)
+                    {
+                        errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.GivenUnitIsInventoried, secondInventoryOperation));
+                    }
+
+                    if (unitInStock is not null)
+                    {
+                        unitInStockDtoList.Remove(unitInStock!);
+                    }
+
+                    if (inStock)
+                    {
+                        unitInStockDtoList.Add(lastOperationWithUnit);
+                    }
 
                     #endregion
                 }
+
+                #endregion
+
+                #endregion
             }
 
             // Добавляем в словарь СНК текущую дату инвентаризации и СНК на эту дату.
@@ -1094,7 +1100,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         GivenUnitIsInventoried = 3,
 
         /// <summary>
-        /// 4. Нет в первой инвентаризации, первая операция на передачу.
+        /// 4. Снятие с учёта не стоявшего на учёте ЗРИ.
         /// </summary>
         UnInventoriedUnitGivenAway = 4,
 
@@ -1104,7 +1110,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         ReDeRegistration = 5,
 
         /// <summary>
-        /// 6. Постановка на учёт ранее проинвентаризированного ЗРИ.
+        /// 6. Постановка на учёт имеющегося в наличии ЗРИ.
         /// </summary>
         InventoriedUnitReceived = 6,
 
@@ -1130,11 +1136,11 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         {
             InventoryErrorTypeEnum.InventoryDuplicate => "Повторная операция инвентаризации ЗРИ в ту же дату. (0)",
             InventoryErrorTypeEnum.RegisteredAndNotInventoriedUnit => "В инвентаризации отсутствует поставленный на учёт ЗРИ. (1)",
-            InventoryErrorTypeEnum.MissingFromInventoryUnit => "В инвентаризации отсутствует ранее стоявший на учёте ЗРИ (был в прошлой инвентаризации). (2)",
+            InventoryErrorTypeEnum.MissingFromInventoryUnit => "В инвентаризации отсутствует ранее стоявший на учёте ЗРИ (был в прошлой инвентаризации, нет операций передачи). (2)",
             InventoryErrorTypeEnum.GivenUnitIsInventoried => "Проинвентаризирован ЗРИ, который был ранее снят с учёта или не был получен. (3)",
-            InventoryErrorTypeEnum.UnInventoriedUnitGivenAway => "Снят с учёта не стоявший на учёте ЗРИ. (4)",
+            InventoryErrorTypeEnum.UnInventoriedUnitGivenAway => "Снятие с учёта не стоявшего на учёте ЗРИ. (4)",
             InventoryErrorTypeEnum.ReDeRegistration => "Повторная операция снятия ЗРИ с учёта. (5)",
-            InventoryErrorTypeEnum.InventoriedUnitReceived => "Постановка на учёт ранее проинвентаризированного ЗРИ. (6)",
+            InventoryErrorTypeEnum.InventoriedUnitReceived => "Постановка на учёт имеющегося в наличии ЗРИ. (6)",
             InventoryErrorTypeEnum.ReRegistration => "Повторная операция постановки ЗРИ на учёт. (7)",
             InventoryErrorTypeEnum.ZeroOperationWithUnInventoriedUnit => "Операция с отсутствующим в наличии ЗРИ. (нулевая) (8)",
             InventoryErrorTypeEnum.QuantityGivenExceedsAvailable => "Снятие с учёта большего количества ЗРИ, чем было в наличии. (9)",
