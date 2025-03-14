@@ -1081,8 +1081,8 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 
                 var duplicate = currentOperationWithoutMutuallyExclusive.FirstOrDefault(x =>
                     x.OpDate == form.OpDate
-                    && (currentFormIsMinus && MinusOperation.Contains(x.OpCode)
-                        || currentFormIsPlus && PlusOperation.Contains(x.OpCode)));
+                    && (currentFormIsMinus && PlusOperation.Contains(x.OpCode)
+                        || currentFormIsPlus && MinusOperation.Contains(x.OpCode)));
 
                 if (duplicate is not null)
                 {

@@ -1927,7 +1927,7 @@ public abstract class CheckF13 : CheckBase
         List<CheckError> result = new();
         string[] applicableOperationCodes =
         {
-            "21", "25", "27", "28", "29", "31", "32", "35", "36", "37", "38",
+            "21", "25", "27", "28", "29", "31", "35", "36", "37", "38",
             "39", "61", "62", "81", "82", "83", "84", "85", "86", "87", "88"
         };
         string[] transporterOkpoValid = { "прим.", "прим", "примечание", "примечания" };

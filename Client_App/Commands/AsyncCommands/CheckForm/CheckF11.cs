@@ -2465,7 +2465,7 @@ public abstract class CheckF11 : CheckBase
         List<CheckError> result = new();
         string[] applicableOperationCodes =
         {
-            "21", "25", "27", "28", "29", "31", "32", "35", "37", "38", "39", 
+            "21", "25", "27", "28", "29", "31", "35", "37", "38", "39", 
             "61", "62", "81", "82", "83", "84", "85", "86", "87", "88"
         };
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);

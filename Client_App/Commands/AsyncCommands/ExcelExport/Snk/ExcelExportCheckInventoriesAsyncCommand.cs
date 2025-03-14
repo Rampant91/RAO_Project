@@ -18,7 +18,6 @@ using OfficeOpenXml.Table;
 using Client_App.ViewModels.ProgressBar;
 using Microsoft.EntityFrameworkCore;
 using DynamicData;
-using ReactiveUI;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
@@ -240,26 +239,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
                 #region GetErrors
 
-                var firstPlusMinusOperation = currentOperations
-                    .FirstOrDefault(x => PlusOperation.Contains(x.OpCode) || MinusOperation.Contains(x.OpCode));
-
-                var lastPlusMinusOperation = currentOperations
-                    .LastOrDefault(x => PlusOperation.Contains(x.OpCode) || MinusOperation.Contains(x.OpCode));
-
-                var firstInventoryOperation = currentOperations
-                    .FirstOrDefault(x => x.OpCode == "10" && x.OpDate == previousInventoryDate);
-
                 var secondInventoryOperation = currentOperations
                     .FirstOrDefault(x => x.OpCode == "10" && x.OpDate == inventoryDate);
-
-                //1. Нет во второй инвентаризации, но последняя +- операция плюсовая.
-                if (secondInventoryOperation is null
-                    && lastPlusMinusOperation is not null
-                    && PlusOperation.Contains(lastPlusMinusOperation.OpCode)
-                    && inventoryDate != inventoryDatesList[^1])
-                {
-                    errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.RegisteredAndNotInventoriedUnit, lastPlusMinusOperation));
-                }
 
                 #endregion
 
@@ -292,6 +273,21 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     }
 
                     var operationsWithoutDuplicates = await GetOperationsWithoutDuplicates(currentOperations);
+
+                    var firstPlusMinusOperation = operationsWithoutDuplicates
+                        .FirstOrDefault(x => PlusOperation.Contains(x.OpCode) || MinusOperation.Contains(x.OpCode));
+
+                    var lastPlusMinusOperation = operationsWithoutDuplicates
+                        .LastOrDefault(x => PlusOperation.Contains(x.OpCode) || MinusOperation.Contains(x.OpCode));
+
+                    //1. Нет во второй инвентаризации, но последняя +- операция плюсовая.
+                    if (secondInventoryOperation is null
+                        && lastPlusMinusOperation is not null
+                        && PlusOperation.Contains(lastPlusMinusOperation.OpCode)
+                        && inventoryDate != inventoryDatesList[^1])
+                    {
+                        errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.RegisteredAndNotInventoriedUnit, lastPlusMinusOperation));
+                    }
 
                     foreach (var operation in operationsWithoutDuplicates)
                     {
@@ -350,8 +346,24 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                 else
                 {
                     var operationsWithoutMutuallyExclusive = await GetOperationsWithoutMutuallyExclusive(currentOperations);
+                    var allOperationsWithoutMutuallyExclusive = await GetOperationsWithoutMutuallyExclusive(allOperations);
 
                     #region GetErrors
+
+                    var firstPlusMinusOperation = operationsWithoutMutuallyExclusive
+                        .FirstOrDefault(x => PlusOperation.Contains(x.OpCode) || MinusOperation.Contains(x.OpCode));
+
+                    var lastPlusMinusOperation = operationsWithoutMutuallyExclusive
+                        .LastOrDefault(x => PlusOperation.Contains(x.OpCode) || MinusOperation.Contains(x.OpCode));
+
+                    //1. Нет во второй инвентаризации, но последняя +- операция плюсовая.
+                    if (secondInventoryOperation is null
+                        && lastPlusMinusOperation is not null
+                        && PlusOperation.Contains(lastPlusMinusOperation.OpCode)
+                        && inventoryDate != inventoryDatesList[^1])
+                    {
+                        errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.RegisteredAndNotInventoriedUnit, lastPlusMinusOperation));
+                    }
 
                     for (var i = 0; i < operationsWithoutMutuallyExclusive.Count; i++)
                     {
@@ -382,10 +394,10 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
                     #region GetInStock
 
-                    var inStock = allOperations.Any(x => x.OpCode == "10" && x.OpDate == primaryInventoryDate);
+                    var inStock = allOperationsWithoutMutuallyExclusive.Any(x => x.OpCode == "10" && x.OpDate == primaryInventoryDate);
                     var  inStockOnPreviousInventoryDate = inStock;
 
-                    foreach (var form in allOperations.Where(x => x.OpDate <= previousInventoryDate))
+                    foreach (var form in allOperationsWithoutMutuallyExclusive.Where(x => x.OpDate <= previousInventoryDate))
                     {
                         if (PlusOperation.Contains(form.OpCode)) inStockOnPreviousInventoryDate = true;
                         else if (MinusOperation.Contains(form.OpCode)) inStockOnPreviousInventoryDate = false;
@@ -398,7 +410,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                         && inventoryDate != inventoryDatesList[^1])
                     {
                         errorsDtoList.Add(new InventoryErrorsShortDto(
-                            InventoryErrorTypeEnum.MissingFromInventoryUnit, allOperations.Last(x => x.OpDate <= inventoryDate)));
+                            InventoryErrorTypeEnum.MissingFromInventoryUnit, allOperationsWithoutMutuallyExclusive.Last(x => x.OpDate <= inventoryDate)));
                     }
 
                     //4. Снятие с учёта не стоявшего на учёте ЗРИ.
@@ -684,7 +696,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
         return !PlusOperation.Contains(dto.OpCode)
                && !MinusOperation.Contains(dto.OpCode)
-               && dto.OpCode != "10";
+               && dto.OpCode is not ("10" or "63" or "64");
     }
 
     #endregion
@@ -1090,7 +1102,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         RegisteredAndNotInventoriedUnit = 1,
 
         /// <summary>
-        /// 2. Есть в первой инвентаризации, нет во второй, нет +- операций.
+        /// 2. В инвентаризации отсутствует ранее стоявший на учёте ЗРИ (был в наличии на момент прошлой инвентаризации, нет операций передачи).
         /// </summary>
         MissingFromInventoryUnit = 2,
 
@@ -1136,7 +1148,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         {
             InventoryErrorTypeEnum.InventoryDuplicate => "Повторная операция инвентаризации ЗРИ в ту же дату. (0)",
             InventoryErrorTypeEnum.RegisteredAndNotInventoriedUnit => "В инвентаризации отсутствует поставленный на учёт ЗРИ. (1)",
-            InventoryErrorTypeEnum.MissingFromInventoryUnit => "В инвентаризации отсутствует ранее стоявший на учёте ЗРИ (был в прошлой инвентаризации, нет операций передачи). (2)",
+            InventoryErrorTypeEnum.MissingFromInventoryUnit => "В инвентаризации отсутствует ранее стоявший на учёте ЗРИ (был в наличии на момент прошлой инвентаризации, нет операций передачи). (2)",
             InventoryErrorTypeEnum.GivenUnitIsInventoried => "Проинвентаризирован ЗРИ, который был ранее снят с учёта или не был получен. (3)",
             InventoryErrorTypeEnum.UnInventoriedUnitGivenAway => "Снятие с учёта не стоявшего на учёте ЗРИ. (4)",
             InventoryErrorTypeEnum.ReDeRegistration => "Повторная операция снятия ЗРИ с учёта. (5)",
