@@ -345,8 +345,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
                 else
                 {
-                    var operationsWithoutMutuallyExclusive = await GetOperationsWithoutMutuallyExclusive(currentOperations);
-                    var allOperationsWithoutMutuallyExclusive = await GetOperationsWithoutMutuallyExclusive(allOperations);
+                    var operationsWithoutMutuallyExclusive = await GetOperationsWithoutMutuallyCompensating(currentOperations);
+                    var allOperationsWithoutMutuallyExclusive = await GetOperationsWithoutMutuallyCompensating(allOperations);
 
                     #region GetErrors
 

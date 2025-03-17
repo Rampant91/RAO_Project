@@ -991,7 +991,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             {
                 var inStock = operations.Any(x => x.OpCode == "10" && x.OpDate == firstInventoryDate);
 
-                var currentOperationsWithoutMutuallyExclusive = await GetOperationsWithoutMutuallyExclusive(operations);
+                var currentOperationsWithoutMutuallyExclusive = await GetOperationsWithoutMutuallyCompensating(operations);
                 foreach (var form in currentOperationsWithoutMutuallyExclusive)
                 {
                     if (PlusOperation.Contains(form.OpCode)) inStock = true;
@@ -1022,6 +1022,11 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
         return unitInStockList;
     }
 
+    /// <summary>
+    /// Для форм 1.1 с незаполненными зав.№ и № паспорта, заменяет в списке операций множество +- операций в одну дату, на одну эквивалентную им операцию.
+    /// </summary>
+    /// <param name="operationList">Список операций.</param>
+    /// <returns>Список операций, в котором множество +- операций в одну дату заменено на одну эквивалентную им операцию.</returns>
     private static Task<List<ShortForm11DTO>> GetOperationsWithoutDuplicates(List<ShortForm11DTO> operationList)
     {
         List<ShortForm11DTO> operationsWithoutDuplicates = [];
@@ -1062,16 +1067,21 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
         return Task.FromResult(operationsWithoutDuplicates);
     }
 
-    private protected static Task<List<ShortForm11DTO>> GetOperationsWithoutMutuallyExclusive(List<ShortForm11DTO> currentOperations)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="operationList">Список операций.</param>
+    /// <returns></returns>
+    private protected static Task<List<ShortForm11DTO>> GetOperationsWithoutMutuallyCompensating(List<ShortForm11DTO> operationList)
     {
-        var currentOperationsGroupedByDate = currentOperations.Where(x =>
+        var operationsGroupedByDate = operationList.Where(x =>
                 !PlusOperation.Contains(x.OpCode) && !MinusOperation.Contains(x.OpCode)
                 || PlusOperation.Contains(x.OpCode) || MinusOperation.Contains(x.OpCode))
             .GroupBy(x => x.OpDate)
             .ToList();
 
-        var currentOperationWithoutMutuallyExclusive = new List<ShortForm11DTO>();
-        foreach (var group in currentOperationsGroupedByDate)
+        var operationWithoutMutuallyExclusive = new List<ShortForm11DTO>();
+        foreach (var group in operationsGroupedByDate)
         {
             var formsList = group.ToList();
             foreach (var form in formsList)
@@ -1079,22 +1089,22 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                 var currentFormIsPlus = PlusOperation.Contains(form.OpCode);
                 var currentFormIsMinus = MinusOperation.Contains(form.OpCode);
 
-                var duplicate = currentOperationWithoutMutuallyExclusive.FirstOrDefault(x =>
+                var duplicate = operationWithoutMutuallyExclusive.FirstOrDefault(x =>
                     x.OpDate == form.OpDate
                     && (currentFormIsMinus && PlusOperation.Contains(x.OpCode)
                         || currentFormIsPlus && MinusOperation.Contains(x.OpCode)));
 
                 if (duplicate is not null)
                 {
-                    currentOperationWithoutMutuallyExclusive.Remove(duplicate);
+                    operationWithoutMutuallyExclusive.Remove(duplicate);
                 }
                 else
                 {
-                    currentOperationWithoutMutuallyExclusive.Add(form);
+                    operationWithoutMutuallyExclusive.Add(form);
                 }
             }
         }
-        return Task.FromResult(currentOperationWithoutMutuallyExclusive);
+        return Task.FromResult(operationWithoutMutuallyExclusive);
     }
 
     #endregion
