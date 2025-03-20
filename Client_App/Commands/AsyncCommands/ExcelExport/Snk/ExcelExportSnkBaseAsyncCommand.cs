@@ -22,6 +22,39 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 {
     #region Properties
 
+    private protected static string[] GetMinusOperationsArray(string formNum)
+    {
+        return formNum switch
+        {
+            "1.1" or "1.3" or "1.4" =>
+            [
+                "21", "22", "25", "27", "28", "29", "41", "42", "43", "46", "47", "65", "67", "68", "71", "72",
+                "81", "82", "83", "84", "98"
+            ],
+
+            _ => []
+        };
+    }
+
+    private protected static string[] GetPlusOperationsArray(string formNum)
+    {
+        return formNum switch
+        {
+            "1.1" =>
+            [
+                "11", "12", "17", "18", "31", "32", "35", "37", "38", "39", "58", "73", "74", "75", "85", "86", "87", "88", "97"
+            ],
+
+            "1.3" or "1.4" => 
+            [
+                "11", "12", "15", "17", "18", "31", "32", "35", "37", "38", "39", "58", "65", "73", "74", "75", "85",
+                "86", "87", "88", "97"
+            ],
+
+            _ => []
+        };
+    }
+
     /// <summary>
     /// Коды операций снятия с учёта.
     /// </summary>

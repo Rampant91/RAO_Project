@@ -28,6 +28,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
         var cts = new CancellationTokenSource();
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
+        var formNum = "1.1";
         ExportType = "Просроченная_инвентаризация_1.1";
 
         progressBarVM.SetProgressBar(5, "Запрос пути сохранения");
@@ -54,7 +55,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
         var filteredRepsDtoList = await CheckRepsInventoryDate(tmpDbPath, repsDtoList, progressBarVM, cts);
 
         progressBarVM.SetProgressBar(40, "Проверка наличия СНК");
-        var repsWithUnitsDtoList = await CheckSnk(tmpDbPath, filteredRepsDtoList, progressBarVM, cts);
+        var repsWithUnitsDtoList = await CheckSnk(tmpDbPath, filteredRepsDtoList, formNum, progressBarVM, cts);
 
         progressBarVM.SetProgressBar(90, "Заполнение строчек в .xlsx");
         await FillExcel(repsWithUnitsDtoList);
@@ -238,10 +239,11 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
     /// </summary>
     /// <param name="tmpDbPath">Путь к временному файлу БД.</param>
     /// <param name="dtoList">Список DTO организаций.</param>
+    /// <param name="formNum">Номер формы.</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Список DTO организаций, у которых есть учётные единицы в наличии.</returns>
-    private static async Task<List<ShortReportsDto>> CheckSnk(string tmpDbPath, List<ShortReportsDto> dtoList,
+    private static async Task<List<ShortReportsDto>> CheckSnk(string tmpDbPath, List<ShortReportsDto> dtoList, string formNum,
         AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
         var currentDate = DateOnly.FromDateTime(DateTime.Now);
@@ -313,15 +315,15 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
         {
             currentRepsNum++;
 
-            var inventoryReportDtoList = await GetInventoryReportDtoList(db, dto.Id, "1.1", currentDate, cts);
+            var inventoryReportDtoList = await GetInventoryReportDtoList(db, dto.Id, formNum, currentDate, cts);
 
-            var (firstSnkDate, inventoryFormsDtoList, _) = await GetInventoryFormsDtoList(db, inventoryReportDtoList, "1.1", currentDate, cts);
+            var (firstSnkDate, inventoryFormsDtoList, _) = await GetInventoryFormsDtoList(db, inventoryReportDtoList, formNum, currentDate, cts);
 
-            var reportIds = await GetReportIds(db, dto.Id, "1.1", cts);
+            var reportIds = await GetReportIds(db, dto.Id, formNum, cts);
 
-            var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, reportIds, "1.1", firstSnkDate, currentDate, cts);
+            var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, reportIds, formNum, firstSnkDate, currentDate, cts);
 
-            var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, dto.Id, "1.1", firstSnkDate, currentDate, cts);
+            var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, dto.Id, formNum, firstSnkDate, currentDate, cts);
 
             var uniqueUnitWithAllOperationDictionary = await GetDictionary_UniqueUnitsWithOperations(inventoryFormsDtoList, plusMinusFormsDtoList, rechargeFormsDtoList);
 
