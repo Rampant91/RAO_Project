@@ -25,6 +25,7 @@ using Client_App.Properties;
 using MessageBox.Avalonia.Models;
 using Client_App.Resources;
 using System.Collections.Generic;
+using Client_App.Resources.CustomComparers;
 
 namespace Client_App.Commands.AsyncCommands;
 

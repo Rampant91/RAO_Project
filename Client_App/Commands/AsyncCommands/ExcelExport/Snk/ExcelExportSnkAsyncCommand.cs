@@ -62,19 +62,19 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
         await FillExcelHeaders(excelPackage, endSnkDate);
 
         progressBarVM.SetProgressBar(15, "Загрузка инвентаризационных отчётов");
-        var inventoryReportDtoList = await GetInventoryReportDtoList(db, selectedReports.Id, endSnkDate, cts);
+        var inventoryReportDtoList = await GetInventoryReportDtoList(db, selectedReports.Id, formNum, endSnkDate, cts);
 
         progressBarVM.SetProgressBar(20, "Загрузка операций инвентаризации");
-        var (firstSnkDate, inventoryFormsDtoList, _) = await GetInventoryFormsDtoList(db, inventoryReportDtoList, endSnkDate, cts, snkParams);
+        var (firstSnkDate, inventoryFormsDtoList, _) = await GetInventoryFormsDtoList(db, inventoryReportDtoList, formNum, endSnkDate, cts, snkParams);
 
         progressBarVM.SetProgressBar(24, "Загрузка списка отчётов");
-        var reportIds = await GetReportIds(db, selectedReports.Id, cts);
+        var reportIds = await GetReportIds(db, selectedReports.Id, formNum, cts);
 
         progressBarVM.SetProgressBar(25, "Загрузка операций передачи/получения");
-        var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, reportIds, firstSnkDate, endSnkDate, cts, snkParams);
+        var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, reportIds, formNum, firstSnkDate, endSnkDate, cts, snkParams);
 
         progressBarVM.SetProgressBar(30, "Загрузка операций перезарядки");
-        var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, selectedReports.Id, firstSnkDate, endSnkDate, cts, snkParams);
+        var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, selectedReports.Id, formNum, firstSnkDate, endSnkDate, cts, snkParams);
 
         progressBarVM.SetProgressBar(35, "Формирование списка учётных единиц");
         var uniqueUnitWithAllOperationDictionary = await GetDictionary_UniqueUnitsWithOperations(inventoryFormsDtoList, plusMinusFormsDtoList, rechargeFormsDtoList);
@@ -235,7 +235,7 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Список форм с данными отчётов и организации.</returns>
-    private static async Task<List<SnkForm11DTO>> GetFullFormsSnkList(DBModel db, List<ShortForm11DTO> unitInStockDtoList,
+    private static async Task<List<SnkForm11DTO>> GetFullFormsSnkList(DBModel db, List<ShortFormDTO> unitInStockDtoList,
         AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
         List<SnkForm11DTO> formsList = [];

@@ -807,6 +807,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region InventoryCheck
 
+
     /// <summary>
     /// Проверка, является ли отчёт инвентаризационным. Если все строчки с кодом операции 10 - добавляет " (ИНВ)",
     /// если хотя бы одна - добавляет " (инв)".

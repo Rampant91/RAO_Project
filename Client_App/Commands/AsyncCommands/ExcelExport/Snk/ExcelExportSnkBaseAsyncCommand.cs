@@ -39,7 +39,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     ];
 
     #endregion
-
+    
     #region DTO
 
     private protected class SnkForm11DTO(string facNum, string pasNum, int quantity, string radionuclids, string type, string activity,
@@ -68,33 +68,45 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
         public readonly string PackNumber = packNumber;
     }
 
-    private protected class ShortForm11DTO(int id, int  numberInOrder, ShortReportDTO repDto, string opCode, DateOnly opDate, string pasNum, string type, 
-        string radionuclids, string facNum, int quantity, string packNumber)
+    #region ShortFormDTO
+    
+    private protected class ShortFormDTO
     {
-        public readonly int Id = id;
+        public int Id { get; set; }
 
-        public readonly int NumberInOrder = numberInOrder;
+        public int NumberInOrder { get; set; }
 
-        public readonly ShortReportDTO RepDto = repDto;
+        public ShortReportDTO RepDto { get; set; }
 
-        public readonly string OpCode = opCode;
+        public string OpCode { get; set; }
 
-        public readonly DateOnly OpDate = opDate;
+        public DateOnly OpDate { get; set; }
 
-        public readonly string PasNum = pasNum;
+        public string PasNum { get; set; }
 
-        public readonly string Type = type;
+        public string Type { get; set; }
 
-        public readonly string Radionuclids = radionuclids;
+        public string Radionuclids { get; set; }
 
-        public readonly string FacNum = facNum;
+        public string FacNum { get; set; }
 
-        public int Quantity = quantity;
+        public int Quantity { get; set; }
 
-        public readonly string PackNumber = packNumber;
+        public string PackNumber { get; set; }
     }
 
-    private class ShortForm11StringDateDTO
+    //private protected class ShortFormDTO : ShortFormDTO
+    //{
+    //    public int Quantity { get; set; }
+    //}
+
+    //private protected class ShortForm13DTO : ShortFormDTO; 
+    
+    #endregion
+
+    #region ShortFormStringDateDTO
+
+    private class ShortFormDateOnlyDTO
     {
         public int Id { get; set; }
 
@@ -114,16 +126,18 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 
         public string Type { get; set; }
 
+        public int? Quantity { get; set; }
+
         public string Radionuclids { get; set; }
 
         public string FacNum { get; set; }
 
-        public int? Quantity { get; set; }
-
         public string PackNumber { get; set; }
     }
+    
+    #endregion
 
-    private protected class ShortForm11StringDatesDTO
+    private protected class ShortFormStringDatesDTO
     {
         public int Id { get; set; }
 
@@ -349,8 +363,8 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             .Replace('У', 'Y')
             .Replace('у', 'y')
             .Replace('Х', 'X')
-            .Replace('х', 'x')
-            .ToLower();
+            .Replace('х', 'x');
+        //.ToLower();
     }
 
     #endregion
@@ -425,11 +439,11 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="rechargeFormsDtoList">Список DTO операций перезарядки.</param>
     /// <param name="zeroFormsFtoList">Список DTO нулевых операций (не приёма-передача и не инвентаризация).</param>
     /// <returns>Словарь из уникальных учётных единиц и списков операций с ними.</returns>
-    private protected static async Task<Dictionary<UniqueUnitDto, List<ShortForm11DTO>>> GetDictionary_UniqueUnitsWithOperations(
-        List<ShortForm11DTO> inventoryFormsDtoList,
-        List<ShortForm11DTO> plusMinusFormsDtoList,
-        List<ShortForm11DTO> rechargeFormsDtoList,
-        List<ShortForm11DTO>? zeroFormsFtoList = null)
+    private protected static async Task<Dictionary<UniqueUnitDto, List<ShortFormDTO>>> GetDictionary_UniqueUnitsWithOperations(
+        List<ShortFormDTO> inventoryFormsDtoList,
+        List<ShortFormDTO> plusMinusFormsDtoList,
+        List<ShortFormDTO> rechargeFormsDtoList,
+        List<ShortFormDTO>? zeroFormsFtoList = null)
     {
         var firstInventoryDate = inventoryFormsDtoList.Count == 0
             ? DateOnly.MinValue
@@ -442,7 +456,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             .Where(x => x.OpDate == firstInventoryDate)
             .ToList();
 
-        List<ShortForm11DTO> unionOperationList = [];
+        List<ShortFormDTO> unionOperationList;
         if (zeroFormsFtoList is null)
         {
             unionOperationList = firstDateInventoryList
@@ -461,7 +475,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 
         var groupedOperationList = await GetGroupedOperationList(unionOperationList);
 
-        Dictionary<UniqueUnitDto, List<ShortForm11DTO>> uniqueUnitWithAllOperationDictionary = [];
+        Dictionary<UniqueUnitDto, List<ShortFormDTO>> uniqueUnitWithAllOperationDictionary = [];
         foreach (var group in groupedOperationList)
         {
             foreach (var form in group)
@@ -469,13 +483,14 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                 var dto = new UniqueUnitDto(form.FacNum, form.PasNum, form.Radionuclids, form.Type, form.Quantity, form.PackNumber);
 
                 var filteredDictionary = uniqueUnitWithAllOperationDictionary
-                    .Where(keyValuePair => keyValuePair.Key.PasNum == form.PasNum
-                                           && keyValuePair.Key.FacNum == form.FacNum
-                                           && keyValuePair.Key.Radionuclids == form.Radionuclids
-                                           && keyValuePair.Key.Type == form.Type
-                                           && (keyValuePair.Key.PackNumber == form.PackNumber || form.OpCode is "53" or "54")
-                                           && (SerialNumbersIsEmpty(keyValuePair.Key.PasNum, keyValuePair.Key.FacNum)
-                                               || keyValuePair.Key.Quantity == form.Quantity))
+                    .Where(keyValuePair =>
+                        string.Equals(keyValuePair.Key.PasNum, form.PasNum, StringComparison.OrdinalIgnoreCase)
+                        && string.Equals(keyValuePair.Key.FacNum, form.FacNum, StringComparison.OrdinalIgnoreCase)
+                        && string.Equals(keyValuePair.Key.Radionuclids, form.Radionuclids, StringComparison.OrdinalIgnoreCase)
+                        && string.Equals(keyValuePair.Key.Type, form.Type, StringComparison.OrdinalIgnoreCase)
+                        && (string.Equals(keyValuePair.Key.PackNumber, form.PackNumber, StringComparison.OrdinalIgnoreCase) || form.OpCode is "53" or "54")
+                        && (SerialNumbersIsEmpty(keyValuePair.Key.PasNum, keyValuePair.Key.FacNum)
+                            || keyValuePair.Key.Quantity == form.Quantity))
                     .ToDictionary();
 
                 // Если запись в словаре отсутствует, то добавляем новую и переходим к следующей форме.
@@ -512,6 +527,11 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                 }
             }
         }
+
+        uniqueUnitWithAllOperationDictionary = uniqueUnitWithAllOperationDictionary
+            .OrderBy(x => x.Key.PasNum)
+            .ThenBy(x => x.Key.FacNum)
+            .ToDictionary();
         return await Task.FromResult(uniqueUnitWithAllOperationDictionary);
     }
 
@@ -522,10 +542,10 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// </summary>
     /// <param name="unionOperationList">Список DTO операций.</param>
     /// <returns>Список сгруппированных DTO операций.</returns>
-    private static Task<List<List<ShortForm11DTO>>> GetGroupedOperationList(List<ShortForm11DTO> unionOperationList)
+    private static Task<List<List<ShortFormDTO>>> GetGroupedOperationList(List<ShortFormDTO> unionOperationList)
     {
-        List<List<ShortForm11DTO>> groupedOperationList = [];
-        List<ShortForm11DTO> currentGroup = [];
+        List<List<ShortFormDTO>> groupedOperationList = [];
+        List<ShortFormDTO> currentGroup = [];
         var opCount = 0;
         foreach (var form in unionOperationList
                      .OrderBy(x => x.OpDate)
@@ -559,7 +579,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// </summary>
     /// <param name="pairWithLastOpDate">Пара ключ-значение из DTO уникальной учётной единицы и списка операций с ней.</param>
     /// <returns>Суммированное количество.</returns>
-    private static Task<int> SumQuantityForEmptySerialNums(KeyValuePair<UniqueUnitDto, List<ShortForm11DTO>> pairWithLastOpDate)
+    private static Task<int> SumQuantityForEmptySerialNums(KeyValuePair<UniqueUnitDto, List<ShortFormDTO>> pairWithLastOpDate)
     {
         var quantity = pairWithLastOpDate.Value
             .FirstOrDefault(x => x.OpCode == "10")
@@ -590,63 +610,139 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// </summary>
     /// <param name="db">Модель БД.</param>
     /// <param name="inventoryReportDtoList">Список DTO отчётов, содержащих операцию инвентаризации.</param>
+    /// <param name="formNum">Номер формы.</param>
     /// <param name="endSnkDate">Дата, на которую нужно сформировать СНК.</param>
     /// <param name="cts">Токен.</param>
     /// <param name="snkParams">DTO состоящий из bool флагов, показывающих, по каким параметрам необходимо выполнять поиск учётной единицы.
     /// Может быть null, тогда поиск ведётся по всем параметрам.</param>
     /// <returns>Список DTO операций инвентаризации, отсортированный по датам, с фильтром по дате от 01.01.2022 до введённой пользователем даты.</returns>
-    private protected static async Task<(DateOnly, List<ShortForm11DTO>, List<ShortForm11DTO>)> GetInventoryFormsDtoList(DBModel db, List<ShortReportDTO> inventoryReportDtoList,
-        DateOnly endSnkDate, CancellationTokenSource cts, SnkParamsDto? snkParams = null)
+    private protected static async Task<(DateOnly, List<ShortFormDTO>, List<ShortFormDTO>)> GetInventoryFormsDtoList(DBModel db, 
+        List<ShortReportDTO> inventoryReportDtoList, string formNum, DateOnly endSnkDate, CancellationTokenSource cts, SnkParamsDto? snkParams = null)
     {
-        List<ShortForm11DTO> inventoryFormsDtoList = [];
+        List<ShortFormDTO> inventoryFormsDtoList = [];
         foreach (var reportDto in inventoryReportDtoList)
         {
-            var currentInventoryFormsStringDateDtoList = await db.ReportCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                .Include(x => x.Rows11)
-                .Where(rep => rep.Reports != null && rep.Reports.DBObservable != null && rep.Id == reportDto.Id)
-                .SelectMany(rep => rep.Rows11
-                    .Where(form => form.OperationCode_DB == "10")
-                    .Select(form11 => new ShortForm11StringDateDTO
-                    {
-                        Id = form11.Id,
-                        RepId = reportDto.Id,
-                        StDate = reportDto.StartPeriod,
-                        EndDate = reportDto.EndPeriod,
-                        NumberInOrder = form11.NumberInOrder_DB,
-                        OpCode = form11.OperationCode_DB,
-                        OpDate = form11.OperationDate_DB,
-                        PasNum = snkParams == null || snkParams.CheckPasNum ? form11.PassportNumber_DB : string.Empty,
-                        Type = snkParams == null || snkParams.CheckType ? form11.Type_DB : string.Empty,
-                        Radionuclids = snkParams == null || snkParams.CheckRadionuclids ? form11.Radionuclids_DB : string.Empty,
-                        FacNum = snkParams == null || snkParams.CheckFacNum ? form11.FactoryNumber_DB : string.Empty,
-                        Quantity = form11.Quantity_DB,
-                        PackNumber = snkParams == null || snkParams.CheckPackNumber ? form11.PackNumber_DB : string.Empty
-                    }))
-                .ToListAsync(cts.Token);
+            switch (formNum)
+            {
+                case "1.1":
+                {
+                    var currentInventoryForms11StringDateDtoList = await db.ReportCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
+                        .Include(x => x.Rows11)
+                        .Where(rep => rep.Reports != null && rep.Reports.DBObservable != null && rep.Id == reportDto.Id)
+                        .SelectMany(rep => rep.Rows11
+                            .Where(form => form.OperationCode_DB == "10")
+                            .Select(form11 => new ShortFormDateOnlyDTO
+                            {
+                                Id = form11.Id,
+                                RepId = reportDto.Id,
+                                StDate = reportDto.StartPeriod,
+                                EndDate = reportDto.EndPeriod,
+                                NumberInOrder = form11.NumberInOrder_DB,
+                                OpCode = form11.OperationCode_DB,
+                                OpDate = form11.OperationDate_DB,
+                                PasNum = snkParams == null || snkParams.CheckPasNum 
+                                    ? form11.PassportNumber_DB 
+                                    : string.Empty,
+                                Type = snkParams == null || snkParams.CheckType 
+                                    ? form11.Type_DB 
+                                    : string.Empty,
+                                Radionuclids = snkParams == null || snkParams.CheckRadionuclids 
+                                    ? form11.Radionuclids_DB 
+                                    : string.Empty,
+                                FacNum = snkParams == null || snkParams.CheckFacNum 
+                                    ? form11.FactoryNumber_DB 
+                                    : string.Empty,
+                                Quantity = form11.Quantity_DB,
+                                PackNumber = snkParams == null || snkParams.CheckPackNumber 
+                                    ? form11.PackNumber_DB 
+                                    : string.Empty
+                            }))
+                        .ToListAsync(cts.Token);
 
-            var currentInventoryFormsDtoList = currentInventoryFormsStringDateDtoList
-                .Where(x => DateTime.TryParse(x.OpDate, out var opDateTime) 
-                            && DateOnly.FromDateTime(opDateTime) >= DateOnly.Parse("01.01.2022")
-                            && DateOnly.FromDateTime(opDateTime) <= endSnkDate)
-                .Select(x => new ShortForm11DTO(
-                    x.Id,
-                    x.NumberInOrder,
-                    reportDto,
-                    x.OpCode,
-                    DateOnly.FromDateTime(DateTime.Parse(x.OpDate)),
-                    AutoReplaceSimilarChars(x.PasNum),
-                    AutoReplaceSimilarChars(x.Type),
-                    AutoReplaceSimilarChars(x.Radionuclids),
-                    AutoReplaceSimilarChars(x.FacNum),
-                    x.Quantity ?? 0,
-                    AutoReplaceSimilarChars(x.PackNumber)
-                    ));
+                    var currentInventoryForms11DtoList = currentInventoryForms11StringDateDtoList
+                        .Where(x => DateTime.TryParse(x.OpDate, out var opDateTime)
+                                    && DateOnly.FromDateTime(opDateTime) >= DateOnly.Parse("01.01.2022")
+                                    && DateOnly.FromDateTime(opDateTime) <= endSnkDate)
+                        .Select(x => new ShortFormDTO
+                        {
+                            Id = x.Id,
+                            NumberInOrder = x.NumberInOrder,
+                            RepDto = reportDto,
+                            OpCode = x.OpCode,
+                            OpDate = DateOnly.FromDateTime(DateTime.Parse(x.OpDate)),
+                            PasNum = AutoReplaceSimilarChars(x.PasNum),
+                            Type = AutoReplaceSimilarChars(x.Type),
+                            Radionuclids = AutoReplaceSimilarChars(x.Radionuclids),
+                            FacNum = AutoReplaceSimilarChars(x.FacNum),
+                            Quantity = x.Quantity ?? 0,
+                            PackNumber = AutoReplaceSimilarChars(x.PackNumber)
+                        });
+                    inventoryFormsDtoList.AddRange(currentInventoryForms11DtoList);
+                    break;
+                }
+                case "1.3":
+                {
+                    var currentInventoryForms13StringDateDtoList = await db.ReportCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
+                        .Include(x => x.Rows13)
+                        .Where(rep => rep.Reports != null && rep.Reports.DBObservable != null && rep.Id == reportDto.Id)
+                        .SelectMany(rep => rep.Rows13
+                            .Where(form => form.OperationCode_DB == "10")
+                            .Select(form13 => new ShortFormDateOnlyDTO
+                            {
+                                Id = form13.Id,
+                                RepId = reportDto.Id,
+                                StDate = reportDto.StartPeriod,
+                                EndDate = reportDto.EndPeriod,
+                                NumberInOrder = form13.NumberInOrder_DB,
+                                OpCode = form13.OperationCode_DB,
+                                OpDate = form13.OperationDate_DB,
+                                PasNum = snkParams == null || snkParams.CheckPasNum
+                                    ? form13.PassportNumber_DB
+                                    : string.Empty,
+                                Type = snkParams == null || snkParams.CheckType 
+                                    ? form13.Type_DB 
+                                    : string.Empty,
+                                Radionuclids = snkParams == null || snkParams.CheckRadionuclids
+                                    ? form13.Radionuclids_DB
+                                    : string.Empty,
+                                FacNum = snkParams == null || snkParams.CheckFacNum 
+                                    ? form13.FactoryNumber_DB 
+                                    : string.Empty,
+                                PackNumber = snkParams == null || snkParams.CheckPackNumber
+                                    ? form13.PackNumber_DB
+                                    : string.Empty
+                            }))
+                        .ToListAsync(cts.Token);
 
-            inventoryFormsDtoList.AddRange(currentInventoryFormsDtoList);
+                    var currentInventoryForms13DtoList = currentInventoryForms13StringDateDtoList
+                        .Where(x => DateTime.TryParse(x.OpDate, out var opDateTime)
+                                    && DateOnly.FromDateTime(opDateTime) >= DateOnly.Parse("01.01.2022")
+                                    && DateOnly.FromDateTime(opDateTime) <= endSnkDate)
+                        .Select(x => new ShortFormDTO
+                        {
+                            Id = x.Id,
+                            NumberInOrder = x.NumberInOrder,
+                            RepDto = new ShortReportDTO(x.RepId, x.StDate, x.EndDate),
+                            OpCode = x.OpCode,
+                            OpDate = DateOnly.FromDateTime(DateTime.Parse(x.OpDate)),
+                            PasNum = AutoReplaceSimilarChars(x.PasNum),
+                            Type = AutoReplaceSimilarChars(x.Type),
+                            Radionuclids = AutoReplaceSimilarChars(x.Radionuclids),
+                            FacNum = AutoReplaceSimilarChars(x.FacNum),
+                            PackNumber = AutoReplaceSimilarChars(x.PackNumber)
+                        });
+                    inventoryFormsDtoList.AddRange(currentInventoryForms13DtoList);
+                    break;
+                }
+            }
         }
         var (summedInventoryFormsDtoList, inventoryDuplicateErrors) = await GetSummedInventoryDtoList(inventoryFormsDtoList);
 
@@ -673,20 +769,20 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// </summary>
     /// <param name="inventoryFormsDtoList">Список DTO операций инвентаризации.</param>
     /// <returns>Список DTO операций инвентаризации, просуммированный по количеству для первой даты.</returns>
-    private static Task<(List<ShortForm11DTO>, List<ShortForm11DTO>)> GetSummedInventoryDtoList(List<ShortForm11DTO> inventoryFormsDtoList)
+    private static Task<(List<ShortFormDTO>, List<ShortFormDTO>)> GetSummedInventoryDtoList(List<ShortFormDTO> inventoryFormsDtoList)
     {
-        List<ShortForm11DTO> newInventoryFormsDtoList = [];
-        List<ShortForm11DTO> inventoryDuplicateErrors = [];
+        List<ShortFormDTO> newInventoryFormsDtoList = [];
+        List<ShortFormDTO> inventoryDuplicateErrors = [];
 
         foreach (var form in inventoryFormsDtoList)
         {
             var matchingForm = newInventoryFormsDtoList.FirstOrDefault(x =>
                 x.OpDate == form.OpDate
-                && x.PasNum == form.PasNum
-                && x.FacNum == form.FacNum
-                && x.Radionuclids == form.Radionuclids
-                && x.Type == form.Type
-                && x.PackNumber == form.PackNumber);
+                && string.Equals(x.PasNum, form.PasNum, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(x.FacNum, form.FacNum, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(x.Radionuclids, form.Radionuclids, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(x.Type, form.Type, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(x.PackNumber, form.PackNumber, StringComparison.OrdinalIgnoreCase));
 
             if (matchingForm != null)
             {
@@ -714,27 +810,45 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     #region GetInventoryReportDtoList
 
     /// <summary>
-    /// Получение списка DTO отчётов по форме 1.1, содержащих хотя бы одну операцию с кодом 10.
+    /// Получение списка DTO отчётов, содержащих хотя бы одну операцию с кодом 10.
     /// </summary>
     /// <param name="db">Модель БД.</param>
     /// <param name="repsId">Id выбранной организации.</param>
+    /// <param name="formNum">Номер формы</param>
     /// <param name="endSnkDate">Дата, на которую нужно сформировать СНК.</param>
     /// <param name="cts">Токен.</param>
-    /// <returns>Список DTO отчётов по форме 1.1, отсортированный по датам.</returns>
-    private protected static async Task<List<ShortReportDTO>> GetInventoryReportDtoList(DBModel db, int repsId, DateOnly endSnkDate,
+    /// <returns>Список DTO отчётов, отсортированный по датам.</returns>
+    private protected static async Task<List<ShortReportDTO>> GetInventoryReportDtoList(DBModel db, int repsId, string formNum, DateOnly endSnkDate,
         CancellationTokenSource cts)
     {
-        var inventoryReportDtoList = await db.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.DBObservable)
-            .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows11)
-            .Where(reps => reps.DBObservable != null && reps.Id == repsId)
-            .SelectMany(reps => reps.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.1" && rep.Rows11.Any(form => form.OperationCode_DB == "10"))
-                .Select(rep => new ShortReportStringDateDTO(rep.Id, rep.StartPeriod_DB, rep.EndPeriod_DB)))
-            .ToListAsync(cts.Token);
+        var inventoryReportDtoList = formNum switch
+        {
+            "1.1" => await db.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.DBObservable)
+                .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows11)
+                .Where(reps => reps.DBObservable != null && reps.Id == repsId)
+                .SelectMany(reps => reps.Report_Collection
+                    .Where(rep => rep.FormNum_DB == formNum && rep.Rows11.Any(form => form.OperationCode_DB == "10"))
+                    .Select(rep => new ShortReportStringDateDTO(rep.Id, rep.StartPeriod_DB, rep.EndPeriod_DB)))
+                .ToListAsync(cts.Token),
+
+            "1.3" => await db.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.DBObservable)
+                .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows13)
+                .Where(reps => reps.DBObservable != null && reps.Id == repsId)
+                .SelectMany(reps => reps.Report_Collection
+                    .Where(rep => rep.FormNum_DB == formNum && rep.Rows13.Any(form => form.OperationCode_DB == "10"))
+                    .Select(rep => new ShortReportStringDateDTO(rep.Id, rep.StartPeriod_DB, rep.EndPeriod_DB)))
+                .ToListAsync(cts.Token),
+
+            _ => throw new ArgumentOutOfRangeException(nameof(formNum), formNum, null)
+        };
 
         return inventoryReportDtoList
             .Where(x => DateOnly.TryParse(x.StartPeriod, out var stPer)
@@ -758,42 +872,94 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// Получение списка DTO форм с операциями приёма передачи.
     /// </summary>
     /// <param name="db">Модель БД.</param>
-    /// <param name="reportIds">Id отчётов по форме 1.1 у выбранной организации.</param>
+    /// <param name="reportIds">Список Id отчётов у выбранной организации.</param>
+    /// <param name="formNum">Номер формы.</param>
     /// <param name="firstSnkDate">>Дата первой инвентаризации после 01.01.2022, либо эта дата.</param>
-    /// <param name="endSnkDate">Дата, на которую нужно сформировать СНК.</param>
+    /// <param name="endSnkDate">Дата, по которую нужно сформировать СНК.</param>
     /// <param name="cts">Токен.</param>
     /// <param name="snkParams">DTO состоящий из bool флагов, показывающих, по каким параметрам необходимо выполнять поиск учётной единицы.
     /// Может быть null, тогда поиск ведётся по всем параметрам.</param>
     /// <returns>Список DTO форм с операциями приёма передачи, отсортированный по датам.</returns>
-    private protected static async Task<List<ShortForm11DTO>> GetPlusMinusFormsDtoList(DBModel db, List<int> reportIds, DateOnly firstSnkDate, DateOnly endSnkDate,
-        CancellationTokenSource cts, SnkParamsDto? snkParams = null)
+    private protected static async Task<List<ShortFormDTO>> GetPlusMinusFormsDtoList(DBModel db, List<int> reportIds, string formNum,
+        DateOnly firstSnkDate, DateOnly endSnkDate, CancellationTokenSource cts, SnkParamsDto? snkParams = null)
     {
-        var plusMinusOperationDtoList = await db.form_11
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.Report)
-            .Where(x => x.Report != null
-                        && reportIds.Contains(x.Report.Id)
-                        && (PlusOperation.Contains(x.OperationCode_DB)
-                            || MinusOperation.Contains(x.OperationCode_DB)))
-            .Select(form => new ShortForm11StringDatesDTO
-            {
-                Id = form.Id,
-                NumberInOrder = form.NumberInOrder_DB,
-                RepId = form.Report!.Id,
-                StDate = form.Report.StartPeriod_DB,
-                EndDate = form.Report.EndPeriod_DB,
-                FacNum = snkParams == null || snkParams.CheckFacNum ? form.FactoryNumber_DB : string.Empty,
-                OpCode = form.OperationCode_DB,
-                OpDate = form.OperationDate_DB,
-                PackNumber = snkParams == null || snkParams.CheckPackNumber ? form.PackNumber_DB : string.Empty,
-                PasNum = snkParams == null || snkParams.CheckPasNum ? form.PassportNumber_DB : string.Empty,
-                Quantity = form.Quantity_DB,
-                Radionuclids = snkParams == null || snkParams.CheckRadionuclids ? form.Radionuclids_DB : string.Empty,
-                Type = snkParams == null || snkParams.CheckType ? form.Type_DB : string.Empty
-            })
-            .ToListAsync(cts.Token);
+        var plusMinusOperationDtoList = formNum switch
+        {
+            "1.1" => await db.form_11
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.Report)
+                .Where(x => x.Report != null
+                            && reportIds.Contains(x.Report.Id)
+                            && (PlusOperation.Contains(x.OperationCode_DB)
+                                || MinusOperation.Contains(x.OperationCode_DB)))
+                .Select(form => new ShortFormStringDatesDTO
+                {
+                    Id = form.Id,
+                    NumberInOrder = form.NumberInOrder_DB,
+                    RepId = form.Report!.Id,
+                    StDate = form.Report.StartPeriod_DB,
+                    EndDate = form.Report.EndPeriod_DB,
+                    FacNum = snkParams == null || snkParams.CheckFacNum
+                        ? form.FactoryNumber_DB
+                        : string.Empty,
+                    OpCode = form.OperationCode_DB,
+                    OpDate = form.OperationDate_DB,
+                    PackNumber = snkParams == null || snkParams.CheckPackNumber
+                        ? form.PackNumber_DB
+                        : string.Empty,
+                    PasNum = snkParams == null || snkParams.CheckPasNum
+                        ? form.PassportNumber_DB
+                        : string.Empty,
+                    Quantity = form.Quantity_DB,
+                    Radionuclids = snkParams == null || snkParams.CheckRadionuclids
+                        ? form.Radionuclids_DB
+                        : string.Empty,
+                    Type = snkParams == null || snkParams.CheckType
+                        ? form.Type_DB
+                        : string.Empty
+                })
+                .ToListAsync(cts.Token),
+
+            "1.3" => await db.form_13
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.Report)
+                .Where(x => x.Report != null
+                            && reportIds.Contains(x.Report.Id)
+                            && (PlusOperation.Contains(x.OperationCode_DB)
+                                || MinusOperation.Contains(x.OperationCode_DB)))
+                .Select(form => new ShortFormStringDatesDTO
+                {
+                    Id = form.Id,
+                    NumberInOrder = form.NumberInOrder_DB,
+                    RepId = form.Report!.Id,
+                    StDate = form.Report.StartPeriod_DB,
+                    EndDate = form.Report.EndPeriod_DB,
+                    FacNum = snkParams == null || snkParams.CheckFacNum
+                        ? form.FactoryNumber_DB
+                        : string.Empty,
+                    OpCode = form.OperationCode_DB,
+                    OpDate = form.OperationDate_DB,
+                    PackNumber = snkParams == null || snkParams.CheckPackNumber
+                        ? form.PackNumber_DB
+                        : string.Empty,
+                    PasNum = snkParams == null || snkParams.CheckPasNum
+                        ? form.PassportNumber_DB
+                        : string.Empty,
+                    Radionuclids = snkParams == null || snkParams.CheckRadionuclids
+                        ? form.Radionuclids_DB
+                        : string.Empty,
+                    Type = snkParams == null || snkParams.CheckType
+                        ? form.Type_DB
+                        : string.Empty
+                })
+                .ToListAsync(cts.Token),
+
+            _ => throw new ArgumentOutOfRangeException(nameof(formNum), formNum, null)
+        };
 
         return plusMinusOperationDtoList
             .Where(x => DateTime.TryParse(x.OpDate, out var opDateTime)
@@ -801,19 +967,20 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                                              && DateOnly.TryParse(x.EndDate, out _)
                                              && DateOnly.FromDateTime(opDateTime) >= firstSnkDate
                                              && DateOnly.FromDateTime(opDateTime) <= endSnkDate)
-            .Select(x => new ShortForm11DTO(
-                x.Id,
-                x.NumberInOrder,
-                new ShortReportDTO(x.RepId, DateOnly.Parse(x.StDate), DateOnly.Parse(x.EndDate)),
-                x.OpCode,
-                DateOnly.FromDateTime(DateTime.Parse(x.OpDate)),
-                AutoReplaceSimilarChars(x.PasNum),
-                AutoReplaceSimilarChars(x.Type),
-                AutoReplaceSimilarChars(x.Radionuclids),
-                AutoReplaceSimilarChars(x.FacNum),
-                x.Quantity ?? 0,
-                AutoReplaceSimilarChars(x.PackNumber)
-                ))
+            .Select(x => new ShortFormDTO 
+            {
+                Id = x.Id,
+                NumberInOrder = x.NumberInOrder,
+                RepDto = new ShortReportDTO(x.RepId, DateOnly.Parse(x.StDate), DateOnly.Parse(x.EndDate)),
+                OpCode = x.OpCode,
+                OpDate = DateOnly.FromDateTime(DateTime.Parse(x.OpDate)),
+                PasNum = AutoReplaceSimilarChars(x.PasNum),
+                Type = AutoReplaceSimilarChars(x.Type),
+                Radionuclids = AutoReplaceSimilarChars(x.Radionuclids),
+                FacNum = AutoReplaceSimilarChars(x.FacNum),
+                Quantity = x.Quantity ?? 0,
+                PackNumber = AutoReplaceSimilarChars(x.PackNumber)
+            })
             .OrderBy(x => x.OpDate)
             .ThenBy(x => x.RepDto.StartPeriod)
             .ThenBy(x => x.RepDto.EndPeriod)
@@ -822,21 +989,6 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 
     #endregion
 
-    private protected static async Task<List<int>> GetReportIds(DBModel db, int repsId, CancellationTokenSource cts)
-    {
-        return await db.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.DBObservable)
-            .Include(x => x.Report_Collection)
-            .Where(reps => reps.DBObservable != null && reps.Id == repsId)
-            .SelectMany(reps => reps.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.1"))
-            .Select(rep => rep.Id)
-            .ToListAsync(cts.Token);
-    }
-
     #region GetRechargeFormsDtoList
 
     /// <summary>
@@ -844,14 +996,15 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// </summary>
     /// <param name="db">Модель БД.</param>
     /// <param name="repsId">Id организации.</param>
+    /// <param name="formNum">Номер формы.</param>
     /// <param name="firstSnkDate">Дата первой инвентаризации после 01.01.2022, либо эта дата.</param>
     /// <param name="endSnkDate">Дата, на которую нужно сформировать СНК.</param>
     /// <param name="cts">Токен.</param>
     /// <param name="snkParams">DTO состоящий из bool флагов, показывающих, по каким параметрам необходимо выполнять поиск учётной единицы.
     /// Может быть null, тогда поиск ведётся по всем параметрам.</param>
     /// <returns>Список DTO форм с операциями перезарядки, отсортированный по датам.</returns>
-    private protected static async Task<List<ShortForm11DTO>> GetRechargeFormsDtoList(DBModel db, int repsId, DateOnly firstSnkDate, DateOnly endSnkDate,
-        CancellationTokenSource cts, SnkParamsDto? snkParams = null)
+    private protected static async Task<List<ShortFormDTO>> GetRechargeFormsDtoList(DBModel db, int repsId, string formNum, 
+        DateOnly firstSnkDate, DateOnly endSnkDate, CancellationTokenSource cts, SnkParamsDto? snkParams = null)
     {
         snkParams ??= new SnkParamsDto(true, true, true, true, true);
 
@@ -863,35 +1016,85 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             .Include(x => x.Report_Collection)
             .Where(reps => reps.DBObservable != null && reps.Id == repsId)
             .SelectMany(reps => reps.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.1"))
+                .Where(rep => rep.FormNum_DB == formNum))
             .Select(rep => rep.Id)
             .ToListAsync(cts.Token);
 
-        var rechargeOperationDtoList = await db.form_11
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.Report)
-            .Where(x => x.Report != null
-                        && reportIds.Contains(x.Report.Id)
-                        && (x.OperationCode_DB == "53" || x.OperationCode_DB == "54"))
-            .Select(form => new ShortForm11StringDatesDTO
-            {
-                Id = form.Id,
-                NumberInOrder = form.NumberInOrder_DB,
-                RepId = form.Report!.Id,
-                StDate = form.Report.StartPeriod_DB,
-                EndDate = form.Report.EndPeriod_DB,
-                FacNum = snkParams == null || snkParams.CheckFacNum ? form.FactoryNumber_DB : string.Empty,
-                OpCode = form.OperationCode_DB,
-                OpDate = form.OperationDate_DB,
-                PackNumber = snkParams == null || snkParams.CheckPackNumber ? form.PackNumber_DB : string.Empty,
-                PasNum = snkParams == null || snkParams.CheckPasNum ? form.PassportNumber_DB : string.Empty,
-                Quantity = form.Quantity_DB,
-                Radionuclids = snkParams == null || snkParams.CheckRadionuclids ? form.Radionuclids_DB : string.Empty,
-                Type = snkParams == null || snkParams.CheckType ? form.Type_DB : string.Empty
-            })
-            .ToListAsync(cts.Token);
+        var rechargeOperationDtoList = formNum switch
+        {
+            "1.1" => await db.form_11
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.Report)
+                .Where(x => x.Report != null
+                            && reportIds.Contains(x.Report.Id)
+                            && (x.OperationCode_DB == "53" || x.OperationCode_DB == "54"))
+                .Select(form => new ShortFormStringDatesDTO
+                {
+                    Id = form.Id,
+                    NumberInOrder = form.NumberInOrder_DB,
+                    RepId = form.Report!.Id,
+                    StDate = form.Report.StartPeriod_DB,
+                    EndDate = form.Report.EndPeriod_DB,
+                    FacNum = snkParams == null || snkParams.CheckFacNum
+                        ? form.FactoryNumber_DB
+                        : string.Empty,
+                    OpCode = form.OperationCode_DB,
+                    OpDate = form.OperationDate_DB,
+                    PackNumber = snkParams == null || snkParams.CheckPackNumber
+                        ? form.PackNumber_DB
+                        : string.Empty,
+                    PasNum = snkParams == null || snkParams.CheckPasNum
+                        ? form.PassportNumber_DB
+                        : string.Empty,
+                    Quantity = form.Quantity_DB,
+                    Radionuclids = snkParams == null || snkParams.CheckRadionuclids
+                        ? form.Radionuclids_DB
+                        : string.Empty,
+                    Type = snkParams == null || snkParams.CheckType
+                        ? form.Type_DB
+                        : string.Empty
+                })
+                .ToListAsync(cts.Token),
+
+            "1.3" => await db.form_13
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.Report)
+                .Where(x => x.Report != null
+                            && reportIds.Contains(x.Report.Id)
+                            && (x.OperationCode_DB == "53" || x.OperationCode_DB == "54"))
+                .Select(form => new ShortFormStringDatesDTO
+                {
+                    Id = form.Id,
+                    NumberInOrder = form.NumberInOrder_DB,
+                    RepId = form.Report!.Id,
+                    StDate = form.Report.StartPeriod_DB,
+                    EndDate = form.Report.EndPeriod_DB,
+                    FacNum = snkParams == null || snkParams.CheckFacNum
+                        ? form.FactoryNumber_DB
+                        : string.Empty,
+                    OpCode = form.OperationCode_DB,
+                    OpDate = form.OperationDate_DB,
+                    PackNumber = snkParams == null || snkParams.CheckPackNumber
+                        ? form.PackNumber_DB
+                        : string.Empty,
+                    PasNum = snkParams == null || snkParams.CheckPasNum
+                        ? form.PassportNumber_DB
+                        : string.Empty,
+                    Radionuclids = snkParams == null || snkParams.CheckRadionuclids
+                        ? form.Radionuclids_DB
+                        : string.Empty,
+                    Type = snkParams == null || snkParams.CheckType
+                        ? form.Type_DB
+                        : string.Empty
+                })
+                .ToListAsync(cts.Token),
+
+            _ => throw new ArgumentOutOfRangeException(nameof(formNum), formNum, null)
+        };
 
         return rechargeOperationDtoList
             .Where(x => DateTime.TryParse(x.OpDate, out var opDateTime)
@@ -899,24 +1102,51 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                                              && DateOnly.TryParse(x.EndDate, out _)
                                              && DateOnly.FromDateTime(opDateTime) >= firstSnkDate
                                              && DateOnly.FromDateTime(opDateTime) <= endSnkDate)
-            .Select(x => new ShortForm11DTO(
-                x.Id,
-                x.NumberInOrder,
-                new ShortReportDTO(x.RepId, DateOnly.Parse(x.StDate), DateOnly.Parse(x.EndDate)),
-                x.OpCode,
-
-                DateOnly.FromDateTime(DateTime.Parse(x.OpDate)),
-                AutoReplaceSimilarChars(x.PasNum),
-                AutoReplaceSimilarChars(x.Type),
-                AutoReplaceSimilarChars(x.Radionuclids),
-                AutoReplaceSimilarChars(x.FacNum),
-                x.Quantity ?? 0,
-                AutoReplaceSimilarChars(x.PackNumber)
-                ))
+            .Select(x => new ShortFormDTO 
+            {
+                Id = x.Id,
+                NumberInOrder = x.NumberInOrder,
+                RepDto = new ShortReportDTO(x.RepId, DateOnly.Parse(x.StDate), DateOnly.Parse(x.EndDate)),
+                OpCode = x.OpCode,
+                OpDate = DateOnly.FromDateTime(DateTime.Parse(x.OpDate)),
+                PasNum = AutoReplaceSimilarChars(x.PasNum),
+                Type = AutoReplaceSimilarChars(x.Type),
+                Radionuclids = AutoReplaceSimilarChars(x.Radionuclids),
+                FacNum = AutoReplaceSimilarChars(x.FacNum),
+                Quantity = x.Quantity ?? 0,
+                PackNumber = AutoReplaceSimilarChars(x.PackNumber)
+            })
             .OrderBy(x => x.OpDate)
             .ThenBy(x => x.RepDto.StartPeriod)
             .ThenBy(x => x.RepDto.EndPeriod)
             .ToList();
+    }
+
+    #endregion
+
+    #region GetReportIds
+
+    /// <summary>
+    /// Возвращает id всех отчётов по заданной форме у выбранной организации.
+    /// </summary>
+    /// <param name="db">Модель БД.</param>
+    /// <param name="repsId">Id организации.</param>
+    /// <param name="formNum">Номер формы.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns></returns>
+    private protected static async Task<List<int>> GetReportIds(DBModel db, int repsId, string formNum, CancellationTokenSource cts)
+    {
+        return await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.DBObservable)
+            .Include(x => x.Report_Collection)
+            .Where(reps => reps.DBObservable != null && reps.Id == repsId)
+            .SelectMany(reps => reps.Report_Collection
+                .Where(rep => rep.FormNum_DB == formNum))
+            .Select(rep => rep.Id)
+            .ToListAsync(cts.Token);
     }
 
     #endregion
@@ -930,10 +1160,10 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="firstInventoryDate">Дата первой инвентаризации.</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <returns>Список DTO учётных единиц в наличии (СНК).</returns>
-    private protected static async Task<List<ShortForm11DTO>> GetUnitInStockDtoList(Dictionary<UniqueUnitDto, List<ShortForm11DTO>> uniqueUnitWithAllOperationDictionary, 
+    private protected static async Task<List<ShortFormDTO>> GetUnitInStockDtoList(Dictionary<UniqueUnitDto, List<ShortFormDTO>> uniqueUnitWithAllOperationDictionary, 
         DateOnly firstInventoryDate, AnyTaskProgressBarVM progressBarVM)
     {
-        List<ShortForm11DTO> unitInStockList = [];
+        List<ShortFormDTO> unitInStockList = [];
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentUnitNum = 1;
         foreach (var (unit, operations) in uniqueUnitWithAllOperationDictionary)
@@ -1027,9 +1257,9 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// </summary>
     /// <param name="operationList">Список операций.</param>
     /// <returns>Список операций, в котором множество +- операций в одну дату заменено на одну эквивалентную им операцию.</returns>
-    private static Task<List<ShortForm11DTO>> GetOperationsWithoutDuplicates(List<ShortForm11DTO> operationList)
+    private static Task<List<ShortFormDTO>> GetOperationsWithoutDuplicates(List<ShortFormDTO> operationList)
     {
-        List<ShortForm11DTO> operationsWithoutDuplicates = [];
+        List<ShortFormDTO> operationsWithoutDuplicates = [];
         foreach (var group in operationList.GroupBy(x => x.OpDate))
         {
             var countPlus = group
@@ -1072,7 +1302,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// </summary>
     /// <param name="operationList">Список операций.</param>
     /// <returns></returns>
-    private protected static Task<List<ShortForm11DTO>> GetOperationsWithoutMutuallyCompensating(List<ShortForm11DTO> operationList)
+    private protected static Task<List<ShortFormDTO>> GetOperationsWithoutMutuallyCompensating(List<ShortFormDTO> operationList)
     {
         var operationsGroupedByDate = operationList.Where(x =>
                 !PlusOperation.Contains(x.OpCode) && !MinusOperation.Contains(x.OpCode)
@@ -1080,7 +1310,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             .GroupBy(x => x.OpDate)
             .ToList();
 
-        var operationWithoutMutuallyExclusive = new List<ShortForm11DTO>();
+        var operationWithoutMutuallyExclusive = new List<ShortFormDTO>();
         foreach (var group in operationsGroupedByDate)
         {
             var formsList = group.ToList();
@@ -1116,7 +1346,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// </summary>
     /// <param name="unionFormsDtoList">Список DTO всех операций инвентаризации, приёма или передачи.</param>
     /// <returns>Список DTO уникальных учётных единиц с операциями инвентаризации, приёма или передачи.</returns>
-    private protected static Task<List<UniqueAccountingUnitDTO>> GetUniqueAccountingUnitDtoList(List<ShortForm11DTO> unionFormsDtoList)
+    private protected static Task<List<UniqueAccountingUnitDTO>> GetUniqueAccountingUnitDtoList(List<ShortFormDTO> unionFormsDtoList)
     {
         var uniqueAccountingUnitDtoList = unionFormsDtoList
             .Select(x => new UniqueAccountingUnitDTO

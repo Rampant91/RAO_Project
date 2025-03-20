@@ -313,15 +313,15 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
         {
             currentRepsNum++;
 
-            var inventoryReportDtoList = await GetInventoryReportDtoList(db, dto.Id, currentDate, cts);
+            var inventoryReportDtoList = await GetInventoryReportDtoList(db, dto.Id, "1.1", currentDate, cts);
 
-            var (firstSnkDate, inventoryFormsDtoList, _) = await GetInventoryFormsDtoList(db, inventoryReportDtoList, currentDate, cts);
+            var (firstSnkDate, inventoryFormsDtoList, _) = await GetInventoryFormsDtoList(db, inventoryReportDtoList, "1.1", currentDate, cts);
 
-            var reportIds = await GetReportIds(db, dto.Id, cts);
+            var reportIds = await GetReportIds(db, dto.Id, "1.1", cts);
 
-            var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, reportIds, firstSnkDate, currentDate, cts);
+            var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, reportIds, "1.1", firstSnkDate, currentDate, cts);
 
-            var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, dto.Id, firstSnkDate, currentDate, cts);
+            var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, dto.Id, "1.1", firstSnkDate, currentDate, cts);
 
             var uniqueUnitWithAllOperationDictionary = await GetDictionary_UniqueUnitsWithOperations(inventoryFormsDtoList, plusMinusFormsDtoList, rechargeFormsDtoList);
 

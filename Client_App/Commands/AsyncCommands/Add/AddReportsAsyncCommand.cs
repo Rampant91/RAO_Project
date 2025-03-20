@@ -8,6 +8,7 @@ using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Resources;
 using System.Collections.Generic;
 using System.Linq;
+using Client_App.Resources.CustomComparers;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 

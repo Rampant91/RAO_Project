@@ -58,41 +58,49 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
 
         progressBarVM.SetProgressBar(13, "Формирование списка инвентаризационных отчётов");
-        var inventoryReportDtoList = await GetInventoryReportDtoList(db, selectedReports.Id, endSnkDate, cts);
+        var inventoryReportDtoList = await GetInventoryReportDtoList(db, selectedReports.Id, formNum, endSnkDate, cts);
 
         progressBarVM.SetProgressBar(14, "Проверка наличия инвентаризации");
         await CheckInventoryFormPresence(inventoryReportDtoList, formNum, progressBar, cts);
 
         progressBarVM.SetProgressBar(15, "Формирование списка операций инвентаризации");
         var (firstSnkDate, inventoryFormsDtoList, inventoryDuplicateErrors) = 
-            await GetInventoryFormsDtoList(db, inventoryReportDtoList, endSnkDate, cts, snkParams);
+            await GetInventoryFormsDtoList(db, inventoryReportDtoList, formNum, endSnkDate, cts, snkParams);
 
         progressBarVM.SetProgressBar(16, "Получение списка дат инвентаризаций");
-        var inventoryDatesList = await GetInventoryDatesList(inventoryFormsDtoList);
+        var inventoryDatesList = await GetInventoryDatesList(inventoryFormsDtoList, endSnkDate);
 
         progressBarVM.SetProgressBar(18, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath);
 
         progressBarVM.SetProgressBar(19, "Заполнение заголовков");
-        await FillExcelHeaders(excelPackage, inventoryDatesList);
+        await FillExcelHeaders(excelPackage, inventoryDatesList, formNum);
 
         progressBarVM.SetProgressBar(20, "Загрузка списка отчётов");
-        var reportIds = await GetReportIds(db, selectedReports.Id, cts);
+        var reportIds = await GetReportIds(db, selectedReports.Id, formNum, cts);
 
         progressBarVM.SetProgressBar(21, "Формирование списка операций передачи/получения");
-        var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, reportIds, firstSnkDate, endSnkDate, cts, snkParams);
+        var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, reportIds, formNum, firstSnkDate, endSnkDate, cts, snkParams);
 
         progressBarVM.SetProgressBar(25, "Загрузка операций перезарядки");
-        var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, selectedReports.Id, firstSnkDate, endSnkDate, cts, snkParams);
+        var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, selectedReports.Id, formNum, firstSnkDate, endSnkDate, cts, snkParams);
 
         progressBarVM.SetProgressBar(30, "Загрузка нулевых операций");
         var zeroFormsDtoList = await GetZeroFormsDtoList(db, selectedReports.Id, rechargeFormsDtoList, firstSnkDate, endSnkDate, cts, snkParams);
 
         progressBarVM.SetProgressBar(35, "Формирование списка учётных единиц");
-        var uniqueUnitWithAllOperationDictionary = await GetDictionary_UniqueUnitsWithOperations(inventoryFormsDtoList, plusMinusFormsDtoList, rechargeFormsDtoList, zeroFormsDtoList);
+        var uniqueUnitWithAllOperationDictionary = await GetDictionary_UniqueUnitsWithOperations(inventoryFormsDtoList, plusMinusFormsDtoList, 
+            rechargeFormsDtoList, zeroFormsDtoList);
 
         progressBarVM.SetProgressBar(40, "Формирование списков СНК и ошибок");
-        await GetInventoryErrorsAndSnk(db, uniqueUnitWithAllOperationDictionary, inventoryFormsDtoList, inventoryDatesList, inventoryDuplicateErrors, firstSnkDate, excelPackage, progressBarVM, cts);
+        var (unitInStockByDateDictionary, inventoryErrorsByDateDictionary) = await GetInventoryErrorsAndSnk(uniqueUnitWithAllOperationDictionary, 
+            inventoryDatesList, inventoryDuplicateErrors, firstSnkDate);
+
+        progressBarVM.SetProgressBar(45, "Загрузка и заполнение СНК");
+        await FillSnkPages(db, unitInStockByDateDictionary, inventoryFormsDtoList, excelPackage, progressBarVM, cts);
+
+        progressBarVM.SetProgressBar(75, "Загрузка и заполнение ошибок");
+        await FillInventoryErrorsPages(db, inventoryErrorsByDateDictionary, excelPackage, progressBarVM, cts);
 
         progressBarVM.SetProgressBar(95, "Сохранение");
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
@@ -111,84 +119,611 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         await progressBar.CloseAsync();
     }
 
-    private static async Task<List<ShortForm11DTO>> GetZeroFormsDtoList(DBModel db, int repsId, List<ShortForm11DTO> rechargeFormsDtoList, DateOnly firstSnkDate, DateOnly endSnkDate, CancellationTokenSource cts, SnkParamsDto? snkParams = null)
+    #region CheckInventoryFormPresence
+
+    /// <summary>
+    /// Проверяет наличие у организации хотя бы одного отчёта, содержащего форму с кодом операции 10.
+    /// При отсутствии таковой выводит сообщение и завершает выполнение команды.
+    /// </summary>
+    /// <param name="inventoryReportDtoList">Список DTO отчётов по форме 1.1, отсортированный по датам.</param>
+    /// <param name="formNum">Номер формы отчётности.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
+    private static async Task CheckInventoryFormPresence(List<ShortReportDTO> inventoryReportDtoList, string formNum,
+        AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
-        var reportIds = await db.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.DBObservable)
-            .Include(x => x.Report_Collection)
-            .Where(reps => reps.DBObservable != null && reps.Id == repsId)
-            .SelectMany(reps => reps.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.1"))
-            .Select(rep => rep.Id)
-            .ToListAsync(cts.Token);
+        if (inventoryReportDtoList.Count == 0)
+        {
+            #region MessageExcelExportFail
 
-        var zeroOperationDtoList = await db.form_11
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.Report)
-            .Where(x => x.Report != null
-                        && reportIds.Contains(x.Report.Id)
-                        && !PlusOperation.Contains(x.OperationCode_DB)
-                        && !MinusOperation.Contains(x.OperationCode_DB)
-                        && x.OperationCode_DB != "10"
-                        && x.OperationCode_DB != "53"
-                        && x.OperationCode_DB != "54")
-            .Select(form => new ShortForm11StringDatesDTO
-            {
-                Id = form.Id,
-                NumberInOrder = form.NumberInOrder_DB,
-                RepId = form.Report!.Id,
-                StDate = form.Report.StartPeriod_DB,
-                EndDate = form.Report.EndPeriod_DB,
-                FacNum = snkParams == null || snkParams.CheckFacNum ? form.FactoryNumber_DB : string.Empty,
-                OpCode = form.OperationCode_DB,
-                OpDate = form.OperationDate_DB,
-                PackNumber = snkParams == null || snkParams.CheckPackNumber ? form.PackNumber_DB : string.Empty,
-                PasNum = snkParams == null || snkParams.CheckPasNum ? form.PassportNumber_DB : string.Empty,
-                Quantity = form.Quantity_DB,
-                Radionuclids = snkParams == null || snkParams.CheckRadionuclids ? form.Radionuclids_DB : string.Empty,
-                Type = snkParams == null || snkParams.CheckType ? form.Type_DB : string.Empty
-            })
-            .ToListAsync(cts.Token);
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentMessage = $"Выгрузка не выполнена, поскольку у организации отсутствуют формы {formNum} с кодом операции 10.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
 
-        return zeroOperationDtoList
-            .Where(x => DateTime.TryParse(x.OpDate, out var opDateTime)
-                        && DateOnly.TryParse(x.StDate, out _)
-                        && DateOnly.TryParse(x.EndDate, out _)
-                        && DateOnly.FromDateTime(opDateTime) >= firstSnkDate
-                        && DateOnly.FromDateTime(opDateTime) <= endSnkDate)
-            .Select(x => new ShortForm11DTO(
-                x.Id,
-                x.NumberInOrder,
-                new ShortReportDTO(x.RepId, DateOnly.Parse(x.StDate), DateOnly.Parse(x.EndDate)),
-                x.OpCode,
-                DateOnly.FromDateTime(DateTime.Parse(x.OpDate)),
-                AutoReplaceSimilarChars(x.PasNum),
-                AutoReplaceSimilarChars(x.Type),
-                AutoReplaceSimilarChars(x.Radionuclids),
-                AutoReplaceSimilarChars(x.FacNum),
-                x.Quantity ?? 0,
-                AutoReplaceSimilarChars(x.PackNumber)
-                ))
-            .Union(rechargeFormsDtoList)
-            .OrderBy(x => x.OpDate)
-            .ThenBy(x => x.RepDto.StartPeriod)
-            .ThenBy(x => x.RepDto.EndPeriod)
-            .ToList();
+            #endregion
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
     }
 
-    private static async Task GetInventoryErrorsAndSnk(DBModel db, Dictionary<UniqueUnitDto, List<ShortForm11DTO>> uniqueUnitWithAllOperationDictionary, 
-        List<ShortForm11DTO> inventoryFormsDtoList, List<DateOnly> inventoryDatesList, List<ShortForm11DTO> inventoryDuplicateErrorsDtoList,
-        DateOnly primaryInventoryDate, ExcelPackage excelPackage, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
-    {
-        List<ShortForm11DTO> unitInStockDtoList = [];
+    #endregion
 
-        Dictionary<DateOnly, List<ShortForm11DTO>> unitInStockByDateDictionary = [];
+    #region FillExcelHeaders
+
+    /// <summary>
+    /// Заполняет заголовки Excel пакета.
+    /// </summary>
+    /// <param name="excelPackage">Excel пакет.</param>
+    /// <param name="inventoryDatesList">Список дат инвентаризации вместе с текущей датой/датой введённой пользователем.</param>
+    /// <param name="formNum">Номер формы.</param>
+    private static async Task FillExcelHeaders(ExcelPackage excelPackage, List<DateOnly> inventoryDatesList, string formNum)
+    {
+        foreach (var date in inventoryDatesList)
+        {
+            var snkWorksheet = excelPackage.Workbook.Worksheets.Add($"СНК на {date:dd.MM.yy}");
+
+            await FillSnkTable(snkWorksheet, date, formNum);
+
+            await FillInventoryTable(snkWorksheet, date, formNum);
+
+            await AutoFitColumnsAndFreezeRows(snkWorksheet, 2);
+
+            var errorsWorksheet = excelPackage.Workbook.Worksheets.Add($"Ошибки на {date:dd.MM.yy}");
+
+            await FillErrorsTable(errorsWorksheet, formNum);
+
+            await AutoFitColumnsAndFreezeRows(errorsWorksheet, 1);
+        }
+    }
+
+    #region AutoFitColumns
+
+    /// <summary>
+    /// Для текущей страницы Excel пакета подбирает ширину колонок и замораживает n строчек.
+    /// </summary>
+    private static Task AutoFitColumnsAndFreezeRows(ExcelWorksheet worksheet, byte numberOfRowsToFreeze)
+    {
+        for (var col = 1; col <= worksheet.Dimension.End.Column; col++)
+        {
+            if (OperatingSystem.IsWindows()) worksheet.Column(col).AutoFit();
+        }
+        for (var row = 2; row <= numberOfRowsToFreeze + 1; row++)
+        {
+            worksheet.View.FreezePanes(row, 1);
+        }
+        return Task.CompletedTask;
+    }
+
+    #endregion
+
+    #region FillErrorsTable
+
+    /// <summary>
+    /// Заполняет лист, содержащий таблицу ошибок инвентаризации.
+    /// </summary>
+    /// <param name="worksheet">Лист Excel пакета.</param>
+    /// <param name="formNum">Номер формы.</param>
+    private static Task FillErrorsTable(ExcelWorksheet worksheet, string formNum)
+    {
+        switch (formNum)
+        {
+            case "1.1":
+            {
+                worksheet.Cells[1, 1].Value = "№ п/п";
+                worksheet.Cells[1, 2].Value = "Описание ошибки";
+                worksheet.Cells[1, 3].Value = "Дата начала периода";
+                worksheet.Cells[1, 4].Value = "Дата конца периода";
+                worksheet.Cells[1, 5].Value = "Номер строки";
+                worksheet.Cells[1, 6].Value = "Код операции";
+                worksheet.Cells[1, 7].Value = "Дата операции";
+                worksheet.Cells[1, 8].Value = "Номер паспорта (сертификата)";
+                worksheet.Cells[1, 9].Value = "тип";
+                worksheet.Cells[1, 10].Value = "радионуклиды";
+                worksheet.Cells[1, 11].Value = "номер";
+                worksheet.Cells[1, 12].Value = "количество, шт.";
+                worksheet.Cells[1, 13].Value = "суммарная активность, Бк";
+                worksheet.Cells[1, 14].Value = "код ОКПО изготовителя";
+                worksheet.Cells[1, 15].Value = "дата выпуска";
+                worksheet.Cells[1, 16].Value = "категория";
+                worksheet.Cells[1, 17].Value = "НСС, мес";
+                worksheet.Cells[1, 18].Value = "Номер УКТ";
+                break;
+            }
+            case "1.3":
+            {
+                worksheet.Cells[1, 1].Value = "№ п/п";
+                worksheet.Cells[1, 2].Value = "Описание ошибки";
+                worksheet.Cells[1, 3].Value = "Дата начала периода";
+                worksheet.Cells[1, 4].Value = "Дата конца периода";
+                worksheet.Cells[1, 5].Value = "Номер строки";
+                worksheet.Cells[1, 6].Value = "Код операции";
+                worksheet.Cells[1, 7].Value = "Дата операции";
+                worksheet.Cells[1, 8].Value = "Номер паспорта (сертификата)";
+                worksheet.Cells[1, 9].Value = "тип";
+                worksheet.Cells[1, 10].Value = "радионуклиды";
+                worksheet.Cells[1, 11].Value = "номер";
+                worksheet.Cells[1, 12].Value = "активность, Бк";
+                worksheet.Cells[1, 13].Value = "код ОКПО изготовителя";
+                worksheet.Cells[1, 14].Value = "дата выпуска";
+                worksheet.Cells[1, 15].Value = "агрегатное состояние";
+                worksheet.Cells[1, 16].Value = "Номер УКТ";
+                break;
+            }
+        }
+        return Task.CompletedTask;
+    }
+
+    #endregion
+
+    #region FillInventoryTable
+
+    /// <summary>
+    /// Заполняет лист, содержащий таблицу инвентаризации на дату.
+    /// </summary>
+    /// <param name="worksheet">Лист Excel пакета.</param>
+    /// <param name="date">Дата инвентаризации.</param>
+    /// <param name="formNum">Номер формы.</param>
+    private static Task FillInventoryTable(ExcelWorksheet worksheet, DateOnly date, string formNum)
+    {
+        switch (formNum)
+        {
+            case "1.1":
+            {
+                worksheet.Cells[1, 13, 1, 24].Merge = true;
+                worksheet.Cells[1, 13, 1, 24].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                worksheet.Cells[1, 13].Value = $"Инвентаризация на {date.ToShortDateString()}";
+
+                worksheet.Cells[2, 13].Value = "№ п/п";
+                worksheet.Cells[2, 14].Value = "Номер паспорта (сертификата)";
+                worksheet.Cells[2, 15].Value = "тип";
+                worksheet.Cells[2, 16].Value = "радионуклиды";
+                worksheet.Cells[2, 17].Value = "номер";
+                worksheet.Cells[2, 18].Value = "количество, шт.";
+                worksheet.Cells[2, 19].Value = "суммарная активность, Бк";
+                worksheet.Cells[2, 20].Value = "код ОКПО изготовителя";
+                worksheet.Cells[2, 21].Value = "дата выпуска";
+                worksheet.Cells[2, 22].Value = "категория";
+                worksheet.Cells[2, 23].Value = "НСС, мес";
+                worksheet.Cells[2, 24].Value = "Номер УКТ";
+                break;
+            }
+            case "1.3":
+            {
+                worksheet.Cells[1, 11, 1, 20].Merge = true;
+                worksheet.Cells[1, 11, 1, 20].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                worksheet.Cells[1, 11].Value = $"Инвентаризация на {date.ToShortDateString()}";
+
+                worksheet.Cells[2, 11].Value = "№ п/п";
+                worksheet.Cells[2, 12].Value = "Номер паспорта (сертификата)";
+                worksheet.Cells[2, 13].Value = "тип";
+                worksheet.Cells[2, 14].Value = "радионуклиды";
+                worksheet.Cells[2, 15].Value = "номер";
+                worksheet.Cells[2, 16].Value = "активность, Бк";
+                worksheet.Cells[2, 17].Value = "код ОКПО изготовителя";
+                worksheet.Cells[2, 18].Value = "дата выпуска";
+                worksheet.Cells[2, 19].Value = "агрегатное состояние";
+                worksheet.Cells[2, 20].Value = "Номер УКТ";
+                break;
+            }
+        }
+        return Task.CompletedTask;
+    }
+
+    #endregion
+
+    #region FillSnkTable
+
+    /// <summary>
+    /// Заполняет лист, содержащий таблицу СНК на дату.
+    /// </summary>
+    /// <param name="worksheet">Лист Excel пакета.</param>
+    /// <param name="date">Дата инвентаризации.</param>
+    /// <param name="formNum">Номер формы.</param>
+    private static Task FillSnkTable(ExcelWorksheet worksheet, DateOnly date, string formNum)
+    {
+        switch (formNum)
+        {
+            case "1.1":
+            {
+                worksheet.Cells[1, 1, 1, 12].Merge = true;
+                worksheet.Cells[1, 1, 1, 12].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                worksheet.Cells[1, 1].Value = $"СНК на {date.ToShortDateString()}";
+
+                worksheet.Cells[2, 1].Value = "№ п/п";
+                worksheet.Cells[2, 2].Value = "Номер паспорта (сертификата)";
+                worksheet.Cells[2, 3].Value = "тип";
+                worksheet.Cells[2, 4].Value = "радионуклиды";
+                worksheet.Cells[2, 5].Value = "номер";
+                worksheet.Cells[2, 6].Value = "количество, шт.";
+                worksheet.Cells[2, 7].Value = "суммарная активность, Бк";
+                worksheet.Cells[2, 8].Value = "код ОКПО изготовителя";
+                worksheet.Cells[2, 9].Value = "дата выпуска";
+                worksheet.Cells[2, 10].Value = "категория";
+                worksheet.Cells[2, 11].Value = "НСС, мес";
+                worksheet.Cells[2, 12].Value = "Номер УКТ";
+                break;
+            }
+            case "1.3":
+            {
+                worksheet.Cells[1, 1, 1, 10].Merge = true;
+                worksheet.Cells[1, 1, 1, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                worksheet.Cells[1, 1].Value = $"СНК на {date.ToShortDateString()}";
+
+                worksheet.Cells[2, 1].Value = "№ п/п";
+                worksheet.Cells[2, 2].Value = "Номер паспорта (сертификата)";
+                worksheet.Cells[2, 3].Value = "тип";
+                worksheet.Cells[2, 4].Value = "радионуклиды";
+                worksheet.Cells[2, 5].Value = "номер";
+                worksheet.Cells[2, 6].Value = "активность, Бк";
+                worksheet.Cells[2, 7].Value = "код ОКПО изготовителя";
+                worksheet.Cells[2, 8].Value = "дата выпуска";
+                worksheet.Cells[2, 9].Value = "агрегатное состояние";
+                worksheet.Cells[2, 10].Value = "Номер УКТ";
+                break;
+            }
+        }
+        return Task.CompletedTask;
+    }
+
+    #endregion
+
+    #endregion
+
+    #region FillInventoryErrorsPages
+
+    private static async Task FillInventoryErrorsPages(DBModel db, Dictionary<DateOnly, List<InventoryErrorsShortDto>> inventoryErrorsByDateDictionary, 
+        ExcelPackage excelPackage, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
+    {
+        double progressBarDoubleValue = progressBarVM.ValueBar;
+        foreach (var (inventoryDate, inventoryErrorsDtoList) in inventoryErrorsByDateDictionary)
+        {
+            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+                $"Загрузка полных форм ошибок на {inventoryDate}");
+
+            var fullFormsErrorsList = await GetFullFormsErrorsList(db, inventoryErrorsDtoList, inventoryErrorsByDateDictionary.Count, progressBarVM, cts);
+
+            var errorsWorksheet = excelPackage.Workbook.Worksheets
+                .First(x => x.Name == $"Ошибки на {inventoryDate:dd.MM.yy}");
+
+            var fullFormsErrorsOrderedList = fullFormsErrorsList
+                .OrderBy(x => x.PasNum)
+                .ThenBy(x => x.FacNum)
+                .ThenBy(x => x.Type)
+                .ThenBy(x => x.PackNumber)
+                .ThenBy(x => x.Radionuclids)
+                .ThenBy(x => x.Quantity)
+                .ThenBy(x => x.StPer)
+                .ThenBy(x => x.EndPer)
+                .ThenBy(x => x.RowNumber)
+                .ToList();
+
+            var errorsRow = 2;
+            foreach (var form in fullFormsErrorsOrderedList)
+            {
+                errorsWorksheet.Cells[errorsRow, 1].Value = errorsRow - 1;
+                errorsWorksheet.Cells[errorsRow, 2].Value = GetErrorDescriptionByType(form.ErrorType);
+                errorsWorksheet.Cells[errorsRow, 3].Value = ConvertToExcelDate(form.StPer.ToShortDateString(), errorsWorksheet, errorsRow, 3);
+                errorsWorksheet.Cells[errorsRow, 4].Value = ConvertToExcelDate(form.EndPer.ToShortDateString(), errorsWorksheet, errorsRow, 4);
+                errorsWorksheet.Cells[errorsRow, 5].Value = form.RowNumber;
+                errorsWorksheet.Cells[errorsRow, 6].Value = form.OpCode;
+                errorsWorksheet.Cells[errorsRow, 7].Value = form.OpDate;
+                errorsWorksheet.Cells[errorsRow, 8].Value = form.PasNum;
+                errorsWorksheet.Cells[errorsRow, 9].Value = form.Type;
+                errorsWorksheet.Cells[errorsRow, 10].Value = form.Radionuclids;
+                errorsWorksheet.Cells[errorsRow, 11].Value = form.FacNum;
+                errorsWorksheet.Cells[errorsRow, 12].Value = form.Quantity;
+                errorsWorksheet.Cells[errorsRow, 13].Value = form.Activity;
+                errorsWorksheet.Cells[errorsRow, 14].Value = form.CreatorOKPO;
+                errorsWorksheet.Cells[errorsRow, 15].Value = ConvertToExcelDate(form.CreationDate, errorsWorksheet, errorsRow, 15);
+                errorsWorksheet.Cells[errorsRow, 16].Value = form.Category;
+                errorsWorksheet.Cells[errorsRow, 17].Value = form.SignedServicePeriod;
+                errorsWorksheet.Cells[errorsRow, 18].Value = form.PackNumber;
+                errorsRow++;
+            }
+
+            var errorsTable = errorsWorksheet.Tables
+                .Add(errorsWorksheet.Cells[1, 1, errorsWorksheet.Dimension.Rows, errorsWorksheet.Dimension.Columns], $"Ошибки_{inventoryDate}");
+            errorsTable.TableStyle = TableStyles.Medium2;
+            errorsWorksheet.Cells[1, 1, errorsWorksheet.Dimension.Rows, errorsWorksheet.Dimension.Columns].Style.Border.BorderAround(ExcelBorderStyle.Thick);
+
+            progressBarDoubleValue += (double)20 / inventoryErrorsByDateDictionary.Count;
+            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+                $"Загрузка полных форм ошибок на {inventoryDate}");
+        }
+    }
+
+    #endregion
+
+    #region FillSnkPages
+
+    private static async Task FillSnkPages(DBModel db, Dictionary<DateOnly, List<ShortFormDTO>> unitInStockByDateDictionary, 
+        List<ShortFormDTO> inventoryFormsDtoList, ExcelPackage excelPackage, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
+    {
+        double progressBarDoubleValue = progressBarVM.ValueBar;
+        foreach (var (inventoryDate, unitInStockOnDateDtoList) in unitInStockByDateDictionary)
+        {
+            var currentInventoryDtoList = inventoryFormsDtoList
+                    .Where(x => x.OpDate == inventoryDate)
+                    .ToList();
+
+            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+                $"Загрузка полных форм на {inventoryDate}",
+                "Загрузка полных форм");
+
+            var fullFormsSnkList = await GetFullFormsSnkList(db, unitInStockOnDateDtoList, inventoryDate, progressBarVM, cts);
+            var fullFormsInventoryList = await GetFullFormsSnkList(db, currentInventoryDtoList, inventoryDate, progressBarVM, cts);
+
+            #region SnkTable
+
+            var snkWorksheet = excelPackage.Workbook.Worksheets
+                .First(x => x.Name == $"СНК на {inventoryDate:dd.MM.yy}");
+
+            var fullFormsSnkOrderedList = fullFormsSnkList
+                .OrderByDescending(x => fullFormsInventoryList
+                    .Any(y => x.PasNum == y.PasNum
+                              && x.Type == y.Type
+                              && x.Radionuclids == y.Radionuclids
+                              && x.FacNum == y.FacNum
+                              && x.Quantity == y.Quantity
+                              && x.PackNumber == y.PackNumber))
+                .ThenBy(x => x.PasNum)
+                .ThenBy(x => x.FacNum)
+                .ThenBy(x => x.Type)
+                .ThenBy(x => x.Radionuclids)
+                .ThenBy(x => x.Quantity)
+                .ThenBy(x => x.PackNumber)
+                .ToList();
+
+            var snkRow = 3;
+            foreach (var form in fullFormsSnkOrderedList)
+            {
+                snkWorksheet.Cells[snkRow, 1].Value = snkRow - 2;
+                snkWorksheet.Cells[snkRow, 2].Value = form.PasNum;
+                snkWorksheet.Cells[snkRow, 3].Value = form.Type;
+                snkWorksheet.Cells[snkRow, 4].Value = form.Radionuclids;
+                snkWorksheet.Cells[snkRow, 5].Value = form.FacNum;
+                snkWorksheet.Cells[snkRow, 6].Value = form.Quantity;
+                snkWorksheet.Cells[snkRow, 7].Value = form.Activity;
+                snkWorksheet.Cells[snkRow, 8].Value = form.CreatorOKPO;
+                snkWorksheet.Cells[snkRow, 9].Value = ConvertToExcelDate(form.CreationDate, snkWorksheet, snkRow, 9);
+                snkWorksheet.Cells[snkRow, 10].Value = form.Category;
+                snkWorksheet.Cells[snkRow, 11].Value = form.SignedServicePeriod;
+                snkWorksheet.Cells[snkRow, 12].Value = form.PackNumber;
+                snkRow++;
+            }
+
+            var snkTable = snkWorksheet.Tables.Add(snkWorksheet.Cells[2, 1, snkRow - 1, 12], $"СНК_{inventoryDate}");
+            snkTable.TableStyle = TableStyles.Medium2;
+            snkWorksheet.Cells[1, 1, snkRow - 1, 12].Style.Border.BorderAround(ExcelBorderStyle.Thick);
+
+            #endregion
+
+            #region InventoryTable
+
+            var fullFormsInventoryOrderedList = fullFormsInventoryList
+                    .OrderByDescending(x => fullFormsSnkList
+                        .Any(y => x.PasNum == y.PasNum
+                                  && x.Type == y.Type
+                                  && x.Radionuclids == y.Radionuclids
+                                  && x.FacNum == y.FacNum
+                                  && x.Quantity == y.Quantity
+                                  && x.PackNumber == y.PackNumber))
+                    .ThenBy(x => x.PasNum)
+                    .ThenBy(x => x.FacNum)
+                    .ThenBy(x => x.Type)
+                    .ThenBy(x => x.Radionuclids)
+                    .ThenBy(x => x.Quantity)
+                    .ThenBy(x => x.PackNumber)
+                    .ToList();
+
+            var inventoryRow = 3;
+            foreach (var inventoryForm in fullFormsInventoryOrderedList)
+            {
+                snkWorksheet.Cells[inventoryRow, 13].Value = inventoryRow - 2;
+                snkWorksheet.Cells[inventoryRow, 14].Value = inventoryForm.PasNum;
+                snkWorksheet.Cells[inventoryRow, 15].Value = inventoryForm.Type;
+                snkWorksheet.Cells[inventoryRow, 16].Value = inventoryForm.Radionuclids;
+                snkWorksheet.Cells[inventoryRow, 17].Value = inventoryForm.FacNum;
+                snkWorksheet.Cells[inventoryRow, 18].Value = inventoryForm.Quantity;
+                snkWorksheet.Cells[inventoryRow, 19].Value = inventoryForm.Activity;
+                snkWorksheet.Cells[inventoryRow, 20].Value = inventoryForm.CreatorOKPO;
+                snkWorksheet.Cells[inventoryRow, 21].Value = ConvertToExcelDate(inventoryForm.CreationDate, snkWorksheet, inventoryRow, 21);
+                snkWorksheet.Cells[inventoryRow, 22].Value = inventoryForm.Category;
+                snkWorksheet.Cells[inventoryRow, 23].Value = inventoryForm.SignedServicePeriod;
+                snkWorksheet.Cells[inventoryRow, 24].Value = inventoryForm.PackNumber;
+                inventoryRow++;
+            }
+
+            var inventoryTable = snkWorksheet.Tables.Add(snkWorksheet.Cells[2, 13, inventoryRow - 1, 24], $"Инвентаризация_{inventoryDate}");
+            inventoryTable.TableStyle = TableStyles.Medium2;
+            snkWorksheet.Cells[1, 13, inventoryRow - 1, 24].Style.Border.BorderAround(ExcelBorderStyle.Thick);
+
+            #endregion
+
+            #region HighlightMatchesWithColor
+
+            var countMatches = fullFormsSnkOrderedList
+                    .Count(x => fullFormsInventoryOrderedList
+                        .Any(y => x.PasNum == y.PasNum
+                                  && x.Type == y.Type
+                                  && x.Radionuclids == y.Radionuclids
+                                  && x.FacNum == y.FacNum
+                                  && x.Quantity == y.Quantity
+                                  && x.PackNumber == y.PackNumber));
+
+            if (countMatches > 0)
+            {
+                for (var column = 1; column <= 24; column++)
+                {
+                    for (var row = 3; row <= countMatches + 2; row++)
+                    {
+                        snkWorksheet.Cells[row, column].Style.Fill.SetBackground(System.Drawing.Color.LightGreen, ExcelFillStyle.LightGray);
+                    }
+                }
+            }
+
+            #endregion
+
+            progressBarDoubleValue += (double)30 / unitInStockByDateDictionary.Count;
+            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+                $"Загрузка полных форм на {inventoryDate}");
+        }
+    }
+
+    #endregion
+
+    #region GetFullForm
+
+    /// <summary>
+    /// Загрузка из БД полных форм вместе с данными отчётов и организации.
+    /// </summary>
+    /// <param name="db">Модель БД.</param>
+    /// <param name="unitInStockDtoList">Список DTO учётных единиц в наличии на дату.</param>
+    /// <param name="inventoryDate">Дата инвентаризации, на которую загружаются формы.</param>
+    /// <param name="progressBarVM">ViewModel прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns>Список форм с данными отчётов и организации.</returns>
+    private static async Task<List<SnkForm11DTO>> GetFullFormsSnkList(DBModel db, List<ShortFormDTO> unitInStockDtoList, DateOnly inventoryDate,
+        AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
+    {
+        List<SnkForm11DTO> formsList = [];
+        double progressBarDoubleValue = progressBarVM.ValueBar;
+        var currentUnitNum = 1;
+
+        foreach (var unit in unitInStockDtoList)
+        {
+            var form = await db.form_11
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Where(x => x.Id == unit.Id
+                            && x.Report != null
+                            && x.Report.Reports != null
+                            && x.Report.Reports.DBObservable != null)
+                .Select(x => new SnkForm11DTO(
+                    x.FactoryNumber_DB,
+                    x.PassportNumber_DB,
+                    unit.Quantity,
+                    x.Radionuclids_DB,
+                    x.Type_DB,
+                    x.Activity_DB,
+                    x.CreatorOKPO_DB,
+                    x.CreationDate_DB,
+                    x.Category_DB,
+                    x.SignedServicePeriod_DB,
+                    x.PackNumber_DB))
+                .FirstAsync(cts.Token);
+
+            formsList.Add(form);
+
+            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+                $"Загрузка {currentUnitNum} формы из {unitInStockDtoList.Count}",
+                $"Загрузка форм на {inventoryDate}");
+            currentUnitNum++;
+        }
+        return formsList;
+
+    }
+
+    private static async Task<List<InventoryErrorForm11DTO>> GetFullFormsErrorsList(DBModel db, List<InventoryErrorsShortDto> inventoryErrorsDtoList, 
+        int datesCount, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
+    {
+        List<InventoryErrorForm11DTO> formsList = [];
+        double progressBarDoubleValue = progressBarVM.ValueBar;
+        var currentUnitNum = 1;
+        foreach (var error in inventoryErrorsDtoList)
+        {
+            var form = await db.form_11
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Where(x => x.Id == error.Dto.Id
+                            && x.Report != null
+                            && x.Report.Reports != null
+                            && x.Report.Reports.DBObservable != null)
+                .Select(x => new InventoryErrorForm11DTO(
+                    error.ErrorTypeEnum,
+                    error.Dto.RepDto.StartPeriod,
+                    error.Dto.RepDto.EndPeriod,
+                    x.NumberInOrder_DB,
+                    x.FactoryNumber_DB,
+                    x.OperationCode_DB,
+                    x.OperationDate_DB,
+                x.PassportNumber_DB,
+                    error.Dto.Quantity,
+                    x.Radionuclids_DB,
+                    x.Type_DB,
+                    x.Activity_DB,
+                    x.CreatorOKPO_DB,
+                    x.CreationDate_DB,
+                    x.Category_DB,
+                    x.SignedServicePeriod_DB,
+                    x.PackNumber_DB))
+                .FirstAsync(cts.Token);
+
+            formsList.Add(form);
+
+            progressBarDoubleValue += (double)25 / inventoryErrorsDtoList.Count / datesCount;
+            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+                $"Загрузка {currentUnitNum} формы из {inventoryErrorsDtoList.Count}",
+                "Загрузка форм");
+            currentUnitNum++;
+        }
+        return formsList;
+
+    }
+
+    #endregion
+
+    #region GetInventoryDatesList
+
+    /// <summary>
+    /// Формирование списка операций инвентаризации.
+    /// </summary>
+    /// <param name="inventoryFormsDtoList">Список DTO операций инвентаризации, отсортированный по датам.</param>
+    /// <param name="endSnkDate">Дата, по которую нужно проверить инвентаризации.</param>
+    /// <returns>Список операций инвентаризации.</returns>
+    private static Task<List<DateOnly>> GetInventoryDatesList(List<ShortFormDTO> inventoryFormsDtoList, DateOnly endSnkDate)
+    {
+        var inventoryDates = inventoryFormsDtoList
+            .Select(x => x.OpDate)
+            .Concat([endSnkDate])
+            .Distinct()
+            .Order()
+            .ToList();
+
+        return Task.FromResult(inventoryDates);
+    }
+
+    #endregion
+
+    #region GetInventoryErrorsAndSnk
+
+    /// <summary>
+    /// Формирование СНК на все даты инвентаризаций, а также списков ошибок на эти даты.
+    /// </summary>
+    /// <param name="uniqueUnitWithAllOperationDictionary"></param>
+    /// <param name="inventoryDatesList">Список дат инвентаризации.</param>
+    /// <param name="inventoryDuplicateErrorsDtoList"></param>
+    /// <param name="primaryInventoryDate">Дата первой инвентаризации начиная с 01.01.2022.</param>
+    private static async Task<(Dictionary<DateOnly, List<ShortFormDTO>>, Dictionary<DateOnly, List<InventoryErrorsShortDto>>)> GetInventoryErrorsAndSnk(
+        Dictionary<UniqueUnitDto, List<ShortFormDTO>> uniqueUnitWithAllOperationDictionary, List<DateOnly> inventoryDatesList,
+        List<ShortFormDTO> inventoryDuplicateErrorsDtoList, DateOnly primaryInventoryDate)
+    {
+        List<ShortFormDTO> unitInStockDtoList = [];
+
+        Dictionary<DateOnly, List<ShortFormDTO>> unitInStockByDateDictionary = [];
         Dictionary<DateOnly, List<InventoryErrorsShortDto>> inventoryErrorsByDateDictionary = [];
+
+        #region GetSnkAndErrors
 
         var currentInventoryDateIndex = 0;
         foreach (var inventoryDate in inventoryDatesList)
@@ -202,7 +737,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
             };
 
             #region FirstInventory
-            
+
             // Если есть операции инвентаризации (кроме текущей даты, которая есть всегда), добавляем для первой инвентаризации СНК.
             if (currentInventoryDateIndex == 0)
             {
@@ -237,12 +772,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     .ThenBy(x => x.NumberInOrder)
                     .ToList();
 
-                #region GetErrors
-
                 var secondInventoryOperation = currentOperations
                     .FirstOrDefault(x => x.OpCode == "10" && x.OpDate == inventoryDate);
-
-                #endregion
 
                 #region GetInStock
 
@@ -254,17 +785,17 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
                     var currentUnitInStock = unitInStockDtoList
                         .FirstOrDefault(x =>
-                            x.PasNum == unit.PasNum
-                            && x.FacNum == unit.FacNum
-                            && x.Radionuclids == unit.Radionuclids
-                            && x.Type == unit.Type
-                            && x.PackNumber == currentPackNumber);
+                            string.Equals(x.PasNum, unit.PasNum, StringComparison.OrdinalIgnoreCase)
+                            && string.Equals(x.FacNum, unit.FacNum, StringComparison.OrdinalIgnoreCase)
+                            && string.Equals(x.Radionuclids, unit.Radionuclids, StringComparison.OrdinalIgnoreCase)
+                            && string.Equals(x.Type, unit.Type, StringComparison.OrdinalIgnoreCase)
+                            && string.Equals(x.PackNumber, currentPackNumber, StringComparison.OrdinalIgnoreCase));
 
                     var quantity = currentUnitInStock?.Quantity ?? 0;
 
                     //2. Есть в СНК на первую инвентаризацию, нет второй инвентаризации, нет минусовых операций.
-                    if (currentUnitInStock != null 
-                        && quantity != 0 
+                    if (currentUnitInStock != null
+                        && quantity != 0
                         && secondInventoryOperation is null
                         && !currentOperations.Any(x => MinusOperation.Contains(x.OpCode))
                         && inventoryDate != inventoryDatesList[^1])
@@ -374,14 +905,14 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                             .Reverse()
                             .FirstOrDefault();
 
-                        if (MinusOperation.Contains(currentForm.OpCode) 
-                            && previousPlusMinusOperation is not null 
+                        if (MinusOperation.Contains(currentForm.OpCode)
+                            && previousPlusMinusOperation is not null
                             && MinusOperation.Contains(previousPlusMinusOperation.OpCode))
                         {
                             //5. Двойное снятие с учёта
                             errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.ReDeRegistration, currentForm));
                         }
-                        else if (PlusOperation.Contains(currentForm.OpCode) 
+                        else if (PlusOperation.Contains(currentForm.OpCode)
                                  && previousPlusMinusOperation is not null &&
                                  PlusOperation.Contains(previousPlusMinusOperation.OpCode))
                         {
@@ -395,7 +926,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     #region GetInStock
 
                     var inStock = allOperationsWithoutMutuallyExclusive.Any(x => x.OpCode == "10" && x.OpDate == primaryInventoryDate);
-                    var  inStockOnPreviousInventoryDate = inStock;
+                    var inStockOnPreviousInventoryDate = inStock;
 
                     foreach (var form in allOperationsWithoutMutuallyExclusive.Where(x => x.OpDate <= previousInventoryDate))
                     {
@@ -410,7 +941,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                         && inventoryDate != inventoryDatesList[^1])
                     {
                         errorsDtoList.Add(new InventoryErrorsShortDto(
-                            InventoryErrorTypeEnum.MissingFromInventoryUnit, allOperationsWithoutMutuallyExclusive.Last(x => x.OpDate <= inventoryDate)));
+                            InventoryErrorTypeEnum.MissingFromInventoryUnit,
+                            allOperationsWithoutMutuallyExclusive.Last(x => x.OpDate <= inventoryDate)));
                     }
 
                     //4. Снятие с учёта не стоявшего на учёте ЗРИ.
@@ -431,9 +963,9 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
                     foreach (var form in allOperations.Where(x => x.OpDate <= inventoryDate))
                     {
-                        if (IsZeroOperation(form) 
-                            && !inStock 
-                            && form.OpDate >= previousInventoryDate 
+                        if (IsZeroOperation(form)
+                            && !inStock
+                            && form.OpDate >= previousInventoryDate
                             && form.OpDate <= inventoryDate
                             && form.OpDate >= primaryInventoryDate)
                         {
@@ -452,12 +984,13 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
                     var currentPackNumber = operationsWithoutMutuallyExclusive.FirstOrDefault()?.PackNumber ?? unit.PackNumber;
 
-                    var unitInStock = unitInStockDtoList.FirstOrDefault(x => x.PasNum == unit.PasNum
-                                                                             && x.FacNum == unit.FacNum
-                                                                             && x.Radionuclids == unit.Radionuclids
-                                                                             && x.Type == unit.Type
-                                                                             && x.PackNumber == currentPackNumber
-                                                                             && x.Quantity == unit.Quantity);
+                    var unitInStock = unitInStockDtoList.FirstOrDefault(x =>
+                        string.Equals(x.PasNum, unit.PasNum, StringComparison.OrdinalIgnoreCase)
+                        && string.Equals(x.FacNum, unit.FacNum, StringComparison.OrdinalIgnoreCase)
+                        && string.Equals(x.Radionuclids, unit.Radionuclids, StringComparison.OrdinalIgnoreCase)
+                        && string.Equals(x.Type, unit.Type, StringComparison.OrdinalIgnoreCase)
+                        && string.Equals(x.PackNumber, currentPackNumber, StringComparison.OrdinalIgnoreCase)
+                        && x.Quantity == unit.Quantity);
 
                     //3. Есть во второй инвентаризации, но отсутствует в СНК на дату второй инвентаризации.
                     if (secondInventoryOperation is not null
@@ -493,322 +1026,18 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
             currentInventoryDateIndex++;
         }
 
-        #region FillSnkPages
-
-        double progressBarDoubleValue = progressBarVM.ValueBar;
-        // Заполняем страницы с СНК
-        foreach (var (inventoryDate, unitInStockOnDateDtoList) in unitInStockByDateDictionary)
-        {
-            var currentInventoryDtoList = inventoryFormsDtoList
-                    .Where(x => x.OpDate == inventoryDate)
-                    .ToList();
-
-            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-                $"Загрузка полных форм на {inventoryDate}",
-                "Загрузка полных форм");
-
-            var fullFormsSnkList = await GetFullFormsSnkList(db, unitInStockOnDateDtoList, inventoryDate, progressBarVM, cts);
-            var fullFormsInventoryList = await GetFullFormsSnkList(db, currentInventoryDtoList, inventoryDate, progressBarVM, cts);
-
-            #region SnkTable
-
-            var snkWorksheet = excelPackage.Workbook.Worksheets
-                .First(x => x.Name == $"СНК на {inventoryDate:dd.MM.yy}");
-
-            var fullFormsSnkOrderedList = fullFormsSnkList
-                .OrderByDescending(x => fullFormsInventoryList
-                    .Any(y => x.PasNum == y.PasNum
-                              && x.Type == y.Type
-                              && x.Radionuclids == y.Radionuclids
-                              && x.FacNum == y.FacNum
-                              && x.Quantity == y.Quantity
-                              && x.PackNumber == y.PackNumber))
-                .ThenBy(x => x.PasNum)
-                .ThenBy(x => x.Type)
-                .ThenBy(x => x.Radionuclids)
-                .ThenBy(x => x.Quantity)
-                .ThenBy(x => x.PackNumber)
-                .ToList();
-
-            var snkRow = 3;
-            foreach (var form in fullFormsSnkOrderedList)
-            {
-                snkWorksheet.Cells[snkRow, 1].Value = snkRow - 2;
-                snkWorksheet.Cells[snkRow, 2].Value = form.PasNum;
-                snkWorksheet.Cells[snkRow, 3].Value = form.Type;
-                snkWorksheet.Cells[snkRow, 4].Value = form.Radionuclids;
-                snkWorksheet.Cells[snkRow, 5].Value = form.FacNum;
-                snkWorksheet.Cells[snkRow, 6].Value = form.Quantity;
-                snkWorksheet.Cells[snkRow, 7].Value = form.Activity;
-                snkWorksheet.Cells[snkRow, 8].Value = form.CreatorOKPO;
-                snkWorksheet.Cells[snkRow, 9].Value = ConvertToExcelDate(form.CreationDate, snkWorksheet, snkRow, 9);
-                snkWorksheet.Cells[snkRow, 10].Value = form.Category;
-                snkWorksheet.Cells[snkRow, 11].Value = form.SignedServicePeriod;
-                snkWorksheet.Cells[snkRow, 12].Value = form.PackNumber;
-                snkRow++;
-            }
-
-            var snkTable = snkWorksheet.Tables.Add(snkWorksheet.Cells[2, 1, snkRow - 1, 12], $"СНК_{inventoryDate}");
-            snkTable.TableStyle = TableStyles.Medium2;
-            snkWorksheet.Cells[1, 1, snkRow - 1, 12].Style.Border.BorderAround(ExcelBorderStyle.Thick);
-
-            #endregion
-
-            #region InventoryTable
-            
-            var fullFormsInventoryOrderedList = fullFormsInventoryList
-                    .OrderByDescending(x => fullFormsSnkList
-                        .Any(y => x.PasNum == y.PasNum
-                                  && x.Type == y.Type
-                                  && x.Radionuclids == y.Radionuclids
-                                  && x.FacNum == y.FacNum
-                                  && x.Quantity == y.Quantity
-                                  && x.PackNumber == y.PackNumber))
-                    .ThenBy(x => x.PasNum)
-                    .ThenBy(x => x.Type)
-                    .ThenBy(x => x.Radionuclids)
-                    .ThenBy(x => x.Quantity)
-                    .ThenBy(x => x.PackNumber)
-                    .ToList();
-
-            var inventoryRow = 3;
-            foreach (var inventoryForm in fullFormsInventoryOrderedList)
-            {
-                snkWorksheet.Cells[inventoryRow, 13].Value = inventoryRow - 2;
-                snkWorksheet.Cells[inventoryRow, 14].Value = inventoryForm.PasNum;
-                snkWorksheet.Cells[inventoryRow, 15].Value = inventoryForm.Type;
-                snkWorksheet.Cells[inventoryRow, 16].Value = inventoryForm.Radionuclids;
-                snkWorksheet.Cells[inventoryRow, 17].Value = inventoryForm.FacNum;
-                snkWorksheet.Cells[inventoryRow, 18].Value = inventoryForm.Quantity;
-                snkWorksheet.Cells[inventoryRow, 19].Value = inventoryForm.Activity;
-                snkWorksheet.Cells[inventoryRow, 20].Value = inventoryForm.CreatorOKPO;
-                snkWorksheet.Cells[inventoryRow, 21].Value = ConvertToExcelDate(inventoryForm.CreationDate, snkWorksheet, inventoryRow, 21);
-                snkWorksheet.Cells[inventoryRow, 22].Value = inventoryForm.Category;
-                snkWorksheet.Cells[inventoryRow, 23].Value = inventoryForm.SignedServicePeriod;
-                snkWorksheet.Cells[inventoryRow, 24].Value = inventoryForm.PackNumber;
-                inventoryRow++;
-            }
-
-            var inventoryTable = snkWorksheet.Tables.Add(snkWorksheet.Cells[2, 13, inventoryRow - 1, 24], $"Инвентаризация_{inventoryDate}");
-            inventoryTable.TableStyle = TableStyles.Medium2;
-            snkWorksheet.Cells[1, 13, inventoryRow - 1, 24].Style.Border.BorderAround(ExcelBorderStyle.Thick);
-
-            #endregion
-
-            #region HighlightMatchesWithColor
-
-            var countMatches = fullFormsSnkOrderedList
-                    .Count(x => fullFormsInventoryOrderedList
-                        .Any(y => x.PasNum == y.PasNum
-                                  && x.Type == y.Type
-                                  && x.Radionuclids == y.Radionuclids
-                                  && x.FacNum == y.FacNum
-                                  && x.Quantity == y.Quantity
-                                  && x.PackNumber == y.PackNumber));
-
-            if (countMatches > 0)
-            {
-                for (var column = 1; column <= 24; column++)
-                {
-                    for (var row = 3; row <= countMatches + 2; row++)
-                    {
-                        snkWorksheet.Cells[row, column].Style.Fill.SetBackground(System.Drawing.Color.LightGreen, ExcelFillStyle.LightGray);
-                    }
-                }
-            }
-
-            #endregion
-
-            progressBarDoubleValue += (double)30 / unitInStockByDateDictionary.Count;
-            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-                $"Загрузка полных форм на {inventoryDate}");
-        }
-
         #endregion
 
-        #region FillInventoryErrorsPages
-
-        foreach (var (inventoryDate, inventoryErrorsDtoList) in inventoryErrorsByDateDictionary)
-        {
-            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-                $"Загрузка полных форм ошибок на {inventoryDate}");
-
-            var fullFormsErrorsList = 
-                await GetFullFormsSnkList(db, inventoryErrorsDtoList, inventoryErrorsByDateDictionary.Count, progressBarVM, cts);
-
-            var errorsWorksheet = excelPackage.Workbook.Worksheets
-                .First(x => x.Name == $"Ошибки на {inventoryDate:dd.MM.yy}");
-
-            var fullFormsErrorsOrderedList = fullFormsErrorsList
-                .OrderBy(x => x.StPer)
-                .ThenBy(x => x.EndPer)
-                .ThenBy(x => x.RowNumber)
-                .ThenBy(x => x.ErrorType)
-                .ThenBy(x => x.PasNum)
-                .ThenBy(x => x.Type)
-                .ThenBy(x => x.Radionuclids)
-                .ThenBy(x => x.Quantity)
-                .ThenBy(x => x.PackNumber)
-                .ToList();
-
-            var errorsRow = 2;
-            foreach (var form in fullFormsErrorsOrderedList)
-            {
-                errorsWorksheet.Cells[errorsRow, 1].Value = errorsRow - 1;
-                errorsWorksheet.Cells[errorsRow, 2].Value = GetErrorDescriptionByType(form.ErrorType);
-                errorsWorksheet.Cells[errorsRow, 3].Value = ConvertToExcelDate(form.StPer.ToShortDateString(), errorsWorksheet, errorsRow, 3);
-                errorsWorksheet.Cells[errorsRow, 4].Value = ConvertToExcelDate(form.EndPer.ToShortDateString(), errorsWorksheet, errorsRow, 4);
-                errorsWorksheet.Cells[errorsRow, 5].Value = form.RowNumber;
-                errorsWorksheet.Cells[errorsRow, 6].Value = form.OpCode;
-                errorsWorksheet.Cells[errorsRow, 7].Value = form.OpDate;
-                errorsWorksheet.Cells[errorsRow, 8].Value = form.PasNum;
-                errorsWorksheet.Cells[errorsRow, 9].Value = form.Type;
-                errorsWorksheet.Cells[errorsRow, 10].Value = form.Radionuclids;
-                errorsWorksheet.Cells[errorsRow, 11].Value = form.FacNum;
-                errorsWorksheet.Cells[errorsRow, 12].Value = form.Quantity;
-                errorsWorksheet.Cells[errorsRow, 13].Value = form.Activity;
-                errorsWorksheet.Cells[errorsRow, 14].Value = form.CreatorOKPO;
-                errorsWorksheet.Cells[errorsRow, 15].Value = ConvertToExcelDate(form.CreationDate, errorsWorksheet, errorsRow, 15);
-                errorsWorksheet.Cells[errorsRow, 16].Value = form.Category;
-                errorsWorksheet.Cells[errorsRow, 17].Value = form.SignedServicePeriod;
-                errorsWorksheet.Cells[errorsRow, 18].Value = form.PackNumber;
-                errorsRow++;
-            }
-
-            var errorsTable = errorsWorksheet.Tables
-                .Add(errorsWorksheet.Cells[1, 1, errorsWorksheet.Dimension.Rows, errorsWorksheet.Dimension.Columns], $"Ошибки_{inventoryDate}");
-            errorsTable.TableStyle = TableStyles.Medium2;
-            errorsWorksheet.Cells[1, 1, errorsWorksheet.Dimension.Rows, errorsWorksheet.Dimension.Columns].Style.Border.BorderAround(ExcelBorderStyle.Thick);
-
-            progressBarDoubleValue += (double)20 / inventoryErrorsByDateDictionary.Count;
-            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-                $"Загрузка полных форм ошибок на {inventoryDate}");
-        }
-
-        #endregion
-    }
-
-    #region IsZeroOperation
-
-    private static bool IsZeroOperation(ShortForm11DTO? dto)
-    {
-        if (dto is null) return false;
-
-        return !PlusOperation.Contains(dto.OpCode)
-               && !MinusOperation.Contains(dto.OpCode)
-               && dto.OpCode is not ("10" or "63" or "64");
-    }
-
-    #endregion
-
-    #region GetFullForm
-
-    /// <summary>
-    /// Загрузка из БД полных форм вместе с данными отчётов и организации.
-    /// </summary>
-    /// <param name="db">Модель БД.</param>
-    /// <param name="unitInStockDtoList">Список DTO учётных единиц в наличии на дату.</param>
-    /// <param name="inventoryDate">Дата инвентаризации, на которую загружаются формы.</param>
-    /// <param name="progressBarVM">ViewModel прогрессбара.</param>
-    /// <param name="cts">Токен.</param>
-    /// <returns>Список форм с данными отчётов и организации.</returns>
-    private static async Task<List<SnkForm11DTO>> GetFullFormsSnkList(DBModel db, List<ShortForm11DTO> unitInStockDtoList, DateOnly inventoryDate,
-        AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
-    {
-        List<SnkForm11DTO> formsList = [];
-        double progressBarDoubleValue = progressBarVM.ValueBar;
-        var currentUnitNum = 1;
-
-        foreach (var unit in unitInStockDtoList)
-        {
-            var form = await db.form_11
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Where(x => x.Id == unit.Id 
-                            && x.Report != null 
-                            && x.Report.Reports != null 
-                            && x.Report.Reports.DBObservable != null)
-                .Select(x => new SnkForm11DTO(
-                    x.FactoryNumber_DB,
-                    x.PassportNumber_DB,
-                    unit.Quantity,
-                    x.Radionuclids_DB,
-                    x.Type_DB,
-                    x.Activity_DB,
-                    x.CreatorOKPO_DB,
-                    x.CreationDate_DB,
-                    x.Category_DB,
-                    x.SignedServicePeriod_DB,
-                    x.PackNumber_DB))
-                .FirstAsync(cts.Token);
-
-            formsList.Add(form);
-
-            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-                $"Загрузка {currentUnitNum} формы из {unitInStockDtoList.Count}",
-                $"Загрузка форм на {inventoryDate}");
-            currentUnitNum++;
-        }
-        return formsList;
-
-    }
-
-    private static async Task<List<InventoryErrorForm11DTO>> GetFullFormsSnkList(DBModel db, 
-        List<InventoryErrorsShortDto> inventoryErrorsDtoList, int datesCount, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
-    {
-        List<InventoryErrorForm11DTO> formsList = [];
-        double progressBarDoubleValue = progressBarVM.ValueBar;
-        var currentUnitNum = 1;
-        foreach (var error in inventoryErrorsDtoList)
-        {
-            var form = await db.form_11
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Where(x => x.Id == error.Dto.Id 
-                            && x.Report != null 
-                            && x.Report.Reports != null 
-                            && x.Report.Reports.DBObservable != null)
-                .Select(x => new InventoryErrorForm11DTO(
-                    error.ErrorTypeEnum,
-                    error.Dto.RepDto.StartPeriod,
-                    error.Dto.RepDto.EndPeriod,
-                    x.NumberInOrder_DB,
-                    x.FactoryNumber_DB,
-                    x.OperationCode_DB,
-                    x.OperationDate_DB,
-                x.PassportNumber_DB,
-                    error.Dto.Quantity,
-                    x.Radionuclids_DB,
-                    x.Type_DB,
-                    x.Activity_DB,
-                    x.CreatorOKPO_DB,
-                    x.CreationDate_DB,
-                    x.Category_DB,
-                    x.SignedServicePeriod_DB,
-                    x.PackNumber_DB))
-                .FirstAsync(cts.Token);
-
-            formsList.Add(form);
-
-            progressBarDoubleValue += (double)25 / inventoryErrorsDtoList.Count / datesCount;
-            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-                $"Загрузка {currentUnitNum} формы из {inventoryErrorsDtoList.Count}",
-                "Загрузка форм");
-            currentUnitNum++;
-        }
-        return formsList;
-
+        return (unitInStockByDateDictionary, inventoryErrorsByDateDictionary);
     }
 
     #endregion
 
     #region GetOperationsWithoutDuplicates
 
-    private static Task<List<ShortForm11DTO>> GetOperationsWithoutDuplicates(List<ShortForm11DTO> operationList)
+    private static Task<List<ShortFormDTO>> GetOperationsWithoutDuplicates(List<ShortFormDTO> operationList)
     {
-        List<ShortForm11DTO> operationsWithoutDuplicates = [];
+        List<ShortFormDTO> operationsWithoutDuplicates = [];
         foreach (var group in operationList.GroupBy(x => x.OpDate))
         {
             var countPlus = group
@@ -848,201 +1077,110 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
     #endregion
 
-    #region CheckInventoryFormPresence
+    #region GetZeroFormsDtoList
 
-    /// <summary>
-    /// Проверяет наличие у организации хотя бы одного отчёта, содержащего форму с кодом операции 10.
-    /// При отсутствии таковой выводит сообщение и завершает выполнение команды.
-    /// </summary>
-    /// <param name="inventoryReportDtoList">Список DTO отчётов по форме 1.1, отсортированный по датам.</param>
-    /// <param name="formNum">Номер формы отчётности.</param>
-    /// <param name="progressBar">Окно прогрессбара.</param>
-    /// <param name="cts">Токен.</param>
-    private static async Task CheckInventoryFormPresence(List<ShortReportDTO> inventoryReportDtoList, string formNum,
-        AnyTaskProgressBar progressBar, CancellationTokenSource cts)
+    private static async Task<List<ShortFormDTO>> GetZeroFormsDtoList(DBModel db, int repsId, List<ShortFormDTO> rechargeFormsDtoList, 
+        DateOnly firstSnkDate, DateOnly endSnkDate, CancellationTokenSource cts, SnkParamsDto? snkParams = null)
     {
-        if (inventoryReportDtoList.Count == 0)
-        {
-            #region MessageExcelExportFail
+        var reportIds = await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.DBObservable)
+            .Include(x => x.Report_Collection)
+            .Where(reps => reps.DBObservable != null && reps.Id == repsId)
+            .SelectMany(reps => reps.Report_Collection
+                .Where(rep => rep.FormNum_DB == "1.1"))
+            .Select(rep => rep.Id)
+            .ToListAsync(cts.Token);
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
-                    ContentMessage = $"Выгрузка не выполнена, поскольку у организации отсутствуют формы {formNum} с кодом операции 10.",
-                    MinWidth = 400,
-                    MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
+        var zeroOperationDtoList = await db.form_11
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.Report)
+            .Where(x => x.Report != null
+                        && reportIds.Contains(x.Report.Id)
+                        && !PlusOperation.Contains(x.OperationCode_DB)
+                        && !MinusOperation.Contains(x.OperationCode_DB)
+                        && x.OperationCode_DB != "10"
+                        && x.OperationCode_DB != "53"
+                        && x.OperationCode_DB != "54")
+            .Select(form => new ShortFormStringDatesDTO
+            {
+                Id = form.Id,
+                NumberInOrder = form.NumberInOrder_DB,
+                RepId = form.Report!.Id,
+                StDate = form.Report.StartPeriod_DB,
+                EndDate = form.Report.EndPeriod_DB,
+                FacNum = snkParams == null || snkParams.CheckFacNum 
+                    ? form.FactoryNumber_DB 
+                    : string.Empty,
+                OpCode = form.OperationCode_DB,
+                OpDate = form.OperationDate_DB,
+                PackNumber = snkParams == null || snkParams.CheckPackNumber 
+                    ? form.PackNumber_DB 
+                    : string.Empty,
+                PasNum = snkParams == null || snkParams.CheckPasNum 
+                    ? form.PassportNumber_DB 
+                    : string.Empty,
+                Quantity = form.Quantity_DB,
+                Radionuclids = snkParams == null || snkParams.CheckRadionuclids 
+                    ? form.Radionuclids_DB 
+                    : string.Empty,
+                Type = snkParams == null || snkParams.CheckType 
+                    ? form.Type_DB 
+                    : string.Empty
+            })
+            .ToListAsync(cts.Token);
 
-            #endregion
-
-            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-        }
-    }
-
-    #endregion
-
-    #region FillExcelHeaders
-
-    /// <summary>
-    /// Заполняет заголовки Excel пакета.
-    /// </summary>
-    /// <param name="excelPackage">Excel пакет.</param>
-    /// <param name="inventoryDatesList">Список дат инвентаризации вместе с текущей датой/датой введённой пользователем.</param>
-    private async Task FillExcelHeaders(ExcelPackage excelPackage, List<DateOnly> inventoryDatesList)
-    {
-        var count = 0;
-        foreach (var date in inventoryDatesList)
-        {
-            count++;
-
-            #region SNK_On_Date_Page
-            
-            #region SNK_Table
-
-            Worksheet = excelPackage.Workbook.Worksheets.Add($"СНК на {date:dd.MM.yy}");
-
-            Worksheet.Cells[1, 1, 1, 12].Merge = true;
-            Worksheet.Cells[1, 1, 1, 12].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            Worksheet.Cells[1, 1].Value = $"СНК на {date.ToShortDateString()}";
-
-            Worksheet.Cells[2, 1].Value = "№ п/п";
-            Worksheet.Cells[2, 2].Value = "Номер паспорта (сертификата)";
-            Worksheet.Cells[2, 3].Value = "тип";
-            Worksheet.Cells[2, 4].Value = "радионуклиды";
-            Worksheet.Cells[2, 5].Value = "номер";
-            Worksheet.Cells[2, 6].Value = "количество, шт.";
-            Worksheet.Cells[2, 7].Value = "суммарная активность, Бк";
-            Worksheet.Cells[2, 8].Value = "код ОКПО изготовителя";
-            Worksheet.Cells[2, 9].Value = "дата выпуска";
-            Worksheet.Cells[2, 10].Value = "категория";
-            Worksheet.Cells[2, 11].Value = "НСС, мес";
-            Worksheet.Cells[2, 12].Value = "Номер УКТ";
-
-            //var range = Worksheet.Cells[2, 1, 50, 12];
-            //var tab = Worksheet.Tables.Add(range, $"Table{count}_1");
-            //tab.TableStyle = TableStyles.Medium2;
-            //Worksheet.Cells[1, 1, 50, 12].Style.Border.BorderAround(ExcelBorderStyle.Thick);
-
-            #endregion
-
-            #region Inventory_Table
-
-            Worksheet.Cells[1, 13, 1, 24].Merge = true;
-            Worksheet.Cells[1, 13, 1, 24].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            Worksheet.Cells[1, 13].Value = $"Инвентаризация на {date.ToShortDateString()}";
-
-            Worksheet.Cells[2, 13].Value = "№ п/п";
-            Worksheet.Cells[2, 14].Value = "Номер паспорта (сертификата)";
-            Worksheet.Cells[2, 15].Value = "тип";
-            Worksheet.Cells[2, 16].Value = "радионуклиды";
-            Worksheet.Cells[2, 17].Value = "номер";
-            Worksheet.Cells[2, 18].Value = "количество, шт.";
-            Worksheet.Cells[2, 19].Value = "суммарная активность, Бк";
-            Worksheet.Cells[2, 20].Value = "код ОКПО изготовителя";
-            Worksheet.Cells[2, 21].Value = "дата выпуска";
-            Worksheet.Cells[2, 22].Value = "категория";
-            Worksheet.Cells[2, 23].Value = "НСС, мес";
-            Worksheet.Cells[2, 24].Value = "Номер УКТ";
-
-            //var range2 = Worksheet.Cells[2, 13, 50, 24];
-            //var tab2 = Worksheet.Tables.Add(range2, $"Table{count}_2");
-            //tab2.TableStyle = TableStyles.Medium2;
-            //Worksheet.Cells[1, 13, 50, 24].Style.Border.BorderAround(ExcelBorderStyle.Thick);
-
-            #endregion
-
-            await AutoFitColumnsAndFreezeRows(2); 
-            
-            #endregion
-
-            #region Errors_On_Date_Page
-
-            Worksheet = excelPackage.Workbook.Worksheets.Add($"Ошибки на {date:dd.MM.yy}");
-
-            #region Headers
-
-            Worksheet.Cells[1, 1].Value = "№ п/п";
-            Worksheet.Cells[1, 2].Value = "Описание ошибки";
-            Worksheet.Cells[1, 3].Value = "Дата начала периода";
-            Worksheet.Cells[1, 4].Value = "Дата конца периода";
-            Worksheet.Cells[1, 5].Value = "Номер строки";
-            Worksheet.Cells[1, 6].Value = "Код операции";
-            Worksheet.Cells[1, 7].Value = "Дата операции";
-            Worksheet.Cells[1, 8].Value = "Номер паспорта (сертификата)";
-            Worksheet.Cells[1, 9].Value = "тип";
-            Worksheet.Cells[1, 10].Value = "радионуклиды";
-            Worksheet.Cells[1, 11].Value = "номер";
-            Worksheet.Cells[1, 12].Value = "количество, шт.";
-            Worksheet.Cells[1, 13].Value = "суммарная активность, Бк";
-            Worksheet.Cells[1, 14].Value = "код ОКПО изготовителя";
-            Worksheet.Cells[1, 15].Value = "дата выпуска";
-            Worksheet.Cells[1, 16].Value = "категория";
-            Worksheet.Cells[1, 17].Value = "НСС, мес";
-            Worksheet.Cells[1, 18].Value = "Номер УКТ";
-
-            #endregion
-
-            //var range3 = Worksheet.Cells[1, 1, 50, 16];
-            //var tab3 = Worksheet.Tables.Add(range3, $"Table{count}");
-            //tab3.TableStyle = TableStyles.Medium2;
-            //range3.Style.Border.BorderAround(ExcelBorderStyle.Thick);
-
-            await AutoFitColumnsAndFreezeRows(1);
-            
-            #endregion
-        }
-    }
-
-    #region AutoFitColumns
-
-    /// <summary>
-    /// Для текущей страницы Excel пакета подбирает ширину колонок и замораживает n строчек.
-    /// </summary>
-    private Task AutoFitColumnsAndFreezeRows(byte numberOfRowsToFreeze)
-    {
-        for (var col = 1; col <= Worksheet.Dimension.End.Column; col++)
-        {
-            if (OperatingSystem.IsWindows()) Worksheet.Column(col).AutoFit();
-        }
-        for (var row = 2; row <= numberOfRowsToFreeze + 1; row++)
-        {
-            Worksheet.View.FreezePanes(row, 1);
-        }
-        return Task.CompletedTask;
-    }
-
-    #endregion
-
-    #endregion
-
-    #region GetInventoryDatesList
-
-    /// <summary>
-    /// Формирование списка операций инвентаризации.
-    /// </summary>
-    /// <param name="inventoryFormsDtoList">Список DTO операций инвентаризации, отсортированный по датам.</param>
-    /// <returns>Список операций инвентаризации.</returns>
-    private static Task<List<DateOnly>> GetInventoryDatesList(List<ShortForm11DTO> inventoryFormsDtoList)
-    {
-        var inventoryDates = inventoryFormsDtoList
-            .Select(x => x.OpDate)
-            .Distinct()
-            .Order()
+        return zeroOperationDtoList
+            .Where(x => DateTime.TryParse(x.OpDate, out var opDateTime)
+                        && DateOnly.TryParse(x.StDate, out _)
+                        && DateOnly.TryParse(x.EndDate, out _)
+                        && DateOnly.FromDateTime(opDateTime) >= firstSnkDate
+                        && DateOnly.FromDateTime(opDateTime) <= endSnkDate)
+            .Select(x => new ShortFormDTO
+            {
+                Id = x.Id,
+                NumberInOrder = x.NumberInOrder,
+                RepDto = new ShortReportDTO(x.RepId, DateOnly.Parse(x.StDate), DateOnly.Parse(x.EndDate)),
+                OpCode = x.OpCode,
+                OpDate = DateOnly.FromDateTime(DateTime.Parse(x.OpDate)),
+                PasNum = AutoReplaceSimilarChars(x.PasNum),
+                Type = AutoReplaceSimilarChars(x.Type),
+                Radionuclids = AutoReplaceSimilarChars(x.Radionuclids),
+                FacNum = AutoReplaceSimilarChars(x.FacNum),
+                Quantity = x.Quantity ?? 0,
+                PackNumber = AutoReplaceSimilarChars(x.PackNumber)
+            })
+            .Union(rechargeFormsDtoList)
+            .OrderBy(x => x.OpDate)
+            .ThenBy(x => x.RepDto.StartPeriod)
+            .ThenBy(x => x.RepDto.EndPeriod)
             .ToList();
-        inventoryDates.Add(DateOnly.FromDateTime(DateTime.Now));
-
-        return Task.FromResult(inventoryDates);
     }
 
     #endregion
 
-    private class InventoryErrorForm11DTO(InventoryErrorTypeEnum errorType, DateOnly stPer, DateOnly endPer, int rowNumber, string facNum, 
-        string opCode, string opDate, string pasNum, int quantity, string radionuclids, string type, string activity, string creatorOKPO, 
-        string creationDate, short? category, float? signedServicePeriod, string packNumber)
+    #region IsZeroOperation
+
+    private static bool IsZeroOperation(ShortFormDTO? dto)
+    {
+        if (dto is null) return false;
+
+        return !PlusOperation.Contains(dto.OpCode)
+               && !MinusOperation.Contains(dto.OpCode)
+               && dto.OpCode is not ("10" or "63" or "64");
+    }
+
+    #endregion
+
+    #region DTO
+    
+    private class InventoryErrorForm11DTO(InventoryErrorTypeEnum errorType, DateOnly stPer, DateOnly endPer, int rowNumber, string facNum,
+    string opCode, string opDate, string pasNum, int quantity, string radionuclids, string type, string activity, string creatorOKPO,
+    string creationDate, short? category, float? signedServicePeriod, string packNumber)
     {
         public readonly InventoryErrorTypeEnum ErrorType = errorType;
 
@@ -1079,12 +1217,16 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         public readonly string PackNumber = packNumber;
     }
 
-    private class InventoryErrorsShortDto(InventoryErrorTypeEnum errorTypeEnum, ShortForm11DTO dto)
+    private class InventoryErrorsShortDto(InventoryErrorTypeEnum errorTypeEnum, ShortFormDTO dto)
     {
         public readonly InventoryErrorTypeEnum ErrorTypeEnum = errorTypeEnum;
 
-        public readonly ShortForm11DTO Dto = dto;
+        public readonly ShortFormDTO Dto = dto;
     }
+
+    #endregion
+
+    #region InventoryErrorTypeEnum
 
     /// <summary>
     /// Перечисление типов ошибок.
@@ -1159,4 +1301,6 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }
+
+    #endregion
 }
