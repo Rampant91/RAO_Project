@@ -1,5 +1,4 @@
-﻿using AvaloniaEdit;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Client_App.Resources.CustomComparers;
@@ -14,7 +13,7 @@ public partial class CustomSnkEqualityComparer : IEqualityComparer<string>
         if (x is null || y is null)
             return false;
 
-        _ = SnkRegex()
+        x = SnkRegex()
             .Replace(x, "")
             .ToLower()
             .Replace('а', 'a')
@@ -34,7 +33,7 @@ public partial class CustomSnkEqualityComparer : IEqualityComparer<string>
             .Replace('у', 'y')
             .Replace('х', 'x');
 
-        _ = SnkRegex()
+        y = SnkRegex()
             .Replace(y, "")
             .ToLower()
             .Replace('а', 'a')

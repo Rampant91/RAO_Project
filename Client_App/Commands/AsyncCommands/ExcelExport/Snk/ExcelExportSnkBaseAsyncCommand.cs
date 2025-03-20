@@ -14,6 +14,7 @@ using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using Client_App.ViewModels.ProgressBar;
 using Models.Collections;
+using Client_App.Resources.CustomComparers;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
@@ -332,43 +333,6 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 
     #endregion
 
-    #region AutoReplaceSimilarChars
-
-    private protected static string AutoReplaceSimilarChars(string? str)
-    {
-        return new Regex(@"[\\/:*?""<>|.,_\-;:\s+]")
-            .Replace(str ?? string.Empty, "")
-            .Replace('А', 'A')
-            .Replace('а', 'a')
-            .Replace('б', 'b')
-            .Replace('В', 'B')
-            .Replace('г', 'r')
-            .Replace('Е', 'E')
-            .Replace('е', 'e')
-            .Replace('Ё', 'E')
-            .Replace('ё', 'e')
-            .Replace('К', 'K')
-            .Replace('к', 'k')
-            .Replace('М', 'M')
-            .Replace('м', 'm')
-            .Replace('Н', 'H')
-            .Replace('О', 'O')
-            .Replace('о', 'o')
-            .Replace('0', 'O')
-            .Replace('Р', 'P')
-            .Replace('р', 'p')
-            .Replace('С', 'C')
-            .Replace('с', 'c')
-            .Replace('Т', 'T')
-            .Replace('У', 'Y')
-            .Replace('у', 'y')
-            .Replace('Х', 'X')
-            .Replace('х', 'x');
-        //.ToLower();
-    }
-
-    #endregion
-
     #region CheckRepsAndRepPresence
 
     /// <summary>
@@ -475,6 +439,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 
         var groupedOperationList = await GetGroupedOperationList(unionOperationList);
 
+        var comparer = new CustomSnkEqualityComparer();
         Dictionary<UniqueUnitDto, List<ShortFormDTO>> uniqueUnitWithAllOperationDictionary = [];
         foreach (var group in groupedOperationList)
         {
@@ -484,11 +449,11 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 
                 var filteredDictionary = uniqueUnitWithAllOperationDictionary
                     .Where(keyValuePair =>
-                        string.Equals(keyValuePair.Key.PasNum, form.PasNum, StringComparison.OrdinalIgnoreCase)
-                        && string.Equals(keyValuePair.Key.FacNum, form.FacNum, StringComparison.OrdinalIgnoreCase)
-                        && string.Equals(keyValuePair.Key.Radionuclids, form.Radionuclids, StringComparison.OrdinalIgnoreCase)
-                        && string.Equals(keyValuePair.Key.Type, form.Type, StringComparison.OrdinalIgnoreCase)
-                        && (string.Equals(keyValuePair.Key.PackNumber, form.PackNumber, StringComparison.OrdinalIgnoreCase) || form.OpCode is "53" or "54")
+                        comparer.Equals(keyValuePair.Key.PasNum, form.PasNum)
+                        && comparer.Equals(keyValuePair.Key.FacNum, form.FacNum)
+                        && comparer.Equals(keyValuePair.Key.Radionuclids, form.Radionuclids)
+                        && comparer.Equals(keyValuePair.Key.Type, form.Type)
+                        && (comparer.Equals(keyValuePair.Key.PackNumber, form.PackNumber) || form.OpCode is "53" or "54")
                         && (SerialNumbersIsEmpty(keyValuePair.Key.PasNum, keyValuePair.Key.FacNum)
                             || keyValuePair.Key.Quantity == form.Quantity))
                     .ToDictionary();
@@ -674,12 +639,12 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                             RepDto = reportDto,
                             OpCode = x.OpCode,
                             OpDate = DateOnly.FromDateTime(DateTime.Parse(x.OpDate)),
-                            PasNum = AutoReplaceSimilarChars(x.PasNum),
-                            Type = AutoReplaceSimilarChars(x.Type),
-                            Radionuclids = AutoReplaceSimilarChars(x.Radionuclids),
-                            FacNum = AutoReplaceSimilarChars(x.FacNum),
+                            PasNum = x.PasNum,
+                            Type = x.Type,
+                            Radionuclids = x.Radionuclids,
+                            FacNum = x.FacNum,
                             Quantity = x.Quantity ?? 0,
-                            PackNumber = AutoReplaceSimilarChars(x.PackNumber)
+                            PackNumber = x.PackNumber
                         });
                     inventoryFormsDtoList.AddRange(currentInventoryForms11DtoList);
                     break;
@@ -733,11 +698,11 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                             RepDto = new ShortReportDTO(x.RepId, x.StDate, x.EndDate),
                             OpCode = x.OpCode,
                             OpDate = DateOnly.FromDateTime(DateTime.Parse(x.OpDate)),
-                            PasNum = AutoReplaceSimilarChars(x.PasNum),
-                            Type = AutoReplaceSimilarChars(x.Type),
-                            Radionuclids = AutoReplaceSimilarChars(x.Radionuclids),
-                            FacNum = AutoReplaceSimilarChars(x.FacNum),
-                            PackNumber = AutoReplaceSimilarChars(x.PackNumber)
+                            PasNum = x.PasNum,
+                            Type = x.Type,
+                            Radionuclids = x.Radionuclids,
+                            FacNum = x.FacNum,
+                            PackNumber = x.PackNumber
                         });
                     inventoryFormsDtoList.AddRange(currentInventoryForms13DtoList);
                     break;
@@ -774,15 +739,16 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
         List<ShortFormDTO> newInventoryFormsDtoList = [];
         List<ShortFormDTO> inventoryDuplicateErrors = [];
 
+        var comparer = new CustomSnkEqualityComparer();
         foreach (var form in inventoryFormsDtoList)
         {
             var matchingForm = newInventoryFormsDtoList.FirstOrDefault(x =>
                 x.OpDate == form.OpDate
-                && string.Equals(x.PasNum, form.PasNum, StringComparison.OrdinalIgnoreCase)
-                && string.Equals(x.FacNum, form.FacNum, StringComparison.OrdinalIgnoreCase)
-                && string.Equals(x.Radionuclids, form.Radionuclids, StringComparison.OrdinalIgnoreCase)
-                && string.Equals(x.Type, form.Type, StringComparison.OrdinalIgnoreCase)
-                && string.Equals(x.PackNumber, form.PackNumber, StringComparison.OrdinalIgnoreCase));
+                && comparer.Equals(x.PasNum, form.PasNum)
+                && comparer.Equals(x.FacNum, form.FacNum)
+                && comparer.Equals(x.Radionuclids, form.Radionuclids)
+                && comparer.Equals(x.Type, form.Type)
+                && comparer.Equals(x.PackNumber, form.PackNumber));
 
             if (matchingForm != null)
             {
@@ -974,12 +940,12 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                 RepDto = new ShortReportDTO(x.RepId, DateOnly.Parse(x.StDate), DateOnly.Parse(x.EndDate)),
                 OpCode = x.OpCode,
                 OpDate = DateOnly.FromDateTime(DateTime.Parse(x.OpDate)),
-                PasNum = AutoReplaceSimilarChars(x.PasNum),
-                Type = AutoReplaceSimilarChars(x.Type),
-                Radionuclids = AutoReplaceSimilarChars(x.Radionuclids),
-                FacNum = AutoReplaceSimilarChars(x.FacNum),
+                PasNum = x.PasNum,
+                Type = x.Type,
+                Radionuclids = x.Radionuclids,
+                FacNum = x.FacNum,
                 Quantity = x.Quantity ?? 0,
-                PackNumber = AutoReplaceSimilarChars(x.PackNumber)
+                PackNumber = x.PackNumber
             })
             .OrderBy(x => x.OpDate)
             .ThenBy(x => x.RepDto.StartPeriod)
@@ -1109,12 +1075,12 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                 RepDto = new ShortReportDTO(x.RepId, DateOnly.Parse(x.StDate), DateOnly.Parse(x.EndDate)),
                 OpCode = x.OpCode,
                 OpDate = DateOnly.FromDateTime(DateTime.Parse(x.OpDate)),
-                PasNum = AutoReplaceSimilarChars(x.PasNum),
-                Type = AutoReplaceSimilarChars(x.Type),
-                Radionuclids = AutoReplaceSimilarChars(x.Radionuclids),
-                FacNum = AutoReplaceSimilarChars(x.FacNum),
+                PasNum = x.PasNum,
+                Type = x.Type,
+                Radionuclids = x.Radionuclids,
+                FacNum = x.FacNum,
                 Quantity = x.Quantity ?? 0,
-                PackNumber = AutoReplaceSimilarChars(x.PackNumber)
+                PackNumber = x.PackNumber
             })
             .OrderBy(x => x.OpDate)
             .ThenBy(x => x.RepDto.StartPeriod)
@@ -1166,6 +1132,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
         List<ShortFormDTO> unitInStockList = [];
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentUnitNum = 1;
+        var comparer = new CustomSnkEqualityComparer();
         foreach (var (unit, operations) in uniqueUnitWithAllOperationDictionary)
         {
             #region SerialNumEmpty
@@ -1198,11 +1165,11 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                 if (lastOperationWithUnit == null) continue;
 
                 var currentUnit = unitInStockList
-                    .FirstOrDefault(x => x.PasNum == unit.PasNum
-                                         && x.FacNum == unit.FacNum
-                                         && x.Radionuclids == unit.Radionuclids
-                                         && x.Type == unit.Type
-                                         && x.PackNumber == unit.PackNumber);
+                    .FirstOrDefault(x => comparer.Equals(x.PasNum, unit.PasNum)
+                                         && comparer.Equals(x.FacNum, unit.FacNum)
+                                         && comparer.Equals(x.Radionuclids, unit.Radionuclids)
+                                         && comparer.Equals(x.Type, unit.Type)
+                                         && comparer.Equals(x.PackNumber, unit.PackNumber));
 
                 if (currentUnit != null) unitInStockList.Remove(currentUnit);
 
@@ -1398,8 +1365,45 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             AutoReplaceSimilarChars("примечание"),
         ];
         return validStrings.Contains(num1) && validStrings.Contains(num2);
-    } 
-    
+    }
+
+    #region AutoReplaceSimilarChars
+
+    private static string AutoReplaceSimilarChars(string? str)
+    {
+        return new Regex(@"[\\/:*?""<>|.,_\-;:\s+]")
+            .Replace(str ?? string.Empty, "")
+            .Replace('А', 'A')
+            .Replace('а', 'a')
+            .Replace('б', 'b')
+            .Replace('В', 'B')
+            .Replace('г', 'r')
+            .Replace('Е', 'E')
+            .Replace('е', 'e')
+            .Replace('Ё', 'E')
+            .Replace('ё', 'e')
+            .Replace('К', 'K')
+            .Replace('к', 'k')
+            .Replace('М', 'M')
+            .Replace('м', 'm')
+            .Replace('Н', 'H')
+            .Replace('О', 'O')
+            .Replace('о', 'o')
+            .Replace('0', 'O')
+            .Replace('Р', 'P')
+            .Replace('р', 'p')
+            .Replace('С', 'C')
+            .Replace('с', 'c')
+            .Replace('Т', 'T')
+            .Replace('У', 'Y')
+            .Replace('у', 'y')
+            .Replace('Х', 'X')
+            .Replace('х', 'x')
+            .ToLower();
+    }
+
+    #endregion
+
     #endregion
 
     #endregion

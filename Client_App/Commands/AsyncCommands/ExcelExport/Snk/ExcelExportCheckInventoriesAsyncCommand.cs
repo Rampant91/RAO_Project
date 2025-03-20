@@ -12,6 +12,7 @@ using Models.DBRealization;
 using Avalonia.Controls;
 using MessageBox.Avalonia.DTO;
 using System.Reflection;
+using Client_App.Resources.CustomComparers;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
@@ -723,9 +724,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         Dictionary<DateOnly, List<ShortFormDTO>> unitInStockByDateDictionary = [];
         Dictionary<DateOnly, List<InventoryErrorsShortDto>> inventoryErrorsByDateDictionary = [];
 
-        #region GetSnkAndErrors
-
         var currentInventoryDateIndex = 0;
+        var comparer = new CustomSnkEqualityComparer();
         foreach (var inventoryDate in inventoryDatesList)
         {
             // Инициализируем список ошибок, сразу добавляя в него повторные операции инвентаризации.
@@ -785,11 +785,11 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
                     var currentUnitInStock = unitInStockDtoList
                         .FirstOrDefault(x =>
-                            string.Equals(x.PasNum, unit.PasNum, StringComparison.OrdinalIgnoreCase)
-                            && string.Equals(x.FacNum, unit.FacNum, StringComparison.OrdinalIgnoreCase)
-                            && string.Equals(x.Radionuclids, unit.Radionuclids, StringComparison.OrdinalIgnoreCase)
-                            && string.Equals(x.Type, unit.Type, StringComparison.OrdinalIgnoreCase)
-                            && string.Equals(x.PackNumber, currentPackNumber, StringComparison.OrdinalIgnoreCase));
+                            comparer.Equals(x.PasNum, unit.PasNum)
+                            && comparer.Equals(x.FacNum, unit.FacNum)
+                            && comparer.Equals(x.Radionuclids, unit.Radionuclids)
+                            && comparer.Equals(x.Type, unit.Type)
+                            && comparer.Equals(x.PackNumber, currentPackNumber));
 
                     var quantity = currentUnitInStock?.Quantity ?? 0;
 
@@ -985,16 +985,15 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     var currentPackNumber = operationsWithoutMutuallyExclusive.FirstOrDefault()?.PackNumber ?? unit.PackNumber;
 
                     var unitInStock = unitInStockDtoList.FirstOrDefault(x =>
-                        string.Equals(x.PasNum, unit.PasNum, StringComparison.OrdinalIgnoreCase)
-                        && string.Equals(x.FacNum, unit.FacNum, StringComparison.OrdinalIgnoreCase)
-                        && string.Equals(x.Radionuclids, unit.Radionuclids, StringComparison.OrdinalIgnoreCase)
-                        && string.Equals(x.Type, unit.Type, StringComparison.OrdinalIgnoreCase)
-                        && string.Equals(x.PackNumber, currentPackNumber, StringComparison.OrdinalIgnoreCase)
+                        comparer.Equals(x.PasNum, unit.PasNum)
+                        && comparer.Equals(x.FacNum, unit.FacNum)
+                        && comparer.Equals(x.Radionuclids, unit.Radionuclids)
+                        && comparer.Equals(x.Type, unit.Type)
+                        && comparer.Equals(x.PackNumber, currentPackNumber)
                         && x.Quantity == unit.Quantity);
 
                     //3. Есть во второй инвентаризации, но отсутствует в СНК на дату второй инвентаризации.
-                    if (secondInventoryOperation is not null
-                        && !inStock)
+                    if (secondInventoryOperation is not null && !inStock)
                     {
                         errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.GivenUnitIsInventoried, secondInventoryOperation));
                     }
@@ -1025,8 +1024,6 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
             currentInventoryDateIndex++;
         }
-
-        #endregion
 
         return (unitInStockByDateDictionary, inventoryErrorsByDateDictionary);
     }
@@ -1147,12 +1144,12 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                 RepDto = new ShortReportDTO(x.RepId, DateOnly.Parse(x.StDate), DateOnly.Parse(x.EndDate)),
                 OpCode = x.OpCode,
                 OpDate = DateOnly.FromDateTime(DateTime.Parse(x.OpDate)),
-                PasNum = AutoReplaceSimilarChars(x.PasNum),
-                Type = AutoReplaceSimilarChars(x.Type),
-                Radionuclids = AutoReplaceSimilarChars(x.Radionuclids),
-                FacNum = AutoReplaceSimilarChars(x.FacNum),
+                PasNum = x.PasNum,
+                Type = x.Type,
+                Radionuclids = x.Radionuclids,
+                FacNum = x.FacNum,
                 Quantity = x.Quantity ?? 0,
-                PackNumber = AutoReplaceSimilarChars(x.PackNumber)
+                PackNumber = x.PackNumber
             })
             .Union(rechargeFormsDtoList)
             .OrderBy(x => x.OpDate)
