@@ -810,7 +810,7 @@ public class CheckF22 : CheckBase
 
         // super fun temporary function BEGINS HERE
         #region TEMP_EXPORT_NUMBERS
-        if (false)
+        if (true)
         {
             var f22Expected = forms22ExpectedDict.Values.ToList();
             var f22Real = forms22RealDict.Values.ToList();
