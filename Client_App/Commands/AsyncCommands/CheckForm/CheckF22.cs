@@ -739,29 +739,32 @@ public class CheckF22 : CheckBase
                 if (zeroCheck < -0.00001)
                     negatives.Add($"Масса с упаковкой (брутто), т: {zeroCheck}");
             }
-            if (TryParseDoubleExtended(formExpected.Item1.TritiumActivity_DB, out zeroCheck))
+            if (formExpected.Item1.CodeRAO_DB != form15Plug)
             {
-                nonZero += (Math.Abs(zeroCheck) > 0.00001) ? 1 : 0;
-                if (zeroCheck < -0.00001)
-                    negatives.Add($"Суммарная активность, Бк - тритий: {zeroCheck}");
-            }
-            if (TryParseDoubleExtended(formExpected.Item1.BetaGammaActivity_DB, out zeroCheck))
-            {
-                nonZero += (Math.Abs(zeroCheck) > 0.00001) ? 1 : 0;
-                if (zeroCheck < -0.00001)
-                    negatives.Add($"Суммарная активность, Бк - бета-, гамма- излучающие радионуклиды (исключая тритий): {zeroCheck}");
-            }
-            if (TryParseDoubleExtended(formExpected.Item1.AlphaActivity_DB, out zeroCheck))
-            {
-                nonZero += (Math.Abs(zeroCheck) > 0.00001) ? 1 : 0;
-                if (zeroCheck < -0.00001)
-                    negatives.Add($"Суммарная активность, Бк - альфа-излучающие радионуклиды (исключая трансурановые): {zeroCheck}");
-            }
-            if (TryParseDoubleExtended(formExpected.Item1.TransuraniumActivity_DB, out zeroCheck))
-            {
-                nonZero += (Math.Abs(zeroCheck) > 0.00001) ? 1 : 0;
-                if (zeroCheck < -0.00001)
-                    negatives.Add($"Суммарная активность, Бк - трансурановые: {zeroCheck}");
+                if (TryParseDoubleExtended(formExpected.Item1.TritiumActivity_DB, out zeroCheck))
+                {
+                    nonZero += (Math.Abs(zeroCheck) > 0.00001) ? 1 : 0;
+                    if (zeroCheck < -0.00001)
+                        negatives.Add($"Суммарная активность, Бк - тритий: {zeroCheck}");
+                }
+                if (TryParseDoubleExtended(formExpected.Item1.BetaGammaActivity_DB, out zeroCheck))
+                {
+                    nonZero += (Math.Abs(zeroCheck) > 0.00001) ? 1 : 0;
+                    if (zeroCheck < -0.00001)
+                        negatives.Add($"Суммарная активность, Бк - бета-, гамма- излучающие радионуклиды (исключая тритий): {zeroCheck}");
+                }
+                if (TryParseDoubleExtended(formExpected.Item1.AlphaActivity_DB, out zeroCheck))
+                {
+                    nonZero += (Math.Abs(zeroCheck) > 0.00001) ? 1 : 0;
+                    if (zeroCheck < -0.00001)
+                        negatives.Add($"Суммарная активность, Бк - альфа-излучающие радионуклиды (исключая трансурановые): {zeroCheck}");
+                }
+                if (TryParseDoubleExtended(formExpected.Item1.TransuraniumActivity_DB, out zeroCheck))
+                {
+                    nonZero += (Math.Abs(zeroCheck) > 0.00001) ? 1 : 0;
+                    if (zeroCheck < -0.00001)
+                        negatives.Add($"Суммарная активность, Бк - трансурановые: {zeroCheck}");
+                }
             }
             if (nonZero == 0) continue;
             if (negatives.Count > 0)
@@ -913,7 +916,7 @@ public class CheckF22 : CheckBase
             QuantityOZIII_DB = (form.Quantity_DB?.ToString() ?? "").Replace('.', ',').Trim(),
             TritiumActivity_DB = (form15Plug ?? "").Trim(),
             BetaGammaActivity_DB = (form15Plug ?? "").Trim(),
-            AlphaActivity_DB = (form15Plug ?? "").Trim(),
+            AlphaActivity_DB = (form.Activity_DB ?? "").Trim(),
             TransuraniumActivity_DB = (form15Plug ?? "").Trim(),
             MainRadionuclids_DB = (form.Radionuclids_DB ?? "").Trim(),
             Subsidy_DB = (form.Subsidy_DB ?? "").Replace('.', ',').Trim(),
@@ -1384,21 +1387,21 @@ public class CheckF22 : CheckBase
             res.Add((columnNum, $"{humanName}", $"{forms1}: {Form22_SubToDec(form1Val)}", $"{forms2}: {Form22_SubToDec(form2Val)}"));
         }
     }
-    private static void Form22_SubMatchExp(string form1Val, string form2Val, string humanName, double valB, List<(int, string, string, string)> res, int columnNum, string forms1, string forms2, bool form15Fix, bool allowLesser = false)
+    private static bool Form22_SubMatchExp(string form1Val, string form2Val, string humanName, double valB, List<(int, string, string, string)> res, int columnNum, string forms1, string forms2, bool form15Fix, bool allowLesser = false)
     {
-        if (form1Val == form15Plug || form2Val == form15Plug) return;
-        if (form1Val == formGenericPlug || form2Val == formGenericPlug) return;
+        if (form1Val == form15Plug || form2Val == form15Plug) return true;
+        if (form1Val == formGenericPlug || form2Val == formGenericPlug) return false;
         if (decimal.TryParse(form1Val, out var val1Dec)
             && decimal.TryParse(form2Val, out var val2Dec))
         {
             if ((val1Dec >= val2Dec * (decimal)(1.0 - valB) || val2Dec >= val1Dec * (decimal)(1.0 - valB)) && !(form15Fix && decimal.Compare(val1Dec, val2Dec) < 0) && !(allowLesser && decimal.Compare(val1Dec, val2Dec) > 0))
             {
                 res.Add((columnNum, $"{humanName}", $"{Form22_SubToExp(form1Val)}: {form1Val}", $"{Form22_SubToExp(form2Val)}: {form2Val}"));
-                return;
+                return false;
             }
             else
             {
-                return;
+                return false;
             }
         }
         TryParseDoubleExtended(form1Val, out var val1);
@@ -1414,6 +1417,7 @@ public class CheckF22 : CheckBase
         {
             res.Add((columnNum, $"{humanName}", $"{forms1}: {Form22_SubToExp(form1Val)}", $"{forms2}: {Form22_SubToExp(form2Val)}"));
         }
+        return false;
     }
 
     #endregion
@@ -1440,10 +1444,13 @@ public class CheckF22 : CheckBase
                 Form22_SubMatchDec(form1.MassOutOfPack_DB, form2.MassOutOfPack_DB, "Масса без упаковки (нетто), т", valB, res, 11, forms1, forms2, form15Fix);
                 Form22_SubMatchDec(form1.MassInPack_DB, form2.MassInPack_DB, "Масса с упаковкой (брутто), т", valB, res, 12, forms1, forms2, form15Fix);
                 Form22_SubMatchDec(form1.QuantityOZIII_DB, form2.QuantityOZIII_DB, "Количество ОЗИИИ, шт.", valB, res, 13, forms1, forms2, form15Fix);
-                Form22_SubMatchExp(form1.TritiumActivity_DB, form2.TritiumActivity_DB, "Суммарная активность, Бк - тритий", valBact, res, 14, forms1, forms2, form15Fix, true);
-                Form22_SubMatchExp(form1.BetaGammaActivity_DB, form2.BetaGammaActivity_DB, "Суммарная активность, Бк - бета-, гамма- излучающие радионуклиды (исключая тритий)", valBact, res, 15, forms1, forms2, form15Fix, true);
-                Form22_SubMatchExp(form1.AlphaActivity_DB, form2.AlphaActivity_DB, "Суммарная активность, Бк - альфа-излучающие радионуклиды (исключая трансурановые)", valBact, res, 16, forms1, forms2, form15Fix, true);
-                Form22_SubMatchExp(form1.TransuraniumActivity_DB, form2.TransuraniumActivity_DB, "Суммарная активность, Бк - трансурановые", valBact, res, 17, forms1, forms2, form15Fix, true);
+                if (!form15Fix)
+                {
+                    Form22_SubMatchExp(form1.TritiumActivity_DB, form2.TritiumActivity_DB, "Суммарная активность, Бк - тритий", valBact, res, 14, forms1, forms2, form15Fix, true);
+                    Form22_SubMatchExp(form1.BetaGammaActivity_DB, form2.BetaGammaActivity_DB, "Суммарная активность, Бк - бета-, гамма- излучающие радионуклиды (исключая тритий)", valBact, res, 15, forms1, forms2, form15Fix, true);
+                    Form22_SubMatchExp(form1.AlphaActivity_DB, form2.AlphaActivity_DB, "Суммарная активность, Бк - альфа-излучающие радионуклиды (исключая трансурановые)", valBact, res, 16, forms1, forms2, form15Fix, true);
+                    Form22_SubMatchExp(form1.TransuraniumActivity_DB, form2.TransuraniumActivity_DB, "Суммарная активность, Бк - трансурановые", valBact, res, 17, forms1, forms2, form15Fix, true);
+                }
                 return res;
             }
             return null;
@@ -1480,10 +1487,18 @@ public class CheckF22 : CheckBase
         {
             TryParseDoubleExtended(form22.VolumeOutOfPack_DB, out var doubleVolumeOutOfPack_DB);
             TryParseDoubleExtended(form22.QuantityOZIII_DB, out var doubleQuantityOZIII_DB);
+            TryParseDoubleExtended(form22.MassOutOfPack_DB, out var doubleMassOutOfPack_DB);
+            TryParseDoubleExtended(form22.AlphaActivity_DB, out var doubleActivityA_DB);
+            TryParseDoubleExtended(form22.BetaGammaActivity_DB, out var doubleActivityBG_DB);
+            TryParseDoubleExtended(form22.TransuraniumActivity_DB, out var doubleActivityU_DB);
+            TryParseDoubleExtended(form22.TritiumActivity_DB, out var doubleActivityT_DB);
+            double doubleActivity_DB = doubleActivityA_DB + doubleActivityBG_DB + doubleActivityU_DB + doubleActivityT_DB;
             Dictionary<string, double> values = new()
             {
                 { "VolumeOutOfPack_DB_TE", doubleVolumeOutOfPack_DB },
-                { "QuantityOZIII_DB_TE", doubleQuantityOZIII_DB }
+                { "QuantityOZIII_DB_TE", doubleQuantityOZIII_DB },
+                { "MassOutOfPack_DB_TE", doubleMassOutOfPack_DB },
+                { "Activity_DB_TE", doubleActivity_DB },
             };
             var key = (form22.StoragePlaceName_DB, form22.StoragePlaceCode_DB);
             if (!rows.ContainsKey(key))
@@ -1491,6 +1506,10 @@ public class CheckF22 : CheckBase
                 rows.Add(key, new());
                 rows[key].Add("VolumeOutOfPack_DB_TE", 0);
                 rows[key].Add("VolumeOutOfPack_DB_TR", 0);
+                rows[key].Add("MassOutOfPack_DB_TE", 0);
+                rows[key].Add("MassOutOfPack_DB_TR", 0);
+                rows[key].Add("Activity_DB_TE", 0);
+                rows[key].Add("Activity_DB_TR", 0);
                 rows[key].Add("VolumeOutOfPack_DB_1E", 0);
                 rows[key].Add("VolumeOutOfPack_DB_1R", 0);
                 rows[key].Add("VolumeOutOfPack_DB_SE", 0);
@@ -1504,15 +1523,25 @@ public class CheckF22 : CheckBase
             }
             rows[key]["VolumeOutOfPack_DB_TE"] += values["VolumeOutOfPack_DB_TE"];
             rows[key]["QuantityOZIII_DB_TE"] += values["QuantityOZIII_DB_TE"];
+            rows[key]["MassOutOfPack_DB_TE"] += values["MassOutOfPack_DB_TE"];
+            rows[key]["Activity_DB_TE"] += values["Activity_DB_TE"];
         }
         foreach (Form22 form22 in f22Real)
         {
             TryParseDoubleExtended(form22.VolumeOutOfPack_DB, out var doubleVolumeOutOfPack_DB);
             TryParseDoubleExtended(form22.QuantityOZIII_DB, out var doubleQuantityOZIII_DB);
+            TryParseDoubleExtended(form22.MassOutOfPack_DB, out var doubleMassOutOfPack_DB);
+            TryParseDoubleExtended(form22.AlphaActivity_DB, out var doubleActivityA_DB);
+            TryParseDoubleExtended(form22.BetaGammaActivity_DB, out var doubleActivityBG_DB);
+            TryParseDoubleExtended(form22.TransuraniumActivity_DB, out var doubleActivityU_DB);
+            TryParseDoubleExtended(form22.TritiumActivity_DB, out var doubleActivityT_DB);
+            double doubleActivity_DB = doubleActivityA_DB + doubleActivityBG_DB + doubleActivityU_DB + doubleActivityT_DB;
             Dictionary<string, double> values = new()
             {
                 { "VolumeOutOfPack_DB_TR", doubleVolumeOutOfPack_DB },
-                { "QuantityOZIII_DB_TR", doubleQuantityOZIII_DB }
+                { "QuantityOZIII_DB_TR", doubleQuantityOZIII_DB },
+                { "MassOutOfPack_DB_TR", doubleMassOutOfPack_DB },
+                { "Activity_DB_TR", doubleActivity_DB },
             };
             var key = (form22.StoragePlaceName_DB, form22.StoragePlaceCode_DB);
             if (!rows.ContainsKey(key))
@@ -1520,6 +1549,10 @@ public class CheckF22 : CheckBase
                 rows.Add(key, new());
                 rows[key].Add("VolumeOutOfPack_DB_TE", 0);
                 rows[key].Add("VolumeOutOfPack_DB_TR", 0);
+                rows[key].Add("MassOutOfPack_DB_TE", 0);
+                rows[key].Add("MassOutOfPack_DB_TR", 0);
+                rows[key].Add("Activity_DB_TE", 0);
+                rows[key].Add("Activity_DB_TR", 0);
                 rows[key].Add("VolumeOutOfPack_DB_1E", 0);
                 rows[key].Add("VolumeOutOfPack_DB_1R", 0);
                 rows[key].Add("VolumeOutOfPack_DB_SE", 0);
@@ -1533,6 +1566,8 @@ public class CheckF22 : CheckBase
             }
             rows[key]["VolumeOutOfPack_DB_TR"] += values["VolumeOutOfPack_DB_TR"];
             rows[key]["QuantityOZIII_DB_TR"] += values["QuantityOZIII_DB_TR"];
+            rows[key]["MassOutOfPack_DB_TR"] += values["MassOutOfPack_DB_TR"];
+            rows[key]["Activity_DB_TR"] += values["Activity_DB_TR"];
         }
         foreach (Form22 form22 in f221Expected)
         {
@@ -1549,6 +1584,10 @@ public class CheckF22 : CheckBase
                 rows.Add(key, new());
                 rows[key].Add("VolumeOutOfPack_DB_TE", 0);
                 rows[key].Add("VolumeOutOfPack_DB_TR", 0);
+                rows[key].Add("MassOutOfPack_DB_TE", 0);
+                rows[key].Add("MassOutOfPack_DB_TR", 0);
+                rows[key].Add("Activity_DB_TE", 0);
+                rows[key].Add("Activity_DB_TR", 0);
                 rows[key].Add("VolumeOutOfPack_DB_1E", 0);
                 rows[key].Add("VolumeOutOfPack_DB_1R", 0);
                 rows[key].Add("VolumeOutOfPack_DB_SE", 0);
@@ -1578,6 +1617,10 @@ public class CheckF22 : CheckBase
                 rows.Add(key, new());
                 rows[key].Add("VolumeOutOfPack_DB_TE", 0);
                 rows[key].Add("VolumeOutOfPack_DB_TR", 0);
+                rows[key].Add("MassOutOfPack_DB_TE", 0);
+                rows[key].Add("MassOutOfPack_DB_TR", 0);
+                rows[key].Add("Activity_DB_TE", 0);
+                rows[key].Add("Activity_DB_TR", 0);
                 rows[key].Add("VolumeOutOfPack_DB_1E", 0);
                 rows[key].Add("VolumeOutOfPack_DB_1R", 0);
                 rows[key].Add("VolumeOutOfPack_DB_SE", 0);
@@ -1607,6 +1650,10 @@ public class CheckF22 : CheckBase
                 rows.Add(key, new());
                 rows[key].Add("VolumeOutOfPack_DB_TE", 0);
                 rows[key].Add("VolumeOutOfPack_DB_TR", 0);
+                rows[key].Add("MassOutOfPack_DB_TE", 0);
+                rows[key].Add("MassOutOfPack_DB_TR", 0);
+                rows[key].Add("Activity_DB_TE", 0);
+                rows[key].Add("Activity_DB_TR", 0);
                 rows[key].Add("VolumeOutOfPack_DB_1E", 0);
                 rows[key].Add("VolumeOutOfPack_DB_1R", 0);
                 rows[key].Add("VolumeOutOfPack_DB_SE", 0);
@@ -1636,6 +1683,10 @@ public class CheckF22 : CheckBase
                 rows.Add(key, new());
                 rows[key].Add("VolumeOutOfPack_DB_TE", 0);
                 rows[key].Add("VolumeOutOfPack_DB_TR", 0);
+                rows[key].Add("MassOutOfPack_DB_TE", 0);
+                rows[key].Add("MassOutOfPack_DB_TR", 0);
+                rows[key].Add("Activity_DB_TE", 0);
+                rows[key].Add("Activity_DB_TR", 0);
                 rows[key].Add("VolumeOutOfPack_DB_1E", 0);
                 rows[key].Add("VolumeOutOfPack_DB_1R", 0);
                 rows[key].Add("VolumeOutOfPack_DB_SE", 0);
@@ -1658,17 +1709,21 @@ public class CheckF22 : CheckBase
         wrksht1.Cells[1, 3].SetCellValue(0, 0, "Код пункта хранения");
         wrksht1.Cells[1, 4].SetCellValue(0, 0, $"Объем {yearPrev} (всего)");
         wrksht1.Cells[1, 5].SetCellValue(0, 0, $"Объем {yearCur} (всего)");
-        wrksht1.Cells[1, 6].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearPrev} (всего)");
-        wrksht1.Cells[1, 7].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearCur} (всего)");
-        wrksht1.Cells[1, 8].SetCellValue(0, 0, $"Объем {yearPrev} (суб)");
-        wrksht1.Cells[1, 9].SetCellValue(0, 0, $"Объем {yearCur} (суб)");
-        wrksht1.Cells[1, 10].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearPrev} (суб)");
-        wrksht1.Cells[1, 11].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearCur} (суб)");
-        wrksht1.Cells[1, 12].SetCellValue(0, 0, $"Объем {yearPrev} (накоп)");
-        wrksht1.Cells[1, 13].SetCellValue(0, 0, $"Объем {yearCur} (накоп)");
-        wrksht1.Cells[1, 14].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearPrev} (накоп)");
-        wrksht1.Cells[1, 15].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearCur} (накоп)");
-        for (int i=1;i<=15;i++) wrksht1.Column(i).AutoFit();
+        wrksht1.Cells[1, 6].SetCellValue(0, 0, $"Масса {yearPrev} (всего)");
+        wrksht1.Cells[1, 7].SetCellValue(0, 0, $"Масса {yearCur} (всего)");
+        wrksht1.Cells[1, 8].SetCellValue(0, 0, $"Активность {yearPrev} (всего)");
+        wrksht1.Cells[1, 9].SetCellValue(0, 0, $"Активность {yearCur} (всего)");
+        wrksht1.Cells[1, 10].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearPrev} (всего)");
+        wrksht1.Cells[1, 11].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearCur} (всего)");
+        wrksht1.Cells[1, 12].SetCellValue(0, 0, $"Объем {yearPrev} (суб)");
+        wrksht1.Cells[1, 13].SetCellValue(0, 0, $"Объем {yearCur} (суб)");
+        wrksht1.Cells[1, 14].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearPrev} (суб)");
+        wrksht1.Cells[1, 15].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearCur} (суб)");
+        wrksht1.Cells[1, 16].SetCellValue(0, 0, $"Объем {yearPrev} (накоп)");
+        wrksht1.Cells[1, 17].SetCellValue(0, 0, $"Объем {yearCur} (накоп)");
+        wrksht1.Cells[1, 18].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearPrev} (накоп)");
+        wrksht1.Cells[1, 19].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearCur} (накоп)");
+        for (int i=1;i<=19;i++) wrksht1.Column(i).AutoFit();
         wrksht1.Column(2).Width = wrksht1.Column(1).Width * 3;
         wrksht1.Column(3).Width = wrksht1.Column(1).Width * 2;
         wrksht1.Column(4).Width = wrksht1.Column(1).Width * 2;
@@ -1683,8 +1738,12 @@ public class CheckF22 : CheckBase
         wrksht1.Column(13).Width = wrksht1.Column(1).Width * 2;
         wrksht1.Column(14).Width = wrksht1.Column(1).Width * 2;
         wrksht1.Column(15).Width = wrksht1.Column(1).Width * 2;
+        wrksht1.Column(16).Width = wrksht1.Column(1).Width * 2;
+        wrksht1.Column(17).Width = wrksht1.Column(1).Width * 2;
+        wrksht1.Column(18).Width = wrksht1.Column(1).Width * 2;
+        wrksht1.Column(19).Width = wrksht1.Column(1).Width * 2;
         int rowCurrent = 1;
-        for (int col = 1; col <= 15; col++)
+        for (int col = 1; col <= 19; col++)
         {
             wrksht1.Cells[rowCurrent, col].Style.WrapText = true;
             wrksht1.Cells[rowCurrent, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Left;
@@ -1703,42 +1762,56 @@ public class CheckF22 : CheckBase
                 //wrksht1.Cells[rowCurrent, 4, rowCurrent, 5].Style.Fill.BackgroundColor.SetColor(255, 224, 224, 192);
                 wrksht1.Cells[rowCurrent, 4, rowCurrent, 5].Style.Font.Bold = true;
             }
-            wrksht1.Cells[rowCurrent, 6].SetCellValue(0, 0, entry.Value["QuantityOZIII_DB_TE"]);
-            wrksht1.Cells[rowCurrent, 7].SetCellValue(0, 0, entry.Value["QuantityOZIII_DB_TR"]);
+            wrksht1.Cells[rowCurrent, 6].SetCellValue(0, 0, entry.Value["MassOutOfPack_DB_TE"]);
+            wrksht1.Cells[rowCurrent, 7].SetCellValue(0, 0, entry.Value["MassOutOfPack_DB_TR"]);
+            if (entry.Value["MassOutOfPack_DB_TE"].ToString("F5") != entry.Value["MassOutOfPack_DB_TR"].ToString("F5"))
+            {
+                //wrksht1.Cells[rowCurrent, 4, rowCurrent, 5].Style.Fill.BackgroundColor.SetColor(255, 224, 224, 192);
+                wrksht1.Cells[rowCurrent, 6, rowCurrent, 7].Style.Font.Bold = true;
+            }
+            wrksht1.Cells[rowCurrent, 8].SetCellValue(0, 0, entry.Value["Activity_DB_TE"]);
+            wrksht1.Cells[rowCurrent, 9].SetCellValue(0, 0, entry.Value["Activity_DB_TR"]);
+            if (entry.Value["Activity_DB_TE"].ToString("F5") != entry.Value["Activity_DB_TR"].ToString("F5"))
+            {
+                //wrksht1.Cells[rowCurrent, 4, rowCurrent, 5].Style.Fill.BackgroundColor.SetColor(255, 224, 224, 192);
+                wrksht1.Cells[rowCurrent, 8, rowCurrent, 9].Style.Font.Bold = true;
+            }
+            wrksht1.Cells[rowCurrent, 10].SetCellValue(0, 0, entry.Value["QuantityOZIII_DB_TE"]);
+            wrksht1.Cells[rowCurrent, 11].SetCellValue(0, 0, entry.Value["QuantityOZIII_DB_TR"]);
             if (entry.Value["QuantityOZIII_DB_TE"].ToString("F5") != entry.Value["QuantityOZIII_DB_TR"].ToString("F5"))
             {
                 //wrksht1.Cells[rowCurrent, 6, rowCurrent, 7].Style.Fill.BackgroundColor.SetColor(255, 224, 224, 192);
-                wrksht1.Cells[rowCurrent, 6, rowCurrent, 7].Style.Font.Bold = true;
+                wrksht1.Cells[rowCurrent, 10, rowCurrent, 11].Style.Font.Bold = true;
             }
-            wrksht1.Cells[rowCurrent, 8].SetCellValue(0, 0, entry.Value["VolumeOutOfPack_DB_SE"]);
-            wrksht1.Cells[rowCurrent, 9].SetCellValue(0, 0, entry.Value["VolumeOutOfPack_DB_SR"]);
+            wrksht1.Cells[rowCurrent, 12].SetCellValue(0, 0, entry.Value["VolumeOutOfPack_DB_SE"]);
+            wrksht1.Cells[rowCurrent, 13].SetCellValue(0, 0, entry.Value["VolumeOutOfPack_DB_SR"]);
             if (entry.Value["VolumeOutOfPack_DB_SE"].ToString("F5") != entry.Value["VolumeOutOfPack_DB_SR"].ToString("F5"))
             {
                 //wrksht1.Cells[rowCurrent, 8, rowCurrent, 9].Style.Fill.BackgroundColor.SetColor(255, 224, 224, 192);
-                wrksht1.Cells[rowCurrent, 8, rowCurrent, 9].Style.Font.Bold = true;
+                wrksht1.Cells[rowCurrent, 12, rowCurrent, 13].Style.Font.Bold = true;
             }
-            wrksht1.Cells[rowCurrent, 10].SetCellValue(0, 0, entry.Value["QuantityOZIII_DB_SE"]);
-            wrksht1.Cells[rowCurrent, 11].SetCellValue(0, 0, entry.Value["QuantityOZIII_DB_SR"]);
+            wrksht1.Cells[rowCurrent, 14].SetCellValue(0, 0, entry.Value["QuantityOZIII_DB_SE"]);
+            wrksht1.Cells[rowCurrent, 15].SetCellValue(0, 0, entry.Value["QuantityOZIII_DB_SR"]);
             if (entry.Value["QuantityOZIII_DB_SE"].ToString("F5") != entry.Value["QuantityOZIII_DB_SR"].ToString("F5"))
             {
                 //wrksht1.Cells[rowCurrent, 10, rowCurrent, 11].Style.Fill.BackgroundColor.SetColor(255, 224, 224, 192);
-                wrksht1.Cells[rowCurrent, 10, rowCurrent, 11].Style.Font.Bold = true;
+                wrksht1.Cells[rowCurrent, 14, rowCurrent, 15].Style.Font.Bold = true;
             }
-            wrksht1.Cells[rowCurrent, 12].SetCellValue(0, 0, entry.Value["VolumeOutOfPack_DB_1E"]);
-            wrksht1.Cells[rowCurrent, 13].SetCellValue(0, 0, entry.Value["VolumeOutOfPack_DB_1R"]);
+            wrksht1.Cells[rowCurrent, 16].SetCellValue(0, 0, entry.Value["VolumeOutOfPack_DB_1E"]);
+            wrksht1.Cells[rowCurrent, 17].SetCellValue(0, 0, entry.Value["VolumeOutOfPack_DB_1R"]);
             if (entry.Value["VolumeOutOfPack_DB_1E"].ToString("F5") != entry.Value["VolumeOutOfPack_DB_1R"].ToString("F5"))
             {
                 //wrksht1.Cells[rowCurrent, 12, rowCurrent, 13].Style.Fill.BackgroundColor.SetColor(255, 224, 224, 192);
-                wrksht1.Cells[rowCurrent, 12, rowCurrent, 13].Style.Font.Bold = true;
+                wrksht1.Cells[rowCurrent, 16, rowCurrent, 17].Style.Font.Bold = true;
             }
-            wrksht1.Cells[rowCurrent, 14].SetCellValue(0, 0, entry.Value["QuantityOZIII_DB_1E"]);
-            wrksht1.Cells[rowCurrent, 15].SetCellValue(0, 0, entry.Value["QuantityOZIII_DB_1R"]);
+            wrksht1.Cells[rowCurrent, 18].SetCellValue(0, 0, entry.Value["QuantityOZIII_DB_1E"]);
+            wrksht1.Cells[rowCurrent, 19].SetCellValue(0, 0, entry.Value["QuantityOZIII_DB_1R"]);
             if (entry.Value["QuantityOZIII_DB_1E"].ToString("F5") != entry.Value["QuantityOZIII_DB_1R"].ToString("F5"))
             {
                 //wrksht1.Cells[rowCurrent, 14, rowCurrent, 15].Style.Fill.BackgroundColor.SetColor(255, 224, 224, 192);
-                wrksht1.Cells[rowCurrent, 14, rowCurrent, 15].Style.Font.Bold = true;
+                wrksht1.Cells[rowCurrent, 18, rowCurrent, 19].Style.Font.Bold = true;
             }
-            for (int col = 1; col <= 15; col++)
+            for (int col = 1; col <= 19; col++)
             {
                 wrksht1.Cells[rowCurrent, col].Style.WrapText = true;
                 wrksht1.Cells[rowCurrent, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Left;
