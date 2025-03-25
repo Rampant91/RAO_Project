@@ -325,9 +325,9 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
 
             var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, dto.Id, formNum, firstSnkDate, currentDate, cts);
 
-            var uniqueUnitWithAllOperationDictionary = await GetDictionary_UniqueUnitsWithOperations(inventoryFormsDtoList, plusMinusFormsDtoList, rechargeFormsDtoList);
+            var uniqueUnitWithAllOperationDictionary = await GetDictionary_UniqueUnitsWithOperations(formNum, inventoryFormsDtoList, plusMinusFormsDtoList, rechargeFormsDtoList);
 
-            dto.CountUnits = (await GetUnitInStockDtoList(uniqueUnitWithAllOperationDictionary, firstSnkDate, progressBarVM)).Count;
+            dto.CountUnits = (await GetUnitInStockDtoList(uniqueUnitWithAllOperationDictionary, formNum, firstSnkDate, progressBarVM)).Count;
 
             progressBarDoubleValue += (double)50 / dtoList.Count;
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),

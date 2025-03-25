@@ -77,10 +77,10 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
         var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, selectedReports.Id, formNum, firstSnkDate, endSnkDate, cts, snkParams);
 
         progressBarVM.SetProgressBar(35, "Формирование списка учётных единиц");
-        var uniqueUnitWithAllOperationDictionary = await GetDictionary_UniqueUnitsWithOperations(inventoryFormsDtoList, plusMinusFormsDtoList, rechargeFormsDtoList);
+        var uniqueUnitWithAllOperationDictionary = await GetDictionary_UniqueUnitsWithOperations(formNum, inventoryFormsDtoList, plusMinusFormsDtoList, rechargeFormsDtoList);
 
         progressBarVM.SetProgressBar(50, "Формирование СНК");
-        var unitInStockDtoList = await GetUnitInStockDtoList(uniqueUnitWithAllOperationDictionary, firstSnkDate, progressBarVM);
+        var unitInStockDtoList = await GetUnitInStockDtoList(uniqueUnitWithAllOperationDictionary, formNum, firstSnkDate, progressBarVM);
 
         progressBarVM.SetProgressBar(60, "Загрузка форм");
         var fullFormsSnkList = await GetFullFormsSnkList(db, unitInStockDtoList, progressBarVM, cts);

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Client_App.Resources.CustomComparers;
 using Models.CheckForm;
 using Models.Collections;
 using Models.Forms;
@@ -2621,7 +2623,7 @@ public abstract class CheckF11 : CheckBase
         var packName = ReplaceNullAndTrim(forms[line].PackName_DB);
         var packType = ReplaceNullAndTrim(forms[line].PackType_DB);
 
-        if (IOU11.Any(x => string.Equals(x, packName, StringComparison.OrdinalIgnoreCase)))
+        if (IOU11.Any(x => ReplaceSimilarCharsAndCheckToContains(x, packName)))
         {
             result.Add(new CheckError
             {
@@ -2632,7 +2634,7 @@ public abstract class CheckF11 : CheckBase
                 Message = "Для данного наименования упаковки, должна быть заполнена форма 1.2 (информационное сообщение, не ошибка)."
             });
         }
-        else if (IOU11.Any(x => string.Equals(x, packType, StringComparison.OrdinalIgnoreCase)))
+        else if (IOU11.Any(x => ReplaceSimilarCharsAndCheckToContains(x, packType)))
         {
             result.Add(new CheckError
             {
@@ -2644,6 +2646,57 @@ public abstract class CheckF11 : CheckBase
             });
         }
         return result;
+    }
+
+    private static bool ReplaceSimilarCharsAndCheckToContains(string? str1, string? str2)
+    {
+        if (ReferenceEquals(str1, str2)) return true;
+
+        if (str1 is null || str2 is null) return false;
+
+        var snkRegex = new Regex(@"[\\/:*?""<>|.,_\-;:\s+]");
+
+        var tmp1 = snkRegex
+            .Replace(str1, "")
+            .ToLower()
+            .Replace('а', 'a')
+            .Replace('б', 'b')
+            .Replace('в', 'b')
+            .Replace('г', 'r')
+            .Replace('е', 'e')
+            .Replace('ё', 'e')
+            .Replace('к', 'k')
+            .Replace('м', 'm')
+            .Replace('н', 'h')
+            .Replace('о', 'o')
+            .Replace('0', 'o')
+            .Replace('р', 'p')
+            .Replace('с', 'c')
+            .Replace('т', 't')
+            .Replace('у', 'y')
+            .Replace('х', 'x');
+
+        var tmp2 = snkRegex
+            .Replace(str2, "")
+            .ToLower()
+            .Replace('а', 'a')
+            .Replace('б', 'b')
+            .Replace('в', 'b')
+            .Replace('г', 'r')
+            .Replace('е', 'e')
+            .Replace('ё', 'e')
+            .Replace('к', 'k')
+            .Replace('м', 'm')
+            .Replace('н', 'h')
+            .Replace('о', 'o')
+            .Replace('0', 'o')
+            .Replace('р', 'p')
+            .Replace('с', 'c')
+            .Replace('т', 't')
+            .Replace('у', 'y')
+            .Replace('х', 'x');
+
+        return tmp1.Contains(tmp2);
     }
 
     #endregion

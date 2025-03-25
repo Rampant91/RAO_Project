@@ -13,7 +13,6 @@ using Client_App.Interfaces.Logger;
 using MessageBox.Avalonia.Enums;
 using Models.DTO;
 using Avalonia.Threading;
-using Client_App.Resources;
 using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels;
 

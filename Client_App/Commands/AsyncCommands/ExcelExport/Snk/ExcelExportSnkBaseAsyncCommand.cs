@@ -55,23 +55,6 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
         };
     }
 
-    /// <summary>
-    /// Коды операций снятия с учёта.
-    /// </summary>
-    private protected static readonly string[] MinusOperation =
-    [
-        "21", "22", "25", "27", "28", "29", "41", "42", "43", "46", "47", "65", "67", "68", "71", "72", "81", "82", "83", "84", "98"
-    ];
-
-
-    /// <summary>
-    /// Коды операций постановки на учёт.
-    /// </summary>
-    private protected static readonly string[] PlusOperation =
-    [
-        "11", "12", "17", "18", "31", "32", "35", "37", "38", "39", "58", "73", "74", "75", "85", "86", "87", "88", "97"
-    ];
-
     #endregion
     
     #region DTO
@@ -431,15 +414,14 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// <summary>
     /// Формирует словарь из уникальных учётных единиц и списков операций с ними.
     /// </summary>
+    /// <param name="formNum">Номер формы.</param>
     /// <param name="inventoryFormsDtoList">Список DTO операций инвентаризации.</param>
     /// <param name="plusMinusFormsDtoList">Список DTO операций приема/передачи.</param>
     /// <param name="rechargeFormsDtoList">Список DTO операций перезарядки.</param>
     /// <param name="zeroFormsFtoList">Список DTO нулевых операций (не приёма-передача и не инвентаризация).</param>
     /// <returns>Словарь из уникальных учётных единиц и списков операций с ними.</returns>
-    private protected static async Task<Dictionary<UniqueUnitDto, List<ShortFormDTO>>> GetDictionary_UniqueUnitsWithOperations(
-        List<ShortFormDTO> inventoryFormsDtoList,
-        List<ShortFormDTO> plusMinusFormsDtoList,
-        List<ShortFormDTO> rechargeFormsDtoList,
+    private protected static async Task<Dictionary<UniqueUnitDto, List<ShortFormDTO>>> GetDictionary_UniqueUnitsWithOperations(string formNum,
+        List<ShortFormDTO> inventoryFormsDtoList, List<ShortFormDTO> plusMinusFormsDtoList, List<ShortFormDTO> rechargeFormsDtoList,
         List<ShortFormDTO>? zeroFormsFtoList = null)
     {
         var firstInventoryDate = inventoryFormsDtoList.Count == 0
@@ -516,7 +498,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 
                     if (SerialNumbersIsEmpty(pairWithLastOpDate.Key.PasNum, pairWithLastOpDate.Key.FacNum))
                     {
-                        var quantity = await SumQuantityForEmptySerialNums(pairWithLastOpDate);
+                        var quantity = await SumQuantityForEmptySerialNums(pairWithLastOpDate, formNum);
                         if (form.Quantity != quantity) continue;
                     }
                     pairWithLastOpDate.Value.Add(form);
@@ -576,19 +558,20 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// Рассчитывает количество, путём сложения количества в первой операции инвентаризации и операциях приёма/передачи.
     /// </summary>
     /// <param name="pairWithLastOpDate">Пара ключ-значение из DTO уникальной учётной единицы и списка операций с ней.</param>
+    /// <param name="formNum">Номер формы.</param>
     /// <returns>Суммированное количество.</returns>
-    private static Task<int> SumQuantityForEmptySerialNums(KeyValuePair<UniqueUnitDto, List<ShortFormDTO>> pairWithLastOpDate)
+    private static Task<int> SumQuantityForEmptySerialNums(KeyValuePair<UniqueUnitDto, List<ShortFormDTO>> pairWithLastOpDate, string formNum)
     {
         var quantity = pairWithLastOpDate.Value
             .FirstOrDefault(x => x.OpCode == "10")
             ?.Quantity ?? 0; ;
         foreach (var form11Dto in pairWithLastOpDate.Value)
         {
-            if (PlusOperation.Contains(form11Dto.OpCode))
+            if (GetPlusOperationsArray(formNum).Contains(form11Dto.OpCode))
             {
                 quantity += form11Dto.Quantity;
             }
-            else if (MinusOperation.Contains(form11Dto.OpCode))
+            else if (GetMinusOperationsArray(formNum).Contains(form11Dto.OpCode))
             {
                 quantity -= form11Dto.Quantity;
                 quantity = Math.Max(0, quantity);
@@ -882,6 +865,10 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     private protected static async Task<List<ShortFormDTO>> GetPlusMinusFormsDtoList(DBModel db, List<int> reportIds, string formNum,
         DateOnly firstSnkDate, DateOnly endSnkDate, CancellationTokenSource cts, SnkParamsDto? snkParams = null)
     {
+        var plusOperationArray = GetPlusOperationsArray(formNum);
+        var minusOperationArray = GetMinusOperationsArray(formNum);
+        
+
         var plusMinusOperationDtoList = formNum switch
         {
             "1.1" => await db.form_11
@@ -891,8 +878,8 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                 .Include(x => x.Report)
                 .Where(x => x.Report != null
                             && reportIds.Contains(x.Report.Id)
-                            && (PlusOperation.Contains(x.OperationCode_DB)
-                                || MinusOperation.Contains(x.OperationCode_DB)))
+                            && (plusOperationArray.Contains(x.OperationCode_DB)
+                                || minusOperationArray.Contains(x.OperationCode_DB)))
                 .Select(form => new ShortFormStringDatesDTO
                 {
                     Id = form.Id,
@@ -928,8 +915,8 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                 .Include(x => x.Report)
                 .Where(x => x.Report != null
                             && reportIds.Contains(x.Report.Id)
-                            && (PlusOperation.Contains(x.OperationCode_DB)
-                                || MinusOperation.Contains(x.OperationCode_DB)))
+                            && (plusOperationArray.Contains(x.OperationCode_DB)
+                                || minusOperationArray.Contains(x.OperationCode_DB)))
                 .Select(form => new ShortFormStringDatesDTO
                 {
                     Id = form.Id,
@@ -1156,12 +1143,17 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// Для каждой учётной единицы из словаря проверяется её наличие и выводится в общий список наличного количества (СНК).
     /// </summary>
     /// <param name="uniqueUnitWithAllOperationDictionary">Словарь из уникальной учётной единицы и списка всех операций с ней.</param>
+    /// <param name="formNum">Номер формы.</param>
     /// <param name="firstInventoryDate">Дата первой инвентаризации.</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <returns>Список DTO учётных единиц в наличии (СНК).</returns>
-    private protected static async Task<List<ShortFormDTO>> GetUnitInStockDtoList(Dictionary<UniqueUnitDto, List<ShortFormDTO>> uniqueUnitWithAllOperationDictionary, 
+    private protected static async Task<List<ShortFormDTO>> GetUnitInStockDtoList(
+        Dictionary<UniqueUnitDto, List<ShortFormDTO>> uniqueUnitWithAllOperationDictionary, string formNum,
         DateOnly firstInventoryDate, AnyTaskProgressBarVM progressBarVM)
     {
+        var plusOperationArray = GetPlusOperationsArray(formNum);
+        var minusOperationArray = GetMinusOperationsArray(formNum);
+
         List<ShortFormDTO> unitInStockList = [];
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentUnitNum = 1;
@@ -1176,15 +1168,15 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                     .FirstOrDefault(x => x.OpCode == "10" && x.OpDate == firstInventoryDate)
                     ?.Quantity ?? 0;
 
-                var operationsWithoutDuplicates = await GetOperationsWithoutDuplicates(operations);
+                var operationsWithoutDuplicates = await GetOperationsWithoutDuplicates(operations, formNum);
 
                 foreach (var operation in operationsWithoutDuplicates)
                 {
-                    if (PlusOperation.Contains(operation.OpCode))
+                    if (plusOperationArray.Contains(operation.OpCode))
                     {
                         quantity += operation.Quantity;
                     }
-                    else if (MinusOperation.Contains(operation.OpCode))
+                    else if (minusOperationArray.Contains(operation.OpCode))
                     {
                         quantity -= operation.Quantity;
                         quantity = Math.Max(0, quantity);
@@ -1221,11 +1213,11 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             {
                 var inStock = operations.Any(x => x.OpCode == "10" && x.OpDate == firstInventoryDate);
 
-                var currentOperationsWithoutMutuallyExclusive = await GetOperationsWithoutMutuallyCompensating(operations);
+                var currentOperationsWithoutMutuallyExclusive = await GetOperationsWithoutMutuallyCompensating(operations, formNum);
                 foreach (var form in currentOperationsWithoutMutuallyExclusive)
                 {
-                    if (PlusOperation.Contains(form.OpCode)) inStock = true;
-                    else if (MinusOperation.Contains(form.OpCode)) inStock = false;
+                    if (plusOperationArray.Contains(form.OpCode)) inStock = true;
+                    else if (minusOperationArray.Contains(form.OpCode)) inStock = false;
                 }
                 if (inStock)
                 {
@@ -1256,18 +1248,22 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// Для форм 1.1 с незаполненными зав.№ и № паспорта, заменяет в списке операций множество +- операций в одну дату, на одну эквивалентную им операцию.
     /// </summary>
     /// <param name="operationList">Список операций.</param>
+    /// <param name="formNum">Номер формы.</param>
     /// <returns>Список операций, в котором множество +- операций в одну дату заменено на одну эквивалентную им операцию.</returns>
-    private static Task<List<ShortFormDTO>> GetOperationsWithoutDuplicates(List<ShortFormDTO> operationList)
+    private static Task<List<ShortFormDTO>> GetOperationsWithoutDuplicates(List<ShortFormDTO> operationList, string formNum)
     {
+        var plusOperationsArray = GetPlusOperationsArray(formNum);
+        var minusOperationsArray = GetMinusOperationsArray(formNum);
+
         List<ShortFormDTO> operationsWithoutDuplicates = [];
         foreach (var group in operationList.GroupBy(x => x.OpDate))
         {
             var countPlus = group
-                .Where(x => PlusOperation.Contains(x.OpCode))
+                .Where(x => plusOperationsArray.Contains(x.OpCode))
                 .Sum(x => x.Quantity);
 
             var countMinus = group
-                .Where(x => MinusOperation.Contains(x.OpCode))
+                .Where(x => minusOperationsArray.Contains(x.OpCode))
                 .Sum(x => x.Quantity);
 
             var givenReceivedPerDayAmount = countPlus - countMinus;
@@ -1276,7 +1272,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             {
                 case > 0:
                 {
-                    var lastOp = group.Last(x => PlusOperation.Contains(x.OpCode));
+                    var lastOp = group.Last(x => plusOperationsArray.Contains(x.OpCode));
                     lastOp.Quantity = givenReceivedPerDayAmount;
                     operationsWithoutDuplicates.Add(lastOp);
                     break;
@@ -1287,7 +1283,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
                 }
                 case < 0:
                 {
-                    var lastOp = group.Last(x => MinusOperation.Contains(x.OpCode));
+                    var lastOp = group.Last(x => minusOperationsArray.Contains(x.OpCode));
                     lastOp.Quantity = int.Abs(givenReceivedPerDayAmount);
                     operationsWithoutDuplicates.Add(lastOp);
                     break;
@@ -1301,12 +1297,16 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     /// 
     /// </summary>
     /// <param name="operationList">Список операций.</param>
+    /// <param name="formNum">Номер формы.</param>
     /// <returns></returns>
-    private protected static Task<List<ShortFormDTO>> GetOperationsWithoutMutuallyCompensating(List<ShortFormDTO> operationList)
+    private protected static Task<List<ShortFormDTO>> GetOperationsWithoutMutuallyCompensating(List<ShortFormDTO> operationList, string formNum)
     {
+        var plusOperationsArray = GetPlusOperationsArray(formNum);
+        var minusOperationsArray = GetMinusOperationsArray(formNum);
+
         var operationsGroupedByDate = operationList.Where(x =>
-                !PlusOperation.Contains(x.OpCode) && !MinusOperation.Contains(x.OpCode)
-                || PlusOperation.Contains(x.OpCode) || MinusOperation.Contains(x.OpCode))
+                !plusOperationsArray.Contains(x.OpCode) && !minusOperationsArray.Contains(x.OpCode)
+                || plusOperationsArray.Contains(x.OpCode) || minusOperationsArray.Contains(x.OpCode))
             .GroupBy(x => x.OpDate)
             .ToList();
 
@@ -1316,13 +1316,13 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             var formsList = group.ToList();
             foreach (var form in formsList)
             {
-                var currentFormIsPlus = PlusOperation.Contains(form.OpCode);
-                var currentFormIsMinus = MinusOperation.Contains(form.OpCode);
+                var currentFormIsPlus = plusOperationsArray.Contains(form.OpCode);
+                var currentFormIsMinus = minusOperationsArray.Contains(form.OpCode);
 
                 var duplicate = operationWithoutMutuallyExclusive.FirstOrDefault(x =>
                     x.OpDate == form.OpDate
-                    && (currentFormIsMinus && PlusOperation.Contains(x.OpCode)
-                        || currentFormIsPlus && MinusOperation.Contains(x.OpCode)));
+                    && (currentFormIsMinus && plusOperationsArray.Contains(x.OpCode)
+                        || currentFormIsPlus && minusOperationsArray.Contains(x.OpCode)));
 
                 if (duplicate is not null)
                 {
