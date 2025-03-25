@@ -97,7 +97,7 @@ public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
             .AsSplitQuery()
             .AsQueryable()
             .Include(x => x.DBObservable)
-            .Where(x => x.DBObservableId != null)
+            .Where(x => x.DBObservable != null)
             .CountAsync(cts.Token);
 
         if (countReports == 0)

@@ -13,12 +13,13 @@ using Client_App.Interfaces.Logger;
 using MessageBox.Avalonia.Enums;
 using Models.DTO;
 using Avalonia.Threading;
-using Client_App.Resources;
+using Client_App.Resources.CustomComparers;
+using Client_App.ViewModels;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
 //  Импорт -> Из RAODB
-public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
+public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -227,6 +228,17 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                         await impReps.Master_DB.Rows20.QuickSortAsync();
                         break;
                 }
+            }
+
+            // Если убрать сохранение, то не перезаписывается базовый отчёт (номер корректировки) и при импорте нескольких файлов одинакового отчёта,
+            // но с разными номерами, в организации появлялись дубли, вместо перезаписи имеющегося отчёта.
+            try
+            {
+                await StaticConfiguration.DBModel.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
             }
         }
 

@@ -162,7 +162,12 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     /// Excel -> Выбранная организация -> СНК
     /// </summary>
     public ICommand ExcelExportSnk => new ExcelExportSnkAsyncCommand();
-    
+
+    /// <summary>
+    /// Excel -> Выбранная организация -> Проверка инвентаризаций
+    /// </summary>
+    public ICommand ExcelExportCheckInventories => new ExcelExportCheckInventoriesAsyncCommand();
+
     /// <summary>
     /// Экспорт всех организаций организации в отдельные файлы .RAODB
     /// </summary>
@@ -209,7 +214,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand();
         ImportExcel = new ImportExcelAsyncCommand();
         ImportJson = new ImportJsonAsyncCommand();
-        ImportRaodb = new ImportRaodbAsyncCommand();
+        ImportRaodb = new ImportRaodbAsyncCommand(this);
         MaxGraphsLength = new MaxGraphsLengthAsyncCommand();
         SaveReports = new SaveReportsAsyncCommand();
         //UnaccountedRad = new UnaccountedRadAsyncCommand(); 

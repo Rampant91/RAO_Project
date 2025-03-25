@@ -127,7 +127,7 @@ public static partial class EssenceMethods
                 tmp = await db.ReportsCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
-                    .Where(x => x.Id == id)
+                    .Include(x => x.DBObservable)
                     .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
                     .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
                     .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
@@ -152,6 +152,7 @@ public static partial class EssenceMethods
                     .Include(x => x.Report_Collection).ThenInclude(x => x.Rows211)
                     .Include(x => x.Report_Collection).ThenInclude(x => x.Rows212)
                     .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                    .Where(x => x.DBObservable != null && x.Id == id)
                     .FirstOrDefaultAsync(ReportsStorage.cancellationToken) as T;
             }
             catch (Exception ex)
@@ -175,9 +176,11 @@ public static partial class EssenceMethods
                 await db.Database.MigrateAsync(ReportsStorage.cancellationToken);
                 IQueryable<Reports> dbQ = db.ReportsCollectionDbSet;
                 var tmp = await dbQ
+                    .Include(x => x.DBObservable)
                     .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
                     .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
                     .Include(x => x.Report_Collection)
+                    .Where( x => x.DBObservable != null)
                     .Select(x => x as T)
                     .ToListAsync(ReportsStorage.cancellationToken);
                 return tmp;

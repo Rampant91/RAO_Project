@@ -65,16 +65,36 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
 
         if (Settings.Default.AppStartupParameters.Split(',')[0].Trim() is "-p")
         {
-            await BackgroundWorkThenAppLaunchedWithParameter();
+            await BackgroundWorkThenAppLaunchedWithOperParameter();
+            Environment.Exit(0);
+        }
+        else if (Settings.Default.AppStartupParameters.Split(',')[0].Trim() is "-y")
+        {
+            await BackgroundWorkThenAppLaunchedWithYearParameter();
             Environment.Exit(0);
         }
     }
 
-    private async Task BackgroundWorkThenAppLaunchedWithParameter()
+    /// <summary>
+    /// Команды, выполняющиеся автоматически при запуске программы с ключом "-p" (оперативная отчётность).
+    /// </summary>
+    private async Task BackgroundWorkThenAppLaunchedWithOperParameter()
     {
         await new ExcelExportListOfOrgsAsyncCommand().AsyncExecute(this);
         await new ExcelExportExecutorsAsyncCommand().AsyncExecute(this);
         await new ExcelExportIntersectionsAsyncCommand().AsyncExecute(this);
+        await new ExcelExportListOfForms1AsyncCommand().AsyncExecute(this);
+        await new ExcelExportAllAsyncCommand().AsyncExecute(this);
+    }
+
+    /// <summary>
+    /// Команды, выполняющиеся автоматически при запуске программы с ключом "-y" (годовая отчётность).
+    /// </summary>
+    private async Task BackgroundWorkThenAppLaunchedWithYearParameter()
+    {
+        await new ExcelExportListOfOrgsAsyncCommand().AsyncExecute(this);
+        await new ExcelExportExecutorsAsyncCommand().AsyncExecute(this);
+        await new ExcelExportListOfForms2AsyncCommand().AsyncExecute(this);
         await new ExcelExportAllAsyncCommand().AsyncExecute(this);
     }
 
@@ -85,15 +105,17 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
             OnStartProgressBar = VMDataContext.OnStartProgressBar;
         }
     }
+
     public Interaction<MainWindowVM, object> ShowDialog { get; private set; }
+
 
     #region INotifyPropertyChanged
 
+    public event PropertyChangedEventHandler? PropertyChanged;
     private void OnPropertyChanged([CallerMemberName] string prop = "")
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
-    public event PropertyChangedEventHandler? PropertyChanged;
-
+    
     #endregion
 }

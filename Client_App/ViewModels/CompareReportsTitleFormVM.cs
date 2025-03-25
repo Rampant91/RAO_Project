@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Client_App.Resources;
+using Client_App.Resources.CustomComparers;
 using Models.Collections;
 
 namespace Client_App.ViewModels;
@@ -1584,114 +1585,113 @@ public class CompareReportsTitleFormVM : INotifyPropertyChanged
         switch (repInBase.FormNum_DB)
         {
             case "1.0":
-                {
-                    NewOrganUprav = !string.IsNullOrEmpty(repImport.Rows10[0].OrganUprav_DB)
-                        ? repImport.Rows10[0].OrganUprav_DB
-                        : !string.IsNullOrEmpty(repImport.Rows10[1].OrganUprav_DB)
-                            ? repImport.Rows10[1].OrganUprav_DB
-                            : string.Empty;
+            {
+                NewOrganUprav = !string.IsNullOrEmpty(repImport.Rows10[0].OrganUprav_DB)
+                    ? repImport.Rows10[0].OrganUprav_DB
+                    : !string.IsNullOrEmpty(repImport.Rows10[1].OrganUprav_DB)
+                        ? repImport.Rows10[1].OrganUprav_DB
+                        : string.Empty;
 
-                    #region JurLico
+                #region JurLico
 
-                    NewSubjectRF0 = repImport.Rows10[0].SubjectRF_DB;
-                    NewJurLico0 = repImport.Rows10[0].JurLico_DB;
-                    NewShortJurLico0 = repImport.Rows10[0].ShortJurLico_DB;
-                    NewJurLicoAddress0 = repImport.Rows10[0].JurLicoAddress_DB;
-                    NewJurLicoFactAddress0 = repImport.Rows10[0].JurLicoFactAddress_DB;
-                    NewGradeFIO0 = repImport.Rows10[0].GradeFIO_DB;
-                    NewTelephone0 = repImport.Rows10[0].Telephone_DB;
-                    NewFax0 = repImport.Rows10[0].Fax_DB;
-                    NewEmail0 = repImport.Rows10[0].Email_DB;
-                    NewOkpo0 = repImport.Rows10[0].Okpo_DB;
-                    NewOkved0 = repImport.Rows10[0].Okved_DB;
-                    NewOkogu0 = repImport.Rows10[0].Okogu_DB;
-                    NewOktmo0 = repImport.Rows10[0].Oktmo_DB;
-                    NewInn0 = repImport.Rows10[0].Inn_DB;
-                    NewKpp0 = repImport.Rows10[0].Kpp_DB;
-                    NewOkopf0 = repImport.Rows10[0].Okopf_DB;
-                    NewOkfs0 = repImport.Rows10[0].Okfs_DB;
+                NewSubjectRF0 = repImport.Rows10[0].SubjectRF_DB;
+                NewJurLico0 = repImport.Rows10[0].JurLico_DB;
+                NewShortJurLico0 = repImport.Rows10[0].ShortJurLico_DB;
+                NewJurLicoAddress0 = repImport.Rows10[0].JurLicoAddress_DB;
+                NewJurLicoFactAddress0 = repImport.Rows10[0].JurLicoFactAddress_DB;
+                NewGradeFIO0 = repImport.Rows10[0].GradeFIO_DB;
+                NewTelephone0 = repImport.Rows10[0].Telephone_DB;
+                NewFax0 = repImport.Rows10[0].Fax_DB;
+                NewEmail0 = repImport.Rows10[0].Email_DB;
+                NewOkpo0 = repImport.Rows10[0].Okpo_DB;
+                NewOkved0 = repImport.Rows10[0].Okved_DB;
+                NewOkogu0 = repImport.Rows10[0].Okogu_DB;
+                NewOktmo0 = repImport.Rows10[0].Oktmo_DB;
+                NewInn0 = repImport.Rows10[0].Inn_DB;
+                NewKpp0 = repImport.Rows10[0].Kpp_DB;
+                NewOkopf0 = repImport.Rows10[0].Okopf_DB;
+                NewOkfs0 = repImport.Rows10[0].Okfs_DB;
 
-                    #endregion
+                #endregion
 
-                    #region ObosoblPodr
+                #region ObosoblPodr
 
-                    NewSubjectRF1 = repImport.Rows10[1].SubjectRF_DB;
-                    NewJurLico1 = repImport.Rows10[1].JurLico_DB;
-                    NewShortJurLico1 = repImport.Rows10[1].ShortJurLico_DB;
-                    NewJurLicoAddress1 = repImport.Rows10[1].JurLicoAddress_DB;
-                    NewJurLicoFactAddress1 = repImport.Rows10[1].JurLicoFactAddress_DB;
-                    NewGradeFIO1 = repImport.Rows10[1].GradeFIO_DB;
-                    NewTelephone1 = repImport.Rows10[1].Telephone_DB;
-                    NewFax1 = repImport.Rows10[1].Fax_DB;
-                    NewEmail1 = repImport.Rows10[1].Email_DB;
-                    NewOkpo1 = repImport.Rows10[1].Okpo_DB;
-                    NewOkved1 = repImport.Rows10[1].Okved_DB;
-                    NewOkogu1 = repImport.Rows10[1].Okogu_DB;
-                    NewOktmo1 = repImport.Rows10[1].Oktmo_DB;
-                    NewInn1 = repImport.Rows10[1].Inn_DB;
-                    NewKpp1 = repImport.Rows10[1].Kpp_DB;
-                    NewOkopf1 = repImport.Rows10[1].Okopf_DB;
-                    NewOkfs1 = repImport.Rows10[1].Okfs_DB;
+                NewSubjectRF1 = repImport.Rows10[1].SubjectRF_DB;
+                NewJurLico1 = repImport.Rows10[1].JurLico_DB;
+                NewShortJurLico1 = repImport.Rows10[1].ShortJurLico_DB;
+                NewJurLicoAddress1 = repImport.Rows10[1].JurLicoAddress_DB;
+                NewJurLicoFactAddress1 = repImport.Rows10[1].JurLicoFactAddress_DB;
+                NewGradeFIO1 = repImport.Rows10[1].GradeFIO_DB;
+                NewTelephone1 = repImport.Rows10[1].Telephone_DB;
+                NewFax1 = repImport.Rows10[1].Fax_DB;
+                NewEmail1 = repImport.Rows10[1].Email_DB;
+                NewOkpo1 = repImport.Rows10[1].Okpo_DB;
+                NewOkved1 = repImport.Rows10[1].Okved_DB;
+                NewOkogu1 = repImport.Rows10[1].Okogu_DB;
+                NewOktmo1 = repImport.Rows10[1].Oktmo_DB;
+                NewInn1 = repImport.Rows10[1].Inn_DB;
+                NewKpp1 = repImport.Rows10[1].Kpp_DB;
+                NewOkopf1 = repImport.Rows10[1].Okopf_DB;
+                NewOkfs1 = repImport.Rows10[1].Okfs_DB;
 
-                    #endregion
+                #endregion
 
-                    break;
-                }
-
+                break;
+            }
             case "2.0":
-                {
-                    NewOrganUprav = !string.IsNullOrEmpty(repImport.Rows20[0].OrganUprav_DB)
-                        ? repImport.Rows20[0].OrganUprav_DB
-                        : !string.IsNullOrEmpty(repImport.Rows20[1].OrganUprav_DB)
-                            ? repImport.Rows20[1].OrganUprav_DB
-                            : string.Empty;
+            {
+                NewOrganUprav = !string.IsNullOrEmpty(repImport.Rows20[0].OrganUprav_DB)
+                    ? repImport.Rows20[0].OrganUprav_DB
+                    : !string.IsNullOrEmpty(repImport.Rows20[1].OrganUprav_DB)
+                        ? repImport.Rows20[1].OrganUprav_DB
+                        : string.Empty;
 
-                    #region JurLico
+                #region JurLico
 
-                    NewSubjectRF0 = repImport.Rows20[0].SubjectRF_DB;
-                    NewJurLico0 = repImport.Rows20[0].JurLico_DB;
-                    NewShortJurLico0 = repImport.Rows20[0].ShortJurLico_DB;
-                    NewJurLicoAddress0 = repImport.Rows20[0].JurLicoAddress_DB;
-                    NewJurLicoFactAddress0 = repImport.Rows20[0].JurLicoFactAddress_DB;
-                    NewGradeFIO0 = repImport.Rows20[0].GradeFIO_DB;
-                    NewTelephone0 = repImport.Rows20[0].Telephone_DB;
-                    NewFax0 = repImport.Rows20[0].Fax_DB;
-                    NewEmail0 = repImport.Rows20[0].Email_DB;
-                    NewOkpo0 = repImport.Rows20[0].Okpo_DB;
-                    NewOkved0 = repImport.Rows20[0].Okved_DB;
-                    NewOkogu0 = repImport.Rows20[0].Okogu_DB;
-                    NewOktmo0 = repImport.Rows20[0].Oktmo_DB;
-                    NewInn0 = repImport.Rows20[0].Inn_DB;
-                    NewKpp0 = repImport.Rows20[0].Kpp_DB;
-                    NewOkopf0 = repImport.Rows20[0].Okopf_DB;
-                    NewOkfs0 = repImport.Rows20[0].Okfs_DB;
+                NewSubjectRF0 = repImport.Rows20[0].SubjectRF_DB;
+                NewJurLico0 = repImport.Rows20[0].JurLico_DB;
+                NewShortJurLico0 = repImport.Rows20[0].ShortJurLico_DB;
+                NewJurLicoAddress0 = repImport.Rows20[0].JurLicoAddress_DB;
+                NewJurLicoFactAddress0 = repImport.Rows20[0].JurLicoFactAddress_DB;
+                NewGradeFIO0 = repImport.Rows20[0].GradeFIO_DB;
+                NewTelephone0 = repImport.Rows20[0].Telephone_DB;
+                NewFax0 = repImport.Rows20[0].Fax_DB;
+                NewEmail0 = repImport.Rows20[0].Email_DB;
+                NewOkpo0 = repImport.Rows20[0].Okpo_DB;
+                NewOkved0 = repImport.Rows20[0].Okved_DB;
+                NewOkogu0 = repImport.Rows20[0].Okogu_DB;
+                NewOktmo0 = repImport.Rows20[0].Oktmo_DB;
+                NewInn0 = repImport.Rows20[0].Inn_DB;
+                NewKpp0 = repImport.Rows20[0].Kpp_DB;
+                NewOkopf0 = repImport.Rows20[0].Okopf_DB;
+                NewOkfs0 = repImport.Rows20[0].Okfs_DB;
 
-                    #endregion
+                #endregion
 
-                    #region ObosoblPodr
+                #region ObosoblPodr
 
-                    NewSubjectRF1 = repImport.Rows20[1].SubjectRF_DB;
-                    NewJurLico1 = repImport.Rows20[1].JurLico_DB;
-                    NewShortJurLico1 = repImport.Rows20[1].ShortJurLico_DB;
-                    NewJurLicoAddress1 = repImport.Rows20[1].JurLicoAddress_DB;
-                    NewJurLicoFactAddress1 = repImport.Rows20[1].JurLicoFactAddress_DB;
-                    NewGradeFIO1 = repImport.Rows20[1].GradeFIO_DB;
-                    NewTelephone1 = repImport.Rows20[1].Telephone_DB;
-                    NewFax1 = repImport.Rows20[1].Fax_DB;
-                    NewEmail1 = repImport.Rows20[1].Email_DB;
-                    NewOkpo1 = repImport.Rows20[1].Okpo_DB;
-                    NewOkved1 = repImport.Rows20[1].Okved_DB;
-                    NewOkogu1 = repImport.Rows20[1].Okogu_DB;
-                    NewOktmo1 = repImport.Rows20[1].Oktmo_DB;
-                    NewInn1 = repImport.Rows20[1].Inn_DB;
-                    NewKpp1 = repImport.Rows20[1].Kpp_DB;
-                    NewOkopf1 = repImport.Rows20[1].Okopf_DB;
-                    NewOkfs1 = repImport.Rows20[1].Okfs_DB;
+                NewSubjectRF1 = repImport.Rows20[1].SubjectRF_DB;
+                NewJurLico1 = repImport.Rows20[1].JurLico_DB;
+                NewShortJurLico1 = repImport.Rows20[1].ShortJurLico_DB;
+                NewJurLicoAddress1 = repImport.Rows20[1].JurLicoAddress_DB;
+                NewJurLicoFactAddress1 = repImport.Rows20[1].JurLicoFactAddress_DB;
+                NewGradeFIO1 = repImport.Rows20[1].GradeFIO_DB;
+                NewTelephone1 = repImport.Rows20[1].Telephone_DB;
+                NewFax1 = repImport.Rows20[1].Fax_DB;
+                NewEmail1 = repImport.Rows20[1].Email_DB;
+                NewOkpo1 = repImport.Rows20[1].Okpo_DB;
+                NewOkved1 = repImport.Rows20[1].Okved_DB;
+                NewOkogu1 = repImport.Rows20[1].Okogu_DB;
+                NewOktmo1 = repImport.Rows20[1].Oktmo_DB;
+                NewInn1 = repImport.Rows20[1].Inn_DB;
+                NewKpp1 = repImport.Rows20[1].Kpp_DB;
+                NewOkopf1 = repImport.Rows20[1].Okopf_DB;
+                NewOkfs1 = repImport.Rows20[1].Okfs_DB;
 
-                    #endregion
+                #endregion
 
-                    break;
-                }
+                break;
+            }
         }
 
         #endregion

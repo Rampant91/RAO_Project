@@ -5,9 +5,9 @@
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU;x86</Platforms>
     <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
-    <AssemblyVersion>1.2.3.18</AssemblyVersion>
-    <FileVersion>1.2.3.18</FileVersion>
-    <Version>1.2.3.18</Version>
+    <AssemblyVersion>1.2.3.21</AssemblyVersion>
+    <FileVersion>1.2.3.21</FileVersion>
+    <Version>1.2.3.21</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
@@ -129,6 +129,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Update="Views\GetSnkParams.axaml.cs">
+      <DependentUpon>GetSnkParams.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\ProgressBar\AnyTaskProgressBar.axaml.cs">
       <DependentUpon>AnyTaskProgressBar.axaml</DependentUpon>

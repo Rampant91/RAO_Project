@@ -1,13 +1,13 @@
-﻿using Models.CheckForm;
-using Models.Collections;
-using Models.Forms;
-using Models.Forms.Form1;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Models.CheckForm;
+using Models.Collections;
+using Models.Forms;
+using Models.Forms.Form1;
 
-namespace Client_App.Commands.SyncCommands.CheckForm;
+namespace Client_App.Commands.AsyncCommands.CheckForm;
 
 public abstract class CheckF12 : CheckBase
 {
@@ -178,7 +178,7 @@ public abstract class CheckF12 : CheckBase
 
     #region Check004
 
-    //Наличие строк дубликатов (графы 2-16)
+    //Наличие строк дубликатов (графы 2 - 16, 20)
     private static List<CheckError> Check_004(List<Form12> forms)
     {
         List<CheckError> result = new();
@@ -208,7 +208,8 @@ public abstract class CheckF12 : CheckBase
                                   && formToCompare.DocumentVid_DB == currentForm.DocumentVid_DB
                                   && comparator.Compare(formToCompare.DocumentNumber_DB, currentForm.DocumentNumber_DB) == 0
                                   && comparator.Compare(formToCompare.DocumentDate_DB, currentForm.DocumentDate_DB) == 0
-                                  && comparator.Compare(formToCompare.ProviderOrRecieverOKPO_DB, currentForm.ProviderOrRecieverOKPO_DB) == 0;
+                                  && comparator.Compare(formToCompare.ProviderOrRecieverOKPO_DB, currentForm.ProviderOrRecieverOKPO_DB) == 0
+                                  && comparator.Compare(formToCompare.PackNumber_DB, currentForm.PackNumber_DB) == 0;
                 if (!isDuplicate) continue;
                 hasDuplicate = true;
                 duplicatesLinesSet.Add(j + 1);
@@ -229,9 +230,9 @@ public abstract class CheckF12 : CheckBase
                 {
                     FormNum = "form_12",
                     Row = dupStrByGroups,
-                    Column = "2 - 16",
+                    Column = "2 - 16, 20",
                     Value = "",
-                    Message = $"Данные граф 2-16 в строках {dupStrByGroups} продублированы. " +
+                    Message = $"Данные граф 2 - 16, 20 в строках {dupStrByGroups} продублированы. " +
                               $"Следует проверить правильность предоставления данных."
                 });
             }

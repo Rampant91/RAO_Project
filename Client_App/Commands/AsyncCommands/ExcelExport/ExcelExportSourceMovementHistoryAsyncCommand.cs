@@ -56,19 +56,19 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         await FillExcelHeaders(excelPackage);
 
         progressBarVM.SetProgressBar(15, "Загрузка паспортов форм 1.1");
-        var pasUniqList11 = await GetPasUniqData11(db, cts);
+        var pasUniqList11 = await GetPasUniqData(db, "1.1", cts);
 
         progressBarVM.SetProgressBar(40, "Загрузка форм 1.1");
-        var filteredForm11 = await GetFilteredForm11(db, pasUniqList11, pasNum!, factoryNum!, cts);
+        var filteredForm11 = (await GetFilteredForm(db, pasUniqList11, "1.1", pasNum!, factoryNum!, cts)).Cast<Form11>();
 
         progressBarVM.SetProgressBar(50, "Заполнение строчек форм 1.1");
         await FillExcel_11(filteredForm11, excelPackage);
 
         progressBarVM.SetProgressBar(55, "Загрузка паспортов форм 1.5");
-        var pasUniqList15 = await GetPasUniqData15(db, cts);
+        var pasUniqList15 = await GetPasUniqData(db, "1.5", cts);
 
         progressBarVM.SetProgressBar(80, "Загрузка форм 1.5");
-        var filteredForm15 = await GetFilteredForm15(db, pasUniqList15, pasNum!, factoryNum!, cts);
+        var filteredForm15 = (await GetFilteredForm(db, pasUniqList15, "1.5", pasNum!, factoryNum!, cts)).Cast<Form15>();
 
         progressBarVM.SetProgressBar(90, "Заполнение строчек форм 1.5");
         await FillExcel_15(filteredForm15, excelPackage);
@@ -128,6 +128,8 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
     }
 
     #endregion
+
+    #region FillExcel
 
     #region FillExcel_11
 
@@ -556,115 +558,97 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
     }
 
     #endregion
+    #endregion
 
-    #region GetFilteredForm11
+    #region GetFilteredForm
 
     /// <summary>
-    /// Получение отфильтрованного списка форм отчётности 1.1.
+    /// Получение отфильтрованного списка форм отчётности 1.1/1.5.
     /// </summary>
     /// <param name="db">Модель БД.</param>
-    /// <param name="form11PasList">Список уникальных параметров паспортов.</param>
+    /// <param name="formPasList">Список уникальных параметров паспортов.</param>
+    /// <param name="formNum">Номер формы.</param>
     /// <param name="pasNum">Искомый номер паспорта.</param>
     /// <param name="factoryNum">Искомый заводской номер.</param>
     /// <param name="cts">Токен.</param>
-    /// <returns>Отфильтрованный список форм отчётности 1.1.</returns>
-    private static async Task<IEnumerable<Form11>> GetFilteredForm11(DBModel db, List<PasUniqDataDTO> form11PasList, string pasNum, string factoryNum, CancellationTokenSource cts)
+    /// <returns>Отфильтрованный список форм отчётности 1.1/1.5.</returns>
+    private static async Task<IEnumerable<Form1>> GetFilteredForm(DBModel db, List<PasUniqDataDTO> formPasList, string formNum, 
+        string pasNum, string factoryNum, CancellationTokenSource cts)
     {
-        List<Form11> filteredForm11 = [];
-        foreach (var form in form11PasList
-                    .Where(form11 => ComparePasParam(form11.PasNum + form11.FacNum, pasNum + factoryNum)))
+        List<Form1> filteredForm = [];
+        foreach (var form in formPasList
+                     .Where(form => ComparePasParam(form.PasNum + form.FacNum, pasNum + factoryNum)))
         {
-            filteredForm11.Add(await db.form_11
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(form11 => form11.Report).ThenInclude(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
-                .Include(form11 => form11.Report).ThenInclude(rep => rep.Rows11)
-                .FirstAsync(form11 => form11.Id == form.Id, cts.Token));
+            Form1 formToAdd = formNum switch
+            {
+                "1.1" => await db.form_11
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(form11 => form11.Report != null && form11.Report.Reports != null && form11.Report.Reports.Master_DB != null)
+                    .Include(form11 => form11.Report).ThenInclude(rep => rep!.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
+                    .Include(form11 => form11.Report).ThenInclude(rep => rep!.Rows11)
+                    .FirstAsync(form11 => form11.Id == form.Id, cts.Token),
+
+                "1.5" => await db.form_15
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Where(form15 => form15.Report != null && form15.Report.Reports != null && form15.Report.Reports.Master_DB != null)
+                    .Include(form15 => form15.Report).ThenInclude(rep => rep!.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
+                    .Include(form15 => form15.Report).ThenInclude(rep => rep!.Rows15)
+                    .FirstAsync(form15 => form15.Id == form.Id, cts.Token),
+
+                _ => throw new ArgumentOutOfRangeException(nameof(formNum), formNum, null)
+            };
+            filteredForm.Add(formToAdd);
         }
-        return filteredForm11;
+        return filteredForm;
     }
 
     #endregion
 
-    #region GetFilteredForm15
+    #region GetPasUniqData
 
     /// <summary>
-    /// Получение отфильтрованного списка форм отчётности 1.5.
+    /// Получение списка уникальных параметров паспортов для форм отчётности 1.1/1.5.
     /// </summary>
-    /// <param name="db">Модель БД.</param>
-    /// <param name="form15PasList">Список уникальных параметров паспортов.</param>
-    /// <param name="pasNum">Искомый номер паспорта.</param>
-    /// <param name="factoryNum">Искомый заводской номер.</param>
-    /// <param name="cts">Токен.</param>
-    /// <returns>Отфильтрованный список форм отчётности 1.5.</returns>
-    private static async Task<IEnumerable<Form15>> GetFilteredForm15(DBModel db, List<PasUniqDataDTO> form15PasList, string pasNum, string factoryNum, CancellationTokenSource cts)
-    {
-        List<Form15> filteredForm15 = [];
-        foreach (var form in form15PasList
-                     .Where(form15 => ComparePasParam(form15.PasNum + form15.FacNum, pasNum + factoryNum)))
-        {
-            filteredForm15.Add(await db.form_15
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(form15 => form15.Report).ThenInclude(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
-                .Include(form15 => form15.Report).ThenInclude(rep => rep.Rows15)
-                .FirstAsync(form15 => form15.Id == form.Id, cts.Token));
-        }
-        return filteredForm15;
-    }
-
-    #endregion
-
-    #region GetPasUniqData11
-
-    /// <summary>
-    /// Получение списка уникальных параметров паспортов для форм отчётности 1.1.
-    /// </summary>
+    /// <param name="formNum">Номер формы.</param>
     /// <param name="db">Модель БД.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Список уникальных параметров паспортов.</returns>
-    private static async Task<List<PasUniqDataDTO>> GetPasUniqData11(DBModel db, CancellationTokenSource cts)
+    private static async Task<List<PasUniqDataDTO>> GetPasUniqData(DBModel db, string formNum, CancellationTokenSource cts)
     {
-        return await db.ReportsCollectionDbSet
+        var query = db.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
-            .SelectMany(reps => reps.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.1")
-                .SelectMany(rep => rep.Rows11
-                    .Select(form11 =>
-                        new PasUniqDataDTO(form11.Id,
-                            form11.FactoryNumber_DB,
-                            form11.PassportNumber_DB))))
-            .ToListAsync(cts.Token);
-    }
+            .Include(x => x.DBObservable);
 
-    #endregion
+        return formNum switch
+        {
+            "1.1" => await query.Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+                .Where(x => x.DBObservable != null)
+                .SelectMany(reps => reps.Report_Collection
+                    .Where(rep => rep.FormNum_DB == "1.1")
+                    .SelectMany(rep => rep.Rows11
+                        .Select(form11 =>
+                            new PasUniqDataDTO(form11.Id,
+                                form11.FactoryNumber_DB,
+                                form11.PassportNumber_DB))))
+                .ToListAsync(cts.Token),
 
-    #region GetPasUniqData15
+            "1.5" => await query.Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
+                .Where(x => x.DBObservable != null)
+                .SelectMany(reps => reps.Report_Collection
+                    .Where(rep => rep.FormNum_DB == "1.5")
+                    .SelectMany(rep => rep.Rows15
+                        .Select(form15 =>
+                            new PasUniqDataDTO(form15.Id,
+                                form15.FactoryNumber_DB,
+                                form15.PassportNumber_DB))))
+                .ToListAsync(cts.Token),
 
-    /// <summary>
-    /// Получение списка уникальных параметров паспортов для форм отчётности 1.5.
-    /// </summary>
-    /// <param name="db">Модель БД.</param>
-    /// <param name="cts">Токен.</param>
-    /// <returns>Список уникальных параметров паспортов.</returns>
-    private static async Task<List<PasUniqDataDTO>> GetPasUniqData15(DBModel db, CancellationTokenSource cts)
-    {
-        return await db.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.Report_Collection).ThenInclude(x => x.Rows15)
-            .SelectMany(reps => reps.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.5")
-                .SelectMany(rep => rep.Rows15
-                    .Select(form15 =>
-                        new PasUniqDataDTO(form15.Id,
-                            form15.FactoryNumber_DB,
-                            form15.PassportNumber_DB))))
-            .ToListAsync(cts.Token);
+            _ => throw new NotImplementedException()
+        };
     }
 
     #endregion

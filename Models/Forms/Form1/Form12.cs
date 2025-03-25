@@ -881,7 +881,7 @@ public class Form12 : Form1
         Mass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 7].Value);
         CreatorOKPO_DB = Convert.ToString(worksheet.Cells[row, 8].Value);
         CreationDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 9].Text);
-        SignedServicePeriod_DB = Convert.ToString(worksheet.Cells[row, 1].Value);
+        SignedServicePeriod_DB = Convert.ToString(worksheet.Cells[row, 10].Value);
         PropertyCode_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 11].Value), out var byteValue) ? byteValue : null;
         Owner_DB = Convert.ToString(worksheet.Cells[row, 12].Value);
         DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 13].Value), out byteValue) ? byteValue : null;

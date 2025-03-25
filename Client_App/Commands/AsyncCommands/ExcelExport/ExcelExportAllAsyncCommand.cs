@@ -340,8 +340,6 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
                     $"Загрузка отчётов {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value}");
             }
             await FillExcel(formNums, repsWithRows, excelPackage);
-
-            repsWithRows.ClearAll();    // Выгрузка ObservableCollection из памяти
         }
     }
 

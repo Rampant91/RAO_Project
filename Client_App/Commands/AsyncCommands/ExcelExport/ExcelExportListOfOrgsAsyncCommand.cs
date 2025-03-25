@@ -659,7 +659,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
             .Include(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
             .Include(reps => reps.Master_DB).ThenInclude(x => x.Rows20)
             .Include(reps => reps.Report_Collection)
-            .Where(reps => reps.DBObservableId != null)
+            .Where(reps => reps.DBObservable != null)
             .ToListAsync(cts.Token);
     }
 
@@ -680,7 +680,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
             .AsSplitQuery()
             .AsQueryable()
             .Include(x => x.DBObservable)
-            .Where(x => x.DBObservableId != null)
+            .Where(x => x.DBObservable != null)
             .CountAsync(cts.Token);
 
         if (countReports == 0)

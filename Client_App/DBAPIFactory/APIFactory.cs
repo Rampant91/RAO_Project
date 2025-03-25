@@ -82,13 +82,9 @@ public static partial class EssenceMethods
         #endregion
     }
 
-    public class APIFactory
+    public class APIFactory(Type unknown)
     {
-        public APIFactory(Type T)
-        {
-            InnerType = T;
-        }
-        public Type InnerType { get; set; }
+        public Type InnerType { get; set; } = unknown;
 
         #region GetObjectByType
 

@@ -1,15 +1,14 @@
-﻿using DynamicData;
-using Models.CheckForm;
-using Models.Collections;
-using Models.Forms;
-using Models.Forms.Form1;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Models.CheckForm;
+using Models.Collections;
+using Models.Forms;
+using Models.Forms.Form1;
 
-namespace Client_App.Commands.SyncCommands.CheckForm;
+namespace Client_App.Commands.AsyncCommands.CheckForm;
 
 public abstract class CheckF17 : CheckBase
 {
@@ -67,7 +66,7 @@ public abstract class CheckF17 : CheckBase
     public static List<CheckError> Check_Total(Reports reps, Report rep)
     {
         var currentFormLine = 0;
-        List<CheckError> errorList = new();
+        List<CheckError> errorList = [];
         LoadDictionaries();
         var formsList = rep.Rows17.ToList<Form17>();
         var notes = rep.Notes.ToList<Note>();
@@ -75,8 +74,7 @@ public abstract class CheckF17 : CheckBase
         errorList.AddRange(Check_002(formsList));
         while (currentFormLine < formsList.Count)
         {
-            List<int> packLines = new();
-            packLines.Add(currentFormLine);
+            List<int> packLines = [currentFormLine];
             currentFormLine++;
             if (currentFormLine >= formsList.Count) break;
             while (string.IsNullOrWhiteSpace(formsList[currentFormLine].PackType_DB) || formsList[currentFormLine].PackType_DB.Trim() == "-")
@@ -3139,9 +3137,9 @@ public abstract class CheckF17 : CheckBase
 
     private static List<CheckError> Check_027_029(List<Form17> forms, List<int> lines)
     {
-        List<CheckError> result = new();
-        List<string> errorColumns = new();
-        List<string> nuclids = new();
+        List<CheckError> result = [];
+        List<string> errorColumns = [];
+        List<string> nuclids = [];
         foreach (var nuclid in lines
                      .Where(line => R
                          .Any(phEntry => phEntry["name"] == ReplaceNullAndTrim(forms[line].Radionuclids_DB).ToLower()))

@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Client_App.Resources.CustomComparers;
 using Models.CheckForm;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
 
-namespace Client_App.Commands.SyncCommands.CheckForm;
+namespace Client_App.Commands.AsyncCommands.CheckForm;
 
 public abstract class CheckF11 : CheckBase
 {
@@ -95,6 +97,8 @@ public abstract class CheckF11 : CheckBase
             errorList.AddRange(Check_069(formsList, currentFormLine));
             errorList.AddRange(Check_070(formsList, currentFormLine));
             errorList.AddRange(Check_071(formsList, currentFormLine));
+            errorList.AddRange(Check_072(formsList, currentFormLine));
+            errorList.AddRange(Check_073(formsList, currentFormLine));
             currentFormLine++;
         }
         var index = 0;
@@ -186,7 +190,7 @@ public abstract class CheckF11 : CheckBase
 
     #region Check004
 
-    //Наличие строк дубликатов (графы 2-19)
+    //Наличие строк дубликатов (графы 2 - 19, 23)
     private static List<CheckError> Check_004(List<Form11> forms)
     {
         List<CheckError> result = new();
@@ -219,7 +223,8 @@ public abstract class CheckF11 : CheckBase
                                   && formToCompare.DocumentVid_DB == currentForm.DocumentVid_DB
                                   && comparator.Compare(formToCompare.DocumentNumber_DB, currentForm.DocumentNumber_DB) == 0
                                   && comparator.Compare(formToCompare.DocumentDate_DB, currentForm.DocumentDate_DB) == 0
-                                  && comparator.Compare(formToCompare.ProviderOrRecieverOKPO_DB, currentForm.ProviderOrRecieverOKPO_DB) == 0;
+                                  && comparator.Compare(formToCompare.ProviderOrRecieverOKPO_DB, currentForm.ProviderOrRecieverOKPO_DB) == 0
+                                  && comparator.Compare(formToCompare.PackNumber_DB, currentForm.PackNumber_DB) == 0;
                 if (!isDuplicate) continue;
                 hasDuplicate = true;
                 duplicatesLinesSet.Add(j + 1);
@@ -240,9 +245,9 @@ public abstract class CheckF11 : CheckBase
                 {
                     FormNum = "form_11",
                     Row = dupStrByGroups,
-                    Column = "2 - 19",
+                    Column = "2 - 19, 23",
                     Value = string.Empty,
-                    Message = $"Данные граф 2-19 в строках {dupStrByGroups} продублированы. " +
+                    Message = $"Данные граф 2 - 19, 23 в строках {dupStrByGroups} продублированы. " +
                               $"Следует проверить правильность предоставления данных."
                 });
             }
@@ -1562,7 +1567,10 @@ public abstract class CheckF11 : CheckBase
                 var nuclidFromR = R.FirstOrDefault(x => x["name"] == nuclid);
                 if (nuclidFromR is null) continue;
                 var expFromR = ConvertStringToExponential(nuclidFromR["D"]);
-                if (decimal.TryParse(expFromR, out var value))
+                if (decimal.TryParse(ConvertStringToExponential(expFromR),
+                        NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
+                        CultureInfo.CreateSpecificCulture("ru-RU"),
+                        out var value))
                 {
                     dValueList.Add(decimal.Multiply(value, 1e12m));
                 }
@@ -2459,7 +2467,7 @@ public abstract class CheckF11 : CheckBase
         List<CheckError> result = new();
         string[] applicableOperationCodes =
         {
-            "21", "25", "27", "28", "29", "31", "32", "35", "37", "38", "39", 
+            "21", "25", "27", "28", "29", "31", "35", "37", "38", "39", 
             "61", "62", "81", "82", "83", "84", "85", "86", "87", "88"
         };
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
@@ -2578,6 +2586,117 @@ public abstract class CheckF11 : CheckBase
             });
         }
         return result;
+    }
+
+    #endregion
+
+    #region Check072
+
+    //Не пустое поле (колонка 23)
+    private static List<CheckError> Check_072(List<Form11> forms, int line)
+    {
+        List<CheckError> result = new();
+        var packNumber = ReplaceNullAndTrim(forms[line].PackNumber_DB);
+        var valid = !string.IsNullOrWhiteSpace(packNumber);
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line + 1).ToString(),
+                Column = "PackNumber_DB",
+                Value = packNumber,
+                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой."
+            });
+        }
+        return result;
+    }
+
+    #endregion
+
+    #region Check073
+
+    //Если значение из списка, то необходимо заполнить форму 1.2 (колонки 21 и 22)
+    private static List<CheckError> Check_073(List<Form11> forms, int line)
+    {
+        List<CheckError> result = new();
+        var packName = ReplaceNullAndTrim(forms[line].PackName_DB);
+        var packType = ReplaceNullAndTrim(forms[line].PackType_DB);
+
+        if (IOU11.Any(x => ReplaceSimilarCharsAndCheckToContains(x, packName)))
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line + 1).ToString(),
+                Column = "PackName_DB",
+                Value = packName,
+                Message = "Для данного наименования упаковки, должна быть заполнена форма 1.2 (информационное сообщение, не ошибка)."
+            });
+        }
+        else if (IOU11.Any(x => ReplaceSimilarCharsAndCheckToContains(x, packType)))
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line + 1).ToString(),
+                Column = "PackType_DB",
+                Value = packType,
+                Message = "Для данного типа упаковки, должна быть заполнена форма 1.2 (информационное сообщение, не ошибка)."
+            });
+        }
+        return result;
+    }
+
+    private static bool ReplaceSimilarCharsAndCheckToContains(string? str1, string? str2)
+    {
+        if (ReferenceEquals(str1, str2)) return true;
+
+        if (str1 is null || str2 is null) return false;
+
+        var snkRegex = new Regex(@"[\\/:*?""<>|.,_\-;:\s+]");
+
+        var tmp1 = snkRegex
+            .Replace(str1, "")
+            .ToLower()
+            .Replace('а', 'a')
+            .Replace('б', 'b')
+            .Replace('в', 'b')
+            .Replace('г', 'r')
+            .Replace('е', 'e')
+            .Replace('ё', 'e')
+            .Replace('к', 'k')
+            .Replace('м', 'm')
+            .Replace('н', 'h')
+            .Replace('о', 'o')
+            .Replace('0', 'o')
+            .Replace('р', 'p')
+            .Replace('с', 'c')
+            .Replace('т', 't')
+            .Replace('у', 'y')
+            .Replace('х', 'x');
+
+        var tmp2 = snkRegex
+            .Replace(str2, "")
+            .ToLower()
+            .Replace('а', 'a')
+            .Replace('б', 'b')
+            .Replace('в', 'b')
+            .Replace('г', 'r')
+            .Replace('е', 'e')
+            .Replace('ё', 'e')
+            .Replace('к', 'k')
+            .Replace('м', 'm')
+            .Replace('н', 'h')
+            .Replace('о', 'o')
+            .Replace('0', 'o')
+            .Replace('р', 'p')
+            .Replace('с', 'c')
+            .Replace('т', 't')
+            .Replace('у', 'y')
+            .Replace('х', 'x');
+
+        return tmp1.Contains(tmp2);
     }
 
     #endregion

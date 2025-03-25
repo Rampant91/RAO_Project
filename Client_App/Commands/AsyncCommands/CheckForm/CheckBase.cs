@@ -1,19 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Models.Forms;
-using OfficeOpenXml;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System;
+using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Models.CheckForm;
 using Models.Collections;
+using Models.Forms;
 using Models.Forms.Form1;
+using OfficeOpenXml;
 
-namespace Client_App.Commands.SyncCommands.CheckForm;
+namespace Client_App.Commands.AsyncCommands.CheckForm;
 
-public abstract class CheckBase
+public abstract class CheckBase : BaseAsyncCommand
 {
     #region Properties
     
@@ -24,6 +23,8 @@ public abstract class CheckBase
     private protected static List<Dictionary<string, string>> R = new();
 
     private protected static List<Dictionary<string, string>> Packs = new();
+
+    private protected static List<string> IOU11 = new();
 
     private protected static List<string> Orgs18 = new();
 
@@ -316,7 +317,7 @@ public abstract class CheckBase
 
             return span1.CompareTo(span2, StringComparison.OrdinalIgnoreCase);
 
-            // Old realization
+            // Old realisation
             //var strA = ReplaceNullAndTrim(x).ToLower();
             //var strB = ReplaceNullAndTrim(y).ToLower();
             //return string.CompareOrdinal(strA, strB);
@@ -337,6 +338,7 @@ public abstract class CheckBase
             OKSM_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"oksm.xlsx"));
 #endif
         }
+
         if (R.Count == 0)
         {
 #if DEBUG
@@ -345,6 +347,7 @@ public abstract class CheckBase
             R_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"R.xlsx"));
 #endif
         }
+
         if (Packs.Count == 0)
         {
 #if DEBUG
@@ -353,6 +356,7 @@ public abstract class CheckBase
             Packs_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Packs.xlsx"));
 #endif
         }
+
         if (Orgs18.Count == 0)
         {
 #if DEBUG
@@ -361,6 +365,7 @@ public abstract class CheckBase
             Orgs18_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Orgs_1.8.xlsx.xlsx"));
 #endif
         }
+
         if (HolidaysSpecific.Count == 0)
         {
 #if DEBUG
@@ -369,7 +374,36 @@ public abstract class CheckBase
             Holidays_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Holidays.xlsx"));
 #endif
         }
+
+        if (IOU11.Count == 0)
+        {
+#if DEBUG
+            IOU11_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "IOU11.xlsx"));
+#else
+            IOU11_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"IOU11.xlsx"));
+#endif
+        }
     }
+
+    #region IOU11_From_File
+
+    private static void IOU11_From_File(string filePath)
+    {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        if (!File.Exists(filePath)) return;
+        FileInfo excelImportFile = new(filePath);
+        var xls = new ExcelPackage(excelImportFile);
+        var worksheet = xls.Workbook.Worksheets["Лист1"];
+        var i = 1;
+        IOU11.Clear();
+        while (worksheet.Cells[i, 1].Text != string.Empty)
+        {
+            IOU11.Add(worksheet.Cells[i, 1].Text);
+            i++;
+        }
+    }
+
+    #endregion
 
     #region  HolidaysFromFile
 

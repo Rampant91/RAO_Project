@@ -1,14 +1,14 @@
-﻿using Models.CheckForm;
-using Models.Collections;
-using Models.Forms;
-using Models.Forms.Form1;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Models.CheckForm;
+using Models.Collections;
+using Models.Forms;
+using Models.Forms.Form1;
 
-namespace Client_App.Commands.SyncCommands.CheckForm;
+namespace Client_App.Commands.AsyncCommands.CheckForm;
 
 /// <summary>
 /// Проверка отчётов по форме 1.8. 
@@ -1334,6 +1334,7 @@ public abstract class CheckF18 : CheckBase
             const byte graphNumber = 18;
             var noteExists = CheckNotePresence(notes, line, graphNumber);
             var codeRao = ReplaceNullAndTrim(forms[line].CodeRAO_DB);
+            if (codeRao == string.Empty) continue;
 
             var massVolumeAndActivityExist = true;
             if (!(nuclidsExistT || nuclidsExistA || nuclidsExistB || nuclidsExistU))

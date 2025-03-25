@@ -20,8 +20,8 @@ public class Form2_Visual
     public static ChangeOrCreateVM tmpVM { get; set; }
 
     #region CreateButton
-    
-    public static Button CreateButton(string content, string thickness, int height, string commProp)
+
+    private static Button CreateButton(string content, string thickness, int height, string commProp)
     {
         return new Button
         {
@@ -37,8 +37,8 @@ public class Form2_Visual
     #endregion
 
     #region CreateToggleSwitch
-    
-    public static ToggleSwitch CreateToggleSwitch(string content, string thickness, int height, string commProp)
+
+    private static ToggleSwitch CreateToggleSwitch(string content, string thickness, int height, string commProp)
     {
         var a = new ToggleSwitch
         {
@@ -56,8 +56,8 @@ public class Form2_Visual
     #endregion
 
     #region CreateTextBox
-    
-    public static Cell CreateTextBox(string thickness, int height, string textProp, double width, INameScope scp, string _flag = "")
+
+    private static Cell CreateTextBox(string thickness, int height, string textProp, double width, INameScope scp, string _flag = "")
     {
         Cell textCell = new()
         {
@@ -109,8 +109,8 @@ public class Form2_Visual
     #endregion
 
     #region CreateTextBlock
-    
-    public static TextBlock CreateTextBlock(string margin, int height, string text, double width = 0)
+
+    private static TextBlock CreateTextBlock(string margin, int height, string text, double width = 0)
     {
         TextBlock tmp = null;
         if (width != 0)

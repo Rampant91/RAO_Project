@@ -144,6 +144,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
+                .Include(rep => rep.Reports).ThenInclude(reps => reps.DBObservable)
                 .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
                 .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows20)
                 .Include(rep => rep.Rows11.OrderBy(form => form.NumberInOrder_DB))
@@ -168,6 +169,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                 .Include(rep => rep.Rows211.OrderBy(form => form.NumberInOrder_DB))
                 .Include(rep => rep.Rows212.OrderBy(form => form.NumberInOrder_DB))
                 .Include(rep => rep.Notes.OrderBy(note => note.Order))
+                .Where(rep => rep.Reports != null && rep.Reports.DBObservable != null)
                 .FirstAsync(rep => rep.Id == repId, cts.Token);
         await rep.SortAsync();
         return rep;

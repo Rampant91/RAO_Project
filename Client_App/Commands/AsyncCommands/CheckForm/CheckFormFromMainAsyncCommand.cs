@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using Client_App.Commands.SyncCommands.CheckForm;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels;
 using DynamicData;
@@ -23,11 +23,30 @@ namespace Client_App.Commands.AsyncCommands.CheckForm;
 /// <returns>Открывает окно с отчётом об ошибках.</returns>
 public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
 {
+    public override async void Execute(object? parameter)
+    {
+        IsExecute = true;
+        try
+        {
+            await Task.Run(() => AsyncExecute(parameter));
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg);
+        }
+        IsExecute = false;
+    }
+
     public override async Task AsyncExecute(object? parameter)
     {
         if (parameter is not IKeyCollection collection) return;
         var par = collection.ToList<Report>().First();
         await using var db = new DBModel(StaticConfiguration.DBPath);
+
+        var cts = new CancellationTokenSource();
 
         #region GetReportFromDB
 
@@ -35,6 +54,7 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
             .AsNoTracking()
             .AsQueryable()
             .AsSplitQuery()
+            .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
             .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
             .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
             .Include(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
@@ -59,8 +79,9 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
             .Include(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Notes.OrderBy(x => x.Order))
-            .FirstOrDefaultAsync(x => x.Id == par.Id); 
-        
+            .Where(x => x.Reports != null && x.Reports.DBObservable != null)
+            .FirstOrDefaultAsync(x => x.Id == par.Id, cts.Token);
+
         #endregion
 
         if (rep is null) return;
@@ -77,6 +98,8 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
                 "1.6" => CheckF16.Check_Total(rep.Reports, rep),
                 "1.7" => CheckF17.Check_Total(rep.Reports, rep),
                 "1.8" => CheckF18.Check_Total(rep.Reports, rep),
+                "2.1" => await new CheckF21().AsyncExecute(rep),
+                "2.2" => await new CheckF22().AsyncExecute(rep),
                 _ => throw new NotImplementedException()
             });
         }
@@ -151,7 +174,7 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
             {
                 Desktop.Windows.First(x => x.Name == "FormCheckerWindow").Close();
             }
-            _ = new Views.CheckForm(new ChangeOrCreateVM(rep.FormNum_DB, rep), errorList);
+            await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(new ChangeOrCreateVM(rep.FormNum_DB, rep), errorList));
         }
     }
 }

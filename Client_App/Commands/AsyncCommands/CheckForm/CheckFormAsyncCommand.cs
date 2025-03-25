@@ -1,34 +1,53 @@
 ﻿using System;
-using Client_App.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using Client_App.Commands.AsyncCommands;
-using MessageBox.Avalonia.DTO;
-using Models.CheckForm;
 using Client_App.Interfaces.Logger;
+using Client_App.ViewModels;
+using MessageBox.Avalonia.DTO;
+using Microsoft.EntityFrameworkCore;
+using Models.CheckForm;
+using Models.DBRealization;
 
-namespace Client_App.Commands.SyncCommands.CheckForm;
+namespace Client_App.Commands.AsyncCommands.CheckForm;
 
 /// <summary>
 /// Проверяет открытую форму, активируется при нажатии кнопки "Проверить".
 /// </summary>
 /// <param name="changeOrCreateViewModel">Модель открытого отчёта.</param>
 /// <returns>Открывает окно с отчетом об ошибках.</returns>
-public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
+public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
-    public override bool CanExecute(object? parameter)
+    public override async void Execute(object? parameter)
     {
-        return true;
+        IsExecute = true;
+        try
+        {
+            await Task.Run(() => AsyncExecute(parameter));
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg);
+        }
+        IsExecute = false;
     }
+
+    public override bool CanExecute(object? parameter) => true;
 
     public override async Task AsyncExecute(object? parameter)
     {
+        var cts = new CancellationTokenSource();
+
         var reps = changeOrCreateViewModel.Storages;
         var rep = changeOrCreateViewModel.Storage;
 
+        await using var db = new DBModel(StaticConfiguration.DBPath);
         List<CheckError> result = [];
         try
         {
@@ -56,32 +75,38 @@ public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
                     result.AddRange(CheckF17.Check_Total(reps, rep));
                     break;
                 case "1.8":
-                {
-                    #region MessageCheckFailed
-
-                    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                        {
-                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                            ContentTitle = $"Проверка формы {rep.FormNum_DB}",
-                            ContentHeader = "Уведомление",
-                            ContentMessage = $"Функция проверки форм {rep.FormNum_DB} находится в режиме тестирования и может содержать ошибки.",
-                            MinWidth = 400,
-                            MinHeight = 150,
-                            
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(Desktop.MainWindow));
-
-                    #endregion
-
                     result.AddRange(CheckF18.Check_Total(reps, rep));
                     break;
-                }
+                case "2.1":
+                    var rep21 = await db.ReportCollectionDbSet
+                        .AsNoTracking()
+                        .AsQueryable()
+                        .AsSplitQuery()
+                        .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
+                        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                        .Include(x => x.Rows21.OrderBy(form => form.NumberInOrder_DB))
+                        .Include(x => x.Notes.OrderBy(note => note.Order))
+                        .Where(x => x.Reports != null && x.Reports.DBObservable != null)
+                    .FirstOrDefaultAsync(x => x.Id == rep.Id, cts.Token);
 
-                //case "1.9":
-                //    result.AddRange(CheckF19.Check_Total(reps, rep));
-                //    break;
+                    result.AddRange(await new CheckF21().AsyncExecute(rep21));
+                    break;
+                case "2.2":
+                    var rep22 = await db.ReportCollectionDbSet
+                        .AsNoTracking()
+                        .AsQueryable()
+                        .AsSplitQuery()
+                        .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
+                        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                        .Include(x => x.Rows22.OrderBy(form => form.NumberInOrder_DB))
+                        .Include(x => x.Notes.OrderBy(note => note.Order))
+                        .Where(x => x.Reports != null && x.Reports.DBObservable != null)
+                    .FirstOrDefaultAsync(x => x.Id == rep.Id, cts.Token);
+
+                    result.AddRange(await new CheckF22().AsyncExecute(rep22));
+                    break;
                 default:
                 {
                     #region MessageCheckFailed
@@ -156,7 +181,7 @@ public class CheckFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
             {
                 Desktop.Windows.First(x => x.Name == "FormCheckerWindow").Close();
             }
-            _ = new Views.CheckForm(changeOrCreateViewModel, result);
+            await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(changeOrCreateViewModel, result));
         }
     }
 }
