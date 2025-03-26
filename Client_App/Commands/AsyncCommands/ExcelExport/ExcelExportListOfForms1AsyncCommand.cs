@@ -31,19 +31,33 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelBaseAsyncCommand
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
-        progressBarVM.SetProgressBar(5, "Запрос пути сохранения", "Выгрузка в .xlsx", ExportType);
-        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
-        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+        progressBarVM.SetProgressBar(2, "Проверка параметров", "Выгрузка в .xlsx", ExportType);
+        var folderPath = await CheckAppParameter();
+        var isBackgroundCommand = folderPath != string.Empty;
 
-        progressBarVM.SetProgressBar(7, "Создание временной БД");
+        progressBarVM.SetProgressBar(5, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
         await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(11, "Подсчёт количества организаций");
+        progressBarVM.SetProgressBar(9, "Подсчёт количества организаций");
         await ReportsCountCheck(db, progressBar, cts);
 
+        progressBarVM.SetProgressBar(11, "Запрос пути сохранения", "Выгрузка в .xlsx", ExportType);
+        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
+        var (fullPath, openTemp) = !isBackgroundCommand
+            ? await ExcelGetFullPath(fileName, cts, progressBar)
+            : (Path.Combine(folderPath, $"{fileName}.xlsx"), true);
+
+        var count = 0;
+        while (File.Exists(fullPath))
+        {
+            fullPath = Path.Combine(folderPath, fileName + $"_{++count}.xlsx");
+        }
+
         progressBarVM.SetProgressBar(13, "Запрос периода");
-        var (startDate, endDate) = await InputDateRange(progressBar, cts);
+        var (startDate, endDate) = !isBackgroundCommand
+            ? await InputDateRange(progressBar, cts)
+            : (DateOnly.MinValue, DateOnly.MaxValue);
 
         progressBarVM.SetProgressBar(15, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath);
