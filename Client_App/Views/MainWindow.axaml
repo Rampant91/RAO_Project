@@ -225,7 +225,7 @@
                           Header="Радионуклиды отсутствующие в справочнике"/> 
                 -->
             </MenuItem>
-          <MenuItem FontSize="14" Header="Сервисы">
+          <MenuItem FontSize="14" Header="Сервис">
             <MenuItem Command="{Binding CalculatorOpenCommand}" Header="Калькулятор"/>
           </MenuItem>
         </Menu>

@@ -16,6 +16,10 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
 {
     private Task MainTask { get; set; }
 
+    private MainWindowVM VMDataContext { get; set; }
+
+    #region Constructor
+
     public OnStartProgressBarVM(IBackgroundLoader backgroundWorker)
     {
         ShowDialog = new Interaction<MainWindowVM, object>();
@@ -30,6 +34,10 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
             MainTask.Start();
         });
     }
+
+    #endregion
+
+    #region Properties
 
     private double _onStartProgressBar;
     public double OnStartProgressBar
@@ -55,7 +63,7 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    private MainWindowVM VMDataContext {get;set;}
+    #endregion
 
     private async Task Start()
     {
@@ -75,6 +83,10 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
         }
     }
 
+    #region BackgroundWork
+    
+    #region BackgroundWorkThenAppLaunchedWithOperParameter
+
     /// <summary>
     /// Команды, выполняющиеся автоматически при запуске программы с ключом "-p" (оперативная отчётность).
     /// </summary>
@@ -87,6 +99,10 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
         await new ExcelExportAllAsyncCommand().AsyncExecute(this);
     }
 
+    #endregion
+
+    #region BackgroundWorkThenAppLaunchedWithYearParameter
+
     /// <summary>
     /// Команды, выполняющиеся автоматически при запуске программы с ключом "-y" (годовая отчётность).
     /// </summary>
@@ -98,6 +114,10 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
         await new ExcelExportAllAsyncCommand().AsyncExecute(this);
     }
 
+    #endregion 
+    
+    #endregion
+
     private void OnVMPropertyChanged(object sender,PropertyChangedEventArgs args)
     {
         if(args.PropertyName==nameof(OnStartProgressBar))
@@ -107,7 +127,6 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
     }
 
     public Interaction<MainWindowVM, object> ShowDialog { get; private set; }
-
 
     #region INotifyPropertyChanged
 

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Client_App.Resources;
 using Client_App.Resources.CustomComparers;
 using Models.Collections;
 

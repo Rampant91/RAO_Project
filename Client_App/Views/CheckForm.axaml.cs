@@ -5,7 +5,7 @@ using Models.CheckForm;
 
 namespace Client_App.Views;
 
-public partial class CheckForm : BaseWindow<CheckFormVM>
+public class CheckForm : BaseWindow<CheckFormVM>
 {
     public CheckForm() { }
     public CheckForm(ChangeOrCreateVM changeOrCreateVM,List<CheckError> checkError)

@@ -1,12 +1,9 @@
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Client_App.ViewModels;
-using Client_App.Views;
 
-namespace Client_App;
+namespace Client_App.Views;
 
-public partial class Calculator : BaseWindow<CalculatorVM>
+public class Calculator : BaseWindow<CalculatorVM>
 {
     public Calculator()
     {

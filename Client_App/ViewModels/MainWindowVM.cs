@@ -18,8 +18,6 @@ using Client_App.Commands.AsyncCommands.Hidden;
 using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Client_App.Service;
 
 namespace Client_App.ViewModels;
 
@@ -58,10 +56,6 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         }
     }
 
-    #endregion
-
-    #region DialogService
-    private readonly DialogService _dialogService;
     #endregion
 
     #region OnStartProgressBar
@@ -193,16 +187,14 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand MaxGraphsLength { get; set; }                   //  Excel -> Максимальное число символов в каждой колонке
     public ICommand SaveReports { get; set; }                       //  Сохраняет текущую базу, используется только для сохранения комментария формы
     //public ICommand UnaccountedRad { get; set; }                    //  Радионуклиды, отсутствующие в справочнике
-    public RelayCommand CalculatorOpenCommand { get; set; }
-
+    public ICommand CalculatorOpenCommand { get; set; }
+    
     #endregion
 
     #region Constructor
 
     public MainWindowVM()
     {
-        _dialogService = new DialogService();
-
         AddForm = new AddFormAsyncCommand();
         AddReports = new AddReportsAsyncCommand();
         ChangeForm = new ChangeFormAsyncCommand();
@@ -218,7 +210,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         MaxGraphsLength = new MaxGraphsLengthAsyncCommand();
         SaveReports = new SaveReportsAsyncCommand();
         //UnaccountedRad = new UnaccountedRadAsyncCommand(); 
-        CalculatorOpenCommand = new RelayCommand(CalculatorOpen);
+        CalculatorOpenCommand = new CalculatorOpenAsyncCommand();
     }
 
     #endregion
@@ -240,9 +232,4 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
-
-    private void CalculatorOpen()
-    {
-        _dialogService.ShowDialogAsync();
-    }
 }
