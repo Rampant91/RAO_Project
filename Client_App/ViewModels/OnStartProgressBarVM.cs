@@ -6,6 +6,7 @@ using ReactiveUI;
 using System.Reactive.Linq;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.ExcelExport;
+using Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
 using Client_App.Interfaces.BackgroundLoader;
 using Client_App.Interfaces.Logger;
 using Client_App.Properties;
