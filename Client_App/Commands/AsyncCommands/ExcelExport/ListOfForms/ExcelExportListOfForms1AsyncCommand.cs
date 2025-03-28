@@ -41,7 +41,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelExportListOfFormsBaseAsy
         await using var db = new DBModel(tmpDbPath);
 
         progressBarVM.SetProgressBar(9, "Подсчёт количества организаций");
-        await ReportsCountCheck(db, progressBar, cts);
+        await ReportsCountCheck(db, "1.0", progressBar, cts);
 
         progressBarVM.SetProgressBar(11, "Запрос пути сохранения", "Выгрузка в .xlsx", ExportType);
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
@@ -408,53 +408,6 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelExportListOfFormsBaseAsy
             }
         }
         return (startDate, endDate);
-    }
-
-    #endregion
-
-    #region ReportsCountCheck
-
-    /// <summary>
-    /// Подсчёт количества организаций. При количестве равном 0, выводится сообщение, операция завершается.
-    /// </summary>
-    /// <param name="db">Модель БД.</param>
-    /// <param name="progressBar">Окно прогрессбара.</param>
-    /// <param name="cts">Токен.</param>
-    private static async Task ReportsCountCheck(DBModel db, AnyTaskProgressBar? progressBar, CancellationTokenSource cts)
-    {
-        var countReports = await db.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.DBObservable)
-            .Include(x => x.Master_DB)
-            .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "1.0")
-            .CountAsync(cts.Token);
-
-        if (countReports == 0)
-        {
-            #region MessageRepsNotFound
-
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
-                    ContentHeader = "Уведомление",
-                    ContentMessage =
-                        "Не удалось совершить выгрузку списка всех отчетов по форме 1 с указанием количества строк," +
-                        $"{Environment.NewLine}поскольку в текущей базе отсутствует отчетность по формам 1./",
-                    MinWidth = 400,
-                    MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(progressBar ?? Desktop.MainWindow));
-
-            #endregion
-
-            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-        }
     }
 
     #endregion
