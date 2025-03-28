@@ -116,7 +116,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelExportListOfFormsBaseAsy
     /// <param name="tupleLists">Список списков кортежей.</param>
     /// <param name="worksheet">Excel страница.</param>
     /// /// <returns>CompletedTask.</returns>
-    private async Task FillExcel(List<Reports> repsList, int minYear, int maxYear, List<List<Tuple<int, int>>> tupleLists,
+    private static async Task FillExcel(List<Reports> repsList, int minYear, int maxYear, List<List<Tuple<int, int>>> tupleLists,
         ExcelWorksheet worksheet)
     {
         var row = 2;

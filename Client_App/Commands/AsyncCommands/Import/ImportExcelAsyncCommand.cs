@@ -568,7 +568,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
     #region GetReportDataFromExcel
 
-    private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, ExcelWorksheet worksheet1, string formNumber, IReadOnlyList<string> timeCreate)
+    private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, ExcelWorksheet worksheet1, string formNumber, List<string> timeCreate)
     {
         var impRep = new Report
         {

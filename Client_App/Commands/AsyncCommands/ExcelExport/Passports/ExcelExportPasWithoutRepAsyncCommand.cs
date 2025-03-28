@@ -195,7 +195,7 @@ public partial class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncComman
     {
         List<string> pasNames = [];
         List<string[]> pasUniqParam = [];
-        pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
+        pasNames.AddRange(files.Select(file => file.Name[..^4]));
         pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
 
         ConcurrentBag<FileInfo> filesToRemove = [];
@@ -217,7 +217,7 @@ public partial class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncComman
                         pasParam[0] + pasParam[1] + pasParam[2] + pasParam[3] + pasParam[4])))
             {
                 var allFilesWithThisName = files.Where(file =>
-                    file.Name.Remove(file.Name.Length - 4) == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}");
+                    file.Name[..^4] == $"{pasParam[0]}#{pasParam[1]}#{pasParam[2]}#{pasParam[3]}#{pasParam[4]}");
                 foreach (var file in allFilesWithThisName)
                 {
                     filesToRemove.Add(file);

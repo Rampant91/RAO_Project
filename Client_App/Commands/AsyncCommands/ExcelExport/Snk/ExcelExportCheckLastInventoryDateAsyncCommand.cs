@@ -227,7 +227,7 @@ public class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseA
                 $"Проверено {currentRepNum} из {repsDtoList.Count} дат инвентаризации",
                 "Проверка последней инвентаризации");
         });
-        return repsWithExpiredInventory.ToList();
+        return [.. repsWithExpiredInventory];
     }
 
     #endregion

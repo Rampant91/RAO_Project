@@ -18,7 +18,7 @@ using Client_App.Resources.CustomComparers;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
-public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
+public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 {
     #region Properties
 
@@ -1370,7 +1370,7 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
     
     private protected static bool SerialNumbersIsEmpty(string? pasNum, string? facNum)
     {
-        var regex = new Regex("[-᠆‐‑‒–—―⸺⸻－﹘﹣－]");
+        var regex = MyRegex();
         var num1 = (pasNum ?? string.Empty)
             .ToLower()
             .Replace(" ", "")
@@ -1434,6 +1434,9 @@ public abstract class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
             .Replace('х', 'x')
             .ToLower();
     }
+
+    [GeneratedRegex("[-᠆‐‑‒–—―⸺⸻－﹘﹣－]")]
+    private static partial Regex MyRegex();
 
     #endregion
 

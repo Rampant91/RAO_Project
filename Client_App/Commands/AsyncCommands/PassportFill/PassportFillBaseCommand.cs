@@ -401,8 +401,8 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
                     { "2", "негорючие" },
                 };
 
-                List<string> codeRao7Valid = new() { "0", "1", "2", "3", "4", "9" };
-                List<string> codeRao7Naliv = new() { "2", "3", "4", "9" };
+                List<string> codeRao7Valid = ["0", "1", "2", "3", "4", "9"];
+                List<string> codeRao7Naliv = ["2", "3", "4", "9"];
                 var codeRao2TextExists = codeRao2Dict.TryGetValue(codeRao2 ?? string.Empty, out var codeRao2Text);
                 var codeRao8TextExists = codeRao8Dict.TryGetValue(codeRao8 ?? string.Empty, out var codeRao8Text);
                 var codeRao910TextExists = codeRao910Dict.TryGetValue(codeRao910 ?? string.Empty, out var codeRao910Text);
@@ -514,15 +514,15 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
     private static List<Dictionary<string, string>> R_Populate_From_File(string filePath)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        List<Dictionary<string, string>> R = new();
-        if (!File.Exists(filePath)) return R;
+        List<Dictionary<string, string>> r = [];
+        if (!File.Exists(filePath)) return r;
         FileInfo excelImportFile = new(filePath);
         var xls = new ExcelPackage(excelImportFile);
         var worksheet = xls.Workbook.Worksheets["Лист1"];
         var i = 2;
         while (worksheet.Cells[i, 1].Text != string.Empty)
         {
-            R.Add(new Dictionary<string, string>
+            r.Add(new Dictionary<string, string>
             {
                 {"name", worksheet.Cells[i, 1].Text},
                 {"value", worksheet.Cells[i, 5].Text},
@@ -536,12 +536,12 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
                 {"OSPORB_Solid", worksheet.Cells[i, 22].Text},
                 {"OSPORB_Liquid", worksheet.Cells[i, 23].Text}
             });
-            if (string.IsNullOrWhiteSpace(R[^1]["D"]) || !double.TryParse(R[^1]["D"], out var val1) || val1 < 0)
+            if (string.IsNullOrWhiteSpace(r[^1]["D"]) || !double.TryParse(r[^1]["D"], out var val1) || val1 < 0)
             {
-                R[^1]["D"] = double.MaxValue.ToString(CultureInfo.CreateSpecificCulture("ru-RU"));
+                r[^1]["D"] = double.MaxValue.ToString(CultureInfo.CreateSpecificCulture("ru-RU"));
             }
             i++;
         }
-        return R;
+        return r;
     }
 }

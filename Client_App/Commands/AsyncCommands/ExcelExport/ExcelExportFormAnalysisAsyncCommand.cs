@@ -241,14 +241,14 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
         {
             case "2.1":
                 t = rep[rep.FormNum_DB].ToList<IKey>().Where(x => ((Form21)x).Sum_DB || ((Form21)x).SumGroup_DB);
-                if (rep[rep.FormNum_DB].ToList<IKey>().Any() && !t.Any())
+                if (rep[rep.FormNum_DB].ToList<IKey>().Count != 0 && !t.Any())
                 {
                     t = rep[rep.FormNum_DB].ToList<IKey>();
                 }
                 break;
             case "2.2":
                 t = rep[rep.FormNum_DB].ToList<IKey>().Where(x => ((Form22)x).Sum_DB || ((Form22)x).SumGroup_DB);
-                if (rep[rep.FormNum_DB].ToList<IKey>().Any() && !t.Any())
+                if (rep[rep.FormNum_DB].ToList<IKey>().Count != 0 && !t.Any())
                 {
                     t = rep[rep.FormNum_DB].ToList<IKey>();
                 }

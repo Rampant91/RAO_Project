@@ -198,7 +198,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
     #region ProcessSpravochniks
     
     /// <summary>
-    /// Инициаоизация справочников
+    /// Инициализация справочников
     /// </summary>
     /// <returns></returns>
     private static Task ProcessSpravochniks()

@@ -8,6 +8,8 @@
     xmlns:type="clr-namespace:Client_App.Tools.ConverterType"
     xmlns:vm="using:Client_App.ViewModels"
     Title="{Binding Current_Db, Mode=OneWay}"
+    d:DesignHeight="600"
+    d:DesignWidth="800"
     Width="{Binding Source={x:Type type:Width}, Converter={tools:RatioConverter}, ConverterParameter='0.75', FallbackValue='600', Mode=OneWay}"
     Height="{Binding Source={x:Type type:Height}, Converter={tools:RatioConverter}, ConverterParameter='0.8', FallbackValue='800', Mode=OneWay}"
     MinWidth="200"
@@ -226,11 +228,9 @@
                 -->
             </MenuItem>
 
-            <!--
             <MenuItem FontSize="14" Header="Сервис">
                 <MenuItem Command="{Binding CalculatorOpenCommand}" Header="Калькулятор"/>
             </MenuItem> 
-            -->
         </Menu>
 
         <Panel x:Name="MainPanel"

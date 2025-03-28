@@ -150,7 +150,7 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
     /// </summary>
     /// <param name="excelPackage">Excel пакет.</param>
     /// <param name="date">Дата, на которую формируется СНК.</param>
-    private async Task<ExcelWorksheet> FillExcelHeaders(ExcelPackage excelPackage, DateOnly date)
+    private static async Task<ExcelWorksheet> FillExcelHeaders(ExcelPackage excelPackage, DateOnly date)
     {
         var worksheet = excelPackage.Workbook.Worksheets.Add($"СНК на {date.ToShortDateString()}");
 

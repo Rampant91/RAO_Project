@@ -754,10 +754,10 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     .Select(unit => unit.Value.First()));
 
                 // Добавляем в словарь СНК текущую дату инвентаризации и СНК на эту дату.
-                unitInStockByDateDictionary.Add(inventoryDate, unitInStockDtoList.ToList());
+                unitInStockByDateDictionary.Add(inventoryDate, [.. unitInStockDtoList]);
 
                 // Добавляем в словарь ошибок текущую дату и список ошибок на эту дату.
-                inventoryErrorsByDateDictionary.Add(inventoryDate, errorsDtoList.ToList());
+                inventoryErrorsByDateDictionary.Add(inventoryDate, [.. errorsDtoList]);
 
                 currentInventoryDateIndex++;
 
@@ -1022,10 +1022,10 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
             }
 
             // Добавляем в словарь СНК текущую дату инвентаризации и СНК на эту дату.
-            unitInStockByDateDictionary.Add(inventoryDate, unitInStockDtoList.ToList());
+            unitInStockByDateDictionary.Add(inventoryDate, [.. unitInStockDtoList]);
 
             // Добавляем в словарь ошибок текущую дату и список ошибок на эту дату.
-            inventoryErrorsByDateDictionary.Add(inventoryDate, errorsDtoList.ToList());
+            inventoryErrorsByDateDictionary.Add(inventoryDate, [.. errorsDtoList]);
 
             currentInventoryDateIndex++;
         }
