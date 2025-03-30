@@ -4,7 +4,7 @@ namespace Models.Interfaces;
 
 public interface IKeyCollection
 {
-    void Add<T1>(T1 obj) where T1:class,IKey;
+    void Add<T1>(T1 obj) where T1 : class, IKey;
     void Remove<T1>(T1 obj) where T1 : class, IKey;
     void RemoveAt<T1>(int obj) where T1 : class, IKey;
     void AddRange<T1>(IEnumerable<T1> obj) where T1 : class, IKey;

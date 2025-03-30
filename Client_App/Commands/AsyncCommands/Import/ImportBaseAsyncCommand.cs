@@ -16,9 +16,9 @@ using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.Forms;
-using Client_App.Resources;
 using Avalonia.Threading;
 using Client_App.Controls.DataGrid.DataGrids;
+using Client_App.Resources.CustomComparers;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 

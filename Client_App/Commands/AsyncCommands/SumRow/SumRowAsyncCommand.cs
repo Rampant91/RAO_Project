@@ -12,20 +12,13 @@ using System.Globalization;
 namespace Client_App.Commands.AsyncCommands.SumRow;
 
 //  Группировка по наименованию в формах 2.1 и 2.2
-internal class SumRowAsyncCommand : BaseAsyncCommand
+internal class SumRowAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
-    private readonly ChangeOrCreateVM _ChangeOrCreateViewModel;
-
-    private Report Storage => _ChangeOrCreateViewModel.Storage;
+    private Report Storage => changeOrCreateViewModel.Storage;
 
     private bool IsSum
     {
-        set => _ChangeOrCreateViewModel.isSum = value;
-    }
-
-    public SumRowAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
-    {
-        _ChangeOrCreateViewModel = changeOrCreateViewModel;
+        set => changeOrCreateViewModel.isSum = value;
     }
 
     #region SumRow

@@ -15,9 +15,9 @@ using MessageBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.DTO;
 using static Client_App.Commands.AsyncCommands.Import.ImportJson.ImportJsonMethods;
-using static Client_App.Resources.StaticStringMethods;
 using Avalonia.Threading;
 using Client_App.Resources;
+using Client_App.Resources.CustomComparers;
 
 namespace Client_App.Commands.AsyncCommands.Import.ImportJson;
 
@@ -76,7 +76,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     ty1.Id = reps[0].Id;
                     var ty2 = FormCreator.Create(formNumReps);
                     ty2.NumberInOrder_DB = 2;
-                    ty2.Id = reps[1].Id;
+                    ty2.Id = reps.Length > 1 ? reps[1].Id : reps[0].Id;
 
                     var impReps = new Reports
                     {

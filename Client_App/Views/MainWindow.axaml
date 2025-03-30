@@ -121,7 +121,7 @@
                     CommandParameter="Executors"
                     Header="Список исполнителей"/>
                 <MenuItem Command="{Binding  ExcelExportCheckLastInventoryDate}"
-                          Header="Проверка последней инвентаризации"/>
+                          Header="Проверка последней инвентаризации"/> 
                 <MenuItem Header="Выбранная организация">
                     <MenuItem Header="Формы 1">
                         <MenuItem Command="{Binding ExcelExportForms}"
@@ -193,6 +193,7 @@
                     <MenuItem Command="{Binding ExcelExportAll}"
                               CommandParameter="SelectedOrg"
                               Header="Все формы"/>
+                    
                     <MenuItem Header="СНК на дату">
                         <MenuItem Command="{Binding  ExcelExportSnk}"
                                   CommandParameter="1.1"
@@ -212,14 +213,21 @@
                         <MenuItem Command="{Binding  ExcelExportCheckInventories}"
                                   CommandParameter="1.1"
                                   Header="Форма 1.1"/>
-                    </MenuItem>
+                        <!--<MenuItem Command="{Binding  ExcelExportCheckInventories}"
+                                  CommandParameter="1.3"
+                                  Header="Форма 1.3"/>-->
+                    </MenuItem> 
                 </MenuItem>
                 <!--
                 <MenuItem Command="{Binding MaxGraphsLength, Mode=OneTime}"
                           Header="Максимальная длинна граф"/>
                 <MenuItem Command="{Binding UnaccountedRad, Mode=OneTime}"
-                          Header="Радионуклиды отсутствующие в справочнике"/>-->
+                          Header="Радионуклиды отсутствующие в справочнике"/> 
+                -->
             </MenuItem>
+          <MenuItem FontSize="14" Header="Сервис">
+            <MenuItem Command="{Binding CalculatorOpenCommand}" Header="Калькулятор"/>
+          </MenuItem>
         </Menu>
         <Panel x:Name="MainPanel"
                Margin="5,5,5,5"

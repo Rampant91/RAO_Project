@@ -15,7 +15,7 @@ namespace Client_App.Commands.AsyncCommands;
 /// <summary>
 /// Найти и открыть соответствующий файл паспорта в сетевом хранилище.
 /// </summary>
-public class OpenPasAsyncCommand : BaseAsyncCommand
+public partial class OpenPasAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -46,8 +46,7 @@ public class OpenPasAsyncCommand : BaseAsyncCommand
         }
         
         var uniqPasName = $"{okpo}#{type}#{year}#{pasNum}#{factoryNum}.pdf";
-        uniqPasName = Regex.Replace(uniqPasName, "[\\\\/:*?\"<>|]", "_");
-        uniqPasName = Regex.Replace(uniqPasName, @"\s+", "");
+        uniqPasName = SpecialCharactersRegex().Replace(uniqPasName, "_").Replace(" ", "");
 
         var pasFolderPath = Settings.Default.PasFolderDefaultPath;
         if (!Path.Exists(pasFolderPath))
@@ -104,4 +103,7 @@ public class OpenPasAsyncCommand : BaseAsyncCommand
             #endregion
         }
     }
+
+    [GeneratedRegex("[\\\\/:*?\"<>|]")]
+    private static partial Regex SpecialCharactersRegex();
 }

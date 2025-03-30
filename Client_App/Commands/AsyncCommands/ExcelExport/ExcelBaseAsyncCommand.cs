@@ -56,7 +56,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     #region CheckAppParameter
 
     /// <summary>
-    /// Проверяет переданный параметр при запуске программы и если он имеет вид "-p, *folderPath*", то возвращает путь к папке.
+    /// Проверяет переданный параметр при запуске программы и если он имеет вид "-p/y, *folderPath*", то возвращает путь к папке.
     /// </summary>
     /// <returns>Полный путь к папке сохранения, если параметр заполнен, иначе пустую строку.</returns>
     private protected static async Task<string> CheckAppParameter()
@@ -64,7 +64,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         var parameters = Settings.Default.AppStartupParameters.Split(',');
         if (parameters.Length != 2 || !Directory.Exists(parameters[1])) return string.Empty;
         var key = parameters[0].Trim();
-        var folderPath = key is "-p"
+        var folderPath = key is "-p" or "-y"
             ? parameters[1]
             : string.Empty;
 
@@ -806,6 +806,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     #endregion
 
     #region InventoryCheck
+
 
     /// <summary>
     /// Проверка, является ли отчёт инвентаризационным. Если все строчки с кодом операции 10 - добавляет " (ИНВ)",

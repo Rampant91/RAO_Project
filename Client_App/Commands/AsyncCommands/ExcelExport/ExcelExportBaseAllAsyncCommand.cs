@@ -476,6 +476,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 30].Value = ConvertToExcelString(repForm.Subsidy_DB);
                 Worksheet.Cells[CurrentRow, 31].Value = ConvertToExcelString(repForm.FcpNumber_DB);
                 Worksheet.Cells[CurrentRow, 32].Value = ConvertToExcelString(repForm.ContractNumber_DB);
+                Worksheet.Cells[CurrentRow, 33].Value = StatusRaoToDescription(repForm.StatusRAO_DB);
                                             
                 #endregion
 
@@ -564,6 +565,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 33].Value = ConvertToExcelString(repForm.Subsidy_DB);
                 Worksheet.Cells[CurrentRow, 34].Value = ConvertToExcelString(repForm.FcpNumber_DB);
                 Worksheet.Cells[CurrentRow, 35].Value = ConvertToExcelString(repForm.ContractNumber_DB);
+                Worksheet.Cells[CurrentRow, 36].Value = StatusRaoToDescription(repForm.StatusRAO_DB);
                                             
                 #endregion
 
@@ -657,7 +659,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 38].Value = ConvertToExcelString(repForm.Subsidy_DB);
                 Worksheet.Cells[CurrentRow, 39].Value = ConvertToExcelString(repForm.FcpNumber_DB);
                 Worksheet.Cells[CurrentRow, 40].Value = ConvertToExcelString(repForm.ContractNumber_DB);
-                                                      
+                Worksheet.Cells[CurrentRow, 41].Value = StatusRaoToDescription(repForm.StatusRAO_DB);
+
                 #endregion
 
                 CurrentRow++;
@@ -746,7 +749,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 34].Value = ConvertToExcelString(repForm.Subsidy_DB);
                 Worksheet.Cells[CurrentRow, 35].Value = ConvertToExcelString(repForm.FcpNumber_DB);
                 Worksheet.Cells[CurrentRow, 36].Value = ConvertToExcelString(repForm.ContractNumber_DB);
-                                            
+                Worksheet.Cells[CurrentRow, 37].Value = StatusRaoToDescription(repForm.StatusRAO_DB);
+
                 #endregion
 
                 CurrentRow++;
@@ -896,6 +900,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelDouble(repForm.BetaGammaActivityOut_DB);
                 Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelDouble(repForm.AlphaActivityOut_DB);
                 Worksheet.Cells[CurrentRow, 29].Value = ConvertToExcelDouble(repForm.TransuraniumActivityOut_DB);
+                Worksheet.Cells[CurrentRow, 30].Value = StatusRaoToDescription(repForm.StatusRAOIn_DB);
+                Worksheet.Cells[CurrentRow, 31].Value = StatusRaoToDescription(repForm.StatusRAOout_DB);
 
                 #endregion
 
@@ -973,6 +979,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelString(repForm.MainRadionuclids_DB);
                 Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelString(repForm.Subsidy_DB);
                 Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelString(repForm.FcpNumber_DB);
+                Worksheet.Cells[CurrentRow, 27].Value = StatusRaoToDescription(repForm.StatusRAO_DB);
 
                 #endregion
 
@@ -1870,6 +1877,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[1, 30].Value = "Субсидия, %";
                 Worksheet.Cells[1, 31].Value = "Номер мероприятия ФЦП";
                 Worksheet.Cells[1, 32].Value = "Номер договора";
+                Worksheet.Cells[1, 33].Value = "Текст статуса РАО";
                 NotesHeaders1();   
         
                 #endregion
@@ -1915,6 +1923,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[1, 33].Value = "Субсидия, %";
                 Worksheet.Cells[1, 34].Value = "Номер мероприятия ФЦП";
                 Worksheet.Cells[1, 35].Value = "Номер договора";
+                Worksheet.Cells[1, 36].Value = "Текст статуса РАО";
                 NotesHeaders1();   
                 
                 #endregion
@@ -1965,6 +1974,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[1, 38].Value = "Субсидия, %";
                 Worksheet.Cells[1, 39].Value = "Номер мероприятия ФЦП";
                 Worksheet.Cells[1, 40].Value = "Номер договора";
+                Worksheet.Cells[1, 41].Value = "Текст статуса РАО";
                 NotesHeaders1();   
                 
                 #endregion
@@ -2011,6 +2021,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[1, 34].Value = "Субсидия, %";
                 Worksheet.Cells[1, 35].Value = "Номер мероприятия ФЦП";
                 Worksheet.Cells[1, 36].Value = "Номер договора";
+                Worksheet.Cells[1, 37].Value = "Текст статуса РАО";
                 NotesHeaders1();   
                 
                 #endregion
@@ -2076,6 +2087,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[1, 27].Value = "бета-, гамма-излучающие радионуклиды (исключая";
                 Worksheet.Cells[1, 28].Value = "альфа-излучающие радионуклиды (исключая";
                 Worksheet.Cells[1, 29].Value = "трансурановые радионуклиды";
+                Worksheet.Cells[1, 30].Value = "Текст статуса РАО для поступивших";
+                Worksheet.Cells[1, 31].Value = "Текст статуса РАО для переработанных";
                 NotesHeaders2(); 
 
                 #endregion
@@ -2112,6 +2125,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[1, 24].Value = "Основные радионуклиды";
                 Worksheet.Cells[1, 25].Value = "Субсидия, %";
                 Worksheet.Cells[1, 26].Value = "Номер мероприятия ФЦП";
+                Worksheet.Cells[1, 27].Value = "Текст статуса РАО";
                 NotesHeaders2(); 
         
                 #endregion
@@ -2418,6 +2432,31 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     }
 
     #endregion
+
+    #endregion
+
+    #region StatusRaoToDescription
+
+    /// <summary>
+    /// Преобразовывает статус РАО в его описание.
+    /// </summary>
+    /// <param name="status">Статус РАО.</param>
+    /// <returns>Описание статуса РАО.</returns>
+    private static string StatusRaoToDescription(string? status)
+    {
+        var tmp = status?.Trim();
+        return tmp switch
+        {
+            "1" => "накопленные",
+            "2" => "федеральные",
+            "3" => "собственность субъекта РФ",
+            "4" => "муниципальная собственность",
+            "6" => "бесхозяйные",
+            "9" => "прочая собственность",
+            "-" or "" or null => "-",
+            _ => "вновь образованные"
+        };
+    }
 
     #endregion
 }

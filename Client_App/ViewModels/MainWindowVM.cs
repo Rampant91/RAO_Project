@@ -17,10 +17,11 @@ using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.AsyncCommands.Hidden;
 using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.ExcelExport.Snk;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Client_App.ViewModels;
 
-public class MainWindowVM : BaseVM, INotifyPropertyChanged
+public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 {
     #region Current_Db
 
@@ -186,7 +187,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand MaxGraphsLength { get; set; }                   //  Excel -> Максимальное число символов в каждой колонке
     public ICommand SaveReports { get; set; }                       //  Сохраняет текущую базу, используется только для сохранения комментария формы
     //public ICommand UnaccountedRad { get; set; }                    //  Радионуклиды, отсутствующие в справочнике
-
+    public ICommand CalculatorOpenCommand { get; set; }
+    
     #endregion
 
     #region Constructor
@@ -207,7 +209,8 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ImportRaodb = new ImportRaodbAsyncCommand(this);
         MaxGraphsLength = new MaxGraphsLengthAsyncCommand();
         SaveReports = new SaveReportsAsyncCommand();
-        //UnaccountedRad = new UnaccountedRadAsyncCommand();
+        //UnaccountedRad = new UnaccountedRadAsyncCommand(); 
+        CalculatorOpenCommand = new CalculatorOpenAsyncCommand();
     }
 
     #endregion

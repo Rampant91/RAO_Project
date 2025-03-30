@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Client_App.Resources;
+namespace Client_App.Resources.CustomComparers;
 
 /// <summary>
 /// Компаратор для сравнения рег.№ и ОКПО при сортировке списка организаций.

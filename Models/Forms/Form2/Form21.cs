@@ -896,7 +896,7 @@ public partial class Form21 : Form2, IBaseColor
     {
         if (args.PropertyName == "Value")
         {
-            QuantityIn_DB = ((RamAccess<string>)value).Value;
+            QuantityIn_DB = ((RamAccess<string>)value).Value?.Trim();
         }
     }
 

@@ -181,7 +181,8 @@ public abstract class CheckF16 : CheckBase
                                   && formToCompare.DocumentVid_DB == currentForm.DocumentVid_DB
                                   && comparator.Compare(formToCompare.DocumentNumber_DB, currentForm.DocumentNumber_DB) == 0
                                   && comparator.Compare(formToCompare.DocumentDate_DB, currentForm.DocumentDate_DB) == 0
-                                  && comparator.Compare(formToCompare.ProviderOrRecieverOKPO_DB, currentForm.ProviderOrRecieverOKPO_DB) == 0;
+                                  && comparator.Compare(formToCompare.ProviderOrRecieverOKPO_DB, currentForm.ProviderOrRecieverOKPO_DB) == 0
+                                  && comparator.Compare(formToCompare.PackNumber_DB, currentForm.PackNumber_DB) == 0;
                 if (!isDuplicate) continue;
                 hasDuplicate = true;
                 duplicatesLinesSet.Add(j + 1);
@@ -202,9 +203,9 @@ public abstract class CheckF16 : CheckBase
                 {
                     FormNum = "form_16",
                     Row = dupStrByGroups,
-                    Column = "2 - 18",
+                    Column = "2 - 18, 25",
                     Value = "",
-                    Message = $"Данные граф 2-18 в строках {dupStrByGroups} продублированы. Следует проверить правильность предоставления данных."
+                    Message = $"Данные граф 2 - 18, 25 в строках {dupStrByGroups} продублированы. Следует проверить правильность предоставления данных."
                 });
             }
         }
@@ -231,9 +232,9 @@ public abstract class CheckF16 : CheckBase
                 Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") +
                           "Номера строк должны располагаться по порядку, без пропусков или дублирования номеров. " +
                           $"{Environment.NewLine}Для устранения ошибки воспользуйтесь либо кнопкой сортировки " +
-                          $"(строки будут отсортированы по №п/п, поменяв свою позицию), " +
+                          "(строки будут отсортированы по №п/п, поменяв свою позицию), " +
                           $"{Environment.NewLine}либо кнопкой выставить порядок строк " +
-                          $"(у строк будет изменён №п/п, но они при этом не поменяют свой порядок)."
+                          "(у строк будет изменён №п/п, но они при этом не поменяют свой порядок)."
             });
         }
         return result;
@@ -761,7 +762,7 @@ public abstract class CheckF16 : CheckBase
             .ToLower()
             .Replace(',', ';')
             .Split(';')
-            .Select(x => x.Trim())
+            .Select(x => x.Trim().Replace(" -", "-").Replace("- ", "-"))
             .ToHashSet();
         var halflife_max = 0.0f;
         var halflife_max_id = -1;
@@ -2150,7 +2151,7 @@ public abstract class CheckF16 : CheckBase
             {
                 FormNum = "form_16",
                 Row = forms[line].NumberInOrder_DB.ToString(),
-                Column = "Radionuclids_DB",
+                Column = "MainRadionuclids_DB",
                 Value = Convert.ToString(rads),
                 Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
                           "Заполните графу 9 «Основные радионуклиды»."
@@ -2173,7 +2174,7 @@ public abstract class CheckF16 : CheckBase
                 {
                     FormNum = "form_16",
                     Row = forms[line].NumberInOrder_DB.ToString(),
-                    Column = "Radionuclids_DB",
+                    Column = "MainRadionuclids_DB",
                     Value = rads,
                     Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
                               "Заполните графу 9 «Основные радионуклиды»"
@@ -2196,7 +2197,7 @@ public abstract class CheckF16 : CheckBase
                 {
                     FormNum = "form_16",
                     Row = forms[line].NumberInOrder_DB.ToString(),
-                    Column = "Radionuclids_DB",
+                    Column = "MainRadionuclids_DB",
                     Value = rads,
                     Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
                               "Формат ввода данных не соответствует приказу. " +
@@ -2225,19 +2226,33 @@ public abstract class CheckF16 : CheckBase
                 .Any(rad => R
                     .Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "т")))
         {
-            if (TryParseFloatExtended(tritiumActivity, out var activityFloatValue)
-                && activityFloatValue != 0)
+            if (TryParseFloatExtended(tritiumActivity, out var activityFloatValue))
             {
-                result.Add(new CheckError
+                if (activityFloatValue == 0)
                 {
-                    FormNum = "form_16",
-                    Row = forms[line].NumberInOrder_DB.ToString(),
-                    Column = "TritiumActivity_DB",
-                    Value = tritiumActivity,
-                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                              "Проверьте перечень основных радионуклидов: указана суммарная активность для трития, " +
-                              "но тритий не приведен в перечне радионуклидов."
-                });
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_16",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "TritiumActivity_DB",
+                        Value = tritiumActivity,
+                        Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                                  "В случае, если в радионуклидном составе отсутствует тритий, то в графу 10 необходимо заносить прочерк вместо нуля."
+                    });
+                }
+                else
+                {
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_16",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "TritiumActivity_DB",
+                        Value = tritiumActivity,
+                        Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                                  "Проверьте перечень основных радионуклидов: указана суммарная активность для трития, " +
+                                  "но тритий не приведен в перечне радионуклидов."
+                    });
+                }
             }
             return result;
         }
@@ -2310,19 +2325,34 @@ public abstract class CheckF16 : CheckBase
                 .Any(rad => R
                     .Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "б")))
         {
-            if (TryParseFloatExtended(betaActivity, out var activityFloatValue)
-                && activityFloatValue != 0)
+            if (TryParseFloatExtended(betaActivity, out var activityFloatValue))
             {
-                result.Add(new CheckError
+                if (activityFloatValue == 0)
                 {
-                    FormNum = "form_16",
-                    Row = forms[line].NumberInOrder_DB.ToString(),
-                    Column = "BetaGammaActivity_DB",
-                    Value = betaActivity,
-                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                              "Проверьте перечень основных радионуклидов: указана суммарная активность для бета-, " +
-                              "гамма-излучающих радионуклидов, но бета-, гамма-излучающие радионуклиды не приведены в перечне радионуклидов."
-                });
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_16",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "BetaGammaActivity_DB",
+                        Value = betaActivity,
+                        Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                                  "В случае, если в радионуклидном составе отсутствуют бета-, гамма-излучающие радионуклиды, " +
+                                  "то в графу 11 необходимо заносить прочерк вместо нуля."
+                    });
+                }
+                else
+                {
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_16",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "BetaGammaActivity_DB",
+                        Value = betaActivity,
+                        Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
+                                  "Проверьте перечень основных радионуклидов: указана суммарная активность для бета-, " +
+                                  "гамма-излучающих радионуклидов, но бета-, гамма-излучающие радионуклиды не приведены в перечне радионуклидов."
+                    });
+                }
             }
             return result;
         }
@@ -2395,19 +2425,34 @@ public abstract class CheckF16 : CheckBase
                 .Any(rad => R
                     .Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "а")))
         {
-            if (TryParseFloatExtended(activity, out var activityFloatValue)
-                && activityFloatValue != 0)
+            if (TryParseFloatExtended(activity, out var activityFloatValue))
             {
-                result.Add(new CheckError
+                if (activityFloatValue == 0)
                 {
-                    FormNum = "form_16",
-                    Row = forms[line].NumberInOrder_DB.ToString(),
-                    Column = "AlphaActivity_DB",
-                    Value = activity,
-                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                              "Проверьте перечень основных радионуклидов: указана суммарная активность для альфа-излучающих радионуклидов, " +
-                              "но альфа-излучающие радионуклиды не приведены в перечне радионуклидов."
-                });
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_16",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "AlphaActivity_DB",
+                        Value = activity,
+                        Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                                  "В случае, если в радионуклидном составе отсутствуют альфа-излучающие радионуклиды, " +
+                                  "то в графу 12 необходимо заносить прочерк вместо нуля."
+                    });
+                }
+                else 
+                { 
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_16",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "AlphaActivity_DB",
+                        Value = activity,
+                        Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                                  "Проверьте перечень основных радионуклидов: указана суммарная активность для альфа-излучающих радионуклидов, " +
+                                  "но альфа-излучающие радионуклиды не приведены в перечне радионуклидов."
+                    });
+                }
             }
             return result;
         }
@@ -2479,19 +2524,34 @@ public abstract class CheckF16 : CheckBase
                 .Any(rad => R
                     .Any(phEntry => phEntry["name"] == rad && phEntry["code"] == "у")))
         {
-            if (TryParseFloatExtended(activity, out var activityFloatValue)
-                && activityFloatValue != 0)
+            if (TryParseFloatExtended(activity, out var activityFloatValue))
             {
-                result.Add(new CheckError
+                if (activityFloatValue == 0)
                 {
-                    FormNum = "form_16",
-                    Row = forms[line].NumberInOrder_DB.ToString(),
-                    Column = "TransuraniumActivity_DB",
-                    Value = activity,
-                    Message = (checkNumPrint?$"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - ":"") + 
-                              "Проверьте перечень основных радионуклидов: указана суммарная активность для трансурановых радионуклидов, " +
-                              "но трансурановые радионуклиды не приведены в перечне радионуклидов."
-                });
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_16",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "TransuraniumActivity_DB",
+                        Value = activity,
+                        Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                                  "В случае, если в радионуклидном составе отсутствуют трансурановые радионуклиды, " +
+                                  "то в графу 13 необходимо заносить прочерк вместо нуля."
+                    });
+                }
+                else
+                {
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_16",
+                        Row = forms[line].NumberInOrder_DB.ToString(),
+                        Column = "TransuraniumActivity_DB",
+                        Value = activity,
+                        Message = (checkNumPrint ? $"Проверка {MethodBase.GetCurrentMethod()?.Name.Replace("Check_", "").TrimStart('0')} - " : "") +
+                                  "Проверьте перечень основных радионуклидов: указана суммарная активность для трансурановых радионуклидов, " +
+                                  "но трансурановые радионуклиды не приведены в перечне радионуклидов."
+                    });
+                }
             }
             return result;
         }

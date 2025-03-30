@@ -24,6 +24,8 @@ public abstract class CheckBase : BaseAsyncCommand
 
     private protected static List<Dictionary<string, string>> Packs = new();
 
+    private protected static List<string> IOU11 = new();
+
     private protected static List<string> Orgs18 = new();
 
     private protected static readonly bool DB_Ignore = true;
@@ -315,7 +317,7 @@ public abstract class CheckBase : BaseAsyncCommand
 
             return span1.CompareTo(span2, StringComparison.OrdinalIgnoreCase);
 
-            // Old realization
+            // Old realisation
             //var strA = ReplaceNullAndTrim(x).ToLower();
             //var strB = ReplaceNullAndTrim(y).ToLower();
             //return string.CompareOrdinal(strA, strB);
@@ -336,6 +338,7 @@ public abstract class CheckBase : BaseAsyncCommand
             OKSM_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"oksm.xlsx"));
 #endif
         }
+
         if (R.Count == 0)
         {
 #if DEBUG
@@ -344,6 +347,7 @@ public abstract class CheckBase : BaseAsyncCommand
             R_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"R.xlsx"));
 #endif
         }
+
         if (Packs.Count == 0)
         {
 #if DEBUG
@@ -352,6 +356,7 @@ public abstract class CheckBase : BaseAsyncCommand
             Packs_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Packs.xlsx"));
 #endif
         }
+
         if (Orgs18.Count == 0)
         {
 #if DEBUG
@@ -360,6 +365,7 @@ public abstract class CheckBase : BaseAsyncCommand
             Orgs18_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Orgs_1.8.xlsx.xlsx"));
 #endif
         }
+
         if (HolidaysSpecific.Count == 0)
         {
 #if DEBUG
@@ -368,7 +374,36 @@ public abstract class CheckBase : BaseAsyncCommand
             Holidays_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Holidays.xlsx"));
 #endif
         }
+
+        if (IOU11.Count == 0)
+        {
+#if DEBUG
+            IOU11_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "IOU11.xlsx"));
+#else
+            IOU11_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"IOU11.xlsx"));
+#endif
+        }
     }
+
+    #region IOU11_From_File
+
+    private static void IOU11_From_File(string filePath)
+    {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        if (!File.Exists(filePath)) return;
+        FileInfo excelImportFile = new(filePath);
+        var xls = new ExcelPackage(excelImportFile);
+        var worksheet = xls.Workbook.Worksheets["Лист1"];
+        var i = 1;
+        IOU11.Clear();
+        while (worksheet.Cells[i, 1].Text != string.Empty)
+        {
+            IOU11.Add(worksheet.Cells[i, 1].Text);
+            i++;
+        }
+    }
+
+    #endregion
 
     #region  HolidaysFromFile
 
