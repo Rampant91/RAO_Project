@@ -69,8 +69,7 @@ public class CheckF22 : CheckBase
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
         var rep = parameter as Report;
 
-        rep = null;
-        string? regno = "64025";
+        string? regno = regno0;
 
         if (rep is null && regno == null)
         {

@@ -107,6 +107,11 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ExcelExportCheckLastInventoryDate => new ExcelExportCheckLastInventoryDateAsyncCommand();
 
     /// <summary>
+    /// Excel -> Проверка наличия формы 2.2.
+    /// </summary>
+    public ICommand ExcelExportBalance22 => new ExcelExportBalance22AsyncCommand();
+
+    /// <summary>
     /// Выбранная форма -> Выгрузка Excel -> Для анализа
     /// </summary>
     public ICommand ExcelExportFormAnalysis => new ExcelExportFormAnalysisAsyncCommand();
