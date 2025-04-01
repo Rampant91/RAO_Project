@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Formats.Asn1;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
@@ -8,7 +7,6 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Media;
 using Avalonia.Threading;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
@@ -20,7 +18,6 @@ using Models.DBRealization;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using OfficeOpenXml;
-using OfficeOpenXml.Style;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -32,6 +29,7 @@ public class CheckF22 : CheckBase
     public override bool CanExecute(object? parameter) => true;
 
     private static string? dbWithForm1Prev = null;
+    private static string? dbWithForm2Prev = null;
 
     const string form15Plug = "!1,5";
     const string formGenericPlug = "!1,X";
@@ -63,13 +61,17 @@ public class CheckF22 : CheckBase
 
     #region MainCheck
 
-    public async Task<List<CheckError>> MainCheck(object? parameter, string? regno = null)
+    public async Task<List<CheckError>> MainCheck(object? parameter, string? regno0 = null)
     {
         var cts = new CancellationTokenSource();
         List<CheckError> errorList = [];
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
         var rep = parameter as Report;
+
+        rep = null;
+        string? regno = "64025";
+
         if (rep is null && regno == null)
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
@@ -78,12 +80,12 @@ public class CheckF22 : CheckBase
         var db = new DBModel(StaticConfiguration.DBPath);
         var db2 = new DBModel(StaticConfiguration.DBPath);
 
-        string form20RegNo = regno == null ? rep!.Reports.Master_DB.RegNoRep.Value : regno;
-        string form20Okpo = rep!.Reports.Master_DB.OkpoRep.Value;
+        string form20RegNo = regno ?? rep!.Reports.Master_DB.RegNoRep.Value;
+        string form20Okpo = rep?.Reports.Master_DB.OkpoRep.Value ?? string.Empty;
 
-        string repYear = rep.Year_DB;
-        string repFormNum = rep.FormNum_DB;
-        ObservableCollectionWithItemPropertyChanged<Form22> repRows22 = rep.Rows22;
+        string repYear = rep?.Year_DB ?? (DateTime.Now.Year - 1).ToString();
+        string repFormNum = rep?.FormNum_DB ?? string.Empty;
+        ObservableCollectionWithItemPropertyChanged<Form22> repRows22 = rep?.Rows22 ?? new();
 
         if (string.IsNullOrWhiteSpace(form20RegNo))
         {
@@ -91,7 +93,7 @@ public class CheckF22 : CheckBase
         }
 
         progressBarVM.SetProgressBar(5, "Поиск соответствующей формы 1.0",
-            $"Проверка {rep.Reports.Master_DB.RegNoRep.Value}_{rep.Reports.Master_DB.OkpoRep.Value}", "Проверка отчёта");
+            $"Проверка {form20RegNo}_{form20Okpo}", "Проверка отчёта");
 
         var repsWithForm1Exist = await db.ReportsCollectionDbSet
             .AsNoTracking()
@@ -264,6 +266,83 @@ public class CheckF22 : CheckBase
         int.TryParse(repYear, out yearRealCurrent);
         string yearPrevious = (yearRealCurrent - 1).ToString();
 
+
+        var repsWithForm2Exist = await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(reps => reps.DBObservable)
+            .Include(reps => reps.Master_DB).ThenInclude(report => report.Rows20)
+            .Where(reps => reps.DBObservable != null)
+            .AnyAsync(reps => reps.Master_DB.Rows10
+                .Any(form20 => form20.RegNo_DB == form20RegNo), cts.Token);
+
+
+        if (!repsWithForm2Exist)
+        {
+            var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
+
+            #region MessageFailedToOpenForm
+
+            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions = dbWithForm2Prev == null ?
+                    [
+                        new ButtonDefinition { Name = "Выбрать файл БД", IsDefault = true },
+                        new ButtonDefinition { Name = "Отмена", IsCancel = true }
+                    ] :
+                    [
+                        new ButtonDefinition { Name = "Использовать ранее выбранный файл БД", IsDefault = true },
+                        new ButtonDefinition { Name = "Выбрать файл БД", IsDefault = true },
+                        new ButtonDefinition { Name = "Отмена", IsCancel = true }
+                    ],
+                    CanResize = true,
+                    ContentTitle = "Проверка формы",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = "В текущей базе данных отсутствует форма 2.0 для проверяемой организации." +
+                                     $"{Environment.NewLine}Можете выбрать файл базы данных, содержащий форму 2.0 для данной организации " +
+                                     $"{Environment.NewLine}или операция проверки формы будет отменена.",
+                    MinWidth = 400,
+                    MinHeight = 200,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow));
+
+            #endregion
+
+            if (answer is not "Выбрать файл БД" and not "Использовать ранее выбранный файл БД")
+            {
+                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+            }
+
+            OpenFileDialog dial = new() { AllowMultiple = false };
+            var filter = new FileDialogFilter
+            {
+                Extensions = { "RAODB" }
+            };
+            dial.Filters = [filter];
+
+            string[]? dbWithForm2 = null;
+            string dbWithForm2FullPath;
+            if (answer is "Использовать ранее выбранный файл БД" && dbWithForm2Prev != null)
+            {
+                dbWithForm2 = [dbWithForm2Prev];
+            }
+            else
+            {
+                dbWithForm2 = await dial.ShowAsync(desktop.MainWindow);
+                if (dbWithForm2 is null)
+                {
+                    await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                }
+            }
+            dbWithForm2FullPath = dbWithForm2![0];
+            dbWithForm2Prev = dbWithForm2FullPath;
+            db2 = new DBModel(dbWithForm2FullPath);
+        }
+
+
         Reports? repsWithForm2 = await db2.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
@@ -274,6 +353,21 @@ public class CheckF22 : CheckBase
                 .Where(report =>
                     (report.FormNum_DB == "2.2")
                     && (report.Year_DB == yearPrevious)))
+            .ThenInclude(x => x.Rows22)
+            .Where(reps => reps.DBObservable != null)
+            .FirstOrDefaultAsync(reps => reps.Master_DB.Rows20
+                .Any(form20 => form20.RegNo_DB == form20RegNo), cts.Token);
+
+        Reports? repsWithForm2New = await db2.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(reps => reps.DBObservable)
+            .Include(reps => reps.Master_DB).ThenInclude(report => report.Rows20)
+            .Include(reps => reps.Report_Collection
+                .Where(report =>
+                    (report.FormNum_DB == "2.2")
+                    && (report.Year_DB == repYear)))
             .ThenInclude(x => x.Rows22)
             .Where(reps => reps.DBObservable != null)
             .FirstOrDefaultAsync(reps => reps.Master_DB.Rows20
