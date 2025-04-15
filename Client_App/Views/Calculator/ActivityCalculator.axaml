@@ -1,0 +1,42 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Client_App.ViewModels.Calculator"
+        d:DataContext="{d:DesignInstance Type=vm:ActivityCalculatorVM}"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Client_App.Views.Calculator.ActivityCalculator"
+        Height="600"
+        Width="800"
+        Title="ActivityCalculator">
+
+    <Grid ColumnDefinitions="*,2*">
+
+        <StackPanel 
+            Grid.Column="0" 
+            Margin="5,5,5,5" 
+            Orientation="Vertical">
+                
+            <TextBox Text="{Binding Path=StringSearch}"/>
+            <DataGrid 
+                AutoGenerateColumns="False"
+                CanUserResizeColumns="True"
+                CanUserReorderColumns="False"
+                Items="{Binding Path=Radionuclids}">
+
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        x:DataType="vm:Radionuclid"
+                        Width="auto"
+                        Header="Рег.№"
+                        IsReadOnly="True"
+                            ></DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+        <Grid Grid.Column="1">
+
+        </Grid>
+    </Grid>
+</Window>

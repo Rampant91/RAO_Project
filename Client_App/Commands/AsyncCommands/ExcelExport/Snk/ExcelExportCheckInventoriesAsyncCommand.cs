@@ -731,6 +731,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
         var currentInventoryDateIndex = 0;
         var comparer = new CustomSnkEqualityComparer();
+        var radsComparer = new CustomSnkRadionuclidsEqualityComparer();
         foreach (var inventoryDate in inventoryDatesList)
         {
             // Инициализируем список ошибок, сразу добавляя в него повторные операции инвентаризации.
@@ -792,7 +793,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                         .FirstOrDefault(x =>
                             comparer.Equals(x.PasNum, unit.PasNum)
                             && comparer.Equals(x.FacNum, unit.FacNum)
-                            && comparer.Equals(x.Radionuclids, unit.Radionuclids)
+                            && radsComparer.Equals(x.Radionuclids, unit.Radionuclids)
                             && comparer.Equals(x.Type, unit.Type)
                             && comparer.Equals(x.PackNumber, currentPackNumber));
 
@@ -992,7 +993,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     var unitInStock = unitInStockDtoList.FirstOrDefault(x =>
                         comparer.Equals(x.PasNum, unit.PasNum)
                         && comparer.Equals(x.FacNum, unit.FacNum)
-                        && comparer.Equals(x.Radionuclids, unit.Radionuclids)
+                        && radsComparer.Equals(x.Radionuclids, unit.Radionuclids)
                         && comparer.Equals(x.Type, unit.Type)
                         && comparer.Equals(x.PackNumber, currentPackNumber)
                         && x.Quantity == unit.Quantity);

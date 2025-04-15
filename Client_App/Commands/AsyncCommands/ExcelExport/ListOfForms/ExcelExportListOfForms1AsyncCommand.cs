@@ -153,8 +153,8 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelExportListOfFormsBaseAsy
                 worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
                 worksheet.Cells[row, 3].Value = reps.Master.ShortJurLicoRep.Value;
                 worksheet.Cells[row, 4].Value = rep.FormNum_DB;
-                worksheet.Cells[row, 5].Value = ConvertToExcelDate(rep.StartPeriod_DB, worksheet, row, 4);
-                worksheet.Cells[row, 6].Value = ConvertToExcelDate(rep.EndPeriod_DB, worksheet, row, 5);
+                worksheet.Cells[row, 5].Value = ConvertToExcelDate(rep.StartPeriod_DB, worksheet, row, 5);
+                worksheet.Cells[row, 6].Value = ConvertToExcelDate(rep.EndPeriod_DB, worksheet, row, 6);
                 worksheet.Cells[row, 7].Value = rep.CorrectionNumber_DB;
                 worksheet.Cells[row, 8].Value = tuple.Item2;
                 worksheet.Cells[row, 9].Value = InventoryCheck(repRowsCount: tuple.Item2, countCode10: tuple.Item3).TrimStart();

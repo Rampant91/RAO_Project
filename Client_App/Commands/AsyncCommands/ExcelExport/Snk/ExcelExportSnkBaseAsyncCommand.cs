@@ -455,6 +455,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         var groupedOperationList = await GetGroupedOperationList(unionOperationList);
 
         var comparer = new CustomSnkEqualityComparer();
+        var radsComparer = new CustomSnkRadionuclidsEqualityComparer();
         Dictionary<UniqueUnitDto, List<ShortFormDTO>> uniqueUnitWithAllOperationDictionary = [];
         foreach (var group in groupedOperationList)
         {
@@ -466,7 +467,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                     .Where(keyValuePair =>
                         comparer.Equals(keyValuePair.Key.PasNum, form.PasNum)
                         && comparer.Equals(keyValuePair.Key.FacNum, form.FacNum)
-                        && comparer.Equals(keyValuePair.Key.Radionuclids, form.Radionuclids)
+                        && radsComparer.Equals(keyValuePair.Key.Radionuclids, form.Radionuclids)
                         && comparer.Equals(keyValuePair.Key.Type, form.Type)
                         && (comparer.Equals(keyValuePair.Key.PackNumber, form.PackNumber) || form.OpCode is "53" or "54")
                         && (SerialNumbersIsEmpty(keyValuePair.Key.PasNum, keyValuePair.Key.FacNum)
@@ -756,13 +757,14 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         List<ShortFormDTO> inventoryDuplicateErrors = [];
 
         var comparer = new CustomSnkEqualityComparer();
+        var radsComparer = new CustomSnkRadionuclidsEqualityComparer();
         foreach (var form in inventoryFormsDtoList)
         {
             var matchingForm = newInventoryFormsDtoList.FirstOrDefault(x =>
                 x.OpDate == form.OpDate
                 && comparer.Equals(x.PasNum, form.PasNum)
                 && comparer.Equals(x.FacNum, form.FacNum)
-                && comparer.Equals(x.Radionuclids, form.Radionuclids)
+                && radsComparer.Equals(x.Radionuclids, form.Radionuclids)
                 && comparer.Equals(x.Type, form.Type)
                 && comparer.Equals(x.PackNumber, form.PackNumber));
 
@@ -1158,6 +1160,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentUnitNum = 1;
         var comparer = new CustomSnkEqualityComparer();
+        var radsComparer = new CustomSnkRadionuclidsEqualityComparer();
         foreach (var (unit, operations) in uniqueUnitWithAllOperationDictionary)
         {
             #region SerialNumEmpty
@@ -1192,7 +1195,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 var currentUnit = unitInStockList
                     .FirstOrDefault(x => comparer.Equals(x.PasNum, unit.PasNum)
                                          && comparer.Equals(x.FacNum, unit.FacNum)
-                                         && comparer.Equals(x.Radionuclids, unit.Radionuclids)
+                                         && radsComparer.Equals(x.Radionuclids, unit.Radionuclids)
                                          && comparer.Equals(x.Type, unit.Type)
                                          && comparer.Equals(x.PackNumber, unit.PackNumber));
 

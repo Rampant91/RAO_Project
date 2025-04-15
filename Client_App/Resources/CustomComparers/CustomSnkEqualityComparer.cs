@@ -7,11 +7,9 @@ public partial class CustomSnkEqualityComparer : IEqualityComparer<string>
 {
     public bool Equals(string? x, string? y)
     {
-        if (ReferenceEquals(x, y))
-            return true;
+        if (ReferenceEquals(x, y)) return true;
 
-        if (x is null || y is null)
-            return false;
+        if (x is null || y is null) return false;
 
         x = SnkRegex()
             .Replace(x, "")

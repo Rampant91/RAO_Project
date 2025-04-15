@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Formats.Asn1;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Media;
 using Avalonia.Threading;
+using Client_App.Interfaces.Logger;
+using Client_App.Properties;
+using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
@@ -821,6 +825,20 @@ public class CheckF22 : CheckBase
         progressBarVM.SetProgressBar(100, "Завершение проверки");
         await progressBar.CloseAsync();
 
+        #region Check22ExportSummary
+
+        if (Settings.Default.AppLaunchedInNorao)
+        {
+            var f22Expected = forms22ExpectedDict.Values.ToList();
+            var f22Real = forms22RealDict.Values.ToList();
+            var f221Expected = forms22ExpectedSubDict.Where(x => x.Key.Item5 == "1").Select(x => x.Value).ToList();
+            var f221Real = forms22RealSubDict.Where(x => x.Key.Item5 == "1").Select(x => x.Value).ToList();
+            var f22SubExpected = forms22ExpectedSubDict.Values.ToList();
+            var f22SubReal = forms22RealSubDict.Values.ToList();
+            await Check22ExportSummary(form20RegNo, f22Expected, f22Real, f221Expected, f221Real, f22SubExpected, f22SubReal, yearPrevious, yearRealCurrent.ToString());
+        }
+        #endregion
+
         return errorList;
     }
 
@@ -1468,4 +1486,552 @@ public class CheckF22 : CheckBase
 
     #endregion
 
+    #region Check22ExportSummary
+
+    private static async Task Check22ExportSummary(string regNum, List<Form22> f22Expected, List<Form22> f22Real, List<Form22> f221Expected, 
+        List<Form22> f221Real, List<Form22> f22SubExpected, List<Form22> f22SubReal, string yearPrev, string yearCur)
+    {
+        Dictionary<(string, string), Dictionary<string, double>> rows = new();
+        foreach (var form22 in f22Expected)
+        {
+            TryParseDoubleExtended(form22.VolumeOutOfPack_DB, out var doubleVolumeOutOfPack_DB);
+            TryParseDoubleExtended(form22.QuantityOZIII_DB, out var doubleQuantityOZIII_DB);
+            TryParseDoubleExtended(form22.MassOutOfPack_DB, out var doubleMassOutOfPack_DB);
+            TryParseDoubleExtended(form22.AlphaActivity_DB, out var doubleActivityA_DB);
+            TryParseDoubleExtended(form22.BetaGammaActivity_DB, out var doubleActivityBG_DB);
+            TryParseDoubleExtended(form22.TransuraniumActivity_DB, out var doubleActivityU_DB);
+            TryParseDoubleExtended(form22.TritiumActivity_DB, out var doubleActivityT_DB);
+            var doubleActivity_DB = doubleActivityA_DB + doubleActivityBG_DB + doubleActivityU_DB + doubleActivityT_DB;
+            Dictionary<string, double> values = new()
+            {
+                { "VolumeOutOfPack_DB_TE", doubleVolumeOutOfPack_DB },
+                { "QuantityOZIII_DB_TE", doubleQuantityOZIII_DB },
+                { "MassOutOfPack_DB_TE", doubleMassOutOfPack_DB },
+                { "Activity_DB_TE", doubleActivity_DB },
+            };
+            var key = (form22.StoragePlaceName_DB, form22.StoragePlaceCode_DB);
+            if (!rows.ContainsKey(key))
+            {
+                rows.Add(key, new Dictionary<string, double>());
+                rows[key].Add("VolumeOutOfPack_DB_TE", 0);
+                rows[key].Add("VolumeOutOfPack_DB_TR", 0);
+                rows[key].Add("MassOutOfPack_DB_TE", 0);
+                rows[key].Add("MassOutOfPack_DB_TR", 0);
+                rows[key].Add("Activity_DB_TE", 0);
+                rows[key].Add("Activity_DB_TR", 0);
+                rows[key].Add("VolumeOutOfPack_DB_1E", 0);
+                rows[key].Add("VolumeOutOfPack_DB_1R", 0);
+                rows[key].Add("VolumeOutOfPack_DB_SE", 0);
+                rows[key].Add("VolumeOutOfPack_DB_SR", 0);
+                rows[key].Add("QuantityOZIII_DB_TE", 0);
+                rows[key].Add("QuantityOZIII_DB_TR", 0);
+                rows[key].Add("QuantityOZIII_DB_1E", 0);
+                rows[key].Add("QuantityOZIII_DB_1R", 0);
+                rows[key].Add("QuantityOZIII_DB_SE", 0);
+                rows[key].Add("QuantityOZIII_DB_SR", 0);
+            }
+            rows[key]["VolumeOutOfPack_DB_TE"] += values["VolumeOutOfPack_DB_TE"];
+            rows[key]["QuantityOZIII_DB_TE"] += values["QuantityOZIII_DB_TE"];
+            rows[key]["MassOutOfPack_DB_TE"] += values["MassOutOfPack_DB_TE"];
+            rows[key]["Activity_DB_TE"] += values["Activity_DB_TE"];
+        }
+        foreach (var form22 in f22Real)
+        {
+            TryParseDoubleExtended(form22.VolumeOutOfPack_DB, out var doubleVolumeOutOfPack_DB);
+            TryParseDoubleExtended(form22.QuantityOZIII_DB, out var doubleQuantityOZIII_DB);
+            TryParseDoubleExtended(form22.MassOutOfPack_DB, out var doubleMassOutOfPack_DB);
+            TryParseDoubleExtended(form22.AlphaActivity_DB, out var doubleActivityA_DB);
+            TryParseDoubleExtended(form22.BetaGammaActivity_DB, out var doubleActivityBG_DB);
+            TryParseDoubleExtended(form22.TransuraniumActivity_DB, out var doubleActivityU_DB);
+            TryParseDoubleExtended(form22.TritiumActivity_DB, out var doubleActivityT_DB);
+            var doubleActivity_DB = doubleActivityA_DB + doubleActivityBG_DB + doubleActivityU_DB + doubleActivityT_DB;
+            Dictionary<string, double> values = new()
+            {
+                { "VolumeOutOfPack_DB_TR", doubleVolumeOutOfPack_DB },
+                { "QuantityOZIII_DB_TR", doubleQuantityOZIII_DB },
+                { "MassOutOfPack_DB_TR", doubleMassOutOfPack_DB },
+                { "Activity_DB_TR", doubleActivity_DB },
+            };
+            var key = (form22.StoragePlaceName_DB, form22.StoragePlaceCode_DB);
+            if (!rows.ContainsKey(key))
+            {
+                rows.Add(key, new Dictionary<string, double>());
+                rows[key].Add("VolumeOutOfPack_DB_TE", 0);
+                rows[key].Add("VolumeOutOfPack_DB_TR", 0);
+                rows[key].Add("MassOutOfPack_DB_TE", 0);
+                rows[key].Add("MassOutOfPack_DB_TR", 0);
+                rows[key].Add("Activity_DB_TE", 0);
+                rows[key].Add("Activity_DB_TR", 0);
+                rows[key].Add("VolumeOutOfPack_DB_1E", 0);
+                rows[key].Add("VolumeOutOfPack_DB_1R", 0);
+                rows[key].Add("VolumeOutOfPack_DB_SE", 0);
+                rows[key].Add("VolumeOutOfPack_DB_SR", 0);
+                rows[key].Add("QuantityOZIII_DB_TE", 0);
+                rows[key].Add("QuantityOZIII_DB_TR", 0);
+                rows[key].Add("QuantityOZIII_DB_1E", 0);
+                rows[key].Add("QuantityOZIII_DB_1R", 0);
+                rows[key].Add("QuantityOZIII_DB_SE", 0);
+                rows[key].Add("QuantityOZIII_DB_SR", 0);
+            }
+            rows[key]["VolumeOutOfPack_DB_TR"] += values["VolumeOutOfPack_DB_TR"];
+            rows[key]["QuantityOZIII_DB_TR"] += values["QuantityOZIII_DB_TR"];
+            rows[key]["MassOutOfPack_DB_TR"] += values["MassOutOfPack_DB_TR"];
+            rows[key]["Activity_DB_TR"] += values["Activity_DB_TR"];
+        }
+        foreach (var form22 in f221Expected)
+        {
+            TryParseDoubleExtended(form22.VolumeOutOfPack_DB, out var doubleVolumeOutOfPack_DB);
+            TryParseDoubleExtended(form22.QuantityOZIII_DB, out var doubleQuantityOZIII_DB);
+            Dictionary<string, double> values = new()
+            {
+                { "VolumeOutOfPack_DB_1E", doubleVolumeOutOfPack_DB },
+                { "QuantityOZIII_DB_1E", doubleQuantityOZIII_DB }
+            };
+            var key = (form22.StoragePlaceName_DB, form22.StoragePlaceCode_DB);
+            if (!rows.ContainsKey(key))
+            {
+                rows.Add(key, new Dictionary<string, double>());
+                rows[key].Add("VolumeOutOfPack_DB_TE", 0);
+                rows[key].Add("VolumeOutOfPack_DB_TR", 0);
+                rows[key].Add("MassOutOfPack_DB_TE", 0);
+                rows[key].Add("MassOutOfPack_DB_TR", 0);
+                rows[key].Add("Activity_DB_TE", 0);
+                rows[key].Add("Activity_DB_TR", 0);
+                rows[key].Add("VolumeOutOfPack_DB_1E", 0);
+                rows[key].Add("VolumeOutOfPack_DB_1R", 0);
+                rows[key].Add("VolumeOutOfPack_DB_SE", 0);
+                rows[key].Add("VolumeOutOfPack_DB_SR", 0);
+                rows[key].Add("QuantityOZIII_DB_TE", 0);
+                rows[key].Add("QuantityOZIII_DB_TR", 0);
+                rows[key].Add("QuantityOZIII_DB_1E", 0);
+                rows[key].Add("QuantityOZIII_DB_1R", 0);
+                rows[key].Add("QuantityOZIII_DB_SE", 0);
+                rows[key].Add("QuantityOZIII_DB_SR", 0);
+            }
+            rows[key]["VolumeOutOfPack_DB_1E"] += values["VolumeOutOfPack_DB_1E"];
+            rows[key]["QuantityOZIII_DB_1E"] += values["QuantityOZIII_DB_1E"];
+        }
+        foreach (var form22 in f221Real)
+        {
+            TryParseDoubleExtended(form22.VolumeOutOfPack_DB, out var doubleVolumeOutOfPack_DB);
+            TryParseDoubleExtended(form22.QuantityOZIII_DB, out var doubleQuantityOZIII_DB);
+            Dictionary<string, double> values = new()
+            {
+                { "VolumeOutOfPack_DB_1R", doubleVolumeOutOfPack_DB },
+                { "QuantityOZIII_DB_1R", doubleQuantityOZIII_DB }
+            };
+            var key = (form22.StoragePlaceName_DB, form22.StoragePlaceCode_DB);
+            if (!rows.ContainsKey(key))
+            {
+                rows.Add(key, new Dictionary<string, double>());
+                rows[key].Add("VolumeOutOfPack_DB_TE", 0);
+                rows[key].Add("VolumeOutOfPack_DB_TR", 0);
+                rows[key].Add("MassOutOfPack_DB_TE", 0);
+                rows[key].Add("MassOutOfPack_DB_TR", 0);
+                rows[key].Add("Activity_DB_TE", 0);
+                rows[key].Add("Activity_DB_TR", 0);
+                rows[key].Add("VolumeOutOfPack_DB_1E", 0);
+                rows[key].Add("VolumeOutOfPack_DB_1R", 0);
+                rows[key].Add("VolumeOutOfPack_DB_SE", 0);
+                rows[key].Add("VolumeOutOfPack_DB_SR", 0);
+                rows[key].Add("QuantityOZIII_DB_TE", 0);
+                rows[key].Add("QuantityOZIII_DB_TR", 0);
+                rows[key].Add("QuantityOZIII_DB_1E", 0);
+                rows[key].Add("QuantityOZIII_DB_1R", 0);
+                rows[key].Add("QuantityOZIII_DB_SE", 0);
+                rows[key].Add("QuantityOZIII_DB_SR", 0);
+            }
+            rows[key]["VolumeOutOfPack_DB_1R"] += values["VolumeOutOfPack_DB_1R"];
+            rows[key]["QuantityOZIII_DB_1R"] += values["QuantityOZIII_DB_1R"];
+        }
+        foreach (var form22 in f22SubExpected)
+        {
+            TryParseDoubleExtended(form22.VolumeOutOfPack_DB, out var doubleVolumeOutOfPack_DB);
+            TryParseDoubleExtended(form22.QuantityOZIII_DB, out var doubleQuantityOZIII_DB);
+            Dictionary<string, double> values = new()
+            {
+                { "VolumeOutOfPack_DB_SE", doubleVolumeOutOfPack_DB },
+                { "QuantityOZIII_DB_SE", doubleQuantityOZIII_DB }
+            };
+            var key = (form22.StoragePlaceName_DB, form22.StoragePlaceCode_DB);
+            if (!rows.ContainsKey(key))
+            {
+                rows.Add(key, new Dictionary<string, double>());
+                rows[key].Add("VolumeOutOfPack_DB_TE", 0);
+                rows[key].Add("VolumeOutOfPack_DB_TR", 0);
+                rows[key].Add("MassOutOfPack_DB_TE", 0);
+                rows[key].Add("MassOutOfPack_DB_TR", 0);
+                rows[key].Add("Activity_DB_TE", 0);
+                rows[key].Add("Activity_DB_TR", 0);
+                rows[key].Add("VolumeOutOfPack_DB_1E", 0);
+                rows[key].Add("VolumeOutOfPack_DB_1R", 0);
+                rows[key].Add("VolumeOutOfPack_DB_SE", 0);
+                rows[key].Add("VolumeOutOfPack_DB_SR", 0);
+                rows[key].Add("QuantityOZIII_DB_TE", 0);
+                rows[key].Add("QuantityOZIII_DB_TR", 0);
+                rows[key].Add("QuantityOZIII_DB_1E", 0);
+                rows[key].Add("QuantityOZIII_DB_1R", 0);
+                rows[key].Add("QuantityOZIII_DB_SE", 0);
+                rows[key].Add("QuantityOZIII_DB_SR", 0);
+            }
+            rows[key]["VolumeOutOfPack_DB_SE"] += values["VolumeOutOfPack_DB_SE"];
+            rows[key]["QuantityOZIII_DB_SE"] += values["QuantityOZIII_DB_SE"];
+        }
+        foreach (var form22 in f22SubReal)
+        {
+            TryParseDoubleExtended(form22.VolumeOutOfPack_DB, out var doubleVolumeOutOfPack_DB);
+            TryParseDoubleExtended(form22.QuantityOZIII_DB, out var doubleQuantityOZIII_DB);
+            Dictionary<string, double> values = new()
+            {
+                { "VolumeOutOfPack_DB_SR", doubleVolumeOutOfPack_DB },
+                { "QuantityOZIII_DB_SR", doubleQuantityOZIII_DB }
+            };
+            var key = (form22.StoragePlaceName_DB, form22.StoragePlaceCode_DB);
+            if (!rows.ContainsKey(key))
+            {
+                rows.Add(key, new Dictionary<string, double>());
+                rows[key].Add("VolumeOutOfPack_DB_TE", 0);
+                rows[key].Add("VolumeOutOfPack_DB_TR", 0);
+                rows[key].Add("MassOutOfPack_DB_TE", 0);
+                rows[key].Add("MassOutOfPack_DB_TR", 0);
+                rows[key].Add("Activity_DB_TE", 0);
+                rows[key].Add("Activity_DB_TR", 0);
+                rows[key].Add("VolumeOutOfPack_DB_1E", 0);
+                rows[key].Add("VolumeOutOfPack_DB_1R", 0);
+                rows[key].Add("VolumeOutOfPack_DB_SE", 0);
+                rows[key].Add("VolumeOutOfPack_DB_SR", 0);
+                rows[key].Add("QuantityOZIII_DB_TE", 0);
+                rows[key].Add("QuantityOZIII_DB_TR", 0);
+                rows[key].Add("QuantityOZIII_DB_1E", 0);
+                rows[key].Add("QuantityOZIII_DB_1R", 0);
+                rows[key].Add("QuantityOZIII_DB_SE", 0);
+                rows[key].Add("QuantityOZIII_DB_SR", 0);
+            }
+            rows[key]["VolumeOutOfPack_DB_SR"] += values["VolumeOutOfPack_DB_SR"];
+            rows[key]["QuantityOZIII_DB_SR"] += values["QuantityOZIII_DB_SR"];
+        }
+
+        var cts = new CancellationTokenSource();
+        var fileName = $"Таблица_{regNum}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
+        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts);
+
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        var xls = new ExcelPackage(new FileInfo(fullPath));
+        var wrksht1 = xls.Workbook.Worksheets.Add("Таблица");
+        wrksht1.Cells[1, 1].SetCellValue(0, 0, "№");
+        wrksht1.Cells[1, 2].SetCellValue(0, 0, "Наименование пункта хранения");
+        wrksht1.Cells[1, 3].SetCellValue(0, 0, "Код пункта хранения");
+        wrksht1.Cells[1, 4].SetCellValue(0, 0, $"Объем {yearPrev} (всего)");
+        wrksht1.Cells[1, 5].SetCellValue(0, 0, $"Объем {yearCur} (всего)");
+        wrksht1.Cells[1, 6].SetCellValue(0, 0, $"Масса {yearPrev} (всего)");
+        wrksht1.Cells[1, 7].SetCellValue(0, 0, $"Масса {yearCur} (всего)");
+        wrksht1.Cells[1, 8].SetCellValue(0, 0, $"Активность {yearPrev} (всего)");
+        wrksht1.Cells[1, 9].SetCellValue(0, 0, $"Активность {yearCur} (всего)");
+        wrksht1.Cells[1, 10].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearPrev} (всего)");
+        wrksht1.Cells[1, 11].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearCur} (всего)");
+        wrksht1.Cells[1, 12].SetCellValue(0, 0, $"Объем {yearPrev} (суб)");
+        wrksht1.Cells[1, 13].SetCellValue(0, 0, $"Объем {yearCur} (суб)");
+        wrksht1.Cells[1, 14].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearPrev} (суб)");
+        wrksht1.Cells[1, 15].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearCur} (суб)");
+        wrksht1.Cells[1, 16].SetCellValue(0, 0, $"Объем {yearPrev} (накоп)");
+        wrksht1.Cells[1, 17].SetCellValue(0, 0, $"Объем {yearCur} (накоп)");
+        wrksht1.Cells[1, 18].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearPrev} (накоп)");
+        wrksht1.Cells[1, 19].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearCur} (накоп)");
+        for (var i = 1; i <= 19; i++) wrksht1.Column(i).AutoFit();
+        wrksht1.Column(2).Width = wrksht1.Column(1).Width * 3;
+        wrksht1.Column(3).Width = wrksht1.Column(1).Width * 2;
+        wrksht1.Column(4).Width = wrksht1.Column(1).Width * 2;
+        wrksht1.Column(5).Width = wrksht1.Column(1).Width * 2;
+        wrksht1.Column(6).Width = wrksht1.Column(1).Width * 2;
+        wrksht1.Column(7).Width = wrksht1.Column(1).Width * 2;
+        wrksht1.Column(8).Width = wrksht1.Column(1).Width * 2;
+        wrksht1.Column(9).Width = wrksht1.Column(1).Width * 2;
+        wrksht1.Column(10).Width = wrksht1.Column(1).Width * 2;
+        wrksht1.Column(11).Width = wrksht1.Column(1).Width * 2;
+        wrksht1.Column(12).Width = wrksht1.Column(1).Width * 2;
+        wrksht1.Column(13).Width = wrksht1.Column(1).Width * 2;
+        wrksht1.Column(14).Width = wrksht1.Column(1).Width * 2;
+        wrksht1.Column(15).Width = wrksht1.Column(1).Width * 2;
+        wrksht1.Column(16).Width = wrksht1.Column(1).Width * 2;
+        wrksht1.Column(17).Width = wrksht1.Column(1).Width * 2;
+        wrksht1.Column(18).Width = wrksht1.Column(1).Width * 2;
+        wrksht1.Column(19).Width = wrksht1.Column(1).Width * 2;
+        var rowCurrent = 1;
+        for (var col = 1; col <= 19; col++)
+        {
+            wrksht1.Cells[rowCurrent, col].Style.WrapText = true;
+            wrksht1.Cells[rowCurrent, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+            wrksht1.Cells[rowCurrent, col].Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+        }
+        rowCurrent += 1;
+        foreach (var entry in rows)
+        {
+            wrksht1.Cells[rowCurrent, 1].SetCellValue(0, 0, rowCurrent - 1);
+            wrksht1.Cells[rowCurrent, 2].SetCellValue(0, 0, entry.Key.Item1);
+            wrksht1.Cells[rowCurrent, 3].SetCellValue(0, 0, entry.Key.Item2);
+            wrksht1.Cells[rowCurrent, 4].SetCellValue(0, 0, entry.Value["VolumeOutOfPack_DB_TE"]);
+            wrksht1.Cells[rowCurrent, 5].SetCellValue(0, 0, entry.Value["VolumeOutOfPack_DB_TR"]);
+            if (entry.Value["VolumeOutOfPack_DB_TE"].ToString("F5") != entry.Value["VolumeOutOfPack_DB_TR"].ToString("F5"))
+            {
+                //wrksht1.Cells[rowCurrent, 4, rowCurrent, 5].Style.Fill.BackgroundColor.SetColor(255, 224, 224, 192);
+                wrksht1.Cells[rowCurrent, 4, rowCurrent, 5].Style.Font.Bold = true;
+            }
+            wrksht1.Cells[rowCurrent, 6].SetCellValue(0, 0, entry.Value["MassOutOfPack_DB_TE"]);
+            wrksht1.Cells[rowCurrent, 7].SetCellValue(0, 0, entry.Value["MassOutOfPack_DB_TR"]);
+            if (entry.Value["MassOutOfPack_DB_TE"].ToString("F5") != entry.Value["MassOutOfPack_DB_TR"].ToString("F5"))
+            {
+                //wrksht1.Cells[rowCurrent, 4, rowCurrent, 5].Style.Fill.BackgroundColor.SetColor(255, 224, 224, 192);
+                wrksht1.Cells[rowCurrent, 6, rowCurrent, 7].Style.Font.Bold = true;
+            }
+            wrksht1.Cells[rowCurrent, 8].SetCellValue(0, 0, entry.Value["Activity_DB_TE"]);
+            wrksht1.Cells[rowCurrent, 9].SetCellValue(0, 0, entry.Value["Activity_DB_TR"]);
+            if (entry.Value["Activity_DB_TE"].ToString("F5") != entry.Value["Activity_DB_TR"].ToString("F5"))
+            {
+                //wrksht1.Cells[rowCurrent, 4, rowCurrent, 5].Style.Fill.BackgroundColor.SetColor(255, 224, 224, 192);
+                wrksht1.Cells[rowCurrent, 8, rowCurrent, 9].Style.Font.Bold = true;
+            }
+            wrksht1.Cells[rowCurrent, 10].SetCellValue(0, 0, entry.Value["QuantityOZIII_DB_TE"]);
+            wrksht1.Cells[rowCurrent, 11].SetCellValue(0, 0, entry.Value["QuantityOZIII_DB_TR"]);
+            if (entry.Value["QuantityOZIII_DB_TE"].ToString("F5") != entry.Value["QuantityOZIII_DB_TR"].ToString("F5"))
+            {
+                //wrksht1.Cells[rowCurrent, 6, rowCurrent, 7].Style.Fill.BackgroundColor.SetColor(255, 224, 224, 192);
+                wrksht1.Cells[rowCurrent, 10, rowCurrent, 11].Style.Font.Bold = true;
+            }
+            wrksht1.Cells[rowCurrent, 12].SetCellValue(0, 0, entry.Value["VolumeOutOfPack_DB_SE"]);
+            wrksht1.Cells[rowCurrent, 13].SetCellValue(0, 0, entry.Value["VolumeOutOfPack_DB_SR"]);
+            if (entry.Value["VolumeOutOfPack_DB_SE"].ToString("F5") != entry.Value["VolumeOutOfPack_DB_SR"].ToString("F5"))
+            {
+                //wrksht1.Cells[rowCurrent, 8, rowCurrent, 9].Style.Fill.BackgroundColor.SetColor(255, 224, 224, 192);
+                wrksht1.Cells[rowCurrent, 12, rowCurrent, 13].Style.Font.Bold = true;
+            }
+            wrksht1.Cells[rowCurrent, 14].SetCellValue(0, 0, entry.Value["QuantityOZIII_DB_SE"]);
+            wrksht1.Cells[rowCurrent, 15].SetCellValue(0, 0, entry.Value["QuantityOZIII_DB_SR"]);
+            if (entry.Value["QuantityOZIII_DB_SE"].ToString("F5") != entry.Value["QuantityOZIII_DB_SR"].ToString("F5"))
+            {
+                //wrksht1.Cells[rowCurrent, 10, rowCurrent, 11].Style.Fill.BackgroundColor.SetColor(255, 224, 224, 192);
+                wrksht1.Cells[rowCurrent, 14, rowCurrent, 15].Style.Font.Bold = true;
+            }
+            wrksht1.Cells[rowCurrent, 16].SetCellValue(0, 0, entry.Value["VolumeOutOfPack_DB_1E"]);
+            wrksht1.Cells[rowCurrent, 17].SetCellValue(0, 0, entry.Value["VolumeOutOfPack_DB_1R"]);
+            if (entry.Value["VolumeOutOfPack_DB_1E"].ToString("F5") != entry.Value["VolumeOutOfPack_DB_1R"].ToString("F5"))
+            {
+                //wrksht1.Cells[rowCurrent, 12, rowCurrent, 13].Style.Fill.BackgroundColor.SetColor(255, 224, 224, 192);
+                wrksht1.Cells[rowCurrent, 16, rowCurrent, 17].Style.Font.Bold = true;
+            }
+            wrksht1.Cells[rowCurrent, 18].SetCellValue(0, 0, entry.Value["QuantityOZIII_DB_1E"]);
+            wrksht1.Cells[rowCurrent, 19].SetCellValue(0, 0, entry.Value["QuantityOZIII_DB_1R"]);
+            if (entry.Value["QuantityOZIII_DB_1E"].ToString("F5") != entry.Value["QuantityOZIII_DB_1R"].ToString("F5"))
+            {
+                //wrksht1.Cells[rowCurrent, 14, rowCurrent, 15].Style.Fill.BackgroundColor.SetColor(255, 224, 224, 192);
+                wrksht1.Cells[rowCurrent, 18, rowCurrent, 19].Style.Font.Bold = true;
+            }
+            for (var col = 1; col <= 19; col++)
+            {
+                wrksht1.Cells[rowCurrent, col].Style.WrapText = true;
+                wrksht1.Cells[rowCurrent, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                wrksht1.Cells[rowCurrent, col].Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+            }
+            rowCurrent += 1;
+        }
+        await ExcelSaveAndOpen(xls, fullPath, openTemp, cts);
+    }
+
+    #endregion
+
+    #region ExcelGetFullPath
+
+    /// <summary>
+    /// Выводит сообщение, дающее выбор, открывать временную копию или сохранить файл.
+    /// </summary>
+    /// <param name="fileName">Имя файла.</param>
+    /// <param name="cts">Токен.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <returns>Полный путь до файла и флаг, нужно ли открывать временную копию.</returns>
+    private protected static async Task<(string fullPath, bool openTemp)> ExcelGetFullPath(string fileName, CancellationTokenSource cts,
+        AnyTaskProgressBar? progressBar = null)
+    {
+        #region MessageSaveOrOpenTemp
+
+        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions =
+                [
+                    new ButtonDefinition { Name = "Сохранить" },
+                    new ButtonDefinition { Name = "Открыть временную копию" }
+                ],
+                CanResize = true,
+                ContentTitle = "Выгрузка в Excel",
+                ContentHeader = "Уведомление",
+                ContentMessage = "Что бы вы хотели сделать с данной выгрузкой?",
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(Desktop.MainWindow));
+
+        #endregion
+
+        var fullPath = "";
+        var openTemp = res is "Открыть временную копию";
+
+        switch (res)
+        {
+            case "Открыть временную копию":
+            {
+                DirectoryInfo tmpFolder = new(Path.Combine(BaseVM.SystemDirectory, "RAO", "temp"));
+                var count = 0;
+
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + ".xlsx");
+                while (File.Exists(fullPath))
+                {
+                    fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{++count}.xlsx");
+                }
+
+                break;
+            }
+            case "Сохранить":
+            {
+                SaveFileDialog dial = new();
+                var filter = new FileDialogFilter
+                {
+                    Name = "Excel",
+                    Extensions = { "xlsx" }
+                };
+                dial.Filters.Add(filter);
+                dial.InitialFileName = fileName;
+                fullPath = await dial.ShowAsync(Desktop.MainWindow);
+                if (string.IsNullOrEmpty(fullPath)) await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                if (!fullPath.EndsWith(".xlsx")) fullPath += ".xlsx"; //В проводнике Linux в имя файла не подставляется расширение из фильтра, добавляю руками если его нет
+                if (File.Exists(fullPath))
+                {
+                    try
+                    {
+                        File.Delete(fullPath!);
+                    }
+                    catch
+                    {
+                        #region MessageFailedToSaveFile
+
+                        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                            {
+                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                ContentTitle = "Выгрузка в Excel",
+                                ContentHeader = "Ошибка",
+                                ContentMessage =
+                                    $"Не удалось сохранить файл по пути: {fullPath}" +
+                                    $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                                    $"{Environment.NewLine}и используется другим процессом.",
+                                MinWidth = 400,
+                                MinHeight = 150,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(Desktop.MainWindow));
+
+                        #endregion
+
+                        await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                    }
+                }
+
+                break;
+            }
+            default:
+            {
+                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                break;
+            }
+        }
+        return(fullPath, openTemp);
+    }
+
+    #endregion
+
+    #region ExcelSaveAndOpen
+
+    /// <summary>
+    /// Сохранить изменения в .xlsx и открыть временную копию при необходимости.
+    /// </summary>
+    /// <param name="excelPackage">Пакет данных .xlsx.</param>
+    /// <param name="fullPath">Полный путь к файлу .xlsx.</param>
+    /// <param name="openTemp">Флаг, открывать ли временную копию.</param>
+    /// <param name="cts">Токен.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <param name="isBackground">Признак выполнения команды в фоне.</param>
+    /// <returns>Открывает файл выгрузки в .xlsx.</returns>
+    private protected static async Task ExcelSaveAndOpen(ExcelPackage excelPackage, string fullPath, bool openTemp,
+        CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null, bool isBackground = false)
+    {
+        try
+        {
+            await excelPackage.SaveAsync(cancellationToken: cts.Token);
+        }
+        catch (ObjectDisposedException ex)
+        {
+            return;
+        }
+        catch (Exception ex)
+        {
+            #region MessageFailedToSaveFile
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = "Не удалось сохранить файл по указанному пути:" +
+                                     $"{Environment.NewLine}{fullPath}",
+                    MinWidth = 400,
+                    MinHeight = 175,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Warning(msg);
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+        if (isBackground) return;
+        if (openTemp)
+        {
+            Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
+        }
+        else
+        {
+            #region MessageExcelExportComplete
+
+            var answer =
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions =
+                    [
+                        new ButtonDefinition { Name = "Ок" },
+                        new ButtonDefinition { Name = "Открыть выгрузку" }
+                    ],
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "Выгрузка сохранена по пути:" +
+                                     $"{Environment.NewLine}{fullPath}",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            if (answer is "Открыть выгрузку")
+            {
+                Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
+            }
+        }
+    }
+
+    #endregion
 }

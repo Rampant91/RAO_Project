@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using ReactiveUI;
 using System.Reactive.Linq;
@@ -72,15 +73,19 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
         VMDataContext.PropertyChanged += OnVMPropertyChanged;
         await new InitializationAsyncCommand(VMDataContext).AsyncExecute(this);
 
-        if (Settings.Default.AppStartupParameters.Split(',')[0].Trim() is "-p")
+        if (Settings.Default.AppStartupParameters.Trim().Split(',').Any(x => x is "-p"))
         {
             await BackgroundWorkThenAppLaunchedWithOperParameter();
             Environment.Exit(0);
         }
-        else if (Settings.Default.AppStartupParameters.Split(',')[0].Trim() is "-y")
+        else if (Settings.Default.AppStartupParameters.Trim().Split(',').Any(x => x is "-y"))
         {
             await BackgroundWorkThenAppLaunchedWithYearParameter();
             Environment.Exit(0);
+        }
+        if (Settings.Default.AppStartupParameters.Trim().Split(',').Any(x => x is "-n"))
+        {
+            Settings.Default.AppLaunchedInNorao = true;
         }
     }
 
