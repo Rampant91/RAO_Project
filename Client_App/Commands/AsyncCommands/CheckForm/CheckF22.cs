@@ -431,7 +431,6 @@ public class CheckF22 : CheckBase
                             form22New = FormConvert(form, repYear);
                             if (form22New != null)
                             {
-                                //if (report.StartPeriod_DB == "28.06.2024" && form22New.NumberInOrder_DB == 3 && form22New.CodeRAO_DB == "20412200592") form22New.CodeRAO_DB = "21412200592";
                                 forms22MetadataBase.Add((form22New.FormNum_DB, $"{report.StartPeriod_DB} - {report.EndPeriod_DB}", form22New.NumberInOrder_DB.ToString()));
                                 forms22ExpectedBase.Add(form22New);
                             }
@@ -904,8 +903,8 @@ public class CheckF22 : CheckBase
         progressBarVM.SetProgressBar(100, "Завершение проверки");
         await progressBar.CloseAsync();
 
-        // super fun temporary function BEGINS HERE
-        #region TEMP_EXPORT_NUMBERS
+        #region Check22ExportSummary
+
         if (true)
         {
             var f22Expected = forms22ExpectedDict.Values.ToList();
@@ -914,10 +913,9 @@ public class CheckF22 : CheckBase
             var f221Real = forms22RealSubDict.Where(x => x.Key.Item5 == "1").Select(x => x.Value).ToList();
             var f22SubExpected = forms22ExpectedSubDict.Values.ToList();
             var f22SubReal = forms22RealSubDict.Values.ToList();
-            TEMP_EXPORT_NUMBERS(form20RegNo, f22Expected, f22Real, f221Expected, f221Real, f22SubExpected, f22SubReal, yearPrevious, yearRealCurrent.ToString());
+            Check22ExportSummary(form20RegNo, f22Expected, f22Real, f221Expected, f221Real, f22SubExpected, f22SubReal, yearPrevious, yearRealCurrent.ToString());
         }
         #endregion
-        // super fun temporary function ENDS HERE
 
         return errorList;
     }
@@ -1570,9 +1568,9 @@ public class CheckF22 : CheckBase
 
     #endregion
 
-    #region TEMP_EXPORT_NUMBERS
+    #region Check22ExportSummary
 
-    private void TEMP_EXPORT_NUMBERS(string regno, List<Form22> f22Expected, List<Form22> f22Real, List<Form22> f221Expected, List<Form22> f221Real, List<Form22> f22SubExpected, List<Form22> f22SubReal, string yearPrev, string yearCur)
+    private void Check22ExportSummary(string regno, List<Form22> f22Expected, List<Form22> f22Real, List<Form22> f221Expected, List<Form22> f221Real, List<Form22> f22SubExpected, List<Form22> f22SubReal, string yearPrev, string yearCur)
     {
 
         Dictionary<(string, string), Dictionary<string, double>> rows = new();
