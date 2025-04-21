@@ -42,7 +42,7 @@ public partial class RatioConverter : MarkupExtension, IValueConverter
                 //var scale = DisplayTools.GetScalingFactorOnWindows();
                 //var height = System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Height * par / scale);
                 //var width = System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Width * par / scale);
-                return isHeight
+                return isHeight 
                     ? height
                     : width;
             }
@@ -60,7 +60,9 @@ public partial class RatioConverter : MarkupExtension, IValueConverter
             ServiceExtension.LoggerManager.Error(msg);
         }
 
-        return isHeight ? 600 : 800;
+        return isHeight 
+            ? 600 
+            : 800;
 
         //var size = System.Convert.ToDouble(value) * System.Convert.ToDouble(parameter,CultureInfo.InvariantCulture);
         //return size.ToString( "G0", CultureInfo.InvariantCulture );

@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
+using Client_App.Commands.AsyncCommands.Calculator;
 using Client_App.Commands.AsyncCommands.Delete;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.ExcelExport.Passports;
@@ -186,9 +187,11 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand ImportJson { get; set; }                        //  Импорт -> Из Json
     public ICommand ImportRaodb { get; set; }                       //  Импорт -> Из RAODB
     public ICommand MaxGraphsLength { get; set; }                   //  Excel -> Максимальное число символов в каждой колонке
+    public ICommand OpenCalculator { get; set; }                    //  Открыть калькулятор пересчёта активности
+    public ICommand OpenFile { get; set; }                          //  Открыть файл
+    public ICommand OpenFolder { get; set; }                        //  Открыть папку
     public ICommand SaveReports { get; set; }                       //  Сохраняет текущую базу, используется только для сохранения комментария формы
     //public ICommand UnaccountedRad { get; set; }                    //  Радионуклиды, отсутствующие в справочнике
-    public ICommand CalculatorOpenCommand { get; set; }
     
     #endregion
 
@@ -211,7 +214,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         MaxGraphsLength = new MaxGraphsLengthAsyncCommand();
         SaveReports = new SaveReportsAsyncCommand();
         //UnaccountedRad = new UnaccountedRadAsyncCommand(); 
-        CalculatorOpenCommand = new CalculatorOpenAsyncCommand();
+        OpenCalculator = new OpenCalculatorAsyncCommand();
+        OpenFile = new OpenFileAsyncCommand();
+        OpenFolder = new OpenFolderAsyncCommand();
     }
 
     #endregion

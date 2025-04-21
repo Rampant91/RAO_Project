@@ -229,7 +229,10 @@
             </MenuItem>
 
             <MenuItem FontSize="14" Header="Сервис">
-                <MenuItem Command="{Binding CalculatorOpenCommand}" Header="Калькулятор"/>
+                <MenuItem Command="{Binding OpenFile}" CommandParameter="manual" Header="Инструкция пользователя"/>
+                <MenuItem Command="{Binding OpenFile}" CommandParameter="radsDictionary" Header="Справочник радионуклидов"/>
+                <MenuItem Command="{Binding OpenCalculator}" Header="Пересчёт активности"/>
+                <MenuItem Command="{Binding OpenFolder}" Header="Шаблоны форм"/>
             </MenuItem> 
         </Menu>
 
