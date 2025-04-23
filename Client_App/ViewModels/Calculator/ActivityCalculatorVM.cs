@@ -8,7 +8,7 @@ using Client_App.Commands.AsyncCommands.Calculator;
 
 namespace Client_App.ViewModels.Calculator;
 
-public partial class ActivityCalculatorVM : BaseVM, INotifyPropertyChanged
+public class ActivityCalculatorVM : BaseVM, INotifyPropertyChanged
 {
     #region Properties
 
@@ -79,8 +79,6 @@ public partial class ActivityCalculatorVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    #endregion
-
     private string _initialActivity;
     public string InitialActivity
     {
@@ -137,14 +135,16 @@ public partial class ActivityCalculatorVM : BaseVM, INotifyPropertyChanged
         get => _residualActivityDate;
         set
         {
-            _residualActivityDate = DateTime.TryParse(value, out var dateTimeValue) 
-                ? dateTimeValue.ToShortDateString() 
+            _residualActivityDate = DateTime.TryParse(value, out var dateTimeValue)
+                ? dateTimeValue.ToShortDateString()
                 : value;
-                
+
             OnPropertyChanged();
             ActivityCalculation.Execute(this);
         }
     }
+
+    #endregion
 
     #region Constructor
 
@@ -153,7 +153,7 @@ public partial class ActivityCalculatorVM : BaseVM, INotifyPropertyChanged
     public ActivityCalculatorVM(List<Radionuclid> radionuclids)
     {
         Radionuclids = new ObservableCollection<Radionuclid>(radionuclids);
-        RadionuclidsFullList = [..Radionuclids];
+        RadionuclidsFullList = [.. Radionuclids];
 
         FilterCommand = new CalculatorFilterAsyncCommand(this);
         ActivityCalculation = new ActivityCalculationAsyncCommand(this);
@@ -161,8 +161,12 @@ public partial class ActivityCalculatorVM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
+    #region Commands
+    
     public ICommand FilterCommand { get; set; }
-    public ICommand ActivityCalculation { get; set; }
+    public ICommand ActivityCalculation { get; set; } 
+    
+    #endregion
 
     #region INotifyPropertyChanged
 

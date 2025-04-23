@@ -6,13 +6,14 @@
         xmlns:tools="clr-namespace:Client_App.Tools"
         xmlns:type="clr-namespace:Client_App.Tools.ConverterType"
         xmlns:converter="clr-namespace:Client_App.Resources.CustomConverters"
-        xmlns:sys="clr-namespace:System;assembly=System.Runtime"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Client_App.Views.Calculator.ActivityCalculator"
-        Width="{Binding Source={x:Type type:Width}, Converter={tools:RatioConverter}, ConverterParameter='0.35', FallbackValue='600', Mode=OneWay}"
+        Icon="/Assets/Radiation_sign.ico"
+        Width="{Binding Source={x:Type type:Width}, Converter={tools:RatioConverter}, ConverterParameter='0.4', FallbackValue='600', Mode=OneWay}"
         Height="{Binding Source={x:Type type:Height}, Converter={tools:RatioConverter}, ConverterParameter='0.5', FallbackValue='800', Mode=OneWay}"
         MinHeight="400"
         MinWidth="650"
+
         WindowStartupLocation="CenterScreen"
         Title="Пересчет активности">
 
@@ -21,13 +22,12 @@
     </Design.DataContext>
 
     <Window.Resources>
-        <converter:BoolInverterConverter x:Key="BoolInverterConverter"></converter:BoolInverterConverter>
+        <converter:BoolInverterConverter x:Key="BoolInverterConverter"/>
     </Window.Resources>
 
     <Grid 
         ColumnDefinitions="0.4*,0.6*" 
         RowDefinitions="0.1*,0.3*,0.6*">
-
         <HeaderedContentControl 
             Grid.Column="0" 
             Grid.Row="0" 
@@ -46,26 +46,26 @@
                     CanUserResizeColumns="True"
                     CanUserReorderColumns="False"
                     Margin="5"
+                    SelectionMode="Single"
                     Items="{Binding Path=Radionuclids}"
                     SelectedItem="{Binding Path=SelectedNuclid, Mode=TwoWay}">
                     <DataGrid.Columns>
                         <DataGridTextColumn
                             x:DataType="vm:Radionuclid"
-                            Width="0.7*"
+                            Width="0.6*"
                             Header="Радионуклид"
                             IsReadOnly="True"
                             Binding="{Binding Path=Name}"/>
                         <DataGridTextColumn
                             x:DataType="vm:Radionuclid"
-                            Width="0.3*"
-                            Header="Обозначение:"
+                            Width="0.4*"
+                            Header="Обозначение"
                             IsReadOnly="True"
                             Binding="{Binding Path=Abbreviation}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
         </HeaderedContentControl>
-
         <HeaderedContentControl
             Grid.Column="1"
             Grid.Row="0"
@@ -142,7 +142,6 @@
                     Text="{Binding SelectedNuclid.Unit}"/>
             </Grid>
         </HeaderedContentControl>
-
         <HeaderedContentControl 
             Grid.Column="1"
             Grid.Row="2"
@@ -268,23 +267,7 @@
                     HorizontalContentAlignment="Left"
                     VerticalAlignment="Center"
                     Text="{Binding ResidualActivity}"/>
-                
             </Grid>
-
-            <!-- 
-            <RadioButton 
-                Content="по диапазону дат"
-                GroupName="DateType"
-                IsChecked="True">
-            </RadioButton>
-            <RadioButton 
-                Content="по диапазону дат"
-                GroupName="DateType"
-                IsChecked="True">
-            </RadioButton>
-            -->
-
         </HeaderedContentControl>
-
     </Grid>
 </Window>

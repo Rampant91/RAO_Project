@@ -2,7 +2,6 @@
 using Client_App.ViewModels.Calculator;
 using System.Linq;
 using System.Threading.Tasks;
-using ExtendedNumerics;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -12,51 +11,65 @@ public partial class ActivityCalculationAsyncCommand : BaseAsyncCommand
 {
     private readonly ActivityCalculatorVM _activityCalculatorVM;
 
+    #region Constructor
+    
     public ActivityCalculationAsyncCommand(ActivityCalculatorVM activityCalculatorVM)
     {
         _activityCalculatorVM = activityCalculatorVM;
         _activityCalculatorVM.PropertyChanged += ActivityCalculatorVMPropertyChanged;
     }
 
+    #endregion
+
+    #region PropertyChanged
+    
     private void ActivityCalculatorVMPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(ActivityCalculatorVM.SelectedNuclid.Halflife) 
-            or nameof(ActivityCalculatorVM.SelectedNuclid.Unit) 
-            or nameof(ActivityCalculatorVM.InitialActivity) 
-            or nameof(ActivityCalculatorVM.TimePeriodDouble) 
+        if (e.PropertyName is nameof(ActivityCalculatorVM.SelectedNuclid.Halflife)
+            or nameof(ActivityCalculatorVM.SelectedNuclid.Unit)
+            or nameof(ActivityCalculatorVM.InitialActivity)
+            or nameof(ActivityCalculatorVM.TimePeriodDouble)
             or nameof(ActivityCalculatorVM.SelectedTimeUnit))
         {
             OnCanExecuteChanged();
         }
     }
 
+    #endregion
+
+    #region AsyncExecute
+    
     public override Task AsyncExecute(object? parameter)
     {
         if (_activityCalculatorVM is { IsDateRange: false })
         {
-            if (double.TryParse(_activityCalculatorVM.TimePeriodDouble, out var timePeriodDoubleValue)
+            if (double.TryParse(ToExponentialString(_activityCalculatorVM.TimePeriodDouble), out var timePeriodDoubleValue) 
                 && double.TryParse(ToExponentialString(_activityCalculatorVM.InitialActivity), out var initialActivityDoubleValue))
             {
-                var halfLife = GetTimeDoubleValueInMinutes(_activityCalculatorVM.SelectedNuclid.Halflife, _activityCalculatorVM.SelectedNuclid.Unit);
-                var timePeriod = GetTimeDoubleValueInMinutes(timePeriodDoubleValue, _activityCalculatorVM.SelectedTimeUnit);
-                var cycles = timePeriod / halfLife;
-                if (cycles > 10000) cycles = 10000;
-                var activity = initialActivityDoubleValue / BigDecimal.Pow(2, cycles);
+                var timeParam = GetTimeDoubleValueInMinutes(timePeriodDoubleValue, _activityCalculatorVM.SelectedTimeUnit)
+                                / GetTimeDoubleValueInMinutes(_activityCalculatorVM.SelectedNuclid.Halflife, _activityCalculatorVM.SelectedNuclid.Unit);
+
+                var degree = -0.693 * timeParam;
+                var exp = Math.Exp(degree);
+                var activity = initialActivityDoubleValue * exp;
+
                 _activityCalculatorVM.ResidualActivity = ToExponentialString(activity);
             }
             else _activityCalculatorVM.ResidualActivity = string.Empty;
         }
         else if (_activityCalculatorVM is { IsDateRange: true })
         {
-            if (double.TryParse(ToExponentialString(_activityCalculatorVM.InitialActivity), out var initialActivityDoubleValue) 
-                && DateOnly.TryParse(_activityCalculatorVM.InitialActivityDate, out var initialActivityDate) 
+            if (double.TryParse(ToExponentialString(_activityCalculatorVM.InitialActivity), out var initialActivityDoubleValue)
+                && DateOnly.TryParse(_activityCalculatorVM.InitialActivityDate, out var initialActivityDate)
                 && DateOnly.TryParse(_activityCalculatorVM.ResidualActivityDate, out var residualActivityDate))
             {
-                var halfLife = GetTimeDoubleValueInMinutes(_activityCalculatorVM.SelectedNuclid.Halflife, _activityCalculatorVM.SelectedNuclid.Unit);
-                var timePeriod = GetTimeDoubleValueInMinutes(residualActivityDate.DayNumber - initialActivityDate.DayNumber, "сут");
-                var cycles = timePeriod / halfLife;
-                if (cycles > 10000) cycles = 10000;
-                var activity = initialActivityDoubleValue / BigDecimal.Pow(2, cycles);
+                var timeParam = GetTimeDoubleValueInMinutes(residualActivityDate.DayNumber - initialActivityDate.DayNumber, "сут")
+                                / GetTimeDoubleValueInMinutes(_activityCalculatorVM.SelectedNuclid.Halflife, _activityCalculatorVM.SelectedNuclid.Unit);
+
+                var degree = -0.693 * timeParam;
+                var exp = Math.Exp(degree);
+                var activity = initialActivityDoubleValue * exp;
+
                 _activityCalculatorVM.ResidualActivity = ToExponentialString(activity);
             }
             else _activityCalculatorVM.ResidualActivity = string.Empty;
@@ -64,17 +77,32 @@ public partial class ActivityCalculationAsyncCommand : BaseAsyncCommand
         return Task.CompletedTask;
     }
 
-    private static double GetTimeDoubleValueInMinutes(double halfLife, string unit)
+    #endregion
+
+    #region GetTimeDoubleValueInMinutes
+
+    /// <summary>
+    /// Переводит значение времени в минуты.
+    /// </summary>
+    /// <param name="timeValue">Значение времени, которое нужно конвертировать.</param>
+    /// <param name="unit">Единица измерения.</param>
+    /// <returns>Значение времени в минутах.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Разрешённые значения для unit: "мин", "час", "сут", "лет".</exception>
+    private static double GetTimeDoubleValueInMinutes(double timeValue, string unit)
     {
         return unit switch
         {
-            "мин" => halfLife,
-            "час" => halfLife * 60,
-            "сут" => halfLife * 60 * 24,
-            "лет" => halfLife * 60 * 24 * 365,
+            "мин" => timeValue,
+            "час" => timeValue * 60,
+            "сут" => timeValue * 60 * 24,
+            "лет" => timeValue * 60 * 24 * 365,
             _ => throw new ArgumentOutOfRangeException(nameof(unit), unit, null)
         };
     }
+
+    #endregion
+
+    #region ToExponentialString
 
     private protected static string ToExponentialString(object? value)
     {
@@ -122,13 +150,30 @@ public partial class ActivityCalculationAsyncCommand : BaseAsyncCommand
             : tmp;
     }
 
-    private protected static string ReplaceDashes(string value) =>
-        value switch
+    #endregion
+
+    #region ReplaceDashes
+
+    /// <summary>
+    /// Заменяет в строчке все виды тире на стандартное.
+    /// </summary>
+    /// <param name="value">Строчка данных.</param>
+    /// <returns>Строчка, в которой заменены все виды тире на стандартное.</returns>
+    private protected static string ReplaceDashes(string value)
+    {
+        return value switch
         {
             null => string.Empty,
             _ => DashesRegex().Replace(value, "-")
         };
+    }
+
+    #endregion
+
+    #region Regex
 
     [GeneratedRegex("[-᠆‐‑‒–—―⸺⸻－﹘﹣－]")]
     protected static partial Regex DashesRegex();
+
+    #endregion
 }

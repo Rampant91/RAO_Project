@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Client_App.ViewModels.Calculator;
@@ -28,12 +27,11 @@ public class CalculatorFilterAsyncCommand : BaseAsyncCommand
     {
         if (_activityCalculatorVM.RadionuclidsFullList is not null)
         {
-            _activityCalculatorVM.Radionuclids = new ObservableCollection<Radionuclid>(_activityCalculatorVM.RadionuclidsFullList
+            _activityCalculatorVM.Radionuclids = [.. _activityCalculatorVM.RadionuclidsFullList
                 .Where(x => 
                     x.Name.Contains(_activityCalculatorVM.Filter, StringComparison.OrdinalIgnoreCase) 
-                    || x.Abbreviation.Contains(_activityCalculatorVM.Filter, StringComparison.OrdinalIgnoreCase)));
+                    || x.Abbreviation.Contains(_activityCalculatorVM.Filter, StringComparison.OrdinalIgnoreCase))];
         }
-
         return Task.CompletedTask;
     }
 }

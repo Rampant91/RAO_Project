@@ -20,10 +20,17 @@
     <None Remove="Models\**" />
   </ItemGroup>
   <ItemGroup>
+    <AvaloniaResource Remove="Assets\logo.ico" />
+    <AvaloniaResource Include="Assets\Radiation_sign.ico" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Remove="Assets\Converters.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EditorConfigFiles Include="Assets\logo.ico" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.10.22" />
@@ -34,7 +41,6 @@
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.22" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="EPPlus" Version="7.5.2" />
-    <PackageReference Include="ExtendedNumerics.BigDecimal" Version="3000.0.3.40" />
     <PackageReference Include="JsonSubTypes" Version="2.0.1" />
     <PackageReference Include="MessageBox.Avalonia" Version="[2.0.1]" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.36" />
@@ -49,6 +55,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Spravochniki\Spravochniki.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Radiation_sign.ico" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Controls\DataGrid\Cell.axaml.cs">
@@ -133,6 +142,9 @@
     </Compile>
     <Compile Update="Views\GetSnkParams.axaml.cs">
       <DependentUpon>GetSnkParams.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Messages\AskDatePeriodMessageWIndow.axaml.cs">
+      <DependentUpon>AskDatePeriodMessageWindow.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\ProgressBar\AnyTaskProgressBar.axaml.cs">
       <DependentUpon>AnyTaskProgressBar.axaml</DependentUpon>
