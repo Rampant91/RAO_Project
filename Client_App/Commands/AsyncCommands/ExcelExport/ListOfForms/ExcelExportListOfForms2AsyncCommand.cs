@@ -89,7 +89,7 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelExportListOfFormsBaseAsy
         await FillExcel(repsList, minYear, maxYear, tuplesList, worksheet);
 
         progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
 
         progressBarVM.SetProgressBar(98, "Очистка временных данных");
         try
