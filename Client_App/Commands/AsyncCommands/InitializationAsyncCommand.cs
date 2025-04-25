@@ -433,6 +433,14 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                 StaticConfiguration.DBPath = fileInfo.FullName;
                 StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                 dbm = StaticConfiguration.DBModel;
+
+                #region Test Version
+
+                var t = await dbm.Database.GetPendingMigrationsAsync();
+                var a = dbm.Database.GetMigrations();
+                var b = await dbm.Database.GetAppliedMigrationsAsync();
+
+                #endregion
                 await dbm.Database.MigrateAsync();
                 return;
             }

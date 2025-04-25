@@ -1,15 +1,15 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm ="clr-namespace:Client_App.ViewModels"
-             xmlns:v ="clr-namespace:Client_App.Views"
              xmlns:local="using:Client_App"
+             xmlns:resources="clr-namespace:Client_App.Resources"
              x:Class="Client_App.App">
+
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
 
-    
     <Application.Resources>
+        <resources:RatioConverter x:Key="RatioConverter"/>
         <!--
         <ResourceDictionary>
             <DataTemplate DataType="{x:Type vm:CheckFormVM}">

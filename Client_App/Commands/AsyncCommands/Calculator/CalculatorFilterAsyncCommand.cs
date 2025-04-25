@@ -7,15 +7,15 @@ namespace Client_App.Commands.AsyncCommands.Calculator;
 
 public class CalculatorFilterAsyncCommand : BaseAsyncCommand
 {
-    private readonly ActivityCalculatorVM _activityCalculatorVM;
+    private readonly BaseCalculatorVM _baseCalculatorVM;
 
-    public CalculatorFilterAsyncCommand(ActivityCalculatorVM activityCalculatorVM)
+    public CalculatorFilterAsyncCommand(BaseCalculatorVM baseCalculatorVM)
     {
-        _activityCalculatorVM = activityCalculatorVM;
-        _activityCalculatorVM.PropertyChanged += ActivityCalculatorVMPropertyChanged;
+        _baseCalculatorVM = baseCalculatorVM;
+        _baseCalculatorVM.PropertyChanged += BaseCalculatorVMPropertyChanged;
     }
 
-    private void ActivityCalculatorVMPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private void BaseCalculatorVMPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(ActivityCalculatorVM.Filter))
         {
@@ -25,12 +25,12 @@ public class CalculatorFilterAsyncCommand : BaseAsyncCommand
 
     public override Task AsyncExecute(object? parameter)
     {
-        if (_activityCalculatorVM.RadionuclidsFullList is not null)
+        if (_baseCalculatorVM.RadionuclidsFullList is not null)
         {
-            _activityCalculatorVM.Radionuclids = [.. _activityCalculatorVM.RadionuclidsFullList
+            _baseCalculatorVM.Radionuclids = [.. _baseCalculatorVM.RadionuclidsFullList
                 .Where(x => 
-                    x.Name.Contains(_activityCalculatorVM.Filter, StringComparison.OrdinalIgnoreCase) 
-                    || x.Abbreviation.Contains(_activityCalculatorVM.Filter, StringComparison.OrdinalIgnoreCase))];
+                    x.Name.Contains(_baseCalculatorVM.Filter, StringComparison.OrdinalIgnoreCase) 
+                    || x.Abbreviation.Contains(_baseCalculatorVM.Filter, StringComparison.OrdinalIgnoreCase))];
         }
         return Task.CompletedTask;
     }

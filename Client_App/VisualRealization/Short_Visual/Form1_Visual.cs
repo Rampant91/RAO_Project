@@ -34,7 +34,6 @@ public class Form1_Visual
         };
         v.Bind(MainWindow.SelectedReportsProperty, bd);
 
-
         var grd3 = FormB_Visual();
         pnlb.Children.Add(grd3);
     }
@@ -105,7 +104,6 @@ public class Form1_Visual
 
         return grd;
     }
-
 
     //Кнопки создания или изменения формы
     private static Panel FormB_Visual()

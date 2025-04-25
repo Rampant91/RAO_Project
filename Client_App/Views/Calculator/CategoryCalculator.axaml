@@ -4,33 +4,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Client_App.ViewModels.Calculator"
         xmlns:m="clr-namespace:Models.DTO;assembly=Models"
-        xmlns:converter="clr-namespace:Client_App.Resources.CustomConverters"
         xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="Client_App.Views.Calculator.ActivityCalculator"
+        mc:Ignorable="d" 
+        x:Class="Client_App.Views.Calculator.CategoryCalculator"
         Icon="/Assets/Radiation_sign.ico"
         Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.4', FallbackValue='600', Mode=OneWay}"
         Height="{Binding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.5', FallbackValue='800', Mode=OneWay}"
         MinHeight="400"
         MinWidth="650"
-
         WindowStartupLocation="CenterScreen"
-        Title="Пересчет активности">
+        Title="Расчёт категории">
 
     <Design.DataContext>
-        <vm:ActivityCalculatorVM/>
+        <vm:CategoryCalculatorVM/>
     </Design.DataContext>
 
-    <Window.Resources>
-        <converter:BoolInverterConverter x:Key="BoolInverterConverter"/>
-    </Window.Resources>
-
-    <Grid 
-        ColumnDefinitions="0.4*,0.6*" 
+    <Grid
+        ColumnDefinitions="0.4*,0.6*"
         RowDefinitions="0.1*,0.3*,0.6*">
-        <HeaderedContentControl 
-            Grid.Column="0" 
-            Grid.Row="0" 
+        <HeaderedContentControl
+            Grid.Column="0"
+            Grid.Row="0"
             Grid.RowSpan="3"
             Margin="5,5,0,5"
             Header="Справочник радионуклидов">
@@ -38,7 +32,6 @@
                 <TextBox
                     Grid.Row="0"
                     Margin="5"
-                    Text="{Binding Path=Filter}"
                     Watermark="Фильтр"/>
                 <DataGrid
                     Grid.Row="1"
@@ -46,9 +39,7 @@
                     CanUserResizeColumns="True"
                     CanUserReorderColumns="False"
                     Margin="5"
-                    SelectionMode="Single"
-                    Items="{Binding Path=Radionuclids}"
-                    SelectedItem="{Binding Path=SelectedNuclid, Mode=TwoWay}">
+                    SelectionMode="Single">
                     <DataGrid.Columns>
                         <DataGridTextColumn
                             x:DataType="m:CalculatorRadionuclidDTO"
@@ -95,8 +86,7 @@
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
                     Margin="5"
-                    VerticalAlignment="Center"
-                    Text="{Binding SelectedNuclid.Abbreviation}">
+                    VerticalAlignment="Center">
                 </TextBox>
                 <TextBlock
                     Grid.Column="0"
@@ -114,8 +104,7 @@
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
                     Margin="5"
-                    VerticalAlignment="Center"
-                    Text="{Binding SelectedNuclid.Name}"/>
+                    VerticalAlignment="Center"/>
                 <TextBlock
                     Grid.Column="0"
                     Grid.Row="2"
@@ -131,18 +120,16 @@
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
                     Margin="5"
-                    VerticalAlignment="Center"
-                    Text="{Binding SelectedNuclid.Halflife}"/>
+                    VerticalAlignment="Center"/>
                 <TextBlock
                     Grid.Column="2"
                     Grid.Row="2"
                     Margin="5"
                     HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Text="{Binding SelectedNuclid.Unit}"/>
+                    VerticalAlignment="Center"/>
             </Grid>
         </HeaderedContentControl>
-        <HeaderedContentControl 
+        <HeaderedContentControl
             Grid.Column="1"
             Grid.Row="2"
             Margin="5"
@@ -158,15 +145,13 @@
                     Grid.Column="0"
                     Grid.Row="0"
                     Content="по диапазону дат"
-                    GroupName="DateType"
-                    IsChecked="{Binding IsDateRange}">
+                    GroupName="DateType">
                 </RadioButton>
                 <RadioButton
                     Grid.Column="0"
                     Grid.Row="1"
                     Content="по отрезку времени"
-                    GroupName="DateType"
-                    IsChecked="{Binding IsDateRange, Converter={StaticResource BoolInverterConverter}}">
+                    GroupName="DateType">
                 </RadioButton>
                 <TextBlock
                     Grid.Column="0"
@@ -181,31 +166,26 @@
                     Margin="5"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
-                    VerticalAlignment="Center"
-                    Text="{Binding InitialActivity}">
+                    VerticalAlignment="Center">
                 </TextBox>
                 <TextBlock
                     Grid.Column="0"
                     Grid.Row="3"
-                    IsVisible="{Binding IsDateRange}"
                     Margin="5"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Text="Дата начальной активности"/>
-                <CalendarDatePicker 
+                <CalendarDatePicker
                     Grid.Column="1"
                     Grid.Row="3"
-                    IsVisible="{Binding IsDateRange}"
                     Margin="5"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
                     VerticalAlignment="Center"
-                    Watermark="дд.мм.гг"
-                    SelectedDate="{Binding InitialActivityDate}"/>
+                    Watermark="дд.мм.гг"/>
                 <TextBlock
                     Grid.Column="0"
                     Grid.Row="4"
-                    IsVisible="{Binding IsDateRange}"
                     Margin="5"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
@@ -213,18 +193,15 @@
                 <CalendarDatePicker
                     Grid.Column="1"
                     Grid.Row="4"
-                    IsVisible="{Binding IsDateRange}"
                     Margin="5"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
                     VerticalAlignment="Center"
-                    Watermark="дд.мм.гг"
-                    SelectedDate="{Binding ResidualActivityDate}"/>
+                    Watermark="дд.мм.гг"/>
                 <TextBlock
                     Grid.Column="0"
                     Grid.Row="3"
                     Grid.RowSpan="2"
-                    IsVisible="{Binding IsDateRange, Converter={StaticResource BoolInverterConverter}}"
                     Margin="5"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
@@ -233,23 +210,18 @@
                     Grid.Column="1"
                     Grid.Row="3"
                     Grid.RowSpan="2"
-                    IsVisible="{Binding IsDateRange, Converter={StaticResource BoolInverterConverter}}"
                     Margin="5"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
-                    VerticalAlignment="Center"
-                    Text="{Binding TimePeriodDouble}"/>
+                    VerticalAlignment="Center"/>
                 <ComboBox
                     Grid.Column="2"
                     Grid.Row="3"
                     Grid.RowSpan="2"
-                    IsVisible="{Binding IsDateRange, Converter={StaticResource BoolInverterConverter}}"
                     Margin="5"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
-                    VerticalAlignment="Center"
-                    Items="{Binding TimeUnitArray}"
-                    SelectedItem="{Binding SelectedTimeUnit}">
+                    VerticalAlignment="Center">
                 </ComboBox>
                 <TextBlock
                     Grid.Column="0"
@@ -265,8 +237,7 @@
                     IsHitTestVisible="False"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
-                    VerticalAlignment="Center"
-                    Text="{Binding ResidualActivity}"/>
+                    VerticalAlignment="Center"/>
             </Grid>
         </HeaderedContentControl>
     </Grid>

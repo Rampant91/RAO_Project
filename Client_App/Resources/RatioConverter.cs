@@ -4,15 +4,14 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
 using Client_App.Interfaces.Logger;
-using Client_App.Tools.ConverterType;
+using Client_App.Resources.ConverterType;
 using Size = System.Drawing.Size;
 
-namespace Client_App.Tools;
+namespace Client_App.Resources;
 
 // get display resolution
 public partial class RatioConverter : MarkupExtension, IValueConverter

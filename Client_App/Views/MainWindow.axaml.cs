@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using Models.Collections;
 using System.Threading.Tasks;
+using Avalonia.Interactivity;
 using ReactiveUI;
 using Client_App.Controls.DataGrid;
 using Client_App.ViewModels;
@@ -97,6 +98,12 @@ public class MainWindow : BaseWindow<MainWindowVM>
 
     #region Events
 
+    private void OpenContactsButtonClicked(object? sender, RoutedEventArgs e)
+    {
+        var contactsWindow = new Contacts();
+        contactsWindow.Show();
+    }
+
     protected override void OnOpened(EventArgs e)
     {
         base.OnOpened(e);
@@ -184,7 +191,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = new[] { "Выгрузить все организации в один файл" },
+            ContextMenuText = ["Выгрузить все организации в один файл"],
             Command = dataContext.ExportAllReportsOneFile
         });
 

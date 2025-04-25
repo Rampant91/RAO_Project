@@ -1,0 +1,25 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Client_App.ViewModels"
+        xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Client_App.Views.Contacts"
+        Icon="/Assets/logo.png"
+        Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.4', FallbackValue='600', Mode=OneWay}"
+        Height="{Binding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.4', FallbackValue='800', Mode=OneWay}"
+        MinHeight="400"
+        MinWidth="650"
+        WindowStartupLocation="CenterScreen"
+        Title="Контакты">
+
+    <Design.DataContext>
+        <vm:BaseVM/>
+    </Design.DataContext>
+
+    
+
+
+
+</Window>

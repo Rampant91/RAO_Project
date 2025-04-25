@@ -1,35 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Client_App.Commands.AsyncCommands.Calculator;
+using Models.DTO;
 
 namespace Client_App.ViewModels.Calculator;
 
-public class ActivityCalculatorVM : BaseVM, INotifyPropertyChanged
+public class ActivityCalculatorVM : BaseCalculatorVM
 {
     #region Properties
 
-    public List<Radionuclid> RadionuclidsFullList;
-
-    private ObservableCollection<Radionuclid> _radionuclids;
-    public ObservableCollection<Radionuclid> Radionuclids
-    {
-        get => _radionuclids;
-        set
-        {
-            if (_radionuclids != value && value != null)
-            {
-                _radionuclids = value;
-            }
-            OnPropertyChanged();
-        }
-    }
-
-    private Radionuclid _selectedNuclid;
-    public Radionuclid SelectedNuclid
+    private CalculatorRadionuclidDTO _selectedNuclid;
+    public CalculatorRadionuclidDTO SelectedNuclid
     {
         get => _selectedNuclid;
         set
@@ -38,18 +21,6 @@ public class ActivityCalculatorVM : BaseVM, INotifyPropertyChanged
             _selectedNuclid = value;
             OnPropertyChanged();
             ActivityCalculation.Execute(this);
-        }
-    }
-
-    private string _filter;
-    public string Filter
-    {
-        get => _filter;
-        set
-        {
-            _filter = value;
-            OnPropertyChanged();
-            FilterCommand?.Execute(null);
         }
     }
 
@@ -150,9 +121,9 @@ public class ActivityCalculatorVM : BaseVM, INotifyPropertyChanged
 
     public ActivityCalculatorVM() { }
 
-    public ActivityCalculatorVM(List<Radionuclid> radionuclids)
+    public ActivityCalculatorVM(List<CalculatorRadionuclidDTO> radionuclids)
     {
-        Radionuclids = new ObservableCollection<Radionuclid>(radionuclids);
+        Radionuclids = new ObservableCollection<CalculatorRadionuclidDTO>(radionuclids);
         RadionuclidsFullList = [.. Radionuclids];
 
         FilterCommand = new CalculatorFilterAsyncCommand(this);
@@ -163,27 +134,7 @@ public class ActivityCalculatorVM : BaseVM, INotifyPropertyChanged
 
     #region Commands
     
-    public ICommand FilterCommand { get; set; }
     public ICommand ActivityCalculation { get; set; } 
     
     #endregion
-
-    #region INotifyPropertyChanged
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string prop = "")
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
-
-    #endregion
-}
-
-public class Radionuclid
-{
-    public required string Name { get; set; }
-    public required string Abbreviation { get; set; }
-    public required double Halflife { get; set; }
-    public required string Unit { get; set; }
-    public required string Code { get; set; }
 }

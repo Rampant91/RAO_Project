@@ -3,23 +3,27 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using Client_App.ViewModels.Calculator;
 using Client_App.Views.Calculator;
+using Models.DTO;
 using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.Calculator;
 
 public class OpenCalculatorAsyncCommand : BaseAsyncCommand
 {
-    private protected static List<Radionuclid> R = [];
+    private protected static List<CalculatorRadionuclidDTO> R = [];
 
     public override Task AsyncExecute(object? parameter)
     {
         if (R.Count == 0) R_Populate_From_File();
-        
-        var dialogWindow = new ActivityCalculator
+
+        Window dialogWindow = parameter switch
         {
-            DataContext = new ActivityCalculatorVM(R)
+            "activity" => new ActivityCalculator { DataContext = new ActivityCalculatorVM(R) },
+            "category" => new CategoryCalculator { DataContext = new CategoryCalculatorVM(R) },
+            _ => throw new ArgumentOutOfRangeException(nameof(parameter), parameter, null)
         };
         dialogWindow.Show();
 
@@ -58,7 +62,7 @@ public class OpenCalculatorAsyncCommand : BaseAsyncCommand
                 && !string.IsNullOrWhiteSpace(unit)
                 && !string.IsNullOrWhiteSpace(code))
             {
-                R.Add(new Radionuclid
+                R.Add(new CalculatorRadionuclidDTO
                 {
                     Name = name,
                     Abbreviation = abbreviation,

@@ -155,11 +155,17 @@
     <Compile Update="Views\RowNumber.axaml.cs">
       <DependentUpon>RowNumber.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Contacts.axaml.cs">
+      <DependentUpon>Contacts.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tools\" />
   </ItemGroup>
 </Project>

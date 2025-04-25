@@ -587,8 +587,8 @@ public class Form2_Visual
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
+            MinHeight = 175,
             Margin = Thickness.Parse("5,5,0,0")
-
         };
 
         prt.Children.Add(grd1);
@@ -817,7 +817,7 @@ public class Form2_Visual
         };
         DataGridNote grd1 = new()
         {
-            Name = "Form21Notes_",
+            Name = "Form22Notes_",
             Focusable = true,
             Comment = "Примечания",
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -826,6 +826,7 @@ public class Form2_Visual
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
+            MinHeight = 175,
             Margin = Thickness.Parse("5,5,0,0")
 
         };
@@ -1046,7 +1047,7 @@ public class Form2_Visual
         };
         DataGridNote grd1 = new()
         {
-            Name = "Form21Notes_",
+            Name = "Form23Notes_",
             Focusable = true,
             Comment = "Примечания",
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -1055,6 +1056,7 @@ public class Form2_Visual
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
+            MinHeight = 175,
             Margin = Thickness.Parse("5,5,0,0")
 
         };
@@ -1275,7 +1277,7 @@ public class Form2_Visual
         };
         DataGridNote grd1 = new()
         {
-            Name = "Form21Notes_",
+            Name = "Form24Notes_",
             Focusable = true,
             Comment = "Примечания",
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -1284,6 +1286,7 @@ public class Form2_Visual
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
+            MinHeight = 175,
             Margin = Thickness.Parse("5,5,0,0")
 
         };
@@ -1504,7 +1507,7 @@ public class Form2_Visual
         };
         DataGridNote grd1 = new()
         {
-            Name = "Form21Notes_",
+            Name = "Form25Notes_",
             Focusable = true,
             Comment = "Примечания",
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -1513,6 +1516,7 @@ public class Form2_Visual
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
+            MinHeight = 175,
             Margin = Thickness.Parse("5,5,0,0")
 
         };
@@ -1741,7 +1745,7 @@ public class Form2_Visual
         };
         DataGridNote grd1 = new()
         {
-            Name = "Form21Notes_",
+            Name = "Form26Notes_",
             Focusable = true,
             Comment = "Примечания",
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -1750,6 +1754,7 @@ public class Form2_Visual
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
+            MinHeight = 175,
             Margin = Thickness.Parse("5,5,0,0")
 
         };
@@ -1991,7 +1996,7 @@ public class Form2_Visual
         };
         DataGridNote grd1 = new()
         {
-            Name = "Form21Notes_",
+            Name = "Form27Notes_",
             Focusable = true,
             Comment = "Примечания",
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -2000,6 +2005,7 @@ public class Form2_Visual
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
+            MinHeight = 175,
             Margin = Thickness.Parse("5,5,0,0")
 
         };
@@ -2285,7 +2291,7 @@ public class Form2_Visual
         };
         DataGridNote grd1 = new()
         {
-            Name = "Form21Notes_",
+            Name = "Form28Notes_",
             Focusable = true,
             Comment = "Примечания",
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -2294,6 +2300,7 @@ public class Form2_Visual
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
+            MinHeight = 175,
             Margin = Thickness.Parse("5,5,0,0")
 
         };
@@ -2514,7 +2521,7 @@ public class Form2_Visual
         };
         DataGridNote grd1 = new()
         {
-            Name = "Form21Notes_",
+            Name = "Form29Notes_",
             Focusable = true,
             Comment = "Примечания",
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -2523,6 +2530,7 @@ public class Form2_Visual
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
+            MinHeight = 175,
             Margin = Thickness.Parse("5,5,0,0")
 
         };
@@ -2743,7 +2751,7 @@ public class Form2_Visual
         };
         DataGridNote grd1 = new()
         {
-            Name = "Form21Notes_",
+            Name = "Form210Notes_",
             Focusable = true,
             Comment = "Примечания",
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -2752,6 +2760,7 @@ public class Form2_Visual
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
+            MinHeight = 175,
             Margin = Thickness.Parse("5,5,0,0")
 
         };
@@ -2972,7 +2981,7 @@ public class Form2_Visual
         };
         DataGridNote grd1 = new()
         {
-            Name = "Form21Notes_",
+            Name = "Form211Notes_",
             Focusable = true,
             Comment = "Примечания",
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -2981,6 +2990,7 @@ public class Form2_Visual
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
+            MinHeight = 175,
             Margin = Thickness.Parse("5,5,0,0")
 
         };
@@ -3201,7 +3211,7 @@ public class Form2_Visual
         };
         DataGridNote grd1 = new()
         {
-            Name = "Form21Notes_",
+            Name = "Form212Notes_",
             Focusable = true,
             Comment = "Примечания",
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -3210,6 +3220,7 @@ public class Form2_Visual
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
+            MinHeight = 175,
             Margin = Thickness.Parse("5,5,0,0")
 
         };
