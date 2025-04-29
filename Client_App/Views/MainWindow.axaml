@@ -332,12 +332,21 @@
                     Command="{Binding OpenFile}" 
                     CommandParameter="manual" 
                     Header="Инструкция пользователя"/>
+                <MenuItem
+                    Command="{Binding OpenFolder}"
+                    CommandParameter="rao"
+                    Header="Папка RAO"/>
+                <MenuItem
+                    Command="{Binding OpenFolder}"
+                    CommandParameter="app"
+                    Header="Папка с программой"/>
                 <MenuItem 
                     Command="{Binding OpenFile}" 
                     CommandParameter="radsDictionary" 
                     Header="Справочник радионуклидов"/>
                 <MenuItem 
-                    Command="{Binding OpenFolder}" 
+                    Command="{Binding OpenFolder}"
+                    CommandParameter="excel"
                     Header="Шаблоны форм"/>
                 <Separator/>
                 <MenuItem

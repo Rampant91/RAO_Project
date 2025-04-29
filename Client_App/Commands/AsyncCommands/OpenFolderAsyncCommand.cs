@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using Client_App.Properties;
 using MessageBox.Avalonia.DTO;
 
 namespace Client_App.Commands.AsyncCommands;
@@ -13,12 +14,36 @@ public class OpenFolderAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
+        var folderPath = "";
+        switch (parameter)
+        {
+            case "app":
+            {
+                folderPath = AppContext.BaseDirectory;
 
+                break;
+            }
+            case "excel":
+            {
 #if DEBUG
-        var folderPath = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Excel");
+                folderPath = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Excel");
 #else
-        var folderPath = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Excel");
+                folderPath = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Excel");
 #endif
+                break;
+            }
+            case "rao":
+            {
+                var systemDirectory = Settings.Default.SystemFolderDefaultPath is "default"
+                    ? OperatingSystem.IsWindows()
+                        ? Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System))!
+                        : Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
+                    : Settings.Default.SystemFolderDefaultPath;
+                folderPath = Path.Combine(systemDirectory, "RAO");
+
+                break;
+            }
+        }
 
         try
         {
