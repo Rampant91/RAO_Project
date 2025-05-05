@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "Client_App": {
+      "commandName": "Project"
+    }
+  }
+}

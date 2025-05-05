@@ -25,7 +25,7 @@ public class CopyRowsAsyncCommand : BaseAsyncCommand
         {
             minColumn++;
         }
-        Dictionary<long, Dictionary<int, string>> dic = new();
+        Dictionary<long, Dictionary<int, string>> dic = [];
         foreach (var item in collection.GetEnumerable().OrderBy(x => x.Order))
         {
             dic.Add(item.Order, new Dictionary<int, string>());
@@ -113,9 +113,9 @@ public class CopyRowsAsyncCommand : BaseAsyncCommand
                     textInSelectedCells += $"{it.Value}\t";
                 }
             }
-            textInSelectedCells = textInSelectedCells.Remove(textInSelectedCells.Length - 1, 1) + "\n";
+            textInSelectedCells = textInSelectedCells[..^1] + "\n";
         }
-        textInSelectedCells = textInSelectedCells.Remove(textInSelectedCells.Length - 1, 1);
+        textInSelectedCells = textInSelectedCells[..^1];
         if (Application.Current.Clipboard is { } clip)
         {
             var currentClipboard = "";

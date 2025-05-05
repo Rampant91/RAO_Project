@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Client_App.Resources;
+namespace Client_App.Resources.CustomComparers;
 
 internal class CustomStringTitleFormComparer : IComparer<string>
 {

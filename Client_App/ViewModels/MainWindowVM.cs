@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
+using Client_App.Commands.AsyncCommands.Calculator;
 using Client_App.Commands.AsyncCommands.Delete;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.ExcelExport.Passports;
@@ -16,11 +17,13 @@ using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.AsyncCommands.Hidden;
 using Client_App.Commands.AsyncCommands.CheckForm;
+using Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
 using Client_App.Commands.AsyncCommands.ExcelExport.Snk;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Client_App.ViewModels;
 
-public class MainWindowVM : BaseVM, INotifyPropertyChanged
+public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 {
     #region Current_Db
 
@@ -184,9 +187,12 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ImportJson { get; set; }                        //  Импорт -> Из Json
     public ICommand ImportRaodb { get; set; }                       //  Импорт -> Из RAODB
     public ICommand MaxGraphsLength { get; set; }                   //  Excel -> Максимальное число символов в каждой колонке
+    public ICommand OpenCalculator { get; set; }                    //  Открыть калькулятор пересчёта активности
+    public ICommand OpenFile { get; set; }                          //  Открыть файл
+    public ICommand OpenFolder { get; set; }                        //  Открыть папку
     public ICommand SaveReports { get; set; }                       //  Сохраняет текущую базу, используется только для сохранения комментария формы
     //public ICommand UnaccountedRad { get; set; }                    //  Радионуклиды, отсутствующие в справочнике
-
+    
     #endregion
 
     #region Constructor
@@ -207,7 +213,10 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ImportRaodb = new ImportRaodbAsyncCommand(this);
         MaxGraphsLength = new MaxGraphsLengthAsyncCommand();
         SaveReports = new SaveReportsAsyncCommand();
-        //UnaccountedRad = new UnaccountedRadAsyncCommand();
+        //UnaccountedRad = new UnaccountedRadAsyncCommand(); 
+        OpenCalculator = new OpenCalculatorAsyncCommand();
+        OpenFile = new OpenFileAsyncCommand();
+        OpenFolder = new OpenFolderAsyncCommand();
     }
 
     #endregion

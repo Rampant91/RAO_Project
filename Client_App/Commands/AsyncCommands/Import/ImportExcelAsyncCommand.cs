@@ -15,6 +15,7 @@ using Models.Forms.Form2;
 using Avalonia.Threading;
 using Client_App.Resources;
 using Client_App.Controls.DataGrid.DataGrids;
+using Client_App.Resources.CustomComparers;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -567,7 +568,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
     #region GetReportDataFromExcel
 
-    private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, ExcelWorksheet worksheet1, string formNumber, IReadOnlyList<string> timeCreate)
+    private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, ExcelWorksheet worksheet1, string formNumber, List<string> timeCreate)
     {
         var impRep = new Report
         {

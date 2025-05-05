@@ -9,7 +9,6 @@
         Width="300"
         Height="150"
         x:Class="Client_App.Views.RowNumberIn"
-        xmlns:vm="using:Client_App.ViewModels"
         Name="RowNumberIn"
         Icon="/Assets/logo.png"
         Title="{Binding WindowHeader}"

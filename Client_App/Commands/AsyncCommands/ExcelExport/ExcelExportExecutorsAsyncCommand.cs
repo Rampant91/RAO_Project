@@ -14,13 +14,14 @@ using System.Reflection;
 using Client_App.Views.ProgressBar;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
+using Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 /// <summary>
 /// Excel -> Список исполнителей.
 /// </summary>
-public class ExcelExportExecutorsAsyncCommand : ExcelBaseAsyncCommand
+public class ExcelExportExecutorsAsyncCommand : ExcelExportListOfFormsBaseAsyncCommand
 {
     private Reports CurrentReports;
     private int _currentRow;

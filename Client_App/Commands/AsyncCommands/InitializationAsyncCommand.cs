@@ -25,6 +25,7 @@ using Client_App.Properties;
 using MessageBox.Avalonia.Models;
 using Client_App.Resources;
 using System.Collections.Generic;
+using Client_App.Resources.CustomComparers;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -197,7 +198,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
     #region ProcessSpravochniks
     
     /// <summary>
-    /// Инициаоизация справочников
+    /// Инициализация справочников
     /// </summary>
     /// <returns></returns>
     private static Task ProcessSpravochniks()
@@ -432,6 +433,14 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                 StaticConfiguration.DBPath = fileInfo.FullName;
                 StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                 dbm = StaticConfiguration.DBModel;
+
+                #region Test Version
+
+                var t = await dbm.Database.GetPendingMigrationsAsync();
+                var a = dbm.Database.GetMigrations();
+                var b = await dbm.Database.GetAppliedMigrationsAsync();
+
+                #endregion
                 await dbm.Database.MigrateAsync();
                 return;
             }

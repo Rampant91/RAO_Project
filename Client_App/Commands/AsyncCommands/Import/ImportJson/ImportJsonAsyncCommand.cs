@@ -17,6 +17,7 @@ using Models.DTO;
 using static Client_App.Commands.AsyncCommands.Import.ImportJson.ImportJsonMethods;
 using Avalonia.Threading;
 using Client_App.Resources;
+using Client_App.Resources.CustomComparers;
 
 namespace Client_App.Commands.AsyncCommands.Import.ImportJson;
 

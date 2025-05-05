@@ -95,7 +95,7 @@ public partial class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncComman
         await FindFilesWithOutReport(pasUniqParam, dtoList, dtoToExcelThreadSafe, progressBarVM, cts);
 
         progressBarVM.SetProgressBar(60, "Загрузка совпавших форм");
-        var matchedFormsList = await LoadMatchedForms(dtoToExcelThreadSafe.ToList(), tmpDbPath, progressBarVM, cts);
+        var matchedFormsList = await LoadMatchedForms([.. dtoToExcelThreadSafe], tmpDbPath, progressBarVM, cts);
 
         progressBarVM.SetProgressBar(90, "Экспорт данных в .xlsx");
         await Task.Run(async () => await ExportToExcel(matchedFormsList), cts.Token);
@@ -237,7 +237,7 @@ public partial class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncComman
         CancellationTokenSource cts)
     {
         List<string> pasNames = [];
-        pasNames.AddRange(files.Select(file => file.Name.Remove(file.Name.Length - 4)));
+        pasNames.AddRange(files.Select(file => file.Name[..^4]));
         pasUniqParam.AddRange(pasNames.Select(pasName => pasName.Split('#')));
 
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);

@@ -754,7 +754,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     #region GetActivities
 
-    private static Dictionary<string, string> GetActivities(Form1 form1, IReadOnlyList<string> nuclidTypeArray)
+    private static Dictionary<string, string> GetActivities(Form1 form1, string[] nuclidTypeArray)
     {
         var tritiumActivity = "-";
         var betaGammaActivity = "-";
@@ -779,8 +779,8 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
             ? $"{activityDoubleValue:0.######################################################e+00}"
             : activityTmp;
 
-        if (nuclidTypeArray.Count == 1
-            || nuclidTypeArray.Count > 1
+        if (nuclidTypeArray.Length == 1
+            || nuclidTypeArray.Length > 1
             && nuclidTypeArray
                 .Skip(1)
                 .All(x => string.Equals(nuclidTypeArray[0], x)))
@@ -1023,7 +1023,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     #region RFromFile
 
-    private static List<Dictionary<string, string>> R = new();
+    private static List<Dictionary<string, string>> R = [];
 
     private static void R_Populate_From_File()
     {

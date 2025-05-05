@@ -7,14 +7,13 @@ namespace Client_App.VisualRealization.Converters;
 
 public class VectorToMarginLeft_Converter : IValueConverter
 {
-    public object Convert(object Value, Type tp, object Param, CultureInfo info)
+    public object Convert(object value, Type tp, object param, CultureInfo info)
     {
-        if (Value != null)
+        if (value != null)
         {
-            var rps = (Vector)Value;
+            var rps = (Vector)value;
             try
             {
-                    
                 var lg = Thickness.Parse($"{(int)rps.X},0,0,0");
                 return lg;
             }
@@ -25,7 +24,7 @@ public class VectorToMarginLeft_Converter : IValueConverter
         }
         return null;
     }
-    public object ConvertBack(object Value, Type tp, object Param, CultureInfo info)
+    public object ConvertBack(object value, Type tp, object param, CultureInfo info)
     {
         //
         return new Vector();

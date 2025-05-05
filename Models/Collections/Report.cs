@@ -2068,7 +2068,7 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(StartPeriod), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(StartPeriod), out var value))
             {
                 ((RamAccess<string>)value).Value = StartPeriod_DB;
                 return (RamAccess<string>)value;
@@ -2094,7 +2094,9 @@ public class Report : IKey, IDataGridColumn
         //{
         //    tmp = tmp.Insert(6, "20");
         //}
-        StartPeriod_DB = tmp;
+        StartPeriod_DB = DateOnly.TryParse(tmp, out var dateOnly) 
+            ? dateOnly.ToShortDateString() 
+            : tmp;
     }
 
     private bool StartPeriod_Validation(RamAccess<string> value)
@@ -2177,7 +2179,9 @@ public class Report : IKey, IDataGridColumn
         //{
         //    tmp = tmp.Insert(6, "20");
         //}
-        EndPeriod_DB = tmp;
+        EndPeriod_DB = DateOnly.TryParse(tmp, out var dateOnly)
+            ? dateOnly.ToShortDateString()
+            : tmp;
     }
 
     private bool EndPeriod_Validation(RamAccess<string> value)

@@ -4,15 +4,14 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
 using Client_App.Interfaces.Logger;
-using Client_App.Tools.ConverterType;
+using Client_App.Resources.ConverterType;
 using Size = System.Drawing.Size;
 
-namespace Client_App.Tools;
+namespace Client_App.Resources;
 
 // get display resolution
 public partial class RatioConverter : MarkupExtension, IValueConverter
@@ -42,7 +41,7 @@ public partial class RatioConverter : MarkupExtension, IValueConverter
                 //var scale = DisplayTools.GetScalingFactorOnWindows();
                 //var height = System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Height * par / scale);
                 //var width = System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Width * par / scale);
-                return isHeight
+                return isHeight 
                     ? height
                     : width;
             }
@@ -60,7 +59,9 @@ public partial class RatioConverter : MarkupExtension, IValueConverter
             ServiceExtension.LoggerManager.Error(msg);
         }
 
-        return isHeight ? 600 : 800;
+        return isHeight 
+            ? 600 
+            : 800;
 
         //var size = System.Convert.ToDouble(value) * System.Convert.ToDouble(parameter,CultureInfo.InvariantCulture);
         //return size.ToString( "G0", CultureInfo.InvariantCulture );
