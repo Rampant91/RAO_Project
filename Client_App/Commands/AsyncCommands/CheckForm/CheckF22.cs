@@ -644,7 +644,7 @@ public class CheckF22 : CheckBase
                     {
                         forms22Expected.RemoveAt(i);
                         matchFound = true;
-                        break;
+                        continue;
                     }
                     else
                     {
