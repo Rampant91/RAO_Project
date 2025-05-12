@@ -11,14 +11,14 @@ public class ActivityCalculatorVM : BaseCalculatorVM
 {
     #region Properties
 
-    private CalculatorRadionuclidDTO _selectedNuclid;
-    public CalculatorRadionuclidDTO SelectedNuclid
+    private CalculatorRadionuclidDTO _selectedDictionaryNuclid;
+    public CalculatorRadionuclidDTO SelectedDictionaryNuclid
     {
-        get => _selectedNuclid;
+        get => _selectedDictionaryNuclid;
         set
         {
-            if (_selectedNuclid == value || value is null) return;
-            _selectedNuclid = value;
+            if (_selectedDictionaryNuclid == value || value is null) return;
+            _selectedDictionaryNuclid = value;
             OnPropertyChanged();
             ActivityCalculation.Execute(this);
         }
@@ -123,8 +123,8 @@ public class ActivityCalculatorVM : BaseCalculatorVM
 
     public ActivityCalculatorVM(List<CalculatorRadionuclidDTO> radionuclids)
     {
-        Radionuclids = new ObservableCollection<CalculatorRadionuclidDTO>(radionuclids);
-        RadionuclidsFullList = [.. Radionuclids];
+        RadionuclidDictionary = new ObservableCollection<CalculatorRadionuclidDTO>(radionuclids);
+        RadionuclidsFullList = [.. RadionuclidDictionary];
 
         FilterCommand = new CalculatorFilterAsyncCommand(this);
         ActivityCalculation = new ActivityCalculationAsyncCommand(this);

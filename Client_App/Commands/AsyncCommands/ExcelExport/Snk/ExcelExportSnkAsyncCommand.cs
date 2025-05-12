@@ -59,7 +59,7 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
         using var excelPackage = await InitializeExcelPackage(fullPath);
 
         progressBarVM.SetProgressBar(13, "Заполнение заголовков");
-        var excelSnkWorksheet = await FillExcelHeaders(excelPackage, endSnkDate);
+        var excelSnkWorksheet = await FillExcelHeaders(formNum, excelPackage, endSnkDate);
 
         progressBarVM.SetProgressBar(15, "Загрузка инвентаризационных отчётов");
         var inventoryReportDtoList = await GetInventoryReportDtoList(db, selectedReports.Id, formNum, endSnkDate, cts);
@@ -148,28 +148,56 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
     /// <summary>
     /// Заполняет заголовки Excel пакета.
     /// </summary>
+    /// <param name="formNum">Номер формы.</param>
     /// <param name="excelPackage">Excel пакет.</param>
     /// <param name="date">Дата, на которую формируется СНК.</param>
-    private static async Task<ExcelWorksheet> FillExcelHeaders(ExcelPackage excelPackage, DateOnly date)
+    private static async Task<ExcelWorksheet> FillExcelHeaders(string formNum, ExcelPackage excelPackage, DateOnly date)
     {
         var worksheet = excelPackage.Workbook.Worksheets.Add($"СНК на {date.ToShortDateString()}");
 
-        #region Headers
+        switch (formNum)
+        {
+            case "1.1":
+            {
+                #region Headers
 
-        worksheet.Cells[1, 1].Value = "№ п/п";
-        worksheet.Cells[1, 2].Value = "Номер паспорта (сертификата)";
-        worksheet.Cells[1, 3].Value = "тип";
-        worksheet.Cells[1, 4].Value = "радионуклиды";
-        worksheet.Cells[1, 5].Value = "номер";
-        worksheet.Cells[1, 6].Value = "количество, шт.";
-        worksheet.Cells[1, 7].Value = "суммарная активность, Бк";
-        worksheet.Cells[1, 8].Value = "код ОКПО изготовителя";
-        worksheet.Cells[1, 9].Value = "дата выпуска";
-        worksheet.Cells[1, 10].Value = "категория";
-        worksheet.Cells[1, 11].Value = "НСС, мес";
-        worksheet.Cells[1, 12].Value = "Номер УКТ";
+                worksheet.Cells[1, 1].Value = "№ п/п";
+                worksheet.Cells[1, 2].Value = "Номер паспорта (сертификата)";
+                worksheet.Cells[1, 3].Value = "тип";
+                worksheet.Cells[1, 4].Value = "радионуклиды";
+                worksheet.Cells[1, 5].Value = "номер";
+                worksheet.Cells[1, 6].Value = "количество, шт.";
+                worksheet.Cells[1, 7].Value = "суммарная активность, Бк";
+                worksheet.Cells[1, 8].Value = "код ОКПО изготовителя";
+                worksheet.Cells[1, 9].Value = "дата выпуска";
+                worksheet.Cells[1, 10].Value = "категория";
+                worksheet.Cells[1, 11].Value = "НСС, мес";
+                worksheet.Cells[1, 12].Value = "Номер УКТ";
 
-        #endregion
+                #endregion
+
+                break;
+            }
+            case "1.3":
+            {
+                #region Headers
+
+                worksheet.Cells[1, 1].Value = "№ п/п";
+                worksheet.Cells[1, 2].Value = "Номер паспорта (сертификата)";
+                worksheet.Cells[1, 3].Value = "тип";
+                worksheet.Cells[1, 4].Value = "радионуклиды";
+                worksheet.Cells[1, 5].Value = "номер";
+                worksheet.Cells[1, 6].Value = "активность, Бк";
+                worksheet.Cells[1, 7].Value = "код ОКПО изготовителя";
+                worksheet.Cells[1, 8].Value = "дата выпуска";
+                worksheet.Cells[1, 9].Value = "агрегатное состояние";
+                worksheet.Cells[1, 10].Value = "Номер УКТ";
+
+                #endregion
+
+                break;
+            }
+        }
 
         await AutoFitColumns(worksheet);
 

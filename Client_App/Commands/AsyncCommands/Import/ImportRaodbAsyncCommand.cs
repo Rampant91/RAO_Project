@@ -267,6 +267,7 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"
                 : "ов";
+
         if (AtLeastOneImportDone)
         {
             #region MessageImportDone
@@ -315,9 +316,9 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
 
         #region Test Version
 
-        var t = await db.Database.GetPendingMigrationsAsync();
-        var a = db.Database.GetMigrations();
-        var b = await db.Database.GetAppliedMigrationsAsync();
+        //var t = await db.Database.GetPendingMigrationsAsync();
+        //var a = db.Database.GetMigrations();
+        //var b = await db.Database.GetAppliedMigrationsAsync();
 
         #endregion
 

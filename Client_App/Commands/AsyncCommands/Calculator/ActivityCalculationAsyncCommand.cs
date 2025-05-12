@@ -25,8 +25,8 @@ public partial class ActivityCalculationAsyncCommand : BaseAsyncCommand
     
     private void ActivityCalculatorVMPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(ActivityCalculatorVM.SelectedNuclid.Halflife)
-            or nameof(ActivityCalculatorVM.SelectedNuclid.Unit)
+        if (e.PropertyName is nameof(ActivityCalculatorVM.SelectedDictionaryNuclid.Halflife)
+            or nameof(ActivityCalculatorVM.SelectedDictionaryNuclid.Unit)
             or nameof(ActivityCalculatorVM.InitialActivity)
             or nameof(ActivityCalculatorVM.TimePeriodDouble)
             or nameof(ActivityCalculatorVM.SelectedTimeUnit))
@@ -47,7 +47,7 @@ public partial class ActivityCalculationAsyncCommand : BaseAsyncCommand
                 && double.TryParse(ToExponentialString(_activityCalculatorVM.InitialActivity), out var initialActivityDoubleValue))
             {
                 var timeParam = GetTimeDoubleValueInMinutes(timePeriodDoubleValue, _activityCalculatorVM.SelectedTimeUnit)
-                                / GetTimeDoubleValueInMinutes(_activityCalculatorVM.SelectedNuclid.Halflife, _activityCalculatorVM.SelectedNuclid.Unit);
+                                / GetTimeDoubleValueInMinutes(_activityCalculatorVM.SelectedDictionaryNuclid.Halflife, _activityCalculatorVM.SelectedDictionaryNuclid.Unit);
 
                 var degree = -0.693 * timeParam;
                 var exp = Math.Exp(degree);
@@ -64,7 +64,7 @@ public partial class ActivityCalculationAsyncCommand : BaseAsyncCommand
                 && DateOnly.TryParse(_activityCalculatorVM.ResidualActivityDate, out var residualActivityDate))
             {
                 var timeParam = GetTimeDoubleValueInMinutes(residualActivityDate.DayNumber - initialActivityDate.DayNumber, "сут")
-                                / GetTimeDoubleValueInMinutes(_activityCalculatorVM.SelectedNuclid.Halflife, _activityCalculatorVM.SelectedNuclid.Unit);
+                                / GetTimeDoubleValueInMinutes(_activityCalculatorVM.SelectedDictionaryNuclid.Halflife, _activityCalculatorVM.SelectedDictionaryNuclid.Unit);
 
                 var degree = -0.693 * timeParam;
                 var exp = Math.Exp(degree);

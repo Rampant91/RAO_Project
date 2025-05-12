@@ -9,7 +9,6 @@ using System.Linq;
 using Models.Collections;
 using System.Threading.Tasks;
 using Avalonia.Interactivity;
-using Client_App.Commands.AsyncCommands;
 using ReactiveUI;
 using Client_App.Controls.DataGrid;
 using Client_App.ViewModels;

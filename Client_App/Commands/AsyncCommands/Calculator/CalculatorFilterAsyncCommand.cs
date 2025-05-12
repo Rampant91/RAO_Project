@@ -27,10 +27,10 @@ public class CalculatorFilterAsyncCommand : BaseAsyncCommand
     {
         if (_baseCalculatorVM.RadionuclidsFullList is not null)
         {
-            _baseCalculatorVM.Radionuclids = [.. _baseCalculatorVM.RadionuclidsFullList
-                .Where(x => 
-                    x.Name.Contains(_baseCalculatorVM.Filter, StringComparison.OrdinalIgnoreCase) 
-                    || x.Abbreviation.Contains(_baseCalculatorVM.Filter, StringComparison.OrdinalIgnoreCase))];
+            _baseCalculatorVM.RadionuclidDictionary = [.. _baseCalculatorVM.RadionuclidsFullList
+                .Where(x => _baseCalculatorVM.Filter != null 
+                            && (x.Name.Contains(_baseCalculatorVM.Filter, StringComparison.OrdinalIgnoreCase) 
+                                || x.Abbreviation.Contains(_baseCalculatorVM.Filter, StringComparison.OrdinalIgnoreCase)))];
         }
         return Task.CompletedTask;
     }

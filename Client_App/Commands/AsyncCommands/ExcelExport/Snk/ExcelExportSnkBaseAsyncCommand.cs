@@ -514,9 +514,6 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             .ThenBy(x => x.Key.FacNum)
             .ToDictionary();
 
-        var a = uniqueUnitWithAllOperationDictionary
-            .Where(x => x.Key is { PasNum: "11609", FacNum: "6810" });
-
         return await Task.FromResult(uniqueUnitWithAllOperationDictionary);
     }
 

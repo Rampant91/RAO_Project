@@ -10,7 +10,7 @@
         Background="WhiteSmoke"
         Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.4', FallbackValue='600', Mode=OneWay}"
         Height="{Binding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.4', FallbackValue='800', Mode=OneWay}"
-        MinHeight="510"
+        MinHeight="520"
         MinWidth="600"
         WindowStartupLocation="CenterScreen"
         Title="Контакты">
@@ -74,7 +74,7 @@
                     Margin="10,0,45,10"
                     TextWrapping="WrapWithOverflow"
                     VerticalAlignment="Top"
-                    Text="При обращении, необходимо указать номер формы, а также название графы. Перед обращением настоятельно рекомендуется ознакомиться с приказом №1/13-НПА и НП-067-16."/>
+                    Text="При обращении необходимо указать номер формы/графы, при заполнении которой возникли трудности. Перед обращением настоятельно рекомендуется ознакомиться с приказом №1/13-НПА и НП-067-16."/>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock
                         FontSize="14"

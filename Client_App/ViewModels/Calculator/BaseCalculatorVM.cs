@@ -13,15 +13,15 @@ public class BaseCalculatorVM : BaseVM, INotifyPropertyChanged
 
     public List<CalculatorRadionuclidDTO>? RadionuclidsFullList;
 
-    private ObservableCollection<CalculatorRadionuclidDTO>? _radionuclids;
-    public ObservableCollection<CalculatorRadionuclidDTO>? Radionuclids
+    private ObservableCollection<CalculatorRadionuclidDTO>? _radionuclidDictionary;
+    public ObservableCollection<CalculatorRadionuclidDTO>? RadionuclidDictionary
     {
-        get => _radionuclids;
+        get => _radionuclidDictionary;
         set
         {
-            if (_radionuclids != value && value != null)
+            if (_radionuclidDictionary != value && value != null)
             {
-                _radionuclids = value;
+                _radionuclidDictionary = value;
             }
             OnPropertyChanged();
         }

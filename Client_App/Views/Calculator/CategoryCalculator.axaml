@@ -7,10 +7,11 @@
         xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
         mc:Ignorable="d" 
         x:Class="Client_App.Views.Calculator.CategoryCalculator"
+        x:DataType="vm:CategoryCalculatorVM"
         Icon="/Assets/Radiation_sign.ico"
         Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.4', FallbackValue='600', Mode=OneWay}"
         Height="{Binding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.5', FallbackValue='800', Mode=OneWay}"
-        MinHeight="400"
+        MinHeight="550"
         MinWidth="650"
         WindowStartupLocation="CenterScreen"
         Title="Расчёт категории">
@@ -21,7 +22,7 @@
 
     <Grid
         ColumnDefinitions="0.4*,0.6*"
-        RowDefinitions="0.1*,0.3*,0.6*">
+        RowDefinitions="0.1*,0.25*,0.65*">
         <HeaderedContentControl
             Grid.Column="0"
             Grid.Row="0"
@@ -32,14 +33,18 @@
                 <TextBox
                     Grid.Row="0"
                     Margin="5"
+                    Text="{Binding Path=Filter}"
                     Watermark="Фильтр"/>
                 <DataGrid
                     Grid.Row="1"
                     AutoGenerateColumns="False"
                     CanUserResizeColumns="True"
                     CanUserReorderColumns="False"
+                    DoubleTapped="OnAddButtonClicked"
                     Margin="5"
-                    SelectionMode="Single">
+                    SelectionMode="Single"
+                    Items="{Binding Path=RadionuclidDictionary}"
+                    SelectedItem="{Binding Path=SelectedDictionaryNuclid, Mode=TwoWay}">
                     <DataGrid.Columns>
                         <DataGridTextColumn
                             x:DataType="m:CalculatorRadionuclidDTO"
@@ -86,7 +91,8 @@
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
                     Margin="5"
-                    VerticalAlignment="Center">
+                    VerticalAlignment="Center"
+                    Text="{Binding SelectedNuclid.Abbreviation}">
                 </TextBox>
                 <TextBlock
                     Grid.Column="0"
@@ -104,7 +110,8 @@
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
                     Margin="5"
-                    VerticalAlignment="Center"/>
+                    VerticalAlignment="Center"
+                    Text="{Binding SelectedNuclid.Name}"/>
                 <TextBlock
                     Grid.Column="0"
                     Grid.Row="2"
@@ -120,124 +127,165 @@
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
                     Margin="5"
-                    VerticalAlignment="Center"/>
+                    VerticalAlignment="Center"
+                    Text="{Binding SelectedNuclid.Halflife}"/>
                 <TextBlock
                     Grid.Column="2"
                     Grid.Row="2"
                     Margin="5"
                     HorizontalAlignment="Left"
-                    VerticalAlignment="Center"/>
+                    VerticalAlignment="Center"
+                    Text="{Binding SelectedNuclid.Unit}"/>
             </Grid>
         </HeaderedContentControl>
         <HeaderedContentControl
             Grid.Column="1"
             Grid.Row="2"
             Margin="5"
-            Header="Пересчёт активности">
-
-            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.3*" MinWidth="160"/>
-                    <ColumnDefinition Width="0.5*" MinWidth="150"/>
-                    <ColumnDefinition Width="0.2*" MinWidth="60"/>
-                </Grid.ColumnDefinitions>
-                <RadioButton
-                    Grid.Column="0"
+            Header="Список радионуклидов">
+            <Grid 
+                ColumnDefinitions="0.1*,0.45*,0.45*"
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                <TextBlock 
+                    Grid.Column="1" 
+                    Grid.ColumnSpan="2" 
                     Grid.Row="0"
-                    Content="по диапазону дат"
-                    GroupName="DateType">
-                </RadioButton>
-                <RadioButton
+                    FontSize="12"
+                    HorizontalAlignment="Center"
+                    Margin="0,0,0,10"
+                    Text="Добавьте радионуклиды в список, укажите активность в Бк и количество (1 по умолчанию)"
+                    TextWrapping="WrapWithOverflow"/>
+                <Button 
+                    Grid.Column="0" 
+                    Grid.Row="1" 
+                    Click="OnAddButtonClicked"
+                    FontSize="16"
+                    Height="30"
+                    VerticalAlignment="Bottom"
+                    VerticalContentAlignment="Center"
+                    Width="30">
+                    <TextBlock
+                        FontSize="16"
+                        HorizontalAlignment="Center"
+                        Margin="-3"
+                        Text="&gt;"
+                        VerticalAlignment="Center"/>
+                </Button>
+                <Button
                     Grid.Column="0"
+                    Grid.Row="2"
+                    Click="OnRemoveButtonClicked"
+                    Height="30"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Width="30">
+                    <TextBlock 
+                        FontSize="16"
+                        HorizontalAlignment="Center"
+                        Margin="-3"
+                        Text="&lt;"
+                        VerticalAlignment="Center"/>
+                </Button>
+                <Button
+                    Grid.Column="0"
+                    Grid.Row="3"
+                    Click="OnClearButtonClicked"
+                    FontSize="16"
+                    Height="30"
+                    VerticalAlignment="Top"
+                    VerticalContentAlignment="Center"
+                    Width="30">
+                    <TextBlock
+                        FontSize="16"
+                        HorizontalAlignment="Center"
+                        Margin="-3"
+                        Text="&lt;&lt;"
+                        VerticalAlignment="Center"/>
+                </Button>
+                <DataGrid
+                    Grid.Column="1"
+                    Grid.ColumnSpan="2" 
                     Grid.Row="1"
-                    Content="по отрезку времени"
-                    GroupName="DateType">
-                </RadioButton>
-                <TextBlock
-                    Grid.Column="0"
-                    Grid.Row="2"
+                    Grid.RowSpan="3"
+                    AutoGenerateColumns="False"
+                    CanUserResizeColumns="True"
+                    CanUserReorderColumns="False"
                     Margin="5"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Text="Начальная активность"/>
-                <TextBox
-                    Grid.Column="1"
-                    Grid.Row="2"
-                    Margin="5"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Left"
-                    VerticalAlignment="Center">
-                </TextBox>
-                <TextBlock
-                    Grid.Column="0"
-                    Grid.Row="3"
-                    Margin="5"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Text="Дата начальной активности"/>
-                <CalendarDatePicker
-                    Grid.Column="1"
-                    Grid.Row="3"
-                    Margin="5"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Left"
-                    VerticalAlignment="Center"
-                    Watermark="дд.мм.гг"/>
-                <TextBlock
-                    Grid.Column="0"
-                    Grid.Row="4"
-                    Margin="5"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Text="Дата остаточной активности"/>
-                <CalendarDatePicker
-                    Grid.Column="1"
-                    Grid.Row="4"
-                    Margin="5"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Left"
-                    VerticalAlignment="Center"
-                    Watermark="дд.мм.гг"/>
-                <TextBlock
-                    Grid.Column="0"
-                    Grid.Row="3"
-                    Grid.RowSpan="2"
-                    Margin="5"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Text="Отрезок времени"/>
-                <TextBox
-                    Grid.Column="1"
-                    Grid.Row="3"
-                    Grid.RowSpan="2"
-                    Margin="5"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Left"
-                    VerticalAlignment="Center"/>
-                <ComboBox
-                    Grid.Column="2"
-                    Grid.Row="3"
-                    Grid.RowSpan="2"
-                    Margin="5"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Left"
-                    VerticalAlignment="Center">
-                </ComboBox>
-                <TextBlock
-                    Grid.Column="0"
-                    Grid.Row="5"
-                    Margin="5"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Text="Остаточная активность"/>
-                <TextBox
-                    Grid.Column="1"
-                    Grid.Row="5"
-                    Margin="5"
-                    IsHitTestVisible="False"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Left"
-                    VerticalAlignment="Center"/>
+                    MinHeight="150"
+                    MaxHeight="175"
+                    SelectionMode="Single"
+                    Items="{Binding Path=SelectedRadionuclids}"
+                    SelectedItem="{Binding Path=SelectedNuclid, Mode=TwoWay}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            x:DataType="m:CalculatorRadionuclidDTO"
+                            Width="0.6*"
+                            Header="Радионуклид"
+                            IsReadOnly="True"
+                            Binding="{Binding Path=Name}"/>
+                        <DataGridTextColumn
+                            x:DataType="m:CalculatorRadionuclidDTO"
+                            Width="0.4*"
+                            Header="Обозначение"
+                            IsReadOnly="True"
+                            Binding="{Binding Path=Abbreviation}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Grid 
+                    Grid.Column="0" 
+                    Grid.ColumnSpan="3" 
+                    Grid.Row="4" 
+                    ColumnDefinitions="*,*" 
+                    RowDefinitions="*,*,*">
+                    <TextBlock
+                        Grid.Column="0"
+                        Grid.Row="0"
+                        Margin="5"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Text="Активность"/>
+                    <TextBox
+                        Grid.Column="1"
+                        Grid.Row="0"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Left"
+                        Margin="5"
+                        Text="{Binding Activity}"
+                        VerticalAlignment="Center"/>
+                    <TextBlock
+                        Grid.Column="0"
+                        Grid.Row="1"
+                        Margin="5"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Text="Количество"/>
+                    <TextBox
+                        Grid.Column="1"
+                        Grid.Row="1"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Left"
+                        Margin="5"
+                        Text="{Binding Quantity}"
+                        VerticalAlignment="Center"/>
+                    <TextBlock
+                        Grid.Column="0"
+                        Grid.Row="2"
+                        Margin="5"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Text="Категория ЗРИ"/>
+                    <TextBox
+                        Grid.Column="1"
+                        Grid.Row="2"
+                        ContextMenu="{x:Null}"
+                        IsHitTestVisible="False"
+                        IsReadOnly="True"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Left"
+                        Margin="5"
+                        Text="{Binding Category}"
+                        VerticalAlignment="Center"/>
+                </Grid>
             </Grid>
         </HeaderedContentControl>
     </Grid>

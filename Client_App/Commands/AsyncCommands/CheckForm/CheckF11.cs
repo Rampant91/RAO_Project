@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Client_App.Resources.CustomComparers;
 using Models.CheckForm;
 using Models.Collections;
 using Models.Forms;
@@ -1606,8 +1605,8 @@ public abstract class CheckF11 : CheckBase
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
                 CultureInfo.CreateSpecificCulture("ru-RU"),
                 out var aValue);
-            aValue /= quantity != 0 
-                ? quantity 
+            aValue /= quantity != 0
+                ? quantity
                 : 1.0m;
             if (valid)
             {
@@ -1620,6 +1619,18 @@ public abstract class CheckF11 : CheckBase
                 valid = dbBounds[category].Item1 <= adMinBound
                         && dbBounds[category].Item2 > adMaxBound;
             }
+        }
+        if (!valid)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line + 1).ToString(),
+                Column = "Category_DB",
+                Value = category.ToString(),
+                Message = "Расчетное значение категории ЗРИ не соответствует представленному в отчёте. " +
+                          "Проверьте правильность указания категории ЗРИ, сведений о суммарной активности и радионуклидах."
+            });
         }
         if (!valid)
         {

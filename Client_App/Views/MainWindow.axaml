@@ -24,9 +24,12 @@
     <Design.DataContext>
         <vm:MainWindowVM/>
     </Design.DataContext>
-
+    
     <DockPanel>
         <Menu 
+            x:Name="SubMenuBorder" 
+            BorderBrush="#FF959595" 
+            BorderThickness="1" 
             Background="WhiteSmoke"
             Height="25"
             DockPanel.Dock="Top">
@@ -269,25 +272,19 @@
                             Command="{Binding  ExcelExportSnk}"
                             CommandParameter="1.1"
                             Header="Форма 1.1"/>
-                        <!--
-                        <MenuItem Command="{Binding  ExcelExportSnk}"
-                                  CommandParameter="1.2"
-                                  Header="Форма 1.2"/>
-                        <MenuItem Command="{Binding  ExcelExportSnk}"
-                                  CommandParameter="1.3"
-                                  Header="Форма 1.3"/>
-                        <MenuItem Command="{Binding  ExcelExportSnk}"
-                                  CommandParameter="1.5"
-                                  Header="Форма 1.5"/>-->
+                        <MenuItem 
+                            Command="{Binding  ExcelExportSnk}"
+                            CommandParameter="1.3"
+                            Header="Форма 1.3"/>
                     </MenuItem>
                     <MenuItem Header="Проверка инвентаризации">
                         <MenuItem
                             Command="{Binding  ExcelExportCheckInventories}"
                             CommandParameter="1.1"
                             Header="Форма 1.1"/>
-                        <!--<MenuItem Command="{Binding  ExcelExportCheckInventories}"
+                        <MenuItem Command="{Binding  ExcelExportCheckInventories}"
                                   CommandParameter="1.3"
-                                  Header="Форма 1.3"/>-->
+                                  Header="Форма 1.3"/>
                     </MenuItem>
                 </MenuItem>
                 <Separator/>
@@ -319,14 +316,14 @@
             <MenuItem 
                 Name="ServiceMenu"
                 Header="Сервис">
+                <MenuItem
+                    Command="{Binding OpenCalculator}"
+                    CommandParameter="activity"
+                    Header="Пересчёт активности"/>
                 <MenuItem 
                     Command="{Binding OpenCalculator}" 
                     CommandParameter="category" 
                     Header="Расчёт категории"/>
-                <MenuItem 
-                    Command="{Binding OpenCalculator}" 
-                    CommandParameter="activity" 
-                    Header="Пересчёт активности"/>
                 <Separator/>
                 <MenuItem
                     Command="{Binding OpenFile}" 

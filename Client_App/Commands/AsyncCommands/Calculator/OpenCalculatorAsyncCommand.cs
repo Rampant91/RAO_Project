@@ -55,17 +55,20 @@ public class OpenCalculatorAsyncCommand : BaseAsyncCommand
             var halfLifeString = worksheet.Cells[i, 5].Text;
             var unit = worksheet.Cells[i, 6].Text;
             var code = worksheet.Cells[i, 8].Text;
+            var d = worksheet.Cells[i, 15].Text;
 
             if (double.TryParse(halfLifeString, out var halfLife)
                 && !string.IsNullOrWhiteSpace(name)
                 && !string.IsNullOrWhiteSpace(abbreviation)
                 && !string.IsNullOrWhiteSpace(unit)
-                && !string.IsNullOrWhiteSpace(code))
+                && !string.IsNullOrWhiteSpace(code)
+                && double.TryParse(d, out _))
             {
                 R.Add(new CalculatorRadionuclidDTO
                 {
                     Name = name,
                     Abbreviation = abbreviation,
+                    D = d,
                     Halflife = halfLife,
                     Unit = unit,
                     Code = code
