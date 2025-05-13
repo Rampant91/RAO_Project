@@ -497,7 +497,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                     var pairWithLastOpDate = filteredDictionary
                         .First(x => x.Value.Contains(lastForm));
 
-                    if (SerialNumbersIsEmpty(pairWithLastOpDate.Key.PasNum, pairWithLastOpDate.Key.FacNum))
+                    if (SerialNumbersIsEmpty(pairWithLastOpDate.Key.PasNum, pairWithLastOpDate.Key.FacNum) && formNum != "1.3")
                     {
                         var quantity = await SumQuantityForEmptySerialNums(pairWithLastOpDate, formNum);
                         if (form.Quantity != quantity) continue;
@@ -607,6 +607,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         {
             switch (formNum)
             {
+                #region 1.1
+                
                 case "1.1":
                 {
                     var currentInventoryForms11StringDateDtoList = await db.ReportCollectionDbSet
@@ -627,21 +629,21 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                                 NumberInOrder = form11.NumberInOrder_DB,
                                 OpCode = form11.OperationCode_DB,
                                 OpDate = form11.OperationDate_DB,
-                                PasNum = snkParams == null || snkParams.CheckPasNum 
-                                    ? form11.PassportNumber_DB 
+                                PasNum = snkParams == null || snkParams.CheckPasNum
+                                    ? form11.PassportNumber_DB
                                     : string.Empty,
-                                Type = snkParams == null || snkParams.CheckType 
-                                    ? form11.Type_DB 
+                                Type = snkParams == null || snkParams.CheckType
+                                    ? form11.Type_DB
                                     : string.Empty,
-                                Radionuclids = snkParams == null || snkParams.CheckRadionuclids 
-                                    ? form11.Radionuclids_DB 
+                                Radionuclids = snkParams == null || snkParams.CheckRadionuclids
+                                    ? form11.Radionuclids_DB
                                     : string.Empty,
-                                FacNum = snkParams == null || snkParams.CheckFacNum 
-                                    ? form11.FactoryNumber_DB 
+                                FacNum = snkParams == null || snkParams.CheckFacNum
+                                    ? form11.FactoryNumber_DB
                                     : string.Empty,
                                 Quantity = form11.Quantity_DB,
-                                PackNumber = snkParams == null || snkParams.CheckPackNumber 
-                                    ? form11.PackNumber_DB 
+                                PackNumber = snkParams == null || snkParams.CheckPackNumber
+                                    ? form11.PackNumber_DB
                                     : string.Empty
                             }))
                         .ToListAsync(cts.Token);
@@ -667,6 +669,11 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                     inventoryFormsDtoList.AddRange(currentInventoryForms11DtoList);
                     break;
                 }
+
+                #endregion
+
+                #region 1.3
+                
                 case "1.3":
                 {
                     var currentInventoryForms13StringDateDtoList = await db.ReportCollectionDbSet
@@ -690,14 +697,14 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                                 PasNum = snkParams == null || snkParams.CheckPasNum
                                     ? form13.PassportNumber_DB
                                     : string.Empty,
-                                Type = snkParams == null || snkParams.CheckType 
-                                    ? form13.Type_DB 
+                                Type = snkParams == null || snkParams.CheckType
+                                    ? form13.Type_DB
                                     : string.Empty,
                                 Radionuclids = snkParams == null || snkParams.CheckRadionuclids
                                     ? form13.Radionuclids_DB
                                     : string.Empty,
-                                FacNum = snkParams == null || snkParams.CheckFacNum 
-                                    ? form13.FactoryNumber_DB 
+                                FacNum = snkParams == null || snkParams.CheckFacNum
+                                    ? form13.FactoryNumber_DB
                                     : string.Empty,
                                 PackNumber = snkParams == null || snkParams.CheckPackNumber
                                     ? form13.PackNumber_DB
@@ -720,14 +727,18 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                             Type = x.Type,
                             Radionuclids = x.Radionuclids,
                             FacNum = x.FacNum,
+                            Quantity = 1,
                             PackNumber = x.PackNumber
                         });
                     inventoryFormsDtoList.AddRange(currentInventoryForms13DtoList);
                     break;
                 }
+
+                #endregion
             }
         }
-        var (summedInventoryFormsDtoList, inventoryDuplicateErrors) = await GetSummedInventoryDtoList(inventoryFormsDtoList);
+
+        var (summedInventoryFormsDtoList, inventoryDuplicateErrors) = await GetSummedInventoryDtoList(inventoryFormsDtoList, formNum);
 
         var firstInventoryDate = summedInventoryFormsDtoList.Count == 0
             ? new DateOnly(2022, 1, 1)
@@ -752,7 +763,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     /// </summary>
     /// <param name="inventoryFormsDtoList">Список DTO операций инвентаризации.</param>
     /// <returns>Список DTO операций инвентаризации, просуммированный по количеству для первой даты.</returns>
-    private static Task<(List<ShortFormDTO>, List<ShortFormDTO>)> GetSummedInventoryDtoList(List<ShortFormDTO> inventoryFormsDtoList)
+    private static Task<(List<ShortFormDTO>, List<ShortFormDTO>)> GetSummedInventoryDtoList(List<ShortFormDTO> inventoryFormsDtoList, string formNum)
     {
         List<ShortFormDTO> newInventoryFormsDtoList = [];
         List<ShortFormDTO> inventoryDuplicateErrors = [];
@@ -771,7 +782,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
             if (matchingForm != null)
             {
-                if (SerialNumbersIsEmpty(form.PasNum, form.FacNum))
+                if (formNum is "1.3" || SerialNumbersIsEmpty(form.PasNum, form.FacNum))
                 {
                     matchingForm.Quantity += form.Quantity;
                 }
@@ -808,29 +819,37 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     {
         var inventoryReportDtoList = formNum switch
         {
-            "1.1" => await db.ReportsCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(x => x.DBObservable)
-                .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows11)
-                .Where(reps => reps.DBObservable != null && reps.Id == repsId)
-                .SelectMany(reps => reps.Report_Collection
-                    .Where(rep => rep.FormNum_DB == formNum && rep.Rows11.Any(form => form.OperationCode_DB == "10"))
-                    .Select(rep => new ShortReportStringDateDTO(rep.Id, rep.StartPeriod_DB, rep.EndPeriod_DB)))
-                .ToListAsync(cts.Token),
+            #region 1.1
 
+            "1.1" => await db.ReportsCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Include(x => x.DBObservable)
+                    .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows11)
+                    .Where(reps => reps.DBObservable != null && reps.Id == repsId)
+                    .SelectMany(reps => reps.Report_Collection
+                        .Where(rep => rep.FormNum_DB == formNum && rep.Rows11.Any(form => form.OperationCode_DB == "10"))
+                        .Select(rep => new ShortReportStringDateDTO(rep.Id, rep.StartPeriod_DB, rep.EndPeriod_DB)))
+                    .ToListAsync(cts.Token),
+
+            #endregion
+
+            #region 1.3
+            
             "1.3" => await db.ReportsCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(x => x.DBObservable)
-                .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows13)
-                .Where(reps => reps.DBObservable != null && reps.Id == repsId)
-                .SelectMany(reps => reps.Report_Collection
-                    .Where(rep => rep.FormNum_DB == formNum && rep.Rows13.Any(form => form.OperationCode_DB == "10"))
-                    .Select(rep => new ShortReportStringDateDTO(rep.Id, rep.StartPeriod_DB, rep.EndPeriod_DB)))
-                .ToListAsync(cts.Token),
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Include(x => x.DBObservable)
+                    .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows13)
+                    .Where(reps => reps.DBObservable != null && reps.Id == repsId)
+                    .SelectMany(reps => reps.Report_Collection
+                        .Where(rep => rep.FormNum_DB == formNum && rep.Rows13.Any(form => form.OperationCode_DB == "10"))
+                        .Select(rep => new ShortReportStringDateDTO(rep.Id, rep.StartPeriod_DB, rep.EndPeriod_DB)))
+                    .ToListAsync(cts.Token),
+
+            #endregion
 
             _ => throw new ArgumentOutOfRangeException(nameof(formNum), formNum, null)
         };

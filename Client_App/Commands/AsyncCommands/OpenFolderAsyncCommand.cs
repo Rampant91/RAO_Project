@@ -21,6 +21,9 @@ public class OpenFolderAsyncCommand : BaseAsyncCommand
             {
                 folderPath = AppContext.BaseDirectory;
 
+                var msg = $"{AppContext.BaseDirectory}";
+                ServiceExtension.LoggerManager.Warning(msg);
+
                 break;
             }
             case "excel":
