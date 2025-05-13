@@ -22,7 +22,7 @@ public class OpenFolderAsyncCommand : BaseAsyncCommand
                 folderPath = AppContext.BaseDirectory;
 
                 var msg = $"{AppContext.BaseDirectory}";
-                ServiceExtension.LoggerManager.Warning(msg);
+                ServiceExtension.LoggerManager.Warning(msg + "- baseFolder");
 
                 break;
             }
@@ -32,6 +32,8 @@ public class OpenFolderAsyncCommand : BaseAsyncCommand
                 folderPath = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Excel");
 #else
                 folderPath = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Excel");
+
+                ServiceExtension.LoggerManager.Warning(folderPath + "- excelFolder");
 #endif
                 break;
             }
