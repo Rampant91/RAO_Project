@@ -7,7 +7,6 @@ using System.IO;
 using System.Threading.Tasks;
 using Client_App.Properties;
 using MessageBox.Avalonia.DTO;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -29,8 +28,6 @@ public class OpenFolderAsyncCommand : BaseAsyncCommand
                 folderPath = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Excel");
 #else
                 folderPath = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Excel");
-
-                ServiceExtension.LoggerManager.Warning(folderPath + "- excelFolder");
 #endif
                 break;
             }
