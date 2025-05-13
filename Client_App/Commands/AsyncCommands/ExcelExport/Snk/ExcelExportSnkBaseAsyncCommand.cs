@@ -56,11 +56,10 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     }
 
     #endregion
-    
-    #region DTO
 
-    private protected class SnkForm11DTO(string facNum, string pasNum, int quantity, string radionuclids, string type, string activity,
-        string creatorOKPO, string creationDate, short? category, float? signedServicePeriod, string packNumber)
+    #region DTO
+    private protected abstract class SnkFormDTO(string facNum, string pasNum, int quantity, string radionuclids, string type, string activity,
+        string creatorOKPO, string creationDate, string packNumber)
     {
         public readonly string PasNum = pasNum;
 
@@ -78,15 +77,27 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
         public readonly string CreationDate = creationDate;
 
-        public readonly short? Category = category;
-
-        public readonly float? SignedServicePeriod = signedServicePeriod;
-
         public readonly string PackNumber = packNumber;
     }
 
+    private protected class SnkForm11DTO(string facNum, string pasNum, int quantity, string radionuclids, string type, string activity,
+        string creatorOKPO, string creationDate, short? category, float? signedServicePeriod, string packNumber) 
+        : SnkFormDTO(facNum, pasNum, quantity, radionuclids, type, activity, creatorOKPO, creationDate, packNumber)
+    {
+        public readonly short? Category = category;
+
+        public readonly float? SignedServicePeriod = signedServicePeriod;
+    }
+
+    private protected class SnkForm13DTO(string facNum, string pasNum, int quantity, string radionuclids, string type, string activity,
+        string creatorOKPO, string creationDate, short? aggregateState, string packNumber)
+        : SnkFormDTO(facNum, pasNum, quantity, radionuclids, type, activity, creatorOKPO, creationDate, packNumber)
+    {
+        public readonly short? AggregateState = aggregateState;
+    }
+
     #region ShortFormDTO
-    
+
     private protected class ShortFormDTO
     {
         public int Id { get; set; }
@@ -470,7 +481,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                         && radsComparer.Equals(keyValuePair.Key.Radionuclids, form.Radionuclids)
                         && comparer.Equals(keyValuePair.Key.Type, form.Type)
                         && (comparer.Equals(keyValuePair.Key.PackNumber, form.PackNumber) || form.OpCode is "53" or "54")
-                        && (SerialNumbersIsEmpty(keyValuePair.Key.PasNum, keyValuePair.Key.FacNum)
+                        && (formNum is "1.3" 
+                            || SerialNumbersIsEmpty(keyValuePair.Key.PasNum, keyValuePair.Key.FacNum)
                             || keyValuePair.Key.Quantity == form.Quantity))
                     .ToDictionary();
 
@@ -497,7 +509,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                     var pairWithLastOpDate = filteredDictionary
                         .First(x => x.Value.Contains(lastForm));
 
-                    if (SerialNumbersIsEmpty(pairWithLastOpDate.Key.PasNum, pairWithLastOpDate.Key.FacNum) && formNum != "1.3")
+                    if (formNum is "1.3" ||SerialNumbersIsEmpty(pairWithLastOpDate.Key.PasNum, pairWithLastOpDate.Key.FacNum))
                     {
                         var quantity = await SumQuantityForEmptySerialNums(pairWithLastOpDate, formNum);
                         if (form.Quantity != quantity) continue;
@@ -666,6 +678,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                             Quantity = x.Quantity ?? 0,
                             PackNumber = x.PackNumber
                         });
+
                     inventoryFormsDtoList.AddRange(currentInventoryForms11DtoList);
                     break;
                 }
@@ -893,6 +906,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
         var plusMinusOperationDtoList = formNum switch
         {
+            #region 1.1
+            
             "1.1" => await db.form_11
                 .AsNoTracking()
                 .AsSplitQuery()
@@ -930,6 +945,10 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 })
                 .ToListAsync(cts.Token),
 
+            #endregion
+
+            #region 1.3
+            
             "1.3" => await db.form_13
                 .AsNoTracking()
                 .AsSplitQuery()
@@ -957,6 +976,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                     PasNum = snkParams == null || snkParams.CheckPasNum
                         ? form.PassportNumber_DB
                         : string.Empty,
+                    Quantity = 1,
                     Radionuclids = snkParams == null || snkParams.CheckRadionuclids
                         ? form.Radionuclids_DB
                         : string.Empty,
@@ -964,7 +984,9 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                         ? form.Type_DB
                         : string.Empty
                 })
-                .ToListAsync(cts.Token),
+                .ToListAsync(cts.Token), 
+            
+            #endregion
 
             _ => throw new ArgumentOutOfRangeException(nameof(formNum), formNum, null)
         };
@@ -1030,6 +1052,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
         var rechargeOperationDtoList = formNum switch
         {
+            #region 1.1
+            
             "1.1" => await db.form_11
                 .AsNoTracking()
                 .AsSplitQuery()
@@ -1066,40 +1090,47 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 })
                 .ToListAsync(cts.Token),
 
+            #endregion
+
+            #region 1.3
+            
             "1.3" => await db.form_13
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(x => x.Report)
-                .Where(x => x.Report != null
-                            && reportIds.Contains(x.Report.Id)
-                            && (x.OperationCode_DB == "53" || x.OperationCode_DB == "54"))
-                .Select(form => new ShortFormStringDatesDTO
-                {
-                    Id = form.Id,
-                    NumberInOrder = form.NumberInOrder_DB,
-                    RepId = form.Report!.Id,
-                    StDate = form.Report.StartPeriod_DB,
-                    EndDate = form.Report.EndPeriod_DB,
-                    FacNum = snkParams == null || snkParams.CheckFacNum
-                        ? form.FactoryNumber_DB
-                        : string.Empty,
-                    OpCode = form.OperationCode_DB,
-                    OpDate = form.OperationDate_DB,
-                    PackNumber = snkParams == null || snkParams.CheckPackNumber
-                        ? form.PackNumber_DB
-                        : string.Empty,
-                    PasNum = snkParams == null || snkParams.CheckPasNum
-                        ? form.PassportNumber_DB
-                        : string.Empty,
-                    Radionuclids = snkParams == null || snkParams.CheckRadionuclids
-                        ? form.Radionuclids_DB
-                        : string.Empty,
-                    Type = snkParams == null || snkParams.CheckType
-                        ? form.Type_DB
-                        : string.Empty
-                })
-                .ToListAsync(cts.Token),
+               .AsNoTracking()
+               .AsSplitQuery()
+               .AsQueryable()
+               .Include(x => x.Report)
+               .Where(x => x.Report != null
+                           && reportIds.Contains(x.Report.Id)
+                           && (x.OperationCode_DB == "53" || x.OperationCode_DB == "54"))
+               .Select(form => new ShortFormStringDatesDTO
+               {
+                   Id = form.Id,
+                   NumberInOrder = form.NumberInOrder_DB,
+                   RepId = form.Report!.Id,
+                   StDate = form.Report.StartPeriod_DB,
+                   EndDate = form.Report.EndPeriod_DB,
+                   FacNum = snkParams == null || snkParams.CheckFacNum
+                       ? form.FactoryNumber_DB
+                       : string.Empty,
+                   OpCode = form.OperationCode_DB,
+                   OpDate = form.OperationDate_DB,
+                   PackNumber = snkParams == null || snkParams.CheckPackNumber
+                       ? form.PackNumber_DB
+                       : string.Empty,
+                   PasNum = snkParams == null || snkParams.CheckPasNum
+                       ? form.PassportNumber_DB
+                       : string.Empty,
+                   Quantity = 1,
+                   Radionuclids = snkParams == null || snkParams.CheckRadionuclids
+                       ? form.Radionuclids_DB
+                       : string.Empty,
+                   Type = snkParams == null || snkParams.CheckType
+                       ? form.Type_DB
+                       : string.Empty
+               })
+               .ToListAsync(cts.Token), 
+            
+            #endregion
 
             _ => throw new ArgumentOutOfRangeException(nameof(formNum), formNum, null)
         };
@@ -1183,9 +1214,9 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         var radsComparer = new CustomSnkRadionuclidsEqualityComparer();
         foreach (var (unit, operations) in uniqueUnitWithAllOperationDictionary)
         {
-            #region SerialNumEmpty
-            
-            if (SerialNumbersIsEmpty(unit.PasNum, unit.FacNum))
+            #region 1.3 || SerialNumEmpty
+
+            if (formNum is "1.3" || SerialNumbersIsEmpty(unit.PasNum, unit.FacNum))
             {
                 var quantity = operations
                     .FirstOrDefault(x => x.OpCode == "10" && x.OpDate == firstInventoryDate)

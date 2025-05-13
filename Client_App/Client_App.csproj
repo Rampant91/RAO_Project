@@ -15,9 +15,13 @@
   </ItemGroup>
   <ItemGroup>
     <AvaloniaXaml Remove="Models\**" />
+    <AvaloniaXaml Remove="Tools\**" />
     <Compile Remove="Models\**" />
+    <Compile Remove="Tools\**" />
     <EmbeddedResource Remove="Models\**" />
+    <EmbeddedResource Remove="Tools\**" />
     <None Remove="Models\**" />
+    <None Remove="Tools\**" />
   </ItemGroup>
   <ItemGroup>
     <AvaloniaResource Remove="Assets\logo.ico" />
@@ -164,8 +168,5 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Tools\" />
   </ItemGroup>
 </Project>
