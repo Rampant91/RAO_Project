@@ -36,6 +36,17 @@ public class ActivityCalculatorVM : BaseCalculatorVM
         }
     }
 
+    private bool _isDateRangeTextVisible;
+    public bool IsDateRangeTextVisible
+    {
+        get => _isDateRangeTextVisible;
+        set
+        {
+            _isDateRangeTextVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
     public static string[] TimeUnitArray { get; } = ["мин", "час", "сут", "лет"];
 
     private string _selectedTimeUnit = "мин";

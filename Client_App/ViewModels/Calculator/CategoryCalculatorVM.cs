@@ -52,9 +52,12 @@ public class CategoryCalculatorVM : BaseCalculatorVM
         get => _activity;
         set
         {
-            _activity = value;
-            OnPropertyChanged();
-            CategoryCalculation.Execute(null);
+            if (_activity != value)
+            {
+                _activity = value;
+                OnPropertyChanged();
+                CategoryCalculation.Execute(null);
+            }
         }
     }
 
@@ -64,8 +67,25 @@ public class CategoryCalculatorVM : BaseCalculatorVM
         get => _category;
         set
         {
-            _category = value;
-            OnPropertyChanged();
+            if (_category != value)
+            {
+                _category = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    private string _categoryText;
+    public string CategoryText
+    {
+        get => _categoryText;
+        set
+        {
+            if (_categoryText != value)
+            {
+                _categoryText = value;
+                OnPropertyChanged();
+            }
         }
     }
 
@@ -75,9 +95,12 @@ public class CategoryCalculatorVM : BaseCalculatorVM
         get => _quantity;
         set
         {
-            _quantity = value;
-            OnPropertyChanged();
-            CategoryCalculation.Execute(null);
+            if (_quantity != value)
+            {
+                _quantity = value;
+                OnPropertyChanged();
+                CategoryCalculation.Execute(null);
+            }
         }
     }
 

@@ -43,6 +43,8 @@ public partial class ActivityCalculationAsyncCommand : BaseAsyncCommand
     {
         if (_activityCalculatorVM is { IsDateRange: false })
         {
+            _activityCalculatorVM.IsDateRangeTextVisible = false;
+
             if (double.TryParse(ToExponentialString(_activityCalculatorVM.TimePeriodDouble), out var timePeriodDoubleValue) 
                 && double.TryParse(ToExponentialString(_activityCalculatorVM.InitialActivity), out var initialActivityDoubleValue))
             {
@@ -59,20 +61,48 @@ public partial class ActivityCalculationAsyncCommand : BaseAsyncCommand
         }
         else if (_activityCalculatorVM is { IsDateRange: true })
         {
-            if (double.TryParse(ToExponentialString(_activityCalculatorVM.InitialActivity), out var initialActivityDoubleValue)
-                && DateOnly.TryParse(_activityCalculatorVM.InitialActivityDate, out var initialActivityDate)
-                && DateOnly.TryParse(_activityCalculatorVM.ResidualActivityDate, out var residualActivityDate))
+            if (!(double.TryParse(ToExponentialString(_activityCalculatorVM.InitialActivity), out var initialActivityDoubleValue)
+                  && DateOnly.TryParse(_activityCalculatorVM.InitialActivityDate, out var initialActivityDate)
+                  && DateOnly.TryParse(_activityCalculatorVM.ResidualActivityDate, out var residualActivityDate)))
             {
-                var timeParam = GetTimeDoubleValueInMinutes(residualActivityDate.DayNumber - initialActivityDate.DayNumber, "сут")
-                                / GetTimeDoubleValueInMinutes(_activityCalculatorVM.SelectedDictionaryNuclid.Halflife, _activityCalculatorVM.SelectedDictionaryNuclid.Unit);
-
-                var degree = -0.693 * timeParam;
-                var exp = Math.Exp(degree);
-                var activity = initialActivityDoubleValue * exp;
-
-                _activityCalculatorVM.ResidualActivity = ToExponentialString(activity);
+                _activityCalculatorVM.IsDateRangeTextVisible = false;
+                _activityCalculatorVM.ResidualActivity = string.Empty;
+                return Task.CompletedTask;
             }
-            else _activityCalculatorVM.ResidualActivity = string.Empty;
+
+            _activityCalculatorVM.IsDateRangeTextVisible = initialActivityDate > residualActivityDate;
+            if (initialActivityDate > residualActivityDate)
+            {
+                _activityCalculatorVM.ResidualActivity = string.Empty;
+                return Task.CompletedTask;
+            }
+
+            var timeParam = GetTimeDoubleValueInMinutes(residualActivityDate.DayNumber - initialActivityDate.DayNumber, "сут")
+                            / GetTimeDoubleValueInMinutes(_activityCalculatorVM.SelectedDictionaryNuclid.Halflife, _activityCalculatorVM.SelectedDictionaryNuclid.Unit);
+
+            var degree = -0.693 * timeParam;
+            var exp = Math.Exp(degree);
+            var activity = initialActivityDoubleValue * exp;
+
+            _activityCalculatorVM.ResidualActivity = ToExponentialString(activity);
+
+            //if (double.TryParse(ToExponentialString(_activityCalculatorVM.InitialActivity), out var initialActivityDoubleValue)
+            //    && DateOnly.TryParse(_activityCalculatorVM.InitialActivityDate, out var initialActivityDate)
+            //    && DateOnly.TryParse(_activityCalculatorVM.ResidualActivityDate, out var residualActivityDate))
+            //{
+            //    _activityCalculatorVM.IsDateRangeTextVisible = initialActivityDate > residualActivityDate;
+            //    if (initialActivityDate > residualActivityDate) return Task.CompletedTask;
+
+            //    var timeParam = GetTimeDoubleValueInMinutes(residualActivityDate.DayNumber - initialActivityDate.DayNumber, "сут")
+            //                    / GetTimeDoubleValueInMinutes(_activityCalculatorVM.SelectedDictionaryNuclid.Halflife, _activityCalculatorVM.SelectedDictionaryNuclid.Unit);
+
+            //    var degree = -0.693 * timeParam;
+            //    var exp = Math.Exp(degree);
+            //    var activity = initialActivityDoubleValue * exp;
+
+            //    _activityCalculatorVM.ResidualActivity = ToExponentialString(activity);
+            //}
+            //else _activityCalculatorVM.ResidualActivity = string.Empty;
         }
         return Task.CompletedTask;
     }

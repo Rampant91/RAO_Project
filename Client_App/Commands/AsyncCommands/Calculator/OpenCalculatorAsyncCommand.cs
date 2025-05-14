@@ -17,7 +17,7 @@ public class OpenCalculatorAsyncCommand : BaseAsyncCommand
 
     public override Task AsyncExecute(object? parameter)
     {
-        if (R.Count == 0) R_Populate_From_File();
+        if (R.Count == 0) R_Populate_From_File(parameter);
 
         Window dialogWindow = parameter switch
         {
@@ -32,7 +32,7 @@ public class OpenCalculatorAsyncCommand : BaseAsyncCommand
 
     #region RFromFile
 
-    private static void R_Populate_From_File()
+    private static void R_Populate_From_File(object? parameter)
     {
 
 #if DEBUG
@@ -54,15 +54,16 @@ public class OpenCalculatorAsyncCommand : BaseAsyncCommand
             var abbreviation = worksheet.Cells[i, 4].Text;
             var halfLifeString = worksheet.Cells[i, 5].Text;
             var unit = worksheet.Cells[i, 6].Text;
-            var code = worksheet.Cells[i, 8].Text;
             var d = worksheet.Cells[i, 15].Text;
+            var mza = worksheet.Cells[i, 17].Text;
 
             if (double.TryParse(halfLifeString, out var halfLife)
                 && !string.IsNullOrWhiteSpace(name)
                 && !string.IsNullOrWhiteSpace(abbreviation)
                 && !string.IsNullOrWhiteSpace(unit)
-                && !string.IsNullOrWhiteSpace(code)
-                && double.TryParse(d, out _))
+                && (parameter is not "category" 
+                    || (double.TryParse(mza, out _) 
+                        && (double.TryParse(d, out _) || string.Equals(d, "неограничено", StringComparison.OrdinalIgnoreCase)))))
             {
                 R.Add(new CalculatorRadionuclidDTO
                 {
@@ -71,7 +72,7 @@ public class OpenCalculatorAsyncCommand : BaseAsyncCommand
                     D = d,
                     Halflife = halfLife,
                     Unit = unit,
-                    Code = code
+                    Mza = mza
                 });
             }
             i++;

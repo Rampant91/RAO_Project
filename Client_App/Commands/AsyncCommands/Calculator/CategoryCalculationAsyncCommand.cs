@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Models.DTO;
 using System.Text.RegularExpressions;
+using System;
+using Client_App.Views.Calculator;
 
 namespace Client_App.Commands.AsyncCommands.Calculator;
 
@@ -106,17 +108,37 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
             { 4, (0.01m, 1) },
             { 5, (0, 0.01m) }
         };
+
+        var radsSet = _categoryCalculatorVM.SelectedRadionuclids.ToHashSet();
         var activity = ToExponentialString(_categoryCalculatorVM.Activity);
+        var valid = decimal.TryParse(activity,
+            NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
+            CultureInfo.CreateSpecificCulture("ru-RU"),
+            out var aValue);
+
         if (!uint.TryParse(_categoryCalculatorVM.Quantity, out var quantityUintValue))
         {
             _categoryCalculatorVM.Quantity = string.Empty;
             return Task.CompletedTask;
         }
-        
-        var radsSet = _categoryCalculatorVM.SelectedRadionuclids.ToHashSet();
+
+        if (radsSet.Count is 0 || !valid)
+        {
+            _categoryCalculatorVM.Category = string.Empty;
+            _categoryCalculatorVM.CategoryText = SetCategoryText();
+            return Task.CompletedTask;
+        }
 
         List<decimal> dValueList = [];
         _ = CheckEquilibriumRads(radsSet);
+
+        if (radsSet.Any(x => string.Equals(x.D, "неограничено", StringComparison.OrdinalIgnoreCase))
+            && valid)
+        {
+            _categoryCalculatorVM.Category = "5";
+            _categoryCalculatorVM.CategoryText = SetCategoryText();
+            return Task.CompletedTask;
+        }
         
         foreach (var nuclidName in radsSet.Select(x => x.Name))
         {
@@ -136,13 +158,11 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
 
         var dMinValue = dValueList.Min();
         var dMaxValue = dValueList.Max();
-        var valid = decimal.TryParse(activity,
-            NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-            CultureInfo.CreateSpecificCulture("ru-RU"),
-            out var aValue);
+
         aValue /= quantityUintValue != 0
             ? quantityUintValue
             : 1.0m;
+
         if (valid)
         {
             var adMinBound = dMaxValue == 0.0m
@@ -158,6 +178,7 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
                     && dbBounds[category].Item2 > adMaxBound)
                 {
                     _categoryCalculatorVM.Category = category.ToString();
+                    _categoryCalculatorVM.CategoryText = SetCategoryText();
                     return Task.CompletedTask;
                 }
             }
@@ -194,6 +215,40 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
             return isEqRads;
         });
         return isEqRads;
+    }
+
+    #endregion
+
+    #region SetCategoryText
+
+    private string SetCategoryText()
+    {
+        var minMza = _categoryCalculatorVM.SelectedRadionuclids
+            .Select(x => (
+                Success: decimal.TryParse(x.Mza, 
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
+                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                    out var value), 
+                Value: value))
+            .Where(pair => pair.Success)
+            .Min(pair => pair.Value);
+
+        var activityValid = decimal.TryParse(_categoryCalculatorVM.Activity,
+            NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
+            CultureInfo.CreateSpecificCulture("ru-RU"),
+            out var activity);
+
+        if (activityValid && activity < minMza) return "Нерадиоактивный, активность ниже МЗА.";
+
+        return _categoryCalculatorVM.Category switch
+        {
+            "1" => "Чрезвычайно опасно для человека (A/D >= 1000)",
+            "2" => "Очень опасно для человека (10 <= A/D < 1000)",
+            "3" => "Опасно для человека (1 <= A/D < 10)",
+            "4" => "Опасность для человека маловероятна (0,01 <= A/D < 1)",
+            "5" => "Опасность для человека очень маловероятна (A/D < 0,01)",
+            _ => string.Empty
+        };
     }
 
     #endregion

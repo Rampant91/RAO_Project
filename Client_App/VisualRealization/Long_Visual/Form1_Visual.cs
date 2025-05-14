@@ -11,6 +11,7 @@ using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.Controls.MaskedTextBox;
 using Client_App.VisualRealization.Converters;
 using Models.Attributes;
+using Models.DBRealization;
 
 namespace Client_App.VisualRealization.Long_Visual;
 

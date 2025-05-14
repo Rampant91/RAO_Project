@@ -282,7 +282,7 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
                         worksheet.Cells[currentRow, 5].Value = ConvertToExcelString(form13.FacNum);
                         worksheet.Cells[currentRow, 6].Value = ConvertToExcelDouble(form13.Activity);
                         worksheet.Cells[currentRow, 7].Value = ConvertToExcelString(form13.CreatorOKPO);
-                        worksheet.Cells[currentRow, 8].Value = ConvertToExcelDate(form13.CreationDate, worksheet, currentRow, 9);
+                        worksheet.Cells[currentRow, 8].Value = ConvertToExcelDate(form13.CreationDate, worksheet, currentRow, 8);
                         worksheet.Cells[currentRow, 9].Value = form13.AggregateState is 0 ? "-" : form13.AggregateState;
                         worksheet.Cells[currentRow, 10].Value = ConvertToExcelString(form13.PackNumber);
 

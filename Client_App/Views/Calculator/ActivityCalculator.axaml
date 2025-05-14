@@ -148,7 +148,7 @@
             Margin="5"
             Header="Пересчёт активности">
 
-            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.3*" MinWidth="160"/>
                     <ColumnDefinition Width="0.5*" MinWidth="150"/>
@@ -267,6 +267,16 @@
                     HorizontalContentAlignment="Left"
                     VerticalAlignment="Center"
                     Text="{Binding ResidualActivity}"/>
+                <TextBlock
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Grid.Row="6"
+                    IsVisible="{Binding IsDateRangeTextVisible}"
+                    Foreground="Red"
+                    Margin="5"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Text="Дата начальной активности превышает дату остаточной!"/>
             </Grid>
         </HeaderedContentControl>
     </Grid>

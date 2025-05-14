@@ -138,6 +138,15 @@ public static partial class StaticStringMethods
                 : value;
     }
 
+    public static object ConvertToExcelShort(string value)
+    {
+        return value is null or "" or "-"
+            ? "-"
+            : short.TryParse(ReplaceE(value), out var shortValue)
+                ? shortValue
+                : value;
+    }
+
     public static object ConvertToExcelString(string value)
     {
         return value is null or "" or "-"
