@@ -85,24 +85,6 @@ public partial class ActivityCalculationAsyncCommand : BaseAsyncCommand
             var activity = initialActivityDoubleValue * exp;
 
             _activityCalculatorVM.ResidualActivity = ToExponentialString(activity);
-
-            //if (double.TryParse(ToExponentialString(_activityCalculatorVM.InitialActivity), out var initialActivityDoubleValue)
-            //    && DateOnly.TryParse(_activityCalculatorVM.InitialActivityDate, out var initialActivityDate)
-            //    && DateOnly.TryParse(_activityCalculatorVM.ResidualActivityDate, out var residualActivityDate))
-            //{
-            //    _activityCalculatorVM.IsDateRangeTextVisible = initialActivityDate > residualActivityDate;
-            //    if (initialActivityDate > residualActivityDate) return Task.CompletedTask;
-
-            //    var timeParam = GetTimeDoubleValueInMinutes(residualActivityDate.DayNumber - initialActivityDate.DayNumber, "сут")
-            //                    / GetTimeDoubleValueInMinutes(_activityCalculatorVM.SelectedDictionaryNuclid.Halflife, _activityCalculatorVM.SelectedDictionaryNuclid.Unit);
-
-            //    var degree = -0.693 * timeParam;
-            //    var exp = Math.Exp(degree);
-            //    var activity = initialActivityDoubleValue * exp;
-
-            //    _activityCalculatorVM.ResidualActivity = ToExponentialString(activity);
-            //}
-            //else _activityCalculatorVM.ResidualActivity = string.Empty;
         }
         return Task.CompletedTask;
     }

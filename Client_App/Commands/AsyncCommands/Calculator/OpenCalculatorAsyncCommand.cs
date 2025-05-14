@@ -17,7 +17,7 @@ public class OpenCalculatorAsyncCommand : BaseAsyncCommand
 
     public override Task AsyncExecute(object? parameter)
     {
-        if (R.Count == 0) R_Populate_From_File(parameter);
+        R_Populate_From_File(parameter);
 
         Window dialogWindow = parameter switch
         {

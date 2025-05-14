@@ -16,21 +16,21 @@ public class OpenFileAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
-        var filePathInDataFolder = parameter switch
-        {
-            "manual" => "Инструкция_МПЗФ.pdf",
-            "radsDictionary" => @"Spravochniki\R.xlsx",
-            _ => ""
-        };
-
-#if DEBUG
-        var filePath = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", filePathInDataFolder);
-#else
-        var filePath = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", filePathInDataFolder);
-#endif
-
         try
         {
+                var filePathInDataFolder = parameter switch
+            {
+                "manual" => "Инструкция_МПЗФ.pdf",
+                "radsDictionary" => Path.Combine("Spravochniki", "R.xlsx"),
+                _ => ""
+            };
+
+#if DEBUG
+            var filePath = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", filePathInDataFolder);
+#else
+            var filePath = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", filePathInDataFolder);
+#endif
+
             Process.Start(new ProcessStartInfo { FileName = filePath, UseShellExecute = true });
         }
         catch (Exception ex)

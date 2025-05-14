@@ -223,22 +223,29 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
 
     private string SetCategoryText()
     {
-        var minMza = _categoryCalculatorVM.SelectedRadionuclids
-            .Select(x => (
-                Success: decimal.TryParse(x.Mza, 
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                    out var value), 
-                Value: value))
-            .Where(pair => pair.Success)
-            .Min(pair => pair.Value);
+        try
+        {
+            var minMza = _categoryCalculatorVM.SelectedRadionuclids
+                .Select(x => (
+                    Success: decimal.TryParse(x.Mza,
+                        NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
+                        CultureInfo.CreateSpecificCulture("ru-RU"),
+                        out var value),
+                    Value: value))
+                .Where(pair => pair.Success)
+                .Min(pair => pair.Value);
 
-        var activityValid = decimal.TryParse(_categoryCalculatorVM.Activity,
-            NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-            CultureInfo.CreateSpecificCulture("ru-RU"),
-            out var activity);
+            var activityValid = decimal.TryParse(_categoryCalculatorVM.Activity,
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
+                CultureInfo.CreateSpecificCulture("ru-RU"),
+                out var activity);
 
-        if (activityValid && activity < minMza) return "Нерадиоактивный, активность ниже МЗА.";
+            if (activityValid && activity < minMza) return "Нерадиоактивный, активность ниже МЗА.";
+        }
+        catch (Exception)
+        {
+            return string.Empty;
+        }
 
         return _categoryCalculatorVM.Category switch
         {
