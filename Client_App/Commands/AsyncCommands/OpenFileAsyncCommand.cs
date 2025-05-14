@@ -18,7 +18,7 @@ public class OpenFileAsyncCommand : BaseAsyncCommand
     {
         try
         {
-                var filePathInDataFolder = parameter switch
+            var filePathInDataFolder = parameter switch
             {
                 "manual" => "Инструкция_МПЗФ.pdf",
                 "radsDictionary" => Path.Combine("Spravochniki", "R.xlsx"),
