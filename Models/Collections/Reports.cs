@@ -143,8 +143,44 @@ public class Reports : IKey, IDataGridColumn
 
     #endregion
 
+    #region ClearAll
+
+    public void ClearAll()
+    {
+        foreach (var key in Report_Collection)
+        {
+            var rep = (Report)key;
+            rep.Rows11.Clear();
+            rep.Rows12.Clear();
+            rep.Rows13.Clear();
+            rep.Rows14.Clear();
+            rep.Rows15.Clear();
+            rep.Rows16.Clear();
+            rep.Rows17.Clear();
+            rep.Rows18.Clear();
+            rep.Rows19.Clear();
+            rep.Rows21.Clear();
+            rep.Rows22.Clear();
+            rep.Rows23.Clear();
+            rep.Rows24.Clear();
+            rep.Rows25.Clear();
+            rep.Rows26.Clear();
+            rep.Rows27.Clear();
+            rep.Rows28.Clear();
+            rep.Rows29.Clear();
+            rep.Rows210.Clear();
+            rep.Rows211.Clear();
+            rep.Rows212.Clear();
+        }
+        Master.Rows10.Clear();
+        Master.Rows20.Clear();
+        Report_Collection.Clear();
+    }
+
+    #endregion
+
     #region Validation
-    
+
     private static bool Master_Validation(RamAccess<Report> value)
     {
         return true;
@@ -169,6 +205,7 @@ public class Reports : IKey, IDataGridColumn
     #endregion
 
     #region IExcel
+
     public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
         throw new NotImplementedException();
@@ -177,21 +214,35 @@ public class Reports : IKey, IDataGridColumn
     {
         throw new NotImplementedException();
     }
+
     #endregion
 
     #region IDataGridColumn
+
     public DataGridColumns GetColumnStructure(string param = "")
     {
-        var regNoR = ((Attributes.FormPropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.RegNo)).GetCustomAttributes(typeof(Attributes.FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        var regNoR = ((Attributes.FormPropertyAttribute)typeof(Form10)
+                .GetProperty(nameof(Form10.RegNo))
+                .GetCustomAttributes(typeof(Attributes.FormPropertyAttribute), true)
+                .FirstOrDefault())
+            .GetDataColumnStructureD();
         regNoR.SizeCol = 50;
         regNoR.Binding = $"{nameof(Master)}.{nameof(Report.RegNoRep)}";
 
-        var shortJurLicoR = ((Attributes.FormPropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.ShortJurLico)).GetCustomAttributes(typeof(Attributes.FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        var shortJurLicoR = ((Attributes.FormPropertyAttribute)typeof(Form10)
+                .GetProperty(nameof(Form10.ShortJurLico))
+                .GetCustomAttributes(typeof(Attributes.FormPropertyAttribute), true)
+                .FirstOrDefault())
+            .GetDataColumnStructureD();
         shortJurLicoR.SizeCol = 603;
         shortJurLicoR.Binding = $"{nameof(Master)}.{nameof(Report.ShortJurLicoRep)}";
         regNoR += shortJurLicoR;
 
-        var okpoR = ((Attributes.FormPropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.Okpo)).GetCustomAttributes(typeof(Attributes.FormPropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+        var okpoR = ((Attributes.FormPropertyAttribute)typeof(Form10)
+                .GetProperty(nameof(Form10.Okpo))
+                .GetCustomAttributes(typeof(Attributes.FormPropertyAttribute), true)
+                .FirstOrDefault())
+            .GetDataColumnStructureD();
         okpoR.SizeCol = 102;
         okpoR.Binding = $"{nameof(Master)}.{nameof(Report.OkpoRep)}";
         regNoR += okpoR;
@@ -203,5 +254,6 @@ public class Reports : IKey, IDataGridColumn
     {
         throw new NotImplementedException();
     }
+
     #endregion
 }

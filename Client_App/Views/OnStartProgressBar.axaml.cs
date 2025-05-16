@@ -1,14 +1,10 @@
-using System;
 using Avalonia;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
 using System.Threading.Tasks;
-using Avalonia.Controls;
 using ReactiveUI;
 using Client_App.ViewModels;
 using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Interfaces.BackgroundLoader;
-using Client_App.Resources;
 
 namespace Client_App.Views;
 

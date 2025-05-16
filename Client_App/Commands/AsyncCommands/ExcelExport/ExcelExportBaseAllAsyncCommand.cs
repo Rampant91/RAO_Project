@@ -5,16 +5,25 @@ using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
-//  Абстрактный класс для выгрузки всех форм и форм х.х
+/// <summary>
+/// Абстрактный класс для выгрузки всех форм и форм х.х
+/// </summary>
 public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 {
     private protected Reports CurrentReports;
+
     private protected int CurrentRow;
+
     private protected int CurrentPrimRow;
+
     private protected bool IsSelectedOrg;
 
     #region FillExportForms
 
+    /// <summary>
+    /// Вызывает соответствующий метод выгрузки данных в .xlsx, в зависимости от номера формы.
+    /// </summary>
+    /// <param name="formNum">Номер формы.</param>
     private protected void FillExportForms(string formNum)
     {
         switch (formNum)
@@ -91,11 +100,15 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_11
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 1.1.
+    /// </summary>
     private void ExportForm11Data()
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null)
-            .OrderBy(x => StringReverse(x.StartPeriod_DB))
+            .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
         foreach (var rep in repList)
         {
@@ -169,11 +182,15 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_12
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 1.2.
+    /// </summary>
     private void ExportForm12Data()
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.2") && x.Rows12 != null)
-            .OrderBy(x => StringReverse(x.StartPeriod_DB))
+            .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
         foreach (var rep in repList)
         {
@@ -245,11 +262,15 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_13
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 1.3.
+    /// </summary>
     private void ExportForm13Data()
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.3") && x.Rows13 != null)
-            .OrderBy(x => StringReverse(x.StartPeriod_DB))
+            .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
         foreach (var rep in repList)
         {
@@ -322,11 +343,15 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_14
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 1.4.
+    /// </summary>
     private void ExportForm14Data()
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.4") && x.Rows14 != null)
-            .OrderBy(x => StringReverse(x.StartPeriod_DB))
+            .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
         foreach (var rep in repList)
         {
@@ -400,11 +425,15 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_15
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 1.5.
+    /// </summary>
     private void ExportForm15Data()
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.5") && x.Rows15 != null)
-            .OrderBy(x => StringReverse(x.StartPeriod_DB))
+            .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
         foreach (var rep in repList)
         {
@@ -446,6 +475,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 29].Value = ConvertToExcelString(repForm.RefineOrSortRAOCode_DB);
                 Worksheet.Cells[CurrentRow, 30].Value = ConvertToExcelString(repForm.Subsidy_DB);
                 Worksheet.Cells[CurrentRow, 31].Value = ConvertToExcelString(repForm.FcpNumber_DB);
+                Worksheet.Cells[CurrentRow, 32].Value = ConvertToExcelString(repForm.ContractNumber_DB);
+                Worksheet.Cells[CurrentRow, 33].Value = StatusRaoToDescription(repForm.StatusRAO_DB);
                                             
                 #endregion
 
@@ -480,11 +511,15 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_16
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 1.6.
+    /// </summary>
     private void ExportForm16Data()
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.6") && x.Rows16 != null)
-            .OrderBy(x => StringReverse(x.StartPeriod_DB))
+            .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
         foreach (var rep in repList)
         {
@@ -529,6 +564,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 32].Value = ConvertToExcelString(repForm.PackNumber_DB);
                 Worksheet.Cells[CurrentRow, 33].Value = ConvertToExcelString(repForm.Subsidy_DB);
                 Worksheet.Cells[CurrentRow, 34].Value = ConvertToExcelString(repForm.FcpNumber_DB);
+                Worksheet.Cells[CurrentRow, 35].Value = ConvertToExcelString(repForm.ContractNumber_DB);
+                Worksheet.Cells[CurrentRow, 36].Value = StatusRaoToDescription(repForm.StatusRAO_DB);
                                             
                 #endregion
 
@@ -563,11 +600,15 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_17
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 1.7.
+    /// </summary>
     private void ExportForm17Data()
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.7") && x.Rows17 != null)
-            .OrderBy(x => StringReverse(x.StartPeriod_DB))
+            .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
         foreach (var rep in repList)
         {
@@ -617,7 +658,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 37].Value = ConvertToExcelString(repForm.RefineOrSortRAOCode_DB);
                 Worksheet.Cells[CurrentRow, 38].Value = ConvertToExcelString(repForm.Subsidy_DB);
                 Worksheet.Cells[CurrentRow, 39].Value = ConvertToExcelString(repForm.FcpNumber_DB);
-                                                      
+                Worksheet.Cells[CurrentRow, 40].Value = ConvertToExcelString(repForm.ContractNumber_DB);
+                Worksheet.Cells[CurrentRow, 41].Value = StatusRaoToDescription(repForm.StatusRAO_DB);
+
                 #endregion
 
                 CurrentRow++;
@@ -651,11 +694,15 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_18
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 1.8.
+    /// </summary>
     private void ExportForm18Data()
     {
         var form = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.8") && x.Rows18 != null)
-            .OrderBy(x => StringReverse(x.StartPeriod_DB))
+            .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
         foreach (var rep in form)
         {
@@ -701,7 +748,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 33].Value = ConvertToExcelString(repForm.RefineOrSortRAOCode_DB);
                 Worksheet.Cells[CurrentRow, 34].Value = ConvertToExcelString(repForm.Subsidy_DB);
                 Worksheet.Cells[CurrentRow, 35].Value = ConvertToExcelString(repForm.FcpNumber_DB);
-                                            
+                Worksheet.Cells[CurrentRow, 36].Value = ConvertToExcelString(repForm.ContractNumber_DB);
+                Worksheet.Cells[CurrentRow, 37].Value = StatusRaoToDescription(repForm.StatusRAO_DB);
+
                 #endregion
 
                 CurrentRow++;
@@ -735,11 +784,15 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_19
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 1.9.
+    /// </summary>
     private void ExportForm19Data()
     {
         var repList = CurrentReports.Report_Collection
             .Where(x => x.FormNum_DB.Equals("1.9") && x.Rows19 != null)
-            .OrderBy(x => StringReverse(x.StartPeriod_DB))
+            .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
         foreach (var rep in repList)
         {
@@ -800,6 +853,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_21
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.1.
+    /// </summary>
     private void ExportForm21Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -844,6 +900,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelDouble(repForm.BetaGammaActivityOut_DB);
                 Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelDouble(repForm.AlphaActivityOut_DB);
                 Worksheet.Cells[CurrentRow, 29].Value = ConvertToExcelDouble(repForm.TransuraniumActivityOut_DB);
+                Worksheet.Cells[CurrentRow, 30].Value = StatusRaoToDescription(repForm.StatusRAOIn_DB);
+                Worksheet.Cells[CurrentRow, 31].Value = StatusRaoToDescription(repForm.StatusRAOout_DB);
 
                 #endregion
 
@@ -877,6 +935,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_22
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.2.
+    /// </summary>
     private void ExportForm22Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -918,6 +979,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelString(repForm.MainRadionuclids_DB);
                 Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelString(repForm.Subsidy_DB);
                 Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelString(repForm.FcpNumber_DB);
+                Worksheet.Cells[CurrentRow, 27].Value = StatusRaoToDescription(repForm.StatusRAO_DB);
 
                 #endregion
 
@@ -951,6 +1013,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_23
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.3.
+    /// </summary>
     private void ExportForm23Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -1018,6 +1083,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_24
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.4.
+    /// </summary>
     private void ExportForm24Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -1089,6 +1157,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_25
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.5.
+    /// </summary>
     private void ExportForm25Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -1153,6 +1224,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_26
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.6.
+    /// </summary>
     private void ExportForm26Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -1215,6 +1289,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_27
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.7.
+    /// </summary>
     private void ExportForm27Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -1275,6 +1352,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_28
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.8.
+    /// </summary>
     private void ExportForm28Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -1336,6 +1416,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_29
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.9.
+    /// </summary>
     private void ExportForm29Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -1395,6 +1478,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_210
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.10.
+    /// </summary>
     private void ExportForm210Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -1460,6 +1546,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_211
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.11.
+    /// </summary>
     private void ExportForm211Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -1523,6 +1612,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region ExportForm_212
 
+    /// <summary>
+    /// Выгрузка в .xlsx данных формы 2.12.
+    /// </summary>
     private void ExportForm212Data()
     {
         var repList = CurrentReports.Report_Collection
@@ -1587,6 +1679,10 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region FillHeaders
 
+    /// <summary>
+    /// Заполнение заголовков в .xlsx.
+    /// </summary>
+    /// <param name="formNum">Номер формы.</param>
     private protected void FillHeaders(string formNum)
     {
         switch (formNum)
@@ -1648,7 +1744,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[1, 11].Value = "номер паспорта";
                 Worksheet.Cells[1, 12].Value = "наименование";
                 Worksheet.Cells[1, 13].Value = "номер";
-                Worksheet.Cells[1, 14].Value = "масса объединенного урана, кг";
+                Worksheet.Cells[1, 14].Value = "масса обедненного урана, кг";
                 Worksheet.Cells[1, 15].Value = "код ОКПО изготовителя";
                 Worksheet.Cells[1, 16].Value = "дата выпуска";
                 Worksheet.Cells[1, 17].Value = "НСС, мес";
@@ -1780,6 +1876,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[1, 29].Value = "Код переработки / сортировки РАО";
                 Worksheet.Cells[1, 30].Value = "Субсидия, %";
                 Worksheet.Cells[1, 31].Value = "Номер мероприятия ФЦП";
+                Worksheet.Cells[1, 32].Value = "Номер договора";
+                Worksheet.Cells[1, 33].Value = "Текст статуса РАО";
                 NotesHeaders1();   
         
                 #endregion
@@ -1824,6 +1922,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[1, 32].Value = "номер упаковки";
                 Worksheet.Cells[1, 33].Value = "Субсидия, %";
                 Worksheet.Cells[1, 34].Value = "Номер мероприятия ФЦП";
+                Worksheet.Cells[1, 35].Value = "Номер договора";
+                Worksheet.Cells[1, 36].Value = "Текст статуса РАО";
                 NotesHeaders1();   
                 
                 #endregion
@@ -1873,6 +1973,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[1, 37].Value = "Код переработки/сортировки РАО";
                 Worksheet.Cells[1, 38].Value = "Субсидия, %";
                 Worksheet.Cells[1, 39].Value = "Номер мероприятия ФЦП";
+                Worksheet.Cells[1, 40].Value = "Номер договора";
+                Worksheet.Cells[1, 41].Value = "Текст статуса РАО";
                 NotesHeaders1();   
                 
                 #endregion
@@ -1918,6 +2020,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[1, 33].Value = "Код переработки/сортировки РАО";
                 Worksheet.Cells[1, 34].Value = "Субсидия, %";
                 Worksheet.Cells[1, 35].Value = "Номер мероприятия ФЦП";
+                Worksheet.Cells[1, 36].Value = "Номер договора";
+                Worksheet.Cells[1, 37].Value = "Текст статуса РАО";
                 NotesHeaders1();   
                 
                 #endregion
@@ -1983,6 +2087,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[1, 27].Value = "бета-, гамма-излучающие радионуклиды (исключая";
                 Worksheet.Cells[1, 28].Value = "альфа-излучающие радионуклиды (исключая";
                 Worksheet.Cells[1, 29].Value = "трансурановые радионуклиды";
+                Worksheet.Cells[1, 30].Value = "Текст статуса РАО для поступивших";
+                Worksheet.Cells[1, 31].Value = "Текст статуса РАО для переработанных";
                 NotesHeaders2(); 
 
                 #endregion
@@ -2019,6 +2125,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Cells[1, 24].Value = "Основные радионуклиды";
                 Worksheet.Cells[1, 25].Value = "Субсидия, %";
                 Worksheet.Cells[1, 26].Value = "Номер мероприятия ФЦП";
+                Worksheet.Cells[1, 27].Value = "Текст статуса РАО";
                 NotesHeaders2(); 
         
                 #endregion
@@ -2291,6 +2398,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     #region NotesHeader
 
+    /// <summary>
+    /// Заполнение заголовков примечаний форм 1.x в .xlsx.
+    /// </summary>
     private void NotesHeaders1()
     {
         WorksheetPrim.Cells[1, 1].Value = "ОКПО";
@@ -2305,6 +2415,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
         WorksheetPrim.View.FreezePanes(2, 1);
     }
 
+    /// <summary>
+    /// Заполнение заголовков примечаний форм 2.x в .xlsx.
+    /// </summary>
     private void NotesHeaders2()
     {
         WorksheetPrim.Cells[1, 1].Value = "ОКПО";
@@ -2319,6 +2432,31 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     }
 
     #endregion
+
+    #endregion
+
+    #region StatusRaoToDescription
+
+    /// <summary>
+    /// Преобразовывает статус РАО в его описание.
+    /// </summary>
+    /// <param name="status">Статус РАО.</param>
+    /// <returns>Описание статуса РАО.</returns>
+    private static string StatusRaoToDescription(string? status)
+    {
+        var tmp = status?.Trim();
+        return tmp switch
+        {
+            "1" => "накопленные",
+            "2" => "федеральные",
+            "3" => "собственность субъекта РФ",
+            "4" => "муниципальная собственность",
+            "6" => "бесхозяйные",
+            "9" => "прочая собственность",
+            "-" or "" or null => "-",
+            _ => "вновь образованные"
+        };
+    }
 
     #endregion
 }

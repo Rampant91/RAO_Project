@@ -6,21 +6,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Client_App.ViewModels;
 using Models.Collections;
+using Avalonia.Threading;
 
 namespace Client_App.Commands.AsyncCommands;
 
-//  Скопировать данные исполнителя из предыдущей формы
-internal class CopyExecutorDataAsyncCommand : BaseAsyncCommand
+/// <summary>
+/// Скопировать данные исполнителя из предыдущей формы.
+/// </summary>
+/// <param name="changeOrCreateViewModel">ViewModel текущего отчёта.</param>
+public class CopyExecutorDataAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
-    private readonly ChangeOrCreateVM _ChangeOrCreateViewModel;
-    private Reports Storages => _ChangeOrCreateViewModel.Storages;
-    private Report Storage => _ChangeOrCreateViewModel.Storage;
-    private string FormType => _ChangeOrCreateViewModel.FormType;
-
-    public CopyExecutorDataAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
-    {
-        _ChangeOrCreateViewModel = changeOrCreateViewModel;
-    }
+    private Reports Storages => changeOrCreateViewModel.Storages;
+    private Report Storage => changeOrCreateViewModel.Storage;
+    private string FormType => changeOrCreateViewModel.FormType;
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -67,14 +65,14 @@ internal class CopyExecutorDataAsyncCommand : BaseAsyncCommand
                 ? $"У {orgName}" + Environment.NewLine + $"отсутствуют другие формы {FormType}"
                 : $"У {orgName}" + Environment.NewLine + $"в формах {FormType} не заполнены данные исполнителя";
             
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
                     ContentHeader = "Уведомление",
                     ContentMessage = msg
                 })
-                .ShowDialog(Desktop.MainWindow);
+                .ShowDialog(Desktop.MainWindow));
 
             #endregion
 

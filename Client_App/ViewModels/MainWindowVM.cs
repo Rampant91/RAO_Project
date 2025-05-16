@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
+using Client_App.Commands.AsyncCommands.Calculator;
 using Client_App.Commands.AsyncCommands.Delete;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.ExcelExport.Passports;
@@ -15,10 +16,14 @@ using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.AsyncCommands.Hidden;
+using Client_App.Commands.AsyncCommands.CheckForm;
+using Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
+using Client_App.Commands.AsyncCommands.ExcelExport.Snk;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Client_App.ViewModels;
 
-public class MainWindowVM : BaseVM, INotifyPropertyChanged
+public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 {
     #region Current_Db
 
@@ -79,31 +84,115 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
     public ICommand ChangeForm { get; set; }                        //  Открыть окно редактирования выбранной формы
     public ICommand ChangePasFolder { get; set; }                   //  Excel -> Паспорта -> Изменить расположение паспортов по умолчанию
     public ICommand ChangeReports { get; set; }                     //  Изменить Формы организации (1.0 и 2.0)
+    public ICommand ExcelExportCheckAllForms { get; set; }          //  Проверить все формы у организации
+    public ICommand CheckFormFromMain { get; set; }                 //  Проверить форму
     public ICommand DeleteForm { get; set; }                        //  Удалить выбранную форму у выбранной организации
     public ICommand DeleteReports { get; set; }                     //  Удалить выбранную организацию
-    public ICommand ExcelExportAll { get; set; }                    //  Excel -> Все формы и Excel -> Выбранная организация -> Все формы
-    public ICommand ExcelExportExecutors { get; set; }              //  Excel -> Список исполнителей
-    public ICommand ExcelExportFormAnalysis { get; set; }           //  Выбранная форма -> Выгрузка Excel -> Для анализа
-    public ICommand ExcelExportFormPrint { get; set; }              //  Выбранная форма -> Выгрузка Excel -> Для печати
-    public ICommand ExcelExportForms { get; set; }                  //  Excel -> Формы 1.x, 2.x и Excel -> Выбранная организация -> Формы 1.x, 2.x
-    public ICommand ExcelExportIntersections { get; set; }          //  Excel -> Разрывы и пересечения
-    public ICommand ExcelExportListOfForms1 { get; set; }           //  Excel -> Список форм 1
-    public ICommand ExcelExportListOfForms2 { get; set; }           //  Excel -> Список форм 2
-    public ICommand ExcelExportListOfOrgs { get; set; }             //  Excel -> Список организаций
-    public ICommand ExcelExportPasWithoutRep { get; set; }          //  Excel -> Паспорта -> Паспорта без отчетов
-    public ICommand ExcelExportRepWithoutPas { get; set; }          //  Excel -> Паспорта -> Отчеты без паспортов
-    public ICommand ExportAllReports { get; set; }                  //  Экспорт всех организаций организации в отдельные файлы .raodb
-    //public ICommand ExportAllReportsOneFile { get; set; }           //  Экспорт всех организаций организации в один файл .raodb
-    public ICommand ExportForm { get; set; }                        //  Экспорт формы в файл .raodb
-    public ICommand ExportReports { get; set; }                     //  Экспорт организации в файл .raodb
-    public ICommand ExportReportsWithDateRange { get; set; }        //  Экспорт организации в файл .raodb с указанием диапазона дат выгружаемых форм
+
+    /// <summary>
+    /// Excel -> Все формы и Excel -> Выбранная организация -> Все формы
+    /// </summary>
+    public ICommand ExcelExportAll => new ExcelExportAllAsyncCommand();
+
+    /// <summary>
+    /// Excel -> Список исполнителей
+    /// </summary>
+    public ICommand ExcelExportExecutors => new ExcelExportExecutorsAsyncCommand();
+
+    /// <summary>
+    /// Экспорт формы в файл .RAODB
+    /// </summary>
+    public ICommand ExportForm => new ExportFormAsyncCommand();
+
+    /// <summary>
+    /// Excel -> Проверка последней инвентаризации.
+    /// </summary>
+    public ICommand ExcelExportCheckLastInventoryDate => new ExcelExportCheckLastInventoryDateAsyncCommand();
+
+    /// <summary>
+    /// Выбранная форма -> Выгрузка Excel -> Для анализа
+    /// </summary>
+    public ICommand ExcelExportFormAnalysis => new ExcelExportFormAnalysisAsyncCommand();
+
+    /// <summary>
+    /// Выбранная форма -> Выгрузка Excel -> Для печати
+    /// </summary>
+    public ICommand ExcelExportFormPrint => new ExcelExportFormPrintAsyncCommand();
+
+    /// <summary>
+    /// Excel -> Формы 1.x, 2.x и Excel -> Выбранная организация -> Формы 1.x, 2.x
+    /// </summary>
+    public ICommand ExcelExportForms => new ExcelExportFormsAsyncCommand();
+
+    /// <summary>
+    /// Excel -> Разрывы и пересечения
+    /// </summary>
+    public ICommand ExcelExportIntersections => new ExcelExportIntersectionsAsyncCommand();
+
+    /// <summary>
+    /// Excel -> Список форм 1
+    /// </summary>
+    public ICommand ExcelExportListOfForms1 => new ExcelExportListOfForms1AsyncCommand();
+
+    /// <summary>
+    /// Excel -> Список форм 2
+    /// </summary>
+    public ICommand ExcelExportListOfForms2 => new ExcelExportListOfForms2AsyncCommand();
+
+    /// <summary>
+    /// Excel -> Список организаций
+    /// </summary>
+    public ICommand ExcelExportListOfOrgs => new ExcelExportListOfOrgsAsyncCommand();
+
+    /// <summary>
+    /// Excel -> Паспорта -> Паспорта без отчетов
+    /// </summary>
+    public ICommand ExcelExportPasWithoutRep => new ExcelExportPasWithoutRepAsyncCommand();
+
+    /// <summary>
+    /// Excel -> Паспорта -> Отчеты без паспортов
+    /// </summary>
+    public ICommand ExcelExportRepWithoutPas => new ExcelExportRepWithoutPasAsyncCommand();
+
+    /// <summary>
+    /// Excel -> Выбранная организация -> СНК
+    /// </summary>
+    public ICommand ExcelExportSnk => new ExcelExportSnkAsyncCommand();
+
+    /// <summary>
+    /// Excel -> Выбранная организация -> Проверка инвентаризаций
+    /// </summary>
+    public ICommand ExcelExportCheckInventories => new ExcelExportCheckInventoriesAsyncCommand();
+
+    /// <summary>
+    /// Экспорт всех организаций организации в отдельные файлы .RAODB
+    /// </summary>
+    public ICommand ExportAllReports => new ExportAllReportsAsyncCommand();
+
+    /// <summary>
+    /// Экспорт всех организаций организации в один файл .RAODB
+    /// </summary>
+    public ICommand ExportAllReportsOneFile => new ExportAllReportsOneFileAsyncCommand();
+
+    /// <summary>
+    /// Экспорт организации в файл .RAODB
+    /// </summary>
+    public static ICommand ExportReports => new ExportReportsAsyncCommand();
+
+    /// <summary>
+    /// Экспорт организации в файл .RAODB с указанием диапазона дат выгружаемых форм
+    /// </summary>
+    public static ICommand ExportReportsWithDateRange => new ExportReportsWithDateRangeAsyncCommand();
     public ICommand ImportExcel { get; set; }                       //  Импорт -> Из Excel
     public ICommand ImportJson { get; set; }                        //  Импорт -> Из Json
     public ICommand ImportRaodb { get; set; }                       //  Импорт -> Из RAODB
     public ICommand MaxGraphsLength { get; set; }                   //  Excel -> Максимальное число символов в каждой колонке
+    public ICommand OpenCalculator { get; set; }                    //  Открыть калькулятор пересчёта активности
+    public ICommand OpenFile { get; set; }                          //  Открыть файл
+    public ICommand OpenFolder { get; set; }                        //  Открыть папку
     public ICommand SaveReports { get; set; }                       //  Сохраняет текущую базу, используется только для сохранения комментария формы
     //public ICommand UnaccountedRad { get; set; }                    //  Радионуклиды, отсутствующие в справочнике
-
+    
     #endregion
 
     #region Constructor
@@ -115,30 +204,19 @@ public class MainWindowVM : BaseVM, INotifyPropertyChanged
         ChangeForm = new ChangeFormAsyncCommand();
         ChangePasFolder = new ChangePasFolderAsyncCommand();
         ChangeReports = new ChangeReportsAsyncCommand();
+        CheckFormFromMain = new CheckFormFromMainAsyncCommand();
         DeleteForm = new DeleteFormAsyncCommand();
         DeleteReports = new DeleteReportsAsyncCommand();
-        ExcelExportExecutors = new ExcelExportExecutorsAsyncCommand();
-        ExcelExportFormAnalysis = new ExcelExportFormAnalysisAsyncCommand();
-        ExcelExportFormPrint = new ExcelExportFormPrintAsyncCommand(); 
-        ExcelExportForms = new ExcelExportFormsAsyncCommand();
-        ExcelExportIntersections = new ExcelExportIntersectionsAsyncCommand();
-        ExcelExportListOfForms1 = new ExcelExportListOfForms1AsyncCommand();
-        ExcelExportListOfForms2 = new ExcelExportListOfForms2AsyncCommand();
-        ExcelExportListOfOrgs = new ExcelExportListOfOrgsAsyncCommand();
-        ExcelExportPasWithoutRep = new ExcelExportPasWithoutRepAsyncCommand();
-        ExcelExportRepWithoutPas = new ExcelExportRepWithoutPasAsyncCommand();
-        ExcelExportAll = new ExcelExportAllAsyncCommandAsyncCommand();
-        ExportAllReports = new ExportAllReportsAsyncCommand();
-        //ExportAllReportsOneFile = new ExportAllReportsOneFileAsyncCommand();
-        ExportForm = new ExportFormAsyncCommand();
-        ExportReports = new ExportReportsAsyncCommand();
-        ExportReportsWithDateRange = new ExportReportsWithDateRangeAsyncCommand(this);
+        ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand();
         ImportExcel = new ImportExcelAsyncCommand();
         ImportJson = new ImportJsonAsyncCommand();
-        ImportRaodb = new ImportRaodbAsyncCommand();
+        ImportRaodb = new ImportRaodbAsyncCommand(this);
         MaxGraphsLength = new MaxGraphsLengthAsyncCommand();
         SaveReports = new SaveReportsAsyncCommand();
-        //UnaccountedRad = new UnaccountedRadAsyncCommand();
+        //UnaccountedRad = new UnaccountedRadAsyncCommand(); 
+        OpenCalculator = new OpenCalculatorAsyncCommand();
+        OpenFile = new OpenFileAsyncCommand();
+        OpenFolder = new OpenFolderAsyncCommand();
     }
 
     #endregion

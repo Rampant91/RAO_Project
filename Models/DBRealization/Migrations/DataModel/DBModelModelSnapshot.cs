@@ -28,7 +28,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("INTEGER")
                         .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK_DBObservable_DbSet");
 
                     b.ToTable("DBObservable_DbSet", (string)null);
                 });
@@ -165,7 +166,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<int?>("Master_DBId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK_ReportsCollection_DbSet");
 
                     b.HasIndex("DBObservableId");
 
@@ -677,6 +679,10 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("Activity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<string>("ContractNumber_DB")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
                     b.Property<string>("CreationDate_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -796,6 +802,10 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("CodeRAO_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<string>("ContractNumber_DB")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
                     b.Property<string>("DocumentDate_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -911,6 +921,10 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("CodeRAO_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("ContractNumber_DB")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("DocumentDate_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1084,6 +1098,10 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("CodeRAO_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("ContractNumber_DB")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("DocumentDate_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -2219,7 +2237,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("RowNumber_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK_notes");
 
                     b.HasIndex("ReportId");
 
@@ -2241,11 +2260,13 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.HasOne("Models.Collections.DBObservable", "DBObservable")
                         .WithMany("Reports_Collection")
                         .HasForeignKey("DBObservableId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_ReportsCollection_DbSet_DBO~");
 
                     b.HasOne("Models.Collections.Report", "Master_DB")
                         .WithMany()
-                        .HasForeignKey("Master_DBId");
+                        .HasForeignKey("Master_DBId")
+                        .HasConstraintName("FK_ReportsCollection_DbSet_Rep~");
 
                     b.Navigation("DBObservable");
 
@@ -2487,7 +2508,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Notes")
                         .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_notes_ReportCollection_DbSe~");
 
                     b.Navigation("Report");
                 });

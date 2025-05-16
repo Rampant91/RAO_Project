@@ -12,10 +12,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
+using Avalonia.Threading;
+using Client_App.Resources;
+using Client_App.Controls.DataGrid.DataGrids;
+using Client_App.Resources.CustomComparers;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
-//  Импорт -> Из Excel
+/// <summary>
+/// Импорт -> Из Excel.
+/// </summary>
 internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
@@ -27,6 +33,16 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         string[] extensions = ["xlsx", "XLSX"];
         var answer = await GetSelectedFilesFromDialog("Excel", extensions);
         if (answer is null) return;
+
+        SkipNewOrg = false;
+        SkipInter = false;
+        SkipLess = false;
+        SkipNew = false;
+        SkipReplace = false;
+        HasMultipleReport = false;
+        AtLeastOneImportDone = false;
+
+        var impReportsList = new List<Reports>();
         foreach (var res in answer) // Для каждого импортируемого файла
         {
             ExcelImportNewReps = false;
@@ -47,7 +63,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             {
                 #region InvalidDataFormatMessage
 
-                await MessageBox.Avalonia.MessageBoxManager
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                     {
                         ButtonDefinitions = 
@@ -61,7 +77,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(Desktop.MainWindow);
+                    .ShowDialog(Desktop.MainWindow));
 
                 #endregion
 
@@ -87,6 +103,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
             var baseReps = GetBaseReps(worksheet0);
             var impReps = GetImportReps(worksheet0);
+            impReportsList.Add(impReps);
             if (baseReps is null)
             {
                 ExcelImportNewReps = true;
@@ -138,7 +155,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             ImpRepStartPeriod = impRep.StartPeriod_DB;
             ImpRepYear = impRep.Year_DB ?? "";
 
-            SkipNewOrg = SkipInter = SkipLess = SkipNew = SkipReplace = AtLeastOneImportDone = false;
+            //SkipNewOrg = SkipInter = SkipLess = SkipNew = SkipReplace = AtLeastOneImportDone = false;
             HasMultipleReport = answer.Length > 1;
 
             var impRepList = new List<Report> { impRep };
@@ -147,15 +164,15 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 switch (worksheet0.Name)
                 {
                     case "1.0":
-                        {
-                            await ProcessIfHasReports11(baseReps, impReps, impRepList);
-                            break;
-                        }
+                    {
+                        await ProcessIfHasReports11(baseReps, impReps, impRepList);
+                        break;
+                    }
                     case "2.0":
-                        {
-                            await ProcessIfHasReports21(baseReps, impReps, impRepList);
-                            break;
-                        }
+                    {
+                        await ProcessIfHasReports21(baseReps, impReps, impRepList);
+                        break;
+                    }
                 }
             }
             else
@@ -169,7 +186,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     {
                         #region MessageNewOrg
 
-                        an = await MessageBox.Avalonia.MessageBoxManager
+                        an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                             {
                                 ButtonDefinitions =
@@ -192,7 +209,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
-                            .ShowDialog(Desktop.MainWindow);
+                            .ShowDialog(Desktop.MainWindow));
 
                         #endregion
 
@@ -202,7 +219,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     {
                         #region MessageNewOrg
 
-                        an = await MessageBox.Avalonia.MessageBoxManager
+                        an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                             {
                                 ButtonDefinitions =
@@ -220,7 +237,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
                             })
-                            .ShowDialog(Desktop.MainWindow);
+                            .ShowDialog(Desktop.MainWindow));
 
                         #endregion
                     }
@@ -232,8 +249,19 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             }
         }
 
-        await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
+        var comparator = new CustomReportsComparer();
+        var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+        ReportsStorage.LocalReports.Reports_Collection.Clear();
+        ReportsStorage.LocalReports.Reports_Collection
+            .AddRange(tmpReportsList
+                .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
+                .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
+
+        //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
+
         await StaticConfiguration.DBModel.SaveChangesAsync();
+
+        await SetDataGridPage(impReportsList);
 
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"
@@ -242,7 +270,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         {
             #region MessageImportDone
 
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
@@ -253,7 +281,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow);
+                .ShowDialog(Desktop.MainWindow));
 
             #endregion
         }
@@ -261,7 +289,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         {
             #region MessageImportCancel
 
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
@@ -272,7 +300,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow);
+                .ShowDialog(Desktop.MainWindow));
 
             #endregion
         }
@@ -280,18 +308,103 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
     #region GetBaseReps
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="worksheet0">Лист Excel.</param>
+    /// <returns></returns>
     private static Reports? GetBaseReps(ExcelWorksheet worksheet0)
     {
-        var excelOkpo = Convert.ToString(worksheet0.Cells["B36"].Value);
+        var excelOkpo0 = Convert.ToString(worksheet0.Cells["B36"].Value);
+        var excelOkpo1= Convert.ToString(worksheet0.Cells["B37"].Value);
+
         var excelRegNo = Convert.ToString(worksheet0.Cells["F6"].Value);
+
         return worksheet0.Name switch
         {
-            "1.0" => ReportsStorage.LocalReports.Reports_Collection10.FirstOrDefault(t => 
-                    (excelOkpo == t.Master.Rows10[0].Okpo_DB && excelRegNo == t.Master.Rows10[0].RegNo_DB)
-                    || (excelOkpo == t.Master.Rows10[1].Okpo_DB && excelRegNo == t.Master.Rows10[1].RegNo_DB)),
-            "2.0" => ReportsStorage.LocalReports.Reports_Collection20.FirstOrDefault(t =>
-                (excelOkpo == t.Master.Rows20[0].Okpo_DB && excelRegNo == t.Master.Rows20[0].RegNo_DB)
-                || (excelOkpo == t.Master.Rows20[1].Okpo_DB && excelRegNo == t.Master.Rows20[1].RegNo_DB)),
+            "1.0" => ReportsStorage.LocalReports.Reports_Collection10
+                         .FirstOrDefault(t =>
+                         
+                             // обособленные пусты и в базе и в импорте, то сверяем головное
+                             excelOkpo0 == t.Master.Rows10[0].Okpo_DB
+                             && excelRegNo == t.Master.Rows10[0].RegNo_DB
+                             && excelOkpo1 == ""
+                             && t.Master.Rows10[1].Okpo_DB == ""
+
+                             // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                             || excelOkpo0 == t.Master.Rows10[0].Okpo_DB
+                             && excelRegNo == t.Master.Rows10[1].RegNo_DB
+                             && excelOkpo1 == ""
+                             && t.Master.Rows10[1].Okpo_DB == ""
+
+                             // обособленные не пусты, их и сверяем
+                             || excelOkpo1 == t.Master.Rows10[1].Okpo_DB
+                             && excelRegNo == t.Master.Rows10[1].RegNo_DB
+                             && excelOkpo1 != ""
+
+                             // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                             || excelOkpo1 == t.Master.Rows10[1].Okpo_DB
+                             && excelRegNo == t.Master.Rows10[0].RegNo_DB
+                             && excelOkpo1 != ""
+                             && t.Master.Rows10[1].RegNo_DB == "")
+
+                     ?? ReportsStorage.LocalReports
+                         .Reports_Collection10 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
+                         .FirstOrDefault(t =>
+
+                             // юр лицо в базе совпадает с обособленным в импорте
+                             excelOkpo1 != ""
+                             && t.Master.Rows10[1].Okpo_DB == ""
+                             && excelOkpo1 == t.Master.Rows10[0].Okpo_DB
+                             && excelRegNo == t.Master.Rows10[0].RegNo_DB
+
+                             // юр лицо в импорте совпадает с обособленным в базе
+                             || excelOkpo1 == ""
+                             && t.Master.Rows10[1].Okpo_DB != ""
+                             && excelOkpo0 == t.Master.Rows10[1].Okpo_DB
+                             && excelRegNo == t.Master.Rows10[1].RegNo_DB),
+
+            "2.0" => ReportsStorage.LocalReports.Reports_Collection20
+                       .FirstOrDefault(t =>
+
+                           // обособленные пусты и в базе и в импорте, то сверяем головное
+                           excelOkpo0 == t.Master.Rows20[0].Okpo_DB
+                           && excelRegNo == t.Master.Rows20[0].RegNo_DB
+                           && excelOkpo1 == ""
+                           && t.Master.Rows20[1].Okpo_DB == ""
+
+                           // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                           || excelOkpo0 == t.Master.Rows20[0].Okpo_DB
+                           && excelRegNo == t.Master.Rows20[1].RegNo_DB
+                           && excelOkpo1 == ""
+                           && t.Master.Rows20[1].Okpo_DB == ""
+
+                           // обособленные не пусты, их и сверяем
+                           || excelOkpo1 == t.Master.Rows20[1].Okpo_DB
+                           && excelRegNo == t.Master.Rows20[1].RegNo_DB
+                           && excelOkpo1 != ""
+
+                           // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                           || excelOkpo1 == t.Master.Rows20[1].Okpo_DB
+                           && excelRegNo == t.Master.Rows20[0].RegNo_DB
+                           && excelOkpo1 != ""
+                           && t.Master.Rows20[1].RegNo_DB == "")
+
+                   ?? ReportsStorage.LocalReports.Reports_Collection20 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
+                       .FirstOrDefault(t =>
+
+                           // юр лицо в базе совпадает с обособленным в импорте
+                           excelOkpo1 != ""
+                           && t.Master.Rows20[1].Okpo_DB == ""
+                           && excelOkpo1 == t.Master.Rows20[0].Okpo_DB
+                           && excelRegNo == t.Master.Rows20[0].RegNo_DB
+
+                           // юр лицо в импорте совпадает с обособленным в базе
+                           || excelOkpo1 == ""
+                           && t.Master.Rows20[1].Okpo_DB != ""
+                           && excelOkpo0 == t.Master.Rows20[1].Okpo_DB
+                           && excelRegNo == t.Master.Rows20[1].RegNo_DB),
+
             _ => null
         };
     }
@@ -302,158 +415,10 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
     private static void GetDataFromRow(string param1, ExcelWorksheet worksheet1, int start, Report repFromEx)
     {
-        switch (param1)
-        {
-            case "1.1":
-            {
-                Form11 form11 = new();
-                form11.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows11.Add(form11);
-                break;
-            }
-            case "1.2":
-            {
-                Form12 form12 = new();
-                form12.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows12.Add(form12);
-                break;
-            }
-            case "1.3":
-            {
-                Form13 form13 = new();
-                form13.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows13.Add(form13);
-                break;
-            }
-            case "1.4":
-            {
-                Form14 form14 = new();
-                form14.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows14.Add(form14);
-                break;
-            }
-            case "1.5":
-            {
-                Form15 form15 = new();
-                form15.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows15.Add(form15);
-                break;
-            }
-            case "1.6":
-            {
-                Form16 form16 = new();
-                form16.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows16.Add(form16);
-                break;
-            }
-            case "1.7":
-            {
-                Form17 form17 = new();
-                form17.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows17.Add(form17);
-                break;
-            }
-            case "1.8":
-            {
-                Form18 form18 = new();
-                form18.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows18.Add(form18);
-                break;
-            }
-            case "1.9":
-            {
-                Form19 form19 = new();
-                form19.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows19.Add(form19);
-                break;
-            }
-            case "2.1":
-            {
-                if (!int.TryParse(Convert.ToString(worksheet1.Cells[$"A{start}"].Value), out _)) break;
-                Form21 form21 = new();
-                form21.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows21.Add(form21);
-                break;
-            }
-            case "2.2":
-            {
-                if (!int.TryParse(Convert.ToString(worksheet1.Cells[$"A{start}"].Value), out _)) break;
-                Form22 form22 = new();
-                form22.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows22.Add(form22);
-                break;
-            }
-            case "2.3":
-            {
-                Form23 form23 = new();
-                form23.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows23.Add(form23);
-                break;
-            }
-            case "2.4":
-            {
-                Form24 form24 = new();
-                form24.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows24.Add(form24);
-                break;
-            }
-            case "2.5":
-            {
-                Form25 form25 = new();
-                form25.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows25.Add(form25);
-                break;
-            }
-            case "2.6":
-            {
-                Form26 form26 = new();
-                form26.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows26.Add(form26);
-                break;
-            }
-            case "2.7":
-            {
-                Form27 form27 = new();
-                form27.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows27.Add(form27);
-                break;
-            }
-            case "2.8":
-            {
-                Form28 form28 = new();
-                form28.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows28.Add(form28);
-                break;
-            }
-            case "2.9":
-            {
-                Form29 form29 = new();
-                form29.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows29.Add(form29);
-                break;
-            }
-            case "2.10":
-            {
-                Form210 form210 = new();
-                form210.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows210.Add(form210);
-                break;
-            }
-            case "2.11":
-            {
-                Form211 form211 = new();
-                form211.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows211.Add(form211);
-                break;
-            }
-            case "2.12":
-            {
-                Form212 form212 = new();
-                form212.ExcelGetRow(worksheet1, start);
-                repFromEx.Rows212.Add(form212);
-                break;
-            }
-        }
+        if (param1 is "2.1" or "2.2" && !int.TryParse(Convert.ToString(worksheet1.Cells[$"A{start}"].Value), out _)) return;
+        dynamic form = FormCreator.Create(param1);
+        form.ExcelGetRow(worksheet1, start);
+        repFromEx.Rows.Add(form);
     }
 
     #endregion
@@ -603,7 +568,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
     #region GetReportDataFromExcel
 
-    private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, ExcelWorksheet worksheet1, string formNumber, IReadOnlyList<string> timeCreate)
+    private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, ExcelWorksheet worksheet1, string formNumber, List<string> timeCreate)
     {
         var impRep = new Report
         {

@@ -15,10 +15,15 @@ using MessageBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.DTO;
 using static Client_App.Commands.AsyncCommands.Import.ImportJson.ImportJsonMethods;
-using static Client_App.Resources.StaticStringMethods;
+using Avalonia.Threading;
+using Client_App.Resources;
+using Client_App.Resources.CustomComparers;
 
 namespace Client_App.Commands.AsyncCommands.Import.ImportJson;
 
+/// <summary>
+/// Импорт данных в формате .json.
+/// </summary>
 public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
@@ -68,8 +73,10 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
 
                     var ty1 = FormCreator.Create(formNumReps);
                     ty1.NumberInOrder_DB = 1;
+                    ty1.Id = reps[0].Id;
                     var ty2 = FormCreator.Create(formNumReps);
                     ty2.NumberInOrder_DB = 2;
+                    ty2.Id = reps.Length > 1 ? reps[1].Id : reps[0].Id;
 
                     var impReps = new Reports
                     {
@@ -77,7 +84,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                         {
                             FormNum_DB = formNumReps
                         },
-                        Id = reps[0].Id
+                        Id = reps.Length > 1 ? reps[1].Id : reps[0].Id
                     };
                     switch (formNumReps)
                     {
@@ -198,7 +205,13 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                 {
                     #region GetImpFormsAndAddToRepsCollection
 
-                    var currentOrg = reportsJsonCollection.FirstOrDefault(reps => reps.Id == rep.ReportsId);
+                    var currentOrg = reportsJsonCollection.FirstOrDefault(reps =>
+                    {
+                        var id = reps.Master_DB.FormNum_DB is "1.0"
+                            ? new[] { reps.Master_DB.Rows10[0].Id, reps.Master_DB.Rows10[1].Id }
+                            : [ reps.Master_DB.Rows20[0].Id, reps.Master_DB.Rows20[1].Id ];
+                        return id.Contains(reps.Id);
+                    });
                     if (currentOrg is null) continue;
 
                     #region GetCreationTime
@@ -249,7 +262,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                         {
                             Order = noteOrder++,
                             RowNumber_DB = note.NotePointer.Row,
-                            GraphNumber_DB = ColNameToColNum(impRep.FormNum_DB, note.NotePointer.ColName),
+                            GraphNumber_DB = ColNameToColNumConvert(impRep.FormNum_DB, note.NotePointer.ColName),
                             Comment_DB = note.NoteValue.Text
                         });
                     }
@@ -259,12 +272,11 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     #endregion
                 }
 
-
                 if (reportsJsonCollection.Count == 0)
                 {
                     #region MessageFailedToReadFile
 
-                    await MessageBox.Avalonia.MessageBoxManager
+                    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                         {
                             ButtonDefinitions = ButtonEnum.Ok,
@@ -276,7 +288,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(Desktop.MainWindow);
+                        .ShowDialog(Desktop.MainWindow));
 
                     #endregion
 
@@ -293,18 +305,20 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     .ToList();
 
                 orgListToAdd.ForEach(reps =>
-                    {
-                        var newRepCol = reps.Report_Collection
-                            .OrderBy(rep => byte.Parse(rep.FormNum_DB.Split('.')[0]))
-                            .ThenBy(rep => byte.Parse(rep.FormNum_DB.Split('.')[1]))
-                            .ThenByDescending(rep => reps.Master_DB.FormNum_DB.StartsWith('1')
-                                ? DateTime.TryParse(rep.StartPeriod_DB, out var dateTimeValue)
-                                    ? StringDateReverse(dateTimeValue.ToShortDateString())
-                                    : rep.StartPeriod_DB
-                                : rep.Year_DB);
-                        reps.Report_Collection = [];
-                        reps.Report_Collection.AddRange(newRepCol);
-                    });
+                {
+                    var newRepCol = reps.Report_Collection
+                        .OrderBy(rep => byte.Parse(rep.FormNum_DB.Split('.')[0]))
+                        .ThenBy(rep => byte.Parse(rep.FormNum_DB.Split('.')[1]))
+                        .ThenByDescending(rep => reps.Master_DB.FormNum_DB.StartsWith('1')
+                            ? DateOnly.TryParse(rep.StartPeriod_DB, out var stDate) 
+                                ? stDate 
+                                : DateOnly.MaxValue
+                            : DateOnly.TryParse(rep.Year_DB, out var year)
+                                ? year
+                                : DateOnly.MaxValue);
+                    reps.Report_Collection = [];
+                    reps.Report_Collection.AddRange(newRepCol);
+                });
 
                 foreach (var impReps in orgListToAdd)
                 {
@@ -352,7 +366,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                             {
                                 #region MessageNewOrg
 
-                                an = await MessageBox.Avalonia.MessageBoxManager
+                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                     {
                                         ButtonDefinitions =
@@ -375,7 +389,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                                         MinWidth = 400,
                                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                                     })
-                                    .ShowDialog(Desktop.MainWindow);
+                                    .ShowDialog(Desktop.MainWindow));
 
                                 #endregion
 
@@ -385,7 +399,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                             {
                                 #region MessageNewOrg
 
-                                an = await MessageBox.Avalonia.MessageBoxManager
+                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                     {
                                         ButtonDefinitions =
@@ -404,7 +418,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                                         MinWidth = 400,
                                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                                     })
-                                    .ShowDialog(Desktop.MainWindow);
+                                    .ShowDialog(Desktop.MainWindow));
 
                                 #endregion
                             }
@@ -419,7 +433,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
 
                             var sortedRepList = impReps.Report_Collection
                                 .OrderBy(x => x.FormNum_DB)
-                                .ThenBy(x => StringReverse(x.StartPeriod_DB))
+                                .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+                                .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
                                 .ToList();
                             foreach (var rep in sortedRepList)
                             {
@@ -466,6 +481,15 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                 //ignore
             }
         }
+
+        var comparator = new CustomReportsComparer();
+        var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+        ReportsStorage.LocalReports.Reports_Collection.Clear();
+        ReportsStorage.LocalReports.Reports_Collection
+            .AddRange(tmpReportsList
+                .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
+                .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
+
         await StaticConfiguration.DBModel.SaveChangesAsync().ConfigureAwait(false);
 
         #region Suffix
@@ -494,7 +518,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
         {
             #region MessageImportDone
 
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
@@ -506,7 +530,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow);
+                .ShowDialog(Desktop.MainWindow));
 
             #endregion
         }
@@ -514,7 +538,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
         {
             #region MessageImportCancel
 
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
@@ -525,7 +549,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow);
+                .ShowDialog(Desktop.MainWindow));
 
             #endregion
         }

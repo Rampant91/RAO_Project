@@ -8,8 +8,10 @@ using Models.Interfaces;
 
 namespace Client_App.Commands.AsyncCommands;
 
-//  Изменить Формы организации (1.0 и 2.0)
-internal class ChangeReportsAsyncCommand : BaseAsyncCommand
+/// <summary>
+/// Изменить Формы организации (1.0 и 2.0).
+/// </summary>
+public class ChangeReportsAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {

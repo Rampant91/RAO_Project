@@ -21,17 +21,25 @@ using static Client_App.ViewModels.BaseVM;
 using System.Reflection;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
+using Client_App.Properties;
+using MessageBox.Avalonia.Models;
+using System.Collections.Generic;
+using Client_App.Resources.CustomComparers;
 
 namespace Client_App.Commands.AsyncCommands;
 
-public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : BaseAsyncCommand
+/// <summary>
+/// Инициализация программы при запуске.
+/// </summary>
+/// <param name="mainWindowViewModel">ViewModel главного окна.</param>
+public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
         var onStartProgressBarVm = parameter as OnStartProgressBarVM;
         onStartProgressBarVm!.LoadStatus = "Поиск системной директории";
         mainWindowViewModel.OnStartProgressBar = 1;
-        GetSystemDirectory();
+        await GetSystemDirectory();
 
         onStartProgressBarVm.LoadStatus = "Создание временных файлов";
         mainWindowViewModel.OnStartProgressBar = 5;
@@ -44,6 +52,14 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
         onStartProgressBarVm.LoadStatus = "Создание базы данных";
         mainWindowViewModel.OnStartProgressBar = 15;
         await ProcessDataBaseCreate();
+
+        onStartProgressBarVm.LoadStatus = "Очистка";
+        mainWindowViewModel.OnStartProgressBar = 17;
+        await CleanUpMasterRep();
+
+        onStartProgressBarVm.LoadStatus = "Создание резервной копии БД";
+        mainWindowViewModel.OnStartProgressBar = 18;
+        await ProcessDataBaseBackup();
 
         onStartProgressBarVm.LoadStatus = "Загрузка таблиц";
         mainWindowViewModel.OnStartProgressBar = 20;
@@ -110,13 +126,18 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
 
     #region GetSystemDirectory
     
-    private static void GetSystemDirectory()
+    /// <summary>
+    /// Определение системной директории
+    /// </summary>
+    private static Task GetSystemDirectory()
     {
         try
         {
-            SystemDirectory = OperatingSystem.IsWindows()
-                ? Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System))!
-                : SystemDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            SystemDirectory = Settings.Default.SystemFolderDefaultPath is "default"
+                ? OperatingSystem.IsWindows()
+                    ? Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System))!
+                    : SystemDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
+                : Settings.Default.SystemFolderDefaultPath;
         }
         catch (Exception ex)
         {
@@ -124,20 +145,27 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.System);
         }
+        return Task.CompletedTask;
     }
 
     #endregion
 
     #region ProcessRaoDirectory
     
+    /// <summary>
+    /// Определение внутренних подпапок программы
+    /// </summary>
+    /// <returns></returns>
     private static Task ProcessRaoDirectory()
     {
         try
         {
             RaoDirectory = Path.Combine(SystemDirectory, "RAO");
             LogsDirectory = Path.Combine(RaoDirectory, "logs");
+            ReserveDirectory = Path.Combine(RaoDirectory, "reserve");
             TmpDirectory = Path.Combine(RaoDirectory, "temp");
             Directory.CreateDirectory(LogsDirectory);
+            Directory.CreateDirectory(ReserveDirectory);
             Directory.CreateDirectory(TmpDirectory);
         }
         catch (Exception ex)
@@ -158,10 +186,9 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
             {
                 var msg = $"{Environment.NewLine}Message: {ex.Message}" +
                            $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-                ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.System);
+                ServiceExtension.LoggerManager.Warning(msg, ErrorCodeLogger.System);
             }
         }
-
         return Task.CompletedTask;
     }
 
@@ -169,6 +196,10 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
 
     #region ProcessSpravochniks
     
+    /// <summary>
+    /// Инициализация справочников
+    /// </summary>
+    /// <returns></returns>
     private static Task ProcessSpravochniks()
     {
         var a = Spravochniks.SprRadionuclids;
@@ -178,8 +209,209 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
 
     #endregion
 
-    #region ProcessDataBaseCreate
+    #region ProcessDataBaseBackup
+
+    /// <summary>
+    /// Создание резервной копии БД раз в месяц.
+    /// </summary>
+    private static async Task ProcessDataBaseBackup()
+    {
+        //Settings.Default.LastDbBackupDate = DateTime.MinValue;    //Сброс даты для тестирования
+        //Settings.Default.Save();
+        if ((DateTime.Now - Settings.Default.LastDbBackupDate).TotalDays < 30
+            || Settings.Default.AppStartupParameters != string.Empty)
+        {
+            return;
+        }
+
+        #region MessageInputCategoryNums
+
+        var lastBackupTime = Settings.Default.LastDbBackupDate == DateTime.MinValue
+            ? string.Empty
+            : $" ({Settings.Default.LastDbBackupDate})";
+        var res = Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxInputParams
+            {
+                ButtonDefinitions =
+                [
+                    new ButtonDefinition { Name = "Сохранить в папку по умолчанию", IsDefault = true },
+                    new ButtonDefinition { Name = "Выбрать папку и сохранить" },
+                    new ButtonDefinition { Name = "Не сохранять", IsCancel = true }
+                ],
+                CanResize = true,
+                ContentTitle = "Резервное копирование",
+                ContentMessage = $"Последняя резервная копия базы данных создавалась более месяца назад{lastBackupTime}." +
+                                 $"{Environment.NewLine}Хотите выполнить резервное копирование?",
+                MinWidth = 450,
+                MinHeight = 150,
+                SizeToContent = SizeToContent.Width,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(Desktop.Windows[0])).GetAwaiter().GetResult();
+
+        #endregion
+
+        switch (res)
+        {
+            case "Сохранить в папку по умолчанию":
+            {
+                var count = 0; 
+                string reserveDbPath;
+                do
+                {
+                    reserveDbPath = Path.Combine(ReserveDirectory, DbFileName + $"_{++count}.RAODB");
+                } while (File.Exists(reserveDbPath));
+
+                try
+                {
+                    File.Copy(Path.Combine(RaoDirectory, DbFileName + ".RAODB"), reserveDbPath);
+                }
+                catch (Exception ex)
+                {
+                    var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                              $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                    ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
+                }
+                Settings.Default.LastDbBackupDate = DateTime.Now;
+                Settings.Default.Save();
+                break;
+            }
+            case "Выбрать папку и сохранить":
+            {
+                SaveFileDialog dial = new();
+                var filter = new FileDialogFilter
+                {
+                    Name = "RAODB",
+                    Extensions = { "RAODB" }
+                };
+                dial.Filters?.Add(filter);
+                dial.Directory = ReserveDirectory;
+                dial.InitialFileName = DbFileName + ".RAODB";
+                var fullPath = dial.ShowAsync(Desktop.Windows[0]).GetAwaiter().GetResult();
+                if (fullPath is not null)
+                {
+                    try
+                    {
+                        File.Copy(Path.Combine(RaoDirectory, DbFileName + ".RAODB"), fullPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                                  $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                        ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
+                    }
+                }
+                Settings.Default.LastDbBackupDate = DateTime.Now;
+                Settings.Default.Save();
+                break;
+            }
+        }
+    }
+
+    #endregion
+
+    #region CleanUpMasterRep
     
+    private static async Task CleanUpMasterRep()
+    {
+        await using var db = new DBModel(StaticConfiguration.DBPath);
+
+        var masterRepRows10List = db.ReportsCollectionDbSet
+            .Include(x => x.DBObservable)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+            .Where(x => x.DBObservable != null)
+            .SelectMany(x => x.Master_DB.Rows10)
+            .ToList();
+
+        var masterRepRows20List = db.ReportsCollectionDbSet
+            .Include(x => x.DBObservable)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+            .Where(x => x.DBObservable != null)
+            .SelectMany(x => x.Master_DB.Rows20)
+            .ToList();
+
+        foreach (var form10 in masterRepRows10List)
+        {
+            form10.RegNo_DB = CustomTrim(form10.RegNo_DB);
+            form10.OrganUprav_DB = CustomTrim(form10.OrganUprav_DB);
+            form10.SubjectRF_DB = CustomTrim(form10.SubjectRF_DB);
+            form10.JurLico_DB = CustomTrim(form10.JurLico_DB);
+            form10.ShortJurLico_DB = CustomTrim(form10.ShortJurLico_DB);
+            form10.JurLicoAddress_DB = CustomTrim(form10.JurLicoAddress_DB);
+            form10.JurLicoFactAddress_DB = CustomTrim(form10.JurLicoFactAddress_DB);
+            form10.GradeFIO_DB = CustomTrim(form10.GradeFIO_DB);
+            form10.Telephone_DB = CustomTrim(form10.Telephone_DB);
+            form10.Fax_DB = CustomTrim(form10.Fax_DB);
+            form10.Email_DB = CustomTrim(form10.Email_DB);
+            form10.Okpo_DB = CustomTrim(form10.Okpo_DB);
+            form10.Okved_DB = CustomTrim(form10.Okved_DB);
+            form10.Okogu_DB = CustomTrim(form10.Okogu_DB);
+            form10.Oktmo_DB = CustomTrim(form10.Oktmo_DB);
+            form10.Inn_DB = CustomTrim(form10.Inn_DB);
+            form10.Kpp_DB = CustomTrim(form10.Kpp_DB);
+            form10.Okopf_DB = CustomTrim(form10.Okopf_DB);
+            form10.Okfs_DB = CustomTrim(form10.Okfs_DB);
+        }
+        foreach (var form20 in masterRepRows20List)
+        {
+            form20.RegNo_DB = CustomTrim(form20.RegNo_DB);
+            form20.OrganUprav_DB = CustomTrim(form20.OrganUprav_DB);
+            form20.SubjectRF_DB = CustomTrim(form20.SubjectRF_DB);
+            form20.JurLico_DB = CustomTrim(form20.JurLico_DB);
+            form20.ShortJurLico_DB = CustomTrim(form20.ShortJurLico_DB);
+            form20.JurLicoAddress_DB = CustomTrim(form20.JurLicoAddress_DB);
+            form20.JurLicoFactAddress_DB = CustomTrim(form20.JurLicoFactAddress_DB);
+            form20.GradeFIO_DB = CustomTrim(form20.GradeFIO_DB);
+            form20.Telephone_DB = CustomTrim(form20.Telephone_DB);
+            form20.Fax_DB = CustomTrim(form20.Fax_DB);
+            form20.Email_DB = CustomTrim(form20.Email_DB);
+            form20.Okpo_DB = CustomTrim(form20.Okpo_DB);
+            form20.Okved_DB = CustomTrim(form20.Okved_DB);
+            form20.Okogu_DB = CustomTrim(form20.Okogu_DB);
+            form20.Oktmo_DB = CustomTrim(form20.Oktmo_DB);
+            form20.Inn_DB = CustomTrim(form20.Inn_DB);
+            form20.Kpp_DB = CustomTrim(form20.Kpp_DB);
+            form20.Okopf_DB = CustomTrim(form20.Okopf_DB);
+            form20.Okfs_DB = CustomTrim(form20.Okfs_DB);
+        }
+        await db.SaveChangesAsync();
+    }
+
+    private static string CustomTrim(string? str)
+    {
+        if (string.IsNullOrEmpty(str)) return string.Empty;
+
+        // Use Span to avoid allocations
+        var span = str.AsSpan();
+
+        // Trim leading and trailing whitespace
+        span = span.Trim();
+
+        // Allocate a buffer to build the result
+        var buffer = new char[span.Length];
+        var bufferIndex = 0;
+
+        // Iterate through the span and skip newline characters
+        foreach (var currentChar in span)
+        {
+            if (currentChar != '\r' && currentChar != '\n')
+            {
+                buffer[bufferIndex++] = currentChar;
+            }
+        }
+
+        // Return the new string with the correct length
+        return new string(buffer, 0, bufferIndex);
+    }
+
+    #endregion
+
+    #region ProcessDataBaseCreate
+
+    /// <summary>
+    /// Создание файла БД, либо чтение имеющегося
+    /// </summary>
+    /// <returns></returns>
     private async Task ProcessDataBaseCreate()
     {
         var i = 0;
@@ -200,6 +432,14 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
                 StaticConfiguration.DBPath = fileInfo.FullName;
                 StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                 dbm = StaticConfiguration.DBModel;
+
+                #region Test Version
+
+                var t = await dbm.Database.GetPendingMigrationsAsync();
+                var a = dbm.Database.GetMigrations();
+                var b = await dbm.Database.GetAppliedMigrationsAsync();
+
+                #endregion
                 await dbm.Database.MigrateAsync();
                 return;
             }
@@ -230,14 +470,12 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
         {
             try
             {
-                var reservePath = Path.Combine(RaoDirectory, "reserve");
-                Directory.CreateDirectory(reservePath);
                 foreach (var fileInfo in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly)
                              .Where(x => x.Name.ToLower().EndsWith(".raodb")))
                 {
                     if (!File.Exists(fileInfo.FullName)) continue;
                     File.Copy(fileInfo.FullName, 
-                        Path.Combine(reservePath, Path.GetFileNameWithoutExtension(fileInfo.Name)) + $"_{DateTime.Now.Ticks}.RAODB");
+                        Path.Combine(ReserveDirectory, Path.GetFileNameWithoutExtension(fileInfo.Name)) + $"_{DateTime.Now.Ticks}.RAODB");
                     File.Delete(fileInfo.FullName);
                 }
                 
@@ -379,6 +617,11 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
 
     #region ProcessDataBaseFillEmpty
 
+    /// <summary>
+    /// Создание головных отчётов организации и сортировка
+    /// </summary>
+    /// <param name="dbm">Контекст</param>
+    /// <returns></returns>
     public static async Task ProcessDataBaseFillEmpty(DataContext dbm)
     {
         if (!dbm.DBObservableDbSet.Any()) dbm.DBObservableDbSet.Add(new DBObservable());
@@ -420,6 +663,10 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
 
     #region ProcessDataBaseFillNullOrder
     
+    /// <summary>
+    /// Выставление порядкового номера и сортировка
+    /// </summary>
+    /// <returns></returns>
     private static async Task ProcessDataBaseFillNullOrder()
     {
         foreach (var key in ReportsStorage.LocalReports.Reports_Collection)
@@ -441,13 +688,26 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
             await item.SortAsync();
         }
 
-        await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync().ConfigureAwait(false);
+        var comparator = new CustomReportsComparer();
+        var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+        ReportsStorage.LocalReports.Reports_Collection.Clear();
+        ReportsStorage.LocalReports.Reports_Collection
+            .AddRange(tmpReportsList
+                .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
+                .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
+
+        //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
     }
 
     #endregion
 
     #region GetNumberInOrder
 
+    /// <summary>
+    /// Получить порядковый номер
+    /// </summary>
+    /// <param name="lst">Список элементов</param>
+    /// <returns></returns>
     public static int GetNumberInOrder(IEnumerable lst)
     {
         var maxNum = 0;
@@ -466,7 +726,12 @@ public class InitializationAsyncCommand(MainWindowVM mainWindowViewModel) : Base
     #endregion
 
     #region Local_ReportsChanged
-    
+
+    /// <summary>
+    /// PropertyChanged локального списка организаций
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void Local_ReportsChanged(object sender, PropertyChangedEventArgs e)
     {
         mainWindowViewModel.OnPropertyChanged(nameof(ReportsStorage.LocalReports));

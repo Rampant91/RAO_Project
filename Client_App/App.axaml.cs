@@ -7,6 +7,7 @@ using System.Threading;
 using Avalonia.Controls;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
+using Client_App.Properties;
 
 namespace Client_App;
 
@@ -49,6 +50,7 @@ public class App : Application
 
     private static bool InstanceCheck()
     {
+        if (!Settings.Default.OnlyOneAppInstanceAllowed) return true;
         _instanceCheckMutex = new Mutex(true, "<Client_App>", out var isNew);
         if (!isNew) 
             _instanceCheckMutex.Dispose();

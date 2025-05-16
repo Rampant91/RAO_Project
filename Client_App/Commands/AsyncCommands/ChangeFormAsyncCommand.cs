@@ -13,7 +13,10 @@ using Models.Classes;
 
 namespace Client_App.Commands.AsyncCommands;
 
-//  Открыть окно редактирования выбранной формы
+/// <summary>
+/// Открыть окно редактирования выбранной формы.
+/// </summary>
+/// <param name="form">Параметр и окно, которое нужно закрыть.</param>
 public class ChangeFormAsyncCommand(FormParameter? form = null) : BaseAsyncCommand
 {
     #region AsyncExecute

@@ -12,12 +12,14 @@ using System.Linq;
 using Client_App.Interfaces.Logger;
 using MessageBox.Avalonia.Enums;
 using Models.DTO;
-using static Client_App.Resources.StaticStringMethods;
+using Avalonia.Threading;
+using Client_App.Resources.CustomComparers;
+using Client_App.ViewModels;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
 //  Импорт -> Из RAODB
-internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
+public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -37,6 +39,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
         var countReadFiles = answer.Length;
 
+        var impReportsList = new List<Reports>();
         foreach (var path in answer) // Для каждого импортируемого файла
         {
             if (path == "") continue;
@@ -48,19 +51,19 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
             {
                 #region MessageFailedToReadFile
 
-                await MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                            {
-                                ButtonDefinitions = ButtonEnum.Ok,
-                                ContentTitle = "Импорт из .raodb",
-                                ContentHeader = "Ошибка",
-                                ContentMessage =
-                                    $"Не удалось прочесть файл {path}," +
-                                    $"{Environment.NewLine}файл поврежден или не содержит данных.",
-                                MinWidth = 400,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(Desktop.MainWindow); 
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = ButtonEnum.Ok,
+                        ContentTitle = "Импорт из .raodb",
+                        ContentHeader = "Ошибка",
+                        ContentMessage =
+                            $"Не удалось прочесть файл {path}," +
+                            $"{Environment.NewLine}файл поврежден или не содержит данных.",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(Desktop.MainWindow)); 
 
                 #endregion
 
@@ -74,6 +77,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
             foreach (var impReps in reportsCollection) // Для каждой импортируемой организации
             {
+                impReportsList.Add(impReps);
                 await impReps.SortAsync();
                 await RestoreReportsOrders(impReps);
                 if (impReps.Master.Rows10.Count != 0)
@@ -119,7 +123,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                         {
                             #region MessageNewOrg
 
-                            an = await MessageBox.Avalonia.MessageBoxManager
+                            an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                 {
                                     ButtonDefinitions =
@@ -142,7 +146,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                     MinWidth = 400,
                                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                                 })
-                                .ShowDialog(Desktop.MainWindow);
+                                .ShowDialog(Desktop.MainWindow));
 
                             #endregion
 
@@ -152,7 +156,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                         {
                             #region MessageNewOrg
 
-                            an = await MessageBox.Avalonia.MessageBoxManager
+                            an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                 {
                                     ButtonDefinitions =
@@ -171,7 +175,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                     MinWidth = 400,
                                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                                 })
-                                .ShowDialog(Desktop.MainWindow);
+                                .ShowDialog(Desktop.MainWindow));
 
                             #endregion
                         }
@@ -185,9 +189,10 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                         #region LoggerImport
 
                         var sortedRepList = impReps.Report_Collection
-                                            .OrderBy(x => x.FormNum_DB)
-                                            .ThenBy(x => StringReverse(x.StartPeriod_DB))
-                                            .ToList();
+                            .OrderBy(x => x.FormNum_DB)
+                            .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+                            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
+                            .ToList();
                         foreach (var rep in sortedRepList)
                         {
                             ImpRepCorNum = rep.CorrectionNumber_DB;
@@ -224,9 +229,30 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                         break;
                 }
             }
+
+            // Если убрать сохранение, то не перезаписывается базовый отчёт (номер корректировки) и при импорте нескольких файлов одинакового отчёта,
+            // но с разными номерами, в организации появлялись дубли, вместо перезаписи имеющегося отчёта.
+            try
+            {
+                await StaticConfiguration.DBModel.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
-        await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
+        var comparator = new CustomReportsComparer();
+        var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+
+        ReportsStorage.LocalReports.Reports_Collection.Clear();
+        ReportsStorage.LocalReports.Reports_Collection
+            .AddRange(tmpReportsList
+                .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
+                .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
+
+        //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
+
         try
         {
             await StaticConfiguration.DBModel.SaveChangesAsync();
@@ -236,14 +262,17 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
         }
 
+        await SetDataGridPage(impReportsList);
+
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"
                 : "ов";
+
         if (AtLeastOneImportDone)
         {
             #region MessageImportDone
             
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
@@ -254,7 +283,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow);
+                .ShowDialog(Desktop.MainWindow));
 
             #endregion
         }
@@ -262,7 +291,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         {
             #region MessageImportCancel
 
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
@@ -273,7 +302,7 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow);
+                .ShowDialog(Desktop.MainWindow));
 
             #endregion
         }
@@ -287,9 +316,9 @@ internal class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
         #region Test Version
 
-        var t = await db.Database.GetPendingMigrationsAsync();
-        var a = db.Database.GetMigrations();
-        var b = await db.Database.GetAppliedMigrationsAsync();
+        //var t = await db.Database.GetPendingMigrationsAsync();
+        //var a = db.Database.GetMigrations();
+        //var b = await db.Database.GetAppliedMigrationsAsync();
 
         #endregion
 

@@ -10,7 +10,10 @@ public static class StaticConfiguration
         get => _dbPath;
         set => _dbPath = value;
     }
+
     public static DBModel DBModel;
+
+    #region IsFileLocked
 
     public static bool IsFileLocked(string fullPath)
     {
@@ -30,4 +33,6 @@ public static class StaticConfiguration
         }
         return false;
     }
+
+    #endregion
 }

@@ -36,10 +36,10 @@ public class CheckFormVM : BaseVM, INotifyPropertyChanged
     private string _titleName;
     public string TitleName
     {
-        get => $"Проверка формы {ChangeOrCreateVM.Storages.Master_DB.RegNoRep.Value}_" +
+        get => $"Проверка_формы_{ChangeOrCreateVM.Storages.Master_DB.RegNoRep.Value}_" +
                $"{ChangeOrCreateVM.Storages.Master_DB.OkpoRep.Value}_" +
                $"{ChangeOrCreateVM.Storage.FormNum_DB}_" +
-               $"{ChangeOrCreateVM.Storage.StartPeriod_DB}-{ChangeOrCreateVM.Storage.EndPeriod_DB}";
+               ((ChangeOrCreateVM.Storage.FormNum_DB[..1] =="2")?$"{ChangeOrCreateVM.Storage.Year_DB}":$"{ChangeOrCreateVM.Storage.StartPeriod_DB}-{ChangeOrCreateVM.Storage.EndPeriod_DB}");
         set
         {
             if (_titleName == value) return;

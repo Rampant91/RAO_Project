@@ -8,8 +8,10 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Client_App.Controls.DataGrid;
 using Client_App.Controls.DataGrid.DataGrids;
+using Client_App.Controls.MaskedTextBox;
 using Client_App.VisualRealization.Converters;
 using Models.Attributes;
+using Models.DBRealization;
 
 namespace Client_App.VisualRealization.Long_Visual;
 
@@ -68,7 +70,7 @@ public class Form1_Visual
         }
         if (_flag == "date")
         {
-            textCell.Control = new MaskedTextBox()
+            textCell.Control = new MaskedTextBoxForDate()
             {
                 [!StyledElement.DataContextProperty] = b,
                 [!TextBox.TextProperty] = new Binding("Value"),
@@ -371,6 +373,7 @@ public class Form1_Visual
 
 
         #region Left
+
         StackPanel leftStPT = new()
         {
             Orientation = Orientation.Vertical,
@@ -543,9 +546,11 @@ public class Form1_Visual
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
+
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -561,6 +566,7 @@ public class Form1_Visual
             MultilineMode = MultilineMode.Multi,
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+            MinHeight = 175,
             MaxHeight = 700,
             Margin = Thickness.Parse("5,5,0,0")
 
@@ -577,6 +583,7 @@ public class Form1_Visual
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
         maingrid.Children.Add(prt);
+
         #endregion
 
         return vw;
@@ -785,9 +792,11 @@ public class Form1_Visual
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
+        
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -795,7 +804,7 @@ public class Form1_Visual
         };
         DataGridNote grd1 = new()
         {
-            Name = "Form11Notes_",
+            Name = "Form12Notes_",
             Focusable = true,
             Comment = "Примечания",
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -804,6 +813,7 @@ public class Form1_Visual
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
+            MinHeight = 175,
             Margin = Thickness.Parse("5,5,0,0")
 
         };
@@ -819,6 +829,7 @@ public class Form1_Visual
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
         maingrid.Children.Add(prt);
+
         #endregion
 
         return vw;
@@ -984,6 +995,7 @@ public class Form1_Visual
         #endregion
 
         #region Centre
+
         DataGridForm13 grd = new()
         {
             Name = "Form13Data_",
@@ -1028,9 +1040,11 @@ public class Form1_Visual
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
+
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -1038,7 +1052,7 @@ public class Form1_Visual
         };
         DataGridNote grd1 = new()
         {
-            Name = "Form11Notes_",
+            Name = "Form13Notes_",
             Focusable = true,
             Comment = "Примечания",
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -1047,6 +1061,7 @@ public class Form1_Visual
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
+            MinHeight = 175,
             Margin = Thickness.Parse("5,5,0,0")
 
         };
@@ -1062,6 +1077,7 @@ public class Form1_Visual
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
         maingrid.Children.Add(prt);
+        
         #endregion
 
         return vw;
@@ -1276,6 +1292,7 @@ public class Form1_Visual
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -1283,7 +1300,7 @@ public class Form1_Visual
         };
         DataGridNote grd1 = new()
         {
-            Name = "Form11Notes_",
+            Name = "Form14Notes_",
             Focusable = true,
             Comment = "Примечания",
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -1292,8 +1309,8 @@ public class Form1_Visual
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
+            MinHeight = 175,
             Margin = Thickness.Parse("5,5,0,0")
-
         };
 
         prt.Children.Add(grd1);
@@ -1307,6 +1324,7 @@ public class Form1_Visual
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
         maingrid.Children.Add(prt);
+
         #endregion
 
         return vw;
@@ -1458,6 +1476,7 @@ public class Form1_Visual
         #endregion
 
         #region Centre
+
         DataGridForm15 grd = new()
         {
             Name = "Form15Data_",
@@ -1502,9 +1521,11 @@ public class Form1_Visual
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
+
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -1512,7 +1533,7 @@ public class Form1_Visual
         };
         DataGridNote grd1 = new()
         {
-            Name = "Form11Notes_",
+            Name = "Form15Notes_",
             Focusable = true,
             Comment = "Примечания",
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -1521,8 +1542,8 @@ public class Form1_Visual
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
+            MinHeight = 175,
             Margin = Thickness.Parse("5,5,0,0")
-
         };
 
         prt.Children.Add(grd1);
@@ -1536,6 +1557,7 @@ public class Form1_Visual
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
         maingrid.Children.Add(prt);
+        
         #endregion
 
         return vw;
@@ -1687,6 +1709,7 @@ public class Form1_Visual
         #endregion
 
         #region Centre
+
         DataGridForm16 grd = new()
         {
             Name = "Form16Data_",
@@ -1731,9 +1754,11 @@ public class Form1_Visual
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
+        
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -1741,7 +1766,7 @@ public class Form1_Visual
         };
         DataGridNote grd1 = new()
         {
-            Name = "Form11Notes_",
+            Name = "Form16Notes_",
             Focusable = true,
             Comment = "Примечания",
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -1750,8 +1775,8 @@ public class Form1_Visual
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
+            MinHeight = 175,
             Margin = Thickness.Parse("5,5,0,0")
-
         };
 
         prt.Children.Add(grd1);
@@ -1765,8 +1790,8 @@ public class Form1_Visual
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
         maingrid.Children.Add(prt);
+        
         #endregion
-
 
         return vw;
     }
@@ -1917,6 +1942,7 @@ public class Form1_Visual
         #endregion
 
         #region Centre
+
         DataGridForm17 grd = new()
         {
             Name = "Form17Data_",
@@ -1961,9 +1987,11 @@ public class Form1_Visual
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
+        
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -1971,7 +1999,7 @@ public class Form1_Visual
         };
         DataGridNote grd1 = new()
         {
-            Name = "Form11Notes_",
+            Name = "Form17Notes_",
             Focusable = true,
             Comment = "Примечания",
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -1980,8 +2008,8 @@ public class Form1_Visual
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
+            MinHeight = 175,
             Margin = Thickness.Parse("5,5,0,0")
-
         };
 
         prt.Children.Add(grd1);
@@ -1995,6 +2023,7 @@ public class Form1_Visual
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
         maingrid.Children.Add(prt);
+        
         #endregion
 
         return vw;
@@ -2146,6 +2175,7 @@ public class Form1_Visual
         #endregion
 
         #region Centre
+
         DataGridForm18 grd = new()
         {
             Name = "Form18Data_",
@@ -2190,9 +2220,11 @@ public class Form1_Visual
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
+        
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -2200,7 +2232,7 @@ public class Form1_Visual
         };
         DataGridNote grd1 = new()
         {
-            Name = "Form11Notes_",
+            Name = "Form18Notes_",
             Focusable = true,
             Comment = "Примечания",
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -2209,8 +2241,8 @@ public class Form1_Visual
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
+            MinHeight = 175,
             Margin = Thickness.Parse("5,5,0,0")
-
         };
 
         prt.Children.Add(grd1);
@@ -2224,8 +2256,8 @@ public class Form1_Visual
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
         maingrid.Children.Add(prt);
+        
         #endregion
-
 
         return vw;
     }
@@ -2376,9 +2408,10 @@ public class Form1_Visual
         #endregion
 
         #region Centre
+
         DataGridForm19 grd = new()
         {
-            Name = "Form12Data_",
+            Name = "Form19Data_",
             Focusable = true,
             Sum = true,
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -2420,9 +2453,11 @@ public class Form1_Visual
         topPnl22.VerticalAlignment = VerticalAlignment.Top;
 
         maingrid.Children.Add(topPnl22);
+
         #endregion
 
         #region Bot
+
         Panel prt = new()
         {
             [Grid.ColumnProperty] = 4,
@@ -2430,7 +2465,7 @@ public class Form1_Visual
         };
         DataGridNote grd1 = new()
         {
-            Name = "Form11Notes_",
+            Name = "Form19Notes_",
             Focusable = true,
             Comment = "Примечания",
             HorizontalAlignment = HorizontalAlignment.Left,
@@ -2439,6 +2474,7 @@ public class Form1_Visual
             ChooseMode = ChooseMode.Cell,
             ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
             MaxHeight = 700,
+            MinHeight = 175,
             Margin = Thickness.Parse("5,5,0,0")
 
         };
@@ -2454,6 +2490,7 @@ public class Form1_Visual
         grd1.Bind(DataGridNote.ItemsProperty, b1);
 
         maingrid.Children.Add(prt);
+
         #endregion
 
         return vw;

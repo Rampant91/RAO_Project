@@ -137,7 +137,7 @@ public class Form11 : Form1
         set
         {
             PassportNumber_DB = value.Value;
-            OnPropertyChanged(nameof(PassportNumber));
+            OnPropertyChanged();
         }
     }
 
@@ -184,7 +184,7 @@ public class Form11 : Form1
         set
         {
             Type_DB = value.Value;
-            OnPropertyChanged(nameof(Type));
+            OnPropertyChanged();
         }
     }
 
@@ -240,7 +240,7 @@ public class Form11 : Form1
         set
         {
             Radionuclids_DB = value.Value;
-            OnPropertyChanged(nameof(Radionuclids));
+            OnPropertyChanged();
         }
     }
 
@@ -278,7 +278,7 @@ public class Form11 : Form1
         set
         {
             FactoryNumber_DB = value.Value;
-            OnPropertyChanged(nameof(FactoryNumber));
+            OnPropertyChanged();
         }
     }
 
@@ -670,7 +670,7 @@ public class Form11 : Form1
         set
         {
             Owner_DB = value.Value;
-            OnPropertyChanged(nameof(Owner));
+            OnPropertyChanged();
         }
     }
     //if change this change validation
@@ -935,16 +935,15 @@ public class Form11 : Form1
         set
         {
             PackType_DB = value.Value;
-            OnPropertyChanged(nameof(PackType));
+            OnPropertyChanged();
         }
     }
     //If change this change validation
 
     private void PackType_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        PackType_DB = tmp.Trim();
+        if (args.PropertyName != "Value" || ((RamAccess<string>)value).Value is null) return;
+        PackType_DB = ((RamAccess<string>)value).Value.Trim();
     }
 
     private bool PackType_Validation(RamAccess<string> value)//Ready
@@ -989,7 +988,7 @@ public class Form11 : Form1
         set
         {
             PackNumber_DB = value.Value;
-            OnPropertyChanged(nameof(PackNumber));
+            OnPropertyChanged();
         }
     }
     //If change this change validation
@@ -1060,7 +1059,10 @@ public class Form11 : Form1
         worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelString(Radionuclids_DB);
         worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelString(FactoryNumber_DB);
         worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = Quantity_DB is null ? "-" : Quantity_DB;
+
+        worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Style.Numberformat.Format = "0.##E+00";
         worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ConvertToExcelDouble(Activity_DB);
+
         worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = ConvertToExcelString(CreatorOKPO_DB);
         worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = ConvertToExcelDate(CreationDate_DB, worksheet, row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0));
         worksheet.Cells[row + (!transpose ? 8 : 0), column + (transpose ? 8 : 0)].Value = Category_DB is null ? "-" : Category_DB;

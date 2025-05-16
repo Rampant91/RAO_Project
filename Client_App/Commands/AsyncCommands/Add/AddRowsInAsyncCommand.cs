@@ -10,8 +10,11 @@ using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
-//  Добавить N строк в форму перед выбранной строкой
-internal class AddRowsInAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
+/// <summary>
+/// Добавить N строк в форму перед выбранной строкой.
+/// </summary>
+/// <param name="changeOrCreateViewModel">ViewModel отчёта.</param>
+public class AddRowsInAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
     private Report Storage => changeOrCreateViewModel.Storage;
     private string FormType => changeOrCreateViewModel.FormType;
@@ -43,7 +46,6 @@ internal class AddRowsInAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) :
                     lst.Add(frm);
                     numberCell++;
                 }
-
                 Storage[Storage.FormNum_DB].AddRange(lst);
                 await Storage.SortAsync();
             }

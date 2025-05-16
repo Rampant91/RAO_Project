@@ -21,6 +21,7 @@ using MessageBox.Avalonia.Models;
 using Models.Forms;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Enums;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 
@@ -62,8 +63,65 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
 
     #endregion
 
+    #region CheckPeriod
+
+    /// <summary>
+    /// Проверяет наличие отчёта с пересекающимся периодом.
+    /// </summary>
+    /// <param name="vm">Модель открытого отчёта.</param>
+    /// <returns>Сообщение о наличии пересечения.</returns>
+    private static async Task CheckPeriod(ChangeOrCreateVM vm)
+    {
+        var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
+        if (vm.Storage.FormNum_DB is "1.0" or "2.0") return;
+        var reps = vm.Storages;
+        var reportCollection = reps.Report_Collection;
+        var rep = vm.Storage;
+        if (DateOnly.TryParse(rep.StartPeriod_DB, out var startPeriod)
+            && DateOnly.TryParse(rep.EndPeriod_DB, out var endPeriod))
+        {
+            foreach (var currentReport in reportCollection.Where(x => x.FormNum_DB == rep.FormNum_DB && x.Id != rep.Id))
+            {
+                if (DateOnly.TryParse(currentReport.StartPeriod_DB, out var currentRepStartPeriod)
+                    && DateOnly.TryParse(currentReport.EndPeriod_DB, out var currentRepEndPeriod)
+                    && startPeriod < currentRepEndPeriod && endPeriod > currentRepStartPeriod)
+                {
+                    #region MessageFindIntersection
+
+                    await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams()
+                        {
+                            ButtonDefinitions = ButtonEnum.Ok,
+                            ContentTitle = "Пересечение",
+                            ContentHeader = "Уведомление",
+                            ContentMessage = $"У организации {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value} " +
+                                             $"{Environment.NewLine}присутствует отчёт по форме " +
+                                             $"{currentReport.FormNum_DB} {currentReport.StartPeriod_DB}-{currentReport.EndPeriod_DB}" +
+                                             $"{Environment.NewLine}пересекающийся с введённым периодом " +
+                                             $"{rep.StartPeriod_DB}-{rep.EndPeriod_DB}.",
+                            MinWidth = 450,
+                            MinHeight = 170,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(desktop.MainWindow));
+
+                    #endregion
+
+                    return;
+                }
+            }
+        }
+    }
+
+    #endregion
+
     #region RemoveEmptyForms
-    
+
+    /// <summary>
+    /// Проверяет на пустые строчки и предлагает их удалить.
+    /// </summary>
+    /// <param name="vm">Модель открытого отчёта.</param>
+    /// <returns>Сообщение с предложением удалить пустые строчки.</returns>
     private static async Task RemoveEmptyForms(ChangeOrCreateVM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
@@ -76,67 +134,67 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                 #region 1.1
 
                 case "1.1":
+                {
+                    var form = (Form11)key;
+                    if (string.IsNullOrWhiteSpace(form.OperationCode_DB)
+                        && string.IsNullOrWhiteSpace(form.OperationDate_DB)
+                        && string.IsNullOrWhiteSpace(form.PassportNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.Type_DB)
+                        && string.IsNullOrWhiteSpace(form.Radionuclids_DB)
+                        && string.IsNullOrWhiteSpace(form.FactoryNumber_DB)
+                        && form.Quantity_DB is null
+                        && string.IsNullOrWhiteSpace(form.Activity_DB)
+                        && string.IsNullOrWhiteSpace(form.CreatorOKPO_DB)
+                        && string.IsNullOrWhiteSpace(form.CreationDate_DB)
+                        && form.Category_DB is null
+                        && form.SignedServicePeriod_DB is null
+                        && form.PropertyCode_DB is null
+                        && string.IsNullOrWhiteSpace(form.Owner_DB)
+                        && form.DocumentVid_DB is null
+                        && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
+                        && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
+                        && string.IsNullOrWhiteSpace(form.TransporterOKPO_DB)
+                        && string.IsNullOrWhiteSpace(form.PackName_DB)
+                        && string.IsNullOrWhiteSpace(form.PackType_DB)
+                        && string.IsNullOrWhiteSpace(form.PackNumber_DB))
                     {
-                        var form = (Form11)key;
-                        if (string.IsNullOrWhiteSpace(form.OperationCode_DB)
-                            && string.IsNullOrWhiteSpace(form.OperationDate_DB)
-                            && string.IsNullOrWhiteSpace(form.PassportNumber_DB)
-                            && string.IsNullOrWhiteSpace(form.Type_DB)
-                            && string.IsNullOrWhiteSpace(form.Radionuclids_DB)
-                            && string.IsNullOrWhiteSpace(form.FactoryNumber_DB)
-                            && form.Quantity_DB is null
-                            && string.IsNullOrWhiteSpace(form.Activity_DB)
-                            && string.IsNullOrWhiteSpace(form.CreatorOKPO_DB)
-                            && string.IsNullOrWhiteSpace(form.CreationDate_DB)
-                            && form.Category_DB is null
-                            && form.SignedServicePeriod_DB is null
-                            && form.PropertyCode_DB is null
-                            && string.IsNullOrWhiteSpace(form.Owner_DB)
-                            && form.DocumentVid_DB is null
-                            && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
-                            && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
-                            && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
-                            && string.IsNullOrWhiteSpace(form.TransporterOKPO_DB)
-                            && string.IsNullOrWhiteSpace(form.PackName_DB)
-                            && string.IsNullOrWhiteSpace(form.PackType_DB)
-                            && string.IsNullOrWhiteSpace(form.PackNumber_DB))
-                        {
-                            formToDeleteList.Add(form);
-                        }
-                        break;
+                        formToDeleteList.Add(form);
                     }
+                    break;
+                }
 
                 #endregion
 
                 #region 1.2
 
                 case "1.2":
+                {
+                    var form = (Form12)key;
+                    if (string.IsNullOrWhiteSpace(form.OperationCode_DB)
+                        && string.IsNullOrWhiteSpace(form.OperationDate_DB)
+                        && string.IsNullOrWhiteSpace(form.PassportNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.NameIOU_DB)
+                        && string.IsNullOrWhiteSpace(form.FactoryNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.Mass_DB)
+                        && string.IsNullOrWhiteSpace(form.CreatorOKPO_DB)
+                        && string.IsNullOrWhiteSpace(form.CreationDate_DB)
+                        && string.IsNullOrWhiteSpace(form.SignedServicePeriod_DB)
+                        && form.PropertyCode_DB is null
+                        && string.IsNullOrWhiteSpace(form.Owner_DB)
+                        && form.DocumentVid_DB is null
+                        && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
+                        && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
+                        && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
+                        && string.IsNullOrWhiteSpace(form.TransporterOKPO_DB)
+                        && string.IsNullOrWhiteSpace(form.PackName_DB)
+                        && string.IsNullOrWhiteSpace(form.PackType_DB)
+                        && string.IsNullOrWhiteSpace(form.PackNumber_DB))
                     {
-                        var form = (Form12)key;
-                        if (string.IsNullOrWhiteSpace(form.OperationCode_DB)
-                            && string.IsNullOrWhiteSpace(form.OperationDate_DB)
-                            && string.IsNullOrWhiteSpace(form.PassportNumber_DB)
-                            && string.IsNullOrWhiteSpace(form.NameIOU_DB)
-                            && string.IsNullOrWhiteSpace(form.FactoryNumber_DB)
-                            && string.IsNullOrWhiteSpace(form.Mass_DB)
-                            && string.IsNullOrWhiteSpace(form.CreatorOKPO_DB)
-                            && string.IsNullOrWhiteSpace(form.CreationDate_DB)
-                            && string.IsNullOrWhiteSpace(form.SignedServicePeriod_DB)
-                            && form.PropertyCode_DB is null
-                            && string.IsNullOrWhiteSpace(form.Owner_DB)
-                            && form.DocumentVid_DB is null
-                            && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
-                            && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
-                            && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
-                            && string.IsNullOrWhiteSpace(form.TransporterOKPO_DB)
-                            && string.IsNullOrWhiteSpace(form.PackName_DB)
-                            && string.IsNullOrWhiteSpace(form.PackType_DB)
-                            && string.IsNullOrWhiteSpace(form.PackNumber_DB))
-                        {
-                            formToDeleteList.Add(form);
-                        }
-                        break;
+                        formToDeleteList.Add(form);
                     }
+                    break;
+                }
 
                 #endregion
 
@@ -4698,7 +4756,17 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
         if (DataContext is not ChangeOrCreateVM vm) return;
-        await RemoveEmptyForms(vm);
+        try
+        {
+            await RemoveEmptyForms(vm);
+            await CheckPeriod(vm);
+        }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" + 
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg);
+        }
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
         try
         {

@@ -1,22 +1,24 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm ="clr-namespace:Client_App.ViewModels"
-             xmlns:v ="clr-namespace:Client_App.Views"
              xmlns:local="using:Client_App"
+             xmlns:resources="clr-namespace:Client_App.Resources"
              x:Class="Client_App.App">
+
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
 
-    <!--
     <Application.Resources>
+        <resources:RatioConverter x:Key="RatioConverter"/>
+        <!--
         <ResourceDictionary>
             <DataTemplate DataType="{x:Type vm:CheckFormVM}">
                 <v:CheckForm/>
             </DataTemplate>
         </ResourceDictionary>
+        -->
     </Application.Resources>
-    -->
+
 
     <Application.Styles>
         <!--FluentTheme Mode="Light"/-->
@@ -26,5 +28,46 @@
         <StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml"/>
         <StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseLight.xaml"/>
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Default.xaml"/>
+
+        <Style Selector="HeaderedContentControl">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Grid 
+                        RowDefinitions="Auto,*" 
+                        ColumnDefinitions="Auto,*">
+
+                        <!-- Header -->
+                        <Border
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            ZIndex="1"
+                            Background="White"
+                            Padding="5,0,5,0"
+                            Margin="5,0,0,0">
+                            <TextBlock
+                                Text="{TemplateBinding Header}"
+                                FontWeight="Bold"/>
+                        </Border>
+
+                        <!-- Content Area -->
+                        <Border
+                            Grid.Row="0" Grid.RowSpan="2"
+                            Padding="0,5,0,0"
+                            Grid.Column="0" Grid.ColumnSpan="2"
+                            CornerRadius="4"
+                            Margin="0,10,0,0"
+                            BorderBrush="Black"
+                            
+                            BorderThickness="1">
+                            <ContentPresenter
+                                Name="PART_ContentPresenter"
+                                Padding="8"
+                                Content="{TemplateBinding Content}"/>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
     </Application.Styles>
 </Application>

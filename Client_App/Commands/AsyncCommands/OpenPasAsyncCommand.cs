@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Threading;
+using Client_App.Properties;
 using Client_App.Resources;
-using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using System;
 using System.Diagnostics;
@@ -11,8 +12,10 @@ using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands;
 
-//  Найти и открыть соответствующий файл паспорта в сетевом хранилище
-internal class OpenPasAsyncCommand : BaseAsyncCommand
+/// <summary>
+/// Найти и открыть соответствующий файл паспорта в сетевом хранилище.
+/// </summary>
+public partial class OpenPasAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -27,7 +30,7 @@ internal class OpenPasAsyncCommand : BaseAsyncCommand
         {
             #region MessageUnableToOpenPassport
 
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow("Уведомление",
                         "Паспорт не может быть открыт, поскольку не заполнены или заполнены некорректно все требуемые поля:"
                         + Environment.NewLine + "- номер паспорта (сертификата);"
@@ -35,7 +38,7 @@ internal class OpenPasAsyncCommand : BaseAsyncCommand
                         + Environment.NewLine + "- номер;"
                         + Environment.NewLine + "- код ОКПО изготовителя;"
                         + Environment.NewLine + "- дата выпуска;")
-                    .ShowDialog(Desktop.MainWindow);
+                    .ShowDialog(Desktop.MainWindow));
 
             #endregion
 
@@ -43,14 +46,37 @@ internal class OpenPasAsyncCommand : BaseAsyncCommand
         }
         
         var uniqPasName = $"{okpo}#{type}#{year}#{pasNum}#{factoryNum}.pdf";
-        uniqPasName = Regex.Replace(uniqPasName, "[\\\\/:*?\"<>|]", "_");
-        uniqPasName = Regex.Replace(uniqPasName, @"\s+", "");
+        uniqPasName = SpecialCharactersRegex().Replace(uniqPasName, "_").Replace(" ", "");
 
-        var pasFullPath = Directory.EnumerateFiles(BaseVM.PasFolderPath, uniqPasName, SearchOption.AllDirectories).FirstOrDefault() is not null
-            ? Directory.EnumerateFiles(BaseVM.PasFolderPath, uniqPasName, SearchOption.AllDirectories).FirstOrDefault()
-            : Directory.EnumerateFiles(BaseVM.PasFolderPath, StaticStringMethods.TranslateToEng(uniqPasName), SearchOption.AllDirectories).FirstOrDefault() is not null
-                ? Directory.EnumerateFiles(BaseVM.PasFolderPath, StaticStringMethods.TranslateToEng(uniqPasName), SearchOption.AllDirectories).FirstOrDefault()
-                : Directory.EnumerateFiles(BaseVM.PasFolderPath, StaticStringMethods.TranslateToRus(uniqPasName)).FirstOrDefault();
+        var pasFolderPath = Settings.Default.PasFolderDefaultPath;
+        if (!Path.Exists(pasFolderPath))
+        {
+            #region MessagePasportFileMissing
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
+                    ContentTitle = "Поиск файла паспорта",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"Сетевое хранилище недоступно:" +
+                                     $"{Environment.NewLine}{pasFolderPath}" +
+                                     $"{Environment.NewLine}Для изменения пути по умолчанию, воспользуйтесь кнопкой " +
+                                     $"{Environment.NewLine}\"Excel -> Паспорта -> Изменить расположение паспортов по умолчанию\".",
+                    MinWidth = 475,
+                    MinHeight = 175,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen
+                }).ShowDialog(Desktop.MainWindow));
+
+            #endregion
+        }
+
+        var pasFullPath = Directory.EnumerateFiles(pasFolderPath, uniqPasName, SearchOption.AllDirectories).FirstOrDefault() is not null
+            ? Directory.EnumerateFiles(pasFolderPath, uniqPasName, SearchOption.AllDirectories).FirstOrDefault()
+            : Directory.EnumerateFiles(pasFolderPath, StaticStringMethods.TranslateToEng(uniqPasName), SearchOption.AllDirectories).FirstOrDefault() is not null
+                ? Directory.EnumerateFiles(pasFolderPath, StaticStringMethods.TranslateToEng(uniqPasName), SearchOption.AllDirectories).FirstOrDefault()
+                : Directory.EnumerateFiles(pasFolderPath, StaticStringMethods.TranslateToRus(uniqPasName)).FirstOrDefault();
 
         if (pasFullPath is not null)
         {
@@ -60,7 +86,7 @@ internal class OpenPasAsyncCommand : BaseAsyncCommand
         {
             #region MessagePasportFileMissing
 
-            await MessageBox.Avalonia.MessageBoxManager
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
@@ -68,13 +94,16 @@ internal class OpenPasAsyncCommand : BaseAsyncCommand
                     ContentHeader = "Уведомление",
                     ContentMessage = $"Паспорт {uniqPasName}" +
                                      $"{Environment.NewLine}отсутствует в сетевом хранилище:" +
-                                     $"{Environment.NewLine}{BaseVM.PasFolderPath}",
+                                     $"{Environment.NewLine}{Settings.Default.PasFolderDefaultPath}",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
-                }).ShowDialog(Desktop.MainWindow);
+                }).ShowDialog(Desktop.MainWindow));
 
             #endregion
         }
     }
+
+    [GeneratedRegex("[\\\\/:*?\"<>|]")]
+    private static partial Regex SpecialCharactersRegex();
 }

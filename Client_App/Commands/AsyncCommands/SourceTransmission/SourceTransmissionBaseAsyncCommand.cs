@@ -23,10 +23,11 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     #region AddNewFormToExistingReport
 
-    private protected async Task AddNewFormToExistingReport(Report rep, Form1 form, DBModel db)
+    private protected async Task<bool> AddNewFormToExistingReport(Report rep, Form1 form, DBModel db)
     {
+        var formIsAdded = false;
         switch (form.FormNum_DB)
-        {
+        { 
             #region 1.1
 
             case "1.1":
@@ -36,8 +37,9 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
-                    .Where(x => x.Id == rep.Id)
+                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                     .Include(x => x.Rows15)
+                    .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Id == rep.Id)
                     .SelectMany(x => x.Rows15)
                     .CountAsync() + 1;
                 var newForm15 = new Form15
@@ -73,7 +75,11 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 var comparator = new CustomForm11ToForm15Comparer();
                 var isDuplicate = rep.Rows15
                     .Any(currentForm => comparator.Compare(newForm15, currentForm) == 0);
-                if (!isDuplicate) db.form_15.Add(newForm15);
+                if (!isDuplicate)
+                {
+                    db.form_15.Add(newForm15);
+                    formIsAdded = true;
+                }
                 break;
             }
 
@@ -88,8 +94,9 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
-                    .Where(x => x.Id == rep.Id)
+                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                     .Include(x => x.Rows16)
+                    .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Id == rep.Id)
                     .SelectMany(x => x.Rows16)
                     .CountAsync() + 1;
                 var massTmp = (form12.Mass_DB ?? "")
@@ -149,7 +156,11 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 var comparator = new CustomForm12And13ToForm16Comparer();
                 var isDuplicate = rep.Rows16
                     .Any(currentForm => comparator.Compare(newForm16, currentForm) == 0);
-                if (!isDuplicate) db.form_16.Add(newForm16);
+                if (!isDuplicate)
+                {
+                    db.form_16.Add(newForm16);
+                    formIsAdded = true;
+                }
                 break;
             }
 
@@ -165,8 +176,9 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
-                    .Where(x => x.Id == rep.Id)
+                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                     .Include(x => x.Rows16)
+                    .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Id == rep.Id)
                     .SelectMany(x => x.Rows16)
                     .CountAsync() + 1;
                 var nuclidsArray = form13.Radionuclids_DB
@@ -216,7 +228,11 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 var comparator = new CustomForm12And13ToForm16Comparer();
                 var isDuplicate = rep.Rows16
                     .Any(currentForm => comparator.Compare(newForm16, currentForm) == 0);
-                if (!isDuplicate) db.form_16.Add(newForm16);
+                if (!isDuplicate)
+                {
+                    db.form_16.Add(newForm16);
+                    formIsAdded = true;
+                }
                 break;
             }
 
@@ -232,8 +248,9 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
-                    .Where(x => x.Id == rep.Id)
+                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                     .Include(x => x.Rows16)
+                    .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Id == rep.Id)
                     .SelectMany(x => x.Rows16)
                     .CountAsync() + 1;
                 var nuclidsArray = form14.Radionuclids_DB
@@ -298,12 +315,17 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 var comparator = new CustomForm14ToForm16Comparer();
                 var isDuplicate = rep.Rows16
                     .Any(currentForm => comparator.Compare(newForm16, currentForm) == 0);
-                if (!isDuplicate) db.form_16.Add(newForm16);
+                if (!isDuplicate)
+                {
+                    db.form_16.Add(newForm16);
+                    formIsAdded = true;
+                }
                 break;
             } 
             
             #endregion
         }
+        return formIsAdded;
     }
 
     #endregion
@@ -328,8 +350,9 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
-                    .Where(x => x.Id == repId)
+                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                     .Include(x => x.Rows15)
+                    .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Id == repId)
                     .SelectMany(x => x.Rows15)
                     .CountAsync() + 1;
                 var newForm15 = new Form15
@@ -382,8 +405,9 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
-                    .Where(x => x.Id == repId)
+                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                     .Include(x => x.Rows16)
+                    .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Id == repId)
                     .SelectMany(x => x.Rows16)
                     .CountAsync() + 1;
                 var massTmp = (form12.Mass_DB ?? "")
@@ -460,8 +484,9 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
-                    .Where(x => x.Id == repId)
+                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                     .Include(x => x.Rows16)
+                    .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Id == repId)
                     .SelectMany(x => x.Rows16)
                     .CountAsync() + 1;
                 var nuclidsArray = form13.Radionuclids_DB
@@ -524,13 +549,13 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 var entityEntry = db.ReportCollectionDbSet.Add(newRep16);
                 await db.SaveChangesAsync();
                 repId = entityEntry.Entity.Id;    //id обновляется после сохранения БД.
-
                 var numberInOrder = await db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
-                    .Where(x => x.Id == repId)
+                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                     .Include(x => x.Rows16)
+                    .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Id == repId)
                     .SelectMany(x => x.Rows16)
                     .CountAsync() + 1;
                 var nuclidsArray = form14.Radionuclids_DB
@@ -729,7 +754,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     #region GetActivities
 
-    private static Dictionary<string, string> GetActivities(Form1 form1, IReadOnlyList<string> nuclidTypeArray)
+    private static Dictionary<string, string> GetActivities(Form1 form1, string[] nuclidTypeArray)
     {
         var tritiumActivity = "-";
         var betaGammaActivity = "-";
@@ -754,8 +779,8 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
             ? $"{activityDoubleValue:0.######################################################e+00}"
             : activityTmp;
 
-        if (nuclidTypeArray.Count == 1
-            || nuclidTypeArray.Count > 1
+        if (nuclidTypeArray.Length == 1
+            || nuclidTypeArray.Length > 1
             && nuclidTypeArray
                 .Skip(1)
                 .All(x => string.Equals(nuclidTypeArray[0], x)))
@@ -998,7 +1023,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     #region RFromFile
 
-    private static List<Dictionary<string, string>> R = new();
+    private static List<Dictionary<string, string>> R = [];
 
     private static void R_Populate_From_File()
     {

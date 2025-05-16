@@ -15,10 +15,13 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Avalonia.Xaml.Interactivity;
+using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.VisualRealization.Converters;
 using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
+using Client_App.Controls.AutoCompleteBox;
 
 namespace Client_App.Controls.DataGrid;
 
@@ -55,10 +58,10 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         get => _items;
         set
         {
-            if (value != null 
+            if (value != null
                 && int.TryParse(NowPage, out var nowPage)
-                && Math.Ceiling(value.Count / 10.0 ) < nowPage
-                && NowPage != "1" 
+                && Math.Ceiling(value.Count / 10.0) < nowPage
+                && NowPage != "1"
                 && _items?.GetEnumerable().FirstOrDefault() is Report) //жуткий костыль, чтобы страница сбрасывалась при смене организации, но не сбрасывалась при её открытии
             {
                 NowPage = "1";
@@ -287,10 +290,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 var props = item.GetType().GetProperties();
                 foreach (var prop in props)
                 {
-                    var attr = (FormPropertyAttribute)prop.GetCustomAttributes(typeof(FormPropertyAttribute), false).FirstOrDefault();
-                    if (attr == null) continue;
                     try
                     {
+                        var attr = (FormPropertyAttribute)prop.GetCustomAttributes(typeof(FormPropertyAttribute), false).FirstOrDefault();
+                        if (attr == null) continue;
+
                         var columnNum = Convert.ToInt32(attr.Number);
                         if (columnNum >= minColumn && columnNum <= maxColumn)
                         {
@@ -298,25 +302,46 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             var _value = midValue.GetType().GetProperty("Value").GetMethod.Invoke(midValue, null);
                             if (_value != null && _value != " ")
                             {
-                                try
+                                _value = _value.ToString().Replace("е", "e").Replace("Е", "E").Replace(".", ",");
+                                if (double.TryParse(_value.ToString(), out _s))
                                 {
-                                    _value = _value.ToString().Replace("е", "e").Replace("Е", "E").Replace(".", ",");
-                                    _s += Convert.ToDouble(_value);
-                                    var stackPanel = (StackPanel)((StackPanel)((Border)((Grid)((Panel)Content).Children[0]).Children[2]).Child).Children[0];
+                                    var stackPanel =
+                                        (StackPanel)((StackPanel)((Border)((Grid)((Panel)Content).Children[0]).Children[
+                                            2]).Child).Children[0];
                                     stackPanel.Children[0].IsVisible = true;
                                     stackPanel.Children[1].IsVisible = true;
                                 }
-                                catch
+                                else
                                 {
-                                    var stackPanel = (StackPanel)((StackPanel)((Border)((Grid)((Panel)Content).Children[0]).Children[2]).Child).Children[0];
+                                    var stackPanel =
+                                        (StackPanel)((StackPanel)((Border)((Grid)((Panel)Content).Children[0]).Children[
+                                            2]).Child).Children[0];
                                     stackPanel.Children[0].IsVisible = false;
                                     stackPanel.Children[1].IsVisible = false;
                                     return null;
                                 }
+                                //try
+                                //{
+                                //    _value = _value.ToString().Ok("е", "e").Ok("Е", "E").Ok(".", ",");
+                                //    _s += Convert.ToDouble(_value);
+                                //    var stackPanel = (StackPanel)((StackPanel)((Border)((Grid)((Panel)Content).Children[0]).Children[2]).Child).Children[0];
+                                //    stackPanel.Children[0].IsVisible = true;
+                                //    stackPanel.Children[1].IsVisible = true;
+                                //}
+                                //catch
+                                //{
+                                //    var stackPanel = (StackPanel)((StackPanel)((Border)((Grid)((Panel)Content).Children[0]).Children[2]).Child).Children[0];
+                                //    stackPanel.Children[0].IsVisible = false;
+                                //    stackPanel.Children[1].IsVisible = false;
+                                //    return null;
+                                //}
                             }
                         }
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        //ignore
+                    }
                 }
             }
         }
@@ -545,10 +570,10 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         {
             if (Items == null) return;
             var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
-            var val = searchText == "" 
-                ? Items.Count 
-                : _itemsWithSearch != null 
-                    ? _itemsWithSearch.Count 
+            var val = searchText == ""
+                ? Items.Count
+                : ItemsWithSearch != null
+                    ? ItemsWithSearch.Count
                     : 0;
             SetAndRaise(ItemsCountProperty, ref _ItemsCount, val.ToString());
         }
@@ -575,14 +600,14 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     ? Items.Count % PageSize == 0
                         ? Items.Count / PageSize
                         : Items.Count / PageSize + 1
-                    : _itemsWithSearch != null
-                        ? _itemsWithSearch.Count == 0
+                    : ItemsWithSearch != null
+                        ? ItemsWithSearch.Count == 0
                             ? 0
-                            : _itemsWithSearch.Count <= PageSize
+                            : ItemsWithSearch.Count <= PageSize
                                 ? 1
-                                : _itemsWithSearch.Count % PageSize == 0
-                                    ? _itemsWithSearch.Count / PageSize
-                                    : _itemsWithSearch.Count / PageSize + 1
+                                : ItemsWithSearch.Count % PageSize == 0
+                                    ? ItemsWithSearch.Count / PageSize
+                                    : ItemsWithSearch.Count / PageSize + 1
                         : Items.Count % PageSize == 0
                             ? Items.Count / PageSize
                             : Items.Count / PageSize + 1
@@ -610,7 +635,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             if (Items == null) return;
             var countR = 0;
             var searchText = Regex.Replace(SearchText.ToLower(), "[-.?!)(,: ]", "");
-            foreach (var item in searchText != "" && _itemsWithSearch != null ? _itemsWithSearch : Items)
+            foreach (var item in searchText != "" && ItemsWithSearch != null ? ItemsWithSearch : Items)
             {
                 var reps = (Reports)item;
                 countR += reps.Report_Collection.Count;
@@ -683,12 +708,12 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             ? Items.Count / PageSize
                             : Items.Count / PageSize + 1
                         : 1
-                    : _itemsWithSearch != null
-                        ? _itemsWithSearch.Count == 0
+                    : ItemsWithSearch != null
+                        ? ItemsWithSearch.Count == 0
                             ? 1
-                            : _itemsWithSearch.Count % PageSize == 0
-                                ? _itemsWithSearch.Count / PageSize
-                                : _itemsWithSearch.Count / PageSize + 1
+                            : ItemsWithSearch.Count % PageSize == 0
+                                ? ItemsWithSearch.Count / PageSize
+                                : ItemsWithSearch.Count / PageSize + 1
                         : 1;
                 if (maxPage == 0) maxPage = 1;
                 if (val.ToString() == _nowPage) return;
@@ -782,8 +807,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 if (SelectedCells.Count is 1)
                 {
                     var cell = (Cell)SelectedCells[0];
-                    var textBox = (TextBox)cell.Control;
-                    if (textBox.SelectedText != textBox.Text)
+                    if (cell.Control is TextBox textBox
+                        && textBox.SelectedText != textBox.Text)
                     {
                         answ[0] = null;
                     }
@@ -875,7 +900,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     }
     #endregion
 
-    private IKeyCollection _itemsWithSearch;
+    public IKeyCollection? ItemsWithSearch;
 
     #region SearchText
     public static readonly DirectProperty<DataGrid<T>, string> SearchTextProperty =
@@ -930,7 +955,6 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             if (MultilineMode == MultilineMode.Multi) SetSelectedControls_CellMulti();
             if (MultilineMode == MultilineMode.Single) SetSelectedControls_CellSingle();
         }
-
         if (ChooseMode == ChooseMode.Line)
         {
             if (MultilineMode == MultilineMode.Multi) SetSelectedControls_LineMulti();
@@ -989,7 +1013,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         {
 
             var tmp1 = Rows
-                .Where(item => ((Cell)item.Children.FirstOrDefault()).Row != row 
+                .Where(item => ((Cell)item.Children.FirstOrDefault()).Row != row
                                && ((Cell)item.Children.FirstOrDefault()).Column != column);
             foreach (var item in tmp1)
             {
@@ -1078,9 +1102,9 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         {
             var tmp1 = Rows
                 .SelectMany(x => x.Children)
-                .Where(item => !(((Cell)item).Row >= minRow 
-                                 && ((Cell)item).Row <= maxRow 
-                                 && ((Cell)item).Column >= minColumn 
+                .Where(item => !(((Cell)item).Row >= minRow
+                                 && ((Cell)item).Row <= maxRow
+                                 && ((Cell)item).Column >= minColumn
                                  && ((Cell)item).Column <= maxColumn));
             foreach (var control in tmp1)
             {
@@ -1104,7 +1128,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 {
                     if (!tmpSelectedItems.ContainsKey(dataContext.Order))
                     {
-                        tmpSelectedItems.Add(dataContext.Order, new ObservableCollectionWithItemPropertyChanged<IKey>());
+                        tmpSelectedItems.Add(dataContext.Order, []);
                     }
                 }
                 else
@@ -1135,7 +1159,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         }
     }
     #endregion
-    
+
     //Всё что касается работы с мышью
     #region DataGridPoiter
 
@@ -1168,7 +1192,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
     #region FindMousePressed
 
-    private int[] FindMousePress(IReadOnlyList<double> mouse)
+    private int[] FindMousePress(double[] mouse)
     {
         var tmp = new int[2];
         var sumy = 0.0;
@@ -1211,7 +1235,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     #endregion
 
     #region MousePressed
-    
+
     private void MousePressed(object sender, PointerPressedEventArgs args)
     {
         var paramKey = args.GetCurrentPoint(this).Properties.PointerUpdateKind;
@@ -1268,7 +1292,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             if (FirstPressedItem[0] != -1)
             {
                 ContextMenu.Close();
-                
+
                 var tmp1 = (Cell)Rows
                     .SelectMany(x => x.Children)
                     .FirstOrDefault(item => ((Cell)item).Row == paramRowColumn[0]
@@ -1311,7 +1335,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     #endregion
 
     #region MouseDoublePressed
-    
+
     private void MouseDoublePressed(object sender, EventArgs args)
     {
         if (FirstPressedItem[0] == -1) return;
@@ -1327,18 +1351,18 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     #endregion
 
     #region MouseReleased
-    
+
     private void MouseReleased(object sender, PointerReleasedEventArgs args)
     {
         var paramKey = args.GetCurrentPoint(this).Properties.PointerUpdateKind;
         var paramPos = args.GetCurrentPoint(CenterStackPanel).Position;
 
         if (paramKey != PointerUpdateKind.LeftButtonReleased) return;
-        var paramRowColumn = FindMousePress(new[] { paramPos.Y, paramPos.X });
-        if (LastPressedItem[0] != paramRowColumn[0] || LastPressedItem[1] != paramRowColumn[1])
+        var paramRowColumn = FindMousePress([paramPos.Y, paramPos.X]);
+        //if (LastPressedItem[0] != paramRowColumn[0] || LastPressedItem[1] != paramRowColumn[1])
         {
             LastPressedItem = paramRowColumn;
-            ScrollLeftRight = 0;
+            //ScrollLeftRight = 0;
             SetSelectedControls();
         }
     }
@@ -1346,14 +1370,14 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     #endregion
 
     #region MouseMoved
-    
+
     private void MouseMoved(object sender, PointerEventArgs args)
     {
         var paramKey = args.GetCurrentPoint(this).Properties;
         var paramPos = args.GetCurrentPoint(CenterStackPanel).Position;
 
         if (!paramKey.IsLeftButtonPressed) return;
-        var paramRowColumn = FindMousePress(new[] { paramPos.Y, paramPos.X });
+        var paramRowColumn = FindMousePress([paramPos.Y, paramPos.X]);
         if (LastPressedItem[0] == paramRowColumn[0] && LastPressedItem[1] == paramRowColumn[1]) return;
         var pr = ((Panel)Content).Bounds.Width;
         if (LastPressedItem[1] < paramRowColumn[1] && paramPos.X > pr / 4)
@@ -1368,15 +1392,15 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         SetSelectedControls();
         //else
         //{
-        //var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
-        //if (paramPos.X > 100)
-        //{
-        //    FixedContentN += 20;
-        //}
-        //if (paramPos.X < 0)
-        //{
-        //    FixedContentN -= 20;
-        //}
+        //    paramRowColumn = FindMousePress([paramPos.Y, paramPos.X]);
+        //    if (paramPos.X > 100)
+        //    {
+        //        ScrollLeftRight += 20;
+        //    }
+        //    if (paramPos.X < 0)
+        //    {
+        //        ScrollLeftRight -= 20;
+        //    }
         //}
     }
 
@@ -1398,7 +1422,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             if (Search)
             {
                 var tmp2Coll = new ObservableCollectionWithItemPropertyChanged<IKey>();
-                var searchText = 
+                var searchText =
                     ((TextBox)
                         ((Panel)
                         ((Border)
@@ -1418,19 +1442,25 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     searchText = Regex.Replace(searchText.ToLower(), "[-.?!)(,: ]", "");
                     if (searchText != "")
                     {
-                        foreach (var it in tmpColl)
+                        foreach (var key in tmpColl)
                         {
-                            var rowsText = ((Reports)it).Master_DB.OkpoRep.Value +
-                                           ((Reports)it).Master_DB.ShortJurLicoRep.Value +
-                                           ((Reports)it).Master_DB.RegNoRep.Value;
-                            rowsText = rowsText.ToLower();
-                            rowsText = Regex.Replace(rowsText, "[-.?!)(,: ]", "");
-                            if (rowsText.Contains(searchText))
+                            var it = (Reports)key;
+
+                            var okpo = Regex.Replace(it.Master_DB.OkpoRep.Value.ToLower(),
+                                "[-.?!)(,: ]", "");
+
+                            var shortJurLico = Regex.Replace(it.Master_DB.ShortJurLicoRep.Value.ToLower(),
+                                "[-.?!)(,: ]", "");
+
+                            var regNo = Regex.Replace(it.Master_DB.RegNoRep.Value.ToLower(),
+                                "[-.?!)(,: ]", "");
+
+                            if (okpo.Contains(searchText) || shortJurLico.Contains(searchText) || regNo.Contains(searchText))
                             {
                                 tmp2Coll.Add(it);
                             }
                         }
-                        if (int.TryParse(NowPage, out var nowPage) 
+                        if (int.TryParse(NowPage, out var nowPage)
                             && nowPage > tmp2Coll.Count / PageSize + 1)
                         {
                             SetAndRaise(NowPageProperty, ref _nowPage, "1");
@@ -1438,7 +1468,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             UpdateCells();
                         }
                         tmpColl = tmp2Coll;
-                        _itemsWithSearch = tmp2Coll;
+                        ItemsWithSearch = tmp2Coll;
                     }
                 }
             }
@@ -1517,14 +1547,18 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         {
             case Key.Left:
             {
-                if (args.Source is TextBox textBox
+                if (args.Source is TextBox { Text: not null } textBox
                     && textBox.SelectionStart != 0)
                 {
                     break;
                 }
-                LastPressedItem[1] = LastPressedItem[1] == 1
-                    ? LastPressedItem[1]
-                    : LastPressedItem[1] - 1;
+                LastPressedItem[1] = sender is DataGridNote     //для списка примечаний можно перемещаться на первый ряд, а в основной таблице нельзя
+                    ? LastPressedItem[1] == 0
+                        ? LastPressedItem[1]
+                        : LastPressedItem[1] - 1
+                    : LastPressedItem[1] == 1
+                        ? LastPressedItem[1]
+                        : LastPressedItem[1] - 1;
                 if (args.KeyModifiers != KeyModifiers.Shift)
                 {
                     FirstPressedItem[0] = LastPressedItem[0];
@@ -1548,7 +1582,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
             case Key.Right:
             {
-                if (args.Source is TextBox textBox
+                if (args.Source is TextBox { Text: not null } textBox
                     && textBox.SelectionStart != textBox.Text.Length)
                 {
                     break;
@@ -1667,7 +1701,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         if (IsReadableSum)
             lst = lst.Where(item => item.First().Key is Key.A or Key.C);
         ContextMenu menu = new();
-        List<MenuItem> lr = new();
+        List<MenuItem> lr = [];
         foreach (var item in lst)
         {
             switch (item.Count())
@@ -1681,7 +1715,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 }
                 case 2:
                 {
-                    List<MenuItem> inlr = new();
+                    List<MenuItem> inlr = [];
                     foreach (var it in item)
                     {
                         var tmp = new MenuItem { Header = it.ContextMenuText[1] };
@@ -1697,7 +1731,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         ContextMenu = menu;
     }
 
-    readonly List<ColumnDefinition> HeadersColumns = new();
+    readonly List<ColumnDefinition> HeadersColumns = [];
     readonly int GridSplitterSize = 2;
     private void MakeHeaderInner(DataGridColumns ls)
     {
@@ -1706,8 +1740,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
         var level = ls.Level;
 
-        Width = !IsAutoSizable 
-            ? ls.SizeCol 
+        Width = !IsAutoSizable
+            ? ls.SizeCol
             : double.NaN;
         HeadersColumns.Clear();
         var tre = ls.GetLevel(level - 1);
@@ -1844,7 +1878,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             {
                                 [!DataContextProperty] = new Binding(item.Binding),
                                 [!TextBox.TextProperty] = new Binding("Value"),
-                                [!BackgroundProperty] = cell[!Cell.ChooseColorProperty],
+                                [!BackgroundProperty] = cell[!Cell.ChooseColorProperty]
                             };
                             ((TextBox)textBox).TextAlignment = TextAlignment.Left;
                             textBox.VerticalAlignment = VerticalAlignment.Stretch;
@@ -1900,8 +1934,67 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 }
                 else
                 {
-                    
-                    textBox = new TextBox
+                    //if (Type is "Form11" && item.name is "22")
+                    //{
+                    //    var autoCompleteBox = new Avalonia.Controls.AutoCompleteBox
+                    //    {
+                    //        [!DataContextProperty] = new Binding(item.Binding),
+                    //        [!Avalonia.Controls.AutoCompleteBox.TextProperty] = new Binding("Value", BindingMode.TwoWay),
+                    //        [!BackgroundProperty] = cell[!Cell.ChooseColorProperty],
+                    //        VerticalAlignment = VerticalAlignment.Stretch,
+                    //        HorizontalAlignment = HorizontalAlignment.Stretch,
+                    //        ContextMenu = new ContextMenu { Width = 0, Height = 0 },
+                    //        FilterMode = AutoCompleteFilterMode.Contains,
+                    //        MinimumPrefixLength = 0,
+                    //        IsTextCompletionEnabled = true,
+                    //        Items = new List<string> { "1", "2", "3" }
+                    //    };
+                    //    Interaction.GetBehaviors(autoCompleteBox).Add(new AutoCompleteBoxBehaviour());
+                    //    //#region Focus
+
+                    //    //autoCompleteBox.GotFocus += (_, _) =>
+                    //    //{
+                    //    //    if (string.IsNullOrEmpty(autoCompleteBox.Text))
+                    //    //    {
+                    //    //        (autoCompleteBox).Text = " "; // when empty, we put a space in the box to make the dropdown appear
+                    //    //    }
+                    //    //    Dispatcher.UIThread.InvokeAsync(() => (autoCompleteBox).IsDropDownOpen = true);
+                    //    //};
+                    //    //autoCompleteBox.LostFocus += (_, _) =>
+                    //    //{
+                    //    //    autoCompleteBox.Text = autoCompleteBox.Text.Trim();
+                    //    //};
+                    //    //autoCompleteBox.TextChanged += (_, _) =>
+                    //    //{
+                    //    //    if (!string.IsNullOrWhiteSpace(autoCompleteBox.Text) &&
+                    //    //        autoCompleteBox.FilterMode != AutoCompleteFilterMode.Contains)
+                    //    //    {
+                    //    //        autoCompleteBox.FilterMode = AutoCompleteFilterMode.Contains;
+                    //    //    }
+
+                    //    //    if (string.IsNullOrWhiteSpace((autoCompleteBox).Text) &&
+                    //    //        autoCompleteBox.FilterMode != AutoCompleteFilterMode.None)
+                    //    //    {
+                    //    //        autoCompleteBox.FilterMode = AutoCompleteFilterMode.None;
+                    //    //    }
+                    //    //};
+
+                    //    //#endregion
+
+                    //    //AutoCompleteBoxBehaviour behavior = new AutoCompleteBoxBehaviour();
+                    //    //behavior.SetValue(AutoCompleteBoxBehaviour.SelectedItemsProperty, new Binding()
+                    //    //{
+                    //    //    ElementName = "_uc",
+                    //    //    Path = new PropertyPath("SelectedItems"),
+                    //    //    Mode = BindingMode.TwoWay
+                    //    //});
+                    //    //Interaction.GetBehaviors(yourElementName).Add(behavior)
+
+                    //    textBox = autoCompleteBox;
+                    //}
+                    //else
+                    {
+                        textBox = new TextBox
                         {
                             [!DataContextProperty] = new Binding(item.Binding),
                             [!TextBox.TextProperty] = new Binding("Value"),
@@ -1910,11 +2003,12 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             HorizontalAlignment = HorizontalAlignment.Stretch,
                             ContextMenu = new ContextMenu { Width = 0, Height = 0 }
                         };
-                    ((TextBox)textBox).TextAlignment = TextAlignment.Left;
-                    if (item.IsTextWrapping)
-                    {
-                        ((TextBox)textBox).TextWrapping = TextWrapping.Wrap;
-                        ((TextBox)textBox).AcceptsReturn = true;
+                        ((TextBox)textBox).TextAlignment = TextAlignment.Left;
+                        if (item.IsTextWrapping)
+                        {
+                            ((TextBox)textBox).TextWrapping = TextWrapping.Wrap;
+                            ((TextBox)textBox).AcceptsReturn = true;
+                        }
                     }
                 }
 
@@ -2174,11 +2268,13 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 Orientation = Orientation.Horizontal
             };
             middleFooterStackPanelS.Children.Add(new TextBlock()
-                { Text = "Сумма:", Margin = Thickness.Parse("5,0,0,0"), IsVisible = false, FontSize = 13 });
+            { Text = "Сумма:", Margin = Thickness.Parse("5,0,0,0"), IsVisible = false, FontSize = 13 });
             middleFooterStackPanelS.Children.Add(new TextBlock()
             {
-                [!TextBox.TextProperty] = this[!SumColumnProperty], Margin = Thickness.Parse("5,0,0,0"),
-                IsVisible = false, FontSize = 13
+                [!TextBox.TextProperty] = this[!SumColumnProperty],
+                Margin = Thickness.Parse("5,0,0,0"),
+                IsVisible = false,
+                FontSize = 13
             });
             middleFooterStackPanel.Children.Add(middleFooterStackPanelS);
         }
@@ -2188,9 +2284,9 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             Orientation = Orientation.Horizontal
         };
         middleFooterStackPanel1.Children.Add(new TextBlock()
-            { Text = "Кол-во страниц:", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });
+        { Text = "Кол-во страниц:", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });
         middleFooterStackPanel1.Children.Add(new TextBlock()
-            { [!TextBox.TextProperty] = this[!PageCountProperty], Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });
+        { [!TextBox.TextProperty] = this[!PageCountProperty], Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });
         middleFooterStackPanel.Children.Add(middleFooterStackPanel1);
 
         StackPanel middleFooterStackPanel2 = new()
@@ -2198,20 +2294,23 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             [!MarginProperty] = this[!FixedContentProperty],
             Orientation = Orientation.Horizontal
         };
-        middleFooterStackPanel2.Children.Add(new TextBlock 
-            {
-                Text = Type is nameof(Form11) or nameof(Form12) or nameof(Form13) or nameof(Form14) or nameof(Form15)
-                           or nameof(Form16) or nameof(Form17) or nameof(Form18) or nameof(Form19) or nameof(Form21)
-                           or nameof(Form22) or nameof(Form23) or nameof(Form24) or nameof(Form25) or nameof(Form26)
-                           or nameof(Form27) or nameof(Form28) or nameof(Form29) or nameof(Form210) or nameof(Form211)
-                           or nameof(Form212) or nameof(Note) || ShowAllReport
-                    ? "Кол-во строчек:"
-                    : "Кол-во отчетов",
-                Margin = Thickness.Parse("5,0,0,0"), FontSize = 13
-            });
         middleFooterStackPanel2.Children.Add(new TextBlock
         {
-            [!TextBox.TextProperty] = this[!ItemsCountProperty], Margin = Thickness.Parse("5,0,0,0"), FontSize = 13
+            Text = Type is nameof(Form11) or nameof(Form12) or nameof(Form13) or nameof(Form14) or nameof(Form15)
+                       or nameof(Form16) or nameof(Form17) or nameof(Form18) or nameof(Form19) or nameof(Form21)
+                       or nameof(Form22) or nameof(Form23) or nameof(Form24) or nameof(Form25) or nameof(Form26)
+                       or nameof(Form27) or nameof(Form28) or nameof(Form29) or nameof(Form210) or nameof(Form211)
+                       or nameof(Form212) or nameof(Note) || ShowAllReport
+                ? "Кол-во строчек:"
+                : "Кол-во отчетов",
+            Margin = Thickness.Parse("5,0,0,0"),
+            FontSize = 13
+        });
+        middleFooterStackPanel2.Children.Add(new TextBlock
+        {
+            [!TextBox.TextProperty] = this[!ItemsCountProperty],
+            Margin = Thickness.Parse("5,0,0,0"),
+            FontSize = 13
         });
         middleFooterStackPanel.Children.Add(middleFooterStackPanel2);
 
@@ -2223,10 +2322,12 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 Orientation = Orientation.Horizontal
             };
             middleFooterStackPanelR.Children.Add(new TextBlock
-                { Text = "Кол-во отчетов:", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });  //Кол-во отчетов у всех организаций (верхняя таблица)
+            { Text = "Кол-во отчетов:", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });  //Кол-во отчетов у всех организаций (верхняя таблица)
             middleFooterStackPanelR.Children.Add(new TextBlock
             {
-                [!TextBox.TextProperty] = this[!ReportCountProperty], Margin = Thickness.Parse("5,0,0,0"), FontSize = 13
+                [!TextBox.TextProperty] = this[!ReportCountProperty],
+                Margin = Thickness.Parse("5,0,0,0"),
+                FontSize = 13
             });
             middleFooterStackPanel2.Children.Add(middleFooterStackPanelR);
         }
@@ -2238,10 +2339,12 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 Orientation = Orientation.Horizontal
             };
             middleFooterStackPanelR.Children.Add(new TextBlock
-                { Text = "Кол-во строчек:", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });  //Кол-во строчек в отчете (нижняя таблица)
+            { Text = "Кол-во строчек:", Margin = Thickness.Parse("5,0,0,0"), FontSize = 13 });  //Кол-во строчек в отчете (нижняя таблица)
             middleFooterStackPanelR.Children.Add(new TextBlock
             {
-                [!TextBox.TextProperty] = this[!ReportStringCountProperty], Margin = Thickness.Parse("5,0,0,0"), FontSize = 13
+                [!TextBox.TextProperty] = this[!ReportStringCountProperty],
+                Margin = Thickness.Parse("5,0,0,0"),
+                FontSize = 13
             });
             middleFooterStackPanel2.Children.Add(middleFooterStackPanelR);
         }

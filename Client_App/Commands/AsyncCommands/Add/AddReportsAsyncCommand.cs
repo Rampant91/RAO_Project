@@ -5,10 +5,16 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Models.Interfaces;
 using Client_App.Commands.AsyncCommands.Save;
+using Client_App.Resources;
+using System.Collections.Generic;
+using System.Linq;
+using Client_App.Resources.CustomComparers;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
-//  Создать и открыть новое окно формы организации (1.0 и 2.0)
+/// <summary>
+/// Создать и открыть новое окно формы организации (1.0 и 2.0).
+/// </summary>
 public class AddReportsAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
@@ -22,7 +28,16 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
             mainWindow.SelectedReports = mainWindow.SelectedReports is null
                 ? []
                 : new ObservableCollectionWithItemPropertyChanged<IKey>(mainWindow.SelectedReports);
-            await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
+
+            var comparator = new CustomReportsComparer();
+            var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+            ReportsStorage.LocalReports.Reports_Collection.Clear();
+            ReportsStorage.LocalReports.Reports_Collection
+                .AddRange(tmpReportsList
+                    .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
+                    .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
+
+            //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
         }
     }
 }

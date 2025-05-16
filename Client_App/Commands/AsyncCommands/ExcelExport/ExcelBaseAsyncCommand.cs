@@ -7,21 +7,27 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Interfaces.Logger;
+using Client_App.Interfaces.Logger.EnumLogger;
+using Client_App.Properties;
 using Client_App.ViewModels;
+using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;
-using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
-using Models.Interfaces;
 using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
+/// <summary>
+/// Базовый класс выгрузки данных в .xlsx.
+/// </summary>
 public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 {
-    private protected CancellationTokenSource Cts = new();
+    private readonly CancellationTokenSource _cts = new();
+
     private protected ExcelWorksheet Worksheet { get; set; }
 
     private protected ExcelWorksheet WorksheetPrim { get; set; }
@@ -33,86 +39,87 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         IsExecute = true;
         try
         {
-            await Task.Run(() => AsyncExecute(parameter), Cts.Token);
+            await Task.Run(() => AsyncExecute(parameter));
         }
-        catch (Exception e)
+        catch (OperationCanceledException) { }
+        catch (Exception ex)
         {
-            // ignored
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg);
         }
         IsExecute = false;
     }
 
-    #region ExcelExportNotes
+    public abstract override Task AsyncExecute(object? parameter);
 
-    private protected static int ExcelExportNotes(string param, int startRow, int startColumn, ExcelWorksheet worksheetPrim,
-        List<Report> forms, bool printId = false)
+    #region CheckAppParameter
+
+    /// <summary>
+    /// Проверяет переданный параметр при запуске программы и если он имеет вид "-p/y, *folderPath*", то возвращает путь к папке.
+    /// </summary>
+    /// <returns>Полный путь к папке сохранения, если параметр заполнен, иначе пустую строку.</returns>
+    private protected static async Task<string> CheckAppParameter()
     {
-        foreach (var item in forms)
-        {
-            var findReports = ReportsStorage.LocalReports.Reports_Collection
-                .Where(t => t.Report_Collection.Contains(item));
-            var reps = findReports.FirstOrDefault();
-            if (reps == null) continue;
-            var curRow = startRow;
-            foreach (var i in item.Notes)
-            {
-                var mstRep = reps.Master_DB;
-                i.ExcelRow(worksheetPrim, curRow, startColumn + 1);
-                var yu = printId
-                    ? param.Split('.')[0] == "1"
-                        ? mstRep.Rows10[1].RegNo_DB != "" && mstRep.Rows10[1].Okpo_DB != ""
-                            ? reps.Master_DB.Rows10[1]
-                                .ExcelRow(worksheetPrim, curRow, 1, sumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
-                            : reps.Master_DB.Rows10[0]
-                                .ExcelRow(worksheetPrim, curRow, 1, sumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
-                        : mstRep.Rows20[1].RegNo_DB != "" && mstRep.Rows20[1].Okpo_DB != ""
-                            ? reps.Master_DB.Rows20[1]
-                                .ExcelRow(worksheetPrim, curRow, 1, sumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
-                            : reps.Master_DB.Rows20[0]
-                                .ExcelRow(worksheetPrim, curRow, 1, sumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
-                    : param.Split('.')[0] == "1"
-                        ? mstRep.Rows10[1].RegNo_DB != "" && mstRep.Rows10[1].Okpo_DB != ""
-                            ? reps.Master_DB.Rows10[1].ExcelRow(worksheetPrim, curRow, 1) + 1
-                            : reps.Master_DB.Rows10[0].ExcelRow(worksheetPrim, curRow, 1) + 1
-                        : mstRep.Rows20[1].RegNo_DB != "" && mstRep.Rows20[1].Okpo_DB != ""
-                            ? reps.Master_DB.Rows20[1].ExcelRow(worksheetPrim, curRow, 1) + 1
-                            : reps.Master_DB.Rows20[0].ExcelRow(worksheetPrim, curRow, 1) + 1;
+        var parameters = Settings.Default.AppStartupParameters.Split(',');
+        if (parameters.Length != 2 || !Directory.Exists(parameters[1])) return string.Empty;
+        var key = parameters[0].Trim();
+        var folderPath = key is "-p" or "-y"
+            ? parameters[1]
+            : string.Empty;
 
-                item.ExcelRow(worksheetPrim, curRow, yu);
-                curRow++;
-            }
+        return await Task.FromResult(folderPath);
+    }
 
-            startRow = curRow;
-        }
+    #endregion
 
-        return startRow;
+    #region CancelCommandAndCloseProgressBarWindow
+
+    /// <summary>
+    /// Отмена исполняемой команды и закрытие окна прогрессбара.
+    /// </summary>
+    /// <param name="cts">Токен.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <returns></returns>
+    private protected static async Task CancelCommandAndCloseProgressBarWindow(CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null)
+    {
+        await cts.CancelAsync();
+        if (progressBar is not null) await progressBar.CloseAsync();
+        cts.Token.ThrowIfCancellationRequested();
     }
 
     #endregion
 
     #region ExcelGetFullPath
 
-    private protected static async Task<(string fullPath, bool openTemp)> ExcelGetFullPath(string fileName, CancellationTokenSource cts)
+    /// <summary>
+    /// Выводит сообщение, дающее выбор, открывать временную копию или сохранить файл.
+    /// </summary>
+    /// <param name="fileName">Имя файла.</param>
+    /// <param name="cts">Токен.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <returns>Полный путь до файла и флаг, нужно ли открывать временную копию.</returns>
+    private protected static async Task<(string fullPath, bool openTemp)> ExcelGetFullPath(string fileName, CancellationTokenSource cts, 
+        AnyTaskProgressBar? progressBar = null)
     {
         #region MessageSaveOrOpenTemp
 
-        var res =
-            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams 
             {
-                ButtonDefinitions = new[]
-                {
+                ButtonDefinitions =
+                [
                     new ButtonDefinition { Name = "Сохранить" },
                     new ButtonDefinition { Name = "Открыть временную копию" }
-                },
+                ],
+                CanResize = true,
                 ContentTitle = "Выгрузка в Excel",
                 ContentHeader = "Уведомление",
-                ContentMessage = "Что бы вы хотели сделать" +
-                                 $"{Environment.NewLine} с данной выгрузкой?",
+                ContentMessage = "Что бы вы хотели сделать с данной выгрузкой?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow)).Result;
+            .ShowDialog(Desktop.MainWindow));
 
         #endregion
 
@@ -125,10 +132,12 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             {
                 DirectoryInfo tmpFolder = new(Path.Combine(BaseVM.SystemDirectory, "RAO", "temp"));
                 var count = 0;
-                do
+
+                fullPath = Path.Combine(tmpFolder.FullName, fileName + ".xlsx");
+                while (File.Exists(fullPath))
                 {
                     fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{++count}.xlsx");
-                } while (File.Exists(fullPath));
+                }
 
                 break;
             }
@@ -143,17 +152,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 dial.Filters.Add(filter);
                 dial.InitialFileName = fileName;
                 fullPath = await dial.ShowAsync(Desktop.MainWindow);
-                if (fullPath is null)
-                {
-                    cts.Cancel();
-                    cts.Token.ThrowIfCancellationRequested();
-                }
+                if (string.IsNullOrEmpty(fullPath)) await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
                 if (!fullPath.EndsWith(".xlsx")) fullPath += ".xlsx"; //В проводнике Linux в имя файла не подставляется расширение из фильтра, добавляю руками если его нет
-                if (string.IsNullOrEmpty(fullPath))
-                {
-                    cts.Cancel();
-                    cts.Token.ThrowIfCancellationRequested();
-                }
                 if (File.Exists(fullPath))
                 {
                     try
@@ -180,10 +180,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                             })
                             .ShowDialog(Desktop.MainWindow));
 
-                        #endregion
+                            #endregion
 
-                        cts.Cancel();
-                        cts.Token.ThrowIfCancellationRequested();
+                        await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
                     }
                 }
 
@@ -191,184 +190,31 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             }
             default:
             {
-                await cts.CancelAsync();
-                cts.Token.ThrowIfCancellationRequested();
+                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
                 break;
             }
         }
-
         return (fullPath, openTemp);
-    }
-
-    #endregion
-
-    #region ExcelExportRows
-
-    private protected static int ExcelExportRows(string param, int startRow, int startColumn, ExcelWorksheet worksheet,
-        List<Report> forms, bool id = false)
-    {
-        foreach (var item in forms)
-        {
-            var reps = ReportsStorage.LocalReports.Reports_Collection
-                .FirstOrDefault(t => t.Report_Collection.Any(x => x.Id == item.Id));
-                    //t.Report_Collection.Contains(item));
-            if (reps is null) continue;
-            IEnumerable<IKey> t;
-            switch (param)
-            {
-                case "2.1":
-                    t = item[param].ToList<IKey>().Where(x => ((Form21)x).Sum_DB || ((Form21)x).SumGroup_DB);
-                    if (item[param].ToList<IKey>().Any() && !t.Any())
-                    {
-                        t = item[param].ToList<IKey>();
-                    }
-                    break;
-                case "2.2":
-                    t = item[param].ToList<IKey>().Where(x => ((Form22)x).Sum_DB || ((Form22)x).SumGroup_DB);
-                    if (item[param].ToList<IKey>().Any() && !t.Any())
-                    {
-                        t = item[param].ToList<IKey>();
-                    }
-                    break;
-                default:
-                    t = item[param].ToList<IKey>();
-                    break;
-            }
-
-            var lst = t.Any()
-                ? item[param].ToList<IKey>().ToList()
-                : item[param].ToList<IKey>().OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
-            if (lst.Count <= 0) continue;
-            var count = startRow;
-            startRow--;
-            lst = lst
-                .Where(it => it != null)
-                .OrderBy(x => x.Order)
-                .ToList();
-            foreach (var it in lst)
-            {
-                switch (it)
-                {
-                    case Form11 form11:
-                        form11.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form12 form12:
-                        form12.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form13 form13:
-                        form13.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form14 form14:
-                        form14.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form15 form15:
-                        form15.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form16 form16:
-                        form16.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form17 form17:
-                        form17.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form18 form18:
-                        form18.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form19 form19:
-                        form19.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form21 form21:
-                        form21.ExcelRow(worksheet, count, startColumn + 1, sumNumber: form21.NumberInOrderSum_DB);
-                        break;
-                    case Form22 form22:
-                        form22.ExcelRow(worksheet, count, startColumn + 1, sumNumber: form22.NumberInOrderSum_DB);
-                        break;
-                    case Form23 form23:
-                        form23.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form24 form24:
-                        form24.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form25 form25:
-                        form25.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form26 form26:
-                        form26.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form27 form27:
-                        form27.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form28 form28:
-                        form28.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form29 form29:
-                        form29.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form210 form210:
-                        form210.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form211 form211:
-                        form211.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                    case Form212 form212:
-                        form212.ExcelRow(worksheet, count, startColumn + 1);
-                        break;
-                }
-
-                var mstrep = reps.Master_DB;
-
-                var yu = id
-                    ? param.Split('.')[0] == "1"
-                        ? mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != ""
-                            ? reps.Master_DB.Rows10[1]
-                                .ExcelRow(worksheet, count, 1, sumNumber: reps.Master_DB.Rows10[1].Id.ToString()) + 1
-                            : reps.Master_DB.Rows10[0]
-                                .ExcelRow(worksheet, count, 1, sumNumber: reps.Master_DB.Rows10[0].Id.ToString()) + 1
-                        : mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != ""
-                            ? reps.Master_DB.Rows20[1]
-                                .ExcelRow(worksheet, count, 1, sumNumber: reps.Master_DB.Rows20[1].Id.ToString()) + 1
-                            : reps.Master_DB.Rows20[0]
-                                .ExcelRow(worksheet, count, 1, sumNumber: reps.Master_DB.Rows20[0].Id.ToString()) + 1
-                    : param.Split('.')[0] == "1"
-                        ? mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != ""
-                            ? reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1) + 1
-                            : reps.Master_DB.Rows10[0].ExcelRow(worksheet, count, 1) + 1
-                        : mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != ""
-                            ? reps.Master_DB.Rows20[1].ExcelRow(worksheet, count, 1) + 1
-                            : reps.Master_DB.Rows20[0].ExcelRow(worksheet, count, 1) + 1;
-
-                item.ExcelRow(worksheet, count, yu);
-                count++;
-            }
-
-            //if (param.Split('.')[0] == "2")
-            //{
-            //    var new_number = 2;
-            //    while (worksheet.Cells[new_number, 6].Value != null)
-            //    {
-            //        worksheet.Cells[new_number, 6].Value = new_number - 1;
-            //        new_number++;
-            //    }
-            //}
-            startRow = count;
-        }
-
-        return startRow;
     }
 
     #endregion
 
     #region ExcelPrintTitulExport
 
-    private protected static void ExcelPrintTitleExport(string param, ExcelWorksheet worksheet, Report form)
+    /// <summary>
+    /// Выгрузка данных титульного листа в .xlsx.
+    /// </summary>
+    /// <param name="formNum">Номер формы.</param>
+    /// <param name="worksheet">Лист Excel.</param>
+    /// <param name="rep">Отчёт.</param>
+    /// <param name="master">Головной отчёт организации.</param>
+    private protected static void ExcelPrintTitleExport(string formNum, ExcelWorksheet worksheet, Report rep, Report master)
     {
-        var master = ReportsStorage.LocalReports.Reports_Collection
-            .First(t => t.Report_Collection.Contains(form))
-            .Master_DB;
-        if (param.Split('.')[0] == "2")
+        if (formNum.Split('.')[0] == "2")
         {
             var frmYur = master.Rows20[0];
             var frmObosob = master.Rows20[1];
-            worksheet.Cells["G10"].Value = form.Year_DB;
+            worksheet.Cells["G10"].Value = rep.Year_DB;
 
             worksheet.Cells["F6"].Value = frmYur.RegNo_DB;
             worksheet.Cells["F15"].Value = frmYur.OrganUprav_DB;
@@ -459,82 +305,94 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelPrintSubMainExport
 
-    private protected static void ExcelPrintSubMainExport(string param, ExcelWorksheet worksheet, Report form)
+    /// <summary>
+    /// Выгрузка дополнительных данных титульного листа в .xlsx.
+    /// </summary>
+    /// <param name="formNum">Номер формы.</param>
+    /// <param name="worksheet">Лист Excel.</param>
+    /// <param name="rep">Отчёт.</param>
+    private protected static void ExcelPrintSubMainExport(string formNum, ExcelWorksheet worksheet, Report rep)
     {
-        if (param.Split('.')[0] == "1")
+        if (formNum.Split('.')[0] == "1")
         {
-            worksheet.Cells["G3"].Value = form.StartPeriod_DB;
-            worksheet.Cells["G4"].Value = form.EndPeriod_DB;
-            worksheet.Cells["G5"].Value = form.CorrectionNumber_DB;
+            worksheet.Cells["G3"].Value = rep.StartPeriod_DB;
+            worksheet.Cells["G4"].Value = rep.EndPeriod_DB;
+            worksheet.Cells["G5"].Value = rep.CorrectionNumber_DB;
         }
         else
         {
-            switch (param)
+            switch (formNum)
             {
                 case "2.6":
                 {
-                    worksheet.Cells["G4"].Value = form.CorrectionNumber_DB;
-                    worksheet.Cells["G5"].Value = form.SourcesQuantity26_DB;
+                    worksheet.Cells["G4"].Value = rep.CorrectionNumber_DB;
+                    worksheet.Cells["G5"].Value = rep.SourcesQuantity26_DB;
                     break;
                 }
                 case "2.7":
                 {
-                    worksheet.Cells["G3"].Value = form.CorrectionNumber_DB;
-                    worksheet.Cells["G4"].Value = form.PermissionNumber27_DB;
-                    worksheet.Cells["G5"].Value = form.ValidBegin27_DB;
-                    worksheet.Cells["J5"].Value = form.ValidThru27_DB;
-                    worksheet.Cells["G6"].Value = form.PermissionDocumentName27_DB;
+                    worksheet.Cells["G3"].Value = rep.CorrectionNumber_DB;
+                    worksheet.Cells["G4"].Value = rep.PermissionNumber27_DB;
+                    worksheet.Cells["G5"].Value = rep.ValidBegin27_DB;
+                    worksheet.Cells["J5"].Value = rep.ValidThru27_DB;
+                    worksheet.Cells["G6"].Value = rep.PermissionDocumentName27_DB;
                     break;
                 }
                 case "2.8":
                 {
-                    worksheet.Cells["G3"].Value = form.CorrectionNumber_DB;
-                    worksheet.Cells["G4"].Value = form.PermissionNumber_28_DB;
-                    worksheet.Cells["K4"].Value = form.ValidBegin_28_DB;
-                    worksheet.Cells["N4"].Value = form.ValidThru_28_DB;
-                    worksheet.Cells["G5"].Value = form.PermissionDocumentName_28_DB;
+                    worksheet.Cells["G3"].Value = rep.CorrectionNumber_DB;
+                    worksheet.Cells["G4"].Value = rep.PermissionNumber_28_DB;
+                    worksheet.Cells["K4"].Value = rep.ValidBegin_28_DB;
+                    worksheet.Cells["N4"].Value = rep.ValidThru_28_DB;
+                    worksheet.Cells["G5"].Value = rep.PermissionDocumentName_28_DB;
 
-                    worksheet.Cells["G6"].Value = form.PermissionNumber1_28_DB;
-                    worksheet.Cells["K6"].Value = form.ValidBegin1_28_DB;
-                    worksheet.Cells["N6"].Value = form.ValidThru1_28_DB;
-                    worksheet.Cells["G7"].Value = form.PermissionDocumentName1_28_DB;
+                    worksheet.Cells["G6"].Value = rep.PermissionNumber1_28_DB;
+                    worksheet.Cells["K6"].Value = rep.ValidBegin1_28_DB;
+                    worksheet.Cells["N6"].Value = rep.ValidThru1_28_DB;
+                    worksheet.Cells["G7"].Value = rep.PermissionDocumentName1_28_DB;
 
-                    worksheet.Cells["G8"].Value = form.ContractNumber_28_DB;
-                    worksheet.Cells["K8"].Value = form.ValidBegin2_28_DB;
-                    worksheet.Cells["N8"].Value = form.ValidThru2_28_DB;
-                    worksheet.Cells["G9"].Value = form.OrganisationReciever_28_DB;
+                    worksheet.Cells["G8"].Value = rep.ContractNumber_28_DB;
+                    worksheet.Cells["K8"].Value = rep.ValidBegin2_28_DB;
+                    worksheet.Cells["N8"].Value = rep.ValidThru2_28_DB;
+                    worksheet.Cells["G9"].Value = rep.OrganisationReciever_28_DB;
 
-                    worksheet.Cells["D21"].Value = form.GradeExecutor_DB;
-                    worksheet.Cells["F21"].Value = form.FIOexecutor_DB;
-                    worksheet.Cells["I21"].Value = form.ExecPhone_DB;
-                    worksheet.Cells["K21"].Value = form.ExecEmail_DB;
+                    worksheet.Cells["D21"].Value = rep.GradeExecutor_DB;
+                    worksheet.Cells["F21"].Value = rep.FIOexecutor_DB;
+                    worksheet.Cells["I21"].Value = rep.ExecPhone_DB;
+                    worksheet.Cells["K21"].Value = rep.ExecEmail_DB;
                     return;
                 }
                 default:
                 {
-                    worksheet.Cells["G4"].Value = form.CorrectionNumber_DB;
+                    worksheet.Cells["G4"].Value = rep.CorrectionNumber_DB;
                     break;
                 }
             }
         }
 
-        worksheet.Cells["D18"].Value = form.GradeExecutor_DB;
-        worksheet.Cells["F18"].Value = form.FIOexecutor_DB;
-        worksheet.Cells["I18"].Value = form.ExecPhone_DB;
-        worksheet.Cells["K18"].Value = form.ExecEmail_DB;
+        worksheet.Cells["D18"].Value = rep.GradeExecutor_DB;
+        worksheet.Cells["F18"].Value = rep.FIOexecutor_DB;
+        worksheet.Cells["I18"].Value = rep.ExecPhone_DB;
+        worksheet.Cells["K18"].Value = rep.ExecEmail_DB;
     }
 
     #endregion
 
     #region ExcelPrintNotesExport
 
-    private protected static void ExcelPrintNotesExport(string param, ExcelWorksheet worksheet, Report form)
+    /// <summary>
+    /// Выгрузка примечаний в шаблон для печати .xlsx.
+    /// </summary>
+    /// <param name="formNum">Номер формы.</param>
+    /// <param name="worksheet">Лист Excel.</param>
+    /// <param name="rep">Отчёт.</param>
+    private protected static void ExcelPrintNotesExport(string formNum, ExcelWorksheet worksheet, Report rep)
     {
-        var start = param is "2.8"
+        var start = formNum is "2.8"
             ? 18
             : 15;
 
-        for (var i = 0; i < form.Notes.Count - 1; i++)
+        for (var i = 0; i < rep.Notes.Count - 1; i++)
         {
             worksheet.InsertRow(start + 1, 1, start);
             var cells = worksheet.Cells[$"A{start + 1}:B{start + 1}"];
@@ -571,7 +429,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         }
 
         var count = start;
-        foreach (var note in form.Notes)
+        foreach (var note in rep.Notes)
         {
             note.ExcelRow(worksheet, count, 1);
             count++;
@@ -582,13 +440,19 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelPrintRowsExport
 
-    private protected static void ExcelPrintRowsExport(string param, ExcelWorksheet worksheet, Report form)
+    /// <summary>
+    /// Выгрузка строчек в шаблон для печати .xlsx.
+    /// </summary>
+    /// <param name="formNum">Номер формы.</param>
+    /// <param name="worksheet">Лист Excel.</param>
+    /// <param name="rep">Отчёт.</param>
+    private protected static void ExcelPrintRowsExport(string formNum, ExcelWorksheet worksheet, Report rep)
     {
-        var start = param is "2.8"
+        var start = formNum is "2.8"
             ? 14
             : 11;
 
-        for (var i = 0; i < form[param].Count - 1; i++)
+        for (var i = 0; i < rep[formNum].Count - 1; i++)
         {
             worksheet.InsertRow(start + 1, 1, start);
             var cells = worksheet.Cells[$"A{start + 1}:B{start + 1}"];
@@ -613,9 +477,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
         #region 2.1 with Sum
 
-        if (param is "2.1" && form[param].ToList<Form21>().Any(form21 => form21.Sum_DB))
+        if (formNum is "2.1" && rep[formNum].ToList<Form21>().Any(form21 => form21.Sum_DB))
         {
-            var forms21 = form[param]
+            var forms21 = rep[formNum]
                 .ToList<Form21>()
                 .GroupBy(x => x.RefineMachineName_DB
                               + x.MachineCode_DB
@@ -637,9 +501,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
         #region 2.2 with Sum
 
-        if (param is "2.2" && form[param].ToList<Form22>().Any(form22 => form22.Sum_DB))
+        if (formNum is "2.2" && rep[formNum].ToList<Form22>().Any(form22 => form22.Sum_DB))
         {
-            var forms22 = form[param]
+            var forms22 = rep[formNum]
                 .ToList<Form22>()
                 .GroupBy(x => x.StoragePlaceName_DB
                               + x.StoragePlaceCode_DB
@@ -661,7 +525,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
         else
         {
-            foreach (var it in form[param])
+            foreach (var it in rep[formNum])
             {
                 switch (it)
                 {
@@ -739,13 +603,28 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #region ExcelSaveAndOpen
 
-    private protected static async Task ExcelSaveAndOpen(ExcelPackage excelPackage, string fullPath, bool openTemp)
+    /// <summary>
+    /// Сохранить изменения в .xlsx и открыть временную копию при необходимости.
+    /// </summary>
+    /// <param name="excelPackage">Пакет данных .xlsx.</param>
+    /// <param name="fullPath">Полный путь к файлу .xlsx.</param>
+    /// <param name="openTemp">Флаг, открывать ли временную копию.</param>
+    /// <param name="cts">Токен.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <param name="isBackground">Признак выполнения команды в фоне.</param>
+    /// <returns>Открывает файл выгрузки в .xlsx.</returns>
+    private protected static async Task ExcelSaveAndOpen(ExcelPackage excelPackage, string fullPath, bool openTemp,
+        CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null, bool isBackground = false)
     {
         try
         {
-            excelPackage.Save();
+            await excelPackage.SaveAsync(cancellationToken: cts.Token);
         }
-        catch (Exception)
+        catch (ObjectDisposedException ex)
+        {
+            return;
+        }
+        catch (Exception ex)
         {
             #region MessageFailedToSaveFile
 
@@ -753,21 +632,26 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Ошибка",
                     ContentMessage = "Не удалось сохранить файл по указанному пути:" +
                                      $"{Environment.NewLine}{fullPath}",
                     MinWidth = 400,
-                    MinHeight = 150,
+                    MinHeight = 175,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
                 .ShowDialog(Desktop.MainWindow));
 
             #endregion
 
-            return;
-        }
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Warning(msg);
 
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+        if (isBackground) return;
         if (openTemp)
         {
             Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
@@ -780,11 +664,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {
-                    ButtonDefinitions = new[]
-                    {
+                    ButtonDefinitions =
+                    [
                         new ButtonDefinition { Name = "Ок" },
                         new ButtonDefinition { Name = "Открыть выгрузку" }
-                    },
+                    ],
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Выгрузка сохранена по пути:" +
@@ -805,8 +689,132 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #endregion
 
+    #region CreateTempDataBase
+
+    /// <summary>
+    /// Создание временной копии текущей базы данных.
+    /// </summary>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns>Полный путь до временной БД.</returns>
+    private protected static async Task<string> CreateTempDataBase(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
+    {
+        var index = 0;
+        var tmpDbPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
+        while (File.Exists(tmpDbPath))
+        {
+            tmpDbPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + $"_{++index}.RAODB");
+        }
+
+        try
+        {
+            File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), tmpDbPath);
+        }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.System);
+
+            #region MessageDbCreationError
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        CanResize = true,
+                        ContentTitle = "Выгрузка в Excel",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = "При создании файла временной БД возникла ошибка." +
+                                         $"{Environment.NewLine}Операция выгрузки принудительно завершена.",
+                        MinHeight = 150,
+                        MinWidth = 250,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(progressBar ?? Desktop.MainWindow));
+
+            #endregion
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+        return tmpDbPath;
+    }
+
+    #endregion
+
+    #region GetFilesFromPasDirectory
+
+    /// <summary>
+    /// Получение списка файлов из папки хранилища паспортов.
+    /// </summary>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
+    /// <returns>Список файлов из папки хранилища паспортов.</returns>
+    private protected static async Task<List<FileInfo>> GetFilesFromPasDirectory(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
+    {
+        var pasFolderDirectory = new DirectoryInfo(Settings.Default.PasFolderDefaultPath);
+        List<FileInfo> files = [];
+        try
+        {
+            files.AddRange(pasFolderDirectory.GetFiles("*#*#*#*#*.pdf", SearchOption.AllDirectories));
+        }
+        catch
+        {
+            #region MessageFailedToOpenPassportDirectory
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = $"Не удалось открыть сетевое хранилище паспортов:" +
+                                     $"{Environment.NewLine}{pasFolderDirectory.FullName}",
+                    MinWidth = 400,
+                    MinHeight = 170,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(progressBar ?? Desktop.MainWindow));
+
+            #endregion
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+        return files;
+    }
+
+    #endregion
+
+    #region InitializeExcelPackage
+
+    /// <summary>
+    /// Инициализация Excel пакета.
+    /// </summary>
+    /// <param name="fullPath">Полный путь до .xlsx файла.</param>
+    /// <returns>Пакет Excel.</returns>
+    private protected static Task<ExcelPackage> InitializeExcelPackage(string fullPath)
+    {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        ExcelPackage excelPackage = new(new FileInfo(fullPath));
+        excelPackage.Workbook.Properties.Author = "RAO_APP";
+        excelPackage.Workbook.Properties.Title = "Report";
+        excelPackage.Workbook.Properties.Created = DateTime.Now;
+        return Task.FromResult(excelPackage);
+    }
+
+    #endregion
+
     #region InventoryCheck
 
+
+    /// <summary>
+    /// Проверка, является ли отчёт инвентаризационным. Если все строчки с кодом операции 10 - добавляет " (ИНВ)",
+    /// если хотя бы одна - добавляет " (инв)".
+    /// </summary>
+    /// <param name="repRowsCount">Количество строчек в отчёте.</param>
+    /// <param name="countCode10">Количество строчек с кодом операции 10.</param>
+    /// <returns>Строчка, информирующая о том, является ли отчёт инвентаризационным.</returns>
     private protected static string InventoryCheck(int repRowsCount, int countCode10)
     {
         return countCode10 == repRowsCount && repRowsCount > 0

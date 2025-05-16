@@ -881,7 +881,7 @@ public class Form12 : Form1
         Mass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 7].Value);
         CreatorOKPO_DB = Convert.ToString(worksheet.Cells[row, 8].Value);
         CreationDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 9].Text);
-        SignedServicePeriod_DB = Convert.ToString(worksheet.Cells[row, 1].Value);
+        SignedServicePeriod_DB = Convert.ToString(worksheet.Cells[row, 10].Value);
         PropertyCode_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 11].Value), out var byteValue) ? byteValue : null;
         Owner_DB = Convert.ToString(worksheet.Cells[row, 12].Value);
         DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 13].Value), out byteValue) ? byteValue : null;
@@ -903,10 +903,16 @@ public class Form12 : Form1
         worksheet.Cells[row, column].Value = ConvertToExcelString(PassportNumber_DB);
         worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(NameIOU_DB);
         worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelString(FactoryNumber_DB);
+
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Style.Numberformat.Format = "0.##E+00";
         worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelDouble(Mass_DB);
+
         worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ConvertToExcelString(CreatorOKPO_DB);
         worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ConvertToExcelDate(CreationDate_DB, worksheet, row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0));
+        
+        worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Style.Numberformat.Format = "0.##E+00";
         worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = ConvertToExcelDouble(SignedServicePeriod_DB);
+
         worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = PropertyCode_DB is null ? "-" : PropertyCode_DB;
         worksheet.Cells[row + (!transpose ? 8 : 0), column + (transpose ? 8 : 0)].Value = ConvertToExcelString(Owner_DB);
         worksheet.Cells[row + (!transpose ? 9 : 0), column + (transpose ? 9 : 0)].Value = DocumentVid_DB is null ? "-" : DocumentVid_DB;

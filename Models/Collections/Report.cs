@@ -2068,7 +2068,7 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(StartPeriod), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(StartPeriod), out var value))
             {
                 ((RamAccess<string>)value).Value = StartPeriod_DB;
                 return (RamAccess<string>)value;
@@ -2094,10 +2094,12 @@ public class Report : IKey, IDataGridColumn
         //{
         //    tmp = tmp.Insert(6, "20");
         //}
-        StartPeriod_DB = tmp;
+        StartPeriod_DB = DateOnly.TryParse(tmp, out var dateOnly) 
+            ? dateOnly.ToShortDateString() 
+            : tmp;
     }
 
-    private static bool StartPeriod_Validation(RamAccess<string> value)
+    private bool StartPeriod_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
@@ -2117,10 +2119,24 @@ public class Report : IKey, IDataGridColumn
         //    value.AddError("Недопустимое значение");
         //    return false;
         //}
-        if (!DateOnly.TryParse(tmp, out _))
+        if (!DateOnly.TryParse(tmp, out var startPeriod))
         {
             value.AddError("Недопустимое значение");
             return false;
+        }
+        if (Reports is not null)
+        {
+            foreach (var currentRep in Reports.Report_Collection.Where(x => x.FormNum_DB == FormNum_DB && x.Id != Id))
+            {
+                if (DateOnly.TryParse(currentRep.StartPeriod_DB, out var currentStartPeriod)
+                    && DateOnly.TryParse(currentRep.EndPeriod_DB, out var currentEndPeriod)
+                    && DateOnly.TryParse(EndPeriod_DB, out var endPeriod)
+                    && startPeriod < currentEndPeriod && endPeriod > currentStartPeriod)
+                {
+                    value.AddError("Пересечение с имеющимся отчётом");
+                    return false;
+                }
+            }
         }
         return true;
     }
@@ -2163,7 +2179,9 @@ public class Report : IKey, IDataGridColumn
         //{
         //    tmp = tmp.Insert(6, "20");
         //}
-        EndPeriod_DB = tmp;
+        EndPeriod_DB = DateOnly.TryParse(tmp, out var dateOnly)
+            ? dateOnly.ToShortDateString()
+            : tmp;
     }
 
     private bool EndPeriod_Validation(RamAccess<string> value)
@@ -2186,20 +2204,33 @@ public class Report : IKey, IDataGridColumn
         //    value.AddError("Недопустимое значение");
         //    return false;
         //}
-        if (!DateOnly.TryParse(StartPeriod_DB, out var startDate))
+        if (!DateOnly.TryParse(StartPeriod_DB, out var startPeriod))
         {
             value.AddError("Недопустимое значение начала периода");
             return false;
         }
-        if (!DateOnly.TryParse(value.Value, out var endDate))
+        if (!DateOnly.TryParse(value.Value, out var endPeriod))
         {
             value.AddError("Недопустимое значение конца периода");
             return false;
         }
-        if (startDate > endDate)
+        if (startPeriod > endPeriod)
         {
             value.AddError("Начало периода должно быть раньше его конца");
             return false;
+        }
+        if (Reports is not null)
+        {
+            foreach (var currentRep in Reports.Report_Collection.Where(x => x.FormNum_DB == FormNum_DB && x.Id != Id))
+            {
+                if (DateOnly.TryParse(currentRep.StartPeriod_DB, out var currentStartPeriod)
+                    && DateOnly.TryParse(currentRep.EndPeriod_DB, out var currentEndPeriod)
+                    && startPeriod < currentEndPeriod && endPeriod > currentStartPeriod)
+                {
+                    value.AddError("Пересечение с имеющимся отчётом");
+                    return false;
+                }
+            }
         }
         return true;
     }

@@ -9,8 +9,11 @@ using Models.Forms;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
-//  Добавить N примечаний в форму
-internal class AddNotesAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
+/// <summary>
+/// Добавить N примечаний в форму.
+/// </summary>
+/// <param name="changeOrCreateViewModel">ViewModel отчёта.</param>
+public class AddNotesAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
     private Report Storage => changeOrCreateViewModel.Storage;
     private Interaction<object, int> ShowDialog => changeOrCreateViewModel.ShowDialog;
@@ -31,6 +34,11 @@ internal class AddNotesAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : 
         }
     }
 
+    /// <summary>
+    /// Получить порядковый номер
+    /// </summary>
+    /// <param name="lst">Список элементов</param>
+    /// <returns>Порядковый номер</returns>
     private static int GetNumberInOrder(IKeyCollection lst)
     {
         var maxNum = 0;

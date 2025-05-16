@@ -34,7 +34,6 @@ public class Form1_Visual
         };
         v.Bind(MainWindow.SelectedReportsProperty, bd);
 
-
         var grd3 = FormB_Visual();
         pnlb.Children.Add(grd3);
     }
@@ -99,13 +98,12 @@ public class Form1_Visual
             Path = "SelectedItems",
             ElementName = "Form10AllDataGrid_",
             NameScope = new WeakReference<INameScope>(scp),
-            Converter = new ReportsToReport_Converter(),
+            Converter = new ReportsToReportConverter()
         };
         grd.Bind(DataGridReport.ItemsProperty, b);
 
         return grd;
     }
-
 
     //Кнопки создания или изменения формы
     private static Panel FormB_Visual()

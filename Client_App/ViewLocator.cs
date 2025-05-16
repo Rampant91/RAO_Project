@@ -7,7 +7,7 @@ namespace Client_App;
 
 public class ViewLocator : IDataTemplate
 {
-    public bool SupportsRecycling => false;
+    public static bool SupportsRecycling => false;
 
     public IControl Build(object data)
     {
@@ -18,14 +18,8 @@ public class ViewLocator : IDataTemplate
         {
             return (Control)Activator.CreateInstance(type)!;
         }
-        else
-        {
-            return new TextBlock { Text = $"Not Found: {name}" };
-        }
+        return new TextBlock { Text = $"Not Found: {name}" };
     }
 
-    public bool Match(object data)
-    {
-        return data is BaseVM;
-    }
+    public bool Match(object data) => data is BaseVM;
 }

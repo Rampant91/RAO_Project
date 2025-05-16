@@ -5,20 +5,25 @@ using System.Text.RegularExpressions;
 using OfficeOpenXml;
 
 namespace Client_App.Resources;
-
-internal static partial class StaticStringMethods
+ 
+public static partial class StaticStringMethods
 {
     #region ComparePasParam
-    
-    internal static bool ComparePasParam(string? nameDb, string? namePas)
+
+    /// <summary>
+    /// У обоих входных строчек удаляет запрещённые символы, заменяет похожие русские символы на английские и сравнивает строчки.
+    /// </summary>
+    /// <param name="nameDb">Первая строчка для сравнения.</param>
+    /// <param name="namePas">Вторая строчка для сравнения.</param>
+    /// <returns>Флаг, равны ли две строчки.</returns>
+    public static bool ComparePasParam(string? nameDb, string? namePas)
     {
         if (nameDb == null || namePas == null)
         {
             return nameDb == null && namePas == null;
         }
 
-        nameDb = RestrictedSymbolsRegex()
-            .Replace(nameDb, string.Empty)
+        nameDb = RestrictedSymbolsRegex().Replace(nameDb, string.Empty)
             .Replace('а', 'a')
             .Replace('б', 'b')
             .Replace('в', 'b')
@@ -35,7 +40,7 @@ internal static partial class StaticStringMethods
             .Replace('у', 'y')
             .Replace('х', 'x');
 
-        namePas = RestrictedSymbolsRegex().Replace(namePas, string.Empty).Replace(nameDb, string.Empty)
+        namePas = RestrictedSymbolsRegex().Replace(namePas, string.Empty)
             .Replace('а', 'a')
             .Replace('б', 'b')
             .Replace('в', 'b')
@@ -59,9 +64,14 @@ internal static partial class StaticStringMethods
 
     #region ConvertDateToYear
 
-    internal static string ConvertDateToYear(string? date)
+    /// <summary>
+    /// Преобразует строчку с датой в строчку с годом или при отсутствии возможности возвращает строчку "0000".
+    /// </summary>
+    /// <param name="date">Строчка с датой для преобразования.</param>
+    /// <returns>Преобразованная строчка из 4 символов или "0000".</returns>
+    public static string ConvertDateToYear(string? date)
     {
-        return DateTime.TryParse(date, out var dateTime)
+        return DateOnly.TryParse(date, out var dateTime)
             ? dateTime.Year.ToString()
             : "0000";
     }
@@ -70,22 +80,27 @@ internal static partial class StaticStringMethods
 
     #region ConvertPrimToDash
 
-    internal static string ConvertPrimToDash(string? num)
+    /// <summary>
+    /// Заменяет null на пустую строчку, заменяет определённые вариации на "-" и возвращает строчку.
+    /// </summary>
+    /// <param name="str">Строчка для преобразования.</param>
+    /// <returns>Преобразованная строка.</returns>
+    public static string ConvertPrimToDash(string? str)
     {
-        if (num == null)
+        if (str == null)
         {
-            return "";
+            return string.Empty;
         }
-        if (num.Contains("прим", StringComparison.OrdinalIgnoreCase)
-            || num.Equals("бн", StringComparison.OrdinalIgnoreCase)
-            || num.Equals("бп", StringComparison.OrdinalIgnoreCase)
-            || num.Contains("без", StringComparison.OrdinalIgnoreCase)
-            || num.Contains("нет", StringComparison.OrdinalIgnoreCase)
-            || num.Contains("отсут", StringComparison.OrdinalIgnoreCase))
+        if (str.Contains("прим", StringComparison.OrdinalIgnoreCase)
+            || str.Equals("бн", StringComparison.OrdinalIgnoreCase)
+            || str.Equals("бп", StringComparison.OrdinalIgnoreCase)
+            || str.Contains("без", StringComparison.OrdinalIgnoreCase)
+            || str.Contains("нет", StringComparison.OrdinalIgnoreCase)
+            || str.Contains("отсут", StringComparison.OrdinalIgnoreCase))
         {
             return "-";
         }
-        return num;
+        return str;
     }
 
     #endregion
@@ -123,6 +138,15 @@ internal static partial class StaticStringMethods
                 : value;
     }
 
+    public static object ConvertToExcelShort(string value)
+    {
+        return value is null or "" or "-"
+            ? "-"
+            : short.TryParse(ReplaceE(value), out var shortValue)
+                ? shortValue
+                : value;
+    }
+
     public static object ConvertToExcelString(string value)
     {
         return value is null or "" or "-"
@@ -157,35 +181,6 @@ internal static partial class StaticStringMethods
         str = str.Replace(" ", "").Replace(Environment.NewLine, "");
         str = RestrictedSymbolsRegex().Replace(str, "");
         return str;
-    }
-
-    #endregion
-
-    #region StringDateReverse
-
-    internal static string StringDateReverse(string date)
-    {
-        var charArray = date.Replace("_", "0").Replace("/", ".").Split(".");
-        if (charArray[0].Length == 1)
-            charArray[0] = $"0{charArray[0]}";
-        if (charArray[1].Length == 1)
-            charArray[1] = $"0{charArray[0]}";
-        if (charArray[2].Length == 2)
-            charArray[2] = $"20{charArray[0]}";
-        Array.Reverse(charArray);
-        return string.Join("", charArray);
-    }
-
-    #endregion
-
-    #region StringReverse
-
-    internal static string? StringReverse(string? str)
-    {
-        if (str is null) return null;
-        var charArray = str.Replace("_", "0").Replace("/", ".").Split(".");
-        Array.Reverse(charArray);
-        return string.Join("", charArray);
     }
 
     #endregion
@@ -238,8 +233,8 @@ internal static partial class StaticStringMethods
                 : ch));
     }
 
-    [GeneratedRegex("[\\\\/:*?\"<>|]\\s")]
-    private static partial Regex RestrictedSymbolsRegex();
-
     #endregion
+
+    [GeneratedRegex("[\\\\/:*?\"<>|\\s+]")]
+    private static partial Regex RestrictedSymbolsRegex();
 }

@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU;x86</Platforms>
     <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
-    <AssemblyVersion>1.2.3.15</AssemblyVersion>
-    <FileVersion>1.2.3.15</FileVersion>
-    <Version>1.2.3.15</Version>
+    <AssemblyVersion>1.2.4.0</AssemblyVersion>
+    <FileVersion>1.2.4.0</FileVersion>
+    <Version>1.2.4.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
@@ -15,9 +15,17 @@
   </ItemGroup>
   <ItemGroup>
     <AvaloniaXaml Remove="Models\**" />
+    <AvaloniaXaml Remove="Tools\**" />
     <Compile Remove="Models\**" />
+    <Compile Remove="Tools\**" />
     <EmbeddedResource Remove="Models\**" />
+    <EmbeddedResource Remove="Tools\**" />
     <None Remove="Models\**" />
+    <None Remove="Tools\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <AvaloniaResource Remove="Assets\logo.ico" />
+    <AvaloniaResource Include="Assets\Radiation_sign.ico" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Assets\Converters.cs" />
@@ -26,24 +34,34 @@
     <Content Include="Assets\logo.ico" />
   </ItemGroup>
   <ItemGroup>
+    <EditorConfigFiles Include="Assets\logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.10.22" />
     <PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.22" />
     <PackageReference Include="Avalonia.Desktop" Version="0.10.22" />
     <PackageReference Include="Avalonia.Diagnostics" Version="0.10.22" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.22" />
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.22" />
-    <PackageReference Include="EPPlus" Version="7.0.8" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="EPPlus" Version="7.5.2" />
     <PackageReference Include="JsonSubTypes" Version="2.0.1" />
-    <PackageReference Include="MessageBox.Avalonia" Version="1.7.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.20">
+    <PackageReference Include="MessageBox.Avalonia" Version="[2.0.1]" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.36" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.36">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="SkiaSharp" Version="2.88.9" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Spravochniki\Spravochniki.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Radiation_sign.ico" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Controls\DataGrid\Cell.axaml.cs">
@@ -121,11 +139,34 @@
     <Compile Update="Controls\DataGrid\DataGrids\DataGridReports.axaml.cs">
       <DependentUpon>DataGridReports.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Update="Views\GetSnkParams.axaml.cs">
+      <DependentUpon>GetSnkParams.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Messages\AskDatePeriodMessageWIndow.axaml.cs">
+      <DependentUpon>AskDatePeriodMessageWindow.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ProgressBar\AnyTaskProgressBar.axaml.cs">
+      <DependentUpon>AnyTaskProgressBar.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\RowNumberIn.axaml.cs">
       <DependentUpon>RowNumberIn.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\RowNumber.axaml.cs">
       <DependentUpon>RowNumber.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Contacts.axaml.cs">
+      <DependentUpon>Contacts.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 </Project>

@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
-//  Добавить примечание в форму
-internal class AddNoteAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
+/// <summary>
+/// Добавить примечание в отчёт.
+/// </summary>
+/// <param name="changeOrCreateViewModel">ViewModel отчёта.</param>
+public class AddNoteAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
     private Report Storage => changeOrCreateViewModel.Storage;
 
@@ -18,6 +21,11 @@ internal class AddNoteAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
         await Storage.SortAsync();
     }
 
+    /// <summary>
+    /// Получить порядковый номер
+    /// </summary>
+    /// <param name="lst">Список элементов</param>
+    /// <returns>Порядковый номер</returns>
     private static int GetNumberInOrder(IKeyCollection lst)
     {
         var maxNum = 0;

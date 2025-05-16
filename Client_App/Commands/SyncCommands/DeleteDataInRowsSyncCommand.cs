@@ -9,7 +9,7 @@ using System.Linq;
 namespace Client_App.Commands.SyncCommands;
 
 //  Удалить данные в выделенных ячейках
-internal class DeleteDataInRowsSyncCommand : BaseCommand
+public class DeleteDataInRowsSyncCommand : BaseCommand
 {
     public override bool CanExecute(object? parameter)
     {

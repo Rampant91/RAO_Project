@@ -11,8 +11,10 @@ using Avalonia;
 
 namespace Client_App.Commands.AsyncCommands;
 
-//  Скопировать в буфер обмена выделенную строку/ячейки
-internal class CopyRowsAsyncCommand : BaseAsyncCommand
+/// <summary>
+/// Скопировать в буфер обмена выделенную строку/ячейки.
+/// </summary>
+public class CopyRowsAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -23,7 +25,7 @@ internal class CopyRowsAsyncCommand : BaseAsyncCommand
         {
             minColumn++;
         }
-        Dictionary<long, Dictionary<int, string>> dic = new();
+        Dictionary<long, Dictionary<int, string>> dic = [];
         foreach (var item in collection.GetEnumerable().OrderBy(x => x.Order))
         {
             dic.Add(item.Order, new Dictionary<int, string>());
@@ -80,7 +82,7 @@ internal class CopyRowsAsyncCommand : BaseAsyncCommand
                                     dic[item.Order][newNum] = value.ToString();
                                 }
                             }
-                            catch
+                            catch (Exception ex)
                             {
                                 dic[item.Order].Add(newNum, value.ToString());
                             }
@@ -91,7 +93,7 @@ internal class CopyRowsAsyncCommand : BaseAsyncCommand
                         }
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
                     //ignored
                 }
@@ -111,9 +113,9 @@ internal class CopyRowsAsyncCommand : BaseAsyncCommand
                     textInSelectedCells += $"{it.Value}\t";
                 }
             }
-            textInSelectedCells = textInSelectedCells.Remove(textInSelectedCells.Length - 1, 1) + "\n";
+            textInSelectedCells = textInSelectedCells[..^1] + "\n";
         }
-        textInSelectedCells = textInSelectedCells.Remove(textInSelectedCells.Length - 1, 1);
+        textInSelectedCells = textInSelectedCells[..^1];
         if (Application.Current.Clipboard is { } clip)
         {
             var currentClipboard = "";

@@ -1,13 +1,11 @@
-﻿using Avalonia.Controls;
-using Avalonia;
-using Models.Attributes;
+﻿using Models.Attributes;
 using Models.Interfaces;
 using System;
 using System.Linq;
 
 namespace Client_App.Resources;
 
-internal static class StaticMethods
+public static class StaticMethods
 {
     //  Из строки формы получаем 5 уникальных параметров имени паспорта.
     internal static void PassportUniqParam(object param, out string? okpo, out string? type, out string? date,

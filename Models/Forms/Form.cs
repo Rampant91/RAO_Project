@@ -15,7 +15,7 @@ using Spravochniki;
 
 namespace Models.Forms;
 
-public abstract class Form : IKey, IDataGridColumn
+public abstract partial class Form : IKey, IDataGridColumn
 {
     #region Properties
 
@@ -265,7 +265,7 @@ public abstract class Form : IKey, IDataGridColumn
     #region NuclidString
 
     private protected static bool NuclidString_Validation(RamAccess<string> value)
-    {
+   {
         value.ClearErrors();
         var tmp = value.Value;
         tmp = ReplaceDashes(tmp);
@@ -356,14 +356,16 @@ public abstract class Form : IKey, IDataGridColumn
         var tmp = (value ?? string.Empty).Trim();
         return DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var date) 
             ? date.ToShortDateString()
-            : tmp;
+            : tmp is not ("" or "-" or "прим.") 
+                ? "" 
+                : tmp;
     }
 
     private protected static string ReplaceDashes(string value) =>
         value switch
         {
             null => string.Empty,
-            _ => Regex.Replace(value, "[-᠆‐‑‒–—―⸺⸻－﹘﹣－]", "-")
+            _ => DashesRegex().Replace(value, "-")
         };
 
     #endregion
@@ -479,6 +481,16 @@ public abstract class Form : IKey, IDataGridColumn
     {
         return null;
     }
+
+    #endregion
+
+    #region GeneratedRegex
+
+    [GeneratedRegex("[-᠆‐‑‒–—―⸺⸻－﹘﹣－]")]
+    protected static partial Regex DashesRegex();
+
+    [GeneratedRegex(@"^\d{8}([\d_][Мм\d]\d{4})?$")]
+    protected static partial Regex OkpoRegex();
 
     #endregion
 }

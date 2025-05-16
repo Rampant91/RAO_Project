@@ -8,31 +8,34 @@ using Avalonia.Controls;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Interfaces;
+using Avalonia.Threading;
 
 namespace Client_App.Commands.AsyncCommands.Delete;
 
-//  Удалить выбранную форму у выбранной организации
-internal class DeleteFormAsyncCommand : BaseAsyncCommand
+/// <summary>
+/// Удалить выбранную форму у выбранной организации.
+/// </summary>
+public class DeleteFormAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
         #region MessageDeleteReport
 
-        var answer = await MessageBox.Avalonia.MessageBoxManager
+        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
-                ButtonDefinitions = new[]
-                {
+                ButtonDefinitions =
+                [
                     new ButtonDefinition { Name = "Да", IsDefault = true },
-                    new ButtonDefinition { Name = "Нет", IsCancel = false }
-                },
+                    new ButtonDefinition { Name = "Нет", IsCancel = true }
+                ],
                 ContentTitle = "Уведомление",
                 ContentHeader = "Уведомление",
                 ContentMessage = "Вы действительно хотите удалить отчет?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(Desktop.MainWindow);
+            .ShowDialog(Desktop.MainWindow));
 
         #endregion
 

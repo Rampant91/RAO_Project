@@ -1,5 +1,9 @@
+using System;
+using System.Linq;
+using System.Text;
 using Avalonia;
 using Avalonia.ReactiveUI;
+using Client_App.Properties;
 
 namespace Client_App;
 
@@ -10,6 +14,9 @@ internal class Program
     // yet and stuff might break.
     public static void Main(string[] args)
     {
+        Settings.Default.AppStartupParameters = string.Join(",", args);
+        Settings.Default.Save();
+
         BuildAvaloniaApp()
             .StartWithClassicDesktopLifetime(args);
     }

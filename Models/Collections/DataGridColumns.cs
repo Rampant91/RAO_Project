@@ -13,77 +13,57 @@ public class DataGridColumns:INotifyPropertyChanged
     public DataGridColumns parent;
 
     #region Blocked
+
     bool _Blocked;
     public bool Blocked { 
-        get 
-        {
-            return _Blocked;
-        }
+        get => _Blocked;
         set
         {
-            if (_Blocked != value)
+            if (_Blocked == value) return;
+            _Blocked = value;
+            if (innertCol == null) return;
+            foreach (var item in innertCol)
             {
-                _Blocked = value;
-                if (innertCol != null)
-                {
-                    foreach (var item in innertCol)
-                    {
-                        item.Blocked = value;
-                    }
-                }
+                item.Blocked = value;
             }
         }
 
     }
+
     #endregion
 
     #region ChooseLine
+
     bool _ChooseLine;
     public bool ChooseLine
     {
-        get
-        {
-            return _ChooseLine;
-        }
+        get => _ChooseLine;
         set
         {
-            if (_ChooseLine != value)
+            if (_ChooseLine == value) return;
+            _ChooseLine = value;
+            if (innertCol == null) return;
+            foreach (var item in innertCol)
             {
-                _ChooseLine = value;
-                if (innertCol != null)
-                {
-                    foreach (var item in innertCol)
-                    {
-                        item.ChooseLine = value;
-                    }
-                }
+                item.ChooseLine = value;
             }
         }
 
     }
+
     #endregion
 
     #region Binding
+
     private string binding = "";
     public string Binding { 
-        get 
+        get
         {
-            if (innertCol != null)
-            {
-                var tmp = innertCol.FirstOrDefault();
-                if (tmp == null)
-                {
-                    return binding;
-                }
-                else
-                {
-                    return tmp.Binding;
-                }
-            }
-            else
-            {
-                return binding;
-            }
+            if (innertCol == null) return binding;
+            var tmp = innertCol.FirstOrDefault();
+            return tmp == null 
+                ? binding 
+                : tmp.Binding;
         }
         set 
         {
@@ -100,6 +80,7 @@ public class DataGridColumns:INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     public string GridLength
@@ -134,6 +115,7 @@ public class DataGridColumns:INotifyPropertyChanged
     }
 
     #region SizeCol
+
     double sizeCol;
     public double SizeCol
     {
@@ -154,6 +136,7 @@ public class DataGridColumns:INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     public int Level
@@ -169,15 +152,16 @@ public class DataGridColumns:INotifyPropertyChanged
         }
     }
 
-    public void SetSizeColToAllLevels(int SizeCol)
+    public void SetSizeColToAllLevels(int sizeCol)
     {
         if (innertCol == null) return;
         foreach (var item in innertCol)
         {
-            item.sizeCol = SizeCol;
-            item.SetSizeColToAllLevels(SizeCol);
+            item.sizeCol = sizeCol;
+            item.SetSizeColToAllLevels(sizeCol);
         }
     }
+
     public List<DataGridColumns> GetLevel(int level)
     {
         var lstar = new List<DataGridColumns>();
@@ -194,10 +178,10 @@ public class DataGridColumns:INotifyPropertyChanged
                 : lstar;
         }
         var allLevel = Level-1;
-        List<DataGridColumns> lst = new(innertCol);
+        List<DataGridColumns> lst = [..innertCol];
         while (allLevel != level)
         {
-            List<DataGridColumns> lst2 = new();
+            List<DataGridColumns> lst2 = [];
             foreach (var item in lst)
             {
                 lst2.AddRange(item.innertCol);
@@ -271,7 +255,7 @@ public class DataGridColumns:INotifyPropertyChanged
             DataGridColumns ret = new()
             {
                 name = col1.name,
-                innertCol = new List<DataGridColumns>()
+                innertCol = []
             };
             foreach(var item in group)
             {
@@ -291,7 +275,7 @@ public class DataGridColumns:INotifyPropertyChanged
             {
                 name = "",
                 binding = "",
-                innertCol = new List<DataGridColumns>()
+                innertCol = []
             };
             if (ret.name == col1.name)
             {
@@ -312,7 +296,7 @@ public class DataGridColumns:INotifyPropertyChanged
             DataGridColumns _ret = new()
             {
                 name = ret.name,
-                innertCol = new List<DataGridColumns>()
+                innertCol = []
             };
             foreach (var item in group)
             {
@@ -330,10 +314,12 @@ public class DataGridColumns:INotifyPropertyChanged
     }
 
     #region INotifyPropertyChanged
+
     private void OnPropertyChanged([CallerMemberName] string prop = "")
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
     public event PropertyChangedEventHandler PropertyChanged;
+
     #endregion
 }

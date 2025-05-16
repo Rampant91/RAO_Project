@@ -99,7 +99,9 @@ public static partial class EssenceMethods
         #endregion
 
         #region MethodsRealizationAsync
+
         #region PostAsync
+
         async Task<T> IEssenceMethods.PostAsync<T>(T obj) where T : class
         {
             if (!CheckType(obj) || (obj as Reports).Id != 0) return null;
@@ -109,9 +111,11 @@ public static partial class EssenceMethods
             await db.SaveChangesAsync(ReportsStorage.cancellationToken);
             return obj;
         }
+
         #endregion
 
         #region GetAsync
+
         async Task<T?> IEssenceMethods.GetAsync<T>(int id) where T : class
         {
             if (!CheckType(typeof(T))) return null;
@@ -123,7 +127,7 @@ public static partial class EssenceMethods
                 tmp = await db.ReportsCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
-                    .Where(x => x.Id == id)
+                    .Include(x => x.DBObservable)
                     .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
                     .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
                     .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
@@ -148,6 +152,7 @@ public static partial class EssenceMethods
                     .Include(x => x.Report_Collection).ThenInclude(x => x.Rows211)
                     .Include(x => x.Report_Collection).ThenInclude(x => x.Rows212)
                     .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
+                    .Where(x => x.DBObservable != null && x.Id == id)
                     .FirstOrDefaultAsync(ReportsStorage.cancellationToken) as T;
             }
             catch (Exception ex)
@@ -157,9 +162,11 @@ public static partial class EssenceMethods
 
             return tmp;
         }
+
         #endregion
 
         #region GetAllAsync
+
         async Task<List<T>> IEssenceMethods.GetAllAsync<T>(string param) where T : class
         {
             if (!CheckType(typeof(T))) return null;
@@ -169,9 +176,11 @@ public static partial class EssenceMethods
                 await db.Database.MigrateAsync(ReportsStorage.cancellationToken);
                 IQueryable<Reports> dbQ = db.ReportsCollectionDbSet;
                 var tmp = await dbQ
+                    .Include(x => x.DBObservable)
                     .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
                     .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
                     .Include(x => x.Report_Collection)
+                    .Where( x => x.DBObservable != null)
                     .Select(x => x as T)
                     .ToListAsync(ReportsStorage.cancellationToken);
                 return tmp;
@@ -183,9 +192,11 @@ public static partial class EssenceMethods
 
             return null;
         }
+
         #endregion
 
         #region UpdateAsync
+
         async Task<bool> IEssenceMethods.UpdateAsync<T>(T obj) where T : class
         {
             if (!CheckType(obj)) return false;
@@ -195,9 +206,11 @@ public static partial class EssenceMethods
             await db.SaveChangesAsync(ReportsStorage.cancellationToken);
             return true;
         }
+
         #endregion
 
         #region DeleteAsync
+
         async Task<bool> IEssenceMethods.DeleteAsync<T>(int id) where T : class
         {
             if (!CheckType(typeof(T))) return false;
@@ -213,7 +226,9 @@ public static partial class EssenceMethods
             }
             return true;
         } 
+
         #endregion
+
         #endregion
     }
 }

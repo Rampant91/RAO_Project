@@ -9,10 +9,13 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Client_App.VisualRealization.Long_Visual;
 using Models.Interfaces;
+using Avalonia.Threading;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
-//  Создать и открыть новое окно формы для выбранной организации
+/// <summary>
+/// Создать и открыть новое окно формы для выбранной организации.
+/// </summary>
 public class AddFormAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
@@ -26,7 +29,7 @@ public class AddFormAsyncCommand : BaseAsyncCommand
             {
                 #region MessageFailedToOpenForm
 
-                await MessageBox.Avalonia.MessageBoxManager
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
@@ -39,7 +42,7 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(Desktop.MainWindow);
+                    .ShowDialog(Desktop.MainWindow));
 
                 #endregion
 

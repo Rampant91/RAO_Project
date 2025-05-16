@@ -2,10 +2,11 @@
 
 namespace Client_App.ViewModels;
 
+/// <summary>
+/// Базовый класс ViewModel
+/// </summary>
 public class BaseVM
 {
-    internal static string PasFolderPath = @"Y:\!!! Поручения\Паспорта ЗРИ 2022\Хранилище паспортов ЗРИ";
-
     internal static string DbFileName = "Local_0";
 
     internal static string LogsDirectory = "";
@@ -14,11 +15,17 @@ public class BaseVM
 
     internal static string RaoDirectory = "";
 
+    internal static string ReserveDirectory = "";
+
     internal static string TmpDirectory = "";
 
-    //  Запускает баш скрипт с введенной командой, не используется
     #region RunCommandInBush
 
+    /// <summary>
+    /// Запускает баш скрипт с введенной командой (не используется).
+    /// </summary>
+    /// <param name="command">Команда.</param>
+    /// <returns></returns>
     private protected static string? RunCommandInBush(string command)
     {
         var process = new Process

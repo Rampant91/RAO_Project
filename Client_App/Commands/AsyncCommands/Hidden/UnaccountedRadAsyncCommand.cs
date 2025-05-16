@@ -1,5 +1,4 @@
 ﻿using Client_App.Commands.AsyncCommands.ExcelExport;
-using Client_App.Views;
 using Models.DBRealization;
 using OfficeOpenXml;
 using System;
@@ -13,12 +12,14 @@ using System.Collections.Generic;
 
 namespace Client_App.Commands.AsyncCommands.Hidden;
 
+/// <summary>
+/// Выгрузка в .xlsx списка отсутствующих в справочнике, но присутствующих в БД радионуклидов (скрытая команда).
+/// </summary>
 public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
-        var mainWindow = Desktop.MainWindow as MainWindow;
         var fileName = $"Отсутствующие_радионуклиды_{Assembly.GetExecutingAssembly().GetName().Version}";
         (string fullPath, bool openTemp) result;
         try
@@ -27,7 +28,6 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
         }
         catch
         {
-            cts.Dispose();
             return;
         }
         var fullPath = result.fullPath;
@@ -396,12 +396,16 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
             line++;
         }
         Worksheet.View.FreezePanes(2, 1);
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp);
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts);
     }
 
     #region RFromFile
 
-    private HashSet<string> RadsFromFile()
+    /// <summary>
+    /// Список имеющихся в справочнике радионуклидов.
+    /// </summary>
+    /// <returns>Список радионуклидов.</returns>
+    private static HashSet<string> RadsFromFile()
     {
         string filePath;
         HashSet<string> radsFromDictionaryHashSet = [];
@@ -426,6 +430,9 @@ public class UnaccountedRadAsyncCommand : ExcelBaseAsyncCommand
 
     #endregion
 
+    /// <summary>
+    /// DTO радионуклида.
+    /// </summary>
     private class UnaccountedRadsDTO
     {
         public string Rad;

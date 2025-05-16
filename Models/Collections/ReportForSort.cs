@@ -24,13 +24,13 @@ public class ReportForSort
 
     #region StartPeriod
 
-    public DateTime StartPeriod { get; set; }
+    public DateOnly StartPeriod { get; set; }
 
     #endregion
 
     #region EndPeriod
-
-    public DateTime EndPeriod { get; set; }
+    
+    public DateOnly EndPeriod { get; set; }
 
     #endregion
 

@@ -82,24 +82,24 @@ public static class Spravochniks
 
     public static readonly List<Tuple<byte?, string>> SprDocumentVidName =
     [
-        new Tuple<byte?, string>(0, ""),
-        new Tuple<byte?, string>(1, ""),
-        new Tuple<byte?, string>(2, ""),
-        new Tuple<byte?, string>(3, ""),
-        new Tuple<byte?, string>(4, ""),
-        new Tuple<byte?, string>(5, ""),
-        new Tuple<byte?, string>(6, ""),
-        new Tuple<byte?, string>(7, ""),
-        new Tuple<byte?, string>(8, ""),
-        new Tuple<byte?, string>(9, ""),
-        new Tuple<byte?, string>(10, ""),
-        new Tuple<byte?, string>(11, ""),
-        new Tuple<byte?, string>(12, ""),
-        new Tuple<byte?, string>(13, ""),
-        new Tuple<byte?, string>(14, ""),
-        new Tuple<byte?, string>(15, ""),
-        new Tuple<byte?, string>(19, ""),
-        new Tuple<byte?, string>(null, "")
+        new(0, string.Empty),
+        new(1, string.Empty),
+        new(2, string.Empty),
+        new(3, string.Empty),
+        new(4, string.Empty),
+        new(5, string.Empty),
+        new(6, string.Empty),
+        new(7, string.Empty),
+        new(8, string.Empty),
+        new(9, string.Empty),
+        new(10, string.Empty),
+        new(11, string.Empty),
+        new(12, string.Empty),
+        new(13, string.Empty),
+        new(14, string.Empty),
+        new(15, string.Empty),
+        new(19, string.Empty),
+        new(null, string.Empty)
     ];
 
     public static List<(string name, long mzua, long mza)> SprRadionuclids => SprRadionuclidsTask.Result;

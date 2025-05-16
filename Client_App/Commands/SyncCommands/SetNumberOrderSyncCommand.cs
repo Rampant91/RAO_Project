@@ -9,14 +9,10 @@ public class SetNumberOrderSyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
 {
     private Report Storage => changeOrCreateViewModel.Storage;
 
-    public override bool CanExecute(object? parameter)
-    {
-        return true;
-    }
+    public override bool CanExecute(object? parameter) => true;
 
     public override void Execute(object? parameter)
     {
-        Storage.Sort();
         var count = 1;
         var rows = Storage.Rows
             .GetEnumerable()

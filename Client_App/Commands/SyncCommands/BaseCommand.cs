@@ -1,9 +1,11 @@
-﻿using Avalonia.Controls;
-using System;
+﻿using System;
 using System.Windows.Input;
 
 namespace Client_App.Commands.SyncCommands;
 
+/// <summary>
+/// Базовый класс команды
+/// </summary>
 public abstract class BaseCommand : ICommand
 {
     public event EventHandler? CanExecuteChanged;

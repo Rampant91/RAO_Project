@@ -122,6 +122,7 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
             }
         }
         Report repToOpen = new(){ StartPeriod_DB = "01.01.0001" };
+        var countAddedForm = 0;
         foreach (var form in formsWithCode41)
         {
             var opDate = DateOnly.Parse(form.OperationDate_DB);
@@ -150,7 +151,8 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
                 case 1:   // Если есть подходящий отчет, то добавляем форму в него
                 {
                     var rep = await ReportsStorage.GetReportAsync(repInRange.First().Id);
-                    await AddNewFormToExistingReport(rep, form, db);
+                    var formIsAdded = await AddNewFormToExistingReport(rep, form, db);
+                    if (formIsAdded) countAddedForm++;
                     await db.SaveChangesAsync();
                     if (DateOnly.TryParse(rep.StartPeriod_DB, out var date)
                         && DateOnly.TryParse(repToOpen.StartPeriod_DB, out var maxDate)
@@ -163,6 +165,7 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
                 default:    // Если отчета с подходящим периодом нет, создаём новый отчёт и добавляем в него форму 
                 {
                     var repId = await CreateReportAndAddNewForm(db, form, opDate);
+                    countAddedForm++;
                     await db.SaveChangesAsync();
                     var report = await ReportsStorage.Api.GetAsync(repId);
                     SelectedReports.Report_Collection.Add(report);
@@ -176,6 +179,30 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
                 }
             }
         }
+
+        if (countAddedForm != formsWithCode41.Count)
+        {
+            #region MessageSourceTransmissionFailed
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Перевод источника в РАО",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"В связи с наличием строчек дубликатов, " +
+                                     $"{Environment.NewLine}было переведено {countAddedForm} строчек форм из {formsWithCode41.Count}. " +
+                                     $"{Environment.NewLine}Проверьте правильность заполнения формы {SelectedReport.FormNum_DB}",
+                    CanResize = true,
+                    MinWidth = 450,
+                    MinHeight = 175,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+        }
+
         await CloseWindowAndOpenNew(repToOpen).ConfigureAwait(false);
     }
 
