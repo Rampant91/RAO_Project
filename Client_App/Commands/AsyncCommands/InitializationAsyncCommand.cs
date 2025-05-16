@@ -218,6 +218,15 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
     {
         //Settings.Default.LastDbBackupDate = DateTime.MinValue;    //Сброс даты для тестирования
         //Settings.Default.Save();
+
+        if (Settings.Default.IsFirstAppRun)
+        {
+            Settings.Default.LastDbBackupDate = DateTime.Now;
+            Settings.Default.IsFirstAppRun = false;
+            Settings.Default.Save();
+            return;
+        }
+
         if ((DateTime.Now - Settings.Default.LastDbBackupDate).TotalDays < 30
             || Settings.Default.AppStartupParameters != string.Empty)
         {

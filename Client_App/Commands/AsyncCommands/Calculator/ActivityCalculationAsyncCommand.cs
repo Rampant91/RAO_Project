@@ -41,14 +41,47 @@ public partial class ActivityCalculationAsyncCommand : BaseAsyncCommand
     
     public override Task AsyncExecute(object? parameter)
     {
-        if (_activityCalculatorVM is { IsDateRange: false })
+        switch (_activityCalculatorVM)
         {
-            _activityCalculatorVM.IsDateRangeTextVisible = false;
-
-            if (double.TryParse(ToExponentialString(_activityCalculatorVM.TimePeriodDouble), out var timePeriodDoubleValue) 
-                && double.TryParse(ToExponentialString(_activityCalculatorVM.InitialActivity), out var initialActivityDoubleValue))
+            case { IsDateRange: false }:
             {
-                var timeParam = GetTimeDoubleValueInMinutes(timePeriodDoubleValue, _activityCalculatorVM.SelectedTimeUnit)
+                _activityCalculatorVM.IsDateRangeTextVisible = false;
+
+                if (double.TryParse(ToExponentialString(_activityCalculatorVM.TimePeriodDouble), out var timePeriodDoubleValue) 
+                    && double.TryParse(ToExponentialString(_activityCalculatorVM.InitialActivity), out var initialActivityDoubleValue))
+                {
+                    var timeParam = GetTimeDoubleValueInMinutes(timePeriodDoubleValue, _activityCalculatorVM.SelectedTimeUnit)
+                                    / GetTimeDoubleValueInMinutes(_activityCalculatorVM.SelectedDictionaryNuclid.Halflife, _activityCalculatorVM.SelectedDictionaryNuclid.Unit);
+
+                    var degree = -0.693 * timeParam;
+                    var exp = Math.Exp(degree);
+                    var activity = initialActivityDoubleValue * exp;
+
+                    _activityCalculatorVM.ResidualActivity = ToExponentialString(activity);
+                }
+                else _activityCalculatorVM.ResidualActivity = string.Empty;
+
+                break;
+            }
+            case { IsDateRange: true }:
+            {
+                if (!(double.TryParse(ToExponentialString(_activityCalculatorVM.InitialActivity), out var initialActivityDoubleValue)
+                      && DateOnly.TryParse(_activityCalculatorVM.InitialActivityDate, out var initialActivityDate)
+                      && DateOnly.TryParse(_activityCalculatorVM.ResidualActivityDate, out var residualActivityDate)))
+                {
+                    _activityCalculatorVM.IsDateRangeTextVisible = false;
+                    _activityCalculatorVM.ResidualActivity = string.Empty;
+                    return Task.CompletedTask;
+                }
+
+                _activityCalculatorVM.IsDateRangeTextVisible = initialActivityDate > residualActivityDate;
+                if (initialActivityDate > residualActivityDate)
+                {
+                    _activityCalculatorVM.ResidualActivity = string.Empty;
+                    return Task.CompletedTask;
+                }
+
+                var timeParam = GetTimeDoubleValueInMinutes(residualActivityDate.DayNumber - initialActivityDate.DayNumber, "сут")
                                 / GetTimeDoubleValueInMinutes(_activityCalculatorVM.SelectedDictionaryNuclid.Halflife, _activityCalculatorVM.SelectedDictionaryNuclid.Unit);
 
                 var degree = -0.693 * timeParam;
@@ -56,35 +89,9 @@ public partial class ActivityCalculationAsyncCommand : BaseAsyncCommand
                 var activity = initialActivityDoubleValue * exp;
 
                 _activityCalculatorVM.ResidualActivity = ToExponentialString(activity);
+
+                break;
             }
-            else _activityCalculatorVM.ResidualActivity = string.Empty;
-        }
-        else if (_activityCalculatorVM is { IsDateRange: true })
-        {
-            if (!(double.TryParse(ToExponentialString(_activityCalculatorVM.InitialActivity), out var initialActivityDoubleValue)
-                  && DateOnly.TryParse(_activityCalculatorVM.InitialActivityDate, out var initialActivityDate)
-                  && DateOnly.TryParse(_activityCalculatorVM.ResidualActivityDate, out var residualActivityDate)))
-            {
-                _activityCalculatorVM.IsDateRangeTextVisible = false;
-                _activityCalculatorVM.ResidualActivity = string.Empty;
-                return Task.CompletedTask;
-            }
-
-            _activityCalculatorVM.IsDateRangeTextVisible = initialActivityDate > residualActivityDate;
-            if (initialActivityDate > residualActivityDate)
-            {
-                _activityCalculatorVM.ResidualActivity = string.Empty;
-                return Task.CompletedTask;
-            }
-
-            var timeParam = GetTimeDoubleValueInMinutes(residualActivityDate.DayNumber - initialActivityDate.DayNumber, "сут")
-                            / GetTimeDoubleValueInMinutes(_activityCalculatorVM.SelectedDictionaryNuclid.Halflife, _activityCalculatorVM.SelectedDictionaryNuclid.Unit);
-
-            var degree = -0.693 * timeParam;
-            var exp = Math.Exp(degree);
-            var activity = initialActivityDoubleValue * exp;
-
-            _activityCalculatorVM.ResidualActivity = ToExponentialString(activity);
         }
         return Task.CompletedTask;
     }
@@ -116,7 +123,7 @@ public partial class ActivityCalculationAsyncCommand : BaseAsyncCommand
 
     #region ToExponentialString
 
-    private protected static string ToExponentialString(object? value)
+    private static string ToExponentialString(object? value)
     {
         var tmp = (value?.ToString() ?? string.Empty)
             .Trim()
@@ -171,7 +178,7 @@ public partial class ActivityCalculationAsyncCommand : BaseAsyncCommand
     /// </summary>
     /// <param name="value">Строчка данных.</param>
     /// <returns>Строчка, в которой заменены все виды тире на стандартное.</returns>
-    private protected static string ReplaceDashes(string value)
+    private static string ReplaceDashes(string value)
     {
         return value switch
         {
@@ -185,7 +192,7 @@ public partial class ActivityCalculationAsyncCommand : BaseAsyncCommand
     #region Regex
 
     [GeneratedRegex("[-᠆‐‑‒–—―⸺⸻－﹘﹣－]")]
-    protected static partial Regex DashesRegex();
+    private static partial Regex DashesRegex();
 
     #endregion
 }

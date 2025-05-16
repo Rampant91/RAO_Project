@@ -16,7 +16,6 @@ using OfficeOpenXml;
 using Microsoft.EntityFrameworkCore;
 using static Client_App.Resources.StaticStringMethods;
 using Client_App.ViewModels.ProgressBar;
-using Models.Forms.Form1;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
