@@ -1005,7 +1005,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
                     if (unitInStock is not null)
                     {
-                        unitInStockDtoList.Remove(unitInStock!);
+                        unitInStockDtoList.Remove(unitInStock);
                     }
 
                     if (inStock)

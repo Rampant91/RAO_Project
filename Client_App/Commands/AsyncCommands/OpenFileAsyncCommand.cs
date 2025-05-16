@@ -21,7 +21,7 @@ public class OpenFileAsyncCommand : BaseAsyncCommand
         {
             var filePathInDataFolder = parameter switch
             {
-                "changelog" => $"Changelog_{Assembly.GetExecutingAssembly().GetName().Version}.txt",
+                "changelog" => $"Changelog.txt",
                 "manual" => "Инструкция_МПЗФ.pdf",
                 "radsDictionary" => Path.Combine("Spravochniki", "R.xlsx"),
                 _ => ""

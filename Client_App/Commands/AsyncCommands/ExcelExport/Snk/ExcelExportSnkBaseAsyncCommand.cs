@@ -278,8 +278,6 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     private protected async Task<(DateOnly, SnkParamsDto)> AskSnkEndDate(AnyTaskProgressBar progressBar,
         CancellationTokenSource cts)
     {
-        var date = DateOnly.MinValue;
-
         var vm = new GetSnkParamsVM();
         await Dispatcher.UIThread.InvokeAsync(async () =>
         {
@@ -294,12 +292,14 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             vm = getSnkParamsWindow._vm;
         });
 
+        var date = DateOnly.MinValue;
+        if (DateTime.TryParse(vm.Date, out var dateTime)) date = DateOnly.FromDateTime(dateTime); 
+
         if (!vm.Ok)
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
-
-        else if (!DateOnly.TryParse(vm.Date, out date))
+        else if (!DateTime.TryParse(vm.Date, out _))
         {
             #region MessageExcelExportFail
 
@@ -318,9 +318,9 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
             #endregion
 
-            date = DateOnly.Parse(DateTime.Now.ToShortDateString());
+            date = DateOnly.FromDateTime(DateTime.Now);
         }
-        else if (date < DateOnly.Parse("01.01.2022"))
+        else if (DateOnly.FromDateTime(dateTime) < DateOnly.Parse("01.01.2022"))
         {
             #region MessageExcelExportFail
 
