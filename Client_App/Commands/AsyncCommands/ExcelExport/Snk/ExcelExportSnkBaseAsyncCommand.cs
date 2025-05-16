@@ -270,12 +270,13 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     #region AskSnkEndDate
 
     /// <summary>
-    /// Запрос ввода даты формирования СНК.
+    /// Запрос ввода даты формирования СНК/проверки инвентаризации.
     /// </summary>
     /// <param name="progressBar">Окно прогрессбара.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Кортеж из даты, на которую необходимо сформировать СНК и dto bool флагов, по каким параметрам определять учётную единицу.</returns>
-    private protected static async Task<(DateOnly, SnkParamsDto)> AskSnkEndDate(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
+    private protected async Task<(DateOnly, SnkParamsDto)> AskSnkEndDate(AnyTaskProgressBar progressBar,
+        CancellationTokenSource cts)
     {
         var date = DateOnly.MinValue;
 
@@ -283,6 +284,12 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         await Dispatcher.UIThread.InvokeAsync(async () =>
         {
             var getSnkParamsWindow = new GetSnkParams();
+            getSnkParamsWindow._vm.CommandName = this switch
+            {
+                ExcelExportSnkAsyncCommand => "СНК",
+                ExcelExportCheckInventoriesAsyncCommand => "Проверка инвентаризаций",
+                _ => ""
+            };
             await getSnkParamsWindow.ShowDialog(Desktop.MainWindow);
             vm = getSnkParamsWindow._vm;
         });

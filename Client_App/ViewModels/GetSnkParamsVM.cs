@@ -146,6 +146,25 @@ public class GetSnkParamsVM : INotifyPropertyChanged
 
     #endregion
 
+    #region CommandName
+
+    /// <summary>
+    /// Имя команды.
+    /// </summary>
+    private string _commandName = "";
+    public string CommandName
+    {
+        get => _commandName;
+        set
+        {
+            if (_commandName == value) return;
+            _commandName = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
+
     #endregion
 
     #region PropertyChanged

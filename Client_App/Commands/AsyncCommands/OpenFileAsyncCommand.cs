@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Client_App.Interfaces.Logger;
@@ -20,6 +21,7 @@ public class OpenFileAsyncCommand : BaseAsyncCommand
         {
             var filePathInDataFolder = parameter switch
             {
+                "changelog" => $"Changelog_{Assembly.GetExecutingAssembly().GetName().Version}.txt",
                 "manual" => "Инструкция_МПЗФ.pdf",
                 "radsDictionary" => Path.Combine("Spravochniki", "R.xlsx"),
                 _ => ""

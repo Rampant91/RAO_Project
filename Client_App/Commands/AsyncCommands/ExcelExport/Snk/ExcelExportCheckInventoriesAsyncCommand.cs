@@ -38,14 +38,13 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         var mainWindow = Desktop.MainWindow as MainWindow;
         var formNum = (parameter as string)!;
 
-        progressBarVM.SetProgressBar(5, "Проверка наличия отчётов",
-            $"Проверка инвентаризаций", ExportType);
+        progressBarVM.SetProgressBar(5, "Проверка наличия отчётов", "Проверка инвентаризаций", ExportType);
         await CheckRepsAndRepPresence(formNum, progressBar, cts);
 
         var selectedReports = mainWindow!.SelectedReports.First() as Reports;
         var regNum = selectedReports!.Master_DB.RegNoRep.Value;
         var okpo = selectedReports.Master_DB.OkpoRep.Value;
-        ExportType = $"СНК_{formNum}_{regNum}_{okpo}";
+        ExportType = $"Проверка_инвентаризаций_{formNum}_{regNum}_{okpo}";
 
         progressBarVM.SetProgressBar(6, "Запрос даты формирования СНК");
         var(endSnkDate, snkParams) = await AskSnkEndDate(progressBar, cts);
