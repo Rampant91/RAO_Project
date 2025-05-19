@@ -87,7 +87,7 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
                     ContentHeader = "Уведомление",
                     ContentMessage =
                         $"Не удалось совершить выгрузку списка всех отчетов по форме {formNum[0]} с указанием количества строк," +
-                        $"{Environment.NewLine}поскольку в текущей базе отсутствует отчетность по формам {formNum[0]}./",
+                        $"{Environment.NewLine}поскольку в текущей базе отсутствует отчетность по формам {formNum[0]}.",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner

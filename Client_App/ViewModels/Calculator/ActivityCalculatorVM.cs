@@ -144,8 +144,8 @@ public class ActivityCalculatorVM : BaseCalculatorVM
     #endregion
 
     #region Commands
-    
-    public ICommand ActivityCalculation { get; set; } 
+
+    private ICommand ActivityCalculation { get; set; } 
     
     #endregion
 }

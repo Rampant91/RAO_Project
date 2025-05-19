@@ -144,7 +144,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Update="Views\GetSnkParams.axaml.cs">
+    <Compile Update="Views\Messages\GetSnkParams.axaml.cs">
       <DependentUpon>GetSnkParams.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\Messages\AskDatePeriodMessageWIndow.axaml.cs">

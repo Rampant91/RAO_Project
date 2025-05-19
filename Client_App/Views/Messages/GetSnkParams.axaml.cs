@@ -3,7 +3,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Client_App.ViewModels;
 
-namespace Client_App.Views;
+namespace Client_App.Views.Messages;
 
 public class GetSnkParams : BaseWindow<GetSnkParamsVM>
 {

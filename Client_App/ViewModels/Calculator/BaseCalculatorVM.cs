@@ -43,7 +43,7 @@ public class BaseCalculatorVM : BaseVM, INotifyPropertyChanged
 
     #region Commands
 
-    public ICommand? FilterCommand { get; set; }
+    protected ICommand? FilterCommand { get; set; }
 
     #endregion
 

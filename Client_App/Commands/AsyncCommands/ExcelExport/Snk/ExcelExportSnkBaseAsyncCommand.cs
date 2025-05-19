@@ -15,6 +15,7 @@ using MessageBox.Avalonia.DTO;
 using Client_App.ViewModels.ProgressBar;
 using Models.Collections;
 using Client_App.Resources.CustomComparers;
+using Client_App.Views.Messages;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
@@ -1437,7 +1438,6 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     
     private protected static bool SerialNumbersIsEmpty(string? pasNum, string? facNum)
     {
-        var regex = MyRegex();
         var num1 = (pasNum ?? string.Empty)
             .ToLower()
             .Replace(" ", "")
@@ -1445,7 +1445,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             .Replace(",", "")
             .Replace("/", "")
             .Replace("\\", "");
-        num1 = regex.Replace(num1, "");
+        num1 = DashesRegex().Replace(num1, "");
 
         var num2 = (facNum ?? string.Empty)
             .ToLower()
@@ -1454,7 +1454,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             .Replace(",", "")
             .Replace("/", "")
             .Replace("\\", "");
-        num2 = regex.Replace(num2, "");
+        num2 = DashesRegex().Replace(num2, "");
+        
         List<string> validStrings =
         [
             "",
@@ -1471,7 +1472,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
     private static string AutoReplaceSimilarChars(string? str)
     {
-        return new Regex(@"[\\/:*?""<>|.,_\-;:\s+]")
+        return SpecialSymbolsRegex()
             .Replace(str ?? string.Empty, "")
             .Replace('А', 'A')
             .Replace('а', 'a')
@@ -1502,12 +1503,19 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             .ToLower();
     }
 
+    #endregion
+
+    #endregion
+
+    #endregion
+
+    #region Regex
+    
     [GeneratedRegex("[-᠆‐‑‒–—―⸺⸻－﹘﹣－]")]
-    private static partial Regex MyRegex();
+    private static partial Regex DashesRegex();
 
-    #endregion
-
-    #endregion
+    [GeneratedRegex(@"[\\/:*?""<>|.,_\-;:\s+]")]
+    private static partial Regex SpecialSymbolsRegex();
 
     #endregion
 }
