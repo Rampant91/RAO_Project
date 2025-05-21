@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Client_App.ViewModels;
+namespace Client_App.ViewModels.Messages;
 
 public class GetSnkParamsVM : INotifyPropertyChanged
 {

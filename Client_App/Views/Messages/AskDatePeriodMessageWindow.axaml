@@ -1,20 +1,21 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="clr-namespace:Client_App.ViewModels.Messages"
-        xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
-        mc:Ignorable="d"
-        Width="{CompiledBinding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.25', FallbackValue='250', Mode=OneWay}"
-        Height="{CompiledBinding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.2', FallbackValue='400', Mode=OneWay}"
-        MaxHeight="300"
-        MaxWidth="500"
-        MinHeight="175"
-        MinWidth="350"
-        x:Class="Client_App.Views.Messages.AskDatePeriodMessageWindow"
-        x:DataType="vm:AskDatePeriodMessageVM"
-        Title="Запрос периода дат"
-        WindowStartupLocation="CenterScreen">
+<Window 
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:Client_App.ViewModels.Messages"
+    xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
+    mc:Ignorable="d"
+    Width="{CompiledBinding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.25', FallbackValue='250', Mode=OneWay}"
+    Height="{CompiledBinding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.2', FallbackValue='400', Mode=OneWay}"
+    MaxHeight="300"
+    MaxWidth="500"
+    MinHeight="175"
+    MinWidth="350"
+    x:Class="Client_App.Views.Messages.AskDatePeriodMessageWindow"
+    x:DataType="vm:AskDatePeriodMessageVM"
+    Title="Запрос периода дат"
+    WindowStartupLocation="CenterScreen">
 
     <Design.DataContext>
         <vm:AskDatePeriodMessageVM/>

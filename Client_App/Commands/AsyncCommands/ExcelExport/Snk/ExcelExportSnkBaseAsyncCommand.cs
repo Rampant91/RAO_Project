@@ -8,14 +8,15 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using Client_App.ViewModels;
 using Client_App.Views;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using Client_App.ViewModels.ProgressBar;
 using Models.Collections;
 using Client_App.Resources.CustomComparers;
+using Client_App.ViewModels.Messages;
 using Client_App.Views.Messages;
+using ReactiveUI;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
@@ -844,6 +845,16 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     private protected static async Task<List<ShortReportDTO>> GetInventoryReportDtoList(DBModel db, int repsId, string formNum, DateOnly endSnkDate,
         CancellationTokenSource cts)
     {
+        var tatata = await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.DBObservable)
+            .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows11)
+            .Where(reps => reps.DBObservable != null && reps.Id == repsId)
+            .SelectMany(reps => reps.Report_Collection)
+            .ToListAsync(cts.Token);
+
         var inventoryReportDtoList = formNum switch
         {
             #region 1.1

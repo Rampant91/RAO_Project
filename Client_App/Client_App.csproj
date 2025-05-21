@@ -42,6 +42,7 @@
     <PackageReference Include="Avalonia.Desktop" Version="0.10.22" />
     <PackageReference Include="Avalonia.Diagnostics" Version="0.10.22" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.22" />
+    <PackageReference Include="Avalonia.Win32" Version="0.10.22" />
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.22" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="EPPlus" Version="7.5.2" />
@@ -143,6 +144,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Messages\GetRegionAndFormNums.axaml.cs">
+      <DependentUpon>GetRegionAndFormNums.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\Messages\GetSnkParams.axaml.cs">
       <DependentUpon>GetSnkParams.axaml</DependentUpon>

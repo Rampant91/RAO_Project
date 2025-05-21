@@ -5,13 +5,11 @@ using Client_App.ViewModels.Messages;
 
 namespace Client_App.Views.Messages;
 
-public class GetSnkParams : BaseWindow<GetSnkParamsVM>
+public class GetRegionAndFormNums : BaseWindow<GetRegionAndFormNumsVM>
 {
-    public GetSnkParamsVM _vm = null!;
+    public GetRegionAndFormNumsVM _vm = null!;
 
-    #region InitializeComponent
-
-    public GetSnkParams()
+    public GetRegionAndFormNums()
     {
         InitializeComponent();
     }
@@ -19,11 +17,9 @@ public class GetSnkParams : BaseWindow<GetSnkParamsVM>
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
-        DataContext = new GetSnkParamsVM();
-        _vm = (DataContext as GetSnkParamsVM)!;
+        DataContext = new GetRegionAndFormNumsVM();
+        _vm = (DataContext as GetRegionAndFormNumsVM)!;
     }
-
-    #endregion
 
     #region Buttons
 
@@ -50,7 +46,7 @@ public class GetSnkParams : BaseWindow<GetSnkParamsVM>
     {
         if (_vm != null)
         {
-            _vm.CheckAll = _vm.CheckPasNum = _vm.CheckType = _vm.CheckRadionuclids = _vm.CheckFacNum = _vm.CheckPackNumber = true;
+            _vm.CheckAll = _vm.CheckForm11 = _vm.CheckForm13 = true;
         }
     }
 
@@ -58,7 +54,7 @@ public class GetSnkParams : BaseWindow<GetSnkParamsVM>
     {
         if (_vm != null)
         {
-            _vm.CheckPasNum = _vm.CheckType = _vm.CheckRadionuclids = _vm.CheckFacNum = _vm.CheckPackNumber = false;
+            _vm.CheckAll = _vm.CheckForm11 = _vm.CheckForm13 = false;
         }
     }
 
@@ -68,8 +64,8 @@ public class GetSnkParams : BaseWindow<GetSnkParamsVM>
         allCheckBox!.IsThreeState = true;
         _vm.CheckAll = _vm switch
         {
-            { CheckPasNum: true, CheckType: true, CheckRadionuclids: true, CheckFacNum: true, CheckPackNumber: true } => true,
-            { CheckPasNum: false, CheckType: false, CheckRadionuclids: false, CheckFacNum: false, CheckPackNumber: false } => false,
+            { CheckForm11: true, CheckForm13: true } => true,
+            { CheckForm11: false, CheckForm13: false } => false,
             _ => allCheckBox.IsChecked = null
         };
     }
