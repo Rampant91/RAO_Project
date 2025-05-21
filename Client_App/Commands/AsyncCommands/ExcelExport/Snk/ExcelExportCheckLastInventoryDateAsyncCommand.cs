@@ -31,7 +31,6 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
         var cts = new CancellationTokenSource();
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
-        var formNum = "1.1";
         ExportType = "Просроченная_инвентаризация";
 
         progressBarVM.SetProgressBar(5, "Запрос форм для проверки СНК", "Проверка инвентаризаций", ExportType);
