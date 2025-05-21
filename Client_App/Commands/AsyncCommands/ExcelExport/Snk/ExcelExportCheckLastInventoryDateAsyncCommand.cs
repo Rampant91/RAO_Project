@@ -40,12 +40,12 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
         await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(9, "Проверка наличия отчётов");
-        await CheckRepsAndRepPresence(db, region, formNums, progressBar, cts);
-
-        progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
+        progressBarVM.SetProgressBar(9, "Запрос пути сохранения");
         var fileName = $"{ExportType}_{Assembly.GetExecutingAssembly().GetName().Version}";
         var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+
+        progressBarVM.SetProgressBar(10, "Проверка наличия отчётов");
+        await CheckRepsAndRepPresence(db, region, formNums, progressBar, cts);
 
         progressBarVM.SetProgressBar(12, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath);
@@ -228,8 +228,8 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
             CancellationToken = cts.Token,
             MaxDegreeOfParallelism = Environment.ProcessorCount
         };
-
-        foreach (var repsDto in repsDtoList)
+        
+        await Parallel.ForEachAsync(repsDtoList, parallelOptions, async (repsDto, token) =>
         {
             await using var db = new DBModel(tmpDbPath);
 
@@ -384,143 +384,6 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
                 $"Проверено {currentRepNum} из {repsDtoList.Count} дат инвентаризации",
                 "Проверка последней инвентаризации");
-        }
-        
-        await Parallel.ForEachAsync(repsDtoList, parallelOptions, async (repsDto, token) =>
-        {
-            //await using var db = new DBModel(tmpDbPath);
-
-            //#region 1.1
-
-            //if (formNums.Contains("1.1"))
-            //{
-            //    var repsDto11 = new ShortReportsDto
-            //    {
-            //        FormNum = "1.1",
-            //        Id = repsDto.Id,
-            //        Okpo = repsDto.Okpo,
-            //        RegNum = repsDto.RegNum,
-            //        ShortName = repsDto.ShortName
-            //    };
-
-            //    var inventoryReport11IdList = await db.ReportsCollectionDbSet
-            //        .AsNoTracking()
-            //        .AsSplitQuery()
-            //        .AsQueryable()
-            //        .Include(reps => reps.DBObservable)
-            //        .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows11)
-            //        .Where(reps => reps.DBObservable != null && reps.Id == repsDto11.Id)
-            //        .SelectMany(reps => reps.Report_Collection
-            //            .Where(rep => rep.FormNum_DB == "1.1" && rep.Rows11.Any(form => form.OperationCode_DB == "10"))
-            //            .Select(rep => rep.Id))
-            //        .ToListAsync(cts.Token);
-
-            //    List<string> inventoryForms11DtoList = [];
-            //    foreach (var reportId in inventoryReport11IdList)
-            //    {
-            //        var currentInventoryFormsStringDateList = await db.ReportCollectionDbSet
-            //            .AsNoTracking()
-            //            .AsSplitQuery()
-            //            .AsQueryable()
-            //            .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-            //            .Include(x => x.Rows11)
-            //            .Where(rep => rep.Reports != null && rep.Reports.DBObservable != null && rep.Id == reportId)
-            //            .SelectMany(rep => rep.Rows11
-            //                .Where(form => form.OperationCode_DB == "10")
-            //                .Select(form11 => form11.OperationDate_DB))
-            //            .ToListAsync(cts.Token);
-
-            //        inventoryForms11DtoList.AddRange(currentInventoryFormsStringDateList);
-            //    }
-
-            //    if (inventoryForms11DtoList.Count == 0)
-            //    {
-            //        repsWithExpiredInventory.Add(repsDto11);
-            //        return;
-            //    }
-
-            //    var lastInventoryDate11 = inventoryForms11DtoList
-            //        .Where(x => DateOnly.TryParse(x, out _))
-            //        .Select(DateOnly.Parse)
-            //        .Max();
-
-            //    if (DateOnly.FromDateTime(DateTime.Now).DayNumber - lastInventoryDate11.DayNumber > 365 + 14)
-            //    {
-            //        repsDto11.LastInventoryDate = lastInventoryDate11;
-            //        repsWithExpiredInventory.Add(repsDto11);
-            //    }
-            //}
-
-            //#endregion
-
-            //#region 1.3
-
-            //if (formNums.Contains("1.3"))
-            //{
-            //    var repsDto13 = new ShortReportsDto
-            //    {
-            //        FormNum = "1.3",
-            //        Id = repsDto.Id,
-            //        Okpo = repsDto.Okpo,
-            //        RegNum = repsDto.RegNum,
-            //        ShortName = repsDto.ShortName
-            //    };
-
-            //    var inventoryReport13IdList = await db.ReportsCollectionDbSet
-            //        .AsNoTracking()
-            //        .AsSplitQuery()
-            //        .AsQueryable()
-            //        .Include(reps => reps.DBObservable)
-            //        .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows13)
-            //        .Where(reps => reps.DBObservable != null && reps.Id == repsDto13.Id)
-            //        .SelectMany(reps => reps.Report_Collection
-            //            .Where(rep => rep.FormNum_DB == "1.3" && rep.Rows13.Any(form => form.OperationCode_DB == "10"))
-            //            .Select(rep => rep.Id))
-            //        .ToListAsync(cts.Token);
-
-            //    List<string> inventoryForms13DtoList = [];
-            //    foreach (var reportId in inventoryReport13IdList)
-            //    {
-            //        var currentInventoryFormsStringDateList = await db.ReportCollectionDbSet
-            //            .AsNoTracking()
-            //            .AsSplitQuery()
-            //            .AsQueryable()
-            //            .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-            //            .Include(x => x.Rows13)
-            //            .Where(rep => rep.Reports != null && rep.Reports.DBObservable != null && rep.Id == reportId)
-            //            .SelectMany(rep => rep.Rows13
-            //                .Where(form => form.OperationCode_DB == "10")
-            //                .Select(form13 => form13.OperationDate_DB))
-            //            .ToListAsync(cts.Token);
-
-            //        inventoryForms13DtoList.AddRange(currentInventoryFormsStringDateList);
-            //    }
-
-            //    if (inventoryForms13DtoList.Count == 0)
-            //    {
-            //        repsWithExpiredInventory.Add(repsDto13);
-            //        return;
-            //    }
-
-            //    var lastInventoryDate13 = inventoryForms13DtoList
-            //        .Where(x => DateOnly.TryParse(x, out _))
-            //        .Select(DateOnly.Parse)
-            //        .Max();
-
-            //    if (DateOnly.FromDateTime(DateTime.Now).DayNumber - lastInventoryDate13.DayNumber > 365 + 14)
-            //    {
-            //        repsDto13.LastInventoryDate = lastInventoryDate13;
-            //        repsWithExpiredInventory.Add(repsDto13);
-            //    }
-            //}
-
-            //#endregion
-
-            //currentRepNum++;
-            //progressBarDoubleValue += (double)20 / repsDtoList.Count;
-            //progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-            //    $"Проверено {currentRepNum} из {repsDtoList.Count} дат инвентаризации",
-            //    "Проверка последней инвентаризации");
         });
 
         return [.. repsWithExpiredInventory];
