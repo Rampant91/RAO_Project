@@ -13,8 +13,6 @@ using System.Threading.Tasks;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Avalonia.Threading;
-using Client_App.Resources;
-using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.Resources.CustomComparers;
 
 namespace Client_App.Commands.AsyncCommands.Import;
