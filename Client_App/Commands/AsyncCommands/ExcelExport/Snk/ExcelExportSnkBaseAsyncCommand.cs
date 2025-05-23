@@ -16,7 +16,6 @@ using Models.Collections;
 using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels.Messages;
 using Client_App.Views.Messages;
-using ReactiveUI;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
@@ -24,6 +23,11 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 {
     #region Properties
 
+    /// <summary>
+    /// Получение массива операций на передачу (минусовых) для форм 1.1, 1.3, 1.4.
+    /// </summary>
+    /// <param name="formNum">Номер формы.</param>
+    /// <returns>Массив операций на передачу (минусовых) для форм 1.1, 1.3, 1.4.</returns>
     private protected static string[] GetMinusOperationsArray(string formNum)
     {
         return formNum switch
@@ -44,6 +48,11 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         };
     }
 
+    /// <summary>
+    /// Получение массива операций на получение (плюсовых) для форм 1.1, 1.3, 1.4.
+    /// </summary>
+    /// <param name="formNum">Номер формы.</param>
+    /// <returns>Массив операций на получение (плюсовых) для форм 1.1, 1.3, 1.4.</returns>
     private protected static string[] GetPlusOperationsArray(string formNum)
     {
         return formNum switch
@@ -130,13 +139,6 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
         public string PackNumber { get; set; }
     }
-
-    //private protected class ShortFormDTO : ShortFormDTO
-    //{
-    //    public int Quantity { get; set; }
-    //}
-
-    //private protected class ShortForm13DTO : ShortFormDTO; 
     
     #endregion
 
@@ -370,6 +372,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             vm.CheckRadionuclids,
             vm.CheckFacNum,
             vm.CheckPackNumber);
+
         return (date, snkParamsDto);
     }
 
@@ -576,6 +579,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             }
         }
         if (groupedOperationList.Count == 0) groupedOperationList.Add(currentGroup);
+
         return Task.FromResult(groupedOperationList);
     }
 
@@ -790,6 +794,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     /// Суммирует операции инвентаризации для первой даты по количеству и возвращает список DTO.
     /// </summary>
     /// <param name="inventoryFormsDtoList">Список DTO операций инвентаризации.</param>
+    /// <param name="formNum">Номер формы.</param>
     /// <returns>Список DTO операций инвентаризации, просуммированный по количеству для первой даты.</returns>
     private static Task<(List<ShortFormDTO>, List<ShortFormDTO>)> GetSummedInventoryDtoList(List<ShortFormDTO> inventoryFormsDtoList, string formNum)
     {
@@ -845,16 +850,6 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     private protected static async Task<List<ShortReportDTO>> GetInventoryReportDtoList(DBModel db, int repsId, string formNum, DateOnly endSnkDate,
         CancellationTokenSource cts)
     {
-        var tatata = await db.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.DBObservable)
-            .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows11)
-            .Where(reps => reps.DBObservable != null && reps.Id == repsId)
-            .SelectMany(reps => reps.Report_Collection)
-            .ToListAsync(cts.Token);
-
         var inventoryReportDtoList = formNum switch
         {
             #region 1.1
@@ -927,7 +922,6 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     {
         var plusOperationArray = GetPlusOperationsArray(formNum);
         var minusOperationArray = GetMinusOperationsArray(formNum);
-        
 
         var plusMinusOperationDtoList = formNum switch
         {
@@ -1418,32 +1412,32 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
     #endregion
 
-    #region GetUniqueAccountingUnitDtoList
+    //#region GetUniqueAccountingUnitDtoList
 
-    /// <summary>
-    /// Получение отсортированного списка DTO уникальных учётных единиц с операциями инвентаризации, приёма или передачи.
-    /// </summary>
-    /// <param name="unionFormsDtoList">Список DTO всех операций инвентаризации, приёма или передачи.</param>
-    /// <returns>Список DTO уникальных учётных единиц с операциями инвентаризации, приёма или передачи.</returns>
-    private protected static Task<List<UniqueAccountingUnitDTO>> GetUniqueAccountingUnitDtoList(List<ShortFormDTO> unionFormsDtoList)
-    {
-        var uniqueAccountingUnitDtoList = unionFormsDtoList
-            .Select(x => new UniqueAccountingUnitDTO
-            {
-                FacNum = x.FacNum,
-                Radionuclids = x.Radionuclids,
-                PackNumber = x.PackNumber,
-                PasNum = x.PasNum,
-                Type = x.Type
-            })
-            .DistinctBy(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type)
-            .OrderBy(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type)
-            .ToList();
+    ///// <summary>
+    ///// Получение отсортированного списка DTO уникальных учётных единиц с операциями инвентаризации, приёма или передачи.
+    ///// </summary>
+    ///// <param name="unionFormsDtoList">Список DTO всех операций инвентаризации, приёма или передачи.</param>
+    ///// <returns>Список DTO уникальных учётных единиц с операциями инвентаризации, приёма или передачи.</returns>
+    //private protected static Task<List<UniqueAccountingUnitDTO>> GetUniqueAccountingUnitDtoList(List<ShortFormDTO> unionFormsDtoList)
+    //{
+    //    var uniqueAccountingUnitDtoList = unionFormsDtoList
+    //        .Select(x => new UniqueAccountingUnitDTO
+    //        {
+    //            FacNum = x.FacNum,
+    //            Radionuclids = x.Radionuclids,
+    //            PackNumber = x.PackNumber,
+    //            PasNum = x.PasNum,
+    //            Type = x.Type
+    //        })
+    //        .DistinctBy(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type)
+    //        .OrderBy(x => x.FacNum + x.PackNumber + x.PasNum + x.Radionuclids + x.Type)
+    //        .ToList();
 
-        return Task.FromResult(uniqueAccountingUnitDtoList);
-    }
+    //    return Task.FromResult(uniqueAccountingUnitDtoList);
+    //}
 
-    #endregion
+    //#endregion
 
     #region SerialNumbersIsEmpty
     

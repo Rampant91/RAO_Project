@@ -84,6 +84,12 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
 
     #region GetRegionAndFormNums
 
+    /// <summary>
+    /// Открывает окно, запрашивающее номера проверяемых форм и регион.
+    /// </summary>
+    /// <param name="progressBar"></param>
+    /// <param name="cts"></param>
+    /// <returns>Кортеж из региона и списка номеров форм.</returns>
     private static async Task<(string, List<string>)> GetRegionAndFormNums(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
         var vm = new GetRegionAndFormNumsVM();
@@ -129,14 +135,15 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
         #region CheckRepsPresence
 
         var anyReps = (await db.ReportsCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(x => x.DBObservable)
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                .Where(x => x.DBObservable != null)
-                .ToListAsync(cts.Token))
-            .Any(x => x.Master_DB.RegNoRep.Value.StartsWith(region));
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.DBObservable)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+            .Where(x => x.DBObservable != null)
+            .Select(x => x.Master_DB.Rows10[0].RegNo_DB)
+            .ToListAsync(cts.Token))
+            .Any(x => x.StartsWith(region));
 
         if (!anyReps)
         {
@@ -174,8 +181,9 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                 x.Reports != null
                 && x.Reports.DBObservable != null
                 && formNums.Contains(x.FormNum_DB))
+            .Select(x => x.Reports.Master_DB.Rows10[0].RegNo_DB)
             .ToListAsync(cts.Token))
-            .Any(x => x.Reports.Master_DB.RegNoRep.Value.StartsWith(region));
+            .Any(x => x.StartsWith(region));
 
         if (!anyRep)
         {
@@ -240,7 +248,8 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                 .Include(reps => reps.DBObservable)
                 .Include(reps => reps.Report_Collection)
                 .Where(reps => reps.DBObservable != null && reps.Id == repsDto.Id)
-                .AnyAsync(reps => reps.Report_Collection.Any(rep => rep.FormNum_DB == "1.1"), cts.Token);
+                .AnyAsync(reps => reps.Report_Collection
+                    .Any(rep => rep.FormNum_DB == "1.1"), cts.Token);
 
             var hasAnyForm13 = await db.ReportsCollectionDbSet
                 .AsNoTracking()
@@ -249,7 +258,8 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                 .Include(reps => reps.DBObservable)
                 .Include(reps => reps.Report_Collection)
                 .Where(reps => reps.DBObservable != null && reps.Id == repsDto.Id)
-                .AnyAsync(reps => reps.Report_Collection.Any(rep => rep.FormNum_DB == "1.3"), cts.Token);
+                .AnyAsync(reps => reps.Report_Collection
+                    .Any(rep => rep.FormNum_DB == "1.3"), cts.Token);
 
             #region 1.1
 
@@ -269,10 +279,10 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                     .AsSplitQuery()
                     .AsQueryable()
                     .Include(reps => reps.DBObservable)
-                    .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows11)
+                    .Include(reps => reps.Report_Collection).ThenInclude(rep => rep.Rows11)
                     .Where(reps => reps.DBObservable != null && reps.Id == repsDto11.Id)
                     .SelectMany(reps => reps.Report_Collection
-                        .Where(rep => rep.FormNum_DB == "1.1" && rep.Rows11.Any(form => form.OperationCode_DB == "10"))
+                        .Where(rep => rep.FormNum_DB == "1.1" && rep.Rows11.Any(form11 => form11.OperationCode_DB == "10"))
                         .Select(rep => rep.Id))
                     .ToListAsync(cts.Token);
 
@@ -283,11 +293,11 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                         .AsNoTracking()
                         .AsSplitQuery()
                         .AsQueryable()
-                        .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                        .Include(x => x.Rows11)
+                        .Include(rep => rep.Reports).ThenInclude(reps => reps.DBObservable)
+                        .Include(rep => rep.Rows11)
                         .Where(rep => rep.Reports != null && rep.Reports.DBObservable != null && rep.Id == reportId)
                         .SelectMany(rep => rep.Rows11
-                            .Where(form => form.OperationCode_DB == "10")
+                            .Where(form11 => form11.OperationCode_DB == "10")
                             .Select(form11 => form11.OperationDate_DB))
                         .ToListAsync(cts.Token);
 
@@ -351,7 +361,7 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                         .Include(x => x.Rows13)
                         .Where(rep => rep.Reports != null && rep.Reports.DBObservable != null && rep.Id == reportId)
                         .SelectMany(rep => rep.Rows13
-                            .Where(form => form.OperationCode_DB == "10")
+                            .Where(form13 => form13.OperationCode_DB == "10")
                             .Select(form13 => form13.OperationDate_DB))
                         .ToListAsync(cts.Token);
 
@@ -488,7 +498,8 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
             var uniqueUnitWithAllOperationDictionary = 
                 await GetDictionary_UniqueUnitsWithOperations(dto.FormNum, inventoryFormsDtoList, plusMinusFormsDtoList, rechargeFormsDtoList);
 
-            dto.CountUnits = (await GetUnitInStockDtoList(uniqueUnitWithAllOperationDictionary, dto.FormNum, firstSnkDate, progressBarVM)).Sum(x => x.Quantity);
+            var unitInStockDtoList = await GetUnitInStockDtoList(uniqueUnitWithAllOperationDictionary, dto.FormNum, firstSnkDate, progressBarVM);
+            dto.CountUnits = unitInStockDtoList.Sum(x => x.Quantity);
 
             progressBarDoubleValue += (double)50 / dtoList.Count;
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
@@ -589,7 +600,6 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
     /// <param name="formNums">Номера форм.</param>
     /// <param name="cts">Токен.</param>
     /// <param name="region">Регион.</param>
-    /// ,
     /// <returns>Список DTO организаций, имеющих отчёты по формам 1.1, 1.3.</returns>
     private static async Task<List<ShortReportsDto>> GetReportsDtoList(DBModel db, string region, List<string> formNums, 
         CancellationTokenSource cts)
