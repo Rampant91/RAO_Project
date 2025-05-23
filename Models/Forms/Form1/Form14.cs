@@ -369,6 +369,7 @@ public class Form14 : Form1
     {
         if (args.PropertyName != "Value") return;
         ActivityMeasurementDate_DB = DateString_ValueChanged(((RamAccess<string>)value).Value);
+
     }
 
     private static bool ActivityMeasurementDate_Validation(RamAccess<string> value) => DateString_Validation(value);

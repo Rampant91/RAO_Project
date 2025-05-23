@@ -354,10 +354,15 @@ public abstract partial class Form : IKey, IDataGridColumn
     private protected static string DateString_ValueChanged(string value)
     {
         var tmp = (value ?? string.Empty).Trim();
-        return DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var date) 
+
+        if (DateTime.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var dateTime))
+        {
+            return dateTime.ToShortDateString();
+        }
+        return DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var date)
             ? date.ToShortDateString()
-            : tmp is not ("" or "-" or "прим.") 
-                ? "" 
+            : tmp is not ("" or "-" or "прим.")
+                ? ""
                 : tmp;
     }
 
