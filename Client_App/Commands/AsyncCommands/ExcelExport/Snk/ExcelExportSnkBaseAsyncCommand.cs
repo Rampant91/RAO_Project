@@ -19,6 +19,9 @@ using Client_App.Views.Messages;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
+/// <summary>
+/// Базовый класс выгрузки СНК в Excel.
+/// </summary>
 public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 {
     #region Properties
@@ -71,201 +74,6 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             _ => []
         };
     }
-
-    #endregion
-
-    #region DTO
-    private protected abstract class SnkFormDTO(string facNum, string pasNum, int quantity, string radionuclids, string type, string activity,
-        string creatorOKPO, string creationDate, string packNumber)
-    {
-        public readonly string PasNum = pasNum;
-
-        public readonly string Type = type;
-
-        public readonly string Radionuclids = radionuclids;
-
-        public readonly string FacNum = facNum;
-
-        public readonly int Quantity = quantity;
-
-        public readonly string Activity = activity;
-
-        public readonly string CreatorOKPO = creatorOKPO;
-
-        public readonly string CreationDate = creationDate;
-
-        public readonly string PackNumber = packNumber;
-    }
-
-    private protected class SnkForm11DTO(string facNum, string pasNum, int quantity, string radionuclids, string type, string activity,
-        string creatorOKPO, string creationDate, short? category, float? signedServicePeriod, string packNumber) 
-        : SnkFormDTO(facNum, pasNum, quantity, radionuclids, type, activity, creatorOKPO, creationDate, packNumber)
-    {
-        public readonly short? Category = category;
-
-        public readonly float? SignedServicePeriod = signedServicePeriod;
-    }
-
-    private protected class SnkForm13DTO(string facNum, string pasNum, int quantity, string radionuclids, string type, string activity,
-        string creatorOKPO, string creationDate, short? aggregateState, string packNumber)
-        : SnkFormDTO(facNum, pasNum, quantity, radionuclids, type, activity, creatorOKPO, creationDate, packNumber)
-    {
-        public readonly short? AggregateState = aggregateState;
-    }
-
-    #region ShortFormDTO
-
-    private protected class ShortFormDTO
-    {
-        public int Id { get; set; }
-
-        public int NumberInOrder { get; set; }
-
-        public ShortReportDTO RepDto { get; set; }
-
-        public string OpCode { get; set; }
-
-        public DateOnly OpDate { get; set; }
-
-        public string PasNum { get; set; }
-
-        public string Type { get; set; }
-
-        public string Radionuclids { get; set; }
-
-        public string FacNum { get; set; }
-
-        public int Quantity { get; set; }
-
-        public string PackNumber { get; set; }
-    }
-    
-    #endregion
-
-    #region ShortFormStringDateDTO
-
-    private class ShortFormDateOnlyDTO
-    {
-        public int Id { get; set; }
-
-        public int RepId { get; set; }
-
-        public DateOnly StDate { get; set; }
-
-        public DateOnly EndDate { get; set; }
-
-        public int NumberInOrder { get; set; }
-
-        public string OpCode { get; set; }
-
-        public string OpDate { get; set; }
-
-        public string PasNum { get; set; }
-
-        public string Type { get; set; }
-
-        public int? Quantity { get; set; }
-
-        public string Radionuclids { get; set; }
-
-        public string FacNum { get; set; }
-
-        public string PackNumber { get; set; }
-    }
-    
-    #endregion
-
-    private protected class ShortFormStringDatesDTO
-    {
-        public int Id { get; set; }
-
-        public int NumberInOrder { get; set; }
-
-        public int RepId { get; set; }
-
-        public string StDate { get; set; }
-
-        public string EndDate { get; set; }
-
-        public string FacNum { get; set; }
-
-        public string OpCode { get; set; }
-
-        public string OpDate { get; set; }
-
-        public string PackNumber { get; set; }
-
-        public string PasNum { get; set; }
-
-        public int? Quantity { get; set; }
-
-        public string Radionuclids { get; set; }
-
-        public string Type { get; set; }
-    }
-
-    private protected class SnkParamsDto(bool pasNum, bool type, bool radionuclids, bool facNum, bool packNum)
-    {
-        public readonly bool CheckPasNum = pasNum;
-
-        public readonly bool CheckType = type;
-
-        public readonly bool CheckRadionuclids = radionuclids;
-
-        public readonly bool CheckFacNum = facNum;
-
-        public readonly bool CheckPackNumber = packNum;
-    }
-
-    private class ShortReportStringDateDTO(int id, string startPeriod, string endPeriod)
-    {
-        public readonly int Id = id;
-
-        public readonly string StartPeriod = startPeriod;
-
-        public readonly string EndPeriod = endPeriod;
-    }
-
-    private protected class ShortReportDTO(int id, DateOnly startPeriod, DateOnly endPeriod)
-    {
-        public readonly int Id = id;
-
-        public readonly DateOnly StartPeriod = startPeriod;
-
-        public readonly DateOnly EndPeriod = endPeriod;
-    }
-
-    private protected class UniqueAccountingUnitDTO
-    {
-        public string FacNum { get; set; }
-
-        public string PackNumber { get; set; }
-
-        public string PasNum { get; set; }
-
-        public string Radionuclids { get; set; }
-
-        public string Type { get; set; }
-    }
-
-    #region UniqueUnitDto
-    
-    private protected class UniqueUnitDto(string facNum, string pasNum, string radionuclids, string type, int quantity, string packNumber)
-    {
-        public string FacNum { get; } = facNum;
-
-        public string PasNum { get; } = pasNum;
-
-        public string Radionuclids { get; } = radionuclids;
-
-        public string Type { get; } = type;
-
-        public int Quantity { get; } = quantity;
-
-        public string PackNumber { get; } = packNumber;
-    }
-
-    #endregion
 
     #endregion
 
@@ -1514,8 +1322,191 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
     #endregion
 
+    #region DTO
+
+    private protected abstract class SnkFormDTO(string facNum, string pasNum, int quantity, string radionuclids, string type, string activity,
+        string creatorOKPO, string creationDate, string packNumber)
+    {
+        public readonly string PasNum = pasNum;
+
+        public readonly string Type = type;
+
+        public readonly string Radionuclids = radionuclids;
+
+        public readonly string FacNum = facNum;
+
+        public readonly int Quantity = quantity;
+
+        public readonly string Activity = activity;
+
+        public readonly string CreatorOKPO = creatorOKPO;
+
+        public readonly string CreationDate = creationDate;
+
+        public readonly string PackNumber = packNumber;
+    }
+
+    private protected class SnkForm11DTO(string facNum, string pasNum, int quantity, string radionuclids, string type, string activity,
+        string creatorOKPO, string creationDate, short? category, float? signedServicePeriod, string packNumber)
+        : SnkFormDTO(facNum, pasNum, quantity, radionuclids, type, activity, creatorOKPO, creationDate, packNumber)
+    {
+        public readonly short? Category = category;
+
+        public readonly float? SignedServicePeriod = signedServicePeriod;
+    }
+
+    private protected class SnkForm13DTO(string facNum, string pasNum, int quantity, string radionuclids, string type, string activity,
+        string creatorOKPO, string creationDate, short? aggregateState, string packNumber)
+        : SnkFormDTO(facNum, pasNum, quantity, radionuclids, type, activity, creatorOKPO, creationDate, packNumber)
+    {
+        public readonly short? AggregateState = aggregateState;
+    }
+
+    #region ShortFormDTO
+
+    private protected class ShortFormDTO
+    {
+        public int Id { get; set; }
+
+        public int NumberInOrder { get; set; }
+
+        public ShortReportDTO RepDto { get; set; }
+
+        public string OpCode { get; set; }
+
+        public DateOnly OpDate { get; set; }
+
+        public string PasNum { get; set; }
+
+        public string Type { get; set; }
+
+        public string Radionuclids { get; set; }
+
+        public string FacNum { get; set; }
+
+        public int Quantity { get; set; }
+
+        public string PackNumber { get; set; }
+    }
+
+    #endregion
+
+    #region ShortFormStringDateDTO
+
+    private class ShortFormDateOnlyDTO
+    {
+        public int Id { get; set; }
+
+        public int RepId { get; set; }
+
+        public DateOnly StDate { get; set; }
+
+        public DateOnly EndDate { get; set; }
+
+        public int NumberInOrder { get; set; }
+
+        public string OpCode { get; set; }
+
+        public string OpDate { get; set; }
+
+        public string PasNum { get; set; }
+
+        public string Type { get; set; }
+
+        public int? Quantity { get; set; }
+
+        public string Radionuclids { get; set; }
+
+        public string FacNum { get; set; }
+
+        public string PackNumber { get; set; }
+    }
+
+    #endregion
+
+    private protected class ShortFormStringDatesDTO
+    {
+        public int Id { get; set; }
+
+        public int NumberInOrder { get; set; }
+
+        public int RepId { get; set; }
+
+        public string StDate { get; set; }
+
+        public string EndDate { get; set; }
+
+        public string FacNum { get; set; }
+
+        public string OpCode { get; set; }
+
+        public string OpDate { get; set; }
+
+        public string PackNumber { get; set; }
+
+        public string PasNum { get; set; }
+
+        public int? Quantity { get; set; }
+
+        public string Radionuclids { get; set; }
+
+        public string Type { get; set; }
+    }
+
+    private protected class SnkParamsDto(bool pasNum, bool type, bool radionuclids, bool facNum, bool packNum)
+    {
+        public readonly bool CheckPasNum = pasNum;
+
+        public readonly bool CheckType = type;
+
+        public readonly bool CheckRadionuclids = radionuclids;
+
+        public readonly bool CheckFacNum = facNum;
+
+        public readonly bool CheckPackNumber = packNum;
+    }
+
+    private class ShortReportStringDateDTO(int id, string startPeriod, string endPeriod)
+    {
+        public readonly int Id = id;
+
+        public readonly string StartPeriod = startPeriod;
+
+        public readonly string EndPeriod = endPeriod;
+    }
+
+    private protected class ShortReportDTO(int id, DateOnly startPeriod, DateOnly endPeriod)
+    {
+        public readonly int Id = id;
+
+        public readonly DateOnly StartPeriod = startPeriod;
+
+        public readonly DateOnly EndPeriod = endPeriod;
+    }
+
+    #region UniqueUnitDto
+
+    private protected class UniqueUnitDto(string facNum, string pasNum, string radionuclids, string type, int quantity, string packNumber)
+    {
+        public string FacNum { get; } = facNum;
+
+        public string PasNum { get; } = pasNum;
+
+        public string Radionuclids { get; } = radionuclids;
+
+        public string Type { get; } = type;
+
+        public int Quantity { get; } = quantity;
+
+        public string PackNumber { get; } = packNumber;
+    }
+
+    #endregion
+
+    #endregion
+
     #region Regex
-    
+
     [GeneratedRegex("[-᠆‐‑‒–—―⸺⸻－﹘﹣－]")]
     private static partial Regex DashesRegex();
 
