@@ -43,6 +43,8 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         var impReportsList = new List<Reports>();
         foreach (var res in answer) // Для каждого импортируемого файла
         {
+            var impDateTime = DateTime.Now;
+
             ExcelImportNewReps = false;
             if (res is "") continue;
             SourceFile = new FileInfo(res);
@@ -104,6 +106,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             impReportsList.Add(impReps);
             if (baseReps is null)
             {
+                impReps.Master_DB.ReportChangedDate = impDateTime;
                 ExcelImportNewReps = true;
                 baseReps = impReps;
             }
@@ -117,6 +120,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             var formNumber = worksheet1.Name;
 
             var impRep = GetReportWithDataFromExcel(worksheet0, worksheet1, formNumber, timeCreate);
+            impRep.ReportChangedDate = impDateTime;
 
             var start = formNumber is "2.8"
                 ? 14

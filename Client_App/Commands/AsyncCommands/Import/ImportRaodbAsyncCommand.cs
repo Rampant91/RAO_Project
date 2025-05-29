@@ -77,16 +77,20 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
 
             foreach (var impReps in reportsCollection) // Для каждой импортируемой организации
             {
+                var dateTime = DateTime.Now;
+
                 impReportsList.Add(impReps);
                 await impReps.SortAsync();
                 await RestoreReportsOrders(impReps);
                 if (impReps.Master.Rows10.Count != 0)
                 {
+                    impReps.Master_DB.ReportChangedDate = dateTime;
                     impReps.Master.Rows10[1].RegNo_DB = impReps.Master.Rows10[0].RegNo_DB;
                 }
 
                 if (impReps.Master.Rows20.Count != 0)
                 {
+                    impReps.Master_DB.ReportChangedDate = dateTime;
                     impReps.Master.Rows20[1].RegNo_DB = impReps.Master.Rows20[0].RegNo_DB;
                 }
 
@@ -103,6 +107,11 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                 BaseRepsRegNum = impReps.Master.RegNoRep.Value;
                 BaseRepsShortName = impReps.Master.ShortJurLicoRep.Value;
 
+                foreach (var key in impReps.Report_Collection)
+                {
+                    var report = (Report)key;
+                    report.ReportChangedDate = dateTime;
+                }
                 var impRepsReportList = impReps.Report_Collection.ToList();
                 if (baseReps11 != null)
                 {

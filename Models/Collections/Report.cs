@@ -1990,6 +1990,12 @@ public class Report : IKey, IDataGridColumn
 
     #endregion
 
+    #region ReportChangedDate
+
+    public DateTime? ReportChangedDate { get; set; }
+
+    #endregion
+
     #region ShortJurLicoRep
 
     [NotMapped]

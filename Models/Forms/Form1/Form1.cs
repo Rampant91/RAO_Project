@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Models.Attributes;
@@ -28,7 +29,7 @@ public abstract partial class Form1 : Form
     }
 
     #region Properties
-    
+
     #region OperationCode (2)
 
     public string OperationCode_DB { get; set; } = "";

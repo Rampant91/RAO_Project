@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Models.Collections;
 using Models.DBRealization;
 using System.Threading.Tasks;
@@ -49,6 +51,12 @@ internal class DeleteReportsAsyncCommand : BaseAsyncCommand
                 ReportsStorage.LocalReports.Reports_Collection.Remove((Reports)item);
             }
         }
+
+        await using var db = new DBModel(StaticConfiguration.DBPath);
+        var a = parameter as IEnumerable;
+        var list = a.Cast<Reports>().ToList();
+        //var 
+
 
         try
         {

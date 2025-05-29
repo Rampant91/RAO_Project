@@ -223,7 +223,6 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
         #endregion
 
         await tempDb.Database.MigrateAsync(cancellationToken: cts.Token);
-        throw new Exception();
 
         #region Progress = 40
 

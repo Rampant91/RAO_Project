@@ -56,6 +56,7 @@ public class SaveReportAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : 
         var dbm = StaticConfiguration.DBModel;
         try
         {
+            Storage.ReportChangedDate = DateTime.Now;
             await dbm.SaveChangesAsync();
             changeOrCreateViewModel.IsCanSaveReportEnabled = false;
         }
