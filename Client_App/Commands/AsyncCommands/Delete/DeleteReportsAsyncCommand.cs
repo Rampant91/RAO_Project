@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using Models.Collections;
 using Models.DBRealization;
@@ -42,25 +41,16 @@ internal class DeleteReportsAsyncCommand : BaseAsyncCommand
         #endregion
 
         if (answer is not "Да") return;
-        if (parameter is IEnumerable param)
-        {
-            foreach (var item in param)
-            {
-                var rep = item as Reports;
-                rep?.Report_Collection.Clear();
-                ReportsStorage.LocalReports.Reports_Collection.Remove((Reports)item);
-            }
-        }
-
-        await using var db = new DBModel(StaticConfiguration.DBPath);
-        var a = parameter as IEnumerable;
-        var list = a.Cast<Reports>().ToList();
-        //var 
-
 
         try
         {
-            await StaticConfiguration.DBModel.SaveChangesAsync().ConfigureAwait(false);
+            var enumerable = parameter as IEnumerable;
+            var repsList = enumerable!.Cast<Reports>().ToList();
+
+            await using var db = new DBModel(StaticConfiguration.DBPath);
+            db.ReportCollectionDbSet.Remove(repsList[0].Master_DB);
+            db.ReportsCollectionDbSet.Remove(repsList[0]);
+            await db.SaveChangesAsync();
         }
         catch (Exception ex)
         {
@@ -68,6 +58,7 @@ internal class DeleteReportsAsyncCommand : BaseAsyncCommand
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
         }
+
         //await Local_Reports.Reports_Collection.QuickSortAsync();
     }
 }
