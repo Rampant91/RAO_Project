@@ -66,6 +66,7 @@ public class PasteRowsAsyncCommand : BaseAsyncCommand
             //    columnsText = columnsText[1..columnsText.Length];
             //}
 
+            //Из-за автозамены значений в определённых ячейках при различных кодах операции и датах операции, начинать заполнение строчки нужно именно с этих значений, чтобы при копировании всей строчки значения не изменялись.
             foreach (var prop in props
                          .OrderByDescending(x => x.Name.Equals("OperationCode"))
                          .ThenByDescending(x => x.Name.Equals("OperationDate")))
