@@ -66,7 +66,9 @@ public class PasteRowsAsyncCommand : BaseAsyncCommand
             //    columnsText = columnsText[1..columnsText.Length];
             //}
 
-            foreach (var prop in props)
+            foreach (var prop in props
+                         .OrderByDescending(x => x.Name.Equals("OperationCode"))
+                         .ThenByDescending(x => x.Name.Equals("OperationDate")))
             {
                 var attr = (FormPropertyAttribute)prop
                     .GetCustomAttributes(typeof(FormPropertyAttribute), false)

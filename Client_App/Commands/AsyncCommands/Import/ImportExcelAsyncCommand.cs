@@ -103,14 +103,15 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
             var baseReps = GetBaseReps(worksheet0);
             var impReps = GetImportReps(worksheet0);
+
             impReportsList.Add(impReps);
             if (baseReps is null)
             {
-                impReps.Master_DB.ReportChangedDate = impDateTime;
                 ExcelImportNewReps = true;
                 baseReps = impReps;
             }
-            
+            baseReps.Master_DB.ReportChangedDate = impDateTime;
+
             BaseRepsOkpo = baseReps.Master.OkpoRep.Value;
             BaseRepsRegNum = baseReps.Master.RegNoRep.Value;
             BaseRepsShortName = baseReps.Master.ShortJurLicoRep.Value;

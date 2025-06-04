@@ -1,11 +1,13 @@
-﻿using System;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Avalonia.Styling;
 using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.ProgressBar;
+using OfficeOpenXml.Style;
+using System;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -71,6 +73,16 @@ public class ExcelExportCheckFormAsyncCommand : ExcelBaseAsyncCommand
             Worksheet.Cells[currentRow, 3].Value = error.Column;
             Worksheet.Cells[currentRow, 4].Value = error.Value;
             Worksheet.Cells[currentRow, 5].Value = error.Message;
+
+            if (error.IsCritical)
+            {
+                Worksheet.Cells[currentRow, 1].Style.Fill.SetBackground(System.Drawing.Color.RosyBrown, ExcelFillStyle.LightGray);
+                Worksheet.Cells[currentRow, 2].Style.Fill.SetBackground(System.Drawing.Color.RosyBrown, ExcelFillStyle.LightGray);
+                Worksheet.Cells[currentRow, 3].Style.Fill.SetBackground(System.Drawing.Color.RosyBrown, ExcelFillStyle.LightGray);
+                Worksheet.Cells[currentRow, 4].Style.Fill.SetBackground(System.Drawing.Color.RosyBrown, ExcelFillStyle.LightGray);
+                Worksheet.Cells[currentRow, 5].Style.Fill.SetBackground(System.Drawing.Color.RosyBrown, ExcelFillStyle.LightGray);
+            }
+
             currentRow++;
 
             progressBarDoubleValue += (double)90 / checkFormVM.CheckError.Count;
@@ -80,6 +92,7 @@ public class ExcelExportCheckFormAsyncCommand : ExcelBaseAsyncCommand
         #endregion
 
         #region FormatCells
+
         if (OperatingSystem.IsWindows())
         {
             for (var col = 1; col <= Worksheet.Dimension.End.Column; col++)

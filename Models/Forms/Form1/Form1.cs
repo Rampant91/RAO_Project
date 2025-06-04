@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Models.Attributes;
@@ -75,7 +74,7 @@ public abstract partial class Form1 : Form
         }
     }
 
-    private protected void OperationCode_ValueChanged(object value, PropertyChangedEventArgs args)
+    private protected virtual void OperationCode_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
@@ -135,7 +134,7 @@ public abstract partial class Form1 : Form
         }
     }
 
-    private protected void OperationDate_ValueChanged(object value, PropertyChangedEventArgs args)
+    private protected virtual void OperationDate_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
         OperationDate_DB = DateString_ValueChanged(((RamAccess<string>)value).Value);

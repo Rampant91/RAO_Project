@@ -293,7 +293,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationCode_DB",
                 Value = opCode,
-                Message = $"Код операции {opCode} не может быть использован в форме 1.4."
+                Message = $"Код операции {opCode} не может быть использован в форме 1.4.",
+                IsCritical = true
             });
         }
         return result;
@@ -313,7 +314,7 @@ public abstract class CheckF14 : CheckBase
         var radionuclidValid = new[]
         {
             "плутоний-238", "плутоний-239", "плутоний-240", "уран-233", "уран-235", "уран-238", "нептуний-237",
-            "америций-241", "америций-243", "калифорний-252", "торий-232", "литий-6", "дейтерий", "тритий"
+            "америций-241", "америций-243", "калифорний-252", "торий-232", "тритий"
         };
         if (!applicableOperationCodes.Contains(opCode)) return result;
         var valid = radionuclidValid
@@ -328,7 +329,8 @@ public abstract class CheckF14 : CheckBase
                 Column = "Radionuclids_DB",
                 Value = radionuclid,
                 Message = "В графе 6 не представлены сведения о радионуклидах, которые могут быть отнесены к ЯМ. " +
-                          "Проверьте правильность выбранного кода операции."
+                          "Проверьте правильность выбранного кода операции.",
+                IsCritical = true
             });
         }
         return result;
@@ -355,7 +357,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationCode_DB",
                 Value = operationCode,
-                Message = "Необходимо дать пояснение об осуществленной операции."
+                Message = "Необходимо дать пояснение об осуществленной операции.",
+                IsCritical = true
             });
         }
         return result;
@@ -389,7 +392,8 @@ public abstract class CheckF14 : CheckBase
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = providerOrRecieverOkpo,
                 Message = "В графе 18 необходимо указать код ОКПО своей организации. В случае, " +
-                          "если зарядку/разрядку осуществляла подрядная организация, следует использовать код операции 54."
+                          "если зарядку/разрядку осуществляла подрядная организация, следует использовать код операции 54.",
+                IsCritical = true
             });
         }
         return result;
@@ -419,7 +423,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Owner_DB",
                 Value = owner,
-                Message = "Уточните правообладателя ОРИ."
+                Message = "Уточните правообладателя ОРИ.",
+                IsCritical = true
             });
         }
         return result;
@@ -593,7 +598,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationDate_DB",
                 Value = opDate,
-                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой."
+                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой.",
+                IsCritical = true
             });
         }
         else if (!DateOnly.TryParse(opDate, out _))
@@ -604,7 +610,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationDate_DB",
                 Value = opDate,
-                Message = "Формат ввода данных не соответствует приказу. Некорректно заполнена дата операции."
+                Message = "Формат ввода данных не соответствует приказу. Некорректно заполнена дата операции.",
+                IsCritical = true
             });
         }
         return result;
@@ -638,7 +645,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationDate_DB",
                 Value = opDateStr,
-                Message = "Дата операции не входит в отчетный период."
+                Message = "Дата операции не входит в отчетный период.",
+                IsCritical = true
             });
         }
         return result;
@@ -722,7 +730,8 @@ public abstract class CheckF14 : CheckBase
                 Column = "PassportNumber_DB",
                 Value = passportNumber,
                 Message = "Графа не может быть пустой. Укажите номера паспорта (сертификата). " +
-                          "В случае, если номер отсутствует укажите символ \"-\" без кавычек."
+                          "В случае, если номер отсутствует укажите символ \"-\" без кавычек.",
+                IsCritical = true
             });
         }
         return result;
@@ -746,7 +755,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Name_DB",
                 Value = name,
-                Message = "Графа не может быть пустой."
+                Message = "Графа не может быть пустой.",
+                IsCritical = true
             });
         }
         return result;
@@ -771,7 +781,8 @@ public abstract class CheckF14 : CheckBase
                 Column = "Sort_DB",
                 Value = Convert.ToString(sort),
                 Message = $"Формат ввода данных не соответствует приказу. Необходимо указать вид РВ " +
-                          $"в соответствии с таблицей 4 приложения №2 к приказу Госкорпорации \"Росатом\" от 07.12.2020 №1/13-НПА."
+                          $"в соответствии с таблицей 4 приложения №2 к приказу Госкорпорации \"Росатом\" от 07.12.2020 №1/13-НПА.",
+                IsCritical = true
             });
         }
         return result;
@@ -797,7 +808,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "AggregateState_DB",
                 Value = Convert.ToString(agrState),
-                Message = $"Для выбранного вида ОРИ ({sort}) - агрегатное состояние (графа 12) - жидкое (значение 1)."
+                Message = $"Для выбранного вида ОРИ ({sort}) - агрегатное состояние (графа 12) - жидкое (значение 1).",
+                IsCritical = true
             });
         }
         return result;
@@ -823,7 +835,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "AggregateState_DB",
                 Value = Convert.ToString(agrState),
-                Message = $"Для выбранного вида ОРИ ({sort}) - агрегатное состояние (графа 12) - твёрдое (значение 2)."
+                Message = $"Для выбранного вида ОРИ ({sort}) - агрегатное состояние (графа 12) - твёрдое (значение 2).",
+                IsCritical = true
             });
         }
         return result;
@@ -849,7 +862,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "AggregateState_DB",
                 Value = Convert.ToString(agrState),
-                Message = $"Для выбранного вида ОРИ ({sort}) - агрегатное состояние не может быть газообразным."
+                Message = $"Для выбранного вида ОРИ ({sort}) - агрегатное состояние не может быть газообразным.",
+                IsCritical = true
             });
         }
         return result;
@@ -873,7 +887,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Radionuclids_DB",
                 Value = radionuclids,
-                Message = "Графа должна быть заполнена."
+                Message = "Графа должна быть заполнена.",
+                IsCritical = true
             });
         }
         return result;
@@ -905,7 +920,8 @@ public abstract class CheckF14 : CheckBase
                 Value = rads,
                 Message = "Формат ввода данных не соответствует приказу. " +
                           "Наименование радионуклида указывается названием химического элемента на русском языке " +
-                          "с указанием через дефис массового числа изотопа."
+                          "с указанием через дефис массового числа изотопа.",
+                IsCritical = true
             });
             return result;
         }
@@ -923,7 +939,8 @@ public abstract class CheckF14 : CheckBase
                 Value = rads,
                 Message = "Формат ввода данных не соответствует приказу. " +
                           "Наименование радионуклида указывается названием химического элемента на русском языке " +
-                          "с указанием через дефис массового числа изотопа, радионуклиды перечисляются через точку с запятой."
+                          "с указанием через дефис массового числа изотопа, радионуклиды перечисляются через точку с запятой.",
+                IsCritical = true
             });
         }
         return result;
@@ -976,7 +993,8 @@ public abstract class CheckF14 : CheckBase
             Column = "Radionuclids_DB",
             Value = rads,
             Message = $"Все указанные радионуклиды являются короткоживущими. " +
-                      $"ОРИ на основе короткоживущих радионуклидов (включая иод-125) учитываются в формах 1.9 и 2.12."
+                      $"ОРИ на основе короткоживущих радионуклидов (включая иод-125) учитываются в формах 1.9 и 2.12.",
+            IsCritical = true
         });
         return result;
     }
@@ -999,7 +1017,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Activity_DB",
                 Value = activity,
-                Message = "Проверьте правильность предоставления сведений по активности."
+                Message = "Проверьте правильность предоставления сведений по активности.",
+                IsCritical = true
             });
         }
         else switch (activityReal)
@@ -1012,7 +1031,8 @@ public abstract class CheckF14 : CheckBase
                     Row = (line + 1).ToString(),
                     Column = "Activity_DB",
                     Value = activity,
-                    Message = "Суммарная активность должна быть более нуля. Проверьте правильность введённых данных."
+                    Message = "Суммарная активность должна быть более нуля. Проверьте правильность введённых данных.",
+                    IsCritical = true
                 });
                 break;
             }
@@ -1024,7 +1044,8 @@ public abstract class CheckF14 : CheckBase
                     Row = (line + 1).ToString(),
                     Column = "Activity_DB",
                     Value = activity,
-                    Message = "Указано слишком большое значение суммарной активности. Проверьте правильность введённых данных."
+                    Message = "Указано слишком большое значение суммарной активности. Проверьте правильность введённых данных.",
+                    IsCritical = true
                 });
                 break;
             }
@@ -1357,7 +1378,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "ActivityMeasurementDate_DB",
                 Value = activityMeasurementDateStr,
-                Message = "Дата измерения активности не может быть позже даты операции."
+                Message = "Дата измерения активности не может быть позже даты операции.",
+                IsCritical = true
             });
         }
         return result;
@@ -1381,7 +1403,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Volume_DB",
                 Value = volume,
-                Message = "Графа не может быть пустой. При отсутствии сведений в круглых скобках указывается оценочное значение."
+                Message = "Графа не может быть пустой. При отсутствии сведений в круглых скобках указывается оценочное значение.",
+                IsCritical = true
             });
         }
         return result;
@@ -1407,7 +1430,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Volume_DB",
                 Value = volume,
-                Message = "Укажите объем ОРИ."
+                Message = "Укажите объем ОРИ.",
+                IsCritical = true
             });
         }
         return result;
@@ -1432,7 +1456,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Mass_DB",
                 Value = mass,
-                Message = "Графа не может быть пустой. При отсутствии сведений в круглых скобках указывается оценочное значение."
+                Message = "Графа не может быть пустой. При отсутствии сведений в круглых скобках указывается оценочное значение.",
+                IsCritical = true
             });
         }
         else if (!TryParseDoubleExtended(mass, out var massValue))
@@ -1443,7 +1468,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Mass_DB",
                 Value = mass,
-                Message = "Некорректно введено значение массы."
+                Message = "Некорректно введено значение массы.",
+                IsCritical = true
             });
         }
         else if (massValue <= 0)
@@ -1454,7 +1480,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Mass_DB",
                 Value = mass,
-                Message = "Значение массы должно быть более нуля."
+                Message = "Значение массы должно быть более нуля.",
+                IsCritical = true
             });
         }
         return result;
@@ -1503,7 +1530,8 @@ public abstract class CheckF14 : CheckBase
                 Column = "PropertyCode_DB",
                 Value = Convert.ToString(propertyCode),
                 Message = "Формат ввода данных не соответствует приказу. " +
-                          "Выберите идентификатор, соответствующий форме собственности ЗРИ."
+                          "Выберите идентификатор, соответствующий форме собственности ЗРИ.",
+                IsCritical = true
             });
         }
         return result;
@@ -1530,7 +1558,8 @@ public abstract class CheckF14 : CheckBase
                 Column = "PropertyCode_DB",
                 Value = Convert.ToString(propertyCode),
                 Message = "Необходимо указать в примечании наименование субъекта Российской Федерации, " +
-                          "в собственности которого находится объект учета."
+                          "в собственности которого находится объект учета.",
+                IsCritical = true
             });
         }
         return result;
@@ -1557,7 +1586,8 @@ public abstract class CheckF14 : CheckBase
                 Column = "PropertyCode_DB",
                 Value = Convert.ToString(propertyCode),
                 Message = "Необходимо указать в примечании наименование муниципального образования, " +
-                          "в собственности которого находится объект учета."
+                          "в собственности которого находится объект учета.",
+                IsCritical = true
             });
         }
         return result;
@@ -1584,7 +1614,8 @@ public abstract class CheckF14 : CheckBase
                 Column = "PropertyCode_DB",
                 Value = Convert.ToString(propertyCode),
                 Message = "Необходимо указать в примечании наименование и адрес правообладателя " +
-                          "(собственника или обладателя вещного права) объекта учета."
+                          "(собственника или обладателя вещного права) объекта учета.",
+                IsCritical = true
             });
         }
         return result;
@@ -1611,7 +1642,8 @@ public abstract class CheckF14 : CheckBase
                 Column = "Owner_DB",
                 Value = owner,
                 Message = "Формат ввода данных не соответствует приказу. В случае, " +
-                          "если правообладатель российское юридическое лицо, необходимо указать его код ОКПО."
+                          "если правообладатель российское юридическое лицо, необходимо указать его код ОКПО.",
+                IsCritical = true
             });
         }
         return result;
@@ -1639,7 +1671,8 @@ public abstract class CheckF14 : CheckBase
                 Column = "Owner_DB",
                 Value = owner,
                 Message = "Формат ввода данных не соответствует приказу. В случае, если правообладатель иностранное государство, " +
-                          "необходимо указать его краткое наименование в соответствии с ОКСМ."
+                          "необходимо указать его краткое наименование в соответствии с ОКСМ.",
+                IsCritical = true
             });
         }
         return result;
@@ -1666,7 +1699,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Owner_DB",
                 Value = owner,
-                Message = "В графе \"код ОКПО правообладателя\", необходимо указать краткое наименование страны в соответствии с ОКСМ."
+                Message = "В графе \"код ОКПО правообладателя\", необходимо указать краткое наименование страны в соответствии с ОКСМ.",
+                IsCritical = true
             });
         }
         var valid = CheckNotePresence(notes, line, graphNumber);
@@ -1704,7 +1738,8 @@ public abstract class CheckF14 : CheckBase
                 Column = "DocumentVid_DB",
                 Value = Convert.ToString(documentVid),
                 Message = "Формат ввода данных не соответствует приказу. Необходимо указать вид документа в соответствии с таблицей 3 " +
-                          "приложения №2 к приказу Госкорпорации \"Росатом\" от 07.12.2020 №1/13-НПА."
+                          "приложения №2 к приказу Госкорпорации \"Росатом\" от 07.12.2020 №1/13-НПА.",
+                IsCritical = true
             });
         }
         return result;
@@ -1728,7 +1763,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentNumber_DB",
                 Value = documentNumber,
-                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой."
+                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой.",
+                IsCritical = true
             });
         }
         return result;
@@ -1751,7 +1787,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentDate_DB",
                 Value = docDate,
-                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой."
+                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой.",
+                IsCritical = true
             });
         }
         else if (!DateOnly.TryParse(docDate, out _))
@@ -1762,7 +1799,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentDate_DB",
                 Value = docDate,
-                Message = "Формат ввода данных не соответствует приказу. Некорректно заполнена дата документа."
+                Message = "Формат ввода данных не соответствует приказу. Некорректно заполнена дата документа.",
+                IsCritical = true
             });
         }
         return result;
@@ -1794,7 +1832,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentDate_DB",
                 Value = documentDate,
-                Message = "Дата документа не может быть позже даты операции."
+                Message = "Дата документа не может быть позже даты операции.",
+                IsCritical = true
             });
         }
         return result;
@@ -1826,7 +1865,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentDate_DB",
                 Value = documentDate,
-                Message = "Дата документа должна соответствовать дате операции."
+                Message = "Дата документа должна соответствовать дате операции.",
+                IsCritical = true
             });
         }
         return result;
@@ -1895,7 +1935,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = providerOrRecieverOkpo,
-                Message = "Для выбранного кода операции указывается код ОКПО отчитывающейся организации."
+                Message = "Для выбранного кода операции указывается код ОКПО отчитывающейся организации.",
+                IsCritical = true
             });
         }
         return result;
@@ -1929,7 +1970,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = providerOrRecieverOkpo,
-                Message = "Для выбранного кода операции указывается код ОКПО контрагента."
+                Message = "Для выбранного кода операции указывается код ОКПО контрагента.",
+                IsCritical = true
             });
         }
         return result;
@@ -1957,7 +1999,8 @@ public abstract class CheckF14 : CheckBase
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = providerOrRecieverOkpo,
                 Message = "Формат ввода данных не соответствует приказу. Следует указать код ОКПО контрагента, " +
-                          "либо \"Минобороны\" без кавычек."
+                          "либо \"Минобороны\" без кавычек.",
+                IsCritical = true
             });
         }
         return result;
@@ -1986,7 +2029,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = providerOrRecieverOkpo,
-                Message = "Формат ввода данных не соответствует приказу."
+                Message = "Формат ввода данных не соответствует приказу.",
+                IsCritical = true
             });
         }
         valid = CheckNotePresence(notes, line, graphNumber);
@@ -1998,7 +2042,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = providerOrRecieverOkpo,
-                Message = "Необходимо добавить примечание."
+                Message = "Необходимо добавить примечание.",
+                IsCritical = true
             });
         }
         return result;
@@ -2029,7 +2074,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
-                Message = "При выбранном коде операции транспортирование не производится. Укажите символ \"-\" без кавычек."
+                Message = "При выбранном коде операции транспортирование не производится. Укажите символ \"-\" без кавычек.",
+                IsCritical = true
             });
         }
         return result;
@@ -2064,7 +2110,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
-                Message = "Необходимо указать код ОКПО организации перевозчика."
+                Message = "Необходимо указать код ОКПО организации перевозчика.",
+                IsCritical = true
             });
         }
         return result;
@@ -2092,7 +2139,8 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
-                Message = "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек."
+                Message = "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек.",
+                IsCritical = true
             });
         }
         return result;

@@ -1,23 +1,28 @@
-﻿using System;
+﻿using Avalonia.Controls;
+using Avalonia.Threading;
+using Client_App.Commands.AsyncCommands.CheckForm;
+using Client_App.Resources;
+using Client_App.ViewModels;
+using Client_App.Views.ProgressBar;
+using DynamicData;
+using FirebirdSql.Data.FirebirdClient;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
+using Models.CheckForm;
+using Models.Collections;
+using Models.DBRealization;
+using Models.Forms.Form1;
+using Models.Interfaces;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Controls;
-using Avalonia.Threading;
-using Client_App.Resources;
-using Client_App.ViewModels;
-using Client_App.Views.ProgressBar;
-using FirebirdSql.Data.FirebirdClient;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
-using Microsoft.EntityFrameworkCore;
-using Models.Collections;
-using Models.DBRealization;
-using Models.Forms.Form1;
-using Models.Interfaces;
+using MessageBox.Avalonia.Enums;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
@@ -31,8 +36,6 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
         if (parameter is not ObservableCollectionWithItemPropertyChanged<IKey> param) return;
         var cts = new CancellationTokenSource();
 
-        var folderPath = await new OpenFolderDialog().ShowAsync(Desktop.MainWindow);
-        if (string.IsNullOrEmpty(folderPath)) return;
         foreach (var item in param)
         {
             var a = DateTime.Now.Date;
@@ -105,6 +108,7 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
+            .Include(report => report.Reports)
             .Include(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows12.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows13.OrderBy(x => x.NumberInOrder_DB))
@@ -155,6 +159,55 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
             Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>([exportReport])
         };
 
+        exportReport.Reports = orgWithExpForm;
+        List<CheckError> errorList = [];
+        try
+        {
+            errorList.Add(exportReport.FormNum_DB switch
+            {
+                "1.1" => CheckF11.Check_Total(exportReport.Reports, exportReport),
+                "1.2" => CheckF12.Check_Total(exportReport.Reports, exportReport),
+                "1.3" => CheckF13.Check_Total(exportReport.Reports, exportReport),
+                "1.4" => CheckF14.Check_Total(exportReport.Reports, exportReport),
+                "1.5" => CheckF15.Check_Total(exportReport.Reports, exportReport),
+                "1.6" => CheckF16.Check_Total(exportReport.Reports, exportReport),
+                //"1.7" => CheckF17.Check_Total(exportReport.Reports, exportReport),
+                "1.8" => CheckF18.Check_Total(exportReport.Reports, exportReport),
+                //"2.1" => await new CheckF21().AsyncExecute(exportReport),
+                //"2.2" => await new CheckF22().AsyncExecute(exportReport),
+                _ => []
+            });
+        }
+        catch (Exception ex)
+        {
+            //ignored
+        }
+
+        if (errorList.Any(x => x.IsCritical))
+        {
+            #region ExportTerminatedDueToCriticalErrors
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+                MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = ButtonEnum.Ok,
+                        ContentTitle = "Выгрузка в .RAODB",
+                        ContentHeader = "Ошибка",
+                        ContentMessage = "Выгрузка отчёта невозможна из-за наличия в нём критических ошибок (выделены красным)." +
+                                         $"{Environment.NewLine}Устраните ошибки и повторите операцию выгрузки.",
+                        MinWidth = 250,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen
+                    }).ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(new ChangeOrCreateVM(exportReport.FormNum_DB, exportReport), errorList));
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+
         var filename = reportWithoutRows.Reports.Master_DB.FormNum_DB switch
         {
             "1.0" =>
@@ -173,8 +226,12 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
                 $"_{StaticStringMethods.RemoveForbiddenChars(exportReport.Year_DB)}" +
                 $"_{exportReport.CorrectionNumber_DB}" +
                 $"_{Assembly.GetExecutingAssembly().GetName().Version}",
+
             _ => throw new ArgumentOutOfRangeException()
         };
+
+        var folderPath = await new OpenFolderDialog().ShowAsync(Desktop.MainWindow);
+        if (string.IsNullOrEmpty(folderPath)) return;
 
         var fullPath = Path.Combine(folderPath, $"{filename}.RAODB");
 
@@ -192,7 +249,7 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
                     MessageBox.Avalonia.MessageBoxManager
                         .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                         {
-                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ButtonDefinitions = ButtonEnum.Ok,
                             ContentTitle = "Выгрузка в Excel",
                             ContentHeader = "Ошибка",
                             ContentMessage =
@@ -276,7 +333,7 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
                 MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Выгрузка в .RAODB",
                         ContentHeader = "Ошибка",
                         ContentMessage = "При копировании файла базы данных из временной папки возникла ошибка." +

@@ -56,6 +56,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                 var jsonObject = JsonConvert.DeserializeObject<JsonModel>(jsonString)!;
                 List<Reports> reportsJsonCollection = [];
 
+                var dateTime = DateTime.Now;
+
                 foreach (var reps in jsonObject.Orgs)   // Для каждой организации в файле (получаем лист импортируемых организаций)
                 {
                     #region GetImpRepsAndAddToRepsCollection
@@ -82,7 +84,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     {
                         Master_DB = new Report
                         {
-                            FormNum_DB = formNumReps
+                            FormNum_DB = formNumReps,
+                            ReportChangedDate = dateTime
                         },
                         Id = reps.Length > 1 ? reps[1].Id : reps[0].Id
                     };
@@ -249,7 +252,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                         EndPeriod_DB = DateTime.TryParse(rep.EndPeriod, out dateTimeValue)
                             ? dateTimeValue.ToShortDateString()
                             : string.Empty,
-                        Year_DB = Convert.ToString(rep.Year)
+                        Year_DB = Convert.ToString(rep.Year),
+                        ReportChangedDate = dateTime
                     };
 
                     BindFormTopSpecificData(rep, impRep); //bind data from form top table to Report
@@ -338,6 +342,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     var impRepsReportList = impReps.Report_Collection.ToList();
                     if (baseReps11 != null)
                     {
+                        baseReps11.Master_DB.ReportChangedDate = dateTime;
                         foreach (var report in baseReps11.Report_Collection)
                         {
                             await ReportsStorage.GetReportAsync(report.Id);
@@ -346,6 +351,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     }
                     else if (baseReps21 != null)
                     {
+                        baseReps21.Master_DB.ReportChangedDate = dateTime;
                         foreach (var report in baseReps21.Report_Collection)
                         {
                             await ReportsStorage.GetReportAsync(report.Id);

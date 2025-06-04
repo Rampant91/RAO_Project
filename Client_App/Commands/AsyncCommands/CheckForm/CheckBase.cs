@@ -578,7 +578,7 @@ public abstract class CheckBase : BaseAsyncCommand
                                                                                                    { "97", 10 },{ "98", 10 },{ "99", 10 }
     };
 
-    protected static readonly Dictionary<string, int> OverduePeriods_RAO = new()
+    protected static readonly Dictionary<string, int> OverduePeriodsRao = new()
     {
         { "01", 90 },
         { "10", 10 },{ "11", 10 },{ "12", 10 },{ "13", 10 },{ "14", 10 },             { "16", 10 },             { "18", 10 },

@@ -289,7 +289,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationCode_DB",
                 Value = operationCode,
-                Message = "Этот код операции не может быть использован в форме 1.2."
+                Message = "Этот код операции не может быть использован в форме 1.2.",
+                IsCritical = true
             });
         }
         return result;
@@ -313,7 +314,8 @@ public abstract class CheckF12 : CheckBase
                 Column = "OperationCode_DB",
                 Value = opCode,
                 Message = "Активность изделий из обедненного урана не может снизится за время эксплуатации " +
-                          "до значений ниже уровня отнесения к объектам учета."
+                          "до значений ниже уровня отнесения к объектам учета.",
+                IsCritical = true
             });
         }
         return result;
@@ -352,7 +354,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationCode_DB",
                 Value = opCode,
-                Message = "Необходимо дать пояснение об осуществленной операции."
+                Message = "Необходимо дать пояснение об осуществленной операции.",
+                IsCritical = true
             });
         }
         return result;
@@ -445,7 +448,8 @@ public abstract class CheckF12 : CheckBase
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = providerOrRecieverOkpo,
                 Message = "В графе 16 необходимо указать код ОКПО отчитывающейся организации. В случае, " +
-                          "если зарядку/разрядку осуществляла подрядная организация, следует использовать код операции 54."
+                          "если зарядку/разрядку осуществляла подрядная организация, следует использовать код операции 54.",
+                IsCritical = true
             });
         }
         return result;
@@ -478,7 +482,8 @@ public abstract class CheckF12 : CheckBase
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = providerOrRecieverOkpo,
                 Message = "В графе 16 необходимо указать ОКПО подрядной организации. В случае, если зарядка/разрядка " +
-                          "осуществлялась силами отчитывающейся организации, следует использовать код операции 53."
+                          "осуществлялась силами отчитывающейся организации, следует использовать код операции 53.",
+                IsCritical = true
             });
         }
         return result;
@@ -598,7 +603,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Owner_DB",
                 Value = owner,
-                Message = "Уточните правообладателя ИОУ."
+                Message = "Уточните правообладателя ИОУ.",
+                IsCritical = true
             });
         }
         return result;
@@ -625,7 +631,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationCode_DB",
                 Value = opCode,
-                Message = "Код используется для предоставления сведений о ИОУ, произведенных в Российской Федерации."
+                Message = "Код используется для предоставления сведений о ИОУ, произведенных в Российской Федерации.",
+                IsCritical = true
             });
         }
         return result;
@@ -653,7 +660,8 @@ public abstract class CheckF12 : CheckBase
                 Column = "CreatorOKPO_DB",
                 Value = creatorOkpo,
                 Message = "Код используется для предоставления сведений о ИОУ, произведенных за пределами Российской Федерации. " +
-                          "Для импортированных ИОУ необходимо указать краткое наименование государства в соответствии с ОКСМ"
+                          "Для импортированных ИОУ необходимо указать краткое наименование государства в соответствии с ОКСМ.",
+                IsCritical = true
             });
         }
         return result;
@@ -676,7 +684,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationDate_DB",
                 Value = opDate,
-                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой."
+                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой.",
+                IsCritical = true
             });
         }
         else if (!DateOnly.TryParse(opDate, out _))
@@ -687,7 +696,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationDate_DB",
                 Value = opDate,
-                Message = "Формат ввода данных не соответствует приказу. Некорректно заполнена дата операции."
+                Message = "Формат ввода данных не соответствует приказу. Некорректно заполнена дата операции.",
+                IsCritical = true
             });
         }
         return result;
@@ -721,7 +731,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationDate_DB",
                 Value = opDate.ToShortDateString(),
-                Message = "Дата операции не входит в отчетный период."
+                Message = "Дата операции не входит в отчетный период.",
+                IsCritical = true
             });
         }
         return result;
@@ -756,7 +767,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentDate_DB",
                 Value = docDateStr,
-                Message = "Для операции инвентаризации дата операции не может превышать даты утверждения акта инвентаризации."
+                Message = "Для операции инвентаризации дата операции не может превышать даты утверждения акта инвентаризации.",
+                IsCritical = true
             });
         }
         var valid = docDate >= stPer && docDate <= dateEndReal;
@@ -769,7 +781,8 @@ public abstract class CheckF12 : CheckBase
                 Column = "DocumentDate_DB",
                 Value = docDate.ToShortDateString(),
                 Message = "Дата документа не входит в отчетный период. Для операции инвентаризации срок предоставления отчета " +
-                          "исчисляется с даты утверждения акта инвентаризации."
+                          "исчисляется с даты утверждения акта инвентаризации.",
+                IsCritical = true
             });
         }
         return result;
@@ -794,7 +807,8 @@ public abstract class CheckF12 : CheckBase
                 Column = "PassportNumber_DB",
                 Value = pasNum,
                 Message = "Графа не может быть пустой. Укажите номера паспорта. " +
-                          "В случае, если номер отсутствует укажите символ \"-\" без кавычек."
+                          "В случае, если номер отсутствует укажите символ \"-\" без кавычек.",
+                IsCritical = true
             });
         }
         return result;
@@ -818,7 +832,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "NameIOU_DB",
                 Value = nameIOU,
-                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой."
+                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой.",
+                IsCritical = true
             });
         }
         return result;
@@ -843,7 +858,8 @@ public abstract class CheckF12 : CheckBase
                 Column = "FactoryNumber_DB",
                 Value = factoryNum,
                 Message = "Заполните сведения о заводском номере ИОУ. " +
-                          "Если номер отсутствует, в ячейке следует указать символ \"-\" без кавычек."
+                          "Если номер отсутствует, в ячейке следует указать символ \"-\" без кавычек.",
+                IsCritical = true
             });
         }
         return result;
@@ -870,7 +886,8 @@ public abstract class CheckF12 : CheckBase
                 Column = "Mass_DB",
                 Value = mass,
                 Message = "Графа не может быть пустой. При отсутствии сведений - в круглых скобках указывается масса, " +
-                          "установленная путем измерений."
+                          "установленная путем измерений.",
+                IsCritical = true
             });
         }
         return result;
@@ -928,7 +945,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "CreatorOKPO_DB",
                 Value = creatorOkpo,
-                Message = "Проверьте код ОКПО организации-изготовителя."
+                Message = "Проверьте код ОКПО организации-изготовителя.",
+                IsCritical = true
             });
         }
         return result;
@@ -1006,7 +1024,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "CreationDate_DB",
                 Value = creationDate,
-                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой."
+                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой.",
+                IsCritical = true
             });
         }
         else if (!DateOnly.TryParse(creationDate, out _))
@@ -1017,7 +1036,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "CreationDate_DB",
                 Value = creationDate,
-                Message = "Формат ввода данных не соответствует приказу. Некорректно заполнена дата выпуска."
+                Message = "Формат ввода данных не соответствует приказу. Некорректно заполнена дата выпуска.",
+                IsCritical = true
             });
         }
         return result;
@@ -1047,7 +1067,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "CreationDate_DB",
                 Value = createDateStr,
-                Message = "Дата выпуска не может быть позже даты операции."
+                Message = "Дата выпуска не может быть позже даты операции.",
+                IsCritical = true
             });
         }
         return result;
@@ -1121,7 +1142,8 @@ public abstract class CheckF12 : CheckBase
                 Column = "PropertyCode_DB",
                 Value = propertyCode.ToString(),
                 Message = "Формат ввода данных не соответствует приказу. " +
-                          "Выберите идентификатор, соответствующий форме собственности ИОУ."
+                          "Выберите идентификатор, соответствующий форме собственности ИОУ.",
+                IsCritical = true
             });
         }
         return result;
@@ -1151,7 +1173,8 @@ public abstract class CheckF12 : CheckBase
                 Column = "PropertyCode_DB",
                 Value = propertyCode.ToString(),
                 Message = "Необходимо указать в примечании наименование субъекта Российской Федерации, " +
-                          "в собственности которого находится объект учета."
+                          "в собственности которого находится объект учета.",
+                IsCritical = true
             });
         }
         return result;
@@ -1181,7 +1204,8 @@ public abstract class CheckF12 : CheckBase
                 Column = "PropertyCode_DB",
                 Value = propertyCode.ToString(),
                 Message = "Необходимо указать в примечании наименование муниципального образования, " +
-                          "в собственности которого находится объект учета."
+                          "в собственности которого находится объект учета.",
+                IsCritical = true
             });
         }
         return result;
@@ -1383,7 +1407,8 @@ public abstract class CheckF12 : CheckBase
                 Column = "DocumentVid_DB",
                 Value = Convert.ToString(documentVid),
                 Message = "Формат ввода данных не соответствует приказу. Необходимо указать вид документа в соответствии " +
-                          "с таблицей 3 приложения №2 к приказу Госкорпорации \"Росатом\" от 07.12.2020 №1/13-НПА."
+                          "с таблицей 3 приложения №2 к приказу Госкорпорации \"Росатом\" от 07.12.2020 №1/13-НПА.",
+                IsCritical = true
             });
         }
         return result;
@@ -1407,7 +1432,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentNumber_DB",
                 Value = documentNumber,
-                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой."
+                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой.",
+                IsCritical = true
             });
         }
         return result;
@@ -1430,7 +1456,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentDate_DB",
                 Value = Convert.ToString(docDate),
-                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой."
+                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой.",
+                IsCritical = true
             });
         }
         else if (!DateOnly.TryParse(docDate, out _))
@@ -1441,7 +1468,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentDate_DB",
                 Value = Convert.ToString(docDate),
-                Message = "Формат ввода данных не соответствует приказу. Некорректно заполнена дата документа."
+                Message = "Формат ввода данных не соответствует приказу. Некорректно заполнена дата документа.",
+                IsCritical = true
             });
         }
         return result;
@@ -1474,7 +1502,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentDate_DB",
                 Value = documentDate,
-                Message = "Дата документа не может быть позже даты операции."
+                Message = "Дата документа не может быть позже даты операции.",
+                IsCritical = true
             });
         }
         return result;
@@ -1506,7 +1535,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentDate_DB",
                 Value = documentDate,
-                Message = "Дата документа должна соответствовать дате операции."
+                Message = "Дата документа должна соответствовать дате операции.",
+                IsCritical = true
             });
         }
         return result;
@@ -1577,7 +1607,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = providerOrRecieverOkpo,
-                Message = "Для выбранного кода операции указывается код ОКПО отчитывающейся организации."
+                Message = "Для выбранного кода операции указывается код ОКПО отчитывающейся организации.",
+                IsCritical = true
             });
         }
         return result;
@@ -1608,7 +1639,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = providerOrRecieverOkpo,
-                Message = "Для выбранного кода операции указывается код ОКПО контрагента."
+                Message = "Для выбранного кода операции указывается код ОКПО контрагента.",
+                IsCritical = true
             });
         }
         return result;
@@ -1638,7 +1670,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = providerOrRecieverOkpo,
-                Message = "Формат ввода данных не соответствует приказу. Укажите код ОКПО контрагента."
+                Message = "Формат ввода данных не соответствует приказу. Укажите код ОКПО контрагента.",
+                IsCritical = true
             });
         }
         return result;
@@ -1698,7 +1731,8 @@ public abstract class CheckF12 : CheckBase
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = providerOrRecieverOkpo,
                 Message = "Формат ввода данных не соответствует приказу. " +
-                          "Следует указать код ОКПО контрагента, либо \"Минобороны\" без кавычек."
+                          "Следует указать код ОКПО контрагента, либо \"Минобороны\" без кавычек.",
+                IsCritical = true
             });
         }
         return result;
@@ -1727,7 +1761,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = providerOrRecieverOkpo,
-                Message = "Формат ввода данных не соответствует приказу."
+                Message = "Формат ввода данных не соответствует приказу.",
+                IsCritical = true
             });
         }
         valid = CheckNotePresence(notes, line, graphNumber);
@@ -1739,7 +1774,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = providerOrRecieverOkpo,
-                Message = "Необходимо добавить примечание."
+                Message = "Необходимо добавить примечание.",
+                IsCritical = true
             });
         }
         return result;
@@ -1770,7 +1806,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
-                Message = "При выбранном коде операции транспортирование не производится."
+                Message = "При выбранном коде операции транспортирование не производится.",
+                IsCritical = true
             });
         }
         return result;
@@ -1801,7 +1838,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
-                Message = "Необходимо указать код ОКПО организации перевозчика."
+                Message = "Необходимо указать код ОКПО организации перевозчика.",
+                IsCritical = true
             });
         }
         return result;
@@ -1829,7 +1867,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
-                Message = "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек."
+                Message = "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек.",
+                IsCritical = true
             });
         }
         return result;

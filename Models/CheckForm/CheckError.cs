@@ -13,4 +13,6 @@ public class CheckError
     public string? Value { get; set; } = "";
 
     public string Message { get; set; } = "";
+
+    public bool IsCritical { get; set; } = false;
 }

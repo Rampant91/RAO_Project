@@ -5,10 +5,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Client_App.ViewModels"
+    xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
     Name="FormCheckerWindow"
     Title="{Binding Path=TitleName, Mode=OneWay}"
-    Width="714"
-    Height="889"
+    Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.45', FallbackValue='500', Mode=OneWay}"
+    Height="{Binding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.85', FallbackValue='800', Mode=OneWay}"
     x:DataType="vm:CheckFormVM"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
@@ -28,7 +29,7 @@
         </Grid>
         <DataGrid
             Grid.Row="1"
-            Name="DtgCheck"
+            Name="CheckErrorsDataGrid"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             CanUserReorderColumns="True"
@@ -49,7 +50,8 @@
                     CellStyleClasses="cell_tooltip"
                     FontSize="11"
                     FontWeight="Bold"
-                    Header="№ п/п"/>
+                    Header="№ п/п">
+                </DataGridTextColumn>
                 <DataGridTextColumn 
                     Width="*"
                     Binding="{Binding Path=Row, Mode=TwoWay}"
