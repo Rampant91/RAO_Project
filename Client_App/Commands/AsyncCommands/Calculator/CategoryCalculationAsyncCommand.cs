@@ -95,7 +95,7 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
             OnCanExecuteChanged();
         }
     }
-
+    
     #endregion
 
     public override Task AsyncExecute(object? parameter)
@@ -132,7 +132,7 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
         List<decimal> dValueList = [];
         _ = CheckEquilibriumRads(radsSet);
 
-        if (radsSet.Any(x => string.Equals(x.D, "неограничено", StringComparison.OrdinalIgnoreCase))
+        if (radsSet.Any(x => string.Equals(x.D, "неограниченно", StringComparison.OrdinalIgnoreCase))
             && valid)
         {
             _categoryCalculatorVM.Category = "5";

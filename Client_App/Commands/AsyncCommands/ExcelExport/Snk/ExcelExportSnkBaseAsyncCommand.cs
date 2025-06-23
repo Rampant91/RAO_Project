@@ -195,7 +195,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     /// <param name="formNum">Номер формы отчётности.</param>
     /// <param name="progressBar">Окно прогрессбара.</param>
     /// <param name="cts">Токен.</param>
-    private protected static async Task CheckRepsAndRepPresence(string formNum, AnyTaskProgressBar progressBar, CancellationTokenSource cts)
+    private protected static async Task<Reports> CheckRepsAndRepPresence(string formNum, AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
         var mainWindow = Desktop.MainWindow as MainWindow;
         var selectedReports = (Reports?)mainWindow?.SelectedReports?.FirstOrDefault();
@@ -242,6 +242,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
+
+        return selectedReports!;
     }
 
     #endregion

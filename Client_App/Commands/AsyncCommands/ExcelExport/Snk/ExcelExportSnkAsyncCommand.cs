@@ -36,20 +36,19 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
 
         progressBarVM.SetProgressBar(5, "Проверка наличия отчётов",
             $"Выгрузка СНК {formNum}", "СНК");
-        await CheckRepsAndRepPresence(formNum, progressBar, cts);
-        var selectedReports = mainWindow!.SelectedReports.First() as Reports;
+        var selectedReports = await CheckRepsAndRepPresence(formNum, progressBar, cts);
 
         var regNum = selectedReports!.Master_DB.RegNoRep.Value;
         var okpo = selectedReports.Master_DB.OkpoRep.Value;
         ExportType = $"СНК_{formNum}_{regNum}_{okpo}";
 
-        progressBarVM.SetProgressBar(7, "Запрос пути сохранения", 
-            $"Выгрузка СНК {formNum} {regNum}_{okpo}", ExportType);
+        progressBarVM.SetProgressBar(7, "Запрос даты формирования СНК");
+        var (endSnkDate, snkParams) = await AskSnkEndDate(progressBar, cts);
+
+        progressBarVM.SetProgressBar(8, "Запрос пути сохранения",
+            $"Выгрузка СНК {formNum} {regNum}_{okpo}_{endSnkDate}", ExportType);
         var fileName = $"{ExportType}_{Assembly.GetExecutingAssembly().GetName().Version}";
         var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
-
-        progressBarVM.SetProgressBar(8, "Запрос даты формирования СНК");
-        var (endSnkDate, snkParams) = await AskSnkEndDate(progressBar, cts);
 
         progressBarVM.SetProgressBar(10, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);

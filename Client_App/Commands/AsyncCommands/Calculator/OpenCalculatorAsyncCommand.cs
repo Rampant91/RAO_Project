@@ -63,7 +63,7 @@ public class OpenCalculatorAsyncCommand : BaseAsyncCommand
                 && !string.IsNullOrWhiteSpace(unit)
                 && (parameter is not "category" 
                     || (double.TryParse(mza, out _) 
-                        && (double.TryParse(d, out _) || string.Equals(d, "неограничено", StringComparison.OrdinalIgnoreCase)))))
+                        && (double.TryParse(d, out _) || string.Equals(d, "неограниченно", StringComparison.OrdinalIgnoreCase)))))
             {
                 R.Add(new CalculatorRadionuclidDTO
                 {

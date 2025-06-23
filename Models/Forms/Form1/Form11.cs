@@ -120,12 +120,12 @@ public class Form11 : Form1
     private protected override void OperationCode_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
 
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
         if (OperationCode_DB != value1)
         {
-            AutoReplaceByOpCode(value1);
             OperationCode_DB = value1;
+            AutoReplaceByOpCode(value1);
         }
     }
 
@@ -181,9 +181,10 @@ public class Form11 : Form1
 
                 #region CreationDate (11)
 
-                if (DateOnly.TryParse(OperationDate_DB, CultureInfo.CreateSpecificCulture("ru-RU"), out var creationDate))
+                if (DateOnly.TryParse(OperationDate_DB, CultureInfo.CreateSpecificCulture("ru-RU"), out var operationDate) 
+                    && CreationDate_DB != operationDate.ToShortDateString())
                 {
-                    CreationDate.Value = creationDate.ToShortDateString();
+                    CreationDate.Value = operationDate.ToShortDateString();
                 }
 
                 #endregion
@@ -219,7 +220,8 @@ public class Form11 : Form1
 
                 #region DocumentDate (18)
 
-                if (DateOnly.TryParse(OperationDate_DB, CultureInfo.CreateSpecificCulture("ru-RU"), out var operationDate))
+                if (DateOnly.TryParse(OperationDate_DB, CultureInfo.CreateSpecificCulture("ru-RU"), out _)
+                    && DocumentDate_DB != operationDate.ToShortDateString())
                 {
                     DocumentDate.Value = operationDate.ToShortDateString();
                 }
@@ -332,13 +334,19 @@ public class Form11 : Form1
             {
                 #region ProviderOrRecieverOKPO (19)
 
-                ProviderOrRecieverOKPO.Value = string.Empty;
+                if (ProviderOrRecieverOKPO_DB is not "")
+                {
+                    ProviderOrRecieverOKPO.Value = string.Empty;
+                }
 
                 #endregion
 
                 #region TransporterOKPO (20)
 
-                TransporterOKPO.Value = string.Empty;
+                if (TransporterOKPO_DB is not "")
+                {
+                    TransporterOKPO.Value = string.Empty;
+                }
 
                 #endregion
 
@@ -382,13 +390,19 @@ public class Form11 : Form1
 
                 #region ProviderOrRecieverOKPO (19)
 
-                ProviderOrRecieverOKPO.Value = string.Empty;
+                if (ProviderOrRecieverOKPO_DB is not "")
+                {
+                    ProviderOrRecieverOKPO.Value = string.Empty;
+                }
 
                 #endregion
 
                 #region TransporterOKPO (20)
 
-                TransporterOKPO.Value = string.Empty;
+                if (TransporterOKPO_DB is not "")
+                {
+                    TransporterOKPO.Value = string.Empty;
+                }
 
                 #endregion
 
@@ -460,7 +474,8 @@ public class Form11 : Form1
             {
                 #region DocumentDate (18)
 
-                if (DateOnly.TryParse(OperationDate_DB, CultureInfo.CreateSpecificCulture("ru-RU"), out var operationDate))
+                if (DateOnly.TryParse(OperationDate_DB, CultureInfo.CreateSpecificCulture("ru-RU"), out var operationDate)
+                    && DocumentDate_DB != operationDate.ToShortDateString())
                 {
                     DocumentDate.Value = operationDate.ToShortDateString();
                 }
@@ -544,7 +559,8 @@ public class Form11 : Form1
 
                 #region DocumentDate (18)
 
-                if (DateOnly.TryParse(OperationDate_DB, CultureInfo.CreateSpecificCulture("ru-RU"), out var operationDate))
+                if (DateOnly.TryParse(OperationDate_DB, CultureInfo.CreateSpecificCulture("ru-RU"), out var operationDate)
+                    && DocumentDate_DB != operationDate.ToShortDateString())
                 {
                     DocumentDate.Value = operationDate.ToShortDateString();
                 }
@@ -586,9 +602,13 @@ public class Form11 : Form1
     private protected override void OperationDate_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        OperationDate_DB = DateString_ValueChanged(((RamAccess<string>)value).Value);
 
-        AutoReplaceByOpDate();
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        if (OperationDate_DB != value1)
+        {
+            OperationDate_DB = DateString_ValueChanged(value1);
+            AutoReplaceByOpDate();
+        }
     }
 
     #region AutoReplaceByOpDate
@@ -649,9 +669,13 @@ public class Form11 : Form1
     private void PassportNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        PassportNumber_DB = tmp.Trim();
-        AutoReplaceByPasNum();
+
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        if (PassportNumber_DB != value1)
+        {
+            PassportNumber_DB = value1;
+            AutoReplaceByPasNum();
+        }
     }
 
     protected static bool PassportNumber_Validation(RamAccess<string> value)//Ready
@@ -665,11 +689,11 @@ public class Form11 : Form1
         return true;
     }
 
-    #region AutoReplaceByOpDate
+    #region AutoReplaceByPasNum
 
     private void AutoReplaceByPasNum()
     {
-        if (OperationCode_DB is "11" && DocumentDate_DB != PassportNumber_DB)
+        if (OperationCode_DB is "11" && DocumentNumber_DB != PassportNumber_DB)
         {
             DocumentNumber.Value = PassportNumber_DB;
         }
@@ -709,8 +733,12 @@ public class Form11 : Form1
     private void Type_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        Type_DB = tmp.Trim();
+
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        if (Type_DB != value1)
+        {
+            Type_DB = value1;
+        }
     }
 
     protected bool Type_Validation(RamAccess<string> value)//Ready
@@ -765,8 +793,12 @@ public class Form11 : Form1
     private void Radionuclids_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        Radionuclids_DB = tmp.Trim();
+
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        if (Radionuclids_DB != value1)
+        {
+            Radionuclids_DB = value1;
+        }
     }
 
     private bool Radionuclids_Validation(RamAccess<string> value) => NuclidString_Validation(value);
@@ -803,8 +835,12 @@ public class Form11 : Form1
     private void FactoryNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        FactoryNumber_DB = tmp.Trim();
+
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        if (FactoryNumber_DB != value1)
+        {
+            FactoryNumber_DB = value1;
+        }
     }
 
     private bool FactoryNumber_Validation(RamAccess<string> value)
@@ -850,7 +886,12 @@ public class Form11 : Form1
     private void Quantity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        Quantity_DB = ((RamAccess<int?>)value).Value;
+
+        var value1 = ((RamAccess<int?>)value).Value;
+        if (value1 != null && Quantity_DB != value1)
+        {
+            Quantity_DB = value1;
+        }
     }
 
     private bool Quantity_Validation(RamAccess<int?> value)//Ready
@@ -901,7 +942,12 @@ public class Form11 : Form1
     private void Activity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        Activity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
+
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        if (Activity_DB != value1)
+        {
+            Activity_DB = ExponentialString_ValueChanged(value1);
+        }
     }
 
     private bool Activity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
@@ -938,12 +984,15 @@ public class Form11 : Form1
     private void CreatorOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
-        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        if (Spravochniks.OKSM.Contains(value1.ToUpper()))
         {
-            tmp = tmp.ToUpper();
+            value1 = value1.ToUpper();
         }
-        CreatorOKPO_DB = tmp;
+        if (CreatorOKPO_DB != value1)
+        {
+            CreatorOKPO_DB = value1;
+        }
     }
 
     private bool CreatorOKPO_Validation(RamAccess<string> value)//TODO
@@ -1005,7 +1054,12 @@ public class Form11 : Form1
     private void CreationDate_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        CreationDate_DB = DateString_ValueChanged(((RamAccess<string>)value).Value);
+
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        if (CreationDate_DB != value1)
+        {
+            CreationDate_DB = DateString_ValueChanged(value1);
+        }
     }
 
     private bool CreationDate_Validation(RamAccess<string> value) => DateString_Validation(value);
@@ -1042,7 +1096,12 @@ public class Form11 : Form1
     private void Category_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        Category_DB = ((RamAccess<short?>)value).Value;
+
+        var value1 = ((RamAccess<short?>)value).Value;
+        if (value1 != null && Category_DB != value1)
+        {
+            Category_DB = value1;
+        }
     }
 
     private bool Category_Validation(RamAccess<short?> value)//TODO
@@ -1093,7 +1152,12 @@ public class Form11 : Form1
     private void SignedServicePeriod_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        SignedServicePeriod_DB = ((RamAccess<float?>)value).Value;
+
+        var value1 = ((RamAccess<float?>)value).Value;
+        if (value1 != null && !Equals(SignedServicePeriod_DB, value1))
+        {
+            SignedServicePeriod_DB = value1;
+        }
     }
 
     private bool SignedServicePeriod_Validation(RamAccess<float?> value)//Ready
@@ -1144,7 +1208,12 @@ public class Form11 : Form1
     private void PropertyCode_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        PropertyCode_DB = ((RamAccess<byte?>)value).Value;
+
+        var value1 = ((RamAccess<byte?>)value).Value;
+        if (value1 != null && PropertyCode_DB != value1)
+        {
+            PropertyCode_DB = value1;
+        }
     }
 
     private bool PropertyCode_Validation(RamAccess<byte?> value)//Ready
@@ -1196,13 +1265,16 @@ public class Form11 : Form1
     private void Owner_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        tmp = tmp.Trim();
-        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        if (Spravochniks.OKSM.Contains(value1.ToUpper()))
         {
-            tmp = tmp.ToUpper();
+            value1 = value1.ToUpper();
         }
-        Owner_DB = tmp;
+        if (Owner_DB != value1)
+        {
+            Owner_DB = value1;
+        }
     }
 
     private bool Owner_Validation(RamAccess<string> value)//Ready
@@ -1266,13 +1338,16 @@ public class Form11 : Form1
     private void ProviderOrRecieverOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        tmp = tmp.Trim();
-        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        if (Spravochniks.OKSM.Contains(value1.ToUpper()))
         {
-            tmp = tmp.ToUpper();
+            value1 = value1.ToUpper();
         }
-        ProviderOrRecieverOKPO_DB = tmp;
+        if (ProviderOrRecieverOKPO_DB != value1)
+        {
+            ProviderOrRecieverOKPO_DB = value1;
+        }
     }
 
     private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
@@ -1336,12 +1411,16 @@ public class Form11 : Form1
     private void TransporterOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
-        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        if (Spravochniks.OKSM.Contains(value1.ToUpper()))
         {
-            tmp = tmp.ToUpper();
+            value1 = value1.ToUpper();
         }
-        TransporterOKPO_DB = tmp;
+        if (TransporterOKPO_DB != value1)
+        {
+            TransporterOKPO_DB = value1;
+        }
     }
 
     private bool TransporterOKPO_Validation(RamAccess<string> value)//TODO
@@ -1407,8 +1486,12 @@ public class Form11 : Form1
     private void PackName_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        PackName_DB = tmp.Trim();
+
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        if (PackName_DB != value1)
+        {
+            PackName_DB = value1;
+        }
     }
 
     private bool PackName_Validation(RamAccess<string> value)
@@ -1460,8 +1543,13 @@ public class Form11 : Form1
 
     private void PackType_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName != "Value" || ((RamAccess<string>)value).Value is null) return;
-        PackType_DB = ((RamAccess<string>)value).Value.Trim();
+        if (args.PropertyName != "Value") return;
+
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        if (PackType_DB != value1)
+        {
+            PackType_DB = value1;
+        }
     }
 
     private bool PackType_Validation(RamAccess<string> value)//Ready
@@ -1514,8 +1602,12 @@ public class Form11 : Form1
     private void PackNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        PackNumber_DB = tmp.Trim();
+
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        if (PackNumber_DB != value1)
+        {
+            PackNumber_DB = value1;
+        }
     }
 
     private bool PackNumber_Validation(RamAccess<string> value)//Ready
