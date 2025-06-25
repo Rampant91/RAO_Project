@@ -14,4 +14,6 @@ public class CalculatorRadionuclidDTO
 
     public required string Mza { get; set; }
 
+    public string Activity { get; set; } = "";
+
 }

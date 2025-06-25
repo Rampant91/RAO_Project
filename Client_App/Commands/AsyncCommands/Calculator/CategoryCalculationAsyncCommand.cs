@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Models.DTO;
 using System.Text.RegularExpressions;
 using System;
-using Client_App.Views.Calculator;
 
 namespace Client_App.Commands.AsyncCommands.Calculator;
 
@@ -88,8 +87,7 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
 
     private void CategoryCalculatorVMPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(CategoryCalculatorVM.SelectedRadionuclids) 
-            or nameof(CategoryCalculatorVM.Activity)
+        if (e.PropertyName is nameof(CategoryCalculatorVM.SelectedRadionuclids)
             or nameof(CategoryCalculatorVM.Quantity))
         {
             OnCanExecuteChanged();
@@ -110,77 +108,117 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
         };
 
         var radsSet = _categoryCalculatorVM.SelectedRadionuclids.ToHashSet();
-        var activity = ToExponentialString(_categoryCalculatorVM.Activity);
-        var valid = decimal.TryParse(activity,
-            NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-            CultureInfo.CreateSpecificCulture("ru-RU"),
-            out var aValue);
+
+        var activityValid = true;
+        radsSet.ToList().ForEach(nuclid =>
+        {
+            if (!decimal.TryParse(ToExponentialString(nuclid.Activity),
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
+                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                    out _))
+            {
+                activityValid = false;
+            }
+        });
 
         if (!uint.TryParse(_categoryCalculatorVM.Quantity, out var quantityUintValue))
         {
             _categoryCalculatorVM.Quantity = string.Empty;
-            return Task.CompletedTask;
-        }
-
-        if (radsSet.Count is 0 || !valid)
-        {
+            _categoryCalculatorVM.ActivityToNormalizingD = string.Empty;
             _categoryCalculatorVM.Category = string.Empty;
-            _categoryCalculatorVM.CategoryText = SetCategoryText();
+            _categoryCalculatorVM.CategoryText = "Введено некорректное значение количества.";
             return Task.CompletedTask;
         }
 
-        List<decimal> dValueList = [];
+        if (radsSet.Count is 0)
+        {
+            _categoryCalculatorVM.ActivityToNormalizingD = string.Empty;
+            _categoryCalculatorVM.Category = string.Empty;
+            _categoryCalculatorVM.CategoryText = "Выберите радионуклиды из списка и заполните их активность.";
+            return Task.CompletedTask;
+        }
+
+        if (!activityValid)
+        {
+            _categoryCalculatorVM.ActivityToNormalizingD = string.Empty;
+            _categoryCalculatorVM.Category = string.Empty;
+            _categoryCalculatorVM.CategoryText = "Некорректно заполнено поле активности радионуклида.";
+            return Task.CompletedTask;
+        }
+
         _ = CheckEquilibriumRads(radsSet);
 
-        if (radsSet.Any(x => string.Equals(x.D, "неограниченно", StringComparison.OrdinalIgnoreCase))
-            && valid)
+        if (radsSet.Any(x => string.Equals(x.D, "неограниченно", StringComparison.OrdinalIgnoreCase)))
         {
+            _categoryCalculatorVM.ActivityToNormalizingD = string.Empty;
             _categoryCalculatorVM.Category = "5";
             _categoryCalculatorVM.CategoryText = SetCategoryText();
             return Task.CompletedTask;
         }
-        
-        foreach (var nuclidName in radsSet.Select(x => x.Name))
+
+        decimal adSum = 0;
+        var countNonRadioactiveRads = 0;
+        foreach (var nuclid in radsSet)
         {
             var nuclidFromR = _categoryCalculatorVM.RadionuclidDictionary
-                !.FirstOrDefault(x => x.Name == nuclidName);
+                !.FirstOrDefault(x => x.Name == nuclid.Name);
 
-            if (nuclidFromR is null) continue;
-            var expFromR = ToExponentialString(nuclidFromR.D);
-            if (decimal.TryParse(ToExponentialString(expFromR),
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
+            var dFromR = ToExponentialString(nuclidFromR!.D);
+
+            if (!decimal.TryParse(ToExponentialString(dFromR),
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands |
+                    NumberStyles.AllowLeadingSign,
                     CultureInfo.CreateSpecificCulture("ru-RU"),
-                    out var value))
+                    out var dValueFromR))
             {
-                dValueList.Add(decimal.Multiply(value, 1e12m));
+                _categoryCalculatorVM.ActivityToNormalizingD = string.Empty;
+                _categoryCalculatorVM.Category = string.Empty;
+                _categoryCalculatorVM.CategoryText = "Некорректное значение нормализующего фактора (D-величина) в справочнике.";
+                return Task.CompletedTask;
+            }
+
+            if (!decimal.TryParse(ToExponentialString(nuclid.Mza),
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
+                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                    out var mza))
+            {
+                _categoryCalculatorVM.ActivityToNormalizingD = string.Empty;
+                _categoryCalculatorVM.Category = string.Empty;
+                _categoryCalculatorVM.CategoryText = "Некорректное значение МЗА в справочнике.";
+                return Task.CompletedTask;
+            }
+
+            var activity = decimal.Parse(
+                ToExponentialString(nuclid.Activity),
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands, 
+                CultureInfo.CreateSpecificCulture("ru-RU"));
+
+            var d = decimal.Multiply(dValueFromR, 1e12m);
+
+            adSum += activity / quantityUintValue / d;
+
+            if (activity < mza)
+            {
+                countNonRadioactiveRads++;
+                if (countNonRadioactiveRads == radsSet.Count)
+                {
+                    _categoryCalculatorVM.ActivityToNormalizingD = ToExponentialString(adSum.ToString(CultureInfo.CurrentCulture));
+                    _categoryCalculatorVM.Category = string.Empty;
+                    _categoryCalculatorVM.CategoryText = "Нерадиоактивный, активность ниже МЗА.";
+                    return Task.CompletedTask;
+                }
             }
         }
 
-        var dMinValue = dValueList.Min();
-        var dMaxValue = dValueList.Max();
-
-        aValue /= quantityUintValue != 0
-            ? quantityUintValue
-            : 1.0m;
-
-        if (valid)
+        for (short category = 1; category <= 5; category++)
         {
-            var adMinBound = dMaxValue == 0.0m
-                ? decimal.MaxValue
-                : aValue / dMaxValue;
-            var adMaxBound = dMinValue == 0.0m
-                ? decimal.MaxValue
-                : aValue / dMinValue;
-
-            for (short category = 1; category <= 5; category++)
+            if (dbBounds[category].Item1 <= adSum
+                && dbBounds[category].Item2 > adSum)
             {
-                if (dbBounds[category].Item1 <= adMinBound
-                    && dbBounds[category].Item2 > adMaxBound)
-                {
-                    _categoryCalculatorVM.Category = category.ToString();
-                    _categoryCalculatorVM.CategoryText = SetCategoryText();
-                    return Task.CompletedTask;
-                }
+                _categoryCalculatorVM.ActivityToNormalizingD = ToExponentialString(adSum.ToString(CultureInfo.CurrentCulture));
+                _categoryCalculatorVM.Category = category.ToString();
+                _categoryCalculatorVM.CategoryText = SetCategoryText();
+                return Task.CompletedTask;
             }
         }
 
@@ -223,30 +261,6 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
 
     private string SetCategoryText()
     {
-        try
-        {
-            var minMza = _categoryCalculatorVM.SelectedRadionuclids
-                .Select(x => (
-                    Success: decimal.TryParse(x.Mza,
-                        NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-                        CultureInfo.CreateSpecificCulture("ru-RU"),
-                        out var value),
-                    Value: value))
-                .Where(pair => pair.Success)
-                .Min(pair => pair.Value);
-
-            var activityValid = decimal.TryParse(_categoryCalculatorVM.Activity,
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-                CultureInfo.CreateSpecificCulture("ru-RU"),
-                out var activity);
-
-            if (activityValid && activity < minMza) return "Нерадиоактивный, активность ниже МЗА.";
-        }
-        catch (Exception)
-        {
-            return string.Empty;
-        }
-
         return _categoryCalculatorVM.Category switch
         {
             "1" => "Чрезвычайно опасно для человека (A/D >= 1000)",
@@ -262,7 +276,7 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
 
     #region ToExponentialString
 
-    private protected static string ToExponentialString(object? value)
+    private static string ToExponentialString(object? value)
     {
         var tmp = (value?.ToString() ?? string.Empty)
             .Trim()

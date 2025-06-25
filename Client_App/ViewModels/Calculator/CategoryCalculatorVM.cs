@@ -46,17 +46,16 @@ public class CategoryCalculatorVM : BaseCalculatorVM
         }
     }
 
-    private string _activity;
-    public string Activity
+    private string _activityToNormalizingD;
+    public string ActivityToNormalizingD
     {
-        get => _activity;
+        get => _activityToNormalizingD;
         set
         {
-            if (_activity != value)
+            if (_activityToNormalizingD != value)
             {
-                _activity = value;
+                _activityToNormalizingD = value;
                 OnPropertyChanged();
-                CategoryCalculation.Execute(null);
             }
         }
     }
@@ -99,7 +98,6 @@ public class CategoryCalculatorVM : BaseCalculatorVM
             {
                 _quantity = value;
                 OnPropertyChanged();
-                CategoryCalculation.Execute(null);
             }
         }
     }
