@@ -165,14 +165,14 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
         {
             errorList.Add(exportReport.FormNum_DB switch
             {
-                "1.1" => CheckF11.Check_Total(exportReport.Reports, exportReport),
-                "1.2" => CheckF12.Check_Total(exportReport.Reports, exportReport),
-                "1.3" => CheckF13.Check_Total(exportReport.Reports, exportReport),
-                "1.4" => CheckF14.Check_Total(exportReport.Reports, exportReport),
-                "1.5" => CheckF15.Check_Total(exportReport.Reports, exportReport),
-                "1.6" => CheckF16.Check_Total(exportReport.Reports, exportReport),
+                //"1.1" => CheckF11.Check_Total(exportReport.Reports, exportReport),
+                //"1.2" => CheckF12.Check_Total(exportReport.Reports, exportReport),
+                //"1.3" => CheckF13.Check_Total(exportReport.Reports, exportReport),
+                //"1.4" => CheckF14.Check_Total(exportReport.Reports, exportReport),
+                //"1.5" => CheckF15.Check_Total(exportReport.Reports, exportReport),
+                //"1.6" => CheckF16.Check_Total(exportReport.Reports, exportReport),
                 //"1.7" => CheckF17.Check_Total(exportReport.Reports, exportReport),
-                "1.8" => CheckF18.Check_Total(exportReport.Reports, exportReport),
+                //"1.8" => CheckF18.Check_Total(exportReport.Reports, exportReport),
                 //"2.1" => await new CheckF21().AsyncExecute(exportReport),
                 //"2.2" => await new CheckF22().AsyncExecute(exportReport),
                 _ => []
