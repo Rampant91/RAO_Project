@@ -290,10 +290,10 @@ public class Form11 : Form1
 
             #endregion
 
-            #region 15, 17, 18, 43, 46, 47, 48, 53, 58, 65, 66, 67, 68, 71, 72, 74, 75
+            #region 15, 17, 18, 43, 46, 47, 48, 53, 58, 65, 67, 68, 71, 72, 74, 75
             
             case "15" or "17" or "18" or "43" or "46" or "47" or "48" or "53" or "58" 
-                or "65" or "66" or "67" or "68" or "71" or "72" or "74" or "75":
+                or "65" or "67" or "68" or "71" or "72" or "74" or "75":
             {
                 #region DocumentDate (18)
 
@@ -468,9 +468,9 @@ public class Form11 : Form1
 
             #endregion
 
-            #region 54
+            #region 54, 66
 
-            case "54":
+            case "54" or "66":
             {
                 #region DocumentDate (18)
 

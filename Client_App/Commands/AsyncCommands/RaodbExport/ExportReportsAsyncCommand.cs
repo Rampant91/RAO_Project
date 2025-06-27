@@ -50,7 +50,6 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                 }
                 fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
                 exportOrg = (Reports)param.First();
-                await StaticConfiguration.DBModel.SaveChangesAsync(cts.Token);
                 break;
             }
             case Reports reps:
@@ -58,11 +57,13 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                 fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
                 exportOrg = reps;
                 exportOrg.Master.ExportDate.Value = dt.Date.ToShortDateString();
-                await StaticConfiguration.DBModel.SaveChangesAsync(cts.Token);
                 break;
             }
             default: return;
         }
+
+        await StaticConfiguration.DBModel.SaveChangesAsync(cts.Token);
+
         var repsId = exportOrg.Id;
 
         #region ProgressBarInitialization
