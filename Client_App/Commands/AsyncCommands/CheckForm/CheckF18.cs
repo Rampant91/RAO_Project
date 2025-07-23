@@ -1351,7 +1351,7 @@ public abstract class CheckF18 : CheckBase
             const byte graphNumber = 18;
             var noteExists = CheckNotePresence(notes, line, graphNumber);
             var codeRao = ReplaceNullAndTrim(forms[line].CodeRAO_DB);
-            if (codeRao == string.Empty) continue;
+            if (codeRao is "" or "-") continue;
 
             var massVolumeAndActivityExist = true;
             if (!(nuclidsExistT || nuclidsExistA || nuclidsExistB || nuclidsExistU))
