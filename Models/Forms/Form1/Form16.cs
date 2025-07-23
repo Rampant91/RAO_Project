@@ -119,6 +119,197 @@ public partial class Form16 : Form1
 
     #region Properties
 
+    #region OperationCode (2)
+
+    private protected override void OperationCode_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName != "Value") return;
+
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        if (OperationCode_DB != value1)
+        {
+            OperationCode_DB = value1;
+            if (Report is { AutoReplace: true })
+            {
+                AutoReplaceByOpCode(value1);
+            }
+        }
+    }
+
+    #region AutoReplaceByOpCode
+    
+    private void AutoReplaceByOpCode(string opCode)
+    {
+        const string dash = "-";
+        var masterOkpo = Report?.Reports?.Master_DB?.OkpoRep.Value ?? string.Empty;
+        switch (opCode)
+        {
+            #region 10, 18, 43, 45, 48, 51, 57, 63, 64, 68, 71, 72, 74 ,75, 76, 97, 98
+
+            case "10" or "18" or "43" or "45" or "48" or "51" or "57" or "63" or "64" or "68" or "71" or "72" or "74" or "75" or "76" or "97" or "98":
+            {
+                #region ProviderOrRecieverOKPO (18)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && ProviderOrRecieverOKPO_DB != masterOkpo)
+                {
+                    ProviderOrRecieverOKPO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (19)
+
+                if (TransporterOKPO_DB != dash)
+                {
+                    TransporterOKPO.Value = dash;
+                }
+
+                #endregion
+
+                #region RefineOrSortRAOCode (22)
+
+                if (RefineOrSortRAOCode_DB != dash)
+                {
+                    RefineOrSortRAOCode.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 11, 12, 13, 14, 16, 41, 42, 73
+
+            case "11" or "12" or "13" or "14" or "16" or "41" or "42" or "73":
+            {
+                #region StatusRAO (5)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && StatusRAO_DB != masterOkpo)
+                {
+                    StatusRAO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region ProviderOrRecieverOKPO (18)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && ProviderOrRecieverOKPO_DB != masterOkpo)
+                {
+                    ProviderOrRecieverOKPO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (19)
+
+                if (TransporterOKPO_DB != dash)
+                {
+                    TransporterOKPO.Value = dash;
+                }
+
+                #endregion
+
+                #region RefineOrSortRAOCode (22)
+
+                if (RefineOrSortRAOCode_DB != dash)
+                {
+                    RefineOrSortRAOCode.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 21, 23, 24, 25, 26, 27, 28, 29, 31, 33, 34, 35, 36, 37, 38, 39, 84, 88
+
+            case "21" or "23" or "24" or "25" or "26" or "27" or "28" or "29" or "31" or "33" or "34" or "35" or "36" or "37" or "38" or "39" or "84" or "88":
+            {
+                #region RefineOrSortRAOCode (22)
+
+                if (RefineOrSortRAOCode_DB != dash)
+                {
+                    RefineOrSortRAOCode.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 22, 32
+
+            case "22" or "32":
+            {
+                #region ProviderOrRecieverOKPO (18)
+
+                const string providerOrRecieverOkpoValue = "Минобороны";
+                if (ProviderOrRecieverOKPO_DB != providerOrRecieverOkpoValue)
+                {
+                    ProviderOrRecieverOKPO.Value = providerOrRecieverOkpoValue;
+                }
+
+                #endregion
+
+                #region RefineOrSortRAOCode (22)
+
+                if (RefineOrSortRAOCode_DB != dash)
+                {
+                    RefineOrSortRAOCode.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 44, 49, 55, 59, 99
+
+            case "44" or "49" or "55" or "56" or "59" or "99":
+            {
+                #region ProviderOrRecieverOKPO (18)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && ProviderOrRecieverOKPO_DB != masterOkpo)
+                {
+                    ProviderOrRecieverOKPO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (19)
+
+                if (TransporterOKPO_DB != dash)
+                {
+                    TransporterOKPO.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            default: return;
+        }
+    }
+
+    #endregion
+
+    #endregion
+
     #region CodeRAO (4)
 
     public string CodeRAO_DB { get; set; } = "";

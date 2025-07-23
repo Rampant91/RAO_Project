@@ -13,9 +13,11 @@ using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using Client_App.ViewModels.ProgressBar;
 using Models.Collections;
-using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels.Messages;
 using Client_App.Views.Messages;
+using CustomSnkEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkEqualityComparer;
+using CustomSnkNumberEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkNumberEqualityComparer;
+using CustomSnkRadionuclidsEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkRadionuclidsEqualityComparer;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
@@ -294,6 +296,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         var groupedOperationList = await GetGroupedOperationList(unionOperationList);
 
         var comparer = new CustomSnkEqualityComparer();
+        var numberComparer = new CustomSnkNumberEqualityComparer();
         var radsComparer = new CustomSnkRadionuclidsEqualityComparer();
         Dictionary<UniqueUnitDto, List<ShortFormDTO>> uniqueUnitWithAllOperationDictionary = [];
         foreach (var group in groupedOperationList)
@@ -304,11 +307,11 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
                 var filteredDictionary = uniqueUnitWithAllOperationDictionary
                     .Where(keyValuePair =>
-                        comparer.Equals(keyValuePair.Key.PasNum, form.PasNum)
-                        && comparer.Equals(keyValuePair.Key.FacNum, form.FacNum)
+                        numberComparer.Equals(keyValuePair.Key.PasNum, form.PasNum)
+                        && numberComparer.Equals(keyValuePair.Key.FacNum, form.FacNum)
                         && radsComparer.Equals(keyValuePair.Key.Radionuclids, form.Radionuclids)
                         && comparer.Equals(keyValuePair.Key.Type, form.Type)
-                        && (comparer.Equals(keyValuePair.Key.PackNumber, form.PackNumber) || form.OpCode is "53" or "54")
+                        && (numberComparer.Equals(keyValuePair.Key.PackNumber, form.PackNumber) || form.OpCode is "53" or "54")
                         && (formNum is "1.3" 
                             || SerialNumbersIsEmpty(keyValuePair.Key.PasNum, keyValuePair.Key.FacNum)
                             || keyValuePair.Key.Quantity == form.Quantity))
@@ -330,10 +333,34 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 // Если операция перезарядки, то суммируем количество, если серийные номера пусты и заменяем запись в словаре
                 else
                 {
-                    var lastForm = filteredDictionary
+                    var lastOpDate = filteredDictionary
                         .SelectMany(x => x.Value)
                         .OrderByDescending(y => y.OpDate)
-                        .First();
+                        .First().OpDate;
+
+                    //Если в последнюю дату несколько операций - берём за последнюю не минусовую.
+                    ShortFormDTO? lastForm;
+                    if (filteredDictionary
+                            .SelectMany(x => x.Value)
+                            .Count(x => x.OpDate == lastOpDate) > 1)
+                    {
+                        lastForm = filteredDictionary
+                            .SelectMany(x => x.Value)
+                            .Where(x => x.OpCode != "10" && !GetMinusOperationsArray(formNum).Contains(x.OpCode))
+                            .OrderByDescending(y => y.OpDate)
+                            .ThenByDescending(x => x.RepDto.StartPeriod)
+                            .ThenByDescending(x => x.RepDto.EndPeriod)
+                            .ThenByDescending(x => x.NumberInOrder)
+                            .First();
+                    }
+                    else
+                    {
+                        lastForm = filteredDictionary
+                            .SelectMany(x => x.Value)
+                            .OrderByDescending(y => y.OpDate)
+                            .First();
+                    }
+
                     var pairWithLastOpDate = filteredDictionary
                         .First(x => x.Value.Contains(lastForm));
 
@@ -1105,8 +1132,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 if (inStock)
                 {
                     var lastOperationWithUnit = currentOperationsWithoutMutuallyExclusive
-                        .OrderByDescending(x => x.OpDate)
-                        .FirstOrDefault();
+                        .OrderBy(x => x.OpDate)
+                        .LastOrDefault();
 
                     if (lastOperationWithUnit != null)
                     {

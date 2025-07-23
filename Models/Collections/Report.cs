@@ -235,6 +235,8 @@ public class Report : IKey, IDataGridColumn
 
     #region Properties
 
+    [NotMapped] public bool AutoReplace { get; set; } = true;
+
     #region Comments
 
     public string Comments_DB { get; set; } = "";

@@ -1,6 +1,5 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
-using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views;
 using Client_App.Views.ProgressBar;
@@ -20,6 +19,8 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using static Client_App.Resources.StaticStringMethods;
+using CustomSnkEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkEqualityComparer;
+using CustomSnkRadionuclidsEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkRadionuclidsEqualityComparer;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 

@@ -1959,7 +1959,7 @@ public class CheckF22 : CheckBase
     /// <param name="progressBar">Окно прогрессбара.</param>
     /// <param name="isBackground">Признак выполнения команды в фоне.</param>
     /// <returns>Открывает файл выгрузки в .xlsx.</returns>
-    private protected static async Task ExcelSaveAndOpen(ExcelPackage excelPackage, string fullPath, bool openTemp,
+    private static async Task ExcelSaveAndOpen(ExcelPackage excelPackage, string fullPath, bool openTemp,
         CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null, bool isBackground = false)
     {
         try

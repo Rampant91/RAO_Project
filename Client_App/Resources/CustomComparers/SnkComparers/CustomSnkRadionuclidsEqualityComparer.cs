@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Client_App.Resources.CustomComparers;
+namespace Client_App.Resources.CustomComparers.SnkComparers;
 
 public partial class CustomSnkRadionuclidsEqualityComparer : IEqualityComparer<string>
 {

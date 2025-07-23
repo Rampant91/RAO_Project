@@ -117,7 +117,10 @@ public class Form12 : Form1
         if (OperationCode_DB != value1)
         {
             OperationCode_DB = value1;
-            AutoReplaceByOpCode(value1);
+            if (Report is { AutoReplace: true })
+            {
+                AutoReplaceByOpCode(value1);
+            }
         }
     }
 
@@ -403,6 +406,8 @@ public class Form12 : Form1
             }
 
             #endregion
+
+            default: return;
         }
     }
 
@@ -420,7 +425,11 @@ public class Form12 : Form1
         if (OperationDate_DB != value1)
         {
             OperationDate_DB = DateString_ValueChanged(value1);
-            AutoReplaceByOpDate();
+            if (Report is { AutoReplace: true })
+            {
+                AutoReplaceByOpDate();
+            }
+            
         }
     }
 
@@ -486,7 +495,10 @@ public class Form12 : Form1
         if (PassportNumber_DB != value1)
         {
             PassportNumber_DB = value1;
-            AutoReplaceByPasNum();
+            if (Report is { AutoReplace: true })
+            {
+                AutoReplaceByPasNum();
+            }
         }
     }
 

@@ -544,22 +544,41 @@ public partial class Form10 : Form
 
     private void Okpo_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+
+        var newValue = ((RamAccess<string>)value).Value;
+
+        var validateOthers = (string.IsNullOrEmpty(Okpo_DB) && !string.IsNullOrEmpty(newValue)) 
+                             || (string.IsNullOrEmpty(newValue) && !string.IsNullOrEmpty(Okpo_DB));
+
+        Okpo_DB = newValue;
+
+        if (validateOthers)
         {
-            Okpo_DB = ((RamAccess<string>)value).Value;
+            Okved_Validation(Okved);
+            Okogu_Validation(Okogu);
+            Oktmo_Validation(Oktmo);
+            Inn_Validation(Inn);
+            Kpp_Validation(Kpp);
+            Okopf_Validation(Okopf);
+            Okfs_Validation(Okfs);
         }
     }
 
     private bool Okpo_Validation(RamAccess<string> value) //Ready
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Length != 8 && value.Value.Length != 14
-            || !OkpoRegex().IsMatch(value.Value))
+        var okpo = value.Value;
+
+        if (Report is null) return true;
+
+        if (Report.Rows10[0].Id == Id
+            && (okpo.Length != 8 && okpo.Length != 14
+                || !OkpoRegex().IsMatch(okpo))
+            || (Report.Rows10[1].Id == Id
+                && !string.IsNullOrEmpty(okpo)
+                && (okpo.Length != 8 && okpo.Length != 14
+                    || !OkpoRegex().IsMatch(okpo))))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -607,6 +626,7 @@ public partial class Form10 : Form
     private bool Okved_Validation(RamAccess<string> value) //Ready
     {
         value.ClearErrors();
+        if (Report != null && Report.Rows10[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
         if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
@@ -661,6 +681,7 @@ public partial class Form10 : Form
     private bool Okogu_Validation(RamAccess<string> value) //Ready
     {
         value.ClearErrors();
+        if (Report != null && Report.Rows10[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
         if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
@@ -714,6 +735,7 @@ public partial class Form10 : Form
     private bool Oktmo_Validation(RamAccess<string> value) //Ready
     {
         value.ClearErrors();
+        if (Report != null && Report.Rows10[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
         if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
@@ -767,6 +789,7 @@ public partial class Form10 : Form
     private bool Inn_Validation(RamAccess<string> value) //Ready
     {
         value.ClearErrors();
+        if (Report != null && Report.Rows10[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
         if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
@@ -820,6 +843,7 @@ public partial class Form10 : Form
     private bool Kpp_Validation(RamAccess<string> value) //Ready
     {
         value.ClearErrors();
+        if (Report != null && Report.Rows10[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
         if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
@@ -873,6 +897,7 @@ public partial class Form10 : Form
     private bool Okopf_Validation(RamAccess<string> value) //Ready
     {
         value.ClearErrors();
+        if (Report != null && Report.Rows10[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
         if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
@@ -926,6 +951,7 @@ public partial class Form10 : Form
     private bool Okfs_Validation(RamAccess<string> value) //Ready
     {
         value.ClearErrors();
+        if (Report != null && Report.Rows10[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
         if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
