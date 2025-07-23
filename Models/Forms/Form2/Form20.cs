@@ -49,7 +49,7 @@ public partial class Form20 : Form
         set
         {
             RegNo_DB = value.Value;
-            OnPropertyChanged(nameof(RegNo));
+            OnPropertyChanged();
         }
     }
 
@@ -113,7 +113,7 @@ public partial class Form20 : Form
         set
         {
             OrganUprav_DB = value.Value;
-            OnPropertyChanged(nameof(OrganUprav));
+            OnPropertyChanged();
         }
     }
 
@@ -157,7 +157,7 @@ public partial class Form20 : Form
         set
         {
             SubjectRF_DB = ParseInnerText(value.Value);
-            OnPropertyChanged(nameof(SubjectRF));
+            OnPropertyChanged();
         }
     }
 
@@ -201,7 +201,7 @@ public partial class Form20 : Form
         set
         {
             JurLico_DB = ParseInnerText(value.Value);
-            OnPropertyChanged(nameof(JurLico));
+            OnPropertyChanged();
         }
     }
 
@@ -290,7 +290,7 @@ public partial class Form20 : Form
         set
         {
             JurLicoAddress_DB = ParseInnerText(value.Value);
-            OnPropertyChanged(nameof(JurLicoAddress));
+            OnPropertyChanged();
         }
     }
 
@@ -334,7 +334,7 @@ public partial class Form20 : Form
         set
         {
             JurLicoFactAddress_DB = ParseInnerText(value.Value);
-            OnPropertyChanged(nameof(JurLicoFactAddress));
+            OnPropertyChanged();
         }
     }
 
@@ -378,7 +378,7 @@ public partial class Form20 : Form
         set
         {
             GradeFIO_DB = ParseInnerText(value.Value);
-            OnPropertyChanged(nameof(GradeFIO));
+            OnPropertyChanged();
         }
     }
 
@@ -422,7 +422,7 @@ public partial class Form20 : Form
         set
         {
             Telephone_DB = value.Value;
-            OnPropertyChanged(nameof(Telephone));
+            OnPropertyChanged();
         }
     }
 
@@ -466,7 +466,7 @@ public partial class Form20 : Form
         set
         {
             Fax_DB = value.Value;
-            OnPropertyChanged(nameof(Fax));
+            OnPropertyChanged();
         }
     }
 
@@ -510,7 +510,7 @@ public partial class Form20 : Form
         set
         {
             Email_DB = value.Value;
-            OnPropertyChanged(nameof(Email));
+            OnPropertyChanged();
         }
     }
 
@@ -554,40 +554,53 @@ public partial class Form20 : Form
         set
         {
             Okpo_DB = value.Value;
-            OnPropertyChanged(nameof(Okpo));
+            OnPropertyChanged();
         }
     }
 
     private void OkpoValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+
+        var newValue = ((RamAccess<string>)value).Value;
+
+        var validateOthers = (string.IsNullOrEmpty(Okpo_DB) && !string.IsNullOrEmpty(newValue))
+                             || (string.IsNullOrEmpty(newValue) && !string.IsNullOrEmpty(Okpo_DB));
+
+        Okpo_DB = newValue;
+
+        if (validateOthers)
         {
-            Okpo_DB = ((RamAccess<string>)value).Value;
+            Okved_Validation(Okved);
+            Okogu_Validation(Okogu);
+            Oktmo_Validation(Oktmo);
+            Inn_Validation(Inn);
+            Kpp_Validation(Kpp);
+            Okopf_Validation(Okopf);
+            Okfs_Validation(Okfs);
         }
     }
 
     private bool Okpo_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Length != 8 && value.Value.Length != 14)
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (!OkpoRegex().IsMatch(value.Value))
+        var okpo = value.Value;
+
+        if (Report is null) return true;
+
+        if (Report.Rows20[0].Id == Id
+            && (okpo.Length != 8 && okpo.Length != 14
+                || !OkpoRegex().IsMatch(okpo))
+            || (Report.Rows20[1].Id == Id
+                && !string.IsNullOrEmpty(okpo)
+                && (okpo.Length != 8 && okpo.Length != 14
+                    || !OkpoRegex().IsMatch(okpo))))
         {
             value.AddError("Недопустимое значение");
             return false;
         }
         return true;
     }
-
-    //Okpo property
 
     #endregion
 
@@ -614,7 +627,7 @@ public partial class Form20 : Form
         set
         {
             Okved_DB = value.Value;
-            OnPropertyChanged(nameof(Okved));
+            OnPropertyChanged();
         }
     }
 
@@ -629,6 +642,7 @@ public partial class Form20 : Form
     private bool Okved_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
+        if (Report != null && Report.Rows10[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
         if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
@@ -641,8 +655,6 @@ public partial class Form20 : Form
         }
         return true;
     }
-
-    //Okved property
 
     #endregion
 
@@ -669,7 +681,7 @@ public partial class Form20 : Form
         set
         {
             Okogu_DB = value.Value;
-            OnPropertyChanged(nameof(Okogu));
+            OnPropertyChanged();
         }
     }
 
@@ -684,6 +696,7 @@ public partial class Form20 : Form
     private bool Okogu_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
+        if (Report != null && Report.Rows10[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
         if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
@@ -696,8 +709,6 @@ public partial class Form20 : Form
         }
         return true;
     }
-
-    //Okogu property
 
     #endregion
 
@@ -739,6 +750,7 @@ public partial class Form20 : Form
     private bool Oktmo_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
+        if (Report != null && Report.Rows10[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
         if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
@@ -753,8 +765,6 @@ public partial class Form20 : Form
 
         return true;
     }
-
-    //Oktmo property
 
     #endregion
 
@@ -781,7 +791,7 @@ public partial class Form20 : Form
         set
         {
             Inn_DB = value.Value;
-            OnPropertyChanged(nameof(Inn));
+            OnPropertyChanged();
         }
     }
 
@@ -796,6 +806,7 @@ public partial class Form20 : Form
     private bool Inn_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
+        if (Report != null && Report.Rows10[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
         if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
@@ -808,8 +819,6 @@ public partial class Form20 : Form
         }
         return true;
     }
-
-    //Inn property
 
     #endregion
 
@@ -836,7 +845,7 @@ public partial class Form20 : Form
         set
         {
             Kpp_DB = value.Value;
-            OnPropertyChanged(nameof(Kpp));
+            OnPropertyChanged();
         }
     }
 
@@ -851,6 +860,7 @@ public partial class Form20 : Form
     private bool Kpp_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
+        if (Report != null && Report.Rows10[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
         if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
@@ -863,8 +873,6 @@ public partial class Form20 : Form
         }
         return true;
     }
-
-    //Kpp property
 
     #endregion
 
@@ -891,7 +899,7 @@ public partial class Form20 : Form
         set
         {
             Okopf_DB = value.Value;
-            OnPropertyChanged(nameof(Okopf));
+            OnPropertyChanged();
         }
     }
 
@@ -906,6 +914,7 @@ public partial class Form20 : Form
     private bool Okopf_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
+        if (Report != null && Report.Rows10[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
         if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
@@ -918,8 +927,6 @@ public partial class Form20 : Form
         }
         return true;
     }
-
-    //Okopf property
 
     #endregion
 
@@ -946,7 +953,7 @@ public partial class Form20 : Form
         set
         {
             Okfs_DB = value.Value;
-            OnPropertyChanged(nameof(Okfs));
+            OnPropertyChanged();
         }
     }
 
@@ -961,6 +968,7 @@ public partial class Form20 : Form
     private bool Okfs_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
+        if (Report != null && Report.Rows10[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
         if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
@@ -973,8 +981,6 @@ public partial class Form20 : Form
         }
         return true;
     }
-
-    //Okfs property
 
     #endregion
 

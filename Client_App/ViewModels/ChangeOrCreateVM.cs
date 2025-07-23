@@ -1,28 +1,28 @@
-﻿using Models.Attributes;
+﻿using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands.Add;
+using Client_App.Commands.AsyncCommands.CheckForm;
+using Client_App.Commands.AsyncCommands.Delete;
+using Client_App.Commands.AsyncCommands.ExcelExport;
+using Client_App.Commands.AsyncCommands.PassportFill;
+using Client_App.Commands.AsyncCommands.Passports;
+using Client_App.Commands.AsyncCommands.Save;
+using Client_App.Commands.AsyncCommands.SourceTransmission;
+using Client_App.Commands.SyncCommands;
+using Models.Attributes;
 using Models.Collections;
+using Models.DBRealization;
+using Models.Forms;
+using Models.Forms.Form1;
+using Models.Forms.Form2;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Client_App.Commands.AsyncCommands;
-using Client_App.Commands.AsyncCommands.Add;
-using Client_App.Commands.AsyncCommands.Delete;
-using Models.Forms;
-using Models.Forms.Form1;
-using Models.Forms.Form2;
-using Client_App.Commands.AsyncCommands.ExcelExport;
-using Client_App.Commands.AsyncCommands.Passports;
-using Client_App.Commands.AsyncCommands.Save;
-using Client_App.Commands.SyncCommands;
-using Models.DBRealization;
-using System.Threading;
-using Client_App.Commands.AsyncCommands.CheckForm;
-using Client_App.Commands.AsyncCommands.SourceTransmission;
-using Client_App.Commands.AsyncCommands.PassportFill;
 
 namespace Client_App.ViewModels;
 
@@ -54,6 +54,21 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
+    private bool _isAutoReplaceEnabled = true;
+    public bool IsAutoReplaceEnabled
+    {
+        get => _isAutoReplaceEnabled;
+        set
+        {
+            if (_isAutoReplaceEnabled != value)
+            {
+                _isAutoReplaceEnabled = value;
+                Storage.AutoReplace = value;
+                NotifyPropertyChanged();
+            }
+        }
+    }
+
     #region IsCanSaveReportEnabled
 
     private bool _isCanSaveReportEnabled;
@@ -75,6 +90,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     #endregion
 
     #region isSum
+
     private bool _isSum;
     public bool isSum
     {
@@ -84,13 +100,15 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             if (_isSum != value)
             {
                 _isSum = value;
-                NotifyPropertyChanged("isSum");
+                NotifyPropertyChanged();
             }
         }
     }
+
     #endregion
 
     #region Storage
+
     private Report _Storage;
     public Report Storage
     {
@@ -104,6 +122,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region Storages
@@ -174,6 +193,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ICommand OpenPas { get; set; }                           //  Найти и открыть соответствующий файл паспорта в сетевом хранилище
     public ICommand PasteRows { get; set; }                         //  Вставить значения из буфера обмена
     public ICommand SaveReport { get; set; }                        //  Сохранить отчет
+    public ICommand SetAutoReplace { get; set; }                     
     public ICommand SetNumberOrder { get; set; }                    //  Выставление порядкового номера
     public ICommand SortForm { get; set; }                          //  Сортировка по порядковому номеру
     public ICommand SourceTransmission { get; set; }                //  Перевод источника из РВ в РАО
@@ -339,6 +359,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         OpenPas = new OpenPasAsyncCommand();
         PasteRows = new PasteRowsAsyncCommand();
         SaveReport = new SaveReportAsyncCommand(this);
+        SetAutoReplace = new SetAutoReplaceAsyncCommand(this);
         SetNumberOrder = new SetNumberOrderSyncCommand(this);
         SortForm = new SortFormSyncCommand(this);
         PassportFill = new PassportFillSyncCommand(this);

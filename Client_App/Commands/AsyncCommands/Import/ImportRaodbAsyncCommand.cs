@@ -251,14 +251,25 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
             }
         }
 
-        var comparator = new CustomReportsComparer();
-        var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
-
-        ReportsStorage.LocalReports.Reports_Collection.Clear();
-        ReportsStorage.LocalReports.Reports_Collection
-            .AddRange(tmpReportsList
+        try
+        {
+            var comparator = new CustomReportsComparer();
+            var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+            var tmpReportsOrderedEnum = tmpReportsList
                 .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
-                .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
+                .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator);
+
+            ReportsStorage.LocalReports.Reports_Collection.Clear();
+            ReportsStorage.LocalReports.Reports_Collection
+                .AddRange(tmpReportsOrderedEnum);
+        }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Warning(msg);
+            return;
+        }
 
         //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
 

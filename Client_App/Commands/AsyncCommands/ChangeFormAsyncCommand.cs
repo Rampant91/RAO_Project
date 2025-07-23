@@ -67,6 +67,11 @@ public class ChangeFormAsyncCommand(FormParameter? form = null) : BaseAsyncComma
             var frm = new ChangeOrCreateVM(numForm, rep);
             switch (numForm)
             {
+                case "1.1":
+                {
+                    Form1_Visual.tmpVM = frm;
+                    break;
+                }
                 case "2.1":
                     {
                         Form2_Visual.tmpVM = frm;

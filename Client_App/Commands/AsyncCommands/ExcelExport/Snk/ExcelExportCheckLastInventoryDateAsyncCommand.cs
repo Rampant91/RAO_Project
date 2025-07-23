@@ -34,7 +34,7 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
         ExportType = "Просроченная_инвентаризация";
 
         progressBarVM.SetProgressBar(5, "Запрос форм для проверки СНК", "Проверка инвентаризаций", ExportType);
-        var (region, formNums) = await GetRegionAndFormNums(progressBar, cts);
+        var (region, formNums, snkParams) = await GetRegionAndFormNums(progressBar, cts);
 
         progressBarVM.SetProgressBar(7, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
@@ -60,7 +60,7 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
         var filteredRepsDtoList = await CheckRepsInventoryDate(tmpDbPath, repsDtoList, formNums, progressBarVM, cts);
 
         progressBarVM.SetProgressBar(40, "Проверка наличия СНК");
-        var repsWithUnitsDtoList = await CheckSnk(tmpDbPath, filteredRepsDtoList, progressBarVM, cts);
+        var repsWithUnitsDtoList = await CheckSnk(tmpDbPath, filteredRepsDtoList, progressBarVM, cts, snkParams);
 
         progressBarVM.SetProgressBar(90, "Заполнение строчек в .xlsx");
         await FillExcel(repsWithUnitsDtoList);
@@ -90,7 +90,7 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
     /// <param name="progressBar"></param>
     /// <param name="cts"></param>
     /// <returns>Кортеж из региона и списка номеров форм.</returns>
-    private static async Task<(string, List<string>)> GetRegionAndFormNums(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
+    private static async Task<(string, List<string>, SnkParamsDto)> GetRegionAndFormNums(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
         var vm = new GetRegionAndFormNumsVM();
         await Dispatcher.UIThread.InvokeAsync(async () =>
@@ -100,20 +100,70 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
             vm = getRegionAndFormNumsWindow._vm;
         });
 
-        if (!vm.Ok || !vm.CheckForm11 && !vm.CheckForm13)
+        if (!vm.Ok)
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
+        else if (!vm.CheckForm11 && !vm.CheckForm13)
+        {
+            #region MessageExcelExportFail
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentMessage = "Выгрузка не выполнена, поскольку не выбран ни один номер формы.",
+                    MinWidth = 400,
+                    MinHeight = 115,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+        else if (vm is { CheckPasNum: false, CheckType: false, CheckRadionuclids: false, CheckFacNum: false, CheckPackNumber: false })
+        {
+            #region MessageExcelExportFail
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
+                    ContentTitle = "Выгрузка в Excel",
+                    ContentMessage = "Выгрузка не выполнена, поскольку не выбран ни один из параметров, для определения учётной единицы.",
+                    MinWidth = 400,
+                    MinHeight = 115,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+
 
         List<string> formNums = [];
         if (vm.CheckForm11) formNums.Add("1.1");
         if (vm.CheckForm13) formNums.Add("1.3");
 
+        var snkParamsDto = new SnkParamsDto(
+            vm.CheckPasNum,
+            vm.CheckType,
+            vm.CheckRadionuclids,
+            vm.CheckFacNum,
+            vm.CheckPackNumber);
+
         var region = RegionRegex().IsMatch(vm.Region)
             ? vm.Region
             : string.Empty;
 
-        return (region, [..formNums]);
+        return (region, [..formNums], snkParamsDto);
     }
 
     #endregion
@@ -408,12 +458,13 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
     /// </summary>
     /// <param name="tmpDbPath">Путь к временному файлу БД.</param>
     /// <param name="dtoList">Список DTO организаций.</param>
-    /// <param name="formNum">Номер формы.</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <param name="cts">Токен.</param>
+    /// /// <param name="snkParams">DTO состоящий из bool флагов, показывающих, по каким параметрам необходимо выполнять поиск учётной единицы.
+    /// Может быть null, тогда поиск ведётся по всем параметрам.</param>
     /// <returns>Список DTO организаций, у которых есть учётные единицы в наличии.</returns>
     private static async Task<List<ShortReportsDto>> CheckSnk(string tmpDbPath, List<ShortReportsDto> dtoList,
-        AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
+        AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts, SnkParamsDto? snkParams = null)
     {
         var currentDate = DateOnly.FromDateTime(DateTime.Now);
 
@@ -487,13 +538,13 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
             var inventoryReportDtoList = await GetInventoryReportDtoList(db, dto.Id, dto.FormNum, currentDate, cts);
 
             var (firstSnkDate, inventoryFormsDtoList, _) = 
-                await GetInventoryFormsDtoList(db, inventoryReportDtoList, dto.FormNum, currentDate, cts);
+                await GetInventoryFormsDtoList(db, inventoryReportDtoList, dto.FormNum, currentDate, cts, snkParams);
 
             var reportIds = await GetReportIds(db, dto.Id, dto.FormNum, cts);
 
-            var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, reportIds, dto.FormNum, firstSnkDate, currentDate, cts);
+            var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, reportIds, dto.FormNum, firstSnkDate, currentDate, cts, snkParams);
 
-            var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, dto.Id, dto.FormNum, firstSnkDate, currentDate, cts);
+            var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, dto.Id, dto.FormNum, firstSnkDate, currentDate, cts, snkParams);
 
             var uniqueUnitWithAllOperationDictionary = 
                 await GetDictionary_UniqueUnitsWithOperations(dto.FormNum, inventoryFormsDtoList, plusMinusFormsDtoList, rechargeFormsDtoList);

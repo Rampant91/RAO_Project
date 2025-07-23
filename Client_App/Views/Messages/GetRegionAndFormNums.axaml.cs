@@ -1,6 +1,8 @@
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using Client_App.ViewModels.Messages;
 
 namespace Client_App.Views.Messages;
@@ -42,33 +44,69 @@ public class GetRegionAndFormNums : BaseWindow<GetRegionAndFormNumsVM>
 
     #endregion
 
-    private void AllCheckBox_Checked(object sender, RoutedEventArgs e)
+    #region FormsCheckBoxes
+    
+    private void AllFormsCheckBox_Checked(object sender, RoutedEventArgs e)
     {
         if (_vm != null)
         {
-            _vm.CheckAll = _vm.CheckForm11 = _vm.CheckForm13 = true;
+            _vm.CheckAllForms = _vm.CheckForm11 = _vm.CheckForm13 = true;
         }
     }
 
-    private void AllCheckBox_Unchecked(object sender, RoutedEventArgs e)
+    private void AllFormsCheckBox_Unchecked(object sender, RoutedEventArgs e)
     {
         if (_vm != null)
         {
-            _vm.CheckAll = _vm.CheckForm11 = _vm.CheckForm13 = false;
+            _vm.CheckAllForms = _vm.CheckForm11 = _vm.CheckForm13 = false;
         }
     }
 
-    private void AnyCheckBox_Clicked(object sender, RoutedEventArgs e)
+    private void AnyFormCheckBox_Clicked(object sender, RoutedEventArgs e)
     {
-        var allCheckBox = (sender as Control).FindNameScope().Find("All") as CheckBox;
+        var allCheckBox = (sender as Control).FindNameScope().Find("AllForms") as CheckBox;
         allCheckBox!.IsThreeState = true;
-        _vm.CheckAll = _vm switch
+        _vm.CheckAllForms = _vm switch
         {
             { CheckForm11: true, CheckForm13: true } => true,
             { CheckForm11: false, CheckForm13: false } => false,
             _ => allCheckBox.IsChecked = null
         };
     }
+
+    #endregion
+
+    #region SnkParamsCheckBoxes
+
+    private void AllSnkParamsCheckBox_Checked(object sender, RoutedEventArgs e)
+    {
+        if (_vm != null)
+        {
+            _vm.CheckAllSnkParams = _vm.CheckPasNum = _vm.CheckType = _vm.CheckRadionuclids = _vm.CheckFacNum = _vm.CheckPackNumber = true;
+        }
+    }
+
+    private void AllSnkParamsCheckBox_Unchecked(object sender, RoutedEventArgs e)
+    {
+        if (_vm != null)
+        {
+            _vm.CheckPasNum = _vm.CheckType = _vm.CheckRadionuclids = _vm.CheckFacNum = _vm.CheckPackNumber = false;
+        }
+    }
+
+    private void AnySnkParamsCheckBox_Clicked(object sender, RoutedEventArgs e)
+    {
+        var allCheckBox = (sender as Control).FindNameScope().Find("AllSnkParams") as CheckBox;
+        allCheckBox!.IsThreeState = true;
+        _vm.CheckAllSnkParams = _vm switch
+        {
+            { CheckPasNum: true, CheckType: true, CheckRadionuclids: true, CheckFacNum: true, CheckPackNumber: true } => true,
+            { CheckPasNum: false, CheckType: false, CheckRadionuclids: false, CheckFacNum: false, CheckPackNumber: false } => false,
+            _ => allCheckBox.IsChecked = null
+        };
+    }
+
+    #endregion
 
     #endregion
 }

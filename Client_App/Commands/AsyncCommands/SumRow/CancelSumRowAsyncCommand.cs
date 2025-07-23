@@ -9,15 +9,9 @@ using System.Threading.Tasks;
 namespace Client_App.Commands.AsyncCommands.SumRow;
 
 //  Отменяет группировку по наименованию в формах 2.1 и 2.2
-internal class CancelSumRowAsyncCommand : BaseAsyncCommand
+internal class CancelSumRowAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
-    private readonly ChangeOrCreateVM _ChangeOrCreateViewModel;
-    private Report Storage => _ChangeOrCreateViewModel.Storage;
-
-    public CancelSumRowAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
-    {
-        _ChangeOrCreateViewModel = changeOrCreateViewModel;
-    }
+    private Report Storage => changeOrCreateViewModel.Storage;
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -40,7 +34,7 @@ internal class CancelSumRowAsyncCommand : BaseAsyncCommand
         await AsyncExecute(null);
     }
 
-    public Task UnSum21()
+    private Task UnSum21()
     {
         var sumRows = Storage.Rows21
             .Where(x => x.Sum_DB)
@@ -79,7 +73,7 @@ internal class CancelSumRowAsyncCommand : BaseAsyncCommand
         return Task.CompletedTask;
     }
 
-    public Task UnSum22()
+    private Task UnSum22()
     {
         var sumRows = Storage.Rows22
             .Where(x => x.Sum_DB)

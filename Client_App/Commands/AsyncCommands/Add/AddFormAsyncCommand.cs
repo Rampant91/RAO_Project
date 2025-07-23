@@ -55,11 +55,20 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                 var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
 
                 ChangeOrCreateVM frm = new(param, y);
-                Form2_Visual.tmpVM = param switch
+
+                if (param.Split(".")[0] is "1")
                 {
-                    "2.1" or "2.2" => frm,
-                    _ => Form2_Visual.tmpVM
-                };
+                    Form1_Visual.tmpVM = frm;
+                }
+                else if (param.Split(".")[0] is "2")
+                {
+                    Form2_Visual.tmpVM = param switch
+                    {
+                        "2.1" or "2.2" => frm,
+                        _ => Form2_Visual.tmpVM
+                    };
+                }
+                    
                 await MainWindowVM.ShowDialog.Handle(frm);
                 t.SelectedReports = tmp;
                 await y.Report_Collection.QuickSortAsync();
