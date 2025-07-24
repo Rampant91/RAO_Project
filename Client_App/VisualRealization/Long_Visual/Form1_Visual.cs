@@ -436,7 +436,7 @@ public class Form1_Visual
             Margin = Thickness.Parse("20, 5, 0, 5"),
             Height = 30,
             VerticalAlignment = VerticalAlignment.Top,
-            IsChecked = tmpVM.IsAutoReplaceEnabled
+            IsChecked = tmpVM?.IsAutoReplaceEnabled ?? false
         };
         checkBox.Checked += new SetAutoReplaceAsyncCommand(tmpVM).Set;
         checkBox.Unchecked += new SetAutoReplaceAsyncCommand(tmpVM).UnSet;
@@ -706,7 +706,7 @@ public class Form1_Visual
             Margin = Thickness.Parse("20, 5, 0, 5"),
             Height = 30,
             VerticalAlignment = VerticalAlignment.Top,
-            IsChecked = tmpVM.IsAutoReplaceEnabled
+            IsChecked = tmpVM?.IsAutoReplaceEnabled ?? false
         };
         checkBox.Checked += new SetAutoReplaceAsyncCommand(tmpVM).Set;
         checkBox.Unchecked += new SetAutoReplaceAsyncCommand(tmpVM).UnSet;
@@ -978,7 +978,7 @@ public class Form1_Visual
             Margin = Thickness.Parse("20, 5, 0, 5"),
             Height = 30,
             VerticalAlignment = VerticalAlignment.Top,
-            IsChecked = tmpVM.IsAutoReplaceEnabled
+            IsChecked = tmpVM?.IsAutoReplaceEnabled ?? false
         };
         checkBox.Checked += new SetAutoReplaceAsyncCommand(tmpVM).Set;
         checkBox.Unchecked += new SetAutoReplaceAsyncCommand(tmpVM).UnSet;
@@ -1251,7 +1251,7 @@ public class Form1_Visual
             Margin = Thickness.Parse("20, 5, 0, 5"),
             Height = 30,
             VerticalAlignment = VerticalAlignment.Top,
-            IsChecked = tmpVM.IsAutoReplaceEnabled
+            IsChecked = tmpVM?.IsAutoReplaceEnabled ?? false
         };
         checkBox.Checked += new SetAutoReplaceAsyncCommand(tmpVM).Set;
         checkBox.Unchecked += new SetAutoReplaceAsyncCommand(tmpVM).UnSet;
@@ -1522,7 +1522,7 @@ public class Form1_Visual
             Margin = Thickness.Parse("20, 5, 0, 5"),
             Height = 30,
             VerticalAlignment = VerticalAlignment.Top,
-            IsChecked = tmpVM.IsAutoReplaceEnabled
+            IsChecked = tmpVM?.IsAutoReplaceEnabled ?? false
         };
         checkBox.Checked += new SetAutoReplaceAsyncCommand(tmpVM).Set;
         checkBox.Unchecked += new SetAutoReplaceAsyncCommand(tmpVM).UnSet;
@@ -1779,7 +1779,7 @@ public class Form1_Visual
             Margin = Thickness.Parse("20, 5, 0, 5"),
             Height = 30,
             VerticalAlignment = VerticalAlignment.Top,
-            IsChecked = tmpVM.IsAutoReplaceEnabled
+            IsChecked = tmpVM?.IsAutoReplaceEnabled ?? false
         };
         checkBox.Checked += new SetAutoReplaceAsyncCommand(tmpVM).Set;
         checkBox.Unchecked += new SetAutoReplaceAsyncCommand(tmpVM).UnSet;
@@ -2036,7 +2036,7 @@ public class Form1_Visual
             Margin = Thickness.Parse("20, 5, 0, 5"),
             Height = 30,
             VerticalAlignment = VerticalAlignment.Top,
-            IsChecked = tmpVM.IsAutoReplaceEnabled
+            IsChecked = tmpVM?.IsAutoReplaceEnabled ?? false
         };
         checkBox.Checked += new SetAutoReplaceAsyncCommand(tmpVM).Set;
         checkBox.Unchecked += new SetAutoReplaceAsyncCommand(tmpVM).UnSet;
@@ -2294,7 +2294,7 @@ public class Form1_Visual
             Margin = Thickness.Parse("20, 5, 0, 5"),
             Height = 30,
             VerticalAlignment = VerticalAlignment.Top,
-            IsChecked = tmpVM?.IsAutoReplaceEnabled ?? true
+            IsChecked = tmpVM?.IsAutoReplaceEnabled ?? false
         };
         checkBox.Checked += new SetAutoReplaceAsyncCommand(tmpVM).Set;
         checkBox.Unchecked += new SetAutoReplaceAsyncCommand(tmpVM).UnSet;
