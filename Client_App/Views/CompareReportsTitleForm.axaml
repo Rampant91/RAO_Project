@@ -5,7 +5,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Client_App.ViewModels"
-    xmlns:resources="clr-namespace:Client_App.Resources"
     xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
     Title="{Binding Title, Mode=OneTime}"
     Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.5', FallbackValue='600', Mode=OneTime}"
@@ -573,7 +572,8 @@
                     VerticalAlignment="Stretch"
                     BorderBrush="Black"
                     BorderThickness="1"
-                    CornerRadius="5">
+                    CornerRadius="5"
+                    IsVisible="False">
                     <Grid ColumnDefinitions="210,300,75,300" RowDefinitions="*,*">
                         <!--  Территориальное обособленное подразделение - Наименования полей  -->
                         <TextBlock
