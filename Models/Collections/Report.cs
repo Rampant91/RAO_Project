@@ -235,7 +235,12 @@ public class Report : IKey, IDataGridColumn
 
     #region Properties
 
-    [NotMapped] public bool AutoReplace { get; set; } = true;
+    #region AutoReplace
+
+    [NotMapped]
+    public bool AutoReplace { get; set; } = false; 
+    
+    #endregion
 
     #region Comments
 

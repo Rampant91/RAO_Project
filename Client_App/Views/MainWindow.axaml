@@ -267,6 +267,7 @@
                             CommandParameter="Org2.12"
                             Header="Форма 2.12"/>
                     </MenuItem>
+                    <!--
                     <MenuItem Header="СНК на дату">
                         <MenuItem
                             Command="{Binding  ExcelExportSnk}"
@@ -286,7 +287,8 @@
                             Command="{Binding  ExcelExportCheckInventories}"
                             CommandParameter="1.3"
                             Header="Форма 1.3"/>
-                    </MenuItem>
+                            </MenuItem>
+                            -->
                 </MenuItem>
                 <Separator/>
                 <MenuItem
@@ -303,10 +305,11 @@
                         Command="{Binding ChangePasFolder}"
                         Header="Изменить расположение паспортов по умолчанию"/>
                 </MenuItem>
+                <!--
                 <MenuItem 
                     Command="{Binding  ExcelExportCheckLastInventoryDate}"
                     Header="Проверка последней инвентаризации"/> 
-                <!--
+                
                 <MenuItem Command="{Binding MaxGraphsLength, Mode=OneTime}"
                           Header="Максимальная длинна граф"/>
                 <MenuItem Command="{Binding UnaccountedRad, Mode=OneTime}"
@@ -317,6 +320,7 @@
             <MenuItem 
                 Name="ServiceMenu"
                 Header="Сервис">
+                <!--
                 <MenuItem
                     Command="{Binding OpenCalculator}"
                     CommandParameter="activity"
@@ -326,6 +330,7 @@
                     CommandParameter="category" 
                     Header="Расчёт категории"/>
                 <Separator/>
+                -->
                 <MenuItem
                     Command="{Binding OpenFile}" 
                     CommandParameter="manual" 

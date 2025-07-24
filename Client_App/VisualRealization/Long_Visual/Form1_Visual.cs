@@ -424,7 +424,9 @@ public class Form1_Visual
 
 		var checkBoxStackPanel = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            IsVisible = false,
+            IsEnabled = false
         };
         checkBoxStackPanel.Children.Add(CreateTextBlock("5,10,0,5", 30, "Автозаполнение:"));
 
@@ -692,7 +694,9 @@ public class Form1_Visual
 
         var checkBoxStackPanel = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            IsVisible = false,
+            IsEnabled = false
         };
         checkBoxStackPanel.Children.Add(CreateTextBlock("5,10,0,5", 30, "Автозаполнение:"));
 
@@ -962,7 +966,9 @@ public class Form1_Visual
 
         var checkBoxStackPanel = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            IsVisible = false,
+            IsEnabled = false
         };
         checkBoxStackPanel.Children.Add(CreateTextBlock("5,10,0,5", 30, "Автозаполнение:"));
 
@@ -1233,7 +1239,9 @@ public class Form1_Visual
 
         var checkBoxStackPanel = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            IsVisible = false,
+            IsEnabled = false
         };
         checkBoxStackPanel.Children.Add(CreateTextBlock("5,10,0,5", 30, "Автозаполнение:"));
 
@@ -1502,7 +1510,9 @@ public class Form1_Visual
 
         var checkBoxStackPanel = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            IsVisible = false,
+            IsEnabled = false
         };
         checkBoxStackPanel.Children.Add(CreateTextBlock("5,10,0,5", 30, "Автозаполнение:"));
 
@@ -1757,7 +1767,9 @@ public class Form1_Visual
 
         var checkBoxStackPanel = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            IsVisible = false,
+            IsEnabled = false
         };
         checkBoxStackPanel.Children.Add(CreateTextBlock("5,10,0,5", 30, "Автозаполнение:"));
 
@@ -2012,7 +2024,9 @@ public class Form1_Visual
 
         var checkBoxStackPanel = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            IsVisible = false,
+            IsEnabled = false
         };
         checkBoxStackPanel.Children.Add(CreateTextBlock("5,10,0,5", 30, "Автозаполнение:"));
 
@@ -2268,7 +2282,9 @@ public class Form1_Visual
 
         var checkBoxStackPanel = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            IsVisible = false,
+            IsEnabled = false
         };
         checkBoxStackPanel.Children.Add(CreateTextBlock("5,10,0,5", 30, "Автозаполнение:"));
 
