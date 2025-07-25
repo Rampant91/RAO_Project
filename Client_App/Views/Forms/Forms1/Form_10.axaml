@@ -7,6 +7,7 @@
     xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
     xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
     Title="Form_10"
+    Name="Форма 1.0"
     Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.5', FallbackValue='600', Mode=OneTime}"
     Height="{Binding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.75', FallbackValue='800', Mode=OneTime}"
     MinWidth="950"
@@ -53,7 +54,7 @@
                     Margin="0,3,5,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
-                    Text="{Binding RegNo, Mode=OneTime}"/>
+                    Text="{Binding RegNo}"/>
                 <TextBlock
                     Grid.Row="1"
                     Grid.Column="0"
@@ -69,7 +70,7 @@
                     Margin="0,0,5,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
-                    Text="{Binding ShortJurLico, Mode=OneTime}"/>
+                    Text="{Binding ShortJurLico}"/>
                 <TextBlock
                     Grid.Row="2"
                     Grid.Column="0"
@@ -85,7 +86,7 @@
                     Margin="0,0,5,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
-                    Text="{Binding Okpo, Mode=OneTime}"/>
+                    Text="{Binding Okpo}"/>
             </Grid>
 
         </Border>
@@ -121,7 +122,7 @@
                             Margin="0,3"
                             AcceptsReturn="True"
                             ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                            Text="{Binding OrganUprav, Mode=OneTime}"
+                            Text="{Binding OrganUprav}"
                             TextWrapping="Wrap"/>
                     </Grid>
                 </Border>
@@ -228,63 +229,63 @@
                             <TextBox
                                 Height="26"
                                 Margin="0,0,0,3"
-                                Text="{Binding SubjectRF0}"/>
+                                Text="{Binding Storage.Rows10[0].SubjectRF}"/>
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding JurLico0}"
+                                Text="{Binding Storage.Rows10[0].JurLico}"
                                 TextWrapping="Wrap"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding ShortJurLico0}"/>
+                                Text="{Binding Storage.Rows10[0].ShortJurLico}"/>
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding JurLicoAddress0}"
-                                TextWrapping="Wrap"/>
-                            <TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding JurLicoFactAddress0}"
+                                Text="{Binding Storage.Rows10[0].JurLicoAddress}"
                                 TextWrapping="Wrap"/>
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding GradeFIO0}"
+                                Text="{Binding Storage.Rows10[0].JurLicoFactAddress}"
+                                TextWrapping="Wrap"/>
+                            <TextBox
+                                Height="42"
+                                Margin="0,3"
+                                AcceptsReturn="True"
+                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                Text="{Binding Storage.Rows10[0].GradeFIO}"
                                 TextWrapping="Wrap"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Telephone0}"/>
+                                Text="{Binding Storage.Rows10[0].Telephone}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Fax0}"/>
+                                Text="{Binding Storage.Rows10[0].Fax}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Email0}"/>
+                                Text="{Binding Storage.Rows10[0].Email}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Okpo0}"/>
+                                Text="{Binding Storage.Rows10[0].Okpo}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Okved0}"/>
+                                Text="{Binding Storage.Rows10[0].Okved}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Okogu0}"/>
+                                Text="{Binding Storage.Rows10[0].Okogu}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"

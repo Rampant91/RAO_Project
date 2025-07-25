@@ -1,18 +1,37 @@
 ﻿using Models.Attributes;
 using Models.Collections;
+using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form1;
 using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Client_App.ViewModels.Forms.Forms1;
 public class Form_10VM : BaseVM, INotifyPropertyChanged
 {
     private Report _repInBase => Storage;
 
+    #region Storages
 
+    private Reports? _storages;
+    public Reports? Storages
+    {
+        get => _storages;
+        set
+        {
+            if (_storages != value)
+            {
+                _storages = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    #endregion
 
     #region Storage
 
@@ -149,6 +168,7 @@ public class Form_10VM : BaseVM, INotifyPropertyChanged
         get => _jurLico0;
         set
         {
+            
             if (_jurLico0 == value) return;
             _jurLico0 = value;
             OnPropertyChanged();
@@ -694,8 +714,20 @@ public class Form_10VM : BaseVM, INotifyPropertyChanged
 
     }
 
+    public Form_10VM(string formNum, in Report rep)
+    {
+        if (rep.FormNum_DB is "1.0" or "2.0")
+        {
+            Storage = rep;
+        }
+
+        FormType = formNum;
+        WindowHeader = $"Форма {rep.FormNum_DB}";
+        StaticConfiguration.DBModel.SaveChanges();
+    }
+
     #region OnPropertyChanged
-    
+
     public event PropertyChangedEventHandler PropertyChanged;
     public void OnPropertyChanged([CallerMemberName] string propertyName = "")
     {
