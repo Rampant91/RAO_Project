@@ -37,7 +37,7 @@
             BorderBrush="Black"
             BorderThickness="1"
             CornerRadius="5">
-            <Grid ColumnDefinitions="250,400" RowDefinitions="*,*,*">
+            <Grid ColumnDefinitions="250,400" RowDefinitions="*,*,*,*">
                 <TextBlock
                     Grid.Row="0"
                     Grid.Column="0"
@@ -86,8 +86,15 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Text="{Binding Okpo, Mode=OneTime}"/>
+				<StackPanel
+					Grid.Row ="3" 
+					Orientation = "Horizontal">
+					<Button Height="32" Margin ="5,0,0,0">Реорганизовать</Button>
+					<Button Height="32" Margin ="5,0,0,0">Проверить</Button>
+					<Button Height="32" Margin ="5,0,0,0">Сохранить</Button>
+				</StackPanel>
             </Grid>
-
+			
         </Border>
         <!--  ScrollData  -->
         <ScrollViewer
