@@ -159,6 +159,7 @@ public class Form_10VM : BaseVM, INotifyPropertyChanged
 
     public ICommand SaveReport => new SaveReportAsyncCommand(this);             //  Сохранить отчет
     public ICommand ChangeReportOrder => new ChangeReportOrderAsyncCommand(this);       //  Поменять местами юр. лицо и обособленное подразделение
+    public ICommand Reorganize => new ReorganizeReportAsyncCommand(this);        // Реорганизовать компанию (Добавить или убрать поля для обособленного подразделения)
     
     #endregion
 

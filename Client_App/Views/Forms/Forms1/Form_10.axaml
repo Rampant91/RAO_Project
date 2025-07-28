@@ -61,22 +61,21 @@
                         Text="Регистрационный номер:"/>
                     <StackPanel
                         Orientation = "Horizontal">
-                        <Button Content="Поменять местами"
-                                IsVisible="{Binding IsSeparateDivision}"
-                                IsEnabled="{Binding IsSeparateDivision}"
-                                Height="32"
-                                Margin ="5,0,0,0"
-                                Command="{Binding ChangeReportOrder}"/>
                         <Button Content="Реорганизовать"
-                                IsVisible="{Binding IsSeparateDivision, Converter={StaticResource BoolInverterConverter}}"
-                                IsEnabled="{Binding IsSeparateDivision, Converter={StaticResource BoolInverterConverter}}"
                                 Height="30"
-                                Margin ="5,0,0,0"/>
+                                Margin ="5,0,0,0"
+						        Command = "{Binding Reorganize}"/>
                         <Button
                             Content="Сохранить"
                             Height="32"
                             Margin ="5,0,0,0"
                             Command="{Binding SaveReport}"/>
+						<Button Content="Поменять местами"
+                                IsVisible="{Binding IsSeparateDivision}"
+                                IsEnabled="{Binding IsSeparateDivision}"
+                                Height="32"
+                                Margin ="5,0,0,0"
+                                Command="{Binding ChangeReportOrder}"/>
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Grid.Column="1"
