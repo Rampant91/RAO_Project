@@ -1,10 +1,12 @@
 ﻿using Client_App.ViewModels;
+using Client_App.ViewModels.Forms.Forms1;
 using Client_App.Views;
+using Client_App.Views.Forms.Forms1;
 using Models.Collections;
+using Models.Interfaces;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Models.Interfaces;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -17,15 +19,12 @@ public class ChangeReportsAsyncCommand : BaseAsyncCommand
     {
         if (parameter is ObservableCollectionWithItemPropertyChanged<IKey> param && param.First() is { } obj)
         {
-            var t = Desktop.MainWindow as MainWindow;
-            var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
-            var rep = (Reports)obj;
-            var frm = new ChangeOrCreateVM(rep.Master.FormNum.Value, rep.Master);
-            await MainWindowVM.ShowDialog.Handle(frm);
-
-            //Local_Reports.Reports_Collection.Sorted = false;
-            //await Local_Reports.Reports_Collection.QuickSortAsync();
-            t.SelectedReports = tmp;
+            var mainWindow = Desktop.MainWindow as MainWindow;
+            var report = (Reports)obj;
+            var form10VM = new Form_10VM(report.DBObservable);
+            var window = new Form_10(form10VM) { DataContext = form10VM };
+            await window.ShowDialog(mainWindow);
+           
         }
     }
 }
