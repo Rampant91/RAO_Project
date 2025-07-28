@@ -6,17 +6,33 @@ using System.Threading.Tasks;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.ViewModels.Forms.Forms1;
+using Client_App.ViewModels.Forms.Forms2;
 
 namespace Client_App.Commands.AsyncCommands.Save;
 
 //  Сохранить отчет
 public class SaveReportAsyncCommand : BaseAsyncCommand
 {
-    private dynamic VM => _formType is "1.0" ? _form10VM : _changeOrCreateVM;
+    private dynamic VM 
+    {
+        get 
+        { 
+            switch (_formType)
+            {
+                case "1.0":
+                        return _form10VM;
+                case "2.0":
+                        return _form20VM;
+                default:
+                    return _changeOrCreateVM;
+            }
+        }
+    }
 
     private readonly ChangeOrCreateVM _changeOrCreateVM = null!;
 
     private readonly Form_10VM _form10VM = null!;
+    private readonly Form_20VM _form20VM = null!;
 
     private readonly string _formType = null!;
     private Report Storage => VM.Storage;
@@ -32,6 +48,12 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
                 _form10VM = form10VM;
                 break;
             }
+            case Form_20VM form20VM:
+                {
+                    _formType = form20VM.FormType;
+                    _form20VM = form20VM;
+                    break;
+                }
             case ChangeOrCreateVM changeOrCreateVM:
             {
                 _formType = changeOrCreateVM.FormType;
@@ -45,6 +67,11 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
     {
         _formType = formViewModel.FormType;
         _form10VM = formViewModel;
+    }
+    public SaveReportAsyncCommand(Form_20VM formViewModel)
+    {
+        _formType = formViewModel.FormType;
+        _form20VM = formViewModel;
     }
 
     public override async Task AsyncExecute(object? parameter)

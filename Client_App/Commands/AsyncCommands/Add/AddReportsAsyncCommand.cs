@@ -2,8 +2,10 @@
 using Avalonia.Threading;
 using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels.Forms.Forms1;
+using Client_App.ViewModels.Forms.Forms2;
 using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
+using Client_App.Views.Forms.Forms2;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;
@@ -26,8 +28,11 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
         {
             var mainWindow = (Desktop.MainWindow as MainWindow)!;
 
-            var form10VM = new Form_10VM(ReportsStorage.LocalReports);
+            var selectedReports = mainWindow.SelectedReports;
+            var reps = (Reports)selectedReports.First();
 
+
+            bool isSeparateDivision = true;
             #region AskIfTheOrganizationIsSeparateDivision
 
             var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
@@ -52,12 +57,12 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
             {
                 case "Юридическое лицо":
                 {
-                    form10VM.IsSeparateDivision = false;
+                    isSeparateDivision = false;
                     break;
                 }
                 case "Обособленное подразделение":
                 {
-                    form10VM.IsSeparateDivision = true;
+                    isSeparateDivision = true;
                     break;
                 }
                 case null or "Отмена":
@@ -67,11 +72,29 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
             }
 
             #endregion
+            switch (reps.Master.FormNum.Value)
+            {
+                case "1.0":
+                    {
+                        var form10VM = new Form_10VM(ReportsStorage.LocalReports);
+                        form10VM.IsSeparateDivision = isSeparateDivision;
+                        var window = new Form_10(form10VM) { DataContext = form10VM };
+                        await new SaveReportAsyncCommand(form10VM).AsyncExecute(null);
+                        await window.ShowDialog(mainWindow);
 
-            var window = new Form_10(form10VM) { DataContext = form10VM };
-            await new SaveReportAsyncCommand(form10VM).AsyncExecute(null);
-            await window.ShowDialog(mainWindow);
+                        break;
+                    }
+                case "2.0":
+                    {
+                        var form20VM = new Form_20VM(ReportsStorage.LocalReports);
+                        form20VM.IsSeparateDivision = isSeparateDivision;
+                        var window = new Form_20(form20VM) { DataContext = form20VM };
+                        await new SaveReportAsyncCommand(form20VM).AsyncExecute(null);
+                        await window.ShowDialog(mainWindow);
 
+                        break;
+                    }
+            }
             mainWindow.SelectedReports = mainWindow.SelectedReports is null
                 ? []
                 : new ObservableCollectionWithItemPropertyChanged<IKey>(mainWindow.SelectedReports);

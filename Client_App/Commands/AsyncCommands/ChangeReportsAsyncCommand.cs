@@ -1,7 +1,10 @@
 ﻿using Client_App.ViewModels.Forms.Forms1;
+using Client_App.ViewModels.Forms.Forms2;
 using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
+using Client_App.Views.Forms.Forms2;
 using Models.Collections;
+using Models.Forms.Form1;
 using Models.Interfaces;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,16 +23,31 @@ public class ChangeReportsAsyncCommand : BaseAsyncCommand
             var mainWindow = (Desktop.MainWindow as MainWindow)!;
             var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(mainWindow.SelectedReports);
             var reps = (Reports)obj;
-
-            var form10VM = new Form_10VM(reps.Master.FormNum.Value, reps.Master)
+            switch (reps.Master.FormNum.Value)
             {
-                IsSeparateDivision = string.IsNullOrWhiteSpace(reps.Master.RegNoRep.Value) 
-                                     && string.IsNullOrWhiteSpace(reps.Master.OkpoRep.Value)
-            };
-
-            var window = new Form_10(form10VM) { DataContext = form10VM };
-
-            await window.ShowDialog(mainWindow);
+                case "1.0":
+                    {
+                        var form10VM = new Form_10VM(reps.Master.FormNum.Value, reps.Master)
+                        {
+                            IsSeparateDivision = string.IsNullOrWhiteSpace(reps.Master.RegNoRep.Value)
+                                    && string.IsNullOrWhiteSpace(reps.Master.OkpoRep.Value)
+                        };
+                        var window = new Form_10(form10VM) { DataContext = form10VM };
+                        await window.ShowDialog(mainWindow);
+                        break;
+                    }
+                case "2.0":
+                    {
+                        var form20VM = new Form_20VM(reps.Master.FormNum.Value, reps.Master)
+                        {
+                            IsSeparateDivision = string.IsNullOrWhiteSpace(reps.Master.RegNoRep.Value)
+                                    && string.IsNullOrWhiteSpace(reps.Master.OkpoRep.Value)
+                        };
+                        var window = new Form_20(form20VM) { DataContext = form20VM };
+                        await window.ShowDialog(mainWindow);
+                        break;
+                    }
+            }
 
             //Local_Reports.Reports_Collection.Sorted = false;
             //await Local_Reports.Reports_Collection.QuickSortAsync();
