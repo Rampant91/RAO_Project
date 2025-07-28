@@ -1,21 +1,17 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
-using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Resources.CustomComparers;
-using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.Views;
-using Client_App.Views.Calculator;
 using Client_App.Views.Forms.Forms1;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Client_App.Commands.AsyncCommands.Save;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
@@ -29,8 +25,6 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
         if (parameter is string par)
         {
             var mainWindow = (Desktop.MainWindow as MainWindow)!;
-
-            //----------------------
 
             var form10VM = new Form_10VM(ReportsStorage.LocalReports);
 
@@ -54,8 +48,6 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
                 })
                 .ShowDialog(mainWindow));
 
-            #endregion
-
             switch (answer)
             {
                 case "Юридическое лицо":
@@ -74,14 +66,11 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
                 }
             }
 
+            #endregion
+
             var window = new Form_10(form10VM) { DataContext = form10VM };
+            await new SaveReportAsyncCommand(form10VM).AsyncExecute(null);
             await window.ShowDialog(mainWindow);
-
-            //----------------------
-
-            //ChangeOrCreateVM frm = new(par, ReportsStorage.LocalReports);
-            //await new SaveReportAsyncCommand(frm).AsyncExecute(null);
-            //await MainWindowVM.ShowDialog.Handle(frm);
 
             mainWindow.SelectedReports = mainWindow.SelectedReports is null
                 ? []

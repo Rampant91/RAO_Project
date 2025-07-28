@@ -16,6 +16,7 @@ public class CheckForm : BaseWindow<CheckFormVM>
     public CheckForm(ChangeOrCreateVM changeOrCreateVM, List<CheckError> checkError)
     {
         AvaloniaXamlLoader.Load(this);
+
         DataContext = new CheckFormVM(changeOrCreateVM, checkError);
 
         var dataGrid = this.Get<DataGrid>("CheckErrorsDataGrid");

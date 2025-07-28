@@ -12,30 +12,44 @@ namespace Client_App.Commands.AsyncCommands.Save;
 //  Сохранить отчет
 public class SaveReportAsyncCommand : BaseAsyncCommand
 {
-    private readonly ChangeOrCreateVM _changeOrCreateVM;
+    private dynamic VM => _formType is "1.0" ? _form10VM : _changeOrCreateVM;
 
-    //private readonly Form_10VM _form10VM;
+    private readonly ChangeOrCreateVM _changeOrCreateVM = null!;
 
-    public SaveReportAsyncCommand(ChangeOrCreateVM changeOrCreateVM)
+    private readonly Form_10VM _form10VM = null!;
+
+    private readonly string _formType = null!;
+    private Report Storage => VM.Storage;
+    private Reports? Storages => VM.Storages;
+
+    public SaveReportAsyncCommand(BaseVM vm)
     {
-        _changeOrCreateVM = changeOrCreateVM;
+        switch (vm)
+        {
+            case Form_10VM form10VM:
+            {
+                _formType = form10VM.FormType;
+                _form10VM = form10VM;
+                break;
+            }
+            case ChangeOrCreateVM changeOrCreateVM:
+            {
+                _formType = changeOrCreateVM.FormType;
+                _changeOrCreateVM = changeOrCreateVM;
+                break;
+            }
+        }
     }
 
-    //public SaveReportAsyncCommand(BaseVM formViewModel)
-    //{
-    //    if (formViewModel is Form_10VM form10VM)
-    //    {
-    //        _form10VM = form10VM;
-    //    }
-    //}
-
-    private Report Storage => _changeOrCreateVM.Storage;
-    private Reports Storages => _changeOrCreateVM.Storages;
-    private string FormType => _changeOrCreateVM.FormType;
+    public SaveReportAsyncCommand(Form_10VM formViewModel)
+    {
+        _formType = formViewModel.FormType;
+        _form10VM = formViewModel;
+    }
 
     public override async Task AsyncExecute(object? parameter)
     {
-        if (_changeOrCreateVM.DBO != null)
+        if (VM.DBO != null)
         {
             var tmp = new Reports { Master = Storage };
             if (tmp.Master.Rows10.Count != 0)
@@ -48,10 +62,10 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
                 tmp.Master.Rows20[1].OrganUprav.Value = tmp.Master.Rows20[0].OrganUprav.Value;
                 tmp.Master.Rows20[1].RegNo.Value = tmp.Master.Rows20[0].RegNo.Value;
             }
-            _changeOrCreateVM.DBO.Reports_Collection.Add(tmp);
-            _changeOrCreateVM.DBO = null;
+            VM.DBO.Reports_Collection.Add(tmp);
+            VM.DBO = null;
         }
-        else if (Storages != null && FormType is not ("1.0" or "2.0") && !Storages.Report_Collection.Contains(Storage))
+        else if (Storages != null && _formType is not ("1.0" or "2.0") && !Storages.Report_Collection.Contains(Storage))
         {
             Storages.Report_Collection.Add(Storage);
         }
@@ -71,12 +85,12 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
             Storages.Report_Collection.Sorted = false;
             await Storages.Report_Collection.QuickSortAsync();
         }
-        var dbm = StaticConfiguration.DBModel;
+        var db = StaticConfiguration.DBModel;
         try
         {
             Storage.ReportChangedDate = DateTime.Now;
-            await dbm.SaveChangesAsync();
-            _changeOrCreateVM.IsCanSaveReportEnabled = false;
+            await db.SaveChangesAsync();
+            VM.IsCanSaveReportEnabled = false;
         }
         catch (Exception ex)
         {
