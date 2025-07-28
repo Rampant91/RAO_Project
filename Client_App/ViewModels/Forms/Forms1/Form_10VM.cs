@@ -1,4 +1,5 @@
-﻿using Models.Attributes;
+﻿using Client_App.Commands.AsyncCommands.Save;
+using Models.Attributes;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
@@ -7,8 +8,8 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Windows.Input;
+using Client_App.Commands.AsyncCommands;
 
 namespace Client_App.ViewModels.Forms.Forms1;
 public class Form_10VM : BaseVM, INotifyPropertyChanged
@@ -154,6 +155,15 @@ public class Form_10VM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
+    #region Commands
+
+    public ICommand SaveReport => new SaveReportAsyncCommand(this);             //  Сохранить отчет
+    public ICommand ChangeReportOrder => new ChangeReportOrderAsyncCommand(this);       //  Поменять местами юр. лицо и обособленное подразделение
+    
+    #endregion
+
+    #region Constructor
+
     public Form_10VM() { }
 
     public Form_10VM(in DBObservable reps)
@@ -182,6 +192,8 @@ public class Form_10VM : BaseVM, INotifyPropertyChanged
         WindowHeader = $"Форма {rep.FormNum_DB}";
         StaticConfiguration.DBModel.SaveChanges();
     }
+
+    #endregion
 
     #region OnPropertyChanged
 

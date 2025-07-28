@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
     xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
+    xmlns:customConverters="clr-namespace:Client_App.Resources.CustomConverters"
     Title="Form_10"
     Name="Форма 1.0"
     Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.5', FallbackValue='600', Mode=OneTime}"
@@ -21,74 +22,85 @@
         <vm:Form_10VM/>
     </Design.DataContext>
 
+    <Window.Resources>
+        <customConverters:BoolInverterConverter x:Key="BoolInverterConverter"/>
+    </Window.Resources>
+
     <Grid>
-        <!-- TopTable -->
+
+        <!--  TopTable  -->
         <Grid.RowDefinitions>
             <RowDefinition Height="*" MaxHeight="200"/>
-            <RowDefinition Height="2*" MinHeight="400"/>
+            <RowDefinition Height="4*" MinHeight="400"/>
         </Grid.RowDefinitions>
         <Border
             Grid.Row="0"
-            MinHeight="200"
+            MinHeight="150"
             MaxHeight="200"
-            Margin="5,5,5,0"
-            Padding="0,5,0,0"
+            Margin="5,15,5,0"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             BorderBrush="Black"
             BorderThickness="1"
             CornerRadius="5">
-            <Grid ColumnDefinitions="250,400" RowDefinitions="*,*,*">
-                <TextBlock
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    Margin="5,3,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Text="Регистрационный номер:"/>
-                <TextBox
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    Width="300"
-                    Height="30"
-                    Margin="0,3,5,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Text="{Binding Storage.RegNoRep.Value}"/>
-                <TextBlock
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Margin="5,0,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Text="Сокращенное наименование:"/>
-                <TextBox
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Width="300"
-                    Height="30"
-                    Margin="0,0,5,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Text="{Binding Storage.ShortJurLicoRep.Value}"/>
-                <TextBlock
-                    Grid.Row="2"
-                    Grid.Column="0"
-                    Margin="5,0,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Text="ОКПО:"/>
-                <TextBox
-                    Grid.Row="2"
-                    Grid.Column="1"
-                    Width="300"
-                    Height="30"
-                    Margin="0,0,5,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Text="{Binding  Storage.OkpoRep.Value}"/>
-            </Grid>
 
+            <Grid ColumnDefinitions="330,500">
+                <StackPanel Grid.Column="0"
+                            Orientation="Vertical">
+                    <TextBlock
+                        Height="32"
+                        Margin="5,13,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Text="Орган управления использованием атомной энергии"/>
+                    <TextBlock
+                        Height="32"
+                        Margin="5,3,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Text="Регистрационный номер:"/>
+                    <StackPanel
+                        Orientation = "Horizontal">
+                        <Button Content="Поменять местами"
+                                IsVisible="{Binding IsSeparateDivision}"
+                                IsEnabled="{Binding IsSeparateDivision}"
+                                Height="32"
+                                Margin ="5,0,0,0"
+                                Command="{Binding ChangeReportOrder}"/>
+                        <Button Content="Реорганизовать"
+                                IsVisible="{Binding IsSeparateDivision, Converter={StaticResource BoolInverterConverter}}"
+                                IsEnabled="{Binding IsSeparateDivision, Converter={StaticResource BoolInverterConverter}}"
+                                Height="30"
+                                Margin ="5,0,0,0"/>
+                        <Button
+                            Content="Сохранить"
+                            Height="32"
+                            Margin ="5,0,0,0"
+                            Command="{Binding SaveReport}"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.Column="1"
+                            Orientation="Vertical">
+                    <TextBox
+                        Width="500"
+                        Height="42"
+                        Margin="0,3"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        AcceptsReturn="True"
+                        ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                        TextWrapping="Wrap"
+                        Text="{Binding Storage.Rows10[0].OrganUprav.Value}"/>
+                    <TextBox
+                        Width="500"
+                        Height="42"
+                        Margin="0,3"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Text="{Binding Storage.RegNoRep.Value}"/>
+                </StackPanel>
+            </Grid>
+			
         </Border>
         <!-- ScrollData -->
         <ScrollViewer
@@ -99,33 +111,6 @@
             VerticalContentAlignment="Stretch"
             VerticalScrollBarVisibility="Hidden">
             <StackPanel>
-                <!-- Орган управления -->
-                <Border
-                    Margin="5"
-                    Padding="3"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    BorderBrush="Black"
-                    BorderThickness="1"
-                    CornerRadius="5">
-                    <Grid VerticalAlignment="Center" ColumnDefinitions="210,300">
-                        <TextBlock
-                            Grid.Column="0"
-                            Height="32"
-                            Margin="5,0,0,0"
-                            IsEnabled="False"
-                            Text="Орган управления использованием атомной энергии"
-                            TextWrapping="Wrap"/>
-                        <TextBox
-                            Grid.Column="1"
-                            Height="42"
-                            Margin="0,3"
-                            AcceptsReturn="True"
-                            ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                            Text="{Binding Storage.Rows10[0].OrganUprav.Value}"
-                            TextWrapping="Wrap"/>
-                    </Grid>
-                </Border>
                 <!-- Юридическое лицо -->
                 <Border
                     Margin="5"
@@ -135,7 +120,7 @@
                     BorderBrush="Black"
                     BorderThickness="1"
                     CornerRadius="5">
-                    <Grid ColumnDefinitions="210,300" RowDefinitions="*,*">
+                    <Grid ColumnDefinitions="330,500" RowDefinitions="*,*">
                         <!-- Юридическое лицо - Наименования полей -->
                         <TextBlock
                             Grid.Row="0"
@@ -319,7 +304,7 @@
                     BorderThickness="1"
                     CornerRadius="5"
                     IsVisible="{Binding IsSeparateDivision}">
-                    <Grid ColumnDefinitions="210,300" RowDefinitions="*,*">
+                    <Grid ColumnDefinitions="330,500" RowDefinitions="*,*">
                         <!-- Территориальное обособленное подразделение - Наименования полей -->
                         <TextBlock
                             Grid.Row="0"
