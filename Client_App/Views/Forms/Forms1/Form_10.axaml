@@ -7,7 +7,7 @@
     xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
     xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
     xmlns:customConverters="clr-namespace:Client_App.Resources.CustomConverters"
-    Title="Form_10"
+    Title="{Binding WindowHeader, Mode=OneTime}"
     Name="Форма 1.0"
     Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.5', FallbackValue='600', Mode=OneTime}"
     Height="{Binding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.75', FallbackValue='800', Mode=OneTime}"

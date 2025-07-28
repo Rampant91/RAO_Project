@@ -92,7 +92,7 @@ public class Form_10VM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
-    private string WindowHeader { get; set; } = "1.0";
+    public string WindowHeader => $"Форма {Storage.FormNum_DB}: Титульный лист организации";
 
     #region Properties
 
@@ -177,8 +177,6 @@ public class Form_10VM : BaseVM, INotifyPropertyChanged
         Storage.Rows10.Add(ty1);
         Storage.Rows10.Add(ty2);
         DBO = reps;
-        WindowHeader = ((Form_ClassAttribute)Type.GetType($"Models.Forms.Form1.Form10,Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
-
     }
 
     public Form_10VM(string formNum, in Report rep)
@@ -189,7 +187,6 @@ public class Form_10VM : BaseVM, INotifyPropertyChanged
         }
 
         FormType = formNum;
-        WindowHeader = $"Форма {rep.FormNum_DB}";
         StaticConfiguration.DBModel.SaveChanges();
     }
 
