@@ -1797,7 +1797,7 @@ public abstract class CheckF16 : CheckBase
     private static List<CheckError> Check_005_26(List<Form16> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
-        var applicableOperationCodes = new [] { "26", "28", "63" };
+        var applicableOperationCodes = new [] { "28", "63" };
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var statusRao = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
@@ -1860,7 +1860,7 @@ public abstract class CheckF16 : CheckBase
     private static List<CheckError> Check_005_42(List<Form16> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
-        var applicableOperationCodes = new[] { "42", "43", "73", "97", "98" };
+        var applicableOperationCodes = new[] { "42", "73", "97", "98" };
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var statusRao = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
@@ -1975,7 +1975,7 @@ public abstract class CheckF16 : CheckBase
         List<CheckError> result = new();
         var applicableOperationCodes = new[]
         {
-            "10", "18", "21", "25", "27", "29", "31", "35", "36", "37", "39", "44", 
+            "10", "18", "21", "25", "26", "27", "29", "31", "35", "36", "37", "39", "44", 
             "45", "48", "49", "51", "52", "56", "57", "59", "68", "71", "74", "75"
         };
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
