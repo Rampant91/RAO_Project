@@ -1,6 +1,10 @@
-﻿using Client_App.ViewModels;
+﻿using Avalonia.Threading;
+using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using Models.Collections;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Models;
+using Avalonia.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,11 +36,44 @@ namespace Client_App.Commands.AsyncCommands
         {
             if (_vm is Form_10VM form_10VM)
             {
+
                 //  Если подразделение реорганизуется в юр. лицо,
                 // поля Территориального обособленного подразделения очищаются,
                 // т.к. после реорганизации они не должны больше использоваться
-                if (form_10VM.IsSeparateDivision) 
+
+                if (form_10VM.IsSeparateDivision)
                 {
+                    // Предупреждение пользователя
+                    var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions =
+                    [
+                        new ButtonDefinition { Name = "Продолжить" },
+                        new ButtonDefinition { Name = "Отмена", IsCancel = true }
+                    ],
+                    CanResize = true,
+                    ContentTitle = "Реорганизация",
+                    ContentMessage = "После реорганизации поля территориального обособленного подразделения очистятся",
+                    MinWidth = 300,
+                    MinHeight = 125,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                }).Show());
+
+                    switch (answer)
+                    {
+                        case "Продолжить":
+                            {
+                                //обработка пройдет дальше
+                                break;
+                            }
+                        case null or "Отмена":
+                            {
+                                // обработка остановится
+                                return;
+                            }
+                    }
+                    //очищение содержимого полей
                     Storage.Rows10[1].SubjectRF.Value = "";
                     Storage.Rows10[1].JurLico.Value = "";
                     Storage.Rows10[1].ShortJurLico.Value = "";
@@ -54,9 +91,9 @@ namespace Client_App.Commands.AsyncCommands
                     Storage.Rows10[1].Kpp.Value = "";
                     Storage.Rows10[1].Okopf.Value = "";
                     Storage.Rows10[1].Okfs.Value = "";
+                    //реорганизация формы
+                    form_10VM.IsSeparateDivision = !form_10VM.IsSeparateDivision;
                 }
-                //реорганизация формы
-                form_10VM.IsSeparateDivision = !form_10VM.IsSeparateDivision;
             }
         }
     }
