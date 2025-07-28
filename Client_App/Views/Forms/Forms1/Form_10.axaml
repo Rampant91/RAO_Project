@@ -122,7 +122,7 @@
                             Margin="0,3"
                             AcceptsReturn="True"
                             ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                            Text="{Binding Storage.Rows10[0].OrganUprav_DB}"
+                            Text="{Binding Storage.Rows10[0].OrganUprav.Value}"
                             TextWrapping="Wrap"/>
                     </Grid>
                 </Border>
@@ -229,83 +229,83 @@
                             <TextBox
                                 Height="26"
                                 Margin="0,0,0,3"
-                                Text="{Binding  Storage.Rows10[0].SubjectRF_DB}"/>
+                                Text="{Binding  Storage.Rows10[0].SubjectRF.Value}"/>
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding Storage.Rows10[0].JurLico_DB}"
+                                Text="{Binding Storage.Rows10[0].JurLico.Value}"
                                 TextWrapping="Wrap"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].ShortJurLico_DB}"/>
+                                Text="{Binding Storage.Rows10[0].ShortJurLico.Value}"/>
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding Storage.Rows10[0].JurLicoAddress_DB}"
-                                TextWrapping="Wrap"/>
-                            <TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding Storage.Rows10[0].JurLicoFactAddress_DB}"
+                                Text="{Binding Storage.Rows10[0].JurLicoAddress.Value}"
                                 TextWrapping="Wrap"/>
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding Storage.Rows10[0].GradeFIO_DB}"
+                                Text="{Binding Storage.Rows10[0].JurLicoFactAddress.Value}"
+                                TextWrapping="Wrap"/>
+                            <TextBox
+                                Height="42"
+                                Margin="0,3"
+                                AcceptsReturn="True"
+                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                Text="{Binding Storage.Rows10[0].GradeFIO.Value}"
                                 TextWrapping="Wrap"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Telephone_DB}"/>
+                                Text="{Binding Storage.Rows10[0].Telephone.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Fax_DB}"/>
+                                Text="{Binding Storage.Rows10[0].Fax.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Email_DB}"/>
+                                Text="{Binding Storage.Rows10[0].Email.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Okpo_DB}"/>
+                                Text="{Binding Storage.Rows10[0].Okpo.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Okved_DB}"/>
+                                Text="{Binding Storage.Rows10[0].Okved.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Okogu_DB}"/>
+                                Text="{Binding Storage.Rows10[0].Okogu.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Oktmo_DB}"/>
+                                Text="{Binding Storage.Rows10[0].Oktmo.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Inn_DB}"/>
+                                Text="{Binding Storage.Rows10[0].Inn.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Kpp_DB}"/>
+                                Text="{Binding Storage.Rows10[0].Kpp.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Okopf_DB}"/>
+                                Text="{Binding Storage.Rows10[0].Okopf.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Okfs_DB}"/>
+                                Text="{Binding Storage.Rows10[0].Okfs.Value}"/>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -413,83 +413,83 @@
                             <TextBox
                                 Height="26"
                                 Margin="0,0,0,3"
-                                Text="{Binding Storage.Rows10[1].SubjectRF_DB}"/>
+                                Text="{Binding Storage.Rows10[1].SubjectRF.Value}"/>
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding Storage.Rows10[1].JurLico_DB}"
+                                Text="{Binding Storage.Rows10[1].JurLico.Value}"
                                 TextWrapping="Wrap"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].ShortJurLico_DB}"/>
+                                Text="{Binding Storage.Rows10[1].ShortJurLico.Value}"/>
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding Storage.Rows10[1].JurLicoAddress_DB}"
-                                TextWrapping="Wrap"/>
-                            <TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding Storage.Rows10[1].JurLicoFactAddress_DB}"
+                                Text="{Binding Storage.Rows10[1].JurLicoAddress.Value}"
                                 TextWrapping="Wrap"/>
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding Storage.Rows10[1].GradeFIO_DB}"
+                                Text="{Binding Storage.Rows10[1].JurLicoFactAddress.Value}"
+                                TextWrapping="Wrap"/>
+                            <TextBox
+                                Height="42"
+                                Margin="0,3"
+                                AcceptsReturn="True"
+                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                Text="{Binding Storage.Rows10[1].GradeFIO.Value}"
                                 TextWrapping="Wrap"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Telephone_DB}"/>
+                                Text="{Binding Storage.Rows10[1].Telephone.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Fax_DB}"/>
+                                Text="{Binding Storage.Rows10[1].Fax.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Email_DB}"/>
+                                Text="{Binding Storage.Rows10[1].Email.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Okpo_DB}"/>
+                                Text="{Binding Storage.Rows10[1].Okpo.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Okved_DB}"/>
+                                Text="{Binding Storage.Rows10[1].Okved.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Okogu_DB}"/>
+                                Text="{Binding Storage.Rows10[1].Okogu.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Oktmo_DB}"/>
+                                Text="{Binding Storage.Rows10[1].Oktmo.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Inn_DB}"/>
+                                Text="{Binding Storage.Rows10[1].Inn.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Kpp_DB}"/>
+                                Text="{Binding Storage.Rows10[1].Kpp.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Okopf_DB}"/>
+                                Text="{Binding Storage.Rows10[1].Okopf.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Okfs_DB}"/>
+                                Text="{Binding Storage.Rows10[1].Okfs.Value}"/>
                         </StackPanel>
                     </Grid>
                 </Border>

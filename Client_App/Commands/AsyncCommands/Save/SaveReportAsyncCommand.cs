@@ -85,11 +85,11 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
             Storages.Report_Collection.Sorted = false;
             await Storages.Report_Collection.QuickSortAsync();
         }
-        var dbm = StaticConfiguration.DBModel;
+        var db = StaticConfiguration.DBModel;
         try
         {
             Storage.ReportChangedDate = DateTime.Now;
-            await dbm.SaveChangesAsync();
+            await db.SaveChangesAsync();
             VM.IsCanSaveReportEnabled = false;
         }
         catch (Exception ex)

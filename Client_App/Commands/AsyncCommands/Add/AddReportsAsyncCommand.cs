@@ -10,10 +10,8 @@ using Models.Collections;
 using Models.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Client_App.Commands.AsyncCommands.Save;
-using Client_App.ViewModels;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
@@ -50,8 +48,6 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
                 })
                 .ShowDialog(mainWindow));
 
-            #endregion
-
             switch (answer)
             {
                 case "Юридическое лицо":
@@ -69,6 +65,8 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
                     return;
                 }
             }
+
+            #endregion
 
             var window = new Form_10(form10VM) { DataContext = form10VM };
             await new SaveReportAsyncCommand(form10VM).AsyncExecute(null);

@@ -79,8 +79,13 @@ public partial class Form_10 : BaseWindow<Form_10VM>
         {
             case "Да":
             {
-                await dbm.SaveChangesAsync();
-                await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+                try
+                {
+                    await dbm.SaveChangesAsync();
+                    await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+                }
+                catch { }
+                
                 if (desktop.Windows.Count == 1)
                 {
                     desktop.MainWindow.WindowState = WindowState.Normal;
@@ -91,7 +96,11 @@ public partial class Form_10 : BaseWindow<Form_10VM>
             {
                 flag = true;
                 dbm.Restore();
-                await dbm.SaveChangesAsync();
+                try
+                {
+                    await dbm.SaveChangesAsync();
+                }
+                catch { }
 
                 var lst = vm.Storage[vm.FormType];
 
