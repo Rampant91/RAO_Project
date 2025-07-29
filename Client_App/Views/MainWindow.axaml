@@ -364,7 +364,9 @@
             Margin="5,5,5,5"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch">
-            <TabControl>
+            <TabControl SelectedIndex ="{Binding SelectedReportType}">
+				<!--Пустой элемент для начала отсчета индекса с 1 -->
+				<TabItem IsVisible="False"/>
                 <TabItem 
                     x:Name="Forms1" 
                     Header="Формы 1">

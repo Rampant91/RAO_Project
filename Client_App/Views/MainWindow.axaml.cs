@@ -98,6 +98,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
 
     #region Events
 
+   
     private void OpenContactsButtonClicked(object? sender, RoutedEventArgs e)
     {
         var contactsWindow = new Contacts();

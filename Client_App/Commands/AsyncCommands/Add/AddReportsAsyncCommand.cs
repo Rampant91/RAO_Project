@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Client_App.Commands.AsyncCommands.Save;
+using Client_App.ViewModels;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
@@ -27,9 +28,9 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
         if (parameter is string par)
         {
             var mainWindow = (Desktop.MainWindow as MainWindow)!;
+            var mainWindowVM = (mainWindow.DataContext as MainWindowVM);
 
             var selectedReports = mainWindow.SelectedReports;
-            var reps = (Reports)selectedReports.First();
 
 
             bool isSeparateDivision = true;
@@ -72,7 +73,7 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
             }
 
             #endregion
-            switch (reps.Master.FormNum.Value)
+            switch (mainWindowVM.SelectedReportTypeToString)
             {
                 case "1.0":
                     {
