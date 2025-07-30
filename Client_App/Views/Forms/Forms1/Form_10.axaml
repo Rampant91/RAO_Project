@@ -22,20 +22,16 @@
         <vm:Form_10VM/>
     </Design.DataContext>
 
-    <Window.Resources>
-        <customConverters:BoolInverterConverter x:Key="BoolInverterConverter"/>
-    </Window.Resources>
-
     <Grid>
 
         <!--  TopTable  -->
         <Grid.RowDefinitions>
             <RowDefinition Height="*" MaxHeight="200"/>
-            <RowDefinition Height="4*" MinHeight="400"/>
+            <RowDefinition Height="5*" MinHeight="400"/>
         </Grid.RowDefinitions>
         <Border
             Grid.Row="0"
-            MinHeight="150"
+            MinHeight="140"
             MaxHeight="200"
             Margin="5,15,5,0"
             HorizontalAlignment="Stretch"
@@ -49,33 +45,35 @@
                             Orientation="Vertical">
                     <TextBlock
                         Height="32"
-                        Margin="5,13,0,0"
+                        Margin="5,25,0,0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Text="Орган управления использованием атомной энергии"/>
                     <TextBlock
                         Height="32"
-                        Margin="5,3,0,0"
+                        Margin="5,8,0,0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Text="Регистрационный номер:"/>
                     <StackPanel
                         Orientation = "Horizontal">
-                        <Button Content="Реорганизовать"
-                                Height="30"
-                                Margin ="5,0,0,0"
-						        Command = "{Binding Reorganize}"/>
+                        <Button 
+                            Content="Поменять местами"
+                            IsVisible="{Binding IsSeparateDivision}"
+                            IsEnabled="{Binding IsSeparateDivision}"
+                            Height="32"
+                            Margin ="5,0,0,0"
+                            Command="{Binding ChangeReportOrder}"/>
+                        <Button 
+                            Content="Реорганизовать"
+                            Height="30"
+                            Margin ="5,0,0,0"
+                            Command = "{Binding Reorganize}"/>
                         <Button
                             Content="Сохранить"
                             Height="32"
                             Margin ="5,0,0,0"
                             Command="{Binding SaveReport}"/>
-						<Button Content="Поменять местами"
-                                IsVisible="{Binding IsSeparateDivision}"
-                                IsEnabled="{Binding IsSeparateDivision}"
-                                Height="32"
-                                Margin ="5,0,0,0"
-                                Command="{Binding ChangeReportOrder}"/>
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Grid.Column="1"
@@ -83,19 +81,14 @@
                     <TextBox
                         Width="500"
                         Height="42"
-                        Margin="0,3"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        AcceptsReturn="True"
+                        Margin="0, 13, 0, 3"
                         ScrollViewer.VerticalScrollBarVisibility="Hidden"
                         TextWrapping="Wrap"
                         Text="{Binding Storage.Rows10[0].OrganUprav.Value}"/>
                     <TextBox
                         Width="500"
-                        Height="42"
+                        Height="26"
                         Margin="0,3"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
                         Text="{Binding Storage.RegNoRep.Value}"/>
                 </StackPanel>
             </Grid>
@@ -112,8 +105,8 @@
             <StackPanel>
                 <!-- Юридическое лицо -->
                 <Border
-                    Margin="5"
-                    Padding="3"
+                    Margin="5,15,5,20"
+                    Padding="3,3,3,3"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     BorderBrush="Black"
@@ -213,27 +206,23 @@
                             <TextBox
                                 Height="26"
                                 Margin="0,0,0,3"
-                                TextAlignment="Right"
                                 Text="{Binding  Storage.Rows10[0].SubjectRF.Value}"/>
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                TextAlignment="Right"
                                 TextWrapping="Wrap"
                                 Text="{Binding Storage.Rows10[0].JurLico.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[0].ShortJurLico.Value}"/>
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                TextAlignment="Right"
                                 TextWrapping="Wrap"
                                 Text="{Binding Storage.Rows10[0].JurLicoAddress.Value}"/>
                             <TextBox
@@ -241,7 +230,6 @@
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                TextAlignment="Right"
                                 TextWrapping="Wrap"
                                 Text="{Binding Storage.Rows10[0].JurLicoFactAddress.Value}"/>
                             <TextBox
@@ -249,70 +237,58 @@
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                TextAlignment="Right"
                                 TextWrapping="Wrap"
                                 Text="{Binding Storage.Rows10[0].GradeFIO.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[0].Telephone.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[0].Fax.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[0].Email.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[0].Okpo.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[0].Okved.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[0].Okogu.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[0].Oktmo.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[0].Inn.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[0].Kpp.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[0].Okopf.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[0].Okfs.Value}"/>
                         </StackPanel>
                     </Grid>
                 </Border>
                 <!-- Территориальное обособленное подразделение -->
                 <Border
-                    Margin="5,0,5,5"
+                    Margin="5,0,5,20"
                     Padding="3"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
@@ -414,27 +390,23 @@
                             <TextBox
                                 Height="26"
                                 Margin="0,0,0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[1].SubjectRF.Value}"/>
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                TextAlignment="Right"
                                 TextWrapping="Wrap"
                                 Text="{Binding Storage.Rows10[1].JurLico.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[1].ShortJurLico.Value}"/>
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                TextAlignment="Right"
                                 TextWrapping="Wrap"
                                 Text="{Binding Storage.Rows10[1].JurLicoAddress.Value}"/>
                             <TextBox
@@ -442,71 +414,57 @@
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                TextAlignment="Right"
-                                TextWrapping="Wrap"
                                 Text="{Binding Storage.Rows10[1].JurLicoFactAddress.Value}"/>
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                TextAlignment="Right"
                                 TextWrapping="Wrap"
                                 Text="{Binding Storage.Rows10[1].GradeFIO.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[1].Telephone.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[1].Fax.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[1].Email.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[1].Okpo.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[1].Okved.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[1].Okogu.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[1].Oktmo.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[1].Inn.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[1].Kpp.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[1].Okopf.Value}"/>
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                TextAlignment="Right"
                                 Text="{Binding Storage.Rows10[1].Okfs.Value}"/>
                         </StackPanel>
                     </Grid>
