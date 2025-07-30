@@ -1,0 +1,197 @@
+<Window
+    x:Class="Client_App.Form_12"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
+    xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
+    Title="Form_12"
+    d:DesignHeight="450"
+    d:DesignWidth="900"
+    x:DataType="vm:Form_12VM"
+    mc:Ignorable="d"
+	x:Name="mainWindow">
+
+    <Window.Resources>
+        <converter:FractionConverter x:Key="FractionConverter"/>
+    </Window.Resources>
+
+	<Window.Styles>
+		<Style Selector="TextBlock.Title1">
+            <Setter Property="Margin" Value="1"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="Background" Value="White"/>
+			<Setter Property="TextWrapping" Value="Wrap"/>
+			<Setter Property="TextAlignment" Value="Center"/>
+		</Style>
+        <Style Selector="TextBlock.Title2">
+            <Setter Property="Margin" Value="1"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="Background" Value="White"/>
+			<Setter Property="TextWrapping" Value="Wrap"/>
+			<Setter Property="TextAlignment" Value="Center"/>
+		    <Setter Property="TextTrimming" Value="None"/>
+        
+        </Style>
+	
+	</Window.Styles>
+
+    <Design.DataContext>
+        <vm:Form_12VM/>
+    </Design.DataContext>
+
+	<Grid RowDefinitions ="Auto,Auto,*,Auto,Auto,Auto">
+		<StackPanel
+			Grid.Row ="0"
+			Orientation ="Horizontal">
+			<Grid Margin="5" RowDefinitions ="*,*,*,*,*">
+				<StackPanel Orientation ="Horizontal" Grid.Row="0">
+					<TextBlock Margin="5" >Дата окончания предыдущего отчетного периода:</TextBlock>
+					<DatePicker Margin="5" ></DatePicker>
+				</StackPanel>
+
+				<StackPanel Orientation ="Horizontal" Grid.Row="1">
+					<TextBlock Margin="5" >Дата окончания настоящего отчетного периода:</TextBlock>
+					<DatePicker Margin="5" ></DatePicker>
+				</StackPanel>
+
+				<StackPanel Orientation ="Horizontal" Grid.Row="2">
+					<TextBlock Margin="5" >Номер корректировки:</TextBlock>
+					<TextBox Margin="5" ></TextBox>
+				</StackPanel>
+
+				<StackPanel Orientation ="Horizontal" Grid.Row="3">
+					<Button Margin="5" >Проверить</Button>
+					<Button Margin="5" >Сохранить</Button>
+				</StackPanel>
+
+				<StackPanel Orientation ="Horizontal" Grid.Row="4">
+					<TextBlock Margin="5" >Автозаполнение:</TextBlock>
+					<CheckBox Margin="5" ></CheckBox>
+				</StackPanel>
+			</Grid>
+
+			<Grid Margin="5" RowDefinitions ="*,*,*,*,*">
+				<StackPanel Orientation ="Horizontal" Grid.Row="0">
+					<TextBlock Margin="5" >ФИО исполнителя:</TextBlock>
+					<TextBox Margin="5" ></TextBox>
+				</StackPanel>
+
+				<StackPanel Orientation ="Horizontal" Grid.Row="1">
+					<TextBlock Margin="5" >Должность:</TextBlock>
+					<TextBox Margin="5" ></TextBox>
+				</StackPanel>
+
+
+				<StackPanel Orientation ="Horizontal" Grid.Row="2">
+					<TextBlock Margin="5" >Телефон:</TextBlock>
+					<TextBox Margin="5" ></TextBox>
+				</StackPanel>
+
+				<StackPanel Orientation ="Horizontal" Grid.Row="3">
+					<TextBlock Margin="5" >Номер корректировки:</TextBlock>
+					<TextBox Margin="5" ></TextBox>
+				</StackPanel>
+
+				<StackPanel Orientation ="Horizontal" Grid.Row="4">
+					<Button Margin="5" >Скопировать данные предыдущей формы</Button>
+				</StackPanel>
+			</Grid>
+
+			<Button Height="42" Margin="5" > Перевести все РВ в РАО</Button>
+		</StackPanel>
+		
+		<StackPanel Background="#5685c0" Grid.Row="1">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                <Grid Margin="5" Name="MainGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Строки таблицы -->
+                    <TextBlock Classes="Title2" Grid.Column="0" Grid.Row="0"/>
+                    <TextBlock Classes="Title2" Grid.Column="0" Grid.Row="1"> № п/п </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="0" Grid.Row="2"> 1 </TextBlock>
+
+                    <TextBlock Classes="Title1" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2"> Сведения об операции </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="1" Grid.Row="1"> код </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="1" Grid.Row="2"> 2 </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="2" Grid.Row="1"> дата </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="2" Grid.Row="2"> 3 </TextBlock>
+     
+                    <TextBlock Classes="Title1" Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="7"> Сведения из паспорта на изделие из обедненного урана </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="3" Grid.Row="1"> номер паспорта </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="3" Grid.Row="2"> 4 </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="4" Grid.Row="1"> наименование </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="4" Grid.Row="2"> 5 </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="5" Grid.Row="1"> номер </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="5" Grid.Row="2"> 6 </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="6" Grid.Row="1" Text=" масса обедненного урана, кг "/>
+                    <TextBlock Classes="Title2" Grid.Column="6" Grid.Row="2"> 7 </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="7" Grid.Row="1"> код ОКПО изготовителя </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="7" Grid.Row="2"> 8 </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="8" Grid.Row="1"> дата выпуска </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="8" Grid.Row="2"> 9 </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="9" Grid.Row="1"> НСС, мес </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="9" Grid.Row="2"> 10 </TextBlock>
+
+                    <TextBlock Classes="Title1" Grid.Column="10" Grid.Row="0" Grid.ColumnSpan="2"> Право собственности на ИОУ </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="10" Grid.Row="1"> код формы собственности </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="10" Grid.Row="2"> 11 </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="11" Grid.Row="1"> код ОКПО правообладателя </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="11" Grid.Row="2"> 12 </TextBlock>
+
+                    <TextBlock Classes="Title1" Grid.Column="12" Grid.Row="0" Grid.ColumnSpan="3"> Документ </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="12" Grid.Row="1"> вид </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="12" Grid.Row="2"> 13 </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="13" Grid.Row="1"> номер </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="13" Grid.Row="2"> 14 </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="14" Grid.Row="1"> дата </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="14" Grid.Row="2"> 15 </TextBlock>
+
+                    <TextBlock Classes="Title1" Grid.Column="15" Grid.Row="0" Grid.ColumnSpan="2"> Код ОКПО </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="15" Grid.Row="1"> поставщика или получателя </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="15" Grid.Row="2"> 16 </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="16" Grid.Row="1"> перевозчика </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="16" Grid.Row="2"> 17 </TextBlock>
+
+                    <TextBlock Classes="Title1" Grid.Column="17" Grid.Row="0" Grid.ColumnSpan="3"> Прибор (установка), УКТ или иная упаковка </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="17" Grid.Row="1"> наименование </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="17" Grid.Row="2"> 18 </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="18" Grid.Row="1"> тип </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="18" Grid.Row="2"> 19 </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="19" Grid.Row="1"> номер </TextBlock>
+                    <TextBlock Classes="Title2" Grid.Column="19" Grid.Row="2"> 20 </TextBlock>
+                </Grid>
+            </ScrollViewer>
+        </StackPanel>
+		
+	</Grid>
+</Window>

@@ -145,6 +145,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Update="Views\Forms\Forms1\Form_12.axaml.cs">
+      <DependentUpon>Form_12.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Forms\Forms2\Form_20.axaml.cs">
       <DependentUpon>Form_20.axaml</DependentUpon>
     </Compile>
