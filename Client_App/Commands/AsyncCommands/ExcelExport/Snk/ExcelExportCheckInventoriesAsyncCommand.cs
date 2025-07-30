@@ -1103,7 +1103,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     #region GetErrors
 
                     var firstPlusMinusOperation = operationsWithoutMutuallyExclusive
-                        .FirstOrDefault(x => plusOperationArray.Contains(x.OpCode) || minusOperationArray.Contains(x.OpCode));
+                        .FirstOrDefault(x => (plusOperationArray.Contains(x.OpCode) || minusOperationArray.Contains(x.OpCode)) 
+                                             && x.OpDate != primaryInventoryDate);
 
                     var lastPlusMinusOperation = operationsWithoutMutuallyExclusive
                         .LastOrDefault(x => plusOperationArray.Contains(x.OpCode) || minusOperationArray.Contains(x.OpCode));
