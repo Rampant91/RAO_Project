@@ -1,12 +1,9 @@
 ﻿using Client_App.Commands.AsyncCommands.Save;
-using Models.Attributes;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form2;
-using System;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Client_App.Commands.AsyncCommands;
@@ -107,47 +104,6 @@ public class Form_20VM : BaseVM, INotifyPropertyChanged
             if (_isSeparateDivision == value) return;
             _isSeparateDivision = value;
             OnPropertyChanged();
-        }
-    }
-
-    #endregion
-
-    #region RegNo
-
-    public string RegNo { get; } = null!;
-
-    #endregion
-
-    #region Okpo
-
-    public string Okpo => !string.IsNullOrEmpty(Storage.Rows20[2].Okpo_DB)
-        ? Storage.Rows20[1].Okpo_DB
-        : Storage.Rows20[0].Okpo_DB;
-
-    #endregion
-
-    #region OrganUprav
-
-    private string _organUprav;
-
-    public string OrganUprav
-    {
-        get
-        {
-            return Storage.FormNum_DB switch
-            {
-                "1.0" => !string.IsNullOrEmpty(Storage.Rows20[0].OrganUprav_DB)
-                    ? Storage.Rows20[0].OrganUprav_DB
-                    : !string.IsNullOrEmpty(Storage.Rows20[1].OrganUprav_DB)
-                        ? Storage.Rows20[1].OrganUprav_DB
-                        : string.Empty,
-                "2.0" => !string.IsNullOrEmpty(Storage.Rows20[0].OrganUprav_DB)
-                    ? Storage.Rows20[0].OrganUprav_DB
-                    : !string.IsNullOrEmpty(Storage.Rows20[1].OrganUprav_DB)
-                        ? Storage.Rows20[1].OrganUprav_DB
-                        : string.Empty,
-                _ => string.Empty
-            };
         }
     }
 

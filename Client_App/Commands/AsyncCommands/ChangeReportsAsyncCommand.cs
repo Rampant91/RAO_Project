@@ -31,8 +31,7 @@ public class ChangeReportsAsyncCommand : BaseAsyncCommand
                     {
                         var form10VM = new Form_10VM(mainWindowVM.SelectedReportTypeToString, reps.Master)
                         {
-                            IsSeparateDivision = string.IsNullOrWhiteSpace(reps.Master.RegNoRep.Value)
-                                    && string.IsNullOrWhiteSpace(reps.Master.OkpoRep.Value)
+                            IsSeparateDivision = !string.IsNullOrWhiteSpace(reps.Master.Rows10[1].Okpo.Value)
                         };
                         var window = new Form_10(form10VM) { DataContext = form10VM };
                         await window.ShowDialog(mainWindow);
@@ -42,8 +41,7 @@ public class ChangeReportsAsyncCommand : BaseAsyncCommand
                     {
                         var form20VM = new Form_20VM(mainWindowVM.SelectedReportTypeToString, reps.Master)
                         {
-                            IsSeparateDivision = string.IsNullOrWhiteSpace(reps.Master.RegNoRep.Value)
-                                    && string.IsNullOrWhiteSpace(reps.Master.OkpoRep.Value)
+                            IsSeparateDivision = !string.IsNullOrWhiteSpace(reps.Master.Rows20[1].Okpo.Value)
                         };
                         var window = new Form_20(form20VM) { DataContext = form20VM };
                         await window.ShowDialog(mainWindow);

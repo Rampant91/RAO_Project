@@ -1148,7 +1148,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
                     var inStock = allOperationsWithoutMutuallyExclusive.Any(x => x.OpCode == "10" && x.OpDate == primaryInventoryDate);
                     var inStockOnPreviousInventoryDate = inStock;
-
+                    
                     foreach (var form in allOperationsWithoutMutuallyExclusive.Where(x => x.OpDate <= previousInventoryDate))
                     {
                         if (plusOperationArray.Contains(form.OpCode)) inStockOnPreviousInventoryDate = true;
