@@ -1,15 +1,17 @@
-﻿using Client_App.ViewModels;
+﻿using Avalonia.Controls;
+using Client_App.Commands.AsyncCommands.SumRow;
+using Client_App.ViewModels;
+using Client_App.ViewModels.Forms.Forms1;
 using Client_App.Views;
+using Client_App.Views.Forms.Forms1;
+using Client_App.VisualRealization.Long_Visual;
+using Models.Classes;
 using Models.Collections;
+using Models.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Client_App.VisualRealization.Long_Visual;
-using Models.Interfaces;
 using System.Reactive.Linq;
-using Avalonia.Controls;
-using Client_App.Commands.AsyncCommands.SumRow;
-using Models.Classes;
+using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -123,8 +125,23 @@ public class ChangeFormAsyncCommand(FormParameter? form = null) : BaseAsyncComma
                         break;
                     }
             }
-            await MainWindowVM.ShowDialog.Handle(frm);
-            t.SelectedReports = tmp;
+            switch (numForm)
+            {
+                case "1.2":
+                    {
+
+                        var form12VM = new Form_12VM(rep);
+                        var window = new Form_12(form12VM);
+                        await window.ShowDialog(t);
+                        break;
+                    }
+                default:
+                    {
+                        await MainWindowVM.ShowDialog.Handle(frm);
+                        t.SelectedReports = tmp;
+                        break;
+                    }
+            }
         }
     }
 
