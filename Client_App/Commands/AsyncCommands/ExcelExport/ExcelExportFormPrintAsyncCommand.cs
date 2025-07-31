@@ -1,16 +1,24 @@
-﻿using System;
+﻿using Avalonia.Controls;
+using Avalonia.Threading;
+using Client_App.Commands.AsyncCommands.CheckForm;
+using Client_App.ViewModels;
+using Client_App.Views.ProgressBar;
+using DynamicData;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Enums;
+using Microsoft.EntityFrameworkCore;
+using Models.CheckForm;
+using Models.Collections;
+using Models.DBRealization;
+using Models.Interfaces;
+using OfficeOpenXml;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Threading;
-using Client_App.Views.ProgressBar;
-using Microsoft.EntityFrameworkCore;
-using Models.Collections;
-using Models.DBRealization;
-using Models.Interfaces;
-using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
@@ -48,6 +56,9 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         progressBarVM.SetProgressBar(70, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath, rep);
 
+        progressBarVM.SetProgressBar(75, "Проверка отчёта");
+        await CheckForm(rep, cts, progressBar);
+
         progressBarVM.SetProgressBar(80, "Выгрузка данных");
         await FillExcel(excelPackage, rep);
 
@@ -67,6 +78,57 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         progressBarVM.SetProgressBar(100, "Завершение выгрузки");
         GC.Collect();
         await progressBar.CloseAsync();
+    }
+
+    private async Task CheckForm(Report exportReport, CancellationTokenSource cts, AnyTaskProgressBar progressBar)
+    {
+        var errorList = new List<CheckError>();
+        try
+        {
+            errorList.Add(exportReport.FormNum_DB switch
+            {
+                "1.1" => CheckF11.Check_Total(exportReport.Reports, exportReport),
+                "1.2" => CheckF12.Check_Total(exportReport.Reports, exportReport),
+                "1.3" => CheckF13.Check_Total(exportReport.Reports, exportReport),
+                "1.4" => CheckF14.Check_Total(exportReport.Reports, exportReport),
+                "1.5" => CheckF15.Check_Total(exportReport.Reports, exportReport),
+                "1.6" => CheckF16.Check_Total(exportReport.Reports, exportReport),
+                "1.7" => CheckF17.Check_Total(exportReport.Reports, exportReport),
+                "1.8" => CheckF18.Check_Total(exportReport.Reports, exportReport),
+                //"2.1" => await new CheckF21().AsyncExecute(exportReport),
+                //"2.2" => await new CheckF22().AsyncExecute(exportReport),
+                _ => []
+            });
+        }
+        catch (Exception ex)
+        {
+            //ignored
+        }
+
+        if (errorList.Any(x => x.IsCritical))
+        {
+            #region ExportTerminatedDueToCriticalErrors
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+                MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = ButtonEnum.Ok,
+                        ContentTitle = "Выгрузка в .RAODB",
+                        ContentHeader = "Ошибка",
+                        ContentMessage = "Выгрузка отчёта невозможна из-за наличия в нём критических ошибок (выделены красным)." +
+                                         $"{Environment.NewLine}Устраните ошибки и повторите операцию выгрузки.",
+                        MinWidth = 250,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen
+                    }).ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(new ChangeOrCreateVM(exportReport.FormNum_DB, exportReport), errorList));
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
     }
 
     #region FillExcel

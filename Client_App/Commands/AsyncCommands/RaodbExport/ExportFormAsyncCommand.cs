@@ -173,8 +173,8 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
                 "1.6" => CheckF16.Check_Total(exportReport.Reports, exportReport),
                 "1.7" => CheckF17.Check_Total(exportReport.Reports, exportReport),
                 "1.8" => CheckF18.Check_Total(exportReport.Reports, exportReport),
-                "2.1" => await new CheckF21().AsyncExecute(exportReport),
-                "2.2" => await new CheckF22().AsyncExecute(exportReport),
+                //"2.1" => await new CheckF21().AsyncExecute(exportReport),
+                //"2.2" => await new CheckF22().AsyncExecute(exportReport),
                 _ => []
             });
         }

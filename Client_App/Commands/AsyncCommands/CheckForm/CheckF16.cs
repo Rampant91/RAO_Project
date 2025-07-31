@@ -90,7 +90,7 @@ public abstract class CheckF16 : CheckBase
             errorList.AddRange(Check_003_10(formsList, rep, currentFormLine));
             errorList.AddRange(Check_004(formsList, notes, currentFormLine));
             errorList.AddRange(Check_005_11(formsList, forms10, currentFormLine));
-            errorList.AddRange(Check_005_26(formsList, forms10, currentFormLine));
+            errorList.AddRange(Check_005_28(formsList, forms10, currentFormLine));
             errorList.AddRange(Check_005_38(formsList, forms10, currentFormLine));
             errorList.AddRange(Check_005_42(formsList, forms10, currentFormLine));
             errorList.AddRange(Check_005_22(formsList, currentFormLine));
@@ -1794,10 +1794,10 @@ public abstract class CheckF16 : CheckBase
 
     #region Check005_26
 
-    private static List<CheckError> Check_005_26(List<Form16> forms, List<Form10> forms10, int line)
+    private static List<CheckError> Check_005_28(List<Form16> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
-        var applicableOperationCodes = new [] { "26", "28", "63" };
+        var applicableOperationCodes = new [] { "28", "63" };
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var statusRao = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
@@ -1860,7 +1860,7 @@ public abstract class CheckF16 : CheckBase
     private static List<CheckError> Check_005_42(List<Form16> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
-        var applicableOperationCodes = new[] { "42", "43", "73", "97", "98" };
+        var applicableOperationCodes = new[] { "42", "73", "97", "98" };
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var statusRao = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
@@ -1878,7 +1878,7 @@ public abstract class CheckF16 : CheckBase
                 Column = "StatusRAO_DB",
                 Value = statusRao,
                 Message = "Проверьте правильность статуса РАО.",
-                IsCritical = true
+                IsCritical = operationCode is "73"
             });
         }
         return result;
@@ -1975,7 +1975,7 @@ public abstract class CheckF16 : CheckBase
         List<CheckError> result = new();
         var applicableOperationCodes = new[]
         {
-            "10", "18", "21", "25", "27", "29", "31", "35", "36", "37", "39", "44", 
+            "10", "18", "21", "25", "26", "27", "29", "31", "35", "36", "37", "39", "44", 
             "45", "48", "49", "51", "52", "56", "57", "59", "68", "71", "74", "75"
         };
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);

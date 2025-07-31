@@ -1485,7 +1485,8 @@ public abstract class CheckF18 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
                     Value = $"{codeRao1MatterState} (1-ый символ кода РАО), {codeRao910TypeCode} (9-10 символы кода РАО)",
-                    Message = "В форме 1.8 приводятся сведения только о жидких кондиционированных РАО (1-й символ кода РАО 1)."
+                    Message = "В форме 1.8 приводятся сведения только о жидких кондиционированных РАО (1-й символ кода РАО 1).",
+                    IsCritical = true
                 });
             }
 
@@ -1657,7 +1658,8 @@ public abstract class CheckF18 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
                         Value = $"{codeRao3NuclidTypes} (3-ий символ кода РАО)",
-                        Message = "Укажите 3-й символ кода РАО в соответствии с радионуклидным составом."
+                        Message = "Укажите 3-й символ кода РАО в соответствии с радионуклидным составом.",
+                        IsCritical = true
                     });
                 }
                 else
@@ -1744,7 +1746,8 @@ public abstract class CheckF18 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = $"{codeRao4HasNuclears} (4-ый символ кода РАО)",
-                            Message = "Не указаны радионуклиды, которые могут быть отнесены к ЯМ."
+                            Message = "Не указаны радионуклиды, которые могут быть отнесены к ЯМ.",
+                            IsCritical = true
                         });
                     }
                 }
@@ -1776,7 +1779,8 @@ public abstract class CheckF18 : CheckBase
                         Column = "CodeRAO_DB",
                         Value = $"{codeRao5HalfLife} (5-ый символ кода РАО)",
                         Message = $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, " +
-                                  "5-ый символ кода РАО (период полураспада) должен быть равен 2."
+                                  "5-ый символ кода РАО (период полураспада) должен быть равен 2.",
+                        IsCritical = true
                     });
                 }
                 else if (codeRao5HalfLife != "1" && (long)halfLifeMax > 31)
@@ -1788,7 +1792,8 @@ public abstract class CheckF18 : CheckBase
                         Column = "CodeRAO_DB",
                         Value = $"{codeRao5HalfLife} (5-ый символ кода РАО)",
                         Message = $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, " +
-                                  "5-ый символ кода РАО (период полураспада) должен быть равен 1."
+                                  "5-ый символ кода РАО (период полураспада) должен быть равен 1.",
+                        IsCritical = true
                     });
                 }
             }
@@ -1919,14 +1924,14 @@ public abstract class CheckF18 : CheckBase
             {
                 Dictionary<string, string[]> validRecycles = new()
                 {
-                    { "0", new[]
-                        {
+                    { "0", 
+                        [
                             "11","12","13","14","15","16","17","19",
                             "21","22","23","24","29",
                             "51","52","53","54","55",
                             "61",
                             "72","73","74","99"
-                        }
+                        ]
                     }
                 };
                 valid = validRecycles.TryGetValue(codeRao7RecycleMethod, out var recycleMethods) 
@@ -1956,7 +1961,8 @@ public abstract class CheckF18 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
                     Value = $"{codeRao8RaoClass} (8-й символ кода РАО)",
-                    Message = "Проверьте правильность выбранной формы отчета (в форме 1.8 8-й символ кода РАО должен быть равен 5)."
+                    Message = "Проверьте правильность выбранной формы отчета (в форме 1.8 8-й символ кода РАО должен быть равен 5).",
+                    IsCritical = true
                 });
             }
 
@@ -1973,7 +1979,8 @@ public abstract class CheckF18 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
                     Value = $"{codeRao910TypeCode} (9-10 символы кода РАО)",
-                    Message = "Необходимо заполнить примечание к коду типа РАО."
+                    Message = "Необходимо заполнить примечание к коду типа РАО.",
+                    IsCritical = true
                 });
             }
 

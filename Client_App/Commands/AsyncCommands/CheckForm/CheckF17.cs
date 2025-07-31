@@ -120,7 +120,7 @@ public abstract class CheckF17 : CheckBase
                     errorList.AddRange(Check_022(formsList, packLines));
                     errorList.AddRange(Check022_RAOCODE(formsList, notes, packLines));
                     errorList.AddRange(Check_023_11(formsList, forms10, packLines));
-                    errorList.AddRange(Check_023_26(formsList, forms10, packLines));
+                    errorList.AddRange(Check_023_28(formsList, forms10, packLines));
                     errorList.AddRange(Check_023_38(formsList, forms10, packLines));
                     errorList.AddRange(Check_023_42(formsList, forms10, packLines));
                     errorList.AddRange(Check_023_22(formsList, packLines));
@@ -1232,7 +1232,8 @@ public abstract class CheckF17 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = Convert.ToString(providerOrRecieverOKPO),
-                Message = "Для выбранного кода операции указывается код ОКПО отчитывающейся организации."
+                Message = "Для выбранного кода операции указывается код ОКПО отчитывающейся организации.",
+                IsCritical = true
             });
         }
         return result;
@@ -1263,7 +1264,8 @@ public abstract class CheckF17 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = Convert.ToString(providerOrRecieverOKPO),
-                Message = "Значение может состоять только из 8 или 14 символов."
+                Message = "Значение может состоять только из 8 или 14 символов.",
+                IsCritical = true
             });
         }
         valid = providerOrRecieverOKPO != repOKPO;
@@ -1275,7 +1277,8 @@ public abstract class CheckF17 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = Convert.ToString(providerOrRecieverOKPO),
-                Message = "Для выбранного кода операции указывается код ОКПО контрагента."
+                Message = "Для выбранного кода операции указывается код ОКПО контрагента.",
+                IsCritical = true
             });
         }
         return result;
@@ -1306,7 +1309,8 @@ public abstract class CheckF17 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = Convert.ToString(providerOrRecieverOKPO),
-                Message = "Для выбранного кода операции указывается код ОКПО контрагента, либо «Минобороны» без кавычек."
+                Message = "Для выбранного кода операции указывается код ОКПО контрагента, либо «Минобороны» без кавычек.",
+                IsCritical = true
             });
         }
         return result;
@@ -1500,7 +1504,8 @@ public abstract class CheckF17 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
                     Value = codeRao,
-                    Message = "В форме 1.7 приводятся сведения только о твёрдых кондиционированных РАО (1-й символ кода РАО должен быть равен 2)."
+                    Message = "В форме 1.7 приводятся сведения только о твёрдых кондиционированных РАО (1-й символ кода РАО должен быть равен 2).",
+                    IsCritical = true
                 });
             }
 
@@ -1516,7 +1521,8 @@ public abstract class CheckF17 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
                     Value = codeRao,
-                    Message = "Для кондиционированных РАО должна быть определена категория (2-й символ кода РАО не может быть равен 9)."
+                    Message = "Для кондиционированных РАО должна быть определена категория (2-й символ кода РАО не может быть равен 9).",
+                    IsCritical = true
                 });
             }
 
@@ -1573,7 +1579,8 @@ public abstract class CheckF17 : CheckBase
                     Column = "CodeRAO_DB",
                     Value = codeRao,
                     Message = "Для РАО, приведенных к критериям приемлемости, должен быть определен период потенциальной опасности " +
-                              "(6-й символ кода РАО не может быть равен 0)."
+                              "(6-й символ кода РАО не может быть равен 0).",
+                    IsCritical = true
                 });
             }
 
@@ -1594,7 +1601,8 @@ public abstract class CheckF17 : CheckBase
                         Column = "CodeRAO_DB",
                         Value = codeRao,
                         Message = "В форме 1.7 приводятся сведения только о твердых РАО, приведенных к критериям приемлемости " +
-                                  "(8-й символ кода РАО не может быть равен 5)."
+                                  "(8-й символ кода РАО не может быть равен 5).",
+                        IsCritical = true
                     });
                 }
                 else
@@ -1606,7 +1614,8 @@ public abstract class CheckF17 : CheckBase
                         Column = "CodeRAO_DB",
                         Value = codeRao,
                         Message = "Сведения о некондиционированных отходах необходимо представлять в формах 1.5 и 1.6 " +
-                                  "(8-й символ кода РАО в форме 1.7 ожидается равным 1, 2, 3, 4, 6)."
+                                  "(8-й символ кода РАО в форме 1.7 ожидается равным 1, 2, 3, 4, 6).",
+                        IsCritical = true
                     });
                 }
             }
@@ -2722,7 +2731,7 @@ public abstract class CheckF17 : CheckBase
     #endregion
 
     #region Check023_26
-    private static List<CheckError> Check_023_26(List<Form17> forms, List<Form10> forms10, List<int> lines)
+    private static List<CheckError> Check_023_28(List<Form17> forms, List<Form10> forms10, List<int> lines)
     {
         List<CheckError> result = new();
         var applicableOperationCodes = new[] { "28", "63" };
