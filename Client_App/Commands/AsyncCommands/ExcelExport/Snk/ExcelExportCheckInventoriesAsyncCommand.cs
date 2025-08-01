@@ -1170,6 +1170,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     //4. Снятие с учёта не стоявшего на учёте ЗРИ.
                     if (!inStockOnPreviousInventoryDate
                         && firstPlusMinusOperation is not null
+                        && firstPlusMinusOperation.OpDate != primaryInventoryDate
                         && minusOperationArray.Contains(firstPlusMinusOperation.OpCode))
                     {
                         errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.UnInventoriedUnitGivenAway, firstPlusMinusOperation));
@@ -1177,7 +1178,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
                     //6. Постановка на учёт имеющегося в наличии ЗРИ.
                     if (inStockOnPreviousInventoryDate
-                        && firstPlusMinusOperation is not null
+                        && firstPlusMinusOperation is not null 
+                        && firstPlusMinusOperation.OpDate != primaryInventoryDate
                         && plusOperationArray.Contains(firstPlusMinusOperation.OpCode))
                     {
                         errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.InventoriedUnitReceived, firstPlusMinusOperation));
