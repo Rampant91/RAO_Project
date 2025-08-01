@@ -320,7 +320,6 @@
             <MenuItem 
                 Name="ServiceMenu"
                 Header="Сервис">
-                <!--
                 <MenuItem
                     Command="{Binding OpenCalculator}"
                     CommandParameter="activity"
@@ -330,7 +329,6 @@
                     CommandParameter="category" 
                     Header="Расчёт категории"/>
                 <Separator/>
-                -->
                 <MenuItem
                     Command="{Binding OpenFile}" 
                     CommandParameter="manual" 
