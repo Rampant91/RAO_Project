@@ -56,13 +56,14 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                 var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
 
                 ChangeOrCreateVM frm = new(param, y);
-                
+                /*
                 if(param == "1.2")
                 {
                     Form_12 form12 = new Form_12();
                     form12.ShowDialog(t);
                 }
-                else if (param.Split(".")[0] is "1")
+                else */
+                if (param.Split(".")[0] is "1")
                 {
                     Form1_Visual.tmpVM = frm;
                     await MainWindowVM.ShowDialog.Handle(frm);

@@ -129,8 +129,7 @@ public class ChangeFormAsyncCommand(FormParameter? form = null) : BaseAsyncComma
             {
                 case "1.2":
                     {
-
-                        var form12VM = new Form_12VM(rep);
+                        var form12VM = new Form_12VM(frm.Storage);
                         var window = new Form_12(form12VM);
                         await window.ShowDialog(t);
                         break;
