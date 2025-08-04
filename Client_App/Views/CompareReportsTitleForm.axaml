@@ -572,8 +572,7 @@
                     VerticalAlignment="Stretch"
                     BorderBrush="Black"
                     BorderThickness="1"
-                    CornerRadius="5"
-                    IsVisible="False">
+                    CornerRadius="5">
                     <Grid ColumnDefinitions="210,300,75,300" RowDefinitions="*,*">
                         <!--  Территориальное обособленное подразделение - Наименования полей  -->
                         <TextBlock
