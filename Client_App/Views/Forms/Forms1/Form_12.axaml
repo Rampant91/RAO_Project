@@ -7,6 +7,8 @@
     xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
     xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
 	xmlns:dataGrid="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
+	xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+    xmlns:behaviors="clr-namespace:YourNamespace.Behaviors"
     Title="Form_12"
     d:DesignHeight="450"
     d:DesignWidth="900"
@@ -15,6 +17,7 @@
 	x:Name="mainWindow">
 
     <Window.Resources>
+		<converter:DataGridLengthToGridLengthConverter x:Key="LengthConverter"/>
 		<SolidColorBrush x:Key="PrimaryColor" Color="#5685c0"/> 
     </Window.Resources>
 
@@ -54,7 +57,7 @@
         <vm:Form_12VM/>
     </Design.DataContext>
 
-	<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+	<ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
 		<Grid RowDefinitions ="Auto,*,Auto,Auto,Auto">
 			<WrapPanel
 				Grid.Row ="0"
@@ -93,7 +96,7 @@
 					</Grid>
 				</Border>
 
-				<Border Margin="5" BorderBrush ="Black" BorderThickness ="1" CornerRadius ="5">
+				<Border Margin="5" BorderBrush="Black" BorderThickness="1" CornerRadius="5">
 					<Grid Margin="5" RowDefinitions ="*,*,*,*,*" ColumnDefinitions="*,2*">
 						<TextBlock Grid.Row="0" Grid.Column="0" Margin="5" >ФИО исполнителя:</TextBlock>
 						<TextBox Grid.Row="0" Grid.Column="1" Margin="5"  IsReadOnly="True"
@@ -114,9 +117,42 @@
 				<Button Height="42" Margin="5" > Перевести все РВ в РАО</Button>
 			</WrapPanel>
 			<StackPanel Grid.Row="1">
-				<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" >
-					<StackPanel >				
+				<ScrollViewer HorizontalScrollBarVisibility="Auto"  >
+					<StackPanel Grid.IsSharedSizeScope="True">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="{Binding #dataGrid.Columns[0].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+								<ColumnDefinition Width="{Binding #dataGrid.Columns[1].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+								<ColumnDefinition Width="{Binding #dataGrid.Columns[2].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+								<ColumnDefinition Width="{Binding #dataGrid.Columns[3].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+								<ColumnDefinition Width="{Binding #dataGrid.Columns[4].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+								<ColumnDefinition Width="{Binding #dataGrid.Columns[5].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+								<ColumnDefinition Width="{Binding #dataGrid.Columns[6].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+								<ColumnDefinition Width="{Binding #dataGrid.Columns[7].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+								<ColumnDefinition Width="{Binding #dataGrid.Columns[8].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+								<ColumnDefinition Width="{Binding #dataGrid.Columns[9].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+								<ColumnDefinition Width="{Binding #dataGrid.Columns[10].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+								<ColumnDefinition Width="{Binding #dataGrid.Columns[11].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+								<ColumnDefinition Width="{Binding #dataGrid.Columns[12].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+								<ColumnDefinition Width="{Binding #dataGrid.Columns[13].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+								<ColumnDefinition Width="{Binding #dataGrid.Columns[14].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+								<ColumnDefinition Width="{Binding #dataGrid.Columns[15].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+								<ColumnDefinition Width="{Binding #dataGrid.Columns[16].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+								<ColumnDefinition Width="{Binding #dataGrid.Columns[17].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+								<ColumnDefinition Width="{Binding #dataGrid.Columns[18].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+								<ColumnDefinition Width="{Binding #dataGrid.Columns[19].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							</Grid.ColumnDefinitions>
+
+							<TextBlock Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Stretch"></TextBlock>
+							<TextBlock Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">Сведения об операции</TextBlock>
+							<TextBlock Grid.Column="3" Grid.ColumnSpan="7" HorizontalAlignment="Stretch">Сведения из паспорта на изделие из обездненного урана</TextBlock>
+							<TextBlock Grid.Column="10" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">Право собственности на ИОУ</TextBlock>
+							<TextBlock Grid.Column="12" Grid.ColumnSpan="3" HorizontalAlignment="Stretch">Документ</TextBlock>
+							<TextBlock Grid.Column="15" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">Код ОКПО</TextBlock>
+							<TextBlock Grid.Column="17" Grid.ColumnSpan="3">Прибор (установка), УКТ или иная упаковка</TextBlock>
+						</Grid>
 					<DataGrid 
+						x:Name="dataGrid"
 						Items="{Binding FormList}"
 						CanUserResizeColumns="True" 
 						RowBackground="White"
@@ -126,46 +162,66 @@
 					
 						<DataGrid.Columns>
 
-							<DataGridTextColumn Header="№ п/п"
-												Binding="{Binding NumberInOrder_DB}"/>
-							<DataGridTextColumn Header="код" 
-												Binding="{Binding OperationCode_DB}"/>
-							<DataGridTextColumn Header="дата" 
-												Binding="{Binding OperationDate_DB}"/>
-							<DataGridTextColumn Header="номер паспорта" 
-												Binding="{Binding PassportNumber_DB}"/>
-							<DataGridTextColumn Header="наименование" 
-												Binding="{Binding NameIOU_DB}"/>
-							<DataGridTextColumn Header="номер" 
-												Binding="{Binding FactoryNumber_DB}"/>
-							<DataGridTextColumn Header="масса обедненного урана, кг" 
-												Binding="{Binding Mass_DB}"/>
-							<DataGridTextColumn Header="код ОКПО изготовителя" 
-												Binding="{Binding CreatorOKPO_DB}"/>
-							<DataGridTextColumn Header="дата выпуска" 
-												Binding="{Binding CreationDate_DB}"/>
-							<DataGridTextColumn Header="НСС, мес" 
-												Binding="{Binding SignedServicePeriod_DB}"/>
-							<DataGridTextColumn Header="код формы собственности" 
-												Binding="{Binding PropertyCode_DB}"/>
-							<DataGridTextColumn Header="код ОКПО правообладателя" 
-												Binding="{Binding Owner_DB}"/>
-							<DataGridTextColumn Header="вид" 
+							<DataGridTextColumn Width="Auto"
+												Header="№ п/п"
+												Binding="{Binding NumberInOrder.Value}"/>
+							<DataGridTextColumn Width="Auto"
+												Header="код" 
+												Binding="{Binding OperationCode.Value}"/>
+							<DataGridTextColumn Width="Auto"
+												Header="дата" 
+												Binding="{Binding OperationDate.Value}"/>
+							<DataGridTextColumn Width="Auto"
+												Header="номер паспорта" 
+												Binding="{Binding PassportNumber.Value}"/>
+							<DataGridTextColumn Width="Auto"
+												Header="наименование" 
+												Binding="{Binding NameIOU.Value}"/>
+							<DataGridTextColumn Width="Auto"
+												Header="номер" 
+												Binding="{Binding FactoryNumber.Value}"/>
+							<DataGridTextColumn Width="Auto"
+												Header="масса обедненного урана, кг" 
+												Binding="{Binding Mass.Value}"/>
+							<DataGridTextColumn Width="Auto"
+												Header="код ОКПО изготовителя" 
+												Binding="{Binding CreatorOKPO.Value}"/>
+							<DataGridTextColumn Width="Auto"
+												Header="дата выпуска" 
+												Binding="{Binding CreationDate.Value}"/>
+							<DataGridTextColumn Width="Auto"
+												Header="НСС, мес" 
+												Binding="{Binding SignedServicePeriod.Value}"/>
+							<DataGridTextColumn Width="Auto"
+												Header="код формы собственности" 
+												Binding="{Binding PropertyCode.Value}"/>
+							<DataGridTextColumn Width="Auto"
+												Header="код ОКПО правообладателя" 
+												Binding="{Binding Owner.Value}"/>
+							<DataGridTextColumn Width="Auto"
+												Header="вид" 
 												Binding="{Binding DocumentVid.Value}"/>
-							<DataGridTextColumn Header="номер" 
+							<DataGridTextColumn Width="Auto"
+												Header="номер" 
 												Binding="{Binding DocumentNumber.Value}"/>
-							<DataGridTextColumn Header="дата" 
+							<DataGridTextColumn Width="Auto"
+												Header="дата" 
 												Binding="{Binding DocumentDate.Value}"/>
-							<DataGridTextColumn Header="поставщика или получателя" 
-												Binding="{Binding ProviderOrRecieverOKPO_DB}"/>
-							<DataGridTextColumn Header="перевозчика" 
-												Binding="{Binding TransporterOKPO_DB}"/>
-							<DataGridTextColumn Header="наименование" 
-												Binding="{Binding PackName_DB}"/>
-							<DataGridTextColumn Header="тип" 
-												Binding="{Binding PackType_DB}"/>
-							<DataGridTextColumn Header="номер" 
-												Binding="{Binding PackNumber_DB}"/>
+							<DataGridTextColumn Width="Auto"
+												Header="поставщика или получателя" 
+												Binding="{Binding ProviderOrRecieverOKPO.Value}"/>
+							<DataGridTextColumn Width="Auto"
+												Header="перевозчика" 
+												Binding="{Binding TransporterOKPO.Value}"/>
+							<DataGridTextColumn Width="Auto"
+												Header="наименование" 
+												Binding="{Binding PackName.Value}"/>
+							<DataGridTextColumn Width="Auto"
+												Header="тип" 
+												Binding="{Binding PackType.Value}"/>
+							<DataGridTextColumn Width="Auto"
+												Header="номер" 
+												Binding="{Binding PackNumber.Value}"/>
 						</DataGrid.Columns>
 					</DataGrid>
 						</StackPanel>
@@ -175,17 +231,22 @@
 			<StackPanel Grid.Row="2" Background="{StaticResource PrimaryColor}" Margin="5">
 				<StackPanel Orientation ="Horizontal">
 					<TextBlock Margin="5">Кол-во страниц:</TextBlock>
-					<TextBlock Margin="5">0</TextBlock>
+					<TextBlock Margin="5" Text="{Binding PageCount}"></TextBlock>
 				</StackPanel>
 				<StackPanel Orientation ="Horizontal">
-					<TextBlock Margin="5">Кол-во строчек:</TextBlock>
-					<TextBlock Margin="5">0</TextBlock>
+					<TextBlock Margin="5">Всего строчек:</TextBlock>
+					<TextBlock Margin="5" Text="{Binding CurrentReport.Rows12.Count}"></TextBlock>
 				</StackPanel>
 			</StackPanel>
-			<StackPanel Grid.Row="3" Background="{StaticResource PrimaryColor}" Margin="5"  Orientation ="Horizontal">
-				<Button Margin="5">&lt;</Button>
-				<Button Margin="5">1</Button>
-				<Button Margin="5">&gt;</Button>
+			<StackPanel Grid.Row="3" Background="{StaticResource PrimaryColor}" Margin="5">
+				<StackPanel Orientation ="Horizontal">
+					<TextBlock Margin="5">Кол-во строчек на странице</TextBlock>
+					<NumericUpDown Margin="5" Value="{Binding RowCount}" Minimum="1" TextInput="TextBox_TextInput" KeyDown="TextBox_PreviewKeyDown"/>
+				</StackPanel>
+				<StackPanel Orientation ="Horizontal">
+					<TextBlock Margin="5">Текущая страница</TextBlock>
+					<NumericUpDown Margin="5" Value="{Binding CurrentPage}" Minimum="1" Maximum="{Binding PageCount}"  TextInput="TextBox_TextInput" KeyDown="TextBox_PreviewKeyDown"/>
+				</StackPanel>
 			</StackPanel>
 			<StackPanel Grid.Row="4" Background="{StaticResource PrimaryColor}" Margin="5">
 				<TextBlock Margin="5">Примечания</TextBlock>

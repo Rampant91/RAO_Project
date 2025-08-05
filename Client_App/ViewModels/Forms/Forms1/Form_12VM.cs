@@ -28,7 +28,6 @@ namespace Client_App.ViewModels.Forms.Forms1
                 OnPropertyChanged();
             }
         }
-
         private Report _currentReport;
         public Report CurrentReport
         {
@@ -42,28 +41,54 @@ namespace Client_App.ViewModels.Forms.Forms1
                 OnPropertyChanged();
             }
         }
-        public DateTime StartPeriod
-        {
-            get 
-            {
-                var startPeriod = CurrentReport.StartPeriod_DB.Split('.');
-                int date = Convert.ToInt32(startPeriod[0]);
-                int month = Convert.ToInt32(startPeriod[1]);
-                int year = Convert.ToInt32(startPeriod[2]);
-                return new DateTime(year, month, date);
-            }
-        }
-        public DateTime EndPeriod
+
+        private int _rowCount = 30;
+        public int RowCount
         {
             get
             {
-                var startPeriod = CurrentReport.EndPeriod_DB.Split('.');
-                int date = Convert.ToInt32(startPeriod[0]);
-                int month = Convert.ToInt32(startPeriod[1]);
-                int year = Convert.ToInt32(startPeriod[2]);
-                return new DateTime(year, month, date);
+                return _rowCount;
+            }
+            set
+            {
+                if (value <= 0)
+                    _rowCount = 1;
+                else
+                    _rowCount = value;
+                OnPropertyChanged();
             }
         }
+
+        private int _currentPage = 1;
+        public int CurrentPage
+        {
+            get
+            {
+                return _currentPage;
+            }
+            set
+          {
+                if (value<=0)
+                    _currentPage = 1;
+                else if(value>PageCount)
+                    _currentPage = PageCount;
+                else
+                    _currentPage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int PageCount
+        {
+            get
+            {
+                var result = CurrentReport.Rows12.Count / RowCount;
+                if (CurrentReport.Rows12.Count % RowCount != 0)
+                    result++;
+                return result;
+            }
+        }
+
         public Form_12VM() { }
         public Form_12VM(Report report) 
         {
