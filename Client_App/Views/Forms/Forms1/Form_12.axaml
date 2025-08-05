@@ -227,27 +227,39 @@
 					</DataGrid.Columns>
 				</DataGrid>
 			</ScrollViewer>
-			<StackPanel Grid.Row="3" Background="{StaticResource PrimaryColor}" Margin="5">
-				<StackPanel Orientation ="Horizontal">
-					<TextBlock Margin="5">Кол-во страниц:</TextBlock>
-					<TextBlock Margin="5" Text="{Binding PageCount}"></TextBlock>
-				</StackPanel>
-				<StackPanel Orientation ="Horizontal">
-					<TextBlock Margin="5">Всего строчек:</TextBlock>
-					<TextBlock Margin="5" Text="{Binding CurrentReport.Rows12.Count}"></TextBlock>
-				</StackPanel>
-			</StackPanel>
+			<Grid	Grid.Row="3" Background="{StaticResource PrimaryColor}" Margin="5"
+				RowDefinitions="Auto,Auto"
+				ColumnDefinitions="Auto,Auto,Auto,Auto">
+				
+				<TextBlock Text="Текущая страница"
+					Grid.Row="0" Grid.Column="0" Margin="5"/>
+				<NumericUpDown Value="{Binding CurrentPage}" Minimum="1" 
+					Grid.Row="0" Grid.Column="1" Margin="5"
+					TextInput="TextBox_TextInput" 
+					KeyDown="TextBox_PreviewKeyDown"/>
+				
+				<TextBlock Text ="Кол-во страниц:"
+					Grid.Row="0" Grid.Column="2" Margin="5"/>
+				<TextBlock Text="{Binding PageCount}"
+					Grid.Row="0" Grid.Column="3" Margin="5"/>
+				
+				<TextBlock Text="Кол-во строчек на странице"
+					Grid.Row="1" Grid.Column="0" Margin="5"/>
+				<NumericUpDown Value="{Binding RowCount}" Minimum="1" 
+					Grid.Row="1" Grid.Column="1" Margin="5"
+					TextInput="TextBox_TextInput" 
+					KeyDown="TextBox_PreviewKeyDown"/>
+				
+				<TextBlock Text="Всего строчек:"
+					Grid.Row="1" Grid.Column="2" Margin="5"/>
+				<TextBlock Text="{Binding CurrentReport.Rows12.Count}"
+					Grid.Row="1" Grid.Column="3" Margin="5"/>
+				
+				
+			</Grid>
+					
+				
 			<StackPanel Grid.Row="4" Background="{StaticResource PrimaryColor}" Margin="5">
-				<StackPanel Orientation ="Horizontal">
-					<TextBlock Margin="5">Кол-во строчек на странице</TextBlock>
-					<NumericUpDown Margin="5" Value="{Binding RowCount}" Minimum="1" TextInput="TextBox_TextInput" KeyDown="TextBox_PreviewKeyDown"/>
-				</StackPanel>
-				<StackPanel Orientation ="Horizontal">
-					<TextBlock Margin="5">Текущая страница</TextBlock>
-					<NumericUpDown Margin="5" Value="{Binding CurrentPage}" Minimum="1" Maximum="{Binding PageCount}"  TextInput="TextBox_TextInput" KeyDown="TextBox_PreviewKeyDown"/>
-				</StackPanel>
-			</StackPanel>
-			<StackPanel Grid.Row="5" Background="{StaticResource PrimaryColor}" Margin="5">
 				<TextBlock Margin="5">Примечания</TextBlock>
 				<DataGrid Margin="5" >
 					<DataGrid.Columns>
