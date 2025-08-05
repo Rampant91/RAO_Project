@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using AvaloniaEdit.Utils;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -56,6 +58,8 @@ namespace Client_App.ViewModels.Forms.Forms1
                 else
                     _rowCount = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(PageCount));
+                FormList = GetFormList(CurrentPage, RowCount);
             }
         }
 
@@ -67,7 +71,7 @@ namespace Client_App.ViewModels.Forms.Forms1
                 return _currentPage;
             }
             set
-          {
+            {
                 if (value<=0)
                     _currentPage = 1;
                 else if(value>PageCount)
@@ -75,6 +79,7 @@ namespace Client_App.ViewModels.Forms.Forms1
                 else
                     _currentPage = value;
                 OnPropertyChanged();
+                FormList = GetFormList(CurrentPage, RowCount);
             }
         }
 
@@ -87,17 +92,23 @@ namespace Client_App.ViewModels.Forms.Forms1
                     result++;
                 return result;
             }
+
         }
 
         public Form_12VM() { }
         public Form_12VM(Report report) 
         {
             _currentReport = report;
-            FormList = report.Rows12;
+            FormList = GetFormList(CurrentPage, RowCount);
         }
 
 
+        private ObservableCollection<Form12> GetFormList (int page, int rowCount)
+        {
 
+            ObservableCollection<Form12> formList = new ObservableCollection<Form12>( CurrentReport.Rows12.Skip((page-1)*rowCount).Take(rowCount));
+            return formList; 
+        }
         #region OnPropertyChanged
 
         public event PropertyChangedEventHandler PropertyChanged;
