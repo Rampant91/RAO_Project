@@ -30,6 +30,19 @@ namespace Client_App.ViewModels.Forms.Forms1
                 OnPropertyChanged();
             }
         }
+        private ObservableCollection<Note> _noteList = new ObservableCollection<Note>();
+        public ObservableCollection<Note> NoteList 
+        {
+            get
+            {
+                return _noteList;
+            }
+            set
+            {
+                _noteList = value;
+                OnPropertyChanged();
+            }
+        }
         private Report _currentReport;
         public Report CurrentReport
         {
@@ -94,12 +107,26 @@ namespace Client_App.ViewModels.Forms.Forms1
             }
 
         }
+        private bool _isHeaderExpanded =true;
+        public bool IsHeaderExpanded
+        {
+            get
+            {
+                return _isHeaderExpanded;
+            }
+            set
+            {
+                _isHeaderExpanded = value;
+                OnPropertyChanged();
+            }
+        }
 
         public Form_12VM() { }
         public Form_12VM(Report report) 
         {
             _currentReport = report;
             FormList = GetFormList(CurrentPage, RowCount);
+            NoteList = CurrentReport.Notes;
         }
 
 
