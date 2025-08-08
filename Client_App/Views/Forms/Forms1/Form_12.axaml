@@ -8,7 +8,6 @@
     xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
 	xmlns:dataGrid="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
 	xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-    xmlns:behaviors="clr-namespace:YourNamespace.Behaviors"
     Title="Form_12"
     d:DesignHeight="450"
     d:DesignWidth="900"
@@ -96,9 +95,9 @@
 							<TextBox Margin="5" Width="75"  IsReadOnly="True"
                                 Text="{Binding Path=CurrentReport.CorrectionNumber.Value}"></TextBox>
 						</StackPanel>
-
+						
 						<StackPanel Orientation="Horizontal" Grid.Row="3">
-							<Button Margin="5" >Проверить</Button>
+							<Button Margin="5" Command="{Binding CheckForm}">Проверить</Button>
 							<Button Margin="5" >Сохранить</Button>
 						</StackPanel>
 

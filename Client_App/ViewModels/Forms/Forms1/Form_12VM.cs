@@ -1,5 +1,8 @@
 ﻿using Avalonia.Controls;
 using AvaloniaEdit.Utils;
+using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands.CheckForm;
+using Client_App.Commands.AsyncCommands.Save;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -12,6 +15,7 @@ using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Client_App.ViewModels.Forms.Forms1
 {
@@ -54,6 +58,13 @@ namespace Client_App.ViewModels.Forms.Forms1
             {
                 _currentReport = value;
                 OnPropertyChanged();
+            }
+        }
+        public Reports CurrentReports
+        {
+            get
+            {
+                return _currentReport.Reports;
             }
         }
 
@@ -128,6 +139,13 @@ namespace Client_App.ViewModels.Forms.Forms1
             FormList = GetFormList(CurrentPage, RowCount);
             NoteList = CurrentReport.Notes;
         }
+
+        #region Commands
+
+        private ICommand _checkFormCommand;
+        public ICommand CheckForm => _checkFormCommand ??= new NewCheckFormAsyncCommand(this);    //  Кнопка "Проверить"
+
+        #endregion
 
 
         private ObservableCollection<Form12> GetFormList (int page, int rowCount)

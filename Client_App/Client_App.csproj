@@ -66,6 +66,9 @@
     <Resource Include="Assets\Radiation_sign.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Commands\AsyncCommands\NewCheckForm\NewCheckForm.axaml.cs">
+      <DependentUpon>NewCheckForm.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Controls\DataGrid\Cell.axaml.cs">
       <DependentUpon>Cell.axaml</DependentUpon>
     </Compile>
