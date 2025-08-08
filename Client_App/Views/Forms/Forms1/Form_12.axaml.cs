@@ -1,5 +1,7 @@
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Client_App.Commands.AsyncCommands;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.Views;
 using System;
@@ -27,6 +29,16 @@ public partial class Form_12 : BaseWindow<Form_12VM>
     {
         AvaloniaXamlLoader.Load(this);
         DataContext = new Form_12VM();
+    }
+
+    //¬ременное узкоспециализированное решение
+    private void CopyExecutorData_Click(object sender, RoutedEventArgs e)
+    {
+        var command = new NewCopyExecutorDataAsyncCommand((Form_12VM)DataContext);
+        if (command.CanExecute(null))
+        {
+            command.Execute(null);
+        }
     }
 
     #region PaginationTextBoxValidation

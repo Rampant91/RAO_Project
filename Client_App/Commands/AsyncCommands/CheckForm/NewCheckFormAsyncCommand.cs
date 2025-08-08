@@ -35,7 +35,6 @@ public class NewCheckFormAsyncCommand(Form_12VM formVM) : BaseAsyncCommand
         IsExecute = false;
     }
 
-    public override bool CanExecute(object? parameter) => true;
 
     public override async Task AsyncExecute(object? parameter)
     {

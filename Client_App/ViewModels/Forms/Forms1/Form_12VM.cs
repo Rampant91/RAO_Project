@@ -13,6 +13,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization.Formatters;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -22,6 +23,8 @@ namespace Client_App.ViewModels.Forms.Forms1
     public class Form_12VM : BaseVM, INotifyPropertyChanged
     {
         private ObservableCollection<Form12> _formList = new ObservableCollection<Form12>();
+
+        public string FormType { get { return "1.2"; } }
         public ObservableCollection<Form12> FormList 
         {
             get
@@ -142,8 +145,8 @@ namespace Client_App.ViewModels.Forms.Forms1
 
         #region Commands
 
-        private ICommand _checkFormCommand;
-        public ICommand CheckForm => _checkFormCommand ??= new NewCheckFormAsyncCommand(this);    //  Кнопка "Проверить"
+        public ICommand CheckForm => new NewCheckFormAsyncCommand(this);    //  Кнопка "Проверить"
+        //public ICommand CopyExecutorDate => new NewCopyExecutorDataAsyncCommand(this); //После привязки кнопка неактивная
 
         #endregion
 
