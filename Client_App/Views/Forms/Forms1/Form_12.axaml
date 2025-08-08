@@ -20,6 +20,7 @@
     <Window.Resources>
 		<converter:DataGridLengthToGridLengthConverter x:Key="LengthConverter"/>
 		<converter:NullToStringConverter x:Key="NullToStringConverter"/>
+		<converter:DateConverter x:Key="DateConverter"/>
 		<SolidColorBrush x:Key="PrimaryColor" Color="#5685c0"/> 
     </Window.Resources>
 
@@ -81,19 +82,19 @@
 						<Grid ColumnDefinitions="*,*"  Grid.Row="0">
 							<TextBlock Grid.Column="0" Margin="5" >Дата окончания предыдущего отчетного периода:</TextBlock>
 							<CalendarDatePicker Grid.Column="1" 
-                                SelectedDate="{Binding Path=CurrentReport.StartPeriod.Value}"/>
+                                SelectedDate="{Binding CurrentReport.StartPeriod.Value, Converter={StaticResource DateConverter}}"/>
 						</Grid>
 
 						<Grid ColumnDefinitions="*,*"  Grid.Row="1">
 							<TextBlock Grid.Column="0" Margin="5" >Дата окончания настоящего отчетного периода:</TextBlock>
 							<CalendarDatePicker Grid.Column="1" 
-                                SelectedDate="{Binding Path=CurrentReport.EndPeriod.Value}"/>
+                                SelectedDate="{Binding CurrentReport.EndPeriod.Value, Converter={StaticResource DateConverter}}"/>
 						</Grid>
 
 						<StackPanel  Orientation="Horizontal" Grid.Row="2">
 							<TextBlock Margin="5">Номер корректировки:</TextBlock>
 							<TextBox Margin="5" Width="75"  IsReadOnly="True"
-                                Text="{Binding Path=CurrentReport.CorrectionNumber.Value, Mode=OneTime}"></TextBox>
+                                Text="{Binding Path=CurrentReport.CorrectionNumber.Value}"></TextBox>
 						</StackPanel>
 
 						<StackPanel Orientation="Horizontal" Grid.Row="3">
@@ -112,16 +113,16 @@
 					<Grid Margin="5" RowDefinitions ="*,*,*,*,*" ColumnDefinitions="*,2*">
 						<TextBlock Grid.Row="0" Grid.Column="0" Margin="5" >ФИО исполнителя:</TextBlock>
 						<TextBox Grid.Row="0" Grid.Column="1" Margin="5"  IsReadOnly="True"
-                                Text="{Binding Path=CurrentReport.FIOexecutor.Value, Mode=OneTime}"></TextBox>
+                                Text="{Binding Path=CurrentReport.FIOexecutor.Value}"></TextBox>
 						<TextBlock Grid.Row="1" Grid.Column="0" Margin="5" >Должность:</TextBlock>
 						<TextBox Grid.Row="1" Grid.Column="1" Margin="5" IsReadOnly="True"
-                                Text="{Binding Path=CurrentReport.GradeExecutor.Value, Mode=OneTime}" ></TextBox>
+                                Text="{Binding Path=CurrentReport.GradeExecutor.Value}" ></TextBox>
 						<TextBlock Grid.Row="2" Grid.Column="0" Margin="5" >Телефон:</TextBlock>
 						<TextBox Grid.Row="2" Grid.Column="1" Margin="5" IsReadOnly="True"
-                                Text="{Binding Path=CurrentReport.ExecPhone.Value, Mode=OneTime}"></TextBox>
+                                Text="{Binding Path=CurrentReport.ExecPhone.Value}"></TextBox>
 						<TextBlock Grid.Row="3" Grid.Column="0" Margin="5" >Электронная почта:</TextBlock>
 						<TextBox Grid.Row="3" Grid.Column="1" Margin="5" IsReadOnly="True"
-                                Text="{Binding Path=CurrentReport.ExecEmail.Value, Mode=OneTime}"></TextBox>
+                                Text="{Binding Path=CurrentReport.ExecEmail.Value}"></TextBox>
 						<Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" >Скопировать данные предыдущей формы</Button>
 					</Grid>
 				</Border>
@@ -182,7 +183,7 @@
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<CalendarDatePicker
-											SelectedDate="{Binding OperationDate.Value}"
+											SelectedDate="{Binding OperationDate.Value, Converter={StaticResource DateConverter}}"
 											HorizontalAlignment="Stretch"
 											VerticalAlignment="Center"/>
 									</DataTemplate>
@@ -207,7 +208,7 @@
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<CalendarDatePicker
-											SelectedDate="{Binding CreationDate.Value}"
+											SelectedDate="{Binding CreationDate.Value, Converter={StaticResource DateConverter}}"
 											HorizontalAlignment="Stretch"
 											VerticalAlignment="Center"/>
 									</DataTemplate>
@@ -240,7 +241,7 @@
 							</DataGridTemplateColumn>
 							<DataGridTextColumn Width="Auto"
 												Header="поставщика или получателя"
-												Binding="{Binding ProviderOrRecieverOKPO.Value}"/>
+												Binding="{Binding ProviderOrRecieverOKPO.Value, Converter={StaticResource DateConverter}}"/>
 							<DataGridTextColumn Width="Auto"
 												Header="перевозчика"
 												Binding="{Binding TransporterOKPO.Value}"/>
