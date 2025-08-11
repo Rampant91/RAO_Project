@@ -1078,11 +1078,13 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                     .FirstOrDefault(x => x.OpCode == "10" && x.OpDate == firstInventoryDate)
                     ?.Quantity ?? 0;
 
+                var inStockOnFirstInventoryDate = operations.Any(x => x.OpCode == "10" && x.OpDate == firstInventoryDate);
                 var operationsWithoutDuplicates = await GetOperationsWithoutDuplicates(operations, formNum);
-
+                
                 foreach (var operation in operationsWithoutDuplicates)
                 {
-                    if (plusOperationArray.Contains(operation.OpCode))
+                    //Складываем количество, за исключением случая, если получение идёт в дату первичной инвентаризации.
+                    if (plusOperationArray.Contains(operation.OpCode) && (operation.OpDate != firstInventoryDate || !inStockOnFirstInventoryDate))
                     {
                         quantity += operation.Quantity;
                     }

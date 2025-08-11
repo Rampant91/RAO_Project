@@ -1039,9 +1039,11 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                             .Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.RegisteredAndNotInventoriedUnit, lastPlusMinusOperation));
                     }
 
+                    var inStockOnFirstInventoryDate = currentOperations.Any(x => x.OpCode == "10" && x.OpDate == primaryInventoryDate);
                     foreach (var operation in operationsWithoutDuplicates)
                     {
-                        if (plusOperationArray.Contains(operation.OpCode))
+                        //Складываем количество, за исключением случая, если получение идёт в дату первичной инвентаризации.
+                        if (plusOperationArray.Contains(operation.OpCode) && (!inStockOnFirstInventoryDate || operation.OpDate != primaryInventoryDate))
                         {
                             quantity += operation.Quantity;
                         }
