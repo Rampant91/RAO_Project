@@ -155,6 +155,9 @@
     <Compile Update="Views\Forms\Forms2\Form_20.axaml.cs">
       <DependentUpon>Form_20.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Messages\AskIntMessageWindow.axaml.cs">
+      <DependentUpon>AskIntMessageWindow.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Messages\GetRegionAndFormNums.axaml.cs">
       <DependentUpon>GetRegionAndFormNums.axaml</DependentUpon>
     </Compile>

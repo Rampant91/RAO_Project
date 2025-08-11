@@ -1,11 +1,14 @@
 ﻿using Avalonia.Controls;
 using AvaloniaEdit.Utils;
 using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.Save;
+using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -25,7 +28,7 @@ namespace Client_App.ViewModels.Forms.Forms1
         private ObservableCollection<Form12> _formList = new ObservableCollection<Form12>();
 
         public string FormType { get { return "1.2"; } }
-        public ObservableCollection<Form12> FormList 
+        public ObservableCollection<Form12> FormList
         {
             get
             {
@@ -38,7 +41,7 @@ namespace Client_App.ViewModels.Forms.Forms1
             }
         }
         private ObservableCollection<Note> _noteList = new ObservableCollection<Note>();
-        public ObservableCollection<Note> NoteList 
+        public ObservableCollection<Note> NoteList
         {
             get
             {
@@ -85,8 +88,8 @@ namespace Client_App.ViewModels.Forms.Forms1
                 else
                     _rowCount = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(PageCount));
-                FormList = GetFormList(CurrentPage, RowCount);
+                OnPropertyChanged(nameof(TotalPages));
+                UpdateFormList();
             }
         }
 
@@ -99,18 +102,18 @@ namespace Client_App.ViewModels.Forms.Forms1
             }
             set
             {
-                if (value<=0)
+                if (value <= 0)
                     _currentPage = 1;
-                else if(value>PageCount)
-                    _currentPage = PageCount;
+                else if (value > TotalPages)
+                    _currentPage = TotalPages;
                 else
                     _currentPage = value;
                 OnPropertyChanged();
-                FormList = GetFormList(CurrentPage, RowCount);
+                UpdateFormList();
             }
         }
 
-        public int PageCount
+        public int TotalPages
         {
             get
             {
@@ -121,7 +124,28 @@ namespace Client_App.ViewModels.Forms.Forms1
             }
 
         }
-        private bool _isHeaderExpanded =true;
+        public int TotalRows
+        {
+            get
+            {
+                return CurrentReport.Rows12.Count;
+            }
+        }
+        private bool _isAutoReplaceEnabled = true;
+        public bool IsAutoReplaceEnabled
+        {
+            get => _isAutoReplaceEnabled;
+            set
+            {
+                if (_isAutoReplaceEnabled != value)
+                {
+                    _isAutoReplaceEnabled = value;
+                    CurrentReport.AutoReplace = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        private bool _isHeaderExpanded = true;
         public bool IsHeaderExpanded
         {
             get
@@ -136,27 +160,39 @@ namespace Client_App.ViewModels.Forms.Forms1
         }
 
         public Form_12VM() { }
-        public Form_12VM(Report report) 
+        public Form_12VM(Report report)
         {
             _currentReport = report;
-            FormList = GetFormList(CurrentPage, RowCount);
+            UpdateFormList();
             NoteList = CurrentReport.Notes;
         }
 
+
+        #region Interaction
+
+
+        #endregion
         #region Commands
 
         public ICommand CheckForm => new NewCheckFormAsyncCommand(this);    //  Кнопка "Проверить"
-        //public ICommand CopyExecutorDate => new NewCopyExecutorDataAsyncCommand(this); //После привязки кнопка неактивная
+        //public ICommand CopyExecutorDate => new NewCopyExecutorDataAsyncCommand(this); //После привязки кнопка неактивна
+        public ICommand SourceTransmissionAll => new NewSourceTransmissionAllAsyncCommand(this);    //  Кнопка "Перевести данные предыдущей формы"
+        public ICommand AddRow => new NewAddRowAsyncCommand(this);
+        public ICommand AddRows => new NewAddRowsAsyncCommand(this);
+        public ICommand AddRowsIn => new NewAddRowsInAsyncCommand(this);
+
 
         #endregion
 
 
-        private ObservableCollection<Form12> GetFormList (int page, int rowCount)
+        public async void UpdateFormList()
         {
-
-            ObservableCollection<Form12> formList = new ObservableCollection<Form12>( CurrentReport.Rows12.Skip((page-1)*rowCount).Take(rowCount));
-            return formList; 
+            FormList = new ObservableCollection<Form12>(CurrentReport.Rows12.Skip((CurrentPage - 1) * RowCount).Take(RowCount));
+            OnPropertyChanged(nameof(TotalPages));
+            OnPropertyChanged(nameof(TotalRows));
         }
+
+
         #region OnPropertyChanged
 
         public event PropertyChangedEventHandler PropertyChanged;

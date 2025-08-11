@@ -1,11 +1,15 @@
+using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Client_App.Commands.AsyncCommands;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.Views;
+using ReactiveUI;
 using System;
+using System.Reactive.Disposables;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Client_App;
 
