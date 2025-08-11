@@ -139,11 +139,10 @@
 							<MenuItem Header="Добавить строку" 
 									  Command="{Binding AddRow}"/>
 							<MenuItem Header="Добавить N строк" 
-									  Command="{Binding AddRows}"
-									  CommandParameter="{Binding $parent[Window]}"/>
+									  Command="{Binding AddRows}"/>
 							<MenuItem Header="Добавить N строк перед" 
 									  Command="{Binding AddRowsIn}"
-									  CommandParameter="{Binding $parent[Window]}"/>
+									  CommandParameter="{Binding SelectedForm}"/>
 							<MenuItem Header="Копировать"> </MenuItem>
 							<MenuItem Header="Вставить"> </MenuItem>
 							<MenuItem Header="Удалить строку"> </MenuItem>
@@ -188,7 +187,8 @@
 						CanUserResizeColumns="True"
 						RowBackground="White"
 						AlternatingRowBackground="LightBlue"
-						Margin="5">
+						Margin="5"
+						SelectedItem="{Binding SelectedForm}">
 						<DataGrid.Columns>
 							<DataGridTextColumn Width="Auto"
 												Header="№ п/п"
@@ -278,19 +278,16 @@
 			<Grid	Grid.Row="3" Background="{StaticResource PrimaryColor}" Margin="5"
 				RowDefinitions="Auto,Auto"
 				ColumnDefinitions="Auto,Auto,Auto,Auto">
-				
 				<TextBlock Text="Текущая страница"
 					Grid.Row="0" Grid.Column="0" Margin="5"/>
 				<NumericUpDown Value="{Binding CurrentPage}" Minimum="1" 
 					Grid.Row="0" Grid.Column="1" Margin="5"
 					TextInput="TextBox_TextInput" 
 					KeyDown="TextBox_PreviewKeyDown"/>
-				
 				<TextBlock Text ="Кол-во страниц:"
 					Grid.Row="0" Grid.Column="2" Margin="5"/>
 				<TextBlock Text="{Binding TotalPages}"
 					Grid.Row="0" Grid.Column="3" Margin="5"/>
-				
 				<TextBlock Text="Кол-во строчек на странице"
 					Grid.Row="1" Grid.Column="0" Margin="5"/>
 				<NumericUpDown Value="{Binding RowCount}" Minimum="1" 

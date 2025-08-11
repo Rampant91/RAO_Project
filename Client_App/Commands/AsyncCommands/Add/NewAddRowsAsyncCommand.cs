@@ -1,14 +1,11 @@
 ﻿using Avalonia; 
-using Avalonia.Controls; 
 using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Commands.AsyncCommands.Save;
-using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Messages;
 using Models.Collections;
 using Models.Forms;
 using Models.Interfaces;
-using ReactiveUI;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
@@ -27,13 +24,9 @@ public class NewAddRowsAsyncCommand(Form_12VM formVM) : BaseAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
-        // Проверяем, что параметр является окном
-        if (parameter is not Window owner)
-        {
             // Если не получили окно напрямую, попробуем найти активное окно
-            owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
+        var owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
                 .FirstOrDefault(w => w.IsActive);
-        }
 
         if (owner == null) return;
 

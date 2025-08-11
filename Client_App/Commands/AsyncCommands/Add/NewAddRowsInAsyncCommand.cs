@@ -1,9 +1,11 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Messages;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Models.Collections;
+using Models.Forms.Form1;
 using Models.Forms;
 using ReactiveUI;
 using System.Collections;
@@ -23,17 +25,22 @@ public class NewAddRowsInAsyncCommand(Form_12VM formVM) : BaseAsyncCommand
     private Report Storage => formVM.CurrentReport;
     private string FormType => formVM.FormType;
 
+
+    //
     public override async Task AsyncExecute(object? parameter)
     {
-        var owner = (Window)parameter;
+        var item = (Form12)parameter;
+
+        var owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
+            .FirstOrDefault(w => w.IsActive);
         if (owner == null) return;
 
-        var param = (IEnumerable)parameter;
-        var item = param.Cast<Form>().ToList().FirstOrDefault();
         if (item != null)
         {
             var numberCell = item.NumberInOrder_DB;
-            var dialog = new AskIntMessageWindow(new AskIntMessageVM("Введите количество строк"));
+            var dialog = new AskIntMessageWindow(new AskIntMessageVM(
+                $"Сколько добавить перед указанной строкой?\n" +
+                $"Выбранная строка:   {numberCell}"));
 
             //Если пользователь отменил ввод числа, окно вернет null
             int? rowCount = await dialog.ShowDialog<int?>(owner);
@@ -63,5 +70,7 @@ public class NewAddRowsInAsyncCommand(Form_12VM formVM) : BaseAsyncCommand
                 await Storage.SortAsync();
             }
         }
+
+        formVM.UpdateFormList();
     }
 }

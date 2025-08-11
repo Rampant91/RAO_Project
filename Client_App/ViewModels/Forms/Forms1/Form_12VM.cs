@@ -73,7 +73,19 @@ namespace Client_App.ViewModels.Forms.Forms1
                 return _currentReport.Reports;
             }
         }
-
+        private Form12 _selectedForm;
+        public Form12 SelectedForm
+        {
+            get
+            {
+                return _selectedForm;
+            }
+            set
+            {
+                _selectedForm = value;
+                OnPropertyChanged();
+            }
+        }
         private int _rowCount = 30;
         public int RowCount
         {
