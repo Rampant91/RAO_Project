@@ -20,7 +20,7 @@ namespace Client_App.Views;
 
 public class MainWindow : BaseWindow<MainWindowVM>
 {
-    #region SelectedReports
+    #region Reports
 
     public static readonly DirectProperty<MainWindow, IEnumerable<IKey>> SelectedReportsProperty =
         AvaloniaProperty.RegisterDirect<MainWindow, IEnumerable<IKey>>(

@@ -81,8 +81,6 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                     t.SelectedReports = tmp;
                     await y.Report_Collection.QuickSortAsync();
                 }
-                    
-                
             }
         }
     }

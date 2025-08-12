@@ -1,16 +1,21 @@
-using Avalonia.Input;
-using Avalonia.Markup.Xaml;
-using Client_App.ViewModels.Forms.Forms1;
-using Client_App.Views;
-using System;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.Markup.Xaml;
+using Client_App.Commands.AsyncCommands.TmpNewCommands;
+using Client_App.ViewModels.Forms.Forms1;
+using Models.Forms.Form1;
+using Avalonia.Controls;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Collections.Generic;
 
-namespace Client_App;
+namespace Client_App.Views.Forms.Forms1;
 
 public partial class Form_12 : BaseWindow<Form_12VM>
 {
-
-    //private Form_12VM _vm = null!;
+    private Form_12VM _vm = null!;
 
     public Form_12() 
     {
@@ -22,15 +27,36 @@ public partial class Form_12 : BaseWindow<Form_12VM>
     {
         AvaloniaXamlLoader.Load(this);
         DataContext = vm;
+        _vm = vm;
     }
+
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
         DataContext = new Form_12VM();
     }
 
+    private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (DataContext is Form_12VM vm && sender is DataGrid dataGrid)
+        {
+            var selectedItems = new List<Form12>();
+            if (dataGrid.SelectedItems != null)
+            {
+                foreach (var item in dataGrid.SelectedItems)
+                {
+                    if (item is Form12 form12)
+                    {
+                        selectedItems.Add(form12);
+                    }
+                }
+            }
+            vm.SelectedForms = new ObservableCollection<Form12>(selectedItems);
+        }
+    }
+
     #region PaginationTextBoxValidation
-    // Валидация для контроля паджинации
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
     private static readonly Regex _regex = new Regex("[^0-9]+"); //regex that matches disallowed text
     private static bool IsTextAllowed(string text)
@@ -43,19 +69,19 @@ public partial class Form_12 : BaseWindow<Form_12VM>
     }
     private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
     {
-        // Разрешаем служебные клавиши (Backspace, Delete, стрелки и т.д.)
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (Backspace, Delete, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅ.пїЅ.)
         if (IsControlKey(e))
         {
             return;
         }
 
-        // Разрешаем цифры с основной клавиатуры и цифрового блока
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         if (IsDigitKey(e))
         {
             return;
         }
 
-        // Блокируем все остальные клавиши
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         e.Handled = true;
     }
 
@@ -73,16 +99,16 @@ public partial class Form_12 : BaseWindow<Form_12VM>
                e.Key == Key.CapsLock ||
                e.Key == Key.PageUp ||
                e.Key == Key.PageDown ||
-               e.KeyModifiers.HasFlag(KeyModifiers.Control); // Разрешаем Ctrl+C, Ctrl+V и т.д.
+               e.KeyModifiers.HasFlag(KeyModifiers.Control); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Ctrl+C, Ctrl+V пїЅ пїЅ.пїЅ.
     }
 
     private bool IsDigitKey(KeyEventArgs e)
     {
-        // Цифры на основной клавиатуре (0-9)
+        // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (0-9)
         if (e.Key >= Key.D0 && e.Key <= Key.D9)
             return true;
 
-        // Цифры на цифровом блоке (NumPad0-NumPad9)
+        // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (NumPad0-NumPad9)
         if (e.Key >= Key.NumPad0 && e.Key <= Key.NumPad9)
             return true;
 

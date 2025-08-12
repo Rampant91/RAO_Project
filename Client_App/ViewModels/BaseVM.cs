@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace Client_App.ViewModels;
 
@@ -42,6 +44,16 @@ public class BaseVM
         process.Start();
         process.StandardInput.WriteLineAsync(command);
         return process.StandardOutput.ReadLine();
+    }
+
+    #endregion
+
+    #region OnPropertyChanged
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    private protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
     #endregion

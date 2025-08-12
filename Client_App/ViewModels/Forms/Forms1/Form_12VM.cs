@@ -1,149 +1,148 @@
-﻿using Avalonia.Controls;
-using AvaloniaEdit.Utils;
-using Models.Collections;
+﻿using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Reactive.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Input; 
+using Client_App.Commands.AsyncCommands.TmpNewCommands;
 
-namespace Client_App.ViewModels.Forms.Forms1
+namespace Client_App.ViewModels.Forms.Forms1;
+
+public class Form_12VM : BaseVM, INotifyPropertyChanged
 {
-    public class Form_12VM : BaseVM, INotifyPropertyChanged
+    private ObservableCollection<Form12> _formList = [];
+    public ObservableCollection<Form12> FormList 
     {
-        private ObservableCollection<Form12> _formList = new ObservableCollection<Form12>();
-        public ObservableCollection<Form12> FormList 
+        get
         {
-            get
-            {
-                return _formList;
-            }
-            set
-            {
-                _formList = value;
-                OnPropertyChanged();
-            }
+            return _formList;
         }
-        private ObservableCollection<Note> _noteList = new ObservableCollection<Note>();
-        public ObservableCollection<Note> NoteList 
+        set
         {
-            get
-            {
-                return _noteList;
-            }
-            set
-            {
-                _noteList = value;
-                OnPropertyChanged();
-            }
+            _formList = value;
+            OnPropertyChanged();
         }
-        private Report _currentReport;
-        public Report CurrentReport
+    }
+    private ObservableCollection<Note> _noteList = [];
+    public ObservableCollection<Note> NoteList 
+    {
+        get => _noteList;
+        set
         {
-            get
-            {
-                return _currentReport;
-            }
-            set
-            {
-                _currentReport = value;
-                OnPropertyChanged();
-            }
+            _noteList = value;
+            OnPropertyChanged();
         }
+    }
 
-        private int _rowCount = 30;
-        public int RowCount
+    private Report _currentReport;
+    public Report CurrentReport
+    {
+        get => _currentReport;
+        set
         {
-            get
-            {
-                return _rowCount;
-            }
-            set
-            {
-                if (value <= 0)
-                    _rowCount = 1;
-                else
-                    _rowCount = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(PageCount));
-                FormList = GetFormList(CurrentPage, RowCount);
-            }
+            _currentReport = value;
+            OnPropertyChanged();
         }
+    }
 
-        private int _currentPage = 1;
-        public int CurrentPage
+    private ObservableCollection<Form12> _selectedForms = new ObservableCollection<Form12>();
+    public ObservableCollection<Form12> SelectedForms
+    {
+        get => _selectedForms;
+        set
         {
-            get
-            {
-                return _currentPage;
-            }
-            set
-            {
-                if (value<=0)
-                    _currentPage = 1;
-                else if(value>PageCount)
-                    _currentPage = PageCount;
-                else
-                    _currentPage = value;
-                OnPropertyChanged();
-                FormList = GetFormList(CurrentPage, RowCount);
-            }
+            _selectedForms = value ?? new ObservableCollection<Form12>();
+            OnPropertyChanged();
         }
+    }
 
-        public int PageCount
+    private int _rowCount = 30;
+    public int RowCount
+    {
+        get => _rowCount;
+        set
         {
-            get
-            {
-                var result = CurrentReport.Rows12.Count / RowCount;
-                if (CurrentReport.Rows12.Count % RowCount != 0)
-                    result++;
-                return result;
-            }
-
-        }
-        private bool _isHeaderExpanded =true;
-        public bool IsHeaderExpanded
-        {
-            get
-            {
-                return _isHeaderExpanded;
-            }
-            set
-            {
-                _isHeaderExpanded = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public Form_12VM() { }
-        public Form_12VM(Report report) 
-        {
-            _currentReport = report;
+            if (value <= 0)
+                _rowCount = 1;
+            else
+                _rowCount = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(PageCount));
             FormList = GetFormList(CurrentPage, RowCount);
-            NoteList = CurrentReport.Notes;
         }
+    }
 
-
-        private ObservableCollection<Form12> GetFormList (int page, int rowCount)
+    private int _currentPage = 1;
+    public int CurrentPage
+    {
+        get => _currentPage;
+        set
         {
-
-            ObservableCollection<Form12> formList = new ObservableCollection<Form12>( CurrentReport.Rows12.Skip((page-1)*rowCount).Take(rowCount));
-            return formList; 
+            if (value<=0)
+                _currentPage = 1;
+            else if(value>PageCount)
+                _currentPage = PageCount;
+            else
+                _currentPage = value;
+            OnPropertyChanged();
+            FormList = GetFormList(CurrentPage, RowCount);
         }
-        #region OnPropertyChanged
+    }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string propertyName = "")
+    public int PageCount
+    {
+        get
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            var result = CurrentReport.Rows12.Count / RowCount;
+            if (CurrentReport.Rows12.Count % RowCount != 0)
+                result++;
+            return result;
         }
 
-        #endregion
+    }
+    private bool _isHeaderExpanded =true;
+    public bool IsHeaderExpanded
+    {
+        get => _isHeaderExpanded;
+        set
+        {
+            _isHeaderExpanded = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #region Commands
+
+    public ICommand DeleteDataInRows{ get; set; }                        //  Удаляет данные из выбранных ячеек
+    public ICommand SourceTransmission { get; set; }                        //  Удаляет данные из выбранных ячеек
+
+    #endregion
+
+    public Form_12VM()
+    {
+        SelectedForms = new ObservableCollection<Form12>();
+        InitCommands();
+    }
+    public Form_12VM(Report report) 
+    {
+        _currentReport = report;
+        FormList = GetFormList(CurrentPage, RowCount);
+        NoteList = CurrentReport.Notes;
+        SelectedForms = new ObservableCollection<Form12>();
+        InitCommands();
+    }
+
+    private void InitCommands()
+    {
+        DeleteDataInRows = new NewDeleteDataInRowsAsyncCommand();
+        SourceTransmission = new NewSourceTransmissionAsyncCommand(this);
+    }
+
+    private ObservableCollection<Form12> GetFormList (int page, int rowCount)
+    {
+
+        ObservableCollection<Form12> formList = new ObservableCollection<Form12>( CurrentReport.Rows12.Skip((page-1)*rowCount).Take(rowCount));
+        return formList; 
     }
 }

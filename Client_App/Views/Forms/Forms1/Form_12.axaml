@@ -1,20 +1,17 @@
 <Window
-    x:Class="Client_App.Form_12"
+    x:Class="Client_App.Views.Forms.Forms1.Form_12"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
     xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
-	xmlns:dataGrid="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
-	xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-    xmlns:behaviors="clr-namespace:YourNamespace.Behaviors"
     Title="Form_12"
     d:DesignHeight="450"
     d:DesignWidth="900"
     x:DataType="vm:Form_12VM"
     mc:Ignorable="d"
-	x:Name="mainWindow"
+	x:Name="MainWindow"
 	MinWidth="800" MinHeight="600">
 
     <Window.Resources>
@@ -135,43 +132,64 @@
 				<Grid RowDefinitions="Auto,*">
 					<Grid Grid.Row="0">
 						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[0].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[1].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[2].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[3].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[4].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[5].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[6].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[7].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[8].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[9].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[10].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[11].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[12].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[13].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[14].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[15].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[16].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[17].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[18].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[19].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							<ColumnDefinition Width="{Binding #DataGrid.Columns[0].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							<ColumnDefinition Width="{Binding #DataGrid.Columns[1].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							<ColumnDefinition Width="{Binding #DataGrid.Columns[2].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							<ColumnDefinition Width="{Binding #DataGrid.Columns[3].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							<ColumnDefinition Width="{Binding #DataGrid.Columns[4].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							<ColumnDefinition Width="{Binding #DataGrid.Columns[5].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							<ColumnDefinition Width="{Binding #DataGrid.Columns[6].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							<ColumnDefinition Width="{Binding #DataGrid.Columns[7].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							<ColumnDefinition Width="{Binding #DataGrid.Columns[8].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							<ColumnDefinition Width="{Binding #DataGrid.Columns[9].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							<ColumnDefinition Width="{Binding #DataGrid.Columns[10].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							<ColumnDefinition Width="{Binding #DataGrid.Columns[11].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							<ColumnDefinition Width="{Binding #DataGrid.Columns[12].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							<ColumnDefinition Width="{Binding #DataGrid.Columns[13].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							<ColumnDefinition Width="{Binding #DataGrid.Columns[14].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							<ColumnDefinition Width="{Binding #DataGrid.Columns[15].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							<ColumnDefinition Width="{Binding #DataGrid.Columns[16].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							<ColumnDefinition Width="{Binding #DataGrid.Columns[17].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							<ColumnDefinition Width="{Binding #DataGrid.Columns[18].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
+							<ColumnDefinition Width="{Binding #DataGrid.Columns[19].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
 						</Grid.ColumnDefinitions>
 						<TextBlock Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Stretch"></TextBlock>
 						<TextBlock Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">Сведения об операции</TextBlock>
-						<TextBlock Grid.Column="3" Grid.ColumnSpan="7" HorizontalAlignment="Stretch">Сведения из паспорта на изделие из обездненного урана</TextBlock>
+						<TextBlock Grid.Column="3" Grid.ColumnSpan="7" HorizontalAlignment="Stretch">Сведения из паспорта на изделие из обедненного урана</TextBlock>
 						<TextBlock Grid.Column="10" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">Право собственности на ИОУ</TextBlock>
 						<TextBlock Grid.Column="12" Grid.ColumnSpan="3" HorizontalAlignment="Stretch">Документ</TextBlock>
 						<TextBlock Grid.Column="15" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">Код ОКПО</TextBlock>
 						<TextBlock Grid.Column="17" Grid.ColumnSpan="3">Прибор (установка), УКТ или иная упаковка</TextBlock>
 					</Grid>
-					<DataGrid Grid.Row="1"
-						x:Name="dataGrid"
+					<DataGrid 
+                        Grid.Row="1"
+						x:Name="DataGrid"
 						Items="{Binding FormList}"
 						CanUserResizeColumns="True"
 						RowBackground="White"
 						AlternatingRowBackground="LightBlue"
-						Margin="5">
-						<DataGrid.Columns>
+						Margin="5"
+                        SelectionMode="Extended"
+                        SelectionChanged="DataGrid_SelectionChanged">
+						<DataGrid.Styles>
+                            <Style Selector="DataGridRow">
+								<Setter Property="ContextMenu">
+									<ContextMenu 
+                                        x:Name="DataRowContextMenu" 
+                                        DataContext="{Binding DataContext, ElementName=MainWindow}">
+										<MenuItem 
+                                            Header="Очистить ячейки"
+                                            Command="{Binding DeleteDataInRows}"
+                                            CommandParameter="{Binding SelectedForms}"/>
+                                        <MenuItem
+                                            Header="Перевести источник в РАО"
+                                            Command="{Binding SourceTransmission}"
+                                            CommandParameter="{Binding SelectedForms}"/>
+                                    </ContextMenu>
+                                </Setter>
+                            </Style>
+                        </DataGrid.Styles>
+                        <DataGrid.Columns>
 							<DataGridTextColumn Width="Auto"
 												Header="№ п/п"
 												Binding="{Binding NumberInOrder.Value}"/>
@@ -190,7 +208,7 @@
 							</DataGridTemplateColumn>
 							<DataGridTextColumn Width="Auto"
 												Header="номер паспорта"
-												Binding="{Binding PassportNumber.Value}"/>
+												Binding="{Binding  PassportNumber.Value}"/>
 							<DataGridTextColumn Width="Auto"
 												Header="наименование"
 												Binding="{Binding NameIOU.Value}"/>
