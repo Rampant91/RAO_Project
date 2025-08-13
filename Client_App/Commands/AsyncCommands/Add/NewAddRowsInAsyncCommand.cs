@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
@@ -26,50 +27,50 @@ public class NewAddRowsInAsyncCommand(Form_12VM formVM) : BaseAsyncCommand
     private string FormType => formVM.FormType;
 
 
-    //
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="parameter">В качестве параметра принимает список выбранных форм</param>
+    /// <returns></returns>
     public override async Task AsyncExecute(object? parameter)
     {
-        var item = (Form12)parameter;
-
+        var collection = (IEnumerable<Form12>)parameter;
+        var item = collection.FirstOrDefault();
         var owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
             .FirstOrDefault(w => w.IsActive);
+
+        //Прекращение выполнения при получении некоректных данных
         if (owner == null) return;
+        if (item == null) return;
 
-        if (item != null)
+        var numberCell = item.NumberInOrder_DB;
+        var dialog = new AskIntMessageWindow(new AskIntMessageVM(
+            $"Сколько добавить перед указанной строкой?\n" +
+            $"Выбранная строка:   {numberCell}"));
+
+        //Если пользователь отменил ввод числа, окно вернет null
+        int? rowCount = await dialog.ShowDialog<int?>(owner);
+        //Если пользователь ничего не ввел, то прекращаем выполнение команды
+        if ((rowCount == null) || (rowCount <= 0)) return;
+
+        foreach (var key in Storage[item.FormNum_DB])
         {
-            var numberCell = item.NumberInOrder_DB;
-            var dialog = new AskIntMessageWindow(new AskIntMessageVM(
-                $"Сколько добавить перед указанной строкой?\n" +
-                $"Выбранная строка:   {numberCell}"));
-
-            //Если пользователь отменил ввод числа, окно вернет null
-            int? rowCount = await dialog.ShowDialog<int?>(owner);
-            
-            //Если пользователь ничего не ввел, то прекращаем выполнение команды
-            if ((rowCount == null)||(rowCount == 0)) return;
-
-            if (rowCount > 0)
+            var it = (Form)key;
+            if (it.NumberInOrder_DB > numberCell - 1)
             {
-                foreach (var key in Storage[item.FormNum_DB])
-                {
-                    var it = (Form)key;
-                    if (it.NumberInOrder_DB > numberCell - 1)
-                    {
-                        it.NumberInOrder.Value = it.NumberInOrder_DB + (int)rowCount;
-                    }
-                }
-                List<Form> lst = new();
-                for (var i = 0; i < rowCount; i++)
-                {
-                    var frm = FormCreator.Create(FormType);
-                    frm.NumberInOrder_DB = numberCell;
-                    lst.Add(frm);
-                    numberCell++;
-                }
-                Storage[Storage.FormNum_DB].AddRange(lst);
-                await Storage.SortAsync();
+                it.NumberInOrder.Value = it.NumberInOrder_DB + (int)rowCount;
             }
         }
+        List<Form> lst = new();
+        for (var i = 0; i < rowCount; i++)
+        {
+            var frm = FormCreator.Create(FormType);
+            frm.NumberInOrder_DB = numberCell;
+            lst.Add(frm);
+            numberCell++;
+        }
+        Storage[Storage.FormNum_DB].AddRange(lst);
+        await Storage.SortAsync();
 
         formVM.UpdateFormList();
     }

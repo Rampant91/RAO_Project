@@ -7,7 +7,9 @@
     xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
     xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
 	xmlns:dataGrid="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
+	xmlns:local="using:Client_App.Behaviors"
 	xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+	xmlns:behaviors="using:Avalonia.Xaml.Interactions.Core"
     Title="Form_12"
     d:DesignHeight="450"
     d:DesignWidth="900"
@@ -142,12 +144,19 @@
 									  Command="{Binding AddRows}"/>
 							<MenuItem Header="Добавить N строк перед" 
 									  Command="{Binding AddRowsIn}"
-									  CommandParameter="{Binding SelectedForm}"/>
-							<MenuItem Header="Копировать"> </MenuItem>
-							<MenuItem Header="Вставить"> </MenuItem>
-							<MenuItem Header="Удалить строку"> </MenuItem>
-							<MenuItem Header="Выставить номер"> </MenuItem>
-							<MenuItem Header="Сортировать по номеру п/п"> </MenuItem>
+									  CommandParameter="{Binding SelectedForms}"/>
+							<MenuItem Header="Копировать"
+									  Command="{Binding CopyRows}"
+									  CommandParameter="{Binding SelectedForms}"/>
+							<MenuItem Header="Вставить"
+									  Command="{Binding PasteRows}"/>
+							<MenuItem Header="Удалить выбранные строчки"
+									  Command="{Binding DeleteRows}"
+									  CommandParameter="{Binding SelectedForms}"/>
+							<MenuItem Header="Выставить номер" 
+									  Command="{Binding SetNumberOrder}"/>
+							<MenuItem Header="Сортировать по номеру п/п"
+									  Command="{Binding SortForms}"/>
 						</ContextMenu>
 					</Grid.ContextMenu>
 					<Grid Grid.Row="0">
@@ -188,7 +197,12 @@
 						RowBackground="White"
 						AlternatingRowBackground="LightBlue"
 						Margin="5"
-						SelectedItem="{Binding SelectedForm}">
+						SelectedItem="{Binding SelectedForm}"
+						SelectionMode="Extended">
+						<interactivity:Interaction.Behaviors>
+							<local:DataGridSelectedItemsBehavior
+								SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
+						</interactivity:Interaction.Behaviors>
 						<DataGrid.Columns>
 							<DataGridTextColumn Width="Auto"
 												Header="№ п/п"

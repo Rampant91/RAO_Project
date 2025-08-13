@@ -3,8 +3,10 @@ using AvaloniaEdit.Utils;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.CheckForm;
+using Client_App.Commands.AsyncCommands.Delete;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
+using Client_App.Commands.SyncCommands;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -25,8 +27,8 @@ namespace Client_App.ViewModels.Forms.Forms1
 {
     public class Form_12VM : BaseVM, INotifyPropertyChanged
     {
+        #region Properties
         private ObservableCollection<Form12> _formList = new ObservableCollection<Form12>();
-
         public string FormType { get { return "1.2"; } }
         public ObservableCollection<Form12> FormList
         {
@@ -84,6 +86,19 @@ namespace Client_App.ViewModels.Forms.Forms1
             {
                 _selectedForm = value;
                 OnPropertyChanged();
+            }
+        }
+        private ObservableCollection<Form12> _selectedForms = new();
+        public ObservableCollection<Form12> SelectedForms
+        {
+            get => _selectedForms;
+            set
+            {
+                if (_selectedForms != value)
+                {
+                    _selectedForms = value;
+                    OnPropertyChanged();
+                }
             }
         }
         private int _rowCount = 30;
@@ -170,7 +185,9 @@ namespace Client_App.ViewModels.Forms.Forms1
                 OnPropertyChanged();
             }
         }
+        #endregion
 
+        #region Constructors
         public Form_12VM() { }
         public Form_12VM(Report report)
         {
@@ -178,12 +195,8 @@ namespace Client_App.ViewModels.Forms.Forms1
             UpdateFormList();
             NoteList = CurrentReport.Notes;
         }
-
-
-        #region Interaction
-
-
         #endregion
+
         #region Commands
 
         public ICommand CheckForm => new NewCheckFormAsyncCommand(this);    //  Кнопка "Проверить"
@@ -192,10 +205,13 @@ namespace Client_App.ViewModels.Forms.Forms1
         public ICommand AddRow => new NewAddRowAsyncCommand(this);
         public ICommand AddRows => new NewAddRowsAsyncCommand(this);
         public ICommand AddRowsIn => new NewAddRowsInAsyncCommand(this);
-
+        public ICommand DeleteRows => new NewDeleteRowsAsyncCommand(this);
+        public ICommand SortForm => new NewSortFormSyncCommand(this);
+        public ICommand SetNumberOrder => new NewSetNumberOrderSyncCommand(this);
+        public ICommand CopyRows => new NewCopyRowsAsyncCommand();
+        public ICommand PasteRows => new PasteRowsAsyncCommand();
 
         #endregion
-
 
         public async void UpdateFormList()
         {
