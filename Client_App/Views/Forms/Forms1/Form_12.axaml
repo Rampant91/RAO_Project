@@ -17,7 +17,9 @@
     <Window.Resources>
 		<converter:DataGridLengthToGridLengthConverter x:Key="LengthConverter"/>
 		<converter:NullToStringConverter x:Key="NullToStringConverter"/>
-		<SolidColorBrush x:Key="PrimaryColor" Color="#5685c0"/> 
+		<SolidColorBrush x:Key="PrimaryColor" Color="#5685c0"/>
+		
+
     </Window.Resources>
 
 	<Window.Styles>
@@ -47,8 +49,13 @@
 			<Setter Property="TextWrapping" Value="Wrap"/>
 			<Setter Property="TextAlignment" Value="Center"/>
 		    <Setter Property="TextTrimming" Value="None"/>
-        
         </Style>
+        <Style Selector="DataGridCell:focus-within">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+        
+
 	
 	</Window.Styles>
 
@@ -208,7 +215,7 @@
 							</DataGridTemplateColumn>
 							<DataGridTextColumn Width="Auto"
 												Header="номер паспорта"
-												Binding="{Binding  PassportNumber.Value}"/>
+												Binding="{Binding PassportNumber.Value}"/>
 							<DataGridTextColumn Width="Auto"
 												Header="наименование"
 												Binding="{Binding NameIOU.Value}"/>

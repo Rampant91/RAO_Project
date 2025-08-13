@@ -195,8 +195,6 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                 }
             }
         }
-
-
     }
 
     #region CloseWindowAndOpenNew

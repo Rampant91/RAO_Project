@@ -36,12 +36,18 @@ public class CheckForm : BaseWindow<CheckFormVM>
     /// <param name="e"></param>
     private static void DataGrid_LoadingRow(object? sender, DataGridRowEventArgs e)
     {
-        if (sender is DataGrid)
+        if (sender is DataGrid && e.Row is not null)
         {
-            if (e.Row?.DataContext is CheckError { IsCritical: true })
+            e.Row.Background = e.Row.DataContext switch
             {
-                e.Row.Background = Brushes.RosyBrown;
-            }
+                CheckError { IsCritical: true } => Brushes.RosyBrown,
+
+                CheckError { IsCritical: false } => e.Row.GetIndex() % 2 == 0 
+                    ? Brushes.LightBlue 
+                    : Brushes.White,
+
+                _ => e.Row.Background
+            };
         }
     }
 
