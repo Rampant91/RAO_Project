@@ -137,27 +137,36 @@
 				<Grid RowDefinitions="Auto,*">
 					<Grid.ContextMenu>
 						<ContextMenu>
-							<MenuItem Header="Выделить всё"
-									  Command="{Binding SelectAll}"/>
-							<MenuItem Header="Добавить строку" 
-									  Command="{Binding AddRow}"/>
-							<MenuItem Header="Добавить N строк" 
-									  Command="{Binding AddRows}"/>
-							<MenuItem Header="Добавить N строк перед" 
+							<MenuItem Header="Выделить всё				Ctrl+A"
+									  Command="{Binding SelectAll}"
+									  HotKey="Ctrl+A"/>
+							<MenuItem Header="Добавить строку			Ctrl+T"
+									  Command="{Binding AddRow}"
+									  HotKey="Ctrl+T"/>
+							<MenuItem Header="Добавить N строк			Ctrl+N"
+									  Command="{Binding AddRows}"
+									  HotKey="Ctrl+N"/>
+							<MenuItem Header="Добавить N строк перед	Ctrl+I" 
 									  Command="{Binding AddRowsIn}"
-									  CommandParameter="{Binding SelectedForms}"/>
-							<MenuItem Header="Копировать"
+									  CommandParameter="{Binding SelectedForms}"
+									  HotKey="Ctrl+I"/>
+							<MenuItem Header="Копировать				Ctrl+C"
 									  Command="{Binding CopyRows}"
-									  CommandParameter="{Binding SelectedForms}"/>
-							<MenuItem Header="Вставить"
-									  Command="{Binding PasteRows}"/>
-							<MenuItem Header="Удалить выбранные строчки"
+									  CommandParameter="{Binding SelectedForms}"
+									  HotKey="Ctrl+C"/>
+							<MenuItem Header="Вставить					Ctrl+V"
+									  Command="{Binding PasteRows}"
+									  HotKey="Ctrl+V"/>
+							<MenuItem Header="Удалить выбранные строчки	Ctrl+D"
 									  Command="{Binding DeleteRows}"
-									  CommandParameter="{Binding SelectedForms}"/>
-							<MenuItem Header="Выставить номер" 
-									  Command="{Binding SetNumberOrder}"/>
-							<MenuItem Header="Сортировать по номеру п/п"
-									  Command="{Binding SortForms}"/>
+									  CommandParameter="{Binding SelectedForms}"
+									  HotKey="Ctrl+D"/>
+							<MenuItem Header="Выставить номер			Ctrl+O"
+									  Command="{Binding SetNumberOrder}"
+									  HotKey="Ctrl+O"/>
+							<MenuItem Header="Сортировать по номеру п/п	Ctrl+L"
+									  Command="{Binding SortForms}"
+									  HotKey="Ctrl+L"/>
 						</ContextMenu>
 					</Grid.ContextMenu>
 					<Grid Grid.Row="0">
