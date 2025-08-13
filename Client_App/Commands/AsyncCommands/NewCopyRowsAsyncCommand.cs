@@ -13,6 +13,8 @@ namespace Client_App.Commands.AsyncCommands;
 /// </summary>
 public class NewCopyRowsAsyncCommand : BaseAsyncCommand
 {
+    //После обновления версии Авалонии нужно будет добавить копирование в формате html
+
     /// <summary>
     /// 
     /// </summary>
