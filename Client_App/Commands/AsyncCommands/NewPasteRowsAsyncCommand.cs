@@ -1,29 +1,21 @@
 ﻿using Avalonia;
-using Client_App.ViewModels;
+using Avalonia.Threading;
 using Client_App.ViewModels.Forms.Forms1;
-using Models.Attributes;
 using Models.Collections;
-using Models.Forms;
-using Models.Forms.DataAccess;
 using Models.Forms.Form1;
-using Models.Forms.Form2;
-using Models.Interfaces;
-using ReactiveUI;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
-using static Models.Collections.Report;
-
+using MessageBox.Avalonia.DTO;
+using Avalonia.Controls;
 
 namespace Client_App.Commands.AsyncCommands;
 
 /// <summary>
-/// Вставить значения из буфера обмена.
+/// Вставить значения из буфера обмена
 /// </summary>
 public class NewPasteRowsAsyncCommand(Form_12VM formVM) : BaseAsyncCommand
 {
+    //После обновления версии Авалонии нужно будет добавить вставку в формате html
     private Report Storage => formVM.CurrentReport;
     private Form12 SelectedForm => formVM.SelectedForm;
     private string FormType => formVM.FormType;
@@ -46,9 +38,21 @@ public class NewPasteRowsAsyncCommand(Form_12VM formVM) : BaseAsyncCommand
 
         int start = SelectedForm.NumberInOrder.Value-1;
 
-        if (start + parsedRows.Length < Storage.Rows.Count)
+        if (start + parsedRows.Length > Storage.Rows.Count)
         {
-            Console.WriteLine("Предупреждение пользователя");
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = $"Вставка данных из буфера обмена",
+                        ContentHeader = "Внимание",
+                        ContentMessage =
+                            $"В таблице не хватает места для некоторых строк, которые вы хотите вставить",
+                        MinWidth = 400,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(Desktop.MainWindow));
         }
 
         for (int i = 0; i < parsedRows.Length && i+start<Storage.Rows.Count; i++)

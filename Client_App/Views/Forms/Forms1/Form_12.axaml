@@ -137,7 +137,8 @@
 				<Grid RowDefinitions="Auto,*">
 					<Grid.ContextMenu>
 						<ContextMenu>
-							<MenuItem Header="Выделить всё"/>
+							<MenuItem Header="Выделить всё"
+									  Command="{Binding SelectAll}"/>
 							<MenuItem Header="Добавить строку" 
 									  Command="{Binding AddRow}"/>
 							<MenuItem Header="Добавить N строк" 
@@ -198,7 +199,8 @@
 						AlternatingRowBackground="LightBlue"
 						Margin="5"
 						SelectedItem="{Binding SelectedForm}"
-						SelectionMode="Extended">
+						SelectionMode="Extended"
+						>
 						<interactivity:Interaction.Behaviors>
 							<local:DataGridSelectedItemsBehavior
 								SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />

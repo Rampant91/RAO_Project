@@ -210,6 +210,7 @@ namespace Client_App.ViewModels.Forms.Forms1
         public ICommand SetNumberOrder => new NewSetNumberOrderSyncCommand(this);
         public ICommand CopyRows => new NewCopyRowsAsyncCommand();
         public ICommand PasteRows => new NewPasteRowsAsyncCommand(this);
+        public ICommand SelectAll => new SelectAllRowsAsyncCommand(this);
 
         #endregion
 

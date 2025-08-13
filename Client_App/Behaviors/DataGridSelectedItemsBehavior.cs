@@ -23,6 +23,7 @@ namespace Client_App.Behaviors
             get => GetValue(SelectedItemsProperty);
             set => SetValue(SelectedItemsProperty, value);
         }
+        private bool _isUpdating;
 
         protected override void OnAttached()
         {
@@ -44,24 +45,56 @@ namespace Client_App.Behaviors
             base.OnDetaching();
         }
 
+        protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change)
+        {
+            base.OnPropertyChanged(change);
+
+            if (change.Property == SelectedItemsProperty)
+            {
+                if (AssociatedObject == null || SelectedItems == null || _isUpdating)
+                    return;
+
+                _isUpdating = true;
+
+                try
+                {
+                    // Обновляем выделение в DataGrid при изменении SelectedItems
+                    AssociatedObject.SelectedItems.Clear();
+                    foreach (var item in SelectedItems)
+                    {
+                        AssociatedObject.SelectedItems.Add(item);
+                    }
+                }
+                finally
+                {
+                    _isUpdating = false;
+                }
+            }
+        }
+
         private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
         {
-            if (AssociatedObject == null || SelectedItems == null)
+            if (AssociatedObject == null || SelectedItems == null || _isUpdating)
                 return;
 
-            // Очищаем коллекцию в UI-потоке (если Avalonia)
-            Dispatcher.UIThread.Post(() =>
-            {
-                SelectedItems.Clear();
+            _isUpdating = true;
 
+            try
+            {
+                // Обновляем SelectedItems при изменении выделения в DataGrid
+                SelectedItems.Clear();
                 foreach (var item in AssociatedObject.SelectedItems)
                 {
-                    if (item is Form12 form)  // Проверяем тип
+                    if (item is Form12 form)
                     {
                         SelectedItems.Add(form);
                     }
                 }
-            });
+            }
+            finally
+            {
+                _isUpdating = false;
+            }
         }
     }
 }
