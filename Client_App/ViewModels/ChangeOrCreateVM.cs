@@ -223,9 +223,12 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         
         FormType = formNum;
         LocalReports = ReportsStorage.LocalReports;
-        var sumR21 = rep.Rows21.Count(x => x.Sum_DB || x.SumGroup_DB);
-        var sumR22 = rep.Rows22.Count(x => x.Sum_DB || x.SumGroup_DB);
-        isSum = sumR21 > 0 || sumR22 > 0;
+        if (formNum is "2.1" or "2.2")
+        {
+            var sumR21 = rep.Rows21.Count(x => x.Sum_DB || x.SumGroup_DB);
+            var sumR22 = rep.Rows22.Count(x => x.Sum_DB || x.SumGroup_DB);
+            isSum = sumR21 > 0 || sumR22 > 0;
+        }
         Init();
         StaticConfiguration.DBModel.SaveChanges();
     }

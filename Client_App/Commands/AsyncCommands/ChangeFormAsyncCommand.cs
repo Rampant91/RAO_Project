@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using System;
+using Avalonia.Controls;
 using Client_App.Commands.AsyncCommands.SumRow;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
@@ -77,30 +78,31 @@ public class ChangeFormAsyncCommand(FormParameter? form = null) : BaseAsyncComma
                 .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                 .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
                 .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows12.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows13.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows14.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows15.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows16.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows17.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows18.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows19.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows21.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows22.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows23.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows24.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows25.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows26.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows27.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows28.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows29.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows210.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Notes.OrderBy(x => x.Order))
-                .Where(x => x.Reports != null && x.Reports.DBObservable != null)
-                .FirstOrDefaultAsync(x => x.Id == repWithoutRows.Id);
+                .Include(x => x.Rows11)
+                .Include(x => x.Rows12)
+                .Include(x => x.Rows13)
+                .Include(x => x.Rows14)
+                .Include(x => x.Rows15)
+                .Include(x => x.Rows16)
+                .Include(x => x.Rows17)
+                .Include(x => x.Rows18)
+                .Include(x => x.Rows19)
+                .Include(x => x.Rows21)
+                .Include(x => x.Rows22)
+                .Include(x => x.Rows23)
+                .Include(x => x.Rows24)
+                .Include(x => x.Rows25)
+                .Include(x => x.Rows26)
+                .Include(x => x.Rows27)
+                .Include(x => x.Rows28)
+                .Include(x => x.Rows29)
+                .Include(x => x.Rows210)
+                .Include(x => x.Rows211)
+                .Include(x => x.Rows212)
+                .Include(x => x.Notes)
+                //.Where(x => x.Reports != null && x.Reports.DBObservable != null)
+                .FirstAsync(x => x.Id == repWithoutRows.Id);
+            rep.Reports = (Reports)t.SelectedReports.First();
 
             #endregion
 
@@ -117,7 +119,6 @@ public class ChangeFormAsyncCommand(FormParameter? form = null) : BaseAsyncComma
 
                     break;
                 }
-                
                 case "2.1":
                 {
                     var frm = new ChangeOrCreateVM(numForm, rep);
@@ -172,7 +173,15 @@ public class ChangeFormAsyncCommand(FormParameter? form = null) : BaseAsyncComma
                 }
                 default:
                 {
-                    var frm = new ChangeOrCreateVM(numForm, rep);
+                    ChangeOrCreateVM frm;
+                    try
+                    {
+                        frm = new ChangeOrCreateVM(numForm, rep);
+                    }
+                    catch(Exception ex)
+                    {
+                        frm = new ChangeOrCreateVM(numForm, rep.Reports);
+                    }
                     Form1_Visual.tmpVM = frm;
                     await MainWindowVM.ShowDialog.Handle(frm);
                     t.SelectedReports = tmp;

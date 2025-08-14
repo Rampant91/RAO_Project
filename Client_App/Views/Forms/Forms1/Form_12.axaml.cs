@@ -1,14 +1,10 @@
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Avalonia.Input;
-using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using Client_App.Commands.AsyncCommands.TmpNewCommands;
 using Client_App.ViewModels.Forms.Forms1;
 using Models.Forms.Form1;
 using Avalonia.Controls;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace Client_App.Views.Forms.Forms1;

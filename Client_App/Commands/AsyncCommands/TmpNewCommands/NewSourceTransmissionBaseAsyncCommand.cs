@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Client_App.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -15,9 +14,17 @@ namespace Client_App.Commands.AsyncCommands.TmpNewCommands;
 
 public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 {
-    private protected Reports Reports => Report.Reports;
+    private protected Reports Reports
+    {
+        get => Report.Reports;
+        set => Report.Reports = value;
+    }
 
-    private protected Report Report => VM.CurrentReport;
+    private protected Report Report
+    {
+        get => VM.CurrentReport;
+        set => VM.CurrentReport = value;
+    }
 
     private protected dynamic VM = null!;
 
@@ -332,9 +339,10 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     #region CreateReportAndAddNewForm
 
-    private protected async Task<int> CreateReportAndAddNewForm(DBModel db, Form1 form, DateOnly opDate)
+    private protected async Task<Report> CreateReportAndAddNewForm(DBModel db, Form1 form, DateOnly opDate)
     {
         var repId = 0;
+        Report newRep = new();
         switch (form.FormNum_DB)
         {
             #region 1.1
@@ -386,6 +394,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     #endregion
                 };
                 db.form_15.Add(newForm15);
+                newRep = newRep15;
                 break;
             }
 
@@ -465,6 +474,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     #endregion
                 };
                 db.form_16.Add(newForm16);
+                newRep = newRep16;
                 break;
             }
 
@@ -534,6 +544,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     #endregion
                 };
                 db.form_16.Add(newForm16);
+                newRep = newRep16;
                 break;
             }
 
@@ -615,12 +626,13 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     #endregion
                 };
                 db.form_16.Add(newForm16);
+                newRep = newRep16;
                 break;
             }
 
             #endregion
         }
-        return repId;
+        return newRep;
     }
 
     #endregion

@@ -11,7 +11,7 @@
     d:DesignWidth="900"
     x:DataType="vm:Form_12VM"
     mc:Ignorable="d"
-	x:Name="MainWindow"
+	x:Name="1.2"
 	MinWidth="800" MinHeight="600">
 
     <Window.Resources>
@@ -183,7 +183,7 @@
 								<Setter Property="ContextMenu">
 									<ContextMenu 
                                         x:Name="DataRowContextMenu" 
-                                        DataContext="{Binding DataContext, ElementName=MainWindow}">
+                                        DataContext="{Binding DataContext, ElementName=1.2}">
 										<MenuItem 
                                             Header="Очистить ячейки"
                                             Command="{Binding DeleteDataInRows}"
@@ -199,6 +199,7 @@
                         <DataGrid.Columns>
 							<DataGridTextColumn Width="Auto"
 												Header="№ п/п"
+												IsReadOnly="True"
 												Binding="{Binding NumberInOrder.Value}"/>
 							<DataGridTextColumn Width="Auto"
 												Header="код"

@@ -12,7 +12,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia.OpenGL;
 using Client_App.ViewModels;
+using Microsoft.CodeAnalysis.Operations;
+using Microsoft.EntityFrameworkCore;
 
 namespace Client_App.Commands.AsyncCommands.TmpNewCommands;
 public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncCommand
@@ -73,6 +76,29 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                 return;
             }
 
+            await using var db = new DBModel(StaticConfiguration.DBPath);
+
+            Report = await db.ReportCollectionDbSet
+                .AsNoTracking()
+                .AsQueryable()
+                .AsSplitQuery()
+                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
+                .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                .Include(x => x.Rows11)
+                .Include(x => x.Rows12)
+                .Include(x => x.Rows13)
+                .Include(x => x.Rows14)
+                .Where(x => x.Reports != null && x.Reports.DBObservable != null)
+                .FirstAsync(x => x.Id == Report.Id);
+
+            Reports = await db.ReportsCollectionDbSet.AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.DBObservable)
+                .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                .Include(x => x.Report_Collection)
+                .FirstAsync(x => x.Id == Report.Reports.Id);
+
             var repInRange = Reports.Report_Collection
                 .Where(rep => (form.FormNum_DB == "1.1" && rep.FormNum_DB == "1.5"
                                || form.FormNum_DB == "1.2" && rep.FormNum_DB == "1.6"
@@ -93,7 +119,6 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                 repInRange.Remove(repInRange[0]);
             }
 
-            await using var db = new DBModel(StaticConfiguration.DBPath);
             var formIsAdded = false;
             switch (repInRange.Count)
             {
@@ -144,7 +169,7 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                                 ButtonDefinitions =
                                 [
                                     new ButtonDefinition { Name = "Да" },
-                            new ButtonDefinition { Name = "Нет" }
+                                    new ButtonDefinition { Name = "Нет" }
                                 ],
                                 ContentTitle = "Перевод источника в РАО",
                                 ContentHeader = "Уведомление",
@@ -185,9 +210,11 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                 }
                 default:    // Если отчета с подходящим периодом нет, создаём новый отчёт и добавляем в него форму 
                 {
-                    var repId = await CreateReportAndAddNewForm(db, form, opDate);
+                    var rep = await CreateReportAndAddNewForm(db, form, opDate);
+                    var repId = rep.Id;
                     formIsAdded = true;
                     await db.SaveChangesAsync();
+                    ReportsStorage.LocalReports.Reports_Collection.First(x => x.Id == Reports.Id).Report_Collection.Add(rep);
                     var report = await ReportsStorage.Api.GetAsync(repId);
                     Reports.Report_Collection.Add(report);
                     await CloseWindowAndOpenNew(report);
