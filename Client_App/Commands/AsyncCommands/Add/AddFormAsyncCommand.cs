@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Client_App.VisualRealization.Long_Visual;
 using Models.Interfaces;
 using Avalonia.Threading;
+using Models.Forms.Form1;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
@@ -55,10 +56,19 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                 var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
 
                 ChangeOrCreateVM frm = new(param, y);
-
+                /*
+                if(param == "1.2")
+                {
+                    Form_12 form12 = new Form_12();
+                    form12.ShowDialog(t);
+                }
+                else */
                 if (param.Split(".")[0] is "1")
                 {
                     Form1_Visual.tmpVM = frm;
+                    await MainWindowVM.ShowDialog.Handle(frm);
+                    t.SelectedReports = tmp;
+                    await y.Report_Collection.QuickSortAsync();
                 }
                 else if (param.Split(".")[0] is "2")
                 {
@@ -67,11 +77,12 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                         "2.1" or "2.2" => frm,
                         _ => Form2_Visual.tmpVM
                     };
+                    await MainWindowVM.ShowDialog.Handle(frm);
+                    t.SelectedReports = tmp;
+                    await y.Report_Collection.QuickSortAsync();
                 }
                     
-                await MainWindowVM.ShowDialog.Handle(frm);
-                t.SelectedReports = tmp;
-                await y.Report_Collection.QuickSortAsync();
+                
             }
         }
     }

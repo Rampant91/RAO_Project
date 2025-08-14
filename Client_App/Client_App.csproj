@@ -39,6 +39,7 @@
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.10.22" />
     <PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.22" />
+    <PackageReference Include="Avalonia.Controls.TreeDataGrid" Version="0.10.18" />
     <PackageReference Include="Avalonia.Desktop" Version="0.10.22" />
     <PackageReference Include="Avalonia.Diagnostics" Version="0.10.22" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.22" />
@@ -65,6 +66,9 @@
     <Resource Include="Assets\Radiation_sign.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Views\Forms\NewCheckForm.axaml.cs">
+      <DependentUpon>NewCheckForm.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Controls\DataGrid\Cell.axaml.cs">
       <DependentUpon>Cell.axaml</DependentUpon>
     </Compile>
@@ -145,8 +149,14 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Update="Views\Forms\Forms1\Form_12.axaml.cs">
+      <DependentUpon>Form_12.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Forms\Forms2\Form_20.axaml.cs">
       <DependentUpon>Form_20.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Messages\AskIntMessageWindow.axaml.cs">
+      <DependentUpon>AskIntMessageWindow.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\Messages\GetRegionAndFormNums.axaml.cs">
       <DependentUpon>GetRegionAndFormNums.axaml</DependentUpon>
