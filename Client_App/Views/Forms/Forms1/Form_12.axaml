@@ -15,7 +15,7 @@
     d:DesignWidth="900"
     x:DataType="vm:Form_12VM"
     mc:Ignorable="d"
-	x:Name="mainWindow"
+	x:Name="1.2"
 	MinWidth="800" MinHeight="600">
 
     <Window.Resources>
@@ -143,21 +143,6 @@
 									  Command="{Binding AddRow}"/>
 							<MenuItem Header="Добавить N строк" 
 									  Command="{Binding AddRows}"/>
-							<MenuItem Header="Добавить N строк перед" 
-									  Command="{Binding AddRowsIn}"
-									  CommandParameter="{Binding SelectedForms}"/>
-							<MenuItem Header="Копировать"
-									  Command="{Binding CopyRows}"
-									  CommandParameter="{Binding SelectedForms}"/>
-							<MenuItem Header="Вставить"
-									  Command="{Binding PasteRows}"/>
-							<MenuItem Header="Удалить выбранные строчки"
-									  Command="{Binding DeleteRows}"
-									  CommandParameter="{Binding SelectedForms}"/>
-							<MenuItem Header="Выставить номер" 
-									  Command="{Binding SetNumberOrder}"/>
-							<MenuItem Header="Сортировать по номеру п/п"
-									  Command="{Binding SortForms}"/>
 						</ContextMenu>
 					</Grid.ContextMenu>
 					<Grid Grid.Row="0">
@@ -185,7 +170,7 @@
 						</Grid.ColumnDefinitions>
 						<TextBlock Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Stretch"></TextBlock>
 						<TextBlock Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">Сведения об операции</TextBlock>
-						<TextBlock Grid.Column="3" Grid.ColumnSpan="7" HorizontalAlignment="Stretch">Сведения из паспорта на изделие из обездненного урана</TextBlock>
+						<TextBlock Grid.Column="3" Grid.ColumnSpan="7" HorizontalAlignment="Stretch">Сведения из паспорта на изделие из обедненного урана</TextBlock>
 						<TextBlock Grid.Column="10" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">Право собственности на ИОУ</TextBlock>
 						<TextBlock Grid.Column="12" Grid.ColumnSpan="3" HorizontalAlignment="Stretch">Документ</TextBlock>
 						<TextBlock Grid.Column="15" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">Код ОКПО</TextBlock>
@@ -199,14 +184,51 @@
 						AlternatingRowBackground="LightBlue"
 						Margin="5"
 						SelectedItem="{Binding SelectedForm}"
-						SelectionMode="Extended"
-						>
-						<interactivity:Interaction.Behaviors>
+						SelectionMode="Extended">
+                        <DataGrid.Styles>
+                            <Style Selector="DataGridRow">
+                                <Setter Property="ContextMenu">
+                                    <ContextMenu
+                                        x:Name="DataRowContextMenu"
+                                        DataContext="{Binding DataContext, ElementName=1.2}">
+                                        <MenuItem Header="Выделить всё"
+                                                  Command="{Binding SelectAll}"/>
+                                        <MenuItem Header="Добавить строку"
+                                                  Command="{Binding AddRow}"/>
+                                        <MenuItem Header="Добавить N строк"
+                                                  Command="{Binding AddRows}"/>
+                                        <MenuItem Header="Добавить N строк перед"
+                                                  Command="{Binding AddRowsIn}"
+                                                  CommandParameter="{Binding SelectedForms}"/>
+                                        <MenuItem Header="Копировать"
+                                                  Command="{Binding CopyRows}"
+                                                  CommandParameter="{Binding SelectedForms}"/>
+                                        <MenuItem Header="Вставить"
+                                                  Command="{Binding PasteRows}"/>
+                                        <MenuItem Header="Удалить выбранные строчки"
+                                                  Command="{Binding DeleteRows}"
+                                                  CommandParameter="{Binding SelectedForms}"/>
+                                        <MenuItem Header="Выставить номер"
+                                                  Command="{Binding SetNumberOrder}"/>
+                                        <!-- <MenuItem Header="Сортировать по номеру п/п"
+                                                  Command="{Binding SortForms}"/> -->
+                                        <MenuItem Header="Очистить ячейки"
+                                                  Command="{Binding DeleteDataInRows}"
+                                                  CommandParameter="{Binding SelectedForms}"/>
+                                        <MenuItem Header="Перевести источник в РАО"
+                                                  Command="{Binding SourceTransmission}"
+                                                  CommandParameter="{Binding SelectedForms}"/>
+                                    </ContextMenu>
+                                </Setter>
+                            </Style>
+                        </DataGrid.Styles>
+                        <interactivity:Interaction.Behaviors>
 							<local:DataGridSelectedItemsBehavior
 								SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
 						</interactivity:Interaction.Behaviors>
 						<DataGrid.Columns>
 							<DataGridTextColumn Width="Auto"
+												IsReadOnly="True"
 												Header="№ п/п"
 												Binding="{Binding NumberInOrder.Value}"/>
 							<DataGridTextColumn Width="Auto"

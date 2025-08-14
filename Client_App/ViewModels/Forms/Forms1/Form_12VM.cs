@@ -22,6 +22,7 @@ using System.Runtime.Serialization.Formatters;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Client_App.Commands.AsyncCommands.TmpNewCommands;
 
 namespace Client_App.ViewModels.Forms.Forms1
 {
@@ -199,18 +200,20 @@ namespace Client_App.ViewModels.Forms.Forms1
 
         #region Commands
 
-        public ICommand CheckForm => new NewCheckFormAsyncCommand(this);    //  Кнопка "Проверить"
         //public ICommand CopyExecutorDate => new NewCopyExecutorDataAsyncCommand(this); //После привязки кнопка неактивна
-        public ICommand SourceTransmissionAll => new NewSourceTransmissionAllAsyncCommand(this);    //  Кнопка "Перевести данные предыдущей формы"
         public ICommand AddRow => new NewAddRowAsyncCommand(this);
         public ICommand AddRows => new NewAddRowsAsyncCommand(this);
         public ICommand AddRowsIn => new NewAddRowsInAsyncCommand(this);
-        public ICommand DeleteRows => new NewDeleteRowsAsyncCommand(this);
-        public ICommand SortForm => new NewSortFormSyncCommand(this);
-        public ICommand SetNumberOrder => new NewSetNumberOrderSyncCommand(this);
+        public ICommand CheckForm => new NewCheckFormAsyncCommand(this);    //  Кнопка "Проверить"
         public ICommand CopyRows => new NewCopyRowsAsyncCommand();
+        public ICommand DeleteDataInRows => new NewDeleteDataInRowsAsyncCommand();
+        public ICommand DeleteRows => new NewDeleteRowsAsyncCommand(this);
         public ICommand PasteRows => new NewPasteRowsAsyncCommand(this);
         public ICommand SelectAll => new SelectAllRowsAsyncCommand(this);
+        public ICommand SetNumberOrder => new NewSetNumberOrderSyncCommand(this);
+        public ICommand SortForm => new NewSortFormSyncCommand(this);
+        public ICommand SourceTransmissionAll => new NewSourceTransmissionAllAsyncCommand(this);    //  Кнопка "Перевести данные предыдущей формы"
+        public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);    //  Кнопка "Перевести источник в РАО"
 
         #endregion
 

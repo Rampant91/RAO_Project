@@ -160,53 +160,9 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
         };
 
         exportReport.Reports = orgWithExpForm;
-        List<CheckError> errorList = [];
-        try
-        {
-            errorList.Add(exportReport.FormNum_DB switch
-            {
-                //"1.1" => CheckF11.Check_Total(exportReport.Reports, exportReport),
-                //"1.2" => CheckF12.Check_Total(exportReport.Reports, exportReport),
-                //"1.3" => CheckF13.Check_Total(exportReport.Reports, exportReport),
-                //"1.4" => CheckF14.Check_Total(exportReport.Reports, exportReport),
-                //"1.5" => CheckF15.Check_Total(exportReport.Reports, exportReport),
-                //"1.6" => CheckF16.Check_Total(exportReport.Reports, exportReport),
-                //"1.7" => CheckF17.Check_Total(exportReport.Reports, exportReport),
-                //"1.8" => CheckF18.Check_Total(exportReport.Reports, exportReport),
-                //"2.1" => await new CheckF21().AsyncExecute(exportReport),
-                //"2.2" => await new CheckF22().AsyncExecute(exportReport),
-                _ => []
-            });
-        }
-        catch (Exception ex)
-        {
-            //ignored
-        }
 
-        if (errorList.Any(x => x.IsCritical))
-        {
-            #region ExportTerminatedDueToCriticalErrors
-
-            await Dispatcher.UIThread.InvokeAsync(() =>
-                MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в .RAODB",
-                        ContentHeader = "Ошибка",
-                        ContentMessage = "Выгрузка отчёта невозможна из-за наличия в нём критических ошибок (выделены красным)." +
-                                         $"{Environment.NewLine}Устраните ошибки и повторите операцию выгрузки.",
-                        MinWidth = 250,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterScreen
-                    }).ShowDialog(Desktop.MainWindow));
-
-            #endregion
-
-            await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(new ChangeOrCreateVM(exportReport.FormNum_DB, exportReport), errorList));
-
-            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-        }
+        //progressBarVM.SetProgressBar(28, "Проверка отчёта");
+        //await CheckForm(exportReport, cts, progressBar);
 
         var filename = reportWithoutRows.Reports.Master_DB.FormNum_DB switch
         {
@@ -397,6 +353,57 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
         }
 
         await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
+    }
+
+    private static async Task CheckForm(Report exportReport, CancellationTokenSource cts, AnyTaskProgressBar progressBar)
+    {
+        var errorList = new List<CheckError>();
+        try
+        {
+            errorList.Add(exportReport.FormNum_DB switch
+            {
+                "1.1" => CheckF11.Check_Total(exportReport.Reports, exportReport),
+                "1.2" => CheckF12.Check_Total(exportReport.Reports, exportReport),
+                "1.3" => CheckF13.Check_Total(exportReport.Reports, exportReport),
+                "1.4" => CheckF14.Check_Total(exportReport.Reports, exportReport),
+                "1.5" => CheckF15.Check_Total(exportReport.Reports, exportReport),
+                "1.6" => CheckF16.Check_Total(exportReport.Reports, exportReport),
+                "1.7" => CheckF17.Check_Total(exportReport.Reports, exportReport),
+                "1.8" => CheckF18.Check_Total(exportReport.Reports, exportReport),
+                //"2.1" => await new CheckF21().AsyncExecute(exportReport),
+                //"2.2" => await new CheckF22().AsyncExecute(exportReport),
+                _ => []
+            });
+        }
+        catch (Exception ex)
+        {
+            //ignored
+        }
+
+        if (errorList.Any(x => x.IsCritical))
+        {
+            #region ExportTerminatedDueToCriticalErrors
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+                MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = ButtonEnum.Ok,
+                        ContentTitle = "Выгрузка в .RAODB",
+                        ContentHeader = "Ошибка",
+                        ContentMessage = "Выгрузка отчёта невозможна из-за наличия в нём критических ошибок (выделены красным)." +
+                                         $"{Environment.NewLine}Устраните ошибки и повторите операцию выгрузки.",
+                        MinWidth = 250,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen
+                    }).ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(new ChangeOrCreateVM(exportReport.FormNum_DB, exportReport), errorList));
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
     }
 
     #region CancelCommandAndCloseProgressBarWindow
