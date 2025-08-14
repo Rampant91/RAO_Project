@@ -1,26 +1,16 @@
-﻿using Avalonia.Controls;
-using AvaloniaEdit.Utils;
-using Client_App.Commands.AsyncCommands;
+﻿using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.Delete;
-using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.Commands.SyncCommands;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
-using ReactiveUI;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization.Formatters;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Client_App.Commands.AsyncCommands.TmpNewCommands;
 
