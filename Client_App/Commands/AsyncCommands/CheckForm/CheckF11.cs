@@ -1950,8 +1950,8 @@ public abstract partial class CheckF11 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Owner_DB",
                 Value = owner,
-                Message = "Необходимо указать в примечании наименование и адрес правообладателя " +
-                          "(собственника или обладателя иного вещного права) на ЗРИ.",
+                Message = "При коде формы собственности равном \"6\", " +
+                          "в графе \"код ОКПО правообладателя\" необходимо указать краткое наименование страны в соответствии с ОКСМ." ,
                 IsCritical = true
             });
             return result;
@@ -1981,7 +1981,7 @@ public abstract partial class CheckF11 : CheckBase
     private static List<CheckError> Check_051(List<Form11> forms, List<Note> notes, int line)
     {
         List<CheckError> result = new();
-        string[] creatorOkpoValid = { "прим.", "прим", "примечание", "примечания" };
+        string[] creatorOkpoValid ={ "прим.", "прим", "примечание", "примечания" };
         const byte graphNumber = 15;
         short?[] propertyCodeValid = { 9 };
         string[] nonApplicableOperationCodes = { "11", "12", "15", "28", "38", "41", "63", "64", "65", "73", "81", "85", "88" }; //взяты из Check_018
