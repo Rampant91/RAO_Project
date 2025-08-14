@@ -35,6 +35,8 @@ public class Form_12VM : BaseVM, INotifyPropertyChanged
         }
     }
 
+    public Reports CurrentReports => _currentReport.Reports;
+
     private Report _currentReport;
     public Report CurrentReport
     {

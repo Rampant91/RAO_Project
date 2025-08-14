@@ -173,15 +173,7 @@ public class ChangeFormAsyncCommand(FormParameter? form = null) : BaseAsyncComma
                 }
                 default:
                 {
-                    ChangeOrCreateVM frm;
-                    try
-                    {
-                        frm = new ChangeOrCreateVM(numForm, rep);
-                    }
-                    catch(Exception ex)
-                    {
-                        frm = new ChangeOrCreateVM(numForm, rep.Reports);
-                    }
+                    var frm = new ChangeOrCreateVM(numForm, rep);
                     Form1_Visual.tmpVM = frm;
                     await MainWindowVM.ShowDialog.Handle(frm);
                     t.SelectedReports = tmp;
