@@ -100,6 +100,13 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
                 "1.8" => CheckF18.Check_Total(rep.Reports, rep),
                 //"2.1" => await new CheckF21().AsyncExecute(rep),
                 //"2.2" => await new CheckF22().AsyncExecute(rep),
+                "2.3" => await new CheckF23().AsyncExecute(rep),
+                "2.6" => await new CheckF26().AsyncExecute(rep),
+                "2.7" => await new CheckF27().AsyncExecute(rep),
+                "2.8" => await new CheckF28().AsyncExecute(rep),
+                "2.9" => await new CheckF29().AsyncExecute(rep),
+                "2.10" => await new CheckF210().AsyncExecute(rep),
+                "2.11" => await new CheckF211().AsyncExecute(rep),
                 _ => throw new NotImplementedException()
             });
         }
