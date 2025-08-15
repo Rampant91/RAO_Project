@@ -19,9 +19,9 @@ namespace Client_App.VisualRealization.Converters
                 return dataGridLength.UnitType switch
                 {
                     DataGridLengthUnitType.Pixel => new GridLength(dataGridLength.Value),
-                    DataGridLengthUnitType.Auto => GridLength.Auto,
-                    DataGridLengthUnitType.SizeToHeader => GridLength.Auto,
-                    DataGridLengthUnitType.SizeToCells => GridLength.Auto,
+                    DataGridLengthUnitType.Auto => new GridLength(dataGridLength.DisplayValue),
+                    DataGridLengthUnitType.SizeToHeader => new GridLength(dataGridLength.DisplayValue),
+                    DataGridLengthUnitType.SizeToCells => new GridLength(dataGridLength.Value),
                     DataGridLengthUnitType.Star => new GridLength(dataGridLength.Value, GridUnitType.Star),
                     _ => GridLength.Auto
                 };

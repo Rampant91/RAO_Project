@@ -52,9 +52,10 @@
 			<Setter Property="TextWrapping" Value="Wrap"/>
 			<Setter Property="TextAlignment" Value="Center"/>
 		    <Setter Property="TextTrimming" Value="None"/>
-        
         </Style>
-	
+		<Style Selector="DataGridRow:selected CalendarDatePicker TextBox">
+			<Setter Property="Foreground" Value="Black"/>
+		</Style>
 	</Window.Styles>
 
     <Design.DataContext>
@@ -134,7 +135,7 @@
 			
 
 			<ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-				<Grid RowDefinitions="Auto,*">
+				<Grid RowDefinitions="Auto,*" ColumnDefinitions="Auto">
 					<Grid.ContextMenu>
 						<ContextMenu>
 							<MenuItem Header="Выделить всё				Ctrl+A"
@@ -169,36 +170,47 @@
 									  HotKey="Ctrl+L"/>
 						</ContextMenu>
 					</Grid.ContextMenu>
-					<Grid Grid.Row="0">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[0].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[1].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[2].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[3].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[4].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[5].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[6].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[7].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[8].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[9].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[10].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[11].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[12].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[13].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[14].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[15].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[16].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[17].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[18].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[19].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-						</Grid.ColumnDefinitions>
-						<TextBlock Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Stretch"></TextBlock>
-						<TextBlock Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">Сведения об операции</TextBlock>
-						<TextBlock Grid.Column="3" Grid.ColumnSpan="7" HorizontalAlignment="Stretch">Сведения из паспорта на изделие из обездненного урана</TextBlock>
-						<TextBlock Grid.Column="10" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">Право собственности на ИОУ</TextBlock>
-						<TextBlock Grid.Column="12" Grid.ColumnSpan="3" HorizontalAlignment="Stretch">Документ</TextBlock>
-						<TextBlock Grid.Column="15" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">Код ОКПО</TextBlock>
-						<TextBlock Grid.Column="17" Grid.ColumnSpan="3">Прибор (установка), УКТ или иная упаковка</TextBlock>
+					<Grid Grid.Row="0" 
+						Margin="5"
+						  Width="{Binding ElementName=dataGrid.Width}">
+						<interactivity:Interaction.Behaviors>
+							<local:ColumnWidthSyncBehavior	SourceDataGrid="{Binding ElementName=dataGrid}"/>
+						</interactivity:Interaction.Behaviors>
+						<Border Grid.Column="0" Grid.ColumnSpan="1"
+								BorderThickness="1" BorderBrush="Black"
+								Margin="-1,0,0,0">
+							<TextBlock TextAlignment="Center" TextWrapping="WrapWithOverflow"></TextBlock>
+						</Border>
+						<Border Grid.Column="1" Grid.ColumnSpan="2"
+								BorderThickness="1" BorderBrush="Black"
+								Margin="-1,0,0,0">
+							<TextBlock TextAlignment="Center" TextWrapping="WrapWithOverflow">Сведения об операции</TextBlock>
+						</Border>
+						<Border Grid.Column="3" Grid.ColumnSpan="7"
+							BorderThickness="1" BorderBrush="Black"
+							Margin="-1,0,0,0">
+							<TextBlock  TextAlignment="Center" TextWrapping="WrapWithOverflow">Сведения из паспорта на изделие из обездненного урана</TextBlock>
+						</Border>
+						<Border Grid.Column="10" Grid.ColumnSpan="2"
+								BorderThickness="1" BorderBrush="Black"
+								Margin="-1,0,0,0">
+							<TextBlock TextAlignment="Center" TextWrapping="WrapWithOverflow">Право собственности на ИОУ</TextBlock>
+						</Border>
+						<Border Grid.Column="12" Grid.ColumnSpan="3"
+								BorderThickness="1" BorderBrush="Black"
+								Margin="-1,0,0,0">
+							<TextBlock TextAlignment="Center" TextWrapping="WrapWithOverflow">Документ</TextBlock>
+						</Border>
+						<Border Grid.Column="15" Grid.ColumnSpan="2"
+								BorderThickness="1" BorderBrush="Black"
+								Margin="-1,0,0,0">
+							<TextBlock TextAlignment="Center" TextWrapping="WrapWithOverflow">Код ОКПО</TextBlock>
+						</Border>
+						<Border Grid.Column="17" Grid.ColumnSpan="3" 
+								BorderThickness="1" BorderBrush="Black"
+								Margin="-1,0,0,0">
+							<TextBlock TextAlignment="Center" TextWrapping="WrapWithOverflow">Прибор (установка), УКТ или иная упаковка</TextBlock>
+						</Border>
 					</Grid>
 					<DataGrid Grid.Row="1"
 						x:Name="dataGrid"
@@ -206,9 +218,10 @@
 						CanUserResizeColumns="True"
 						RowBackground="White"
 						AlternatingRowBackground="LightBlue"
-						Margin="5"
+						Margin="5,0,5,5"
 						SelectedItem="{Binding SelectedForm}"
 						SelectionMode="Extended"
+						GridLinesVisibility="Vertical"
 						>
 						<interactivity:Interaction.Behaviors>
 							<local:DataGridSelectedItemsBehavior
@@ -216,12 +229,15 @@
 						</interactivity:Interaction.Behaviors>
 						<DataGrid.Columns>
 							<DataGridTextColumn Width="Auto"
+												MinWidth="60"
 												Header="№ п/п"
 												Binding="{Binding NumberInOrder.Value}"/>
 							<DataGridTextColumn Width="Auto"
+												MinWidth="60"
 												Header="код"
 												Binding="{Binding OperationCode.Value}"/>
-							<DataGridTemplateColumn Header="дата" Width="Auto">
+							<DataGridTemplateColumn Header="дата" Width="Auto"
+												MinWidth="60">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<CalendarDatePicker
@@ -232,21 +248,27 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 							<DataGridTextColumn Width="Auto"
+												MinWidth="60"
 												Header="номер паспорта"
 												Binding="{Binding PassportNumber.Value}"/>
 							<DataGridTextColumn Width="Auto"
+												MinWidth="60"
 												Header="наименование"
 												Binding="{Binding NameIOU.Value}"/>
 							<DataGridTextColumn Width="Auto"
+												MinWidth="60"
 												Header="номер"
 												Binding="{Binding FactoryNumber.Value}"/>
 							<DataGridTextColumn Width="Auto"
+												MinWidth="60"
 												Header="масса обедненного урана, кг"
 												Binding="{Binding Mass.Value}"/>
 							<DataGridTextColumn Width="Auto"
+												MinWidth="60"
 												Header="код ОКПО изготовителя"
 												Binding="{Binding CreatorOKPO.Value}"/>
-							<DataGridTemplateColumn Header="дата выпуска" Width="Auto">
+							<DataGridTemplateColumn Header="дата выпуска" Width="Auto"
+												MinWidth="60">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<CalendarDatePicker
@@ -257,21 +279,27 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 							<DataGridTextColumn Width="Auto"
+												MinWidth="60"
 												Header="НСС, мес"
 												Binding="{Binding SignedServicePeriod.Value}"/>
 							<DataGridTextColumn Width="Auto"
+												MinWidth="60"
 												Header="код формы собственности"
 												Binding="{Binding PropertyCode.Value}"/>
 							<DataGridTextColumn Width="Auto"
+												MinWidth="60"
 												Header="код ОКПО правообладателя"
 												Binding="{Binding Owner.Value}"/>
 							<DataGridTextColumn Width="Auto"
+												MinWidth="60"
 												Header="вид"
 												Binding="{Binding DocumentVid.Value}"/>
 							<DataGridTextColumn Width="Auto"
+												MinWidth="60"
 												Header="номер"
 												Binding="{Binding DocumentNumber.Value}"/>
-							<DataGridTemplateColumn Header="дата" Width="Auto">
+							<DataGridTemplateColumn Header="дата" Width="Auto"
+												MinWidth="60">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<CalendarDatePicker
@@ -282,18 +310,23 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 							<DataGridTextColumn Width="Auto"
+												MinWidth="60"
 												Header="поставщика или получателя"
 												Binding="{Binding ProviderOrRecieverOKPO.Value, Converter={StaticResource DateConverter}}"/>
 							<DataGridTextColumn Width="Auto"
+												MinWidth="60"
 												Header="перевозчика"
 												Binding="{Binding TransporterOKPO.Value}"/>
 							<DataGridTextColumn Width="Auto"
+												MinWidth="60"
 												Header="наименование"
 												Binding="{Binding PackName.Value}"/>
 							<DataGridTextColumn Width="Auto"
+												MinWidth="60"
 												Header="тип"
 												Binding="{Binding PackType.Value}"/>
 							<DataGridTextColumn Width="Auto"
+												MinWidth="60"
 												Header="номер"
 												Binding="{Binding PackNumber.Value}"/>
 						</DataGrid.Columns>
