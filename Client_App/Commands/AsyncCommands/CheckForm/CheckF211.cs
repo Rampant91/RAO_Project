@@ -199,15 +199,6 @@ public class CheckF211 : CheckBase
                 });
             }
         }
-        Form211 g;
-        g.PlotName_DB;
-        g.;
-        g.;
-        g.;
-        g.;
-        g.;
-        g.;
-        g.;
     }
 
     #endregion
