@@ -53,7 +53,7 @@
 			<Setter Property="TextAlignment" Value="Center"/>
 		    <Setter Property="TextTrimming" Value="None"/>
         </Style>
-		<Style Selector="DataGridRow:selected CalendarDatePicker TextBox">
+		<Style Selector="DataGridRow:selected TextBox">
 			<Setter Property="Foreground" Value="Black"/>
 		</Style>
 	</Window.Styles>
@@ -233,42 +233,87 @@
 							<DataGridTextColumn Width="Auto"
 												MinWidth="60"
 												Header="№ п/п"
-												Binding="{Binding NumberInOrder.Value, Mode=TwoWay}"/>
-							<DataGridTextColumn Width="Auto"
-												MinWidth="60"
-												Header="код"
-												Binding="{Binding OperationCode.Value, Mode=TwoWay}"/>
+												Binding="{Binding NumberInOrder.Value, Mode=OneWay}"/>
+							
+							<DataGridTemplateColumn 
+												Header="код" 
+												Width="Auto"
+												MinWidth="60">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBox Margin="3" Text="{Binding OperationCode.Value, Mode=TwoWay}"></TextBox>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+							
 							<DataGridTemplateColumn Header="дата" Width="Auto"
 												MinWidth="60">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<CalendarDatePicker
+											Margin="3"
 											SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"
 											HorizontalAlignment="Stretch"
 											VerticalAlignment="Center"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
-							<DataGridTextColumn Width="Auto"
-												MinWidth="60"
+							
+							<DataGridTemplateColumn
 												Header="номер паспорта"
-												Binding="{Binding PassportNumber.Value, Mode=TwoWay}"/>
-							<DataGridTextColumn Width="Auto"
-												MinWidth="60"
+												Width="Auto"
+												MinWidth="60">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBox Margin="3" Text="{Binding PassportNumber.Value, Mode=TwoWay}"></TextBox>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+
+							<DataGridTemplateColumn
 												Header="наименование"
-												Binding="{Binding NameIOU.Value, Mode=TwoWay}"/>
-							<DataGridTextColumn Width="Auto"
-												MinWidth="60"
+												Width="Auto"
+												MinWidth="60">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBox Margin="3" Text="{Binding NameIOU.Value, Mode=TwoWay}"></TextBox>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+
+							<DataGridTemplateColumn
 												Header="номер"
-												Binding="{Binding FactoryNumber.Value, Mode=TwoWay}"/>
-							<DataGridTextColumn Width="Auto"
-												MinWidth="60"
+												Width="Auto"
+												MinWidth="60">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBox Margin="3" Text="{Binding FactoryNumber.Value, Mode=TwoWay}"></TextBox>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+							
+							<DataGridTemplateColumn
 												Header="масса обедненного урана, кг"
-												Binding="{Binding Mass.Value, Mode=TwoWay}"/>
-							<DataGridTextColumn Width="Auto"
-												MinWidth="60"
+												Width="Auto"
+												MinWidth="60">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBox Margin="3" Text="{Binding Mass.Value, Mode=TwoWay}"></TextBox>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+
+							<DataGridTemplateColumn
 												Header="код ОКПО изготовителя"
-												Binding="{Binding CreatorOKPO.Value, Mode=TwoWay}"/>
+												Width="Auto"
+												MinWidth="60">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBox Margin="3" Text="{Binding CreatorOKPO.Value, Mode=TwoWay}"></TextBox>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+							
 							<DataGridTemplateColumn Header="дата выпуска" Width="Auto"
 												MinWidth="60">
 								<DataGridTemplateColumn.CellTemplate>
@@ -280,26 +325,62 @@
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
-							<DataGridTextColumn Width="Auto"
-												MinWidth="60"
+
+							<DataGridTemplateColumn
 												Header="НСС, мес"
-												Binding="{Binding SignedServicePeriod.Value, Mode=TwoWay}"/>
-							<DataGridTextColumn Width="Auto"
-												MinWidth="60"
+												Width="Auto"
+												MinWidth="60">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBox Margin="3" Text="{Binding SignedServicePeriod.Value, Mode=TwoWay}"></TextBox>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+
+							<DataGridTemplateColumn
 												Header="код формы собственности"
-												Binding="{Binding PropertyCode.Value, Mode=TwoWay}"/>
-							<DataGridTextColumn Width="Auto"
-												MinWidth="60"
+												Width="Auto"
+												MinWidth="60">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBox Margin="3" Text="{Binding PropertyCode.Value, Mode=TwoWay}"></TextBox>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+
+							<DataGridTemplateColumn
 												Header="код ОКПО правообладателя"
-												Binding="{Binding Owner.Value, Mode=TwoWay}"/>
-							<DataGridTextColumn Width="Auto"
-												MinWidth="60"
+												Width="Auto"
+												MinWidth="60">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBox Margin="3" Text="{Binding Owner.Value, Mode=TwoWay}"></TextBox>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+
+							<DataGridTemplateColumn
 												Header="вид"
-												Binding="{Binding DocumentVid.Value, Mode=TwoWay}"/>
-							<DataGridTextColumn Width="Auto"
-												MinWidth="60"
+												Width="Auto"
+												MinWidth="60">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBox Margin="3" Text="{Binding DocumentVid.Value, Mode=TwoWay}"></TextBox>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+
+							<DataGridTemplateColumn
 												Header="номер"
-												Binding="{Binding DocumentNumber.Value, Mode=TwoWay}"/>
+												Width="Auto"
+												MinWidth="60">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBox Margin="3" Text="{Binding DocumentNumber.Value, Mode=TwoWay}"></TextBox>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+							
 							<DataGridTemplateColumn Header="дата" Width="Auto"
 												MinWidth="60">
 								<DataGridTemplateColumn.CellTemplate>
@@ -311,26 +392,61 @@
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
-							<DataGridTextColumn Width="Auto"
-												MinWidth="60"
+
+							<DataGridTemplateColumn
 												Header="поставщика или получателя"
-												Binding="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
-							<DataGridTextColumn Width="Auto"
-												MinWidth="60"
+												Width="Auto"
+												MinWidth="60">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBox Margin="3" Text="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay}"></TextBox>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+
+							<DataGridTemplateColumn
 												Header="перевозчика"
-												Binding="{Binding TransporterOKPO.Value, Mode=TwoWay}"/>
-							<DataGridTextColumn Width="Auto"
-												MinWidth="60"
+												Width="Auto"
+												MinWidth="60">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBox Margin="3" Text="{Binding TransporterOKPO.Value, Mode=TwoWay}"></TextBox>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+
+							<DataGridTemplateColumn
 												Header="наименование"
-												Binding="{Binding PackName.Value, Mode=TwoWay}"/>
-							<DataGridTextColumn Width="Auto"
-												MinWidth="60"
+												Width="Auto"
+												MinWidth="60">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBox Margin="3" Text="{Binding PackName.Value, Mode=TwoWay}"></TextBox>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+
+							<DataGridTemplateColumn
 												Header="тип"
-												Binding="{Binding PackType.Value, Mode=TwoWay}"/>
-							<DataGridTextColumn Width="Auto"
-												MinWidth="60"
+												Width="Auto"
+												MinWidth="60">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBox Margin="3" Text="{Binding PackType.Value, Mode=TwoWay}"></TextBox>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+
+							<DataGridTemplateColumn
 												Header="номер"
-												Binding="{Binding PackNumber.Value, Mode=TwoWay}"/>
+												Width="Auto"
+												MinWidth="60">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBox Margin="3" Text="{Binding PackNumber.Value, Mode=TwoWay}"></TextBox>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
 						</DataGrid.Columns>
 					</DataGrid>
 				</Grid>
