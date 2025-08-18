@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Client_App.ViewModels;
+﻿using Client_App.ViewModels;
+using Client_App.ViewModels.Forms;
+using Client_App.ViewModels.Forms.Forms1;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms.Form1;
 using OfficeOpenXml;
-using Client_App.ViewModels.Forms.Forms1;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.SourceTransmission;
 
@@ -20,7 +21,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     private protected Report SelectedReport => FormVM.CurrentReport;
 
-    protected Form_12VM FormVM = null!;
+    protected BaseFormVM FormVM = null!;
 
     #region AddNewFormToExistingReport
 

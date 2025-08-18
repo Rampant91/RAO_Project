@@ -436,4 +436,25 @@ public class Form19 : Form1
     }
 
     #endregion
+
+    #region ConvertToTSVstring
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        string str =
+            $"{this.NumberInOrder.Value}\t" +
+            $"{this.OperationCode.Value}\t" +
+            $"{this.OperationDate.Value}\t" +
+            $"{this.DocumentVid.Value}\t" +
+            $"{this.DocumentNumber.Value}\t" +
+            $"{this.DocumentDate.Value}\t" +
+            $"{this.CodeTypeAccObject.Value}\t" +
+            $"{this.Radionuclids.Value}\t" +
+            $"{this.Activity.Value}";
+        return str;
+    }
+    #endregion
 }

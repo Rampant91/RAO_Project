@@ -1022,4 +1022,29 @@ public partial class Form23 : Form2
     #endregion 
 
     #endregion
+
+    #region ConvertToTSVstring
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        string str =
+            $"{this.NumberInOrder.Value}\t" +
+            $"{this.StoragePlaceName.Value}\t" +
+            $"{this.StoragePlaceCode.Value}\t" +
+            $"{this.ProjectVolume.Value}\t" +
+            $"{this.CodeRAO.Value}\t" +
+            $"{this.Volume.Value}\t" +
+            $"{this.Mass.Value}\t" +
+            $"{this.QuantityOZIII.Value}\t" +
+            $"{this.SummaryActivity.Value}\t" +
+            $"{this.DocumentNumber.Value}\t" +
+            $"{this.DocumentDate.Value}\t" +
+            $"{this.ExpirationDate.Value}\t" +
+            $"{this.DocumentName.Value}";
+        return str;
+    }
+    #endregion
 }

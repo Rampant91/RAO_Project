@@ -2627,6 +2627,51 @@ public partial class Form17 : Form1
 
     [GeneratedRegex("^[0-9x+]{11}$")]
     private static partial Regex CodeRaoRegex();
-    
+
+    #endregion
+
+    #region ConvertToTSVstring
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        string str =
+            $"{this.NumberInOrder.Value}\t" +
+            $"{this.OperationCode.Value}\t" +
+            $"{this.OperationDate.Value}\t" +
+            $"{this.PackName.Value}\t" +
+            $"{this.PackType.Value}\t" +
+            $"{this.PackFactoryNumber.Value}\t" +
+            $"{this.PackNumber.Value}\t" +
+            $"{this.FormingDate.Value}\t" +
+            $"{this.PassportNumber.Value}\t" +
+            $"{this.Volume.Value}\t" +
+            $"{this.Mass.Value}\t" +
+            $"{this.Radionuclids.Value}\t" +
+            $"{this.SpecificActivity.Value}\t" +
+            $"{this.DocumentVid.Value}\t" +
+            $"{this.DocumentNumber.Value}\t" +
+            $"{this.DocumentDate.Value}\t" +
+            $"{this.ProviderOrRecieverOKPO.Value}\t" +
+            $"{this.TransporterOKPO.Value}\t" +
+            $"{this.StoragePlaceName.Value}\t" +
+            $"{this.StoragePlaceCode.Value}\t" +
+            $"{this.CodeRAO.Value}\t" +
+            $"{this.StatusRAO.Value}\t" +
+            $"{this.VolumeOutOfPack.Value}\t" +
+            $"{this.MassOutOfPack.Value}\t" +
+            $"{this.Quantity.Value}\t" +
+            $"{this.TritiumActivity.Value}\t" +
+            $"{this.BetaGammaActivity.Value}\t" +
+            $"{this.AlphaActivity.Value}\t" +
+            $"{this.TransuraniumActivity.Value}\t" +
+            $"{this.RefineOrSortRAOCode.Value}\t" +
+            $"{this.Subsidy.Value}\t" +
+            $"{this.FcpNumber.Value}\t" +
+            $"{this.ContractNumber.Value}";
+        return str;
+    }
     #endregion
 }

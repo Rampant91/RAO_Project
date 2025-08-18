@@ -1,10 +1,11 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 using Client_App.ViewModels;
+using Client_App.ViewModels.Forms;
+using Client_App.ViewModels.Forms.Forms1;
 using Models.CheckForm;
 using System.Collections.Generic;
-using Avalonia.Media;
-using Client_App.ViewModels.Forms.Forms1;
 
 namespace Client_App.Views
 {
@@ -15,7 +16,7 @@ namespace Client_App.Views
 
         public NewCheckForm() { }
 
-        public NewCheckForm(Form_12VM formVM, List<CheckError> checkError)
+        public NewCheckForm(BaseFormVM formVM, List<CheckError> checkError)
         {
             AvaloniaXamlLoader.Load(this);
 

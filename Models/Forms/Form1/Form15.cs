@@ -1792,7 +1792,41 @@ public partial class Form15 : Form1
     private static partial Regex StoragePlaceCodeRegex6();
 
     [GeneratedRegex("^[1]{1}[1-9]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1]{1}|^[4]{1}[1-49]{1}|^[5]{1}[1-69]{1}|^[6]{1}[1]{1}|^[7]{1}[1349]{1}|^[8]{1}[1-69]{1}|^[9]{1}[9]{1}")]
-    private static partial Regex StoragePlaceCodeRegex7(); 
-    
+    private static partial Regex StoragePlaceCodeRegex7();
+
+    #endregion
+
+    #region ConvertToTSVstring
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        string str =
+            $"{this.NumberInOrder.Value}\t" +
+            $"{this.OperationCode.Value}\t" +
+            $"{this.OperationDate.Value}\t" +
+            $"{this.PassportNumber.Value}\t" +
+            $"{this.Type.Value}\t" +
+            $"{this.Radionuclids.Value}\t" +
+            $"{this.FactoryNumber.Value}\t" +
+            $"{this.Quantity.Value}\t" +
+            $"{this.Activity.Value}\t" +
+            $"{this.CreationDate.Value}\t" +
+            $"{this.StatusRAO.Value}\t" +
+            $"{this.ProviderOrRecieverOKPO.Value}\t" +
+            $"{this.TransporterOKPO.Value}\t" +
+            $"{this.PackName.Value}\t" +
+            $"{this.PackType.Value}\t" +
+            $"{this.PackNumber.Value}\t" +
+            $"{this.StoragePlaceName.Value}\t" +
+            $"{this.StoragePlaceCode.Value}\t" +
+            $"{this.RefineOrSortRAOCode.Value}\t" +
+            $"{this.Subsidy.Value}\t" +
+            $"{this.FcpNumber.Value}\t" +
+            $"{this.ContractNumber.Value}";
+        return str;
+    }
     #endregion
 }

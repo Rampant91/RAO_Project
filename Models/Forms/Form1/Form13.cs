@@ -1673,4 +1673,34 @@ public class Form13 : Form1
     }
 
     #endregion
+
+    #region ConvertToTSVstring
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        string str =
+            $"{this.NumberInOrder.Value}\t" +
+            $"{this.OperationCode.Value}\t" +
+            $"{this.OperationDate.Value}\t" +
+            $"{this.PassportNumber.Value}\t" +
+            $"{this.Type.Value}\t" +
+            $"{this.Radionuclids.Value}\t" +
+            $"{this.FactoryNumber.Value}\t" +
+            $"{this.Activity.Value}\t" +
+            $"{this.CreatorOKPO.Value}\t" +
+            $"{this.CreationDate.Value}\t" +
+            $"{this.AggregateState.Value}\t" +
+            $"{this.PropertyCode.Value}\t" +
+            $"{this.Owner.Value}\t" +
+            $"{this.ProviderOrRecieverOKPO.Value}\t" +
+            $"{this.TransporterOKPO.Value}\t" +
+            $"{this.PackName.Value}\t" +
+            $"{this.PackType.Value}\t" +
+            $"{this.PackNumber.Value}";
+        return str;
+    }
+    #endregion
 }

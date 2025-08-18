@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Client_App.Commands.AsyncCommands.ExcelExport;
+using Client_App.ViewModels.Forms;
+using Client_App.ViewModels.Forms.Forms1;
+using Models.CheckForm;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using Client_App.Commands.AsyncCommands.ExcelExport;
-using Models.CheckForm;
-using Client_App.ViewModels.Forms.Forms1;
 namespace Client_App.ViewModels
 {
     public class NewCheckFormVM : BaseVM, INotifyPropertyChanged
@@ -13,7 +14,7 @@ namespace Client_App.ViewModels
 
         public NewCheckFormVM() { }
 
-        public NewCheckFormVM(Form_12VM formVM, List<CheckError> checkError)
+        public NewCheckFormVM(BaseFormVM formVM, List<CheckError> checkError)
         {
             FormVM = formVM;
             CheckError = checkError;
@@ -31,7 +32,7 @@ namespace Client_App.ViewModels
 
         #region Properties
 
-        public readonly Form_12VM FormVM;
+        public readonly BaseFormVM FormVM;
 
         private string _titleName;
         public string TitleName

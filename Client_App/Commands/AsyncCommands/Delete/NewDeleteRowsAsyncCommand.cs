@@ -1,15 +1,16 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Threading;
+using Client_App.ViewModels;
+using Client_App.ViewModels.Forms;
+using Client_App.ViewModels.Forms.Forms1;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
+using Models.Collections;
+using Models.Forms;
+using Models.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Models.Interfaces;
-using Client_App.ViewModels;
-using Models.Collections;
-using Models.Forms;
-using Avalonia.Threading;
-using Client_App.ViewModels.Forms.Forms1;
 
 namespace Client_App.Commands.AsyncCommands.Delete;
 
@@ -17,7 +18,7 @@ namespace Client_App.Commands.AsyncCommands.Delete;
 /// Удалить выбранные строчки из формы.
 /// </summary>
 /// <param name="changeOrCreateViewModel">ViewModel отчёта.</param>
-public class NewDeleteRowsAsyncCommand(Form_12VM formVM) : BaseAsyncCommand
+public class NewDeleteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
     private Report Storage => formVM.CurrentReport;
 

@@ -2046,4 +2046,41 @@ public partial class Form16 : Form1
     #endregion
 
     #endregion
+
+    #region ConvertToTSVstring
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        string str =
+            $"{this.NumberInOrder.Value}\t" +
+            $"{this.OperationCode.Value}\t" +
+            $"{this.OperationDate.Value}\t" +
+            $"{this.CodeRAO.Value}\t" +
+            $"{this.StatusRAO.Value}\t" +
+            $"{this.Volume.Value}\t" +
+            $"{this.Mass.Value}\t" +
+            $"{this.QuantityOZIII.Value}\t" +
+            $"{this.MainRadionuclids.Value}\t" +
+            $"{this.TritiumActivity.Value}\t" +
+            $"{this.BetaGammaActivity.Value}\t" +
+            $"{this.AlphaActivity.Value}\t" +
+            $"{this.TransuraniumActivity.Value}\t" +
+            $"{this.ActivityMeasurementDate.Value}\t" +
+            $"{this.ProviderOrRecieverOKPO.Value}\t" +
+            $"{this.TransporterOKPO.Value}\t" +
+            $"{this.StoragePlaceName.Value}\t" +
+            $"{this.StoragePlaceCode.Value}\t" +
+            $"{this.RefineOrSortRAOCode.Value}\t" +
+            $"{this.PackName.Value}\t" +
+            $"{this.PackType.Value}\t" +
+            $"{this.PackNumber.Value}\t" +
+            $"{this.Subsidy.Value}\t" +
+            $"{this.FcpNumber.Value}\t" +
+            $"{this.ContractNumber.Value}";
+        return str;
+    }
+    #endregion
 }

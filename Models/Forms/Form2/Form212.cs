@@ -447,4 +447,22 @@ public class Form212 : Form2
     }
 
     #endregion
+
+    #region ConvertToTSVstring
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        string str =
+            $"{this.NumberInOrder.Value}\t" +
+            $"{this.OperationCode.Value}\t" +
+            $"{this.ObjectTypeCode.Value}\t" +
+            $"{this.Radionuclids.Value}\t" +
+            $"{this.Activity.Value}\t" +
+            $"{this.ProviderOrRecieverOKPO.Value}";
+        return str;
+    }
+    #endregion
 }

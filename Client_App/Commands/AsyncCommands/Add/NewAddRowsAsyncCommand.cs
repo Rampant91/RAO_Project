@@ -1,6 +1,7 @@
 ﻿using Avalonia; 
 using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Commands.AsyncCommands.Save;
+using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Messages;
 using Models.Collections;
@@ -17,7 +18,7 @@ namespace Client_App.Commands.AsyncCommands.Add;
 /// Добавить N строк в форму.
 /// </summary>
 /// <param name="changeOrCreateViewModel">ViewModel отчёта.</param>
-public class NewAddRowsAsyncCommand(Form_12VM formVM) : BaseAsyncCommand
+public class NewAddRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
     private Report Storage => formVM.CurrentReport;
     private string FormType => formVM.FormType;

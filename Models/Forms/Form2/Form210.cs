@@ -728,6 +728,29 @@ public partial class Form210 : Form2
     
     [GeneratedRegex("^[0-9]{6}$")]
     private static partial Regex SixNumRegex();
-    
+
+    #endregion
+
+    #region ConvertToTSVstring
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        string str =
+            $"{this.NumberInOrder.Value}\t" +
+            $"{this.IndicatorName.Value}\t" +
+            $"{this.PlotName.Value}\t" +
+            $"{this.PlotKadastrNumber.Value}\t" +
+            $"{this.PlotCode.Value}\t" +
+            $"{this.InfectedArea.Value}\t" +
+            $"{this.AvgGammaRaysDosePower.Value}\t" +
+            $"{this.MaxGammaRaysDosePower.Value}\t" +
+            $"{this.WasteDensityAlpha.Value}\t" +
+            $"{this.WasteDensityBeta.Value}\t" +
+            $"{this.FcpNumber.Value}";
+        return str;
+    }
     #endregion
 }

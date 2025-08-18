@@ -2099,4 +2099,36 @@ public partial class Form22 : Form2, IBaseColor
     #endregion 
 
     #endregion
+
+    #region ConvertToTSVstring
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        string str =
+            $"{this.NumberInOrder.Value}\t" +
+            $"{this.StoragePlaceName.Value}\t" +
+            $"{this.StoragePlaceCode.Value}\t" +
+            $"{this.PackName.Value}\t" +
+            $"{this.PackType.Value}\t" +
+            $"{this.PackQuantity.Value}\t" +
+            $"{this.CodeRAO.Value}\t" +
+            $"{this.StatusRAO.Value}\t" +
+            $"{this.VolumeOutOfPack.Value}\t" +
+            $"{this.VolumeInPack.Value}\t" +
+            $"{this.MassOutOfPack.Value}\t" +
+            $"{this.MassInPack.Value}\t" +
+            $"{this.QuantityOZIII.Value}\t" +
+            $"{this.TritiumActivity.Value}\t" +
+            $"{this.BetaGammaActivity.Value}\t" +
+            $"{this.AlphaActivity.Value}\t" +
+            $"{this.TransuraniumActivity.Value}\t" +
+            $"{this.MainRadionuclids.Value}\t" +
+            $"{this.Subsidy.Value}\t" +
+            $"{this.FcpNumber.Value}";
+        return str;
+    }
+    #endregion
 }

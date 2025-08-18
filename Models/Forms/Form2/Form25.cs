@@ -695,4 +695,26 @@ public partial class Form25 : Form2
     private static partial Regex FiveNumRegex();
 
     #endregion
+
+    #region ConvertToTSVstring
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        string str =
+            $"{this.NumberInOrder.Value}\t" +
+            $"{this.StoragePlaceName.Value}\t" +
+            $"{this.StoragePlaceCode.Value}\t" +
+            $"{this.CodeOYAT.Value}\t" +
+            $"{this.FcpNumber.Value}\t" +
+            $"{this.FuelMass.Value}\t" +
+            $"{this.CellMass.Value}\t" +
+            $"{this.Quantity.Value}\t" +
+            $"{this.AlphaActivity.Value}\t" +
+            $"{this.BetaGammaActivity.Value}";
+        return str;
+    }
+    #endregion
 }

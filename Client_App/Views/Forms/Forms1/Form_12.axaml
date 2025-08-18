@@ -222,8 +222,8 @@
 						SelectedItem="{Binding SelectedForm}"
 						SelectionMode="Extended"
 						GridLinesVisibility="Vertical"
-						CanUserReorderColumns="False"
 						CanUserSortColumns="False"
+						IsReadOnly="False"
 						>
 						<interactivity:Interaction.Behaviors>
 							<local:DataGridSelectedItemsBehavior
@@ -233,17 +233,17 @@
 							<DataGridTextColumn Width="Auto"
 												MinWidth="60"
 												Header="№ п/п"
-												Binding="{Binding NumberInOrder.Value}"/>
+												Binding="{Binding NumberInOrder.Value, Mode=TwoWay}"/>
 							<DataGridTextColumn Width="Auto"
 												MinWidth="60"
 												Header="код"
-												Binding="{Binding OperationCode.Value}"/>
+												Binding="{Binding OperationCode.Value, Mode=TwoWay}"/>
 							<DataGridTemplateColumn Header="дата" Width="Auto"
 												MinWidth="60">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<CalendarDatePicker
-											SelectedDate="{Binding OperationDate.Value, Converter={StaticResource DateConverter}}"
+											SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"
 											HorizontalAlignment="Stretch"
 											VerticalAlignment="Center"/>
 									</DataTemplate>
@@ -252,29 +252,29 @@
 							<DataGridTextColumn Width="Auto"
 												MinWidth="60"
 												Header="номер паспорта"
-												Binding="{Binding PassportNumber.Value}"/>
+												Binding="{Binding PassportNumber.Value, Mode=TwoWay}"/>
 							<DataGridTextColumn Width="Auto"
 												MinWidth="60"
 												Header="наименование"
-												Binding="{Binding NameIOU.Value}"/>
+												Binding="{Binding NameIOU.Value, Mode=TwoWay}"/>
 							<DataGridTextColumn Width="Auto"
 												MinWidth="60"
 												Header="номер"
-												Binding="{Binding FactoryNumber.Value}"/>
+												Binding="{Binding FactoryNumber.Value, Mode=TwoWay}"/>
 							<DataGridTextColumn Width="Auto"
 												MinWidth="60"
 												Header="масса обедненного урана, кг"
-												Binding="{Binding Mass.Value}"/>
+												Binding="{Binding Mass.Value, Mode=TwoWay}"/>
 							<DataGridTextColumn Width="Auto"
 												MinWidth="60"
 												Header="код ОКПО изготовителя"
-												Binding="{Binding CreatorOKPO.Value}"/>
+												Binding="{Binding CreatorOKPO.Value, Mode=TwoWay}"/>
 							<DataGridTemplateColumn Header="дата выпуска" Width="Auto"
 												MinWidth="60">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<CalendarDatePicker
-											SelectedDate="{Binding CreationDate.Value, Converter={StaticResource DateConverter}}"
+											SelectedDate="{Binding CreationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"
 											HorizontalAlignment="Stretch"
 											VerticalAlignment="Center"/>
 									</DataTemplate>
@@ -283,29 +283,29 @@
 							<DataGridTextColumn Width="Auto"
 												MinWidth="60"
 												Header="НСС, мес"
-												Binding="{Binding SignedServicePeriod.Value}"/>
+												Binding="{Binding SignedServicePeriod.Value, Mode=TwoWay}"/>
 							<DataGridTextColumn Width="Auto"
 												MinWidth="60"
 												Header="код формы собственности"
-												Binding="{Binding PropertyCode.Value}"/>
+												Binding="{Binding PropertyCode.Value, Mode=TwoWay}"/>
 							<DataGridTextColumn Width="Auto"
 												MinWidth="60"
 												Header="код ОКПО правообладателя"
-												Binding="{Binding Owner.Value}"/>
+												Binding="{Binding Owner.Value, Mode=TwoWay}"/>
 							<DataGridTextColumn Width="Auto"
 												MinWidth="60"
 												Header="вид"
-												Binding="{Binding DocumentVid.Value}"/>
+												Binding="{Binding DocumentVid.Value, Mode=TwoWay}"/>
 							<DataGridTextColumn Width="Auto"
 												MinWidth="60"
 												Header="номер"
-												Binding="{Binding DocumentNumber.Value}"/>
+												Binding="{Binding DocumentNumber.Value, Mode=TwoWay}"/>
 							<DataGridTemplateColumn Header="дата" Width="Auto"
 												MinWidth="60">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<CalendarDatePicker
-											SelectedDate="{Binding DocumentDate.Value}"
+											SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay}"
 											HorizontalAlignment="Stretch"
 											VerticalAlignment="Center"/>
 									</DataTemplate>
@@ -314,23 +314,23 @@
 							<DataGridTextColumn Width="Auto"
 												MinWidth="60"
 												Header="поставщика или получателя"
-												Binding="{Binding ProviderOrRecieverOKPO.Value, Converter={StaticResource DateConverter}}"/>
+												Binding="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
 							<DataGridTextColumn Width="Auto"
 												MinWidth="60"
 												Header="перевозчика"
-												Binding="{Binding TransporterOKPO.Value}"/>
+												Binding="{Binding TransporterOKPO.Value, Mode=TwoWay}"/>
 							<DataGridTextColumn Width="Auto"
 												MinWidth="60"
 												Header="наименование"
-												Binding="{Binding PackName.Value}"/>
+												Binding="{Binding PackName.Value, Mode=TwoWay}"/>
 							<DataGridTextColumn Width="Auto"
 												MinWidth="60"
 												Header="тип"
-												Binding="{Binding PackType.Value}"/>
+												Binding="{Binding PackType.Value, Mode=TwoWay}"/>
 							<DataGridTextColumn Width="Auto"
 												MinWidth="60"
 												Header="номер"
-												Binding="{Binding PackNumber.Value}"/>
+												Binding="{Binding PackNumber.Value, Mode=TwoWay}"/>
 						</DataGrid.Columns>
 					</DataGrid>
 				</Grid>

@@ -538,4 +538,24 @@ public class Form26 : Form2
     }
 
     #endregion
+
+    #region ConvertToTSVstring
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        string str =
+            $"{this.NumberInOrder.Value}\t" +
+            $"{this.ObservedSourceNumber.Value}\t" +
+            $"{this.ControlledAreaName.Value}\t" +
+            $"{this.SupposedWasteSource.Value}\t" +
+            $"{this.DistanceToWasteSource.Value}\t" +
+            $"{this.TestDepth.Value}\t" +
+            $"{this.RadionuclidName.Value}\t" +
+            $"{this.AverageYearConcentration.Value}";
+        return str;
+    }
+    #endregion
 }
