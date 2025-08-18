@@ -66,19 +66,18 @@ public class CheckF26 : CheckBase
         int.TryParse(repYear, out yearRealCurrent);
         string yearPrevious = (yearRealCurrent - 1).ToString();
 
-        Reports? reps26Prev = await db2.ReportsCollectionDbSet
+        Reports? reps26Prev = null;
+        foreach (var _ in db2.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
-            .Include(reps => reps.DBObservable)
-            .Include(reps => reps.Master_DB)
-            .Include(reps => reps.Report_Collection
-                .Where(report =>
-                    (report.FormNum_DB == "2.6")
-                    && (report.Year_DB == yearPrevious)))
-            .Where(reps => reps.DBObservable != null)
-            .FirstOrDefaultAsync(reps => reps.Master_DB.Rows20
-                .Any(form20 => form20.RegNo_DB == form20RegNo), cts.Token);
+            .Include(x => x.DBObservable)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+            .Where(x => x.Master_DB.Rows20.Any(y => y.RegNo_DB == form20RegNo))
+            .Include(x => x.Report_Collection)
+            .Include(x => x.Report_Collection.Where(y => y.Year_DB == yearPrevious && y.FormNum_DB == "2.6"))
+            .ThenInclude(x => x.Rows210))
+            if (_.Report_Collection.Count > 0) { reps26Prev = _; break; }
 
         await db2.DisposeAsync();
 
