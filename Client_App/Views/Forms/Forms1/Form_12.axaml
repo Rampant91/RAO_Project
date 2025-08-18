@@ -222,6 +222,8 @@
 						SelectedItem="{Binding SelectedForm}"
 						SelectionMode="Extended"
 						GridLinesVisibility="Vertical"
+						CanUserReorderColumns="False"
+						CanUserSortColumns="False"
 						>
 						<interactivity:Interaction.Behaviors>
 							<local:DataGridSelectedItemsBehavior

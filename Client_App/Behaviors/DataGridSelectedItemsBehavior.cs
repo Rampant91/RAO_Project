@@ -12,6 +12,9 @@ using Models.Forms.Form1;
 
 namespace Client_App.Behaviors
 {
+    /// <summary>
+    /// Этот Behavior используется для привязки к DataGrid нового параметра, хранящего все выделенные ячейки
+    /// </summary>
     public class DataGridSelectedItemsBehavior : Behavior<DataGrid>
     {
         public static readonly StyledProperty<IList?> SelectedItemsProperty =
