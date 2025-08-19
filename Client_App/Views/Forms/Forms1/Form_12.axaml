@@ -10,7 +10,7 @@
 	xmlns:local="using:Client_App.Behaviors"
 	xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 	xmlns:behaviors="using:Avalonia.Xaml.Interactions.Core"
-    Title="Form_12"
+    Title="{Binding WindowTitle}"
     d:DesignHeight="450"
     d:DesignWidth="900"
     x:DataType="vm:Form_12VM"
@@ -36,6 +36,7 @@
 				<RowDefinition Height="Auto"></RowDefinition>
 				<RowDefinition Height="Auto"></RowDefinition>
 				<RowDefinition Height="Auto"></RowDefinition>
+				<RowDefinition Height="Auto"></RowDefinition>
 			</Grid.RowDefinitions>
 			
 			<CheckBox Classes="hideButton" Grid.Row ="0" IsChecked ="{Binding IsHeaderExpanded}">Раскрыть/Скрыть верхнюю панель</CheckBox>
@@ -45,7 +46,15 @@
 				IsVisible="{Binding IsHeaderExpanded}">
 					
 				<Border Classes="borderContainer">
-					<Grid Margin="5" RowDefinitions ="*,*,*,*,*">
+					<Grid Margin="5">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*"/>
+							<RowDefinition Height="*"/>
+							<RowDefinition Height="*"/>
+							<RowDefinition Height="*"/>
+							<RowDefinition Height="*"/>
+						</Grid.RowDefinitions>
+						
 						<Grid ColumnDefinitions="*,*"  Grid.Row="0">
 							<TextBlock Grid.Column="0" Margin="5" >Дата окончания предыдущего отчетного периода:</TextBlock>
 							<CalendarDatePicker Grid.Column="1" 
@@ -60,7 +69,7 @@
 
 						<StackPanel  Orientation="Horizontal" Grid.Row="2">
 							<TextBlock Margin="5">Номер корректировки:</TextBlock>
-							<TextBox Margin="5" Width="75"  IsReadOnly="True"
+							<TextBox Margin="5" Width="75"  
                                 Text="{Binding Path=CurrentReport.CorrectionNumber.Value}"></TextBox>
 						</StackPanel>
 						
@@ -79,16 +88,16 @@
 				<Border Classes="borderContainer">
 					<Grid Margin="5" RowDefinitions ="*,*,*,*,*" ColumnDefinitions="*,2*">
 						<TextBlock Grid.Row="0" Grid.Column="0" Margin="5" >ФИО исполнителя:</TextBlock>
-						<TextBox Grid.Row="0" Grid.Column="1" Margin="5"  IsReadOnly="True"
+						<TextBox Grid.Row="0" Grid.Column="1" Margin="5"  
                                 Text="{Binding Path=CurrentReport.FIOexecutor.Value}"></TextBox>
 						<TextBlock Grid.Row="1" Grid.Column="0" Margin="5" >Должность:</TextBlock>
-						<TextBox Grid.Row="1" Grid.Column="1" Margin="5" IsReadOnly="True"
+						<TextBox Grid.Row="1" Grid.Column="1" Margin="5" 
                                 Text="{Binding Path=CurrentReport.GradeExecutor.Value}" ></TextBox>
 						<TextBlock Grid.Row="2" Grid.Column="0" Margin="5" >Телефон:</TextBlock>
-						<TextBox Grid.Row="2" Grid.Column="1" Margin="5" IsReadOnly="True"
+						<TextBox Grid.Row="2" Grid.Column="1" Margin="5" 
                                 Text="{Binding Path=CurrentReport.ExecPhone.Value}"></TextBox>
 						<TextBlock Grid.Row="3" Grid.Column="0" Margin="5" >Электронная почта:</TextBlock>
-						<TextBox Grid.Row="3" Grid.Column="1" Margin="5" IsReadOnly="True"
+						<TextBox Grid.Row="3" Grid.Column="1" Margin="5" 
                                 Text="{Binding Path=CurrentReport.ExecEmail.Value}"></TextBox>
 						<Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Click="CopyExecutorData_Click">Скопировать данные предыдущей формы</Button>
 					</Grid>
@@ -135,29 +144,95 @@
 					</Grid.ContextMenu>
 					<Grid Classes="tableHeader" Grid.Row="0" 
 						  Width="{Binding ElementName=dataGrid.Width}">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
 						<interactivity:Interaction.Behaviors>
 							<local:ColumnWidthSyncBehavior	SourceDataGrid="{Binding ElementName=dataGrid}"/>
 						</interactivity:Interaction.Behaviors>
-						<Border Grid.Column="0" Grid.ColumnSpan="1">
+						<!--Первый уровень заголовков-->
+						<Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="1">
 							<TextBlock></TextBlock>
 						</Border>
-						<Border Grid.Column="1" Grid.ColumnSpan="2">
+						<Border Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
 							<TextBlock>Сведения об операции</TextBlock>
 						</Border>
-						<Border Grid.Column="3" Grid.ColumnSpan="7">
+						<Border Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="7">
 							<TextBlock>Сведения из паспорта на изделие из обездненного урана</TextBlock>
 						</Border>
-						<Border Grid.Column="10" Grid.ColumnSpan="2">
+						<Border Grid.Column="10" Grid.Row="0" Grid.ColumnSpan="2">
 							<TextBlock>Право собственности на ИОУ</TextBlock>
 						</Border>
-						<Border Grid.Column="12" Grid.ColumnSpan="3">
+						<Border Grid.Column="12" Grid.Row="0" Grid.ColumnSpan="3">
 							<TextBlock>Документ</TextBlock>
 						</Border>
-						<Border Grid.Column="15" Grid.ColumnSpan="2">
+						<Border Grid.Column="15" Grid.Row="0" Grid.ColumnSpan="2">
 							<TextBlock>Код ОКПО</TextBlock>
 						</Border>
-						<Border Grid.Column="17" Grid.ColumnSpan="3">
+						<Border Grid.Column="17" Grid.Row="0" Grid.ColumnSpan="3">
 							<TextBlock>Прибор (установка), УКТ или иная упаковка</TextBlock>
+						</Border>
+						<!--Второй уровень заголовков-->
+						<Border Grid.Column="0" Grid.Row="1">
+							<TextBlock>№ п/п</TextBlock>
+						</Border>
+						<Border Grid.Column="1" Grid.Row="1">
+							<TextBlock>код</TextBlock>
+						</Border>
+						<Border Grid.Column="2" Grid.Row="1">
+							<TextBlock>дата</TextBlock>
+						</Border>
+						<Border Grid.Column="3" Grid.Row="1">
+							<TextBlock>номер паспорта</TextBlock>
+						</Border>
+						<Border Grid.Column="4" Grid.Row="1">
+							<TextBlock>наименование</TextBlock>
+						</Border>
+						<Border Grid.Column="5" Grid.Row="1">
+							<TextBlock>номер</TextBlock>
+						</Border>
+						<Border Grid.Column="6" Grid.Row="1">
+							<TextBlock>масса обедненного урана, кг</TextBlock>
+						</Border>
+						<Border Grid.Column="7" Grid.Row="1">
+							<TextBlock>код ОКПО изготовителя</TextBlock>
+						</Border>
+						<Border Grid.Column="8" Grid.Row="1">
+							<TextBlock>дата выпуска</TextBlock>
+						</Border>
+						<Border Grid.Column="9" Grid.Row="1">
+							<TextBlock>НСС, мес</TextBlock>
+						</Border>
+						<Border Grid.Column="10" Grid.Row="1">
+							<TextBlock>код формы собственности</TextBlock>
+						</Border>
+						<Border Grid.Column="11" Grid.Row="1">
+							<TextBlock>код ОКПО правообладателя</TextBlock>
+						</Border>
+						<Border Grid.Column="12" Grid.Row="1">
+							<TextBlock>вид</TextBlock>
+						</Border>
+						<Border Grid.Column="13" Grid.Row="1">
+							<TextBlock>номер</TextBlock>
+						</Border>
+						<Border Grid.Column="14" Grid.Row="1">
+							<TextBlock>дата</TextBlock>
+						</Border>
+						<Border Grid.Column="15" Grid.Row="1">
+							<TextBlock>поставщика или получателя</TextBlock>
+						</Border>
+						<Border Grid.Column="16" Grid.Row="1">
+							<TextBlock>перевозчика</TextBlock>
+						</Border>
+						<Border Grid.Column="17" Grid.Row="1">
+							<TextBlock>наименование</TextBlock>
+						</Border>
+						<Border Grid.Column="18" Grid.Row="1">
+							<TextBlock>тип</TextBlock>
+						</Border>
+						<Border Grid.Column="19" Grid.Row="1">
+							<TextBlock>номер</TextBlock>
 						</Border>
 					</Grid>
 					<DataGrid Grid.Row="1"
@@ -166,14 +241,15 @@
 						Items="{Binding FormList}"
 						SelectedItem="{Binding SelectedForm}">
 						<interactivity:Interaction.Behaviors>
-							<local:DataGridSelectedItemsBehavior
-								SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
+							<local:DataGridDragSelectionBehavior/>
+							<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
 						</interactivity:Interaction.Behaviors>
 						<DataGrid.Columns>
-							<DataGridTextColumn Header="№ п/п"
-												Binding="{Binding NumberInOrder.Value, Mode=OneWay}"/>
+							<DataGridTextColumn Header="1"
+												Binding="{Binding NumberInOrder.Value}"
+												IsReadOnly="True"/>
 							
-							<DataGridTemplateColumn Header="код">
+							<DataGridTemplateColumn Header="2">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<TextBox Text="{Binding OperationCode.Value, Mode=TwoWay}"></TextBox>
@@ -181,7 +257,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 							
-							<DataGridTemplateColumn Header="дата">
+							<DataGridTemplateColumn Header="3">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<CalendarDatePicker SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
@@ -189,7 +265,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 							
-							<DataGridTemplateColumn Header="номер паспорта">
+							<DataGridTemplateColumn Header="4">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<TextBox Text="{Binding PassportNumber.Value, Mode=TwoWay}"></TextBox>
@@ -197,7 +273,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 
-							<DataGridTemplateColumn Header="наименование">
+							<DataGridTemplateColumn Header="5">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<TextBox Text="{Binding NameIOU.Value, Mode=TwoWay}"></TextBox>
@@ -205,7 +281,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 
-							<DataGridTemplateColumn Header="номер">
+							<DataGridTemplateColumn Header="6">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<TextBox Text="{Binding FactoryNumber.Value, Mode=TwoWay}"></TextBox>
@@ -213,7 +289,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 							
-							<DataGridTemplateColumn Header="масса обедненного урана, кг">
+							<DataGridTemplateColumn Header="7">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<TextBox Text="{Binding Mass.Value, Mode=TwoWay}"></TextBox>
@@ -221,7 +297,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 
-							<DataGridTemplateColumn Header="код ОКПО изготовителя">
+							<DataGridTemplateColumn Header="8">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<TextBox Text="{Binding CreatorOKPO.Value, Mode=TwoWay}"></TextBox>
@@ -229,7 +305,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 							
-							<DataGridTemplateColumn Header="дата выпуска">
+							<DataGridTemplateColumn Header="9">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<CalendarDatePicker SelectedDate="{Binding CreationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
@@ -238,7 +314,7 @@
 							</DataGridTemplateColumn>
 
 							<DataGridTemplateColumn
-												Header="НСС, мес">
+												Header="10">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<TextBox Text="{Binding SignedServicePeriod.Value, Mode=TwoWay}"></TextBox>
@@ -246,7 +322,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 
-							<DataGridTemplateColumn Header="код формы собственности">
+							<DataGridTemplateColumn Header="11">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<TextBox Text="{Binding PropertyCode.Value, Mode=TwoWay}"></TextBox>
@@ -254,7 +330,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 
-							<DataGridTemplateColumn Header="код ОКПО правообладателя">
+							<DataGridTemplateColumn Header="12">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<TextBox Text="{Binding Owner.Value, Mode=TwoWay}"></TextBox>
@@ -262,7 +338,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 
-							<DataGridTemplateColumn Header="вид">
+							<DataGridTemplateColumn Header="13">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<TextBox Text="{Binding DocumentVid.Value, Mode=TwoWay}"></TextBox>
@@ -270,7 +346,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 
-							<DataGridTemplateColumn Header="номер">
+							<DataGridTemplateColumn Header="14">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<TextBox Text="{Binding DocumentNumber.Value, Mode=TwoWay}"></TextBox>
@@ -278,7 +354,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 							
-							<DataGridTemplateColumn Header="дата">
+							<DataGridTemplateColumn Header="15">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<CalendarDatePicker SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay}"/>
@@ -286,7 +362,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 
-							<DataGridTemplateColumn Header="поставщика или получателя">
+							<DataGridTemplateColumn Header="16">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<TextBox Text="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay}"></TextBox>
@@ -294,7 +370,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 
-							<DataGridTemplateColumn Header="перевозчика">
+							<DataGridTemplateColumn Header="17">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<TextBox Text="{Binding TransporterOKPO.Value, Mode=TwoWay}"></TextBox>
@@ -302,7 +378,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 
-							<DataGridTemplateColumn Header="наименование">
+							<DataGridTemplateColumn Header="18">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<TextBox Text="{Binding PackName.Value, Mode=TwoWay}"></TextBox>
@@ -310,7 +386,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 
-							<DataGridTemplateColumn Header="тип">
+							<DataGridTemplateColumn Header="19">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<TextBox Text="{Binding PackType.Value, Mode=TwoWay}"></TextBox>
@@ -318,7 +394,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 
-							<DataGridTemplateColumn Header="номер">
+							<DataGridTemplateColumn Header="20">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
 										<TextBox Text="{Binding PackNumber.Value, Mode=TwoWay}"></TextBox>
@@ -358,7 +434,8 @@
 			</Grid>
 					
 				
-			<StackPanel Grid.Row="4" Classes="notesContainer">
+			<StackPanel Grid.Row="4" Classes="notesContainer"
+						IsVisible="{Binding IsFooterExpanded}">
 				<TextBlock Margin="5">Примечания</TextBlock>
 				<DataGrid Classes="notesTable"
 					Items="{Binding NoteList}">
@@ -372,6 +449,6 @@
 					</DataGrid.Columns>
 				</DataGrid>
 			</StackPanel>
-		
+			<CheckBox Classes="hideButton" Grid.Row ="5" IsChecked ="{Binding IsFooterExpanded}">Раскрыть/Скрыть нижнюю панель</CheckBox>
 		</Grid>
 </Window>

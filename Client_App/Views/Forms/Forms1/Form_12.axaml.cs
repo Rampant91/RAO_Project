@@ -5,12 +5,7 @@ using Avalonia.Markup.Xaml;
 using Client_App.Commands.AsyncCommands;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.Views;
-using ReactiveUI;
-using System;
-using System.Reactive.Disposables;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
 namespace Client_App;
 
 public partial class Form_12 : BaseWindow<Form_12VM>
@@ -21,18 +16,19 @@ public partial class Form_12 : BaseWindow<Form_12VM>
     public Form_12() 
     {
         InitializeComponent();
+        DataContext = new Form_12VM();
         Show();
     }
 
     public Form_12(Form_12VM vm)
     {
-        AvaloniaXamlLoader.Load(this);
+        InitializeComponent();
         DataContext = vm;
     }
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
-        DataContext = new Form_12VM();
+        this.WindowState = WindowState.Maximized;
     }
 
     //¬ременное узкоспециализированное решение
@@ -105,4 +101,6 @@ public partial class Form_12 : BaseWindow<Form_12VM>
         return false;
     }
     #endregion
+
+    
 }

@@ -6,6 +6,7 @@ using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.Commands.SyncCommands;
 using Client_App.Views;
 using Client_App.Views.Forms;
+using Models.Attributes;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -25,8 +26,18 @@ namespace Client_App.ViewModels.Forms
     {
         #region Properties
 
-        public abstract  string FormType { get; }
-        private ObservableCollection<Form> _formList = new ObservableCollection<Form>();
+        public abstract string FormType { get; }
+        public string WindowTitle 
+        { 
+            get 
+            { 
+                return $"Форма {FormType} :  "
+                           + $"{CurrentReports.Master_DB.RegNoRep.Value}  "
+                           + $"{CurrentReports.Master_DB.ShortJurLicoRep.Value}  "
+                           + $"{CurrentReports.Master_DB.OkpoRep.Value}";
+            } 
+        }
+        protected ObservableCollection<Form> _formList = new ObservableCollection<Form>();
         public ObservableCollection<Form> FormList
         {
             get
@@ -39,7 +50,7 @@ namespace Client_App.ViewModels.Forms
                 OnPropertyChanged();
             }
         }
-        private ObservableCollection<Note> _noteList = new ObservableCollection<Note>();
+        protected ObservableCollection<Note> _noteList = new ObservableCollection<Note>();
         public ObservableCollection<Note> NoteList
         {
             get
@@ -52,7 +63,7 @@ namespace Client_App.ViewModels.Forms
                 OnPropertyChanged();
             }
         }
-        private Report _currentReport;
+        protected Report _currentReport;
         public Report CurrentReport
         {
             get
@@ -72,7 +83,7 @@ namespace Client_App.ViewModels.Forms
                 return _currentReport.Reports;
             }
         }
-        private Form _selectedForm;
+        protected Form _selectedForm;
         public Form SelectedForm
         {
             get
@@ -85,7 +96,7 @@ namespace Client_App.ViewModels.Forms
                 OnPropertyChanged();
             }
         }
-        private ObservableCollection<Form> _selectedForms = new();
+        protected ObservableCollection<Form> _selectedForms = new();
         public ObservableCollection<Form> SelectedForms
         {
             get => _selectedForms;
@@ -98,7 +109,7 @@ namespace Client_App.ViewModels.Forms
                 }
             }
         }
-        private int _rowCount = 30;
+        protected int _rowCount = 30;
         public int RowCount
         {
             get
@@ -109,6 +120,8 @@ namespace Client_App.ViewModels.Forms
             {
                 if (value <= 0)
                     _rowCount = 1;
+                if (value > 50) //Хардкод максимального кол-ва загруженных строк
+                    _rowCount = 50;
                 else
                     _rowCount = value;
                 OnPropertyChanged();
@@ -117,7 +130,7 @@ namespace Client_App.ViewModels.Forms
             }
         }
 
-        private int _currentPage = 1;
+        protected int _currentPage = 1;
         public int CurrentPage
         {
             get
@@ -155,7 +168,7 @@ namespace Client_App.ViewModels.Forms
                 return CurrentReport.Rows.Count;
             }
         }
-        private bool _isAutoReplaceEnabled = true;
+        protected bool _isAutoReplaceEnabled = true;
         public bool IsAutoReplaceEnabled
         {
             get => _isAutoReplaceEnabled;
@@ -169,7 +182,7 @@ namespace Client_App.ViewModels.Forms
                 }
             }
         }
-        private bool _isHeaderExpanded = true;
+        protected bool _isHeaderExpanded = true;
         public bool IsHeaderExpanded
         {
             get
@@ -179,6 +192,19 @@ namespace Client_App.ViewModels.Forms
             set
             {
                 _isHeaderExpanded = value;
+                OnPropertyChanged();
+            }
+        }
+        protected bool _isFooterExpanded = true;
+        public bool IsFooterExpanded
+        {
+            get
+            {
+                return _isFooterExpanded;
+            }
+            set
+            {
+                _isFooterExpanded = value;
                 OnPropertyChanged();
             }
         }

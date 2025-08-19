@@ -4756,6 +4756,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
         if (DataContext is not ChangeOrCreateVM vm) return;
+
         try
         {
             await RemoveEmptyForms(vm);
