@@ -1,4 +1,5 @@
 ﻿using Client_App.Commands.AsyncCommands.Calculator;
+using Client_App.Views.Calculator;
 using Models.DTO;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -46,6 +47,20 @@ public class CategoryCalculatorVM : BaseCalculatorVM
         }
     }
 
+    private string _activity;
+    public string Activity
+    {
+        get => _activity;
+        set
+        {
+            if (_activity != value)
+            {
+                _activity = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     private string _activityToNormalizingD;
     public string ActivityToNormalizingD
     {
@@ -85,6 +100,17 @@ public class CategoryCalculatorVM : BaseCalculatorVM
                 _categoryText = value;
                 OnPropertyChanged();
             }
+        }
+    }
+
+    private bool _isSingleActivity = true;
+    public bool IsSingleActivity
+    {
+        get => _isSingleActivity;
+        set
+        {
+            _isSingleActivity = value;
+            OnPropertyChanged();
         }
     }
 

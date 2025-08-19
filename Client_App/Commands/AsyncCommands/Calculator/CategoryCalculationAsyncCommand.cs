@@ -160,10 +160,10 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
         var countNonRadioactiveRads = 0;
         foreach (var nuclid in radsSet)
         {
-            var nuclidFromR = _categoryCalculatorVM.RadionuclidDictionary
-                !.FirstOrDefault(x => x.Name == nuclid.Name);
+            var nuclidFromR = _categoryCalculatorVM.RadionuclidsFullList
+                !.First(x => x.Name == nuclid.Name);
 
-            var dFromR = ToExponentialString(nuclidFromR!.D);
+            var dFromR = ToExponentialString(nuclidFromR.D);
 
             if (!decimal.TryParse(ToExponentialString(dFromR),
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands |
@@ -229,30 +229,33 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
     #region CheckEquilibriumRads
 
     /// <summary>
-    /// Проверяет сет радионуклидов на равновесные, оставляет в нём только главные и возвращает флаг, были ли в сете равновесные радионуклиды.
+    /// Проверяет сет радионуклидов на равновесные, оставляет в нём только главные равновесные и неравновесные.
     /// </summary>
     /// <param name="radsSet">Сет радионуклидов.</param>
-    /// <returns>Флаг, были ли в сете равновесные радионуклиды.</returns>
-    private static bool CheckEquilibriumRads(HashSet<CalculatorRadionuclidDTO> radsSet)
+    /// <returns>CompletedTask.</returns>
+    private static Task CheckEquilibriumRads(HashSet<CalculatorRadionuclidDTO> radsSet)
     {
-        var radsNameSet = radsSet
-            .Select(x => x.Name)
-            .ToHashSet();
+        if (radsSet.Count <= 1) return Task.CompletedTask;
 
-        var isEqRads = false;
-        if (radsNameSet.Count <= 1) return isEqRads;
-        isEqRads = EquilibriumRadionuclids.All(x =>
+        foreach (var eqRadsString in EquilibriumRadionuclids)
         {
-            x = x.Replace(" ", string.Empty);
-            var eqSet = x.Split(',').ToHashSet();
-            if (radsNameSet.Intersect(eqSet).Any())
+            var eqRadsSet = eqRadsString
+                .Split(", ")
+                .ToHashSet();
+
+            var intersection = radsSet
+                .Select(x => x.Name)
+                .Intersect(eqRadsSet)
+                .OrderByDescending(x => x == eqRadsSet.First())
+                .ToHashSet();
+
+            if (intersection.Count == eqRadsSet.Count)
             {
-                isEqRads = true;
-                radsNameSet.ExceptWith(eqSet.Skip(1));
+                radsSet.RemoveWhere(x => intersection.Skip(1).Contains(x.Name));
             }
-            return isEqRads;
-        });
-        return isEqRads;
+        }
+
+        return Task.CompletedTask;
     }
 
     #endregion
