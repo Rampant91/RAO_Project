@@ -118,15 +118,19 @@ namespace Client_App.ViewModels.Forms
             }
             set
             {
+                var result = value;
                 if (value <= 0)
-                    _rowCount = 1;
-                if (value > 50) //Хардкод максимального кол-ва загруженных строк
-                    _rowCount = 50;
-                else
-                    _rowCount = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(TotalPages));
-                UpdateFormList();
+                    result = 1;
+                else if (value > 50) //Хардкод максимального кол-ва загруженных строк
+                    result = 50;
+
+                if (_rowCount != result)
+                {
+                    _rowCount = result;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(TotalPages));
+                    UpdateFormList();
+                }
             }
         }
 
@@ -139,14 +143,18 @@ namespace Client_App.ViewModels.Forms
             }
             set
             {
+                var result = value;
                 if (value <= 0)
-                    _currentPage = 1;
+                    result = 1;
                 else if (value > TotalPages)
-                    _currentPage = TotalPages;
-                else
-                    _currentPage = value;
-                OnPropertyChanged();
-                UpdateFormList();
+                    result = TotalPages;
+
+                if (result != _currentPage)
+                {
+                    _currentPage = result;
+                    OnPropertyChanged();
+                    UpdateFormList();
+                }
             }
         }
 
@@ -239,7 +247,8 @@ namespace Client_App.ViewModels.Forms
 
         public async void UpdateFormList()
         {
-            FormList = new ObservableCollection<Form>(CurrentReport.Rows.ToList<Form>().Skip((CurrentPage - 1) * RowCount).Take(RowCount));
+
+            FormList = new ObservableCollection<Form>(CurrentReport.Rows.ToList<Form>().Skip((CurrentPage - 1) * RowCount).Take(RowCount));//Нужна оптимизация
             OnPropertyChanged(nameof(TotalPages));
             OnPropertyChanged(nameof(TotalRows));
         }

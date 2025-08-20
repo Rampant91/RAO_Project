@@ -14,6 +14,7 @@ namespace Client_App.Behaviors
 {
     /// <summary>
     /// Этот Behavior используется для привязки к DataGrid нового параметра, хранящего все выделенные ячейки
+    /// Без него выделение всех строк работает некоректно
     /// </summary>
     public class DataGridSelectedItemsBehavior : Behavior<DataGrid>
     {
@@ -77,6 +78,7 @@ namespace Client_App.Behaviors
 
         private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
         {
+
             if (AssociatedObject == null || SelectedItems == null || _isUpdating)
                 return;
 

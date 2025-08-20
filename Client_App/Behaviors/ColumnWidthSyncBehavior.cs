@@ -1,8 +1,5 @@
 ﻿using Avalonia;
-using Avalonia.Collections;
 using Avalonia.Controls;
-using Avalonia.Data;
-using Avalonia.Layout;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
 using System;
