@@ -107,6 +107,27 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
 
                     result.AddRange(await new CheckF22().AsyncExecute(rep22));
                     break;
+                case "2.3":
+                    result.AddRange(await CheckF23.Check_Total(rep));
+                    break;
+                case "2.6":
+                    result.AddRange(await CheckF26.Check_Total(rep));
+                    break;
+                case "2.7":
+                    result.AddRange(await CheckF27.Check_Total(rep));
+                    break;
+                case "2.8":
+                    result.AddRange(await CheckF28.Check_Total(rep));
+                    break;
+                case "2.9":
+                    result.AddRange(await CheckF29.Check_Total(rep));
+                    break;
+                case "2.10":
+                    result.AddRange(await CheckF210.Check_Total(rep));
+                    break;
+                case "2.11":
+                    result.AddRange(await CheckF211.Check_Total(rep));
+                    break;
                 default:
                 {
                     #region MessageCheckFailed
