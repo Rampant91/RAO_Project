@@ -1146,8 +1146,7 @@ public abstract class CheckF15 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentVid_DB",
                 Value = Convert.ToString(documentVid),
-                Message = "При коде операции 41, вид документа должен быть равен 1.",
-                IsCritical = true
+                Message = "При коде операции 41, вид документа должен быть равен 1."
             });
         }
         return result;

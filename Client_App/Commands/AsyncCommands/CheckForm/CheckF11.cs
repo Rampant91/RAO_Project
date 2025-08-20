@@ -1602,7 +1602,7 @@ public abstract partial class CheckF11 : CheckBase
                 var nuclidFromR = R.FirstOrDefault(x => x["name"] == nuclid);
                 if (nuclidFromR is null) continue;
                 var expFromR = ConvertStringToExponential(nuclidFromR["D"]);
-                if (decimal.TryParse(ConvertStringToExponential(expFromR),
+                if (decimal.TryParse((expFromR),
                         NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
                         CultureInfo.CreateSpecificCulture("ru-RU"),
                         out var value))
@@ -1655,18 +1655,6 @@ public abstract partial class CheckF11 : CheckBase
                 valid = dbBounds[category].Item1 <= adMinBound
                         && dbBounds[category].Item2 > adMaxBound;
             }
-        }
-        if (!valid)
-        {
-            result.Add(new CheckError
-            {
-                FormNum = "form_11",
-                Row = (line + 1).ToString(),
-                Column = "Category_DB",
-                Value = category.ToString(),
-                Message = "Расчетное значение категории ЗРИ не соответствует представленному в отчёте. " +
-                          "Проверьте правильность указания категории ЗРИ, сведений о суммарной активности и радионуклидах."
-            });
         }
         if (!valid)
         {

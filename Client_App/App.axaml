@@ -17,6 +17,9 @@
             </DataTemplate>
         </ResourceDictionary>
         -->
+        <!--Палитра-->
+        <SolidColorBrush x:Key="PrimaryColor" Color="#5685c0"/>
+
     </Application.Resources>
 
 
@@ -32,8 +35,8 @@
         <Style Selector="HeaderedContentControl">
             <Setter Property="Template">
                 <ControlTemplate>
-                    <Grid 
-                        RowDefinitions="Auto,*" 
+                    <Grid
+                        RowDefinitions="Auto,*"
                         ColumnDefinitions="Auto,*">
 
                         <!-- Header -->
@@ -68,6 +71,84 @@
                 </ControlTemplate>
             </Setter>
         </Style>
-
+        <!--Стили для окон редактирования форм-->
+        <!--Header-->
+        <Style Selector="CheckBox.hideButton">
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style Selector="WrapPanel.header">
+            <Setter Property="Orientation" Value="Horizontal"/>
+        </Style>
+        <Style Selector="WrapPanel.header Border.borderContainer">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="5"/>
+        </Style>
+        <Style Selector="WrapPanel.header Button">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <!--TableHeader-->
+        <Style Selector="ScrollViewer.tableScrollViewer">
+            <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="VerticalScrollBarVisibility" Value="Disabled"/>
+        </Style>
+        <Style Selector="Grid.tableHeader">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style Selector="Grid.tableHeader Border">
+            <Setter Property="Margin" Value="-1,0,0,0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+        </Style>
+        <Style Selector="Grid.tableHeader TextBlock">
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+        </Style>
+        <!--Table-->
+        <Style Selector="DataGrid.table">
+            <Setter Property="CanUserResizeColumns" Value="True"/>
+            <Setter Property="RowBackground" Value="White"/>
+            <Setter Property="AlternatingRowBackground" Value="LightBlue"/>
+            <Setter Property="Margin" Value="5,0,5,5"/>
+            <Setter Property="SelectionMode" Value="Extended"/>
+            <Setter Property="GridLinesVisibility" Value="Vertical"/>
+            <Setter Property="CanUserSortColumns" Value="False"/>
+            <Setter Property="ColumnWidth" Value="Auto" />
+            <Setter Property="MinColumnWidth" Value="50" />
+        </Style>
+        <Style Selector="DataGridRow:selected TextBox">
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+        <Style Selector="DataGrid.table TextBox">
+            <Setter Property="Margin" Value="3"/>
+        </Style>
+        <Style Selector="DataGrid.table CalendarDatePicker">
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <!--PageControl-->
+        <Style Selector="Grid.pageControlContainer">
+            <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <!--Notes-->
+        <Style Selector="StackPanel.notesContainer">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style Selector="DataGrid.notesTable">
+            <Setter Property="Width" Value="512"/>
+            <Setter Property="MaxHeight" Value="175"/>
+            <Setter Property="CanUserResizeColumns" Value="True"/>
+            <Setter Property="RowBackground" Value="White"/>
+            <Setter Property="AlternatingRowBackground" Value="LightBlue"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <!--Конец стилей для окон редактирования форм-->
     </Application.Styles>
 </Application>
