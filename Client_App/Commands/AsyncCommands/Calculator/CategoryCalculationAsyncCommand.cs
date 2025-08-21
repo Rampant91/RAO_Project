@@ -318,8 +318,6 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
         }
 
         #endregion
-
-        _vm.Category = string.Empty;
     }
 
     #region CheckActivity

@@ -413,7 +413,7 @@
                                  IsReadOnly="True"
                                  HorizontalAlignment="Stretch"
                                  Margin="5"
-                                 Text="{Binding Category}"
+                                 Text="{Binding Category, Mode=TwoWay}"
                                  VerticalAlignment="Center"/>
 
                         <!-- 4 ряд: текст категории -->
