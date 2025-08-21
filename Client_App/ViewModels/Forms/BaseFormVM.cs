@@ -195,7 +195,6 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand CheckForm => new NewCheckFormAsyncCommand(this);    //  Кнопка "Проверить"
     //public ICommand CopyExecutorDate => new NewCopyExecutorDataAsyncCommand(this); //После привязки кнопка неактивна
     public ICommand SourceTransmissionAll => new NewSourceTransmissionAllAsyncCommand(this);    //  Кнопка "Перевести данные предыдущей формы"
-    public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);    //  Кнопка "Перевести данные предыдущей формы"
     public ICommand AddRow => new NewAddRowAsyncCommand(this);
     public ICommand AddRows => new NewAddRowsAsyncCommand(this);
     public ICommand AddRowsIn => new NewAddRowsInAsyncCommand(this);
