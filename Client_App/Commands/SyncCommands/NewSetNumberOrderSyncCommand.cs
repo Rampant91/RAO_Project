@@ -1,11 +1,13 @@
-﻿using System.Linq;
-using Client_App.ViewModels;
-using Models.Collections;
+﻿using Client_App.ViewModels;
+using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Forms.Forms1;
+using Models.Collections;
+using System.Linq;
+
 namespace Client_App.Commands.SyncCommands;
 
 //  Выставление порядкового номера
-public class NewSetNumberOrderSyncCommand(Form_12VM formVM) : BaseCommand
+public class NewSetNumberOrderSyncCommand(BaseFormVM formVM) : BaseCommand
 {
     private Report Storage => formVM.CurrentReport;
 

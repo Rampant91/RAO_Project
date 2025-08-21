@@ -1,13 +1,14 @@
-﻿using System.Linq;
-using Client_App.ViewModels;
+﻿using Client_App.ViewModels;
+using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Forms.Forms1;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form2;
+using System.Linq;
 
 namespace Client_App.Commands.SyncCommands;
 
-public class NewSortFormSyncCommand(Form_12VM formVM) : BaseCommand
+public class NewSortFormSyncCommand(BaseFormVM formVM) : BaseCommand
 {
     private Report Storage => formVM.CurrentReport;
 

@@ -2627,6 +2627,53 @@ public partial class Form17 : Form1
 
     [GeneratedRegex("^[0-9x+]{11}$")]
     private static partial Regex CodeRaoRegex();
-    
+
+    #endregion
+
+    #region ConvertToTSVstring
+
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        var str =
+            $"{NumberInOrder.Value}\t" +
+            $"{OperationCode.Value}\t" +
+            $"{OperationDate.Value}\t" +
+            $"{PackName.Value}\t" +
+            $"{PackType.Value}\t" +
+            $"{PackFactoryNumber.Value}\t" +
+            $"{PackNumber.Value}\t" +
+            $"{FormingDate.Value}\t" +
+            $"{PassportNumber.Value}\t" +
+            $"{Volume.Value}\t" +
+            $"{Mass.Value}\t" +
+            $"{Radionuclids.Value}\t" +
+            $"{SpecificActivity.Value}\t" +
+            $"{DocumentVid.Value}\t" +
+            $"{DocumentNumber.Value}\t" +
+            $"{DocumentDate.Value}\t" +
+            $"{ProviderOrRecieverOKPO.Value}\t" +
+            $"{TransporterOKPO.Value}\t" +
+            $"{StoragePlaceName.Value}\t" +
+            $"{StoragePlaceCode.Value}\t" +
+            $"{CodeRAO.Value}\t" +
+            $"{StatusRAO.Value}\t" +
+            $"{VolumeOutOfPack.Value}\t" +
+            $"{MassOutOfPack.Value}\t" +
+            $"{Quantity.Value}\t" +
+            $"{TritiumActivity.Value}\t" +
+            $"{BetaGammaActivity.Value}\t" +
+            $"{AlphaActivity.Value}\t" +
+            $"{TransuraniumActivity.Value}\t" +
+            $"{RefineOrSortRAOCode.Value}\t" +
+            $"{Subsidy.Value}\t" +
+            $"{FcpNumber.Value}\t" +
+            $"{ContractNumber.Value}";
+        return str;
+    }
+
     #endregion
 }

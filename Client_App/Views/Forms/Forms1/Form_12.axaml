@@ -6,58 +6,23 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
     xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
-	xmlns:dataGrid="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
 	xmlns:local="using:Client_App.Behaviors"
 	xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 	xmlns:behaviors="using:Avalonia.Xaml.Interactions.Core"
-    Title="Form_12"
+    Title="{Binding WindowTitle}"
     d:DesignHeight="450"
     d:DesignWidth="900"
     x:DataType="vm:Form_12VM"
     mc:Ignorable="d"
 	x:Name="1.2"
+	WindowStartupLocation="CenterScreen"
 	MinWidth="800" MinHeight="600">
 
     <Window.Resources>
 		<converter:DataGridLengthToGridLengthConverter x:Key="LengthConverter"/>
 		<converter:NullToStringConverter x:Key="NullToStringConverter"/>
 		<converter:DateConverter x:Key="DateConverter"/>
-		<SolidColorBrush x:Key="PrimaryColor" Color="#5685c0"/> 
     </Window.Resources>
-
-	<Window.Styles>
-		<Style Selector="TextBlock.Title1">
-            <Setter Property="Margin" Value="1"/>
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-			<Setter Property="VerticalAlignment" Value="Stretch"/>
-            <Setter Property="Background" Value="White"/>
-			<Setter Property="TextWrapping" Value="Wrap"/>
-			<Setter Property="TextAlignment" Value="Center"/>
-		</Style>
-        <Style Selector="TextBlock.Title2">
-            <Setter Property="Margin" Value="1"/>
-			<Setter Property="Padding" Value="5"/>
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-			<Setter Property="VerticalAlignment" Value="Stretch"/>
-            <Setter Property="Background" Value="White"/>
-			<Setter Property="TextWrapping" Value="Wrap"/>
-			<Setter Property="TextAlignment" Value="Left"/>
-		    <Setter Property="TextTrimming" Value="WordEllipsis"/>
-        </Style>
-		<Style Selector="TextBlock.Title3">
-            <Setter Property="Margin" Value="1"/>
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-			<Setter Property="VerticalAlignment" Value="Stretch"/>
-            <Setter Property="Background" Value="White"/>
-			<Setter Property="TextWrapping" Value="Wrap"/>
-			<Setter Property="TextAlignment" Value="Center"/>
-		    <Setter Property="TextTrimming" Value="None"/>
-        </Style>
-        <Style Selector="DataGridCell:focus-within">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Foreground" Value="Black"/>
-        </Style>
-	</Window.Styles>
 
     <Design.DataContext>
         <vm:Form_12VM/>
@@ -71,18 +36,19 @@
 				<RowDefinition Height="Auto"></RowDefinition>
 				<RowDefinition Height="Auto"></RowDefinition>
 				<RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
 			</Grid.RowDefinitions>
+
+            <CheckBox Classes="hideButton" Grid.Row ="0" IsChecked ="{Binding IsHeaderExpanded}">Раскрыть/Скрыть верхнюю панель</CheckBox>
 			
-			<CheckBox Grid.Row ="0" Height="30" Margin="5" IsChecked ="{Binding IsHeaderExpanded}">Раскрыть/Скрыть верхнюю панель</CheckBox>
-			
-			<WrapPanel
-				Grid.Row ="1"
-				Orientation ="Horizontal"
-				IsVisible="{Binding IsHeaderExpanded}">
+			<WrapPanel Classes="header"
+                       Grid.Row ="1"
+                       IsVisible="{Binding IsHeaderExpanded}">
 					
-				<Border Margin="5" BorderBrush ="Black" BorderThickness ="1" CornerRadius ="5">
-					<Grid Margin="5" RowDefinitions ="*,*,*,*,*">
-						<Grid ColumnDefinitions="*,*"  Grid.Row="0">
+				<Border Classes="borderContainer">
+                    <Grid Margin="5" RowDefinitions="*,*,*,*,*">
+
+                        <Grid ColumnDefinitions="*,*"  Grid.Row="0">
 							<TextBlock Grid.Column="0" Margin="5" >Дата окончания предыдущего отчетного периода:</TextBlock>
 							<CalendarDatePicker Grid.Column="1" 
                                 SelectedDate="{Binding CurrentReport.StartPeriod.Value, Converter={StaticResource DateConverter}}"/>
@@ -96,7 +62,7 @@
 
 						<StackPanel  Orientation="Horizontal" Grid.Row="2">
 							<TextBlock Margin="5">Номер корректировки:</TextBlock>
-							<TextBox Margin="5" Width="75"  IsReadOnly="True"
+							<TextBox Margin="5" Width="75"
                                 Text="{Binding Path=CurrentReport.CorrectionNumber.Value}"></TextBox>
 						</StackPanel>
 						
@@ -112,31 +78,29 @@
 					</Grid>
 				</Border>
 
-				<Border Margin="5" BorderBrush="Black" BorderThickness="1" CornerRadius="5">
+				<Border Classes="borderContainer">
 					<Grid Margin="5" RowDefinitions ="*,*,*,*,*" ColumnDefinitions="*,2*">
 						<TextBlock Grid.Row="0" Grid.Column="0" Margin="5" >ФИО исполнителя:</TextBlock>
-						<TextBox Grid.Row="0" Grid.Column="1" Margin="5"  IsReadOnly="True"
+						<TextBox Grid.Row="0" Grid.Column="1" Margin="5"
                                 Text="{Binding Path=CurrentReport.FIOexecutor.Value}"></TextBox>
 						<TextBlock Grid.Row="1" Grid.Column="0" Margin="5" >Должность:</TextBlock>
-						<TextBox Grid.Row="1" Grid.Column="1" Margin="5" IsReadOnly="True"
+						<TextBox Grid.Row="1" Grid.Column="1" Margin="5"
                                 Text="{Binding Path=CurrentReport.GradeExecutor.Value}" ></TextBox>
 						<TextBlock Grid.Row="2" Grid.Column="0" Margin="5" >Телефон:</TextBlock>
-						<TextBox Grid.Row="2" Grid.Column="1" Margin="5" IsReadOnly="True"
+						<TextBox Grid.Row="2" Grid.Column="1" Margin="5"
                                 Text="{Binding Path=CurrentReport.ExecPhone.Value}"></TextBox>
 						<TextBlock Grid.Row="3" Grid.Column="0" Margin="5" >Электронная почта:</TextBlock>
-						<TextBox Grid.Row="3" Grid.Column="1" Margin="5" IsReadOnly="True"
+						<TextBox Grid.Row="3" Grid.Column="1" Margin="5"
                                 Text="{Binding Path=CurrentReport.ExecEmail.Value}"></TextBox>
 						<Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Click="CopyExecutorData_Click">Скопировать данные предыдущей формы</Button>
 					</Grid>
 				</Border>
-				<Button Height="30" Margin="5" Command="{Binding SourceTransmissionAll}"> Перевести все РВ в РАО</Button>
-				
-				
-			</WrapPanel>
-			
+                <Button Command="{Binding SourceTransmissionAll}"> Перевести все РВ в РАО</Button>
 
-			<ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-				<Grid RowDefinitions="Auto,*">
+			</WrapPanel>
+
+			<ScrollViewer Classes="tableScrollViewer" Grid.Row="2">
+				<Grid RowDefinitions="Auto,*" ColumnDefinitions="Auto">
 					<Grid.ContextMenu>
 						<ContextMenu>
 							<MenuItem Header="Выделить всё"
@@ -147,213 +111,305 @@
 									  Command="{Binding AddRows}"/>
 						</ContextMenu>
 					</Grid.ContextMenu>
-					<Grid Grid.Row="0">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[0].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[1].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[2].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[3].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[4].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[5].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[6].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[7].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[8].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[9].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[10].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[11].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[12].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[13].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[14].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[15].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[16].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[17].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[18].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-							<ColumnDefinition Width="{Binding #dataGrid.Columns[19].Width,  Converter={StaticResource LengthConverter}}"></ColumnDefinition>
-						</Grid.ColumnDefinitions>
-						<TextBlock Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Stretch"></TextBlock>
-						<TextBlock Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">Сведения об операции</TextBlock>
-						<TextBlock Grid.Column="3" Grid.ColumnSpan="7" HorizontalAlignment="Stretch">Сведения из паспорта на изделие из обедненного урана</TextBlock>
-						<TextBlock Grid.Column="10" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">Право собственности на ИОУ</TextBlock>
-						<TextBlock Grid.Column="12" Grid.ColumnSpan="3" HorizontalAlignment="Stretch">Документ</TextBlock>
-						<TextBlock Grid.Column="15" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">Код ОКПО</TextBlock>
-						<TextBlock Grid.Column="17" Grid.ColumnSpan="3">Прибор (установка), УКТ или иная упаковка</TextBlock>
-					</Grid>
-					<DataGrid Grid.Row="1"
+                    <Grid Classes="tableHeader" Grid.Row="0"
+                          Width="{Binding ElementName=dataGrid.Width}" 
+                          RowDefinitions="Auto,Auto">
+                        <interactivity:Interaction.Behaviors>
+                            <local:ColumnWidthSyncBehavior	SourceDataGrid="{Binding ElementName=dataGrid}"/>
+                        </interactivity:Interaction.Behaviors>
+                        <!--Первый уровень заголовков-->
+                        <Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="1">
+                            <TextBlock></TextBlock>
+                        </Border>
+                        <Border Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
+                            <TextBlock>Сведения об операции</TextBlock>
+                        </Border>
+                        <Border Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="7">
+                            <TextBlock>Сведения из паспорта на изделие из обедненного урана</TextBlock>
+                        </Border>
+                        <Border Grid.Column="10" Grid.Row="0" Grid.ColumnSpan="2">
+                            <TextBlock>Право собственности на ИОУ</TextBlock>
+                        </Border>
+                        <Border Grid.Column="12" Grid.Row="0" Grid.ColumnSpan="3">
+                            <TextBlock>Документ</TextBlock>
+                        </Border>
+                        <Border Grid.Column="15" Grid.Row="0" Grid.ColumnSpan="2">
+                            <TextBlock>Код ОКПО</TextBlock>
+                        </Border>
+                        <Border Grid.Column="17" Grid.Row="0" Grid.ColumnSpan="3">
+                            <TextBlock>Прибор (установка), УКТ или иная упаковка</TextBlock>
+                        </Border>
+                        <!--Второй уровень заголовков-->
+                        <Border Grid.Column="0" Grid.Row="1">
+                            <TextBlock>№ п/п</TextBlock>
+                        </Border>
+                        <Border Grid.Column="1" Grid.Row="1">
+                            <TextBlock>код</TextBlock>
+                        </Border>
+                        <Border Grid.Column="2" Grid.Row="1">
+                            <TextBlock>дата</TextBlock>
+                        </Border>
+                        <Border Grid.Column="3" Grid.Row="1">
+                            <TextBlock>номер паспорта</TextBlock>
+                        </Border>
+                        <Border Grid.Column="4" Grid.Row="1">
+                            <TextBlock>наименование</TextBlock>
+                        </Border>
+                        <Border Grid.Column="5" Grid.Row="1">
+                            <TextBlock>номер</TextBlock>
+                        </Border>
+                        <Border Grid.Column="6" Grid.Row="1">
+                            <TextBlock>масса обедненного урана, кг</TextBlock>
+                        </Border>
+                        <Border Grid.Column="7" Grid.Row="1">
+                            <TextBlock>код ОКПО изготовителя</TextBlock>
+                        </Border>
+                        <Border Grid.Column="8" Grid.Row="1">
+                            <TextBlock>дата выпуска</TextBlock>
+                        </Border>
+                        <Border Grid.Column="9" Grid.Row="1">
+                            <TextBlock>НСС, мес</TextBlock>
+                        </Border>
+                        <Border Grid.Column="10" Grid.Row="1">
+                            <TextBlock>код формы собственности</TextBlock>
+                        </Border>
+                        <Border Grid.Column="11" Grid.Row="1">
+                            <TextBlock>код ОКПО правообладателя</TextBlock>
+                        </Border>
+                        <Border Grid.Column="12" Grid.Row="1">
+                            <TextBlock>вид</TextBlock>
+                        </Border>
+                        <Border Grid.Column="13" Grid.Row="1">
+                            <TextBlock>номер</TextBlock>
+                        </Border>
+                        <Border Grid.Column="14" Grid.Row="1">
+                            <TextBlock>дата</TextBlock>
+                        </Border>
+                        <Border Grid.Column="15" Grid.Row="1">
+                            <TextBlock>поставщика или получателя</TextBlock>
+                        </Border>
+                        <Border Grid.Column="16" Grid.Row="1">
+                            <TextBlock>перевозчика</TextBlock>
+                        </Border>
+                        <Border Grid.Column="17" Grid.Row="1">
+                            <TextBlock>наименование</TextBlock>
+                        </Border>
+                        <Border Grid.Column="18" Grid.Row="1">
+                            <TextBlock>тип</TextBlock>
+                        </Border>
+                        <Border Grid.Column="19" Grid.Row="1">
+                            <TextBlock>номер</TextBlock>
+                        </Border>
+                    </Grid>
+					<DataGrid 
+                        Grid.Row="1"
+                        Classes="table"
 						x:Name="dataGrid"
 						Items="{Binding FormList}"
-						CanUserResizeColumns="True"
-						RowBackground="White"
-						AlternatingRowBackground="LightBlue"
-						Margin="5"
-						SelectedItem="{Binding SelectedForm}"
-						SelectionMode="Extended">
-                        <DataGrid.Styles>
-                            <Style Selector="DataGridRow">
-                                <Setter Property="ContextMenu">
-                                    <ContextMenu
-                                        x:Name="DataRowContextMenu"
-                                        DataContext="{Binding DataContext, ElementName=1.2}">
-                                        <MenuItem Header="Выделить всё"
-                                                  Command="{Binding SelectAll}"/>
-                                        <MenuItem Header="Добавить строку"
-                                                  Command="{Binding AddRow}"/>
-                                        <MenuItem Header="Добавить N строк"
-                                                  Command="{Binding AddRows}"/>
-                                        <MenuItem Header="Добавить N строк перед"
-                                                  Command="{Binding AddRowsIn}"
-                                                  CommandParameter="{Binding SelectedForms}"/>
-                                        <MenuItem Header="Копировать"
-                                                  Command="{Binding CopyRows}"
-                                                  CommandParameter="{Binding SelectedForms}"/>
-                                        <MenuItem Header="Вставить"
-                                                  Command="{Binding PasteRows}"/>
-                                        <MenuItem Header="Удалить выбранные строчки"
-                                                  Command="{Binding DeleteRows}"
-                                                  CommandParameter="{Binding SelectedForms}"/>
-                                        <MenuItem Header="Выставить номер"
-                                                  Command="{Binding SetNumberOrder}"/>
-                                        <!-- <MenuItem Header="Сортировать по номеру п/п"
-                                                  Command="{Binding SortForms}"/> -->
-                                        <MenuItem Header="Очистить ячейки"
-                                                  Command="{Binding DeleteDataInRows}"
-                                                  CommandParameter="{Binding SelectedForms}"/>
-                                        <MenuItem Header="Перевести источник в РАО"
-                                                  Command="{Binding SourceTransmission}"
-                                                  CommandParameter="{Binding SelectedForms}"/>
-                                    </ContextMenu>
-                                </Setter>
-                            </Style>
-                        </DataGrid.Styles>
+                        SelectedItem="{Binding SelectedForm}">
                         <interactivity:Interaction.Behaviors>
-							<local:DataGridSelectedItemsBehavior
-								SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
+                            <local:DataGridDragSelectionBehavior/>
+                            <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
 						</interactivity:Interaction.Behaviors>
-						<DataGrid.Columns>
-							<DataGridTextColumn Width="Auto"
-												IsReadOnly="True"
-												Header="№ п/п"
-												Binding="{Binding NumberInOrder.Value}"/>
-							<DataGridTextColumn Width="Auto"
-												Header="код"
-												Binding="{Binding OperationCode.Value}"/>
-							<DataGridTemplateColumn Header="дата" Width="Auto">
-								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate>
-										<CalendarDatePicker
-											SelectedDate="{Binding OperationDate.Value, Converter={StaticResource DateConverter}}"
-											HorizontalAlignment="Stretch"
-											VerticalAlignment="Center"/>
-									</DataTemplate>
-								</DataGridTemplateColumn.CellTemplate>
-							</DataGridTemplateColumn>
-							<DataGridTextColumn Width="Auto"
-												Header="номер паспорта"
-												Binding="{Binding PassportNumber.Value}"/>
-							<DataGridTextColumn Width="Auto"
-												Header="наименование"
-												Binding="{Binding NameIOU.Value}"/>
-							<DataGridTextColumn Width="Auto"
-												Header="номер"
-												Binding="{Binding FactoryNumber.Value}"/>
-							<DataGridTextColumn Width="Auto"
-												Header="масса обедненного урана, кг"
-												Binding="{Binding Mass.Value}"/>
-							<DataGridTextColumn Width="Auto"
-												Header="код ОКПО изготовителя"
-												Binding="{Binding CreatorOKPO.Value}"/>
-							<DataGridTemplateColumn Header="дата выпуска" Width="Auto">
-								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate>
-										<CalendarDatePicker
-											SelectedDate="{Binding CreationDate.Value, Converter={StaticResource DateConverter}}"
-											HorizontalAlignment="Stretch"
-											VerticalAlignment="Center"/>
-									</DataTemplate>
-								</DataGridTemplateColumn.CellTemplate>
-							</DataGridTemplateColumn>
-							<DataGridTextColumn Width="Auto"
-												Header="НСС, мес"
-												Binding="{Binding SignedServicePeriod.Value}"/>
-							<DataGridTextColumn Width="Auto"
-												Header="код формы собственности"
-												Binding="{Binding PropertyCode.Value}"/>
-							<DataGridTextColumn Width="Auto"
-												Header="код ОКПО правообладателя"
-												Binding="{Binding Owner.Value}"/>
-							<DataGridTextColumn Width="Auto"
-												Header="вид"
-												Binding="{Binding DocumentVid.Value}"/>
-							<DataGridTextColumn Width="Auto"
-												Header="номер"
-												Binding="{Binding DocumentNumber.Value}"/>
-							<DataGridTemplateColumn Header="дата" Width="Auto">
-								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate>
-										<CalendarDatePicker
-											SelectedDate="{Binding DocumentDate.Value}"
-											HorizontalAlignment="Stretch"
-											VerticalAlignment="Center"/>
-									</DataTemplate>
-								</DataGridTemplateColumn.CellTemplate>
-							</DataGridTemplateColumn>
-							<DataGridTextColumn Width="Auto"
-												Header="поставщика или получателя"
-												Binding="{Binding ProviderOrRecieverOKPO.Value, Converter={StaticResource DateConverter}}"/>
-							<DataGridTextColumn Width="Auto"
-												Header="перевозчика"
-												Binding="{Binding TransporterOKPO.Value}"/>
-							<DataGridTextColumn Width="Auto"
-												Header="наименование"
-												Binding="{Binding PackName.Value}"/>
-							<DataGridTextColumn Width="Auto"
-												Header="тип"
-												Binding="{Binding PackType.Value}"/>
-							<DataGridTextColumn Width="Auto"
-												Header="номер"
-												Binding="{Binding PackNumber.Value}"/>
-						</DataGrid.Columns>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="1"
+                                                Binding="{Binding NumberInOrder.Value}"
+                                                IsReadOnly="True"/>
+
+                            <DataGridTemplateColumn Header="2">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding OperationCode.Value, Mode=TwoWay}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="3">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CalendarDatePicker SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="4">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding PassportNumber.Value, Mode=TwoWay}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="5">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding NameIOU.Value, Mode=TwoWay}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="6">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding FactoryNumber.Value, Mode=TwoWay}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="7">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding Mass.Value, Mode=TwoWay}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="8">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding CreatorOKPO.Value, Mode=TwoWay}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="9">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CalendarDatePicker SelectedDate="{Binding CreationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn
+												Header="10">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding SignedServicePeriod.Value, Mode=TwoWay}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="11">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding PropertyCode.Value, Mode=TwoWay}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="12">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding Owner.Value, Mode=TwoWay}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="13">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding DocumentVid.Value, Mode=TwoWay}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="14">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding DocumentNumber.Value, Mode=TwoWay}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="15">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CalendarDatePicker SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="16">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="17">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding TransporterOKPO.Value, Mode=TwoWay}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="18">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding PackName.Value, Mode=TwoWay}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="19">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding PackType.Value, Mode=TwoWay}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="20">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding PackNumber.Value, Mode=TwoWay}"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
 					</DataGrid>
 				</Grid>
 			</ScrollViewer>
-			<Grid	Grid.Row="3" Background="{StaticResource PrimaryColor}" Margin="5"
-				RowDefinitions="Auto,Auto"
-				ColumnDefinitions="Auto,Auto,Auto,Auto">
+
+            <Grid Grid.Row="3"
+                  Classes="pageControlContainer"
+                  RowDefinitions="Auto,Auto"
+                  ColumnDefinitions="Auto,Auto,Auto,Auto">
 				<TextBlock Text="Текущая страница"
 					Grid.Row="0" Grid.Column="0" Margin="5"/>
-				<NumericUpDown Value="{Binding CurrentPage}" Minimum="1" 
-					Grid.Row="0" Grid.Column="1" Margin="5"
-					TextInput="TextBox_TextInput" 
-					KeyDown="TextBox_PreviewKeyDown"/>
+				<NumericUpDown Value="{Binding CurrentPage}" Minimum="1"
+					Grid.Row="0" Grid.Column="1" Margin="5">
+                    <interactivity:Interaction.Behaviors>
+                        <local:NumericUpDownDigitValidationBehavior/>
+                    </interactivity:Interaction.Behaviors>
+                </NumericUpDown>
 				<TextBlock Text ="Кол-во страниц:"
 					Grid.Row="0" Grid.Column="2" Margin="5"/>
 				<TextBlock Text="{Binding TotalPages}"
 					Grid.Row="0" Grid.Column="3" Margin="5"/>
 				<TextBlock Text="Кол-во строчек на странице"
 					Grid.Row="1" Grid.Column="0" Margin="5"/>
-				<NumericUpDown Value="{Binding RowCount}" Minimum="1" 
-					Grid.Row="1" Grid.Column="1" Margin="5"
-					TextInput="TextBox_TextInput" 
-					KeyDown="TextBox_PreviewKeyDown"/>
+				<NumericUpDown Value="{Binding RowCount}" Minimum="1"
+					Grid.Row="1" Grid.Column="1" Margin="5">
+                    <interactivity:Interaction.Behaviors>
+                        <local:NumericUpDownDigitValidationBehavior/>
+                    </interactivity:Interaction.Behaviors>
+                </NumericUpDown>
 				
 				<TextBlock Text="Всего строчек:"
 					Grid.Row="1" Grid.Column="2" Margin="5"/>
 				<TextBlock Text="{Binding TotalRows}"
 					Grid.Row="1" Grid.Column="3" Margin="5"/>
-				
 			</Grid>
-					
-				
-			<StackPanel Grid.Row="4" HorizontalAlignment="Left" Background="{StaticResource PrimaryColor}" Margin="5">
+
+            <StackPanel Grid.Row="4" Classes="notesContainer"
+                        IsVisible="{Binding IsFooterExpanded}">
 				<TextBlock Margin="5">Примечания</TextBlock>
-				<DataGrid 
-					Width="512"
-					MaxHeight="175"
-					Items="{Binding NoteList}"
-					CanUserResizeColumns="True"
-					RowBackground="White"
-					AlternatingRowBackground="LightBlue"
-					Margin="5">
-					<DataGrid.Columns>
+                <DataGrid Classes="notesTable"
+                          Items="{Binding NoteList}">
+                    <DataGrid.Columns>
 						<DataGridTextColumn Header="№ строки"
 											Binding="{Binding RowNumber.Value, Converter={StaticResource NullToStringConverter}}"/>
 						<DataGridTextColumn Header="№ графы"
@@ -363,6 +419,7 @@
 					</DataGrid.Columns>
 				</DataGrid>
 			</StackPanel>
-		
+
+            <CheckBox Classes="hideButton" Grid.Row ="5" IsChecked ="{Binding IsFooterExpanded}">Раскрыть/Скрыть нижнюю панель</CheckBox>
 		</Grid>
 </Window>

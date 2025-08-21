@@ -1095,6 +1095,20 @@ public partial class Form10 : Form
 
     [GeneratedRegex(@"^[Мм\d]\d{4}$")]
     private static partial Regex RegNoRegex();
-    
+
+    #endregion
+
+    #region ConvertToTSVstring
+
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Заглушка
+        var str = "Форма 1.0";
+        return str;
+    }
+
     #endregion
 }

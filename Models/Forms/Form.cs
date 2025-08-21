@@ -498,4 +498,13 @@ public abstract partial class Form : IKey, IDataGridColumn
     protected static partial Regex OkpoRegex();
 
     #endregion
+
+    #region ConvertToTSVstring
+
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public abstract string ConvertToTSVstring();
+
+    #endregion
 }

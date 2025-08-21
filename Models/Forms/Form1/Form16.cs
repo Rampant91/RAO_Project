@@ -2046,4 +2046,43 @@ public partial class Form16 : Form1
     #endregion
 
     #endregion
+
+    #region ConvertToTSVstring
+
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        var str =
+            $"{NumberInOrder.Value}\t" +
+            $"{OperationCode.Value}\t" +
+            $"{OperationDate.Value}\t" +
+            $"{CodeRAO.Value}\t" +
+            $"{StatusRAO.Value}\t" +
+            $"{Volume.Value}\t" +
+            $"{Mass.Value}\t" +
+            $"{QuantityOZIII.Value}\t" +
+            $"{MainRadionuclids.Value}\t" +
+            $"{TritiumActivity.Value}\t" +
+            $"{BetaGammaActivity.Value}\t" +
+            $"{AlphaActivity.Value}\t" +
+            $"{TransuraniumActivity.Value}\t" +
+            $"{ActivityMeasurementDate.Value}\t" +
+            $"{ProviderOrRecieverOKPO.Value}\t" +
+            $"{TransporterOKPO.Value}\t" +
+            $"{StoragePlaceName.Value}\t" +
+            $"{StoragePlaceCode.Value}\t" +
+            $"{RefineOrSortRAOCode.Value}\t" +
+            $"{PackName.Value}\t" +
+            $"{PackType.Value}\t" +
+            $"{PackNumber.Value}\t" +
+            $"{Subsidy.Value}\t" +
+            $"{FcpNumber.Value}\t" +
+            $"{ContractNumber.Value}";
+        return str;
+    }
+
+    #endregion
 }

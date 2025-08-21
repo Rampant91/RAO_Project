@@ -1,19 +1,20 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Messages;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Models.Collections;
-using Models.Forms.Form1;
 using Models.Forms;
+using Models.Forms.Form1;
 using ReactiveUI;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using System.Collections.ObjectModel;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
@@ -21,7 +22,7 @@ namespace Client_App.Commands.AsyncCommands.Add;
 /// Добавить N строк в форму перед выбранной строкой.
 /// </summary>
 /// <param name="formVM">ViewModel отчёта.</param>
-public class NewAddRowsInAsyncCommand(Form_12VM formVM) : BaseAsyncCommand
+public class NewAddRowsInAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
     private Report Storage => formVM.CurrentReport;
     private string FormType => formVM.FormType;
@@ -34,7 +35,7 @@ public class NewAddRowsInAsyncCommand(Form_12VM formVM) : BaseAsyncCommand
     /// <returns></returns>
     public override async Task AsyncExecute(object? parameter)
     {
-        var collection = (IEnumerable<Form12>)parameter;
+        var collection = (IEnumerable<Form>)parameter;
         var item = collection.FirstOrDefault();
         var owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
             .FirstOrDefault(w => w.IsActive);

@@ -2173,7 +2173,47 @@ public partial class Form18 : Form1
     private static partial Regex StoragePlaceCodeRegex7();
 
     [GeneratedRegex("^[0-9x+]{11}$")]
-    private static partial Regex CodeRaoRegex(); 
-    
+    private static partial Regex CodeRaoRegex();
+
+    #endregion
+
+    #region ConvertToTSVstring
+
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        var str =
+            $"{NumberInOrder.Value}\t" +
+            $"{OperationCode.Value}\t" +
+            $"{OperationDate.Value}\t" +
+            $"{IndividualNumberZHRO.Value}\t" +
+            $"{PassportNumber.Value}\t" +
+            $"{Volume6.Value}\t" +
+            $"{Mass7.Value}\t" +
+            $"{SaltConcentration.Value}\t" +
+            $"{Radionuclids.Value}\t" +
+            $"{SpecificActivity.Value}\t" +
+            $"{ProviderOrRecieverOKPO.Value}\t" +
+            $"{TransporterOKPO.Value}\t" +
+            $"{StoragePlaceName.Value}\t" +
+            $"{StoragePlaceCode.Value}\t" +
+            $"{CodeRAO.Value}\t" +
+            $"{StatusRAO.Value}\t" +
+            $"{Volume20.Value}\t" +
+            $"{Mass21.Value}\t" +
+            $"{TritiumActivity.Value}\t" +
+            $"{BetaGammaActivity.Value}\t" +
+            $"{AlphaActivity.Value}\t" +
+            $"{TransuraniumActivity.Value}\t" +
+            $"{RefineOrSortRAOCode.Value}\t" +
+            $"{Subsidy.Value}\t" +
+            $"{FcpNumber.Value}\t" +
+            $"{ContractNumber.Value}";
+        return str;
+    }
+
     #endregion
 }

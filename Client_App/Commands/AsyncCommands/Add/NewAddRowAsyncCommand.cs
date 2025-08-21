@@ -1,10 +1,11 @@
-﻿using Client_App.ViewModels;
+﻿using Client_App.Commands.AsyncCommands.Save;
+using Client_App.ViewModels;
+using Client_App.ViewModels.Forms;
+using Client_App.ViewModels.Forms.Forms1;
 using Models.Collections;
 using Models.Forms;
 using Models.Interfaces;
 using System.Threading.Tasks;
-using Client_App.Commands.AsyncCommands.Save;
-using Client_App.ViewModels.Forms.Forms1;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
@@ -12,7 +13,7 @@ namespace Client_App.Commands.AsyncCommands.Add;
 /// Добавить строку в форму.
 /// </summary>
 /// <param name="changeOrCreateViewModel">ViewModel отчёта.</param>
-public class NewAddRowAsyncCommand(Form_12VM formVM) : BaseAsyncCommand
+public class NewAddRowAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
     private Report Storage => formVM.CurrentReport;
     private string FormType => formVM.FormType;

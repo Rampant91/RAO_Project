@@ -1,13 +1,15 @@
-﻿using System;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
-using System.Linq;
-using Models.Attributes;
+﻿using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
 using Spravochniki;
+using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using static Models.Collections.Report;
 
 namespace Models.Forms.Form1;
 
@@ -1618,5 +1620,37 @@ public class Form12 : Form1
         return numberInOrderR;
     }
 
+    #endregion
+
+    #region ConvertToTSVstring
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        var str =
+            $"{NumberInOrder.Value}\t" +
+            $"{OperationCode.Value}\t" +
+            $"{OperationDate.Value}\t" +
+            $"{PassportNumber.Value}\t" +
+            $"{NameIOU.Value}\t" +
+            $"{FactoryNumber.Value}\t" +
+            $"{Mass.Value}\t" +
+            $"{CreatorOKPO.Value}\t" +
+            $"{CreationDate.Value}\t" +
+            $"{SignedServicePeriod.Value}\t" +
+            $"{PropertyCode.Value}\t" +
+            $"{Owner.Value}\t" +
+            $"{DocumentVid.Value}\t" +
+            $"{DocumentNumber.Value}\t" +
+            $"{DocumentDate.Value}\t" +
+            $"{ProviderOrRecieverOKPO.Value}\t" +
+            $"{TransporterOKPO.Value}\t" +
+            $"{PackName.Value}\t" +
+            $"{PackType.Value}\t" +
+            $"{PackNumber.Value}";
+        return str;
+    }
     #endregion
 }

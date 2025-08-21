@@ -1,22 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels;
+using Client_App.ViewModels.Forms;
+using Client_App.ViewModels.Forms.Forms1;
 using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
 using Models.CheckForm;
 using Models.DBRealization;
 using Client_App.ViewModels.Forms.Forms1;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
-
-public class NewCheckFormAsyncCommand(Form_12VM formVM) : BaseAsyncCommand
+public class NewCheckFormAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
     public override async void Execute(object? parameter)
     {
@@ -34,7 +35,6 @@ public class NewCheckFormAsyncCommand(Form_12VM formVM) : BaseAsyncCommand
         }
         IsExecute = false;
     }
-
 
     public override async Task AsyncExecute(object? parameter)
     {

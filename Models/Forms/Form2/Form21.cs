@@ -2079,4 +2079,40 @@ public partial class Form21 : Form2, IBaseColor
     private static partial Regex CodeRaoInRegex7();
 
     #endregion
+
+    #region ConvertToTSVstring
+
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        var str =
+            $"{NumberInOrder.Value}\t" +
+            $"{RefineMachineName.Value}\t" +
+            $"{MachineCode.Value}\t" +
+            $"{MachinePower.Value}\t" +
+            $"{NumberOfHoursPerYear.Value}\t" +
+            $"{CodeRAOIn.Value}\t" +
+            $"{StatusRAOIn.Value}\t" +
+            $"{VolumeIn.Value}\t" +
+            $"{MassIn.Value}\t" +
+            $"{QuantityIn.Value}\t" +
+            $"{TritiumActivityIn.Value}\t" +
+            $"{BetaGammaActivityIn.Value}\t" +
+            $"{AlphaActivityIn.Value}\t" +
+            $"{TransuraniumActivityIn.Value}\t" +
+            $"{CodeRAOout.Value}\t" +
+            $"{StatusRAOout.Value}\t" +
+            $"{VolumeOut.Value}\t" +
+            $"{MassOut.Value}\t" +
+            $"{QuantityOZIIIout.Value}\t" +
+            $"{TritiumActivityOut.Value}\t" +
+            $"{BetaGammaActivityOut.Value}\t" +
+            $"{TransuraniumActivityOut.Value}";
+        return str;
+    }
+
+    #endregion
 }

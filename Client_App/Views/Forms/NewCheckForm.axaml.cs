@@ -1,52 +1,50 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 using Client_App.ViewModels;
+using Client_App.ViewModels.Forms;
 using Models.CheckForm;
 using System.Collections.Generic;
-using Avalonia.Media;
-using Client_App.ViewModels.Forms.Forms1;
 
-namespace Client_App.Views
+namespace Client_App.Views;
+
+public class NewCheckForm : BaseWindow<CheckFormVM>
 {
+    #region Constructor
 
-    public class NewCheckForm : BaseWindow<CheckFormVM>
+    public NewCheckForm() { }
+
+    public NewCheckForm(BaseFormVM formVM, List<CheckError> checkError)
     {
-        #region Constructor
+        AvaloniaXamlLoader.Load(this);
 
-        public NewCheckForm() { }
+        DataContext = new NewCheckFormVM(formVM, checkError);
 
-        public NewCheckForm(Form_12VM formVM, List<CheckError> checkError)
+        var dataGrid = this.Get<DataGrid>("CheckErrorsDataGrid");
+        dataGrid.LoadingRow += DataGrid_LoadingRow;
+
+        Show();
+    }
+
+    #endregion
+
+    #region Events
+
+    /// <summary>
+    /// Устанавливает цвет строки в зависимости от того, является ли ошибка критической.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private static void DataGrid_LoadingRow(object? sender, DataGridRowEventArgs e)
+    {
+        if (sender is DataGrid)
         {
-            AvaloniaXamlLoader.Load(this);
-
-            DataContext = new NewCheckFormVM(formVM, checkError);
-
-            var dataGrid = this.Get<DataGrid>("CheckErrorsDataGrid");
-            dataGrid.LoadingRow += DataGrid_LoadingRow;
-
-            Show();
-        }
-
-        #endregion
-
-        #region Events
-
-        /// <summary>
-        /// Устанавливает цвет строки в зависимости от того, является ли ошибка критической.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private static void DataGrid_LoadingRow(object? sender, DataGridRowEventArgs e)
-        {
-            if (sender is DataGrid)
+            if (e.Row?.DataContext is CheckError { IsCritical: true })
             {
-                if (e.Row?.DataContext is CheckError { IsCritical: true })
-                {
-                    e.Row.Background = Brushes.RosyBrown;
-                }
+                e.Row.Background = Brushes.RosyBrown;
             }
         }
-
-        #endregion
     }
+
+    #endregion
 }

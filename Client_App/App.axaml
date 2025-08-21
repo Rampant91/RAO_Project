@@ -86,6 +86,12 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="5"/>
         </Style>
+        <Style Selector="Border.borderContainer TextBox">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="Border.borderContainer TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
         <Style Selector="WrapPanel.header Button">
             <Setter Property="Height" Value="30"/>
             <Setter Property="Margin" Value="5"/>
@@ -96,12 +102,13 @@
             <Setter Property="VerticalScrollBarVisibility" Value="Disabled"/>
         </Style>
         <Style Selector="Grid.tableHeader">
-            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Margin" Value="6,5,-5,5"/>
+            <Setter Property="Background" Value="#f5f5f5"/>
         </Style>
         <Style Selector="Grid.tableHeader Border">
             <Setter Property="Margin" Value="-1,0,0,0"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="BorderBrush" Value="#aaaaaa"/>
         </Style>
         <Style Selector="Grid.tableHeader TextBlock">
             <Setter Property="TextAlignment" Value="Center"/>
@@ -112,18 +119,20 @@
             <Setter Property="CanUserResizeColumns" Value="True"/>
             <Setter Property="RowBackground" Value="White"/>
             <Setter Property="AlternatingRowBackground" Value="LightBlue"/>
-            <Setter Property="Margin" Value="5,0,5,5"/>
+            <Setter Property="Margin" Value="5,-5,5,5"/>
             <Setter Property="SelectionMode" Value="Extended"/>
             <Setter Property="GridLinesVisibility" Value="Vertical"/>
             <Setter Property="CanUserSortColumns" Value="False"/>
             <Setter Property="ColumnWidth" Value="Auto" />
             <Setter Property="MinColumnWidth" Value="50" />
+            <Setter Property="MaxColumnWidth" Value="250" />
         </Style>
         <Style Selector="DataGridRow:selected TextBox">
             <Setter Property="Foreground" Value="Black"/>
         </Style>
         <Style Selector="DataGrid.table TextBox">
             <Setter Property="Margin" Value="3"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
         <Style Selector="DataGrid.table CalendarDatePicker">
             <Setter Property="Margin" Value="3"/>

@@ -1,24 +1,25 @@
-﻿using Avalonia.Threading;
+﻿using Avalonia.Controls;
+using Avalonia.Threading;
 using Client_App.ViewModels;
+using Client_App.ViewModels.Forms;
+using Client_App.ViewModels.Forms.Forms1;
+using MessageBox.Avalonia.DTO;
+using Models.Classes;
 using Models.Collections;
+using Models.DBRealization;
+using Models.Forms.Form1;
+using Models.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia.Controls;
-using MessageBox.Avalonia.DTO;
-using Models.Forms.Form1;
-using Models.DBRealization;
-using Models.Classes;
-using System.Collections.Generic;
-using Models.Interfaces;
-using Client_App.ViewModels.Forms.Forms1;
 
 namespace Client_App.Commands.AsyncCommands.SourceTransmission;
 
 // Перевод всех источников в форме из РВ в РАО
 public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsyncCommand
 {
-    public NewSourceTransmissionAllAsyncCommand(Form_12VM formVM)
+    public NewSourceTransmissionAllAsyncCommand(BaseFormVM formVM)
     {
         FormVM = formVM;
     }
