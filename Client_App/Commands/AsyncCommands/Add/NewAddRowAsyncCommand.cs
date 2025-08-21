@@ -20,6 +20,7 @@ public class NewAddRowAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
+        bool currentPageIsLastPage = formVM.CurrentPage == formVM.TotalPages;
         var frm = FormCreator.Create(FormType);
         frm.NumberInOrder_DB = GetNumberInOrder(Storage[Storage.FormNum_DB]);
         var formContainRowAtStart = Storage.Rows.Count > 0;
@@ -31,7 +32,11 @@ public class NewAddRowAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         }
 
         //Обновление DataGrid для отображения новых строк
-        formVM.UpdateFormList();
+        if(currentPageIsLastPage)
+        {
+            formVM.UpdateFormList();
+        }
+        formVM.UpdatePageInfo();
     }
 
     /// <summary>

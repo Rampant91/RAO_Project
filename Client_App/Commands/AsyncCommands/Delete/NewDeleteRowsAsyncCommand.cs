@@ -59,6 +59,7 @@ public class NewDeleteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             }
             formVM.SortForm.Execute(minItem);
             formVM.UpdateFormList();
+            formVM.UpdatePageInfo();
         }
         //if (parameter is null) return;
 

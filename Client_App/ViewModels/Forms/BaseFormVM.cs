@@ -128,8 +128,8 @@ namespace Client_App.ViewModels.Forms
                 {
                     _rowCount = result;
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(TotalPages));
                     UpdateFormList();
+                    UpdatePageInfo();
                 }
             }
         }
@@ -154,6 +154,8 @@ namespace Client_App.ViewModels.Forms
                     _currentPage = result;
                     OnPropertyChanged();
                     UpdateFormList();
+
+                    UpdatePageInfo();
                 }
             }
         }
@@ -224,6 +226,7 @@ namespace Client_App.ViewModels.Forms
         {
             _currentReport = report;
             UpdateFormList();
+            UpdatePageInfo();
             NoteList = CurrentReport.Notes;
         }
         #endregion
@@ -247,8 +250,10 @@ namespace Client_App.ViewModels.Forms
 
         public async void UpdateFormList()
         {
-
             FormList = new ObservableCollection<Form>(CurrentReport.Rows.ToList<Form>().Skip((CurrentPage - 1) * RowCount).Take(RowCount));//Нужна оптимизация
+        }
+        public async void UpdatePageInfo()
+        {
             OnPropertyChanged(nameof(TotalPages));
             OnPropertyChanged(nameof(TotalRows));
         }

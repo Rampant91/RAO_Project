@@ -1650,6 +1650,7 @@ public class Form12 : Form1
             $"{this.PackName.Value}\t" +
             $"{this.PackType.Value}\t" +
             $"{this.PackNumber.Value}";
+
         return str;
     }
     #endregion

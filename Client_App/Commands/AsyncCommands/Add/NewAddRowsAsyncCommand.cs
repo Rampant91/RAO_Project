@@ -25,7 +25,9 @@ public class NewAddRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
-            // Если не получили окно напрямую, попробуем найти активное окно
+
+        bool currentPageIsLastPage = formVM.CurrentPage == formVM.TotalPages;
+        // Если не получили окно напрямую, попробуем найти активное окно
         var owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
                 .FirstOrDefault(w => w.IsActive);
 
@@ -53,7 +55,12 @@ public class NewAddRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             {
                 await new SaveReportAsyncCommand(formVM).AsyncExecute(null);
             }
-            formVM.UpdateFormList();
+
+            if (currentPageIsLastPage)
+            {
+                formVM.UpdateFormList();
+            }
+            formVM.UpdatePageInfo();
         }
     }
 

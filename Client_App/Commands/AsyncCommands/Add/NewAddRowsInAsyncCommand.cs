@@ -35,6 +35,9 @@ public class NewAddRowsInAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     /// <returns></returns>
     public override async Task AsyncExecute(object? parameter)
     {
+
+        bool currentPageIsLastPage = formVM.CurrentPage == formVM.TotalPages;
+
         var collection = (IEnumerable<Form>)parameter;
         var item = collection.FirstOrDefault();
         var owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
@@ -73,6 +76,10 @@ public class NewAddRowsInAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         Storage[Storage.FormNum_DB].AddRange(lst);
         await Storage.SortAsync();
 
-        formVM.UpdateFormList();
+        if (currentPageIsLastPage)
+        {
+            formVM.UpdateFormList();
+        }
+        formVM.UpdatePageInfo();
     }
 }

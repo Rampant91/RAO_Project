@@ -22,6 +22,7 @@
 		<converter:DataGridLengthToGridLengthConverter x:Key="LengthConverter"/>
 		<converter:NullToStringConverter x:Key="NullToStringConverter"/>
 		<converter:DateConverter x:Key="DateConverter"/>
+		
     </Window.Resources>
 
     <Design.DataContext>
@@ -119,7 +120,7 @@
 							<MenuItem Header="Добавить N строк			Ctrl+N"
 									  Command="{Binding AddRows}"
 									  HotKey="Ctrl+N"/>
-							<MenuItem Header="Добавить N строк перед	Ctrl+I" 
+							<MenuItem Header="Добавить N строк перед	Ctrl+I"
 									  Command="{Binding AddRowsIn}"
 									  CommandParameter="{Binding SelectedForms}"
 									  HotKey="Ctrl+I"/>
@@ -252,7 +253,7 @@
 							<DataGridTemplateColumn Header="2">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
-										<TextBox Text="{Binding OperationCode.Value, Mode=TwoWay}"></TextBox>
+										<TextBox Text="{Binding OperationCode.Value, Mode=TwoWay}" />
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -268,7 +269,7 @@
 							<DataGridTemplateColumn Header="4">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
-										<TextBox Text="{Binding PassportNumber.Value, Mode=TwoWay}"></TextBox>
+										<TextBox Text="{Binding PassportNumber.Value, Mode=TwoWay}" />
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -276,7 +277,7 @@
 							<DataGridTemplateColumn Header="5">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
-										<TextBox Text="{Binding NameIOU.Value, Mode=TwoWay}"></TextBox>
+										<TextBox Text="{Binding NameIOU.Value, Mode=TwoWay}" />
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -284,7 +285,7 @@
 							<DataGridTemplateColumn Header="6">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
-										<TextBox Text="{Binding FactoryNumber.Value, Mode=TwoWay}"></TextBox>
+										<TextBox Text="{Binding FactoryNumber.Value, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -292,7 +293,7 @@
 							<DataGridTemplateColumn Header="7">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
-										<TextBox Text="{Binding Mass.Value, Mode=TwoWay}"></TextBox>
+										<TextBox Text="{Binding Mass.Value, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -300,7 +301,7 @@
 							<DataGridTemplateColumn Header="8">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
-										<TextBox Text="{Binding CreatorOKPO.Value, Mode=TwoWay}"></TextBox>
+										<TextBox Text="{Binding CreatorOKPO.Value, Mode=TwoWay}" />
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -313,11 +314,10 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 
-							<DataGridTemplateColumn
-												Header="10">
+							<DataGridTemplateColumn Header="10">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
-										<TextBox Text="{Binding SignedServicePeriod.Value, Mode=TwoWay}"></TextBox>
+										<TextBox Text="{Binding SignedServicePeriod.Value, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -325,7 +325,7 @@
 							<DataGridTemplateColumn Header="11">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
-										<TextBox Text="{Binding PropertyCode.Value, Mode=TwoWay}"></TextBox>
+										<TextBox Text="{Binding PropertyCode.Value, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -333,7 +333,7 @@
 							<DataGridTemplateColumn Header="12">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
-										<TextBox Text="{Binding Owner.Value, Mode=TwoWay}"></TextBox>
+										<TextBox Text="{Binding Owner.Value, Mode=TwoWay}" />
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -341,7 +341,7 @@
 							<DataGridTemplateColumn Header="13">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
-										<TextBox Text="{Binding DocumentVid.Value, Mode=TwoWay}"></TextBox>
+										<TextBox Text="{Binding DocumentVid.Value, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -349,7 +349,7 @@
 							<DataGridTemplateColumn Header="14">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
-										<TextBox Text="{Binding DocumentNumber.Value, Mode=TwoWay}"></TextBox>
+										<TextBox Text="{Binding DocumentNumber.Value, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -365,7 +365,7 @@
 							<DataGridTemplateColumn Header="16">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
-										<TextBox Text="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay}"></TextBox>
+										<TextBox Text="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -373,7 +373,7 @@
 							<DataGridTemplateColumn Header="17">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
-										<TextBox Text="{Binding TransporterOKPO.Value, Mode=TwoWay}"></TextBox>
+										<TextBox Text="{Binding TransporterOKPO.Value, Mode=TwoWay}" />
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -381,7 +381,7 @@
 							<DataGridTemplateColumn Header="18">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
-										<TextBox Text="{Binding PackName.Value, Mode=TwoWay}"></TextBox>
+										<TextBox Text="{Binding PackName.Value, Mode=TwoWay}" />
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -389,7 +389,7 @@
 							<DataGridTemplateColumn Header="19">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
-										<TextBox Text="{Binding PackType.Value, Mode=TwoWay}"></TextBox>
+										<TextBox Text="{Binding PackType.Value, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -397,7 +397,7 @@
 							<DataGridTemplateColumn Header="20">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate>
-										<TextBox Text="{Binding PackNumber.Value, Mode=TwoWay}"></TextBox>
+										<TextBox Text="{Binding PackNumber.Value, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
