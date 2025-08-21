@@ -72,9 +72,18 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             form.CreatorOKPO.Value = parsedRows[i][7];
             form.CreationDate.Value = parsedRows[i][8];
             form.SignedServicePeriod.Value = parsedRows[i][9];
-            form.PropertyCode.Value = Convert.ToByte(parsedRows[i][10]);
+            if (parsedRows[i][10] == "")
+                form.PropertyCode.Value = null;
+            else
+                form.PropertyCode.Value = Convert.ToByte(parsedRows[i][10]);
+
             form.Owner.Value = parsedRows[i][11];
-            form.DocumentVid.Value = Convert.ToByte(parsedRows[i][12]);
+
+            if (parsedRows[i][12] == "")
+                form.DocumentVid.Value = null;
+            else
+                form.DocumentVid.Value = Convert.ToByte(parsedRows[i][12]);
+
             form.DocumentNumber.Value = parsedRows[i][13];
             form.DocumentDate.Value = parsedRows[i][14];
             form.ProviderOrRecieverOKPO.Value = parsedRows[i][15];
