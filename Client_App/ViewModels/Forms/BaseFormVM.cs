@@ -100,8 +100,8 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             {
                 _rowCount = result;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(TotalPages));
                 UpdateFormList();
+                UpdatePageInfo();
             }
         }
     }
@@ -123,6 +123,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
                 _currentPage = result;
                 OnPropertyChanged();
                 UpdateFormList();
+                UpdatePageInfo();
             }
         }
     }
@@ -185,7 +186,9 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     {
         _currentReport = report;
         UpdateFormList();
+        UpdatePageInfo();
         NoteList = CurrentReport.Notes;
+
     }
 
     #endregion
@@ -211,10 +214,12 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public async void UpdateFormList()
     {
         FormList = new ObservableCollection<Form>(CurrentReport.Rows.ToList<Form>().Skip((CurrentPage - 1) * RowCount).Take(RowCount)); //Нужна оптимизация
+    }
+    public async void UpdatePageInfo()
+    {
         OnPropertyChanged(nameof(TotalPages));
         OnPropertyChanged(nameof(TotalRows));
     }
-
 
     #region OnPropertyChanged
 
