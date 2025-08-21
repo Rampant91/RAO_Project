@@ -1,8 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
-using Client_App.ViewModels;
 using Client_App.ViewModels.Forms;
-using Client_App.ViewModels.Forms.Forms1;
 using MessageBox.Avalonia.DTO;
 using Models.Classes;
 using Models.Collections;
@@ -166,10 +164,10 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
                 }
                 default:    // Если отчета с подходящим периодом нет, создаём новый отчёт и добавляем в него форму 
                 {
-                    var repId = await CreateReportAndAddNewForm(db, form, opDate);
+                    var rep = await CreateReportAndAddNewForm(db, form, opDate);
                     countAddedForm++;
                     await db.SaveChangesAsync();
-                    var report = await ReportsStorage.Api.GetAsync(repId);
+                    var report = await ReportsStorage.Api.GetAsync(rep.Id);
                     SelectedReports.Report_Collection.Add(report);
                     if (DateOnly.TryParse(report.StartPeriod_DB, out var date)
                         && DateOnly.TryParse(repToOpen.StartPeriod_DB, out var maxDate)

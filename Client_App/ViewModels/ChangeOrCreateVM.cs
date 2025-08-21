@@ -23,7 +23,6 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Client_App.Commands.AsyncCommands.TmpNewCommands;
 
 namespace Client_App.ViewModels;
 
@@ -353,7 +352,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         CopyExecutorData = new CopyExecutorDataAsyncCommand(this);
         CopyPasName = new CopyPasNameAsyncCommand();
         CopyRows = new CopyRowsAsyncCommand();
-        DeleteDataInRows = new NewDeleteDataInRowsAsyncCommand();
+        DeleteDataInRows = new DeleteDataInRowsAsyncCommand();
         DeleteNote = new DeleteNoteAsyncCommand(this);
         DeleteRows = new DeleteRowsAsyncCommand(this);
         ExcelExportSourceMovementHistory = new ExcelExportSourceMovementHistoryAsyncCommand();

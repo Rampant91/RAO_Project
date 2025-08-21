@@ -3,7 +3,6 @@ using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.Delete;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
-using Client_App.Commands.AsyncCommands.TmpNewCommands;
 using Client_App.Commands.SyncCommands;
 using Models.Collections;
 using Models.Forms;
@@ -196,10 +195,11 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand CheckForm => new NewCheckFormAsyncCommand(this);    //  Кнопка "Проверить"
     //public ICommand CopyExecutorDate => new NewCopyExecutorDataAsyncCommand(this); //После привязки кнопка неактивна
     public ICommand SourceTransmissionAll => new NewSourceTransmissionAllAsyncCommand(this);    //  Кнопка "Перевести данные предыдущей формы"
+    public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);    //  Кнопка "Перевести данные предыдущей формы"
     public ICommand AddRow => new NewAddRowAsyncCommand(this);
     public ICommand AddRows => new NewAddRowsAsyncCommand(this);
     public ICommand AddRowsIn => new NewAddRowsInAsyncCommand(this);
-    public ICommand DeleteDataInRows => new NewDeleteDataInRowsAsyncCommand();
+    public ICommand DeleteDataInRows => new DeleteDataInRowsAsyncCommand();
     public ICommand DeleteRows => new NewDeleteRowsAsyncCommand(this);
     public ICommand SortForm => new NewSortFormSyncCommand(this);
     public ICommand SetNumberOrder => new NewSetNumberOrderSyncCommand(this);

@@ -23,6 +23,20 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     protected BaseFormVM FormVM = null!;
 
+    private protected Reports Reports
+    {
+        get => Report.Reports;
+        set => Report.Reports = value;
+    }
+
+    private protected Report Report
+    {
+        get => VM.CurrentReport;
+        set => VM.CurrentReport = value;
+    }
+
+    private protected dynamic VM = null!;
+
     #region AddNewFormToExistingReport
 
     private protected async Task<bool> AddNewFormToExistingReport(Report rep, Form1 form, DBModel db)
@@ -334,13 +348,14 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     #region CreateReportAndAddNewForm
 
-    private protected async Task<int> CreateReportAndAddNewForm(DBModel db, Form1 form, DateOnly opDate)
+    private protected async Task<Report> CreateReportAndAddNewForm(DBModel db, Form1 form, DateOnly opDate)
     {
         var repId = 0;
+        Report newRep = new();
         switch (form.FormNum_DB)
         {
             #region 1.1
-            
+
             case "1.1":
             {
                 var form11 = (Form11)form;
@@ -372,7 +387,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     Activity_DB = form11.Activity_DB,
                     Quantity_DB = form11.Quantity_DB,
                     CreationDate_DB = form11.CreationDate_DB,
-                    StatusRAO_DB = SelectedReports.Master_DB.OkpoRep.Value,
+                    StatusRAO_DB = Reports.Master_DB.OkpoRep.Value,
                     DocumentVid_DB = form11.DocumentVid_DB,
                     DocumentNumber_DB = form11.DocumentNumber_DB,
                     DocumentDate_DB = form11.DocumentDate_DB,
@@ -388,13 +403,14 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     #endregion
                 };
                 db.form_15.Add(newForm15);
+                newRep = newRep15;
                 break;
             }
 
             #endregion
 
             #region 1.2
-            
+
             case "1.2":
             {
                 var form12 = (Form12)form;
@@ -443,7 +459,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     OperationCode_DB = form12.OperationCode_DB,
                     OperationDate_DB = form12.OperationDate_DB,
                     CodeRAO_DB = "22511300522",
-                    StatusRAO_DB = SelectedReports.Master_DB.OkpoRep.Value,
+                    StatusRAO_DB = Reports.Master_DB.OkpoRep.Value,
                     Mass_DB = massTon,
                     QuantityOZIII_DB = "-",
                     MainRadionuclids_DB = "уран-238; торий-234; протактиний-234м; уран-234",
@@ -455,7 +471,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     DocumentVid_DB = form12.DocumentVid_DB,
                     DocumentNumber_DB = form12.DocumentNumber_DB,
                     DocumentDate_DB = form12.DocumentDate_DB,
-                    ProviderOrRecieverOKPO_DB = SelectedReports.Master_DB.OkpoRep.Value,
+                    ProviderOrRecieverOKPO_DB = Reports.Master_DB.OkpoRep.Value,
                     TransporterOKPO_DB = "-",
                     RefineOrSortRAOCode_DB = "-",
                     PackName_DB = form12.PackName_DB,
@@ -467,13 +483,14 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     #endregion
                 };
                 db.form_16.Add(newForm16);
+                newRep = newRep16;
                 break;
             }
 
             #endregion
 
             #region 1.3
-            
+
             case "1.3":
             {
                 R_Populate_From_File();
@@ -513,7 +530,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     OperationCode_DB = form13.OperationCode_DB,
                     OperationDate_DB = form13.OperationDate_DB,
                     CodeRAO_DB = codeRao,
-                    StatusRAO_DB = SelectedReports.Master_DB.OkpoRep.Value,
+                    StatusRAO_DB = Reports.Master_DB.OkpoRep.Value,
                     QuantityOZIII_DB = "-",
                     MainRadionuclids_DB = form13.Radionuclids_DB,
                     TritiumActivity_DB = activitiesDictionary["tritium"],
@@ -524,7 +541,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     DocumentVid_DB = form13.DocumentVid_DB,
                     DocumentNumber_DB = form13.DocumentNumber_DB,
                     DocumentDate_DB = form13.DocumentDate_DB,
-                    ProviderOrRecieverOKPO_DB = SelectedReports.Master_DB.OkpoRep.Value,
+                    ProviderOrRecieverOKPO_DB = Reports.Master_DB.OkpoRep.Value,
                     TransporterOKPO_DB = "-",
                     RefineOrSortRAOCode_DB = "-",
                     PackName_DB = form13.PackName_DB,
@@ -536,13 +553,14 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     #endregion
                 };
                 db.form_16.Add(newForm16);
+                newRep = newRep16;
                 break;
             }
 
             #endregion
 
             #region 1.4
-            
+
             case "1.4":
             {
                 R_Populate_From_File();
@@ -592,7 +610,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     OperationCode_DB = form14.OperationCode_DB,
                     OperationDate_DB = form14.OperationDate_DB,
                     CodeRAO_DB = codeRao,
-                    StatusRAO_DB = SelectedReports.Master_DB.OkpoRep.Value,
+                    StatusRAO_DB = Reports.Master_DB.OkpoRep.Value,
                     Volume_DB = form14.Volume_DB,
                     Mass_DB = massTon,
                     QuantityOZIII_DB = "-",
@@ -605,7 +623,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     DocumentVid_DB = form14.DocumentVid_DB,
                     DocumentNumber_DB = form14.DocumentNumber_DB,
                     DocumentDate_DB = form14.DocumentDate_DB,
-                    ProviderOrRecieverOKPO_DB = SelectedReports.Master_DB.OkpoRep.Value,
+                    ProviderOrRecieverOKPO_DB = Reports.Master_DB.OkpoRep.Value,
                     TransporterOKPO_DB = "-",
                     RefineOrSortRAOCode_DB = "-",
                     PackName_DB = form14.PackName_DB,
@@ -617,12 +635,13 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     #endregion
                 };
                 db.form_16.Add(newForm16);
+                newRep = newRep16;
                 break;
             }
 
             #endregion
         }
-        return repId;
+        return newRep;
     }
 
     #endregion

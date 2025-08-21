@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using Models.Forms;
 using Models.Forms.Form1;
 
-namespace Client_App.Commands.AsyncCommands.TmpNewCommands;
+namespace Client_App.Commands.AsyncCommands.Delete;
 
-public class NewDeleteDataInRowsAsyncCommand : BaseAsyncCommand
+public class DeleteDataInRowsAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {

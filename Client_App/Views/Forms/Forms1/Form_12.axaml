@@ -137,6 +137,10 @@
                                       Command="{Binding DeleteDataInRows}"
                                       CommandParameter="{Binding SelectedForms}"
                                       HotKey="Ctrl+K"/>
+                            <!--<MenuItem Header="Перевести РВ в РАО        Ctrl+J"
+                                      Command="{Binding SourceTransmission}"
+                                      CommandParameter="{Binding SelectedForms}"
+                                      HotKey="Ctrl+J"/>-->
                         </ContextMenu>
                     </Grid.ContextMenu>
                     <Grid Classes="tableHeader" Grid.Row="0"
