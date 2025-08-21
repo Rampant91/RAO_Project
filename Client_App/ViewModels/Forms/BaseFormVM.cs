@@ -3,6 +3,7 @@ using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.Delete;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
+using Client_App.Commands.AsyncCommands.TmpNewCommands;
 using Client_App.Commands.SyncCommands;
 using Models.Collections;
 using Models.Forms;
@@ -198,6 +199,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand AddRow => new NewAddRowAsyncCommand(this);
     public ICommand AddRows => new NewAddRowsAsyncCommand(this);
     public ICommand AddRowsIn => new NewAddRowsInAsyncCommand(this);
+    public ICommand DeleteDataInRows => new NewDeleteDataInRowsAsyncCommand();
     public ICommand DeleteRows => new NewDeleteRowsAsyncCommand(this);
     public ICommand SortForm => new NewSortFormSyncCommand(this);
     public ICommand SetNumberOrder => new NewSetNumberOrderSyncCommand(this);
