@@ -13,8 +13,6 @@ public class Form_12VM : BaseFormVM
 
     public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);
 
-    #region Typed properties for Compile Bindings
-
     public ObservableCollection<Form12> Form12List => new(FormList.Cast<Form12>());
     
     public ObservableCollection<Form12> SelectedForms12 => new(SelectedForms.Cast<Form12>());
@@ -24,8 +22,6 @@ public class Form_12VM : BaseFormVM
         get => SelectedForm as Form12;
         set => SelectedForm = value;
     }
-
-    #endregion
 
     #region Constructors
 
