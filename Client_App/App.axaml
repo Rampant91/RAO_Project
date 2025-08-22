@@ -127,7 +127,7 @@
             <Setter Property="MinColumnWidth" Value="50" />
             <Setter Property="MaxColumnWidth" Value="250" />
         </Style>
-        <Style Selector="DataGridRow:selected TextBox">
+        <Style Selector="DataGrid.table DataGridRow:selected TextBox">
             <Setter Property="Foreground" Value="Black"/>
         </Style>
         <Style Selector="DataGrid.table TextBox">
@@ -151,10 +151,11 @@
             <Setter Property="Margin" Value="5"/>
         </Style>
         <Style Selector="DataGrid.notesTable">
-            <Setter Property="Width" Value="512"/>
-            <Setter Property="MaxHeight" Value="175"/>
-            <Setter Property="CanUserResizeColumns" Value="True"/>
+            <Setter Property="Width" Value="650"/>
+            <Setter Property="MaxHeight" Value="180"/>
+			<Setter Property="RowHeight" Value="30" />
             <Setter Property="RowBackground" Value="White"/>
+			<Setter Property="SelectionMode" Value="Extended"/>
             <Setter Property="AlternatingRowBackground" Value="LightBlue"/>
             <Setter Property="Margin" Value="5"/>
         </Style>

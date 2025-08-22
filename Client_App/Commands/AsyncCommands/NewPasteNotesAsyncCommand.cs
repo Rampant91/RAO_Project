@@ -16,14 +16,12 @@ namespace Client_App.Commands.AsyncCommands;
 
 /// <summary>
 /// Вставить значения из буфера обмена
-/// Пока что работает только с Form12+
 /// </summary>
-public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
+public class NewPasteNotesAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
     //После обновления версии Авалонии нужно будет добавить вставку в формате html
     private Report Storage => formVM.CurrentReport;
-    private Form SelectedForm => formVM.SelectedForm;
-    private string FormType => formVM.FormType;
+    private Note SelectedNote => formVM.SelectedNote;
     public override async Task AsyncExecute(object? parameter)
     {
 
@@ -41,9 +39,9 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             parsedRows[i] = rows[i].Split('\t');
         }
 
-        int start = SelectedForm.NumberInOrder.Value-1;
+        int start = formVM.CurrentReport.Notes.IndexOf(SelectedNote);
 
-        if (start + parsedRows.Length > Storage.Rows.Count)
+        if (start + parsedRows.Length > Storage.Notes.Count)
         {
             await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
@@ -60,39 +58,13 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     .ShowDialog(Desktop.MainWindow));
         }
 
-        
-        for (int i = 0; i < parsedRows.Length && i+start<Storage.Rows.Count; i++)
+        for (int i = 0; i < parsedRows.Length && i+start<Storage.Notes.Count; i++)
         {
-            var form = Storage.Rows.Get<Form12>(i+start);
+            var note = Storage.Notes.Get<Note>(i+start);
 
-            form.OperationCode.Value = parsedRows[i][1];
-            form.OperationDate.Value = parsedRows[i][2];
-            form.PassportNumber.Value = parsedRows[i][3];
-            form.NameIOU.Value = parsedRows[i][4];
-            form.FactoryNumber.Value = parsedRows[i][5];
-            form.Mass.Value = parsedRows[i][6];
-            form.CreatorOKPO.Value = parsedRows[i][7];
-            form.CreationDate.Value = parsedRows[i][8];
-            form.SignedServicePeriod.Value = parsedRows[i][9];
-            if (parsedRows[i][10] == "")
-                form.PropertyCode.Value = null;
-            else
-                form.PropertyCode.Value = Convert.ToByte(parsedRows[i][10]);
-
-            form.Owner.Value = parsedRows[i][11];
-
-            if (parsedRows[i][12] == "")
-                form.DocumentVid.Value = null;
-            else
-                form.DocumentVid.Value = Convert.ToByte(parsedRows[i][12]);
-
-            form.DocumentNumber.Value = parsedRows[i][13];
-            form.DocumentDate.Value = parsedRows[i][14];
-            form.ProviderOrRecieverOKPO.Value = parsedRows[i][15];
-            form.TransporterOKPO.Value = parsedRows[i][16];
-            form.PackName.Value = parsedRows[i][17];
-            form.PackType.Value = parsedRows[i][18];
-            form.PackNumber.Value = parsedRows[i][19];
+            note.RowNumber.Value = parsedRows[i][0];
+            note.GraphNumber.Value = parsedRows[i][1];
+            note.Comment.Value = parsedRows[i][2];
         }
 
     }

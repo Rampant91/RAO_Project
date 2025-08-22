@@ -438,16 +438,40 @@
 
             <StackPanel Grid.Row="4" Classes="notesContainer"
                         IsVisible="{Binding IsFooterExpanded}">
+				<StackPanel.ContextMenu>
+					<ContextMenu>
+						<MenuItem Header="Добавить строку"
+								  Command="{Binding AddNote}"/>
+						<MenuItem Header="Добавить N строк"
+								  Command="{Binding AddNotes}"/>
+						<MenuItem Header="Копировать"
+								  Command="{Binding CopyNotes}"
+								  CommandParameter="{Binding SelectedNotes}"/>
+						<MenuItem Header="Вставить"
+								  Command="{Binding PasteNotes}"/>
+						<MenuItem Header="Удалить выбранные строчки"
+								  Command="{Binding DeleteNotes}"
+								  CommandParameter="{Binding SelectedNotes}"/>
+					</ContextMenu>
+				</StackPanel.ContextMenu>
 				<TextBlock Margin="5">Примечания</TextBlock>
                 <DataGrid Classes="notesTable"
-                          Items="{Binding NoteList}">
+                          Items="{Binding NoteList}"
+                          SelectedItem="{Binding SelectedNote}">
+					<interactivity:Interaction.Behaviors>
+						<local:DataGridDragSelectionBehavior/>
+						<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
+					</interactivity:Interaction.Behaviors>
                     <DataGrid.Columns>
-						<DataGridTextColumn Header="№ строки"
-											Binding="{Binding RowNumber.Value, Converter={StaticResource NullToStringConverter}}"/>
-						<DataGridTextColumn Header="№ графы"
-											Binding="{Binding GraphNumber.Value, Converter={StaticResource NullToStringConverter}}"/>
-						<DataGridTextColumn Header="Пояснения"
-											Binding="{Binding Comment.Value, Converter={StaticResource NullToStringConverter}}"/>
+						<DataGridTextColumn Width="80"
+											Header="№ строки"
+											Binding="{Binding RowNumber.Value}"/>
+						<DataGridTextColumn Width="80"
+											Header="№ графы"
+											Binding="{Binding GraphNumber.Value}"/>
+						<DataGridTextColumn Width="*" 
+											Header="Пояснения"
+											Binding="{Binding Comment.Value}"/>
 					</DataGrid.Columns>
 				</DataGrid>
 			</StackPanel>
