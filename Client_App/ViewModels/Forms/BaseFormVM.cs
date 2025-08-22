@@ -84,6 +84,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     protected int _rowCount = 30;
     public int RowCount
     {
