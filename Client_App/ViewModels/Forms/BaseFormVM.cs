@@ -178,28 +178,6 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
-    protected bool _isHeaderExpanded = true;
-    public bool IsHeaderExpanded
-    {
-        get => _isHeaderExpanded;
-        set
-        {
-            _isHeaderExpanded = value;
-            OnPropertyChanged();
-        }
-    }
-
-    protected bool _isFooterExpanded = true;
-    public bool IsFooterExpanded
-    {
-        get => _isFooterExpanded;
-        set
-        {
-            _isFooterExpanded = value;
-            OnPropertyChanged();
-        }
-    }
-
     #endregion
 
     #region Constructors

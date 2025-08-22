@@ -31,75 +31,74 @@
 		<Grid>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"></RowDefinition>
-				<RowDefinition Height="Auto"></RowDefinition>
 				<RowDefinition Height="*" MinHeight="175"></RowDefinition>
 				<RowDefinition Height="Auto"></RowDefinition>
 				<RowDefinition Height="Auto"></RowDefinition>
 				<RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
 			</Grid.RowDefinitions>
-
-            <CheckBox Classes="hideButton" Grid.Row ="0" IsChecked ="{Binding IsHeaderExpanded}">Раскрыть/Скрыть верхнюю панель</CheckBox>
 			
-			<WrapPanel Classes="header"
-                       Grid.Row ="1"
-                       IsVisible="{Binding IsHeaderExpanded}">
-					
-				<Border Classes="borderContainer">
-                    <Grid Margin="5" RowDefinitions="*,*,*,*,*">
+			<Expander Grid.Row ="0"
+					  IsExpanded="True">
+				<Expander.Header>
+					Скрыть/Раскрыть верхнюю панель
+				</Expander.Header>
+			    <WrapPanel Classes="header">
+				    <Border Classes="borderContainer">
+                        <Grid Margin="5" RowDefinitions="*,*,*,*,*">
 
-                        <Grid ColumnDefinitions="*,*"  Grid.Row="0">
-							<TextBlock Grid.Column="0" Margin="5" >Дата окончания предыдущего отчетного периода:</TextBlock>
-							<CalendarDatePicker Grid.Column="1" 
-                                SelectedDate="{Binding CurrentReport.StartPeriod.Value, Converter={StaticResource DateConverter}}"/>
-						</Grid>
+                            <Grid ColumnDefinitions="*,*"  Grid.Row="0">
+							    <TextBlock Grid.Column="0" Margin="5" >Дата окончания предыдущего отчетного периода:</TextBlock>
+							    <CalendarDatePicker Grid.Column="1" 
+                                    SelectedDate="{Binding CurrentReport.StartPeriod.Value, Converter={StaticResource DateConverter}}"/>
+						    </Grid>
 
-						<Grid ColumnDefinitions="*,*"  Grid.Row="1">
-							<TextBlock Grid.Column="0" Margin="5" >Дата окончания настоящего отчетного периода:</TextBlock>
-							<CalendarDatePicker Grid.Column="1" 
-                                SelectedDate="{Binding CurrentReport.EndPeriod.Value, Converter={StaticResource DateConverter}}"/>
-						</Grid>
+						    <Grid ColumnDefinitions="*,*"  Grid.Row="1">
+							    <TextBlock Grid.Column="0" Margin="5" >Дата окончания настоящего отчетного периода:</TextBlock>
+							    <CalendarDatePicker Grid.Column="1" 
+                                    SelectedDate="{Binding CurrentReport.EndPeriod.Value, Converter={StaticResource DateConverter}}"/>
+						    </Grid>
 
-						<StackPanel  Orientation="Horizontal" Grid.Row="2">
-							<TextBlock Margin="5">Номер корректировки:</TextBlock>
-							<TextBox Margin="5" Width="75"
-                                Text="{Binding Path=CurrentReport.CorrectionNumber.Value}"></TextBox>
-						</StackPanel>
+						    <StackPanel  Orientation="Horizontal" Grid.Row="2">
+							    <TextBlock Margin="5">Номер корректировки:</TextBlock>
+							    <TextBox Margin="5" Width="75"
+                                    Text="{Binding Path=CurrentReport.CorrectionNumber.Value}"></TextBox>
+						    </StackPanel>
 						
-						<StackPanel Orientation="Horizontal" Grid.Row="3">
-							<Button Margin="5" Command="{Binding CheckForm}">Проверить</Button>
-							<Button Margin="5" >Сохранить</Button>
-						</StackPanel>
+						    <StackPanel Orientation="Horizontal" Grid.Row="3">
+							    <Button Margin="5" Command="{Binding CheckForm}">Проверить</Button>
+							    <Button Margin="5" >Сохранить</Button>
+						    </StackPanel>
 
-						<StackPanel Orientation="Horizontal"  Grid.Row="4">
-							<TextBlock Margin="5" >Автозаполнение:</TextBlock>
-							<CheckBox Margin="5" IsChecked="{Binding IsAutoReplaceEnabled}"></CheckBox>
-						</StackPanel>
-					</Grid>
-				</Border>
+						    <StackPanel Orientation="Horizontal"  Grid.Row="4">
+							    <TextBlock Margin="5" >Автозаполнение:</TextBlock>
+							    <CheckBox Margin="5" IsChecked="{Binding IsAutoReplaceEnabled}"></CheckBox>
+						    </StackPanel>
+					    </Grid>
+				    </Border>
 
-				<Border Classes="borderContainer">
-					<Grid Margin="5" RowDefinitions ="*,*,*,*,*" ColumnDefinitions="*,2*">
-						<TextBlock Grid.Row="0" Grid.Column="0" Margin="5" >ФИО исполнителя:</TextBlock>
-						<TextBox Grid.Row="0" Grid.Column="1" Margin="5"
-                                Text="{Binding Path=CurrentReport.FIOexecutor.Value}"></TextBox>
-						<TextBlock Grid.Row="1" Grid.Column="0" Margin="5" >Должность:</TextBlock>
-						<TextBox Grid.Row="1" Grid.Column="1" Margin="5"
-                                Text="{Binding Path=CurrentReport.GradeExecutor.Value}" ></TextBox>
-						<TextBlock Grid.Row="2" Grid.Column="0" Margin="5" >Телефон:</TextBlock>
-						<TextBox Grid.Row="2" Grid.Column="1" Margin="5"
-                                Text="{Binding Path=CurrentReport.ExecPhone.Value}"></TextBox>
-						<TextBlock Grid.Row="3" Grid.Column="0" Margin="5" >Электронная почта:</TextBlock>
-						<TextBox Grid.Row="3" Grid.Column="1" Margin="5"
-                                Text="{Binding Path=CurrentReport.ExecEmail.Value}"></TextBox>
-						<Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Click="CopyExecutorData_Click">Скопировать данные предыдущей формы</Button>
-					</Grid>
-				</Border>
-                <Button Command="{Binding SourceTransmissionAll}"> Перевести все РВ в РАО</Button>
+				    <Border Classes="borderContainer">
+					    <Grid Margin="5" RowDefinitions ="*,*,*,*,*" ColumnDefinitions="*,2*">
+						    <TextBlock Grid.Row="0" Grid.Column="0" Margin="5" >ФИО исполнителя:</TextBlock>
+						    <TextBox Grid.Row="0" Grid.Column="1" Margin="5"
+                                    Text="{Binding Path=CurrentReport.FIOexecutor.Value}"></TextBox>
+						    <TextBlock Grid.Row="1" Grid.Column="0" Margin="5" >Должность:</TextBlock>
+						    <TextBox Grid.Row="1" Grid.Column="1" Margin="5"
+                                    Text="{Binding Path=CurrentReport.GradeExecutor.Value}" ></TextBox>
+						    <TextBlock Grid.Row="2" Grid.Column="0" Margin="5" >Телефон:</TextBlock>
+						    <TextBox Grid.Row="2" Grid.Column="1" Margin="5"
+                                    Text="{Binding Path=CurrentReport.ExecPhone.Value}"></TextBox>
+						    <TextBlock Grid.Row="3" Grid.Column="0" Margin="5" >Электронная почта:</TextBlock>
+						    <TextBox Grid.Row="3" Grid.Column="1" Margin="5"
+                                    Text="{Binding Path=CurrentReport.ExecEmail.Value}"></TextBox>
+						    <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Click="CopyExecutorData_Click">Скопировать данные предыдущей формы</Button>
+					    </Grid>
+				    </Border>
+                    <Button Command="{Binding SourceTransmissionAll}"> Перевести все РВ в РАО</Button>
 
-			</WrapPanel>
+			    </WrapPanel>
+		    </Expander>
 
-			<ScrollViewer Classes="tableScrollViewer" Grid.Row="2">
+			<ScrollViewer Classes="tableScrollViewer" Grid.Row="1">
 				<Grid RowDefinitions="Auto,*" ColumnDefinitions="Auto">
                     <Grid.ContextMenu>
                         <ContextMenu>
@@ -405,7 +404,7 @@
 				</Grid>
 			</ScrollViewer>
 
-            <Grid Grid.Row="3"
+            <Grid Grid.Row="2"
                   Classes="pageControlContainer"
                   RowDefinitions="Auto,Auto"
                   ColumnDefinitions="Auto,Auto,Auto,Auto">
@@ -436,46 +435,51 @@
 					Grid.Row="1" Grid.Column="3" Margin="5"/>
 			</Grid>
 
-            <StackPanel Grid.Row="4" Classes="notesContainer"
-                        IsVisible="{Binding IsFooterExpanded}">
-				<StackPanel.ContextMenu>
-					<ContextMenu>
-						<MenuItem Header="Добавить строку"
-								  Command="{Binding AddNote}"/>
-						<MenuItem Header="Добавить N строк"
-								  Command="{Binding AddNotes}"/>
-						<MenuItem Header="Копировать"
-								  Command="{Binding CopyNotes}"
-								  CommandParameter="{Binding SelectedNotes}"/>
-						<MenuItem Header="Вставить"
-								  Command="{Binding PasteNotes}"/>
-						<MenuItem Header="Удалить выбранные строчки"
-								  Command="{Binding DeleteNotes}"
-								  CommandParameter="{Binding SelectedNotes}"/>
-					</ContextMenu>
-				</StackPanel.ContextMenu>
-				<TextBlock Margin="5">Примечания</TextBlock>
-                <DataGrid Classes="notesTable"
-                          Items="{Binding NoteList}"
-                          SelectedItem="{Binding SelectedNote}">
-					<interactivity:Interaction.Behaviors>
-						<local:DataGridDragSelectionBehavior/>
-						<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
-					</interactivity:Interaction.Behaviors>
-                    <DataGrid.Columns>
-						<DataGridTextColumn Width="80"
-											Header="№ строки"
-											Binding="{Binding RowNumber.Value}"/>
-						<DataGridTextColumn Width="80"
-											Header="№ графы"
-											Binding="{Binding GraphNumber.Value}"/>
-						<DataGridTextColumn Width="*" 
-											Header="Пояснения"
-											Binding="{Binding Comment.Value}"/>
-					</DataGrid.Columns>
-				</DataGrid>
-			</StackPanel>
+			<Expander Grid.Row ="3"
+					  IsExpanded="True"
+					  ExpandDirection="Up">
+				<Expander.Header>
+					Скрыть/Раскрыть нижнюю панель
+				</Expander.Header>
+                <StackPanel Classes="notesContainer">
+				    <StackPanel.ContextMenu>
+					    <ContextMenu>
+						    <MenuItem Header="Добавить строку"
+								      Command="{Binding AddNote}"/>
+						    <MenuItem Header="Добавить N строк"
+								      Command="{Binding AddNotes}"/>
+						    <MenuItem Header="Копировать"
+								      Command="{Binding CopyNotes}"
+								      CommandParameter="{Binding SelectedNotes}"/>
+						    <MenuItem Header="Вставить"
+								      Command="{Binding PasteNotes}"/>
+						    <MenuItem Header="Удалить выбранные строчки"
+								      Command="{Binding DeleteNotes}"
+								      CommandParameter="{Binding SelectedNotes}"/>
+					    </ContextMenu>
+				    </StackPanel.ContextMenu>
+				    <TextBlock Margin="5">Примечания</TextBlock>
+                    <DataGrid Classes="notesTable"
+                              Items="{Binding NoteList}"
+                              SelectedItem="{Binding SelectedNote}">
+					    <interactivity:Interaction.Behaviors>
+						    <local:DataGridDragSelectionBehavior/>
+						    <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
+					    </interactivity:Interaction.Behaviors>
+                        <DataGrid.Columns>
+						    <DataGridTextColumn Width="80"
+											    Header="№ строки"
+											    Binding="{Binding RowNumber.Value}"/>
+						    <DataGridTextColumn Width="80"
+											    Header="№ графы"
+											    Binding="{Binding GraphNumber.Value}"/>
+						    <DataGridTextColumn Width="*" 
+											    Header="Пояснения"
+											    Binding="{Binding Comment.Value}"/>
+					    </DataGrid.Columns>
+				    </DataGrid>
+			    </StackPanel>
+			</Expander>
 
-            <CheckBox Classes="hideButton" Grid.Row ="5" IsChecked ="{Binding IsFooterExpanded}">Раскрыть/Скрыть нижнюю панель</CheckBox>
 		</Grid>
 </Window>
