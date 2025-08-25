@@ -71,7 +71,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-    protected ObservableCollection<Form> _selectedForms = [];
+    protected ObservableCollection<Form> _selectedForms = new ObservableCollection<Form>();
     public ObservableCollection<Form> SelectedForms
     {
         get => _selectedForms;
@@ -80,6 +80,29 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             if (_selectedForms != value)
             {
                 _selectedForms = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+    protected Note _selectedNote;
+    public Note SelectedNote
+    {
+        get => _selectedNote;
+        set
+        {
+            _selectedNote = value;
+            OnPropertyChanged();
+        }
+    }
+    protected ObservableCollection<Note> _selectedNotes = new ObservableCollection<Note>();
+    public ObservableCollection<Note> SelectedNotes
+    {
+        get => _selectedNotes;
+        set
+        {
+            if (_selectedNotes != value)
+            {
+                _selectedNotes = value;
                 OnPropertyChanged();
             }
         }
@@ -155,28 +178,6 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
-    protected bool _isHeaderExpanded = true;
-    public bool IsHeaderExpanded
-    {
-        get => _isHeaderExpanded;
-        set
-        {
-            _isHeaderExpanded = value;
-            OnPropertyChanged();
-        }
-    }
-
-    protected bool _isFooterExpanded = true;
-    public bool IsFooterExpanded
-    {
-        get => _isFooterExpanded;
-        set
-        {
-            _isFooterExpanded = value;
-            OnPropertyChanged();
-        }
-    }
-
     #endregion
 
     #region Constructors
@@ -208,6 +209,11 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand CopyRows => new NewCopyRowsAsyncCommand();
     public ICommand PasteRows => new NewPasteRowsAsyncCommand(this);
     public ICommand SelectAll => new SelectAllRowsAsyncCommand(this);
+    public ICommand AddNote => new NewAddNoteAsyncCommand(this);
+    public ICommand AddNotes => new NewAddNotesAsyncCommand(this);
+    public ICommand CopyNotes => new NewCopyNotesAsyncCommand();
+    public ICommand PasteNotes => new NewPasteNotesAsyncCommand(this);
+    public ICommand DeleteNotes => new NewDeleteNoteAsyncCommand(this);
 
     #endregion
 

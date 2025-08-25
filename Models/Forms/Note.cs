@@ -1,15 +1,16 @@
-﻿using System;
+﻿using Models.Attributes;
+using Models.Collections;
+using Models.Forms.DataAccess;
+using Models.Interfaces;
+using OfficeOpenXml;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Models.Attributes;
-using Models.Collections;
-using Models.Forms.DataAccess;
-using Models.Interfaces;
-using OfficeOpenXml;
+using System.Security.AccessControl;
 
 namespace Models.Forms;
 
@@ -192,12 +193,24 @@ public class Note : IKey, IDataGridColumn
 
     #endregion
 
+    #region ConvertToTSVstring
+    public string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        var str =
+            $"{RowNumber.Value}\t" +
+            $"{GraphNumber.Value}\t" +
+            $"{Comment.Value}";
+        return str;
+    }
+    #endregion
+
     //Для валидации
     //public bool Object_Validation() => true;
     //Для валидации
 
     #region PropertyChanged
-    
+
     protected void OnPropertyChanged([CallerMemberName] string prop = "")
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));

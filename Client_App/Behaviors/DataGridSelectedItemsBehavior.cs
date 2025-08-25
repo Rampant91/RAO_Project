@@ -83,10 +83,7 @@ public class DataGridSelectedItemsBehavior : Behavior<DataGrid>
             SelectedItems.Clear();
             foreach (var item in AssociatedObject.SelectedItems)
             {
-                if (item is Form12 form)
-                {
-                    SelectedItems.Add(form);
-                }
+                SelectedItems.Add(item);
             }
         }
         finally
