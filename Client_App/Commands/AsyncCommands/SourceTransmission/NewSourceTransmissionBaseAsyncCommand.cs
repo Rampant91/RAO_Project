@@ -1,6 +1,4 @@
-﻿using Client_App.ViewModels;
-using Client_App.ViewModels.Forms;
-using Client_App.ViewModels.Forms.Forms1;
+﻿using Client_App.ViewModels.Forms;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -17,9 +15,9 @@ namespace Client_App.Commands.AsyncCommands.SourceTransmission;
 
 public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 {
-    private protected Reports SelectedReports => FormVM.CurrentReports;
+    private protected Reports SelectedReports => FormVM.Reports;
 
-    private protected Report SelectedReport => FormVM.CurrentReport;
+    private protected Report SelectedReport => FormVM.Report;
 
     protected BaseFormVM FormVM = null!;
 

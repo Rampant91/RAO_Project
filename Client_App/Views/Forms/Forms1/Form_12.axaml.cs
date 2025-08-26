@@ -44,7 +44,7 @@ public partial class Form_12 : BaseWindow<Form_12VM>
     {
         InitializeComponent();
         DataContext = vm;
-        //Closing += OnStandardClosing;
+        Closing += OnStandardClosing;
     }
     private void InitializeComponent()
     {
@@ -66,7 +66,7 @@ public partial class Form_12 : BaseWindow<Form_12VM>
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
-        if (DataContext is not ChangeOrCreateVM vm) return;
+        if (DataContext is not Form_12VM vm) return;
         try
         {
             await RemoveEmptyForms(vm);
@@ -137,42 +137,42 @@ public partial class Form_12 : BaseWindow<Form_12VM>
                 new SortFormSyncCommand(vm).Execute(null);
                 await dbm.SaveChangesAsync();
 
-                var lst = vm.Storage[vm.FormType];
+                var lst = vm.Report[vm.FormType];
 
                 foreach (var key in lst)
                 {
                     var item = (Form)key;
                     if (item.Id == 0)
                     {
-                        vm.Storage[vm.Storage.FormNum_DB].Remove(item);
+                        vm.Report[vm.Report.FormNum_DB].Remove(item);
                     }
                 }
 
-                var lstNote = vm.Storage.Notes.ToList<Note>();
+                var lstNote = vm.Report.Notes.ToList<Note>();
                 foreach (var item in lstNote.Where(item => item.Id == 0))
                 {
-                    vm.Storage.Notes.Remove(item);
+                    vm.Report.Notes.Remove(item);
                 }
 
                 if (vm.FormType is not "1.0" and not "2.0")
                 {
                     if (vm.FormType.Split('.')[0] == "1")
                     {
-                        vm.Storage.OnPropertyChanged(nameof(vm.Storage.StartPeriod));
-                        vm.Storage.OnPropertyChanged(nameof(vm.Storage.EndPeriod));
-                        vm.Storage.OnPropertyChanged(nameof(vm.Storage.CorrectionNumber));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.StartPeriod));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.EndPeriod));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
                     }
                     else if (vm.FormType.Split('.')[0] == "2")
                     {
-                        vm.Storage.OnPropertyChanged(nameof(vm.Storage.Year));
-                        vm.Storage.OnPropertyChanged(nameof(vm.Storage.CorrectionNumber));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.Year));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
                     }
                 }
                 else
                 {
-                    vm.Storage.OnPropertyChanged(nameof(vm.Storage.RegNoRep));
-                    vm.Storage.OnPropertyChanged(nameof(vm.Storage.ShortJurLicoRep));
-                    vm.Storage.OnPropertyChanged(nameof(vm.Storage.OkpoRep));
+                    vm.Report.OnPropertyChanged(nameof(vm.Report.RegNoRep));
+                    vm.Report.OnPropertyChanged(nameof(vm.Report.ShortJurLicoRep));
+                    vm.Report.OnPropertyChanged(nameof(vm.Report.OkpoRep));
                 }
 
                 break;
@@ -193,13 +193,13 @@ public partial class Form_12 : BaseWindow<Form_12VM>
     /// </summary>
     /// <param name="vm">Модель открытого отчёта.</param>
     /// <returns>Сообщение о наличии пересечения.</returns>
-    private static async Task CheckPeriod(ChangeOrCreateVM vm)
+    private static async Task CheckPeriod(Form_12VM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
-        if (vm.Storage.FormNum_DB is "1.0" or "2.0") return;
-        var reps = vm.Storages;
+        if (vm.Report.FormNum_DB is "1.0" or "2.0") return;
+        var reps = vm.Reports;
         var reportCollection = reps.Report_Collection;
-        var rep = vm.Storage;
+        var rep = vm.Report;
         if (DateOnly.TryParse(rep.StartPeriod_DB, out var startPeriod)
             && DateOnly.TryParse(rep.EndPeriod_DB, out var endPeriod))
         {
@@ -245,14 +245,13 @@ public partial class Form_12 : BaseWindow<Form_12VM>
     /// </summary>
     /// <param name="vm">Модель открытого отчёта.</param>
     /// <returns>Сообщение с предложением удалить пустые строчки.</returns>
-    private static async Task RemoveEmptyForms(ChangeOrCreateVM vm)
+    private static async Task RemoveEmptyForms(Form_12VM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
         List<Form> formToDeleteList = [];
-        var lst = vm.Storage[vm.FormType];
-        foreach (var key in lst)
+        var lst = vm.Report[vm.FormType].ToList<Form12>();
+        foreach (var form in lst)
         {
-            var form = (Form12)key;
             if (string.IsNullOrWhiteSpace(form.OperationCode_DB)
                 && string.IsNullOrWhiteSpace(form.OperationDate_DB)
                 && string.IsNullOrWhiteSpace(form.PassportNumber_DB)
@@ -305,11 +304,12 @@ public partial class Form_12 : BaseWindow<Form_12VM>
                 await using var db = new DBModel(StaticConfiguration.DBPath);
                 foreach (var form in formToDeleteList)
                 {
-                    vm.Storage.Rows.Remove(form);
+                    vm.Report.Rows.Remove(form);
                 }
+                
                 var minItem = formToDeleteList.Min(x => x.Order);
-                await vm.Storage.SortAsync();
-                var itemQ = vm.Storage.Rows
+                await vm.Report.SortAsync();
+                var itemQ = vm.Report.Rows
                     .GetEnumerable()
                     .Where(x => x.Order > minItem)
                     .Select(x => (Form)x)

@@ -1,19 +1,11 @@
 ﻿using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.ViewModels.Forms;
-using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Messages;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Models.Collections;
 using Models.Forms;
-using Models.Forms.Form1;
-using ReactiveUI;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.Add;
@@ -24,7 +16,7 @@ namespace Client_App.Commands.AsyncCommands.Add;
 /// <param name="formVM">ViewModel отчёта.</param>
 public class NewAddRowsInAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
-    private Report Storage => formVM.CurrentReport;
+    private Report Storage => formVM.Report;
     private string FormType => formVM.FormType;
 
 

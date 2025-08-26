@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Client_App.Commands.AsyncCommands.Save;
 
 namespace Client_App.ViewModels.Forms;
 
@@ -24,9 +25,9 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         get
         {
             return $"Форма {FormType} :  "
-                   + $"{CurrentReports.Master_DB.RegNoRep.Value}  "
-                   + $"{CurrentReports.Master_DB.ShortJurLicoRep.Value}  "
-                   + $"{CurrentReports.Master_DB.OkpoRep.Value}";
+                   + $"{Reports.Master_DB.RegNoRep.Value}  "
+                   + $"{Reports.Master_DB.ShortJurLicoRep.Value}  "
+                   + $"{Reports.Master_DB.OkpoRep.Value}";
         }
     }
     protected ObservableCollection<Form> _formList = [];
@@ -49,17 +50,56 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-    protected Report _currentReport;
-    public Report CurrentReport
+
+    #region Report
+
+    protected Report _report;
+    public Report Report
     {
-        get => _currentReport;
+        get => _report;
         set
         {
-            _currentReport = value;
+            _report = value;
             OnPropertyChanged();
         }
     }
-    public Reports CurrentReports => _currentReport.Reports;
+
+    #endregion
+
+    #region Reports
+
+    private Reports _reports;
+    public Reports Reports
+    {
+        get => _reports;
+        set
+        {
+            if (_reports != value)
+            {
+                _reports = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+    #endregion
+
+    #region DBO
+
+    private DBObservable _DBO;
+    public DBObservable DBO
+    {
+        get => _DBO;
+        set
+        {
+            if (_DBO != value)
+            {
+                _DBO = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    #endregion
 
     protected Form _selectedForm;
     public Form SelectedForm
@@ -71,7 +111,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-    protected ObservableCollection<Form> _selectedForms = new ObservableCollection<Form>();
+    protected ObservableCollection<Form> _selectedForms = [];
     public ObservableCollection<Form> SelectedForms
     {
         get => _selectedForms;
@@ -94,7 +134,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-    protected ObservableCollection<Note> _selectedNotes = new ObservableCollection<Note>();
+    protected ObservableCollection<Note> _selectedNotes = [];
     public ObservableCollection<Note> SelectedNotes
     {
         get => _selectedNotes;
@@ -155,14 +195,14 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     {
         get
         {
-            var result = CurrentReport.Rows.Count / RowCount;
-            if (CurrentReport.Rows.Count % RowCount != 0)
+            var result = Report.Rows.Count / RowCount;
+            if (Report.Rows.Count % RowCount != 0)
                 result++;
             return result;
         }
 
     }
-    public int TotalRows => CurrentReport.Rows.Count;
+    public int TotalRows => Report.Rows.Count;
 
     protected bool _isAutoReplaceEnabled = true;
     public bool IsAutoReplaceEnabled
@@ -173,7 +213,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             if (_isAutoReplaceEnabled != value)
             {
                 _isAutoReplaceEnabled = value;
-                CurrentReport.AutoReplace = value;
+                Report.AutoReplace = value;
                 OnPropertyChanged();
             }
         }
@@ -185,10 +225,12 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public BaseFormVM() { }
     public BaseFormVM(Report report)
     {
-        _currentReport = report;
+        _report = report;
+        _reports = report.Reports;
+        //_DBO = report.Reports.DBObservable;
         UpdateFormList();
         UpdatePageInfo();
-        NoteList = CurrentReport.Notes;
+        NoteList = Report.Notes;
 
     }
 
@@ -209,6 +251,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand CopyRows => new NewCopyRowsAsyncCommand();
     public ICommand PasteRows => new NewPasteRowsAsyncCommand(this);
     public ICommand SelectAll => new SelectAllRowsAsyncCommand(this);
+    public ICommand SaveReport => new SaveReportAsyncCommand(this);
     public ICommand AddNote => new NewAddNoteAsyncCommand(this);
     public ICommand AddNotes => new NewAddNotesAsyncCommand(this);
     public ICommand CopyNotes => new NewCopyNotesAsyncCommand();
@@ -219,7 +262,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
     public async void UpdateFormList()
     {
-        FormList = new ObservableCollection<Form>(CurrentReport.Rows.ToList<Form>().Skip((CurrentPage - 1) * RowCount).Take(RowCount)); //Нужна оптимизация
+        FormList = new ObservableCollection<Form>(Report.Rows.ToList<Form>().Skip((CurrentPage - 1) * RowCount).Take(RowCount)); //Нужна оптимизация
     }
     public async void UpdatePageInfo()
     {

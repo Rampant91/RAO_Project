@@ -2,14 +2,9 @@
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels.Forms;
-using Client_App.ViewModels.Forms.Forms1;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
-using Models.Forms.Form1;
-using System;
 using System.Threading.Tasks;
-using Client_App.Views;
-using Client_App.Views.Forms;
 using Models.Forms;
 
 namespace Client_App.Commands.AsyncCommands;
@@ -20,7 +15,7 @@ namespace Client_App.Commands.AsyncCommands;
 public class NewPasteNotesAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
     //После обновления версии Авалонии нужно будет добавить вставку в формате html
-    private Report Storage => formVM.CurrentReport;
+    private Report Storage => formVM.Report;
     private Note SelectedNote => formVM.SelectedNote;
     public override async Task AsyncExecute(object? parameter)
     {
@@ -39,7 +34,7 @@ public class NewPasteNotesAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             parsedRows[i] = rows[i].Split('\t');
         }
 
-        int start = formVM.CurrentReport.Notes.IndexOf(SelectedNote);
+        int start = formVM.Report.Notes.IndexOf(SelectedNote);
 
         if (start + parsedRows.Length > Storage.Notes.Count)
         {

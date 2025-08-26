@@ -2,14 +2,11 @@
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels.Forms;
-using Client_App.ViewModels.Forms.Forms1;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
 using Models.Forms.Form1;
 using System;
 using System.Threading.Tasks;
-using Client_App.Views;
-using Client_App.Views.Forms;
 using Models.Forms;
 
 namespace Client_App.Commands.AsyncCommands;
@@ -21,7 +18,7 @@ namespace Client_App.Commands.AsyncCommands;
 public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
     //После обновления версии Авалонии нужно будет добавить вставку в формате html
-    private Report Storage => formVM.CurrentReport;
+    private Report Storage => formVM.Report;
     private Form SelectedForm => formVM.SelectedForm;
     private string FormType => formVM.FormType;
     public override async Task AsyncExecute(object? parameter)

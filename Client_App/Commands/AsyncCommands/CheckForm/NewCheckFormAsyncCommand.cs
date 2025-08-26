@@ -1,14 +1,10 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
-using Client_App.ViewModels;
 using Client_App.ViewModels.Forms;
-using Client_App.ViewModels.Forms.Forms1;
 using MessageBox.Avalonia.DTO;
-using Microsoft.EntityFrameworkCore;
 using Models.CheckForm;
 using Models.DBRealization;
-using Client_App.ViewModels.Forms.Forms1;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,8 +36,8 @@ public class NewCheckFormAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     {
         var cts = new CancellationTokenSource();
 
-        var reps = formVM.CurrentReports;
-        var rep = formVM.CurrentReport;
+        var reps = formVM.Reports;
+        var rep = formVM.Report;
 
         await using var db = new DBModel(StaticConfiguration.DBPath);
         List<CheckError> result = [];

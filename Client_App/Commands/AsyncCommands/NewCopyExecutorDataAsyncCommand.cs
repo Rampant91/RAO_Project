@@ -4,7 +4,6 @@ using MessageBox.Avalonia.Enums;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Client_App.ViewModels;
 using Models.Collections;
 using Avalonia.Threading;
 using Client_App.ViewModels.Forms.Forms1;
@@ -15,7 +14,7 @@ namespace Client_App.Commands.AsyncCommands;
 public class NewCopyExecutorDataAsyncCommand(Form_12VM formVM) : BaseAsyncCommand
 {
     
-    private Report Storage => formVM.CurrentReport;
+    private Report Storage => formVM.Report;
     private Reports Storages => Storage.Reports;
     private string FormType => formVM.FormType;
     public override bool CanExecute(object? parameter) => true;

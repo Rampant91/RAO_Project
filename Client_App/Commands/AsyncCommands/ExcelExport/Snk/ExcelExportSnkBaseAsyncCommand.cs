@@ -342,6 +342,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                     ShortFormDTO? lastForm;
                     if (filteredDictionary
                             .SelectMany(x => x.Value)
+                            .Where(x => x.OpCode != "10")
                             .Count(x => x.OpDate == lastOpDate) > 1)
                     {
                         lastForm = filteredDictionary

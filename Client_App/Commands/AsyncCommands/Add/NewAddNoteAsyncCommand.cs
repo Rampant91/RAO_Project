@@ -1,5 +1,4 @@
-﻿using Client_App.ViewModels;
-using Client_App.ViewModels.Forms;
+﻿using Client_App.ViewModels.Forms;
 using Models.Collections;
 using Models.Forms;
 using Models.Interfaces;
@@ -13,7 +12,7 @@ namespace Client_App.Commands.AsyncCommands.Add;
 /// <param name="formVM">ViewModel отчёта.</param>
 public class NewAddNoteAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
-    private Report Storage => formVM.CurrentReport;
+    private Report Storage => formVM.Report;
 
     public override async Task AsyncExecute(object? parameter)
     {

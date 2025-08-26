@@ -1,6 +1,4 @@
-﻿using Client_App.ViewModels;
-using Client_App.ViewModels.Forms;
-using Client_App.ViewModels.Forms.Forms1;
+﻿using Client_App.ViewModels.Forms;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form2;
@@ -10,7 +8,7 @@ namespace Client_App.Commands.SyncCommands;
 
 public class NewSortFormSyncCommand(BaseFormVM formVM) : BaseCommand
 {
-    private Report Storage => formVM.CurrentReport;
+    private Report Storage => formVM.Report;
 
     public override bool CanExecute(object? parameter) => true;
 

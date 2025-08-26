@@ -37,10 +37,10 @@ public class NewCheckFormVM : BaseVM, INotifyPropertyChanged
     private string _titleName;
     public string TitleName
     {
-        get => $"Проверка_формы_{FormVM.CurrentReports.Master_DB.RegNoRep.Value}_" +
-               $"{FormVM.CurrentReports.Master_DB.OkpoRep.Value}_" +
-               $"{FormVM.CurrentReport.FormNum_DB}_" +
-               ((FormVM.CurrentReport.FormNum_DB[..1] == "2") ? $"{FormVM.CurrentReport.Year_DB}" : $"{FormVM.CurrentReport.StartPeriod_DB}-{FormVM.CurrentReport.EndPeriod_DB}");
+        get => $"Проверка_формы_{FormVM.Reports.Master_DB.RegNoRep.Value}_" +
+               $"{FormVM.Reports.Master_DB.OkpoRep.Value}_" +
+               $"{FormVM.Report.FormNum_DB}_" +
+               ((FormVM.Report.FormNum_DB[..1] == "2") ? $"{FormVM.Report.Year_DB}" : $"{FormVM.Report.StartPeriod_DB}-{FormVM.Report.EndPeriod_DB}");
         set
         {
             if (_titleName == value) return;

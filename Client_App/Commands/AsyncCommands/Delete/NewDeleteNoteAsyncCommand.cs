@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;
@@ -19,7 +17,7 @@ namespace Client_App.Commands.AsyncCommands.Delete;
 /// <param name="changeOrCreateViewModel">ViewModel отчёта.</param>
 public class NewDeleteNoteAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
-    private Report Storage => formVM.CurrentReport;
+    private Report Storage => formVM.Report;
 
     public override async Task AsyncExecute(object? parameter)
     {

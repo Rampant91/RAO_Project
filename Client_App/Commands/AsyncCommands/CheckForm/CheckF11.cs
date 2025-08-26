@@ -87,7 +87,7 @@ public abstract partial class CheckF11 : CheckBase
             errorList.AddRange(Check_060(formsList, forms10, currentFormLine));
             errorList.AddRange(Check_061(formsList, forms10, currentFormLine));
             errorList.AddRange(Check_062(formsList, currentFormLine));
-            errorList.AddRange(Check_063(formsList, forms10, currentFormLine));
+            errorList.AddRange(Check_063(formsList, forms10, notes, currentFormLine));
             errorList.AddRange(Check_064(formsList, currentFormLine));
             errorList.AddRange(Check_065(formsList, notes, currentFormLine));
             errorList.AddRange(Check_066(formsList, currentFormLine));
@@ -2381,23 +2381,23 @@ public abstract partial class CheckF11 : CheckBase
     #region Check063
 
     //Код ОКПО поставщика/получателя 8/14 чисел и не равен ОКПО отчитывающейся организации (графа 19)
-    private static List<CheckError> Check_063(List<Form11> forms, List<Form10> forms10, int line)
+    private static List<CheckError> Check_063(List<Form11> forms, List<Form10> forms10, List<Note> notes, int line)
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "66" };
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
-        var providerOrRecieverOkpo = ReplaceNullAndTrim(forms[line].ProviderOrRecieverOKPO_DB);
+        var providerOrRecieverOkpo = ReplaceNullAndTrim(forms[line].ProviderOrRecieverOKPO_DB).ToLower();
         var okpoRepJur = ReplaceNullAndTrim(forms10[0].Okpo_DB);
         var okpoRepTerPodr = ReplaceNullAndTrim(forms10[1].Okpo_DB);
+        string[] correctNotes = ["прим.", "прим", "примечание", "примечания"];
+        const byte graphNumber = 19;
         var repOkpo = okpoRepTerPodr is not ""
             ? okpoRepTerPodr
             : okpoRepJur;
-        if (!applicableOperationCodes.Contains(operationCode) 
-            || providerOrRecieverOkpo.ToLower() is "прим." or "прим" or "примечание") return result;
+        if (!applicableOperationCodes.Contains(operationCode)) return result;
 
-        var valid = OkpoRegex.IsMatch(providerOrRecieverOkpo)
-                     && providerOrRecieverOkpo != repOkpo;
-        if (!valid)
+        if (!(OkpoRegex.IsMatch(providerOrRecieverOkpo) && providerOrRecieverOkpo != repOkpo) 
+            && !correctNotes.Contains(providerOrRecieverOkpo))
         {
             result.Add(new CheckError
             {
@@ -2405,7 +2405,19 @@ public abstract partial class CheckF11 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = providerOrRecieverOkpo,
-                Message = "Для выбранного кода операции указывается код ОКПО организации, осуществившей продление НСС"
+                Message = "Для выбранного кода операции указывается код ОКПО организации, осуществившей продление НСС."
+            });
+        }
+
+        if (!CheckNotePresence(notes, line, graphNumber))
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line + 1).ToString(),
+                Column = "ProviderOrRecieverOKPO_DB",
+                Value = providerOrRecieverOkpo,
+                Message = "В примечаниях к данной ячейке необходимо указать ОКПО, ИНН и наименование организации."
             });
         }
         return result;

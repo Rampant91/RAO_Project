@@ -51,6 +51,64 @@ public partial class Form_10 : BaseWindow<Form_10VM>
             ServiceExtension.LoggerManager.Error(msg);
         }
 
+        var jurForm10 = vm.Storage.Rows10[0];
+        var obForm10 = vm.Storage.Rows10[1];
+
+        if ((!string.IsNullOrWhiteSpace(jurForm10.SubjectRF_DB)
+            || !string.IsNullOrWhiteSpace(jurForm10.JurLico_DB)
+            || !string.IsNullOrWhiteSpace(jurForm10.ShortJurLico_DB)
+            || !string.IsNullOrWhiteSpace(jurForm10.JurLicoAddress_DB)
+            || !string.IsNullOrWhiteSpace(jurForm10.JurLicoFactAddress_DB)
+            || !string.IsNullOrWhiteSpace(jurForm10.GradeFIO_DB)
+            || !string.IsNullOrWhiteSpace(jurForm10.Okpo_DB)
+            || !string.IsNullOrWhiteSpace(jurForm10.Okved_DB)
+            || !string.IsNullOrWhiteSpace(jurForm10.Okogu_DB)
+            || !string.IsNullOrWhiteSpace(jurForm10.Oktmo_DB)
+            || !string.IsNullOrWhiteSpace(jurForm10.Inn_DB)
+            || !string.IsNullOrWhiteSpace(jurForm10.Kpp_DB)
+            || !string.IsNullOrWhiteSpace(jurForm10.Okopf_DB)
+            || !string.IsNullOrWhiteSpace(jurForm10.Okfs_DB))
+            && (string.IsNullOrWhiteSpace(jurForm10.SubjectRF_DB)
+                || string.IsNullOrWhiteSpace(jurForm10.JurLico_DB)
+                || string.IsNullOrWhiteSpace(jurForm10.ShortJurLico_DB)
+                || string.IsNullOrWhiteSpace(jurForm10.JurLicoAddress_DB)
+                || string.IsNullOrWhiteSpace(jurForm10.JurLicoFactAddress_DB)
+                || string.IsNullOrWhiteSpace(jurForm10.GradeFIO_DB)
+                || string.IsNullOrWhiteSpace(jurForm10.Okpo_DB)
+                || string.IsNullOrWhiteSpace(jurForm10.Okved_DB)
+                || string.IsNullOrWhiteSpace(jurForm10.Okogu_DB)
+                || string.IsNullOrWhiteSpace(jurForm10.Oktmo_DB)
+                || string.IsNullOrWhiteSpace(jurForm10.Inn_DB)
+                || string.IsNullOrWhiteSpace(jurForm10.Kpp_DB)
+                || string.IsNullOrWhiteSpace(jurForm10.Okopf_DB)
+                || string.IsNullOrWhiteSpace(jurForm10.Okfs_DB)))
+        {
+            var answer = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions =
+                    [
+                        new ButtonDefinition { Name = "Да" },
+                        new ButtonDefinition { Name = "Нет" }
+                    ],
+                    ContentTitle = "Форма 1.0",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "При заполнении данных обособленного территориального подразделения, " +
+                                     $"{Environment.NewLine}также необходимо заполнить данные юридического лица. " +
+                                     $"{Environment.NewLine}Вы уверены, что хотите закрыть форму, " +
+                                     $"оставив данные юридического лица незаполненными?",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(desktop.MainWindow));
+
+            if (answer is not "Да")
+            {
+                args.Cancel = true;
+                return;
+            }
+        }
+
         var flag = false;
 
         #region MessageRemoveEmptyForms

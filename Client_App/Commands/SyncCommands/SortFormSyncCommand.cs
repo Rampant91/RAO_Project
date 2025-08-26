@@ -1,27 +1,42 @@
 ﻿using System.Linq;
 using Client_App.ViewModels;
+using Client_App.ViewModels.Forms;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form2;
 
 namespace Client_App.Commands.SyncCommands;
 
-public class SortFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseCommand
+public class SortFormSyncCommand : BaseCommand
 {
-    private Report Storage => changeOrCreateViewModel.Storage;
+    private readonly BaseFormVM? _vm;
+
+    private readonly ChangeOrCreateVM? _changeOrCreateViewModel;
+
+    public SortFormSyncCommand(BaseFormVM vm)
+    {
+        _vm = vm;
+    }
+
+    public SortFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
+    {
+        _changeOrCreateViewModel = changeOrCreateViewModel;
+    }
+
+    private Report Report => _changeOrCreateViewModel is null ? _vm.Report : _changeOrCreateViewModel.Storage;
 
     public override bool CanExecute(object? parameter) => true;
 
     public override void Execute(object? parameter)
     {
-        var formNum = Storage.FormNum_DB;
-        var minItem = (long)(parameter ?? Storage[formNum].GetEnumerable().Min(x => x.Order));
+        var formNum = Report.FormNum_DB;
+        var minItem = (long)(parameter ?? Report[formNum].GetEnumerable().Min(x => x.Order));
         switch (formNum)
         {
             case "2.1":
             {
                 var count = 1;
-                var rows = Storage[formNum]
+                var rows = Report[formNum]
                     .GetEnumerable()
                     .Cast<Form21>()
                     .ToArray();
@@ -36,7 +51,7 @@ public class SortFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Bas
             case "2.2":
             {
                 var count = 1;
-                var rows = Storage[formNum]
+                var rows = Report[formNum]
                     .GetEnumerable()
                     .Cast<Form22>()
                     .ToArray();
@@ -50,8 +65,8 @@ public class SortFormSyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Bas
             }
             default:
             {
-                Storage.Sort();
-                var itemQ = Storage.Rows
+                Report.Sort();
+                var itemQ = Report.Rows
                     .GetEnumerable()
                     .Where(x => x.Order >= minItem)
                     .Select(x => (Form)x)
