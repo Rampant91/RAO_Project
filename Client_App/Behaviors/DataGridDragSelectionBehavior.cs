@@ -49,15 +49,18 @@ public class DataGridDragSelectionBehavior : Behavior<DataGrid>
 
     private void DataGrid_PointerPressed(object sender, DataGridCellPointerPressedEventArgs e)
     {
-            AssociatedObject.SelectedItems.Clear();
-            var point = e.PointerPressedEventArgs.GetPosition(AssociatedObject);
+            var point = e.PointerPressedEventArgs.GetCurrentPoint(AssociatedObject);
 
+
+        if (point.Properties.IsLeftButtonPressed)
+        {
             _isSelecting = true;
 
+            AssociatedObject.SelectedItems.Clear();
             // Захватываем указатель для получения всех событий
             AssociatedObject.CapturePointer(e.PointerPressedEventArgs.Pointer);
 
-            var row = GetRowAtPoint(point);
+            var row = GetRowAtPoint(point.Position);
             if (row != null)
             {
                 var item = row.DataContext;
@@ -70,6 +73,7 @@ public class DataGridDragSelectionBehavior : Behavior<DataGrid>
             }
 
             e.PointerPressedEventArgs.Handled = true;
+        }
     }
 
     private void DataGrid_PointerMoved(object sender, PointerEventArgs e)
