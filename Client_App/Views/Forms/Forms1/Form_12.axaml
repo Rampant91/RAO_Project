@@ -20,40 +20,6 @@
 
     <Window.Resources>
 		<converter:DateConverter x:Key="DateConverter"/>
-		
-		<!-- Стиль для Expander без анимации -->
-		<Style x:Key="NoAnimationExpander" TargetType="Expander">
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="Expander">
-						<Border Background="{TemplateBinding Background}"
-								BorderBrush="{TemplateBinding BorderBrush}"
-								BorderThickness="{TemplateBinding BorderThickness}">
-							<Grid>
-								<Grid.RowDefinitions>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="*"/>
-								</Grid.RowDefinitions>
-								
-								<!-- Заголовок -->
-								<ToggleButton x:Name="PART_toggle"
-											  Grid.Row="0"
-											  IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-											  Content="{TemplateBinding Header}"
-											  HorizontalAlignment="Stretch"
-											  HorizontalContentAlignment="Left"/>
-								
-								<!-- Содержимое без анимации -->
-								<ContentPresenter x:Name="PART_content"
-												  Grid.Row="1"
-												  Content="{TemplateBinding Content}"
-												  IsVisible="{TemplateBinding IsExpanded}"/>
-							</Grid>
-						</Border>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
     </Window.Resources>
 
     <Design.DataContext>
@@ -70,8 +36,7 @@
 			</Grid.RowDefinitions>
 			
 			<Expander Grid.Row ="0"
-					  IsExpanded="True"
-					  Style="{StaticResource NoAnimationExpander}">
+					  IsExpanded="True">
 				<Expander.Header>
 					Скрыть/Раскрыть верхнюю панель
 				</Expander.Header>
@@ -478,8 +443,7 @@
 
 			<Expander Grid.Row ="3"
 					  IsExpanded="True"
-					  ExpandDirection="Up"
-					  Style="{StaticResource NoAnimationExpander}">
+					  ExpandDirection="Up">
 				<Expander.Header>
 					Скрыть/Раскрыть нижнюю панель
 				</Expander.Header>
