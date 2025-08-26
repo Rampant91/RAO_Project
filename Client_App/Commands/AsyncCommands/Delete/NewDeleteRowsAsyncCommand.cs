@@ -1,8 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
-using Client_App.ViewModels;
 using Client_App.ViewModels.Forms;
-using Client_App.ViewModels.Forms.Forms1;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;
@@ -20,7 +18,7 @@ namespace Client_App.Commands.AsyncCommands.Delete;
 /// <param name="changeOrCreateViewModel">ViewModel отчёта.</param>
 public class NewDeleteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
-    private Report Storage => formVM.CurrentReport;
+    private Report Storage => formVM.Report;
 
     public override async Task AsyncExecute(object? parameter)
     {

@@ -20,7 +20,11 @@ public class Form_12VM : BaseFormVM
     public Form12 SelectedForm12
     {
         get => SelectedForm as Form12;
-        set => SelectedForm = value;
+        set
+        {
+            SelectedForm = value;
+            UpdateFormList();
+        }
     }
 
     #region Constructors
@@ -31,7 +35,7 @@ public class Form_12VM : BaseFormVM
 
     #endregion
 
-    #region Override pagination properties to ensure our UpdateFormList is called
+    #region RowCount
 
     public new int RowCount
     {
@@ -63,7 +67,7 @@ public class Form_12VM : BaseFormVM
 
     #endregion
 
-    #region Override UpdateFormList to notify Form12-specific properties
+    #region UpdateFormList
 
     public new async void UpdateFormList()
     {

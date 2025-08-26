@@ -1,15 +1,12 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Client_App.ViewModels;
 using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Messages;
 using Models.Collections;
 using Models.Forms;
 using Models.Interfaces;
-using ReactiveUI;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.Add;
@@ -20,7 +17,7 @@ namespace Client_App.Commands.AsyncCommands.Add;
 /// <param name="formVM">ViewModel отчёта.</param>
 public class NewAddNotesAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
-    private Report Storage => formVM.CurrentReport;
+    private Report Storage => formVM.Report;
 
     public override async Task AsyncExecute(object? parameter)
     {

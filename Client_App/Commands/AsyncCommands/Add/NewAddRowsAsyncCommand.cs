@@ -2,14 +2,12 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.ViewModels.Forms;
-using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Messages;
 using Models.Collections;
 using Models.Forms;
 using Models.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.Add;
@@ -20,7 +18,7 @@ namespace Client_App.Commands.AsyncCommands.Add;
 /// <param name="changeOrCreateViewModel">ViewModel отчёта.</param>
 public class NewAddRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
-    private Report Storage => formVM.CurrentReport;
+    private Report Storage => formVM.Report;
     private string FormType => formVM.FormType;
 
     public override async Task AsyncExecute(object? parameter)
@@ -49,7 +47,7 @@ public class NewAddRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                 number++;
             }
             var formContainRowAtStart = Storage.Rows.Count > 0;
-            formVM.CurrentReport.Rows.AddRange(lst);
+            formVM.Report.Rows.AddRange(lst);
             if (!formContainRowAtStart)
             {
                 await new SaveReportAsyncCommand(formVM).AsyncExecute(null);

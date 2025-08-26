@@ -55,7 +55,7 @@ public abstract class CheckF12 : CheckBase
             errorList.AddRange(Check_029(formsList, forms10, currentFormLine));
             errorList.AddRange(Check_030(formsList, currentFormLine));
             errorList.AddRange(Check_031(formsList, notes, currentFormLine));
-            errorList.AddRange(Check_032(formsList, currentFormLine));
+            errorList.AddRange(Check_032(formsList, notes, currentFormLine));
             errorList.AddRange(Check_033(formsList, currentFormLine));
             errorList.AddRange(Check_034(formsList, currentFormLine));
             errorList.AddRange(Check_035(formsList, currentFormLine));
@@ -1012,10 +1012,12 @@ public abstract class CheckF12 : CheckBase
     #region Check032
 
     //Дата выпуска корректно заполнена (графа 9)
-    private static List<CheckError> Check_032(List<Form12> forms, int line)
+    private static List<CheckError> Check_032(List<Form12> forms, List<Note> notes, int line)
     {
-        List<CheckError> result = new();
+        List<CheckError> result = [];
         var creationDate = ReplaceNullAndTrim(forms[line].CreationDate_DB);
+        const byte graphNumber = 9;
+        string[] correctNotes = ["прим.", "прим", "примечание", "примечания"];
         if (creationDate is "" or "-")
         {
             result.Add(new CheckError
@@ -1028,6 +1030,19 @@ public abstract class CheckF12 : CheckBase
                 IsCritical = true
             });
         }
+        else if (correctNotes.Contains(creationDate) 
+                 && !CheckNotePresence(notes, line, graphNumber))
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_12",
+                Row = (line + 1).ToString(),
+                Column = "CreationDate_DB",
+                Value = creationDate,
+                Message = "В таблице примечаний отсутствует примечание.",
+                IsCritical = true
+            });
+        }
         else if (!DateOnly.TryParse(creationDate, out _))
         {
             result.Add(new CheckError
@@ -1037,7 +1052,7 @@ public abstract class CheckF12 : CheckBase
                 Column = "CreationDate_DB",
                 Value = creationDate,
                 Message = "Формат ввода данных не соответствует приказу. Некорректно заполнена дата выпуска.",
-                IsCritical = true
+                IsCritical = !correctNotes.Contains(creationDate)
             });
         }
         return result;

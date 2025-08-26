@@ -5,6 +5,7 @@ using Models.DBRealization;
 using System.Threading.Tasks;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
+using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
 
@@ -23,6 +24,8 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
                         return _form10VM;
                 case "2.0":
                         return _form20VM;
+                case "1.2":
+                    return _formVM;
                 default:
                     return _changeOrCreateVM;
             }
@@ -31,12 +34,13 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
 
     private readonly ChangeOrCreateVM _changeOrCreateVM = null!;
 
+    private readonly BaseFormVM _formVM = null!;
     private readonly Form_10VM _form10VM = null!;
     private readonly Form_20VM _form20VM = null!;
 
     private readonly string _formType = null!;
-    private Report Storage => VM.Storage;
-    private Reports? Storages => VM.Storages;
+    private Report Storage => VM is BaseFormVM ? VM.Report : VM.Storage;
+    private Reports? Storages => VM is BaseFormVM ? VM.Reports : VM.Storages;
 
     public SaveReportAsyncCommand(BaseVM vm)
     {
@@ -49,11 +53,17 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
                 break;
             }
             case Form_20VM form20VM:
-                {
-                    _formType = form20VM.FormType;
-                    _form20VM = form20VM;
-                    break;
-                }
+            {
+                _formType = form20VM.FormType;
+                _form20VM = form20VM;
+                break;
+            }
+            case BaseFormVM formVM:
+            {
+                _formType = formVM.FormType;
+                _formVM = formVM;
+                break;
+            }
             case ChangeOrCreateVM changeOrCreateVM:
             {
                 _formType = changeOrCreateVM.FormType;

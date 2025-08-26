@@ -189,6 +189,13 @@ public abstract class CheckBase : BaseAsyncCommand
 
     #region CheckNotePresence
 
+    /// <summary>
+    /// Проверяет наличие примечаний к ячейке из входных параметров. Возвращает true/false.
+    /// </summary>
+    /// <param name="notes">Список примечаний.</param>
+    /// <param name="line">Номер строчки.</param>
+    /// <param name="graphNumber">Номер графы (колонки).</param>
+    /// <returns>Bool, есть ли примечание к данной ячейке.</returns>
     private protected static bool CheckNotePresence(List<Note> notes, int line, byte graphNumber)
     {
         var valid = false;
