@@ -133,7 +133,8 @@
         <Style Selector="DataGrid.table TextBox">
             <Setter Property="Margin" Value="3"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
+			<Setter Property="IsHitTestVisible" Value="False"/>
+		</Style>
         <Style Selector="DataGrid.table CalendarDatePicker">
             <Setter Property="Margin" Value="3"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
