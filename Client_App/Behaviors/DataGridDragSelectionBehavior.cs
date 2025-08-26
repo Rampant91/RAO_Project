@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
 using AvaloniaEdit.Utils;
@@ -26,11 +27,10 @@ public class DataGridDragSelectionBehavior : Behavior<DataGrid>
         if (AssociatedObject != null)
         {
             // Подписываемся на события
-            AssociatedObject.PointerPressed += DataGrid_PointerPressed;
+            AssociatedObject.CellPointerPressed += DataGrid_PointerPressed;
             AssociatedObject.PointerMoved += DataGrid_PointerMoved;
             AssociatedObject.PointerReleased += DataGrid_PointerReleased;
             AssociatedObject.PointerCaptureLost += DataGrid_PointerCaptureLost;
-            AssociatedObject.SelectionChanged += DataGrid_OnSelectionChanged;
         }
     }
 
@@ -38,39 +38,27 @@ public class DataGridDragSelectionBehavior : Behavior<DataGrid>
     {
         if (AssociatedObject != null)
         {
-            AssociatedObject.PointerPressed -= DataGrid_PointerPressed;
+            AssociatedObject.CellPointerPressed -= DataGrid_PointerPressed;
             AssociatedObject.PointerMoved -= DataGrid_PointerMoved;
             AssociatedObject.PointerReleased -= DataGrid_PointerReleased;
             AssociatedObject.PointerCaptureLost -= DataGrid_PointerCaptureLost;
-            AssociatedObject.SelectionChanged -= DataGrid_OnSelectionChanged;
         }
 
         base.OnDetaching();
     }
 
-    private void DataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    private void DataGrid_PointerPressed(object sender, DataGridCellPointerPressedEventArgs e)
     {
-        if (AssociatedObject.SelectedItems.Count != 1)
-        {
-            return;
-        }
+            var point = e.PointerPressedEventArgs.GetCurrentPoint(AssociatedObject);
 
-        _isSelecting = true;
-        _firstSelectedItem = AssociatedObject.SelectedItems[0];
-        _lastSelectedItem = AssociatedObject.SelectedItems[0];
-    }
-    private void DataGrid_PointerPressed(object sender, PointerPressedEventArgs e)
-    {
-        AssociatedObject.SelectedItems.Clear();
-        var point = e.GetCurrentPoint(AssociatedObject);
 
-        // Обрабатываем только левую кнопку мыши
         if (point.Properties.IsLeftButtonPressed)
         {
             _isSelecting = true;
 
+            AssociatedObject.SelectedItems.Clear();
             // Захватываем указатель для получения всех событий
-            AssociatedObject.CapturePointer(e.Pointer);
+            AssociatedObject.CapturePointer(e.PointerPressedEventArgs.Pointer);
 
             var row = GetRowAtPoint(point.Position);
             if (row != null)
@@ -84,7 +72,7 @@ public class DataGridDragSelectionBehavior : Behavior<DataGrid>
                 AssociatedObject.SelectedItems.Add(item);
             }
 
-            e.Handled = true;
+            e.PointerPressedEventArgs.Handled = true;
         }
     }
 
@@ -153,7 +141,6 @@ public class DataGridDragSelectionBehavior : Behavior<DataGrid>
 
             visual = visual.GetVisualParent() as Visual;
         }
-
         return null;
     }
     private void SelectRange()

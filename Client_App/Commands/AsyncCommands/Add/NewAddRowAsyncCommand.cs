@@ -3,6 +3,7 @@ using Client_App.ViewModels.Forms;
 using Models.Collections;
 using Models.Forms;
 using Models.Interfaces;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.Add;
@@ -10,7 +11,7 @@ namespace Client_App.Commands.AsyncCommands.Add;
 /// <summary>
 /// Добавить строку в форму.
 /// </summary>
-/// <param name="changeOrCreateViewModel">ViewModel отчёта.</param>
+/// <param name="formVM">ViewModel отчёта.</param>
 public class NewAddRowAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
     private Report Storage => formVM.Report;
@@ -18,7 +19,6 @@ public class NewAddRowAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
-
         bool currentPageIsLastPage = formVM.CurrentPage == formVM.TotalPages;
         var frm = FormCreator.Create(FormType);
         frm.NumberInOrder_DB = GetNumberInOrder(Storage[Storage.FormNum_DB]);
@@ -36,6 +36,7 @@ public class NewAddRowAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             formVM.UpdateFormList();
         }
         formVM.UpdatePageInfo();
+        Debug.WriteLine(this);
     }
 
     /// <summary>
