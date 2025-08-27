@@ -24,8 +24,8 @@ namespace Client_App.ViewModels.Messages
                 OnPropertyChanged();
             }
         }
-        private int _result = 0;
-        public int Result
+        private int? _result;
+        public int? Result
         {
             get => _result;
             set

@@ -6,13 +6,15 @@
         x:Class="Client_App.AskIntMessageWindow"
         Title="Введите число"
 		Width="320"
-		Height="200">
+		Height="200"
+		CanResize="False"
+		WindowStartupLocation="CenterOwner">
 	<StackPanel>
-		<TextBlock Margin="5" Text="{Binding Text}" TextWrapping="Wrap"/>
-		<TextBox Margin="5" Text="{Binding Result}"/>
+		<TextBlock Margin="10,5,10,5" Text="{Binding Text}" TextWrapping="Wrap"/>
+		<TextBox x:Name="textbox" Margin="10,5,10,5" Text="{Binding Result}"/>
 		<WrapPanel HorizontalAlignment="Right" Margin="0,15,0,0">
-			<Button IsDefault="True" Click="Accept_Click" MinWidth="60" Margin="0,0,10,0">Подтвердить</Button>
-			<Button Content="Отмена" Click="Cancel_Click"/>
+			<Button IsDefault="True" Click="Accept_Click" MinWidth="60" Margin="0,0,5,0">Подтвердить</Button>
+			<Button Margin="0,0,10,0" Content="Отмена" Click="Cancel_Click"/>
 		</WrapPanel>
 	</StackPanel>
 </Window>

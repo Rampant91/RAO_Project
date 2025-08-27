@@ -66,10 +66,7 @@ public class NewAddRowsInAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         Storage[Storage.FormNum_DB].AddRange(lst);
         await Storage.SortAsync();
 
-        if (currentPageIsLastPage)
-        {
-            formVM.UpdateFormList();
-        }
+        formVM.UpdateFormList();
         formVM.UpdatePageInfo();
     }
 }
