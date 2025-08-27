@@ -1,4 +1,4 @@
-﻿using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.Delete;

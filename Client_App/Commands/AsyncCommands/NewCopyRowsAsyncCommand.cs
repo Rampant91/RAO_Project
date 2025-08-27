@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Input;
 using Models.Forms;
 using Models.Forms.Form1; 
