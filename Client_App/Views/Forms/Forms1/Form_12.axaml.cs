@@ -9,7 +9,6 @@ using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
 using Client_App.Interfaces.Logger;
-using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
@@ -21,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -328,4 +326,51 @@ public partial class Form_12 : BaseWindow<Form_12VM>
     #endregion
 
     #endregion
+
+    private void DataGrid_OnKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.KeyModifiers is KeyModifiers.Control)
+        {
+            var form = sender as Form_12;
+            var vm = (Form_12VM)DataContext!;
+            var dataGrid = form.FindControl<DataGrid>("dataGrid");
+            if (dataGrid.IsPointerOver)
+            {
+                switch (e.Key)
+                {
+                    case Key.A:
+                        vm.SelectAll.Execute(null);
+                        break;
+                    case Key.C:
+                        vm.CopyRows.Execute(dataGrid.SelectedItems.Cast<Form12>());
+                        break;
+                    case Key.D:
+                        vm.DeleteRows.Execute(dataGrid.SelectedItems.Cast<Form12>());
+                        break;
+                    case Key.I:
+                        vm.AddRowsIn.Execute(dataGrid.SelectedItems.Cast<Form12>());
+                        break;
+                    case Key.J:
+                        vm.SourceTransmission.Execute(dataGrid.SelectedItem as Form12);
+                        break;
+                    case Key.K:
+                        vm.DeleteDataInRows.Execute(dataGrid.SelectedItems.Cast<Form12>());
+                        break;
+                    case Key.N:
+                        vm.AddRows.Execute(null);
+                        break;
+                    case Key.O:
+                        vm.SetNumberOrder.Execute(null);
+                        break;
+                    case Key.T:
+                        vm.AddRow.Execute(null);
+                        break;
+                    case Key.V:
+                        vm.PasteRows.Execute(null);
+                        break;
+                    default: return;
+                }
+            }
+        }
+    }
 }

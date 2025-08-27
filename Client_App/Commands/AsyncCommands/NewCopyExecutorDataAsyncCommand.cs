@@ -10,10 +10,8 @@ using Client_App.ViewModels.Forms.Forms1;
 
 namespace Client_App.Commands.AsyncCommands;
 
-
 public class NewCopyExecutorDataAsyncCommand(Form_12VM formVM) : BaseAsyncCommand
 {
-    
     private Report Storage => formVM.Report;
     private Reports Storages => Storage.Reports;
     private string FormType => formVM.FormType;

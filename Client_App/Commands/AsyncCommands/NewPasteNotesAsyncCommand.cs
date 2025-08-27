@@ -19,7 +19,6 @@ public class NewPasteNotesAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     private Note SelectedNote => formVM.SelectedNote;
     public override async Task AsyncExecute(object? parameter)
     {
-
         var clipboard = Application.Current.Clipboard;
 
         var pastedString = await clipboard.GetTextAsync();
@@ -28,32 +27,36 @@ public class NewPasteNotesAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         var rows = pastedString.Split("\r\n");
 
         //Последняя строка пустая, поэтому выделяем память на одну ячейку меньше
-        string[][] parsedRows = new string[rows.Length-1][];
-        for(int i =0; i< parsedRows.Length;i++)
+        var parsedRows = new string[rows.Length-1][];
+        for(var i =0; i< parsedRows.Length;i++)
         {
             parsedRows[i] = rows[i].Split('\t');
         }
 
-        int start = formVM.Report.Notes.IndexOf(SelectedNote);
+        var start = formVM.Report.Notes.IndexOf(SelectedNote);
 
         if (start + parsedRows.Length > Storage.Notes.Count)
         {
+            #region NotEnoughSpaceInTheTableMessage
+
             await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = $"Вставка данных из буфера обмена",
-                        ContentHeader = "Внимание",
-                        ContentMessage =
-                            $"В таблице не хватает места для некоторых строк, которые вы хотите вставить",
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+                       .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                       {
+                           ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                           ContentTitle = $"Вставка данных из буфера обмена",
+                           ContentHeader = "Внимание",
+                           ContentMessage =
+                               "В таблице не хватает места для некоторых строк, которые вы хотите вставить",
+                           MinWidth = 400,
+                           MinHeight = 150,
+                           WindowStartupLocation = WindowStartupLocation.CenterOwner
+                       })
+                       .ShowDialog(Desktop.MainWindow)); 
+            
+            #endregion
         }
 
-        for (int i = 0; i < parsedRows.Length && i+start<Storage.Notes.Count; i++)
+        for (var i = 0; i < parsedRows.Length && i+start<Storage.Notes.Count; i++)
         {
             var note = Storage.Notes.Get<Note>(i+start);
 
@@ -61,6 +64,5 @@ public class NewPasteNotesAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             note.GraphNumber.Value = parsedRows[i][1];
             note.Comment.Value = parsedRows[i][2];
         }
-
     }
 }

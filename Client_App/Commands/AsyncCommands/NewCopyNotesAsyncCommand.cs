@@ -1,7 +1,5 @@
 ﻿using Avalonia;
-using Avalonia.Input;
 using Models.Forms;
-using Models.Forms.Form1; 
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

@@ -13,19 +13,19 @@ public class Form_12VM : BaseFormVM
 
     public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);
 
-    public ObservableCollection<Form12> Form12List => new(FormList.Cast<Form12>());
+    //public ObservableCollection<Form12> Form12List => new(FormList.Cast<Form12>());
     
-    public ObservableCollection<Form12> SelectedForms12 => new(SelectedForms.Cast<Form12>());
+    //public ObservableCollection<Form12> SelectedForms12 => new(SelectedForms.Cast<Form12>());
     
-    public Form12 SelectedForm12
-    {
-        get => SelectedForm as Form12;
-        set
-        {
-            SelectedForm = value;
-            UpdateFormList();
-        }
-    }
+    //public Form12 SelectedForm12
+    //{
+    //    get => SelectedForm as Form12;
+    //    set
+    //    {
+    //        SelectedForm = value;
+    //        UpdateFormList();
+    //    }
+    //}
 
     #region Constructors
 
@@ -73,9 +73,9 @@ public class Form_12VM : BaseFormVM
     {
         base.UpdateFormList();
         
-        OnPropertyChanged(nameof(Form12List));
-        OnPropertyChanged(nameof(SelectedForms12));
-        OnPropertyChanged(nameof(SelectedForm12));
+        //OnPropertyChanged(nameof(Form12List));
+        //OnPropertyChanged(nameof(SelectedForms12));
+        //OnPropertyChanged(nameof(SelectedForm12));
     }
 
     #endregion
