@@ -467,20 +467,35 @@
                               Items="{Binding NoteList}"
                               SelectedItem="{Binding SelectedNote}">
 					    <interactivity:Interaction.Behaviors>
+							<local:DataGridDoubleClickBehavior/>
 						    <local:DataGridDragSelectionBehavior/>
 						    <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
 					    </interactivity:Interaction.Behaviors>
                         <DataGrid.Columns>
+						    <DataGridTemplateColumn Header="№ строки" Width="80">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding RowNumber.Value, Mode=TwoWay}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+							
+                            <DataGridTemplateColumn Header="№ графы" Width="80">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding GraphNumber.Value, Mode=TwoWay}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+							
+                            <DataGridTemplateColumn Header="Пояснения" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding Comment.Value, Mode=TwoWay}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
 
-                            <DataGridTextColumn Width="80"
-                                                Header="№ строки"
-                                                Binding="{Binding RowNumber.Value}"/>
-						    <DataGridTextColumn Width="80"
-											    Header="№ графы"
-											    Binding="{Binding GraphNumber.Value}"/>
-						    <DataGridTextColumn Width="*" 
-											    Header="Пояснения"
-											    Binding="{Binding Comment.Value}"/>
 					    </DataGrid.Columns>
 				    </DataGrid>
 			    </StackPanel>
