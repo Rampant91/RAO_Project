@@ -91,6 +91,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             form.PackType.Value = parsedRows[i][18];
             form.PackNumber.Value = parsedRows[i][19];
         }
-
+        //Узкоспециализированное решение для корректного вывода пустых дат
+        formVM.UpdateFormList();
     }
 }
