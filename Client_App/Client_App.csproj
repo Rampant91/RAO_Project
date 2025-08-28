@@ -66,6 +66,24 @@
     <Resource Include="Assets\Radiation_sign.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Views\Forms\Forms1\Form_19.axaml.cs">
+      <DependentUpon>Form_19.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms1\Form_18.axaml.cs">
+      <DependentUpon>Form_18.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms1\Form_17.axaml.cs">
+      <DependentUpon>Form_17.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms1\Form_16.axaml.cs">
+      <DependentUpon>Form_16.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms1\Form_15.axaml.cs">
+      <DependentUpon>Form_15.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms1\Form_14.axaml.cs">
+      <DependentUpon>Form_14.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Forms\NewCheckForm.axaml.cs">
       <DependentUpon>NewCheckForm.axaml</DependentUpon>
     </Compile>

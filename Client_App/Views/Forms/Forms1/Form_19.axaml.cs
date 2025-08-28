@@ -28,19 +28,19 @@ using Avalonia.Controls;
 
 namespace Client_App.Views.Forms.Forms1;
 
-public partial class Form_11 : BaseWindow<Form_11VM>
+public partial class Form_19 : BaseWindow<Form_19VM>
 {
 
-    //private Form_11VM _vm = null!;
+    //private Form_19VM _vm = null!;
 
-    public Form_11()
+    public Form_19()
     {
         InitializeComponent();
-        DataContext = new Form_11VM();
+        DataContext = new Form_19VM();
         Show();
     }
 
-    public Form_11(Form_11VM vm)
+    public Form_19(Form_19VM vm)
     {
         InitializeComponent();
         DataContext = vm;
@@ -55,7 +55,7 @@ public partial class Form_11 : BaseWindow<Form_11VM>
     //Временное узкоспециализированное решение
     private void CopyExecutorData_Click(object sender, RoutedEventArgs e)
     {
-        var command = new NewCopyExecutorDataAsyncCommand((Form_11VM)DataContext);
+        var command = new NewCopyExecutorDataAsyncCommand((Form_19VM)DataContext);
         if (command.CanExecute(null))
         {
             command.Execute(null);
@@ -66,7 +66,7 @@ public partial class Form_11 : BaseWindow<Form_11VM>
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
-        if (DataContext is not Form_11VM vm) return;
+        if (DataContext is not Form_19VM vm) return;
         try
         {
             await RemoveEmptyForms(vm);
@@ -193,7 +193,7 @@ public partial class Form_11 : BaseWindow<Form_11VM>
     /// </summary>
     /// <param name="vm">Модель открытого отчёта.</param>
     /// <returns>Сообщение о наличии пересечения.</returns>
-    private static async Task CheckPeriod(Form_11VM vm)
+    private static async Task CheckPeriod(Form_19VM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
         if (vm.Report.FormNum_DB is "1.0" or "2.0") return;
@@ -245,35 +245,21 @@ public partial class Form_11 : BaseWindow<Form_11VM>
     /// </summary>
     /// <param name="vm">Модель открытого отчёта.</param>
     /// <returns>Сообщение с предложением удалить пустые строчки.</returns>
-    private static async Task RemoveEmptyForms(Form_11VM vm)
+    private static async Task RemoveEmptyForms(Form_19VM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
         List<Form> formToDeleteList = [];
-        var lst = vm.Report[vm.FormType].ToList<Form11>();
+        var lst = vm.Report[vm.FormType].ToList<Form19>();
         foreach (var form in lst)
         {
             if (string.IsNullOrWhiteSpace(form.OperationCode_DB)
                 && string.IsNullOrWhiteSpace(form.OperationDate_DB)
-                && string.IsNullOrWhiteSpace(form.PassportNumber_DB)
-                && string.IsNullOrWhiteSpace(form.Type_DB)
-                && string.IsNullOrWhiteSpace(form.Radionuclids_DB)
-                && string.IsNullOrWhiteSpace(form.FactoryNumber_DB) 
-                && form.Quantity_DB is null
-                && string.IsNullOrWhiteSpace(form.Activity_DB)
-                && string.IsNullOrWhiteSpace(form.CreatorOKPO_DB)
-                && string.IsNullOrWhiteSpace(form.CreationDate_DB)
-                && form.Category_DB is null
-                && form.SignedServicePeriod_DB is null
-                && form.PropertyCode_DB is null
-                && string.IsNullOrWhiteSpace(form.Owner_DB)
                 && form.DocumentVid_DB is null
                 && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
                 && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
-                && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
-                && string.IsNullOrWhiteSpace(form.TransporterOKPO_DB)
-                && string.IsNullOrWhiteSpace(form.PackName_DB)
-                && string.IsNullOrWhiteSpace(form.PackType_DB)
-                && string.IsNullOrWhiteSpace(form.PackNumber_DB))
+                && form.CodeTypeAccObject_DB is null
+                && string.IsNullOrWhiteSpace(form.Radionuclids_DB)
+                && string.IsNullOrWhiteSpace(form.Activity_DB))
             {
                 formToDeleteList.Add(form);
             }

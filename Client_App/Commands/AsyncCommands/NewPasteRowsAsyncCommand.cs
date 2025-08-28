@@ -23,7 +23,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     private string FormType => formVM.FormType;
     public override async Task AsyncExecute(object? parameter)
     {
-
+        if (SelectedForm == null) return;
         var clipboard = Application.Current.Clipboard;
 
         var pastedString = await clipboard.GetTextAsync();

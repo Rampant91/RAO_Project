@@ -127,10 +127,66 @@ public class ChangeFormAsyncCommand(FormParameter? form = null) : BaseAsyncComma
             }
             switch (numForm)
             {
+                case "1.1":
+                    {
+                        var form11VM = new Form_11VM(frm.Storage);
+                        var window = new Form_11(form11VM);
+                        await window.ShowDialog(t);
+                        break;
+                    }
                 case "1.2":
                     {
                         var form12VM = new Form_12VM(frm.Storage);
                         var window = new Form_12(form12VM);
+                        await window.ShowDialog(t);
+                        break;
+                    }
+                case "1.3":
+                    {
+                        var form13VM = new Form_13VM(frm.Storage);
+                        var window = new Form_13(form13VM);
+                        await window.ShowDialog(t);
+                        break;
+                    }
+                case "1.4":
+                    {
+                        var form14VM = new Form_14VM(frm.Storage);
+                        var window = new Form_14(form14VM);
+                        await window.ShowDialog(t);
+                        break;
+                    }
+                case "1.5":
+                    {
+                        var form15VM = new Form_15VM(frm.Storage);
+                        var window = new Form_15(form15VM);
+                        await window.ShowDialog(t);
+                        break;
+                    }
+                case "1.6":
+                    {
+                        var form16VM = new Form_16VM(frm.Storage);
+                        var window = new Form_16(form16VM);
+                        await window.ShowDialog(t);
+                        break;
+                    }
+                case "1.7":
+                    {
+                        var form17VM = new Form_17VM(frm.Storage);
+                        var window = new Form_17(form17VM);
+                        await window.ShowDialog(t);
+                        break;
+                    }
+                case "1.8":
+                    {
+                        var form18VM = new Form_18VM(frm.Storage);
+                        var window = new Form_18(form18VM);
+                        await window.ShowDialog(t);
+                        break;
+                    }
+                case "1.9":
+                    {
+                        var form19VM = new Form_19VM(frm.Storage);
+                        var window = new Form_19(form19VM);
                         await window.ShowDialog(t);
                         break;
                     }
