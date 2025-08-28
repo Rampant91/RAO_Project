@@ -188,20 +188,14 @@
                         <Border Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
                             <TextBlock>Сведения об операции</TextBlock>
                         </Border>
-                        <Border Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="7">
-                            <TextBlock>Сведения из паспорта на изделие из обедненного урана</TextBlock>
-                        </Border>
-                        <Border Grid.Column="10" Grid.Row="0" Grid.ColumnSpan="2">
-                            <TextBlock>Право собственности на ИОУ</TextBlock>
-                        </Border>
-                        <Border Grid.Column="12" Grid.Row="0" Grid.ColumnSpan="3">
+                        <Border Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="3">
                             <TextBlock>Документ</TextBlock>
                         </Border>
-                        <Border Grid.Column="15" Grid.Row="0" Grid.ColumnSpan="2">
-                            <TextBlock>Код ОКПО</TextBlock>
+                        <Border Grid.Column="6" Grid.Row="0" Grid.ColumnSpan="1">
+                            <TextBlock></TextBlock>
                         </Border>
-                        <Border Grid.Column="17" Grid.Row="0" Grid.ColumnSpan="3">
-                            <TextBlock>Прибор (установка), УКТ или иная упаковка</TextBlock>
+                        <Border Grid.Column="7" Grid.Row="0" Grid.ColumnSpan="2">
+                            <TextBlock>Сведения о радиоактивных веществах</TextBlock>
                         </Border>
                         <!--Второй уровень заголовков-->
                         <Border Grid.Column="0" Grid.Row="1">
@@ -214,55 +208,22 @@
                             <TextBlock>дата</TextBlock>
                         </Border>
                         <Border Grid.Column="3" Grid.Row="1">
-                            <TextBlock>номер паспорта</TextBlock>
-                        </Border>
-                        <Border Grid.Column="4" Grid.Row="1">
-                            <TextBlock>наименование</TextBlock>
-                        </Border>
-                        <Border Grid.Column="5" Grid.Row="1">
-                            <TextBlock>номер</TextBlock>
-                        </Border>
-                        <Border Grid.Column="6" Grid.Row="1">
-                            <TextBlock>масса обедненного урана, кг</TextBlock>
-                        </Border>
-                        <Border Grid.Column="7" Grid.Row="1">
-                            <TextBlock>код ОКПО изготовителя</TextBlock>
-                        </Border>
-                        <Border Grid.Column="8" Grid.Row="1">
-                            <TextBlock>дата выпуска</TextBlock>
-                        </Border>
-                        <Border Grid.Column="9" Grid.Row="1">
-                            <TextBlock>НСС, мес</TextBlock>
-                        </Border>
-                        <Border Grid.Column="10" Grid.Row="1">
-                            <TextBlock>код формы собственности</TextBlock>
-                        </Border>
-                        <Border Grid.Column="11" Grid.Row="1">
-                            <TextBlock>код ОКПО правообладателя</TextBlock>
-                        </Border>
-                        <Border Grid.Column="12" Grid.Row="1">
                             <TextBlock>вид</TextBlock>
                         </Border>
-                        <Border Grid.Column="13" Grid.Row="1">
+                        <Border Grid.Column="4" Grid.Row="1">
                             <TextBlock>номер</TextBlock>
                         </Border>
-                        <Border Grid.Column="14" Grid.Row="1">
+                        <Border Grid.Column="5" Grid.Row="1">
                             <TextBlock>дата</TextBlock>
                         </Border>
-                        <Border Grid.Column="15" Grid.Row="1">
-                            <TextBlock>поставщика или получателя</TextBlock>
+                        <Border Grid.Column="6" Grid.Row="1">
+                            <TextBlock>Код типа объектов учета</TextBlock>
                         </Border>
-                        <Border Grid.Column="16" Grid.Row="1">
-                            <TextBlock>перевозчика</TextBlock>
+                        <Border Grid.Column="7" Grid.Row="1">
+                            <TextBlock>радионуклиды</TextBlock>
                         </Border>
-                        <Border Grid.Column="17" Grid.Row="1">
-                            <TextBlock>наименование</TextBlock>
-                        </Border>
-                        <Border Grid.Column="18" Grid.Row="1">
-                            <TextBlock>тип</TextBlock>
-                        </Border>
-                        <Border Grid.Column="19" Grid.Row="1">
-                            <TextBlock>номер</TextBlock>
+                        <Border Grid.Column="8" Grid.Row="1">
+                            <TextBlock>активность, Бк</TextBlock>
                         </Border>
                     </Grid>
 					<DataGrid 
@@ -300,80 +261,7 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Header="4" Width="80">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
-                                        <TextBox Text="{Binding PassportNumber.Value, Mode=TwoWay}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-
-                            <DataGridTemplateColumn Header="5"  Width="100">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
-                                        <TextBox Text="{Binding NameIOU.Value, Mode=TwoWay}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-
-                            <DataGridTemplateColumn Header="6">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
-                                        <TextBox Text="{Binding FactoryNumber.Value, Mode=TwoWay}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-
-                            <DataGridTemplateColumn Header="7"  Width="100">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
-                                        <TextBox Text="{Binding Mass.Value, Mode=TwoWay}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-
-                            <DataGridTemplateColumn Header="8"  Width="100">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
-                                        <TextBox Text="{Binding CreatorOKPO.Value, Mode=TwoWay}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-
-                            <DataGridTemplateColumn Header="9">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
-                                        <CalendarDatePicker SelectedDate="{Binding CreationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-
-                            <DataGridTemplateColumn
-												Header="10">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
-                                        <TextBox Text="{Binding SignedServicePeriod.Value, Mode=TwoWay}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-
-                            <DataGridTemplateColumn Header="11"  Width="100">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
-                                        <TextBox Text="{Binding PropertyCode.Value, Mode=TwoWay}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-
-                            <DataGridTemplateColumn Header="12"  Width="110">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
-                                        <TextBox Text="{Binding Owner.Value, Mode=TwoWay}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-
-                            <DataGridTemplateColumn Header="13">
+                            <DataGridTemplateColumn Header="4">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
                                         <TextBox Text="{Binding DocumentVid.Value, Mode=TwoWay}"/>
@@ -381,7 +269,7 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Header="14">
+                            <DataGridTemplateColumn Header="5">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
                                         <TextBox Text="{Binding DocumentNumber.Value, Mode=TwoWay}"/>
@@ -389,7 +277,7 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Header="15">
+                            <DataGridTemplateColumn Header="6">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
                                         <CalendarDatePicker SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
@@ -397,45 +285,30 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Header="16" Width="110">
+                            <DataGridTemplateColumn Header="7" Width="110">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
-                                        <TextBox Text="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay}"/>
+                                        <TextBox Text="{Binding CodeTypeAccObject.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Header="17" Width="100">
+                            <DataGridTemplateColumn Header="8" Width="100">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
-                                        <TextBox Text="{Binding TransporterOKPO.Value, Mode=TwoWay}"/>
+                                        <TextBox Text="{Binding Radionuclids.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Header="18" Width="100">
+                            <DataGridTemplateColumn Header="9" Width="100">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
-                                        <TextBox Text="{Binding PackName.Value, Mode=TwoWay}"/>
+                                        <TextBox Text="{Binding Activity.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-
-                            <DataGridTemplateColumn Header="19">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
-                                        <TextBox Text="{Binding PackType.Value, Mode=TwoWay}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-
-                            <DataGridTemplateColumn Header="20">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
-                                        <TextBox Text="{Binding PackNumber.Value, Mode=TwoWay}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+							
                         </DataGrid.Columns>
 					</DataGrid>
 				</Grid>

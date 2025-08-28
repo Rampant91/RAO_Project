@@ -188,19 +188,19 @@
 					<Border Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
 						<TextBlock>Сведения об операции</TextBlock>
 					</Border>
-					<Border Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="7">
-						<TextBlock>Сведения из паспорта на изделие из обедненного урана</TextBlock>
+					<Border Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="8">
+						<TextBlock>Сведения из паспорта на открытый радионуклидный источник</TextBlock>
 					</Border>
-					<Border Grid.Column="10" Grid.Row="0" Grid.ColumnSpan="2">
-						<TextBlock>Право собственности на ИОУ</TextBlock>
+					<Border Grid.Column="11" Grid.Row="0" Grid.ColumnSpan="2">
+						<TextBlock>Право собственности на ОРИ</TextBlock>
 					</Border>
-					<Border Grid.Column="12" Grid.Row="0" Grid.ColumnSpan="3">
+					<Border Grid.Column="13" Grid.Row="0" Grid.ColumnSpan="3">
 						<TextBlock>Документ</TextBlock>
 					</Border>
-					<Border Grid.Column="15" Grid.Row="0" Grid.ColumnSpan="2">
+					<Border Grid.Column="16" Grid.Row="0" Grid.ColumnSpan="2">
 						<TextBlock>Код ОКПО</TextBlock>
 					</Border>
-					<Border Grid.Column="17" Grid.Row="0" Grid.ColumnSpan="3">
+					<Border Grid.Column="18" Grid.Row="0" Grid.ColumnSpan="3">
 						<TextBlock>Прибор (установка), УКТ или иная упаковка</TextBlock>
 					</Border>
 					<!--Второй уровень заголовков-->
@@ -214,54 +214,57 @@
 						<TextBlock>дата</TextBlock>
 					</Border>
 					<Border Grid.Column="3" Grid.Row="1">
-						<TextBlock>номер паспорта</TextBlock>
+						<TextBlock>номер паспорта (сертификата)</TextBlock>
 					</Border>
 					<Border Grid.Column="4" Grid.Row="1">
-						<TextBlock>наименование</TextBlock>
-					</Border>
-					<Border Grid.Column="5" Grid.Row="1">
-						<TextBlock>номер</TextBlock>
-					</Border>
-					<Border Grid.Column="6" Grid.Row="1">
-						<TextBlock>масса обедненного урана, кг</TextBlock>
-					</Border>
-					<Border Grid.Column="7" Grid.Row="1">
-						<TextBlock>код ОКПО изготовителя</TextBlock>
-					</Border>
-					<Border Grid.Column="8" Grid.Row="1">
-						<TextBlock>дата выпуска</TextBlock>
-					</Border>
-					<Border Grid.Column="9" Grid.Row="1">
-						<TextBlock>НСС, мес</TextBlock>
-					</Border>
-					<Border Grid.Column="10" Grid.Row="1">
-						<TextBlock>код формы собственности</TextBlock>
-					</Border>
-					<Border Grid.Column="11" Grid.Row="1">
-						<TextBlock>код ОКПО правообладателя</TextBlock>
-					</Border>
-					<Border Grid.Column="12" Grid.Row="1">
-						<TextBlock>вид</TextBlock>
-					</Border>
-					<Border Grid.Column="13" Grid.Row="1">
-						<TextBlock>номер</TextBlock>
-					</Border>
-					<Border Grid.Column="14" Grid.Row="1">
-						<TextBlock>дата</TextBlock>
-					</Border>
-					<Border Grid.Column="15" Grid.Row="1">
-						<TextBlock>поставщика или получателя</TextBlock>
-					</Border>
-					<Border Grid.Column="16" Grid.Row="1">
-						<TextBlock>перевозчика</TextBlock>
-					</Border>
-					<Border Grid.Column="17" Grid.Row="1">
-						<TextBlock>наименование</TextBlock>
-					</Border>
-					<Border Grid.Column="18" Grid.Row="1">
 						<TextBlock>тип</TextBlock>
 					</Border>
+					<Border Grid.Column="5" Grid.Row="1">
+						<TextBlock>радионуклиды</TextBlock>
+					</Border>
+					<Border Grid.Column="6" Grid.Row="1">
+						<TextBlock>номер</TextBlock>
+					</Border>
+					<Border Grid.Column="7" Grid.Row="1">
+						<TextBlock>активность, Бк</TextBlock>
+					</Border>
+					<Border Grid.Column="8" Grid.Row="1">
+						<TextBlock>код ОКПО изготовителя</TextBlock>
+					</Border>
+					<Border Grid.Column="9" Grid.Row="1">
+						<TextBlock>дата выпуска</TextBlock>
+					</Border>
+					<Border Grid.Column="10" Grid.Row="1">
+						<TextBlock>агрегатное состояние</TextBlock>
+					</Border>
+					<Border Grid.Column="11" Grid.Row="1">
+						<TextBlock>код формы собственности</TextBlock>
+					</Border>
+					<Border Grid.Column="12" Grid.Row="1">
+						<TextBlock>код ОКПО правообладателя</TextBlock>
+					</Border>
+					<Border Grid.Column="13" Grid.Row="1">
+						<TextBlock>вид</TextBlock>
+					</Border>
+					<Border Grid.Column="14" Grid.Row="1">
+						<TextBlock>номер</TextBlock>
+					</Border>
+					<Border Grid.Column="15" Grid.Row="1">
+						<TextBlock>дата</TextBlock>
+					</Border>
+					<Border Grid.Column="16" Grid.Row="1">
+						<TextBlock>поставщика или</TextBlock>
+					</Border>
+					<Border Grid.Column="17" Grid.Row="1">
+						<TextBlock>перевозчика</TextBlock>
+					</Border>
+					<Border Grid.Column="18" Grid.Row="1">
+						<TextBlock>наименование</TextBlock>
+					</Border>
 					<Border Grid.Column="19" Grid.Row="1">
+						<TextBlock>тип</TextBlock>
+					</Border>
+					<Border Grid.Column="20" Grid.Row="1">
 						<TextBlock>номер</TextBlock>
 					</Border>
 				</Grid>

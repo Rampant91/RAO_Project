@@ -24,7 +24,23 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
                         return _form10VM;
                 case "2.0":
                         return _form20VM;
+                case "1.1":
+                    return _formVM;
                 case "1.2":
+                    return _formVM;
+                case "1.3":
+                    return _formVM;
+                case "1.4":
+                    return _formVM;
+                case "1.5":
+                    return _formVM;
+                case "1.6":
+                    return _formVM;
+                case "1.7":
+                    return _formVM;
+                case "1.8":
+                    return _formVM;
+                case "1.9":
                     return _formVM;
                 default:
                     return _changeOrCreateVM;

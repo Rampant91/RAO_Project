@@ -265,6 +265,7 @@ public partial class Form_14 : BaseWindow<Form_14VM>
                 && form.AggregateState_DB is null
                 && form.PropertyCode_DB is null
                 && string.IsNullOrWhiteSpace(form.Owner_DB)
+                && form.DocumentVid_DB is null
                 && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
                 && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
                 && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)

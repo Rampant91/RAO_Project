@@ -262,6 +262,9 @@ public partial class Form_15 : BaseWindow<Form_15VM>
                 && string.IsNullOrWhiteSpace(form.Activity_DB)
                 && string.IsNullOrWhiteSpace(form.CreationDate_DB)
                 && string.IsNullOrWhiteSpace(form.StatusRAO_DB)
+                && form.DocumentVid_DB is null
+                && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
+                && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
                 && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
                 && string.IsNullOrWhiteSpace(form.TransporterOKPO_DB)
                 && string.IsNullOrWhiteSpace(form.PackName_DB)

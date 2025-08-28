@@ -265,6 +265,9 @@ public partial class Form_16 : BaseWindow<Form_16VM>
                 && string.IsNullOrWhiteSpace(form.AlphaActivity_DB)
                 && string.IsNullOrWhiteSpace(form.TransuraniumActivity_DB)
                 && string.IsNullOrWhiteSpace(form.ActivityMeasurementDate_DB)
+                && form.DocumentVid_DB is null
+                && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
+                && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
                 && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
                 && string.IsNullOrWhiteSpace(form.TransporterOKPO_DB)
                 && string.IsNullOrWhiteSpace(form.StoragePlaceName_DB)

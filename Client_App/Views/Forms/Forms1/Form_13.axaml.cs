@@ -264,6 +264,9 @@ public partial class Form_13 : BaseWindow<Form_13VM>
                 && form.AggregateState_DB is null 
                 && form.PropertyCode_DB is null
                 && string.IsNullOrWhiteSpace(form.Owner_DB)
+                && form.DocumentVid_DB is null
+                && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
+                && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
                 && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
                 && string.IsNullOrWhiteSpace(form.TransporterOKPO_DB)
                 && string.IsNullOrWhiteSpace(form.PackName_DB)

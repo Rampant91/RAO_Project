@@ -262,6 +262,9 @@ public partial class Form_18 : BaseWindow<Form_18VM>
                 && string.IsNullOrWhiteSpace(form.SaltConcentration_DB)
                 && string.IsNullOrWhiteSpace(form.Radionuclids_DB)
                 && string.IsNullOrWhiteSpace(form.SpecificActivity_DB)
+                && form.DocumentVid_DB is null
+                && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
+                && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
                 && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
                 && string.IsNullOrWhiteSpace(form.TransporterOKPO_DB)
                 && string.IsNullOrWhiteSpace(form.StoragePlaceName_DB)
