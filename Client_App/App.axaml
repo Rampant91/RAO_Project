@@ -122,7 +122,7 @@
             <Setter Property="Margin" Value="5,-5,5,5"/>
             <Setter Property="SelectionMode" Value="Extended"/>
             <Setter Property="GridLinesVisibility" Value="All"/>
-            <Setter Property="CanUserSortColumns" Value="False"/>
+            <Setter Property="CanUserSortColumns" Value="True"/>
             <Setter Property="ColumnWidth" Value="Auto" />
             <Setter Property="MinColumnWidth" Value="50" />
             <Setter Property="MaxColumnWidth" Value="250" />

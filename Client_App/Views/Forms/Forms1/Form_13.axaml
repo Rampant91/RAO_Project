@@ -355,7 +355,7 @@
 											Header="10">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate x:CompileBindings="True" x:DataType="forms1:Form13">
-									<TextBox Text="{Binding CreationDate.Value, Mode=TwoWay}"/>
+									<CalendarDatePicker SelectedDate="{Binding CreationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>

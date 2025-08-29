@@ -209,7 +209,7 @@
 					<Border Grid.Column="27" Grid.Row="0" Grid.ColumnSpan="1">
 						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="28" Grid.Row="1" Grid.ColumnSpan="1">
+					<Border Grid.Column="28" Grid.Row="0" Grid.ColumnSpan="1">
 						<TextBlock>Договор</TextBlock>
 					</Border>
 					<!--Второй уровень заголовков-->

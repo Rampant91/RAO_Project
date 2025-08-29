@@ -11,6 +11,7 @@ using Client_App.VisualRealization.Long_Visual;
 using Models.Interfaces;
 using Avalonia.Threading;
 using Models.Forms.Form1;
+using Client_App.ViewModels.Forms;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
@@ -44,7 +45,6 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
                     .ShowDialog(Desktop.MainWindow));
-
                 #endregion
 
                 return;
