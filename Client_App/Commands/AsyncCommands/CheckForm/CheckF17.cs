@@ -1188,7 +1188,7 @@ public abstract class CheckF17 : CheckBase
         {
             valid = DateOnly.TryParse(documentDate, out pMid)
                     && DateOnly.TryParse(operationDate, out var pOper)
-                    && pMid <= pOper;
+                    && pMid <= pOper.AddDays(30);
             if (!valid)
             {
                 result.Add(new CheckError

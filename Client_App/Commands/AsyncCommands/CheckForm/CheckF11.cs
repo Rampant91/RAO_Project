@@ -781,7 +781,8 @@ public abstract partial class CheckF11 : CheckBase
     {
         List<CheckError> result = new();
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
-        if (!OperationCode_DB_Check021.Contains(operationCode)) return result;
+        string[] validCodes = ["11", "12", "15", "28", "38", "41", "63", "64", "65", "81", "85", "88"];
+        if (!validCodes.Contains(operationCode)) return result;
         var okpoRepJur = ReplaceNullAndTrim(forms10[0].Okpo_DB);
         var okpoRepTerPodr = ReplaceNullAndTrim(forms10[1].Okpo_DB);
         var owner = ReplaceNullAndTrim(forms[line].Owner_DB);
@@ -1137,16 +1138,9 @@ public abstract partial class CheckF11 : CheckBase
         List<CheckError> result = new();
         var factoryNum = ReplaceNullAndTrim(forms[line].FactoryNumber_DB);
         if (factoryNum is "-") return result;
-        var quantity = forms[line].Quantity_DB ?? 0;
-        var valid = !string.IsNullOrWhiteSpace(factoryNum)
-                    && !factoryNum.Contains(',');
+        var quantity = forms[line].Quantity_DB ?? 0; ;
 
-        if (quantity > 1 && !factoryNum.Contains(';')
-            || quantity == 1 && factoryNum.Contains(';'))
-        {
-            valid = false;
-        }
-        if (!valid)
+        if (string.IsNullOrWhiteSpace(factoryNum))
         {
             result.Add(new CheckError
             {
@@ -1154,12 +1148,55 @@ public abstract partial class CheckF11 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "FactoryNumber_DB",
                 Value = factoryNum,
-                Message = "Заполните сведения о заводском номере ЗРИ. Если номер отсутствует, " + 
-                          "в ячейке следует указать символ \"-\" без кавычек. Для упаковки однотипных ЗРИ, " + 
-                          "имеющей один паспорт (сертификат) заводские номера в списке разделяются точкой с запятой.",
+                Message = "Заполните сведения о заводском номере ЗРИ. Если номер отсутствует, " +
+                          "в ячейке следует указать символ \"-\" без кавычек.",
                 IsCritical = true
             });
         }
+        if (factoryNum.Contains(','))
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line + 1).ToString(),
+                Column = "FactoryNumber_DB",
+                Value = factoryNum,
+                Message = "Заводской номер не должен содержать запятых. Для упаковки однотипных ЗРИ, имеющей один паспорт (сертификат), " +
+                          "заводские номера в списке необходимо разделять точкой с запятой " +
+                          "(при перечислении номеров использование тире также недопустимо).",
+                IsCritical = true
+            });
+        }
+        if (quantity == 1 && factoryNum.Contains(';'))
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line + 1).ToString(),
+                Column = "FactoryNumber_DB",
+                Value = factoryNum,
+                Message = "При указании в графе «Количество» 1 шт., заводской номер не должен содержать символа точка с запятой " +
+                          "(используется для перечисления).",
+                IsCritical = true
+            });
+        }
+
+        if (quantity > 1 && !factoryNum.Contains(';'))
+        {
+            {
+                result.Add(new CheckError
+                {
+                    FormNum = "form_11",
+                    Row = (line + 1).ToString(),
+                    Column = "FactoryNumber_DB",
+                    Value = factoryNum,
+                    Message = "Для упаковки однотипных ЗРИ, имеющей один паспорт (сертификат), " +
+                              "заводские номера в списке разделяются точкой с запятой.",
+                    IsCritical = true
+                });
+            }
+        }
+
         return result;
     }
 
@@ -1511,7 +1548,8 @@ public abstract partial class CheckF11 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "CreationDate_DB",
                 Value = creationDate,
-                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой.",
+                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой. " +
+                          "Если известен только год, то указывается 1 января этого года.",
                 IsCritical = true
             });
         }
@@ -1523,7 +1561,8 @@ public abstract partial class CheckF11 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "CreationDate_DB",
                 Value = creationDate,
-                Message = "Формат ввода данных не соответствует приказу. Некорректно заполнена дата выпуска.",
+                Message = "Формат ввода данных не соответствует приказу. Некорректно заполнена дата выпуска. " +
+                          "Если известен только год, то указывается 1 января этого года.",
                 IsCritical = true
             });
         }
@@ -2192,7 +2231,7 @@ public abstract partial class CheckF11 : CheckBase
         {
             return result;
         }
-        var valid = documentDateReal <= operationDateReal;
+        var valid = documentDateReal <= operationDateReal.AddDays(30);
         if (!valid)
         {
             result.Add(new CheckError
@@ -2225,7 +2264,13 @@ public abstract partial class CheckF11 : CheckBase
         {
             return result;
         }
-        var valid = documentDateReal == operationDateReal;
+
+        var daysBetween = operationDateReal > documentDateReal
+            ? operationDateReal.DayNumber - documentDateReal.DayNumber
+            : documentDateReal.DayNumber - operationDateReal.DayNumber;
+
+        var valid = daysBetween <= 30;
+
         if (!valid)
         {
             result.Add(new CheckError

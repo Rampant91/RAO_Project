@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
+﻿using Avalonia.Controls;
 using Models.CheckForm;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using static OfficeOpenXml.ExcelErrorValue;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -279,7 +281,7 @@ public abstract class CheckF16 : CheckBase
     {
         List<CheckError> result = new();
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
-        var applicableOperationCodes = new[] { "56", "57", "59" };
+        var applicableOperationCodes = new[] { "56" };
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         if (forms[line].CodeRAO_DB.Length < 10) return result;
         var valid = forms[line].CodeRAO_DB.Substring(8, 2) != "99";
@@ -309,8 +311,13 @@ public abstract class CheckF16 : CheckBase
         var applicableOperationCodes = new[] { "12", "42" };
         var requiredNuclids = new []
         {
-            "плутоний", "уран-233", "уран-235", "уран-238", "нептуний-237", "америций-241", 
-            "америций-243", "калифорний-252", "торий", "тритий"
+            "америций-241", "америций-243", "калифорний-252", "литий-6", "нептуний-237", 
+            "плутоний-234", "плутоний-235", "плутоний-236", "плутоний-237", "плутоний-238", "плутоний-239", "плутоний-240", 
+            "плутоний-241", "плутоний-242", "плутоний-243", "плутоний-244", "плутоний-245", "плутоний-246",
+            "сумма радионуклидов урана", "торий-226", "торий-227", "торий-228", "торий-229", "торий-230", "торий-231", "торий-232",
+            "торий-234", "торий естественный", "торий-естественный", "торий природный", "торий-природный", "тритий", 
+            "уран-230", "уран-231", "уран-232", "уран-233", "уран-234", "уран-235", "уран-236", "уран-237",
+            "уран естественный", "уран-естественный", "уран-238", "уран-239", "уран-240", "уран природный", "уран-природный"
         };
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var mainRad = ReplaceNullAndTrim(forms[line].MainRadionuclids_DB);
@@ -1589,8 +1596,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = $"{codeRao8RaoClass} (8-ой символ кода РАО)",
-                Message = 
-                          "Недопустимое значение 8-го символа кода РАО."
+                Message = "Недопустимое значение 8-го символа кода РАО."
             });
         }
         else
@@ -1622,8 +1628,7 @@ public abstract class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
                         Value = $"{codeRao8RaoClass} (8-ой символ кода РАО)",
-                        Message = 
-                                  "Для вновь образованных РАО 8-ой символ кода РАО должен быть равен 0."
+                        Message = "Для вновь образованных РАО 8-ой символ кода РАО должен быть равен 0."
                     });
                 }
                 if (!operationCodes.Contains(operationCode) 
@@ -1636,8 +1641,7 @@ public abstract class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "StatusRAO_DB",
                         Value = statusRao,
-                        Message = 
-                                  "Проверьте статус РАО."
+                        Message = "Проверьте статус РАО."
                     });
                 }
                 if (!storageCodeValid.Contains(storageCode1) && statusRao == "1")
@@ -1648,8 +1652,7 @@ public abstract class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
                         Value = $"{codeRao8RaoClass} (8-ой символ кода РАО)",
-                        Message = 
-                                  "Особые РАО могут быть размещены только в ПРОРАО либо ПКОРАО."
+                        Message = "Особые РАО могут быть размещены только в ПРОРАО либо ПКОРАО."
                     });
                 }
             }
@@ -1665,8 +1668,7 @@ public abstract class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "StatusRAO_DB",
                         Value = statusRao,
-                        Message = 
-                                  "Для вновь образованных РАО 8-ой символ кода РАО должен быть равен 0."
+                        Message = "Для вновь образованных РАО 8-ой символ кода РАО должен быть равен 0."
                     });
                 }
                 if (!(storageCode1 == "2" && statusRao == "1"))
@@ -1783,8 +1785,7 @@ public abstract class CheckF16 : CheckBase
                 Column = "StatusRAO_DB",
                 Value = statusRaoDB,
                 Message = "РАО, образовавшиеся после 15.07.2011, находятся в собственности организации, " +
-                          "в результате деятельности которой они образовались.",
-                IsCritical = true
+                          "в результате деятельности которой они образовались."
             });
         }
         return result;
@@ -1814,8 +1815,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "StatusRAO_DB",
                 Value = statusRao,
-                Message = "Операция, соответствующая выбранному коду, может использоваться только для собственных РАО.",
-                IsCritical = true
+                Message = "Операция, соответствующая выбранному коду, может использоваться только для собственных РАО."
             });
         }
         return result;
@@ -1846,8 +1846,7 @@ public abstract class CheckF16 : CheckBase
                 Column = "StatusRAO_DB",
                 Value = statusRao,
                 Message = "При операциях, связанных с получением права собственности, " +
-                          "в графе статус РАО необходимо отразить код ОКПО отчитывающейся организации.",
-                IsCritical = true
+                          "в графе статус РАО необходимо отразить код ОКПО отчитывающейся организации."
             });
         }
         return result;
@@ -1877,8 +1876,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "StatusRAO_DB",
                 Value = statusRao,
-                Message = "Проверьте правильность статуса РАО.",
-                IsCritical = operationCode is "73"
+                Message = "Проверьте правильность статуса РАО."
             });
         }
         return result;
@@ -1904,8 +1902,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "StatusRAO_DB",
                 Value = statusRao,
-                Message = "Проверьте правильность статуса РАО.",
-                IsCritical = true
+                Message = "Проверьте правильность статуса РАО."
             });
         }
         return result;
@@ -1932,8 +1929,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "StatusRAO_DB",
                 Value = statusRao,
-                Message = "Проверьте правильность статуса РАО",
-                IsCritical = true
+                Message = "Проверьте правильность статуса РАО"
             });
         }
         return result;
@@ -1959,8 +1955,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "StatusRAO_DB",
                 Value = statusRao,
-                Message = "Проверьте правильность статуса РАО.",
-                IsCritical = true
+                Message = "Проверьте правильность статуса РАО."
             });
         }
         return result;
@@ -1991,8 +1986,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "StatusRAO_DB",
                 Value = statusRao,
-                Message = "Заполнение графы 5 не соответствует требованиям приказа Госкорпорации \"Росатом\" от 07.12.2020 № 1/13-НПА.",
-                IsCritical = true
+                Message = "Заполнение графы 5 не соответствует требованиям приказа Госкорпорации \"Росатом\" от 07.12.2020 № 1/13-НПА."
             });
         }
         return result;
@@ -2085,7 +2079,7 @@ public abstract class CheckF16 : CheckBase
     {
         List<CheckError> result = new();
         var codeRao = ReplaceNullAndTrim(forms[line].CodeRAO_DB);
-        var quantityOziii = ReplaceNullAndTrim(forms[line].QuantityOZIII_DB);
+        var quantityOziii = ReplaceNullAndTrim(forms[line].QuantityOZIII_DB).TrimStart('(').TrimEnd(')');
         var quantityOziiiExists = int.TryParse(quantityOziii, out _);
         var raoTypes1 = new[] { "81", "82", "85", "86", "87", "88", "89" };
         var raoTypes2 = new[] { "99" };
@@ -2203,13 +2197,16 @@ public abstract class CheckF16 : CheckBase
                     Value = rads,
                     Message = "Формат ввода данных не соответствует приказу. " +
                               "Наименование радионуклида указывается названием химического элемента на русском языке, " +
-                              "с указанием через дефис массового числа изотопа.",
+                              "с указанием через дефис массового числа изотопа. " +
+                              $"Нераспознанные наименования: {string.Join(", ", unknownNuclids)}. " +
+                              "Корректное наименование можно уточнить в справочнике радионуклидов (Сервис -> Справочник радионуклидов).",
                     IsCritical = true
                 });
             }
         }
         return result;
     }
+
     #endregion
 
     #region Check010
@@ -2238,8 +2235,8 @@ public abstract class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "TritiumActivity_DB",
                         Value = tritiumActivity,
-                        Message = "В случае, если в радионуклидном составе отсутствует тритий, то в графу 10 необходимо заносить прочерк вместо нуля.",
-                        IsCritical = true
+                        Message = "В случае, если в радионуклидном составе отсутствует тритий, " +
+                                  "то в графу 10 необходимо заносить прочерк вместо нуля."
                     });
                 }
                 else
@@ -2251,8 +2248,7 @@ public abstract class CheckF16 : CheckBase
                         Column = "TritiumActivity_DB",
                         Value = tritiumActivity,
                         Message = "Проверьте перечень основных радионуклидов: указана суммарная активность для трития, " +
-                                  "но тритий не приведен в перечне радионуклидов.",
-                        IsCritical = true
+                                  "но тритий не приведен в перечне радионуклидов."
                     });
                 }
             }
@@ -2270,8 +2266,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "TritiumActivity_DB",
                 Value = tritiumActivity,
-                Message = "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 10.",
-                IsCritical = true
+                Message = "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 10."
             });
             return result;
         }
@@ -2285,8 +2280,7 @@ public abstract class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "TritiumActivity_DB",
                     Value = tritiumActivity,
-                    Message = "Проверьте значение суммарной активности в графе 10.",
-                    IsCritical = true
+                    Message = "Проверьте значение суммарной активности в графе 10."
                 });
                 break;
             }
@@ -2299,8 +2293,7 @@ public abstract class CheckF16 : CheckBase
                     Column = "TritiumActivity_DB",
                     Value = tritiumActivity,
                     Message = "Проверьте значение суммарной активности в графе 10. " +
-                              "Указанная суммарная активность превышает предельное значение.",
-                    IsCritical = true
+                              "Указанная суммарная активность превышает предельное значение."
                 });
                 break;
             }
@@ -2338,8 +2331,7 @@ public abstract class CheckF16 : CheckBase
                         Column = "BetaGammaActivity_DB",
                         Value = betaActivity,
                         Message = "В случае, если в радионуклидном составе отсутствуют бета-, гамма-излучающие радионуклиды, " +
-                                  "то в графу 11 необходимо заносить прочерк вместо нуля.",
-                        IsCritical = true
+                                  "то в графу 11 необходимо заносить прочерк вместо нуля."
                     });
                 }
                 else
@@ -2351,8 +2343,7 @@ public abstract class CheckF16 : CheckBase
                         Column = "BetaGammaActivity_DB",
                         Value = betaActivity,
                         Message = "Проверьте перечень основных радионуклидов: указана суммарная активность для бета-, " +
-                                  "гамма-излучающих радионуклидов, но бета-, гамма-излучающие радионуклиды не приведены в перечне радионуклидов.",
-                        IsCritical = true
+                                  "гамма-излучающих радионуклидов, но бета-, гамма-излучающие радионуклиды не приведены в перечне радионуклидов."
                     });
                 }
             }
@@ -2370,8 +2361,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "BetaGammaActivity_DB",
                 Value = betaActivity,
-                Message = "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 11.",
-                IsCritical = true
+                Message = "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 11."
             });
             return result;
         }
@@ -2385,8 +2375,7 @@ public abstract class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "BetaGammaActivity_DB",
                     Value = betaActivity,
-                    Message = "Проверьте значение суммарной активности в графе 11.",
-                    IsCritical = true
+                    Message = "Проверьте значение суммарной активности в графе 11."
                 });
                 break;
             }
@@ -2399,8 +2388,7 @@ public abstract class CheckF16 : CheckBase
                     Column = "BetaGammaActivity_DB",
                     Value = betaActivity,
                     Message = "Проверьте значение суммарной активности в графе 11. " +
-                              "Указанная суммарная активность превышает предельное значение.",
-                    IsCritical = true
+                              "Указанная суммарная активность превышает предельное значение."
                 });
                 break;
             }
@@ -2438,8 +2426,7 @@ public abstract class CheckF16 : CheckBase
                         Column = "AlphaActivity_DB",
                         Value = activity,
                         Message = "В случае, если в радионуклидном составе отсутствуют альфа-излучающие радионуклиды, " +
-                                  "то в графу 12 необходимо заносить прочерк вместо нуля.",
-                        IsCritical = true
+                                  "то в графу 12 необходимо заносить прочерк вместо нуля."
                     });
                 }
                 else 
@@ -2451,8 +2438,7 @@ public abstract class CheckF16 : CheckBase
                         Column = "AlphaActivity_DB",
                         Value = activity,
                         Message = "Проверьте перечень основных радионуклидов: указана суммарная активность для альфа-излучающих радионуклидов, " +
-                                  "но альфа-излучающие радионуклиды не приведены в перечне радионуклидов.",
-                        IsCritical = true
+                                  "но альфа-излучающие радионуклиды не приведены в перечне радионуклидов."
                     });
                 }
             }
@@ -2470,8 +2456,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "AlphaActivity_DB",
                 Value = activity,
-                Message = "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 12.",
-                IsCritical = true
+                Message = "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 12."
             });
             return result;
         }
@@ -2485,8 +2470,7 @@ public abstract class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "AlphaActivity_DB",
                     Value = activity,
-                    Message = "Проверьте значение суммарной активности в графе 12.",
-                    IsCritical = true
+                    Message = "Проверьте значение суммарной активности в графе 12."
                 });
                 break;
             }
@@ -2499,8 +2483,7 @@ public abstract class CheckF16 : CheckBase
                     Column = "AlphaActivity_DB",
                     Value = activity,
                     Message = "Проверьте значение суммарной активности в графе 12. " +
-                              "Указанная суммарная активность превышает предельное значение.",
-                    IsCritical = true
+                              "Указанная суммарная активность превышает предельное значение."
                 });
                 break;
             }
@@ -2537,8 +2520,7 @@ public abstract class CheckF16 : CheckBase
                         Column = "TransuraniumActivity_DB",
                         Value = activity,
                         Message = "В случае, если в радионуклидном составе отсутствуют трансурановые радионуклиды, " +
-                                  "то в графу 13 необходимо заносить прочерк вместо нуля.",
-                        IsCritical = true
+                                  "то в графу 13 необходимо заносить прочерк вместо нуля."
                     });
                 }
                 else
@@ -2550,8 +2532,7 @@ public abstract class CheckF16 : CheckBase
                         Column = "TransuraniumActivity_DB",
                         Value = activity,
                         Message = "Проверьте перечень основных радионуклидов: указана суммарная активность для трансурановых радионуклидов, " +
-                                  "но трансурановые радионуклиды не приведены в перечне радионуклидов.",
-                        IsCritical = true
+                                  "но трансурановые радионуклиды не приведены в перечне радионуклидов."
                     });
                 }
             }
@@ -2569,8 +2550,7 @@ public abstract class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "TransuraniumActivity_DB",
                         Value = activity,
-                        Message = "Проверьте значение суммарной активности в графе 13.",
-                        IsCritical = true
+                        Message = "Проверьте значение суммарной активности в графе 13."
                     });
                     break;
                 }
@@ -2583,8 +2563,7 @@ public abstract class CheckF16 : CheckBase
                         Column = "TransuraniumActivity_DB",
                         Value = activity,
                         Message = "Проверьте значение суммарной активности в графе 13. " +
-                                  "Указанная суммарная активность превышает предельное значение.",
-                        IsCritical = true
+                                  "Указанная суммарная активность превышает предельное значение."
                     });
                     break;
                 }
@@ -2598,8 +2577,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "TransuraniumActivity_DB",
                 Value = activity,
-                Message = "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 13.",
-                IsCritical = true
+                Message = "Для указанного в графе 9 радионуклидного состава должна быть приведена активность в графе 13."
             });
         }
         return result;
@@ -2708,15 +2686,21 @@ public abstract class CheckF16 : CheckBase
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var operationDate = ReplaceNullAndTrim(forms[line].OperationDate_DB);
         var documentDate = ReplaceNullAndTrim(forms[line].DocumentDate_DB);
-        DateOnly pMid;
+        DateOnly docDate;
         bool valid;
         switch (operationCode)
         {
             case "41":
             {
-                valid = DateOnly.TryParse(documentDate, out pMid)
-                        && DateOnly.TryParse(operationDate, out var pOper)
-                        && pMid == pOper;
+                _ = DateOnly.TryParse(documentDate, out docDate)
+                    & DateOnly.TryParse(operationDate, out var opDate);
+
+                var daysBetween = opDate > docDate
+                    ? opDate.DayNumber - docDate.DayNumber
+                    : docDate.DayNumber - opDate.DayNumber;
+
+                valid = daysBetween <= 30;
+
                 if (!valid)
                 {
                     result.Add(new CheckError
@@ -2725,8 +2709,7 @@ public abstract class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "DocumentDate_DB",
                         Value = documentDate,
-                        Message = "Дата документа должна соответствовать дате операции.",
-                        IsCritical = true
+                        Message = "Дата документа должна соответствовать дате операции."
                     });
                 }
                 break;
@@ -2735,8 +2718,8 @@ public abstract class CheckF16 : CheckBase
             {
                 valid = DateOnly.TryParse(rep.StartPeriod_DB, out var pStart)
                         && DateOnly.TryParse(rep.EndPeriod_DB, out var pEnd)
-                        && DateOnly.TryParse(documentDate, out pMid)
-                        && pMid >= pStart && pMid <= pEnd;
+                        && DateOnly.TryParse(documentDate, out docDate)
+                        && docDate >= pStart && docDate <= pEnd;
                 if (!valid)
                 {
                     result.Add(new CheckError
@@ -2752,9 +2735,9 @@ public abstract class CheckF16 : CheckBase
             }
             default:
             {
-                valid = DateOnly.TryParse(documentDate, out pMid)
+                valid = DateOnly.TryParse(documentDate, out docDate)
                         && DateOnly.TryParse(operationDate, out var pOper)
-                        && pMid <= pOper;
+                        && docDate <= pOper.AddDays(30);
                 if (!valid)
                 {
                     result.Add(new CheckError
@@ -2763,8 +2746,7 @@ public abstract class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "DocumentDate_DB",
                         Value = documentDate,
-                        Message = "Дата документа не может быть позже даты операции.",
-                        IsCritical = true
+                        Message = "Дата документа не может быть позже даты операции."
                     });
                 }
                 break;
@@ -3117,7 +3099,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "RefineOrSortRAOCode_DB",
                 Value = refineOrSortRaoCode,
-                Message = "При данном коде операции для кода переработки/сортировки используется символ «-».",
+                Message = "Выбранный код операции не соответствует переработке/сортировке РАО. Проверьте правильность заполнения граф 2 и 22.",
                 IsCritical = true
             });
         }
@@ -3154,8 +3136,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "RefineOrSortRAOCode_DB",
                 Value = refineOrSortRaoCode,
-                Message = 
-                          $"Для кода операции {operationCode} код переработки/сортировки {refineOrSortRaoCode} недопустим.",
+                Message = "Несуществующий код переработки/сортировки.",
                 IsCritical = true
             });
         }
@@ -3198,7 +3179,7 @@ public abstract class CheckF16 : CheckBase
     {   
         List<CheckError> result = new();
         var applicableOperationCodes = new[] { "49", "59" };
-        var applicableRefineCodes = new[] { "52", "72", "74", "-" };
+        var applicableRefineCodes = new[] { "52", "72", "73", "74", "-" };
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var refineOrSortRaoCode = ReplaceNullAndTrim(forms[line].RefineOrSortRAOCode_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
@@ -3211,7 +3192,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "RefineOrSortRAOCode_DB",
                 Value = refineOrSortRaoCode,
-                Message = "Коду операции сортировка соответствуют коды сортировки 52, 72, 74.",
+                Message = "Коду операции сортировка соответствуют коды сортировки 52, 72, 73, 74.",
                 IsCritical = true
             });
         }
@@ -3240,8 +3221,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "RefineOrSortRAOCode_DB",
                 Value = refineOrSortRaoCode,
-                Message = "РАО направлены на установку сжигания. Проверьте значение 11 символа кода РАО.",
-                IsCritical = true
+                Message = "РАО направлены на установку сжигания. Проверьте значение 11 символа кода РАО."
             });
         }
         return result;

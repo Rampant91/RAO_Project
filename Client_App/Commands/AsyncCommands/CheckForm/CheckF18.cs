@@ -849,7 +849,7 @@ public abstract class CheckF18 : CheckBase
         else
         {
             valid = DateOnly.TryParse(operationDate, out var pOper)
-                    && pMid <= pOper;
+                    && pMid <= pOper.AddDays(30);
             if (!valid)
             {
                 result.Add(new CheckError
