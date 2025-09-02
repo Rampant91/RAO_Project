@@ -236,16 +236,38 @@
                             <local:DataGridDragSelectionBehavior/>
                             <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
 						    <local:DataGridDoubleClickBehavior/>
+							<local:DeselectDataGridOnClickOutsideBehavior/>
 						</interactivity:Interaction.Behaviors>
                         <DataGrid.Columns>
 
                             <DataGridTextColumn Binding="{Binding NumberInOrder.Value}"
-                                                Header="1"
+												Width="40"
                                                 IsReadOnly="True"
-                                                x:CompileBindings="True" 
-                                                x:DataType="forms1:Form19"/>
+                                                x:CompileBindings="True"
+                                                x:DataType="forms1:Form19">
+								<DataGridTextColumn.HeaderTemplate>
+									<DataTemplate>
+										<Border Classes="headerTemplate">
+											<Grid ColumnDefinitions="*,Auto">
+												<TextBlock Grid.Column="0" Text="1"/>
+												<Button Grid.Column="1"/>
+											</Grid>
+										</Border>
+									</DataTemplate>
+								</DataGridTextColumn.HeaderTemplate>
+							</DataGridTextColumn>
 
-                            <DataGridTemplateColumn Header="2">
+							<DataGridTemplateColumn>
+								<DataGridTemplateColumn.HeaderTemplate>
+									<DataTemplate>
+										<Border Classes="headerTemplate">
+											<Grid ColumnDefinitions="*,Auto">
+												<TextBlock Grid.Column="0" Text="2"/>
+												<Button Grid.Column="1"/>
+											</Grid>
+										</Border>
+									</DataTemplate>
+								</DataGridTemplateColumn.HeaderTemplate>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
                                         <TextBox Text="{Binding OperationCode.Value, Mode=TwoWay}"/>
@@ -253,15 +275,39 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Header="3">
+							<DataGridTemplateColumn>
+								<DataGridTemplateColumn.HeaderTemplate>
+									<DataTemplate>
+										<Border Classes="headerTemplate">
+											<Grid ColumnDefinitions="*,Auto">
+												<TextBlock Grid.Column="0" Text="3"/>
+												<Button Grid.Column="1"/>
+											</Grid>
+										</Border>
+									</DataTemplate>
+								</DataGridTemplateColumn.HeaderTemplate>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
-                                        <CalendarDatePicker SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
-                                    </DataTemplate>
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBox Grid.Column="0" Text="{Binding OperationDate.Value, Mode=TwoWay}"/>
+											<CalendarDatePicker Grid.Column="1"
+																SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
+										</Grid>
+									</DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Header="4">
+							<DataGridTemplateColumn>
+								<DataGridTemplateColumn.HeaderTemplate>
+									<DataTemplate>
+										<Border Classes="headerTemplate">
+											<Grid ColumnDefinitions="*,Auto">
+												<TextBlock Grid.Column="0" Text="4"/>
+												<Button Grid.Column="1"/>
+											</Grid>
+										</Border>
+									</DataTemplate>
+								</DataGridTemplateColumn.HeaderTemplate>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
                                         <TextBox Text="{Binding DocumentVid.Value, Mode=TwoWay}"/>
@@ -269,7 +315,17 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Header="5">
+							<DataGridTemplateColumn>
+								<DataGridTemplateColumn.HeaderTemplate>
+									<DataTemplate>
+										<Border Classes="headerTemplate">
+											<Grid ColumnDefinitions="*,Auto">
+												<TextBlock Grid.Column="0" Text="5"/>
+												<Button Grid.Column="1"/>
+											</Grid>
+										</Border>
+									</DataTemplate>
+								</DataGridTemplateColumn.HeaderTemplate>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
                                         <TextBox Text="{Binding DocumentNumber.Value, Mode=TwoWay}"/>
@@ -277,15 +333,39 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Header="6">
+							<DataGridTemplateColumn>
+								<DataGridTemplateColumn.HeaderTemplate>
+									<DataTemplate>
+										<Border Classes="headerTemplate">
+											<Grid ColumnDefinitions="*,Auto">
+												<TextBlock Grid.Column="0" Text="6"/>
+												<Button Grid.Column="1"/>
+											</Grid>
+										</Border>
+									</DataTemplate>
+								</DataGridTemplateColumn.HeaderTemplate>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
-                                        <CalendarDatePicker SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
-                                    </DataTemplate>
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBox Grid.Column="0" Text="{Binding DocumentDate.Value, Mode=TwoWay}"/>
+											<CalendarDatePicker Grid.Column="1"
+																SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
+										</Grid>
+									</DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Header="7" Width="110">
+							<DataGridTemplateColumn>
+								<DataGridTemplateColumn.HeaderTemplate>
+									<DataTemplate>
+										<Border Classes="headerTemplate">
+											<Grid ColumnDefinitions="*,Auto">
+												<TextBlock Grid.Column="0" Text="7"/>
+												<Button Grid.Column="1"/>
+											</Grid>
+										</Border>
+									</DataTemplate>
+								</DataGridTemplateColumn.HeaderTemplate>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
                                         <TextBox Text="{Binding CodeTypeAccObject.Value, Mode=TwoWay}"/>
@@ -293,7 +373,17 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Header="8" Width="100">
+							<DataGridTemplateColumn>
+								<DataGridTemplateColumn.HeaderTemplate>
+									<DataTemplate>
+										<Border Classes="headerTemplate">
+											<Grid ColumnDefinitions="*,Auto">
+												<TextBlock Grid.Column="0" Text="8"/>
+												<Button Grid.Column="1"/>
+											</Grid>
+										</Border>
+									</DataTemplate>
+								</DataGridTemplateColumn.HeaderTemplate>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
                                         <TextBox Text="{Binding Radionuclids.Value, Mode=TwoWay}"/>
@@ -301,7 +391,17 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Header="9" Width="100">
+							<DataGridTemplateColumn>
+								<DataGridTemplateColumn.HeaderTemplate>
+									<DataTemplate>
+										<Border Classes="headerTemplate">
+											<Grid ColumnDefinitions="*,Auto">
+												<TextBlock Grid.Column="0" Text="9"/>
+												<Button Grid.Column="1"/>
+											</Grid>
+										</Border>
+									</DataTemplate>
+								</DataGridTemplateColumn.HeaderTemplate>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form19">
                                         <TextBox Text="{Binding Activity.Value, Mode=TwoWay}"/>
