@@ -9,7 +9,7 @@ namespace Client_App.ViewModels.Forms.Forms1;
 
 public class Form_19VM : BaseFormVM
 {
-    public override string FormType => "1.2";
+    public override string FormType => "1.9";
 
     public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);
 

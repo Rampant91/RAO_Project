@@ -79,6 +79,7 @@
         <Style Selector="CheckBox.hideButton">
             <Setter Property="Height" Value="30" />
             <Setter Property="Margin" Value="5"/>
+            <Setter Property="CornerRadius" Value="5"/>
         </Style>
         <Style Selector="WrapPanel.header">
             <Setter Property="Orientation" Value="Horizontal"/>
@@ -90,12 +91,11 @@
             <Setter Property="CornerRadius" Value="5"/>
         </Style>
         <Style Selector="Border.borderContainer TextBox">
+            <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
-        <Style Selector="Border.borderContainer TextBlock">
-            <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
         <Style Selector="WrapPanel.header Button">
+            <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="Height" Value="30"/>
             <Setter Property="Margin" Value="5"/>
         </Style>
@@ -119,6 +119,7 @@
         </Style>
         <!--Table-->
         <Style Selector="DataGrid.table">
+            <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="CanUserResizeColumns" Value="True"/>
             <Setter Property="RowBackground" Value="White"/>
             <Setter Property="AlternatingRowBackground" Value="White"/>
@@ -148,6 +149,7 @@
 		    <Setter Property="Margin" Value="0,0,5,0"/>
 		</Style>
 		<Style Selector="Border.headerTemplate Button">
+            <Setter Property="CornerRadius" Value="5"/>
 			<Setter Property="Content" Value="˅"/>
 			<Setter Property="Padding" Value="0"/>
 			<Setter Property="Width" Value="20"/>
@@ -157,6 +159,7 @@
 			<Setter Property="Background" Value="#f0f8ff"/>
 		</Style>
 		<Style Selector="DataGrid DataGridRow:selected DataGridCell">
+            <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="Foreground" Value="Black"/>
 		    <Setter Property="Background" Value="LightBlue"/>
         </Style>
@@ -179,6 +182,7 @@
 			<Setter Property="IsHitTestVisible" Value="False"/>
 		</Style>
         <Style Selector="DataGrid.table CalendarDatePicker">
+            <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="Margin" Value="2,-1,-1,-2"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -186,20 +190,30 @@
         </Style>
 		
         <Style Selector="DataGrid.table CalendarDatePicker TextBox">
+            <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="IsVisible" Value="False"/>
         </Style>
         <!--PageControl-->
-        <Style Selector="Grid.pageControlContainer">
+        <Style Selector="Border.pageControlContainer">
+			<Setter Property="CornerRadius" Value="5"/>
             <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
             <Setter Property="Margin" Value="5"/>
         </Style>
+		<Style Selector="Border.pageControlContainer NumericUpDown">
+			<Setter Property="CornerRadius" Value="5"/>
+		</Style>
+		
         <!--Notes-->
-        <Style Selector="StackPanel.notesContainer">
-            <Setter Property="HorizontalAlignment" Value="Left"/>
+		<Style Selector="Border.notesContainer">
+			<Setter Property="CornerRadius" Value="5"/>
             <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
             <Setter Property="Margin" Value="5"/>
+		</Style>
+        <Style Selector="Border.notesContainer StackPanel">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>
         <Style Selector="DataGrid.notesTable">
+            <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="Width" Value="650"/>
             <Setter Property="MaxHeight" Value="180"/>
 			<Setter Property="RowHeight" Value="35" />
@@ -210,6 +224,7 @@
 			<Setter Property="GridLinesVisibility" Value="All"></Setter>
         </Style>
 		<Style Selector="DataGrid.notesTable TextBox">
+            <Setter Property="CornerRadius" Value="5"/>
 			<Setter Property="Margin" Value="-1"/>
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
 			<Setter Property="IsHitTestVisible" Value="False"/>
