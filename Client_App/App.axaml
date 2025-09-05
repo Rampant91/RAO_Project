@@ -71,6 +71,16 @@
                 </ControlTemplate>
             </Setter>
         </Style>
+		
+	    <!--Общие стили-->
+		
+			<!--Из-за особенностей предметной области допускается, что пользователи могут ввести вместо даты строку
+			    Поэтому buttonOnly предназначен для того чтобы упрощать пользователям ввод в обычный TextBox-->
+        <Style Selector="CalendarDatePicker.buttonOnly TextBox">
+            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
+		
 		<Style Selector="Border#Background">
 			<Setter Property="Background" Value="#f0f8ff"/>
         </Style>
@@ -189,10 +199,6 @@
 			<Setter Property="Watermark" Value="&lt;дд.мм.гггг&gt;"/>
         </Style>
 		
-        <Style Selector="DataGrid.table CalendarDatePicker TextBox">
-            <Setter Property="CornerRadius" Value="5"/>
-            <Setter Property="IsVisible" Value="False"/>
-        </Style>
         <!--PageControl-->
         <Style Selector="Border.pageControlContainer">
 			<Setter Property="CornerRadius" Value="5"/>
