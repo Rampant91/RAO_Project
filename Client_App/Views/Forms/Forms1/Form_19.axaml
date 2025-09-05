@@ -53,7 +53,7 @@
 								FontSize="48" 
 								Content="🠕"/>
 						
-						<Button Grid.Row="1">Поиск</Button>
+						<!--<Button Grid.Row="1">Поиск</Button>-->
 						<Button Command="{Binding SwitchToPreviousReport}"
 								Grid.Row="2" 
 								VerticalContentAlignment="Center" 
@@ -267,7 +267,7 @@
 										<Border Classes="headerTemplate">
 											<Grid ColumnDefinitions="*,Auto">
 												<TextBlock Grid.Column="0" Text="1"/>
-												<Button Grid.Column="1"/>
+												<!--<Button Grid.Column="1"/>-->
 											</Grid>
 										</Border>
 									</DataTemplate>
@@ -280,7 +280,7 @@
 										<Border Classes="headerTemplate">
 											<Grid ColumnDefinitions="*,Auto">
 												<TextBlock Grid.Column="0" Text="2"/>
-												<Button Grid.Column="1"/>
+												<!--<Button Grid.Column="1"/>-->
 											</Grid>
 										</Border>
 									</DataTemplate>
@@ -298,7 +298,7 @@
 										<Border Classes="headerTemplate">
 											<Grid ColumnDefinitions="*,Auto">
 												<TextBlock Grid.Column="0" Text="3"/>
-												<Button Grid.Column="1"/>
+												<!--<Button Grid.Column="1"/>-->
 											</Grid>
 										</Border>
 									</DataTemplate>
@@ -320,7 +320,7 @@
 										<Border Classes="headerTemplate">
 											<Grid ColumnDefinitions="*,Auto">
 												<TextBlock Grid.Column="0" Text="4"/>
-												<Button Grid.Column="1"/>
+												<!--<Button Grid.Column="1"/>-->
 											</Grid>
 										</Border>
 									</DataTemplate>
@@ -338,7 +338,7 @@
 										<Border Classes="headerTemplate">
 											<Grid ColumnDefinitions="*,Auto">
 												<TextBlock Grid.Column="0" Text="5"/>
-												<Button Grid.Column="1"/>
+												<!--<Button Grid.Column="1"/>-->
 											</Grid>
 										</Border>
 									</DataTemplate>
@@ -356,7 +356,7 @@
 										<Border Classes="headerTemplate">
 											<Grid ColumnDefinitions="*,Auto">
 												<TextBlock Grid.Column="0" Text="6"/>
-												<Button Grid.Column="1"/>
+												<!--<Button Grid.Column="1"/>-->
 											</Grid>
 										</Border>
 									</DataTemplate>
@@ -378,7 +378,7 @@
 										<Border Classes="headerTemplate">
 											<Grid ColumnDefinitions="*,Auto">
 												<TextBlock Grid.Column="0" Text="7"/>
-												<Button Grid.Column="1"/>
+												<!--<Button Grid.Column="1"/>-->
 											</Grid>
 										</Border>
 									</DataTemplate>
@@ -396,7 +396,7 @@
 										<Border Classes="headerTemplate">
 											<Grid ColumnDefinitions="*,Auto">
 												<TextBlock Grid.Column="0" Text="8"/>
-												<Button Grid.Column="1"/>
+												<!--<Button Grid.Column="1"/>-->
 											</Grid>
 										</Border>
 									</DataTemplate>
@@ -414,7 +414,7 @@
 										<Border Classes="headerTemplate">
 											<Grid ColumnDefinitions="*,Auto">
 												<TextBlock Grid.Column="0" Text="9"/>
-												<Button Grid.Column="1"/>
+												<!--<Button Grid.Column="1"/>-->
 											</Grid>
 										</Border>
 									</DataTemplate>
