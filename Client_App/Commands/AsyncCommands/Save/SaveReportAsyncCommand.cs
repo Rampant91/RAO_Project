@@ -17,18 +17,17 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
     private dynamic VM 
     {
         get 
-        { 
-            switch (_formType)
-            {
-                case "1.0":
-                        return _form10VM;
-                case "2.0":
-                        return _form20VM;
-                case "1.2":
-                    return _formVM;
-                default:
-                    return _changeOrCreateVM;
-            }
+        {
+            if (_formVM != null)
+                return _formVM;
+            else if (_changeOrCreateVM != null)
+                return _changeOrCreateVM;
+            else if (_form10VM != null)
+                return _form10VM;
+            else if (_form20VM != null)
+                return _form20VM;
+            else
+                return null;
         }
     }
 

@@ -23,21 +23,22 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     private string FormType => formVM.FormType;
     public override async Task AsyncExecute(object? parameter)
     {
+        if (SelectedForm == null) return;
         var clipboard = Application.Current.Clipboard;
 
         var pastedString = await clipboard.GetTextAsync();
-        if (string.IsNullOrEmpty(pastedString)) return;
+        if ((pastedString == null) || (pastedString == "")) return;
 
         var rows = pastedString.Split("\r\n");
 
         //Последняя строка пустая, поэтому выделяем память на одну ячейку меньше
-        var parsedRows = new string[rows.Length - 1][];
-        for(var i =0; i< parsedRows.Length; i++)
+        string[][] parsedRows = new string[rows.Length-1][];
+        for(int i =0; i< parsedRows.Length;i++)
         {
             parsedRows[i] = rows[i].Split('\t');
         }
 
-        var start = SelectedForm.NumberInOrder.Value - 1;
+        int start = SelectedForm.NumberInOrder.Value-1;
 
         if (start + parsedRows.Length > Storage.Rows.Count)
         {
@@ -56,7 +57,8 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     .ShowDialog(Desktop.MainWindow));
         }
 
-        for (var i = 0; i < parsedRows.Length && i+start<Storage.Rows.Count; i++)
+        
+        for (int i = 0; i < parsedRows.Length && i+start<Storage.Rows.Count; i++)
         {
             var form = Storage.Rows.Get<Form12>(i+start);
 

@@ -2,17 +2,18 @@
 using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.Delete;
+using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
+using Client_App.Commands.AsyncCommands.SwitchReport;
 using Client_App.Commands.SyncCommands;
 using Models.Collections;
 using Models.Forms;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using Client_App.Commands.AsyncCommands.Calculator;
-using Client_App.Commands.AsyncCommands.Save;
 
 namespace Client_App.ViewModels.Forms;
 
@@ -219,6 +220,19 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+    public int _selectedYear = DateTime.Now.Year;
+    public int SelectedYear
+    {
+        get
+        {
+            return _selectedYear;
+        }
+        set
+        {
+            _selectedYear = value;
+            OnPropertyChanged();
+        }
+    }
     #endregion
 
     #region Constructors
@@ -232,7 +246,6 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         UpdateFormList();
         UpdatePageInfo();
         NoteList = Report.Notes;
-
     }
 
     #endregion
@@ -258,7 +271,9 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand CopyNotes => new NewCopyNotesAsyncCommand();
     public ICommand PasteNotes => new NewPasteNotesAsyncCommand(this);
     public ICommand DeleteNotes => new NewDeleteNoteAsyncCommand(this);
-
+    public ICommand SwitchToNextReport => new SwitchToNextReportAsyncCommand(this);
+    public ICommand SwitchToSelectedReport => new SwitchToSelectedReportAsyncCommand(this);
+    public ICommand SwitchToPreviousReport => new SwitchToPreviousReportAsyncCommand(this);
     #endregion
 
     public async void UpdateFormList()

@@ -12,7 +12,7 @@ using Models.Forms.Form1;
 using Models.Interfaces;
 using MessageBox.Avalonia.Models;
 using Client_App.ViewModels.Forms.Forms1;
-
+using Client_App.ViewModels.Forms;
 namespace Client_App.Commands.AsyncCommands.SourceTransmission;
 
 // Перевод источника из РВ в РАО
@@ -20,7 +20,7 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
 {
     #region Constructor
 
-    public NewSourceTransmissionAsyncCommand(Form_12VM formVM)
+    public NewSourceTransmissionAsyncCommand(BaseFormVM formVM)
     {
         FormVM = formVM;
     }

@@ -1,4 +1,3 @@
-
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
@@ -29,19 +28,19 @@ using Avalonia.Controls;
 
 namespace Client_App.Views.Forms.Forms1;
 
-public partial class Form_11 : BaseWindow<Form_11VM>
+public partial class Form_16 : BaseWindow<Form_16VM>
 {
 
-    //private Form_11VM _vm = null!;
+    //private Form_16VM _vm = null!;
 
-    public Form_11()
+    public Form_16()
     {
         InitializeComponent();
-        DataContext = new Form_11VM();
+        DataContext = new Form_16VM();
         Show();
     }
 
-    public Form_11(Form_11VM vm)
+    public Form_16(Form_16VM vm)
     {
         InitializeComponent();
         DataContext = vm;
@@ -50,15 +49,13 @@ public partial class Form_11 : BaseWindow<Form_11VM>
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
-        this.AttachDevTools();
-
         WindowState = WindowState.Maximized;
     }
 
     //Временное узкоспециализированное решение
     private void CopyExecutorData_Click(object sender, RoutedEventArgs e)
     {
-        var command = new NewCopyExecutorDataAsyncCommand((Form_11VM)DataContext);
+        var command = new NewCopyExecutorDataAsyncCommand((Form_16VM)DataContext);
         if (command.CanExecute(null))
         {
             command.Execute(null);
@@ -69,7 +66,7 @@ public partial class Form_11 : BaseWindow<Form_11VM>
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
-        if (DataContext is not Form_11VM vm) return;
+        if (DataContext is not Form_16VM vm) return;
         try
         {
             await RemoveEmptyForms(vm);
@@ -196,7 +193,7 @@ public partial class Form_11 : BaseWindow<Form_11VM>
     /// </summary>
     /// <param name="vm">Модель открытого отчёта.</param>
     /// <returns>Сообщение о наличии пересечения.</returns>
-    private static async Task CheckPeriod(Form_11VM vm)
+    private static async Task CheckPeriod(Form_16VM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
         if (vm.Report.FormNum_DB is "1.0" or "2.0") return;
@@ -248,35 +245,40 @@ public partial class Form_11 : BaseWindow<Form_11VM>
     /// </summary>
     /// <param name="vm">Модель открытого отчёта.</param>
     /// <returns>Сообщение с предложением удалить пустые строчки.</returns>
-    private static async Task RemoveEmptyForms(Form_11VM vm)
+    private static async Task RemoveEmptyForms(Form_16VM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
         List<Form> formToDeleteList = [];
-        var lst = vm.Report[vm.FormType].ToList<Form11>();
+        var lst = vm.Report[vm.FormType].ToList<Form16>();
         foreach (var form in lst)
         {
             if (string.IsNullOrWhiteSpace(form.OperationCode_DB)
                 && string.IsNullOrWhiteSpace(form.OperationDate_DB)
-                && string.IsNullOrWhiteSpace(form.PassportNumber_DB)
-                && string.IsNullOrWhiteSpace(form.Type_DB)
-                && string.IsNullOrWhiteSpace(form.Radionuclids_DB)
-                && string.IsNullOrWhiteSpace(form.FactoryNumber_DB) 
-                && form.Quantity_DB is null
-                && string.IsNullOrWhiteSpace(form.Activity_DB)
-                && string.IsNullOrWhiteSpace(form.CreatorOKPO_DB)
-                && string.IsNullOrWhiteSpace(form.CreationDate_DB)
-                && form.Category_DB is null
-                && form.SignedServicePeriod_DB is null
-                && form.PropertyCode_DB is null
-                && string.IsNullOrWhiteSpace(form.Owner_DB)
+                && string.IsNullOrWhiteSpace(form.CodeRAO_DB)
+                && string.IsNullOrWhiteSpace(form.StatusRAO_DB)
+                && string.IsNullOrWhiteSpace(form.Volume_DB)
+                && string.IsNullOrWhiteSpace(form.Mass_DB)
+                && string.IsNullOrWhiteSpace(form.QuantityOZIII_DB)
+                && string.IsNullOrWhiteSpace(form.MainRadionuclids_DB)
+                && string.IsNullOrWhiteSpace(form.TritiumActivity_DB)
+                && string.IsNullOrWhiteSpace(form.BetaGammaActivity_DB)
+                && string.IsNullOrWhiteSpace(form.AlphaActivity_DB)
+                && string.IsNullOrWhiteSpace(form.TransuraniumActivity_DB)
+                && string.IsNullOrWhiteSpace(form.ActivityMeasurementDate_DB)
                 && form.DocumentVid_DB is null
                 && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
                 && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
                 && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
                 && string.IsNullOrWhiteSpace(form.TransporterOKPO_DB)
+                && string.IsNullOrWhiteSpace(form.StoragePlaceName_DB)
+                && string.IsNullOrWhiteSpace(form.StoragePlaceCode_DB)
+                && string.IsNullOrWhiteSpace(form.RefineOrSortRAOCode_DB)
                 && string.IsNullOrWhiteSpace(form.PackName_DB)
                 && string.IsNullOrWhiteSpace(form.PackType_DB)
-                && string.IsNullOrWhiteSpace(form.PackNumber_DB))
+                && string.IsNullOrWhiteSpace(form.PackNumber_DB)
+                && string.IsNullOrWhiteSpace(form.Subsidy_DB)
+                && string.IsNullOrWhiteSpace(form.FcpNumber_DB)
+                && string.IsNullOrWhiteSpace(form.ContractNumber_DB)) 
             {
                 formToDeleteList.Add(form);
             }

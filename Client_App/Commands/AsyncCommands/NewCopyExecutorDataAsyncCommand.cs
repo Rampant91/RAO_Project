@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 using Models.Collections;
 using Avalonia.Threading;
 using Client_App.ViewModels.Forms.Forms1;
+using Client_App.ViewModels.Forms;
 
 namespace Client_App.Commands.AsyncCommands;
 
 
-public class NewCopyExecutorDataAsyncCommand(Form_12VM formVM) : BaseAsyncCommand
+public class NewCopyExecutorDataAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
     
     private Report Storage => formVM.Report;

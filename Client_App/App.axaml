@@ -18,7 +18,7 @@
         </ResourceDictionary>
         -->
         <!--Палитра-->
-        <SolidColorBrush x:Key="PrimaryColor" Color="#5685c0"/>
+        <SolidColorBrush x:Key="PrimaryColor" Color="#99d3f0"/>
 
     </Application.Resources>
 
@@ -71,11 +71,25 @@
                 </ControlTemplate>
             </Setter>
         </Style>
+		
+	    <!--Общие стили-->
+		
+			<!--Из-за особенностей предметной области допускается, что пользователи могут ввести вместо даты строку
+			    Поэтому buttonOnly предназначен для того чтобы упрощать пользователям ввод в обычный TextBox-->
+        <Style Selector="CalendarDatePicker.buttonOnly TextBox">
+            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
+		
+		<Style Selector="Border#Background">
+			<Setter Property="Background" Value="#f0f8ff"/>
+        </Style>
         <!--Стили для окон редактирования форм-->
         <!--Header-->
         <Style Selector="CheckBox.hideButton">
             <Setter Property="Height" Value="30" />
             <Setter Property="Margin" Value="5"/>
+            <Setter Property="CornerRadius" Value="5"/>
         </Style>
         <Style Selector="WrapPanel.header">
             <Setter Property="Orientation" Value="Horizontal"/>
@@ -87,12 +101,11 @@
             <Setter Property="CornerRadius" Value="5"/>
         </Style>
         <Style Selector="Border.borderContainer TextBox">
+            <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
-        <Style Selector="Border.borderContainer TextBlock">
-            <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
         <Style Selector="WrapPanel.header Button">
+            <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="Height" Value="30"/>
             <Setter Property="Margin" Value="5"/>
         </Style>
@@ -116,54 +129,109 @@
         </Style>
         <!--Table-->
         <Style Selector="DataGrid.table">
+            <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="CanUserResizeColumns" Value="True"/>
             <Setter Property="RowBackground" Value="White"/>
-            <Setter Property="AlternatingRowBackground" Value="LightBlue"/>
+            <Setter Property="AlternatingRowBackground" Value="White"/>
             <Setter Property="Margin" Value="5,-5,5,5"/>
             <Setter Property="SelectionMode" Value="Extended"/>
             <Setter Property="GridLinesVisibility" Value="All"/>
             <Setter Property="CanUserSortColumns" Value="False"/>
-            <Setter Property="ColumnWidth" Value="Auto" />
+            <Setter Property="ColumnWidth" Value="125" />
             <Setter Property="MinColumnWidth" Value="50" />
             <Setter Property="MaxColumnWidth" Value="250" />
         </Style>
+		
+		<Style Selector="DataGrid.table DataGridColumnHeader">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+		
+		<Style Selector="Border.headerTemplate">
+			<Setter Property="BorderThickness" Value="1"/>
+		    <Setter Property="BorderBrush" Value="#aaaaaa"/>
+		    <Setter Property="Margin" Value="-1,-1,-1,0"/>
+		</Style>
+		
+		<Style Selector="Border.headerTemplate TextBlock">
+			<Setter Property="TextAlignment" Value="Center"/>
+		    <Setter Property="VerticalAlignment" Value="Center"/>
+		    <Setter Property="Margin" Value="0,0,5,0"/>
+		</Style>
+		<Style Selector="Border.headerTemplate Button">
+            <Setter Property="CornerRadius" Value="5"/>
+			<Setter Property="Content" Value="˅"/>
+			<Setter Property="Padding" Value="0"/>
+			<Setter Property="Width" Value="20"/>
+			<Setter Property="Height" Value="20"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Margin" Value="0,2,5,2"/>
+			<Setter Property="Background" Value="#f0f8ff"/>
+		</Style>
+		<Style Selector="DataGrid DataGridRow:selected DataGridCell">
+            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="Foreground" Value="Black"/>
+		    <Setter Property="Background" Value="LightBlue"/>
+        </Style>
+        <Style Selector="DataGrid DataGridRow:pointerover:not(:selected) DataGridCell">
+            <Setter Property="Foreground" Value="Black"/>
+		    <Setter Property="Background" Value="LightGray"/>
+        </Style>
         <Style Selector="DataGrid DataGridRow:selected TextBox">
             <Setter Property="Foreground" Value="Black"/>
+		    <Setter Property="Background" Value="LightBlue"/>
         </Style>
+        <Style Selector="DataGrid DataGridRow:pointerover:not(:selected) TextBox">
+            <Setter Property="Foreground" Value="Black"/>
+		    <Setter Property="Background" Value="LightGray"/>
+        </Style>
+		
         <Style Selector="DataGrid.table TextBox">
-            <Setter Property="Margin" Value="3"/>
+            <Setter Property="Margin" Value="-1,-1,-1,-1"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
 			<Setter Property="IsHitTestVisible" Value="False"/>
 		</Style>
         <Style Selector="DataGrid.table CalendarDatePicker">
-            <Setter Property="Margin" Value="3"/>
+            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="Margin" Value="2,-1,-1,-2"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
 			<Setter Property="Watermark" Value="&lt;дд.мм.гггг&gt;"/>
         </Style>
+		
         <!--PageControl-->
-        <Style Selector="Grid.pageControlContainer">
+        <Style Selector="Border.pageControlContainer">
+			<Setter Property="CornerRadius" Value="5"/>
             <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
             <Setter Property="Margin" Value="5"/>
         </Style>
+		<Style Selector="Border.pageControlContainer NumericUpDown">
+			<Setter Property="CornerRadius" Value="5"/>
+		</Style>
+		
         <!--Notes-->
-        <Style Selector="StackPanel.notesContainer">
-            <Setter Property="HorizontalAlignment" Value="Left"/>
+		<Style Selector="Border.notesContainer">
+			<Setter Property="CornerRadius" Value="5"/>
             <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
             <Setter Property="Margin" Value="5"/>
+		</Style>
+        <Style Selector="Border.notesContainer StackPanel">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>
         <Style Selector="DataGrid.notesTable">
+            <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="Width" Value="650"/>
             <Setter Property="MaxHeight" Value="180"/>
 			<Setter Property="RowHeight" Value="35" />
             <Setter Property="RowBackground" Value="White"/>
 			<Setter Property="SelectionMode" Value="Extended"/>
-            <Setter Property="AlternatingRowBackground" Value="LightBlue"/>
+            <Setter Property="AlternatingRowBackground" Value="White"/>
             <Setter Property="Margin" Value="5"/>
 			<Setter Property="GridLinesVisibility" Value="All"></Setter>
         </Style>
 		<Style Selector="DataGrid.notesTable TextBox">
-			<Setter Property="Margin" Value="3"/>
+            <Setter Property="CornerRadius" Value="5"/>
+			<Setter Property="Margin" Value="-1"/>
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
 			<Setter Property="IsHitTestVisible" Value="False"/>
 		</Style>
