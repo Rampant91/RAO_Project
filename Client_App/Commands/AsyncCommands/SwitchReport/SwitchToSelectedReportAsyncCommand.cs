@@ -9,6 +9,7 @@ namespace Client_App.Commands.AsyncCommands.SwitchReport
 {
     internal class SwitchToSelectedReportAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     {
+        // Пока не используется
         public override async Task AsyncExecute(object? parameter)
         {
         }
