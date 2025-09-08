@@ -205,6 +205,10 @@
 								  Command="{Binding DeleteDataInRows}"
 								  CommandParameter="{Binding SelectedForms}"
 								  HotKey="Ctrl+K"/>
+                        <MenuItem Header="Рассчитать категорию"
+                                  Command="{Binding CategoryCalculationFromReport}"
+                                  CommandParameter="{Binding SelectedForms}"
+                                  HotKey="Ctrl+K"/>
 						<MenuItem Header="Перевести РВ в РАО        Ctrl+J"
 								  Command="{Binding SourceTransmission}"
 								  CommandParameter="{Binding SelectedForm}"

@@ -1378,16 +1378,6 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
                     {
-                        Key = Avalonia.Input.Key.P,
-                        KeyModifiers = Avalonia.Input.KeyModifiers.Control,
-                        IsDoubleTappedCommand = false,
-                        IsContextMenuCommand = true,
-                        ParamName = "SelectedItems",
-                        ContextMenuText = ["Рассчитать категорию"],
-                        Command = dataContext.CategoryCalculationFromReport
-                    });
-                    Rgrd.CommandsList.Add(new KeyCommand
-                    {
                         Key = Avalonia.Input.Key.Z,
                         KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                         IsDoubleTappedCommand = false,

@@ -1,18 +1,21 @@
-﻿using Models.DTO;
+﻿using Avalonia.Controls;
+using Avalonia.Threading;
+using DynamicData.Binding;
+using MessageBox.Avalonia.DTO;
+using Models.Collections;
+using Models.DTO;
+using Models.Forms;
 using Models.Forms.Form1;
+using Models.Interfaces;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Avalonia.Controls;
-using Avalonia.Threading;
-using MessageBox.Avalonia.DTO;
-using Models.Collections;
-using Models.Interfaces;
 
 namespace Client_App.Commands.AsyncCommands.Calculator;
 
@@ -82,36 +85,66 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
 
     public override async Task AsyncExecute(object? parameter)
     {
-        if (parameter is not ObservableCollectionWithItemPropertyChanged<IKey> selectedForms) return;
-
-        if (selectedForms.Count != 1)
+        if (parameter is not ObservableCollectionWithItemPropertyChanged<IKey> && parameter is not ObservableCollection<Form>) return;
+        Form11 form = new();
+        if (parameter is ObservableCollectionWithItemPropertyChanged<IKey> selectedForms)
         {
-            var msg = selectedForms.Count switch
+            if (selectedForms.Count != 1)
             {
-                0 => "Не удалось выполнить расчёт категории. Не выбрана строчка.",
-                > 1 => "Не удалось выполнить расчёт категории. Выбрано более одной строчки.",
-                _ => string.Empty
-            };
+                var msg = selectedForms.Count switch
+                {
+                    0 => "Не удалось выполнить расчёт категории. Не выбрана строчка.",
+                    > 1 => "Не удалось выполнить расчёт категории. Выбрано более одной строчки.",
+                    _ => string.Empty
+                };
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                 {
-                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                     ContentTitle = "Расчёт категории ЗРИ.",
-                     ContentHeader = "Уведомление",
-                     ContentMessage = msg,
-                     MinWidth = 450,
-                     MinHeight = 150,
-                     WindowStartupLocation = WindowStartupLocation.CenterOwner
-                 })
-                 .ShowDialog(Desktop.MainWindow));
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = "Расчёт категории ЗРИ.",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = msg,
+                        MinWidth = 450,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(Desktop.MainWindow));
 
-            return;
+                return;
+            }
+            form = (Form11)selectedForms.First();
+        }
+        if (parameter is ObservableCollection<Form> newSelectedForms)
+        {
+            if (newSelectedForms.Count != 1)
+            {
+                var msg = newSelectedForms.Count switch
+                {
+                    0 => "Не удалось выполнить расчёт категории. Не выбрана строчка.",
+                    > 1 => "Не удалось выполнить расчёт категории. Выбрано более одной строчки.",
+                    _ => string.Empty
+                };
+
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = "Расчёт категории ЗРИ.",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = msg,
+                        MinWidth = 450,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(Desktop.MainWindow));
+
+                return;
+            }
+            form = (Form11)newSelectedForms.First();
         }
 
         R_Populate_From_File();
-
-        var form = (Form11)selectedForms.First();
 
         var radsString = form.Radionuclids_DB;
         var radsSet = radsString
