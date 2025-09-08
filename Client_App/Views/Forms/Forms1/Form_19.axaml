@@ -145,7 +145,6 @@
                                     Content="Скопировать данные предыдущей формы"/>
 					    </Grid>
 				    </Border>
-                    <Button Command="{Binding SourceTransmissionAll}"> Перевести все РВ в РАО</Button>
 
 			    </WrapPanel>
 		    </Expander>
