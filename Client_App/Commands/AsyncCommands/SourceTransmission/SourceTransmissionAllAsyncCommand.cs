@@ -8,8 +8,8 @@ using Avalonia.Controls;
 using MessageBox.Avalonia.DTO;
 using Models.Forms.Form1;
 using Models.DBRealization;
-using Models.Classes;
 using System.Collections.Generic;
+using Client_App.Resources;
 using Models.Interfaces;
 
 namespace Client_App.Commands.AsyncCommands.SourceTransmission;

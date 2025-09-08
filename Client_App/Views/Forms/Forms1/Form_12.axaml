@@ -133,45 +133,55 @@
 				<Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="Auto">
                     <Grid.ContextMenu>
                         <ContextMenu DataContext="{Binding DataContext, ElementName=dataGrid}">
-                            <MenuItem Header="Выделить всё				Ctrl+A"
+                            <MenuItem Header="Выделить всё"
                                       Command="{Binding SelectAll}"
 									  IsHitTestVisible="True"
+                                      InputGesture="Ctrl+A"
                                       HotKey="Ctrl+A"/>
-                            <MenuItem Header="Добавить строку			Ctrl+T"
+                            <MenuItem Header="Добавить строку"
                                       Command="{Binding AddRow}"
+                                      InputGesture="Ctrl+T"
                                       HotKey="Ctrl+T"/>
-                            <MenuItem Header="Добавить N строк			Ctrl+N"
+                            <MenuItem Header="Добавить N строк"
                                       Command="{Binding AddRows}"
+                                      InputGesture="Ctrl+N"
                                       HotKey="Ctrl+N"/>
-                            <MenuItem Header="Добавить N строк перед	Ctrl+I"
+                            <MenuItem Header="Добавить N строк перед"
                                       Command="{Binding AddRowsIn}"
                                       CommandParameter="{Binding SelectedForms}"
+                                      InputGesture="Ctrl+I"
                                       HotKey="Ctrl+I"/>
-                            <MenuItem Header="Копировать				Ctrl+C"
+                            <MenuItem Header="Копировать"
                                       Command="{Binding CopyRows}"
                                       CommandParameter="{Binding SelectedForms}"
+                                      InputGesture="Ctrl+C"
                                       HotKey="Ctrl+C"/>
-	
-                            <MenuItem Header="Вставить					Ctrl+V"
+                            <MenuItem Header="Вставить"
                                       Command="{Binding PasteRows}"
+                                      InputGesture="Ctrl+V"
                                       HotKey="Ctrl+V"/>
-                            <MenuItem Header="Удалить выбранные строчки	Ctrl+D"
+                            <MenuItem Header="Удалить выбранные строчки"
                                       Command="{Binding DeleteRows}"
                                       CommandParameter="{Binding SelectedForms}"
+                                      InputGesture="Ctrl+D"
                                       HotKey="Ctrl+D"/>
-                            <MenuItem Header="Выставить номер			Ctrl+O"
+                            <MenuItem Header="Выставить номер"
                                       Command="{Binding SetNumberOrder}"
+                                      InputGesture="Ctrl+O"
                                       HotKey="Ctrl+O"/>
-                            <!--<MenuItem Header="Сортировать по номеру п/п	Ctrl+L"
+                            <!--<MenuItem Header="Сортировать по номеру п/п"
                                       Command="{Binding SortForms}"
+                                      InputGesture="Ctrl+L"
                                       HotKey="Ctrl+L"/> -->
-                            <MenuItem Header="Очистить строчки	        Ctrl+K"
+                            <MenuItem Header="Очистить строчки"
                                       Command="{Binding DeleteDataInRows}"
                                       CommandParameter="{Binding SelectedForms}"
+                                      InputGesture="Ctrl+K"
                                       HotKey="Ctrl+K"/>
-                            <MenuItem Header="Перевести РВ в РАО        Ctrl+J"
+                            <MenuItem Header="Перевести РВ в РАО"
                                       Command="{Binding SourceTransmission}"
                                       CommandParameter="{Binding SelectedForm}"
+                                      InputGesture="Ctrl+J"
                                       HotKey="Ctrl+J"/>
                         </ContextMenu>
                     </Grid.ContextMenu>
@@ -268,12 +278,13 @@
 					<DataGrid 
                         Grid.Row="1"
                         Classes="table"
+                        x:CompileBindings="True"
 						x:Name="dataGrid"
 						Items="{Binding FormList}"
                         SelectedItem="{Binding SelectedForm}">
                         <interactivity:Interaction.Behaviors>
                             <local:DataGridDragSelectionBehavior/>
-                            <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
+                            <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}"/>
 						    <local:DataGridDoubleClickBehavior/>
 						</interactivity:Interaction.Behaviors>
                         <DataGrid.Columns>
@@ -281,12 +292,11 @@
                             <DataGridTextColumn Binding="{Binding NumberInOrder.Value}"
                                                 Header="1"
                                                 IsReadOnly="True"
-                                                x:CompileBindings="True" 
                                                 x:DataType="forms1:Form12"/>
 
                             <DataGridTemplateColumn Header="2">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form12">
+                                    <DataTemplate x:DataType="forms1:Form12">
                                         <TextBox Text="{Binding OperationCode.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -294,15 +304,16 @@
 
                             <DataGridTemplateColumn Header="3">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form12">
-                                        <CalendarDatePicker SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
+                                    <DataTemplate x:DataType="forms1:Form12">
+                                        <CalendarDatePicker SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, 
+                                                            Converter={StaticResource DateConverter}}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
                             <DataGridTemplateColumn Header="4" Width="80">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form12">
+                                    <DataTemplate x:DataType="forms1:Form12">
                                         <TextBox Text="{Binding PassportNumber.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -310,7 +321,7 @@
 
                             <DataGridTemplateColumn Header="5"  Width="100">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form12">
+                                    <DataTemplate x:DataType="forms1:Form12">
                                         <TextBox Text="{Binding NameIOU.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -318,7 +329,7 @@
 
                             <DataGridTemplateColumn Header="6">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form12">
+                                    <DataTemplate x:DataType="forms1:Form12">
                                         <TextBox Text="{Binding FactoryNumber.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -326,7 +337,7 @@
 
                             <DataGridTemplateColumn Header="7"  Width="100">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form12">
+                                    <DataTemplate x:DataType="forms1:Form12">
                                         <TextBox Text="{Binding Mass.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -334,7 +345,7 @@
 
                             <DataGridTemplateColumn Header="8"  Width="100">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form12">
+                                    <DataTemplate x:DataType="forms1:Form12">
                                         <TextBox Text="{Binding CreatorOKPO.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -342,8 +353,9 @@
 
                             <DataGridTemplateColumn Header="9">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form12">
-                                        <CalendarDatePicker SelectedDate="{Binding CreationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
+                                    <DataTemplate x:DataType="forms1:Form12">
+                                        <CalendarDatePicker SelectedDate="{Binding CreationDate.Value, Mode=TwoWay, 
+                                                            Converter={StaticResource DateConverter}}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -351,7 +363,7 @@
                             <DataGridTemplateColumn
 												Header="10">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form12">
+                                    <DataTemplate x:DataType="forms1:Form12">
                                         <TextBox Text="{Binding SignedServicePeriod.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -359,7 +371,7 @@
 
                             <DataGridTemplateColumn Header="11"  Width="100">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form12">
+                                    <DataTemplate x:DataType="forms1:Form12">
                                         <TextBox Text="{Binding PropertyCode.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -367,7 +379,7 @@
 
                             <DataGridTemplateColumn Header="12"  Width="110">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form12">
+                                    <DataTemplate x:DataType="forms1:Form12">
                                         <TextBox Text="{Binding Owner.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -375,7 +387,7 @@
 
                             <DataGridTemplateColumn Header="13">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form12">
+                                    <DataTemplate x:DataType="forms1:Form12">
                                         <TextBox Text="{Binding DocumentVid.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -383,7 +395,7 @@
 
                             <DataGridTemplateColumn Header="14">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form12">
+                                    <DataTemplate x:DataType="forms1:Form12">
                                         <TextBox Text="{Binding DocumentNumber.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -391,15 +403,16 @@
 
                             <DataGridTemplateColumn Header="15">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form12">
-                                        <CalendarDatePicker SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
+                                    <DataTemplate x:DataType="forms1:Form12">
+                                        <CalendarDatePicker SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay, 
+                                                            Converter={StaticResource DateConverter}}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
                             <DataGridTemplateColumn Header="16" Width="110">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form12">
+                                    <DataTemplate x:DataType="forms1:Form12">
                                         <TextBox Text="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -407,7 +420,7 @@
 
                             <DataGridTemplateColumn Header="17" Width="100">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form12">
+                                    <DataTemplate x:DataType="forms1:Form12">
                                         <TextBox Text="{Binding TransporterOKPO.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -415,7 +428,7 @@
 
                             <DataGridTemplateColumn Header="18" Width="100">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form12">
+                                    <DataTemplate x:DataType="forms1:Form12">
                                         <TextBox Text="{Binding PackName.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -423,7 +436,7 @@
 
                             <DataGridTemplateColumn Header="19">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form12">
+                                    <DataTemplate x:DataType="forms1:Form12">
                                         <TextBox Text="{Binding PackType.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -431,7 +444,7 @@
 
                             <DataGridTemplateColumn Header="20">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms1:Form12">
+                                    <DataTemplate x:DataType="forms1:Form12">
                                         <TextBox Text="{Binding PackNumber.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -498,6 +511,7 @@
 				    <TextBlock Margin="5">Примечания</TextBlock>
                     <DataGrid Classes="notesTable"
                               Items="{Binding NoteList}"
+                              x:CompileBindings="True"
                               SelectedItem="{Binding SelectedNote}">
 					    <interactivity:Interaction.Behaviors>
 							<local:DataGridDoubleClickBehavior/>
@@ -507,7 +521,7 @@
                         <DataGrid.Columns>
 						    <DataGridTemplateColumn Header="№ строки" Width="80">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms:Note">
+                                    <DataTemplate x:DataType="forms:Note">
                                         <TextBox Text="{Binding RowNumber.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -515,7 +529,7 @@
 							
                             <DataGridTemplateColumn Header="№ графы" Width="80">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms:Note">
+                                    <DataTemplate x:DataType="forms:Note">
                                         <TextBox Text="{Binding GraphNumber.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -523,7 +537,7 @@
 							
                             <DataGridTemplateColumn Header="Пояснения" Width="*">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:CompileBindings="True" x:DataType="forms:Note">
+                                    <DataTemplate x:DataType="forms:Note">
                                         <TextBox Text="{Binding Comment.Value, Mode=TwoWay}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>

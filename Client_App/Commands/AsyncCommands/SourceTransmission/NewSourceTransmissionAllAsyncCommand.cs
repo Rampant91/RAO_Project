@@ -2,7 +2,6 @@
 using Avalonia.Threading;
 using Client_App.ViewModels.Forms;
 using MessageBox.Avalonia.DTO;
-using Models.Classes;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms.Form1;
@@ -11,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Client_App.Resources;
 
 namespace Client_App.Commands.AsyncCommands.SourceTransmission;
 

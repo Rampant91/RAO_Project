@@ -966,6 +966,16 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
                 {
+                    Key = Avalonia.Input.Key.P,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = ["Рассчитать категорию"],
+                    Command = dataContext.CategoryCalculationFromReport
+                });
+                Rgrd.CommandsList.Add(new KeyCommand
+                {
                     Key = Avalonia.Input.Key.E,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
@@ -1365,6 +1375,16 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         ParamName = "Del",
                         ContextMenuText = ["Очистить ячейки                     Delete"],
                         Command = dataContext.DeleteDataInRows
+                    });
+                    Rgrd.CommandsList.Add(new KeyCommand
+                    {
+                        Key = Avalonia.Input.Key.P,
+                        KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                        IsDoubleTappedCommand = false,
+                        IsContextMenuCommand = true,
+                        ParamName = "SelectedItems",
+                        ContextMenuText = ["Рассчитать категорию"],
+                        Command = dataContext.CategoryCalculationFromReport
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
                     {

@@ -12,26 +12,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Client_App.Resources;
 
 namespace Client_App.Commands.AsyncCommands;
 
 /// <summary>
 /// Открыть окно редактирования выбранной формы.
 /// </summary>
-/// <param name="form">Параметр и окно, которое нужно закрыть.</param>
-public class ChangeFormAsyncCommand(FormParameter? form = null) : BaseAsyncCommand
+/// <param name="formParam">Содержит коллекцию отчётов Parameter (костыль, оттуда мы всегда берём только один отчёт)
+/// и окно Window, которое нужно закрыть.</param>
+public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsyncCommand
 {
     #region AsyncExecute
     
+    /// <summary>
+    /// Используется при вызове из других команд
+    /// </summary>
+    /// <param name="parameter"></param>
+    /// <returns></returns>
     public override async Task AsyncExecute(object? parameter)
     {
         if (parameter != null)
         {
-            await Execute(parameter);
+            await Execute();
         }
-        else if (form != null)
+        else if (formParam != null)
         {
-            await Execute(form.Parameter, form.Window);
+            await Execute(formParam.Window);
         }
     }
 
@@ -39,17 +46,17 @@ public class ChangeFormAsyncCommand(FormParameter? form = null) : BaseAsyncComma
 
     #region Execute
 
-    private async Task Execute(object? parameter, Window? window = null)
+    public override async void Execute(object? parameter)
     {
-        if (window != null)
-        {
-            window.Closed += WindowClosed;
-            window.Close();
-        }
-        else
-        {
-            await OpenReport(parameter);
-        }
+        await OpenReport(parameter);
+    }
+
+    private Task Execute(Window? window = null)
+    {
+        window.Closed += WindowClosed;
+        window.Close();
+
+        return Task.CompletedTask;
     }
 
     #endregion
@@ -58,7 +65,7 @@ public class ChangeFormAsyncCommand(FormParameter? form = null) : BaseAsyncComma
 
     private static async Task OpenReport(object? parameter)
     {
-        if (parameter is ObservableCollectionWithItemPropertyChanged<IKey> param && param.First() is { } obj)
+        if (parameter is ObservableCollectionWithItemPropertyChanged<IKey> { Count: > 0 } param && param.First() is { } obj)
         {
             var t = Desktop.MainWindow as MainWindow;
             var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
@@ -150,8 +157,8 @@ public class ChangeFormAsyncCommand(FormParameter? form = null) : BaseAsyncComma
 
     private async void WindowClosed(object? sender, System.EventArgs e)
     {
-        if (form == null) return;
-        await OpenReport(form.Parameter).ConfigureAwait(false);
+        if (formParam == null) return;
+        await OpenReport(formParam.Parameter).ConfigureAwait(false);
     }
 
     #endregion

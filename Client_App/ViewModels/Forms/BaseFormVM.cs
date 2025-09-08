@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Client_App.Commands.AsyncCommands.Calculator;
 using Client_App.Commands.AsyncCommands.Save;
 
 namespace Client_App.ViewModels.Forms;

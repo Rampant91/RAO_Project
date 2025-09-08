@@ -336,9 +336,9 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
 
         #region Test Version
 
-        //var t = await db.Database.GetPendingMigrationsAsync();
-        //var a = db.Database.GetMigrations();
-        //var b = await db.Database.GetAppliedMigrationsAsync();
+        var t = await db.Database.GetPendingMigrationsAsync();
+        var a = db.Database.GetMigrations();
+        var b = await db.Database.GetAppliedMigrationsAsync();
 
         #endregion
 

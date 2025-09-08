@@ -2547,8 +2547,23 @@ public abstract class CheckF18 : CheckBase
                 {
                     if (WorkdaysBetweenDates(dateMid, dateEnd) > days)
                     {
-                        //overdueSet.Add($"Операция {operationCode} за {date_mid} просрочена на {WorkdaysBetweenDates(date_mid, date_end) - days} дней.");
-                        overdueSetLines.Add((i + 1).ToString());
+                        if (operationCode == "10")
+                        {
+                            result.Add(new CheckError
+                            {
+                                FormNum = "form_18",
+                                Row = (i + 1).ToString(),
+                                Column = "DocumentDate_DB",
+                                Value = documentDate,
+                                Message = "Нарушен срок предоставления отчётности. Для операций инвентаризации, " +
+                                          "срок предоставления отчёта исчисляется с даты утверждения акта инвентаризации " +
+                                          "и не должен превышать 10 рабочих дней."
+                            });
+                        }
+                        else
+                        {
+                            overdueSetLines.Add((i + 1).ToString());
+                        }
                     }
                 }
             }
@@ -2561,7 +2576,7 @@ public abstract class CheckF18 : CheckBase
                 Row = string.Join(", ", overdueSetLines),
                 Column = "-",
                 Value = "",
-                Message = $"Указанные операции просрочены."
+                Message = "Указанные операции просрочены."
             });
         }
         return result;

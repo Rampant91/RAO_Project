@@ -782,7 +782,7 @@ public abstract class CheckF15 : CheckBase
         {
             result.Add(new CheckError
             {
-                FormNum = "form_11",
+                FormNum = "form_15",
                 Row = (line + 1).ToString(),
                 Column = "FactoryNumber_DB",
                 Value = factoryNum,
@@ -795,7 +795,7 @@ public abstract class CheckF15 : CheckBase
         {
             result.Add(new CheckError
             {
-                FormNum = "form_11",
+                FormNum = "form_15",
                 Row = (line + 1).ToString(),
                 Column = "FactoryNumber_DB",
                 Value = factoryNum,
@@ -809,7 +809,7 @@ public abstract class CheckF15 : CheckBase
         {
             result.Add(new CheckError
             {
-                FormNum = "form_11",
+                FormNum = "form_15",
                 Row = (line + 1).ToString(),
                 Column = "FactoryNumber_DB",
                 Value = factoryNum,
@@ -823,7 +823,7 @@ public abstract class CheckF15 : CheckBase
             {
                 result.Add(new CheckError
                 {
-                    FormNum = "form_11",
+                    FormNum = "form_15",
                     Row = (line + 1).ToString(),
                     Column = "FactoryNumber_DB",
                     Value = factoryNum,
@@ -1362,8 +1362,8 @@ public abstract class CheckF15 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentDate_DB",
                 Value = documentDate,
-                Message = "Дата документа не входит в отчетный период. Для операции инвентаризации, " +
-                          "срок предоставления отчета исчисляется с даты утверждения акта инвентаризации."
+                Message = "Нарушен срок предоставления отчётности. Для операций инвентаризации, " +
+                          "срок предоставления отчёта исчисляется с даты утверждения акта инвентаризации и не должен превышать 10 рабочих дней."
             });
         }
         return result;

@@ -6,7 +6,6 @@ using Client_App.ViewModels.Calculator;
 using Models.DTO;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;

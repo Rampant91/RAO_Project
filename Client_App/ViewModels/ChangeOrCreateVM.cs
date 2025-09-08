@@ -23,6 +23,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Client_App.Commands.AsyncCommands.Calculator;
 
 namespace Client_App.ViewModels;
 
@@ -181,6 +182,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ICommand AddRow { get; set; }                            //  Добавить строку в форму
     public ICommand AddRows { get; set; }                           //  Добавить N строк в форму
     public ICommand AddRowsIn { get; set; }                         //  Добавить N строк в форму перед выбранной строкой
+    public ICommand CategoryCalculationFromReport { get; set; }     //  Расчёт категории источника ЗРИ
     public ICommand ChangeReportOrder { get; set; }                 //  Поменять местами юр. лицо и обособленное подразделение
     public ICommand CheckReport { get; set; }                       //  Открывает окно проверки текущей формы при нажатии кнопки "Проверить"
     public ICommand CopyExecutorData { get; set; }                  //  Скопировать данные исполнителя из предыдущей формы
@@ -347,6 +349,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         AddRow = new AddRowAsyncCommand(this);
         AddRows = new AddRowsAsyncCommand(this);
         AddRowsIn = new AddRowsInAsyncCommand(this);
+        CategoryCalculationFromReport = new CategoryCalculationFromReportAsyncCommand();
         ChangeReportOrder = new ChangeReportOrderAsyncCommand(this);
         CheckReport = new CheckFormAsyncCommand(this);
         CopyExecutorData = new CopyExecutorDataAsyncCommand(this);

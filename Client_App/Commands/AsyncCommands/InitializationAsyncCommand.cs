@@ -227,11 +227,11 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             return;
         }
 
-        if ((DateTime.Now - Settings.Default.LastDbBackupDate).TotalDays < 30
-            || Settings.Default.AppStartupParameters != string.Empty)
-        {
-            return;
-        }
+        //if ((DateTime.Now - Settings.Default.LastDbBackupDate).TotalDays < 30
+        //    || Settings.Default.AppStartupParameters != string.Empty)
+        //{
+        //    return;
+        //}
 
         #region MessageInputCategoryNums
 
@@ -287,21 +287,20 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             }
             case "Выбрать папку и сохранить":
             {
-                SaveFileDialog dial = new();
-                var filter = new FileDialogFilter
+                OpenFolderDialog dial = new() { Directory = ReserveDirectory };
+                var folderPath = dial.ShowAsync(Desktop.Windows[0]).GetAwaiter().GetResult();
+                if (folderPath is not null)
                 {
-                    Name = "RAODB",
-                    Extensions = { "RAODB" }
-                };
-                dial.Filters?.Add(filter);
-                dial.Directory = ReserveDirectory;
-                dial.InitialFileName = DbFileName + ".RAODB";
-                var fullPath = dial.ShowAsync(Desktop.Windows[0]).GetAwaiter().GetResult();
-                if (fullPath is not null)
-                {
+                    var count = 0;
+                    string reserveDbPath;
+                    do
+                    {
+                        reserveDbPath = Path.Combine(folderPath, DbFileName + $"_{++count}.RAODB");
+                    } while (File.Exists(reserveDbPath));
+
                     try
                     {
-                        File.Copy(Path.Combine(RaoDirectory, DbFileName + ".RAODB"), fullPath);
+                        File.Copy(Path.Combine(RaoDirectory, DbFileName + ".RAODB"), reserveDbPath);
                     }
                     catch (Exception ex)
                     {
@@ -320,7 +319,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
     #endregion
 
     #region CleanUpMasterRep
-    
+
     private static async Task CleanUpMasterRep()
     {
         await using var db = new DBModel(StaticConfiguration.DBPath);
@@ -444,12 +443,14 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
                 #region Test Version
 
-                var t = await dbm.Database.GetPendingMigrationsAsync();
-                var a = dbm.Database.GetMigrations();
-                var b = await dbm.Database.GetAppliedMigrationsAsync();
+                //var t = await dbm.Database.GetPendingMigrationsAsync();
+                //var a = dbm.Database.GetMigrations();
+                //var b = await dbm.Database.GetAppliedMigrationsAsync();
 
                 #endregion
+
                 await dbm.Database.MigrateAsync();
+
                 return;
             }
             catch (FirebirdSql.Data.FirebirdClient.FbException fbEx)
