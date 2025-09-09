@@ -33,14 +33,17 @@ namespace Client_App.Commands.AsyncCommands.SwitchReport
             // Проверяем изменения и предлагаем сохранить
             var shouldContinue = await CheckForChangesAndSave();
             if (!shouldContinue) return;
+
             // Дальше переключаемся на другую форму
             var index = Reports.Report_Collection.IndexOf(Report);
             Report? newReport = null;
-            for (int i = index + 1; i < Reports.Report_Collection.Count; i++)
+            for (int i = index - 1; i >= 0; i--)
             {
-                newReport = Reports.Report_Collection[i];
-                if (newReport.FormNum.Value == Report.FormNum.Value)
+                if (Reports.Report_Collection[i].FormNum.Value == Report.FormNum.Value)
+                {
+                    newReport = Reports.Report_Collection[i];
                     break;
+                }
             }
             if (newReport == null) return;
 
@@ -52,6 +55,7 @@ namespace Client_App.Commands.AsyncCommands.SwitchReport
             };
             await new ChangeFormAsyncCommand(windowParam).AsyncExecute(null).ConfigureAwait(false);
         }
+
         private async Task<bool> CheckForChangesAndSave()
         {
             var desktop = (IClassicDesktopStyleApplicationLifetime)Avalonia.Application.Current.ApplicationLifetime;
