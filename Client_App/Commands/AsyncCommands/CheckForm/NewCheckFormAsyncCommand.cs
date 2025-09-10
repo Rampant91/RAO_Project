@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Client_App.Views.Forms;
+using Microsoft.EntityFrameworkCore;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -69,36 +71,57 @@ public class NewCheckFormAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                 case "1.8":
                     result.AddRange(CheckF18.Check_Total(reps, rep));
                     break;
-                //case "2.1":
-                //    var rep21 = await db.ReportCollectionDbSet
-                //        .AsNoTracking()
-                //        .AsQueryable()
-                //        .AsSplitQuery()
-                //        .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                //        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                //        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                //        .Include(x => x.Rows21.OrderBy(form => form.NumberInOrder_DB))
-                //        .Include(x => x.Notes.OrderBy(note => note.Order))
-                //        .Where(x => x.Reports != null && x.Reports.DBObservable != null)
-                //    .FirstOrDefaultAsync(x => x.Id == rep.Id, cts.Token);
+                case "2.1":
+                    var rep21 = await db.ReportCollectionDbSet
+                        .AsNoTracking()
+                        .AsQueryable()
+                        .AsSplitQuery()
+                        .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
+                        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                        .Include(x => x.Rows21.OrderBy(form => form.NumberInOrder_DB))
+                        .Include(x => x.Notes.OrderBy(note => note.Order))
+                        .Where(x => x.Reports != null && x.Reports.DBObservable != null)
+                    .FirstOrDefaultAsync(x => x.Id == rep.Id, cts.Token);
 
-                //    result.AddRange(await new CheckF21().AsyncExecute(rep21));
-                //    break;
-                //case "2.2":
-                //    var rep22 = await db.ReportCollectionDbSet
-                //        .AsNoTracking()
-                //        .AsQueryable()
-                //        .AsSplitQuery()
-                //        .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                //        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                //        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                //        .Include(x => x.Rows22.OrderBy(form => form.NumberInOrder_DB))
-                //        .Include(x => x.Notes.OrderBy(note => note.Order))
-                //        .Where(x => x.Reports != null && x.Reports.DBObservable != null)
-                //    .FirstOrDefaultAsync(x => x.Id == rep.Id, cts.Token);
+                    result.AddRange(await new CheckF21().AsyncExecute(rep21));
+                    break;
+                case "2.2":
+                    var rep22 = await db.ReportCollectionDbSet
+                        .AsNoTracking()
+                        .AsQueryable()
+                        .AsSplitQuery()
+                        .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
+                        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                        .Include(x => x.Rows22.OrderBy(form => form.NumberInOrder_DB))
+                        .Include(x => x.Notes.OrderBy(note => note.Order))
+                        .Where(x => x.Reports != null && x.Reports.DBObservable != null)
+                    .FirstOrDefaultAsync(x => x.Id == rep.Id, cts.Token);
 
-                //    result.AddRange(await new CheckF22().AsyncExecute(rep22));
-                //    break;
+                    result.AddRange(await new CheckF22().AsyncExecute(rep22));
+                    break;
+                case "2.3":
+                    result.AddRange(await CheckF23.Check_Total(rep));
+                    break;
+                case "2.6":
+                    result.AddRange(await CheckF26.Check_Total(rep));
+                    break;
+                case "2.7":
+                    result.AddRange(await CheckF27.Check_Total(rep));
+                    break;
+                case "2.8":
+                    result.AddRange(await CheckF28.Check_Total(rep));
+                    break;
+                case "2.9":
+                    result.AddRange(await CheckF29.Check_Total(rep));
+                    break;
+                case "2.10":
+                    result.AddRange(await CheckF210.Check_Total(rep));
+                    break;
+                case "2.11":
+                    result.AddRange(await CheckF211.Check_Total(rep));
+                    break;
                 default:
                 {
                     #region MessageCheckFailed
@@ -173,7 +196,7 @@ public class NewCheckFormAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             {
                 Desktop.Windows.First(x => x.Name == "FormCheckerWindow").Close();
             }
-            await Dispatcher.UIThread.InvokeAsync(() => new Views.NewCheckForm(formVM, result));
+            await Dispatcher.UIThread.InvokeAsync(() => new NewCheckForm(formVM, result));
         }
     }
 }

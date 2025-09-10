@@ -6,8 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Resources;
 using MessageBox.Avalonia.DTO;
-using Models.Classes;
 using Models.DBRealization;
 using Models.Forms.Form1;
 using Models.Interfaces;
@@ -208,6 +208,8 @@ public class SourceTransmissionAsyncCommand : SourceTransmissionBaseAsyncCommand
             Window = window
         };
         await new ChangeFormAsyncCommand(windowParam).AsyncExecute(null).ConfigureAwait(false);
+
+        await Task.Run(() => new ChangeFormAsyncCommand(windowParam).Execute(windowParam.Window));
     }
 
     #endregion

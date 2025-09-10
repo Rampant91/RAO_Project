@@ -321,8 +321,13 @@ public abstract class CheckF13 : CheckBase
         string[] applicableOperationCodes = { "12", "42" };
         var radionuclidValid = new[]
         {
-            "плутоний-238", "плутоний-239", "плутоний-240", "уран-233", "уран-235", "уран-238", "нептуний-237",
-            "америций-241", "америций-243", "калифорний-252", "торий-232", "тритий"
+            "америций-241", "америций-243", "калифорний-252", "литий-6", "нептуний-237",
+            "плутоний-234", "плутоний-235", "плутоний-236", "плутоний-237", "плутоний-238", "плутоний-239", "плутоний-240",
+            "плутоний-241", "плутоний-242", "плутоний-243", "плутоний-244", "плутоний-245", "плутоний-246",
+            "сумма радионуклидов урана", "торий-226", "торий-227", "торий-228", "торий-229", "торий-230", "торий-231", "торий-232",
+            "торий-234", "торий естественный", "торий-естественный", "торий природный", "торий-природный", "тритий",
+            "уран-230", "уран-231", "уран-232", "уран-233", "уран-234", "уран-235", "уран-236", "уран-237",
+            "уран естественный", "уран-естественный", "уран-238", "уран-239", "уран-240", "уран природный", "уран-природный"
         };
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var valid = radionuclidValid
@@ -354,7 +359,7 @@ public abstract class CheckF13 : CheckBase
         List<CheckError> result = new();
         string[] applicableOperationCodes =
         {
-            "11", "12", "15", "28", "38", "41", "48", "63", "64", "65", "73", "81", "85", "88"
+            "11", "12", "15", "28", "38", "41", "48", "63", "64", "65", "81", "85", "88"
         };
         var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         if (!applicableOperationCodes.Contains(opCode)) return result;
@@ -599,8 +604,7 @@ public abstract class CheckF13 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "CreatorOKPO_DB",
                 Value = creatorOkpo,
-                Message = "Код используется для предоставления сведений о ОРИ, произведенных в Российской Федерации.",
-                IsCritical = true
+                Message = "Код используется для предоставления сведений о ОРИ, произведенных в Российской Федерации."
             });
         }
         return result;
@@ -629,8 +633,7 @@ public abstract class CheckF13 : CheckBase
                 Column = "CreatorOKPO_DB",
                 Value = creatorOkpo,
                 Message = "Код используется для предоставления сведений об ОРИ, произведенных за пределами Российской Федерации. " +
-                          "Для импортированных ОРИ необходимо указать краткое наименование государства в соответствии с ОКСМ.",
-                IsCritical = true
+                          "Для импортированных ОРИ необходимо указать краткое наименование государства в соответствии с ОКСМ."
             });
         }
         return result;
@@ -1684,7 +1687,7 @@ public abstract class CheckF13 : CheckBase
         {
             return result;
         }
-        var valid = docDate <= opDate;
+        var valid = docDate <= opDate.AddDays(30);
         if (!valid)
         {
             result.Add(new CheckError
@@ -1717,7 +1720,11 @@ public abstract class CheckF13 : CheckBase
         {
             return result;
         }
-        var valid = docDate == opDate;
+        var daysBetween = opDate > docDate
+            ? opDate.DayNumber - docDate.DayNumber
+            : docDate.DayNumber - opDate.DayNumber;
+
+        var valid = daysBetween <= 30;
         if (!valid)
         {
             result.Add(new CheckError
@@ -1759,8 +1766,8 @@ public abstract class CheckF13 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentDate_DB",
                 Value = docDateStr,
-                Message = "Дата документа не входит в отчетный период. Для операции инвентаризации, " +
-                          "срок предоставления отчета (10 рабочих дней) исчисляется с даты утверждения акта инвентаризации."
+                Message = "Нарушен срок предоставления отчётности. Для операций инвентаризации, " +
+                          "срок предоставления отчёта исчисляется с даты утверждения акта инвентаризации и не должен превышать 10 рабочих дней."
             });
         }
         return result;

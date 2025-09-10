@@ -587,7 +587,7 @@ public abstract class CheckF12 : CheckBase
     private static List<CheckError> Check_018(List<Form12> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
-        string[] applicableOperationCodes = { "11", "12", "28", "38", "41", "63", "64", "73", "81", "85" };
+        string[] applicableOperationCodes = { "11", "12", "28", "38", "41", "63", "64", "81", "85" };
         var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         if (!applicableOperationCodes.Contains(opCode)) return result;
         var owner = ReplaceNullAndTrim(forms[line].Owner_DB);
@@ -604,7 +604,7 @@ public abstract class CheckF12 : CheckBase
                 Column = "Owner_DB",
                 Value = owner,
                 Message = "Уточните правообладателя ИОУ.",
-                IsCritical = true
+                IsCritical = opCode is "11" or "28" or "38" or "63" or "64"
             });
         }
         return result;
@@ -631,8 +631,7 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationCode_DB",
                 Value = opCode,
-                Message = "Код используется для предоставления сведений о ИОУ, произведенных в Российской Федерации.",
-                IsCritical = true
+                Message = "Код используется для предоставления сведений о ИОУ, произведенных в Российской Федерации."
             });
         }
         return result;
@@ -660,8 +659,7 @@ public abstract class CheckF12 : CheckBase
                 Column = "CreatorOKPO_DB",
                 Value = creatorOkpo,
                 Message = "Код используется для предоставления сведений о ИОУ, произведенных за пределами Российской Федерации. " +
-                          "Для импортированных ИОУ необходимо указать краткое наименование государства в соответствии с ОКСМ.",
-                IsCritical = true
+                          "Для импортированных ИОУ необходимо указать краткое наименование государства в соответствии с ОКСМ."
             });
         }
         return result;
@@ -1026,7 +1024,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "CreationDate_DB",
                 Value = creationDate,
-                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой.",
+                Message = "Формат ввода данных не соответствует приказу. Графа не может быть пустой. " +
+                          "Если известен только год, то указывается 1 января этого года.",
                 IsCritical = true
             });
         }
@@ -1051,7 +1050,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "CreationDate_DB",
                 Value = creationDate,
-                Message = "Формат ввода данных не соответствует приказу. Некорректно заполнена дата выпуска.",
+                Message = "Формат ввода данных не соответствует приказу. Некорректно заполнена дата выпуска. " +
+                          "Если известен только год, то указывается 1 января этого года.",
                 IsCritical = !correctNotes.Contains(creationDate)
             });
         }
@@ -1508,7 +1508,7 @@ public abstract class CheckF12 : CheckBase
         {
             return result;
         }
-        var valid = documentDateReal <= operationDateReal;
+        var valid = documentDateReal <= operationDateReal.AddDays(30);
         if (!valid)
         {
             result.Add(new CheckError
@@ -1541,7 +1541,13 @@ public abstract class CheckF12 : CheckBase
         {
             return result;
         }
-        var valid = documentDateReal == operationDateReal;
+
+        var daysBetween = operationDateReal > documentDateReal
+            ? operationDateReal.DayNumber - documentDateReal.DayNumber
+            : documentDateReal.DayNumber - operationDateReal.DayNumber;
+
+        var valid = daysBetween <= 30;
+
         if (!valid)
         {
             result.Add(new CheckError
@@ -1583,8 +1589,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentDate_DB",
                 Value = docDateStr,
-                Message = "Дата документа не входит в отчетный период. Для операции инвентаризации, " +
-                          "срок предоставления отчета исчисляется с даты утверждения акта инвентаризации."
+                Message = "Нарушен срок предоставления отчётности. Для операций инвентаризации, " +
+                          "срок предоставления отчёта исчисляется с даты утверждения акта инвентаризации и не должен превышать 10 рабочих дней."
             });
         }
         return result;

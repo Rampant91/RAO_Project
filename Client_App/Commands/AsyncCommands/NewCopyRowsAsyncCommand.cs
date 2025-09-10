@@ -1,5 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Input;
+using Client_App.ViewModels.Forms;
+using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1; 
 using System.Collections.Generic;
@@ -12,7 +14,7 @@ namespace Client_App.Commands.AsyncCommands;
 /// <summary>
 /// Скопировать в буфер обмена выделенную строку/ячейки.
 /// </summary>
-public class NewCopyRowsAsyncCommand : BaseAsyncCommand
+public class NewCopyRowsAsyncCommand() : BaseAsyncCommand
 {
     //После обновления версии Авалонии нужно будет добавить копирование в формате html
 

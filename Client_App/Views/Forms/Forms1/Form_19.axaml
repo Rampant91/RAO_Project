@@ -145,45 +145,55 @@
 				<Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="Auto">
                     <Grid.ContextMenu>
                         <ContextMenu DataContext="{Binding DataContext, ElementName=dataGrid}">
-                            <MenuItem Header="Выделить всё				Ctrl+A"
+                            <MenuItem Header="Выделить всё"
                                       Command="{Binding SelectAll}"
-									  IsHitTestVisible="True"
+                                      IsHitTestVisible="True"
+                                      InputGesture="Ctrl+A"
                                       HotKey="Ctrl+A"/>
-                            <MenuItem Header="Добавить строку			Ctrl+T"
+                            <MenuItem Header="Добавить строку"
                                       Command="{Binding AddRow}"
+                                      InputGesture="Ctrl+T"
                                       HotKey="Ctrl+T"/>
-                            <MenuItem Header="Добавить N строк			Ctrl+N"
+                            <MenuItem Header="Добавить N строк"
                                       Command="{Binding AddRows}"
+                                      InputGesture="Ctrl+N"
                                       HotKey="Ctrl+N"/>
-                            <MenuItem Header="Добавить N строк перед	Ctrl+I"
+                            <MenuItem Header="Добавить N строк перед"
                                       Command="{Binding AddRowsIn}"
                                       CommandParameter="{Binding SelectedForms}"
+                                      InputGesture="Ctrl+I"
                                       HotKey="Ctrl+I"/>
-                            <MenuItem Header="Копировать				Ctrl+C"
+                            <MenuItem Header="Копировать"
                                       Command="{Binding CopyRows}"
                                       CommandParameter="{Binding SelectedForms}"
+                                      InputGesture="Ctrl+C"
                                       HotKey="Ctrl+C"/>
-	
-                            <MenuItem Header="Вставить					Ctrl+V"
+                            <MenuItem Header="Вставить"
                                       Command="{Binding PasteRows}"
+                                      InputGesture="Ctrl+V"
                                       HotKey="Ctrl+V"/>
-                            <MenuItem Header="Удалить выбранные строчки	Ctrl+D"
+                            <MenuItem Header="Удалить выбранные строчки"
                                       Command="{Binding DeleteRows}"
                                       CommandParameter="{Binding SelectedForms}"
+                                      InputGesture="Ctrl+D"
                                       HotKey="Ctrl+D"/>
-                            <MenuItem Header="Выставить номер			Ctrl+O"
+                            <MenuItem Header="Выставить номер"
                                       Command="{Binding SetNumberOrder}"
+                                      InputGesture="Ctrl+O"
                                       HotKey="Ctrl+O"/>
-                            <!--<MenuItem Header="Сортировать по номеру п/п	Ctrl+L"
+                            <!--<MenuItem Header="Сортировать по номеру п/п"
                                       Command="{Binding SortForms}"
-                                      HotKey="Ctrl+L"/> -->
-                            <MenuItem Header="Очистить строчки	        Ctrl+K"
+                                      InputGesture="Ctrl+L"
+                                      HotKey="Ctrl+L"/>-->
+                            <MenuItem Header="Очистить строчки"
                                       Command="{Binding DeleteDataInRows}"
                                       CommandParameter="{Binding SelectedForms}"
+                                      InputGesture="Ctrl+K"
                                       HotKey="Ctrl+K"/>
-                            <MenuItem Header="Перевести РВ в РАО        Ctrl+J"
+                            <MenuItem Header="Перевести РВ в РАО"
                                       Command="{Binding SourceTransmission}"
                                       CommandParameter="{Binding SelectedForm}"
+                                      InputGesture="Ctrl+J"
                                       HotKey="Ctrl+J"/>
                         </ContextMenu>
                     </Grid.ContextMenu>

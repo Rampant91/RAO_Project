@@ -1,12 +1,12 @@
+using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms;
 using Models.CheckForm;
-using System.Collections.Generic;
 
-namespace Client_App.Views;
+namespace Client_App.Views.Forms;
 
 public class NewCheckForm : BaseWindow<CheckFormVM>
 {
@@ -37,12 +37,18 @@ public class NewCheckForm : BaseWindow<CheckFormVM>
     /// <param name="e"></param>
     private static void DataGrid_LoadingRow(object? sender, DataGridRowEventArgs e)
     {
-        if (sender is DataGrid)
+        if (sender is DataGrid && e.Row is not null)
         {
-            if (e.Row?.DataContext is CheckError { IsCritical: true })
+            e.Row.Background = e.Row.DataContext switch
             {
-                e.Row.Background = Brushes.RosyBrown;
-            }
+                CheckError { IsCritical: true } => Brushes.RosyBrown,
+
+                CheckError { IsCritical: false } => e.Row.GetIndex() % 2 == 0
+                    ? Brushes.LightBlue
+                    : Brushes.White,
+
+                _ => e.Row.Background
+            };
         }
     }
 

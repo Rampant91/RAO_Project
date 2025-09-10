@@ -44,8 +44,7 @@ public abstract class CheckF15 : CheckBase
             errorList.AddRange(Check_008(formsList, currentFormLine));
             errorList.AddRange(Check_009_a(formsList, currentFormLine));
             errorList.AddRange(Check_009_b(formsList, currentFormLine));
-            errorList.AddRange(Check_010_a(formsList, currentFormLine));
-            errorList.AddRange(Check_010_b(formsList, currentFormLine));
+            errorList.AddRange(Check_010(formsList, currentFormLine));
             errorList.AddRange(Check_011(formsList, currentFormLine));
             errorList.AddRange(Check_012(formsList, currentFormLine));
             errorList.AddRange(Check_013(formsList, currentFormLine));
@@ -657,7 +656,7 @@ public abstract class CheckF15 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "PassportNumber_DB",
                 Value = passportNumber,
-                Message = "Заполните сведения о номере паспорта (сертификата) ЗРИ, который переведен в ОЗИИИ.",
+                Message = "Заполните сведения о номере паспорта (сертификата) ЗРИ, который переведен в ОЗИИИ, или поставьте прочерк.",
                 IsCritical = true
             });
         }
@@ -682,7 +681,7 @@ public abstract class CheckF15 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Type_DB",
                 Value = type,
-                Message = "Заполните сведения о типе ЗРИ, который переведен в ОЗИИИ.",
+                Message = "Заполните сведения о типе ЗРИ, который переведен в ОЗИИИ, или поставьте прочерк.",
                 IsCritical = true
             });
         }
@@ -771,60 +770,70 @@ public abstract class CheckF15 : CheckBase
     #region Check010_a
 
     //У номеров в качестве разделителя использовать ";"
-    private static List<CheckError> Check_010_a(List<Form15> forms, int line)
+    private static List<CheckError> Check_010(List<Form15> forms, int line)
     {
         List<CheckError> result = new();
-        var factoryNumber = ReplaceNullAndTrim(forms[line].FactoryNumber_DB);
-        if (factoryNumber.Contains(',') || factoryNumber.Contains('+'))
-        {
-            result.Add(new CheckError
-            {
-                FormNum = "form_15",
-                Row = (line + 1).ToString(),
-                Column = "FactoryNumber_DB",
-                Value = factoryNumber,
-                Message = "Заполните сведения о заводском номере ЗРИ, который переведен в ОЗИИИ. Если номер отсутствует, " +
-                          "в ячейке следует указать символ \"-\" без кавычек. Для упаковки однотипных ЗРИ, " +
-                          "имеющей один паспорт (сертификат) заводские номера в списке разделяются точкой с запятой."
-            });
-        }
-        return result;
-    }
+        var factoryNum = ReplaceNullAndTrim(forms[line].FactoryNumber_DB);
 
-    #endregion
-
-    #region Check010_b
-
-    //Номер не пустая строка (колонка 7)
-    private static List<CheckError> Check_010_b(List<Form15> forms, int line)
-    {
-        List<CheckError> result = new();
-        var factoryNumber = ReplaceNullAndTrim(forms[line].FactoryNumber_DB);
+        if (factoryNum is "-") return result;
         var quantity = forms[line].Quantity_DB ?? 0;
-        if (factoryNumber == string.Empty)
+
+        if (string.IsNullOrWhiteSpace(factoryNum))
         {
             result.Add(new CheckError
             {
                 FormNum = "form_15",
                 Row = (line + 1).ToString(),
                 Column = "FactoryNumber_DB",
-                Value = factoryNumber,
+                Value = factoryNum,
                 Message = "Заполните сведения о заводском номере ЗРИ, который переведен в ОЗИИИ. Если номер отсутствует, " +
-                          "в ячейке следует указать символ \"-\" без кавычек."
+                          "в ячейке следует указать символ \"-\" без кавычек.",
+                IsCritical = true
             });
         }
-        else if (quantity > 1 && factoryNumber != "-" && !factoryNumber.Contains(';'))
+        if (factoryNum.Contains(','))
         {
             result.Add(new CheckError
             {
                 FormNum = "form_15",
                 Row = (line + 1).ToString(),
                 Column = "FactoryNumber_DB",
-                Value = factoryNumber,
-                Message = "Убедитесь в правильности заполнения графы. При перечислении (количество более 1), " +
-                          "номера ОЗИИИ должны быть разделены точкой с запятой."
+                Value = factoryNum,
+                Message = "Заводской номер не должен содержать запятых. Для упаковки однотипных ЗРИ, имеющей один паспорт (сертификат), " +
+                          "заводские номера в списке необходимо разделять точкой с запятой " +
+                          "(при перечислении номеров использование тире также недопустимо).",
+                IsCritical = true
             });
         }
+        if (quantity == 1 && factoryNum.Contains(';'))
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_15",
+                Row = (line + 1).ToString(),
+                Column = "FactoryNumber_DB",
+                Value = factoryNum,
+                Message = "При указании в графе «Количество» 1 шт., заводской номер не должен содержать символа точка с запятой " +
+                          "(используется для перечисления).",
+                IsCritical = true
+            });
+        }
+        if (quantity > 1 && !factoryNum.Contains(';'))
+        {
+            {
+                result.Add(new CheckError
+                {
+                    FormNum = "form_15",
+                    Row = (line + 1).ToString(),
+                    Column = "FactoryNumber_DB",
+                    Value = factoryNum,
+                    Message = "Для упаковки однотипных ЗРИ, имеющей один паспорт (сертификат), " +
+                              "заводские номера в списке разделяются точкой с запятой.",
+                    IsCritical = true
+                });
+            }
+        }
+
         return result;
     }
 
@@ -870,8 +879,7 @@ public abstract class CheckF15 : CheckBase
                 Column = "Activity_DB",
                 Value = activity,
                 Message = "Заполните сведения о суммарной активности ЗРИ, переведенных в ОЗИИИ. " +
-                          "Оценочные сведения приводятся в круглых скобках.",
-                IsCritical = true
+                          "Оценочные сведения приводятся в круглых скобках."
             });
         }
         else switch (activityReal)
@@ -884,8 +892,7 @@ public abstract class CheckF15 : CheckBase
                     Row = (line + 1).ToString(),
                     Column = "Activity_DB",
                     Value = activity,
-                    Message = "Суммарная активность должна быть более 10 Бк. Проверьте правильность введённых данных.",
-                    IsCritical = true
+                    Message = "Суммарная активность должна быть более 10 Бк. Проверьте правильность введённых данных."
                 });
                 break;
             }
@@ -897,8 +904,7 @@ public abstract class CheckF15 : CheckBase
                     Row = (line + 1).ToString(),
                     Column = "Activity_DB",
                     Value = activity,
-                    Message = "Указано слишком большое значение суммарной активности. Проверьте правильность введённых данных.",
-                    IsCritical = true
+                    Message = "Указано слишком большое значение суммарной активности. Проверьте правильность введённых данных."
                 });
                 break;
             }
@@ -962,7 +968,7 @@ public abstract class CheckF15 : CheckBase
 
         switch (opCode)
         {
-            case "11" or "12" or "13" or "14" or "41":
+            case "11" or "13" or "41":
             {
                 if (status != obOkpo && status != jurOkpo)
                 {
@@ -979,7 +985,55 @@ public abstract class CheckF15 : CheckBase
                 }
                 break;
             }
-            case "26" or "28" or "63":
+            case "12":
+            {
+                if (status != obOkpo && status != jurOkpo && status is not "2")
+                {
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_15",
+                        Row = (line + 1).ToString(),
+                        Column = "StatusRAO_DB",
+                        Value = status,
+                        Message = "Проверьте правильность статуса РАО.",
+                        IsCritical = true
+                    });
+                }
+                break;
+            }
+            case "14":
+            {
+                if (status != obOkpo && status != jurOkpo && status is not ("2" or "3" or "4"))
+                {
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_15",
+                        Row = (line + 1).ToString(),
+                        Column = "StatusRAO_DB",
+                        Value = status,
+                        Message = "Проверьте правильность статуса РАО.",
+                        IsCritical = true
+                    });
+                }
+                break;
+            }
+            case "26":
+            {
+                if (!OkpoRegex.IsMatch(status) && status is not ("1" or "2" or "3" or "4" or "6"))
+                {
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_15",
+                        Row = (line + 1).ToString(),
+                        Column = "StatusRAO_DB",
+                        Value = status,
+                        Message = "Проверьте правильность статуса РАО.",
+                        IsCritical = true
+                    });
+                }
+                break;
+            }
+            case "28" or "63":
             {
                 if (status != obOkpo && status != jurOkpo)
                 {
@@ -1012,7 +1066,7 @@ public abstract class CheckF15 : CheckBase
                 }
                 break;
             }
-            case "42" or "43" or "73" or "97" or "98":
+            case "42" or "43" or "73":
             {
                 if (status != obOkpo && status != jurOkpo)
                 {
@@ -1046,7 +1100,7 @@ public abstract class CheckF15 : CheckBase
             }
             case "16":
             {
-                if (status != "2" && !OkpoRegex.IsMatch(status))
+                if (!OkpoRegex.IsMatch(status) && status != "2")
                 {
                     result.Add(new CheckError
                     {
@@ -1078,7 +1132,7 @@ public abstract class CheckF15 : CheckBase
             }
             default:
             {
-                if (status is not ("1" or "2" or "3" or "4" or "6" or "9") && !OkpoRegex.IsMatch(status))
+                if (!OkpoRegex.IsMatch(status) && status is not ("1" or "2" or "3" or "4" or "6" or "9"))
                 {
                     result.Add(new CheckError
                     {
@@ -1230,7 +1284,7 @@ public abstract class CheckF15 : CheckBase
         {
             return result;
         }
-        var valid = documentDateReal <= operationDateReal;
+        var valid = documentDateReal <= operationDateReal.AddDays(30);
         if (!valid)
         {
             result.Add(new CheckError
@@ -1239,8 +1293,7 @@ public abstract class CheckF15 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentDate_DB",
                 Value = documentDate,
-                Message = "Дата документа не может быть позже даты операции.",
-                IsCritical = true
+                Message = "Дата документа не может быть позже даты операции."
             });
         }
         return result;
@@ -1263,7 +1316,13 @@ public abstract class CheckF15 : CheckBase
         {
             return result;
         }
-        var valid = documentDateReal == operationDateReal;
+
+        var daysBetween = operationDateReal > documentDateReal
+            ? operationDateReal.DayNumber - documentDateReal.DayNumber
+            : documentDateReal.DayNumber - operationDateReal.DayNumber;
+
+        var valid = daysBetween <= 30;
+
         if (!valid)
         {
             result.Add(new CheckError
@@ -1272,8 +1331,7 @@ public abstract class CheckF15 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentDate_DB",
                 Value = documentDate,
-                Message = "Дата документа должна соответствовать дате операции.",
-                IsCritical = true
+                Message = "Дата документа должна соответствовать дате операции."
             });
         }
         return result;
@@ -1304,9 +1362,8 @@ public abstract class CheckF15 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "DocumentDate_DB",
                 Value = documentDate,
-                Message = "Дата документа не входит в отчетный период. Для операции инвентаризации, " +
-                          "срок предоставления отчета исчисляется с даты утверждения акта инвентаризации.",
-                IsCritical = true
+                Message = "Нарушен срок предоставления отчётности. Для операций инвентаризации, " +
+                          "срок предоставления отчёта исчисляется с даты утверждения акта инвентаризации и не должен превышать 10 рабочих дней."
             });
         }
         return result;

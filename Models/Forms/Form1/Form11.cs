@@ -764,7 +764,7 @@ public class Form11 : Form1
             .Where(item => item.Item1 == value.Value)
             .Select(item => item.Item2)
             .ToList();
-        if (string.IsNullOrEmpty(Radionuclids.Value) && a.Count == 1)
+        if (string.IsNullOrEmpty(Radionuclids_DB) && a.Count == 1)
         {
             AutoRn = true;
             Radionuclids.Value = a.First();

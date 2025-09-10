@@ -19,21 +19,17 @@ public class NewAddRowsInAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     private Report Storage => formVM.Report;
     private string FormType => formVM.FormType;
 
-
-    /// <summary>
-    /// 
-    /// </summary>
     /// <param name="parameter">В качестве параметра принимает список выбранных форм</param>
     /// <returns></returns>
     public override async Task AsyncExecute(object? parameter)
     {
-        bool currentPageIsLastPage = formVM.CurrentPage == formVM.TotalPages;
+        var currentPageIsLastPage = formVM.CurrentPage == formVM.TotalPages;
         var collection = (IEnumerable<Form>)parameter;
         var item = collection.FirstOrDefault();
         var owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
             .FirstOrDefault(w => w.IsActive);
 
-        //Прекращение выполнения при получении некоректных данных
+        //Прекращение выполнения при получении некорректных данных
         if (owner == null) return;
         if (item == null) return;
 
@@ -43,9 +39,9 @@ public class NewAddRowsInAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             $"Выбранная строка:   {numberCell}"));
 
         //Если пользователь отменил ввод числа, окно вернет null
-        int? rowCount = await dialog.ShowDialog<int?>(owner);
+        var rowCount = await dialog.ShowDialog<int?>(owner);
         //Если пользователь ничего не ввел, то прекращаем выполнение команды
-        if ((rowCount == null) || (rowCount <= 0)) return;
+        if (rowCount is null or <= 0) return;
 
         foreach (var key in Storage[item.FormNum_DB])
         {
@@ -55,7 +51,7 @@ public class NewAddRowsInAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                 it.NumberInOrder.Value = it.NumberInOrder_DB + (int)rowCount;
             }
         }
-        List<Form> lst = new();
+        List<Form> lst = [];
         for (var i = 0; i < rowCount; i++)
         {
             var frm = FormCreator.Create(FormType);

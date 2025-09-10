@@ -145,46 +145,45 @@
 			<Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="Auto">
 				<Grid.ContextMenu>
 					<ContextMenu DataContext="{Binding DataContext, ElementName=dataGrid}">
-						<MenuItem Header="Выделить всё				Ctrl+A"
-								  Command="{Binding SelectAll}"
-								  IsHitTestVisible="True"
-								  HotKey="Ctrl+A"/>
-						<MenuItem Header="Добавить строку			Ctrl+T"
-								  Command="{Binding AddRow}"
-								  HotKey="Ctrl+T"/>
-						<MenuItem Header="Добавить N строк			Ctrl+N"
-								  Command="{Binding AddRows}"
-								  HotKey="Ctrl+N"/>
-						<MenuItem Header="Добавить N строк перед	Ctrl+I"
-								  Command="{Binding AddRowsIn}"
-								  CommandParameter="{Binding SelectedForms}"
-								  HotKey="Ctrl+I"/>
-						<MenuItem Header="Копировать				Ctrl+C"
-								  Command="{Binding CopyRows}"
-								  CommandParameter="{Binding SelectedForms}"
-								  HotKey="Ctrl+C"/>
-
-						<MenuItem Header="Вставить					Ctrl+V"
-								  Command="{Binding PasteRows}"
-								  HotKey="Ctrl+V"/>
-						<MenuItem Header="Удалить выбранные строчки	Ctrl+D"
-								  Command="{Binding DeleteRows}"
-								  CommandParameter="{Binding SelectedForms}"
-								  HotKey="Ctrl+D"/>
-						<MenuItem Header="Выставить номер			Ctrl+O"
-								  Command="{Binding SetNumberOrder}"
-								  HotKey="Ctrl+O"/>
-						<!--<MenuItem Header="Сортировать по номеру п/п	Ctrl+L"
+						<MenuItem Header="Выделить всё"
+                                  Command="{Binding SelectAll}"
+                                  IsHitTestVisible="True"
+                                  InputGesture="Ctrl+A"/>
+                        <MenuItem Header="Добавить строку"
+                                  Command="{Binding AddRow}"
+                                  InputGesture="Ctrl+T"/>
+                        <MenuItem Header="Добавить N строк"
+                                  Command="{Binding AddRows}"
+                                  InputGesture="Ctrl+N"/>
+                        <MenuItem Header="Добавить N строк перед"
+                                  Command="{Binding AddRowsIn}"
+                                  CommandParameter="{Binding SelectedForms}"
+                                  InputGesture="Ctrl+I"/>
+                        <MenuItem Header="Копировать"
+                                  Command="{Binding CopyRows}"
+                                  CommandParameter="{Binding SelectedForms}"
+                                  InputGesture="Ctrl+C"/>
+                        <MenuItem Header="Вставить"
+                                  Command="{Binding PasteRows}"
+                                  InputGesture="Ctrl+V"/>
+                        <MenuItem Header="Удалить выбранные строчки"
+                                  Command="{Binding DeleteRows}"
+                                  CommandParameter="{Binding SelectedForms}"
+                                  InputGesture="Ctrl+D"/>
+                        <MenuItem Header="Выставить номер"
+                                  Command="{Binding SetNumberOrder}"
+                                  InputGesture="Ctrl+O"/>
+                        <!--<MenuItem Header="Сортировать по номеру п/п"
                                       Command="{Binding SortForms}"
-                                      HotKey="Ctrl+L"/> -->
-						<MenuItem Header="Очистить строчки	        Ctrl+K"
-								  Command="{Binding DeleteDataInRows}"
-								  CommandParameter="{Binding SelectedForms}"
-								  HotKey="Ctrl+K"/>
-						<MenuItem Header="Перевести РВ в РАО        Ctrl+J"
-								  Command="{Binding SourceTransmission}"
-								  CommandParameter="{Binding SelectedForm}"
-								  HotKey="Ctrl+J"/>
+                                      InputGesture="Ctrl+L"/>-->
+                        <MenuItem Header="Очистить строчки"
+                                  Command="{Binding DeleteDataInRows}"
+                                  CommandParameter="{Binding SelectedForms}"
+                                  InputGesture="Ctrl+K"/>
+                        <MenuItem Header="Перевести РВ в РАО"
+                                  Command="{Binding SourceTransmission}"
+                                  CommandParameter="{Binding SelectedForm}"
+                                  InputGesture="Ctrl+J"/>
 					</ContextMenu>
 				</Grid.ContextMenu>
 				<Grid Classes="tableHeader" Grid.Row="0"

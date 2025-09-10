@@ -18,6 +18,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Client_App.Resources;
 
 namespace Client_App.Commands.AsyncCommands.SwitchReport
 {

@@ -1,4 +1,5 @@
-﻿using Client_App.Commands.AsyncCommands.SourceTransmission;
+﻿using Client_App.Commands.AsyncCommands.Calculator;
+using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Models.Collections;
 using Models.Forms.Form1;
 using System.Collections.ObjectModel;
@@ -11,7 +12,9 @@ public class Form_11VM : BaseFormVM
 {
     public override string FormType => "1.1";
 
+    public ICommand CategoryCalculationFromReport => new CategoryCalculationFromReportAsyncCommand();
     public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);
+
 
     //public ObservableCollection<Form12> Form12List => new(FormList.Cast<Form12>());
 
