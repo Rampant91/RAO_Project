@@ -258,7 +258,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand AddRow => new NewAddRowAsyncCommand(this);
     public ICommand AddRows => new NewAddRowsAsyncCommand(this);
     public ICommand AddRowsIn => new NewAddRowsInAsyncCommand(this);
-    public ICommand DeleteDataInRows => new DeleteDataInRowsAsyncCommand();
+    public ICommand DeleteDataInRows => new NewDeleteDataInRowsAsyncCommand();
     public ICommand DeleteRows => new NewDeleteRowsAsyncCommand(this);
     public ICommand SortForm => new NewSortFormSyncCommand(this);
     public ICommand SetNumberOrder => new NewSetNumberOrderSyncCommand(this);

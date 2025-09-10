@@ -355,7 +355,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         CopyExecutorData = new CopyExecutorDataAsyncCommand(this);
         CopyPasName = new CopyPasNameAsyncCommand();
         CopyRows = new CopyRowsAsyncCommand();
-        DeleteDataInRows = new DeleteDataInRowsAsyncCommand();
+        DeleteDataInRows = new DeleteDataInRowsSyncCommand();
         DeleteNote = new DeleteNoteAsyncCommand(this);
         DeleteRows = new DeleteRowsAsyncCommand(this);
         ExcelExportSourceMovementHistory = new ExcelExportSourceMovementHistoryAsyncCommand();

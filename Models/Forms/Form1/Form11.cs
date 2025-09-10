@@ -899,7 +899,7 @@ public class Form11 : Form1
         if (args.PropertyName != "Value") return;
 
         var value1 = ((RamAccess<int?>)value).Value;
-        if (value1 != null && Quantity_DB != value1)
+        if (Quantity_DB != value1)
         {
             Quantity_DB = value1;
         }
@@ -1109,7 +1109,7 @@ public class Form11 : Form1
         if (args.PropertyName != "Value") return;
 
         var value1 = ((RamAccess<short?>)value).Value;
-        if (value1 != null && Category_DB != value1)
+        if (Category_DB != value1)
         {
             Category_DB = value1;
         }
@@ -1165,7 +1165,7 @@ public class Form11 : Form1
         if (args.PropertyName != "Value") return;
 
         var value1 = ((RamAccess<float?>)value).Value;
-        if (value1 != null && !Equals(SignedServicePeriod_DB, value1))
+        if (!Equals(SignedServicePeriod_DB, value1))
         {
             SignedServicePeriod_DB = value1;
         }
@@ -1221,7 +1221,7 @@ public class Form11 : Form1
         if (args.PropertyName != "Value") return;
 
         var value1 = ((RamAccess<byte?>)value).Value;
-        if (value1 != null && PropertyCode_DB != value1)
+        if (PropertyCode_DB != value1)
         {
             PropertyCode_DB = value1;
         }

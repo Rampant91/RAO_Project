@@ -154,16 +154,17 @@ public partial class Form_11 : BaseWindow<Form_11VM>
                         vm.DeleteDataInRows.Execute(selectedForms);
                         e.Handled = true;
                     }
+                    
                     break;
                 }
-                case Key.J: // Convert to RAW
+                case Key.J: // Source Transmission to RAO
                 {
-                    var selectedForm = dataContext.GetType().GetProperty("SelectedForm")?.GetValue(dataContext);
-                    if (selectedForm != null)
+                    if (selectedForms is { Count: > 0 })
                     {
-                        dataContext.GetType().GetMethod("SourceTransmission")?.Invoke(dataContext, new[] { selectedForm });
+                        vm.SourceTransmission.Execute(selectedForms);
                         e.Handled = true;
                     }
+
                     break;
                 }
                 default: return;

@@ -12,6 +12,7 @@ using Models.Interfaces;
 using Avalonia.Threading;
 using Models.Forms.Form1;
 using Client_App.ViewModels.Forms;
+using Client_App.ViewModels.Forms.Forms1;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 

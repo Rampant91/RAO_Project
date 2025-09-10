@@ -319,6 +319,7 @@
 					Classes="table"
 					x:CompileBindings="True"
 					x:Name="dataGrid"
+					CanUserSortColumns="True"
 					Items="{Binding FormList}"
 					SelectedItem="{Binding SelectedForm}">
 					<interactivity:Interaction.Behaviors>
@@ -483,7 +484,7 @@
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 
-						<DataGridTemplateColumn > 
+						<DataGridTemplateColumn> 
 							<DataGridTemplateColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
