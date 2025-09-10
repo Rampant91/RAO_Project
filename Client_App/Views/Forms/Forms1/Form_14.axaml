@@ -722,7 +722,7 @@
 					  ColumnDefinitions="Auto,Auto,Auto,Auto">
 					<TextBlock Text="Текущая страница"
 						Grid.Row="0" Grid.Column="0" Margin="5"/>
-					<NumericUpDown Value="{Binding CurrentPage}" Minimum="1"
+					<NumericUpDown Value="{Binding CurrentPage}" Increment="-1"
 						Grid.Row="0" Grid.Column="1" Margin="5">
 						<interactivity:Interaction.Behaviors>
 							<local:NumericUpDownDigitValidationBehavior/>
