@@ -18,7 +18,6 @@ using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form1;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -63,7 +62,9 @@ public partial class Form_11 : BaseWindow<Form_11VM>
         }
     }
 
-    private void DataGrid_KeyDown(object? sender, KeyEventArgs e)
+    #region DataGrid_KeyUp
+
+    private void DataGrid_KeyUp(object? sender, KeyEventArgs e)
     {
         if (DataContext is not Form_11VM vm)
             return;
@@ -147,6 +148,34 @@ public partial class Form_11 : BaseWindow<Form_11VM>
 
                     break;
                 }
+                case Key.U: // Copy Pas Name
+                {
+                    vm.CopyPasName.Execute(selectedForms);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.P: // Open Pas
+                {
+                    vm.OpenPas.Execute(selectedForms);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.E: // Export Movement History
+                {
+                    vm.ExcelExportSourceMovementHistory.Execute(selectedForms);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.Y: // Calculate Category
+                {
+                    vm.CategoryCalculationFromReport.Execute(selectedForms);
+                    e.Handled = true;
+
+                    break;
+                }
                 case Key.K: // Clear Rows
                 {
                     if (selectedForms is { Count: > 0 })
@@ -154,14 +183,14 @@ public partial class Form_11 : BaseWindow<Form_11VM>
                         vm.DeleteDataInRows.Execute(selectedForms);
                         e.Handled = true;
                     }
-                    
+
                     break;
                 }
                 case Key.J: // Source Transmission to RAO
                 {
-                    if (selectedForms is { Count: > 0 })
+                    if (vm.SelectedForm is not null)
                     {
-                        vm.SourceTransmission.Execute(selectedForms);
+                        vm.SourceTransmission.Execute(vm.SelectedForm);
                         e.Handled = true;
                     }
 
@@ -171,6 +200,8 @@ public partial class Form_11 : BaseWindow<Form_11VM>
             }
         }
     }
+
+    #endregion
 
     #region OnStandartClosing
 

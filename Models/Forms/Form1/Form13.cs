@@ -1696,6 +1696,9 @@ public class Form13 : Form1
             $"{AggregateState.Value}\t" +
             $"{PropertyCode.Value}\t" +
             $"{Owner.Value}\t" +
+            $"{DocumentVid.Value}\t" +
+            $"{DocumentNumber.Value}\t" +
+            $"{DocumentDate.Value}\t" +
             $"{ProviderOrRecieverOKPO.Value}\t" +
             $"{TransporterOKPO.Value}\t" +
             $"{PackName.Value}\t" +

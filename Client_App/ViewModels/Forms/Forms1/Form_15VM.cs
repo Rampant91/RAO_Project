@@ -1,8 +1,5 @@
 using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Models.Collections;
-using Models.Forms.Form1;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows.Input;
 
 namespace Client_App.ViewModels.Forms.Forms1;
@@ -11,12 +8,24 @@ public class Form_15VM : BaseFormVM
 {
     public override string FormType => "1.5";
 
-    public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);
+    #region Constructors
+
+    public Form_15VM() { }
+
+    public Form_15VM(Report report) : base(report) { }
+
+    #endregion
+
+    #region Commands
+
+    public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this); 
+    
+    #endregion
 
     //public ObservableCollection<Form15> Form15List => new(FormList.Cast<Form15>());
-    
+
     //public ObservableCollection<Form15> SelectedForms15 => new(SelectedForms.Cast<Form15>());
-    
+
     //public Form15 SelectedForm15
     //{
     //    get => SelectedForm as Form15;
@@ -26,14 +35,6 @@ public class Form_15VM : BaseFormVM
     //        UpdateFormList();
     //    }
     //}
-
-    #region Constructors
-
-    public Form_15VM() { }
-    
-    public Form_15VM(Report report) : base(report) { }
-
-    #endregion
 
     /*
     #region UpdateFormList

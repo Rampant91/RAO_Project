@@ -1,9 +1,9 @@
-﻿using Client_App.Commands.AsyncCommands.Calculator;
+﻿using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands.Calculator;
+using Client_App.Commands.AsyncCommands.ExcelExport;
+using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Models.Collections;
-using Models.Forms.Form1;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows.Input;
 
 namespace Client_App.ViewModels.Forms.Forms1;
@@ -12,8 +12,23 @@ public class Form_11VM : BaseFormVM
 {
     public override string FormType => "1.1";
 
+    #region Constructors
+
+    public Form_11VM() { }
+
+    public Form_11VM(Report report) : base(report) { }
+
+    #endregion
+
+    #region Commands
+
     public ICommand CategoryCalculationFromReport => new CategoryCalculationFromReportAsyncCommand();
+    public ICommand CopyPasName => new CopyPasNameAsyncCommand();
+    public ICommand ExcelExportSourceMovementHistory => new ExcelExportSourceMovementHistoryAsyncCommand();
+    public ICommand OpenPas => new OpenPasAsyncCommand();
     public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);
+
+    #endregion
 
 
     //public ObservableCollection<Form12> Form12List => new(FormList.Cast<Form12>());
@@ -30,19 +45,11 @@ public class Form_11VM : BaseFormVM
     //    }
     //}
 
-    #region Constructors
-
-    public Form_11VM() { }
-
-    public Form_11VM(Report report) : base(report) { }
-
-    #endregion
-
-    #region FilterProperty
+    //#region FilterProperty
 
 
 
-    #endregion
+    //#endregion
 
     /*
     #region UpdateFormList

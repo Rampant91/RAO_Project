@@ -1,5 +1,7 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
@@ -20,16 +22,16 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Controls;
 
 namespace Client_App.Views.Forms.Forms1;
 
 public partial class Form_12 : BaseWindow<Form_12VM>
 {
-
     //private Form_12VM _vm = null!;
 
-    public Form_12() 
+    #region Constructors
+
+    public Form_12()
     {
         InitializeComponent();
         DataContext = new Form_12VM();
@@ -42,11 +44,16 @@ public partial class Form_12 : BaseWindow<Form_12VM>
         DataContext = vm;
         Closing += OnStandardClosing;
     }
+
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
         WindowState = WindowState.Maximized;
     }
+
+    #endregion
+
+    #region CopyExecutorData_Click
 
     //¬ременное узкоспециализированное решение
     private void CopyExecutorData_Click(object sender, RoutedEventArgs e)
@@ -57,6 +64,121 @@ public partial class Form_12 : BaseWindow<Form_12VM>
             command.Execute(null);
         }
     }
+
+    #endregion
+
+    #region DataGrid_KeyUp
+
+    private void DataGrid_KeyUp(object? sender, KeyEventArgs e)
+    {
+        if (DataContext is not Form_12VM vm)
+            return;
+
+        var dataGrid = this.FindControl<DataGrid>("dataGrid");
+        var dataContext = dataGrid?.DataContext;
+        if (dataContext is null || dataGrid is null)
+            return;
+
+        var selectedForms = vm.SelectedForms;
+
+        if (dataGrid.IsPointerOver && e.KeyModifiers is KeyModifiers.Control)
+        {
+            switch (e.Key)
+            {
+                case Key.A: // Select All
+                {
+                    vm.SelectAll.Execute(null);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.T: // Add Row
+                {
+                    vm.AddRow.Execute(null);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.N: // Add N Rows
+                {
+                    vm.AddRows.Execute(null);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.I: // Add N Rows Before
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.AddRowsIn.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+
+                    break;
+                }
+                case Key.C: // Copy Rows
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.CopyRows.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+
+                    break;
+                }
+                case Key.V: // Paste Rows
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.PasteRows.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+
+                    break;
+                }
+                case Key.D: // Delete Selected Rows
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.DeleteRows.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+
+                    break;
+                }
+                case Key.O: // Set Number Order
+                {
+                    vm.SetNumberOrder.Execute(null);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.K: // Clear Rows
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.DeleteDataInRows.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+
+                    break;
+                }
+                case Key.J: // Source Transmission to RAO
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.SourceTransmission.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+
+                    break;
+                }
+                default: return;
+            }
+        }
+    }
+
+    #endregion
 
     #region OnStandartClosing
 
