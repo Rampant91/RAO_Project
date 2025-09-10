@@ -276,15 +276,34 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand SwitchToPreviousReport => new SwitchToPreviousReportAsyncCommand(this);
     #endregion
 
-    public async void UpdateFormList()
+    #region UpdateFormList
+
+    /// <summary>
+    /// Обновляет отображение ячеек DataGrid'а.
+    /// </summary>
+    public void UpdateFormList()
     {
-        FormList = new ObservableCollection<Form>(Report.Rows.ToList<Form>().Skip((CurrentPage - 1) * RowCount).Take(RowCount)); //Нужна оптимизация
+        FormList = new ObservableCollection<Form>(
+            Report.Rows
+                .ToList<Form>()
+                .Skip((CurrentPage - 1) * RowCount)
+                .Take(RowCount)); //Нужна оптимизация
     }
-    public async void UpdatePageInfo()
+
+    #endregion
+
+    #region UpdatePageInfo
+
+    /// <summary>
+    /// Обновляет отображаемое количество страниц и строчек.
+    /// </summary>
+    public void UpdatePageInfo()
     {
         OnPropertyChanged(nameof(TotalPages));
         OnPropertyChanged(nameof(TotalRows));
     }
+
+    #endregion
 
     #region OnPropertyChanged
 

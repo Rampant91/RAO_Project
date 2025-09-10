@@ -12,58 +12,65 @@ using Models.Forms;
 namespace Client_App.Commands.AsyncCommands;
 
 /// <summary>
-/// Вставить значения из буфера обмена
-/// Пока что работает только с Form12+
+/// Вставить значения из буфера обмена.
+/// После обновления версии Avalonia нужно будет добавить вставку в формате html
 /// </summary>
 public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
-    //После обновления версии Авалонии нужно будет добавить вставку в формате html
     private Report Storage => formVM.Report;
+
     private Form SelectedForm => formVM.SelectedForm;
+
     private string FormType => formVM.FormType;
+
     public override async Task AsyncExecute(object? parameter)
     {
         if (SelectedForm == null) return;
-        var clipboard = Application.Current.Clipboard;
+        var clipboard = Application.Current!.Clipboard;
 
         var pastedString = await clipboard.GetTextAsync();
-        if ((pastedString == null) || (pastedString == "")) return;
+        if (string.IsNullOrEmpty(pastedString)) return;
 
         var rows = pastedString.Split("\r\n");
 
         //Последняя строка пустая, поэтому выделяем память на одну ячейку меньше
-        string[][] parsedRows = new string[rows.Length-1][];
-        for(int i =0; i< parsedRows.Length;i++)
+        var parsedRows = new string[rows.Length-1][];
+        for(var i = 0; i < parsedRows.Length; i++)
         {
             parsedRows[i] = rows[i].Split('\t');
         }
 
-        int start = SelectedForm.NumberInOrder.Value-1;
+        var start = SelectedForm.NumberInOrder.Value-1;
 
         if (start + parsedRows.Length > Storage.Rows.Count)
         {
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = $"Вставка данных из буфера обмена",
-                        ContentHeader = "Внимание",
-                        ContentMessage =
-                            $"В таблице не хватает места для некоторых строк, которые вы хотите вставить",
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(Desktop.MainWindow));
-        }
+            #region NotEnoughSpaceMessage
 
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        {
+                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ContentTitle = "Вставка данных из буфера обмена",
+                            ContentHeader = "Внимание",
+                            ContentMessage = "В таблице не хватает места для некоторых строк, которые вы хотите вставить.",
+                            MinWidth = 400,
+                            MinHeight = 150,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(Desktop.MainWindow)); 
+            
+            #endregion
+        }
         
-        for (int i = 0; i < parsedRows.Length && i+start<Storage.Rows.Count; i++)
+        for (var i = 0; i < parsedRows.Length && i + start < Storage.Rows.Count; i++)
         {
             switch (FormType)
             {
+                #region 1.1
+                
                 case "1.1":
-                    Form11 form11 = Storage.Rows.Get<Form11>(i + start);
+                {
+                    var form11 = Storage.Rows.Get<Form11>(i + start);
                     form11.OperationCode.Value = parsedRows[i][1];
                     form11.OperationDate.Value = parsedRows[i][2];
                     form11.PassportNumber.Value = parsedRows[i][3];
@@ -71,7 +78,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     form11.Radionuclids.Value = parsedRows[i][5];
                     form11.FactoryNumber.Value = parsedRows[i][6];
 
-                    if (parsedRows[i][7] == "")
+                    if (parsedRows[i][7] == string.Empty)
                         form11.Quantity.Value = null;
                     else
                         form11.Quantity.Value = Convert.ToInt32(parsedRows[i][7]);
@@ -80,31 +87,43 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     form11.CreatorOKPO.Value = parsedRows[i][9];
                     form11.CreationDate.Value = parsedRows[i][10];
 
-                    if (parsedRows[i][11] == "")
+                    if (parsedRows[i][11] == string.Empty)
                         form11.Category.Value = null;
                     else
                         form11.Category.Value = Convert.ToInt16(parsedRows[i][11]);
 
-                    if (parsedRows[i][12] == "")
+                    if (parsedRows[i][12] == string.Empty)
                         form11.SignedServicePeriod.Value = null;
                     else
                         form11.SignedServicePeriod.Value = (float)Convert.ToDouble(parsedRows[i][12]);
 
-
-                    if (parsedRows[i][13] == "")
+                    if (parsedRows[i][13] == string.Empty)
                         form11.PropertyCode.Value = null;
                     else
                         form11.PropertyCode.Value = Convert.ToByte(parsedRows[i][13]);
 
                     form11.Owner.Value = parsedRows[i][14];
-                    form11.ProviderOrRecieverOKPO.Value = parsedRows[i][15];
-                    form11.TransporterOKPO.Value = parsedRows[i][16];
-                    form11.PackName.Value = parsedRows[i][17];
-                    form11.PackType.Value = parsedRows[i][18];
-                    form11.PackNumber.Value = parsedRows[i][19];
+
+                    form11.DocumentVid.Value = Convert.ToByte(parsedRows[i][15]);
+                    form11.DocumentNumber.Value = parsedRows[i][16];
+                    form11.DocumentDate.Value = parsedRows[i][17];
+
+                    form11.ProviderOrRecieverOKPO.Value = parsedRows[i][18];
+                    form11.TransporterOKPO.Value = parsedRows[i][19];
+                    form11.PackName.Value = parsedRows[i][20];
+                    form11.PackType.Value = parsedRows[i][21];
+                    form11.PackNumber.Value = parsedRows[i][22];
+
                     break;
+                }
+
+                #endregion
+
+                #region 1.2
+                
                 case "1.2":
-                    Form12 form12 = Storage.Rows.Get<Form12>(i + start);
+                {
+                    var form12 = Storage.Rows.Get<Form12>(i + start);
                     form12.OperationCode.Value = parsedRows[i][1];
                     form12.OperationDate.Value = parsedRows[i][2];
                     form12.PassportNumber.Value = parsedRows[i][3];
@@ -114,14 +133,15 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     form12.CreatorOKPO.Value = parsedRows[i][7];
                     form12.CreationDate.Value = parsedRows[i][8];
                     form12.SignedServicePeriod.Value = parsedRows[i][9];
-                    if (parsedRows[i][10] == "")
+
+                    if (parsedRows[i][10] == string.Empty)
                         form12.PropertyCode.Value = null;
                     else
                         form12.PropertyCode.Value = Convert.ToByte(parsedRows[i][10]);
 
                     form12.Owner.Value = parsedRows[i][11];
 
-                    if (parsedRows[i][12] == "")
+                    if (parsedRows[i][12] == string.Empty)
                         form12.DocumentVid.Value = null;
                     else
                         form12.DocumentVid.Value = Convert.ToByte(parsedRows[i][12]);
@@ -133,9 +153,17 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     form12.PackName.Value = parsedRows[i][17];
                     form12.PackType.Value = parsedRows[i][18];
                     form12.PackNumber.Value = parsedRows[i][19];
+
                     break;
+                }
+
+                #endregion
+
+                #region 1.3
+                
                 case "1.3":
-                    Form13 form13 = Storage.Rows.Get<Form13>(i + start);
+                {
+                    var form13 = Storage.Rows.Get<Form13>(i + start);
                     form13.OperationCode.Value = parsedRows[i][1];
                     form13.OperationDate.Value = parsedRows[i][2];
                     form13.PassportNumber.Value = parsedRows[i][3];
@@ -146,20 +174,20 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     form13.CreatorOKPO.Value = parsedRows[i][8];
                     form13.CreationDate.Value = parsedRows[i][9];
 
-                    if (parsedRows[i][10] == "")
+                    if (parsedRows[i][10] == string.Empty)
                         form13.AggregateState.Value = null;
                     else
                         form13.AggregateState.Value = Convert.ToByte(parsedRows[i][10]);
 
 
-                    if (parsedRows[i][11] == "")
+                    if (parsedRows[i][11] == string.Empty)
                         form13.PropertyCode.Value = null;
                     else
                         form13.PropertyCode.Value = Convert.ToByte(parsedRows[i][11]);
 
                     form13.Owner.Value = parsedRows[i][12];
 
-                    if (parsedRows[i][13] == "")
+                    if (parsedRows[i][13] == string.Empty)
                         form13.DocumentVid.Value = null;
                     else
                         form13.DocumentVid.Value = Convert.ToByte(parsedRows[i][13]);
@@ -171,9 +199,17 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     form13.PackName.Value = parsedRows[i][18];
                     form13.PackType.Value = parsedRows[i][19];
                     form13.PackNumber.Value = parsedRows[i][20];
+
                     break;
+                }
+
+                #endregion
+
+                #region 1.4
+                
                 case "1.4":
-                    Form14 form14 = Storage.Rows.Get<Form14>(i + start);
+                {
+                    var form14 = Storage.Rows.Get<Form14>(i + start);
                     form14.OperationCode.Value = parsedRows[i][1];
                     form14.OperationDate.Value = parsedRows[i][2];
                     form14.PassportNumber.Value = parsedRows[i][3];
@@ -188,7 +224,6 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     form14.Activity.Value = parsedRows[i][7];
                     form14.ActivityMeasurementDate.Value = parsedRows[i][8];
                     form14.Volume.Value = parsedRows[i][9];
-
                     form14.Mass.Value = parsedRows[i][10];
 
                     if (parsedRows[i][11] == "")
@@ -215,9 +250,17 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     form14.PackName.Value = parsedRows[i][19];
                     form14.PackType.Value = parsedRows[i][20];
                     form14.PackNumber.Value = parsedRows[i][21];
+
                     break;
+                }
+
+                #endregion
+
+                #region 1.5
+                
                 case "1.5":
-                    Form15 form15 = Storage.Rows.Get<Form15>(i + start);
+                {
+                    var form15 = Storage.Rows.Get<Form15>(i + start);
                     form15.OperationCode.Value = parsedRows[i][1];
                     form15.OperationDate.Value = parsedRows[i][2];
                     form15.PassportNumber.Value = parsedRows[i][3];
@@ -225,7 +268,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     form15.Radionuclids.Value = parsedRows[i][5];
                     form15.FactoryNumber.Value = parsedRows[i][6];
 
-                    if (parsedRows[i][7] == "")
+                    if (parsedRows[i][7] == string.Empty)
                         form15.Quantity.Value = null;
                     else
                         form15.Quantity.Value = Convert.ToByte(parsedRows[i][7]);
@@ -234,7 +277,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     form15.CreationDate.Value = parsedRows[i][9];
                     form15.StatusRAO.Value = parsedRows[i][10];
 
-                    if (parsedRows[i][11] == "")
+                    if (parsedRows[i][11] == string.Empty)
                         form15.DocumentVid.Value = null;
                     else
                         form15.DocumentVid.Value = Convert.ToByte(parsedRows[i][11]);
@@ -252,9 +295,17 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     form15.Subsidy.Value = parsedRows[i][22];
                     form15.FcpNumber.Value = parsedRows[i][23];
                     form15.ContractNumber.Value = parsedRows[i][24];
+
                     break;
+                }
+
+                #endregion
+
+                #region 1.6
+                
                 case "1.6":
-                    Form16 form16 = Storage.Rows.Get<Form16>(i + start);
+                {
+                    var form16 = Storage.Rows.Get<Form16>(i + start);
                     form16.OperationCode.Value = parsedRows[i][1];
                     form16.OperationDate.Value = parsedRows[i][2];
                     form16.CodeRAO.Value = parsedRows[i][3];
@@ -287,9 +338,17 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     form16.Subsidy.Value = parsedRows[i][25];
                     form16.FcpNumber.Value = parsedRows[i][26];
                     form16.ContractNumber.Value = parsedRows[i][27];
+
                     break;
+                }
+
+                #endregion
+
+                #region 1.7
+                
                 case "1.7":
-                    Form17 form17 = Storage.Rows.Get<Form17>(i + start);
+                {
+                    var form17 = Storage.Rows.Get<Form17>(i + start);
                     form17.OperationCode.Value = parsedRows[i][1];
                     form17.OperationDate.Value = parsedRows[i][2];
                     form17.PackName.Value = parsedRows[i][3];
@@ -309,9 +368,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                         form17.DocumentVid.Value = Convert.ToByte(parsedRows[i][13]);
 
                     form17.DocumentNumber.Value = parsedRows[i][14];
-
                     form17.DocumentDate.Value = parsedRows[i][15];
-
                     form17.ProviderOrRecieverOKPO.Value = parsedRows[i][16];
                     form17.TransporterOKPO.Value = parsedRows[i][17];
                     form17.StoragePlaceName.Value = parsedRows[i][18];
@@ -329,9 +386,17 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     form17.Subsidy.Value = parsedRows[i][30];
                     form17.FcpNumber.Value = parsedRows[i][31];
                     form17.ContractNumber.Value = parsedRows[i][32];
+
                     break;
+                }
+
+                #endregion
+
+                #region 1.8
+                
                 case "1.8":
-                    Form18 form18 = Storage.Rows.Get<Form18>(i + start);
+                {
+                    var form18 = Storage.Rows.Get<Form18>(i + start);
 
                     form18.OperationCode.Value = parsedRows[i][1];
                     form18.OperationDate.Value = parsedRows[i][2];
@@ -349,9 +414,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                         form18.DocumentVid.Value = Convert.ToByte(parsedRows[i][10]);
 
                     form18.DocumentNumber.Value = parsedRows[i][11];
-
                     form18.DocumentDate.Value = parsedRows[i][12];
-
                     form18.ProviderOrRecieverOKPO.Value = parsedRows[i][13];
                     form18.TransporterOKPO.Value = parsedRows[i][14];
                     form18.StoragePlaceName.Value = parsedRows[i][15];
@@ -368,9 +431,17 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     form18.Subsidy.Value = parsedRows[i][26];
                     form18.FcpNumber.Value = parsedRows[i][27];
                     form18.ContractNumber.Value = parsedRows[i][28];
+
                     break;
+                }
+
+                #endregion
+
+                #region 1.9
+                
                 case "1.9":
-                    Form19 form19 = Storage.Rows.Get<Form19>(i + start);
+                {
+                    var form19 = Storage.Rows.Get<Form19>(i + start);
                     form19.OperationCode.Value = parsedRows[i][1];
                     form19.OperationDate.Value = parsedRows[i][2];
 
@@ -380,7 +451,6 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                         form19.DocumentVid.Value = Convert.ToByte(parsedRows[i][3]);
 
                     form19.DocumentNumber.Value = parsedRows[i][4];
-
                     form19.DocumentDate.Value = parsedRows[i][5];
 
                     if (parsedRows[i][6] == "")
@@ -390,9 +460,14 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 
                     form19.Radionuclids.Value = parsedRows[i][7];
                     form19.Activity.Value = parsedRows[i][8];
+
                     break;
+                }
+
+                #endregion
             }
         }
+
         //Узкоспециализированное решение для корректного вывода пустых дат
         formVM.UpdateFormList();
     }

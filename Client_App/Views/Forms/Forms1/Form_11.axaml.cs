@@ -1,16 +1,15 @@
 
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using Client_App.Controls.DataGrid;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
 using Client_App.Interfaces.Logger;
-using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
@@ -19,13 +18,12 @@ using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form1;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Controls;
 
 namespace Client_App.Views.Forms.Forms1;
 
@@ -62,6 +60,114 @@ public partial class Form_11 : BaseWindow<Form_11VM>
         if (command.CanExecute(null))
         {
             command.Execute(null);
+        }
+    }
+
+    private void DataGrid_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (DataContext is not Form_11VM vm)
+            return;
+
+        var dataGrid = this.FindControl<DataGrid>("dataGrid");
+        var dataContext = dataGrid?.DataContext;
+        if (dataContext is null || dataGrid is null)
+            return;
+
+        var selectedForms = vm.SelectedForms;
+
+        if (dataGrid.IsPointerOver && e.KeyModifiers is KeyModifiers.Control)
+        {
+            switch (e.Key)
+            {
+                case Key.A: // Select All
+                {
+                    vm.SelectAll.Execute(null);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.T: // Add Row
+                {
+                    vm.AddRow.Execute(null);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.N: // Add N Rows
+                {
+                    vm.AddRows.Execute(null);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.I: // Add N Rows Before
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.AddRowsIn.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+
+                    break;
+                }
+                case Key.C: // Copy Rows
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.CopyRows.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+
+                    break;
+                }
+                case Key.V: // Paste Rows
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.PasteRows.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+
+                    break;
+                }
+                case Key.D: // Delete Selected Rows
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.DeleteRows.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+
+                    break;
+                }
+                case Key.O: // Set Number Order
+                {
+                    vm.SetNumberOrder.Execute(null);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.K: // Clear Rows
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.DeleteDataInRows.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+                    break;
+                }
+                case Key.J: // Convert to RAW
+                {
+                    var selectedForm = dataContext.GetType().GetProperty("SelectedForm")?.GetValue(dataContext);
+                    if (selectedForm != null)
+                    {
+                        dataContext.GetType().GetMethod("SourceTransmission")?.Invoke(dataContext, new[] { selectedForm });
+                        e.Handled = true;
+                    }
+                    break;
+                }
+                default: return;
+            }
         }
     }
 

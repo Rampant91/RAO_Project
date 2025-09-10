@@ -20,7 +20,12 @@ public class ExcelExportCheckFormAsyncCommand : ExcelBaseAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
-        if (parameter is not CheckFormVM checkFormVM) return;
+        if (parameter is not (CheckFormVM or NewCheckFormVM)) return;
+        
+        dynamic checkFormVM;
+        if (parameter is CheckFormVM vm) checkFormVM = vm;
+        else checkFormVM = (NewCheckFormVM)parameter;
+
         var cts = new CancellationTokenSource();
         ExportType = "Список_ошибок";
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
