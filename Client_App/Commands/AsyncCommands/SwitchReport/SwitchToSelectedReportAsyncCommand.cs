@@ -2,6 +2,7 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.Logger;
+using Client_App.Resources;
 using Client_App.ViewModels.Forms;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
