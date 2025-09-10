@@ -47,29 +47,11 @@
 			</Expander.Header>
 			<WrapPanel Classes="header">
 				<Border Classes="borderContainer">
-					<Grid RowDefinitions="Auto,*,Auto">
-						<Button Command="{Binding SwitchToNextReport}"
-								Grid.Row="0" 
-								VerticalContentAlignment="Center" 
-								Height="75" 
-								FontSize="48" 
-								Content="🠕"/>
-
-						<!--
-							<controls:SelectReportPopup
-								Grid.Row="1"
-								DataContext="{Binding SelectReportPopupVM}"
-								HorizontalAlignment="Center"
-								VerticalAlignment="Center"/>
-						-->
-						
-						<Button Command="{Binding SwitchToPreviousReport}"
-								Grid.Row="2" 
-								VerticalContentAlignment="Center" 
-								Height="75" 
-								FontSize="48" 
-								Content="🠗"/>
-					</Grid>
+						<controls:SelectReportPopup
+							Grid.Row="1"
+							DataContext="{Binding SelectReportPopupVM}"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"/>
 				</Border>
 				<Border Classes="borderContainer">
 					<Grid Margin="5" RowDefinitions="*,*,*,*,*">

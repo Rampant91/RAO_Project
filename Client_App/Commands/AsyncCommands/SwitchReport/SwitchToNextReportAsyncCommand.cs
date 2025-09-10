@@ -30,7 +30,7 @@ namespace Client_App.Commands.AsyncCommands.SwitchReport
         public override async Task AsyncExecute(object? parameter)
         {
             // Проверяем изменения и предлагаем сохранить
-            var shouldContinue = await CheckForChangesAndSave();
+            var shouldContinue = await new CheckForChangesAndSaveCommand(formVM).AsyncExecute(null);
             if (!shouldContinue) return;
 
             // Дальше переключаемся на другую форму
@@ -53,60 +53,7 @@ namespace Client_App.Commands.AsyncCommands.SwitchReport
                 Window = window
             };
             await new ChangeFormAsyncCommand(windowParam).AsyncExecute(null).ConfigureAwait(false);
-        }
-
-        private async Task<bool> CheckForChangesAndSave()
-        {
-            var desktop = (IClassicDesktopStyleApplicationLifetime)Avalonia.Application.Current.ApplicationLifetime;
-            var dbm = StaticConfiguration.DBModel;
-
-            try
-            {
-                if (!dbm.ChangeTracker.HasChanges())
-                {
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                var msg = $"{Environment.NewLine}Message: {ex.Message}" +
-                          $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-                ServiceExtension.LoggerManager.Error(msg);
-                return true;
-            }
-
-            // Показываем диалог сохранения изменений
-            var res = await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                {
-                    ButtonDefinitions =
-                    [
-                        new ButtonDefinition { Name = "Да" },
-                        new ButtonDefinition { Name = "Нет" }
-                    ],
-                    ContentTitle = "Сохранение изменений",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = $"Сохранить форму {formVM.FormType}?",
-                    MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(desktop.MainWindow);
-
-            switch (res)
-            {
-                case "Да":
-                    await dbm.SaveChangesAsync();
-                    await new SaveReportAsyncCommand(formVM).AsyncExecute(null);
-                    return true;
-
-                case "Нет":
-                    dbm.Restore();
-                    await dbm.SaveChangesAsync();
-                    return true;
-
-                default:
-                    return false; // Отмена переключения
-            }
+            
         }
     }
 }
