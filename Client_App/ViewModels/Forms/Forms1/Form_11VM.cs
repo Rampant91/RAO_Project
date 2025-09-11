@@ -3,7 +3,10 @@ using Client_App.Commands.AsyncCommands.Calculator;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
+using Models.Attributes;
 using Models.Collections;
+using System;
+using System.Linq;
 using System.Windows.Input;
 
 namespace Client_App.ViewModels.Forms.Forms1;
@@ -17,6 +20,31 @@ public class Form_11VM : BaseFormVM
     public Form_11VM() { }
 
     public Form_11VM(Report report) : base(report) { }
+
+    public Form_11VM(in Reports reps)
+    {
+        var formNum = FormType;
+        Report = new Report
+        {
+            FormNum_DB = formNum,
+            StartPeriod =
+            {
+                Value = reps.Report_Collection
+                    .Where(x => x.FormNum_DB == formNum && DateOnly.TryParse(x.EndPeriod_DB, out _))
+                    .OrderBy(x => DateOnly.Parse(x.EndPeriod_DB))
+                    .Select(x => x.EndPeriod_DB)
+                    .LastOrDefault() ?? ""
+            }
+        };
+
+        Reports = reps;
+
+        formNum = formNum.Replace(".", "");
+        WindowTitle = $"{((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{formNum[0]}.Form{formNum},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name} "
+                      + $"{Reports.Master_DB.RegNoRep.Value} "
+                      + $"{Reports.Master_DB.ShortJurLicoRep.Value} "
+                      + $"{Reports.Master_DB.OkpoRep.Value}";
+    }
 
     #endregion
 

@@ -234,7 +234,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
-    #region AddNewForm
+    #region AddNewReport
 
     public ChangeOrCreateVM(string formNum, in Reports reps)
     {
