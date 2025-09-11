@@ -98,10 +98,7 @@
 							    <Button Margin="5" Command="{Binding SaveReport}">Сохранить</Button>
 						    </StackPanel>
 
-						    <StackPanel Orientation="Horizontal"  Grid.Row="4">
-							    <TextBlock Margin="5" >Автозаполнение:</TextBlock>
-							    <CheckBox Margin="5" IsChecked="{Binding IsAutoReplaceEnabled}"></CheckBox>
-						    </StackPanel>
+						    
 					    </Grid>
 				    </Border>
 
@@ -147,8 +144,18 @@
                                     Content="Скопировать данные предыдущей формы"/>
 					    </Grid>
 				    </Border>
-                    <Button Command="{Binding SourceTransmissionAll}"> Перевести все РВ в РАО</Button>
 
+					<Border Classes="borderContainer">
+						<Grid Margin="5" RowDefinitions="Auto,Auto">
+
+							<Button Grid.Row="0" Command="{Binding SourceTransmissionAll}"> Перевести все РВ в РАО</Button>
+
+							<StackPanel Grid.Row="1" Orientation="Horizontal">
+								<TextBlock Margin="5" >Автозаполнение:</TextBlock>
+								<CheckBox Margin="5" IsChecked="{Binding IsAutoReplaceEnabled}"></CheckBox>
+							</StackPanel>
+						</Grid>
+					</Border>
 			    </WrapPanel>
 		    </Expander>
 

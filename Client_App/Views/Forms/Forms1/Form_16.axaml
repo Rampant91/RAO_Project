@@ -98,10 +98,6 @@
 							<Button Margin="5" Command="{Binding SaveReport}">Сохранить</Button>
 						</StackPanel>
 
-						<StackPanel Orientation="Horizontal"  Grid.Row="4">
-							<TextBlock Margin="5" >Автозаполнение:</TextBlock>
-							<CheckBox Margin="5" IsChecked="{Binding IsAutoReplaceEnabled}"></CheckBox>
-						</StackPanel>
 					</Grid>
 				</Border>
 
@@ -145,6 +141,15 @@
 								Margin="5"
 								Click="CopyExecutorData_Click"
 								Content="Скопировать данные предыдущей формы"/>
+					</Grid>
+				</Border>
+				<Border Classes="borderContainer">
+					<Grid Margin="5" RowDefinitions="Auto,Auto">
+
+						<StackPanel Grid.Row="1" Orientation="Horizontal">
+							<TextBlock Margin="5" >Автозаполнение:</TextBlock>
+							<CheckBox Margin="5" IsChecked="{Binding IsAutoReplaceEnabled}"></CheckBox>
+						</StackPanel>
 					</Grid>
 				</Border>
 
