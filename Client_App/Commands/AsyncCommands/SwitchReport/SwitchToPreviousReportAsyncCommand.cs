@@ -37,16 +37,14 @@ namespace Client_App.Commands.AsyncCommands.SwitchReport
             // Дальше переключаемся на другую форму
             var index = Reports.Report_Collection.IndexOf(Report);
             Report? newReport = null;
-            for (int i = index - 1; i >= 0; i--)
+            
+            for (int i = index + 1; i < Reports.Report_Collection.Count; i++)
             {
-                if (Reports.Report_Collection[i].FormNum.Value == Report.FormNum.Value)
-                {
-                    newReport = Reports.Report_Collection[i];
+                newReport = Reports.Report_Collection[i];
+                if (newReport.FormNum.Value == Report.FormNum.Value)
                     break;
-                }
             }
             if (newReport == null) return;
-
             var window = Desktop.Windows.First(x => x.Name == formVM.FormType);
             var windowParam = new FormParameter()
             {
