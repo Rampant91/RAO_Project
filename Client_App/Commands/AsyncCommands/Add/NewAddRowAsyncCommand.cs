@@ -19,7 +19,7 @@ public class NewAddRowAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
-        bool currentPageIsLastPage = formVM.CurrentPage == formVM.TotalPages;
+        var currentPageIsLastPage = formVM.CurrentPage == formVM.TotalPages || formVM.TotalPages == 0;
         var frm = FormCreator.Create(FormType);
         frm.NumberInOrder_DB = GetNumberInOrder(Storage[Storage.FormNum_DB]);
         var formContainRowAtStart = Storage.Rows.Count > 0;

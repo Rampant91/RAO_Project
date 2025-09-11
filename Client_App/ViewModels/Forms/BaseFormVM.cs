@@ -6,17 +6,15 @@ using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.Commands.AsyncCommands.SwitchReport;
 using Client_App.Commands.SyncCommands;
-using Models.Attributes;
 using Models.Collections;
 using Models.Forms;
-using Models.Forms.Form1;
-using Models.Forms.Form2;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Models.Attributes;
 
 namespace Client_App.ViewModels.Forms;
 
@@ -25,16 +23,18 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     #region Properties
 
     public abstract string FormType { get; }
-    public string WindowTitle { get; set; }
-    //{
-    //    get
-    //    {
-    //        return $"Форма {FormType} :  "
-    //               + $"{Reports.Master_DB.RegNoRep.Value}  "
-    //               + $"{Reports.Master_DB.ShortJurLicoRep.Value}  "
-    //               + $"{Reports.Master_DB.OkpoRep.Value}";
-    //    }
-    //}
+    public string WindowTitle 
+    {
+        get
+        {
+            var formNum = FormType.Replace(".", "");
+            return $"{((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{formNum[0]}.Form{formNum},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name} " 
+                   + $"{Reports.Master_DB.RegNoRep.Value}  "
+                   + $"{Reports.Master_DB.ShortJurLicoRep.Value}  "
+                   + $"{Reports.Master_DB.OkpoRep.Value}";
+        }
+    
+    }
 
     protected ObservableCollection<Form> _formList = [];
     public ObservableCollection<Form> FormList

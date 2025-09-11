@@ -30,23 +30,12 @@ public class Form_18VM : BaseFormVM
                     .OrderBy(x => DateOnly.Parse(x.EndPeriod_DB))
                     .Select(x => x.EndPeriod_DB)
                     .LastOrDefault() ?? ""
-            }
+            },
+            Reports = reps
         };
 
         Reports = reps;
-
-        formNum = formNum.Replace(".", "");
-        WindowTitle = $"{((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{formNum[0]}.Form{formNum},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name} "
-                      + $"{Reports.Master_DB.RegNoRep.Value} "
-                      + $"{Reports.Master_DB.ShortJurLicoRep.Value} "
-                      + $"{Reports.Master_DB.OkpoRep.Value}";
     }
-
-    #endregion
-
-    #region Commands
-
-    public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);
 
     #endregion
 

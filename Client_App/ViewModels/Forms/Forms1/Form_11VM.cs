@@ -3,7 +3,6 @@ using Client_App.Commands.AsyncCommands.Calculator;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
-using Models.Attributes;
 using Models.Collections;
 using System;
 using System.Linq;
@@ -34,16 +33,11 @@ public class Form_11VM : BaseFormVM
                     .OrderBy(x => DateOnly.Parse(x.EndPeriod_DB))
                     .Select(x => x.EndPeriod_DB)
                     .LastOrDefault() ?? ""
-            }
+            },
+            Reports = reps
         };
 
         Reports = reps;
-
-        formNum = formNum.Replace(".", "");
-        WindowTitle = $"{((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{formNum[0]}.Form{formNum},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name} "
-                      + $"{Reports.Master_DB.RegNoRep.Value} "
-                      + $"{Reports.Master_DB.ShortJurLicoRep.Value} "
-                      + $"{Reports.Master_DB.OkpoRep.Value}";
     }
 
     #endregion
