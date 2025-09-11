@@ -238,7 +238,7 @@ public class Report : IKey, IDataGridColumn
     #region AutoReplace
 
     [NotMapped]
-    public bool AutoReplace { get; set; } = false; 
+    public bool AutoReplace { get; set; } = true; 
     
     #endregion
 

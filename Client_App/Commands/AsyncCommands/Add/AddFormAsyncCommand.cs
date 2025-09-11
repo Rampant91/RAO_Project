@@ -1,13 +1,11 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
-using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.Views;
 using Client_App.VisualRealization.Long_Visual;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
-using Models.Forms;
 using Models.Interfaces;
 using System;
 using System.Linq;
