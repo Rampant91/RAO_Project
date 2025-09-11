@@ -322,7 +322,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="1"/>
-											<!--<Button Grid.Column="1"/>-->
+
 										</Grid>
 
 									</Border>
@@ -336,7 +336,11 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="2"/>
-											<!--<Button Grid.Column="1"/>-->
+
+											<controls:FilterPopup
+												Grid.Column="1"
+												HorizontalAlignment="Center"
+												VerticalAlignment="Center"/>
 										</Grid>
 									</Border>
 								</DataTemplate>
