@@ -92,7 +92,10 @@
                                     Text="{Binding Path=Report.CorrectionNumber.Value}"></TextBox>
 						    </StackPanel>
 						
-						   
+						    <StackPanel Orientation="Horizontal" Grid.Row="3">
+							    <Button Margin="5" Command="{Binding CheckForm}">Проверить</Button>
+							    <Button Margin="5" Command="{Binding SaveReport}">Сохранить</Button>
+						    </StackPanel>
 
 					    </Grid>
 				    </Border>

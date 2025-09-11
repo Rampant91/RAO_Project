@@ -93,7 +93,10 @@
 								Text="{Binding Path=Report.CorrectionNumber.Value}"></TextBox>
 						</StackPanel>
 
-						
+						<StackPanel Orientation="Horizontal" Grid.Row="3">
+							<Button Margin="5" Command="{Binding CheckForm}">Проверить</Button>
+							<Button Margin="5" Command="{Binding SaveReport}">Сохранить</Button>
+						</StackPanel>
 
 					</Grid>
 				</Border>
@@ -142,6 +145,7 @@
 				</Border>
 				<Border Classes="borderContainer">
 					<Grid Margin="5" RowDefinitions="Auto,Auto">
+
 
 						<StackPanel Grid.Row="1" Orientation="Horizontal">
 							<TextBlock Margin="5" >Автозаполнение:</TextBlock>
