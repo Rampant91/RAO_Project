@@ -33,6 +33,8 @@ public partial class Form_15 : BaseWindow<Form_15VM>
 
     //private Form_15VM _vm = null!;
 
+    #region Constructors
+
     public Form_15()
     {
         InitializeComponent();
@@ -52,6 +54,10 @@ public partial class Form_15 : BaseWindow<Form_15VM>
         WindowState = WindowState.Maximized;
     }
 
+    #endregion
+
+    #region CopyExecutorData_Click
+
     //¬ременное узкоспециализированное решение
     private void CopyExecutorData_Click(object sender, RoutedEventArgs e)
     {
@@ -61,6 +67,118 @@ public partial class Form_15 : BaseWindow<Form_15VM>
             command.Execute(null);
         }
     }
+
+    #endregion
+
+    #region DataGrid_KeyUp
+
+    private void DataGrid_KeyUp(object? sender, KeyEventArgs e)
+    {
+        if (DataContext is not Form_15VM vm)
+            return;
+
+        var dataGrid = this.FindControl<DataGrid>("dataGrid");
+        var dataContext = dataGrid?.DataContext;
+        if (dataContext is null || dataGrid is null)
+            return;
+
+        var selectedForms = vm.SelectedForms;
+
+        if (dataGrid.IsPointerOver && e.KeyModifiers is KeyModifiers.Control)
+        {
+            switch (e.Key)
+            {
+                case Key.A: // Select All
+                {
+                    vm.SelectAll.Execute(null);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.T: // Add Row
+                {
+                    vm.AddRow.Execute(null);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.N: // Add N Rows
+                {
+                    vm.AddRows.Execute(null);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.I: // Add N Rows Before
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.AddRowsIn.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+
+                    break;
+                }
+                case Key.C: // Copy Rows
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.CopyRows.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+
+                    break;
+                }
+                case Key.V: // Paste Rows
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.PasteRows.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+
+                    break;
+                }
+                case Key.D: // Delete Selected Rows
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.DeleteRows.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+
+                    break;
+                }
+                case Key.O: // Set Number Order
+                {
+                    vm.SetNumberOrder.Execute(null);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.K: // Clear Rows
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.DeleteDataInRows.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+
+                    break;
+                }
+                case Key.E: // Export Movement History
+                {
+                    vm.ExcelExportSourceMovementHistory.Execute(selectedForms);
+                    e.Handled = true;
+
+                    break;
+                }
+                default: return;
+            }
+        }
+    }
+
+    #endregion
 
     #region OnStandartClosing
 

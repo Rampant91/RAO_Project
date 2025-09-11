@@ -16,12 +16,6 @@ public class Form_16VM : BaseFormVM
 
     #endregion
 
-    #region Commands
-
-    public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this); 
-    
-    #endregion
-
     //public ObservableCollection<Form16> Form16List => new(FormList.Cast<Form16>());
 
     //public ObservableCollection<Form16> SelectedForms16 => new(SelectedForms.Cast<Form16>());

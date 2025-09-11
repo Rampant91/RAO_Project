@@ -2070,6 +2070,9 @@ public partial class Form16 : Form1
             $"{AlphaActivity.Value}\t" +
             $"{TransuraniumActivity.Value}\t" +
             $"{ActivityMeasurementDate.Value}\t" +
+            $"{DocumentVid.Value}\t" +
+            $"{DocumentNumber.Value}\t" +
+            $"{DocumentDate.Value}\t" +
             $"{ProviderOrRecieverOKPO.Value}\t" +
             $"{TransporterOKPO.Value}\t" +
             $"{StoragePlaceName.Value}\t" +

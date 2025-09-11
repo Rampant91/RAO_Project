@@ -1,3 +1,4 @@
+using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Models.Collections;
 using System.Windows.Input;
@@ -18,7 +19,7 @@ public class Form_15VM : BaseFormVM
 
     #region Commands
 
-    public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this); 
+    public ICommand ExcelExportSourceMovementHistory => new ExcelExportSourceMovementHistoryAsyncCommand();
     
     #endregion
 
