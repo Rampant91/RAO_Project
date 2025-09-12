@@ -75,8 +75,8 @@ public class CheckF27 : CheckBase
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
             .Where(x => x.Master_DB.Rows20.Any(y => y.RegNo_DB == form20RegNo))
             .Include(x => x.Report_Collection)
-            .Include(x => x.Report_Collection.Where(y => y.Year_DB == yearPrevious && y.FormNum_DB == "2.7"))
-            .ThenInclude(x => x.Rows210))
+            .Include(x => x.Report_Collection.Where(y => y.Year_DB == yearPrevious && y.FormNum_DB == "2.7")).ThenInclude(report => report.Rows27)
+            .Include(x => x.Report_Collection.Where(y => y.Year_DB == yearPrevious && y.FormNum_DB == "2.7")).ThenInclude(x => x.Rows210))
             if (_.Report_Collection.Count > 0) { reps27Prev = _; break; }
 
         await db2.DisposeAsync();
