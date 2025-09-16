@@ -351,10 +351,10 @@
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="2"/>
 
-											<controls:FilterPopup
+											<!--<controls:FilterPopup
 												Grid.Column="1"
 												HorizontalAlignment="Center"
-												VerticalAlignment="Center"/>
+												VerticalAlignment="Center"/> -->
 										</Grid>
 									</Border>
 								</DataTemplate>

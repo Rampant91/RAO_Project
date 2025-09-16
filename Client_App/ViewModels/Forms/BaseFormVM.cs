@@ -286,8 +286,6 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand CopyNotes => new NewCopyNotesAsyncCommand();
     public ICommand PasteNotes => new NewPasteNotesAsyncCommand(this);
     public ICommand DeleteNotes => new NewDeleteNoteAsyncCommand(this);
-    public ICommand SwitchToNextReport => new SwitchToNextReportAsyncCommand(this);
-    public ICommand SwitchToPreviousReport => new SwitchToPreviousReportAsyncCommand(this);
     #endregion
 
     #region UpdateFormList
