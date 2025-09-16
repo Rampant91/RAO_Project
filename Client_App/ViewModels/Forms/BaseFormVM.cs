@@ -287,6 +287,12 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand PasteNotes => new NewPasteNotesAsyncCommand(this);
     public ICommand DeleteNotes => new NewDeleteNoteAsyncCommand(this);
     #endregion
+    #region  UpdateNoteList
+    public void UpdateNoteList()
+    {
+        NoteList = new ObservableCollection<Note>( Report.Notes.ToList<Note>()); 
+    }
+    #endregion
 
     #region UpdateFormList
 
