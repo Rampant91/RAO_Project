@@ -217,10 +217,14 @@ public class CheckF29 : CheckBase
                     && rowCur.RadionuclidName_DB.Trim().Equals(rowPrev.RadionuclidName_DB.Trim(), StringComparison.InvariantCultureIgnoreCase)
                     )
                 {
-                    if (!(double.TryParse(rowCur.FactedActivity_DB, out var factedActivityCur)
-                        && double.TryParse(rowPrev.FactedActivity_DB, out var factedActivityPrev)
+                    double factedActivityCur = 0;
+                    double factedActivityPrev = 0;
+                    if (!(double.TryParse(rowCur.FactedActivity_DB, out factedActivityCur)
+                        && double.TryParse(rowPrev.FactedActivity_DB, out factedActivityPrev)
                         && factedActivityCur <= 1.2 * factedActivityPrev
-                        && factedActivityPrev <= 1.2 * factedActivityCur))
+                        && factedActivityPrev <= 1.2 * factedActivityCur
+                        || (rowCur.FactedActivity_DB == "-" && factedActivityPrev == 0)
+                        || (rowPrev.FactedActivity_DB == "-" && factedActivityCur == 0)))
                     {
                         errorList.Add(new CheckError
                         {
@@ -231,6 +235,8 @@ public class CheckF29 : CheckBase
                             Message = $"Сведения о фактическом сбросе за предыдущий год существенно отличаются от данных представленных в отчете. Проверьте правильность сведений."
                         });
                     }
+                    factedActivityCur = 0;
+                    factedActivityPrev = 0;
                     break;
                 }
             }

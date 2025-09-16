@@ -984,7 +984,7 @@ public abstract class CheckF17 : CheckBase
         foreach (var line in lines)
         {
             var specificActivity = ConvertStringToExponential(forms[line].SpecificActivity_DB);
-            var rads = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
+            var rads = ReplaceNullAndTrim(forms[line].Radionuclids_DB).Replace('m', 'м');
             if (R.Any(phEntry => phEntry["name"] == rads.ToLower()) 
                 && TryParseFloatExtended(specificActivity, out var partialActivityReal))
             {
