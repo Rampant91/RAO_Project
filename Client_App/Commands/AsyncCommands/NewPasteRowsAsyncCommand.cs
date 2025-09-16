@@ -63,6 +63,70 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         else
             return null;
     }
+
+    //При копировании из Excel, ячейки с символами \n и \t заворачиваются в кавычки
+    //Так как в этих скобках могут быть \t, то эти ячейки будут дробиться при сплите
+    //Этот метод не может обрабатывать все возможные случаи,
+    //Например ячейка   ("Ячейка1"  - все еще ячейка1)
+    //в формате TSV будет выглядеть так (\t\"\"\"Ячейка1\"\"\t- все еще ячейка1\"\t)
+    //поэтому после обновления Авалонии необходимо переписать всю команду вставки
+    private string CutTabulationInCells(string row)
+    {
+        //Начало раздробленной ячейки
+        if (row.Contains("\t\""))
+        {
+            row = row.Replace("\t\"", "\t%border%start/");
+        }
+        //Конец раздробленной ячейки
+        if (row.Contains("\"\t"))
+        {
+            row = row.Replace("\"\t", "/end%border%\t");
+        }
+        if ((row.Contains("%border%start/")) || (row.Contains("/end%border%")))
+        {
+            var splitedRow = row.Split("%border%");
+            row = "";
+            for(int  i = 0; i< splitedRow.Length; i++)
+            {
+                if ((splitedRow[i].StartsWith("start/")) && (splitedRow[i].EndsWith("/end")))
+                {
+                    splitedRow[i] = splitedRow[i].Replace("\t", "");
+                }
+                row += splitedRow[i];
+            }
+            if (row.Contains("start/"))
+            {
+                row = row.Replace("start/", "");
+            }
+            if (row.Contains("/end"))
+            {
+                row = row.Replace("/end", "");
+            }
+        }
+
+        return row;
+    }
+    private string[] PrepareRowsForParsing(string[] rows)
+    {
+        for (int i = 0; i < rows.Length; i++)
+        {
+
+            //Вырезаем из строк лишние \n
+            if (rows[i].Contains('\n'))
+            {
+                rows[i] = rows[i].Replace('\n', ' ');
+            }
+
+            rows[i] = CutTabulationInCells(rows[i]);
+
+            //Excel экранирует обычные кавычки другими кавычками
+            if (rows[i].Contains("\"\""))
+            {
+                rows[i] = rows[i].Replace("\"\"", "\"");
+            }
+        }
+        return rows;
+    }
     public override async Task AsyncExecute(object? parameter)
     {
         if (SelectedForm == null) return;
@@ -72,6 +136,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         if (string.IsNullOrEmpty(pastedString)) return;
 
         var rows = pastedString.Split("\r\n");
+        rows = PrepareRowsForParsing(rows);
 
         //Последняя строка пустая, поэтому выделяем память на одну ячейку меньше
         var parsedRows = new string[rows.Length - 1][];
@@ -80,6 +145,50 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             parsedRows[i] = rows[i].Split('\t');
         }
 
+        for (int i = 0; i < parsedRows.Length; i++)
+        {
+            for (int j = 0; j < parsedRows[i].Length; j++)
+            {
+                var cell = parsedRows[i][j];
+                //Тримим каждую ячейку для проверки на кавычки
+                cell = cell.Trim();
+
+                // Убираем все пустые символы что были после кавычек
+                cell = cell.Trim();
+                parsedRows[i][j] = cell;
+
+                /*
+                var cell = parsedRows[i][j];
+                //Тримим каждую ячейку для проверки на кавычки
+                cell = cell.Trim();
+                //Excel заворачивает в кавычки ячейки, если внутри был \n или \t
+                //Лишние \n уже были убраны, а \t при парсинге разбил одну ячейку на несколько
+                //Поэтому необходимо собрать эту ячейку заново
+                if (cell[0] == '\"')
+                {
+                    if (cell[cell.Length - 1] != '\"')
+                    {
+                        //запоминаем индекс 
+                        int index = j + 1;
+                        var nextCell = parsedRows[i][index];
+                        while (nextCell[nextCell.Length - 1] != '\"')
+                        {
+                            cell += nextCell;
+                            index++;
+                            nextCell = parsedRows[i][index];
+                        }
+                        cell += nextCell;
+                    }
+                    cell = cell.Remove(cell.Length - 1, 1);
+                    cell = cell.Remove(0, 1);
+                }
+                // Убираем все пробелы что были после кавычек
+                cell = cell.Trim();
+                parsedRows[i][j] = cell;
+                */
+            }
+        }
+        
         var start = SelectedForm.NumberInOrder.Value - 1;
 
         if (start + parsedRows.Length > Storage.Rows.Count)
