@@ -75,8 +75,8 @@ public class CheckF23 : CheckBase
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
             .Where(x => x.Master_DB.Rows20.Any(y => y.RegNo_DB == form20RegNo))
             .Include(x => x.Report_Collection)
-            .Include(x => x.Report_Collection.Where(y => y.Year_DB == yearPrevious && y.FormNum_DB == "2.3"))
-            .ThenInclude(x => x.Rows210))
+            .Include(x => x.Report_Collection.Where(y => y.Year_DB == yearPrevious && y.FormNum_DB == "2.3")).ThenInclude(report => report.Rows23)
+            .Include(x => x.Report_Collection.Where(y => y.Year_DB == yearPrevious && y.FormNum_DB == "2.3")).ThenInclude(x => x.Rows210))
             if (_.Report_Collection.Count > 0) { reps23Prev = _; break; }
 
         Reports? reps22Cur = null;
@@ -88,8 +88,8 @@ public class CheckF23 : CheckBase
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
             .Where(x => x.Master_DB.Rows20.Any(y => y.RegNo_DB == form20RegNo))
             .Include(x => x.Report_Collection)
-            .Include(x => x.Report_Collection.Where(y => y.Year_DB == repYear && y.FormNum_DB == "2.2"))
-            .ThenInclude(x => x.Rows210))
+            .Include(x => x.Report_Collection.Where(y => y.Year_DB == yearPrevious && y.FormNum_DB == "2.2")).ThenInclude(report => report.Rows22)
+            .Include(x => x.Report_Collection.Where(y => y.Year_DB == yearPrevious && y.FormNum_DB == "2.2")).ThenInclude(x => x.Rows210))
             if (_.Report_Collection.Count > 0) { reps22Cur = _; break; }
 
         await db2.DisposeAsync();
