@@ -51,7 +51,6 @@ public abstract class CheckF14 : CheckBase
             errorList.AddRange(Check_026(formsList, currentFormLine));
             errorList.AddRange(Check_027(formsList, currentFormLine));
             errorList.AddRange(Check_028(formsList, currentFormLine));
-            errorList.AddRange(Check_029(formsList, currentFormLine));
             errorList.AddRange(Check_030(formsList, currentFormLine));
             errorList.AddRange(Check_031(formsList, currentFormLine));
             errorList.AddRange(Check_032(formsList, currentFormLine));
@@ -841,33 +840,6 @@ public abstract class CheckF14 : CheckBase
                 Column = "AggregateState_DB",
                 Value = Convert.ToString(agrState),
                 Message = $"Для выбранного вида ОРИ ({sort}) - агрегатное состояние (графа 12) - твёрдое (значение 2).",
-                IsCritical = true
-            });
-        }
-        return result;
-    }
-
-    #endregion
-
-    #region Check029
-
-    //Агрегатное состояния 1 или 2, если вид 4-7 (графа 12)
-    private static List<CheckError> Check_029(List<Form14> forms, int line)
-    {
-        List<CheckError> result = new();
-        var sort = forms[line].Sort_DB ?? 0;
-        var agrState = forms[line].AggregateState_DB ?? 0;
-        if (sort is not (4 or 5 or 6 or 7)) return result;
-        var valid = agrState is 1 or 2;
-        if (!valid)
-        {
-            result.Add(new CheckError
-            {
-                FormNum = "form_14",
-                Row = (line + 1).ToString(),
-                Column = "AggregateState_DB",
-                Value = Convert.ToString(agrState),
-                Message = $"Для выбранного вида ОРИ ({sort}) - агрегатное состояние не может быть газообразным.",
                 IsCritical = true
             });
         }
