@@ -922,6 +922,7 @@
 					<TextBlock Margin="5">Примечания</TextBlock>
 					<DataGrid Classes="notesTable"
 							  x:CompileBindings="True"
+							  Height="{Binding NoteTableHeight}"
 							  Items="{Binding NoteList}"
 							  SelectedItem="{Binding SelectedNote}">
 						<interactivity:Interaction.Behaviors>
