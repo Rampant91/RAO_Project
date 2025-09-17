@@ -252,7 +252,7 @@ public partial class Form_12 : BaseWindow<Form_12VM>
             {
                 flag = true;
                 dbm.Restore();
-                new SortFormSyncCommand(vm).Execute(null);
+                new NewSortFormSyncCommand(vm).Execute(null);
                 await dbm.SaveChangesAsync();
 
                 var lst = vm.Report[vm.FormType];
