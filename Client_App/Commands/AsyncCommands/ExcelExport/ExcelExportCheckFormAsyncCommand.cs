@@ -1,5 +1,4 @@
-﻿using Avalonia.Styling;
-using Avalonia.Threading;
+﻿using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.ProgressBar;

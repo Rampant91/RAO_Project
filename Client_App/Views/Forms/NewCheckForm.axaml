@@ -6,6 +6,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Client_App.ViewModels"
     xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
+    xmlns:behaviors="clr-namespace:Client_App.Behaviors"
+    xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
     Name="FormCheckerWindow"
     Title="{Binding Path=TitleName, Mode=OneWay}"
     Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.45', FallbackValue='500', Mode=OneWay}"
@@ -40,6 +42,11 @@
             IsReadOnly="True"
             SelectionMode="Extended"
             Items="{Binding Path=CheckError, Mode=OneWay}">
+
+            <i:Interaction.Behaviors>
+                <behaviors:DataGridSortingBehavior/>
+            </i:Interaction.Behaviors>
+
             <DataGrid.Styles>
                 <Style Selector="TextBlock">
                     <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
@@ -52,7 +59,8 @@
                     CellStyleClasses="cell_tooltip"
                     FontSize="11"
                     FontWeight="Bold"
-                    Header="№ п/п">
+                    Header="№ п/п"
+                    SortMemberPath="Index">
                 </DataGridTextColumn>
                 <DataGridTextColumn 
                     Width="*"
@@ -60,26 +68,32 @@
                     CellStyleClasses="cell_tooltip"
                     FontSize="11"
                     FontWeight="Bold"
-                    Header="стр."/>
+                    Header="стр."
+                    SortMemberPath="Row">
+                </DataGridTextColumn>
                 <DataGridTextColumn
                     Width="2.5*"
                     Binding="{Binding Path=Column, Mode=OneWay}"
                     CellStyleClasses="cell_tooltip"
                     FontSize="11"
                     FontWeight="Bold"
-                    Header="Графа"/>
+                    Header="Графа"
+                    SortMemberPath="Column">
+                </DataGridTextColumn>
                 <DataGridTextColumn 
                     Width="3*"
                     Binding="{Binding Path=Value, Mode=OneWay}"
                     CellStyleClasses="cell_tooltip"
                     FontSize="11"
                     FontWeight="Bold"
+                    SortMemberPath="Value"
                     Header="Значение"/>
                 <DataGridTextColumn
                     Width="10*"
                     Binding="{Binding Path=Message, Mode=OneWay}"
                     CellStyleClasses="cell_tooltip"
                     FontSize="11"
+                    SortMemberPath="Message"
                     Header="Сообщение"/>
             </DataGrid.Columns>
         </DataGrid>

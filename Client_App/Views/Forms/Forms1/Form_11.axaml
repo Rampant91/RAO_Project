@@ -10,7 +10,6 @@
 	xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
     xmlns:forms1="clr-namespace:Models.Forms.Form1;assembly=Models"
     xmlns:forms="clr-namespace:Models.Forms;assembly=Models"
-	xmlns:behaviors="using:Avalonia.Xaml.Interactions.Core"
     Title="{Binding WindowTitle}"
     d:DesignHeight="450"
     d:DesignWidth="900"
@@ -33,19 +32,17 @@
 
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto"></RowDefinition>
-			<RowDefinition Height="*" MinHeight="175"></RowDefinition>
-			<RowDefinition Height="Auto"></RowDefinition>
-			<RowDefinition Height="Auto"></RowDefinition>
-			<RowDefinition Height="Auto"></RowDefinition>
-		</Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" MinHeight="175"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
 		<Expander Grid.Row ="0"
-				  IsExpanded="True">
-			<Expander.Header>
-				Скрыть/Раскрыть верхнюю панель
-			</Expander.Header>
-			<WrapPanel Classes="header">
+				  IsExpanded="True" 
+                  Header="Скрыть/Раскрыть верхнюю панель">
+            <WrapPanel Classes="header">
 				<Border Classes="borderContainer">
 					<Grid RowDefinitions="Auto,*,Auto">
 						<Button Command="{Binding SwitchToNextReport}"
@@ -55,7 +52,8 @@
 								FontSize="48" 
 								Content="🠕"/>
 						
-						<!--						
+						<!--
+                        
 						<Button Grid.Row="1" Content="Поиск"
 								local:YearPickerButtonBehavior.IsEnabled="True"
 								local:YearPickerButtonBehavior.ItemsSource="{Binding Reports.Report_Collection}"
@@ -230,12 +228,16 @@
                 </Grid.ContextMenu>
                 <Grid Classes="tableHeader" Grid.Row="0"
 					  Width="{Binding ElementName=dataGrid.Width}"
+                      ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
 					  RowDefinitions="Auto,Auto">
+
                     <interactivity:Interaction.Behaviors>
                         <local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"/>
                     </interactivity:Interaction.Behaviors>
+
                     <!--Первый уровень заголовков-->
-                    <Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="1">
+
+                    <Border Grid.Column="0" Grid.Row="0">
                         <TextBlock></TextBlock>
                     </Border>
                     <Border Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
@@ -256,7 +258,9 @@
                     <Border Grid.Column="20" Grid.Row="0" Grid.ColumnSpan="3">
                         <TextBlock>Прибор (установка), УКТ или иная упаковка</TextBlock>
                     </Border>
+
                     <!--Второй уровень заголовков-->
+
                     <Border Grid.Column="0" Grid.Row="1">
                         <TextBlock>№ п/п</TextBlock>
                     </Border>
@@ -327,6 +331,7 @@
                         <TextBlock>номер</TextBlock>
                     </Border>
                 </Grid>
+
                 <DataGrid
                     Grid.Row="1"
 					Classes="table"
@@ -400,7 +405,8 @@
                                     <Grid ColumnDefinitions="*,Auto">
                                         <TextBox Grid.Column="0" Text="{Binding OperationDate.Value, Mode=TwoWay}"/>
                                         <CalendarDatePicker Classes="buttonOnly"  Grid.Column="1"
-															SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
+															SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, 
+                                                            Converter={StaticResource DateConverter}}"/>
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -556,7 +562,8 @@
                                     <Grid ColumnDefinitions="*,Auto">
                                         <TextBox Grid.Column="0" Text="{Binding CreationDate.Value, Mode=TwoWay}"/>
                                         <CalendarDatePicker Classes="buttonOnly"  Grid.Column="1"
-															SelectedDate="{Binding CreationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
+															SelectedDate="{Binding CreationDate.Value, Mode=TwoWay, 
+                                                            Converter={StaticResource DateConverter}}"/>
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -693,7 +700,8 @@
                                     <Grid ColumnDefinitions="*,Auto">
                                         <TextBox Grid.Column="0" Text="{Binding DocumentDate.Value, Mode=TwoWay}"/>
                                         <CalendarDatePicker Classes="buttonOnly"  Grid.Column="1"
-															SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
+															SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay, 
+                                                            Converter={StaticResource DateConverter}}"/>
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -832,11 +840,9 @@
 		</Border>
 		<Expander Grid.Row ="3"
 				  IsExpanded="True"
-				  ExpandDirection="Up">
-			<Expander.Header>
-				Скрыть/Раскрыть нижнюю панель
-			</Expander.Header>
-			<Border Classes="notesContainer">
+				  ExpandDirection="Up" 
+                  Header="Скрыть/Раскрыть нижнюю панель">
+            <Border Classes="notesContainer">
 				<StackPanel>
 					<StackPanel.ContextMenu>
 						<ContextMenu>
@@ -859,11 +865,13 @@
 							  x:CompileBindings="True"
 							  Items="{Binding NoteList}"
 							  SelectedItem="{Binding SelectedNote}">
-						<interactivity:Interaction.Behaviors>
+
+                        <interactivity:Interaction.Behaviors>
 							<local:DataGridDoubleClickBehavior/>
 							<local:DataGridDragSelectionBehavior/>
 							<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
 						</interactivity:Interaction.Behaviors>
+
 						<DataGrid.Columns>
 							<DataGridTemplateColumn Header="№ строки" Width="80">
 								<DataGridTemplateColumn.CellTemplate>
@@ -894,6 +902,5 @@
 				</StackPanel>
 			</Border>
 		</Expander>
-
 	</Grid>
 </Window>

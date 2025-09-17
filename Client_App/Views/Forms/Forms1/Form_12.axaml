@@ -33,18 +33,16 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*" MinHeight="175"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" MinHeight="175"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Expander Grid.Row ="0"
-                  IsExpanded="True">
-            <Expander.Header>
-                Скрыть/Раскрыть верхнюю панель
-            </Expander.Header>
+                  IsExpanded="True" 
+                  Header="Скрыть/Раскрыть верхнюю панель">
             <WrapPanel Classes="header">
                 <Border Classes="borderContainer">
                     <Grid RowDefinitions="Auto,*,Auto">
@@ -206,12 +204,16 @@
                 </Grid.ContextMenu>
                 <Grid Classes="tableHeader" Grid.Row="0"
                       Width="{Binding ElementName=dataGrid.Width}"
+                      ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
                       RowDefinitions="Auto,Auto">
+
                     <interactivity:Interaction.Behaviors>
                         <local:ColumnWidthSyncBehavior	SourceDataGrid="{Binding ElementName=dataGrid}"/>
                     </interactivity:Interaction.Behaviors>
+
                     <!--Первый уровень заголовков-->
-                    <Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="1">
+
+                    <Border Grid.Column="0" Grid.Row="0">
                         <TextBlock></TextBlock>
                     </Border>
                     <Border Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
@@ -232,7 +234,9 @@
                     <Border Grid.Column="17" Grid.Row="0" Grid.ColumnSpan="3">
                         <TextBlock>Прибор (установка), УКТ или иная упаковка</TextBlock>
                     </Border>
+
                     <!--Второй уровень заголовков-->
+
                     <Border Grid.Column="0" Grid.Row="1">
                         <TextBlock>№ п/п</TextBlock>
                     </Border>
@@ -293,7 +297,9 @@
                     <Border Grid.Column="19" Grid.Row="1">
                         <TextBlock>номер</TextBlock>
                     </Border>
+
                 </Grid>
+
                 <DataGrid
                     Grid.Row="1"
                     Classes="table"
@@ -301,12 +307,14 @@
                     x:Name="dataGrid"
                     Items="{Binding FormList}"
                     SelectedItem="{Binding SelectedForm}">
+
                     <interactivity:Interaction.Behaviors>
                         <local:DataGridDragSelectionBehavior/>
                         <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}"/>
                         <local:DataGridDoubleClickBehavior/>
                         <local:DeselectDataGridOnClickOutsideBehavior/>
                     </interactivity:Interaction.Behaviors>
+
                     <DataGrid.Columns>
 
                         <DataGridTextColumn Binding="{Binding NumberInOrder.Value}"
@@ -682,6 +690,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
+
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
@@ -719,10 +728,8 @@
         </Border>
         <Expander Grid.Row ="3"
                   IsExpanded="True"
-                  ExpandDirection="Up">
-            <Expander.Header>
-                Скрыть/Раскрыть нижнюю панель
-            </Expander.Header>
+                  ExpandDirection="Up" 
+                  Header="Скрыть/Раскрыть нижнюю панель">
 
             <Border Classes="notesContainer">
                 <StackPanel>
@@ -747,11 +754,13 @@
                               x:CompileBindings="True"
                               Items="{Binding NoteList}"
                               SelectedItem="{Binding SelectedNote}">
+
                         <interactivity:Interaction.Behaviors>
                             <local:DataGridDoubleClickBehavior/>
                             <local:DataGridDragSelectionBehavior/>
                             <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
                         </interactivity:Interaction.Behaviors>
+
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Header="№ строки" Width="80">
                                 <DataGridTemplateColumn.CellTemplate>
@@ -782,6 +791,5 @@
                 </StackPanel>
             </Border>
         </Expander>
-
     </Grid>
 </Window>
