@@ -11,6 +11,7 @@
     xmlns:forms1="clr-namespace:Models.Forms.Form1;assembly=Models"
     xmlns:forms="clr-namespace:Models.Forms;assembly=Models"
 	xmlns:behaviors="using:Avalonia.Xaml.Interactions.Core"
+	xmlns:controls="clr-namespace:Client_App.Controls"
     Title="{Binding WindowTitle}"
     d:DesignHeight="450"
     d:DesignWidth="900"
@@ -47,22 +48,11 @@
 			</Expander.Header>
 			<WrapPanel Classes="header">
 				<Border Classes="borderContainer">
-					<Grid RowDefinitions="Auto,*,Auto">
-						<Button Command="{Binding SwitchToNextReport}"
-								Grid.Row="0"
-								VerticalContentAlignment="Center"
-								Height="75"
-								FontSize="48"
-								Content="🠕"/>
-
-						<!--<Button Grid.Row="1">Поиск</Button>-->
-						<Button Command="{Binding SwitchToPreviousReport}"
-								Grid.Row="2"
-								VerticalContentAlignment="Center"
-								Height="75"
-								FontSize="48"
-								Content="🠗"/>
-					</Grid>
+					<controls:SelectReportPopup
+						Grid.Row="1"
+						DataContext="{Binding SelectReportPopupVM}"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"/>
 				</Border>
 				<Border Classes="borderContainer">
 					<Grid Margin="5" RowDefinitions="*,*,*,*,*">
@@ -940,6 +930,7 @@
 
 					<DataGrid Classes="notesTable"
 							  x:CompileBindings="True"
+							  Height="{Binding NoteTableHeight}"
 							  Items="{Binding NoteList}"
 							  SelectedItem="{Binding SelectedNote}">
 

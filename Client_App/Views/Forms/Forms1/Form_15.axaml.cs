@@ -185,9 +185,9 @@ public partial class Form_15 : BaseWindow<Form_15VM>
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
         if (DataContext is not Form_15VM vm) return;
+
         try
         {
-            await RemoveEmptyForms(vm);
             await CheckPeriod(vm);
         }
         catch (Exception ex)
@@ -196,6 +196,7 @@ public partial class Form_15 : BaseWindow<Form_15VM>
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Error(msg);
         }
+
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
         try
         {
@@ -240,6 +241,18 @@ public partial class Form_15 : BaseWindow<Form_15VM>
         {
             case "ƒа":
                 {
+                    //ѕеред тем как сохранить данные пользователю предлагают удалить пустые строчки
+                    try
+                    {
+                        await RemoveEmptyForms(vm);
+                    }
+                    catch (Exception ex)
+                    {
+                        var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                                  $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                        ServiceExtension.LoggerManager.Error(msg);
+                    }
+
                     await dbm.SaveChangesAsync();
                     await new SaveReportAsyncCommand(vm).AsyncExecute(null);
                     if (desktop.Windows.Count == 1)
@@ -252,7 +265,7 @@ public partial class Form_15 : BaseWindow<Form_15VM>
                 {
                     flag = true;
                     dbm.Restore();
-                    new SortFormSyncCommand(vm).Execute(null);
+                    new NewSortFormSyncCommand(vm).Execute(null);
                     await dbm.SaveChangesAsync();
 
                     var lst = vm.Report[vm.FormType];
@@ -296,6 +309,7 @@ public partial class Form_15 : BaseWindow<Form_15VM>
                     break;
                 }
         }
+
         desktop.MainWindow.WindowState = WindowState.Normal;
         if (flag)
         {

@@ -6,6 +6,7 @@ using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.Commands.AsyncCommands.SwitchReport;
 using Client_App.Commands.SyncCommands;
+using Client_App.ViewModels.Controls;
 using Models.Collections;
 using Models.Forms;
 using System;
@@ -239,6 +240,20 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+    private SelectReportPopupVM _selectReportVM;
+    public SelectReportPopupVM SelectReportPopupVM
+    {
+        get
+        {
+            return _selectReportVM;
+        }
+    }
+
+    public int NoteTableHeight
+    {
+        get { return 25 + (35 + 1) * NoteList.Count + 3; }  // Хардкод: ColumnHeaderHeight + (RowHeight + отступ) * NoteList.Count + отступ;
+                                                            //отступы корректируют высоту, учитывая BorderThickness
+    }
     #endregion
 
     #region Constructors
@@ -253,6 +268,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         UpdateFormList();
         UpdatePageInfo();
         NoteList = Report.Notes;
+        _selectReportVM = new SelectReportPopupVM(this);
     }
 
     #endregion
@@ -278,9 +294,13 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand CopyNotes => new NewCopyNotesAsyncCommand();
     public ICommand PasteNotes => new NewPasteNotesAsyncCommand(this);
     public ICommand DeleteNotes => new NewDeleteNoteAsyncCommand(this);
-    public ICommand SwitchToNextReport => new SwitchToNextReportAsyncCommand(this);
-    public ICommand SwitchToSelectedReport => new SwitchToSelectedReportAsyncCommand(this);
-    public ICommand SwitchToPreviousReport => new SwitchToPreviousReportAsyncCommand(this);
+    #endregion
+    #region  UpdateNoteList
+    public void UpdateNoteList()
+    {
+        NoteList = new ObservableCollection<Note>( Report.Notes.ToList<Note>());
+        OnPropertyChanged(nameof(NoteTableHeight));
+    }
     #endregion
 
     #region UpdateFormList

@@ -11,6 +11,7 @@
     xmlns:forms1="clr-namespace:Models.Forms.Form1;assembly=Models"
     xmlns:forms="clr-namespace:Models.Forms;assembly=Models"
 	xmlns:behaviors="using:Avalonia.Xaml.Interactions.Core"
+	xmlns:controls="clr-namespace:Client_App.Controls"
     Title="{Binding WindowTitle}"
     d:DesignHeight="450"
     d:DesignWidth="900"
@@ -45,104 +46,91 @@
 		          Header="Скрыть/Раскрыть верхнюю панель">
 		    <WrapPanel Classes="header">
 				<Border Classes="borderContainer">
-					<Grid RowDefinitions="Auto,*,Auto">
-						<Button Command="{Binding SwitchToNextReport}"
-								Grid.Row="0"
-								VerticalContentAlignment="Center"
-								Height="75"
-								FontSize="48"
-								Content="🠕"/>
+                    <controls:SelectReportPopup
+                        DataContext="{Binding SelectReportPopupVM}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"/>
+                </Border>
+                <Border Classes="borderContainer">
+                    <Grid Margin="5" RowDefinitions="*,*,*,*,*">
 
-						<!--<Button Grid.Row="1">Поиск</Button>-->
-						<Button Command="{Binding SwitchToPreviousReport}"
-								Grid.Row="2"
-								VerticalContentAlignment="Center"
-								Height="75"
-								FontSize="48"
-								Content="🠗"/>
-					</Grid>
-				</Border>
-			    <Border Classes="borderContainer">
-		            <Grid Margin="5" RowDefinitions="*,*,*,*,*">
+                        <Grid ColumnDefinitions="*,*,*"  Grid.Row="0">
+                            <TextBlock Grid.Column="0" Margin="5" >Дата окончания предыдущего отчетного периода:</TextBlock>
+						    <TextBox Grid.Column="1" Text="{Binding Report.StartPeriod.Value}"/>
+					        <CalendarDatePicker Classes="buttonOnly" 
+                                                Grid.Column="2"
+                                                SelectedDate="{Binding Report.StartPeriod.Value, 
+                                                Converter={StaticResource DateConverter}}"
+                                                Watermark="дд.мм.гггг"/>
+                        </Grid>
 
-		                <Grid ColumnDefinitions="*,*,*"  Grid.Row="0">
-						    <TextBlock Grid.Column="0" Margin="5" >Дата окончания предыдущего отчетного периода:</TextBlock>
-							<TextBox Grid.Column="1" Text="{Binding Report.StartPeriod.Value}"/>
-						    <CalendarDatePicker Classes="buttonOnly" 
-								Grid.Column="2"
-		                        SelectedDate="{Binding Report.StartPeriod.Value, 
-		                        Converter={StaticResource DateConverter}}"
-		                        Watermark="дд.мм.гггг"/>
-					    </Grid>
+					 <Grid ColumnDefinitions="*,*,*"  Grid.Row="1">
+                         <TextBlock Grid.Column="0" Margin="5" >Дата окончания настоящего отчетного периода:</TextBlock>
+						 <TextBox Grid.Column="1"
+                                  Margin="10.5,3,0,0"
+                                  Text="{Binding Report.EndPeriod.Value}"/>
+					     <CalendarDatePicker Classes="buttonOnly"  
+                                             Grid.Column="2" 
+                                             SelectedDate="{Binding Report.EndPeriod.Value, 
+                                             Converter={StaticResource DateConverter}}"
+                                             Watermark="дд.мм.гггг"/>
+					 </Grid>
 
-					    <Grid ColumnDefinitions="*,*,*"  Grid.Row="1">
-						    <TextBlock Grid.Column="0" Margin="5" >Дата окончания настоящего отчетного периода:</TextBlock>
-							<TextBox Grid.Column="1"
-		                        Margin="10.5,3,0,0"
-								Text="{Binding Report.EndPeriod.Value}"/>
-						    <CalendarDatePicker Classes="buttonOnly"  
-		                        Grid.Column="2" 
-		                        SelectedDate="{Binding Report.EndPeriod.Value, 
-		                        Converter={StaticResource DateConverter}}"
-		                        Watermark="дд.мм.гггг"/>
-					    </Grid>
-
-					    <StackPanel  Orientation="Horizontal" Grid.Row="2">
-						    <TextBlock Margin="5">Номер корректировки:</TextBlock>
-						    <TextBox Margin="5" Width="75" Text="{Binding Path=Report.CorrectionNumber.Value}"></TextBox>
-					    </StackPanel>
+					 <StackPanel  Orientation="Horizontal" Grid.Row="2">
+                         <TextBlock Margin="5">Номер корректировки:</TextBlock>
+                         <TextBox Margin="5" Width="75" Text="{Binding Path=Report.CorrectionNumber.Value}"/>
+                     </StackPanel>
 					
-					    <StackPanel Orientation="Horizontal" Grid.Row="3">
-						    <Button Margin="5" Command="{Binding CheckForm}">Проверить</Button>
-						    <Button Margin="5" Command="{Binding SaveReport}">Сохранить</Button>
-					    </StackPanel>
+					 <StackPanel Orientation="Horizontal" Grid.Row="3">
+					    <Button Margin="5" Command="{Binding CheckForm}">Проверить</Button>
+					    <Button Margin="5" Command="{Binding SaveReport}">Сохранить</Button>
+                     </StackPanel>
 
-					    
-				    </Grid>
-			    </Border>
+                    </Grid>
+                </Border>
 
-			    <Border Classes="borderContainer">
-				    <Grid Margin="5" RowDefinitions ="*,*,*,*,*" ColumnDefinitions="*,2*">
-					    <TextBlock Grid.Row="0" 
-		                           Grid.Column="0" 
-		                           Margin="5" 
-		                           Text="ФИО исполнителя:"/>
+                <Border Classes="borderContainer">
+                    <Grid Margin="5" RowDefinitions ="*,*,*,*,*" ColumnDefinitions="*,2*">
+                        <TextBlock Grid.Row="0" 
+                                   Grid.Column="0" 
+                                   Margin="5" 
+                                   Text="ФИО исполнителя:"/>
 					    <TextBox Grid.Row="0" 
-		                         Grid.Column="1" 
-		                         Margin="5"
-		                         Text="{Binding Path=Report.FIOexecutor.Value}"/>
+                                 Grid.Column="1" 
+                                 Margin="5"
+                                 Text="{Binding Path=Report.FIOexecutor.Value}"/>
 					    <TextBlock Grid.Row="1" 
-		                           Grid.Column="0" 
-		                           Margin="5" 
-		                           Text="Должность:"/>
+                                   Grid.Column="0" 
+                                   Margin="5" 
+                                   Text="Должность:"/>
 					    <TextBox Grid.Row="1" 
-		                         Grid.Column="1" 
-		                         Margin="5"
-		                        Text="{Binding Path=Report.GradeExecutor.Value}"/>
+                                 Grid.Column="1" 
+                                 Margin="5"
+                                 Text="{Binding Path=Report.GradeExecutor.Value}"/>
 					    <TextBlock Grid.Row="2" 
-		                           Grid.Column="0" 
-		                           Margin="5" 
-		                           Text="Телефон:"/>
+                                   Grid.Column="0" 
+                                   Margin="5" 
+                                   Text="Телефон:"/>
 					    <TextBox Grid.Row="2" 
-		                         Grid.Column="1" 
-		                         Margin="5"
-		                         Text="{Binding Path=Report.ExecPhone.Value}"/>
+                                 Grid.Column="1" 
+                                 Margin="5"
+                                 Text="{Binding Path=Report.ExecPhone.Value}"/>
 					    <TextBlock Grid.Row="3" 
-		                           Grid.Column="0" 
-		                           Margin="5" 
-		                           Text="Электронная почта:"/>
+                                   Grid.Column="0" 
+                                   Margin="5" 
+                                   Text="Электронная почта:"/>
 					    <TextBox Grid.Row="3" 
-		                         Grid.Column="1" 
-		                         Margin="5" 
-		                         Text="{Binding Path=Report.ExecEmail.Value}"/>
+                                 Grid.Column="1" 
+                                 Margin="5" 
+                                 Text="{Binding Path=Report.ExecEmail.Value}"/>
 					    <Button Grid.Row="4" 
-		                        Grid.Column="0" 
-		                        Grid.ColumnSpan="2" 
-		                        Margin="5" 
-		                        Click="CopyExecutorData_Click" 
-		                        Content="Скопировать данные предыдущей формы"/>
-				    </Grid>
-			    </Border>
+                                Grid.Column="0" 
+                                Grid.ColumnSpan="2" 
+                                Margin="5" 
+                                Click="CopyExecutorData_Click" 
+                                Content="Скопировать данные предыдущей формы"/>
+                    </Grid>
+                </Border>
 
 				<Border Classes="borderContainer">
 					<Grid Margin="5" RowDefinitions="Auto,Auto">
@@ -155,8 +143,8 @@
 						</StackPanel>
 					</Grid>
 				</Border>
-		    </WrapPanel>
-		</Expander>
+            </WrapPanel>
+        </Expander>
 
 		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1">
 			<Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="Auto">
@@ -374,7 +362,8 @@
 									<Grid ColumnDefinitions="*,Auto">
 										<TextBox Grid.Column="0" Text="{Binding OperationDate.Value, Mode=TwoWay}"/>
 										<CalendarDatePicker Classes="buttonOnly"  Grid.Column="1"
-															SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
+															SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, 
+                                                            Converter={StaticResource DateConverter}}"/>
 									</Grid>
 								</DataTemplate>
 		                    </DataGridTemplateColumn.CellTemplate>
@@ -486,7 +475,8 @@
 									<Grid ColumnDefinitions="*,Auto">
 										<TextBox Grid.Column="0" Text="{Binding ActivityMeasurementDate.Value, Mode=TwoWay}"/>
 										<CalendarDatePicker Classes="buttonOnly"  Grid.Column="1"
-															SelectedDate="{Binding ActivityMeasurementDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
+															SelectedDate="{Binding ActivityMeasurementDate.Value, Mode=TwoWay, 
+                                                            Converter={StaticResource DateConverter}}"/>
 									</Grid>
 								</DataTemplate>
 		                    </DataGridTemplateColumn.CellTemplate>
@@ -634,7 +624,8 @@
 									<Grid ColumnDefinitions="*,Auto">
 										<TextBox Grid.Column="0" Text="{Binding DocumentDate.Value, Mode=TwoWay}"/>
 										<CalendarDatePicker Classes="buttonOnly"  Grid.Column="1"
-															SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}"/>
+															SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay, 
+                                                            Converter={StaticResource DateConverter}}"/>
 									</Grid>
 								</DataTemplate>
 		                    </DataGridTemplateColumn.CellTemplate>

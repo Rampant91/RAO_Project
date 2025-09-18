@@ -185,9 +185,9 @@ public partial class Form_12 : BaseWindow<Form_12VM>
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
         if (DataContext is not Form_12VM vm) return;
+
         try
         {
-            await RemoveEmptyForms(vm);
             await CheckPeriod(vm);
         }
         catch (Exception ex)
@@ -196,6 +196,7 @@ public partial class Form_12 : BaseWindow<Form_12VM>
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Error(msg);
         }
+
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
         try
         {
@@ -239,63 +240,76 @@ public partial class Form_12 : BaseWindow<Form_12VM>
         switch (res.Result)
         {
             case "Да":
-            {
-                await dbm.SaveChangesAsync();
-                await new SaveReportAsyncCommand(vm).AsyncExecute(null);
-                if (desktop.Windows.Count == 1)
                 {
-                    desktop.MainWindow.WindowState = WindowState.Normal;
+                    //Перед тем как сохранить данные пользователю предлагают удалить пустые строчки
+                    try
+                    {
+                        await RemoveEmptyForms(vm);
+                    }
+                    catch (Exception ex)
+                    {
+                        var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                                  $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                        ServiceExtension.LoggerManager.Error(msg);
+                    }
+
+                    await dbm.SaveChangesAsync();
+                    await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+                    if (desktop.Windows.Count == 1)
+                    {
+                        desktop.MainWindow.WindowState = WindowState.Normal;
+                    }
+                    return;
                 }
-                return;
-            }
             case "Нет":
-            {
-                flag = true;
-                dbm.Restore();
-                new SortFormSyncCommand(vm).Execute(null);
-                await dbm.SaveChangesAsync();
-
-                var lst = vm.Report[vm.FormType];
-
-                foreach (var key in lst)
                 {
-                    var item = (Form)key;
-                    if (item.Id == 0)
+                    flag = true;
+                    dbm.Restore();
+                    new NewSortFormSyncCommand(vm).Execute(null);
+                    await dbm.SaveChangesAsync();
+
+                    var lst = vm.Report[vm.FormType];
+
+                    foreach (var key in lst)
                     {
-                        vm.Report[vm.Report.FormNum_DB].Remove(item);
+                        var item = (Form)key;
+                        if (item.Id == 0)
+                        {
+                            vm.Report[vm.Report.FormNum_DB].Remove(item);
+                        }
                     }
-                }
 
-                var lstNote = vm.Report.Notes.ToList<Note>();
-                foreach (var item in lstNote.Where(item => item.Id == 0))
-                {
-                    vm.Report.Notes.Remove(item);
-                }
-
-                if (vm.FormType is not "1.0" and not "2.0")
-                {
-                    if (vm.FormType.Split('.')[0] == "1")
+                    var lstNote = vm.Report.Notes.ToList<Note>();
+                    foreach (var item in lstNote.Where(item => item.Id == 0))
                     {
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.StartPeriod));
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.EndPeriod));
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
+                        vm.Report.Notes.Remove(item);
                     }
-                    else if (vm.FormType.Split('.')[0] == "2")
-                    {
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.Year));
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
-                    }
-                }
-                else
-                {
-                    vm.Report.OnPropertyChanged(nameof(vm.Report.RegNoRep));
-                    vm.Report.OnPropertyChanged(nameof(vm.Report.ShortJurLicoRep));
-                    vm.Report.OnPropertyChanged(nameof(vm.Report.OkpoRep));
-                }
 
-                break;
-            }
+                    if (vm.FormType is not "1.0" and not "2.0")
+                    {
+                        if (vm.FormType.Split('.')[0] == "1")
+                        {
+                            vm.Report.OnPropertyChanged(nameof(vm.Report.StartPeriod));
+                            vm.Report.OnPropertyChanged(nameof(vm.Report.EndPeriod));
+                            vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
+                        }
+                        else if (vm.FormType.Split('.')[0] == "2")
+                        {
+                            vm.Report.OnPropertyChanged(nameof(vm.Report.Year));
+                            vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
+                        }
+                    }
+                    else
+                    {
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.RegNoRep));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.ShortJurLicoRep));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.OkpoRep));
+                    }
+
+                    break;
+                }
         }
+
         desktop.MainWindow.WindowState = WindowState.Normal;
         if (flag)
         {
