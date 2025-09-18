@@ -22,5 +22,7 @@ public class NewSetNumberOrderSyncCommand(BaseFormVM formVM) : BaseCommand
             row.SetOrder(count);
             count++;
         }
+
+        formVM.UpdateFormList();
     }
 }

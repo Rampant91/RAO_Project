@@ -225,8 +225,9 @@
         </Style>
         <Style Selector="DataGrid.notesTable">
             <Setter Property="CornerRadius" Value="5"/>
-            <Setter Property="Width" Value="650"/>
+            <Setter Property="Width" Value="660"/>
             <Setter Property="MaxHeight" Value="180"/>
+			<Setter Property="ColumnHeaderHeight" Value="25"/>
 			<Setter Property="RowHeight" Value="35" />
             <Setter Property="RowBackground" Value="White"/>
 			<Setter Property="SelectionMode" Value="Extended"/>
@@ -234,9 +235,10 @@
             <Setter Property="Margin" Value="5"/>
 			<Setter Property="GridLinesVisibility" Value="All"></Setter>
         </Style>
+		
 		<Style Selector="DataGrid.notesTable TextBox">
-            <Setter Property="CornerRadius" Value="5"/>
-			<Setter Property="Margin" Value="-1"/>
+			<Setter Property="BorderThickness" Value="0.5"/>
+			<Setter Property="Margin" Value="0,0,0,0"/>
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
 			<Setter Property="IsHitTestVisible" Value="False"/>
 		</Style>

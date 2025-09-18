@@ -19,6 +19,7 @@ public class NewAddNoteAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         Note nt = new() { Order = GetNumberInOrder(Storage.Notes) };
         Storage.Notes.Add(nt);
         await Storage.SortAsync();
+        formVM.UpdateNoteList();
     }
 
     /// <summary>
@@ -37,6 +38,8 @@ public class NewAddNoteAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                 maxNum++;
             }
         }
+
+
         return maxNum + 1;
     }
 }

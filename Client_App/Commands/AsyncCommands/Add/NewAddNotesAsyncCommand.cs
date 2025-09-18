@@ -40,6 +40,7 @@ public class NewAddNotesAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                 Storage.Notes.Add(note);
             }
         }
+        formVM.UpdateNoteList();
     }
 
     /// <summary>

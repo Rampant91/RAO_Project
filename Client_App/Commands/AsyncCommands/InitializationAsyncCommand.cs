@@ -227,11 +227,11 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             return;
         }
 
-        //if ((DateTime.Now - Settings.Default.LastDbBackupDate).TotalDays < 30
-        //    || Settings.Default.AppStartupParameters != string.Empty)
-        //{
-        //    return;
-        //}
+        if ((DateTime.Now - Settings.Default.LastDbBackupDate).TotalDays < 30
+            || Settings.Default.AppStartupParameters != string.Empty)
+        {
+            return;
+        }
 
         #region MessageInputCategoryNums
 

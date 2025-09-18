@@ -23,7 +23,7 @@ public class NewAddRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
-        bool currentPageIsLastPage = formVM.CurrentPage == formVM.TotalPages;
+        bool currentPageIsLastPage = formVM.CurrentPage == formVM.TotalPages || formVM.TotalPages == 0;
         // Если не получили окно напрямую, попробуем найти активное окно
         var owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
                 .FirstOrDefault(w => w.IsActive);

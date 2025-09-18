@@ -1,7 +1,7 @@
 using Client_App.Commands.AsyncCommands.SourceTransmission;
+using Models.Attributes;
 using Models.Collections;
-using Models.Forms.Form1;
-using System.Collections.ObjectModel;
+using System;
 using System.Linq;
 using System.Windows.Input;
 
@@ -11,12 +11,44 @@ public class Form_14VM : BaseFormVM
 {
     public override string FormType => "1.4";
 
+    #region Constructors
+
+    public Form_14VM() { }
+
+    public Form_14VM(Report report) : base(report) { }
+
+    public Form_14VM(in Reports reps)
+    {
+        var formNum = FormType;
+        Report = new Report
+        {
+            FormNum_DB = formNum,
+            StartPeriod =
+            {
+                Value = reps.Report_Collection
+                    .Where(x => x.FormNum_DB == formNum && DateOnly.TryParse(x.EndPeriod_DB, out _))
+                    .OrderBy(x => DateOnly.Parse(x.EndPeriod_DB))
+                    .Select(x => x.EndPeriod_DB)
+                    .LastOrDefault() ?? ""
+            },
+            Reports = reps
+        };
+
+        Reports = reps;
+    }
+
+    #endregion
+
+    #region Commands
+
     public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);
 
+    #endregion
+
     //public ObservableCollection<Form14> Form14List => new(FormList.Cast<Form14>());
-    
+
     //public ObservableCollection<Form14> SelectedForms14 => new(SelectedForms.Cast<Form14>());
-    
+
     //public Form14 SelectedForm14
     //{
     //    get => SelectedForm as Form14;
@@ -26,14 +58,6 @@ public class Form_14VM : BaseFormVM
     //        UpdateFormList();
     //    }
     //}
-
-    #region Constructors
-
-    public Form_14VM() { }
-    
-    public Form_14VM(Report report) : base(report) { }
-
-    #endregion
 
     /*
     #region UpdateFormList

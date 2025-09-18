@@ -49,14 +49,15 @@ public class DataGridDragSelectionBehavior : Behavior<DataGrid>
 
     private void DataGrid_PointerPressed(object sender, DataGridCellPointerPressedEventArgs e)
     {
-            var point = e.PointerPressedEventArgs.GetCurrentPoint(AssociatedObject);
+        var point = e.PointerPressedEventArgs.GetCurrentPoint(AssociatedObject);
 
 
         if (point.Properties.IsLeftButtonPressed)
         {
             _isSelecting = true;
 
-            AssociatedObject.SelectedItems.Clear();
+            if (e.PointerPressedEventArgs.KeyModifiers != KeyModifiers.Shift)
+                AssociatedObject.SelectedItems.Clear();
             // Захватываем указатель для получения всех событий
             AssociatedObject.CapturePointer(e.PointerPressedEventArgs.Pointer);
 

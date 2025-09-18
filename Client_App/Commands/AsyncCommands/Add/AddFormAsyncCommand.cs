@@ -1,17 +1,17 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Threading;
 using Client_App.ViewModels;
+using Client_App.ViewModels.Forms.Forms1;
 using Client_App.Views;
+using Client_App.VisualRealization.Long_Visual;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
+using Models.Interfaces;
 using System;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Client_App.VisualRealization.Long_Visual;
-using Models.Interfaces;
-using Avalonia.Threading;
-using Models.Forms.Form1;
-using Client_App.ViewModels.Forms;
+using Client_App.Views.Forms.Forms1;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
@@ -56,6 +56,100 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                 var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
 
                 ChangeOrCreateVM frm = new(param, y);
+
+                
+                switch (param)
+                {
+                    case "1.1":
+                    {
+                        var form11Window = new Form_11(new Form_11VM(y));
+                        await form11Window.ShowDialog(t);
+                        t.SelectedReports = tmp;
+                        await y.Report_Collection.QuickSortAsync();
+                        break;
+                    }
+                    case "1.2":
+                    {
+                        var form11Window = new Form_12(new Form_12VM(y));
+                        await form11Window.ShowDialog(t);
+                        t.SelectedReports = tmp;
+                        await y.Report_Collection.QuickSortAsync();
+                        break;
+                    }
+                    case "1.3":
+                    {
+                        var form11Window = new Form_13(new Form_13VM(y));
+                        await form11Window.ShowDialog(t);
+                        t.SelectedReports = tmp;
+                        await y.Report_Collection.QuickSortAsync();
+                        break;
+                    }
+                    case "1.4":
+                    {
+                        var form11Window = new Form_14(new Form_14VM(y));
+                        await form11Window.ShowDialog(t);
+                        t.SelectedReports = tmp;
+                        await y.Report_Collection.QuickSortAsync();
+                        break;
+                    }
+                    case "1.5":
+                    {
+                        var form11Window = new Form_15(new Form_15VM(y));
+                        await form11Window.ShowDialog(t);
+                        t.SelectedReports = tmp;
+                        await y.Report_Collection.QuickSortAsync();
+                        break;
+                    }
+                    case "1.6":
+                    {
+                        var form11Window = new Form_16(new Form_16VM(y));
+                        await form11Window.ShowDialog(t);
+                        t.SelectedReports = tmp;
+                        await y.Report_Collection.QuickSortAsync();
+                        break;
+                    }
+                    case "1.7":
+                    {
+                        var form11Window = new Form_17(new Form_17VM(y));
+                        await form11Window.ShowDialog(t);
+                        t.SelectedReports = tmp;
+                        await y.Report_Collection.QuickSortAsync();
+                        break;
+                    }
+                    case "1.8":
+                    {
+                        var form11Window = new Form_18(new Form_18VM(y));
+                        await form11Window.ShowDialog(t);
+                        t.SelectedReports = tmp;
+                        await y.Report_Collection.QuickSortAsync();
+                        break;
+                    }
+                    case "1.9":
+                    {
+                        var form11Window = new Form_19(new Form_19VM(y));
+                        await form11Window.ShowDialog(t);
+                        t.SelectedReports = tmp;
+                        await y.Report_Collection.QuickSortAsync();
+                        break;
+                    }
+                    default:
+                    {
+                        if (param.Split(".")[0] is "2")
+                        {
+                            Form2_Visual.tmpVM = param switch
+                            {
+                                "2.1" or "2.2" => frm,
+                                _ => Form2_Visual.tmpVM
+                            };
+                            await MainWindowVM.ShowDialog.Handle(frm);
+                            t.SelectedReports = tmp;
+                            await y.Report_Collection.QuickSortAsync();
+                        }
+
+                        break;
+                    }
+                }
+
                 /*
                 if(param == "1.2")
                 {
@@ -63,26 +157,14 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                     form12.ShowDialog(t);
                 }
                 else */
-                if (param.Split(".")[0] is "1")
-                {
-                    Form1_Visual.tmpVM = frm;
-                    await MainWindowVM.ShowDialog.Handle(frm);
-                    t.SelectedReports = tmp;
-                    await y.Report_Collection.QuickSortAsync();
-                }
-                else if (param.Split(".")[0] is "2")
-                {
-                    Form2_Visual.tmpVM = param switch
-                    {
-                        "2.1" or "2.2" => frm,
-                        _ => Form2_Visual.tmpVM
-                    };
-                    await MainWindowVM.ShowDialog.Handle(frm);
-                    t.SelectedReports = tmp;
-                    await y.Report_Collection.QuickSortAsync();
-                }
-                    
-                
+                //if (param.Split(".")[0] is "1")
+                //{
+                //    Form1_Visual.tmpVM = frm;
+                //    await MainWindowVM.ShowDialog.Handle(frm);
+                //    t.SelectedReports = tmp;
+                //    await y.Report_Collection.QuickSortAsync();
+                //}
+
             }
         }
     }

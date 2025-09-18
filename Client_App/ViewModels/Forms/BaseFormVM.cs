@@ -15,6 +15,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Models.Attributes;
 
 namespace Client_App.ViewModels.Forms;
 
@@ -23,16 +24,19 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     #region Properties
 
     public abstract string FormType { get; }
-    public string WindowTitle
+    public string WindowTitle 
     {
         get
         {
-            return $"Форма {FormType} :  "
+            var formNum = FormType.Replace(".", "");
+            return $"{((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{formNum[0]}.Form{formNum},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name} " 
                    + $"{Reports.Master_DB.RegNoRep.Value}  "
                    + $"{Reports.Master_DB.ShortJurLicoRep.Value}  "
                    + $"{Reports.Master_DB.OkpoRep.Value}";
         }
+    
     }
+
     protected ObservableCollection<Form> _formList = [];
     public ObservableCollection<Form> FormList
     {
@@ -242,15 +246,22 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             return _selectReportVM;
         }
     }
+
+    public int NoteTableHeight
+    {
+        get { return 25 + (35 + 1) * NoteList.Count + 3; }  // Хардкод: ColumnHeaderHeight + (RowHeight + отступ) * NoteList.Count + отступ;
+                                                            //отступы корректируют высоту, учитывая BorderThickness
+    }
     #endregion
 
     #region Constructors
 
     public BaseFormVM() { }
+
     public BaseFormVM(Report report)
     {
         _report = report;
-        _reports = report.Reports;
+        _reports = report.Reports; 
         //_DBO = report.Reports.DBObservable;
         UpdateFormList();
         UpdatePageInfo();
@@ -268,7 +279,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand AddRow => new NewAddRowAsyncCommand(this);
     public ICommand AddRows => new NewAddRowsAsyncCommand(this);
     public ICommand AddRowsIn => new NewAddRowsInAsyncCommand(this);
-    public ICommand DeleteDataInRows => new DeleteDataInRowsAsyncCommand();
+    public ICommand DeleteDataInRows => new NewDeleteDataInRowsAsyncCommand();
     public ICommand DeleteRows => new NewDeleteRowsAsyncCommand(this);
     public ICommand SortForm => new NewSortFormSyncCommand(this);
     public ICommand SetNumberOrder => new NewSetNumberOrderSyncCommand(this);
@@ -281,8 +292,13 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand CopyNotes => new NewCopyNotesAsyncCommand();
     public ICommand PasteNotes => new NewPasteNotesAsyncCommand(this);
     public ICommand DeleteNotes => new NewDeleteNoteAsyncCommand(this);
-    public ICommand SwitchToNextReport => new SwitchToNextReportAsyncCommand(this);
-    public ICommand SwitchToPreviousReport => new SwitchToPreviousReportAsyncCommand(this);
+    #endregion
+    #region  UpdateNoteList
+    public void UpdateNoteList()
+    {
+        NoteList = new ObservableCollection<Note>( Report.Notes.ToList<Note>());
+        OnPropertyChanged(nameof(NoteTableHeight));
+    }
     #endregion
 
     #region UpdateFormList

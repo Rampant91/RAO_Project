@@ -18,7 +18,6 @@ using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form1;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -48,8 +47,9 @@ public partial class Form_11 : BaseWindow<Form_11VM>
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
-        this.AttachDevTools();
-
+        #if DEBUG
+                this.AttachDevTools();
+        #endif
         WindowState = WindowState.Maximized;
     }
 
@@ -63,7 +63,9 @@ public partial class Form_11 : BaseWindow<Form_11VM>
         }
     }
 
-    private void DataGrid_KeyDown(object? sender, KeyEventArgs e)
+    #region DataGrid_KeyUp
+
+    private void DataGrid_KeyUp(object? sender, KeyEventArgs e)
     {
         if (DataContext is not Form_11VM vm)
             return;
@@ -147,6 +149,34 @@ public partial class Form_11 : BaseWindow<Form_11VM>
 
                     break;
                 }
+                case Key.U: // Copy Pas Name
+                {
+                    vm.CopyPasName.Execute(selectedForms);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.P: // Open Pas
+                {
+                    vm.OpenPas.Execute(selectedForms);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.E: // Export Movement History
+                {
+                    vm.ExcelExportSourceMovementHistory.Execute(selectedForms);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.Y: // Calculate Category
+                {
+                    vm.CategoryCalculationFromReport.Execute(selectedForms);
+                    e.Handled = true;
+
+                    break;
+                }
                 case Key.K: // Clear Rows
                 {
                     if (selectedForms is { Count: > 0 })
@@ -154,16 +184,17 @@ public partial class Form_11 : BaseWindow<Form_11VM>
                         vm.DeleteDataInRows.Execute(selectedForms);
                         e.Handled = true;
                     }
+
                     break;
                 }
-                case Key.J: // Convert to RAW
+                case Key.J: // Source Transmission to RAO
                 {
-                    var selectedForm = dataContext.GetType().GetProperty("SelectedForm")?.GetValue(dataContext);
-                    if (selectedForm != null)
+                    if (vm.SelectedForm is not null)
                     {
-                        dataContext.GetType().GetMethod("SourceTransmission")?.Invoke(dataContext, new[] { selectedForm });
+                        vm.SourceTransmission.Execute(vm.SelectedForm);
                         e.Handled = true;
                     }
+
                     break;
                 }
                 default: return;
@@ -171,14 +202,16 @@ public partial class Form_11 : BaseWindow<Form_11VM>
         }
     }
 
+    #endregion
+
     #region OnStandartClosing
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
         if (DataContext is not Form_11VM vm) return;
+
         try
         {
-            await RemoveEmptyForms(vm);
             await CheckPeriod(vm);
         }
         catch (Exception ex)
@@ -187,6 +220,7 @@ public partial class Form_11 : BaseWindow<Form_11VM>
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Error(msg);
         }
+
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
         try
         {
@@ -231,6 +265,18 @@ public partial class Form_11 : BaseWindow<Form_11VM>
         {
             case "ƒа":
                 {
+                    //ѕеред тем как сохранить данные пользователю предлагают удалить пустые строчки
+                    try
+                    {
+                        await RemoveEmptyForms(vm);
+                    }
+                    catch (Exception ex)
+                    {
+                        var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                                  $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                        ServiceExtension.LoggerManager.Error(msg);
+                    }
+
                     await dbm.SaveChangesAsync();
                     await new SaveReportAsyncCommand(vm).AsyncExecute(null);
                     if (desktop.Windows.Count == 1)
@@ -243,7 +289,7 @@ public partial class Form_11 : BaseWindow<Form_11VM>
                 {
                     flag = true;
                     dbm.Restore();
-                    new SortFormSyncCommand(vm).Execute(null);
+                    new NewSortFormSyncCommand(vm).Execute(null);
                     await dbm.SaveChangesAsync();
 
                     var lst = vm.Report[vm.FormType];
@@ -287,6 +333,7 @@ public partial class Form_11 : BaseWindow<Form_11VM>
                     break;
                 }
         }
+
         desktop.MainWindow.WindowState = WindowState.Normal;
         if (flag)
         {

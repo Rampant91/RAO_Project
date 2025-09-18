@@ -33,6 +33,8 @@ public partial class Form_15 : BaseWindow<Form_15VM>
 
     //private Form_15VM _vm = null!;
 
+    #region Constructors
+
     public Form_15()
     {
         InitializeComponent();
@@ -52,6 +54,10 @@ public partial class Form_15 : BaseWindow<Form_15VM>
         WindowState = WindowState.Maximized;
     }
 
+    #endregion
+
+    #region CopyExecutorData_Click
+
     //¬ременное узкоспециализированное решение
     private void CopyExecutorData_Click(object sender, RoutedEventArgs e)
     {
@@ -62,14 +68,126 @@ public partial class Form_15 : BaseWindow<Form_15VM>
         }
     }
 
+    #endregion
+
+    #region DataGrid_KeyUp
+
+    private void DataGrid_KeyUp(object? sender, KeyEventArgs e)
+    {
+        if (DataContext is not Form_15VM vm)
+            return;
+
+        var dataGrid = this.FindControl<DataGrid>("dataGrid");
+        var dataContext = dataGrid?.DataContext;
+        if (dataContext is null || dataGrid is null)
+            return;
+
+        var selectedForms = vm.SelectedForms;
+
+        if (dataGrid.IsPointerOver && e.KeyModifiers is KeyModifiers.Control)
+        {
+            switch (e.Key)
+            {
+                case Key.A: // Select All
+                {
+                    vm.SelectAll.Execute(null);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.T: // Add Row
+                {
+                    vm.AddRow.Execute(null);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.N: // Add N Rows
+                {
+                    vm.AddRows.Execute(null);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.I: // Add N Rows Before
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.AddRowsIn.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+
+                    break;
+                }
+                case Key.C: // Copy Rows
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.CopyRows.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+
+                    break;
+                }
+                case Key.V: // Paste Rows
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.PasteRows.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+
+                    break;
+                }
+                case Key.D: // Delete Selected Rows
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.DeleteRows.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+
+                    break;
+                }
+                case Key.O: // Set Number Order
+                {
+                    vm.SetNumberOrder.Execute(null);
+                    e.Handled = true;
+
+                    break;
+                }
+                case Key.K: // Clear Rows
+                {
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.DeleteDataInRows.Execute(selectedForms);
+                        e.Handled = true;
+                    }
+
+                    break;
+                }
+                case Key.E: // Export Movement History
+                {
+                    vm.ExcelExportSourceMovementHistory.Execute(selectedForms);
+                    e.Handled = true;
+
+                    break;
+                }
+                default: return;
+            }
+        }
+    }
+
+    #endregion
+
     #region OnStandartClosing
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
         if (DataContext is not Form_15VM vm) return;
+
         try
         {
-            await RemoveEmptyForms(vm);
             await CheckPeriod(vm);
         }
         catch (Exception ex)
@@ -78,6 +196,7 @@ public partial class Form_15 : BaseWindow<Form_15VM>
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Error(msg);
         }
+
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
         try
         {
@@ -122,6 +241,18 @@ public partial class Form_15 : BaseWindow<Form_15VM>
         {
             case "ƒа":
                 {
+                    //ѕеред тем как сохранить данные пользователю предлагают удалить пустые строчки
+                    try
+                    {
+                        await RemoveEmptyForms(vm);
+                    }
+                    catch (Exception ex)
+                    {
+                        var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                                  $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                        ServiceExtension.LoggerManager.Error(msg);
+                    }
+
                     await dbm.SaveChangesAsync();
                     await new SaveReportAsyncCommand(vm).AsyncExecute(null);
                     if (desktop.Windows.Count == 1)
@@ -134,7 +265,7 @@ public partial class Form_15 : BaseWindow<Form_15VM>
                 {
                     flag = true;
                     dbm.Restore();
-                    new SortFormSyncCommand(vm).Execute(null);
+                    new NewSortFormSyncCommand(vm).Execute(null);
                     await dbm.SaveChangesAsync();
 
                     var lst = vm.Report[vm.FormType];
@@ -178,6 +309,7 @@ public partial class Form_15 : BaseWindow<Form_15VM>
                     break;
                 }
         }
+
         desktop.MainWindow.WindowState = WindowState.Normal;
         if (flag)
         {

@@ -2196,6 +2196,9 @@ public partial class Form18 : Form1
             $"{SaltConcentration.Value}\t" +
             $"{Radionuclids.Value}\t" +
             $"{SpecificActivity.Value}\t" +
+            $"{DocumentVid.Value}\t" +
+            $"{DocumentNumber.Value}\t" +
+            $"{DocumentDate.Value}\t" +
             $"{ProviderOrRecieverOKPO.Value}\t" +
             $"{TransporterOKPO.Value}\t" +
             $"{StoragePlaceName.Value}\t" +

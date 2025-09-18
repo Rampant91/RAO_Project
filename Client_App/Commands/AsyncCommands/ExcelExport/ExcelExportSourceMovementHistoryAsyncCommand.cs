@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Resources;
 using Client_App.Views.ProgressBar;
@@ -17,7 +9,16 @@ using Models.DBRealization;
 using Models.DTO;
 using Models.Forms.Form1;
 using OfficeOpenXml;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using static Client_App.Resources.StaticStringMethods;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -37,7 +38,19 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
         progressBarVM.SetProgressBar(5, "Проверка правильности заполнения паспорта", "Выгрузка в .xlsx", ExportType);
-        StaticMethods.PassportUniqParam(parameter, out _, out _, out _, out var pasNum, out var factoryNum);
+
+        //Костыль для старого и нового интерфейса. Нужно убрать, когда откажемся от старого интерфейса форм 1. TODO
+        string? pasNum;
+        string? factoryNum;
+        if (parameter is object[])
+        {
+            StaticMethods.PassportUniqParam(parameter, out _, out _, out _, out pasNum, out factoryNum);
+        }
+        else
+        {
+            StaticMethods.NewPassportUniqParam(parameter, out _, out _, out _, out pasNum, out factoryNum);
+        }
+
         await CheckPasParam(pasNum, factoryNum, progressBar, cts);
 
         progressBarVM.SetProgressBar(7, "Запрос пути сохранения");
