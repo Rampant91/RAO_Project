@@ -5,10 +5,8 @@ using Client_App.ViewModels.Forms;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
 using Models.Forms.Form1;
-using System;
 using System.Threading.Tasks;
 using Models.Forms;
-using JetBrains.Annotations;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -23,45 +21,41 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     private Form SelectedForm => formVM.SelectedForm;
 
     private string FormType => formVM.FormType;
-    private byte? ConvertStringToByte(string str)
+    private static byte? ConvertStringToByte(string str)
     {
-        byte result;
-        if (byte.TryParse(str, out result))
+        if (byte.TryParse(str, out var result))
         {
             return result;
         }
-        else
-            return null;
+
+        return null;
     }
-    private int? ConvertStringToInt(string str)
+
+    private static int? ConvertStringToInt(string str)
     {
-        int result;
-        if (int.TryParse(str, out result))
+        if (int.TryParse(str, out var result))
         {
             return result;
         }
-        else
-            return null;
+        return null;
     }
-    private short? ConvertStringToShort(string str)
+
+    private static short? ConvertStringToShort(string str)
     {
-        short result;
-        if (short.TryParse(str, out result))
+        if (short.TryParse(str, out var result))
         {
             return result;
         }
-        else
-            return null;
+        return null;
     }
-    private float? ConvertStringToFloat(string str)
+
+    private static float? ConvertStringToFloat(string str)
     {
-        float result;
-        if (float.TryParse(str, out result))
+        if (float.TryParse(str, out var result))
         {
             return result;
         }
-        else
-            return null;
+        return null;
     }
 
     //При копировании из Excel, ячейки с символами \n и \t заворачиваются в кавычки
@@ -70,7 +64,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     //Например ячейка   ("Ячейка1"  - все еще ячейка1)
     //в формате TSV будет выглядеть так (\t\"\"\"Ячейка1\"\"\t- все еще ячейка1\"\t)
     //поэтому после обновления Авалонии необходимо переписать всю команду вставки
-    private string CutTabulationInCells(string row)
+    private static string CutTabulationInCells(string row)
     {
         //Начало раздробленной ячейки
         if (row.Contains("\t\""))
@@ -84,15 +78,15 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         }
         if ((row.Contains("%border%start/")) || (row.Contains("/end%border%")))
         {
-            var splitedRow = row.Split("%border%");
+            var splitRow = row.Split("%border%");
             row = "";
-            for(int  i = 0; i< splitedRow.Length; i++)
+            for(var  i = 0; i< splitRow.Length; i++)
             {
-                if ((splitedRow[i].StartsWith("start/")) && (splitedRow[i].EndsWith("/end")))
+                if ((splitRow[i].StartsWith("start/")) && (splitRow[i].EndsWith("/end")))
                 {
-                    splitedRow[i] = splitedRow[i].Replace("\t", "");
+                    splitRow[i] = splitRow[i].Replace("\t", "");
                 }
-                row += splitedRow[i];
+                row += splitRow[i];
             }
             if (row.Contains("start/"))
             {
@@ -106,11 +100,11 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 
         return row;
     }
-    private string[] PrepareRowsForParsing(string[] rows)
-    {
-        for (int i = 0; i < rows.Length; i++)
-        {
 
+    private static string[] PrepareRowsForParsing(string[] rows)
+    {
+        for (var i = 0; i < rows.Length; i++)
+        {
             //Вырезаем из строк лишние \n
             if (rows[i].Contains('\n'))
             {
@@ -127,6 +121,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         }
         return rows;
     }
+
     public override async Task AsyncExecute(object? parameter)
     {
         if (SelectedForm == null) return;
@@ -145,47 +140,50 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             parsedRows[i] = rows[i].Split('\t');
         }
 
-        for (int i = 0; i < parsedRows.Length; i++)
+        foreach (var t in parsedRows)
         {
-            for (int j = 0; j < parsedRows[i].Length; j++)
+            for (var j = 0; j < t.Length; j++)
             {
-                var cell = parsedRows[i][j];
+                var cell = t[j];
                 //Тримим каждую ячейку для проверки на кавычки
                 cell = cell.Trim();
 
                 // Убираем все пустые символы что были после кавычек
                 cell = cell.Trim();
-                parsedRows[i][j] = cell;
+                t[j] = cell;
+
+                #region coment
 
                 /*
-                var cell = parsedRows[i][j];
-                //Тримим каждую ячейку для проверки на кавычки
-                cell = cell.Trim();
-                //Excel заворачивает в кавычки ячейки, если внутри был \n или \t
-                //Лишние \n уже были убраны, а \t при парсинге разбил одну ячейку на несколько
-                //Поэтому необходимо собрать эту ячейку заново
-                if (cell[0] == '\"')
-                {
-                    if (cell[cell.Length - 1] != '\"')
-                    {
-                        //запоминаем индекс 
-                        int index = j + 1;
-                        var nextCell = parsedRows[i][index];
-                        while (nextCell[nextCell.Length - 1] != '\"')
+                        var cell = parsedRows[i][j];
+                        //Тримим каждую ячейку для проверки на кавычки
+                        cell = cell.Trim();
+                        //Excel заворачивает в кавычки ячейки, если внутри был \n или \t
+                        //Лишние \n уже были убраны, а \t при парсинге разбил одну ячейку на несколько
+                        //Поэтому необходимо собрать эту ячейку заново
+                        if (cell[0] == '\"')
                         {
-                            cell += nextCell;
-                            index++;
-                            nextCell = parsedRows[i][index];
+                            if (cell[cell.Length - 1] != '\"')
+                            {
+                                //запоминаем индекс 
+                                int index = j + 1;
+                                var nextCell = parsedRows[i][index];
+                                while (nextCell[nextCell.Length - 1] != '\"')
+                                {
+                                    cell += nextCell;
+                                    index++;
+                                    nextCell = parsedRows[i][index];
+                                }
+                                cell += nextCell;
+                            }
+                            cell = cell.Remove(cell.Length - 1, 1);
+                            cell = cell.Remove(0, 1);
                         }
-                        cell += nextCell;
-                    }
-                    cell = cell.Remove(cell.Length - 1, 1);
-                    cell = cell.Remove(0, 1);
-                }
-                // Убираем все пробелы что были после кавычек
-                cell = cell.Trim();
-                parsedRows[i][j] = cell;
-                */
+                        // Убираем все пробелы что были после кавычек
+                        cell = cell.Trim();
+                        parsedRows[i][j] = cell;
+                        */ 
+                #endregion
             }
         }
         

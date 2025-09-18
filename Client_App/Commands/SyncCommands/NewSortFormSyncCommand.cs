@@ -1,8 +1,8 @@
 ﻿using Client_App.ViewModels.Forms;
 using Models.Collections;
 using Models.Forms;
-using Models.Forms.Form2;
 using System.Linq;
+using Models.Interfaces;
 
 namespace Client_App.Commands.SyncCommands;
 
@@ -17,10 +17,10 @@ public class NewSortFormSyncCommand(BaseFormVM formVM) : BaseCommand
         var formNum = Storage.FormNum_DB;
         var enumerable = Storage[formNum].GetEnumerable();
         if (enumerable is null) return;
-        if (enumerable.Count() <= 0) return;
+        var formArray = enumerable as IKey[] ?? enumerable.ToArray();
+        if (formArray.Length == 0) return;
 
-        var minItem = enumerable.Min(x => x.Order);
-
+        var minItem = formArray.Min(x => x.Order);
 
         Storage.Sort();
         var itemQ = Storage.Rows
@@ -34,6 +34,5 @@ public class NewSortFormSyncCommand(BaseFormVM formVM) : BaseCommand
             form.NumberInOrder.OnPropertyChanged();
             minItem++;
         }
-
     }
 }

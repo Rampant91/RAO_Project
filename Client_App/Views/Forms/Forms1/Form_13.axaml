@@ -12,7 +12,8 @@
     xmlns:forms="clr-namespace:Models.Forms;assembly=Models"
 	xmlns:behaviors="using:Avalonia.Xaml.Interactions.Core"
 	xmlns:controls="clr-namespace:Client_App.Controls"
-    Title="{Binding WindowTitle}"
+	xmlns:controls1="clr-namespace:Client_App.Views.Controls"
+	Title="{Binding WindowTitle}"
     d:DesignHeight="450"
     d:DesignWidth="900"
     x:DataType="vm:Form_13VM"
@@ -46,7 +47,7 @@
                   Header="Скрыть/Раскрыть верхнюю панель">
             <WrapPanel Classes="header">
 				<Border Classes="borderContainer">
-					<controls:SelectReportPopup
+					<controls1:SelectReportPopup
 						Grid.Row="1"
 						DataContext="{Binding SelectReportPopupVM}"
 						HorizontalAlignment="Center"

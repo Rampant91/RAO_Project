@@ -2,7 +2,6 @@
 using Avalonia.Controls;
 using Avalonia.Xaml.Interactivity;
 using System.Collections;
-using Models.Forms.Form1;
 
 namespace Client_App.Behaviors;
 

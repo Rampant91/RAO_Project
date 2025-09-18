@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="clr-namespace:Client_App.ViewModels.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Client_App.Controls.FilterPopup"
+             x:Class="Client_App.Views.Controls.FilterPopup"
 			 x:DataType="vm:FilterPopupVM">
 	<StackPanel>
 	    <Button Name="ToggleButton" 
@@ -24,8 +24,8 @@
 				<StackPanel>
 					<Button Content="Сортировка от А до Я"/>
 					<Button Content="Сортировка от Я до А"/>
-					<AutoCompleteBox Watermark="Поиск"></AutoCompleteBox>
-					<ListBox Items="{Binding ValueCollection}">
+					<AutoCompleteBox Watermark="Поиск"/>
+                    <ListBox Items="{Binding ValueCollection}">
 						<ListBox.ItemTemplate>
 							<DataTemplate>
 								<CheckBox Content="Значение"/>

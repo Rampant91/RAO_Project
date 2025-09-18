@@ -1,15 +1,11 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
 using AvaloniaEdit.Utils;
-using Models.Forms.Form1;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-
 
 namespace Client_App.Behaviors;
 
@@ -51,58 +47,54 @@ public class DataGridDragSelectionBehavior : Behavior<DataGrid>
     {
         var point = e.PointerPressedEventArgs.GetCurrentPoint(AssociatedObject);
 
+        if (!point.Properties.IsLeftButtonPressed) return;
 
-        if (point.Properties.IsLeftButtonPressed)
+        _isSelecting = true;
+
+        if (e.PointerPressedEventArgs.KeyModifiers != KeyModifiers.Shift)
+            AssociatedObject.SelectedItems.Clear();
+
+        // Захватываем указатель для получения всех событий
+        AssociatedObject.CapturePointer(e.PointerPressedEventArgs.Pointer);
+
+        var row = GetRowAtPoint(point.Position);
+        if (row != null)
         {
-            _isSelecting = true;
+            var item = row.DataContext;
+            _firstSelectedItem ??= item;
+            _lastSelectedItem = item;
 
-            if (e.PointerPressedEventArgs.KeyModifiers != KeyModifiers.Shift)
-                AssociatedObject.SelectedItems.Clear();
-            // Захватываем указатель для получения всех событий
-            AssociatedObject.CapturePointer(e.PointerPressedEventArgs.Pointer);
-
-            var row = GetRowAtPoint(point.Position);
-            if (row != null)
-            {
-                var item = row.DataContext;
-                if (_firstSelectedItem == null)
-                    _firstSelectedItem = item;
-                _lastSelectedItem = item;
-
-                // Обычный клик - очищаем и выделяем один элемент
-                AssociatedObject.SelectedItems.Add(item);
-            }
-
-            e.PointerPressedEventArgs.Handled = true;
+            // Обычный клик - очищаем и выделяем один элемент
+            AssociatedObject.SelectedItems.Add(item);
         }
+
+        e.PointerPressedEventArgs.Handled = true;
     }
 
     private void DataGrid_PointerMoved(object sender, PointerEventArgs e)
     {
-        if (_isSelecting)
+        if (!_isSelecting) return;
+
+        var point = e.GetCurrentPoint(AssociatedObject);
+        var row = GetRowAtPoint(point.Position);
+
+        if (row != null)
         {
-            var point = e.GetCurrentPoint(AssociatedObject);
-            var row = GetRowAtPoint(point.Position);
-
-            if (row != null)
+            var item = row.DataContext;
+            if (item != _lastSelectedItem)
             {
-                var item = row.DataContext;
-                if (item != _lastSelectedItem)
-                {
-                    if (_firstSelectedItem == null)
-                        _firstSelectedItem = item;
-                    _lastSelectedItem = item;
+                _firstSelectedItem ??= item;
+                _lastSelectedItem = item;
 
-                    // Добавляем элемент к выделению, если его еще нет
-                    if (!AssociatedObject.SelectedItems.Contains(item))
-                    {
-                        SelectRange();
-                    }
+                // Добавляем элемент к выделению, если его еще нет
+                if (!AssociatedObject.SelectedItems.Contains(item))
+                {
+                    SelectRange();
                 }
             }
-
-            e.Handled = true;
         }
+
+        e.Handled = true;
     }
 
     private void DataGrid_PointerReleased(object sender, PointerReleasedEventArgs e)
@@ -149,7 +141,6 @@ public class DataGridDragSelectionBehavior : Behavior<DataGrid>
         var items = AssociatedObject.Items?.OfType<object>().ToList();
         if (items == null) return;
 
-
         var lastIndex = items.IndexOf(_lastSelectedItem);
         var firstIndex = items.IndexOf(_firstSelectedItem);
 
@@ -158,7 +149,7 @@ public class DataGridDragSelectionBehavior : Behavior<DataGrid>
             var start = Math.Min(firstIndex, lastIndex);
             var end = Math.Max(firstIndex, lastIndex);
 
-            for (int i = start; i <= end; i++)
+            for (var i = start; i <= end; i++)
             {
                 if (!AssociatedObject.SelectedItems.Contains(items[i]))
                 {

@@ -28,7 +28,7 @@ public class NewAddNotesAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         if (owner == null) return;
         var dialog = new AskIntMessageWindow(new AskIntMessageVM("Введите количество новых примечаний"));
 
-        int? rowCount = await dialog.ShowDialog<int?>(owner);
+        var rowCount = await dialog.ShowDialog<int?>(owner);
 
         if (rowCount > 0)
         {

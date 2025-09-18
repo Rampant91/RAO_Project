@@ -39,7 +39,6 @@ public class NewAddNoteAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             }
         }
 
-
         return maxNum + 1;
     }
 }

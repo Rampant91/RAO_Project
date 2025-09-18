@@ -23,7 +23,6 @@
     </Design.DataContext>
 
     <Grid>
-
         <!--  TopTable  -->
         <Grid.RowDefinitions>
             <RowDefinition Height="*" MaxHeight="200"/>
@@ -319,7 +318,7 @@
                             <TextBlock
                                 Height="32"
                                 Margin="5,8"
-                                Text="Наименование юр. лица"/>
+                                Text="Наименование обособленного подразделения"/>
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
@@ -327,11 +326,11 @@
                             <TextBlock
                                 Height="32"
                                 Margin="5,8"
-                                Text="Адрес места нахождения юр. лица"/>
+                                Text="Адрес места нахождения обособленного подразделения"/>
                             <TextBlock
                                 Height="32"
                                 Margin="5,8"
-                                Text="Фактический адрес юр. лица"/>
+                                Text="Фактический адрес обособленного подразделения"/>
                             <TextBlock
                                 Height="32"
                                 Margin="5,8"

@@ -5,6 +5,7 @@ using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
 
 namespace Client_App.Behaviors;
+
 public class DeselectDataGridOnClickOutsideBehavior : Behavior<DataGrid>
 {
     private Window _parentWindow;
