@@ -587,7 +587,7 @@ public abstract class CheckF12 : CheckBase
     private static List<CheckError> Check_018(List<Form12> forms, List<Form10> forms10, int line)
     {
         List<CheckError> result = new();
-        string[] applicableOperationCodes = { "11", "12", "28", "38", "41", "63", "64", "81", "85" };
+        string[] applicableOperationCodes = { "11", "12", "28", "38", "41", "63", "64", "73", "81", "85" };
         var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         if (!applicableOperationCodes.Contains(opCode)) return result;
         var owner = ReplaceNullAndTrim(forms[line].Owner_DB);
@@ -631,7 +631,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "OperationCode_DB",
                 Value = opCode,
-                Message = "Код используется для предоставления сведений о ИОУ, произведенных в Российской Федерации."
+                Message = "Код используется для предоставления сведений о ИОУ, произведенных в Российской Федерации.",
+                IsCritical = true
             });
         }
         return result;
@@ -646,7 +647,7 @@ public abstract class CheckF12 : CheckBase
     {
         List<CheckError> result = new();
         string[] applicableOperationCodes = { "83", "84", "85", "86" };
-        var opCode = ReplaceNullAndTrim(forms[line].OperationDate_DB);
+        var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var creatorOkpo = ReplaceNullAndTrim(forms[line].CreatorOKPO_DB);
         if (!applicableOperationCodes.Contains(opCode)) return result;
         if (OKSM.All(oksmEntry => oksmEntry["shortname"] != creatorOkpo)
@@ -659,7 +660,8 @@ public abstract class CheckF12 : CheckBase
                 Column = "CreatorOKPO_DB",
                 Value = creatorOkpo,
                 Message = "Код используется для предоставления сведений о ИОУ, произведенных за пределами Российской Федерации. " +
-                          "Для импортированных ИОУ необходимо указать краткое наименование государства в соответствии с ОКСМ."
+                          "Для импортированных ИОУ необходимо указать краткое наименование государства в соответствии с ОКСМ.",
+                IsCritical = true
             });
         }
         return result;
@@ -1782,7 +1784,7 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "ProviderOrRecieverOKPO_DB",
                 Value = providerOrRecieverOkpo,
-                Message = "Формат ввода данных не соответствует приказу.",
+                Message = "Формат ввода данных не соответствует приказу. Должно быть выбрано значение из справочника ОКСМ, но не \"Россия\"",
                 IsCritical = true
             });
         }

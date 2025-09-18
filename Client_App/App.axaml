@@ -130,6 +130,7 @@
         </Style>
         <Style Selector="Grid.tableHeader TextBlock">
             <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
         </Style>
         <!--Table-->

@@ -604,7 +604,8 @@ public abstract class CheckF13 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "CreatorOKPO_DB",
                 Value = creatorOkpo,
-                Message = "Код используется для предоставления сведений о ОРИ, произведенных в Российской Федерации."
+                Message = "Код используется для предоставления сведений о ОРИ, произведенных в Российской Федерации.",
+                IsCritical = true
             });
         }
         return result;
@@ -633,7 +634,8 @@ public abstract class CheckF13 : CheckBase
                 Column = "CreatorOKPO_DB",
                 Value = creatorOkpo,
                 Message = "Код используется для предоставления сведений об ОРИ, произведенных за пределами Российской Федерации. " +
-                          "Для импортированных ОРИ необходимо указать краткое наименование государства в соответствии с ОКСМ."
+                          "Для импортированных ОРИ необходимо указать краткое наименование государства в соответствии с ОКСМ.",
+                IsCritical = true
             });
         }
         return result;

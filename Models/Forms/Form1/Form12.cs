@@ -714,7 +714,7 @@ public class Form12 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (Spravochniks.OKSM.Contains(value.Value.ToUpper()))
+        if (Spravochniks.OKSM.Contains(value.Value.ToUpper()) && OperationCode_DB is "81" or "83" or "84" or "85" or "86" or "88")
         {
             return true;
         }

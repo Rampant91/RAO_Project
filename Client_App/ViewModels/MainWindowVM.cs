@@ -206,14 +206,18 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     /// Экспорт организации в файл .RAODB с указанием диапазона дат выгружаемых форм
     /// </summary>
     public static ICommand ExportReportsWithDateRange => new ExportReportsWithDateRangeAsyncCommand();
-    public ICommand ImportExcel { get; set; }                       //  Импорт -> Из Excel
-    public ICommand ImportJson { get; set; }                        //  Импорт -> Из Json
-    public ICommand ImportRaodb { get; set; }                       //  Импорт -> Из RAODB
-    public ICommand MaxGraphsLength { get; set; }                   //  Excel -> Максимальное число символов в каждой колонке
-    public ICommand OpenCalculator { get; set; }                    //  Открыть калькулятор пересчёта активности
-    public ICommand OpenFile { get; set; }                          //  Открыть файл
-    public ICommand OpenFolder { get; set; }                        //  Открыть папку
-    public ICommand SaveReports { get; set; }                       //  Сохраняет текущую базу, используется только для сохранения комментария формы
+
+    /// <summary>
+    /// Импорт отчёта из Excel.
+    /// </summary>
+    public ICommand ImportExcel { get; set; }
+    public ICommand ImportJson { get; set; }                                //  Импорт -> Из Json
+    public ICommand ImportRaodb { get; set; }                               //  Импорт -> Из RAODB
+    public ICommand MaxGraphsLength { get; set; }                           //  Excel -> Максимальное число символов в каждой колонке
+    public ICommand OpenCalculator { get; set; }                            //  Открыть калькулятор пересчёта активности
+    public ICommand OpenFile { get; set; }                                  //  Открыть файл
+    public ICommand OpenFolder { get; set; }                                //  Открыть папку
+    public ICommand SaveReports { get; set; }                               //  Сохраняет текущую базу, используется только для сохранения комментария формы
     //public ICommand UnaccountedRad { get; set; }                    //  Радионуклиды, отсутствующие в справочнике
     
     #endregion

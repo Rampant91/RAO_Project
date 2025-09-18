@@ -75,8 +75,8 @@ public class CheckF23 : CheckBase
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
             .Where(x => x.Master_DB.Rows20.Any(y => y.RegNo_DB == form20RegNo))
             .Include(x => x.Report_Collection)
-            .Include(x => x.Report_Collection.Where(y => y.Year_DB == yearPrevious && y.FormNum_DB == "2.3"))
-            .ThenInclude(x => x.Rows210))
+            .Include(x => x.Report_Collection.Where(y => y.Year_DB == yearPrevious && y.FormNum_DB == "2.3")).ThenInclude(report => report.Rows23)
+            .Include(x => x.Report_Collection.Where(y => y.Year_DB == yearPrevious && y.FormNum_DB == "2.3")).ThenInclude(x => x.Rows210))
             if (_.Report_Collection.Count > 0) { reps23Prev = _; break; }
 
         Reports? reps22Cur = null;
@@ -88,8 +88,8 @@ public class CheckF23 : CheckBase
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
             .Where(x => x.Master_DB.Rows20.Any(y => y.RegNo_DB == form20RegNo))
             .Include(x => x.Report_Collection)
-            .Include(x => x.Report_Collection.Where(y => y.Year_DB == repYear && y.FormNum_DB == "2.2"))
-            .ThenInclude(x => x.Rows210))
+            .Include(x => x.Report_Collection.Where(y => y.Year_DB == yearPrevious && y.FormNum_DB == "2.2")).ThenInclude(report => report.Rows22)
+            .Include(x => x.Report_Collection.Where(y => y.Year_DB == yearPrevious && y.FormNum_DB == "2.2")).ThenInclude(x => x.Rows210))
             if (_.Report_Collection.Count > 0) { reps22Cur = _; break; }
 
         await db2.DisposeAsync();
@@ -330,10 +330,10 @@ public class CheckF23 : CheckBase
         { "Mass_DB", "07 - Разрешено к размещению - количество РАО - масса, т" },
         { "QuantityOZIII_DB", "08 - Разрешено к размещению - количество ОЗИИИ, шт." },
         { "SummaryActivity_DB", "09 - Разрешено к размещению - суммарная активность, Бк." },
-        { "DocumentNumber_DB", "10 - Наимнование и реквизиты документа на размещение РАО - номер" },
-        { "DocumentDate_DB", "11 - Наимнование и реквизиты документа на размещение РАО - дата" },
-        { "ExpirationDate_DB", "12 - Наимнование и реквизиты документа на размещение РАО - срок действия" },
-        { "DocumentName_DB", "13 - Наимнование и реквизиты документа на размещение РАО - наименование документа" }
+        { "DocumentNumber_DB", "10 - Наименование и реквизиты документа на размещение РАО - номер" },
+        { "DocumentDate_DB", "11 - Наименование и реквизиты документа на размещение РАО - дата" },
+        { "ExpirationDate_DB", "12 - Наименование и реквизиты документа на размещение РАО - срок действия" },
+        { "DocumentName_DB", "13 - Наименование и реквизиты документа на размещение РАО - наименование документа" }
     };
 
     #endregion

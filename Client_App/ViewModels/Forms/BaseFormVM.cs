@@ -209,6 +209,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
 
     }
+
     public int TotalRows => Report.Rows.Count;
 
     protected bool _isAutoReplaceEnabled = true;
@@ -225,6 +226,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     public int _selectedYear = DateTime.Now.Year;
     public int SelectedYear
     {

@@ -29,12 +29,13 @@ namespace Client_App.Views.Forms.Forms1;
 public partial class Form_11 : BaseWindow<Form_11VM>
 {
 
-    //private Form_11VM _vm = null!;
+    private Form_11VM _vm = null!;
 
     public Form_11()
     {
         InitializeComponent();
-        DataContext = new Form_11VM();
+        _vm = new Form_11VM();
+        DataContext = _vm;
         Show();
     }
 
@@ -42,8 +43,10 @@ public partial class Form_11 : BaseWindow<Form_11VM>
     {
         InitializeComponent();
         DataContext = vm;
+        _vm = vm;
         Closing += OnStandardClosing;
     }
+
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
