@@ -117,7 +117,7 @@ public class Form13 : Form1
     {
         if (args.PropertyName != "Value") return;
         
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (OperationCode_DB != value1)
         {
             OperationCode_DB = value1;
@@ -425,7 +425,7 @@ public class Form13 : Form1
     {
         if (args.PropertyName != "Value") return;
 
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (OperationDate_DB != value1)
         {
             OperationDate_DB = DateString_ValueChanged(value1);
@@ -494,7 +494,7 @@ public class Form13 : Form1
     {
         if (args.PropertyName != "Value") return;
 
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (PassportNumber_DB != value1)
         {
             PassportNumber_DB = value1;
@@ -567,7 +567,7 @@ public class Form13 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        Type_DB = tmp.Trim();
+        Type_DB = tmp;
     }
 
     private bool Type_Validation(RamAccess<string> value)
@@ -623,7 +623,7 @@ public class Form13 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        Radionuclids_DB = tmp.Trim();
+        Radionuclids_DB = tmp;
     }
 
     private bool Radionuclids_Validation(RamAccess<string> value) => NuclidString_Validation(value);
@@ -661,7 +661,7 @@ public class Form13 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        FactoryNumber_DB = tmp.Trim();
+        FactoryNumber_DB = tmp;
     }
 
     private bool FactoryNumber_Validation(RamAccess<string> value)
@@ -745,7 +745,7 @@ public class Form13 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        tmp = tmp.Trim();
+        tmp = tmp;
         if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
         {
             tmp = tmp.ToUpper();
@@ -946,7 +946,7 @@ public class Form13 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        tmp = tmp.Trim();
+        tmp = tmp;
         if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
         {
             tmp = tmp.ToUpper();
@@ -1015,7 +1015,7 @@ public class Form13 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        tmp = tmp.Trim();
+        tmp = tmp;
         if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
         {
             tmp = tmp.ToUpper();
@@ -1092,7 +1092,7 @@ public class Form13 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        tmp = tmp.Trim();
+        tmp = tmp;
         if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
         {
             tmp = tmp.ToUpper();
@@ -1158,7 +1158,7 @@ public class Form13 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        PackName_DB = tmp.Trim();
+        PackName_DB = tmp;
     }
 
     private bool PackName_Validation(RamAccess<string> value)
@@ -1211,7 +1211,7 @@ public class Form13 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        PackType_DB = tmp.Trim();
+        PackType_DB = tmp;
     }
 
     private bool PackType_Validation(RamAccess<string> value)//Ready
@@ -1264,7 +1264,7 @@ public class Form13 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value;
-        PackNumber_DB = tmp.Trim();
+        PackNumber_DB = tmp;
     }
 
     private bool PackNumber_Validation(RamAccess<string> value)//Ready

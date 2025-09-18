@@ -86,7 +86,7 @@
 		<Style Selector="Border#Background">
 			<Setter Property="Background" Value="#f0f8ff"/>
         </Style>
-		<Style Selector="TextBox.autoTrim">
+		<Style Selector="TextBox">
 			<Setter Property="behaviors:TextBoxAutoTrim.IsEnabled" Value="True"/>
 		</Style>
         <!--Стили для окон редактирования форм-->

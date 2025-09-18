@@ -121,7 +121,7 @@ public class Form11 : Form1
     {
         if (args.PropertyName != "Value") return;
 
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (OperationCode_DB != value1)
         {
             OperationCode_DB = value1;
@@ -608,7 +608,7 @@ public class Form11 : Form1
     {
         if (args.PropertyName != "Value") return;
 
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (OperationDate_DB != value1)
         {
             OperationDate_DB = DateString_ValueChanged(value1);
@@ -678,7 +678,7 @@ public class Form11 : Form1
     {
         if (args.PropertyName != "Value") return;
 
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (PassportNumber_DB != value1)
         {
             PassportNumber_DB = value1;
@@ -745,7 +745,7 @@ public class Form11 : Form1
     {
         if (args.PropertyName != "Value") return;
 
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (Type_DB != value1)
         {
             Type_DB = value1;
@@ -805,7 +805,7 @@ public class Form11 : Form1
     {
         if (args.PropertyName != "Value") return;
 
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (Radionuclids_DB != value1)
         {
             Radionuclids_DB = value1;
@@ -847,7 +847,7 @@ public class Form11 : Form1
     {
         if (args.PropertyName != "Value") return;
 
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (FactoryNumber_DB != value1)
         {
             FactoryNumber_DB = value1;
@@ -954,7 +954,7 @@ public class Form11 : Form1
     {
         if (args.PropertyName != "Value") return;
 
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (Activity_DB != value1)
         {
             Activity_DB = ExponentialString_ValueChanged(value1);
@@ -995,7 +995,7 @@ public class Form11 : Form1
     private void CreatorOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (Spravochniks.OKSM.Contains(value1.ToUpper()))
         {
             value1 = value1.ToUpper();
@@ -1066,7 +1066,7 @@ public class Form11 : Form1
     {
         if (args.PropertyName != "Value") return;
 
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (CreationDate_DB != value1)
         {
             CreationDate_DB = DateString_ValueChanged(value1);
@@ -1277,7 +1277,7 @@ public class Form11 : Form1
     {
         if (args.PropertyName != "Value") return;
 
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (Spravochniks.OKSM.Contains(value1.ToUpper()))
         {
             value1 = value1.ToUpper();
@@ -1350,7 +1350,7 @@ public class Form11 : Form1
     {
         if (args.PropertyName != "Value") return;
 
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (Spravochniks.OKSM.Contains(value1.ToUpper()))
         {
             value1 = value1.ToUpper();
@@ -1423,7 +1423,7 @@ public class Form11 : Form1
     {
         if (args.PropertyName != "Value") return;
 
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (Spravochniks.OKSM.Contains(value1.ToUpper()))
         {
             value1 = value1.ToUpper();
@@ -1498,7 +1498,7 @@ public class Form11 : Form1
     {
         if (args.PropertyName != "Value") return;
 
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (PackName_DB != value1)
         {
             PackName_DB = value1;
@@ -1556,7 +1556,7 @@ public class Form11 : Form1
     {
         if (args.PropertyName != "Value") return;
 
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (PackType_DB != value1)
         {
             PackType_DB = value1;
@@ -1614,7 +1614,7 @@ public class Form11 : Form1
     {
         if (args.PropertyName != "Value") return;
 
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (PackNumber_DB != value1)
         {
             PackNumber_DB = value1;
