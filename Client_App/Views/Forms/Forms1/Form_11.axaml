@@ -98,15 +98,18 @@
 								   Grid.Column="0"
 								   Margin="5"
 								   Text="ФИО исполнителя:"/>
-						<TextBox Grid.Row="0"
+						<TextBox Classes="autoTrim"
+								 Grid.Row="0"
 								 Grid.Column="1"
 								 Margin="5"
-								 Text="{Binding Path=Report.FIOexecutor.Value}"/>
+								 Text="{Binding Path=Report.FIOexecutor.Value}">
+							</TextBox>
 						<TextBlock Grid.Row="1"
 								   Grid.Column="0"
 								   Margin="5"
 								   Text="Должность:"/>
-						<TextBox Grid.Row="1"
+						<TextBox Classes="autoTrim"
+								 Grid.Row="1"
 								 Grid.Column="1"
 								 Margin="5"
 								Text="{Binding Path=Report.GradeExecutor.Value}"/>
@@ -114,15 +117,18 @@
 								   Grid.Column="0"
 								   Margin="5"
 								   Text="Телефон:"/>
-						<TextBox Grid.Row="2"
+						<TextBox Classes="autoTrim"
+								 Grid.Row="2"
 								 Grid.Column="1"
 								 Margin="5"
 								 Text="{Binding Path=Report.ExecPhone.Value}"/>
-						<TextBlock Grid.Row="3"
+						<TextBlock Classes="autoTrim"
+								   Grid.Row="3"
 								   Grid.Column="0"
 								   Margin="5"
 								   Text="Электронная почта:"/>
-						<TextBox Grid.Row="3"
+						<TextBox Classes="autoTrim"
+								 Grid.Row="3"
 								 Grid.Column="1"
 								 Margin="5"
 								 Text="{Binding Path=Report.ExecEmail.Value}"/>
