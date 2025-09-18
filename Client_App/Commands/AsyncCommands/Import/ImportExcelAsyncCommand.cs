@@ -136,6 +136,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 end = $"A{start}";
                 value = worksheet1.Cells[end].Value;
             }
+            NumberInOrder = 1;
 
             if (value is null)
                 start += 3;
@@ -262,7 +263,32 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
         //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
 
-        await StaticConfiguration.DBModel.SaveChangesAsync();
+
+        try
+        {
+            await StaticConfiguration.DBModel.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            #region MessageImportError
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Импорт из .xlsx",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"При сохранении импортированных данных возникла ошибка.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            return;
+        }
 
         await SetDataGridPage(impReportsList);
 
@@ -416,11 +442,14 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
     #region GetDataFromRow
 
-    private static void GetDataFromRow(string param1, ExcelWorksheet worksheet1, int start, Report repFromEx)
+    private int NumberInOrder { get; set; } = 1;
+
+    private void GetDataFromRow(string param1, ExcelWorksheet worksheet1, int start, Report repFromEx)
     {
         if (param1 is "2.1" or "2.2" && !int.TryParse(Convert.ToString(worksheet1.Cells[$"A{start}"].Value), out _)) return;
         dynamic form = FormCreator.Create(param1);
         form.ExcelGetRow(worksheet1, start);
+        form.NumberInOrder_DB = NumberInOrder++;
         repFromEx.Rows.Add(form);
     }
 
