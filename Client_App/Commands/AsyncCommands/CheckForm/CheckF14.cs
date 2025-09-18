@@ -80,8 +80,6 @@ public abstract class CheckF14 : CheckBase
             errorList.AddRange(Check_056(formsList, forms10, currentFormLine));
             errorList.AddRange(Check_057(formsList, forms10, currentFormLine));
             errorList.AddRange(Check_058(formsList, currentFormLine));
-            errorList.AddRange(Check_057(formsList, forms10, currentFormLine));
-            errorList.AddRange(Check_058(formsList, currentFormLine));
             errorList.AddRange(Check_059(formsList, notes, currentFormLine));
             errorList.AddRange(Check_060(formsList, currentFormLine));
             errorList.AddRange(Check_061(formsList, notes, currentFormLine));
@@ -332,7 +330,7 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Radionuclids_DB",
                 Value = radionuclid,
-                Message = "В графе 6 не представлены сведения о радионуклидах, которые могут быть отнесены к ЯМ. " +
+                Message = "В графе 7 не представлены сведения о радионуклидах, которые могут быть отнесены к ЯМ. " +
                           "Проверьте правильность выбранного кода операции.",
                 IsCritical = true
             });
@@ -812,8 +810,7 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "AggregateState_DB",
                 Value = Convert.ToString(agrState),
-                Message = $"Для выбранного вида ОРИ ({sort}) - агрегатное состояние (графа 12) - жидкое (значение 1).",
-                IsCritical = true
+                Message = $"Для выбранного вида ОРИ ({sort}) - агрегатное состояние (графа 12) - жидкое (значение 1)."
             });
         }
         return result;
@@ -839,8 +836,7 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "AggregateState_DB",
                 Value = Convert.ToString(agrState),
-                Message = $"Для выбранного вида ОРИ ({sort}) - агрегатное состояние (графа 12) - твёрдое (значение 2).",
-                IsCritical = true
+                Message = $"Для выбранного вида ОРИ ({sort}) - агрегатное состояние (графа 12) - твёрдое (значение 2)."
             });
         }
         return result;
