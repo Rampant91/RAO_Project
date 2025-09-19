@@ -1,554 +1,520 @@
-﻿namespace Models;
-
-//[Serializable]
-//[Attributes.Form_Class("Форма 4.0: Титульный лист орого отчета СГУК РВ и РАО")]
-//public class Form40 : Abstracts.Form
-//{
-//    public Form40() : base()
-//    {
-//        //FormNum.Value = "40";
-//        //NumberOfFields.Value = 18;
-//    }
-
-//    [Attributes.Form_Property("Форма")]
-//    public override bool Object_Validation()
-//    {
-//        return false;
-//    }
-
-//    //SubjectRF property
-//    public int? SubjectRFId { get; set; }
-//    [Attributes.Form_Property("Субъект РФ")]
-//    public virtual RamAccess<string> SubjectRF
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(SubjectRF));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(SubjectRF), value);
-//            }
-//            OnPropertyChanged(nameof(SubjectRF));
-//        }
-//    }
-
-
-//    //SubjectRF property
-
-//    //Yyear property
-//    public int? YyearId { get; set; }
-//    [Attributes.Form_Property("Год")]
-//    public virtual RamAccess<int> Yyear
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<int>(nameof(Yyear));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(Yyear), value);
-//            }
-//            OnPropertyChanged(nameof(Yyear));
-//        }
-//    }
-
-
-//    //Yyear property
-
-//    //SubjectAuthorityName property
-//    public int? SubjectAuthorityNameId { get; set; }
-//    [Attributes.Form_Property("Наименование органа исполнительной власти")]
-//    public virtual RamAccess<int> SubjectAuthorityName
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<int>(nameof(SubjectAuthorityName));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-//            DataAccess.Set(nameof(SubjectAuthorityName), value);
-//            OnPropertyChanged(nameof(SubjectAuthorityName));
-//        }
-//    }
-
+﻿using Models.Attributes;
+using Models.Collections;
+using Models.Forms.DataAccess;
+using OfficeOpenXml;
+using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Drawing;
+using System.Linq;
+using System.Text.RegularExpressions;
+
+namespace Models.Forms.Form4;
+
+[Serializable]
+[Form_Class(name: "Форма 4.0: Титульный лист организации")]
+[Table(name: "form_40")]
+public partial class Form40 : Form
+{
+    #region Constructor
+
+    public Form40()
+    {
+        FormNum.Value = "4.0";
+    }
 
-//    //SubjectAuthorityName property
+    #endregion
 
-//    //ShortSubjectAuthorityName property
-//    public int? ShortSubjectAuthorityNameId { get; set; }
-//    [Attributes.Form_Property("Краткое наименование органа исполнительной власти")]
-//    public virtual RamAccess<int> ShortSubjectAuthorityName
-//    {
-//        get
-//        {
+    #region Properties
 
-//            {
-//                return DataAccess.Get<int>(nameof(ShortSubjectAuthorityName));
-//            }
+    #region SubjectRF (2)
+
+    public string SubjectRF_DB { get; set; } = "";
+
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> SubjectRF
+    {
+        get;
+        set;
+    }
+
+    private void SubjectRF_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
 
-//            {
+    private bool SubjectRF_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
 
-//            }
-//        }
-//        set
-//        {
+    #endregion
 
+    #region Year (3)
+
+    public string Year_DB { get; set; } = "";
+
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> Year
+    {
+        get;
+        set;
+    }
+
+    private void Year_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
 
-//            {
-//                DataAccess.Set(nameof(ShortSubjectAuthorityName), value);
-//            }
-//            OnPropertyChanged(nameof(ShortSubjectAuthorityName));
-//        }
-//    }
+    private bool Year_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
 
+    #endregion
 
-//    //ShortSubjectAuthorityName property
+    #region NameOrganUprav (4)
 
-//    //FactAddress property
-//    public int? FactAddressId { get; set; }
-//    [Attributes.Form_Property("Фактический адрес")]
-//    public virtual RamAccess<string> FactAddress
-//    {
-//        get
-//        {
+    public string NameOrganUprav_DB { get; set; } = "";
+
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> NameOrganUprav
+    {
+        get;
+        set;
+    }
+
+    private void NameOrganUprav_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
 
-//            {
-//                return DataAccess.Get<string>(nameof(FactAddress));
-//            }
+    private bool NameOrganUprav_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
 
-//            {
+    #endregion
 
-//            }
-//        }
-//        set
-//        {
+    #region ShortNameOrganUprav (5)
 
+    public string ShortNameOrganUprav_DB { get; set; } = "";
+
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> ShortNameOrganUprav
+    {
+        get;
+        set;
+    }
+
+    private void ShortNameOrganUprav_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
 
-//            {
-//                DataAccess.Set(nameof(FactAddress), value);
-//            }
-//            OnPropertyChanged(nameof(FactAddress));
-//        }
-//    }
+    private bool ShortNameOrganUprav_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
 
+    #endregion
 
-//    //FactAddress property
+    #region AddressOrganUprav (6)
 
-//    //GradeFIOchef property
-//    public int? GradeFIOchefId { get; set; }
-//    [Attributes.Form_Property("ФИО, должность руководителя")]
-//    public virtual RamAccess<string> GradeFIOchef
-//    {
-//        get
-//        {
+    public string AddressOrganUprav_DB { get; set; } = "";
 
-//            {
-//                return DataAccess.Get<string>(nameof(GradeFIOchef));
-//            }
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> AddressOrganUprav
+    {
+        get;
+        set;
+    }
 
-//            {
+    private void AddressOrganUprav_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
 
-//            }
-//        }
-//        set
-//        {
+    private bool AddressOrganUprav_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
 
+    #endregion
 
-//            {
-//                DataAccess.Set(nameof(GradeFIOchef), value);
-//            }
-//            OnPropertyChanged(nameof(GradeFIOchef));
-//        }
-//    }
+    #region GradeFioDirectorOrganUprav (7)
 
+    public string GradeFioDirectorOrganUprav_DB { get; set; } = "";
 
-//    //GradeFIOchef property
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> GradeFioDirectorOrganUprav
+    {
+        get;
+        set;
+    }
 
-//    //GradeFIOresponsibleExecutor property
-//    public int? GradeFIOresponsibleExecutorId { get; set; }
-//    [Attributes.Form_Property("ФИО, должность ответственного исполнителя")]
-//    public virtual RamAccess<string> GradeFIOresponsibleExecutor
-//    {
-//        get
-//        {
+    private void GradeFioDirectorOrganUprav_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
 
-//            {
-//                return DataAccess.Get<string>(nameof(GradeFIOresponsibleExecutor));
-//            }
+    private bool GradeFioDirectorOrganUprav_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
 
-//            {
+    #endregion
 
-//            }
-//        }
-//        set
-//        {
+    #region GradeFioExecutorOrganUprav (8)
 
+    public string GradeFioExecutorOrganUprav_DB { get; set; } = "";
 
-//            {
-//                DataAccess.Set(nameof(GradeFIOresponsibleExecutor), value);
-//            }
-//            OnPropertyChanged(nameof(GradeFIOresponsibleExecutor));
-//        }
-//    }
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> GradeFioExecutorOrganUprav
+    {
+        get;
+        set;
+    }
 
+    private void GradeFioExecutorOrganUprav_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
 
-//    //GradeFIOresponsibleExecutor property
+    private bool GradeFioExecutorOrganUprav_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
 
-//    //Telephone property
-//    public int? TelephoneId { get; set; }
-//    [Attributes.Form_Property("Телефон")]
-//    public virtual RamAccess<string> Telephone
-//    {
-//        get
-//        {
+    #endregion
 
-//            {
-//                return DataAccess.Get<string>(nameof(Telephone));
-//            }
+    #region TelephoneOrganUprav (9)
 
-//            {
+    public string TelephoneOrganUprav_DB { get; set; } = "";
 
-//            }
-//        }
-//        set
-//        {
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> TelephoneOrganUprav
+    {
+        get;
+        set;
+    }
 
+    private void TelephoneOrganUprav_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
 
-//            {
-//                DataAccess.Set(nameof(Telephone), value);
-//            }
-//            OnPropertyChanged(nameof(Telephone));
-//        }
-//    }
+    private bool TelephoneOrganUprav_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
 
+    #endregion
 
-//    //Telephone property
+    #region FaxOrganUprav (10)
 
-//    //Fax property
-//    public int? FaxId { get; set; }
-//    [Attributes.Form_Property("Факс")]
-//    public virtual RamAccess<string> Fax
-//    {
-//        get
-//        {
+    public string FaxOrganUprav_DB { get; set; } = "";
 
-//            {
-//                return DataAccess.Get<string>(nameof(Fax));
-//            }
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> FaxOrganUprav
+    {
+        get;
+        set;
+    }
 
-//            {
+    private void FaxOrganUprav_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
 
-//            }
-//        }
-//        set
-//        {
+    private bool FaxOrganUprav_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
 
+    #endregion
 
-//            {
-//                DataAccess.Set(nameof(Fax), value);
-//            }
-//            OnPropertyChanged(nameof(Fax));
-//        }
-//    }
+    #region EmailOrganUprav (11)
 
+    public string EmailOrganUprav_DB { get; set; } = "";
 
-//    //Fax property
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> EmailOrganUprav
+    {
+        get;
+        set;
+    }
 
-//    //Email property
-//    public int? EmailId { get; set; }
-//    [Attributes.Form_Property("Эл. почта")]
-//    public virtual RamAccess<string> Email
-//    {
-//        get
-//        {
+    private void EmailOrganUprav_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
 
-//            {
-//                return DataAccess.Get<string>(nameof(Email));
-//            }
+    private bool EmailOrganUprav_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
 
-//            {
+    #endregion
 
-//            }
-//        }
-//        set
-//        {
+    #region NameRiac (12)
 
+    public string NameRiac_DB { get; set; } = "";
 
-//            {
-//                DataAccess.Set(nameof(Email), value);
-//            }
-//            OnPropertyChanged(nameof(Email));
-//        }
-//    }
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> NameRiac
+    {
+        get;
+        set;
+    }
 
+    private void NameRiac_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
 
-//    //Email property
+    private bool NameRiac_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
 
-//    //Telephone1 property
-//    public int? Telephone1Id { get; set; }
-//    [Attributes.Form_Property("Телефон")]
-//    public virtual RamAccess<string> Telephone1
-//    {
-//        get
-//        {
+    #endregion
 
-//            {
-//                return DataAccess.Get<string>(nameof(Telephone1));
-//            }
+    #region ShortNameRiac (13)
 
-//            {
+    public string ShortNameRiac_DB { get; set; } = "";
 
-//            }
-//        }
-//        set
-//        {
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> ShortNameRiac
+    {
+        get;
+        set;
+    }
 
+    private void ShortNameRiac_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
 
-//            {
-//                DataAccess.Set(nameof(Telephone1), value);
-//            }
-//            OnPropertyChanged(nameof(Telephone1));
-//        }
-//    }
+    private bool ShortNameRiac_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
 
+    #endregion
 
-//    //Telephone1 property
+    #region AddressRiac (14)
 
-//    //Fax1 property
-//    public int? Fax1Id { get; set; }
-//    [Attributes.Form_Property("Факс")]
-//    public virtual RamAccess<string> Fax1
-//    {
-//        get
-//        {
+    public string AddressRiac_DB { get; set; } = "";
 
-//            {
-//                return DataAccess.Get<string>(nameof(Fax1));
-//            }
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> AddressRiac
+    {
+        get;
+        set;
+    }
 
-//            {
+    private void AddressRiac_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
 
-//            }
-//        }
-//        set
-//        {
+    private bool AddressRiac_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
 
+    #endregion
 
-//            {
-//                DataAccess.Set(nameof(Fax1), value);
-//            }
-//            OnPropertyChanged(nameof(Fax1));
-//        }
-//    }
+    #region GradeFioDirectorRiac (15)
 
+    public string GradeFioDirectorRiac_DB { get; set; } = "";
 
-//    //Fax1 property
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> GradeFioDirectorRiac
+    {
+        get;
+        set;
+    }
 
-//    //Email1 property
-//    public int? Email1Id { get; set; }
-//    [Attributes.Form_Property("Эл. почта")]
-//    public virtual RamAccess<string> Email1
-//    {
-//        get
-//        {
+    private void GradeFioDirectorRiac_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
 
-//            {
-//                return DataAccess.Get<string>(nameof(Email1));
-//            }
+    private bool GradeFioDirectorRiac_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
 
-//            {
+    #endregion
 
-//            }
-//        }
-//        set
-//        {
+    #region GradeFioExecutorRiac (16)
 
+    public string GradeFioExecutorRiac_DB { get; set; } = "";
 
-//            {
-//                DataAccess.Set(nameof(Email1), value);
-//            }
-//            OnPropertyChanged(nameof(Email1));
-//        }
-//    }
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> GradeFioExecutorRiac
+    {
+        get;
+        set;
+    }
 
+    private void GradeFioExecutorRiac_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
+
+    private bool GradeFioExecutorRiac_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
 
-//    //Email1 property
+    #endregion
+
+    #region TelephoneRiac (17)
+
+    public string TelephoneRiac_DB { get; set; } = "";
+
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> TelephoneRiac
+    {
+        get;
+        set;
+    }
+
+    private void TelephoneRiac_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
+
+    private bool TelephoneRiac_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
+
+    #endregion
+
+    #region FaxRiac (18)
+
+    public string FaxRiac_DB { get; set; } = "";
 
-//    //OrgName property
-//    public int? OrgNameId { get; set; }
-//    [Attributes.Form_Property("Название организации")]
-//    public virtual RamAccess<string> OrgName
-//    {
-//        get
-//        {
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> FaxRiac
+    {
+        get;
+        set;
+    }
 
-//            {
-//                return DataAccess.Get<string>(nameof(OrgName));
-//            }
+    private void FaxRiac_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
 
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(OrgName), value);
-//            }
-//            OnPropertyChanged(nameof(OrgName));
-//        }
-//    }
-
-
-//    //OrgName property
-
-//    //ShortOrgName property
-//    public int? ShortOrgNameId { get; set; }
-//    [Attributes.Form_Property("Краткое название организации")]
-//    public virtual RamAccess<string> ShortOrgName
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(ShortOrgName));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(ShortOrgName), value);
-//            }
-//            OnPropertyChanged(nameof(ShortOrgName));
-//        }
-//    }
-
-
-//    //ShortOrgName property
-
-//    //FactAddress1 property
-//    public int? FactAddress1Id { get; set; }
-//    [Attributes.Form_Property("Фактический адрес")]
-//    public virtual RamAccess<string> FactAddress1
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(FactAddress1));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(FactAddress1), value);
-//            }
-//            OnPropertyChanged(nameof(FactAddress1));
-//        }
-//    }
-
-
-//    //FactAddress1 property
-
-//    //GradeFIOchef1 property
-//    public int? GradeFIOchef1Id { get; set; }
-//    [Attributes.Form_Property("ФИО, должность руководителя")]
-//    public virtual RamAccess<string> GradeFIOchef1
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(GradeFIOchef1));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(GradeFIOchef1), value);
-//            }
-//            OnPropertyChanged(nameof(GradeFIOchef1));
-//        }
-//    }
-
-
-//    //GradeFIOchef1 property
-
-//    //GradeFIOresponsibleExecutor1 property
-//    public int? GradeFIOresponsibleExecutor1Id { get; set; }
-//    [Attributes.Form_Property("ФИО, должность ответственного исполнителя")]
-//    public virtual RamAccess<string> GradeFIOresponsibleExecutor1
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(GradeFIOresponsibleExecutor1));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(GradeFIOresponsibleExecutor1), value);
-//            }
-//            OnPropertyChanged(nameof(GradeFIOresponsibleExecutor1));
-//        }
-//    }
-
-
-//    //GradeFIOresponsibleExecutor1 property
-//}
+    private bool FaxRiac_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
+
+    #endregion
+
+    #region EmailRiac (19)
+
+    public string EmailRiac_DB { get; set; } = "";
+
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> EmailRiac
+    {
+        get;
+        set;
+    }
+
+    private void EmailRiac_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
+
+    private bool EmailRiac_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
+
+    #endregion
+
+    #endregion
+
+    #region Validation
+
+    public override bool Object_Validation()
+    {
+        return !(SubjectRF.HasErrors ||
+                 Year.HasErrors ||
+                 NameOrganUprav.HasErrors ||
+                 ShortNameOrganUprav.HasErrors ||
+                 AddressOrganUprav.HasErrors ||
+                 GradeFioDirectorOrganUprav.HasErrors ||
+                 GradeFioExecutorOrganUprav.HasErrors ||
+                 TelephoneOrganUprav.HasErrors ||
+                 FaxOrganUprav.HasErrors ||
+                 EmailOrganUprav.HasErrors ||
+                 NameRiac.HasErrors ||
+                 ShortNameRiac.HasErrors ||
+                 AddressRiac.HasErrors ||
+                 GradeFioDirectorOrganUprav.HasErrors ||
+                 GradeFioExecutorRiac.HasErrors ||
+                 TelephoneRiac.HasErrors ||
+                 FaxRiac.HasErrors ||
+                 EmailRiac.HasErrors);
+    }
+
+    #endregion
+
+    #region ParseInnerText
+    private static string ParseInnerText(string text)
+    {
+        return text.Replace("\r", " ").Replace("\n", " ").Replace("\t", " ");
+    }
+    #endregion
+
+    #region IExcel
+
+    public override void ExcelGetRow(ExcelWorksheet worksheet, int row)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
+    {
+        throw new NotImplementedException();
+    }
+
+    public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string id = "")
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion
+
+    #region IDataGridColumn
+
+    public override DataGridColumns GetColumnStructure(string param)
+    {
+        return null;
+    }
+
+    #endregion
+
+    #region ConvertToTSVstring
+
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Заглушка
+        var str = "Форма 4.0";
+        return str;
+    }
+
+    #endregion
+}

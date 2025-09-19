@@ -431,6 +431,14 @@
                         </ScrollViewer>
                     </Panel>
                 </TabItem>
+				<TabItem x:Name="Forms4" Header="Формы 4">
+					<Border Classes="borderContainer">
+						<StackPanel>
+						    <Button Command="{Binding Open40StubWindow}" Content="Форма 4.0"></Button>
+						    <Button Command="{Binding Open41StubWindow}" Content="Форма 4.1"></Button>
+						</StackPanel>
+					</Border>
+				</TabItem>
             </TabControl>
         </Panel>
 

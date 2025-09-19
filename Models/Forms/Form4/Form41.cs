@@ -1,340 +1,280 @@
-﻿namespace Models;
+﻿using Models.Attributes;
+using Models.Collections;
+using Models.Forms.DataAccess;
+using OfficeOpenXml;
+using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Drawing;
+using System.Linq;
+using System.Text.RegularExpressions;
 
-//    [Serializable]
-//    [Attributes.Form_Class("Форма 4.1: Перечень организаций, зарегистрированных в СГУК РВ и РАО на региональном уровне")]
-//    public class Form41 : Abstracts.Form
-//    {
-//        public Form41() : base()
-//        {
-//            //FormNum.Value = "41";
-//            //NumberOfFields.Value = 10;
-//        }
+namespace Models.Forms.Form4;
 
-//        [Attributes.Form_Property("Форма")]
-//        public override bool Object_Validation()
-//        {
-//            return false;
-//        }
+[Serializable]
+[Form_Class(name: "Форма 4.1: Титульный лист организации")]
+[Table(name: "form_41")]
+public partial class Form41 : Form
+{
+    #region Constructor
 
-//        //NumberInOrder property
-//        public int? NumberInOrderId { get; set; }
-//        [Attributes.Form_Property("№ п/п")]
-//        public virtual RamAccess<int> NumberInOrder
-//        {
-//            get
-//            {
-                
-//                {
-//                    return DataAccess.Get<int>(nameof(NumberInOrder));
-                    
-//                }
-                
-//                {
-                    
-//                }
-//            }
-//            set
-//            {
+    public Form41()
+    {
+        FormNum.Value = "4.1";
+    }
 
-                
-//                {
-//                    DataAccess.Set(nameof(NumberInOrder), value);
-//                }
-//                OnPropertyChanged(nameof(NumberInOrder));
-//            }
-//        }
+    #endregion
 
+    #region Properties
 
-//        private bool NumberInOrder_Validation(RamAccess<string> value)
-//        {
-//            value.ClearErrors(); return true;}
-//        //NumberInOrder property
+    #region RegNo (2)
 
-//        //RegNo property
-//        public int? RegNoId { get; set; }
-//        [Attributes.Form_Property("Регистрационный номер")]
-//        public virtual RamAccess<string> RegNo
-//        {
-//            get
-//            {
-                
-//                {
-//                    return DataAccess.Get<string>(nameof(RegNo));
-//                }
-                
-//                {
-                    
-//                }
-//            }
-//            set
-//            {
+    public string RegNo_DB { get; set; } = "";
 
-                
-//                {
-//                    DataAccess.Set(nameof(RegNo), value);
-//                }
-//                OnPropertyChanged(nameof(RegNo));
-//            }
-//        }
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> RegNo
+    {
+        get;
+        set;
+    }
 
+    private void RegNo_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
 
-//        //RegNo property
+    private bool RegNo_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
 
-//        //Okpo property
-//        public int? OkpoId { get; set; }
-//        [Attributes.Form_Property("ОКПО")]
-//        public virtual RamAccess<string> Okpo
-//        {
-//            get
-//            {
-                
-//                {
-//                    return DataAccess.Get<string>(nameof(Okpo));
-//                }
-                
-//                {
-                    
-//                }
-//            }
-//            set
-//            {
+    #endregion
 
-                
-//                {
-//                    DataAccess.Set(nameof(Okpo), value);
-//                }
-//                OnPropertyChanged(nameof(Okpo));
-//            }
-//        }
+    #region Okpo (3)
 
-//        private bool Okpo_Validation(RamAccess<string> value)
-//        {
-//            value.ClearErrors();
-//            if ((value.Value.Length != 8) && (value.Value.Length != 14))
-//            {
-//                value.AddError("Недопустимое значение"); return false;
-//            }
-//            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-//            if (!mask.IsMatch(value.Value))
-//            {
-//                value.AddError("Недопустимое значение");
-//                return false;
-//            }
-//            return true;
-//        }
-//        //Okpo property
+    public string Okpo_DB { get; set; } = "";
 
-//        //OrgName property
-//        public int? OrgNameId { get; set; }
-//        [Attributes.Form_Property("Наименование организации")]
-//        public virtual RamAccess<string> OrgName
-//        {
-//            get
-//            {
-                
-//                {
-//                    return DataAccess.Get<string>(nameof(OrgName));
-//                }
-                
-//                {
-                    
-//                }
-//            }
-//            set
-//            {
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> Okpo
+    {
+        get;
+        set;
+    }
 
-                
-//                {
-//                    DataAccess.Set(nameof(OrgName), value);
-//                }
-//                OnPropertyChanged(nameof(OrgName));
-//            }
-//        }
+    private void Okpo_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
 
+    private bool Okpo_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
 
-//        //OrgName property
+    #endregion
 
-//        //LicenseInfo property
-//        public int? LicenseInfoId { get; set; }
-//        [Attributes.Form_Property("Сведения о лицензии")]
-//        public virtual RamAccess<string> LicenseInfo
-//        {
-//            get
-//            {
-                
-//                {
-//                    return DataAccess.Get<string>(nameof(LicenseInfo));
-//                }
-                
-//                {
-                    
-//                }
-//            }
-//            set
-//            {
+    #region OrganizationName (4)
 
-                
-//                {
-//                    DataAccess.Set(nameof(LicenseInfo), value);
-//                }
-//                OnPropertyChanged(nameof(LicenseInfo));
-//            }
-//        }
+    public string OrganizationName_DB { get; set; } = "";
 
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> OrganizationName
+    {
+        get;
+        set;
+    }
 
-//        //LicenseInfo property
+    private void OrganizationName_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
 
-//        //QuantityOfFormsInv property
-//        public int? QuantityOfFormsInvId { get; set; }
-//        [Attributes.Form_Property("Количество отчетных форм по инвентаризации, шт.")]
-//        public virtual RamAccess<int> QuantityOfFormsInv
-//        {
-//            get
-//            {
-                
-//                {
-//                    return DataAccess.Get<int>(nameof(QuantityOfFormsInv));//OK
-                    
-//                }
-                
-//                {
-                    
-//                }
-//            }
-//            set
-//            {
+    private bool OrganizationName_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
 
+    #endregion
 
-                
-//                {
-//                    DataAccess.Set(nameof(QuantityOfFormsInv), value);
-//                }
-//                OnPropertyChanged(nameof(QuantityOfFormsInv));
-//            }
-//        }
-//        // positive int.
+    #region LicenseOrRegistrationInfo (5)
 
-//        private bool QuantityOfFormsInv_Validation(RamAccess<int> value)//Ready
-//        {
-//            value.ClearErrors();
-//            if (value.Value <= 0)
-//            {
-//                value.AddError( "Недопустимое значение");
-//return false;
-//            }
-//            return true;
-//        }
-//        //QuantityOfFormsInv property
+    public string LicenseOrRegistrationInfo_DB { get; set; } = "";
 
-//        //QuantityOfFormsOper property
-//        public int? QuantityOfFormsOperId { get; set; }
-//        [Attributes.Form_Property("Количество форм оперативных отчетов, шт.")]
-//        public virtual RamAccess<int> QuantityOfFormsOper
-//        {
-//            get
-//            {
-                
-//                {
-//                    return DataAccess.Get<int>(nameof(QuantityOfFormsOper));//OK
-                    
-//                }
-                
-//                {
-                    
-//                }
-//            }
-//            set
-//            {
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> LicenseOrRegistrationInfo
+    {
+        get;
+        set;
+    }
+
+    private void LicenseOrRegistrationInfo_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
+
+    private bool LicenseOrRegistrationInfo_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
+
+    #endregion
+
+    #region NumOfFormsWithInventarizationInfo (6)
+
+    public string NumOfFormsWithInventarizationInfo_DB { get; set; } = "";
+
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> NumOfFormsWithInventarizationInfo
+    {
+        get;
+        set;
+    }
+
+    private void NumOfFormsWithInventarizationInfo_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
+
+    private bool NumOfFormsWithInventarizationInfo_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
+
+    #endregion
+
+    #region NumOfFormsWithoutInventarizationInfo (7)
+
+    public string NumOfFormsWithoutInventarizationInfo_DB { get; set; } = "";
+
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> NumOfFormsWithoutInventarizationInfo
+    {
+        get;
+        set;
+    }
+
+    private void NumOfFormsWithoutInventarizationInfoUprav_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
+
+    private bool NumOfFormsWithoutInventarizationInfoUprav_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
+
+    #endregion
+
+    #region NumOfForms212 (8)
+
+    public string NumOfForms212_DB { get; set; } = "";
+
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> NumOfForms212
+    {
+        get;
+        set;
+    }
+
+    private void NumOfForms212_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
+
+    private bool NumOfForms212_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
+
+    #endregion
+
+    #region Note (9)
+
+    public string Note_DB { get; set; } = "";
+
+    [NotMapped]
+    [FormProperty(true, "Субъект Российской Федерации")]
+    public RamAccess<string> Note
+    {
+        get;
+        set;
+    }
+
+    private void NoteOrganUprav_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+    }
+
+    private bool Note_Validation(RamAccess<string> value)
+    {
+        return true;
+    }
+
+    #endregion
 
 
-                
-//                {
-//                    DataAccess.Set(nameof(QuantityOfFormsOper), value);
-//                }
-//                OnPropertyChanged(nameof(QuantityOfFormsOper));
-//            }
-//        }
-//        // positive int.
+    #endregion
 
-//        private bool QuantityOfFormsOper_Validation(RamAccess<int> value)//Ready
-//        {
-//            value.ClearErrors();
-//            if (value.Value <= 0)
-//            {
-//                value.AddError("Недопустимое значение"); return false;
-//            }
-//            return true;
-//        }
-//        //QuantityOfFormsOper property
+    #region Validation
 
-//        //QuantityOfFormsYear property
-//        public int? QuantityOfFormsYearId { get; set; }
-//        [Attributes.Form_Property("Количество форм годовых отчетов, шт.")]
-//        public virtual RamAccess<int> QuantityOfFormsYear
-//        {
-//            get
-//            {
-                
-//                {
-//                    return DataAccess.Get<int>(nameof(QuantityOfFormsYear));//OK
-                    
-//                }
-                
-//                {
-                    
-//                }
-//            }
-//            set
-//            {
+    public override bool Object_Validation()
+    {
+        return !(RegNo.HasErrors ||
+                 Okpo.HasErrors ||
+                 OrganizationName.HasErrors ||
+                 LicenseOrRegistrationInfo.HasErrors ||
+                 NumOfFormsWithInventarizationInfo.HasErrors ||
+                 NumOfFormsWithoutInventarizationInfo.HasErrors ||
+                 NumOfForms212.HasErrors);
+    }
 
+    #endregion
 
-                
-//                {
-//                    DataAccess.Set(nameof(QuantityOfFormsYear), value);
-//                }
-//                OnPropertyChanged(nameof(QuantityOfFormsYear));
-//            }
-//        }
-//        // positive int.
+    #region ParseInnerText
+    private static string ParseInnerText(string text)
+    {
+        return text.Replace("\r", " ").Replace("\n", " ").Replace("\t", " ");
+    }
+    #endregion
 
-//        private bool QuantityOfFormsYear_Validation(RamAccess<int> value)//Ready
-//        {
-//            value.ClearErrors();
-//            if (value.Value <= 0)
-//            {
-//                value.AddError("Недопустимое значение"); return false;
-//            }
-//            return true;
-//        }
-//        //QuantityOfFormsYear property
+    #region IExcel
 
-//        //Notes property
-//        public int? NotesId { get; set; }
-//        [Attributes.Form_Property("Примечания")]
-//        public virtual RamAccess<string> Notes
-//        {
-//            get
-//            {
-                
-//                {
-//                    return DataAccess.Get<string>(nameof(Notes));
-//                }
-                
-//                {
-                    
-//                }
-//            }
-//            set
-//            {
+    public override void ExcelGetRow(ExcelWorksheet worksheet, int row)
+    {
+        throw new NotImplementedException();
+    }
 
-                
-//                {
-//                    DataAccess.Set(nameof(Notes), value);
-//                }
-//                OnPropertyChanged(nameof(Notes));
-//            }
-//        }
+    public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
+    {
+        throw new NotImplementedException();
+    }
 
+    public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string id = "")
+    {
+        throw new NotImplementedException();
+    }
 
-//        //Notes property
-//    }
+    #endregion
+
+    #region IDataGridColumn
+
+    public override DataGridColumns GetColumnStructure(string param)
+    {
+        return null;
+    }
+
+    #endregion
+
+    #region ConvertToTSVstring
+
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Заглушка
+        var str = "Форма 4.0";
+        return str;
+    }
+
+    #endregion
+}

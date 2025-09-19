@@ -1,26 +1,30 @@
-﻿using Models.Collections;
-using ReactiveUI;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
+﻿using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.Calculator;
+using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.Delete;
 using Client_App.Commands.AsyncCommands.ExcelExport;
+using Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
 using Client_App.Commands.AsyncCommands.ExcelExport.Passports;
+using Client_App.Commands.AsyncCommands.ExcelExport.Snk;
+using Client_App.Commands.AsyncCommands.Hidden;
 using Client_App.Commands.AsyncCommands.Import;
 using Client_App.Commands.AsyncCommands.Import.ImportJson;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
-using Client_App.Commands.AsyncCommands.Hidden;
-using Client_App.Commands.AsyncCommands.CheckForm;
-using Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
-using Client_App.Commands.AsyncCommands.ExcelExport.Snk;
+using Client_App.Views;
+using Client_App.Views.Forms.Forms1;
 using CommunityToolkit.Mvvm.ComponentModel;
-
+using Models.Collections;
+using ReactiveUI;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows.Input;
+using Avalonia;
 namespace Client_App.ViewModels;
 
 public class MainWindowVM : ObservableObject, INotifyPropertyChanged
@@ -218,8 +222,12 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand OpenFile { get; set; }                                  //  Открыть файл
     public ICommand OpenFolder { get; set; }                                //  Открыть папку
     public ICommand SaveReports { get; set; }                               //  Сохраняет текущую базу, используется только для сохранения комментария формы
-    //public ICommand UnaccountedRad { get; set; }                    //  Радионуклиды, отсутствующие в справочнике
-    
+                                                                            //public ICommand UnaccountedRad { get; set; }                    
+                                                                            //  Радионуклиды, отсутствующие в справочнике
+
+    public ICommand Open40StubWindow { get; set; } //Используется чтобы открыть заглушку формы 40 (Потом удалить)
+    public ICommand Open41StubWindow { get; set; } //Используется чтобы открыть заглушку формы 41 (Потом удалить)
+
     #endregion
 
     #region Constructor
@@ -244,6 +252,21 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         OpenCalculator = new OpenCalculatorAsyncCommand();
         OpenFile = new OpenFileAsyncCommand();
         OpenFolder = new OpenFolderAsyncCommand();
+        Open40StubWindow = ReactiveCommand.Create(() =>
+        {
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                var window = new Form_40();
+            }
+        });
+
+        Open41StubWindow = ReactiveCommand.Create(() =>
+        {
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                var window = new Form_41();
+            }
+        });
     }
 
     #endregion
