@@ -10,9 +10,9 @@ using MessageBox.Avalonia.DTO;
 using Models.DBRealization;
 using Models.Forms.Form1;
 using Models.Interfaces;
-using MessageBox.Avalonia.Models;
-using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms;
+using MessageBox.Avalonia.Models;
+
 namespace Client_App.Commands.AsyncCommands.SourceTransmission;
 
 // Перевод источника из РВ в РАО
@@ -96,7 +96,6 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
         }
 
         await using var db = new DBModel(StaticConfiguration.DBPath);
-        var formIsAdded = false;
         switch (repInRange.Count)
         {
             case > 1:   // У организации по ошибке есть несколько отчётов с нужным периодом
@@ -129,10 +128,9 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
             }
             case 1:   // Если есть подходящий отчет, то добавляем форму в него
             {
-                var rep = repInRange.First();
-                formIsAdded = await AddNewFormToExistingReport(rep, form, db);
-                var report = await ReportsStorage.GetReportAsync(rep.Id);
-                if (report.ExportDate_DB != "")
+                var rep = await ReportsStorage.GetReportAsync(repInRange.First().Id);
+                _ = await AddNewFormToExistingReport(rep, form, db);
+                if (rep.ExportDate_DB != "")
                 {
                     var appropriateFormNum = form.FormNum_DB is "1.1"
                         ? "1.5"
@@ -146,7 +144,7 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                             ButtonDefinitions =
                             [
                                 new ButtonDefinition { Name = "Да" },
-                            new ButtonDefinition { Name = "Нет" }
+                                new ButtonDefinition { Name = "Нет" }
                             ],
                             ContentTitle = "Перевод источника в РАО",
                             ContentHeader = "Уведомление",
@@ -159,10 +157,10 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
 
                     #endregion
 
-                    if (res is "Да") report.CorrectionNumber_DB++;
+                    if (res is "Да") rep.CorrectionNumber_DB++;
                 }
                 await db.SaveChangesAsync();
-                await CloseWindowAndOpenNew(report);
+                await CloseWindowAndOpenNew(rep);
 
                 #region MessageSourceTransmissionFailed
 
@@ -188,7 +186,6 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
             default:    // Если отчета с подходящим периодом нет, создаём новый отчёт и добавляем в него форму 
             {
                 var rep = await CreateReportAndAddNewForm(db, form, opDate);
-                formIsAdded = true;
                 await db.SaveChangesAsync();
                 var report = await ReportsStorage.Api.GetAsync(rep.Id);
                 SelectedReports.Report_Collection.Add(report);

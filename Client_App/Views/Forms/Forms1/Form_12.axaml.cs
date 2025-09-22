@@ -13,6 +13,8 @@ using Client_App.ViewModels.Forms.Forms1;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
+using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -185,6 +187,7 @@ public partial class Form_12 : BaseWindow<Form_12VM>
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
         if (DataContext is not Form_12VM vm) return;
+        var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
 
         try
         {
@@ -197,22 +200,10 @@ public partial class Form_12 : BaseWindow<Form_12VM>
             ServiceExtension.LoggerManager.Error(msg);
         }
 
-        var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
-        try
-        {
-            if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges())
-            {
-                desktop.MainWindow.WindowState = WindowState.Normal;
-                return;
-            }
-        }
-        catch (Exception ex)
-        {
-            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
-                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-            ServiceExtension.LoggerManager.Error(msg);
-        }
+        var isModified = await CheckForModifiedEntries();
 
+        if (!isModified) return;
+        
         var flag = false;
 
         #region MessageRemoveEmptyForms
@@ -317,6 +308,53 @@ public partial class Form_12 : BaseWindow<Form_12VM>
         }
         args.Cancel = true;
     }
+
+    #region CheckForModifiedEntries
+
+    /// <summary>
+    /// Проверяет, какие Entries были изменены, находит Properties, которые были у них изменены.
+    /// В качестве "узкоспециализированного решения", отдельно проверяем свойство ReportsId на изменения и если флаг стоит ошибочно
+    /// (оригинальное и новое значение совпадают), то изменяем состояние Entry на UnModified. Далее проверяем DbModel на изменения.
+    /// </summary>
+    /// <returns>Bool значение, были ли изменения.</returns>
+    private static Task<bool> CheckForModifiedEntries()
+    {
+        try
+        {
+            var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
+            var modifiedEntries = StaticConfiguration.DBModel.ChangeTracker.Entries()
+                .Where(e => e.State != EntityState.Unchanged)
+                .ToList();
+
+            foreach (var e in modifiedEntries)
+            {
+                var modifiedProperties = modifiedEntries.First().Properties.Where(x => x.IsModified);
+                if (modifiedProperties.All(x => 
+                        x.Metadata.Name == "ReportsId" 
+                        && x is { OriginalValue: not null, CurrentValue: not null } 
+                        && (int)x.OriginalValue == (int)x.CurrentValue))
+                {
+                    e.State = EntityState.Unchanged;
+                }
+            }
+
+            if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges())
+            {
+                desktop.MainWindow.WindowState = WindowState.Normal;
+                return Task.FromResult(false);
+            }
+        }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg);
+        }
+
+        return Task.FromResult(true);
+    }
+
+    #endregion
 
     #region CheckPeriod
 

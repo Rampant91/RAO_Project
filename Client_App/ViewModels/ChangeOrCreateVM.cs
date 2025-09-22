@@ -370,8 +370,6 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         ShowDialog = new Interaction<object, int>();
         ShowDialogIn = new Interaction<int, int>();
         ShowMessageT = new Interaction<List<string>, string>();
-        SourceTransmission = new SourceTransmissionAsyncCommand(this);
-        SourceTransmissionAll = new SourceTransmissionAllAsyncCommand(this);
         if (!isSum)
         {
             //Storage.Sort();
