@@ -56,8 +56,8 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         progressBarVM.SetProgressBar(70, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath, rep);
 
-        //progressBarVM.SetProgressBar(75, "Проверка отчёта");
-        //await CheckForm(rep, cts, progressBar);
+        progressBarVM.SetProgressBar(75, "Проверка отчёта");
+        await CheckForm(rep, cts, progressBar);
 
         progressBarVM.SetProgressBar(80, "Выгрузка данных");
         await FillExcel(excelPackage, rep);

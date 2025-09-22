@@ -161,8 +161,8 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
 
         exportReport.Reports = orgWithExpForm;
 
-        //progressBarVM.SetProgressBar(28, "Проверка отчёта");
-        //await CheckForm(exportReport, cts, progressBar);
+        progressBarVM.SetProgressBar(28, "Проверка отчёта");
+        await CheckForm(exportReport, cts, progressBar);
 
         var filename = reportWithoutRows.Reports.Master_DB.FormNum_DB switch
         {
