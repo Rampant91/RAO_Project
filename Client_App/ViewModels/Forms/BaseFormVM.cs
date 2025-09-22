@@ -247,11 +247,6 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    public int NoteTableHeight
-    {
-        get { return 25 + (35 + 1) * NoteList.Count + 3; }  // Хардкод: ColumnHeaderHeight + (RowHeight + отступ) * NoteList.Count + отступ;
-                                                            //отступы корректируют высоту, учитывая BorderThickness
-    }
     #endregion
 
     #region Constructors
@@ -297,7 +292,6 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public void UpdateNoteList()
     {
         NoteList = new ObservableCollection<Note>( Report.Notes.ToList<Note>());
-        OnPropertyChanged(nameof(NoteTableHeight));
     }
     #endregion
 

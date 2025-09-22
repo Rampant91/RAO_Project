@@ -837,11 +837,12 @@
 						</ContextMenu>
 					</StackPanel.ContextMenu>
 					<TextBlock Margin="5">Примечания</TextBlock>
-					<DataGrid Classes="notesTable"
+					<DataGrid x:Name="notesTable"
+							  Classes="notesTable"
 							  x:CompileBindings="True" 
 							  Items="{Binding NoteList}"
-							  Height="{Binding NoteTableHeight}"
-							  SelectedItem="{Binding SelectedNote}">
+							  SelectedItem="{Binding SelectedNote}"
+							  >
 						<interactivity:Interaction.Behaviors>
 							<local:DataGridDoubleClickBehavior/>
 							<local:DataGridDragSelectionBehavior/>
