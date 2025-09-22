@@ -99,6 +99,15 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                 "1.8" => CheckF18.Check_Total(exportReport.Reports, exportReport),
                 //"2.1" => await new CheckF21().AsyncExecute(exportReport),
                 //"2.2" => await new CheckF22().AsyncExecute(exportReport),
+                //"2.3" => await new CheckF23().AsyncExecute(exportReport),
+                //"2.4" => await new CheckF24().AsyncExecute(exportReport),
+                //"2.5" => await new CheckF25().AsyncExecute(exportReport),
+                //"2.6" => await new CheckF26().AsyncExecute(exportReport),
+                //"2.7" => await new CheckF27().AsyncExecute(exportReport),
+                //"2.8" => await new CheckF28().AsyncExecute(exportReport),
+                //"2.9" => await new CheckF29().AsyncExecute(exportReport),
+                //"2.10" => await new CheckF210().AsyncExecute(exportReport),
+                //"2.11" => await new CheckF211().AsyncExecute(exportReport),
                 _ => []
             });
         }
