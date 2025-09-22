@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
-using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using DynamicData;
 using MessageBox.Avalonia.DTO;
@@ -187,74 +186,66 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
             {
                 case "1.1":
                 {
-                    var vm = new Form_11VM(rep.Reports);
+                    var vm = new Form_11VM(rep.Reports) { Report = rep };
                     await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList).Show());
 
                     break;
                 }
                 case "1.2":
                 {
-                    var vm = new Form_12VM(rep.Reports);
+                    var vm = new Form_12VM(rep.Reports) { Report = rep };
                     await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList).Show());
 
                     break;
                 }
                 case "1.3":
                 {
-                    var vm = new Form_13VM(rep.Reports);
+                    var vm = new Form_13VM(rep.Reports) { Report = rep };
                     await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList).Show());
 
                     break;
                 }
                 case "1.4":
                 {
-                    var vm = new Form_14VM(rep.Reports);
+                    var vm = new Form_14VM(rep.Reports) { Report = rep };
                     await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList).Show());
 
                     break;
                 }
                 case "1.5":
                 {
-                    var vm = new Form_15VM(rep.Reports);
+                    var vm = new Form_15VM(rep.Reports) { Report = rep };
                     await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList).Show());
 
                     break;
                 }
                 case "1.6":
                 {
-                    var vm = new Form_16VM(rep.Reports);
+                    var vm = new Form_16VM(rep.Reports) { Report = rep };
                     await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList).Show());
 
                     break;
                 }
                 case "1.7":
                 {
-                    var vm = new Form_17VM(rep.Reports);
+                    var vm = new Form_17VM(rep.Reports) { Report = rep };
                     await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList).Show());
 
                     break;
                 }
                 case "1.8":
                 {
-                    var vm = new Form_18VM(rep.Reports);
+                    var vm = new Form_18VM(rep.Reports) { Report = rep };
                     await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList).Show());
 
                     break;
                 }
-                case "1.9":
-                {
-                    var vm = new Form_19VM(rep.Reports);
-                    await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList).Show());
+                default: return;
 
-                    break;
-                }
-                default:
-                {
-                    var vm = new ChangeOrCreateVM(rep.FormNum_DB, rep);
-                    await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(vm, errorList));
+                //var vm = new ChangeOrCreateVM(rep.FormNum_DB, rep);
+                //await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(vm, errorList));
 
-                    break;
-                }
+                //break;
             }
         }
     }
