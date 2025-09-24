@@ -531,8 +531,6 @@
 								</Border>
 							</Grid>
 							<StackPanel Grid.Row ="0" Grid.Column="1" Margin="5">
-								<TextBlock>Заглушки</TextBlock>
-								<Button Command="{Binding Open40StubWindow}" Content="Форма 4.0"></Button>
 							    <Button Command="{Binding Open41StubWindow}" Content="Форма 4.1"></Button>
 							</StackPanel>
 							<Grid Grid.Row ="1" Grid.Column="0" Grid.ColumnSpan="2" RowDefinitions="*,Auto" >
