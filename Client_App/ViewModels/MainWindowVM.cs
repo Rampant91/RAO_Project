@@ -26,28 +26,25 @@ namespace Client_App.ViewModels;
 public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 {
     #region SelectedReportType
+
     private byte _selectedReportType = 1;
     
     public byte SelectedReportType
     {
-        get => (byte)(_selectedReportType);
+        get => _selectedReportType;
         set
         {
-            if (_selectedReportType != (byte)(value))
+            if (_selectedReportType != value)
             {
-                _selectedReportType = (byte)(value);
+                _selectedReportType = value;
                 OnPropertyChanged();
             }
         }
     }
-    public string SelectedReportTypeToString
-    {
-        get
-        {
-            return $"{_selectedReportType}.0";
-        }
-    }
+    public string SelectedReportTypeToString => $"{_selectedReportType}.0";
+
     #endregion
+
     #region Current_Db
 
     private string _current_Db = "";

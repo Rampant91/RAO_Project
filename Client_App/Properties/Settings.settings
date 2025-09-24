@@ -1,40 +1,30 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Client_App.Properties" GeneratedClassName="Settings">
-    <Profiles />
-    <Settings>
-        <Setting Name="PasFolderDefaultPath" Type="System.String" Scope="User">
-            <Value Profile="(Default)">Y:\!!! Поручения\Паспорта ЗРИ\Хранилище паспортов ЗРИ</Value>
-            <Description>Путь к папке по умолчанию для хранения паспортов ЗРИ. Используется при сохранении и загрузке файлов.</Description>
-        </Setting>
-
-        <Setting Name="LastDbBackupDate" Type="System.DateTime" Scope="User">
-            <Value Profile="(Default)" />
-            <Description>Дата и время последнего резервного копирования базы данных. Автоматически обновляется при создании бэкапа.</Description>
-        </Setting>
-
-        <Setting Name="SystemFolderDefaultPath" Type="System.String" Scope="User">
-            <Value Profile="(Default)">default</Value>
-            <Description>Путь к системной папке приложения. Значение 'default' означает использование папки по умолчанию.</Description>
-        </Setting>
-
-        <Setting Name="OnlyOneAppInstanceAllowed" Type="System.Boolean" Scope="User">
-            <Value Profile="(Default)">True</Value>
-            <Description>Разрешает только один экземпляр приложения. При значении True попытка запуска второго экземпляра будет заблокирована.</Description>
-        </Setting>
-
-        <Setting Name="AppStartupParameters" Type="System.String" Scope="User">
-            <Value Profile="(Default)" />
-            <Description>Параметры командной строки, переданные при запуске приложения. Используются для настройки начального состояния приложения.</Description>
-        </Setting>
-
-        <Setting Name="AppLaunchedInNorao" Type="System.Boolean" Scope="User">
-            <Value Profile="(Default)">False</Value>
-            <Description>Флаг, указывающий на то, что приложение было запущено из НО-РАО. Влияет на отображение некоторых элементов интерфейса.</Description>
-        </Setting>
-
-        <Setting Name="IsFirstAppRun" Type="System.Boolean" Scope="User">
-            <Value Profile="(Default)">True</Value>
-            <Description>Флаг первого запуска приложения. Используется для отображения приветственного экрана или начальной настройки.</Description>
-        </Setting>
-    </Settings>
+  <Profiles />
+  <Settings>
+    <Setting Name="PasFolderDefaultPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Y:\!!! Поручения\Паспорта ЗРИ\Хранилище паспортов ЗРИ</Value>
+    </Setting>
+    <Setting Name="LastDbBackupDate" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SystemFolderDefaultPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">default</Value>
+    </Setting>
+    <Setting Name="OnlyOneAppInstanceAllowed" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="AppStartupParameters" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="AppLaunchedInNorao" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="IsFirstAppRun" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="AutoReplaceIsEnable" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>
