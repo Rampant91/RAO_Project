@@ -107,7 +107,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     #region Commands
 
     public ICommand AddForm { get; set; }                           //  Создать и открыть новое окно формы для выбранной организации
-    public ICommand AddReports { get; set; }                        //  Создать и открыть новое окно формы организации (1.0 и 2.0)
+    public ICommand AddReports { get; set; }                        //  Создать и открыть новое окно формы организации (1.0, 2.0, 4.0)
     public ICommand ChangeForm { get; set; }                        //  Открыть окно редактирования выбранной формы
     public ICommand ChangePasFolder { get; set; }                   //  Excel -> Паспорта -> Изменить расположение паспортов по умолчанию
     public ICommand ChangeReports { get; set; }                     //  Изменить Формы организации (1.0 и 2.0)

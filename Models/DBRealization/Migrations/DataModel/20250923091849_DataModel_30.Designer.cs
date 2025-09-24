@@ -3,6 +3,7 @@ using System;
 using FirebirdSql.EntityFrameworkCore.Firebird.Metadata;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models.DBRealization;
 
@@ -11,9 +12,10 @@ using Models.DBRealization;
 namespace Models.DBRealization.Migrations.DataModel
 {
     [DbContext(typeof(DBModel))]
-    partial class DBModelModelSnapshot : ModelSnapshot
+    [Migration("20250923091849_DataModel_30")]
+    partial class DataModel_30
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2312,7 +2314,7 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_40", (string)null);
+                    b.ToTable("form_40");
                 });
 
             modelBuilder.Entity("Models.Forms.Form4.Form41", b =>
@@ -2364,7 +2366,7 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("form_41", (string)null);
+                    b.ToTable("form_41");
                 });
 
             modelBuilder.Entity("Models.Forms.Note", b =>
@@ -2659,8 +2661,7 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows40")
-                        .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ReportId");
 
                     b.Navigation("Report");
                 });
@@ -2669,8 +2670,7 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     b.HasOne("Models.Collections.Report", "Report")
                         .WithMany("Rows41")
-                        .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ReportId");
 
                     b.Navigation("Report");
                 });

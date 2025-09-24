@@ -16,6 +16,7 @@ using Models.Forms.DataAccess;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Models.Interfaces;
+using Models.Forms.Form4;
 
 namespace Models.Collections;
 
@@ -105,6 +106,12 @@ public class Report : IKey, IDataGridColumn
         Rows212 = new ObservableCollectionWithItemPropertyChanged<Form212>();
         Rows212.CollectionChanged += CollectionChanged212;
 
+        Rows40 = new ObservableCollectionWithItemPropertyChanged<Form40>();
+        Rows40.CollectionChanged += CollectionChanged41;
+
+        Rows41 = new ObservableCollectionWithItemPropertyChanged<Form41>();
+        Rows41.CollectionChanged += CollectionChanged41;
+
         Notes = new ObservableCollectionWithItemPropertyChanged<Note>();
         Notes.CollectionChanged += CollectionChangedNotes;
     }
@@ -138,7 +145,9 @@ public class Report : IKey, IDataGridColumn
         Form29,
         Form210,
         Form211,
-        Form212
+        Form212,
+        Form40,
+        Form41
     }
 
     [NotMapped]
@@ -1915,6 +1924,7 @@ public class Report : IKey, IDataGridColumn
                     Rows20[0].Okpo.PropertyChanged -= OkpoRep_ValueChanged;
                     Rows20[0].Okpo.PropertyChanged += OkpoRep_ValueChanged;
                     break;
+                    //
             }
             return tmp;
         }
@@ -2794,6 +2804,48 @@ public class Report : IKey, IDataGridColumn
 
     #endregion 
 
+    #region Rows40
+
+    ObservableCollectionWithItemPropertyChanged<Form40> Rows40_DB;
+
+    public virtual ObservableCollectionWithItemPropertyChanged<Form40> Rows40
+    {
+        get => Rows40_DB;
+        set
+        {
+            Rows40_DB = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void CollectionChanged40(object sender, NotifyCollectionChangedEventArgs args)
+    {
+        OnPropertyChanged(nameof(Rows40));
+    }
+
+    #endregion 
+
+    #region Rows41
+
+    ObservableCollectionWithItemPropertyChanged<Form41> Rows41_DB;
+
+    public virtual ObservableCollectionWithItemPropertyChanged<Form41> Rows41
+    {
+        get => Rows41_DB;
+        set
+        {
+            Rows41_DB = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void CollectionChanged41(object sender, NotifyCollectionChangedEventArgs args)
+    {
+        OnPropertyChanged(nameof(Rows41));
+    }
+
+    #endregion 
+
     #endregion
 
     #region CleanIds
@@ -2824,6 +2876,8 @@ public class Report : IKey, IDataGridColumn
         Rows210.CleanIds();
         Rows211.CleanIds();
         Rows212.CleanIds();
+        Rows40.CleanIds();
+        Rows41.CleanIds();
         Notes.CleanIds();
     }
 
@@ -2861,6 +2915,8 @@ public class Report : IKey, IDataGridColumn
                 "2.10" => Rows210,
                 "2.11" => Rows211,
                 "2.12" => Rows212,
+                "4.0" => Rows40,
+                "4.1" => Rows41,
                 _ => null
             };
         }
@@ -2898,6 +2954,8 @@ public class Report : IKey, IDataGridColumn
         Rows210.CollectionChanged -= CollectionChanged210;
         Rows211.CollectionChanged -= CollectionChanged211;
         Rows212.CollectionChanged -= CollectionChanged212;
+        Rows40.CollectionChanged -= CollectionChanged40;
+        Rows41.CollectionChanged -= CollectionChanged41;
         Notes.CollectionChanged -= CollectionChangedNotes;
     }
 
@@ -2928,6 +2986,7 @@ public class Report : IKey, IDataGridColumn
         Rows210.QuickSort();
         Rows211.QuickSort();
         Rows212.QuickSort();
+        Rows41.QuickSort();
         Notes.QuickSort();
     }
 
@@ -2958,6 +3017,7 @@ public class Report : IKey, IDataGridColumn
         await Rows210.QuickSortAsync();
         await Rows211.QuickSortAsync();
         await Rows212.QuickSortAsync();
+        await Rows41.QuickSortAsync();
         await Notes.QuickSortAsync();
     }
 

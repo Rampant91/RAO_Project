@@ -148,8 +148,9 @@
             <Setter Property="MaxColumnWidth" Value="250" />
         </Style>
 		
-		<Style Selector="DataGrid.table DataGridColumnHeader">
+		<Style Selector="DataGridColumnHeader">
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+			<Setter Property="VerticalContentAlignment" Value="Stretch"/>
             <Setter Property="Padding" Value="0"/>
         </Style>
 		
@@ -157,12 +158,14 @@
 			<Setter Property="BorderThickness" Value="1"/>
 		    <Setter Property="BorderBrush" Value="#aaaaaa"/>
 		    <Setter Property="Margin" Value="-1,-1,-1,0"/>
+			
 		</Style>
 		
 		<Style Selector="Border.headerTemplate TextBlock">
 			<Setter Property="TextAlignment" Value="Center"/>
 		    <Setter Property="VerticalAlignment" Value="Center"/>
 		    <Setter Property="Margin" Value="0,0,5,0"/>
+			<Setter Property="TextWrapping" Value="WrapWithOverflow"/>
 		</Style>
 		<Style Selector="Border.headerTemplate Button">
             <Setter Property="CornerRadius" Value="5"/>
@@ -236,7 +239,11 @@
             <Setter Property="Margin" Value="5"/>
 			<Setter Property="GridLinesVisibility" Value="All"></Setter>
         </Style>
-		
+
+		<Style Selector="DataGrid.notesTable DataGridColumnHeader">
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+	    </Style>
 		<Style Selector="DataGrid.notesTable TextBox">
 			<Setter Property="BorderThickness" Value="0.5"/>
 			<Setter Property="Margin" Value="0,0,0,0"/>

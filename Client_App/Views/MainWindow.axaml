@@ -6,6 +6,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:Client_App.ViewModels"
     xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
+	xmlns:local="using:Client_App.Behaviors"
+	xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
     Title="{Binding Current_Db, Mode=OneWay}"
     d:DesignHeight="600"
     d:DesignWidth="800"
@@ -431,12 +433,221 @@
                         </ScrollViewer>
                     </Panel>
                 </TabItem>
+				<TabItem x:Name="Forms3" Header="Формы 3" IsVisible="False"/>
+				<!--Формы 4-->
 				<TabItem x:Name="Forms4" Header="Формы 4">
 					<Border Classes="borderContainer">
-						<StackPanel>
-						    <Button Command="{Binding Open40StubWindow}" Content="Форма 4.0"></Button>
-						    <Button Command="{Binding Open41StubWindow}" Content="Форма 4.1"></Button>
-						</StackPanel>
+						<Grid RowDefinitions="*,*" ColumnDefinitions="5*,3*" >
+							<Grid Grid.Row ="0" Grid.Column="0" RowDefinitions="Auto,*,Auto">
+								<TextBox Grid.Row="0" Margin="5" Watermark ="Поиск..." />
+								<DataGrid Grid.Row="1" Margin="5">
+									<DataGrid.ContextMenu>
+										<ContextMenu>
+											<MenuItem Header="Добавить РИАЦ"
+                                                      Command="{Binding AddReports}"
+													  CommandParameter=""/>
+										</ContextMenu>
+									</DataGrid.ContextMenu>
+									<DataGrid.Columns>
+										<DataGridTextColumn
+											Width="60"
+											IsReadOnly="True">
+											<DataGridTextColumn.HeaderTemplate>
+												<DataTemplate>
+													<Border Classes="headerTemplate">
+														<Grid ColumnDefinitions="*,Auto" Margin="3">
+															<TextBlock Grid.Column="0" Text="Код субъекта РФ"/>
+															<!--<Button Grid.Column="1"/>-->
+														</Grid>
+													</Border>
+												</DataTemplate>
+											</DataGridTextColumn.HeaderTemplate>
+										</DataGridTextColumn>
+										<DataGridTextColumn 
+											Width="Auto"
+											IsReadOnly="True">
+											<DataGridTextColumn.HeaderTemplate>
+												<DataTemplate>
+													<Border Classes="headerTemplate">
+														<Grid ColumnDefinitions="*,Auto" Margin="3">
+															<TextBlock Grid.Column="0" Text="Субъект РФ"/>
+															<!--<Button Grid.Column="1"/>-->
+														</Grid>
+													</Border>
+												</DataTemplate>
+											</DataGridTextColumn.HeaderTemplate>
+										</DataGridTextColumn>
+										<DataGridTextColumn
+											Width="*"
+											IsReadOnly="True">
+											<DataGridTextColumn.HeaderTemplate>
+												<DataTemplate>
+													<Border Classes="headerTemplate">
+														<Grid ColumnDefinitions="*,Auto" Margin="3">
+															<TextBlock Grid.Column="0" Text="Сокращенное наименование РИАЦ"/>
+															<!--<Button Grid.Column="1"/>-->
+														</Grid>
+													</Border>
+												</DataTemplate>
+											</DataGridTextColumn.HeaderTemplate>
+										</DataGridTextColumn>
+
+								    </DataGrid.Columns>
+								</DataGrid>
+								<Border Grid.Row="2" Classes="pageControlContainer">
+									<Grid
+										  RowDefinitions="Auto,Auto"
+										  ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+										<TextBlock Text="Текущая страница"
+											Grid.Row="0" Grid.Column="0" Margin="5"/>
+										<NumericUpDown Increment="-1"
+											Grid.Row="0" Grid.Column="1" Margin="5">
+											<interactivity:Interaction.Behaviors>
+												<local:NumericUpDownDigitValidationBehavior/>
+											</interactivity:Interaction.Behaviors>
+										</NumericUpDown>
+										<TextBlock Text ="Кол-во страниц:"
+											Grid.Row="0" Grid.Column="2" Margin="5"/>
+										<TextBlock 
+											Grid.Row="0" Grid.Column="3" Margin="5"/>
+										<TextBlock Text="Кол-во строчек на странице"
+											Grid.Row="1" Grid.Column="0" Margin="5"/>
+										<NumericUpDown  Minimum="1"
+											Grid.Row="1" Grid.Column="1" Margin="5">
+											<interactivity:Interaction.Behaviors>
+												<local:NumericUpDownDigitValidationBehavior/>
+											</interactivity:Interaction.Behaviors>
+										</NumericUpDown>
+										<TextBlock Text="Кол-во строчек:"
+											Grid.Row="1" Grid.Column="2" Margin="5"/>
+										<TextBlock
+											Grid.Row="1" Grid.Column="3" Margin="5"/>
+
+										<TextBlock Text="Кол-во отчетов:"
+											Grid.Row="1" Grid.Column="4" Margin="5"/>
+										<TextBlock 
+											Grid.Row="1" Grid.Column="5" Margin="5"/>
+									</Grid>
+								</Border>
+							</Grid>
+							<StackPanel Grid.Row ="0" Grid.Column="1" Margin="5">
+								<TextBlock>Заглушки</TextBlock>
+								<Button Command="{Binding Open40StubWindow}" Content="Форма 4.0"></Button>
+							    <Button Command="{Binding Open41StubWindow}" Content="Форма 4.1"></Button>
+							</StackPanel>
+							<Grid Grid.Row ="1" Grid.Column="0" Grid.ColumnSpan="2" RowDefinitions="*,Auto" >
+								<DataGrid Grid.Row="0" Margin="5">
+
+									<DataGrid.Columns>
+									    <DataGridTextColumn
+											    Width="*"
+											    IsReadOnly="True">
+										    <DataGridTextColumn.HeaderTemplate>
+											    <DataTemplate>
+												    <Border Classes="headerTemplate">
+													    <Grid ColumnDefinitions="*,Auto" Margin="3">
+														    <TextBlock Grid.Column="0" Text="Форма"/>
+														    <!--<Button Grid.Column="1"/>-->
+													    </Grid>
+												    </Border>
+											    </DataTemplate>
+										    </DataGridTextColumn.HeaderTemplate>
+									    </DataGridTextColumn>
+									    <DataGridTextColumn
+											    Width="*"
+											    IsReadOnly="True">
+										    <DataGridTextColumn.HeaderTemplate>
+											    <DataTemplate>
+												    <Border Classes="headerTemplate">
+													    <Grid ColumnDefinitions="*,Auto" Margin="3">
+														    <TextBlock Grid.Column="0" Text="Год"/>
+														    <!--<Button Grid.Column="1"/>-->
+													    </Grid>
+												    </Border>
+											    </DataTemplate>
+										    </DataGridTextColumn.HeaderTemplate>
+									    </DataGridTextColumn>
+									    <DataGridTextColumn
+											    Width="2*"
+											    IsReadOnly="True">
+										    <DataGridTextColumn.HeaderTemplate>
+											    <DataTemplate>
+												    <Border Classes="headerTemplate">
+													    <Grid ColumnDefinitions="*,Auto" Margin="3">
+														    <TextBlock Grid.Column="0" Text="Дата выгрузки"/>
+														    <!--<Button Grid.Column="1"/>-->
+													    </Grid>
+												    </Border>
+											    </DataTemplate>
+										    </DataGridTextColumn.HeaderTemplate>
+									    </DataGridTextColumn>
+									    <DataGridTextColumn
+											    Width="2*"
+											    IsReadOnly="True">
+										    <DataGridTextColumn.HeaderTemplate>
+											    <DataTemplate>
+												    <Border Classes="headerTemplate">
+													    <Grid ColumnDefinitions="*,Auto" Margin="3">
+														    <TextBlock Grid.Column="0" Text="Номер корректировки"/>
+														    <!--<Button Grid.Column="1"/>-->
+													    </Grid>
+												    </Border>
+											    </DataTemplate>
+										    </DataGridTextColumn.HeaderTemplate>
+									    </DataGridTextColumn>
+									    <DataGridTextColumn
+											    Width="4*"
+											    IsReadOnly="True">
+										    <DataGridTextColumn.HeaderTemplate>
+											    <DataTemplate>
+												    <Border Classes="headerTemplate">
+													    <Grid ColumnDefinitions="*,Auto" Margin="3">
+														    <TextBlock Grid.Column="0" Text="Комментарий"/>
+														    <!--<Button Grid.Column="1"/>-->
+													    </Grid>
+												    </Border>
+											    </DataTemplate>
+										    </DataGridTextColumn.HeaderTemplate>
+									    </DataGridTextColumn>
+									</DataGrid.Columns>
+								</DataGrid>
+								<Border Grid.Row="1" Classes="pageControlContainer">
+									<Grid
+										  RowDefinitions="Auto,Auto"
+										  ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+										<TextBlock Text="Текущая страница"
+											Grid.Row="0" Grid.Column="0" Margin="5"/>
+										<NumericUpDown  Increment="-1"
+											Grid.Row="0" Grid.Column="1" Margin="5">
+											<interactivity:Interaction.Behaviors>
+												<local:NumericUpDownDigitValidationBehavior/>
+											</interactivity:Interaction.Behaviors>
+										</NumericUpDown>
+										<TextBlock Text ="Кол-во страниц:"
+											Grid.Row="0" Grid.Column="2" Margin="5"/>
+										<TextBlock 
+											Grid.Row="0" Grid.Column="3" Margin="5"/>
+										<TextBlock Text="Кол-во строчек на странице"
+											Grid.Row="1" Grid.Column="0" Margin="5"/>
+										<NumericUpDown Minimum="1"
+											Grid.Row="1" Grid.Column="1" Margin="5">
+											<interactivity:Interaction.Behaviors>
+												<local:NumericUpDownDigitValidationBehavior/>
+											</interactivity:Interaction.Behaviors>
+										</NumericUpDown>
+										<TextBlock Text="Кол-во строчек:"
+											Grid.Row="1" Grid.Column="2" Margin="5"/>
+										<TextBlock
+											Grid.Row="1" Grid.Column="3" Margin="5"/>
+
+										<TextBlock Text="Кол-во отчетов:"
+											Grid.Row="1" Grid.Column="4" Margin="5"/>
+										<TextBlock
+											Grid.Row="1" Grid.Column="5" Margin="5"/>
+									</Grid>
+								</Border>
+							</Grid>
+						</Grid>
 					</Border>
 				</TabItem>
             </TabControl>

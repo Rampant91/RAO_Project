@@ -118,7 +118,7 @@
 		</Expander>
 
 		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1">
-			<Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="*">
+			<Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="Auto">
 				<Grid.ContextMenu>
 					<ContextMenu x:CompileBindings="True"
                                  x:DataType="vm:Form_11VM"
@@ -182,7 +182,6 @@
 				</Grid.ContextMenu>
 				<Grid Classes="tableHeader" Grid.Row="0"
 					  Width="{Binding ElementName=dataGrid.Width}"
-                      ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
 					  RowDefinitions="Auto,Auto">
 
 					<interactivity:Interaction.Behaviors>
@@ -225,13 +224,8 @@
 					Classes="table"
 					x:CompileBindings="True"
 					x:Name="dataGrid"
-					CanUserSortColumns="True"
-					CanUserReorderColumns="False"
 					Items="{Binding FormList}"
-					SelectedItem="{Binding SelectedForm}"
-					VerticalScrollBarVisibility="Hidden"
-					HorizontalScrollBarVisibility="Auto"
-					RowHeight="30">
+					SelectedItem="{Binding SelectedForm}">
 
 					<interactivity:Interaction.Behaviors>
 						<local:DataGridDragSelectionBehavior/>
