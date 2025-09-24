@@ -370,4 +370,46 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
     }
 
     #endregion
+
+    #region TabControl_SelectionChanged
+
+    private void TabControl_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (sender is not TabControl tc)
+            return;
+
+        // ¬кладки: индекс 0 Ч скрытый, 1 Ч Forms1, 2 Ч Forms2 и т.д.
+        var target = SelectedReports; // по умолчанию текущее значение
+
+        if (tc.SelectedIndex == 1)
+        {
+            target = SelectedReports1;
+        }
+        else if (tc.SelectedIndex == 2)
+        {
+            target = SelectedReports2;
+        }
+        else
+        {
+            // –езервна€ логика через тип формы из VM
+            if (DataContext is ViewModels.MainWindowVM vm)
+            {
+                var formNum = vm.SelectedReportTypeToString;
+                if (!string.IsNullOrEmpty(formNum))
+                {
+                    if (formNum.StartsWith("1"))
+                        target = SelectedReports1;
+                    else if (formNum.StartsWith("2"))
+                        target = SelectedReports2;
+                }
+            }
+        }
+
+        if (!ReferenceEquals(SelectedReports, target))
+        {
+            SelectedReports = target;
+        }
+    }
+
+    #endregion
 }

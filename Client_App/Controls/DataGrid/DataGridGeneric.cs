@@ -975,7 +975,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 item.ChooseColor = (SolidColorBrush)Background;
             }
             SelectedCells.Clear();
-            ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new();
+            
             var tmp2 = Rows
                 .Where(x => x.IsVisible)
                 .SelectMany(x => x.Children)
@@ -985,9 +985,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 var item = (Cell)control;
                 item.ChooseColor = (SolidColorBrush)ChooseColor;
                 SelectedCells.Add(item);
-                tmpSelectedItems.Add((T)item.DataContext);
             }
-            //tmpSelectedItems.Add((T)((Cell)tmp2.FirstOrDefault()).DataContext);
+            ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = [(T)tmp2.First().DataContext];
             SelectedItems = tmpSelectedItems;
         }
         else
