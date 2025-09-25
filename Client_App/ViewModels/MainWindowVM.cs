@@ -25,6 +25,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Avalonia;
+using System.Collections.ObjectModel;
 namespace Client_App.ViewModels;
 
 public class MainWindowVM : ObservableObject, INotifyPropertyChanged
@@ -267,6 +268,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                 var window = new Form_41();
             }
         });
+
     }
 
     #endregion

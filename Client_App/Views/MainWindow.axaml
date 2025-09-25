@@ -440,7 +440,7 @@
 						<Grid RowDefinitions="*,*" ColumnDefinitions="5*,3*" >
 							<Grid Grid.Row ="0" Grid.Column="0" RowDefinitions="Auto,*,Auto">
 								<TextBox Grid.Row="0" Margin="5" Watermark ="Поиск..." />
-								<DataGrid Grid.Row="1" Margin="5">
+									<DataGrid Grid.Row="1" Margin="5" Items="{Binding }">
 									<DataGrid.ContextMenu>
 										<ContextMenu>
 											<MenuItem Header="Добавить РИАЦ"

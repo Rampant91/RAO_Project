@@ -7,6 +7,7 @@ using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
+using Models.Forms.Form4;
 
 namespace Models.DBRealization;
 
@@ -66,10 +67,12 @@ public class DataContext : DbContext
     public DbSet<Form211> form_211 { get; set; }
     public DbSet<Form212> form_212 { get; set; }
 
+    public  DbSet<Form40> form_40 { get; set; }
+    public DbSet<Form41> form_41 { get; set; }
     #endregion
 
     #region Load
-    
+
     public void LoadTables()
     {
         notes.Load();
@@ -97,6 +100,9 @@ public class DataContext : DbContext
         form_210.Load();
         form_211.Load();
         form_212.Load();
+
+        form_40.Load();
+        form_41.Load();
 
         ReportCollectionDbSet.Load();
         ReportsCollectionDbSet.Load();
@@ -140,6 +146,9 @@ public class DataContext : DbContext
             await form_210.LoadAsync();
             await form_211.LoadAsync();
             await form_212.LoadAsync();
+
+            await form_40.LoadAsync();
+            await form_41.LoadAsync();
 
             await ReportCollectionDbSet.LoadAsync();
             await ReportsCollectionDbSet.LoadAsync();

@@ -92,7 +92,7 @@ namespace Client_App.ViewModels.Forms.Forms4
 
         #region FormType
 
-        public string FormType { get; set; } = "1.0";
+        public string FormType { get; set; } = "4.0";
 
         #endregion
 
