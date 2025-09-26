@@ -319,9 +319,8 @@
 					Items="{Binding FormList}"
 					SelectedItem="{Binding SelectedForm}">
 					<interactivity:Interaction.Behaviors>
-						<local:DataGridDragSelectionBehavior/>
+						<local:DataGridPointerBehavior/>
 						<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
-						<local:DataGridDoubleClickBehavior/>
 						<local:DeselectDataGridOnClickOutsideBehavior/>
 					</interactivity:Interaction.Behaviors>
 					
@@ -844,8 +843,7 @@
 							  SelectedItem="{Binding SelectedNote}"
 							  >
 						<interactivity:Interaction.Behaviors>
-							<local:DataGridDoubleClickBehavior/>
-							<local:DataGridDragSelectionBehavior/>
+							<local:DataGridPointerBehavior/>
 							<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
 						</interactivity:Interaction.Behaviors>
 						<DataGrid.Columns>
