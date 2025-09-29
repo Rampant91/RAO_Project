@@ -440,18 +440,22 @@
 						<Grid RowDefinitions="*,*" ColumnDefinitions="5*,3*" >
 							<Grid Grid.Row ="0" Grid.Column="0" RowDefinitions="Auto,*,Auto">
 								<TextBox Grid.Row="0" Margin="5" Watermark ="Поиск..." />
-									<DataGrid Grid.Row="1" Margin="5" Items="{Binding }">
-									<DataGrid.ContextMenu>
+								<DataGrid Grid.Row="1" Margin="5"
+					                      x:CompileBindings="True"
+									      Items="{Binding LocalReports.Reports_Collection40}">
+										
+							        <DataGrid.ContextMenu>
 										<ContextMenu>
 											<MenuItem Header="Добавить РИАЦ"
-                                                      Command="{Binding AddReports}"
-													  CommandParameter=""/>
+													  Command="{Binding AddReports}"/>
 										</ContextMenu>
 									</DataGrid.ContextMenu>
+										
 									<DataGrid.Columns>
 										<DataGridTextColumn
 											Width="60"
-											IsReadOnly="True">
+											IsReadOnly="True"
+											Binding="{Binding Master.Rows40[0].SubjectRF.Value}">
 											<DataGridTextColumn.HeaderTemplate>
 												<DataTemplate>
 													<Border Classes="headerTemplate">
@@ -463,9 +467,11 @@
 												</DataTemplate>
 											</DataGridTextColumn.HeaderTemplate>
 										</DataGridTextColumn>
+										
 										<DataGridTextColumn 
 											Width="Auto"
-											IsReadOnly="True">
+											IsReadOnly="True"
+											Binding="{Binding Master.Rows40[0].SubjectRF.Value}">
 											<DataGridTextColumn.HeaderTemplate>
 												<DataTemplate>
 													<Border Classes="headerTemplate">
@@ -477,9 +483,11 @@
 												</DataTemplate>
 											</DataGridTextColumn.HeaderTemplate>
 										</DataGridTextColumn>
+										
 										<DataGridTextColumn
 											Width="*"
-											IsReadOnly="True">
+											IsReadOnly="True"
+											Binding="{Binding Master.Rows40[0].ShortNameRiac.Value}">
 											<DataGridTextColumn.HeaderTemplate>
 												<DataTemplate>
 													<Border Classes="headerTemplate">

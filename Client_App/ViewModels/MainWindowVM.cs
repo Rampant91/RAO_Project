@@ -32,7 +32,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 {
     #region SelectedReportType
     private byte _selectedReportType = 1;
-    
+
     public byte SelectedReportType
     {
         get => (byte)(_selectedReportType);
@@ -87,6 +87,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     }
 
     #endregion
+
 
     #region OnStartProgressBar
 

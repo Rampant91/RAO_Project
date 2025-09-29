@@ -65,11 +65,11 @@
 					<TextBox
 						Height="26"
 						Margin="0,0,0,3"
-						Text="!Субъект Российской федерации!"/>
+						Text="{Binding Storage.Rows40[0].SubjectRF.Value}"/>
 					<TextBox
 						Height="26"
 						Margin="0,0,0,3"
-						Text="!Отчет РИАЦ за (год)!"/>
+						Text="{Binding Storage.Rows40[0].Year.Value}"/>
 				</StackPanel>
 			</Grid>
 
@@ -153,44 +153,44 @@
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
                                 TextWrapping="Wrap"
-                                Text="!Наименование органа исполнительной власти субъекта Российской Федерации!"/>
+                                Text="{Binding Storage.Rows40[0].NameOrganUprav.Value}"/>
 							<TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="!Сокращенное наименование органа исполнительной власти субъекта Российской Федерации (при наличии)!"/>
+                                Text="{Binding Storage.Rows40[0].ShortNameOrganUprav.Value}"/>
 							<TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
                                 TextWrapping="Wrap"
-                                Text="!Место нахождения органа управления!"/>
+                                Text="{Binding Storage.Rows40[0].AddressOrganUprav.Value}"/>
 							<TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
                                 TextWrapping="Wrap"
-                                Text="!Должность, фамилия, имя, отчество (при наличии) руководителя!"/>
+                                Text="{Binding Storage.Rows40[0].GradeFioDirectorOrganUprav.Value}"/>
 							<TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
                                 TextWrapping="Wrap"
-                                Text="!Должность, фамилия, имя, отчество (при наличии) ответственного исполнителя!"/>
+                                Text="{Binding Storage.Rows40[0].GradeFioExecutorOrganUprav.Value}"/>
 							<TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="!Телефон!"/>
+                                Text="{Binding Storage.Rows40[0].TelephoneOrganUprav.Value}"/>
 							<TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="!Факс!"/>
+                                Text="{Binding Storage.Rows40[0].FaxOrganUprav.Value}"/>
 							<TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="!Адрес электронной почты (при наличии)!"/>
+                                Text="{Binding Storage.Rows40[0].EmailOrganUprav.Value}"/>
 						</StackPanel>
 					</Grid>
 				</Border>
@@ -235,10 +235,6 @@
 							<TextBlock
                                 Height="32"
                                 Margin="5,8"
-                                Text="Фактический адрес юр. лица"/>
-							<TextBlock
-                                Height="32"
-                                Margin="5,8"
                                 Text="Должность, фамилия, имя, отчество (при наличии) руководителя"/>
 							<TextBlock
                                 Height="32"
@@ -266,50 +262,46 @@
 							<TextBox
                                 Height="26"
                                 Margin="0,0,0,3"
-                                Text="!Наименование организации!"/>
+                                Text="{Binding Storage.Rows40[0].NameRiac.Value}"/>
 							<TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
                                 TextWrapping="Wrap"
-                                Text="!Сокращенное наименование организации (при наличии)!"/>
+                                Text="{Binding Storage.Rows40[0].ShortNameRiac.Value}"/>
 							<TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="!Адрес РИАЦ!"/>
+                                Text="{Binding Storage.Rows40[0].AddressRiac.Value}"/>
 							<TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
                                 TextWrapping="Wrap"
-                                Text="!Фактический адрес юр. лица!"/>
+                                Text="{Binding Storage.Rows40[0].GradeFioDirectorRiac.Value}"/>
 							<TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="!Должность, фамилия, имя, отчество (при наличии) руководителя!"/>
+                                Text="{Binding Storage.Rows40[0].GradeFioExecutorRiac.Value}"/>
 							<TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
                                 TextWrapping="Wrap"
-                                Text="!Должность, фамилия, имя, отчество (при наличии) ответственного исполнителя!"/>
+                                Text="{Binding Storage.Rows40[0].TelephoneRiac.Value}"/>
 							<TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="!Телефон!"/>
+                                Text="{Binding Storage.Rows40[0].FaxRiac.Value}"/>
 							<TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="!Факс!"/>
-							<TextBox
-			                     Height="26"
-			                     Margin="0,3"
-			                     Text="!Адрес электронной почты (при наличии)!"/>
+                                Text="{Binding Storage.Rows40[0].EmailRiac.Value}"/>
 						</StackPanel>
 					</Grid>
 				</Border>
