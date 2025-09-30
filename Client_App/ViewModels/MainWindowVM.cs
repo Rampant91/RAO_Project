@@ -89,6 +89,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         }
     }
 
+    #endregion
+
+    #region Reports40
 
     public ObservableCollection<Reports> Reports40 => ReportsStorage.LocalReports.Reports_Collection40;
 
@@ -109,7 +112,17 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-       
+
+    #endregion
+
+
+    #region UpdateReports
+    public void UpdateReports()
+    {
+        OnPropertyChanged(nameof(ReportsStorage.LocalReports));
+        OnPropertyChanged(nameof(Reports40));
+    }
+
     #endregion
 
     #region OnStartProgressBar

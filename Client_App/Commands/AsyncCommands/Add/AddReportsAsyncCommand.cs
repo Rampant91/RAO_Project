@@ -122,7 +122,7 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
                 .OrderBy(x => x.Master_DB.RegNoRep?.Value, comparator)
                 .ThenBy(x => x.Master_DB.OkpoRep?.Value, comparator));
 
-        mainWindowVM.OnPropertyChanged(nameof(mainWindowVM.Reports40));
+        mainWindowVM.UpdateReports();
 
 
         //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync(); не нужно
