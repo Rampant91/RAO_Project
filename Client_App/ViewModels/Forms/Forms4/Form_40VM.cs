@@ -72,23 +72,6 @@ namespace Client_App.ViewModels.Forms.Forms4
 
         #endregion
 
-        #region IsCanSaveReportEnabled
-
-        private bool _isCanSaveReportEnabled;
-        public bool IsCanSaveReportEnabled
-        {
-            get => _isCanSaveReportEnabled;
-            set
-            {
-                if (_isCanSaveReportEnabled != value)
-                {
-                    _isCanSaveReportEnabled = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        #endregion
 
         #region FormType
 
@@ -100,16 +83,16 @@ namespace Client_App.ViewModels.Forms.Forms4
 
         #region Properties
 
-        #region IsSeparateDivision
+        #region SelectedReports
 
-        private bool _isSeparateDivision = true;
-        public bool IsSeparateDivision
+        private Reports _selectedReports;
+        public Reports SelectedReports
         {
-            get => _isSeparateDivision;
+            get => _selectedReports;
             set
             {
-                if (_isSeparateDivision == value) return;
-                _isSeparateDivision = value;
+                if (_selectedReports == value) return;
+                _selectedReports = value;
                 OnPropertyChanged();
             }
         }
@@ -122,7 +105,6 @@ namespace Client_App.ViewModels.Forms.Forms4
 
         public ICommand SaveReport => new SaveReportAsyncCommand(this);             //  Сохранить отчет
         public ICommand ChangeReportOrder => new ChangeReportOrderAsyncCommand(this);       //  Поменять местами юр. лицо и обособленное подразделение
-        public ICommand Reorganize => new ReorganizeReportAsyncCommand(this);        // Реорганизовать компанию (Добавить или убрать поля для обособленного подразделения)
 
         #endregion
 

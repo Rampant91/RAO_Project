@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
+    xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms4"
     xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
     xmlns:customConverters="clr-namespace:Client_App.Resources.CustomConverters"
     Title="Форма 4.0"
@@ -14,12 +14,12 @@
     MinWidth="950"
     MinHeight="600"
     x:CompileBindings="True"
-    x:DataType="vm:Form_10VM"
+    x:DataType="vm:Form_40VM"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
 	<Design.DataContext>
-		<vm:Form_10VM/>
+		<vm:Form_40VM/>
 	</Design.DataContext>
 
 	<Grid>
@@ -202,8 +202,7 @@
                     VerticalAlignment="Stretch"
                     BorderBrush="Black"
                     BorderThickness="1"
-                    CornerRadius="5"
-                    IsVisible="{Binding IsSeparateDivision}">
+                    CornerRadius="5">
 					<Grid ColumnDefinitions="330,500" RowDefinitions="*,*">
 						<!-- Региональный информационно-аналитический центр - Наименования полей -->
 						<TextBlock

@@ -60,7 +60,10 @@ public partial class Form40 : Form
     private void SubjectRF_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value; 
+        var value1 = ((RamAccess<string>)value).Value;
+
+        if (value1 is null) return;
+
         value1 = value1.Length > 64
             ? value1[..64]
             : value1;
@@ -154,7 +157,10 @@ public partial class Form40 : Form
     private void NameOrganUprav_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<string>)value).Value; 
+        var value1 = ((RamAccess<string>)value).Value;
+
+        if (value1 is null) return;
+
         value1 = value1.Length > 256
             ? value1[..256]
             : value1;
@@ -205,6 +211,10 @@ public partial class Form40 : Form
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string?>)value).Value;
+
+        if (value1 is null) return;
+
+        
         value1 = value1.Length > 256
             ? value1[..256]
             : value1;
@@ -254,6 +264,9 @@ public partial class Form40 : Form
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string>)value).Value;
+
+        if (value1 is null) return;
+
         value1 = value1.Length > 256
             ? value1[..256]
             : value1;
@@ -303,6 +316,9 @@ public partial class Form40 : Form
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string?>)value).Value;
+
+        if (value1 is null) return;
+
         value1 = value1.Length > 64
             ? value1[..64]
             : value1;
@@ -353,6 +369,9 @@ public partial class Form40 : Form
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string?>)value).Value;
+
+        if (value1 is null) return;
+
         value1 = value1.Length > 64
             ? value1[..64]
             : value1;
@@ -402,6 +421,9 @@ public partial class Form40 : Form
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string>)value).Value;
+
+        if (value1 is null) return;
+
         value1 = value1.Length > 64
             ? value1[..64]
             : value1;
@@ -451,6 +473,9 @@ public partial class Form40 : Form
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string>)value).Value;
+
+        if (value1 is null) return;
+
         value1 = value1.Length > 64
             ? value1[..64]
             : value1;
@@ -501,6 +526,9 @@ public partial class Form40 : Form
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string?>)value).Value;
+
+        if (value1 is null) return;
+
         value1 = value1.Length > 256
             ? value1[..256]
             : value1;
@@ -550,6 +578,9 @@ public partial class Form40 : Form
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string>)value).Value;
+
+        if (value1 is null) return;
+
         value1 = value1.Length > 256
             ? value1[..256]
             : value1;
@@ -600,6 +631,10 @@ public partial class Form40 : Form
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string?>)value).Value;
+
+        if (value1 is null) return;
+
+        if (value1 is null) return;
         value1 = value1.Length > 256
             ? value1[..256]
             : value1;
@@ -649,6 +684,9 @@ public partial class Form40 : Form
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string>)value).Value;
+
+        if (value1 is null) return;
+
         value1 = value1.Length > 256
             ? value1[..256]
             : value1;
@@ -699,6 +737,9 @@ public partial class Form40 : Form
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string?>)value).Value;
+
+        if (value1 is null) return;
+
         value1 = value1.Length > 64
             ? value1[..64]
             : value1;
@@ -749,6 +790,9 @@ public partial class Form40 : Form
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string?>)value).Value;
+
+        if (value1 is null) return;
+
         value1 = value1.Length > 64
             ? value1[..64]
             : value1;
@@ -798,6 +842,9 @@ public partial class Form40 : Form
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string>)value).Value;
+
+        if (value1 is null) return;
+
         value1 = value1.Length > 64
             ? value1[..64]
             : value1;
@@ -847,6 +894,9 @@ public partial class Form40 : Form
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string>)value).Value;
+
+        if (value1 is null) return;
+
         value1 = value1.Length > 64
             ? value1[..64]
             : value1;

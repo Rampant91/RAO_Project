@@ -102,7 +102,6 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
             case "4.0":
                 {
                     var form40VM = new Form_40VM(ReportsStorage.LocalReports);
-                    form40VM.IsSeparateDivision = isSeparateDivision;
                     var window = new Form_40(form40VM) { DataContext = form40VM };
                     await new SaveReportAsyncCommand(form40VM).AsyncExecute(null);
                     await window.ShowDialog(mainWindow);

@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
@@ -21,11 +22,11 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Models.Collections;
 using ReactiveUI;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using Avalonia;
-using System.Collections.ObjectModel;
 namespace Client_App.ViewModels;
 
 public class MainWindowVM : ObservableObject, INotifyPropertyChanged
@@ -53,6 +54,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         }
     }
     #endregion
+
     #region Current_Db
 
     private string _current_Db = "";
@@ -86,8 +88,34 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         }
     }
 
+    private ObservableCollection<Reports> _reports40 => ReportsStorage.LocalReports.Reports_Collection40;
+    public ObservableCollection<Reports> Reports40
+    {
+        get 
+        {
+            return _reports40; 
+        }
+    }
+
     #endregion
 
+    #region SelectedReports
+
+    private Reports? _selectedReports;
+    public Reports? SelectedReports
+    {
+        get
+        {
+            return _selectedReports;
+        }
+        set
+        {
+            _selectedReports = value;
+            OnPropertyChanged();
+        }
+    }
+       
+    #endregion
 
     #region OnStartProgressBar
 
@@ -113,6 +141,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand ChangeForm { get; set; }                        //  Открыть окно редактирования выбранной формы
     public ICommand ChangePasFolder { get; set; }                   //  Excel -> Паспорта -> Изменить расположение паспортов по умолчанию
     public ICommand ChangeReports { get; set; }                     //  Изменить Формы организации (1.0 и 2.0)
+    public ICommand NewChangeReports { get; set; }                  //  Изменить Формы организации (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
     public ICommand ExcelExportCheckAllForms { get; set; }          //  Проверить все формы у организации
     public ICommand CheckFormFromMain { get; set; }                 //  Проверить форму
     public ICommand DeleteForm { get; set; }                        //  Удалить выбранную форму у выбранной организации
@@ -236,9 +265,11 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
     public MainWindowVM()
     {
+        //Команды
         AddForm = new AddFormAsyncCommand();
         AddReports = new AddReportsAsyncCommand();
         ChangeForm = new ChangeFormAsyncCommand();
+        NewChangeReports = new NewChangeReportsAsyncCommand();
         ChangePasFolder = new ChangePasFolderAsyncCommand();
         ChangeReports = new ChangeReportsAsyncCommand();
         CheckFormFromMain = new CheckFormFromMainAsyncCommand();

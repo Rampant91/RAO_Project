@@ -8,6 +8,7 @@
     xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
 	xmlns:local="using:Client_App.Behaviors"
 	xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+	xmlns:models="clr-namespace:Models.Collections;assembly=Models"
     Title="{Binding Current_Db, Mode=OneWay}"
     d:DesignHeight="600"
     d:DesignWidth="800"
@@ -442,17 +443,25 @@
 								<TextBox Grid.Row="0" Margin="5" Watermark ="Поиск..." />
 								<DataGrid Grid.Row="1" Margin="5"
 					                      x:CompileBindings="True"
-									      Items="{Binding LocalReports.Reports_Collection40}">
+									      Items="{Binding Reports40}"
+										  SelectionMode="Single"
+										  SelectedItem="{Binding SelectedReports}"
+										  RowHeight="25">
 										
 							        <DataGrid.ContextMenu>
 										<ContextMenu>
-											<MenuItem Header="Добавить РИАЦ"
+											<MenuItem Header="Добавить форму"
 													  Command="{Binding AddReports}"/>
+											<MenuItem Header="Редактировать форму"
+													  Command="{Binding NewChangeReports}"/>
+											<MenuItem Header="Удалить форму"
+													  Command="{Binding DeleteReports}"/>
 										</ContextMenu>
 									</DataGrid.ContextMenu>
 										
 									<DataGrid.Columns>
 										<DataGridTextColumn
+											x:DataType="models:Reports"
 											Width="60"
 											IsReadOnly="True"
 											Binding="{Binding Master.Rows40[0].SubjectRF.Value}">
@@ -469,6 +478,7 @@
 										</DataGridTextColumn>
 										
 										<DataGridTextColumn 
+											x:DataType="models:Reports"
 											Width="Auto"
 											IsReadOnly="True"
 											Binding="{Binding Master.Rows40[0].SubjectRF.Value}">
@@ -483,8 +493,9 @@
 												</DataTemplate>
 											</DataGridTextColumn.HeaderTemplate>
 										</DataGridTextColumn>
-										
+
 										<DataGridTextColumn
+											x:DataType="models:Reports"
 											Width="*"
 											IsReadOnly="True"
 											Binding="{Binding Master.Rows40[0].ShortNameRiac.Value}">

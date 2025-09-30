@@ -113,10 +113,15 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
                 tmp.Master.Rows20[1].OrganUprav.Value = tmp.Master.Rows20[0].OrganUprav.Value;
                 tmp.Master.Rows20[1].RegNo.Value = tmp.Master.Rows20[0].RegNo.Value;
             }
+            if (tmp.Master.Rows40.Count != 0)
+            {
+                tmp.Master.Rows40[1].NameOrganUprav.Value = tmp.Master.Rows40[0].NameOrganUprav.Value;
+                tmp.Master.Rows40[1].NameRiac.Value = tmp.Master.Rows40[0].NameRiac.Value;
+            }
             VM.DBO.Reports_Collection.Add(tmp);
             VM.DBO = null;
         }
-        else if (Storages != null && _formType is not ("1.0" or "2.0") && !Storages.Report_Collection.Contains(Storage))
+        else if (Storages != null && _formType is not ("1.0" or "2.0" or "4.0") && !Storages.Report_Collection.Contains(Storage))
         {
             Storages.Report_Collection.Add(Storage);
         }
@@ -132,6 +137,11 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
             {
                 Storages.Master.Rows20[1].OrganUprav.Value = Storages.Master.Rows20[0].OrganUprav.Value;
                 Storages.Master.Rows20[1].RegNo.Value = Storages.Master.Rows20[0].RegNo.Value;
+            }
+            if (Storages.Master.Rows40.Count != 0)
+            {
+                Storages.Master.Rows40[1].NameOrganUprav.Value = Storages.Master.Rows40[0].NameOrganUprav.Value;
+                Storages.Master.Rows40[1].NameRiac.Value = Storages.Master.Rows40[0].NameRiac.Value;
             }
             Storages.Report_Collection.Sorted = false;
             await Storages.Report_Collection.QuickSortAsync();
