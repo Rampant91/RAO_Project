@@ -1,16 +1,20 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Commands.AsyncCommands.Save;
+using Client_App.Interfaces.Logger;
+using Client_App.Resources;
 using Client_App.ViewModels.Forms;
 using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.DBRealization;
+using Models.Forms;
 using Models.Forms.Form1;
 using Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Client_App.Resources;
 
 namespace Client_App.Commands.AsyncCommands.SourceTransmission;
 
@@ -24,6 +28,8 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
 
     public override async Task AsyncExecute(object? parameter)
     {
+        var window = Desktop.Windows.First(x => x.Name == SelectedReport.FormNum_DB);
+
         var formsWithCode41 = SelectedReport[SelectedReport.FormNum_DB].ToList<Form1>()
             .Where(x => string.Equals(x.OperationCode_DB.Trim(), "41", StringComparison.Ordinal))
             .ToList();
@@ -47,7 +53,7 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowDialog(window));
 
             #endregion
              
@@ -68,11 +74,60 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowDialog(window));
 
             #endregion
 
             return;
+        }
+
+        try
+        {
+            if (StaticConfiguration.DBModel.ChangeTracker.HasChanges())
+            {
+                #region MessageSaveChanges
+
+                var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    {
+                        ButtonDefinitions =
+                        [
+                            new ButtonDefinition { Name = "Да" },
+                            new ButtonDefinition { Name = "Отмена" }
+                        ],
+                        ContentTitle = "Сохранение изменений",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = $"Обнаружены изменения." +
+                                         $"{Environment.NewLine}Сохранить форму {FormVM.FormType} перед переводом РВ в РАО?",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(window));
+
+                #endregion
+
+                var dbm = StaticConfiguration.DBModel;
+                switch (res)
+                {
+                    case "Да":
+                    {
+                        await dbm.SaveChangesAsync();
+                        await new SaveReportAsyncCommand(FormVM).AsyncExecute(null);
+
+                        break;
+                    }
+                    case "Отмена":
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg);
         }
 
         foreach (var f in formsWithCode41)
@@ -184,6 +239,12 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
         {
             #region MessageSourceTransmissionFailed
 
+            var repFormNum = SelectedReport.FormNum_DB switch
+            {
+                "1.1" => "1.5",
+                _ => "1.6"
+            };
+
             await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
@@ -192,18 +253,21 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
                     ContentHeader = "Уведомление",
                     ContentMessage = $"В связи с наличием строчек дубликатов, " +
                                      $"{Environment.NewLine}было переведено {countAddedForm} строчек форм из {formsWithCode41.Count}. " +
-                                     $"{Environment.NewLine}Проверьте правильность заполнения формы {SelectedReport.FormNum_DB}",
+                                     $"{Environment.NewLine}Проверьте правильность заполнения форм {SelectedReport.FormNum_DB} и {repFormNum}",
                     CanResize = true,
                     MinWidth = 450,
                     MinHeight = 175,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowDialog(window));
 
             #endregion
         }
 
-        await CloseWindowAndOpenNew(repToOpen).ConfigureAwait(false);
+        if (countAddedForm > 0)
+        {
+            await CloseWindowAndOpenNew(repToOpen).ConfigureAwait(false);
+        }
     }
 
     #region CloseWindowAndOpenNew
@@ -211,6 +275,8 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
     private static async Task CloseWindowAndOpenNew(Report rep)
     {
         var window = Desktop.Windows.First(x => x.Name is "1.1" or "1.2" or "1.3" or "1.4");
+        var vm = (BaseFormVM)window.DataContext;
+        vm.SkipChangeTacking = true;
         var windowParam = new FormParameter()
         {
             Parameter = new ObservableCollectionWithItemPropertyChanged<IKey>(new List<Report> { rep }),

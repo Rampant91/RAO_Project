@@ -14,11 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia;
 using Client_App.Commands.AsyncCommands.Save;
-using Client_App.Commands.SyncCommands;
-using Microsoft.EntityFrameworkCore;
-using Models.Forms;
 
 namespace Client_App.Commands.AsyncCommands.SourceTransmission;
 
@@ -154,7 +150,6 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
         }
 
         await using var db = new DBModel(StaticConfiguration.DBPath);
-        bool formIsAdded;
         var repFormNum = form.FormNum_DB switch
         {
             "1.1" => "1.5",
@@ -187,7 +182,7 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
             case 1:   // Если есть подходящий отчет, то добавляем форму в него
             {
                 var rep = repInRange.First();
-                formIsAdded = await AddNewFormToExistingReport(rep, form, db);
+                var formIsAdded = await AddNewFormToExistingReport(rep, form, db);
 
                 if (!formIsAdded)
                 {
@@ -199,12 +194,12 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                             ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                             ContentTitle = "Перевод источника в РАО",
                             ContentHeader = "Уведомление",
-                            ContentMessage = $"Строчка не была переведена в РАО, в связи с тем, " +
-                                             $"{Environment.NewLine}что в форме 1.5 уже присутствует данная строчка с кодом операции 41. " +
-                                             $"{Environment.NewLine}Проверьте правильность заполнения форм {form.FormNum_DB} и {repFormNum}",
+                            ContentMessage = $"Строчка не была переведена в РАО, в связи с тем, что в форме {repFormNum}" +
+                                             $"{Environment.NewLine}уже присутствует данная строчка с кодом операции 41." +
+                                             $"{Environment.NewLine}Проверьте правильность заполнения форм {form.FormNum_DB} и {repFormNum}.",
                             CanResize = true,
-                            MinWidth = 400,
-                            MinHeight = 150,
+                            MinWidth = 450,
+                            MinHeight = 175,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
                         .ShowDialog(Desktop.MainWindow));
@@ -246,13 +241,7 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                     
                 }
 
-                var modifiedEntities = db.ChangeTracker.Entries()
-                    .Where(x => x.State != EntityState.Unchanged);
-
                 await db.SaveChangesAsync();
-
-                var modifiedEntities2 = db.ChangeTracker.Entries()
-                    .Where(x => x.State != EntityState.Unchanged);
 
                 await CloseWindowAndOpenNew(report);
 
@@ -261,7 +250,6 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
             default:    // Если отчета с подходящим периодом нет, создаём новый отчёт и добавляем в него форму 
             {
                 var rep = await CreateReportAndAddNewForm(db, form, opDate);
-                formIsAdded = true;
                 await db.SaveChangesAsync();
                 var report = await ReportsStorage.Api.GetAsync(rep.Id);
                 SelectedReports.Report_Collection.Add(report);
@@ -276,9 +264,11 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
     private static async Task CloseWindowAndOpenNew(Report rep)
     {
         var window = Desktop.Windows.First(x => x.Name is "1.1" or "1.2" or "1.3" or "1.4");
-        var windowParam = new FormParameter()
+        var vm = (BaseFormVM)window.DataContext;
+        vm.SkipChangeTacking = true;
+        var windowParam = new FormParameter
         {
-            Parameter = new ObservableCollectionWithItemPropertyChanged<IKey>(new List<Report> { rep }),
+            Parameter = new ObservableCollectionWithItemPropertyChanged<IKey>(new List<Report> { rep } ),
             Window = window
         };
         await new ChangeFormAsyncCommand(windowParam).AsyncExecute(null).ConfigureAwait(false);

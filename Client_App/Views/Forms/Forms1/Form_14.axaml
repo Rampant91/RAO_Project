@@ -25,6 +25,7 @@
 		<converter:DataGridLengthToGridLengthConverter x:Key="LengthConverter"/>
 		<converter:NullToStringConverter x:Key="NullToStringConverter"/>
 		<converter:DateConverter x:Key="DateConverter"/>
+        <converter:IsOperation41AndSingleSelectionConverter x:Key="Op41AndOneSelectedConverter"/>
     </Window.Resources>
 
     <Design.DataContext>
@@ -177,18 +178,22 @@
 		                <MenuItem Header="Добавить N строк перед"
 		                          Command="{Binding AddRowsIn}"
 		                          CommandParameter="{Binding SelectedForms}"
-		                          InputGesture="Ctrl+I"/>
+		                          InputGesture="Ctrl+I"
+                                  IsVisible="{Binding AnyRowSelected}"/>
 		                <MenuItem Header="Копировать"
 		                          Command="{Binding CopyRows}"
 		                          CommandParameter="{Binding SelectedForms}"
-		                          InputGesture="Ctrl+C"/>
+		                          InputGesture="Ctrl+C"
+                                  IsVisible="{Binding AnyRowSelected}"/>
 		                <MenuItem Header="Вставить"
 		                          Command="{Binding PasteRows}"
-		                          InputGesture="Ctrl+V"/>
+		                          InputGesture="Ctrl+V"
+                                  IsVisible="{Binding AnyRowSelected}"/>
 		                <MenuItem Header="Удалить выбранные строчки"
 		                          Command="{Binding DeleteRows}"
 		                          CommandParameter="{Binding SelectedForms}"
-		                          InputGesture="Ctrl+D"/>
+		                          InputGesture="Ctrl+D"
+                                  IsVisible="{Binding AnyRowSelected}"/>
 		                <MenuItem Header="Выставить номер"
 		                          Command="{Binding SetNumberOrder}"
 		                          InputGesture="Ctrl+O"/>
@@ -198,11 +203,19 @@
 		                <MenuItem Header="Очистить строчки"
 		                          Command="{Binding DeleteDataInRows}"
 		                          CommandParameter="{Binding SelectedForms}"
-		                          InputGesture="Ctrl+K"/>
+		                          InputGesture="Ctrl+K"
+                                  IsVisible="{Binding AnyRowSelected}"/>
 		                <MenuItem Header="Перевести РВ в РАО"
 		                          Command="{Binding SourceTransmission}"
 		                          CommandParameter="{Binding SelectedForm}"
-                                  IsVisible="{Binding OnlyOneRowSelected}"/>
+                                  InputGesture="Ctrl+J">
+                            <MenuItem.IsVisible>
+                                <MultiBinding Converter="{StaticResource Op41AndOneSelectedConverter}">
+                                    <Binding Path="OnlyOneRowSelected"/>
+                                    <Binding Path="SelectedForm"/>
+                                </MultiBinding>
+                            </MenuItem.IsVisible>
+                        </MenuItem>
 		            </ContextMenu>
 		        </Grid.ContextMenu>
 		        <Grid Classes="tableHeader" Grid.Row="0"

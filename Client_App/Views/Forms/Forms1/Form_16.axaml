@@ -173,18 +173,22 @@
                         <MenuItem Header="Добавить N строк перед"
                                   Command="{Binding AddRowsIn}"
                                   CommandParameter="{Binding SelectedForms}"
-                                  InputGesture="Ctrl+I"/>
+                                  InputGesture="Ctrl+I"
+                                  IsVisible="{Binding AnyRowSelected}"/>
                         <MenuItem Header="Копировать"
                                   Command="{Binding CopyRows}"
                                   CommandParameter="{Binding SelectedForms}"
-                                  InputGesture="Ctrl+C"/>
+                                  InputGesture="Ctrl+C"
+                                  IsVisible="{Binding AnyRowSelected}"/>
                         <MenuItem Header="Вставить"
                                   Command="{Binding PasteRows}"
-                                  InputGesture="Ctrl+V"/>
+                                  InputGesture="Ctrl+V"
+                                  IsVisible="{Binding AnyRowSelected}"/>
                         <MenuItem Header="Удалить выбранные строчки"
                                   Command="{Binding DeleteRows}"
                                   CommandParameter="{Binding SelectedForms}"
-                                  InputGesture="Ctrl+D"/>
+                                  InputGesture="Ctrl+D"
+                                  IsVisible="{Binding AnyRowSelected}"/>
                         <MenuItem Header="Выставить номер"
                                   Command="{Binding SetNumberOrder}"
                                   InputGesture="Ctrl+O"/>
@@ -194,7 +198,8 @@
                         <MenuItem Header="Очистить строчки"
                                   Command="{Binding DeleteDataInRows}"
                                   CommandParameter="{Binding SelectedForms}"
-                                  InputGesture="Ctrl+K"/>
+                                  InputGesture="Ctrl+K"
+                                  IsVisible="{Binding AnyRowSelected}"/>
                     </ContextMenu>
 				</Grid.ContextMenu>
 				<Grid Classes="tableHeader" Grid.Row="0"

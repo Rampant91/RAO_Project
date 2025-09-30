@@ -7,7 +7,6 @@ using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
 using Client_App.VisualRealization.Long_Visual;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Interfaces;

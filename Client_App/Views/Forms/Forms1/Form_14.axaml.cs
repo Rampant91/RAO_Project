@@ -13,6 +13,8 @@ using Client_App.ViewModels.Forms.Forms1;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
+using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -164,7 +166,7 @@ public partial class Form_14 : BaseWindow<Form_14VM>
                 }
                 case Key.J: // Source Transmission to RAO
                 {
-                    if (selectedForms is { Count: > 0 })
+                    if (vm.SelectedForm is not null)
                     {
                         vm.SourceTransmission.Execute(selectedForms);
                         e.Handled = true;
@@ -198,9 +200,17 @@ public partial class Form_14 : BaseWindow<Form_14VM>
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
         try
         {
-            if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges())
+            var db = StaticConfiguration.DBModel;
+
+            var modifiedEntities = db.ChangeTracker.Entries()
+                .Where(x => x.State != EntityState.Unchanged);
+
+            if (modifiedEntities.All(x => x.Entity is Report rep && rep.FormNum_DB != vm.FormType)
+                || !db.ChangeTracker.HasChanges() || vm.SkipChangeTacking)
             {
-                desktop.MainWindow.WindowState = WindowState.Normal;
+                if (vm.SkipChangeTacking) vm.SkipChangeTacking = false;
+                desktop.MainWindow.WindowState = OwnerPrevState;
+
                 return;
             }
         }
@@ -215,7 +225,7 @@ public partial class Form_14 : BaseWindow<Form_14VM>
 
         #region MessageRemoveEmptyForms
 
-        var res = Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
+        var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
@@ -233,67 +243,66 @@ public partial class Form_14 : BaseWindow<Form_14VM>
 
         #endregion
 
-        await res.WaitAsync(new CancellationToken());
         var dbm = StaticConfiguration.DBModel;
-        switch (res.Result)
+        switch (res)
         {
             case "Да":
+            {
+                await dbm.SaveChangesAsync();
+                await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+                if (desktop.Windows.Count == 1)
                 {
-                    await dbm.SaveChangesAsync();
-                    await new SaveReportAsyncCommand(vm).AsyncExecute(null);
-                    if (desktop.Windows.Count == 1)
-                    {
-                        desktop.MainWindow.WindowState = WindowState.Normal;
-                    }
-                    return;
+                    desktop.MainWindow.WindowState = WindowState.Normal;
                 }
+                return;
+            }
             case "Нет":
+            {
+                flag = true;
+                dbm.Restore();
+                new SortFormSyncCommand(vm).Execute(null);
+                await dbm.SaveChangesAsync();
+
+                var lst = vm.Report[vm.FormType];
+
+                foreach (var key in lst)
                 {
-                    flag = true;
-                    dbm.Restore();
-                    new SortFormSyncCommand(vm).Execute(null);
-                    await dbm.SaveChangesAsync();
-
-                    var lst = vm.Report[vm.FormType];
-
-                    foreach (var key in lst)
+                    var item = (Form)key;
+                    if (item.Id == 0)
                     {
-                        var item = (Form)key;
-                        if (item.Id == 0)
-                        {
-                            vm.Report[vm.Report.FormNum_DB].Remove(item);
-                        }
+                        vm.Report[vm.Report.FormNum_DB].Remove(item);
                     }
-
-                    var lstNote = vm.Report.Notes.ToList<Note>();
-                    foreach (var item in lstNote.Where(item => item.Id == 0))
-                    {
-                        vm.Report.Notes.Remove(item);
-                    }
-
-                    if (vm.FormType is not "1.0" and not "2.0")
-                    {
-                        if (vm.FormType.Split('.')[0] == "1")
-                        {
-                            vm.Report.OnPropertyChanged(nameof(vm.Report.StartPeriod));
-                            vm.Report.OnPropertyChanged(nameof(vm.Report.EndPeriod));
-                            vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
-                        }
-                        else if (vm.FormType.Split('.')[0] == "2")
-                        {
-                            vm.Report.OnPropertyChanged(nameof(vm.Report.Year));
-                            vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
-                        }
-                    }
-                    else
-                    {
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.RegNoRep));
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.ShortJurLicoRep));
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.OkpoRep));
-                    }
-
-                    break;
                 }
+
+                var lstNote = vm.Report.Notes.ToList<Note>();
+                foreach (var item in lstNote.Where(item => item.Id == 0))
+                {
+                    vm.Report.Notes.Remove(item);
+                }
+
+                if (vm.FormType is not "1.0" and not "2.0")
+                {
+                    if (vm.FormType.Split('.')[0] == "1")
+                    {
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.StartPeriod));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.EndPeriod));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
+                    }
+                    else if (vm.FormType.Split('.')[0] == "2")
+                    {
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.Year));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
+                    }
+                }
+                else
+                {
+                    vm.Report.OnPropertyChanged(nameof(vm.Report.RegNoRep));
+                    vm.Report.OnPropertyChanged(nameof(vm.Report.ShortJurLicoRep));
+                    vm.Report.OnPropertyChanged(nameof(vm.Report.OkpoRep));
+                }
+
+                break;
+            }
         }
         desktop.MainWindow.WindowState = WindowState.Normal;
         if (flag)

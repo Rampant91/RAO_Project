@@ -110,8 +110,8 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
-    private Form _selectedForm;
-    public Form SelectedForm
+    private Form? _selectedForm;
+    public Form? SelectedForm
     {
         get => _selectedForm;
         set
@@ -168,6 +168,24 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             if (_onlyOneRowSelected != value)
             {
                 _onlyOneRowSelected = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    #endregion
+
+    #region SkipChangeTacking
+
+    private bool _skipChangeTacking;
+    public bool SkipChangeTacking
+    {
+        get => _skipChangeTacking;
+        set
+        {
+            if (_skipChangeTacking != value)
+            {
+                _skipChangeTacking = value;
                 OnPropertyChanged();
             }
         }
@@ -355,6 +373,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
     private void SelectedForms_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
+        OnPropertyChanged(nameof(AnyRowSelected));
         OnPropertyChanged(nameof(OnlyOneRowSelected));
     }
 

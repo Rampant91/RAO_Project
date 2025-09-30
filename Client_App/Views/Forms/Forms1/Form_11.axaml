@@ -25,6 +25,7 @@
 		<converter:DataGridLengthToGridLengthConverter x:Key="LengthConverter"/>
 		<converter:NullToStringConverter x:Key="NullToStringConverter"/>
 		<converter:DateConverter x:Key="DateConverter"/>
+        <converter:IsOperation41AndSingleSelectionConverter x:Key="Op41AndOneSelectedConverter"/>
 	</Window.Resources>
 
 	<Design.DataContext>
@@ -233,8 +234,14 @@
                         <MenuItem Header="Перевести РВ в РАО"
 								  Command="{Binding SourceTransmission}"
 								  CommandParameter="{Binding SelectedForm}"
-                                  InputGesture="Ctrl+J"
-                                  IsVisible="{Binding OnlyOneRowSelected}"/>
+                                  InputGesture="Ctrl+J">
+                            <MenuItem.IsVisible>
+                                <MultiBinding Converter="{StaticResource Op41AndOneSelectedConverter}">
+                                    <Binding Path="OnlyOneRowSelected"/>
+                                    <Binding Path="SelectedForm"/>
+                                </MultiBinding>
+                            </MenuItem.IsVisible>
+                        </MenuItem>
                     </ContextMenu>
                 </Grid.ContextMenu>
                 <Grid Classes="tableHeader" Grid.Row="0"

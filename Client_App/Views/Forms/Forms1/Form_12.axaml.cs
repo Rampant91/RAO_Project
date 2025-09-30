@@ -22,6 +22,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Models.Collections;
 
 namespace Client_App.Views.Forms.Forms1;
 
@@ -165,7 +167,7 @@ public partial class Form_12 : BaseWindow<Form_12VM>
                 }
                 case Key.J: // Source Transmission to RAO
                 {
-                    if (selectedForms is { Count: > 0 })
+                    if (vm.SelectedForm is not null)
                     {
                         vm.SourceTransmission.Execute(selectedForms);
                         e.Handled = true;
@@ -199,9 +201,16 @@ public partial class Form_12 : BaseWindow<Form_12VM>
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
         try
         {
-            if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges())
+            var db = StaticConfiguration.DBModel;
+            var modifiedEntities = db.ChangeTracker.Entries()
+                .Where(x => x.State != EntityState.Unchanged);
+
+            if (modifiedEntities.All(x => x.Entity is Report rep && rep.FormNum_DB != vm.FormType)
+                || !db.ChangeTracker.HasChanges() || vm.SkipChangeTacking)
             {
-                desktop.MainWindow.WindowState = WindowState.Normal;
+                if (vm.SkipChangeTacking) vm.SkipChangeTacking = false;
+                desktop.MainWindow.WindowState = OwnerPrevState;
+
                 return;
             }
         }
@@ -216,7 +225,7 @@ public partial class Form_12 : BaseWindow<Form_12VM>
 
         #region MessageRemoveEmptyForms
 
-        var res = Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
+        var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
@@ -234,9 +243,8 @@ public partial class Form_12 : BaseWindow<Form_12VM>
 
         #endregion
 
-        await res.WaitAsync(new CancellationToken());
         var dbm = StaticConfiguration.DBModel;
-        switch (res.Result)
+        switch (res)
         {
             case "Да":
             {

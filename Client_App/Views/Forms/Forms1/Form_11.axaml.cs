@@ -233,13 +233,17 @@ public partial class Form_11 : BaseWindow<Form_11VM>
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
         try
         {
-            var modifiedEntities = StaticConfiguration.DBModel.ChangeTracker.Entries()
+            var db = StaticConfiguration.DBModel;
+
+            var modifiedEntities = db.ChangeTracker.Entries()
                 .Where(x => x.State != EntityState.Unchanged);
 
             if (modifiedEntities.All(x => x.Entity is Report rep && rep.FormNum_DB != vm.FormType) 
-                || !StaticConfiguration.DBModel.ChangeTracker.HasChanges())
+                || !db.ChangeTracker.HasChanges() || vm.SkipChangeTacking)
             {
+                if (vm.SkipChangeTacking) vm.SkipChangeTacking = false;
                 desktop.MainWindow.WindowState = OwnerPrevState;
+
                 return;
             }
         }
