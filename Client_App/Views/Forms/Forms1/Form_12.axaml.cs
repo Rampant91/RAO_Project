@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
@@ -30,6 +29,8 @@ namespace Client_App.Views.Forms.Forms1;
 public partial class Form_12 : BaseWindow<Form_12VM>
 {
     //private Form_12VM _vm = null!;
+
+    private bool _isCloseConfirmed;
 
     #region Constructors
 
@@ -202,6 +203,7 @@ public partial class Form_12 : BaseWindow<Form_12VM>
         try
         {
             var db = StaticConfiguration.DBModel;
+
             var modifiedEntities = db.ChangeTracker.Entries()
                 .Where(x => x.State != EntityState.Unchanged);
 
@@ -221,9 +223,9 @@ public partial class Form_12 : BaseWindow<Form_12VM>
             ServiceExtension.LoggerManager.Error(msg);
         }
 
-        var flag = false;
+        args.Cancel = true;
 
-        #region MessageRemoveEmptyForms
+        #region MessageSaveChanges
 
         var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
@@ -231,7 +233,8 @@ public partial class Form_12 : BaseWindow<Form_12VM>
                 ButtonDefinitions =
                 [
                     new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" }
+                    new ButtonDefinition { Name = "Нет" },
+                    new ButtonDefinition { Name = "Отмена" }
                 ],
                 ContentTitle = "Сохранение изменений",
                 ContentHeader = "Уведомление",
@@ -239,7 +242,7 @@ public partial class Form_12 : BaseWindow<Form_12VM>
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(desktop.MainWindow));
+            .ShowDialog(this));
 
         #endregion
 
@@ -248,17 +251,19 @@ public partial class Form_12 : BaseWindow<Form_12VM>
         {
             case "Да":
             {
+                _isCloseConfirmed = true;
                 await dbm.SaveChangesAsync();
                 await new SaveReportAsyncCommand(vm).AsyncExecute(null);
                 if (desktop.Windows.Count == 1)
                 {
-                    desktop.MainWindow.WindowState = WindowState.Normal;
+                    desktop.MainWindow.WindowState = OwnerPrevState;
                 }
-                return;
+                args.Cancel = false;
+                break;
             }
             case "Нет":
             {
-                flag = true;
+                _isCloseConfirmed = true;
                 dbm.Restore();
                 new SortFormSyncCommand(vm).Execute(null);
                 await dbm.SaveChangesAsync();
@@ -303,13 +308,16 @@ public partial class Form_12 : BaseWindow<Form_12VM>
 
                 break;
             }
+            case "Отмена":
+            {
+                return;
+            }
         }
-        desktop.MainWindow.WindowState = WindowState.Normal;
-        if (flag)
+        desktop.MainWindow.WindowState = OwnerPrevState;
+        if (_isCloseConfirmed)
         {
             Close();
         }
-        args.Cancel = true;
     }
 
     #region CheckPeriod

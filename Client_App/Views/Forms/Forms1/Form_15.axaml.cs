@@ -205,13 +205,17 @@ public partial class Form_15 : BaseWindow<Form_15VM>
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
         try
         {
-            var modifiedEntities = StaticConfiguration.DBModel.ChangeTracker.Entries()
+            var db = StaticConfiguration.DBModel;
+
+            var modifiedEntities = db.ChangeTracker.Entries()
                 .Where(x => x.State != EntityState.Unchanged);
 
             if (modifiedEntities.All(x => x.Entity is Report rep && rep.FormNum_DB != vm.FormType)
-                || !StaticConfiguration.DBModel.ChangeTracker.HasChanges())
+                || !db.ChangeTracker.HasChanges() || vm.SkipChangeTacking)
             {
+                if (vm.SkipChangeTacking) vm.SkipChangeTacking = false;
                 desktop.MainWindow.WindowState = OwnerPrevState;
+
                 return;
             }
         }
@@ -241,7 +245,7 @@ public partial class Form_15 : BaseWindow<Form_15VM>
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(desktop.MainWindow));
+            .ShowDialog(this));
 
         #endregion
 
@@ -249,7 +253,7 @@ public partial class Form_15 : BaseWindow<Form_15VM>
         switch (res)
         {
             case "Да":
-                {
+            {
                 _isCloseConfirmed = true;
                 await dbm.SaveChangesAsync();
                 await new SaveReportAsyncCommand(vm).AsyncExecute(null);
@@ -258,7 +262,6 @@ public partial class Form_15 : BaseWindow<Form_15VM>
                     desktop.MainWindow.WindowState = OwnerPrevState;
                 }
                 args.Cancel = false;
-
                 break;
             }
             case "Нет":
@@ -307,6 +310,10 @@ public partial class Form_15 : BaseWindow<Form_15VM>
                 }
 
                 break;
+            }
+            case "Отмена":
+            {
+                return;
             }
         }
         desktop.MainWindow.WindowState = OwnerPrevState;
