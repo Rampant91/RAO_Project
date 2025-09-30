@@ -1,4 +1,4 @@
-﻿using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.Delete;
@@ -10,11 +10,13 @@ using Models.Collections;
 using Models.Forms;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Models.Attributes;
+
 
 namespace Client_App.ViewModels.Forms;
 
@@ -117,6 +119,9 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+
+    
+
     protected ObservableCollection<Form> _selectedForms = [];
     public ObservableCollection<Form> SelectedForms
     {
@@ -130,6 +135,25 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
+    #region OnlyOneRowSelected
+
+    private bool _onlyOneRowSelected;
+    public bool OnlyOneRowSelected
+    {
+        get => SelectedForms.Count == 1;
+        set
+        {
+            if (_onlyOneRowSelected != value)
+            {
+                _onlyOneRowSelected = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    #endregion
+
     protected Note _selectedNote;
     public Note SelectedNote
     {
@@ -140,6 +164,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+
     protected ObservableCollection<Note> _selectedNotes = [];
     public ObservableCollection<Note> SelectedNotes
     {
@@ -153,6 +178,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     protected int _rowCount = 30;
     public int RowCount
     {

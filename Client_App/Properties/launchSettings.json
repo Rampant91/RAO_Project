@@ -1,7 +1,8 @@
 {
   "profiles": {
     "Client_App": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "-n"
     }
   }
 }

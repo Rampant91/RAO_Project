@@ -87,8 +87,10 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     #endregion
                 };
                 var comparator = new CustomForm11ToForm15Comparer();
-                var isDuplicate = rep.Rows15
-                    .Any(currentForm => comparator.Compare(newForm15, currentForm) == 0);
+
+                var forms15Array = await db.form_15.Where(x => x.ReportId == rep.Id).ToArrayAsync();
+
+                var isDuplicate = forms15Array.Any(currentForm => comparator.Compare(newForm15, currentForm) == 0);
                 if (!isDuplicate)
                 {
                     db.form_15.Add(newForm15);

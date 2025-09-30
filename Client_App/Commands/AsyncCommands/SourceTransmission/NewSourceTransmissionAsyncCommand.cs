@@ -1,18 +1,25 @@
-﻿using Models.Collections;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Threading;
+using Client_App.Interfaces.Logger;
+using Client_App.Resources;
+using Client_App.ViewModels.Forms;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Models;
+using Models.Collections;
+using Models.DBRealization;
+using Models.Forms.Form1;
+using Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia.Controls;
-using Avalonia.Threading;
-using Client_App.Resources;
-using MessageBox.Avalonia.DTO;
-using Models.DBRealization;
-using Models.Forms.Form1;
-using Models.Interfaces;
-using MessageBox.Avalonia.Models;
-using Client_App.ViewModels.Forms.Forms1;
-using Client_App.ViewModels.Forms;
+using Avalonia;
+using Client_App.Commands.AsyncCommands.Save;
+using Client_App.Commands.SyncCommands;
+using Microsoft.EntityFrameworkCore;
+using Models.Forms;
+
 namespace Client_App.Commands.AsyncCommands.SourceTransmission;
 
 // Перевод источника из РВ в РАО
@@ -32,6 +39,9 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
         if (parameter is null) return;
 
         var form = (Form1)parameter;
+
+        var window = Desktop.Windows.First(x => x.Name == form.FormNum_DB);
+
         if (!string.Equals(form.OperationCode_DB.Trim(), "41", StringComparison.Ordinal))
         {
             #region MessageSourceTransmissionFailed
@@ -47,7 +57,7 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowDialog(window));
 
             #endregion
 
@@ -68,11 +78,59 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowDialog(window));
 
             #endregion
 
             return;
+        }
+        try
+        {
+            if (StaticConfiguration.DBModel.ChangeTracker.HasChanges())
+            {
+                #region MessageSaveChanges
+
+                var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    {
+                        ButtonDefinitions =
+                        [
+                            new ButtonDefinition { Name = "Да" },
+                            new ButtonDefinition { Name = "Отмена" }
+                        ],
+                        ContentTitle = "Сохранение изменений",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = $"Обнаружены изменения." +
+                                         $"{Environment.NewLine}Сохранить форму {FormVM.FormType} перед переводом РВ в РАО?",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(window));
+
+                #endregion
+
+                var dbm = StaticConfiguration.DBModel;
+                switch (res)
+                {
+                    case "Да":
+                    {
+                        await dbm.SaveChangesAsync();
+                        await new SaveReportAsyncCommand(FormVM).AsyncExecute(null);
+
+                        break;
+                    }
+                    case "Отмена":
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg);
         }
 
         var repInRange = SelectedReports.Report_Collection
@@ -96,17 +154,16 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
         }
 
         await using var db = new DBModel(StaticConfiguration.DBPath);
-        var formIsAdded = false;
+        bool formIsAdded;
+        var repFormNum = form.FormNum_DB switch
+        {
+            "1.1" => "1.5",
+            _ => "1.6"
+        };
         switch (repInRange.Count)
         {
             case > 1:   // У организации по ошибке есть несколько отчётов с нужным периодом
             {
-                var repFormNum = form.FormNum_DB switch
-                {
-                    "1.1" => "1.5",
-                    _ => "1.6"
-                };
-
                 #region MessageSourceTransmissionFailed
 
                 await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
@@ -131,6 +188,32 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
             {
                 var rep = repInRange.First();
                 formIsAdded = await AddNewFormToExistingReport(rep, form, db);
+
+                if (!formIsAdded)
+                {
+                    #region MessageSourceTransmissionFailed
+
+                    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        {
+                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ContentTitle = "Перевод источника в РАО",
+                            ContentHeader = "Уведомление",
+                            ContentMessage = $"Строчка не была переведена в РАО, в связи с тем, " +
+                                             $"{Environment.NewLine}что в форме 1.5 уже присутствует данная строчка с кодом операции 41. " +
+                                             $"{Environment.NewLine}Проверьте правильность заполнения форм {form.FormNum_DB} и {repFormNum}",
+                            CanResize = true,
+                            MinWidth = 400,
+                            MinHeight = 150,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(Desktop.MainWindow));
+
+                    return;
+
+                    #endregion
+                }
+
                 var report = await ReportsStorage.GetReportAsync(rep.Id);
                 if (report.ExportDate_DB != "")
                 {
@@ -160,28 +243,18 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                     #endregion
 
                     if (res is "Да") report.CorrectionNumber_DB++;
+                    
                 }
+
+                var modifiedEntities = db.ChangeTracker.Entries()
+                    .Where(x => x.State != EntityState.Unchanged);
+
                 await db.SaveChangesAsync();
+
+                var modifiedEntities2 = db.ChangeTracker.Entries()
+                    .Where(x => x.State != EntityState.Unchanged);
+
                 await CloseWindowAndOpenNew(report);
-
-                #region MessageSourceTransmissionFailed
-
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Перевод источника в РАО",
-                        ContentHeader = "Уведомление",
-                        ContentMessage = $"Строчка не была переведена в РАО, в связи с наличием строчек дубликатов. " +
-                                         $"{Environment.NewLine}Проверьте правильность заполнения формы {SelectedReport.FormNum_DB}",
-                        CanResize = true,
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(Desktop.MainWindow));
-
-                #endregion
 
                 break;
             }

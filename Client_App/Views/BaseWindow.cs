@@ -11,6 +11,8 @@ namespace Client_App.Views;
 
 public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>
 {
+    public WindowState OwnerPrevState;
+
     public override async void Show()
     {
         base.Show();

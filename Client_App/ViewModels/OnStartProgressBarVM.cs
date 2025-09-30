@@ -83,10 +83,7 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
             await BackgroundWorkThenAppLaunchedWithYearParameter();
             Environment.Exit(0);
         }
-        if (Settings.Default.AppStartupParameters.Trim().Split(',').Any(x => x is "-n"))
-        {
-            Settings.Default.AppLaunchedInNorao = true;
-        }
+        Settings.Default.AppLaunchedInNorao = Settings.Default.AppStartupParameters.Trim().Split(',').Any(x => x is "-n"); 
     }
 
     #region BackgroundWork

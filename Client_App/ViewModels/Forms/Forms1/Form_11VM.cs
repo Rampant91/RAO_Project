@@ -1,4 +1,4 @@
-﻿using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Calculator;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.Passports;
@@ -13,6 +13,20 @@ namespace Client_App.ViewModels.Forms.Forms1;
 public class Form_11VM : BaseFormVM
 {
     public override string FormType => "1.1";
+
+    private bool _dataGridIsEditing;
+    public bool DataGridIsEditing
+    {
+        get => _dataGridIsEditing;
+        set
+        {
+            if (_dataGridIsEditing != value)
+            {
+                _dataGridIsEditing = value;
+                OnPropertyChanged();
+            }
+        }
+    }
 
     #region Constructors
 

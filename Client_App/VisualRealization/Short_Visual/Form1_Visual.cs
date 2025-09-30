@@ -171,7 +171,7 @@ public class Form1_Visual
         btn5.Bind(Button.CommandProperty, new Binding("AddForm"));
         btn5.CommandParameter = "1.5";
         btn5.Height = h;
-        btn5.FontSize = 12;
+        btn5.FontSize = 13;
         btn5.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
         btn5.Margin = Thickness.Parse("5,148,0,0");
         panel.Children.Add(btn5);
