@@ -44,24 +44,34 @@ internal class DeleteReportsAsyncCommand : BaseAsyncCommand
 
         if (answer is not "Да") return;
 
+            Reports reports;
+            if (parameter is IEnumerable enumerable)
+            {
+                var repsList = enumerable!.Cast<Reports>().ToList();
+                reports = repsList[0];
+            }
+            else if (parameter is Reports reps)
+                reports = reps;
+            else
+                return;
+
         try
         {
-            var enumerable = parameter as IEnumerable;
-            var repsList = enumerable!.Cast<Reports>().ToList();
-
             await using var db = new DBModel(StaticConfiguration.DBPath);
-            db.ReportCollectionDbSet.Remove(repsList[0].Master_DB);
-            db.ReportsCollectionDbSet.Remove(repsList[0]);
+            db.ReportCollectionDbSet.Remove(reports.Master_DB);
+            db.ReportsCollectionDbSet.Remove(reports);
             await db.SaveChangesAsync();
 
 
             var mainWindow = (Desktop.MainWindow as MainWindow)!;
             var mainWindowVM = (mainWindow.DataContext as MainWindowVM);
+
+            mainWindowVM.OnPropertyChanged(nameof(ReportsStorage.LocalReports));
             mainWindowVM.OnPropertyChanged(nameof(mainWindowVM.Reports40));
         }
         catch (Exception ex)
         {
-            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+            var msg = $"{Environment.NewLine}Message:{ex.Message}" +
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
         }

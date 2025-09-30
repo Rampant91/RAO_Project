@@ -455,7 +455,8 @@
 											<MenuItem Header="Редактировать форму"
 													  Command="{Binding NewChangeReports}"/>
 											<MenuItem Header="Удалить форму"
-													  Command="{Binding DeleteReports}"/>
+													  Command="{Binding DeleteReports}"
+													  CommandParameter="{Binding SelectedReports}"/>
 										</ContextMenu>
 									</DataGrid.ContextMenu>
 										
