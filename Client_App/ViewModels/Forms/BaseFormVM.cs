@@ -157,6 +157,20 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
+    private bool _dataGridIsEditing;
+    public bool DataGridIsEditing
+    {
+        get => _dataGridIsEditing;
+        set
+        {
+            if (_dataGridIsEditing != value)
+            {
+                _dataGridIsEditing = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     #region OnlyOneRowSelected
 
     private bool _onlyOneRowSelected;

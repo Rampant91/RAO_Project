@@ -90,96 +90,99 @@ public partial class Form_15 : BaseWindow<Form_15VM>
 
         var selectedForms = vm.SelectedForms;
 
-        if (dataGrid.IsPointerOver && e.KeyModifiers is KeyModifiers.Control)
+        if (!dataGrid.IsPointerOver || e.KeyModifiers is not KeyModifiers.Control) return;
+        
+        switch (e.Key)
         {
-            switch (e.Key)
+            case Key.A: // Select All
             {
-                case Key.A: // Select All
+                vm.SelectAll.Execute(null);
+                e.Handled = true;
+
+                break;
+            }
+            case Key.T: // Add Row
+            {
+                vm.AddRow.Execute(null);
+                e.Handled = true;
+
+                break;
+            }
+            case Key.N: // Add N Rows
+            {
+                vm.AddRows.Execute(null);
+                e.Handled = true;
+
+                break;
+            }
+            case Key.I: // Add N Rows Before
+            {
+                if (selectedForms is { Count: > 0 })
                 {
-                    vm.SelectAll.Execute(null);
+                    vm.AddRowsIn.Execute(selectedForms);
                     e.Handled = true;
-
-                    break;
                 }
-                case Key.T: // Add Row
+
+                break;
+            }
+            case Key.D: // Delete Selected Rows
+            {
+                if (selectedForms is { Count: > 0 })
                 {
-                    vm.AddRow.Execute(null);
+                    vm.DeleteRows.Execute(selectedForms);
                     e.Handled = true;
-
-                    break;
                 }
-                case Key.N: // Add N Rows
+
+                break;
+            }
+            case Key.O: // Set Number Order
+            {
+                vm.SetNumberOrder.Execute(null);
+                e.Handled = true;
+
+                break;
+            }
+            case Key.K: // Clear Rows
+            {
+                if (selectedForms is { Count: > 0 })
                 {
-                    vm.AddRows.Execute(null);
+                    vm.DeleteDataInRows.Execute(selectedForms);
                     e.Handled = true;
-
-                    break;
                 }
-                case Key.I: // Add N Rows Before
-                {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.AddRowsIn.Execute(selectedForms);
-                        e.Handled = true;
-                    }
 
-                    break;
-                }
-                case Key.C: // Copy Rows
-                {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.CopyRows.Execute(selectedForms);
-                        e.Handled = true;
-                    }
+                break;
+            }
+            case Key.E: // Export Movement History
+            {
+                vm.ExcelExportSourceMovementHistory.Execute(selectedForms);
+                e.Handled = true;
 
-                    break;
-                }
-                case Key.V: // Paste Rows
-                {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.PasteRows.Execute(selectedForms);
-                        e.Handled = true;
-                    }
+                break;
+            }
+        }
 
-                    break;
-                }
-                case Key.D: // Delete Selected Rows
+        if (vm.DataGridIsEditing) return;
+        switch (e.Key)
+        {
+            case Key.C: // Copy Rows
+            {
+                if (selectedForms is { Count: > 0 })
                 {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.DeleteRows.Execute(selectedForms);
-                        e.Handled = true;
-                    }
-
-                    break;
-                }
-                case Key.O: // Set Number Order
-                {
-                    vm.SetNumberOrder.Execute(null);
+                    vm.CopyRows.Execute(selectedForms);
                     e.Handled = true;
-
-                    break;
                 }
-                case Key.K: // Clear Rows
-                {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.DeleteDataInRows.Execute(selectedForms);
-                        e.Handled = true;
-                    }
 
-                    break;
-                }
-                case Key.E: // Export Movement History
+                break;
+            }
+            case Key.V: // Paste Rows
+            {
+                if (selectedForms is { Count: > 0 })
                 {
-                    vm.ExcelExportSourceMovementHistory.Execute(selectedForms);
+                    vm.PasteRows.Execute(selectedForms);
                     e.Handled = true;
-
-                    break;
                 }
-                default: return;
+
+                break;
             }
         }
     }
