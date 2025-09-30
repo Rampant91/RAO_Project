@@ -17,7 +17,6 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Models.Attributes;
 
-
 namespace Client_App.ViewModels.Forms;
 
 public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
@@ -25,6 +24,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     #region Properties
 
     public abstract string FormType { get; }
+
     public string WindowTitle 
     {
         get
@@ -38,7 +38,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     
     }
 
-    protected ObservableCollection<Form> _formList = [];
+    private ObservableCollection<Form> _formList = [];
     public ObservableCollection<Form> FormList
     {
         get => _formList;
@@ -48,7 +48,8 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-    protected ObservableCollection<Note> _noteList = [];
+
+    private ObservableCollection<Note> _noteList = [];
     public ObservableCollection<Note> NoteList
     {
         get => _noteList;
@@ -61,7 +62,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
     #region Report
 
-    protected Report _report;
+    private Report _report;
     public Report Report
     {
         get => _report;
@@ -109,7 +110,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
-    protected Form _selectedForm;
+    private Form _selectedForm;
     public Form SelectedForm
     {
         get => _selectedForm;
@@ -120,9 +121,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    
-
-    protected ObservableCollection<Form> _selectedForms = [];
+    private ObservableCollection<Form> _selectedForms = [];
     public ObservableCollection<Form> SelectedForms
     {
         get => _selectedForms;
@@ -130,11 +129,33 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         {
             if (_selectedForms != value)
             {
+                UnsubscribeSelectedForms(_selectedForms);
                 _selectedForms = value;
+                SubscribeSelectedForms(_selectedForms);
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(AnyRowSelected));
+                OnPropertyChanged(nameof(OnlyOneRowSelected));
+            }
+        }
+    }
+
+    #region AnyRowSelected
+
+    private bool _anyRowSelected;
+    public bool AnyRowSelected
+    {
+        get => SelectedForms.Any();
+        set
+        {
+            if (_anyRowSelected != value)
+            {
+                _anyRowSelected = value;
                 OnPropertyChanged();
             }
         }
     }
+
+    #endregion
 
     #region OnlyOneRowSelected
 
@@ -154,7 +175,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
-    protected Note _selectedNote;
+    private Note _selectedNote;
     public Note SelectedNote
     {
         get => _selectedNote;
@@ -165,7 +186,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    protected ObservableCollection<Note> _selectedNotes = [];
+    private ObservableCollection<Note> _selectedNotes = [];
     public ObservableCollection<Note> SelectedNotes
     {
         get => _selectedNotes;
@@ -179,7 +200,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    protected int _rowCount = 30;
+    private int _rowCount = 30;
     public int RowCount
     {
         get => _rowCount;
@@ -201,7 +222,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    protected int _currentPage = 1;
+    private int _currentPage = 1;
     public int CurrentPage
     {
         get => _currentPage;
@@ -237,7 +258,8 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
     public int TotalRows => Report.Rows.Count;
 
-    protected bool _isAutoReplaceEnabled = true;
+
+    private bool _isAutoReplaceEnabled = true;
     public bool IsAutoReplaceEnabled
     {
         get => _isAutoReplaceEnabled;
@@ -252,24 +274,22 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    public int _selectedYear = DateTime.Now.Year;
+    private int _selectedYear = DateTime.Now.Year;
     public int SelectedYear
     {
-        get
-        {
-            return _selectedYear;
-        }
+        get => _selectedYear;
         set
         {
             _selectedYear = value;
             OnPropertyChanged();
         }
     }
+
     #endregion
 
     #region Constructors
 
-    public BaseFormVM() { }
+    public BaseFormVM() { SubscribeSelectedForms(_selectedForms); }
 
     public BaseFormVM(Report report)
     {
@@ -279,6 +299,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         UpdateFormList();
         UpdatePageInfo();
         NoteList = Report.Notes;
+        SubscribeSelectedForms(_selectedForms);
     }
 
     #endregion
@@ -307,6 +328,36 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand SwitchToNextReport => new SwitchToNextReportAsyncCommand(this);
     public ICommand SwitchToSelectedReport => new SwitchToSelectedReportAsyncCommand(this);
     public ICommand SwitchToPreviousReport => new SwitchToPreviousReportAsyncCommand(this);
+
+    #endregion
+
+    #region SelectionChangeWiring
+
+    /// <summary>
+    /// Обновление списка выделенных строчек.
+    /// </summary>
+    /// <param name="collection"></param>
+    private void SubscribeSelectedForms(ObservableCollection<Form> collection)
+    {
+        if (collection is INotifyCollectionChanged notify)
+        {
+            notify.CollectionChanged += SelectedForms_CollectionChanged;
+        }
+    }
+
+    private void UnsubscribeSelectedForms(ObservableCollection<Form> collection)
+    {
+        if (collection is INotifyCollectionChanged notify)
+        {
+            notify.CollectionChanged -= SelectedForms_CollectionChanged;
+        }
+    }
+
+    private void SelectedForms_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        OnPropertyChanged(nameof(OnlyOneRowSelected));
+    }
+
     #endregion
 
     #region UpdateFormList

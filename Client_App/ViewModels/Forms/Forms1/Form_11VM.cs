@@ -4,7 +4,9 @@ using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Models.Collections;
+using Models.Forms;
 using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 
@@ -13,6 +15,7 @@ namespace Client_App.ViewModels.Forms.Forms1;
 public class Form_11VM : BaseFormVM
 {
     public override string FormType => "1.1";
+
 
     private bool _dataGridIsEditing;
     public bool DataGridIsEditing
@@ -65,7 +68,6 @@ public class Form_11VM : BaseFormVM
     public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);
 
     #endregion
-
 
     //public ObservableCollection<Form12> Form12List => new(FormList.Cast<Form12>());
 

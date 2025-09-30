@@ -198,7 +198,8 @@
                         <MenuItem Header="Выгрузка истории движения источника"
                                   Command="{Binding ExcelExportSourceMovementHistory}"
                                   CommandParameter="{Binding SelectedForms}"
-                                  InputGesture="Ctrl+E"/>
+                                  InputGesture="Ctrl+E"
+                                  IsVisible="{Binding OnlyOneRowSelected}"/>
                     </ContextMenu>
 				</Grid.ContextMenu>
 				<Grid Classes="tableHeader" Grid.Row="0"

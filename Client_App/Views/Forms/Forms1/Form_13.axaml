@@ -200,7 +200,8 @@
                                   InputGesture="Ctrl+K"/>
                         <MenuItem Header="Перевести РВ в РАО"
                                   Command="{Binding SourceTransmission}"
-                                  CommandParameter="{Binding SelectedForm}"/>
+                                  CommandParameter="{Binding SelectedForm}"
+                                  IsVisible="{Binding OnlyOneRowSelected}"/>
                     </ContextMenu>
 				</Grid.ContextMenu>
 				<Grid Classes="tableHeader" Grid.Row="0"
