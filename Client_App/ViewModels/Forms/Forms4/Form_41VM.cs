@@ -29,14 +29,6 @@ namespace Client_App.ViewModels.Forms.Forms4
             Report = new Report
             {
                 FormNum_DB = formNum,
-                StartPeriod =
-            {
-                Value = reps.Report_Collection
-                    .Where(x => x.FormNum_DB == formNum && DateOnly.TryParse(x.EndPeriod_DB, out _))
-                    .OrderBy(x => DateOnly.Parse(x.EndPeriod_DB))
-                    .Select(x => x.EndPeriod_DB)
-                    .LastOrDefault() ?? ""
-            },
                 Reports = reps
             };
 

@@ -21,7 +21,9 @@ namespace Client_App.Views;
 public class MainWindow : BaseWindow<MainWindowVM>
 {
     #region SelectedReports
-
+    // this.SelectedReports Используется в легаси коде
+    // Так как это не соответствует паттерну MVVM, было решено продублировать SelectedReportsProperty в VM
+    // После перерисовки интерфейса нужно будет удалить этот SelectedReports
     public static readonly DirectProperty<MainWindow, IEnumerable<IKey>> SelectedReportsProperty =
         AvaloniaProperty.RegisterDirect<MainWindow, IEnumerable<IKey>>(
             nameof(SelectedReports),

@@ -551,7 +551,9 @@
 								</Border>
 							</Grid>
 							<StackPanel Grid.Row ="0" Grid.Column="1" Margin="5">
-							    <Button Command="{Binding Open41StubWindow}" Content="Форма 4.1"></Button>
+							    <Button Command="{Binding AddForm}"
+										CommandParameter="4.1"
+										Content="Форма 4.1"></Button>
 							</StackPanel>
 							<Grid Grid.Row ="1" Grid.Column="0" Grid.ColumnSpan="2" RowDefinitions="*,Auto" >
 								<DataGrid Grid.Row="0" Margin="5">

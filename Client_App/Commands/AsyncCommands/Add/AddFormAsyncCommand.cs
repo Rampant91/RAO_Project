@@ -25,9 +25,12 @@ public class AddFormAsyncCommand : BaseAsyncCommand
         if (parameter is string param)
         {
             var mainWindow = Desktop.MainWindow as MainWindow;
-            if (mainWindow?.SelectedReports is null
+            var mainWindowVM = mainWindow.DataContext as MainWindowVM;
+            if (mainWindow?.SelectedReports is null         // В легаси SelectedReports хранится во View (Потом удалить)
                 || !mainWindow.SelectedReports.Any()
-                || ((Reports)mainWindow.SelectedReports.First()).Master.FormNum_DB[0] != param[0])
+                || ((Reports)mainWindow.SelectedReports.First()).Master.FormNum_DB[0] != param[0]
+                || (mainWindowVM.SelectedReports is null )) // В новом коде SelectedReports хранится в ViewModel
+
             {
                 #region MessageFailedToOpenForm
 
