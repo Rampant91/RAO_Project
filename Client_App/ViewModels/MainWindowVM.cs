@@ -88,14 +88,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         }
     }
 
-    private ObservableCollection<Reports> _reports40 => ReportsStorage.LocalReports.Reports_Collection40;
-    public ObservableCollection<Reports> Reports40
-    {
-        get 
-        {
-            return _reports40; 
-        }
-    }
+
+    public ObservableCollection<Reports> Reports40 => ReportsStorage.LocalReports.Reports_Collection40;
 
     #endregion
 
@@ -256,7 +250,6 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                                                                             //public ICommand UnaccountedRad { get; set; }                    
                                                                             //  Радионуклиды, отсутствующие в справочнике
 
-    public ICommand Open40StubWindow { get; set; } //Используется чтобы открыть заглушку формы 40 (Потом удалить)
     public ICommand Open41StubWindow { get; set; } //Используется чтобы открыть заглушку формы 41 (Потом удалить)
 
     #endregion
@@ -265,7 +258,6 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
     public MainWindowVM()
     {
-        //Команды
         AddForm = new AddFormAsyncCommand();
         AddReports = new AddReportsAsyncCommand();
         ChangeForm = new ChangeFormAsyncCommand();
@@ -285,13 +277,6 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         OpenCalculator = new OpenCalculatorAsyncCommand();
         OpenFile = new OpenFileAsyncCommand();
         OpenFolder = new OpenFolderAsyncCommand();
-        Open40StubWindow = ReactiveCommand.Create(() =>
-        {
-            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                var window = new Form_40();
-            }
-        });
 
         Open41StubWindow = ReactiveCommand.Create(() =>
         {

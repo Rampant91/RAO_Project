@@ -12,7 +12,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Models.Forms.Form4;
-
 [Serializable]
 [Form_Class(name: "Форма 4.0: Титульный лист организации")]
 [Table(name: "form_40")]
@@ -947,6 +946,7 @@ public partial class Form40 : Form
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string>)value).Value;
+        if (value1 is null) return;
         value1 = value1.Length > 256
             ? value1[..256]
             : value1;

@@ -1,15 +1,15 @@
-﻿using Models.Collections;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Client_App.DBAPIFactory;
+﻿using Client_App.DBAPIFactory;
 using Client_App.ViewModels;
 using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Client_App;
 

@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections;
-using System.Linq;
-using Models.Collections;
-using Models.DBRealization;
-using System.Threading.Tasks;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
+using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
+using Client_App.ViewModels;
+using Client_App.Views;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
-using Avalonia.Threading;
+using Models.Collections;
+using Models.DBRealization;
+using System;
+using System.Collections;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.Delete;
 
@@ -51,6 +53,11 @@ internal class DeleteReportsAsyncCommand : BaseAsyncCommand
             db.ReportCollectionDbSet.Remove(repsList[0].Master_DB);
             db.ReportsCollectionDbSet.Remove(repsList[0]);
             await db.SaveChangesAsync();
+
+
+            var mainWindow = (Desktop.MainWindow as MainWindow)!;
+            var mainWindowVM = (mainWindow.DataContext as MainWindowVM);
+            mainWindowVM.OnPropertyChanged(nameof(mainWindowVM.Reports40));
         }
         catch (Exception ex)
         {

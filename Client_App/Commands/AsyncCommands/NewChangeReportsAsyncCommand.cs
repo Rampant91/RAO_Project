@@ -51,9 +51,12 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
                     var form40VM = new Form_40VM(formNum, report);
                     var window = new Form_40(form40VM) { DataContext = form40VM };
                     await window.ShowDialog(mainWindow);
+                    mainWindowVM.OnPropertyChanged(nameof(mainWindowVM.Reports40));
                     break;
+
                 }
         }
+        
 
     }
 }
