@@ -18,6 +18,7 @@ using MessageBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form1;
+using Models.Forms.Form4;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -414,31 +415,17 @@ public partial class Form_41 : BaseWindow<Form_41VM>
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
         List<Form> formToDeleteList = [];
-        var lst = vm.Report[vm.FormType].ToList<Form11>();
+        var lst = vm.Report[vm.FormType].ToList<Form41>();
         foreach (var form in lst)
         {
-            if (string.IsNullOrWhiteSpace(form.OperationCode_DB)
-                && string.IsNullOrWhiteSpace(form.OperationDate_DB)
-                && string.IsNullOrWhiteSpace(form.PassportNumber_DB)
-                && string.IsNullOrWhiteSpace(form.Type_DB)
-                && string.IsNullOrWhiteSpace(form.Radionuclids_DB)
-                && string.IsNullOrWhiteSpace(form.FactoryNumber_DB)
-                && form.Quantity_DB is null
-                && string.IsNullOrWhiteSpace(form.Activity_DB)
-                && string.IsNullOrWhiteSpace(form.CreatorOKPO_DB)
-                && string.IsNullOrWhiteSpace(form.CreationDate_DB)
-                && form.Category_DB is null
-                && form.SignedServicePeriod_DB is null
-                && form.PropertyCode_DB is null
-                && string.IsNullOrWhiteSpace(form.Owner_DB)
-                && form.DocumentVid_DB is null
-                && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
-                && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
-                && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
-                && string.IsNullOrWhiteSpace(form.TransporterOKPO_DB)
-                && string.IsNullOrWhiteSpace(form.PackName_DB)
-                && string.IsNullOrWhiteSpace(form.PackType_DB)
-                && string.IsNullOrWhiteSpace(form.PackNumber_DB))
+            if (string.IsNullOrWhiteSpace(form.RegNo_DB)
+                && string.IsNullOrWhiteSpace(form.Okpo_DB)
+                && string.IsNullOrWhiteSpace(form.OrganizationName_DB)
+                && string.IsNullOrWhiteSpace(form.LicenseOrRegistrationInfo_DB)
+                && form.NumOfFormsWithInventarizationInfo_DB is 0
+                && form.NumOfFormsWithoutInventarizationInfo_DB is 0
+                && form.NumOfForms212_DB is 0
+                && string.IsNullOrWhiteSpace(form.Note_DB))
             {
                 formToDeleteList.Add(form);
             }

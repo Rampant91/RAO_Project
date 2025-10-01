@@ -1,19 +1,21 @@
 ﻿using Avalonia.Controls;
 using Client_App.Commands.AsyncCommands.SumRow;
+using Client_App.Resources;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
+using Client_App.ViewModels.Forms.Forms4;
 using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
+using Client_App.Views.Forms.Forms4;
 using Client_App.VisualRealization.Long_Visual;
 using Models.Collections;
+using Models.DBRealization;
 using Models.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using Client_App.Resources;
-using Client_App.ViewModels.Forms.Forms4;
-using Client_App.Views.Forms.Forms4;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -68,8 +70,10 @@ public class NewChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAs
     {
         if (parameter is Report report)
         {
+
             var t = Desktop.MainWindow as MainWindow;
             var numForm = report.FormNum.Value;
+            report = await ReportsStorage.GetReportAsync(report.Id);
             switch (numForm)
             {
                 case "1.1":

@@ -363,15 +363,15 @@ public partial class Form41 : Form
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(RegNo), out var value))
+            if (Dictionary.TryGetValue(nameof(Note), out var value))
             {
-                ((RamAccess<string>)value).Value = RegNo_DB;
+                ((RamAccess<string>)value).Value = Note_DB;
                 return (RamAccess<string>)value;
             }
-            var rm = new RamAccess<string>(Note_Validation, RegNo_DB);
+            var rm = new RamAccess<string>(Note_Validation, Note_DB);
             rm.PropertyChanged += Note_ValueChanged;
-            Dictionary.Add(nameof(RegNo), rm);
-            return (RamAccess<string>)Dictionary[nameof(RegNo)];
+            Dictionary.Add(nameof(Note), rm);
+            return (RamAccess<string>)Dictionary[nameof(Note)];
         }
         set
         {
