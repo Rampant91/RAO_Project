@@ -1,5 +1,5 @@
 <Window
-    x:Class="Client_App.Form_41"
+    x:Class="Client_App.Views.Forms.Forms4.Form_41"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"

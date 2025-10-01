@@ -18,6 +18,7 @@ using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
+using Client_App.Views.Forms.Forms4;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Models.Collections;
 using ReactiveUI;
@@ -110,17 +111,50 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         {
             _selectedReports = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(ReportList));
         }
     }
 
     #endregion
 
+    #region ReportList
+    
+    public ObservableCollection<Report> ReportList
+    {
+        get
+        {
+            if (SelectedReports is null) return null;
+
+            return SelectedReports.Report_Collection;
+        }
+    }
+
+    #endregion
+
+    #region SelectedReport
+
+    private Report? _selectedReport;
+    public Report? SelectedReport
+    {
+        get
+        {
+            return _selectedReport;
+        }
+        set
+        {
+            _selectedReport = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
 
     #region UpdateReports
     public void UpdateReports()
     {
         OnPropertyChanged(nameof(ReportsStorage.LocalReports));
         OnPropertyChanged(nameof(Reports40));
+        OnPropertyChanged(nameof(ReportList));
     }
 
     #endregion
@@ -144,16 +178,19 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
     #region Commands
 
-    public ICommand AddForm { get; set; }                           //  Создать и открыть новое окно формы для выбранной организации
+    public ICommand AddForm { get; set; }                           //  Создать и открыть новое окно формы для выбранной организации (1.0, 2.0)
+    public ICommand NewAddForm { get; set; }                        //  Создать и открыть новое окно формы для выбранной организации (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
     public ICommand AddReports { get; set; }                        //  Создать и открыть новое окно формы организации (1.0, 2.0, 4.0)
-    public ICommand ChangeForm { get; set; }                        //  Открыть окно редактирования выбранной формы
+    public ICommand ChangeForm { get; set; }                        //  Открыть окно редактирования выбранной формы (1.0, 2.0)
+    public ICommand NewChangeForm { get; set; }                        //  Открыть окно редактирования выбранной формы (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
     public ICommand ChangePasFolder { get; set; }                   //  Excel -> Паспорта -> Изменить расположение паспортов по умолчанию
     public ICommand ChangeReports { get; set; }                     //  Изменить Формы организации (1.0 и 2.0)
     public ICommand NewChangeReports { get; set; }                  //  Изменить Формы организации (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
     public ICommand ExcelExportCheckAllForms { get; set; }          //  Проверить все формы у организации
     public ICommand CheckFormFromMain { get; set; }                 //  Проверить форму
-    public ICommand DeleteForm { get; set; }                        //  Удалить выбранную форму у выбранной организации
-    public ICommand DeleteReports { get; set; }                     //  Удалить выбранную организацию
+    public ICommand DeleteForm { get; set; }                        //  Удалить выбранную форму у выбранной организации (1.0, 2.0)
+    public ICommand NewDeleteForm { get; set; }                     //  Удалить выбранную форму у выбранной организации  (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
+    public ICommand DeleteReports { get; set; }                     //  Удалить выбранную организацию (1.0, 2.0, 4.0)
 
     /// <summary>
     /// Excel -> Все формы и Excel -> Выбранная организация -> Все формы
@@ -264,7 +301,6 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                                                                             //public ICommand UnaccountedRad { get; set; }                    
                                                                             //  Радионуклиды, отсутствующие в справочнике
 
-    public ICommand Open41StubWindow { get; set; } //Используется чтобы открыть заглушку формы 41 (Потом удалить)
 
     #endregion
 
@@ -273,13 +309,16 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public MainWindowVM()
     {
         AddForm = new AddFormAsyncCommand();
+        NewAddForm = new NewAddFormAsyncCommand();
         AddReports = new AddReportsAsyncCommand();
         ChangeForm = new ChangeFormAsyncCommand();
-        NewChangeReports = new NewChangeReportsAsyncCommand();
+        NewChangeForm = new NewChangeFormAsyncCommand();
         ChangePasFolder = new ChangePasFolderAsyncCommand();
         ChangeReports = new ChangeReportsAsyncCommand();
+        NewChangeReports = new NewChangeReportsAsyncCommand();
         CheckFormFromMain = new CheckFormFromMainAsyncCommand();
         DeleteForm = new DeleteFormAsyncCommand();
+        NewDeleteForm = new NewDeleteFormAsyncCommand();
         DeleteReports = new DeleteReportsAsyncCommand();
         ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand();
         ImportExcel = new ImportExcelAsyncCommand();
@@ -291,14 +330,6 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         OpenCalculator = new OpenCalculatorAsyncCommand();
         OpenFile = new OpenFileAsyncCommand();
         OpenFolder = new OpenFolderAsyncCommand();
-
-        Open41StubWindow = ReactiveCommand.Create(() =>
-        {
-            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                var window = new Form_41();
-            }
-        });
 
     }
 

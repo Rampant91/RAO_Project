@@ -441,12 +441,15 @@
 						<Grid RowDefinitions="*,*" ColumnDefinitions="5*,3*" >
 							<Grid Grid.Row ="0" Grid.Column="0" RowDefinitions="Auto,*,Auto">
 								<TextBox Grid.Row="0" Margin="5" Watermark ="Поиск..." />
-								<DataGrid Grid.Row="1" Margin="5"
+								<!--Ошибка в этом DataGrid-->
+								<DataGrid 
+									      Grid.Row="1" Margin="5"
 					                      x:CompileBindings="True"
 									      Items="{Binding Reports40}"
 										  SelectionMode="Single"
 										  SelectedItem="{Binding SelectedReports}"
-										  RowHeight="25">
+										  RowHeight="25"
+										  GridLinesVisibility="All">
 										
 							        <DataGrid.ContextMenu>
 										<ContextMenu>
@@ -551,12 +554,26 @@
 								</Border>
 							</Grid>
 							<StackPanel Grid.Row ="0" Grid.Column="1" Margin="5">
-							    <Button Command="{Binding AddForm}"
+							    <Button Command="{Binding NewAddForm}"
 										CommandParameter="4.1"
 										Content="Форма 4.1"></Button>
 							</StackPanel>
 							<Grid Grid.Row ="1" Grid.Column="0" Grid.ColumnSpan="2" RowDefinitions="*,Auto" >
-								<DataGrid Grid.Row="0" Margin="5">
+								<DataGrid Grid.Row="0" Margin="5"
+										  Items="{Binding ReportList}"
+										  SelectedItem="{Binding SelectedReport}"
+										  RowHeight="25"
+										  GridLinesVisibility="All">
+									<DataGrid.ContextMenu>
+										<ContextMenu>
+											<MenuItem Header="Редактировать форму"
+													  Command="{Binding NewChangeForm}"
+													  CommandParameter="{Binding SelectedReport}"/>
+											<MenuItem Header="Удалить форму"
+													  Command="{Binding NewDeleteForm}"
+													  CommandParameter="{Binding SelectedReport}"/>
+										</ContextMenu>
+									</DataGrid.ContextMenu>
 
 									<DataGrid.Columns>
 									    <DataGridTextColumn

@@ -61,7 +61,7 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
         try
         {
-                var db = StaticConfiguration.DBModel;
+            var db = StaticConfiguration.DBModel;
             db.ReportCollectionDbSet.Remove(reports.Master_DB);
             db.ReportsCollectionDbSet.Remove(reports);
             await db.SaveChangesAsync();
