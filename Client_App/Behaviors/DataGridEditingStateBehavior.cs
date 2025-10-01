@@ -28,8 +28,6 @@ public class DataGridEditingStateBehavior : Behavior<DataGrid>
         base.OnAttached();
         if (AssociatedObject is null) return;
 
-        AssociatedObject.BeginningEdit += OnBeginningEdit;
-        AssociatedObject.CellEditEnded += OnCellEditEnded;
         AssociatedObject.LostFocus += OnLostFocus;
         AssociatedObject.LoadingRow += OnLoadingRow; // ensure edits end update
 
@@ -43,8 +41,6 @@ public class DataGridEditingStateBehavior : Behavior<DataGrid>
     {
         if (AssociatedObject is not null)
         {
-            AssociatedObject.BeginningEdit -= OnBeginningEdit;
-            AssociatedObject.CellEditEnded -= OnCellEditEnded;
             AssociatedObject.LostFocus -= OnLostFocus;
             AssociatedObject.LoadingRow -= OnLoadingRow;
             AssociatedObject.RemoveHandler(InputElement.GotFocusEvent, OnGotFocus);
@@ -53,21 +49,11 @@ public class DataGridEditingStateBehavior : Behavior<DataGrid>
         base.OnDetaching();
     }
 
-    private void OnBeginningEdit(object? sender, DataGridBeginningEditEventArgs e)
-    {
-        IsEditing = true;
-    }
-
-    private void OnCellEditEnded(object? sender, DataGridCellEditEndedEventArgs e)
-    {
-        // End of a cell edit (Commit or Cancel)
-        IsEditing = false;
-    }
-
     private void OnLostFocus(object? sender, RoutedEventArgs e)
     {
         // When the grid loses focus, ensure we don't stay stuck in editing state
         IsEditing = false;
+        
     }
 
     private void OnLoadingRow(object? sender, DataGridRowEventArgs e)

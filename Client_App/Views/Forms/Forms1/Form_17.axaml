@@ -213,8 +213,11 @@
 
 					<!--Первый уровень заголовков-->
 
-					<Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3">
-						<TextBlock></TextBlock>
+                    <Border Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" BorderThickness="1,1,1,0">
+                        <TextBlock># п/п</TextBlock>
+                    </Border>
+					<Border Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2" BorderThickness="1,1,1,0">
+						<TextBlock>Сведения об операции</TextBlock>
 					</Border>
 					<Border Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="10">
 						<TextBlock>Сведения об упаковке</TextBlock>
@@ -243,11 +246,11 @@
 
 					<!--Второй уровень заголовков-->
 
-					<Border Grid.Column="0" Grid.Row="1">
+					<Border Grid.Column="0" Grid.Row="1" BorderThickness="1,0,1,0">
 						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2">
-						<TextBlock>Сведения об операции</TextBlock>
+					<Border Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" BorderThickness="1,0,1,1">
+						<TextBlock></TextBlock>
 					</Border>
 					<Border Grid.Column="3" Grid.Row="1">
 						<TextBlock></TextBlock>
@@ -318,8 +321,8 @@
 
 					<!--Третий уровень заголовков-->
 
-					<Border Grid.Column="0" Grid.Row="2">
-						<TextBlock>№ п/п</TextBlock>
+					<Border Grid.Column="0" Grid.Row="2" BorderThickness="1,0,1,1">
+						<TextBlock></TextBlock>
 					</Border>
 					<Border Grid.Column="1" Grid.Row="2">
 						<TextBlock>код</TextBlock>

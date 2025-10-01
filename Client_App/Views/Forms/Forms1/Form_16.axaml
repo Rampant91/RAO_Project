@@ -247,7 +247,7 @@
 						<TextBlock>ОКПО</TextBlock>
 					</Border>
 					<Border Grid.Column="19" Grid.Row="0" Grid.ColumnSpan="2">
-						<TextBlock>Прибор (установка), УКТ или иная упаковка</TextBlock>
+						<TextBlock>Пункт хранения</TextBlock>
 					</Border>
 					<Border Grid.Column="21" Grid.Row="0">
 						<TextBlock></TextBlock>
@@ -283,13 +283,13 @@
 						<TextBlock>Статус РАО</TextBlock>
 					</Border>
 					<Border Grid.Column="5" Grid.Row="1">
-						<TextBlock>объем без упаковки, куб.</TextBlock>
+						<TextBlock>объем без упаковки, куб.м</TextBlock>
 					</Border>
 					<Border Grid.Column="6" Grid.Row="1">
-						<TextBlock>масса без упаковки</TextBlock>
+						<TextBlock>масса без упаковки (нетто), т</TextBlock>
 					</Border>
 					<Border Grid.Column="7" Grid.Row="1">
-						<TextBlock>Количество ОЗИИИ</TextBlock>
+						<TextBlock>Количество ОЗРИ, шт.</TextBlock>
 					</Border>
 					<Border Grid.Column="8" Grid.Row="1">
 						<TextBlock>Основные радионуклиды</TextBlock>
@@ -298,10 +298,10 @@
 						<TextBlock>тритий</TextBlock>
 					</Border>
 					<Border Grid.Column="10" Grid.Row="1">
-						<TextBlock>бета-, гамма-излучающие радионуклиды (исключая</TextBlock>
+						<TextBlock>бета-, гамма-излучающие радионуклиды (исключая тритий)</TextBlock>
 					</Border>
 					<Border Grid.Column="11" Grid.Row="1">
-						<TextBlock>альфа-излучающие радионуклиды (исключая</TextBlock>
+						<TextBlock>альфа-излучающие радионуклиды (исключая трансурановые)</TextBlock>
 					</Border>
 					<Border Grid.Column="12" Grid.Row="1">
 						<TextBlock>трансурановые радионуклиды</TextBlock>
@@ -331,7 +331,7 @@
 						<TextBlock>код</TextBlock>
 					</Border>
 					<Border Grid.Column="21" Grid.Row="1">
-						<TextBlock>Код переработки /</TextBlock>
+						<TextBlock>Код переработки / сортировки РАО</TextBlock>
 					</Border>
 					<Border Grid.Column="22" Grid.Row="1">
 						<TextBlock>наименование</TextBlock>
@@ -340,8 +340,8 @@
 						<TextBlock>тип</TextBlock>
 					</Border>
 					<Border Grid.Column="24" Grid.Row="1">
-						<TextBlock>номер упаковки</TextBlock>
-					</Border>
+                        <TextBlock>заводской номер</TextBlock>
+                    </Border>
 					<Border Grid.Column="25" Grid.Row="1">
 						<TextBlock>Субсидия, %</TextBlock>
 					</Border>
