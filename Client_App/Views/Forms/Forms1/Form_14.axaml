@@ -317,7 +317,7 @@
 						<TextBlock>тип</TextBlock>
 					</Border>
 					<Border Grid.Column="21" Grid.Row="1">
-						<TextBlock>номер упаковки</TextBlock>
+						<TextBlock>номер</TextBlock>
 					</Border>
 		        </Grid>
 

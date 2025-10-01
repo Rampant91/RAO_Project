@@ -225,7 +225,7 @@
 						<TextBlock>Сведения об операции</TextBlock>
 					</Border>
 					<Border Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="7">
-						<TextBlock>Сведения из паспорта на изделие из обедненного урана</TextBlock>
+						<TextBlock>Сведения об отработавших закрытых источниках ионизирующего излучения</TextBlock>
 					</Border>
 					<Border Grid.Column="10" Grid.Row="0">
 						<TextBlock></TextBlock>
@@ -237,7 +237,7 @@
 						<TextBlock>Код ОКПО</TextBlock>
 					</Border>
 					<Border Grid.Column="16" Grid.Row="0" Grid.ColumnSpan="3">
-						<TextBlock>Прибор (установка), УКТ или иная упаковка</TextBlock>
+						<TextBlock>Прибор (установка), УКТ, контейнер или иная упаковка</TextBlock>
 					</Border>
 					<Border Grid.Column="19" Grid.Row="0" Grid.ColumnSpan="2">
 						<TextBlock>Пункт хранения</TextBlock>
@@ -321,7 +321,7 @@
 						<TextBlock>код</TextBlock>
 					</Border>
 					<Border Grid.Column="21" Grid.Row="1">
-						<TextBlock>Код переработки/сортировки РАО</TextBlock>
+						<TextBlock>Код переработки / сортировки РАО</TextBlock>
 					</Border>
 					<Border Grid.Column="22" Grid.Row="1">
 						<TextBlock>Субсидия, %</TextBlock>
