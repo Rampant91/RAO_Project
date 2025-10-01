@@ -623,7 +623,7 @@ public abstract class CheckF14 : CheckBase
 
     #region Check022
 
-    //Дата документа входит в отчетный период с учетом срока подачи отчета в днях (графа 3)
+    //Дата операции входит в отчетный период с учетом срока подачи отчета в днях (графа 3)
     private static List<CheckError> Check_022(List<Form14> forms, Report rep, int line)
     {
         List<CheckError> result = new();
@@ -638,7 +638,28 @@ public abstract class CheckF14 : CheckBase
         {
             return result;
         }
-        var valid = opDate >= pStart && opDate <= pEnd;
+
+        var repCollection = rep.Reports.Report_Collection.ToList().FindAll(x => x.FormNum_DB == rep.FormNum_DB);
+        var repIndex = repCollection.IndexOf(rep);
+        var previousRepExist = repIndex + 1 < repCollection.Count;
+
+        if (opDate == pStart && previousRepExist)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_14",
+                Row = (line + 1).ToString(),
+                Column = "OperationDate_DB",
+                Value = opDateStr,
+                Message = "Дата операции не должна совпадать с датой начала периода, " +
+                          "если имеется хотя бы один более ранний отчёт по данной форме. " +
+                          "См. приказ №1/1623-П раздел 5.2.",
+                IsCritical = true
+            });
+            return result;
+        }
+
+        var valid = opDate > pStart && opDate <= pEnd;
         if (!valid)
         {
             result.Add(new CheckError

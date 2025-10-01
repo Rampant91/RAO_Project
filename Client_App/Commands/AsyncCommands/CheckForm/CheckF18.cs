@@ -479,13 +479,37 @@ public abstract class CheckF18 : CheckBase
         List<CheckError> result = new();
         string[] nonApplicableOperationCodes = { "10", "01" };
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
-        var operationDate = ReplaceNullAndTrim(forms[line].OperationDate_DB);
-        if (nonApplicableOperationCodes.Contains(operationCode)) return result;
-        var valid = rep is { StartPeriod_DB: not null, EndPeriod_DB: not null }
-                    && DateOnly.TryParse(rep.StartPeriod_DB, out var pStart)
-                    && DateOnly.TryParse(rep.EndPeriod_DB, out var pEnd)
-                    && DateOnly.TryParse(operationDate, out var pMid)
-                    && pMid >= pStart && pMid <= pEnd;
+        var opDateStr = ReplaceNullAndTrim(forms[line].OperationDate_DB);
+        if (nonApplicableOperationCodes.Contains(operationCode)
+            || !(rep is { StartPeriod_DB: not null, EndPeriod_DB: not null }
+                 && DateOnly.TryParse(rep.StartPeriod_DB, out var pStart)
+                 && DateOnly.TryParse(rep.EndPeriod_DB, out var pEnd)
+                 && DateOnly.TryParse(opDateStr, out var opDate)))
+        {
+            return result;
+        }
+
+        var repCollection = rep.Reports.Report_Collection.ToList().FindAll(x => x.FormNum_DB == rep.FormNum_DB);
+        var repIndex = repCollection.IndexOf(rep);
+        var previousRepExist = repIndex + 1 < repCollection.Count;
+
+        if (opDate == pStart && previousRepExist)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_18",
+                Row = (line + 1).ToString(),
+                Column = "OperationDate_DB",
+                Value = opDateStr,
+                Message = "Дата операции не должна совпадать с датой начала периода, " +
+                          "если имеется хотя бы один более ранний отчёт по данной форме. " +
+                          "См. приказ №1/1623-П раздел 5.2.",
+                IsCritical = true
+            });
+            return result;
+        }
+
+        var valid = opDate > pStart && opDate <= pEnd;
         if (!valid)
         {
             result.Add(new CheckError
@@ -493,7 +517,7 @@ public abstract class CheckF18 : CheckBase
                 FormNum = "form_18",
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "OperationDate_DB",
-                Value = operationDate,
+                Value = opDateStr,
                 Message = "Дата операции не входит в отчетный период.",
                 IsCritical = true
             });
