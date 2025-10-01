@@ -10,7 +10,6 @@
 	xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
     xmlns:forms1="clr-namespace:Models.Forms.Form1;assembly=Models"
     xmlns:forms="clr-namespace:Models.Forms;assembly=Models"
-    xmlns:dbRealization="clr-namespace:Models.DBRealization;assembly=Models"
     Title="{Binding WindowTitle}"
     d:DesignHeight="450"
     d:DesignWidth="900"
@@ -403,7 +402,8 @@
 
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding OperationCode.Value, Mode=TwoWay}"/>
+                                    <TextBox LostFocus="OperationCodeTextBox_OnLostFocus"
+                                             Text="{Binding OperationCode.Value, Mode=TwoWay}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
