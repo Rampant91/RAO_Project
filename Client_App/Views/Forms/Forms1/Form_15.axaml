@@ -380,7 +380,8 @@
 							</DataGridTemplateColumn.HeaderTemplate>
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate x:DataType="forms1:Form15">
-									<TextBox LostFocus="OperationCodeTextBox_OnLostFocus"
+									<TextBox GotFocus="OperationCodeTextBox_OnGotFocus"
+											 LostFocus="OperationCodeTextBox_OnLostFocus"
 										     Text="{Binding OperationCode.Value, Mode=TwoWay}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
