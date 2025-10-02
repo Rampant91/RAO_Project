@@ -15,13 +15,11 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Avalonia.Xaml.Interactivity;
 using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.VisualRealization.Converters;
 using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
-using Client_App.Controls.AutoCompleteBox;
 
 namespace Client_App.Controls.DataGrid;
 
@@ -975,7 +973,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 item.ChooseColor = (SolidColorBrush)Background;
             }
             SelectedCells.Clear();
-            
+            ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new();
+
             var tmp2 = Rows
                 .Where(x => x.IsVisible)
                 .SelectMany(x => x.Children)
@@ -985,8 +984,9 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 var item = (Cell)control;
                 item.ChooseColor = (SolidColorBrush)ChooseColor;
                 SelectedCells.Add(item);
+                tmpSelectedItems.Add((T)item.DataContext);
             }
-            ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = [(T)tmp2.First().DataContext];
+            //tmpSelectedItems.Add((T)((Cell)tmp2.FirstOrDefault()).DataContext);
             SelectedItems = tmpSelectedItems;
         }
         else
