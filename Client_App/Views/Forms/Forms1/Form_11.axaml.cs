@@ -496,16 +496,4 @@ public partial class Form_11 : BaseWindow<Form_11VM>
     #endregion
 
     #endregion
-
-    #region OperationCodeTextBox_OnLostFocus
-    
-    private void OperationCodeTextBox_OnLostFocus(object? sender, RoutedEventArgs e)
-    {
-        if (sender is TextBox { Text: "41" } textBox)
-        {
-            textBox.Text = string.Empty;
-        }
-    }
-
-    #endregion
 }

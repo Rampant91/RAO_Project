@@ -261,7 +261,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                 case "1.5":
                 {
                     var form15 = Storage.Rows.Get<Form15>(i + start);
-                    form15.OperationCode.Value = parsedRows[i][1];
+                    form15.OperationCode.Value = parsedRows[i][1] is "41" ? string.Empty : "41";
                     form15.OperationDate.Value = parsedRows[i][2];
                     form15.PassportNumber.Value = parsedRows[i][3];
                     form15.Type.Value = parsedRows[i][4];
@@ -306,7 +306,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                 case "1.6":
                 {
                     var form16 = Storage.Rows.Get<Form16>(i + start);
-                    form16.OperationCode.Value = parsedRows[i][1];
+                    form16.OperationCode.Value = parsedRows[i][1] is "41" ? string.Empty : "41";
                     form16.OperationDate.Value = parsedRows[i][2];
                     form16.CodeRAO.Value = parsedRows[i][3];
                     form16.StatusRAO.Value = parsedRows[i][4];
