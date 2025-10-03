@@ -30,7 +30,8 @@ public class SortFormSyncCommand : BaseCommand
     public override void Execute(object? parameter)
     {
         var formNum = Report.FormNum_DB;
-        var minItem = (long)(parameter ?? Report[formNum].GetEnumerable().Min(x => x.Order));
+        var enumerable = Report[formNum].GetEnumerable();
+        var minItem = (long)(parameter ?? enumerable.Min(x => x.Order));
         switch (formNum)
         {
             case "2.1":

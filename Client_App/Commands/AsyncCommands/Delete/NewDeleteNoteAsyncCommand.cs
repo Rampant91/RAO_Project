@@ -65,6 +65,7 @@ public class NewDeleteNoteAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                 }
             }
             await Storage.SortAsync();
+            formVM.UpdateNoteList();
         }
     }
 }

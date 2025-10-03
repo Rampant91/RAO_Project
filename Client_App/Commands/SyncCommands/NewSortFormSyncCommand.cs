@@ -15,55 +15,25 @@ public class NewSortFormSyncCommand(BaseFormVM formVM) : BaseCommand
     public override void Execute(object? parameter)
     {
         var formNum = Storage.FormNum_DB;
-        var minItem = (long)(parameter ?? Storage[formNum].GetEnumerable().Min(x => x.Order));
-        switch (formNum)
+        var enumerable = Storage[formNum].GetEnumerable();
+        if (enumerable is null) return;
+        if (enumerable.Count() <= 0) return;
+
+        var minItem = enumerable.Min(x => x.Order);
+
+
+        Storage.Sort();
+        var itemQ = Storage.Rows
+            .GetEnumerable()
+            .Where(x => x.Order >= minItem)
+            .Select(x => (Form)x)
+            .ToArray();
+        foreach (var form in itemQ)
         {
-            case "2.1":
-            {
-                var count = 1;
-                var rows = Storage[formNum]
-                    .GetEnumerable()
-                    .Cast<Form21>()
-                    .ToArray();
-                foreach (var row in rows)
-                {
-                    row.NumberInOrder_DB = count;
-                    count++;
-                    row.NumberInOrderSum_DB = string.Empty;
-                }
-                break;
-            }
-            case "2.2":
-            {
-                var count = 1;
-                var rows = Storage[formNum]
-                    .GetEnumerable()
-                    .Cast<Form22>()
-                    .ToArray();
-                foreach (var row in rows)
-                {
-                    row.NumberInOrder_DB = count;
-                    count++;
-                    row.NumberInOrderSum_DB = string.Empty;
-                }
-                break;
-            }
-            default:
-            {
-                Storage.Sort();
-                var itemQ = Storage.Rows
-                    .GetEnumerable()
-                    .Where(x => x.Order >= minItem)
-                    .Select(x => (Form)x)
-                    .ToArray();
-                foreach (var form in itemQ)
-                {
-                    form.NumberInOrder_DB = (int)minItem;
-                    form.NumberInOrder.OnPropertyChanged();
-                    minItem++;
-                }
-                break;
-            }
+            form.NumberInOrder_DB = (int)minItem;
+            form.NumberInOrder.OnPropertyChanged();
+            minItem++;
         }
+
     }
 }

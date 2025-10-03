@@ -6,6 +6,7 @@ using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.Commands.AsyncCommands.SwitchReport;
 using Client_App.Commands.SyncCommands;
+using Client_App.ViewModels.Controls;
 using Models.Collections;
 using Models.Forms;
 using System;
@@ -317,6 +318,15 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
+    private SelectReportPopupVM _selectReportVM;
+    public SelectReportPopupVM SelectReportPopupVM
+    {
+        get
+        {
+            return _selectReportVM;
+        }
+    }
+
     #endregion
 
     #region Constructors
@@ -332,6 +342,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         UpdatePageInfo();
         NoteList = Report.Notes;
         SubscribeSelectedForms(_selectedForms);
+        _selectReportVM = new SelectReportPopupVM(this);
     }
 
     #endregion
@@ -357,9 +368,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand CopyNotes => new NewCopyNotesAsyncCommand();
     public ICommand PasteNotes => new NewPasteNotesAsyncCommand(this);
     public ICommand DeleteNotes => new NewDeleteNoteAsyncCommand(this);
-    public ICommand SwitchToNextReport => new SwitchToNextReportAsyncCommand(this);
     public ICommand SwitchToSelectedReport => new SwitchToSelectedReportAsyncCommand(this);
-    public ICommand SwitchToPreviousReport => new SwitchToPreviousReportAsyncCommand(this);
 
     #endregion
 
@@ -389,6 +398,15 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     {
         OnPropertyChanged(nameof(AnyRowSelected));
         OnPropertyChanged(nameof(OnlyOneRowSelected));
+    }
+
+    #endregion
+
+    #region  UpdateNoteList
+
+    public void UpdateNoteList()
+    {
+        NoteList = new ObservableCollection<Note>( Report.Notes.ToList<Note>());
     }
 
     #endregion
