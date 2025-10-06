@@ -66,6 +66,9 @@ public class ExcelExportExecutorsAsyncCommand : ExcelExportListOfFormsBaseAsyncC
         progressBarVM.SetProgressBar(55, "Обработка форм 2");
         await GetExecutorsList2(db, excelPackage, cts);
 
+        progressBarVM.SetProgressBar(75, "Обработка форм 4");
+        await GetExecutorsList4(db, excelPackage, cts);
+
         progressBarVM.SetProgressBar(95, "Сохранение");
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
 
@@ -162,6 +165,16 @@ public class ExcelExportExecutorsAsyncCommand : ExcelExportListOfFormsBaseAsyncC
                 Worksheet.Cells[1, 9].Value = "Телефон";
                 Worksheet.Cells[1, 10].Value = "Электронная почта";
                 break;
+            case '4':
+                Worksheet.Cells[1, 1].Value = "Сокращенное наименование";
+                Worksheet.Cells[1, 2].Value = "Форма";
+                Worksheet.Cells[1, 3].Value = "Отчетный год";
+                Worksheet.Cells[1, 4].Value = "Номер корректировки";
+                Worksheet.Cells[1, 5].Value = "ФИО исполнителя";
+                Worksheet.Cells[1, 6].Value = "Должность";
+                Worksheet.Cells[1, 7].Value = "Телефон";
+                Worksheet.Cells[1, 8].Value = "Электронная почта";
+                break;
         }
         if (OperatingSystem.IsWindows())
         {
@@ -207,6 +220,16 @@ public class ExcelExportExecutorsAsyncCommand : ExcelExportListOfFormsBaseAsyncC
                 Worksheet.Cells[_currentRow, 8].Value = rep.GradeExecutor_DB;
                 Worksheet.Cells[_currentRow, 9].Value = rep.ExecPhone_DB;
                 Worksheet.Cells[_currentRow, 10].Value = rep.ExecEmail_DB;
+                break;
+            case '4':
+                Worksheet.Cells[_currentRow, 1].Value = CurrentReports.Master.Rows40[0].ShortNameRiac.Value;
+                Worksheet.Cells[_currentRow, 2].Value = rep.FormNum_DB;
+                Worksheet.Cells[_currentRow, 3].Value = rep.Year_DB;
+                Worksheet.Cells[_currentRow, 4].Value = rep.CorrectionNumber_DB;
+                Worksheet.Cells[_currentRow, 5].Value = rep.FIOexecutor_DB;
+                Worksheet.Cells[_currentRow, 6].Value = rep.GradeExecutor_DB;
+                Worksheet.Cells[_currentRow, 7].Value = rep.ExecPhone_DB;
+                Worksheet.Cells[_currentRow, 8].Value = rep.ExecEmail_DB;
                 break;
         }
         return Task.CompletedTask;
@@ -289,6 +312,47 @@ public class ExcelExportExecutorsAsyncCommand : ExcelExportListOfFormsBaseAsyncC
                          .OrderBy(x => x.FormNum_DB.Split('.')[1])
                          .ThenByDescending(x => DateOnly.TryParse(x.Year_DB, out var year) 
                              ? year 
+                             : DateOnly.MaxValue))
+            {
+                await FillExecutors(rep);
+                _currentRow++;
+            }
+        }
+    }
+
+    #endregion
+
+    #region GetExecutorsList4
+
+    /// <summary>
+    /// Получение списка исполнителей по формам отчётности 4.х.
+    /// </summary>
+    /// <param name="db">Модель БД.</param>
+    /// <param name="excelPackage">Excel пакет.</param>
+    /// <param name="cts">Токен.</param>
+    private async Task GetExecutorsList4(DBModel db, ExcelPackage excelPackage, CancellationTokenSource cts)
+    {
+        var repsList = await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.DBObservable)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows40)
+            .Include(reports => reports.Report_Collection)
+            .Where(x => x.DBObservable != null)
+            .ToListAsync(cts.Token);
+
+        _currentRow = 2;
+        Worksheet = excelPackage.Workbook.Worksheets.Add("Формы 4");
+        await FillExecutorsHeaders('4');
+        foreach (var reps in repsList)
+        {
+            CurrentReports = reps;
+            foreach (var rep in CurrentReports.Report_Collection
+                         .Where(x => x.FormNum_DB.Split('.')[0] == "4")
+                         .OrderBy(x => x.FormNum_DB.Split('.')[1])
+                         .ThenByDescending(x => DateOnly.TryParse(x.Year_DB, out var year)
+                             ? year
                              : DateOnly.MaxValue))
             {
                 await FillExecutors(rep);
