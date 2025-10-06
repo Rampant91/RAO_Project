@@ -576,9 +576,11 @@
 									</DataGrid.ContextMenu>
 
 									<DataGrid.Columns>
-									    <DataGridTextColumn
+										<DataGridTextColumn
+											    x:DataType="models:Report"
 											    Width="*"
-											    IsReadOnly="True">
+											    IsReadOnly="True"
+												Binding="{Binding FormNum.Value}">
 										    <DataGridTextColumn.HeaderTemplate>
 											    <DataTemplate>
 												    <Border Classes="headerTemplate">
@@ -590,9 +592,11 @@
 											    </DataTemplate>
 										    </DataGridTextColumn.HeaderTemplate>
 									    </DataGridTextColumn>
-									    <DataGridTextColumn
+										<DataGridTextColumn
+											    x:DataType="models:Report"
 											    Width="*"
-											    IsReadOnly="True">
+											    IsReadOnly="True"
+												Binding="{Binding Year.Value}">
 										    <DataGridTextColumn.HeaderTemplate>
 											    <DataTemplate>
 												    <Border Classes="headerTemplate">
@@ -604,9 +608,11 @@
 											    </DataTemplate>
 										    </DataGridTextColumn.HeaderTemplate>
 									    </DataGridTextColumn>
-									    <DataGridTextColumn
+										<DataGridTextColumn
+											    x:DataType="models:Report"
 											    Width="2*"
-											    IsReadOnly="True">
+											    IsReadOnly="True"
+												Binding="{Binding ExportDate.Value}">
 										    <DataGridTextColumn.HeaderTemplate>
 											    <DataTemplate>
 												    <Border Classes="headerTemplate">
@@ -618,9 +624,11 @@
 											    </DataTemplate>
 										    </DataGridTextColumn.HeaderTemplate>
 									    </DataGridTextColumn>
-									    <DataGridTextColumn
+										<DataGridTextColumn
+											    x:DataType="models:Report"
 											    Width="2*"
-											    IsReadOnly="True">
+											    IsReadOnly="True"
+												Binding="{Binding CorrectionNumber.Value}">
 										    <DataGridTextColumn.HeaderTemplate>
 											    <DataTemplate>
 												    <Border Classes="headerTemplate">
@@ -632,9 +640,11 @@
 											    </DataTemplate>
 										    </DataGridTextColumn.HeaderTemplate>
 									    </DataGridTextColumn>
-									    <DataGridTextColumn
+										<DataGridTextColumn
+											    x:DataType="models:Report"
 											    Width="4*"
-											    IsReadOnly="True">
+											    IsReadOnly="False"
+												Binding="{Binding Comments.Value}">
 										    <DataGridTextColumn.HeaderTemplate>
 											    <DataTemplate>
 												    <Border Classes="headerTemplate">

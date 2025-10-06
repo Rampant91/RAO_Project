@@ -12,6 +12,8 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Client_App.Resources;
+using Client_App.ViewModels.Forms.Forms4;
+using Client_App.Views.Forms.Forms4;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -193,6 +195,13 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                     {
                         var form19VM = new Form_19VM(frm.Storage);
                         var window = new Form_19(form19VM);
+                        await window.ShowDialog(t);
+                        break;
+                    }
+                case "4.1":
+                    {
+                        var form19VM = new Form_41VM(frm.Storage);
+                        var window = new Form_41(form19VM);
                         await window.ShowDialog(t);
                         break;
                     }

@@ -19,6 +19,12 @@ namespace Client_App.ViewModels.Controls
             _formVM = formVM;
             _reportCollection = FormVM.Report.Reports.Report_Collection.ToList().FindAll(x => x.FormNum.Value == formVM.FormType);
             _selectedReport = Report;
+
+            // Если форма не 1.X, то в выпадающем меню будет отображаться год отчета
+
+            _yearMode = _selectedReport.FormNum.Value[0] != '1';
+            
+
             OpenPopupCommand = ReactiveCommand.Create(() =>
             {
                 PopupIsOpen = !PopupIsOpen;
@@ -46,6 +52,14 @@ namespace Client_App.ViewModels.Controls
                 OnPropertyChanged();
             }
         }
+
+        // Если форма не 1.X, то в выпадающем меню будет отображаться год отчета
+        private bool _yearMode;
+        public bool YearMode
+        {
+            get { return _yearMode; }
+        }
+
         private Report _selectedReport;
         public Report SelectedReport
         {

@@ -97,7 +97,7 @@ public partial class Form41 : Form
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Okpo_Validation, Okpo_DB);
-            rm.PropertyChanged += RegNo_ValueChanged;
+            rm.PropertyChanged += Okpo_ValueChanged;
             Dictionary.Add(nameof(Okpo), rm);
             return (RamAccess<string>)Dictionary[nameof(Okpo)];
         }
@@ -375,7 +375,7 @@ public partial class Form41 : Form
         }
         set
         {
-            RegNo_DB = ParseInnerText(value.Value);
+            Note_DB = ParseInnerText(value.Value);
             OnPropertyChanged();
         }
     }

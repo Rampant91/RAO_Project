@@ -54,19 +54,19 @@
 				<Border Classes="borderContainer">
 					<Grid Margin="5" RowDefinitions="*,*,*,*,*">
 
-						<Grid ColumnDefinitions="*,*,*"  Grid.Row="0">
+						<Grid ColumnDefinitions="*,*"  Grid.Row="0">
 							<TextBlock Grid.Column="0" Margin="5" >Отчетный период</TextBlock>
-							<TextBox Grid.Column="1" Text="{Binding Report.StartPeriod.Value}"/>
-							<CalendarDatePicker
-								Classes="buttonOnly"
-								Grid.Column="2"
-								SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource DateConverter}}"
-								Watermark="дд.мм.гггг"/>
+							<TextBox Grid.Column="1" Text="{Binding Report.Year.Value}"/>
 						</Grid>
 
 						<StackPanel Orientation="Horizontal" Grid.Row="1">
 							<Button Margin="5" Command="{Binding CheckForm}">Проверить</Button>
 							<Button Margin="5" Command="{Binding SaveReport}">Сохранить</Button>
+						</StackPanel>
+
+						<StackPanel  Orientation="Horizontal" Grid.Row="2">
+							<TextBlock Margin="5">Номер корректировки:</TextBlock>
+							<TextBox Margin="5" Width="75" Text="{Binding Path=Report.CorrectionNumber.Value}"/>
 						</StackPanel>
 					</Grid>
 				</Border>
@@ -110,6 +110,7 @@
 								Grid.Column="0"
 								Grid.ColumnSpan="2"
 								Margin="5"
+								Click="CopyExecutorData_Click"
 								Content="Скопировать данные предыдущей формы"/>
 					</Grid>
 				</Border>

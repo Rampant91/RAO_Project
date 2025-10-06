@@ -23,12 +23,10 @@ namespace Client_App.Commands.AsyncCommands;
 /// <summary>
 /// Открыть окно редактирования выбранной формы.
 /// </summary>
-/// <param name="formParam">Содержит коллекцию отчётов Parameter (костыль, оттуда мы всегда берём только один отчёт)
-/// и окно Window, которое нужно закрыть.</param>
-public class NewChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsyncCommand
+public class NewChangeFormAsyncCommand : BaseAsyncCommand
 {
     #region AsyncExecute
-    
+
     /// <summary>
     /// Используется при вызове из других команд
     /// </summary>
@@ -38,11 +36,7 @@ public class NewChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAs
     {
         if (parameter != null)
         {
-            await Execute();
-        }
-        else if (formParam != null)
-        {
-            await Execute(formParam.Window);
+            Execute(parameter);
         }
     }
 
@@ -55,13 +49,6 @@ public class NewChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAs
         await OpenReport(parameter);
     }
 
-    private Task Execute(Window? window = null)
-    {
-        window.Closed += WindowClosed;
-        window.Close();
-
-        return Task.CompletedTask;
-    }
 
     #endregion
 
@@ -74,18 +61,19 @@ public class NewChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAs
 
             var t = Desktop.MainWindow as MainWindow;
             var numForm = report.FormNum.Value;
-            using DBModel dBModel = new DBModel(StaticConfiguration.DBPath);
+            var dBModel = StaticConfiguration.DBModel;
             
             switch (numForm)
             {
                 case "1.1":
                     {
-                        report = dBModel.ReportCollectionDbSet
+                        var dbReport = dBModel.ReportCollectionDbSet
                             .AsSplitQuery()
                             .AsQueryable()
                             .Include(rep => rep.Rows11)
                             .Include(rep => rep.Reports)
                             .FirstOrDefault(x => x.Id == report.Id);
+                        report.Rows11 = dbReport.Rows11;
                         var form11VM = new Form_11VM(report);
                         var window = new Form_11(form11VM);
                         await window.ShowDialog(t);
@@ -93,12 +81,13 @@ public class NewChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAs
                     }
                 case "1.2":
                     {
-                        report = dBModel.ReportCollectionDbSet
+                        var dbReport = dBModel.ReportCollectionDbSet
                             .AsSplitQuery()
                             .AsQueryable()
                             .Include(rep => rep.Rows12)
                             .Include(rep => rep.Reports)
                             .FirstOrDefault(x => x.Id == report.Id);
+                        report.Rows12 = dbReport.Rows12;
                         var form12VM = new Form_12VM(report);
                         var window = new Form_12(form12VM);
                         await window.ShowDialog(t);
@@ -106,12 +95,13 @@ public class NewChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAs
                     }
                 case "1.3":
                     {
-                        report = dBModel.ReportCollectionDbSet
+                        var dbReport = dBModel.ReportCollectionDbSet
                             .AsSplitQuery()
                             .AsQueryable()
                             .Include(rep => rep.Rows13)
                             .Include(rep => rep.Reports)
                             .FirstOrDefault(x => x.Id == report.Id);
+                        report.Rows13 = dbReport.Rows13;
                         var form13VM = new Form_13VM(report);
                         var window = new Form_13(form13VM);
                         await window.ShowDialog(t);
@@ -119,12 +109,13 @@ public class NewChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAs
                     }
                 case "1.4":
                     {
-                        report = dBModel.ReportCollectionDbSet
+                        var dbReport = dBModel.ReportCollectionDbSet
                             .AsSplitQuery()
                             .AsQueryable()
                             .Include(rep => rep.Rows14)
                             .Include(rep => rep.Reports)
                             .FirstOrDefault(x => x.Id == report.Id);
+                        report.Rows14 = dbReport.Rows14;
                         var form14VM = new Form_14VM(report);
                         var window = new Form_14(form14VM);
                         await window.ShowDialog(t);
@@ -132,12 +123,13 @@ public class NewChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAs
                     }
                 case "1.5":
                     {
-                        report = dBModel.ReportCollectionDbSet
+                        var dbReport = dBModel.ReportCollectionDbSet
                             .AsSplitQuery()
                             .AsQueryable()
                             .Include(rep => rep.Rows15)
                             .Include(rep => rep.Reports)
                             .FirstOrDefault(x => x.Id == report.Id);
+                        report.Rows15 = dbReport.Rows15;
                         var form15VM = new Form_15VM(report);
                         var window = new Form_15(form15VM);
                         await window.ShowDialog(t);
@@ -145,12 +137,13 @@ public class NewChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAs
                     }
                 case "1.6":
                     {
-                        report = dBModel.ReportCollectionDbSet
+                        var dbReport = dBModel.ReportCollectionDbSet
                             .AsSplitQuery()
                             .AsQueryable()
                             .Include(rep => rep.Rows16)
                             .Include(rep => rep.Reports)
                             .FirstOrDefault(x => x.Id == report.Id);
+                        report.Rows16 = dbReport.Rows16;
                         var form16VM = new Form_16VM(report);
                         var window = new Form_16(form16VM);
                         await window.ShowDialog(t);
@@ -158,12 +151,13 @@ public class NewChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAs
                     }
                 case "1.7":
                     {
-                        report = dBModel.ReportCollectionDbSet
+                        var dbReport = dBModel.ReportCollectionDbSet
                             .AsSplitQuery()
                             .AsQueryable()
                             .Include(rep => rep.Rows17)
                             .Include(rep => rep.Reports)
                             .FirstOrDefault(x => x.Id == report.Id);
+                        report.Rows17 = dbReport.Rows17;
                         var form17VM = new Form_17VM(report);
                         var window = new Form_17(form17VM);
                         await window.ShowDialog(t);
@@ -171,12 +165,13 @@ public class NewChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAs
                     }
                 case "1.8":
                     {
-                        report = dBModel.ReportCollectionDbSet
+                        var dbReport = dBModel.ReportCollectionDbSet
                             .AsSplitQuery()
                             .AsQueryable()
                             .Include(rep => rep.Rows18)
                             .Include(rep => rep.Reports)
                             .FirstOrDefault(x => x.Id == report.Id);
+                        report.Rows18 = dbReport.Rows18;
                         var form18VM = new Form_18VM(report);
                         var window = new Form_18(form18VM);
                         await window.ShowDialog(t);
@@ -184,12 +179,13 @@ public class NewChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAs
                     }
                 case "1.9":
                     {
-                        report = dBModel.ReportCollectionDbSet
+                        var dbReport = dBModel.ReportCollectionDbSet
                             .AsSplitQuery()
                             .AsQueryable()
                             .Include(rep => rep.Rows19)
                             .Include(rep => rep.Reports)
                             .FirstOrDefault(x => x.Id == report.Id);
+                        report.Rows19 = dbReport.Rows19;
                         var form19VM = new Form_19VM(report);
                         var window = new Form_19(form19VM);
                         await window.ShowDialog(t);
@@ -197,12 +193,13 @@ public class NewChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAs
                     }
                 case "4.1":
                     {
-                        report = dBModel.ReportCollectionDbSet
+                        var dbReport = dBModel.ReportCollectionDbSet
                             .AsSplitQuery()
                             .AsQueryable()
                             .Include(rep => rep.Rows41)
                             .Include(rep => rep.Reports)
                             .FirstOrDefault(x => x.Id == report.Id);
+                        report.Rows41 = dbReport.Rows41;
                         var form41VM = new Form_41VM(report);
                         var window = new Form_41(form41VM);
                         await window.ShowDialog(t);
@@ -214,13 +211,4 @@ public class NewChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAs
 
     #endregion
 
-    #region Events
-
-    private async void WindowClosed(object? sender, System.EventArgs e)
-    {
-        if (formParam == null) return;
-        await OpenReport(formParam.Parameter).ConfigureAwait(false);
-    }
-
-    #endregion
 }

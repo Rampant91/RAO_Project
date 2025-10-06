@@ -27,8 +27,14 @@ public partial class SelectReportPopup : UserControl
     }
     public void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs args)
     {
-        Report newSelectedReport = (sender as ListBox).SelectedItem as Report; 
-        new SwitchToSelectedReportAsyncCommand(vm.FormVM).AsyncExecute(newSelectedReport);
+        Report newSelectedReport = (sender as ListBox).SelectedItem as Report;
+
+        // ѕри инициализации View Model формы происходит ложное срабатывание событи€
+        // ѕоэтому провер€ем был ли выбран элемент до срабатывани€,
+        // ≈сли нет то значит событие было вызвано при инициализации DataContext`а формы
+
+        if (args.RemovedItems.Count>0) // проверка прошлого выбранного итема.
+            new SwitchToSelectedReportAsyncCommand(vm.FormVM).AsyncExecute(newSelectedReport);
 
     }
 }

@@ -42,7 +42,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         {
             if (_selectedReportType != (byte)(value))
             {
-                SelectedReports = null; // узко специализрованное решение: очищает выбранную организациб при переключении на другую панель
+                SelectedReports = null; // узко специализрованное решение: очищает выбранную организацию при переключении на другую панель
                 _selectedReportType = (byte)(value);
                 OnPropertyChanged();
             }
