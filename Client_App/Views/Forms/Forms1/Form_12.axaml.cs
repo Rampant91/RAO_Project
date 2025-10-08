@@ -190,6 +190,12 @@ public partial class Form_12 : BaseWindow<Form_12VM>
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
+        args.Cancel = true; // Сразу запрещаем закрытие окна, т.к. из-за асинхроности окно может закрыться в любой момент
+
+
+        _isCloseConfirmed = true; // перед выходом из обработчика события стоит проверка на _isCloseConfirmed,
+                                  // если true, то окно закроется,
+                                  // если false, то не закроется
         if (DataContext is not Form_12VM vm) return;
 
         try
@@ -216,6 +222,12 @@ public partial class Form_12 : BaseWindow<Form_12VM>
             {
                 if (vm.SkipChangeTacking) vm.SkipChangeTacking = false;
                 desktop.MainWindow.WindowState = OwnerPrevState;
+
+                if (_isCloseConfirmed) //выход из обработчика события
+                {
+                    Closing -= OnStandardClosing;
+                    Close();
+                }
 
                 return;
             }
@@ -254,23 +266,20 @@ public partial class Form_12 : BaseWindow<Form_12VM>
         switch (res)
         {
             case "Да":
-            {
-                _isCloseConfirmed = true;
-                await dbm.SaveChangesAsync();
-                await new SaveReportAsyncCommand(vm).AsyncExecute(null);
-                if (desktop.Windows.Count == 1)
                 {
-                    desktop.MainWindow.WindowState = OwnerPrevState;
+                    await dbm.SaveChangesAsync();
+                    await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+                    if (desktop.Windows.Count == 1)
+                    {
+                        desktop.MainWindow.WindowState = OwnerPrevState;
+                    }
+                    break;
                 }
-                args.Cancel = false;
-                break;
-            }
             case "Нет":
-            {
-                _isCloseConfirmed = true;
-                dbm.Restore();
-                new SortFormSyncCommand(vm).Execute(null);
-                await dbm.SaveChangesAsync();
+                {
+                    dbm.Restore();
+                    new SortFormSyncCommand(vm).Execute(null);
+                    await dbm.SaveChangesAsync();
 
                     var lst = vm.Report[vm.FormType];
 
@@ -313,13 +322,16 @@ public partial class Form_12 : BaseWindow<Form_12VM>
                 break;
             }
             case "Отмена":
-            {
-                return;
-            }
+                {
+                    _isCloseConfirmed = false;
+                    return;
+                }
         }
         desktop.MainWindow.WindowState = OwnerPrevState;
-        if (_isCloseConfirmed)
+
+        if (_isCloseConfirmed)      //выход из обработчика события
         {
+            Closing -= OnStandardClosing;
             Close();
         }
     }
@@ -331,7 +343,7 @@ public partial class Form_12 : BaseWindow<Form_12VM>
     /// </summary>
     /// <param name="vm">Модель открытого отчёта.</param>
     /// <returns>Сообщение о наличии пересечения.</returns>
-    private static async Task CheckPeriod(Form_12VM vm)
+    private  async Task CheckPeriod(Form_12VM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
         if (vm.Report.FormNum_DB is "1.0" or "2.0") return;
@@ -364,7 +376,7 @@ public partial class Form_12 : BaseWindow<Form_12VM>
                             MinHeight = 170,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(desktop.MainWindow));
+                        .ShowDialog(this));
 
                     #endregion
 
@@ -383,7 +395,7 @@ public partial class Form_12 : BaseWindow<Form_12VM>
     /// </summary>
     /// <param name="vm">Модель открытого отчёта.</param>
     /// <returns>Сообщение с предложением удалить пустые строчки.</returns>
-    private static async Task RemoveEmptyForms(Form_12VM vm)
+    private async Task RemoveEmptyForms(Form_12VM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
         List<Form> formToDeleteList = [];
@@ -433,7 +445,7 @@ public partial class Form_12 : BaseWindow<Form_12VM>
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(desktop.MainWindow));
+                .ShowDialog(this));
 
             #endregion
 
