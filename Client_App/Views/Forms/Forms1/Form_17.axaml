@@ -222,7 +222,7 @@
 						<TextBlock></TextBlock>
 					</Border>
 					<Border Grid.Column="20" Grid.Row="0" Grid.ColumnSpan="10">
-						<TextBlock>Сведения РАО</TextBlock>
+						<TextBlock>Сведения о РАО</TextBlock>
 					</Border>
 					<Border Grid.Column="30" Grid.Row="0">
 						<TextBlock></TextBlock>
@@ -276,7 +276,7 @@
 						<TextBlock>ОКПО</TextBlock>
 					</Border>
 					<Border Grid.Column="18" Grid.Row="1" Grid.ColumnSpan="2">
-						<TextBlock>Путь хранения</TextBlock>
+						<TextBlock>Пункт хранения</TextBlock>
 					</Border>
 					<Border Grid.Column="20" Grid.Row="1">
 						<TextBlock></TextBlock>
@@ -294,7 +294,7 @@
 						<TextBlock></TextBlock>
 					</Border>
 					<Border Grid.Column="25" Grid.Row="1" Grid.ColumnSpan="4">
-						<TextBlock>Суммарная активность</TextBlock>
+						<TextBlock>Суммарная активность, Бк		</TextBlock>
 					</Border>
 					<Border Grid.Column="29" Grid.Row="1">
 						<TextBlock></TextBlock>
@@ -384,16 +384,16 @@
 						<TextBlock>масса без упаковки (нетто), т</TextBlock>
 					</Border>
 					<Border Grid.Column="24" Grid.Row="2">
-						<TextBlock>количество ОЗИИ, шт</TextBlock>
+						<TextBlock>количество ОЗИИИ, шт</TextBlock>
 					</Border>
 					<Border Grid.Column="25" Grid.Row="2">
 						<TextBlock>тритий</TextBlock>
 					</Border>
 					<Border Grid.Column="26" Grid.Row="2">
-						<TextBlock>бета-, гамма-излучающие радионуклиды(исключая</TextBlock>
+						<TextBlock>бета-, гамма-излучающие радионуклиды(исключая тритий)</TextBlock>
 					</Border>
 					<Border Grid.Column="27" Grid.Row="2">
-						<TextBlock>альфа-излучающие радионуклиды (исключая</TextBlock>
+						<TextBlock>альфа-излучающие радионуклиды (исключая трансурановые)</TextBlock>
 					</Border>
 					<Border Grid.Column="28" Grid.Row="2">
 						<TextBlock>трансурановые радионуклиды</TextBlock>
