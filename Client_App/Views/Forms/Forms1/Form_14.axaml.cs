@@ -188,6 +188,12 @@ public partial class Form_14 : BaseWindow<Form_14VM>
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
+        args.Cancel = true; // Сразу запрещаем закрытие окна, т.к. из-за асинхроности окно может закрыться в любой момент
+
+
+        _isCloseConfirmed = true; // перед выходом из обработчика события стоит проверка на _isCloseConfirmed,
+                                  // если true, то окно закроется,
+                                  // если false, то не закроется
         if (DataContext is not Form_14VM vm) return;
         try
         {
@@ -213,6 +219,12 @@ public partial class Form_14 : BaseWindow<Form_14VM>
             {
                 if (vm.SkipChangeTacking) vm.SkipChangeTacking = false;
                 desktop.MainWindow.WindowState = OwnerPrevState;
+
+                if (_isCloseConfirmed) //выход из обработчика события
+                {
+                    Closing -= OnStandardClosing;
+                    Close();
+                }
 
                 return;
             }
@@ -251,72 +263,72 @@ public partial class Form_14 : BaseWindow<Form_14VM>
         switch (res)
         {
             case "Да":
-            {
-                _isCloseConfirmed = true;
-                await dbm.SaveChangesAsync();
-                await new SaveReportAsyncCommand(vm).AsyncExecute(null);
-                if (desktop.Windows.Count == 1)
                 {
-                    desktop.MainWindow.WindowState = OwnerPrevState;
+                    await dbm.SaveChangesAsync();
+                    await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+                    if (desktop.Windows.Count == 1)
+                    {
+                        desktop.MainWindow.WindowState = OwnerPrevState;
+                    }
+                    break;
                 }
-                args.Cancel = false;
-                break;
-            }
             case "Нет":
-            {
-                _isCloseConfirmed = true;
-                dbm.Restore();
-                new SortFormSyncCommand(vm).Execute(null);
-                await dbm.SaveChangesAsync();
-
-                var lst = vm.Report[vm.FormType];
-
-                foreach (var key in lst)
                 {
-                    var item = (Form)key;
-                    if (item.Id == 0)
+                    dbm.Restore();
+                    new SortFormSyncCommand(vm).Execute(null);
+                    await dbm.SaveChangesAsync();
+
+
+                    var lst = vm.Report[vm.FormType];
+
+                    foreach (var key in lst)
                     {
-                        vm.Report[vm.Report.FormNum_DB].Remove(item);
+                        var item = (Form)key;
+                        if (item.Id == 0)
+                        {
+                            vm.Report[vm.Report.FormNum_DB].Remove(item);
+                        }
                     }
-                }
 
-                var lstNote = vm.Report.Notes.ToList<Note>();
-                foreach (var item in lstNote.Where(item => item.Id == 0))
-                {
-                    vm.Report.Notes.Remove(item);
-                }
-
-                if (vm.FormType is not "1.0" and not "2.0")
-                {
-                    if (vm.FormType.Split('.')[0] == "1")
+                    var lstNote = vm.Report.Notes.ToList<Note>();
+                    foreach (var item in lstNote.Where(item => item.Id == 0))
                     {
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.StartPeriod));
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.EndPeriod));
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
+                        vm.Report.Notes.Remove(item);
                     }
-                    else if (vm.FormType.Split('.')[0] == "2")
+                    if (vm.FormType is not "1.0" and not "2.0")
                     {
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.Year));
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
+                        if (vm.FormType.Split('.')[0] == "1")
+                        {
+                            vm.Report.OnPropertyChanged(nameof(vm.Report.StartPeriod));
+                            vm.Report.OnPropertyChanged(nameof(vm.Report.EndPeriod));
+                            vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
+                        }
+                        else if (vm.FormType.Split('.')[0] == "2")
+                        {
+                            vm.Report.OnPropertyChanged(nameof(vm.Report.Year));
+                            vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
+                        }
                     }
+                    else
+                    {
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.RegNoRep));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.ShortJurLicoRep));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.OkpoRep));
+                    }
+                    ;
+                    break;
                 }
-                else
-                {
-                    vm.Report.OnPropertyChanged(nameof(vm.Report.RegNoRep));
-                    vm.Report.OnPropertyChanged(nameof(vm.Report.ShortJurLicoRep));
-                    vm.Report.OnPropertyChanged(nameof(vm.Report.OkpoRep));
-                }
-
-                break;
-            }
             case "Отмена":
-            {
-                return;
-            }
+                {
+                    _isCloseConfirmed = false;
+                    return;
+                }
         }
         desktop.MainWindow.WindowState = OwnerPrevState;
-        if (_isCloseConfirmed)
+
+        if (_isCloseConfirmed)      //выход из обработчика события
         {
+            Closing -= OnStandardClosing;
             Close();
         }
     }
@@ -328,7 +340,7 @@ public partial class Form_14 : BaseWindow<Form_14VM>
     /// </summary>
     /// <param name="vm">Модель открытого отчёта.</param>
     /// <returns>Сообщение о наличии пересечения.</returns>
-    private static async Task CheckPeriod(Form_14VM vm)
+    private async Task CheckPeriod(Form_14VM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
         if (vm.Report.FormNum_DB is "1.0" or "2.0") return;
@@ -361,7 +373,7 @@ public partial class Form_14 : BaseWindow<Form_14VM>
                             MinHeight = 170,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(desktop.MainWindow));
+                        .ShowDialog(this));
 
                     #endregion
 
@@ -380,7 +392,7 @@ public partial class Form_14 : BaseWindow<Form_14VM>
     /// </summary>
     /// <param name="vm">Модель открытого отчёта.</param>
     /// <returns>Сообщение с предложением удалить пустые строчки.</returns>
-    private static async Task RemoveEmptyForms(Form_14VM vm)
+    private async Task RemoveEmptyForms(Form_14VM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
         List<Form> formToDeleteList = [];
@@ -432,7 +444,7 @@ public partial class Form_14 : BaseWindow<Form_14VM>
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(desktop.MainWindow));
+                .ShowDialog(this));
 
             #endregion
 
