@@ -257,7 +257,7 @@
 						<TextBlock>дата</TextBlock>
 					</Border>
 					<Border Grid.Column="3" Grid.Row="1">
-						<TextBlock>номер паспорта (сертификата) ЗРИ, акта определения характеристик ОЗИИ</TextBlock>
+						<TextBlock>номер паспорта (сертификата) ЗРИ, акта определения характеристик ОЗИИИ</TextBlock>
 					</Border>
 					<Border Grid.Column="4" Grid.Row="1">
 						<TextBlock>тип</TextBlock>

@@ -13,16 +13,13 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-namespace Client_App.Commands.AsyncCommands
+namespace Client_App.Commands.AsyncCommands;
+public class CheckForChangesAndSaveCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
-        private Reports Reports => formVM.Reports;
-    public class CheckForChangesAndSaveCommand (BaseFormVM formVM) : BaseAsyncCommand
+    public override async Task<bool> AsyncExecute(object? parameter)
     {
-        public override async Task<bool> AsyncExecute(object? parameter)
-        {
-            var desktop = (IClassicDesktopStyleApplicationLifetime)Avalonia.Application.Current.ApplicationLifetime;
-            var dbm = StaticConfiguration.DBModel;
-            var dbm = StaticConfiguration.DBModel;
+        var desktop = (IClassicDesktopStyleApplicationLifetime)Avalonia.Application.Current.ApplicationLifetime;
+        var dbm = StaticConfiguration.DBModel;
 
         try
         {
