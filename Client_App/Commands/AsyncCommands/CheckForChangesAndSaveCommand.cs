@@ -5,70 +5,70 @@ using Client_App.Interfaces.Logger;
 using Client_App.ViewModels.Forms;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
+using Models.Collections;
 using Models.DBRealization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-
 namespace Client_App.Commands.AsyncCommands
 {
-
+        private Reports Reports => formVM.Reports;
     public class CheckForChangesAndSaveCommand (BaseFormVM formVM) : BaseAsyncCommand
     {
         public override async Task<bool> AsyncExecute(object? parameter)
         {
             var desktop = (IClassicDesktopStyleApplicationLifetime)Avalonia.Application.Current.ApplicationLifetime;
             var dbm = StaticConfiguration.DBModel;
+            var dbm = StaticConfiguration.DBModel;
 
-            try
+        try
+        {
+            if (!dbm.ChangeTracker.HasChanges())
             {
-                if (!dbm.ChangeTracker.HasChanges())
-                {
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                var msg = $"{Environment.NewLine}Message: {ex.Message}" +
-                          $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-                ServiceExtension.LoggerManager.Error(msg);
                 return true;
             }
+        }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg);
+            return true;
+        }
 
-            // Показываем диалог сохранения изменений
-            var res = await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                {
-                    ButtonDefinitions =
-                    [
-                        new ButtonDefinition { Name = "Да" },
-                        new ButtonDefinition { Name = "Нет" }
-                    ],
-                    ContentTitle = "Сохранение изменений",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = $"Сохранить форму {formVM.FormType}?",
-                    MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(desktop.MainWindow);
-
-            switch (res)
+        // Показываем диалог сохранения изменений
+        var res = await MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
-                case "Да":
-                    await dbm.SaveChangesAsync();
-                    await new SaveReportAsyncCommand(formVM).AsyncExecute(null);
-                    return true;
+                ButtonDefinitions =
+                [
+                    new ButtonDefinition { Name = "Да" },
+                    new ButtonDefinition { Name = "Нет" }
+                ],
+                ContentTitle = "Сохранение изменений",
+                ContentHeader = "Уведомление",
+                ContentMessage = $"Сохранить форму {formVM.FormType}?",
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(desktop.MainWindow);
 
-                case "Нет":
-                    dbm.Restore();
-                    await dbm.SaveChangesAsync();
-                    return true;
+        switch (res)
+        {
+            case "Да":
+                await dbm.SaveChangesAsync();
+                await new SaveReportAsyncCommand(formVM).AsyncExecute(null);
+                return true;
 
-                default:
-                    return false; // Отмена
-            }
+            case "Нет":
+                dbm.Restore();
+                await dbm.SaveChangesAsync();
+                return true;
+            default:
+                return false; // Отмена переключения
         }
     }
 }

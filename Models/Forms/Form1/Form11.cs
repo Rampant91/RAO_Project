@@ -122,6 +122,7 @@ public class Form11 : Form1
         if (args.PropertyName != "Value") return;
 
         var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+
         if (OperationCode_DB != value1)
         {
             OperationCode_DB = value1;

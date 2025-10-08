@@ -24,10 +24,10 @@ public class AddFormAsyncCommand : BaseAsyncCommand
     {
         if (parameter is string param)
         {
-            var t = Desktop.MainWindow as MainWindow;
-            if (t?.SelectedReports is null
-                || !t.SelectedReports.Any()
-                || ((Reports)t.SelectedReports.First()).Master.FormNum_DB[0] != param[0])
+            var mainWindow = Desktop.MainWindow as MainWindow;
+            if (mainWindow?.SelectedReports is null
+                || !mainWindow.SelectedReports.Any()
+                || ((Reports)mainWindow.SelectedReports.First()).Master.FormNum_DB[0] != param[0])
             {
                 #region MessageFailedToOpenForm
 
@@ -50,86 +50,95 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                 return;
             }
 
-            var y = t.SelectedReports.First() as Reports;
-            if (y?.Master.FormNum_DB.Split(".")[0] == param.Split(".")[0])
+            var selectedReports = mainWindow.SelectedReports.First() as Reports;
+            if (selectedReports?.Master.FormNum_DB.Split(".")[0] == param.Split(".")[0])
             {
-                var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
+                var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(mainWindow.SelectedReports);
 
-                ChangeOrCreateVM frm = new(param, y);
+                ChangeOrCreateVM frm = new(param, selectedReports);
 
                 
                 switch (param)
                 {
                     case "1.1":
                     {
-                        var form11Window = new Form_11(new Form_11VM(y));
-                        await form11Window.ShowDialog(t);
-                        t.SelectedReports = tmp;
-                        await y.Report_Collection.QuickSortAsync();
+                        var form11Window = new Form_11(new Form_11VM(selectedReports));
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await form11Window.ShowDialog(mainWindow);
+                        mainWindow.SelectedReports = tmp;
+                        await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
                     case "1.2":
                     {
-                        var form11Window = new Form_12(new Form_12VM(y));
-                        await form11Window.ShowDialog(t);
-                        t.SelectedReports = tmp;
-                        await y.Report_Collection.QuickSortAsync();
+                        var form11Window = new Form_12(new Form_12VM(selectedReports));
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await form11Window.ShowDialog(mainWindow);
+                        mainWindow.SelectedReports = tmp;
+                        await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
                     case "1.3":
                     {
-                        var form11Window = new Form_13(new Form_13VM(y));
-                        await form11Window.ShowDialog(t);
-                        t.SelectedReports = tmp;
-                        await y.Report_Collection.QuickSortAsync();
+                        var form11Window = new Form_13(new Form_13VM(selectedReports));
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await form11Window.ShowDialog(mainWindow);
+                        mainWindow.SelectedReports = tmp;
+                        await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
                     case "1.4":
                     {
-                        var form11Window = new Form_14(new Form_14VM(y));
-                        await form11Window.ShowDialog(t);
-                        t.SelectedReports = tmp;
-                        await y.Report_Collection.QuickSortAsync();
+                        var form11Window = new Form_14(new Form_14VM(selectedReports));
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await form11Window.ShowDialog(mainWindow);
+                        mainWindow.SelectedReports = tmp;
+                        await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
                     case "1.5":
                     {
-                        var form11Window = new Form_15(new Form_15VM(y));
-                        await form11Window.ShowDialog(t);
-                        t.SelectedReports = tmp;
-                        await y.Report_Collection.QuickSortAsync();
+                        var form11Window = new Form_15(new Form_15VM(selectedReports));
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await form11Window.ShowDialog(mainWindow);
+                        mainWindow.SelectedReports = tmp;
+                        await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
                     case "1.6":
                     {
-                        var form11Window = new Form_16(new Form_16VM(y));
-                        await form11Window.ShowDialog(t);
-                        t.SelectedReports = tmp;
-                        await y.Report_Collection.QuickSortAsync();
+                        var form11Window = new Form_16(new Form_16VM(selectedReports));
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await form11Window.ShowDialog(mainWindow);
+                        mainWindow.SelectedReports = tmp;
+                        await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
                     case "1.7":
                     {
-                        var form11Window = new Form_17(new Form_17VM(y));
-                        await form11Window.ShowDialog(t);
-                        t.SelectedReports = tmp;
-                        await y.Report_Collection.QuickSortAsync();
+                        var form11Window = new Form_17(new Form_17VM(selectedReports));
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await form11Window.ShowDialog(mainWindow);
+                        mainWindow.SelectedReports = tmp;
+                        await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
                     case "1.8":
                     {
-                        var form11Window = new Form_18(new Form_18VM(y));
-                        await form11Window.ShowDialog(t);
-                        t.SelectedReports = tmp;
-                        await y.Report_Collection.QuickSortAsync();
+                        var form11Window = new Form_18(new Form_18VM(selectedReports));
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await form11Window.ShowDialog(mainWindow);
+                        mainWindow.SelectedReports = tmp;
+                        await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
                     case "1.9":
                     {
-                        var form11Window = new Form_19(new Form_19VM(y));
-                        await form11Window.ShowDialog(t);
-                        t.SelectedReports = tmp;
-                        await y.Report_Collection.QuickSortAsync();
+                        var form11Window = new Form_19(new Form_19VM(selectedReports));
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await form11Window.ShowDialog(mainWindow);
+                        mainWindow.SelectedReports = tmp;
+                        await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
                     default:
@@ -142,8 +151,8 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                                 _ => Form2_Visual.tmpVM
                             };
                             await MainWindowVM.ShowDialog.Handle(frm);
-                            t.SelectedReports = tmp;
-                            await y.Report_Collection.QuickSortAsync();
+                            mainWindow.SelectedReports = tmp;
+                            await selectedReports.Report_Collection.QuickSortAsync();
                         }
 
                         break;

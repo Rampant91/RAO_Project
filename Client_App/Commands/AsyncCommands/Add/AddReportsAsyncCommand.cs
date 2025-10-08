@@ -30,10 +30,7 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
             var mainWindow = (Desktop.MainWindow as MainWindow)!;
             var mainWindowVM = (mainWindow.DataContext as MainWindowVM);
 
-            var selectedReports = mainWindow.SelectedReports;
-
-
-            bool isSeparateDivision = true;
+            var isSeparateDivision = true;
             #region AskIfTheOrganizationIsSeparateDivision
 
             var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
@@ -76,25 +73,23 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
             switch (mainWindowVM.SelectedReportTypeToString)
             {
                 case "1.0":
-                    {
-                        var form10VM = new Form_10VM(ReportsStorage.LocalReports);
-                        form10VM.IsSeparateDivision = isSeparateDivision;
-                        var window = new Form_10(form10VM) { DataContext = form10VM };
-                        await new SaveReportAsyncCommand(form10VM).AsyncExecute(null);
-                        await window.ShowDialog(mainWindow);
+                {
+                    var form10VM = new Form_10VM(ReportsStorage.LocalReports) { IsSeparateDivision = isSeparateDivision };
+                    var window = new Form_10(form10VM) { DataContext = form10VM };
+                    await new SaveReportAsyncCommand(form10VM).AsyncExecute(null);
+                    await window.ShowDialog(mainWindow);
 
-                        break;
-                    }
+                    break;
+                }
                 case "2.0":
-                    {
-                        var form20VM = new Form_20VM(ReportsStorage.LocalReports);
-                        form20VM.IsSeparateDivision = isSeparateDivision;
-                        var window = new Form_20(form20VM) { DataContext = form20VM };
-                        await new SaveReportAsyncCommand(form20VM).AsyncExecute(null);
-                        await window.ShowDialog(mainWindow);
+                {
+                    var form20VM = new Form_20VM(ReportsStorage.LocalReports) { IsSeparateDivision = isSeparateDivision };
+                    var window = new Form_20(form20VM) { DataContext = form20VM };
+                    await new SaveReportAsyncCommand(form20VM).AsyncExecute(null);
+                    await window.ShowDialog(mainWindow);
 
-                        break;
-                    }
+                    break;
+                }
             }
             mainWindow.SelectedReports = mainWindow.SelectedReports is null
                 ? []

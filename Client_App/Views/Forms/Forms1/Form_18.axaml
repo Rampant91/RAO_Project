@@ -34,12 +34,12 @@
 
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto"></RowDefinition>
-			<RowDefinition Height="*" MinHeight="175"></RowDefinition>
-			<RowDefinition Height="Auto"></RowDefinition>
-			<RowDefinition Height="Auto"></RowDefinition>
-			<RowDefinition Height="Auto"></RowDefinition>
-		</Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" MinHeight="175"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
 		<Expander Grid.Row ="0"
 				  IsExpanded="True">
@@ -166,18 +166,22 @@
                         <MenuItem Header="Добавить N строк перед"
                                   Command="{Binding AddRowsIn}"
                                   CommandParameter="{Binding SelectedForms}"
-                                  InputGesture="Ctrl+I"/>
+                                  InputGesture="Ctrl+I"
+                                  IsVisible="{Binding AnyRowSelected}"/>
                         <MenuItem Header="Копировать"
                                   Command="{Binding CopyRows}"
                                   CommandParameter="{Binding SelectedForms}"
-                                  InputGesture="Ctrl+C"/>
+                                  InputGesture="Ctrl+C"
+                                  IsVisible="{Binding AnyRowSelected}"/>
                         <MenuItem Header="Вставить"
                                   Command="{Binding PasteRows}"
-                                  InputGesture="Ctrl+V"/>
+                                  InputGesture="Ctrl+V"
+                                  IsVisible="{Binding AnyRowSelected}"/>
                         <MenuItem Header="Удалить выбранные строчки"
                                   Command="{Binding DeleteRows}"
                                   CommandParameter="{Binding SelectedForms}"
-                                  InputGesture="Ctrl+D"/>
+                                  InputGesture="Ctrl+D"
+                                  IsVisible="{Binding AnyRowSelected}"/>
                         <MenuItem Header="Выставить номер"
                                   Command="{Binding SetNumberOrder}"
                                   InputGesture="Ctrl+O"/>
@@ -187,17 +191,22 @@
                         <MenuItem Header="Очистить строчки"
                                   Command="{Binding DeleteDataInRows}"
                                   CommandParameter="{Binding SelectedForms}"
-                                  InputGesture="Ctrl+K"/>
+                                  InputGesture="Ctrl+K"
+                                  IsVisible="{Binding AnyRowSelected}"/>
                     </ContextMenu>
 				</Grid.ContextMenu>
 				<Grid Classes="tableHeader" Grid.Row="0"
 					  Width="{Binding ElementName=dataGrid.Width}"
-					  RowDefinitions="Auto,Auto">
-					<interactivity:Interaction.Behaviors>
+                      ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
+                      RowDefinitions="Auto,Auto">
+
+                    <interactivity:Interaction.Behaviors>
 						<local:ColumnWidthSyncBehavior	SourceDataGrid="{Binding ElementName=dataGrid}"/>
 					</interactivity:Interaction.Behaviors>
+
 					<!--Первый уровень заголовков-->
-					<Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="1">
+
+					<Border Grid.Column="0" Grid.Row="0">
 						<TextBlock></TextBlock>
 					</Border>
 					<Border Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
@@ -218,16 +227,18 @@
 					<Border Grid.Column="17" Grid.Row="0" Grid.ColumnSpan="9">
 						<TextBlock>Характеристика ЖРО</TextBlock>
 					</Border>
-					<Border Grid.Column="26" Grid.Row="0" Grid.ColumnSpan="1">
+					<Border Grid.Column="26" Grid.Row="0">
 						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="27" Grid.Row="0" Grid.ColumnSpan="1">
+					<Border Grid.Column="27" Grid.Row="0">
 						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="28" Grid.Row="0" Grid.ColumnSpan="1">
+					<Border Grid.Column="28" Grid.Row="0">
 						<TextBlock>Договор</TextBlock>
 					</Border>
+
 					<!--Второй уровень заголовков-->
+
 					<Border Grid.Column="0" Grid.Row="1">
 						<TextBlock>№ п/п</TextBlock>
 					</Border>
@@ -316,6 +327,7 @@
 						<TextBlock>номер</TextBlock>
 					</Border>
 				</Grid>
+
 				<DataGrid
 					Grid.Row="1"
 					Classes="table"
@@ -328,6 +340,7 @@
 						<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
 						<local:DeselectDataGridOnClickOutsideBehavior/>
 					</interactivity:Interaction.Behaviors>
+
 					<DataGrid.Columns>
 
 						<DataGridTextColumn Binding="{Binding NumberInOrder.Value}"
@@ -895,11 +908,9 @@
 		</Border>
 		<Expander Grid.Row ="3"
 				  IsExpanded="True"
-				  ExpandDirection="Up">
-			<Expander.Header>
-				Скрыть/Раскрыть нижнюю панель
-			</Expander.Header>
-			<Border  Classes="notesContainer">
+				  ExpandDirection="Up" 
+                  Header="Скрыть/Раскрыть нижнюю панель">
+            <Border Classes="notesContainer">
 				<StackPanel>
 					<StackPanel.ContextMenu>
 						<ContextMenu x:CompileBindings="True"
@@ -919,6 +930,7 @@
 						</ContextMenu>
 					</StackPanel.ContextMenu>
 					<TextBlock Margin="5">Примечания</TextBlock>
+
 					<DataGrid Classes="notesTable"
 							  x:CompileBindings="True"
 							  Items="{Binding NoteList}"
@@ -927,6 +939,7 @@
 							<local:DataGridPointerBehavior/>
 							<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
 						</interactivity:Interaction.Behaviors>
+
 						<DataGrid.Columns>
 							<DataGridTemplateColumn Header="№ строки" Width="80">
 								<DataGridTemplateColumn.CellTemplate>
@@ -957,6 +970,5 @@
 				</StackPanel>
 			</Border>
 		</Expander>
-
 	</Grid>
 </Window>

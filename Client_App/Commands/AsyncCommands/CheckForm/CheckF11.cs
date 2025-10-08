@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Models.CheckForm;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -843,7 +844,7 @@ public abstract partial class CheckF11 : CheckBase
 
     #region Check023
 
-    //Дата операции входит в отчетный период (графа 3)
+    //Дата операции входит в отчетный период и не совпадает с его началом (графа 3)
     private static List<CheckError> Check_023(List<Form11> forms, Report rep, int line)
     {
         List<CheckError> result = new();
@@ -858,7 +859,28 @@ public abstract partial class CheckF11 : CheckBase
         {
             return result;
         }
-        var valid = opDate >= pStart && opDate <= pEnd;
+
+        var repCollection = rep.Reports.Report_Collection.ToList().FindAll(x => x.FormNum_DB == rep.FormNum_DB);
+        var repIndex = repCollection.IndexOf(rep);
+        var previousRepExist = repIndex + 1 < repCollection.Count;
+
+        if (opDate == pStart && previousRepExist)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line + 1).ToString(),
+                Column = "OperationDate_DB",
+                Value = opDateStr,
+                Message = "Дата операции не должна совпадать с датой начала периода, " +
+                          "если имеется хотя бы один более ранний отчёт по данной форме. " +
+                          "См. приказ №1/1623-П раздел 5.2.",
+                IsCritical = true
+            });
+            return result;
+        }
+
+        var valid = opDate > pStart && opDate <= pEnd;
         if (!valid)
         {
             result.Add(new CheckError
@@ -1704,7 +1726,8 @@ public abstract partial class CheckF11 : CheckBase
                 Column = "Category_DB",
                 Value = category.ToString(),
                 Message = "Расчетное значение категории ЗРИ не соответствует представленному в отчёте. " +
-                          "Проверьте правильность указания категории ЗРИ, сведений о суммарной активности и радионуклидах."
+                          "Проверьте правильность указания категории ЗРИ, сведений о суммарной активности и радионуклидах.",
+                IsCritical = category is not 5
             });
         }
         return result;

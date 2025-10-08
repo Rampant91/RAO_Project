@@ -121,6 +121,7 @@ public partial class Form15 : Form1
         var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
         if (OperationCode_DB != value1)
         {
+            if (value1 is "41") return;
             OperationCode_DB = value1;
             if (Report is { AutoReplace: true })
             {
@@ -1816,6 +1817,9 @@ public partial class Form15 : Form1
             $"{Activity.Value}\t" +
             $"{CreationDate.Value}\t" +
             $"{StatusRAO.Value}\t" +
+            $"{DocumentVid.Value}\t" +
+            $"{DocumentNumber.Value}\t" +
+            $"{DocumentDate.Value}\t" +
             $"{ProviderOrRecieverOKPO.Value}\t" +
             $"{TransporterOKPO.Value}\t" +
             $"{PackName.Value}\t" +

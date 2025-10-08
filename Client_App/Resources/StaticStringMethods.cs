@@ -176,8 +176,9 @@ public static partial class StaticStringMethods
 
     #region RemoveForbiddenChars
 
-    internal static string RemoveForbiddenChars(string str)
+    internal static string RemoveForbiddenChars(string? str)
     {
+        str ??= string.Empty;
         str = str.Replace(" ", "").Replace(Environment.NewLine, "");
         str = RestrictedSymbolsRegex().Replace(str, "");
         return str;

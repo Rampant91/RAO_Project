@@ -15,13 +15,11 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Avalonia.Xaml.Interactivity;
 using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.VisualRealization.Converters;
 using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
-using Client_App.Controls.AutoCompleteBox;
 
 namespace Client_App.Controls.DataGrid;
 
@@ -976,6 +974,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             }
             SelectedCells.Clear();
             ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new();
+
             var tmp2 = Rows
                 .Where(x => x.IsVisible)
                 .SelectMany(x => x.Children)

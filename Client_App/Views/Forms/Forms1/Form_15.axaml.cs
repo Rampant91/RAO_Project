@@ -1,19 +1,20 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using Client_App.Controls.DataGrid;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
 using Client_App.Interfaces.Logger;
-using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
+using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -21,23 +22,22 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Controls;
 
 namespace Client_App.Views.Forms.Forms1;
 
 public partial class Form_15 : BaseWindow<Form_15VM>
 {
+    private readonly Form_15VM _vm = null!;
 
-    //private Form_15VM _vm = null!;
+    private bool _isCloseConfirmed;
 
     #region Constructors
 
     public Form_15()
     {
         InitializeComponent();
+        _vm = new Form_15VM();
         DataContext = new Form_15VM();
         Show();
     }
@@ -46,11 +46,17 @@ public partial class Form_15 : BaseWindow<Form_15VM>
     {
         InitializeComponent();
         DataContext = vm;
+        _vm = vm;
         Closing += OnStandardClosing;
     }
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
+
+#if DEBUG
+        this.AttachDevTools();
+#endif
+
         WindowState = WindowState.Maximized;
     }
 
@@ -84,96 +90,99 @@ public partial class Form_15 : BaseWindow<Form_15VM>
 
         var selectedForms = vm.SelectedForms;
 
-        if (dataGrid.IsPointerOver && e.KeyModifiers is KeyModifiers.Control)
+        if (!dataGrid.IsPointerOver || e.KeyModifiers is not KeyModifiers.Control) return;
+        
+        switch (e.Key)
         {
-            switch (e.Key)
+            case Key.A: // Select All
             {
-                case Key.A: // Select All
+                vm.SelectAll.Execute(null);
+                e.Handled = true;
+
+                break;
+            }
+            case Key.T: // Add Row
+            {
+                vm.AddRow.Execute(null);
+                e.Handled = true;
+
+                break;
+            }
+            case Key.N: // Add N Rows
+            {
+                vm.AddRows.Execute(null);
+                e.Handled = true;
+
+                break;
+            }
+            case Key.I: // Add N Rows Before
+            {
+                if (selectedForms is { Count: > 0 })
                 {
-                    vm.SelectAll.Execute(null);
+                    vm.AddRowsIn.Execute(selectedForms);
                     e.Handled = true;
-
-                    break;
                 }
-                case Key.T: // Add Row
+
+                break;
+            }
+            case Key.D: // Delete Selected Rows
+            {
+                if (selectedForms is { Count: > 0 })
                 {
-                    vm.AddRow.Execute(null);
+                    vm.DeleteRows.Execute(selectedForms);
                     e.Handled = true;
-
-                    break;
                 }
-                case Key.N: // Add N Rows
+
+                break;
+            }
+            case Key.O: // Set Number Order
+            {
+                vm.SetNumberOrder.Execute(null);
+                e.Handled = true;
+
+                break;
+            }
+            case Key.K: // Clear Rows
+            {
+                if (selectedForms is { Count: > 0 })
                 {
-                    vm.AddRows.Execute(null);
+                    vm.DeleteDataInRows.Execute(selectedForms);
                     e.Handled = true;
-
-                    break;
                 }
-                case Key.I: // Add N Rows Before
-                {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.AddRowsIn.Execute(selectedForms);
-                        e.Handled = true;
-                    }
 
-                    break;
-                }
-                case Key.C: // Copy Rows
-                {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.CopyRows.Execute(selectedForms);
-                        e.Handled = true;
-                    }
+                break;
+            }
+            case Key.E: // Export Movement History
+            {
+                vm.ExcelExportSourceMovementHistory.Execute(selectedForms);
+                e.Handled = true;
 
-                    break;
-                }
-                case Key.V: // Paste Rows
-                {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.PasteRows.Execute(selectedForms);
-                        e.Handled = true;
-                    }
+                break;
+            }
+        }
 
-                    break;
-                }
-                case Key.D: // Delete Selected Rows
+        if (vm.DataGridIsEditing) return;
+        switch (e.Key)
+        {
+            case Key.C: // Copy Rows
+            {
+                if (selectedForms is { Count: > 0 })
                 {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.DeleteRows.Execute(selectedForms);
-                        e.Handled = true;
-                    }
-
-                    break;
-                }
-                case Key.O: // Set Number Order
-                {
-                    vm.SetNumberOrder.Execute(null);
+                    vm.CopyRows.Execute(selectedForms);
                     e.Handled = true;
-
-                    break;
                 }
-                case Key.K: // Clear Rows
-                {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.DeleteDataInRows.Execute(selectedForms);
-                        e.Handled = true;
-                    }
 
-                    break;
-                }
-                case Key.E: // Export Movement History
+                break;
+            }
+            case Key.V: // Paste Rows
+            {
+                if (selectedForms is { Count: > 0 })
                 {
-                    vm.ExcelExportSourceMovementHistory.Execute(selectedForms);
+                    vm.PasteRows.Execute(selectedForms);
                     e.Handled = true;
-
-                    break;
                 }
-                default: return;
+
+                break;
             }
         }
     }
@@ -200,9 +209,17 @@ public partial class Form_15 : BaseWindow<Form_15VM>
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
         try
         {
-            if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges())
+            var db = StaticConfiguration.DBModel;
+
+            var modifiedEntities = db.ChangeTracker.Entries()
+                .Where(x => x.State != EntityState.Unchanged);
+
+            if (modifiedEntities.All(x => x.Entity is Report rep && rep.FormNum_DB != vm.FormType)
+                || !db.ChangeTracker.HasChanges() || vm.SkipChangeTacking)
             {
-                desktop.MainWindow.WindowState = WindowState.Normal;
+                if (vm.SkipChangeTacking) vm.SkipChangeTacking = false;
+                desktop.MainWindow.WindowState = OwnerPrevState;
+
                 return;
             }
         }
@@ -213,17 +230,18 @@ public partial class Form_15 : BaseWindow<Form_15VM>
             ServiceExtension.LoggerManager.Error(msg);
         }
 
-        var flag = false;
+        args.Cancel = true;
 
-        #region MessageRemoveEmptyForms
+        #region MessageSaveChanges
 
-        var res = Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
+        var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
                     new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" }
+                    new ButtonDefinition { Name = "Нет" },
+                    new ButtonDefinition { Name = "Отмена" }
                 ],
                 ContentTitle = "Сохранение изменений",
                 ContentHeader = "Уведомление",
@@ -231,91 +249,82 @@ public partial class Form_15 : BaseWindow<Form_15VM>
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(desktop.MainWindow));
+            .ShowDialog(this));
 
         #endregion
 
-        await res.WaitAsync(new CancellationToken());
         var dbm = StaticConfiguration.DBModel;
-        switch (res.Result)
+        switch (res)
         {
             case "Да":
+            {
+                _isCloseConfirmed = true;
+                await dbm.SaveChangesAsync();
+                await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+                if (desktop.Windows.Count == 1)
                 {
-                    //Перед тем как сохранить данные пользователю предлагают удалить пустые строчки
-                    try
-                    {
-                        await RemoveEmptyForms(vm);
-                    }
-                    catch (Exception ex)
-                    {
-                        var msg = $"{Environment.NewLine}Message: {ex.Message}" +
-                                  $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-                        ServiceExtension.LoggerManager.Error(msg);
-                    }
-
-                    await dbm.SaveChangesAsync();
-                    await new SaveReportAsyncCommand(vm).AsyncExecute(null);
-                    if (desktop.Windows.Count == 1)
-                    {
-                        desktop.MainWindow.WindowState = WindowState.Normal;
-                    }
-                    return;
+                    desktop.MainWindow.WindowState = OwnerPrevState;
                 }
+                args.Cancel = false;
+                break;
+            }
             case "Нет":
+            {
+                _isCloseConfirmed = true;
+                dbm.Restore();
+                new SortFormSyncCommand(vm).Execute(null);
+                await dbm.SaveChangesAsync();
+
+                var lst = vm.Report[vm.FormType];
+
+                foreach (var key in lst)
                 {
-                    flag = true;
-                    dbm.Restore();
-                    new NewSortFormSyncCommand(vm).Execute(null);
-                    await dbm.SaveChangesAsync();
-
-                    var lst = vm.Report[vm.FormType];
-
-                    foreach (var key in lst)
+                    var item = (Form)key;
+                    if (item.Id == 0)
                     {
-                        var item = (Form)key;
-                        if (item.Id == 0)
-                        {
-                            vm.Report[vm.Report.FormNum_DB].Remove(item);
-                        }
+                        vm.Report[vm.Report.FormNum_DB].Remove(item);
                     }
-
-                    var lstNote = vm.Report.Notes.ToList<Note>();
-                    foreach (var item in lstNote.Where(item => item.Id == 0))
-                    {
-                        vm.Report.Notes.Remove(item);
-                    }
-
-                    if (vm.FormType is not "1.0" and not "2.0")
-                    {
-                        if (vm.FormType.Split('.')[0] == "1")
-                        {
-                            vm.Report.OnPropertyChanged(nameof(vm.Report.StartPeriod));
-                            vm.Report.OnPropertyChanged(nameof(vm.Report.EndPeriod));
-                            vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
-                        }
-                        else if (vm.FormType.Split('.')[0] == "2")
-                        {
-                            vm.Report.OnPropertyChanged(nameof(vm.Report.Year));
-                            vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
-                        }
-                    }
-                    else
-                    {
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.RegNoRep));
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.ShortJurLicoRep));
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.OkpoRep));
-                    }
-
-                    break;
                 }
-        }
 
-        desktop.MainWindow.WindowState = WindowState.Normal;
-        if (flag)
+                var lstNote = vm.Report.Notes.ToList<Note>();
+                foreach (var item in lstNote.Where(item => item.Id == 0))
+                {
+                    vm.Report.Notes.Remove(item);
+                }
+
+                if (vm.FormType is not "1.0" and not "2.0")
+                {
+                    if (vm.FormType.Split('.')[0] == "1")
+                    {
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.StartPeriod));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.EndPeriod));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
+                    }
+                    else if (vm.FormType.Split('.')[0] == "2")
+                    {
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.Year));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
+                    }
+                }
+                else
+                {
+                    vm.Report.OnPropertyChanged(nameof(vm.Report.RegNoRep));
+                    vm.Report.OnPropertyChanged(nameof(vm.Report.ShortJurLicoRep));
+                    vm.Report.OnPropertyChanged(nameof(vm.Report.OkpoRep));
+                }
+
+                break;
+            }
+            case "Отмена":
+            {
+                return;
+            }
+        }
+        desktop.MainWindow.WindowState = OwnerPrevState;
+        if (_isCloseConfirmed)
         {
             Close();
         }
-        args.Cancel = true;
     }
 
     #region CheckPeriod
@@ -463,6 +472,42 @@ public partial class Form_15 : BaseWindow<Form_15VM>
     }
 
     #endregion
+
+    #endregion
+
+    #region OperationCode
+
+    private string OperationCodeStartValue { get; set; }
+
+    private void OperationCodeTextBox_OnGotFocus(object? sender, GotFocusEventArgs e)
+    {
+        if (sender is TextBox textBox)
+        {
+            OperationCodeStartValue = textBox.Text;
+        }
+    }
+
+    private void OperationCodeTextBox_OnLostFocus(object? sender, RoutedEventArgs e)
+    {
+        if (sender is TextBox { Text: "41" } textBox && OperationCodeStartValue is not "41")
+        {
+            textBox.Text = string.Empty;
+
+            Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams()
+                {
+                    ButtonDefinitions = ButtonEnum.Ok,
+                    ContentTitle = "Перевод РВ в РАО",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"Операцию перевода РВ в РАО необходимо осуществлять посредством кнопки " +
+                                     $"{Environment.NewLine}\"Перевести РВ в РАО\" (правый щелчкок мыши по нужной строчке в форме 1.1).",
+                    MinWidth = 450,
+                    MinHeight = 170,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(this));
+        }
+    }
 
     #endregion
 }

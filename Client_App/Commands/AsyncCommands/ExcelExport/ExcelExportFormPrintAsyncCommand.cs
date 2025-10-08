@@ -1,11 +1,13 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.CheckForm;
+using Client_App.Properties;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
 using DynamicData;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
+using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.CheckForm;
 using Models.Collections;
@@ -56,8 +58,8 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         progressBarVM.SetProgressBar(70, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath, rep);
 
-        //progressBarVM.SetProgressBar(75, "Проверка отчёта");
-        //await CheckForm(rep, cts, progressBar);
+        progressBarVM.SetProgressBar(75, "Проверка отчёта");
+        await CheckForm(rep, cts, progressBar);
 
         progressBarVM.SetProgressBar(80, "Выгрузка данных");
         await FillExcel(excelPackage, rep);
@@ -99,6 +101,15 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                 "1.8" => CheckF18.Check_Total(exportReport.Reports, exportReport),
                 //"2.1" => await new CheckF21().AsyncExecute(exportReport),
                 //"2.2" => await new CheckF22().AsyncExecute(exportReport),
+                //"2.3" => await new CheckF23().AsyncExecute(exportReport),
+                //"2.4" => await new CheckF24().AsyncExecute(exportReport),
+                //"2.5" => await new CheckF25().AsyncExecute(exportReport),
+                //"2.6" => await new CheckF26().AsyncExecute(exportReport),
+                //"2.7" => await new CheckF27().AsyncExecute(exportReport),
+                //"2.8" => await new CheckF28().AsyncExecute(exportReport),
+                //"2.9" => await new CheckF29().AsyncExecute(exportReport),
+                //"2.10" => await new CheckF210().AsyncExecute(exportReport),
+                //"2.11" => await new CheckF211().AsyncExecute(exportReport),
                 _ => []
             });
         }
@@ -107,7 +118,9 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
             //ignored
         }
 
-        if (errorList.Any(x => x.IsCritical))
+        if (!errorList.Any(x => x.IsCritical)) return;
+
+        if (!Settings.Default.AppLaunchedInNorao)
         {
             #region ExportTerminatedDueToCriticalErrors
 
@@ -116,7 +129,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в .RAODB",
+                        ContentTitle = "Выгрузка в .xlsx",
                         ContentHeader = "Ошибка",
                         ContentMessage = "Выгрузка отчёта невозможна из-за наличия в нём критических ошибок (выделены красным)." +
                                          $"{Environment.NewLine}Устраните ошибки и повторите операцию выгрузки.",
@@ -126,6 +139,35 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                     }).ShowDialog(Desktop.MainWindow));
 
             #endregion
+
+            await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(new ChangeOrCreateVM(exportReport.FormNum_DB, exportReport), errorList));
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+        else
+        {
+            #region ReportHasCriticalErrors
+
+            var answer = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions =
+                    [
+                        new ButtonDefinition { Name = "Да" },
+                        new ButtonDefinition { Name = "Отмена" }
+                    ],
+                    ContentTitle = "Выгрузка в .xlsx",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"В отчёте присутствуют критические ошибки (выделены красным). " +
+                                     $"{Environment.NewLine}Всё равно выгрузить отчёт?",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            if (answer is "Да") return;
 
             await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(new ChangeOrCreateVM(exportReport.FormNum_DB, exportReport), errorList));
 

@@ -51,7 +51,6 @@ public abstract class CheckF14 : CheckBase
             errorList.AddRange(Check_026(formsList, currentFormLine));
             errorList.AddRange(Check_027(formsList, currentFormLine));
             errorList.AddRange(Check_028(formsList, currentFormLine));
-            errorList.AddRange(Check_029(formsList, currentFormLine));
             errorList.AddRange(Check_030(formsList, currentFormLine));
             errorList.AddRange(Check_031(formsList, currentFormLine));
             errorList.AddRange(Check_032(formsList, currentFormLine));
@@ -79,8 +78,6 @@ public abstract class CheckF14 : CheckBase
             errorList.AddRange(Check_054(formsList, currentFormLine));
             errorList.AddRange(Check_055(formsList, rep, currentFormLine));
             errorList.AddRange(Check_056(formsList, forms10, currentFormLine));
-            errorList.AddRange(Check_057(formsList, forms10, currentFormLine));
-            errorList.AddRange(Check_058(formsList, currentFormLine));
             errorList.AddRange(Check_057(formsList, forms10, currentFormLine));
             errorList.AddRange(Check_058(formsList, currentFormLine));
             errorList.AddRange(Check_059(formsList, notes, currentFormLine));
@@ -333,7 +330,7 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Radionuclids_DB",
                 Value = radionuclid,
-                Message = "В графе 6 не представлены сведения о радионуклидах, которые могут быть отнесены к ЯМ. " +
+                Message = "В графе 7 не представлены сведения о радионуклидах, которые могут быть отнесены к ЯМ. " +
                           "Проверьте правильность выбранного кода операции.",
                 IsCritical = true
             });
@@ -626,7 +623,7 @@ public abstract class CheckF14 : CheckBase
 
     #region Check022
 
-    //Дата документа входит в отчетный период с учетом срока подачи отчета в днях (графа 3)
+    //Дата операции входит в отчетный период с учетом срока подачи отчета в днях (графа 3)
     private static List<CheckError> Check_022(List<Form14> forms, Report rep, int line)
     {
         List<CheckError> result = new();
@@ -641,7 +638,28 @@ public abstract class CheckF14 : CheckBase
         {
             return result;
         }
-        var valid = opDate >= pStart && opDate <= pEnd;
+
+        var repCollection = rep.Reports.Report_Collection.ToList().FindAll(x => x.FormNum_DB == rep.FormNum_DB);
+        var repIndex = repCollection.IndexOf(rep);
+        var previousRepExist = repIndex + 1 < repCollection.Count;
+
+        if (opDate == pStart && previousRepExist)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_14",
+                Row = (line + 1).ToString(),
+                Column = "OperationDate_DB",
+                Value = opDateStr,
+                Message = "Дата операции не должна совпадать с датой начала периода, " +
+                          "если имеется хотя бы один более ранний отчёт по данной форме. " +
+                          "См. приказ №1/1623-П раздел 5.2.",
+                IsCritical = true
+            });
+            return result;
+        }
+
+        var valid = opDate > pStart && opDate <= pEnd;
         if (!valid)
         {
             result.Add(new CheckError
@@ -813,8 +831,7 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "AggregateState_DB",
                 Value = Convert.ToString(agrState),
-                Message = $"Для выбранного вида ОРИ ({sort}) - агрегатное состояние (графа 12) - жидкое (значение 1).",
-                IsCritical = true
+                Message = $"Для выбранного вида ОРИ ({sort}) - агрегатное состояние (графа 12) - жидкое (значение 1)."
             });
         }
         return result;
@@ -840,35 +857,7 @@ public abstract class CheckF14 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "AggregateState_DB",
                 Value = Convert.ToString(agrState),
-                Message = $"Для выбранного вида ОРИ ({sort}) - агрегатное состояние (графа 12) - твёрдое (значение 2).",
-                IsCritical = true
-            });
-        }
-        return result;
-    }
-
-    #endregion
-
-    #region Check029
-
-    //Агрегатное состояния 1 или 2, если вид 4-7 (графа 12)
-    private static List<CheckError> Check_029(List<Form14> forms, int line)
-    {
-        List<CheckError> result = new();
-        var sort = forms[line].Sort_DB ?? 0;
-        var agrState = forms[line].AggregateState_DB ?? 0;
-        if (sort is not (4 or 5 or 6 or 7)) return result;
-        var valid = agrState is 1 or 2;
-        if (!valid)
-        {
-            result.Add(new CheckError
-            {
-                FormNum = "form_14",
-                Row = (line + 1).ToString(),
-                Column = "AggregateState_DB",
-                Value = Convert.ToString(agrState),
-                Message = $"Для выбранного вида ОРИ ({sort}) - агрегатное состояние не может быть газообразным.",
-                IsCritical = true
+                Message = $"Для выбранного вида ОРИ ({sort}) - агрегатное состояние (графа 12) - твёрдое (значение 2)."
             });
         }
         return result;

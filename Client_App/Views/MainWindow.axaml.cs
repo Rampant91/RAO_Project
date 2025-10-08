@@ -18,22 +18,67 @@ using Models.Interfaces;
 
 namespace Client_App.Views;
 
-public class MainWindow : BaseWindow<MainWindowVM>
+public partial class MainWindow : BaseWindow<MainWindowVM>
 {
     #region SelectedReports
 
-    public static readonly DirectProperty<MainWindow, IEnumerable<IKey>> SelectedReportsProperty =
+    public static readonly DirectProperty<MainWindow, IEnumerable<IKey>?> SelectedReportsProperty =
         AvaloniaProperty.RegisterDirect<MainWindow, IEnumerable<IKey>>(
             nameof(SelectedReports),
             o => o.SelectedReports,
             (o, v) => o.SelectedReports = v);
 
-    private IEnumerable<IKey> _selectedReports = new ObservableCollectionWithItemPropertyChanged<IKey>();
+    private IEnumerable<IKey>? _selectedReports;
 
-    public IEnumerable<IKey> SelectedReports
+    public IEnumerable<IKey>? SelectedReports
     {
         get => _selectedReports;
-        set => SetAndRaise(SelectedReportsProperty, ref _selectedReports, value); // убрал if (value != null) 
+        set
+        {
+            var tab1 = this.FindControl<TabItem>("Forms1");
+            var tab2 = this.FindControl<TabItem>("Forms2");
+
+            if (tab1.IsSelected)
+            {
+                if (!Equals(SelectedReports1, value)) 
+                    SelectedReports1 = value;
+            }
+            else if (tab2.IsSelected)
+            {
+                if (!Equals(SelectedReports2, value))
+                    SelectedReports2 = value;
+            }
+            SetAndRaise(SelectedReportsProperty, ref _selectedReports, value);
+        }
+        // убрал if (value != null) 
+    }
+
+    private IEnumerable<IKey>? _selectedReports1;
+    private IEnumerable<IKey>? SelectedReports1
+    {
+        get => _selectedReports1;
+        set
+        {
+            if (!Equals(_selectedReports1, value))
+            {
+                _selectedReports1 = value;
+            }
+            if (!ReferenceEquals(SelectedReports, value)) _selectedReports = value;
+        }
+    }
+
+    private IEnumerable<IKey>? _selectedReports2;
+    private IEnumerable<IKey>? SelectedReports2
+    {
+        get => _selectedReports2;
+        set
+        {
+            if (!Equals(_selectedReports2, value))
+            {
+                _selectedReports2 = value;
+            }
+            if (!ReferenceEquals(SelectedReports, value)) _selectedReports = value;
+        }
     }
 
     #endregion
@@ -322,6 +367,48 @@ public class MainWindow : BaseWindow<MainWindowVM>
 
         SetCommandList(grd3, grd4, "2.0", dataContext);
         #endregion
+    }
+
+    #endregion
+
+    #region TabControl_SelectionChanged
+
+    private void TabControl_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (sender is not TabControl tc)
+            return;
+
+        // ¬кладки: индекс 0 Ч скрытый, 1 Ч Forms1, 2 Ч Forms2 и т.д.
+        var target = SelectedReports; // по умолчанию текущее значение
+
+        if (tc.SelectedIndex == 1)
+        {
+            target = SelectedReports1;
+        }
+        else if (tc.SelectedIndex == 2)
+        {
+            target = SelectedReports2;
+        }
+        else
+        {
+            // –езервна€ логика через тип формы из VM
+            if (DataContext is ViewModels.MainWindowVM vm)
+            {
+                var formNum = vm.SelectedReportTypeToString;
+                if (!string.IsNullOrEmpty(formNum))
+                {
+                    if (formNum.StartsWith("1"))
+                        target = SelectedReports1;
+                    else if (formNum.StartsWith("2"))
+                        target = SelectedReports2;
+                }
+            }
+        }
+
+        if (!ReferenceEquals(SelectedReports, target))
+        {
+            SelectedReports = target;
+        }
     }
 
     #endregion

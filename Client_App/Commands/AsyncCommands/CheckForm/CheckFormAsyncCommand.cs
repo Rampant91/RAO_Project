@@ -90,6 +90,8 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
                         .Where(x => x.Reports != null && x.Reports.DBObservable != null)
                     .FirstOrDefaultAsync(x => x.Id == rep.Id, cts.Token);
 
+                    var rep21Test = ReportsStorage.Api.GetAsync(rep.Id);
+
                     result.AddRange(await new CheckF21().AsyncExecute(rep21));
                     break;
                 case "2.2":

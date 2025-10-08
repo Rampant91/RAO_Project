@@ -20,14 +20,17 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Models.Collections;
 
 namespace Client_App.Views.Forms.Forms1;
 
 public partial class Form_12 : BaseWindow<Form_12VM>
 {
     //private Form_12VM _vm = null!;
+
+    private bool _isCloseConfirmed;
 
     #region Constructors
 
@@ -81,99 +84,102 @@ public partial class Form_12 : BaseWindow<Form_12VM>
 
         var selectedForms = vm.SelectedForms;
 
-        if (dataGrid.IsPointerOver && e.KeyModifiers is KeyModifiers.Control)
+        if (!dataGrid.IsPointerOver || e.KeyModifiers is not KeyModifiers.Control) return;
+
+        switch (e.Key)
         {
-            switch (e.Key)
+            case Key.A: // Select All
             {
-                case Key.A: // Select All
+                vm.SelectAll.Execute(null);
+                e.Handled = true;
+
+                break;
+            }
+            case Key.T: // Add Row
+            {
+                vm.AddRow.Execute(null);
+                e.Handled = true;
+
+                break;
+            }
+            case Key.N: // Add N Rows
+            {
+                vm.AddRows.Execute(null);
+                e.Handled = true;
+
+                break;
+            }
+            case Key.I: // Add N Rows Before
+            {
+                if (selectedForms is { Count: > 0 })
                 {
-                    vm.SelectAll.Execute(null);
+                    vm.AddRowsIn.Execute(selectedForms);
                     e.Handled = true;
-
-                    break;
                 }
-                case Key.T: // Add Row
+
+                break;
+            }
+            case Key.D: // Delete Selected Rows
+            {
+                if (selectedForms is { Count: > 0 })
                 {
-                    vm.AddRow.Execute(null);
+                    vm.DeleteRows.Execute(selectedForms);
                     e.Handled = true;
-
-                    break;
                 }
-                case Key.N: // Add N Rows
+
+                break;
+            }
+            case Key.O: // Set Number Order
+            {
+                vm.SetNumberOrder.Execute(null);
+                e.Handled = true;
+
+                break;
+            }
+            case Key.K: // Clear Rows
+            {
+                if (selectedForms is { Count: > 0 })
                 {
-                    vm.AddRows.Execute(null);
+                    vm.DeleteDataInRows.Execute(selectedForms);
                     e.Handled = true;
-
-                    break;
                 }
-                case Key.I: // Add N Rows Before
-                {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.AddRowsIn.Execute(selectedForms);
-                        e.Handled = true;
-                    }
 
-                    break;
-                }
-                case Key.C: // Copy Rows
+                break;
+            }
+            case Key.J: // Source Transmission to RAO
+            {
+                if (vm.SelectedForm is not null)
                 {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.CopyRows.Execute(selectedForms);
-                        e.Handled = true;
-                    }
-
-                    break;
-                }
-                case Key.V: // Paste Rows
-                {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.PasteRows.Execute(selectedForms);
-                        e.Handled = true;
-                    }
-
-                    break;
-                }
-                case Key.D: // Delete Selected Rows
-                {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.DeleteRows.Execute(selectedForms);
-                        e.Handled = true;
-                    }
-
-                    break;
-                }
-                case Key.O: // Set Number Order
-                {
-                    vm.SetNumberOrder.Execute(null);
+                    vm.SourceTransmission.Execute(selectedForms);
                     e.Handled = true;
-
-                    break;
                 }
-                case Key.K: // Clear Rows
+
+                break;
+            }
+        }
+
+        if (vm.DataGridIsEditing) return;
+        switch (e.Key)
+        {
+            case Key.C: // Copy Rows
+            {
+                if (selectedForms is { Count: > 0 })
                 {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.DeleteDataInRows.Execute(selectedForms);
-                        e.Handled = true;
-                    }
-
-                    break;
+                    vm.CopyRows.Execute(selectedForms);
+                    e.Handled = true;
                 }
-                case Key.J: // Source Transmission to RAO
+
+                break;
+            }
+            case Key.V: // Paste Rows
+            {
+                if (selectedForms is { Count: > 0 })
                 {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.SourceTransmission.Execute(selectedForms);
-                        e.Handled = true;
-                    }
-
-                    break;
+                    vm.PasteRows.Execute(selectedForms);
+                    e.Handled = true;
                 }
-                default: return;
+
+                break;
             }
         }
     }
@@ -200,9 +206,17 @@ public partial class Form_12 : BaseWindow<Form_12VM>
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
         try
         {
-            if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges())
+            var db = StaticConfiguration.DBModel;
+
+            var modifiedEntities = db.ChangeTracker.Entries()
+                .Where(x => x.State != EntityState.Unchanged);
+
+            if (modifiedEntities.All(x => x.Entity is Report rep && rep.FormNum_DB != vm.FormType)
+                || !db.ChangeTracker.HasChanges() || vm.SkipChangeTacking)
             {
-                desktop.MainWindow.WindowState = WindowState.Normal;
+                if (vm.SkipChangeTacking) vm.SkipChangeTacking = false;
+                desktop.MainWindow.WindowState = OwnerPrevState;
+
                 return;
             }
         }
@@ -213,17 +227,18 @@ public partial class Form_12 : BaseWindow<Form_12VM>
             ServiceExtension.LoggerManager.Error(msg);
         }
 
-        var flag = false;
+        args.Cancel = true;
 
-        #region MessageRemoveEmptyForms
+        #region MessageSaveChanges
 
-        var res = Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
+        var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
                     new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" }
+                    new ButtonDefinition { Name = "Нет" },
+                    new ButtonDefinition { Name = "Отмена" }
                 ],
                 ContentTitle = "Сохранение изменений",
                 ContentHeader = "Уведомление",
@@ -231,42 +246,31 @@ public partial class Form_12 : BaseWindow<Form_12VM>
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(desktop.MainWindow));
+            .ShowDialog(this));
 
         #endregion
 
-        await res.WaitAsync(new CancellationToken());
         var dbm = StaticConfiguration.DBModel;
-        switch (res.Result)
+        switch (res)
         {
             case "Да":
+            {
+                _isCloseConfirmed = true;
+                await dbm.SaveChangesAsync();
+                await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+                if (desktop.Windows.Count == 1)
                 {
-                    //Перед тем как сохранить данные пользователю предлагают удалить пустые строчки
-                    try
-                    {
-                        await RemoveEmptyForms(vm);
-                    }
-                    catch (Exception ex)
-                    {
-                        var msg = $"{Environment.NewLine}Message: {ex.Message}" +
-                                  $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-                        ServiceExtension.LoggerManager.Error(msg);
-                    }
-
-                    await dbm.SaveChangesAsync();
-                    await new SaveReportAsyncCommand(vm).AsyncExecute(null);
-                    if (desktop.Windows.Count == 1)
-                    {
-                        desktop.MainWindow.WindowState = WindowState.Normal;
-                    }
-                    return;
+                    desktop.MainWindow.WindowState = OwnerPrevState;
                 }
+                args.Cancel = false;
+                break;
+            }
             case "Нет":
-                {
-                    flag = true;
-                    dbm.Restore();
-                    new NewSortFormSyncCommand(vm).Execute(null);
-                    await dbm.SaveChangesAsync();
+            {
+                _isCloseConfirmed = true;
+                dbm.Restore();
+                new SortFormSyncCommand(vm).Execute(null);
+                await dbm.SaveChangesAsync();
 
                     var lst = vm.Report[vm.FormType];
 
@@ -306,16 +310,18 @@ public partial class Form_12 : BaseWindow<Form_12VM>
                         vm.Report.OnPropertyChanged(nameof(vm.Report.OkpoRep));
                     }
 
-                    break;
-                }
+                break;
+            }
+            case "Отмена":
+            {
+                return;
+            }
         }
-
-        desktop.MainWindow.WindowState = WindowState.Normal;
-        if (flag)
+        desktop.MainWindow.WindowState = OwnerPrevState;
+        if (_isCloseConfirmed)
         {
             Close();
         }
-        args.Cancel = true;
     }
 
     #region CheckPeriod

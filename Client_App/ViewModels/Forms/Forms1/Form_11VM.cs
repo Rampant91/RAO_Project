@@ -1,4 +1,4 @@
-﻿using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Calculator;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.Passports;
@@ -51,7 +51,6 @@ public class Form_11VM : BaseFormVM
     public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);
 
     #endregion
-
 
     //public ObservableCollection<Form12> Form12List => new(FormList.Cast<Form12>());
 
