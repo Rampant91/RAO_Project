@@ -179,18 +179,11 @@ public partial class Form_17 : BaseWindow<Form_17VM>
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
-        args.Cancel = true; // Блокируем закрытие окна, так как из-за асинхронности окно может закрыться в любой момент
-
-
-        _isCloseConfirmed = true; // В конце обработчика события будет проверка на _isCloseConfirmed,
-                                  // если true, то окно закроется,
-                                  // если false, то не закроется
-        if (DataContext is not Form_11VM vm) return;
+        if (DataContext is not Form_17VM vm) return;
         try
         {
             await RemoveEmptyForms(vm);
             await CheckPeriod(vm);
-
         }
         catch (Exception ex)
         {
@@ -211,12 +204,6 @@ public partial class Form_17 : BaseWindow<Form_17VM>
             {
                 if (vm.SkipChangeTacking) vm.SkipChangeTacking = false;
                 desktop.MainWindow.WindowState = OwnerPrevState;
-
-                if (_isCloseConfirmed) //Выход из функции
-                {
-                    Closing -= OnStandardClosing;
-                    Close();
-                }
 
                 return;
             }
@@ -255,71 +242,72 @@ public partial class Form_17 : BaseWindow<Form_17VM>
         switch (res)
         {
             case "Да":
+            {
+                _isCloseConfirmed = true;
+                await dbm.SaveChangesAsync();
+                await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+                if (desktop.Windows.Count == 1)
                 {
-                    await dbm.SaveChangesAsync();
-                    await new SaveReportAsyncCommand(vm).AsyncExecute(null);
-                    if (desktop.Windows.Count == 1)
-                    {
-                        desktop.MainWindow.WindowState = OwnerPrevState;
-                    }
-                    break; ;
+                    desktop.MainWindow.WindowState = OwnerPrevState;
                 }
+                args.Cancel = false;
+                break;
+            }
             case "Нет":
+            {
+                _isCloseConfirmed = true;
+                dbm.Restore();
+                new SortFormSyncCommand(vm).Execute(null);
+                await dbm.SaveChangesAsync();
+
+                var lst = vm.Report[vm.FormType];
+
+                foreach (var key in lst)
                 {
-                    dbm.Restore();
-                    new SortFormSyncCommand(vm).Execute(null);
-                    await dbm.SaveChangesAsync();
-
-                    var lst = vm.Report[vm.FormType];
-
-                    foreach (var key in lst)
+                    var item = (Form)key;
+                    if (item.Id == 0)
                     {
-                        var item = (Form)key;
-                        if (item.Id == 0)
-                        {
-                            vm.Report[vm.Report.FormNum_DB].Remove(item);
-                        }
+                        vm.Report[vm.Report.FormNum_DB].Remove(item);
                     }
-
-                    var lstNote = vm.Report.Notes.ToList<Note>();
-                    foreach (var item in lstNote.Where(item => item.Id == 0))
-                    {
-                        vm.Report.Notes.Remove(item);
-                    }
-
-                    if (vm.FormType is not "1.0" and not "2.0")
-                    {
-                        if (vm.FormType.Split('.')[0] == "1")
-                        {
-                            vm.Report.OnPropertyChanged(nameof(vm.Report.StartPeriod));
-                            vm.Report.OnPropertyChanged(nameof(vm.Report.EndPeriod));
-                            vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
-                        }
-                        else if (vm.FormType.Split('.')[0] == "2")
-                        {
-                            vm.Report.OnPropertyChanged(nameof(vm.Report.Year));
-                            vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
-                        }
-                    }
-                    else
-                    {
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.RegNoRep));
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.ShortJurLicoRep));
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.OkpoRep));
-                    }
-                    ;
-                    break;
                 }
+
+                var lstNote = vm.Report.Notes.ToList<Note>();
+                foreach (var item in lstNote.Where(item => item.Id == 0))
+                {
+                    vm.Report.Notes.Remove(item);
+                }
+
+                if (vm.FormType is not "1.0" and not "2.0")
+                {
+                    if (vm.FormType.Split('.')[0] == "1")
+                    {
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.StartPeriod));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.EndPeriod));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
+                    }
+                    else if (vm.FormType.Split('.')[0] == "2")
+                    {
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.Year));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
+                    }
+                }
+                else
+                {
+                    vm.Report.OnPropertyChanged(nameof(vm.Report.RegNoRep));
+                    vm.Report.OnPropertyChanged(nameof(vm.Report.ShortJurLicoRep));
+                    vm.Report.OnPropertyChanged(nameof(vm.Report.OkpoRep));
+                }
+
+                break;
+            }
             case "Отмена":
-                {
-                    _isCloseConfirmed = false;
-                    return;
-                }
+            {
+                return;
+            }
         }
         desktop.MainWindow.WindowState = OwnerPrevState;
-        if (_isCloseConfirmed) //Выход из функции
+        if (_isCloseConfirmed)
         {
-            Closing -= OnStandardClosing;
             Close();
         }
     }
@@ -331,7 +319,7 @@ public partial class Form_17 : BaseWindow<Form_17VM>
     /// </summary>
     /// <param name="vm">Модель открытого отчёта.</param>
     /// <returns>Сообщение о наличии пересечения.</returns>
-    private static async Task CheckPeriod(Form_11VM vm)
+    private static async Task CheckPeriod(Form_17VM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
         if (vm.Report.FormNum_DB is "1.0" or "2.0") return;
@@ -383,35 +371,45 @@ public partial class Form_17 : BaseWindow<Form_17VM>
     /// </summary>
     /// <param name="vm">Модель открытого отчёта.</param>
     /// <returns>Сообщение с предложением удалить пустые строчки.</returns>
-    private static async Task RemoveEmptyForms(Form_11VM vm)
+    private static async Task RemoveEmptyForms(Form_17VM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
         List<Form> formToDeleteList = [];
-        var lst = vm.Report[vm.FormType].ToList<Form11>();
+        var lst = vm.Report[vm.FormType].ToList<Form17>();
         foreach (var form in lst)
         {
             if (string.IsNullOrWhiteSpace(form.OperationCode_DB)
                 && string.IsNullOrWhiteSpace(form.OperationDate_DB)
+                && string.IsNullOrWhiteSpace(form.PackName_DB)
+                && string.IsNullOrWhiteSpace(form.PackType_DB)
+                && string.IsNullOrWhiteSpace(form.PackFactoryNumber_DB)
+                && string.IsNullOrWhiteSpace(form.PackNumber_DB)
+                && string.IsNullOrWhiteSpace(form.FormingDate_DB)
                 && string.IsNullOrWhiteSpace(form.PassportNumber_DB)
-                && string.IsNullOrWhiteSpace(form.Type_DB)
+                && string.IsNullOrWhiteSpace(form.Volume_DB)
+                && string.IsNullOrWhiteSpace(form.Mass_DB)
                 && string.IsNullOrWhiteSpace(form.Radionuclids_DB)
-                && string.IsNullOrWhiteSpace(form.FactoryNumber_DB)
-                && form.Quantity_DB is null
-                && string.IsNullOrWhiteSpace(form.Activity_DB)
-                && string.IsNullOrWhiteSpace(form.CreatorOKPO_DB)
-                && string.IsNullOrWhiteSpace(form.CreationDate_DB)
-                && form.Category_DB is null
-                && form.SignedServicePeriod_DB is null
-                && form.PropertyCode_DB is null
-                && string.IsNullOrWhiteSpace(form.Owner_DB)
+                && string.IsNullOrWhiteSpace(form.SpecificActivity_DB)
                 && form.DocumentVid_DB is null
                 && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
                 && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
                 && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
                 && string.IsNullOrWhiteSpace(form.TransporterOKPO_DB)
-                && string.IsNullOrWhiteSpace(form.PackName_DB)
-                && string.IsNullOrWhiteSpace(form.PackType_DB)
-                && string.IsNullOrWhiteSpace(form.PackNumber_DB))
+                && string.IsNullOrWhiteSpace(form.StoragePlaceName_DB)
+                && string.IsNullOrWhiteSpace(form.StoragePlaceCode_DB)
+                && string.IsNullOrWhiteSpace(form.CodeRAO_DB)
+                && string.IsNullOrWhiteSpace(form.StatusRAO_DB)
+                && string.IsNullOrWhiteSpace(form.VolumeOutOfPack_DB)
+                && string.IsNullOrWhiteSpace(form.MassOutOfPack_DB)
+                && string.IsNullOrWhiteSpace(form.Quantity_DB)
+                && string.IsNullOrWhiteSpace(form.TritiumActivity_DB)
+                && string.IsNullOrWhiteSpace(form.BetaGammaActivity_DB)
+                && string.IsNullOrWhiteSpace(form.AlphaActivity_DB)
+                && string.IsNullOrWhiteSpace(form.TransuraniumActivity_DB)
+                && string.IsNullOrWhiteSpace(form.RefineOrSortRAOCode_DB)
+                && string.IsNullOrWhiteSpace(form.Subsidy_DB)
+                && string.IsNullOrWhiteSpace(form.FcpNumber_DB)
+                && string.IsNullOrWhiteSpace(form.ContractNumber_DB))
             {
                 formToDeleteList.Add(form);
             }
