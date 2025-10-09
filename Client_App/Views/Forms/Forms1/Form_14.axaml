@@ -195,7 +195,7 @@
 		                <MenuItem Header="Очистить строчки"
 		                          Command="{Binding DeleteDataInRows}"
 		                          CommandParameter="{Binding SelectedForms}"
-		                          InputGesture="Ctrl+K"
+		                          InputGesture="Ctrl+U"
                                   IsVisible="{Binding AnyRowSelected}"/>
 		                <MenuItem Header="Перевести РВ в РАО"
 		                          Command="{Binding SourceTransmission}"

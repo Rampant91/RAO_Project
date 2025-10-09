@@ -136,7 +136,7 @@ public partial class Form_11 : BaseWindow<Form_11VM>
 
                 break;
             }
-            case Key.U: // Copy Pas Name
+            case Key.K: // Copy Pas Name
             {
                 vm.CopyPasName.Execute(selectedForms);
                 e.Handled = true;
@@ -164,7 +164,7 @@ public partial class Form_11 : BaseWindow<Form_11VM>
 
                 break;
             }
-            case Key.K: // Clear Rows
+            case Key.U: // Clear Rows
             {
                 if (selectedForms is { Count: > 0 })
                 {

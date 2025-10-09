@@ -143,7 +143,7 @@ public partial class Form_15 : BaseWindow<Form_15VM>
 
                 break;
             }
-            case Key.K: // Clear Rows
+            case Key.U: // Clear Rows
             {
                 if (selectedForms is { Count: > 0 })
                 {

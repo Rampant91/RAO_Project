@@ -136,7 +136,7 @@ public partial class Form_12 : BaseWindow<Form_12VM>
 
                 break;
             }
-            case Key.K: // Clear Rows
+            case Key.U: // Clear Rows
             {
                 if (selectedForms is { Count: > 0 })
                 {
