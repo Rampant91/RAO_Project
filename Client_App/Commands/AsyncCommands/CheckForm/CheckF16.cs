@@ -1285,8 +1285,7 @@ public abstract class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
                         Value = codeRao4HasNuclears,
-                        Message = 
-                                  "4-ый символ кода РАО не может быть равен 1 при коде операции 12."
+                        Message = "4-ый символ кода РАО не может быть равен 1 при коде операции 12."
                     });
                 }
                 //else if (operations11.Contains(operationCode))
@@ -1324,8 +1323,7 @@ public abstract class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
                         Value = $"{codeRao4HasNuclears} (4-ый символ кода РАО)",
-                        Message = 
-                                  "4-ый символ кода РАО не может быть равен 2 при кодах операции 11, 13, 14, 16 и 41."
+                        Message = "4-ый символ кода РАО не может быть равен 2 при кодах операции 11, 13, 14, 16 и 41."
                     });
                 }
                 else
@@ -1338,8 +1336,7 @@ public abstract class CheckF16 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = $"{codeRao4HasNuclears} (4-ый символ кода РАО)",
-                            Message = 
-                                      "4-ый символ кода РАО может быть равен 2 при данном коде операции только при указании радионуклидов, " +
+                            Message = "4-ый символ кода РАО может быть равен 2 при данном коде операции только при указании радионуклидов, " +
                                       "которые могут быть отнесены к ЯМ."
                         });
                     }
@@ -1812,7 +1809,8 @@ public abstract class CheckF16 : CheckBase
             .Select(x => x.Okpo_DB)
             .Where(x => !string.IsNullOrWhiteSpace(x))
             .ToList();
-        var valid = repOKPOList.Contains(statusRaoDB);
+        var valid = repOKPOList.Contains(statusRaoDB) 
+            || (operationCode == "12" && statusRaoDB == "2");
         if (!valid)
         {
             result.Add(new CheckError

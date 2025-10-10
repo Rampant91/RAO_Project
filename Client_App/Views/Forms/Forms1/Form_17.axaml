@@ -55,24 +55,30 @@
 				<Border Classes="borderContainer">
 					<Grid Margin="5" RowDefinitions="*,*,*,*,*">
 
-						<Grid ColumnDefinitions="*,*,*"  Grid.Row="0">
-							<TextBlock Grid.Column="0" Margin="5" >Дата окончания предыдущего отчетного периода:</TextBlock>
-							<TextBox Grid.Column="1" Text="{Binding Report.StartPeriod.Value}"/>
-							<CalendarDatePicker Classes="buttonOnly"  
-								Grid.Column="2"
-								SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource DateConverter}}"
-								Watermark="дд.мм.гггг"/>
+						<Grid ColumnDefinitions="*,*,*" Grid.Row="0">
+							<TextBlock Grid.Column="0"
+									   Margin="5,11"
+									   Text="Дата окончания предыдущего отчетного периода:"/>
+							<TextBox Grid.Column="1"
+									 Text="{Binding Report.StartPeriod.Value}"
+									 MinWidth="83"
+									 Watermark="дд.мм.гггг"/>
+							<CalendarDatePicker	Classes="buttonOnly"
+								                Grid.Column="2"
+								                SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource DateConverter}}"/>
 						</Grid>
 
 						<Grid ColumnDefinitions="*,*,*"  Grid.Row="1">
-							<TextBlock Grid.Column="0" Margin="5" >Дата окончания настоящего отчетного периода:</TextBlock>
-							<TextBox Grid.Column="1" 
-								Margin="10.5,3,0,0"
-								Text="{Binding Report.EndPeriod.Value}"/>
-							<CalendarDatePicker Classes="buttonOnly" 
-								Grid.Column="2"
-								SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource DateConverter}}"
-								Watermark="дд.мм.гггг"/>
+							<TextBlock Grid.Column="0"
+									   Margin="5,13"
+									   Text="Дата окончания настоящего отчетного периода:"/>
+							<TextBox Grid.Column="1"
+									 Margin="11,3,0,0"
+									 Text="{Binding Report.EndPeriod.Value}"
+									 Watermark="дд.мм.гггг"/>
+							<CalendarDatePicker Classes="buttonOnly"
+								                Grid.Column="2"
+								                SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource DateConverter}}"								/>
 						</Grid>
 
 						<StackPanel  Orientation="Horizontal" Grid.Row="2">
@@ -211,7 +217,7 @@
 						<TextBlock>Сведения об упаковке</TextBlock>
 					</Border>
 					<Border Grid.Column="13" Grid.Row="0" Grid.ColumnSpan="3">
-						<TextBlock></TextBlock>
+						<TextBlock>Документ</TextBlock>
 					</Border>
 					<Border Grid.Column="16" Grid.Row="0" Grid.ColumnSpan="2">
 						<TextBlock></TextBlock>
@@ -222,14 +228,14 @@
 					<Border Grid.Column="20" Grid.Row="0" Grid.ColumnSpan="10">
 						<TextBlock>Сведения РАО</TextBlock>
 					</Border>
-					<Border Grid.Column="30" Grid.Row="0">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="30" Grid.Row="0" Grid.RowSpan="3" BorderThickness="1,1,1,0">
+						<TextBlock>Субсидия, %</TextBlock>
 					</Border>
-					<Border Grid.Column="31" Grid.Row="0">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="31" Grid.Row="0" Grid.RowSpan="3" BorderThickness="1,1,1,0">
+						<TextBlock>Номер мероприятия ФЦП</TextBlock>
 					</Border>
-					<Border Grid.Column="32" Grid.Row="0">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="32" Grid.Row="0" Grid.RowSpan="2" BorderThickness="1,1,1,0">
+						<TextBlock>Договор</TextBlock>
 					</Border>
 
 					<!--Второй уровень заголовков-->
@@ -240,35 +246,41 @@
 					<Border Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" BorderThickness="1,0,1,1">
 						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="3" Grid.Row="1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="3" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,0,1,1">
+						<TextBlock>наименование</TextBlock>
 					</Border>
-					<Border Grid.Column="4" Grid.Row="1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="4" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,0,1,1">
+						<TextBlock>тип</TextBlock>
 					</Border>
-					<Border Grid.Column="5" Grid.Row="1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="5" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,0,1,1">
+						<TextBlock>заводской номер</TextBlock>
 					</Border>
-					<Border Grid.Column="6" Grid.Row="1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="6" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,0,1,1">
+						<TextBlock>номер упаковки (идентификационный код)</TextBlock>
 					</Border>
-					<Border Grid.Column="7" Grid.Row="1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="7" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,0,1,1">
+						<TextBlock>дата формирования</TextBlock>
 					</Border>
-					<Border Grid.Column="8" Grid.Row="1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="8" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,0,1,1">
+						<TextBlock>номер паспорта</TextBlock>
 					</Border>
-					<Border Grid.Column="9" Grid.Row="1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="9" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,0,1,1">
+						<TextBlock>объем, куб. м</TextBlock>
 					</Border>
-					<Border Grid.Column="10" Grid.Row="1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="10" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,0,1,1">
+						<TextBlock>масса брутто, т</TextBlock>
 					</Border>
 					<Border Grid.Column="11" Grid.Row="1" Grid.ColumnSpan="2">
 						<TextBlock>Радионуклидный состав</TextBlock>
 					</Border>
-					<Border Grid.Column="13" Grid.Row="1" Grid.ColumnSpan="3">
-						<TextBlock>Документ</TextBlock>
+					<Border Grid.Column="13" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,0,1,1">
+						<TextBlock></TextBlock>
+					</Border>
+					<Border Grid.Column="14" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,0,1,1">
+						<TextBlock></TextBlock>
+					</Border>
+					<Border Grid.Column="15" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,0,1,1">
+						<TextBlock></TextBlock>
 					</Border>
 					<Border Grid.Column="16" Grid.Row="1" Grid.ColumnSpan="2">
 						<TextBlock>ОКПО</TextBlock>
@@ -276,35 +288,35 @@
 					<Border Grid.Column="18" Grid.Row="1" Grid.ColumnSpan="2">
 						<TextBlock>Путь хранения</TextBlock>
 					</Border>
-					<Border Grid.Column="20" Grid.Row="1">
+					<Border Grid.Column="20" Grid.Row="1" BorderThickness="1,1,1,0">
 						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="21" Grid.Row="1">
+					<Border Grid.Column="21" Grid.Row="1" BorderThickness="1,1,1,0">
 						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="22" Grid.Row="1">
+					<Border Grid.Column="22" Grid.Row="1" BorderThickness="1,1,1,0">
 						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="23" Grid.Row="1">
+					<Border Grid.Column="23" Grid.Row="1" BorderThickness="1,1,1,0">
 						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="24" Grid.Row="1">
+					<Border Grid.Column="24" Grid.Row="1" BorderThickness="1,1,1,0">
 						<TextBlock></TextBlock>
 					</Border>
 					<Border Grid.Column="25" Grid.Row="1" Grid.ColumnSpan="4">
 						<TextBlock>Суммарная активность</TextBlock>
 					</Border>
-					<Border Grid.Column="29" Grid.Row="1">
+					<Border Grid.Column="29" Grid.Row="1" BorderThickness="1,1,1,0">
 						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="30" Grid.Row="1">
+					<Border Grid.Column="30" Grid.Row="1" BorderThickness="1,0,1,0">
 						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="31" Grid.Row="1">
+					<Border Grid.Column="31" Grid.Row="1" BorderThickness="1,0,1,0">
 						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="32" Grid.Row="1">
-						<TextBlock>Договор</TextBlock>
+					<Border Grid.Column="32" Grid.Row="1" BorderThickness="1,0,1,1">
+						<TextBlock></TextBlock>
 					</Border>
 
 					<!--Третий уровень заголовков-->
@@ -318,29 +330,29 @@
 					<Border Grid.Column="2" Grid.Row="2">
 						<TextBlock>дата</TextBlock>
 					</Border>
-					<Border Grid.Column="3" Grid.Row="2">
-						<TextBlock>наименование</TextBlock>
+					<Border Grid.Column="3" Grid.Row="2" BorderThickness="1,0,1,1">
+						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="4" Grid.Row="2">
-						<TextBlock>тип</TextBlock>
+					<Border Grid.Column="4" Grid.Row="2" BorderThickness="1,0,1,1">
+						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="5" Grid.Row="2">
-						<TextBlock>заводской номер</TextBlock>
+					<Border Grid.Column="5" Grid.Row="2" BorderThickness="1,0,1,1">
+						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="6" Grid.Row="2">
-						<TextBlock>номер упаковки (идентификационный код)</TextBlock>
+					<Border Grid.Column="6" Grid.Row="2" BorderThickness="1,0,1,1">
+						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="7" Grid.Row="2">
-						<TextBlock>дата формирования</TextBlock>
+					<Border Grid.Column="7" Grid.Row="2" BorderThickness="1,0,1,1">
+						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="8" Grid.Row="2">
-						<TextBlock>номер паспорта</TextBlock>
+					<Border Grid.Column="8" Grid.Row="2" BorderThickness="1,0,1,1">
+						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="9" Grid.Row="2">
-						<TextBlock>объем, куб. м</TextBlock>
+					<Border Grid.Column="9" Grid.Row="2" BorderThickness="1,0,1,1">
+						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="10" Grid.Row="2">
-						<TextBlock>масса брутто, т</TextBlock>
+					<Border Grid.Column="10" Grid.Row="2" BorderThickness="1,0,1,1">
+						<TextBlock></TextBlock>
 					</Border>
 					<Border Grid.Column="11" Grid.Row="2">
 						<TextBlock>наименование радионуклида</TextBlock>
@@ -348,62 +360,62 @@
 					<Border Grid.Column="12" Grid.Row="2">
 						<TextBlock>удельная активность, БК/г</TextBlock>
 					</Border>
-					<Border Grid.Column="13" Grid.Row="2">
+					<Border Grid.Column="13" Grid.Row="2" BorderThickness="1,0,1,1">
 						<TextBlock>вид</TextBlock>
 					</Border>
-					<Border Grid.Column="14" Grid.Row="2">
+					<Border Grid.Column="14" Grid.Row="2" BorderThickness="1,0,1,1">
 						<TextBlock>номер</TextBlock>
 					</Border>
-					<Border Grid.Column="15" Grid.Row="2">
+					<Border Grid.Column="15" Grid.Row="2" BorderThickness="1,0,1,1">
 						<TextBlock>дата</TextBlock>
 					</Border>
-					<Border Grid.Column="16" Grid.Row="2">
-						<TextBlock>постащика или получателя</TextBlock>
+					<Border Grid.Column="16" Grid.Row="2" BorderThickness="1,0,1,1">
+						<TextBlock>поставщика или получателя</TextBlock>
 					</Border>
-					<Border Grid.Column="17" Grid.Row="2">
+					<Border Grid.Column="17" Grid.Row="2" BorderThickness="1,0,1,1">
 						<TextBlock>перевозчика</TextBlock>
 					</Border>
-					<Border Grid.Column="18" Grid.Row="2">
+					<Border Grid.Column="18" Grid.Row="2" BorderThickness="1,0,1,1">
 						<TextBlock>наименование</TextBlock>
 					</Border>
-					<Border Grid.Column="19" Grid.Row="2">
+					<Border Grid.Column="19" Grid.Row="2" BorderThickness="1,0,1,1">
 						<TextBlock>код</TextBlock>
 					</Border>
-					<Border Grid.Column="20" Grid.Row="2">
+					<Border Grid.Column="20" Grid.Row="2" BorderThickness="1,0,1,1">
 						<TextBlock>код</TextBlock>
 					</Border>
-					<Border Grid.Column="21" Grid.Row="2">
+					<Border Grid.Column="21" Grid.Row="2" BorderThickness="1,0,1,1">
 						<TextBlock>статус</TextBlock>
 					</Border>
-					<Border Grid.Column="22" Grid.Row="2">
+					<Border Grid.Column="22" Grid.Row="2" BorderThickness="1,0,1,1">
 						<TextBlock>объем без упаковки, куб.м</TextBlock>
 					</Border>
-					<Border Grid.Column="23" Grid.Row="2">
+					<Border Grid.Column="23" Grid.Row="2" BorderThickness="1,0,1,1">
 						<TextBlock>масса без упаковки (нетто), т</TextBlock>
 					</Border>
-					<Border Grid.Column="24" Grid.Row="2">
-						<TextBlock>количество ОЗИИ, шт</TextBlock>
+					<Border Grid.Column="24" Grid.Row="2" BorderThickness="1,0,1,1">
+						<TextBlock>количество ОЗРИ, шт</TextBlock>
 					</Border>
 					<Border Grid.Column="25" Grid.Row="2">
 						<TextBlock>тритий</TextBlock>
 					</Border>
 					<Border Grid.Column="26" Grid.Row="2">
-						<TextBlock>бета-, гамма-излучающие радионуклиды(исключая</TextBlock>
+						<TextBlock>бета-, гамма-излучающие радионуклиды(исключая тритий)</TextBlock>
 					</Border>
 					<Border Grid.Column="27" Grid.Row="2">
-						<TextBlock>альфа-излучающие радионуклиды (исключая</TextBlock>
+						<TextBlock>альфа-излучающие радионуклиды (исключая трансурановые)</TextBlock>
 					</Border>
 					<Border Grid.Column="28" Grid.Row="2">
 						<TextBlock>трансурановые радионуклиды</TextBlock>
 					</Border>
-					<Border Grid.Column="29" Grid.Row="2">
+					<Border Grid.Column="29" Grid.Row="2" BorderThickness="1,0,1,1">
 						<TextBlock>Код переработки/сортировки РАО</TextBlock>
 					</Border>
-					<Border Grid.Column="30" Grid.Row="2">
-						<TextBlock>Субсидия, %</TextBlock>
+					<Border Grid.Column="30" Grid.Row="2" BorderThickness="1,0,1,1">
+						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="31" Grid.Row="2">
-						<TextBlock>Номер мероприятия ФЦП</TextBlock>
+					<Border Grid.Column="31" Grid.Row="2" BorderThickness="1,0,1,1">
+						<TextBlock></TextBlock>
 					</Border>
 					<Border Grid.Column="32" Grid.Row="2">
 						<TextBlock>номер</TextBlock>
@@ -419,10 +431,10 @@
 					SelectedItem="{Binding SelectedForm}">
 					
                     <interactivity:Interaction.Behaviors>
-						<local:DataGridDragSelectionBehavior/>
 						<local:DataGridPointerBehavior/>
 						<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
 						<local:DeselectDataGridOnClickOutsideBehavior/>
+						<local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}"/>
 					</interactivity:Interaction.Behaviors>
 
 					<DataGrid.Columns>
@@ -1087,8 +1099,6 @@
 							  SelectedItem="{Binding SelectedNote}">
 
 						<interactivity:Interaction.Behaviors>
-							<local:DataGridDoubleClickBehavior/>
-							<local:DataGridDragSelectionBehavior/>
 							<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}"/>
 							<local:DataGridPointerBehavior/>
 						</interactivity:Interaction.Behaviors>

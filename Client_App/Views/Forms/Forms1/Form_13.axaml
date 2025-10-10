@@ -56,24 +56,30 @@
 				<Border Classes="borderContainer">
 					<Grid Margin="5" RowDefinitions="*,*,*,*,*">
 
-						<Grid ColumnDefinitions="*,*,*"  Grid.Row="0">
-							<TextBlock Grid.Column="0" Margin="5" >Дата окончания предыдущего отчетного периода:</TextBlock>
-							<TextBox Grid.Column="1" Text="{Binding Report.StartPeriod.Value}"/>
-							<CalendarDatePicker Classes="buttonOnly"  
-								Grid.Column="2"
-								SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource DateConverter}}"
-								Watermark="дд.мм.гггг"/>
+						<Grid ColumnDefinitions="*,*,*" Grid.Row="0">
+							<TextBlock Grid.Column="0"
+									   Margin="5,11"
+									   Text="Дата окончания предыдущего отчетного периода:"/>
+							<TextBox Grid.Column="1"
+									 Text="{Binding Report.StartPeriod.Value}"
+									 MinWidth="83"
+									 Watermark="дд.мм.гггг"/>
+							<CalendarDatePicker	Classes="buttonOnly"
+								                Grid.Column="2"
+								                SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource DateConverter}}"/>
 						</Grid>
 
 						<Grid ColumnDefinitions="*,*,*"  Grid.Row="1">
-							<TextBlock Grid.Column="0" Margin="5" >Дата окончания настоящего отчетного периода:</TextBlock>
+							<TextBlock Grid.Column="0"
+									   Margin="5,13"
+									   Text="Дата окончания настоящего отчетного периода:"/>
 							<TextBox Grid.Column="1"
-								Margin="10.5,3,0,0"
-								Text="{Binding Report.EndPeriod.Value}"/>
-							<CalendarDatePicker Classes="buttonOnly" 
-								Grid.Column="2"
-								SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource DateConverter}}"
-								Watermark="дд.мм.гггг"/>
+									 Margin="11,3,0,0"
+									 Text="{Binding Report.EndPeriod.Value}"
+									 Watermark="дд.мм.гггг"/>
+							<CalendarDatePicker Classes="buttonOnly"
+								                Grid.Column="2"
+								                SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource DateConverter}}"								/>
 						</Grid>
 
 						<StackPanel  Orientation="Horizontal" Grid.Row="2">
@@ -217,8 +223,8 @@
 
 					<!--Первый уровень заголовков-->
 
-					<Border Grid.Column="0" Grid.Row="0">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"  BorderThickness="1,1,1,0">
+						<TextBlock>№ п/п</TextBlock>
 					</Border>
 					<Border Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
 						<TextBlock>Сведения об операции</TextBlock>
@@ -241,8 +247,8 @@
 
 					<!--Второй уровень заголовков-->
 
-					<Border Grid.Column="0" Grid.Row="1">
-						<TextBlock>№ п/п</TextBlock>
+					<Border Grid.Column="0" Grid.Row="1" BorderThickness="1,0,1,1">
+						<TextBlock></TextBlock>
 					</Border>
 					<Border Grid.Column="1" Grid.Row="1">
 						<TextBlock>код</TextBlock>
@@ -315,10 +321,10 @@
 					SelectedItem="{Binding SelectedForm}">
 
                     <interactivity:Interaction.Behaviors>
-						<local:DataGridDragSelectionBehavior/>
 						<local:DataGridPointerBehavior/>
 						<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
 						<local:DeselectDataGridOnClickOutsideBehavior/>
+						<local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}"/>
 					</interactivity:Interaction.Behaviors>
 
 					<DataGrid.Columns>
@@ -779,9 +785,7 @@
 							  SelectedItem="{Binding SelectedNote}">
 
                         <interactivity:Interaction.Behaviors>
-							<local:DataGridDoubleClickBehavior/>
 							<local:DataGridPointerBehavior/>
-							<local:DataGridDragSelectionBehavior/>
 							<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
 						</interactivity:Interaction.Behaviors>
 

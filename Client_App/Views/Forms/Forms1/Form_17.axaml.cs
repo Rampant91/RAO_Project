@@ -179,7 +179,7 @@ public partial class Form_17 : BaseWindow<Form_17VM>
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
-        if (DataContext is not Form_11VM vm) return;
+        if (DataContext is not Form_17VM vm) return;
 
         try
         {

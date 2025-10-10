@@ -72,13 +72,12 @@ public abstract class CheckF18 : CheckBase
         errorList.AddRange(Check_002(forms10));
         while (currentFormLine < formsList.Count)
         {
-            List<int> packLines = new();
-            packLines.Add(currentFormLine);
+            List<int> packLines = [currentFormLine];
             currentFormLine++;
-            if (currentFormLine >= formsList.Count) break;
 
-            while (string.IsNullOrWhiteSpace(formsList[currentFormLine].IndividualNumberZHRO_DB) 
-                   || formsList[currentFormLine].IndividualNumberZHRO_DB.Trim() == "-")
+            while (currentFormLine < formsList.Count 
+                && (string.IsNullOrWhiteSpace(formsList[currentFormLine].IndividualNumberZHRO_DB) 
+                   || formsList[currentFormLine].IndividualNumberZHRO_DB.Trim() == "-"))
             {
                 packLines.Add(currentFormLine);
                 currentFormLine++;
@@ -2425,7 +2424,7 @@ public abstract class CheckF18 : CheckBase
             "11","12","13","14","15","16","17",     "19",
             "21","22","23","24",                    "29",
             "51","52","53","54","55",
-            "61",
+            "61","62",
                  "72","73","74",
             "99","-"
         };

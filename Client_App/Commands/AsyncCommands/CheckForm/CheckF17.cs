@@ -76,8 +76,10 @@ public abstract class CheckF17 : CheckBase
         {
             List<int> packLines = [currentFormLine];
             currentFormLine++;
-            if (currentFormLine >= formsList.Count) break;
-            while (string.IsNullOrWhiteSpace(formsList[currentFormLine].PackType_DB) || formsList[currentFormLine].PackType_DB.Trim() == "-")
+
+            while (currentFormLine < formsList.Count
+                && (string.IsNullOrWhiteSpace(formsList[currentFormLine].PackType_DB)
+                    || formsList[currentFormLine].PackType_DB.Trim() == "-"))
             {
                 packLines.Add(currentFormLine);
                 currentFormLine++;
@@ -2735,7 +2737,8 @@ public abstract class CheckF17 : CheckBase
         {
             var statusRaoDB = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
             if (statusRaoDB is "" or "-") continue;
-            var valid = repOKPOList.Contains(statusRaoDB);
+            var valid = repOKPOList.Contains(statusRaoDB) 
+                || (operationCode == "12" && statusRaoDB == "2");
             if (!valid)
             {
                 result.Add(new CheckError

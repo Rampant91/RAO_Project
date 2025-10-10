@@ -579,7 +579,13 @@ public partial class Form15 : Form1
     private void Activity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        Activity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
+
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        if (Activity_DB != value1)
+        {
+            Activity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
+        }
+        
     }
 
     private bool Activity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);

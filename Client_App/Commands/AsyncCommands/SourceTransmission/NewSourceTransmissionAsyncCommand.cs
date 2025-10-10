@@ -173,7 +173,7 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(Desktop.MainWindow));
+                    .ShowDialog(window));
 
                 #endregion
 
@@ -202,7 +202,7 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                             MinHeight = 175,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(Desktop.MainWindow));
+                        .ShowDialog(window));
 
                     return;
 
@@ -233,7 +233,7 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(Desktop.MainWindow));
+                        .ShowDialog(window));
 
                     #endregion
 

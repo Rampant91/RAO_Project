@@ -17,6 +17,7 @@
 			 Content="Выбрать отчет" 
 			 Command="{Binding OpenPopupCommand}">
 	</Button>
+		
 	<Popup Name="PartPopup"
 			IsOpen="{Binding PopupIsOpen, Mode=TwoWay}"
 			PlacementTarget="{Binding ElementName=ToggleButton}"
@@ -49,6 +50,7 @@
 			</StackPanel>
 		</Border>
 	</Popup>
+		
 	<Button Command="{Binding SwitchPreviousReportCommand}"
 		Grid.Row="2"
 		VerticalContentAlignment="Center"
