@@ -135,7 +135,7 @@ public partial class Form_18 : BaseWindow<Form_18VM>
 
                 break;
             }
-            case Key.K: // Clear Rows
+            case Key.U: // Clear Rows
             {
                 if (selectedForms is { Count: > 0 })
                 {
@@ -275,6 +275,7 @@ public partial class Form_18 : BaseWindow<Form_18VM>
                     if (desktop.Windows.Count == 1)
                     {
                         desktop.MainWindow.WindowState = OwnerPrevState;
+
                         break;
                     }
 
@@ -293,11 +294,16 @@ public partial class Form_18 : BaseWindow<Form_18VM>
 
                     foreach (var key in lst)
                     {
+
                         var item = (Form)key;
                         if (item.Id == 0)
                         {
                             vm.Report[vm.Report.FormNum_DB].Remove(item);
                         }
+
+                        dbm.Restore();
+                        new SortFormSyncCommand(vm).Execute(null);
+                        await dbm.SaveChangesAsync();
                     }
 
                     var lstNote = vm.Report.Notes.ToList<Note>();
@@ -327,7 +333,7 @@ public partial class Form_18 : BaseWindow<Form_18VM>
                     }
                     break;
                 }
-            case "Отмена":
+            case "Отмена" or null:
                 {
                     _isCloseConfirmed = false;
                     return;

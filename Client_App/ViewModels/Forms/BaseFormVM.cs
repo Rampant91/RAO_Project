@@ -341,6 +341,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         UpdateFormList();
         UpdatePageInfo();
         NoteList = Report.Notes;
+
         SubscribeSelectedForms(_selectedForms);
         _selectReportVM = new SelectReportPopupVM(this);
     }

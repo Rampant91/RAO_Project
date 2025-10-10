@@ -5,10 +5,8 @@ using Client_App.ViewModels.Forms;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
 using Models.Forms.Form1;
-using System;
 using System.Threading.Tasks;
 using Models.Forms;
-using JetBrains.Annotations;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -518,6 +516,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                 case "1.6":
                 {
                     var form16 = Storage.Rows.Get<Form16>(i + start);
+
                     if (parsedRows[i].Length == 27)
                     {
                         form16.OperationCode.Value = parsedRows[i][0] is not "41" ? parsedRows[i][0] : string.Empty;
@@ -547,6 +546,8 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                         form16.Subsidy.Value = parsedRows[i][24];
                         form16.FcpNumber.Value = parsedRows[i][25];
                         form16.ContractNumber.Value = parsedRows[i][26];
+
+                        break;
                     }
                     else if (parsedRows[i].Length == 28)
                     {

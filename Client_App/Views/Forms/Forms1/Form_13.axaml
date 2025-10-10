@@ -197,7 +197,7 @@
                         <MenuItem Header="Очистить строчки"
                                   Command="{Binding DeleteDataInRows}"
                                   CommandParameter="{Binding SelectedForms}"
-                                  InputGesture="Ctrl+K"
+                                  InputGesture="Ctrl+U"
                                   IsVisible="{Binding AnyRowSelected}"/>
                         <MenuItem Header="Перевести РВ в РАО"
                                   Command="{Binding SourceTransmission}"
@@ -319,8 +319,8 @@
 					x:CompileBindings="True"
 					Items="{Binding FormList}"
 					SelectedItem="{Binding SelectedForm}">
-
-                    <interactivity:Interaction.Behaviors>
+					
+					<interactivity:Interaction.Behaviors>
 						<local:DataGridPointerBehavior/>
 						<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
 						<local:DeselectDataGridOnClickOutsideBehavior/>
@@ -784,7 +784,7 @@
 							  Items="{Binding NoteList}"
 							  SelectedItem="{Binding SelectedNote}">
 
-                        <interactivity:Interaction.Behaviors>
+						<interactivity:Interaction.Behaviors>
 							<local:DataGridPointerBehavior/>
 							<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
 						</interactivity:Interaction.Behaviors>

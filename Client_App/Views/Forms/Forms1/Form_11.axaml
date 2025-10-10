@@ -153,9 +153,10 @@
 		</Expander>
 
 		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1">
-			<Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="*">
-				<Grid.ContextMenu>
-					<ContextMenu x:CompileBindings="True"
+
+            <Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="Auto">
+                <Grid.ContextMenu>
+                    <ContextMenu x:CompileBindings="True"
                                  x:DataType="vm:Form_11VM"
                                  DataContext="{Binding DataContext, ElementName=dataGrid}">
 						<MenuItem Header="Выделить всё"
@@ -190,7 +191,7 @@
 						<MenuItem Header="Очистить строчки"
                                   Command="{Binding DeleteDataInRows}"
                                   CommandParameter="{Binding SelectedForms}"
-                                  InputGesture="Ctrl+K"
+                                  InputGesture="Ctrl+U"
                                   IsVisible="{Binding AnyRowSelected}"/>
 						<MenuItem Header="Выставить номер"
                                   Command="{Binding SetNumberOrder}"
@@ -201,7 +202,7 @@
 						<MenuItem Header="Скопировать в буфер имя паспорта"
                                   Command="{Binding CopyPasName}"
                                   CommandParameter="{Binding SelectedForms}"
-                                  InputGesture="Ctrl+U"
+                                  InputGesture="Ctrl+K"
                                   IsVisible="{Binding OnlyOneRowSelected}"/>
 						<MenuItem Header="Открыть паспорт"
                                   Command="{Binding OpenPas}"
@@ -351,12 +352,11 @@
 						<local:DataGridPointerBehavior/>
 						<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
 						<local:DeselectDataGridOnClickOutsideBehavior/>
-						<local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}"/>
+                        <local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}"/>
 					</interactivity:Interaction.Behaviors>
 
 					<DataGrid.Columns>
-
-						<DataGridTextColumn Binding="{Binding NumberInOrder.Value}"
+                        <DataGridTextColumn Binding="{Binding NumberInOrder.Value}"
 											Width="40"
 											IsReadOnly="True"
 											x:DataType="forms1:Form11">
