@@ -310,7 +310,7 @@ public partial class Form_16 : BaseWindow<Form_16VM>
                     ;
                     break;
                 }
-            case "Отмена":
+            case "Отмена" or null:
                 {
                     _isCloseConfirmed = false;
                     return;
