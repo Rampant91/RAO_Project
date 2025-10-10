@@ -1,5 +1,7 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	         xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+			 xmlns:behaviors="using:Client_App.Behaviors"
              xmlns:local="using:Client_App"
              xmlns:resources="clr-namespace:Client_App.Resources"
              x:Class="Client_App.App">
@@ -80,7 +82,9 @@
             <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="IsVisible" Value="False"/>
         </Style>
-		
+		<Style Selector="CalendarDatePicker.buttonOnly">
+			<Setter Property="behaviors:ScrollBlock.BlockPointerWheel" Value="True"/>
+		</Style>
 		<Style Selector="Border#Background">
 			<Setter Property="Background" Value="#f0f8ff"/>
         </Style>
