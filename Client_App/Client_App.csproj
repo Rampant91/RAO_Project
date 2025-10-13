@@ -204,4 +204,5 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ProjectExtensions><VisualStudio><UserProperties properties_4columnwidthsettings_4columnwidthssettings_1json__JsonSchema="https://appsemble.app/api.json" /></VisualStudio></ProjectExtensions>
 </Project>

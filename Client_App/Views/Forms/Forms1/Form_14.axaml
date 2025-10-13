@@ -322,6 +322,7 @@
 		            SelectedItem="{Binding SelectedForm}">
 
 		            <interactivity:Interaction.Behaviors>
+						<local:DataGridColumnWidthLoadBehavior FormNum="1.4"/>
 		                <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
 					    <local:DataGridPointerBehavior/>
 						<local:DeselectDataGridOnClickOutsideBehavior/>
