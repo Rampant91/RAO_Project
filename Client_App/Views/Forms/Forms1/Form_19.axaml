@@ -265,6 +265,7 @@
 
                     <interactivity:Interaction.Behaviors>
 						<local:DataGridPointerBehavior/>
+						<local:DataGridColumnWidthLoadBehavior FormNum="1.9"/>
                         <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
 						<local:DeselectDataGridOnClickOutsideBehavior/>
 						<local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}"/>
