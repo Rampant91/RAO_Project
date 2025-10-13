@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Client_App.ViewModels;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -7,7 +8,7 @@ namespace Client_App.Properties.ColumnWidthSettings
 {
     public static class ColumnSettingsManager
     {
-        private static readonly string SettingsPath = "columnWidthsSettings.json";
+        private static readonly string SettingsPath = BaseVM.ConfigDirectory + "\\columnWidthsSettings.json";
 
         // Опции для сериализации с обработкой ошибок
         private static readonly JsonSerializerOptions Options = new JsonSerializerOptions
