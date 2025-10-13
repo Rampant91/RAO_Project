@@ -150,6 +150,7 @@
 		<Style Selector="DataGrid.table DataGridColumnHeader">
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="Padding" Value="0"/>
+			
         </Style>
 		
 		<Style Selector="Border.headerTemplate">

@@ -313,7 +313,8 @@
 					x:Name="dataGrid"
 					x:CompileBindings="True"
 					Items="{Binding FormList}"
-					SelectedItem="{Binding SelectedForm}">
+					SelectedItem="{Binding SelectedForm}"
+					ColumnWidth ="125">
 					<interactivity:Interaction.Behaviors>
 						<local:DataGridColumnWidthLoadBehavior FormNum="1.3"/>
 						<local:DataGridPointerBehavior/>
