@@ -64,7 +64,10 @@ namespace Client_App.Behaviors
             columnWidths.Clear();
             for (int i = 0; i < columns.Count; i++)
             {
-                columnWidths.Add(columns[i].ActualWidth);
+                if (columns[i].Width.IsAbsolute)
+                    columnWidths.Add(columns[i].Width.Value);
+                else
+                    columnWidths.Add(AssociatedObject.ColumnWidth.Value);
             }
             ColumnSettingsManager.SaveSettings(columnWidths, FormNum);
         }
