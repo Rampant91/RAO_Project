@@ -758,8 +758,8 @@
 				  ExpandDirection="Up" 
                   Header="Скрыть/Раскрыть нижнюю панель">
             <Border  Classes="notesContainer">
-				<StackPanel>
-					<StackPanel.ContextMenu>
+				<Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto">
+					<Grid.ContextMenu>
 						<ContextMenu>
 							<MenuItem Header="Добавить строку"
 									  Command="{Binding AddNote}"/>
@@ -774,13 +774,15 @@
 									  Command="{Binding DeleteNotes}"
 									  CommandParameter="{Binding SelectedNotes}"/>
 						</ContextMenu>
-					</StackPanel.ContextMenu>
-					<TextBlock Margin="5">Примечания</TextBlock>
-					<DataGrid Classes="notesTable"
+					</Grid.ContextMenu>
+					<TextBlock Grid.Row="0" Margin="5">Примечания</TextBlock>
+					<DataGrid Grid.Row="1" Classes="notesTable"
 							  x:CompileBindings="True"
 							  Items="{Binding NoteList}"
 							  SelectedItem="{Binding SelectedNote}">
+
 						<interactivity:Interaction.Behaviors>
+							<local:DataGridColumnWidthLoadBehavior FormNum="notes"/>
 							<local:DataGridPointerBehavior/>
 							<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
 						</interactivity:Interaction.Behaviors>
@@ -812,7 +814,7 @@
 
 						</DataGrid.Columns>
 					</DataGrid>
-				</StackPanel>
+				</Grid>
 			</Border>
 		</Expander>
 	</Grid>

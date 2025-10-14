@@ -348,7 +348,6 @@
 						<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
 						<local:DeselectDataGridOnClickOutsideBehavior/>
                         <local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}"/>
-						<local:DataGridAlternateArrowsKeyControl IsEditing="{Binding DataGridIsEditing, Mode=OneWay}"/>
 						<local:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}"/>
                     
 					</interactivity:Interaction.Behaviors>
@@ -845,8 +844,8 @@
 				  ExpandDirection="Up" 
                   Header="Скрыть/Раскрыть нижнюю панель">
             <Border Classes="notesContainer">
-				<StackPanel>
-					<StackPanel.ContextMenu>
+				<Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto">
+					<Grid.ContextMenu>
 						<ContextMenu>
 							<MenuItem Header="Добавить строку"
 									  Command="{Binding AddNote}"/>
@@ -861,15 +860,17 @@
 									  Command="{Binding DeleteNotes}"
 									  CommandParameter="{Binding SelectedNotes}"/>
 						</ContextMenu>
-					</StackPanel.ContextMenu>
-					<TextBlock Margin="5">Примечания</TextBlock>
-					<DataGrid x:Name="notesTable"
+					</Grid.ContextMenu>
+					<TextBlock Grid.Row="0" Margin="5">Примечания</TextBlock>
+					<DataGrid Grid.Row="1" 
+							  x:Name="notesTable"
 							  Classes="notesTable"
 							  x:CompileBindings="True" 
 							  Items="{Binding NoteList}"
-							  SelectedItem="{Binding SelectedNote}"
-							  >
+							  SelectedItem="{Binding SelectedNote}">
+						
 						<interactivity:Interaction.Behaviors>
+							<local:DataGridColumnWidthLoadBehavior FormNum="notes"/>
 							<local:DataGridPointerBehavior/>
 							<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
 						</interactivity:Interaction.Behaviors>
@@ -891,7 +892,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 
-							<DataGridTemplateColumn Header="Пояснения" Width="*">
+							<DataGridTemplateColumn Header="Пояснения" Width="250">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate x:DataType="forms:Note">
 										<TextBox Text="{Binding Comment.Value, Mode=TwoWay}"/>
@@ -901,7 +902,7 @@
 
 						</DataGrid.Columns>
 					</DataGrid>
-				</StackPanel>
+				</Grid>
 			</Border>
 		</Expander>
 	</Grid>

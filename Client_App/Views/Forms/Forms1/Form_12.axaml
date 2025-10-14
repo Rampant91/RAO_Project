@@ -741,33 +741,34 @@
                   Header="Скрыть/Раскрыть нижнюю панель">
 
             <Border Classes="notesContainer">
-                <StackPanel>
-                    <StackPanel.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Добавить строку"
-                                      Command="{Binding AddNote}"/>
-                            <MenuItem Header="Добавить N строк"
-                                      Command="{Binding AddNotes}"/>
-                            <MenuItem Header="Копировать"
-                                      Command="{Binding CopyNotes}"
-                                      CommandParameter="{Binding SelectedNotes}"/>
-                            <MenuItem Header="Вставить"
-                                      Command="{Binding PasteNotes}"/>
-                            <MenuItem Header="Удалить выбранные строчки"
-                                      Command="{Binding DeleteNotes}"
-                                      CommandParameter="{Binding SelectedNotes}"/>
-                        </ContextMenu>
-                    </StackPanel.ContextMenu>
-                    <TextBlock Margin="5">Примечания</TextBlock>
-                    <DataGrid Classes="notesTable"
+				<Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto">
+					<Grid.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Добавить строку"
+									  Command="{Binding AddNote}"/>
+							<MenuItem Header="Добавить N строк"
+									  Command="{Binding AddNotes}"/>
+							<MenuItem Header="Копировать"
+									  Command="{Binding CopyNotes}"
+									  CommandParameter="{Binding SelectedNotes}"/>
+							<MenuItem Header="Вставить"
+									  Command="{Binding PasteNotes}"/>
+							<MenuItem Header="Удалить выбранные строчки"
+									  Command="{Binding DeleteNotes}"
+									  CommandParameter="{Binding SelectedNotes}"/>
+						</ContextMenu>
+					</Grid.ContextMenu>
+                    <TextBlock Grid.Row="0" Margin="5">Примечания</TextBlock>
+                    <DataGrid Grid.Row="1" Classes="notesTable"
                               x:CompileBindings="True"
                               Items="{Binding NoteList}"
                               SelectedItem="{Binding SelectedNote}">
 
-                        <interactivity:Interaction.Behaviors>
+						<interactivity:Interaction.Behaviors>
+							<local:DataGridColumnWidthLoadBehavior FormNum="notes"/>
 							<local:DataGridPointerBehavior/>
-                            <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
-                        </interactivity:Interaction.Behaviors>
+							<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
+						</interactivity:Interaction.Behaviors>
 
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Header="№ строки" Width="80">
@@ -796,7 +797,7 @@
 
                         </DataGrid.Columns>
                     </DataGrid>
-                </StackPanel>
+                </Grid>
             </Border>
         </Expander>
     </Grid>
