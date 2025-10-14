@@ -369,7 +369,7 @@ public abstract class CheckBase : BaseAsyncCommand
 #if DEBUG
             Orgs18_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "Orgs_1.8.xlsx"));
 #else
-            Orgs18_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Orgs_1.8.xlsx.xlsx"));
+            Orgs18_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Orgs_1.8.xlsx"));
 #endif
         }
 
