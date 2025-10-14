@@ -268,7 +268,7 @@
 						<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
 						<local:DeselectDataGridOnClickOutsideBehavior/>
 						<local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}"/>
-						<local:DataGridAlternateArrowsKeyControl IsEditing="{Binding DataGridIsEditing, Mode=OneWay}"/>
+						<local:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}"/>
 					</interactivity:Interaction.Behaviors>
 
                     <DataGrid.Columns>

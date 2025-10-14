@@ -2,18 +2,18 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
-using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
 using System.Linq;
+using Avalonia.VisualTree;
+using Avalonia.Threading;
 
 namespace Client_App.Behaviors
 {
-    public class DataGridAlternateArrowsKeyControl : Behavior<DataGrid>
+    public class DataGridAlternateArrowsKeyBehavior : Behavior<DataGrid>
     {
         public Control? cell { get; set; } = null;
         public static readonly StyledProperty<bool> IsEditingProperty =
-            AvaloniaProperty.Register<DataGridAlternateArrowsKeyControl, bool>(nameof(IsEditing));
+            AvaloniaProperty.Register<DataGridAlternateArrowsKeyBehavior, bool>(nameof(IsEditing));
 
         public bool IsEditing
         {
@@ -110,32 +110,40 @@ namespace Client_App.Behaviors
             if (newRowIndex < 0 || newRowIndex >= itemsCount) return;
             if (newColumnIndex < 0 || newColumnIndex >= dataGrid.Columns.Count) return;
 
-            // Получаем новую строку
-            var newRow = GetRowByIndex(dataGrid, newRowIndex);
-            if (newRow == null) return;
+            // Получаем элемент данных для новой строки
+            var newItem = dataGrid.Items.Cast<object>().ElementAt(newRowIndex);
 
             // Получаем новую колонку
             var newColumn = dataGrid.Columns[newColumnIndex];
 
-            // Ищем ячейку в новой позиции
-            var newCell = GetCellByColumn(newRow, newColumn);
-            if (newCell != null)
-            {
-                // Устанавливаем фокус на новую ячейку
-                newCell.Focus();
+            // Прокручиваем к нужной строке
+            dataGrid.ScrollIntoView(newItem, newColumn);
 
-                // Если в ячейке есть TextBox, фокусируемся на нем
-                var textBox = newCell.FindDescendantOfType<TextBox>();
+            // Ждем немного, чтобы визуальное дерево обновилось после прокрутки
+            Dispatcher.UIThread.Post(() => {
+                // Получаем новую строку после прокрутки
+                var newRow = GetRowByIndex(dataGrid, newRowIndex);
+                if (newRow == null) return;
 
-                if (textBox != null)
+                // Ищем ячейку в новой позиции
+                var newCell = GetCellByColumn(newRow, newColumn);
+                if (newCell != null)
                 {
-                    textBox.Focus();
-                    Dispatcher.UIThread.Post(() =>
+                    // Устанавливаем фокус на новую ячейку
+                    newCell.Focus();
+
+                    // Если в ячейке есть TextBox, фокусируемся на нем и выделяем весь текст
+                    var textBox = newCell.FindDescendantOfType<TextBox>();
+                    if (textBox != null)
                     {
-                        textBox.SelectAll();
-                    }, DispatcherPriority.Background);
+                        textBox.Focus();
+                        Dispatcher.UIThread.Post(() =>
+                        {
+                            textBox.SelectAll();
+                        }, DispatcherPriority.Background);
+                    }
                 }
-            }
+            }, DispatcherPriority.Background);
         }
 
         private DataGridCell? GetCurrentCell()
