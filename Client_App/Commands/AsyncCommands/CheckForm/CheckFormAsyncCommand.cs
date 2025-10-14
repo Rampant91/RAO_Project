@@ -47,6 +47,8 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
         var reps = changeOrCreateViewModel.Storages;
         var rep = changeOrCreateViewModel.Storage;
 
+        var window = Desktop.Windows.FirstOrDefault(x => x.Name == rep.FormNum_DB);
+
         await using var db = new DBModel(StaticConfiguration.DBPath);
         List<CheckError> result = [];
         try
@@ -145,7 +147,7 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
                             MinHeight = 150,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(Desktop.MainWindow));
+                        .ShowDialog(window ?? Desktop.MainWindow));
 
                     #endregion
 
@@ -172,7 +174,7 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowDialog(window ?? Desktop.MainWindow));
 
             #endregion
 
@@ -194,7 +196,7 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowDialog(window ?? Desktop.MainWindow));
 
             #endregion
         }
