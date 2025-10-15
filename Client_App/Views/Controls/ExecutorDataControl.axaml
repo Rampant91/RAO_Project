@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Client_App.ExecutorDataControl">
+	<Grid Margin="5" RowDefinitions ="*,*,*,*,*" ColumnDefinitions="*,2*">
+		<TextBlock Grid.Row="0"
+				   Grid.Column="0"
+				   Margin="5"
+				   Text="ФИО исполнителя:"/>
+		<TextBox Grid.Row="0"
+				 Grid.Column="1"
+				 Margin="5"
+				 Text="{Binding FIO}"/>
+		<TextBlock Grid.Row="1"
+				   Grid.Column="0"
+				   Margin="5"
+				   Text="Должность:"/>
+		<TextBox Grid.Row="1"
+				 Grid.Column="1"
+				 Margin="5"
+				Text="{Binding Grade}"/>
+		<TextBlock Grid.Row="2"
+				   Grid.Column="0"
+				   Margin="5"
+				   Text="Телефон:"/>
+		<TextBox Grid.Row="2"
+				 Grid.Column="1"
+				 Margin="5"
+				 Text="{Binding Phone}"/>
+		<TextBlock Grid.Row="3"
+				   Grid.Column="0"
+				   Margin="5"
+				   Text="Электронная почта:"/>
+		<TextBox Grid.Row="3"
+				 Grid.Column="1"
+				 Margin="5"
+				 Text="{Binding Email}"/>
+		<Button Grid.Row="4"
+				Grid.Column="0"
+				Grid.ColumnSpan="2"
+				Margin="5"
+				Click="CopyExecutorData_Click"
+				Content="Скопировать данные предыдущей формы"/>
+	</Grid>
+</UserControl>
