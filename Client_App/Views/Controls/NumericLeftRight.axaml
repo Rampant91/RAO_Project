@@ -7,7 +7,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Client_App.Controls.NumericLeftRight">
 	<Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto">
-		<RepeatButton Grid.Column="0" 
+		<Button Grid.Column="0" 
 					  Classes="DecreasePart" 
 					  Command="{Binding Decrease, RelativeSource={RelativeSource AncestorType=UserControl}}" 
 					  Content="❮" />
@@ -16,7 +16,7 @@
 				<local:TextBoxDigitValidationBehavior/>
 			</interactivity:Interaction.Behaviors>
 		</TextBox>
-		<RepeatButton Grid.Column="2" 
+		<Button Grid.Column="2" 
 					  Classes="IncreasePart" 
 					  Command="{Binding Increase, RelativeSource={RelativeSource AncestorType=UserControl}}" 
 					  Content="❯" />
