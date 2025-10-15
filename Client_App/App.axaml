@@ -88,6 +88,8 @@
 		<Style Selector="Border#Background">
 			<Setter Property="Background" Value="#f0f8ff"/>
         </Style>
+		
+			
         <!--Стили для окон редактирования форм-->
         <!--Header-->
         <Style Selector="CheckBox.hideButton">

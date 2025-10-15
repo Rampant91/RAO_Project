@@ -891,24 +891,20 @@
 				  ColumnDefinitions="Auto,Auto,Auto,Auto">
 				<TextBlock Text="Текущая страница"
 					Grid.Row="0" Grid.Column="0" Margin="5"/>
-				<NumericUpDown Value="{Binding CurrentPage}" Increment="-1"
-					Grid.Row="0" Grid.Column="1" Margin="5">
-					<interactivity:Interaction.Behaviors>
-						<local:NumericUpDownDigitValidationBehavior/>
-					</interactivity:Interaction.Behaviors>
-				</NumericUpDown>
+				<controls:NumericLeftRight
+					Grid.Row="0" Grid.Column="1" Margin="5"
+					Value="{Binding CurrentPage}"
+					Minimum="1"/>
 				<TextBlock Text ="Кол-во страниц:"
 					Grid.Row="0" Grid.Column="2" Margin="5"/>
 				<TextBlock Text="{Binding TotalPages}"
 					Grid.Row="0" Grid.Column="3" Margin="5"/>
 				<TextBlock Text="Кол-во строчек на странице"
 					Grid.Row="1" Grid.Column="0" Margin="5"/>
-				<NumericUpDown Value="{Binding RowCount}" Minimum="1"
-					Grid.Row="1" Grid.Column="1" Margin="5">
-					<interactivity:Interaction.Behaviors>
-						<local:NumericUpDownDigitValidationBehavior/>
-					</interactivity:Interaction.Behaviors>
-				</NumericUpDown>
+				<controls:NumericLeftRight
+					Grid.Row="1" Grid.Column="1" Margin="5"
+					Value="{Binding RowCount}"
+					Minimum="1"/>
 
 				<TextBlock Text="Всего строчек:"
 					Grid.Row="1" Grid.Column="2" Margin="5"/>
