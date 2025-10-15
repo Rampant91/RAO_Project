@@ -56,24 +56,30 @@
 				<Border Classes="borderContainer">
 					<Grid Margin="5" RowDefinitions="*,*,*,*,*">
 
-						<Grid ColumnDefinitions="*,*,*"  Grid.Row="0">
-							<TextBlock Grid.Column="0" Margin="5" >Дата окончания предыдущего отчетного периода:</TextBlock>
-							<TextBox Grid.Column="1" Text="{Binding Report.StartPeriod.Value}"/>
-							<CalendarDatePicker Classes="buttonOnly"  
-								Grid.Column="2"
-								SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource DateConverter}}"
-								Watermark="дд.мм.гггг"/>
+						<Grid ColumnDefinitions="*,*,*" Grid.Row="0">
+							<TextBlock Grid.Column="0"
+									   Margin="5,11"
+									   Text="Дата окончания предыдущего отчетного периода:"/>
+							<TextBox Grid.Column="1"
+									 Text="{Binding Report.StartPeriod.Value}"
+									 MinWidth="83"
+									 Watermark="дд.мм.гггг"/>
+							<CalendarDatePicker	Classes="buttonOnly"
+								                Grid.Column="2"
+								                SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource DateConverter}}"/>
 						</Grid>
 
 						<Grid ColumnDefinitions="*,*,*"  Grid.Row="1">
-							<TextBlock Grid.Column="0" Margin="5" >Дата окончания настоящего отчетного периода:</TextBlock>
+							<TextBlock Grid.Column="0"
+									   Margin="5,13"
+									   Text="Дата окончания настоящего отчетного периода:"/>
 							<TextBox Grid.Column="1"
-								Margin="10.5,3,0,0"
-								Text="{Binding Report.EndPeriod.Value}"/>
-							<CalendarDatePicker Classes="buttonOnly" 
-								Grid.Column="2"
-								SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource DateConverter}}"
-								Watermark="дд.мм.гггг"/>
+									 Margin="11,3,0,0"
+									 Text="{Binding Report.EndPeriod.Value}"
+									 Watermark="дд.мм.гггг"/>
+							<CalendarDatePicker Classes="buttonOnly"
+								                Grid.Column="2"
+								                SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource DateConverter}}"								/>
 						</Grid>
 
 						<StackPanel  Orientation="Horizontal" Grid.Row="2">
@@ -87,7 +93,6 @@
 							<Button Margin="5" Command="{Binding SaveReport}">Сохранить</Button>
 						</StackPanel>
 
-						
 					</Grid>
 				</Border>
 
@@ -222,8 +227,8 @@
 
 					<!--Первый уровень заголовков-->
 
-					<Border Grid.Column="0" Grid.Row="0">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"  BorderThickness="1,1,1,0">
+						<TextBlock>№ п/п</TextBlock>
 					</Border>
 					<Border Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
 						<TextBlock>Сведения об операции</TextBlock>
@@ -246,8 +251,8 @@
 
 					<!--Второй уровень заголовков-->
 
-					<Border Grid.Column="0" Grid.Row="1">
-						<TextBlock>№ п/п</TextBlock>
+					<Border Grid.Column="0" Grid.Row="1" BorderThickness="1,0,1,1">
+						<TextBlock></TextBlock>
 					</Border>
 					<Border Grid.Column="1" Grid.Row="1">
 						<TextBlock>код</TextBlock>
@@ -318,7 +323,8 @@
 					x:CompileBindings="True"
 					Items="{Binding FormList}"
 					SelectedItem="{Binding SelectedForm}"
-					ColumnWidth ="125">
+					ColumnWidth="125">
+					
 					<interactivity:Interaction.Behaviors>
 						<local:DataGridColumnWidthLoadBehavior FormNum="1.3"/>
 						<local:DataGridPointerBehavior/>
@@ -339,7 +345,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="1"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -352,7 +357,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="2"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -370,7 +374,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="3"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -393,7 +396,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="4"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -411,7 +413,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="5"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -429,7 +430,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="6"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -447,7 +447,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="7"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -465,7 +464,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="8"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -483,7 +481,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="9"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -501,7 +498,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="10"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -524,7 +520,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="11"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -542,7 +537,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="12"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -560,7 +554,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="13"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -578,7 +571,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="14"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -596,7 +588,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="15"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -614,7 +605,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="16"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -637,7 +627,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="17"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -655,7 +644,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="18"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -673,7 +661,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="19"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -691,7 +678,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="20"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -709,7 +695,6 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="21"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -727,7 +712,7 @@
 		</ScrollViewer>
 
 		<Border Grid.Row="2"
-			  Classes="pageControlContainer">
+				Classes="pageControlContainer">
 			<Grid RowDefinitions="Auto,Auto"
 				  ColumnDefinitions="Auto,Auto,Auto,Auto">
 				<TextBlock Text="Текущая страница"
@@ -750,7 +735,9 @@
 				<TextBlock Text="Всего строчек:"
 					Grid.Row="1" Grid.Column="2" Margin="5"/>
 				<TextBlock Text="{Binding TotalRows}"
-					Grid.Row="1" Grid.Column="3" Margin="5"/>
+						   Grid.Row="1" 
+						   Grid.Column="3" 
+						   Margin="5"/>
 			</Grid>
 		</Border>
 		<Expander Grid.Row ="3"

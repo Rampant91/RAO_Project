@@ -164,9 +164,11 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             LogsDirectory = Path.Combine(RaoDirectory, "logs");
             ReserveDirectory = Path.Combine(RaoDirectory, "reserve");
             TmpDirectory = Path.Combine(RaoDirectory, "temp");
+            ConfigDirectory = Path.Combine(RaoDirectory, "config");
             Directory.CreateDirectory(LogsDirectory);
             Directory.CreateDirectory(ReserveDirectory);
             Directory.CreateDirectory(TmpDirectory);
+            Directory.CreateDirectory(ConfigDirectory);
         }
         catch (Exception ex)
         {

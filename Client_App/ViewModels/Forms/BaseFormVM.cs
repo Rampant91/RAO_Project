@@ -317,6 +317,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+
     private SelectReportPopupVM _selectReportVM;
     public SelectReportPopupVM SelectReportPopupVM
     {
@@ -340,8 +341,9 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         UpdateFormList();
         UpdatePageInfo();
         NoteList = Report.Notes;
-        _selectReportVM = new SelectReportPopupVM(this);
+
         SubscribeSelectedForms(_selectedForms);
+        _selectReportVM = new SelectReportPopupVM(this);
     }
 
     #endregion
@@ -369,12 +371,6 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand DeleteNotes => new NewDeleteNoteAsyncCommand(this);
     public ICommand SetDefaultColumnWidth => new SetDefaultColumnWidthAsyncCommand();
     #endregion
-
-    #region  UpdateNoteList
-    public void UpdateNoteList()
-    {
-        NoteList = new ObservableCollection<Note>( Report.Notes.ToList<Note>());
-    }
 
     #endregion
 
@@ -404,6 +400,15 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     {
         OnPropertyChanged(nameof(AnyRowSelected));
         OnPropertyChanged(nameof(OnlyOneRowSelected));
+    }
+
+    #endregion
+
+    #region  UpdateNoteList
+
+    public void UpdateNoteList()
+    {
+        NoteList = new ObservableCollection<Note>( Report.Notes.ToList<Note>());
     }
 
     #endregion

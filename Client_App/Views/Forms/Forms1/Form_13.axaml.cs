@@ -267,30 +267,55 @@ public partial class Form_13 : BaseWindow<Form_13VM>
         {
             case "Да":
                 {
+                    _isCloseConfirmed = true;
+
+                    //Перед тем как сохранить данные пользователю предлагают удалить пустые строчки
+                    try
+                    {
+                        await RemoveEmptyForms(vm);
+                    }
+                    catch (Exception ex)
+                    {
+                        var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                                  $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                        ServiceExtension.LoggerManager.Error(msg);
+                    }
+
                     await dbm.SaveChangesAsync();
                     await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+
                     if (desktop.Windows.Count == 1)
                     {
                         desktop.MainWindow.WindowState = OwnerPrevState;
+
+                        break;
                     }
-                    break;
+
+                    args.Cancel = false;
+
+                    return;
                 }
             case "Нет":
                 {
+                    _isCloseConfirmed = true;
                     dbm.Restore();
-                    new SortFormSyncCommand(vm).Execute(null);
+                    new NewSortFormSyncCommand(vm).Execute(null);
                     await dbm.SaveChangesAsync();
-
 
                     var lst = vm.Report[vm.FormType];
 
                     foreach (var key in lst)
                     {
+
                         var item = (Form)key;
                         if (item.Id == 0)
                         {
                             vm.Report[vm.Report.FormNum_DB].Remove(item);
                         }
+
+                        dbm.Restore();
+                        new SortFormSyncCommand(vm).Execute(null);
+                        await dbm.SaveChangesAsync();
                     }
 
                     var lstNote = vm.Report.Notes.ToList<Note>();
@@ -318,7 +343,6 @@ public partial class Form_13 : BaseWindow<Form_13VM>
                         vm.Report.OnPropertyChanged(nameof(vm.Report.ShortJurLicoRep));
                         vm.Report.OnPropertyChanged(nameof(vm.Report.OkpoRep));
                     }
-                    ;
                     break;
                 }
             case "Отмена" or null:

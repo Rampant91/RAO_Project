@@ -961,7 +961,7 @@ public abstract class CheckF14 : CheckBase
             if (phEntry is null) return result;
             var unit = phEntry["unit"];
             var value = phEntry["value"].Replace('.', ',');
-            if (!TryParseDoubleExtended(value, out var halfLife)) continue;
+            if (!TryParseDoubleExtended(value, out var halfLife)) return result;
             switch (unit)
             {
                 case "лет":
@@ -976,7 +976,7 @@ public abstract class CheckF14 : CheckBase
                     halfLife /= 1440;
                     break;
                 default:
-                    continue;
+                    return result;
             }
             if (halfLife >= 60 && rad != "иод-125") return result;  //Если встречаем хоть один не короткоживущий - ошибки нет
         }

@@ -294,66 +294,90 @@ public partial class Form_11 : BaseWindow<Form_11VM>
         switch (res)
         {
             case "Да":
+            {
+                _isCloseConfirmed = true;
+
+                //Перед тем как сохранить данные пользователю предлагают удалить пустые строчки
+                try
                 {
-                    await dbm.SaveChangesAsync();
-                    await new SaveReportAsyncCommand(vm).AsyncExecute(null);
-                    if (desktop.Windows.Count == 1)
-                    {
-                        desktop.MainWindow.WindowState = OwnerPrevState;
-                    }
+                    await RemoveEmptyForms(vm);
+                }
+                catch (Exception ex)
+                {
+                    var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                              $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                    ServiceExtension.LoggerManager.Error(msg);
+                }
+
+                await dbm.SaveChangesAsync();
+                await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+
+                if (desktop.Windows.Count == 1)
+                {
+                    desktop.MainWindow.WindowState = OwnerPrevState;
+               
                     break; 
                 }
+
+                args.Cancel = false;
+
+                return;
+            }
             case "Нет":
+            {
+                _isCloseConfirmed = true;
+                dbm.Restore();
+                new NewSortFormSyncCommand(vm).Execute(null);
+                await dbm.SaveChangesAsync();
+
+                var lst = vm.Report[vm.FormType];
+
+                foreach (var key in lst)
                 {
+                
+                    var item = (Form)key;
+                    if (item.Id == 0)
+                    {
+                        vm.Report[vm.Report.FormNum_DB].Remove(item);
+                    }
+                
                     dbm.Restore();
                     new SortFormSyncCommand(vm).Execute(null);
                     await dbm.SaveChangesAsync();
-
-
-                    var lst = vm.Report[vm.FormType];
-
-                    foreach (var key in lst)
-                    {
-                        var item = (Form)key;
-                        if (item.Id == 0)
-                        {
-                            vm.Report[vm.Report.FormNum_DB].Remove(item);
-                        }
-                    }
-
-                    var lstNote = vm.Report.Notes.ToList<Note>();
-                    foreach (var item in lstNote.Where(item => item.Id == 0))
-                    {
-                        vm.Report.Notes.Remove(item);
-                    }
-                    if (vm.FormType is not "1.0" and not "2.0")
-                    {
-                        if (vm.FormType.Split('.')[0] == "1")
-                        {
-                            vm.Report.OnPropertyChanged(nameof(vm.Report.StartPeriod));
-                            vm.Report.OnPropertyChanged(nameof(vm.Report.EndPeriod));
-                            vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
-                        }
-                        else if (vm.FormType.Split('.')[0] == "2")
-                        {
-                            vm.Report.OnPropertyChanged(nameof(vm.Report.Year));
-                            vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
-                        }
-                    }
-                    else
-                    {
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.RegNoRep));
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.ShortJurLicoRep));
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.OkpoRep));
-                    }
-                    ;
-                    break;
                 }
-            case "Отмена" or null:
+
+                var lstNote = vm.Report.Notes.ToList<Note>();
+                foreach (var item in lstNote.Where(item => item.Id == 0))
                 {
-                    _isCloseConfirmed = false;
-                    return;
+                    vm.Report.Notes.Remove(item);
                 }
+                if (vm.FormType is not "1.0" and not "2.0")
+                {
+                    if (vm.FormType.Split('.')[0] == "1")
+                    {
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.StartPeriod));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.EndPeriod));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
+                    }
+                    else if (vm.FormType.Split('.')[0] == "2")
+                    {
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.Year));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
+                    }
+                }
+                else
+                {
+                    vm.Report.OnPropertyChanged(nameof(vm.Report.RegNoRep));
+                    vm.Report.OnPropertyChanged(nameof(vm.Report.ShortJurLicoRep));
+                    vm.Report.OnPropertyChanged(nameof(vm.Report.OkpoRep));
+                }
+                break;
+            }
+            case "Отмена" or null:
+            {
+                _isCloseConfirmed = false;
+                return;
+            }
         }
         desktop.MainWindow.WindowState = OwnerPrevState;
 

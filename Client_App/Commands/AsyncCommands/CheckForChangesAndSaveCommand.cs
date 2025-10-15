@@ -5,15 +5,12 @@ using Client_App.Interfaces.Logger;
 using Client_App.ViewModels.Forms;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
-using Models.Collections;
 using Models.DBRealization;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
+
 namespace Client_App.Commands.AsyncCommands;
+
 public class CheckForChangesAndSaveCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
     public override async Task<bool> AsyncExecute(object? parameter)
@@ -23,10 +20,7 @@ public class CheckForChangesAndSaveCommand(BaseFormVM formVM) : BaseAsyncCommand
 
         try
         {
-            if (!dbm.ChangeTracker.HasChanges())
-            {
-                return true;
-            }
+            if (!dbm.ChangeTracker.HasChanges()) return true;
         }
         catch (Exception ex)
         {
@@ -43,7 +37,7 @@ public class CheckForChangesAndSaveCommand(BaseFormVM formVM) : BaseAsyncCommand
                 ButtonDefinitions =
                 [
                     new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" }
+                        new ButtonDefinition { Name = "Нет" }
                 ],
                 ContentTitle = "Сохранение изменений",
                 ContentHeader = "Уведомление",
@@ -65,7 +59,7 @@ public class CheckForChangesAndSaveCommand(BaseFormVM formVM) : BaseAsyncCommand
                 await dbm.SaveChangesAsync();
                 return true;
             default:
-                return false; // Отмена переключения
+                return false; // Отмена
         }
     }
 }
