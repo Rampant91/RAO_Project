@@ -318,6 +318,15 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
+    private ExecutorDataControlVM _executorDataControlVM;
+    public ExecutorDataControlVM ExecutorDataControlVM
+    {
+        get
+        {
+            return _executorDataControlVM;
+        }
+    }
+
     private SelectReportPopupVM _selectReportVM;
     public SelectReportPopupVM SelectReportPopupVM
     {
@@ -326,7 +335,6 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             return _selectReportVM;
         }
     }
-
     #endregion
 
     #region Constructors
@@ -344,6 +352,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
         SubscribeSelectedForms(_selectedForms);
         _selectReportVM = new SelectReportPopupVM(this);
+        _executorDataControlVM = new ExecutorDataControlVM(this.Report);
     }
 
     #endregion
@@ -372,7 +381,6 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand SetDefaultColumnWidth => new SetDefaultColumnWidthAsyncCommand();
     #endregion
 
-    #endregion
 
     #region SelectionChangeWiring
 

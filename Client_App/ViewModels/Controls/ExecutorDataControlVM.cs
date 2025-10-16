@@ -1,4 +1,5 @@
-﻿using Client_App.ViewModels.Forms;
+﻿using Client_App.Properties.ColumnWidthSettings;
+using Client_App.ViewModels.Forms;
 using Models.Collections;
 using Models.JSON.ExecutorData;
 using Newtonsoft.Json;
@@ -27,12 +28,13 @@ namespace Client_App.ViewModels.Controls
             {
                 PopupIsOpen = !PopupIsOpen;
             });
+
         }
 
         #region Property
         #region ExecutorData
 
-        public ExecutorData ExecutorData
+        public ExecutorData Executor
         {
             get
             {
@@ -50,6 +52,7 @@ namespace Client_App.ViewModels.Controls
                 Phone = value.ExecPhone;
                 Grade = value.GradeExecutor;
                 FIO = value.FIOexecutor;
+                OnPropertyChanged();
             }
         }
 
@@ -62,6 +65,7 @@ namespace Client_App.ViewModels.Controls
             set
             {
                 _report.FIOexecutor.Value = value;
+                OnPropertyChanged();
             }
         }
         public string Grade
@@ -73,6 +77,7 @@ namespace Client_App.ViewModels.Controls
             set
             {
                 _report.GradeExecutor.Value = value;
+                OnPropertyChanged();
             }
         }
         public string Phone
@@ -84,6 +89,7 @@ namespace Client_App.ViewModels.Controls
             set
             {
                 _report.ExecPhone.Value = value;
+                OnPropertyChanged();
             }
         }
         public string Email
@@ -95,6 +101,7 @@ namespace Client_App.ViewModels.Controls
             set
             {
                 _report.ExecEmail.Value = value;
+                OnPropertyChanged();
             }
         }
         #endregion
@@ -130,7 +137,7 @@ namespace Client_App.ViewModels.Controls
         public ICommand GetExecutor;
         public ICommand DeleteExecutor;
 
-        public ICommand OpenPopupCommand;
+        public ICommand OpenPopupCommand { get; set; }
 
 
         #endregion

@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Client_App.Controls;
+using Client_App.ViewModels;
+using Models.JSON.ExecutorData;
+using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -7,7 +11,7 @@ namespace Client_App.Properties.ColumnWidthSettings
 {
     public static class ExecutorDataManager
     {
-        private static readonly string SettingsPath = "ExecutorData.json";
+        private static readonly string SettingsPath = BaseVM.ConfigDirectory + "\\executorData.json";
 
         // Опции для сериализации с обработкой ошибок
         private static readonly JsonSerializerOptions Options = new JsonSerializerOptions
@@ -16,57 +20,63 @@ namespace Client_App.Properties.ColumnWidthSettings
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             NumberHandling = JsonNumberHandling.AllowReadingFromString
         };
+        public static void AddExecutorData(ExecutorData executorData)
+        {
+            var executors = GetAllExecutorData();
 
-        public static List<double> GetExecutorData(string formNum)
+            if (executors.Contains(executorData)) return;
+
+            //Записываем в начало списка, чтобы в начале списка хранились последние исполнители  
+            executors.Insert(0,executorData);
+            SaveAllExecutorData(executors);
+        }
+
+        private static List<ExecutorData> GetAllExecutorData()
         {
             if (!File.Exists(SettingsPath))
-                return new List<double>();
+                return new List<ExecutorData>();
 
             try
             {
                 var json = File.ReadAllText(SettingsPath);
-                if (string.IsNullOrWhiteSpace(json))
-                    return new List<double>();
-
-                var settings = JsonSerializer.Deserialize<Dictionary<string, List<double>>>(json, Options);
-
-                return settings?.GetValueOrDefault(formNum) ?? new List<double>();
+                return JsonSerializer.Deserialize<List<ExecutorData>> (json, Options) ?? new List<ExecutorData>();
             }
             catch
             {
-                return new List<double>();
+                return new List<ExecutorData>();
             }
         }
 
-        public static void SaveExecutorData(List<double> formSettings, string formNum)
+        //Этот метод нужен только для того чтобы переместить выбранного исполнителя в начало списка
+        //В начале списка хранится последний исполнитель
+        private static ExecutorData GetExecutorData(ExecutorData executorData)
         {
-            var currentSettings = GetAllExecutorData();
-            currentSettings[formNum] = formSettings ?? new List<double>();
-            SaveAllExecutorData(currentSettings);
+            var executors = GetAllExecutorData();
+
+            if (!executors.Contains(executorData)) return new ExecutorData();
+
+            executors.Remove(executorData);
+            executors.Insert(0,executorData);
+
+            SaveAllExecutorData(executors);
+
+            return executorData;
+
         }
-
-        private static Dictionary<string, List<double>> GetAllExecutorData()
+        public static void DeleteExecutorData(ExecutorData executorData)
         {
-            if (!File.Exists(SettingsPath))
-                return new Dictionary<string, List<double>>();
+            var executors = GetAllExecutorData();
 
+            if (executors.Contains(executorData))
+                executors.Remove(executorData);
+
+            SaveAllExecutorData(executors);
+        }
+        private static void SaveAllExecutorData(List<ExecutorData> executors)
+        {
             try
             {
-                var json = File.ReadAllText(SettingsPath);
-                return JsonSerializer.Deserialize<Dictionary<string, List<double>>>(json, Options)
-                       ?? new Dictionary<string, List<double>>();
-            }
-            catch
-            {
-                return new Dictionary<string, List<double>>();
-            }
-        }
-
-        private static void SaveAllExecutorData(Dictionary<string, List<double>> settings)
-        {
-            try
-            {
-                var json = JsonSerializer.Serialize(settings, Options);
+                var json = JsonSerializer.Serialize(executors, Options);
                 File.WriteAllText(SettingsPath, json);
             }
             catch (System.Exception ex)
