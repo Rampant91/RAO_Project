@@ -339,7 +339,10 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
     #region Constructors
 
-    public BaseFormVM() { SubscribeSelectedForms(_selectedForms); }
+    public BaseFormVM() 
+    { 
+        SubscribeSelectedForms(_selectedForms);
+    }
 
     public BaseFormVM(Report report)
     {
@@ -351,10 +354,14 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         NoteList = Report.Notes;
 
         SubscribeSelectedForms(_selectedForms);
+        InitializeUserControls();
+    }
+
+    public void InitializeUserControls()
+    {
         _selectReportVM = new SelectReportPopupVM(this);
         _executorDataControlVM = new ExecutorDataControlVM(this.Report);
     }
-
     #endregion
 
     #region Commands

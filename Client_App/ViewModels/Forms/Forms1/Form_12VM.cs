@@ -1,4 +1,5 @@
 using Client_App.Commands.AsyncCommands.SourceTransmission;
+using Client_App.ViewModels.Controls;
 using Models.Collections;
 using System;
 using System.Linq;
@@ -31,8 +32,10 @@ public class Form_12VM : BaseFormVM
                     .LastOrDefault() ?? ""
             },
             Reports = reps
+
         };
 
+        base.InitializeUserControls();
         Reports = reps;
     }
 

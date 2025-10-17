@@ -3,6 +3,7 @@ using Client_App.ViewModels;
 using Models.JSON.ExecutorData;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -18,20 +19,27 @@ namespace Client_App.Properties.ColumnWidthSettings
         {
             WriteIndented = true,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            NumberHandling = JsonNumberHandling.AllowReadingFromString
+            NumberHandling = JsonNumberHandling.AllowReadingFromString,
+
         };
+        
         public static void AddExecutorData(ExecutorData executorData)
         {
             var executors = GetAllExecutorData();
 
-            if (executors.Contains(executorData)) return;
+            if (executors.Exists
+                (x => 
+                x.ExecEmail == executorData.ExecEmail 
+                && x.ExecPhone == executorData.ExecPhone
+                && x.GradeExecutor == executorData.GradeExecutor
+                && x.FIOexecutor == executorData.FIOexecutor)) return;
 
             //Записываем в начало списка, чтобы в начале списка хранились последние исполнители  
             executors.Insert(0,executorData);
             SaveAllExecutorData(executors);
         }
 
-        private static List<ExecutorData> GetAllExecutorData()
+        public static List<ExecutorData> GetAllExecutorData()
         {
             if (!File.Exists(SettingsPath))
                 return new List<ExecutorData>();
@@ -49,30 +57,41 @@ namespace Client_App.Properties.ColumnWidthSettings
 
         //Этот метод нужен только для того чтобы переместить выбранного исполнителя в начало списка
         //В начале списка хранится последний исполнитель
-        private static ExecutorData GetExecutorData(ExecutorData executorData)
+        public static ExecutorData? GetExecutorData(ExecutorData executorData)
         {
             var executors = GetAllExecutorData();
 
-            if (!executors.Contains(executorData)) return new ExecutorData();
+            var executor = executors.FirstOrDefault
+               (x =>
+               x.ExecEmail == executorData.ExecEmail
+               && x.ExecPhone == executorData.ExecPhone
+               && x.GradeExecutor == executorData.GradeExecutor
+               && x.FIOexecutor == executorData.FIOexecutor);
+            if (executor == null) return null;
 
-            executors.Remove(executorData);
-            executors.Insert(0,executorData);
+            executors.Remove(executor);
+            executors.Insert(0, executor);
 
             SaveAllExecutorData(executors);
 
-            return executorData;
+            return executor;
 
         }
         public static void DeleteExecutorData(ExecutorData executorData)
         {
             var executors = GetAllExecutorData();
-
-            if (executors.Contains(executorData))
-                executors.Remove(executorData);
+            var executor = executors.FirstOrDefault
+                (x =>
+                x.ExecEmail == executorData.ExecEmail
+                && x.ExecPhone == executorData.ExecPhone
+                && x.GradeExecutor == executorData.GradeExecutor
+                && x.FIOexecutor == executorData.FIOexecutor);
+            if (executor == null) return;
+                executors.Remove(executor);
 
             SaveAllExecutorData(executors);
         }
-        private static void SaveAllExecutorData(List<ExecutorData> executors)
+        public static void SaveAllExecutorData(List<ExecutorData> executors)
         {
             try
             {

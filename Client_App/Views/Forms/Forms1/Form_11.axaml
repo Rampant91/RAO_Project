@@ -99,6 +99,7 @@
 					<controls:ExecutorDataControl
 						DataContext="{Binding ExecutorDataControlVM}"></controls:ExecutorDataControl>
 				</Border>
+				
 				<Border Classes="borderContainer">
 					<Grid Margin="5" RowDefinitions="Auto,Auto,Auto">
 						

@@ -35,6 +35,7 @@ public class Form_15VM : BaseFormVM
             Reports = reps
         };
 
+        base.InitializeUserControls();
         Reports = reps;
     }
 

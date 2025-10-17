@@ -3,8 +3,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Client_App.Controls.ExecutorDataControl">
+             x:Class="Client_App.Controls.ExecutorDataControl"
+			 x:Name="ExecutorDataControl">
 	<StackPanel>
+		
 		<Grid Margin="5" RowDefinitions ="*,*,*,*,*" ColumnDefinitions="*,2*">
 			<TextBlock Grid.Row="0"
 					   Grid.Column="0"
@@ -41,16 +43,17 @@
 			<Button Grid.Row="4"
 					Grid.Column="0"
 					Margin="5"
-					Content="Сохранить данные исполнителя"/>
+					Content="Сохранить шаблон исполнителя"
+					Command="{Binding AddExecutor}"/>
 			<Button x:Name="LoadButton"
 					Grid.Row="4"
 					Grid.Column="1"
 					Margin="5"
-					Content="Загрузить данные исполнителя"
+					Content="Загрузить шаблон исполнителя"
 					Command="{Binding OpenPopupCommand}"/>
 		</Grid>
-		<Popup x:Name="ExecutorsPopup"
-			IsOpen="{Binding PopupIsOpen, Mode=TwoWay}"
+		<Popup IsOpen="{Binding PopupIsOpen, Mode=TwoWay}" 
+			x:Name="ExecutorsPopup"
 			PlacementTarget="{Binding #LoadButton}"
 			PlacementMode="Right"
 			IsLightDismissEnabled="True">
@@ -60,19 +63,21 @@
 					CornerRadius="4"
 					Padding="10">
 				<StackPanel>
-					<TextBlock Text="Выбор отчета"/>
-					<ListBox Items="{Binding ExecutorList}"
-							 SelectedItem="{Binding SelectedReport, Mode=TwoWay}"
+					<TextBlock Text="Выбор исполнителя"/>
+					<ListBox x:Name="ExecutorsListBox" 
+							 Items="{Binding ExecutorList}"
 							 SelectionMode="Single">
 						<ListBox.ItemTemplate>
-							<DataTemplate>
-								<Grid ColumnDefinitions="*,Auto" RowDefinitions="20,20,20,20">
-									<TextBlock Grid.Column="0" Grid.Row="0" Text=""/>
-									<TextBlock Grid.Column="0" Grid.Row="1" Text=""/>
-									<TextBlock Grid.Column="0" Grid.Row="2" Text=""/>
-									<TextBlock Grid.Column="0" Grid.Row="3" Text=""/>
-									
-									<Button Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" Content="X"/>
+							<DataTemplate >
+								<Grid ColumnDefinitions="*,Auto" RowDefinitions="20,20,20,20" >
+									<TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding FIOexecutor}"/>
+									<TextBlock Grid.Column="0" Grid.Row="1" Text="{Binding GradeExecutor}"/>
+									<TextBlock Grid.Column="0" Grid.Row="2" Text="{Binding ExecPhone}"/>
+									<TextBlock Grid.Column="0" Grid.Row="3" Text="{Binding ExecEmail}"/>
+									<Button  
+										Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" 
+											Height="80" Width="50" 
+											Content="X"/>
 								</Grid>
 							</DataTemplate>
 						</ListBox.ItemTemplate>

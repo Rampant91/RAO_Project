@@ -16,17 +16,30 @@ using System.Windows.Input;
 
 namespace Client_App.ViewModels.Controls
 {
-    public class ExecutorDataControlVM
+    public class ExecutorDataControlVM : INotifyPropertyChanged
     {
 
         private Report _report;
         public ExecutorDataControlVM(Report report)
         {
             _report = report;
-
+            _executorList = new ObservableCollection<ExecutorData>(ExecutorDataManager.GetAllExecutorData());
             OpenPopupCommand = ReactiveCommand.Create(() =>
             {
                 PopupIsOpen = !PopupIsOpen;
+            });
+            AddExecutor = ReactiveCommand.Create(() =>
+            {
+                ExecutorDataManager.AddExecutorData(Executor);
+                ExecutorList = new ObservableCollection<ExecutorData>(ExecutorDataManager.GetAllExecutorData());
+            });
+            DeleteExecutor = ReactiveCommand.Create<ExecutorData>((executor) => {
+                ExecutorDataManager.DeleteExecutorData(executor);
+                ExecutorList = new ObservableCollection<ExecutorData>(ExecutorDataManager.GetAllExecutorData());
+            });
+            GetExecutor = ReactiveCommand.Create<ExecutorData>((executor) =>
+            {
+                Executor = ExecutorDataManager.GetExecutorData(executor);
             });
 
         }
@@ -56,7 +69,7 @@ namespace Client_App.ViewModels.Controls
             }
         }
 
-        public string FIO
+        public string? FIO
         {
             get
             {
@@ -68,7 +81,7 @@ namespace Client_App.ViewModels.Controls
                 OnPropertyChanged();
             }
         }
-        public string Grade
+        public string? Grade
         {
             get
             {
@@ -80,7 +93,7 @@ namespace Client_App.ViewModels.Controls
                 OnPropertyChanged();
             }
         }
-        public string Phone
+        public string? Phone
         {
             get
             {
@@ -92,7 +105,7 @@ namespace Client_App.ViewModels.Controls
                 OnPropertyChanged();
             }
         }
-        public string Email
+        public string? Email
         {
             get
             {
@@ -117,25 +130,26 @@ namespace Client_App.ViewModels.Controls
             }
         }
 
-        private ObservableCollection<ExecutorData> _executorsList;
+        private ObservableCollection<ExecutorData> _executorList;
         public ObservableCollection<ExecutorData> ExecutorList
         {
             get
             {
-                return _executorsList;
+                return _executorList;
             }
             set
             {
-                _executorsList = value;
+                _executorList = value;
+
                 OnPropertyChanged();
             }
         }
         #endregion
 
         #region Commands
-        public ICommand CreateExecutor;
-        public ICommand GetExecutor;
-        public ICommand DeleteExecutor;
+        public ICommand AddExecutor { get; set; }
+        public ICommand GetExecutor { get; set; }
+        public ICommand DeleteExecutor { get; set; }
 
         public ICommand OpenPopupCommand { get; set; }
 

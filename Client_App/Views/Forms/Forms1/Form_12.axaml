@@ -96,48 +96,10 @@
                     </Grid>
                 </Border>
 
-                <Border Classes="borderContainer">
-                    <Grid Margin="5" RowDefinitions ="*,*,*,*,*" ColumnDefinitions="*,2*">
-                        <TextBlock Grid.Row="0"
-                                   Grid.Column="0"
-                                   Margin="5"
-                                   Text="ФИО исполнителя:"/>
-                        <TextBox Grid.Row="0"
-                                 Grid.Column="1"
-                                 Margin="5"
-                                 Text="{Binding Path=Report.FIOexecutor.Value}"/>
-                        <TextBlock Grid.Row="1"
-                                   Grid.Column="0"
-                                   Margin="5"
-                                   Text="Должность:"/>
-                        <TextBox Grid.Row="1"
-                                 Grid.Column="1"
-                                 Margin="5"
-                                Text="{Binding Path=Report.GradeExecutor.Value}"/>
-                        <TextBlock Grid.Row="2"
-                                   Grid.Column="0"
-                                   Margin="5"
-                                   Text="Телефон:"/>
-                        <TextBox Grid.Row="2"
-                                 Grid.Column="1"
-                                 Margin="5"
-                                 Text="{Binding Path=Report.ExecPhone.Value}"/>
-                        <TextBlock Grid.Row="3"
-                                   Grid.Column="0"
-                                   Margin="5"
-                                   Text="Электронная почта:"/>
-                        <TextBox Grid.Row="3"
-                                 Grid.Column="1"
-                                 Margin="5"
-                                 Text="{Binding Path=Report.ExecEmail.Value}"/>
-                        <Button Grid.Row="4"
-                                Grid.Column="0"
-                                Grid.ColumnSpan="2"
-                                Margin="5"
-                                Click="CopyExecutorData_Click"
-                                Content="Скопировать данные предыдущей формы"/>
-                    </Grid>
-                </Border>
+				<Border Classes="borderContainer">
+					<controls:ExecutorDataControl
+						DataContext="{Binding ExecutorDataControlVM}"></controls:ExecutorDataControl>
+				</Border>
 
 				<Border Classes="borderContainer">
 					<Grid Margin="5" RowDefinitions="Auto,Auto,Auto">
