@@ -1,30 +1,31 @@
-﻿using System;
-using System.Collections;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Threading;
-using Client_App.ViewModels;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
-using Models.Collections;
-using Models.DBRealization;
-using Models.Forms.Form1;
-using Models.Forms.Form2;
-using Models.Forms;
-using Models.Interfaces;
-using Spravochniki;
-using Microsoft.EntityFrameworkCore;
-using static Client_App.ViewModels.BaseVM;
-using System.Reflection;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.Properties;
-using MessageBox.Avalonia.Models;
-using System.Collections.Generic;
 using Client_App.Resources.CustomComparers;
+using Client_App.ViewModels;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Enums;
+using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using Models.Collections;
+using Models.DBRealization;
+using Models.Forms;
+using Models.Forms.Form1;
+using Models.Forms.Form2;
+using Models.Interfaces;
+using Spravochniki;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using static Client_App.ViewModels.BaseVM;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -431,7 +432,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         FileInfo dbFileInfo = null;
         foreach (var fileInfo in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly)
                      .Where(x => x.Name.ToLower().EndsWith(".raodb"))
-                     .OrderByDescending((x => x.LastWriteTime)))
+                     .OrderByDescending(x => x.LastWriteTime))
         {
             try
             {
@@ -482,12 +483,20 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         {
             try
             {
+                var lastModifiedFile = true;
+                var actualReserveFileFullPath = string.Empty;
                 foreach (var fileInfo in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly)
-                             .Where(x => x.Name.ToLower().EndsWith(".raodb")))
+                             .Where(x => x.Name.ToLower().EndsWith(".raodb"))
+                             .OrderByDescending(x => x.LastWriteTime))
                 {
                     if (!File.Exists(fileInfo.FullName)) continue;
-                    File.Copy(fileInfo.FullName, 
-                        Path.Combine(ReserveDirectory, Path.GetFileNameWithoutExtension(fileInfo.Name)) + $"_{DateTime.Now.Ticks}.RAODB");
+                    var reserveFileFullPath = Path.Combine(ReserveDirectory, Path.GetFileNameWithoutExtension(fileInfo.Name) + $"_{DateTime.Now.Ticks}.RAODB");
+                    if (lastModifiedFile)
+                    {
+                        actualReserveFileFullPath = reserveFileFullPath;
+                        lastModifiedFile = false;
+                    }
+                    File.Copy(fileInfo.FullName, reserveFileFullPath);
                     File.Delete(fileInfo.FullName);
                 }
                 
@@ -499,12 +508,17 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Ошибка при чтении файла .raodb",
+                        ContentTitle = "Ошибка при чтении файла .RAODB",
                         ContentHeader = "Ошибка",
-                        ContentMessage = $"Не удалось прочесть файл базы данных " +
-                                         $"{Environment.NewLine}{dbFileInfo.FullName}. Файл поврежден." +
-                                         $"{Environment.NewLine}Программа запущена с новым пустым файлом базы данных" +
-                                         $"{Environment.NewLine}{StaticConfiguration.DBPath}",
+                        ContentMessage = $"Возникла ошибка при чтении файла базы данных (БД)" +
+                                         $"{Environment.NewLine}{dbFileInfo.FullName}." +
+                                         $"{Environment.NewLine}Файл БД был перемещён по пути " +
+                                         $"{Environment.NewLine}{actualReserveFileFullPath}." +
+                                         $"{Environment.NewLine}Программа запущена с новым пустым файлом БД" +
+                                         $"{Environment.NewLine}{StaticConfiguration.DBPath}." +
+                                         $"{Environment.NewLine}Для восстановления данных воспользуйтель функцией \"Импорт -> из RAODB\"," +
+                                         $"{Environment.NewLine}указав путь к резервному файлу.",
+
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })

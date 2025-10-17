@@ -325,14 +325,25 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         {
             return _selectReportVM;
         }
+        set
+        {
+            _selectReportVM = value;
+        }
     }
 
     #endregion
 
     #region Constructors
 
-    public BaseFormVM() { SubscribeSelectedForms(_selectedForms); }
+    public BaseFormVM() 
+    { 
+        SubscribeSelectedForms(_selectedForms);
+    }
 
+    /// <summary>
+    /// Редактирование ранее созданного отчёта.
+    /// </summary>
+    /// <param name="report">Отчёт.</param>
     public BaseFormVM(Report report)
     {
         _report = report;

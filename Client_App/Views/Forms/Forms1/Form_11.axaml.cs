@@ -321,7 +321,7 @@ public partial class Form_11 : BaseWindow<Form_11VM>
 
                 args.Cancel = false;
 
-                return;
+                break;
             }
             case "Нет":
             {

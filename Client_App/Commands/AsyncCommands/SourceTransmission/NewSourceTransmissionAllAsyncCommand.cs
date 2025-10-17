@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.Logger;
@@ -28,7 +29,9 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
 
     public override async Task AsyncExecute(object? parameter)
     {
-        var window = Desktop.Windows.First(x => x.Name == SelectedReport.FormNum_DB);
+        var formWindow = Desktop.Windows.FirstOrDefault(x => x.Name == FormVM.FormType);
+        var desktop = (IClassicDesktopStyleApplicationLifetime)Avalonia.Application.Current?.ApplicationLifetime!;
+        var activeWindow = formWindow ?? desktop.MainWindow;
 
         var formsWithCode41 = SelectedReport[SelectedReport.FormNum_DB].ToList<Form1>()
             .Where(x => string.Equals(x.OperationCode_DB.Trim(), "41", StringComparison.Ordinal))
@@ -53,7 +56,7 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(window));
+                .ShowDialog(activeWindow));
 
             #endregion
              
@@ -74,7 +77,7 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(window));
+                .ShowDialog(activeWindow));
 
             #endregion
 
@@ -102,7 +105,7 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(window));
+                    .ShowDialog(activeWindow));
 
                 #endregion
 
@@ -116,7 +119,8 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
 
                         break;
                     }
-                    case "Отмена":
+                    case null or "Отмена":
+                    default:
                     {
                         return;
                     }
@@ -169,7 +173,7 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(Desktop.MainWindow));
+                    .ShowDialog(activeWindow));
 
                 #endregion
 
@@ -259,7 +263,7 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
                     MinHeight = 175,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(window));
+                .ShowDialog(activeWindow));
 
             #endregion
         }

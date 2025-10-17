@@ -36,7 +36,9 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
 
         var form = (Form1)parameter;
 
-        var window = Desktop.Windows.First(x => x.Name == form.FormNum_DB);
+        var formWindow = Desktop.Windows.FirstOrDefault(x => x.Name == form.FormNum_DB);
+        var desktop = (IClassicDesktopStyleApplicationLifetime)Avalonia.Application.Current?.ApplicationLifetime!;
+        var activeWindow = formWindow ?? desktop.MainWindow;
 
         if (!string.Equals(form.OperationCode_DB.Trim(), "41", StringComparison.Ordinal))
         {
@@ -53,7 +55,7 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(window));
+                .ShowDialog(activeWindow));
 
             #endregion
 
@@ -74,7 +76,7 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(window));
+                .ShowDialog(activeWindow));
 
             #endregion
 
@@ -101,7 +103,7 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(window));
+                    .ShowDialog(activeWindow));
 
                 #endregion
 
@@ -115,7 +117,8 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
 
                         break;
                     }
-                    case "Отмена":
+                    case null or "Отмена":
+                    default:
                     {
                         return;
                     }
@@ -173,7 +176,7 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(window));
+                    .ShowDialog(activeWindow));
 
                 #endregion
 
@@ -202,7 +205,7 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                             MinHeight = 175,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(window));
+                        .ShowDialog(activeWindow));
 
                     return;
 
@@ -233,7 +236,7 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(window));
+                        .ShowDialog(activeWindow));
 
                     #endregion
 

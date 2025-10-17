@@ -1,9 +1,7 @@
-using Client_App.Commands.AsyncCommands.SourceTransmission;
-using Models.Attributes;
+using Client_App.ViewModels.Controls;
 using Models.Collections;
 using System;
 using System.Linq;
-using System.Windows.Input;
 
 namespace Client_App.ViewModels.Forms.Forms1;
 
@@ -35,6 +33,8 @@ public class Form_18VM : BaseFormVM
         };
 
         Reports = reps;
+
+        SelectReportPopupVM = new SelectReportPopupVM(this);
     }
 
     #endregion
