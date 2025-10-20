@@ -9,6 +9,7 @@ using System;
 using System.Threading.Tasks;
 using Models.Forms;
 using JetBrains.Annotations;
+using Models.Forms.Form4;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -767,6 +768,66 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                         }
                         break;
                     }
+
+
+                #endregion
+
+                #region 4.1
+
+                case "4.1":
+                    {
+                        var form41 = Storage.Rows.Get<Form41>(i + start);
+                        if (parsedRows[i].Length == 8)
+                        {
+                            form41.RegNo.Value = parsedRows[i][0];
+                            form41.Okpo.Value = parsedRows[i][1];
+                            form41.OrganizationName.Value = parsedRows[i][2];
+                            form41.LicenseOrRegistrationInfo.Value = parsedRows[i][3];
+
+                            var value = ConvertStringToInt(parsedRows[i][4]);
+                            if (value == null)
+                                value = 0;
+                            form41.NumOfFormsWithInventarizationInfo.Value = (int)value;
+
+                            value = ConvertStringToInt(parsedRows[i][5]);
+                            if (value == null)
+                                value = 0;
+                            form41.NumOfFormsWithoutInventarizationInfo.Value = (int)value;
+
+                            value = ConvertStringToInt(parsedRows[i][6]);
+                            if (value == null)
+                                value = 0;
+                            form41.NumOfForms212.Value = (int)value;
+
+                            form41.Note.Value = parsedRows[i][7];
+                        }
+                        else if (parsedRows[i].Length == 9)
+                        {
+                            form41.RegNo.Value = parsedRows[i][1];
+                            form41.Okpo.Value = parsedRows[i][2];
+                            form41.OrganizationName.Value = parsedRows[i][3];
+                            form41.LicenseOrRegistrationInfo.Value = parsedRows[i][4];
+
+                            var value = ConvertStringToInt(parsedRows[i][5]);
+                            if (value == null)
+                                value = 0;
+                            form41.NumOfFormsWithInventarizationInfo.Value = (int)value;
+
+                            value = ConvertStringToInt(parsedRows[i][6]);
+                            if (value == null)
+                                value = 0;
+                            form41.NumOfFormsWithoutInventarizationInfo.Value = (int)value;
+
+                            value = ConvertStringToInt(parsedRows[i][7]);
+                            if (value == null)
+                                value = 0;
+                            form41.NumOfForms212.Value = (int)value;
+
+                            form41.Note.Value = parsedRows[i][8];
+                        }
+                        break;
+                    }
+
 
                     #endregion
             }

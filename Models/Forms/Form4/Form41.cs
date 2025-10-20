@@ -433,7 +433,17 @@ public partial class Form41 : Form
 
     public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
-        throw new NotImplementedException();
+            worksheet.Cells[row + 0, column + 0].Value = NumberInOrder_DB;
+            worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(RegNo_DB);
+            worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelString(Okpo_DB);
+            worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelString(OrganizationName_DB);
+            worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = NumOfFormsWithInventarizationInfo_DB;
+            worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = NumOfFormsWithInventarizationInfo_DB;
+            worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = NumOfFormsWithoutInventarizationInfo_DB;
+            worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = NumOfForms212_DB;
+            worksheet.Cells[row + (!transpose ? 8 : 0), column + (transpose ? 8 : 0)].Value = ConvertToExcelString(Note_DB);
+
+            return 9;
     }
 
     public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string id = "")

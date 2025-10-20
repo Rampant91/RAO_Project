@@ -572,6 +572,9 @@
 											<MenuItem Header="Удалить форму"
 													  Command="{Binding NewDeleteForm}"
 													  CommandParameter="{Binding SelectedReport}"/>
+											<MenuItem Header="Выгрузить форму в Excel"
+													  Command="{Binding ExcelExportFormPrint}"
+                                                      CommandParameter="{Binding SelectedReport}"/>
 										</ContextMenu>
 									</DataGrid.ContextMenu>
 

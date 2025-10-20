@@ -17,6 +17,7 @@ using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
+using Models.Forms.Form4;
 using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
@@ -255,7 +256,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             worksheet.Cells["H37"].Value = frmObosob.Okopf_DB;
             worksheet.Cells["I37"].Value = frmObosob.Okfs_DB;
         }
-        else
+        else if (formNum.Split('.')[0] == "1")
         {
             var frmYur = master.Rows10[0];
             var frmObosob = master.Rows10[1];
@@ -299,6 +300,33 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             worksheet.Cells["H37"].Value = frmObosob.Okopf_DB;
             worksheet.Cells["I37"].Value = frmObosob.Okfs_DB;
         }
+        else if (formNum.Split('.')[0] == "4")
+        {
+            var form40 = master.Rows40[0];
+
+            worksheet.Cells["B9"].Value = form40.SubjectRF_DB;
+
+            worksheet.Cells["B15"].Value = form40.Year_DB;
+
+            worksheet.Cells["B19"].Value = form40.NameOrganUprav_DB;
+            worksheet.Cells["B20"].Value = form40.ShortNameOrganUprav_DB;
+            worksheet.Cells["B21"].Value = form40.AddressOrganUprav_DB;
+            worksheet.Cells["B22"].Value = form40.GradeFioDirectorOrganUprav_DB;
+            worksheet.Cells["B23"].Value = form40.GradeFioExecutorOrganUprav_DB;
+            worksheet.Cells["B24"].Value = form40.TelephoneOrganUprav_DB;
+            worksheet.Cells["B25"].Value = form40.FaxOrganUprav_DB;
+            worksheet.Cells["B26"].Value = form40.EmailOrganUprav_DB;
+
+            worksheet.Cells["B28"].Value = form40.NameRiac_DB;
+            worksheet.Cells["B29"].Value = form40.ShortNameRiac_DB;
+            worksheet.Cells["B30"].Value = form40.AddressRiac_DB;
+            worksheet.Cells["B31"].Value = form40.GradeFioDirectorRiac_DB;
+            worksheet.Cells["B32"].Value = form40.GradeFioExecutorRiac_DB;
+            worksheet.Cells["B33"].Value = form40.TelephoneRiac_DB;
+            worksheet.Cells["B34"].Value = form40.FaxRiac_DB;
+            worksheet.Cells["B35"].Value = form40.EmailRiac_DB;
+
+        }
     }
 
     #endregion
@@ -319,7 +347,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             worksheet.Cells["G4"].Value = rep.EndPeriod_DB;
             worksheet.Cells["G5"].Value = rep.CorrectionNumber_DB;
         }
-        else
+        else if (formNum.Split('.')[0] == "2")
         {
             switch (formNum)
             {
@@ -370,10 +398,20 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             }
         }
 
-        worksheet.Cells["D18"].Value = rep.GradeExecutor_DB;
-        worksheet.Cells["F18"].Value = rep.FIOexecutor_DB;
-        worksheet.Cells["I18"].Value = rep.ExecPhone_DB;
-        worksheet.Cells["K18"].Value = rep.ExecEmail_DB;
+        if (formNum.Split('.')[0] == "4")
+        {
+            worksheet.Cells["B12"].Value = rep.GradeExecutor_DB;
+            worksheet.Cells["B13"].Value = rep.FIOexecutor_DB;
+            worksheet.Cells["B14"].Value = rep.ExecPhone_DB;
+            worksheet.Cells["B15"].Value = rep.ExecEmail_DB;
+        }
+        else
+        {
+            worksheet.Cells["D18"].Value = rep.GradeExecutor_DB;
+            worksheet.Cells["F18"].Value = rep.FIOexecutor_DB;
+            worksheet.Cells["I18"].Value = rep.ExecPhone_DB;
+            worksheet.Cells["K18"].Value = rep.ExecEmail_DB;
+        }
     }
 
     #endregion
@@ -448,9 +486,20 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     /// <param name="rep">Отчёт.</param>
     private protected static void ExcelPrintRowsExport(string formNum, ExcelWorksheet worksheet, Report rep)
     {
-        var start = formNum is "2.8"
-            ? 14
-            : 11;
+
+        int start;
+        switch (formNum)
+        {
+            case "2.8":
+                start = 14;
+                break;
+            case "4.1":
+                start = 9;
+                break;
+            default:
+                start = 11;
+                break;
+        }
 
         for (var i = 0; i < rep[formNum].Count - 1; i++)
         {
@@ -591,6 +640,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                         break;
                     case Form212 form212:
                         form212.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form41 form41:
+                        form41.ExcelRow(worksheet, count, 1);
                         break;
                 }
 
