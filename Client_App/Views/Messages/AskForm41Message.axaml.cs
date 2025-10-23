@@ -1,0 +1,99 @@
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
+using Models.Collections;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Reactive.Linq;
+using System.Runtime.CompilerServices;
+
+namespace Client_App;
+
+public partial class AskForm41Message : Window, INotifyPropertyChanged
+{
+    private ObservableCollection<Report> _reportList;
+    public ObservableCollection<Report> ReportList
+    {
+        get
+        {
+            return _reportList;
+        }
+        set
+        {
+            _reportList = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private Report _selectedReport;
+    public Report SelectedReport
+    {
+        get
+        {
+            return _selectedReport;
+        }
+        set
+        {
+            _selectedReport = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private Reports _reports;
+    public Reports Reports
+    {
+        get
+        {
+            return _reports;
+        }
+        set
+        {
+            _reports = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public AskForm41Message(Report report)
+    {
+        Reports = report.Reports;
+        ReportList = new ObservableCollection<Report>(Reports.Report_Collection);
+        ReportList.Remove(report);
+
+        DataContext = this;
+        AvaloniaXamlLoader.Load(this);
+
+        
+    }
+    public AskForm41Message()
+    {
+        AvaloniaXamlLoader.Load(this);
+        DataContext = this;
+
+        Reports = new Reports();
+        ReportList = Reports.Report_Collection;
+    }
+    private void Accept_Click(object sender, RoutedEventArgs e)
+    {
+        Report? result = SelectedReport;
+        // Return the integer result from ViewModel
+            Close(result);
+    }
+
+    private void Cancel_Click(object sender, RoutedEventArgs e)
+    {
+        // Return a cancellation indicator (could use null or sentinel value)
+        Close(null);
+    }
+
+    #region INotifyPropertyChanged
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private void OnPropertyChanged([CallerMemberName] string prop = "")
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+    }
+
+    #endregion
+}

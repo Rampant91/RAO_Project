@@ -449,7 +449,9 @@
 										  SelectionMode="Single"
 										  SelectedItem="{Binding SelectedReports}"
 										  RowHeight="25"
-										  GridLinesVisibility="All">
+										  GridLinesVisibility="All"
+										  AlternatingRowBackground="White"
+										  RowBackground="White">
 										
 							        <DataGrid.ContextMenu>
 										<ContextMenu>
@@ -563,7 +565,9 @@
 										  Items="{Binding ReportList}"
 										  SelectedItem="{Binding SelectedReport}"
 										  RowHeight="25"
-										  GridLinesVisibility="All">
+										  GridLinesVisibility="All"
+										  AlternatingRowBackground="White"
+										  RowBackground="White">
 									<DataGrid.ContextMenu>
 										<ContextMenu>
 											<MenuItem Header="Редактировать форму"

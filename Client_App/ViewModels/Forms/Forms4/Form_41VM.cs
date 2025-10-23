@@ -1,4 +1,5 @@
-﻿using Client_App.Commands.AsyncCommands;
+﻿using Client_App.Commands;
+using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Calculator;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.Passports;
@@ -44,6 +45,7 @@ namespace Client_App.ViewModels.Forms.Forms4
         public ICommand ExcelExportSourceMovementHistory => new ExcelExportSourceMovementHistoryAsyncCommand();
         public ICommand OpenPas => new OpenPasAsyncCommand();
         public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);
+        public ICommand GenerateForm41 => new GenerateForm41AsyncCommand(this);
 
         #endregion
 

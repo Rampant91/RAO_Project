@@ -1,10 +1,12 @@
-﻿using Client_App.Commands.AsyncCommands;
+﻿using Client_App.Commands;
+using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Save;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form4;
+using Spravochniki;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -82,6 +84,47 @@ namespace Client_App.ViewModels.Forms.Forms4
         public string WindowHeader => $"Форма {Storage.FormNum_DB}: Титульный лист организации";
 
         #region Properties
+
+        public ICollection<string> SubjectRFCollection
+        {
+            get
+            {
+                return Spravochniks.DictionaryOfSubjectRF.Values;
+            }
+        }
+
+        public int CodeOfSubjectRF
+        {
+            get
+            {
+                var code = Spravochniks.DictionaryOfSubjectRF
+                    .FirstOrDefault(x => x.Value == Storage.Rows40[0].SubjectRF.Value)
+                    .Key;
+                return code;
+            }
+            set
+            {
+                if (Spravochniks.DictionaryOfSubjectRF.ContainsKey(value))
+                Storage.Rows40[0].SubjectRF.Value = Spravochniks.DictionaryOfSubjectRF[value];
+
+                OnPropertyChanged(nameof(NameOfSubjectRF));
+                OnPropertyChanged(nameof(CodeOfSubjectRF));
+            }
+        }
+        public string NameOfSubjectRF
+        {
+            get
+            {
+                return Storage.Rows40[0].SubjectRF.Value;
+            }
+            set
+            {
+                Storage.Rows40[0].SubjectRF.Value = value;
+
+                OnPropertyChanged(nameof(NameOfSubjectRF));
+                OnPropertyChanged(nameof(CodeOfSubjectRF));
+            }
+        }
 
         #region SelectedReports
 
