@@ -74,12 +74,20 @@ public partial class AskSubjectRFMessage : Window, INotifyPropertyChanged
     
     private void Accept_Click(object sender, RoutedEventArgs e)
     {
-        string? result = ((AskSubjectRFMessage)DataContext).NameOfSubjectRF;
-        // Return the integer result from ViewModel
-        if (result == null)
-            Close("");
+        int code = ((AskSubjectRFMessage)DataContext).CodeOfSubjectRF;
+        string name = ((AskSubjectRFMessage)DataContext).NameOfSubjectRF;
+
+        if ((code == 0) || (name == ""))
+            Close(null);
         else
+        {
+            var result = code.ToString();
+
+            if (result.Length == 1)
+                result = "0" + result;
+
             Close(result);
+        }
     }
 
     private void Cancel_Click(object sender, RoutedEventArgs e)

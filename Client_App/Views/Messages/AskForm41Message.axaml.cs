@@ -3,9 +3,12 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
+using Models.DBRealization;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 
@@ -77,8 +80,19 @@ public partial class AskForm41Message : Window, INotifyPropertyChanged
     private void Accept_Click(object sender, RoutedEventArgs e)
     {
         Report? result = SelectedReport;
+
+        if (result != null)
+        {
+            var dBModel = StaticConfiguration.DBModel;
+            var dbReport = dBModel.ReportCollectionDbSet
+                            .AsSplitQuery()
+                            .AsQueryable()
+                            .Include(rep => rep.Rows41)
+                            .FirstOrDefault(x => x.Id == result.Id);
+            result.Rows41 = dbReport.Rows41;
+        }
         // Return the integer result from ViewModel
-            Close(result);
+        Close(result);
     }
 
     private void Cancel_Click(object sender, RoutedEventArgs e)
