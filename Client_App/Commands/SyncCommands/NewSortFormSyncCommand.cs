@@ -19,7 +19,7 @@ public class NewSortFormSyncCommand(BaseFormVM formVM) : BaseCommand
         if (enumerable is null) return;
         if (enumerable.Count() <= 0) return;
 
-        var minItem = enumerable.Min(x => x.Order);
+        var minItem = 1;
 
 
         Storage.Sort();
