@@ -177,7 +177,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             ContextMenuText = ["Выгрузить организацию"],
-            Command = MainWindowVM.ExportReports
+            Command = dataContext.ExportReports
         });
 
         grd1.CommandsList.Add(new KeyCommand
@@ -186,7 +186,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             ContextMenuText = ["Выгрузить организацию с указанием диапазона дат"],
-            Command = MainWindowVM.ExportReportsWithDateRange
+            Command = dataContext.ExportReportsWithDateRange
         });
 
         grd1.CommandsList.Add(new KeyCommand

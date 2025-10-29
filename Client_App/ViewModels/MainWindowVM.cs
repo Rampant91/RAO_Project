@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Commands.AsyncCommands;
@@ -280,12 +281,12 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     /// <summary>
     /// Экспорт организации в файл .RAODB
     /// </summary>
-    public static ICommand ExportReports => new ExportReportsAsyncCommand();
+    public ICommand ExportReports => new ExportReportsAsyncCommand();
 
     /// <summary>
     /// Экспорт организации в файл .RAODB с указанием диапазона дат выгружаемых форм
     /// </summary>
-    public static ICommand ExportReportsWithDateRange => new ExportReportsWithDateRangeAsyncCommand();
+    public ICommand ExportReportsWithDateRange => new ExportReportsWithDateRangeAsyncCommand();
 
     /// <summary>
     /// Импорт отчёта из Excel.

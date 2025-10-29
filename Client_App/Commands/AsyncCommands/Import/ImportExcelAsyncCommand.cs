@@ -262,8 +262,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     {
                         if (worksheet0.Name is "1.0" or "2.0")
                         {
-                            #region MessageNewOrg
-
+                            #region MessageNewOrg 1.0 or 2.0
                             an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                 {
@@ -280,6 +279,34 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                         $"{Environment.NewLine}" +
                                         $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
                                         $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
+                                        $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                        $"{Environment.NewLine}" +
+                                        $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
+                                        $"{Environment.NewLine}импортировать все новые организации.",
+                                    MinWidth = 400,
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                })
+                                .ShowDialog(Desktop.MainWindow));
+
+                            #endregion
+                        }
+                        else if (worksheet0.Name is "4.0")
+                        {
+                            #region MessageNewOrg 4.0
+                            an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                {
+                                    ButtonDefinitions =
+                                    [
+                                        new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                                    new ButtonDefinition { Name = "Да для всех" },
+                                    new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
+                                    ],
+                                    ContentTitle = "Импорт из .xlsx",
+                                    ContentHeader = "Уведомление",
+                                    ContentMessage =
+                                        $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {ImpRepFormNum}." +
+                                        $"{Environment.NewLine}" +
                                         $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
                                         $"{Environment.NewLine}" +
                                         $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +

@@ -462,6 +462,17 @@
 											<MenuItem Header="Удалить форму"
 													  Command="{Binding DeleteReports}"
 													  CommandParameter="{Binding SelectedReports}"/>
+											<MenuItem Header="Выгрузить организацию"
+													  Command="{Binding ExportReports}"
+													  CommandParameter="{Binding SelectedReports}"/>
+											<MenuItem Header="Выгрузить организацию с указанием диапазона дат"
+													  Command="{Binding ExportReportsWithDateRange}"
+													  CommandParameter="{Binding SelectedReports}"/>
+											<MenuItem Header="Выгрузить все организации в один файл"
+													  Command="{Binding ExportAllReportsOneFile}"/>
+											<MenuItem Header="Выгрузить все организации в отдельные файлы"
+													  Command="{Binding ExportAllReports}"
+													  CommandParameter="{Binding SelectedReports}"/>
 										</ContextMenu>
 									</DataGrid.ContextMenu>
 										
@@ -578,6 +589,9 @@
 													  CommandParameter="{Binding SelectedReport}"/>
 											<MenuItem Header="Выгрузить форму в Excel"
 													  Command="{Binding ExcelExportFormPrint}"
+                                                      CommandParameter="{Binding SelectedReport}"/>
+											<MenuItem Header="Выгрузить"
+													  Command="{Binding ExportForm}"
                                                       CommandParameter="{Binding SelectedReport}"/>
 										</ContextMenu>
 									</DataGrid.ContextMenu>
