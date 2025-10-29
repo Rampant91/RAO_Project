@@ -470,7 +470,7 @@
 											x:DataType="models:Reports"
 											Width="60"
 											IsReadOnly="True"
-											Binding="{Binding Master.Rows40[0].SubjectRF.Value}">
+											Binding="{Binding Master.Rows40[0].CodeSubjectRF.Value}">
 											<DataGridTextColumn.HeaderTemplate>
 												<DataTemplate>
 													<Border Classes="headerTemplate">

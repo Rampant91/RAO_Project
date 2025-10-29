@@ -74,7 +74,6 @@ namespace Client_App.ViewModels.Forms.Forms4
 
         #endregion
 
-
         #region FormType
 
         public string FormType { get; set; } = "4.0";
@@ -93,22 +92,16 @@ namespace Client_App.ViewModels.Forms.Forms4
             }
         }
 
-        public int CodeOfSubjectRF
+        public string CodeOfSubjectRF
         {
             get
             {
-                var code = Spravochniks.DictionaryOfSubjectRF
-                    .FirstOrDefault(x => x.Value == Storage.Rows40[0].SubjectRF.Value)
-                    .Key;
-                return code;
+                return Storage.Rows40[0].CodeSubjectRF.Value;
             }
             set
             {
-                if (Spravochniks.DictionaryOfSubjectRF.ContainsKey(value))
-                Storage.Rows40[0].SubjectRF.Value = Spravochniks.DictionaryOfSubjectRF[value];
-
-                OnPropertyChanged(nameof(NameOfSubjectRF));
-                OnPropertyChanged(nameof(CodeOfSubjectRF));
+                Storage.Rows40[0].CodeSubjectRF.Value = value;
+                OnPropertyChanged();
             }
         }
         public string NameOfSubjectRF
@@ -120,9 +113,15 @@ namespace Client_App.ViewModels.Forms.Forms4
             set
             {
                 Storage.Rows40[0].SubjectRF.Value = value;
+                if (Spravochniks.DictionaryOfSubjectRF.ContainsValue(value))
+                {
+                    string key = Spravochniks.DictionaryOfSubjectRF.FirstOrDefault(x => x.Value == value).Key.ToString();
+                    if (key.Length == 1)
+                        key = "0" + key;
+                    CodeOfSubjectRF = key;
+                }
 
-                OnPropertyChanged(nameof(NameOfSubjectRF));
-                OnPropertyChanged(nameof(CodeOfSubjectRF));
+                OnPropertyChanged();
             }
         }
 

@@ -16,8 +16,14 @@ namespace Client_App;
 public partial class AskSubjectRFMessage : Window, INotifyPropertyChanged
 {
 
-
-
+    private string _text = "Выберите субъект Российской Федерации";
+    public string Text 
+    {
+        get
+        {
+            return _text;
+        } 
+    }
     public ICollection<string> SubjectRFCollection
     {
         get
@@ -61,6 +67,15 @@ public partial class AskSubjectRFMessage : Window, INotifyPropertyChanged
     }
     public AskSubjectRFMessage()
     {
+        Initialize();
+    }
+    public AskSubjectRFMessage(string text)
+    {
+        _text = text;
+        Initialize();
+    }
+    private void Initialize()
+    {
         AvaloniaXamlLoader.Load(this);
         DataContext = this;
         Dispatcher.UIThread.InvokeAsync(() =>
@@ -71,7 +86,7 @@ public partial class AskSubjectRFMessage : Window, INotifyPropertyChanged
     }
 
 
-    
+
     private void Accept_Click(object sender, RoutedEventArgs e)
     {
         int code = ((AskSubjectRFMessage)DataContext).CodeOfSubjectRF;

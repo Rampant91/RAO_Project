@@ -304,9 +304,10 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         {
             var form40 = master.Rows40[0];
 
+            worksheet.Cells["B8"].Value = form40.CodeSubjectRF_DB;
             worksheet.Cells["B9"].Value = form40.SubjectRF_DB;
 
-            worksheet.Cells["B15"].Value = form40.Year_DB;
+            worksheet.Cells["B15"].Value = rep.Year_DB;
 
             worksheet.Cells["B19"].Value = form40.NameOrganUprav_DB;
             worksheet.Cells["B20"].Value = form40.ShortNameOrganUprav_DB;
@@ -397,13 +398,19 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 }
             }
         }
-
-        if (formNum.Split('.')[0] == "4")
+        else if (formNum.Split('.')[0] == "4")
         {
+            worksheet.Cells["B1"].Value = rep.CorrectionNumber_DB;
+
+            
+
+
             worksheet.Cells["B12"].Value = rep.GradeExecutor_DB;
             worksheet.Cells["B13"].Value = rep.FIOexecutor_DB;
             worksheet.Cells["B14"].Value = rep.ExecPhone_DB;
             worksheet.Cells["B15"].Value = rep.ExecEmail_DB;
+
+           
         }
         else
         {

@@ -159,10 +159,18 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         var worksheetTitle = excelPackage.Workbook.Worksheets[0];
         var worksheetMain = excelPackage.Workbook.Worksheets[1];
 
+
         ExcelPrintTitleExport(rep.FormNum_DB, worksheetTitle, rep, rep.Reports.Master);
+
+
         ExcelPrintSubMainExport(rep.FormNum_DB, worksheetMain, rep);
-        ExcelPrintNotesExport(rep.FormNum_DB, worksheetMain, rep);
+
+        if (worksheetTitle.Name is "1.0" or "2.0")
+            ExcelPrintNotesExport(rep.FormNum_DB, worksheetMain, rep);
+
+
         ExcelPrintRowsExport(rep.FormNum_DB, worksheetMain, rep);
+
         return Task.CompletedTask;
     }
 

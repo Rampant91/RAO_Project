@@ -26,13 +26,11 @@
 
 		<!--  TopTable  -->
 		<Grid.RowDefinitions>
-			<RowDefinition Height="*" MaxHeight="200"/>
+			<RowDefinition Height="Auto" MaxHeight="200"/>
 			<RowDefinition Height="5*" MinHeight="400"/>
 		</Grid.RowDefinitions>
 		<Border
             Grid.Row="0"
-            MinHeight="140"
-            MaxHeight="200"
             Margin="5,15,5,0"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
@@ -40,51 +38,44 @@
             BorderThickness="1"
             CornerRadius="5">
 
-			<Grid ColumnDefinitions="330,500">
-				<StackPanel Grid.Column="0"
-                            Orientation="Vertical">
-					<TextBlock
-						Height="32"
-						Margin="5,0"
-						Text="Субъект Российской федерации"/>
-					<TextBlock
-						Height="32"
-						Margin="5,0"
-						Text="Отчет РИАЦ за (год)"/>
-					<StackPanel
-                        Orientation = "Horizontal">
-						<Button
-                            Content="Сохранить"
-                            Height="32"
-                            Margin ="5,0,0,0"
-                            Command="{Binding SaveReport}"/>
-					</StackPanel>
-				</StackPanel>
-				<StackPanel Grid.Column="1"
-                            Orientation="Vertical">
-					<Grid ColumnDefinitions="30,*">
-					    <TextBox Grid.Column="0" 
-								 Height="26" 
-								 Margin="0,0,0,3" 
-								 Text="{Binding CodeOfSubjectRF}" 
-								 MaxLength="2"/>
-						<AutoCompleteBox
-							Grid.Column="1"
-						    MaxDropDownHeight="300"
-						    Height="26"
-						    Items="{Binding SubjectRFCollection}"
-						    FilterMode="Contains"
-						    Margin="0,0,0,3"
-						    Text="{Binding NameOfSubjectRF}">
-					    </AutoCompleteBox>
-					</Grid>
-					<TextBox
-						Height="26"
+			<Grid RowDefinitions="Auto,Auto" ColumnDefinitions="330, 550">
+				<TextBlock
+					Grid.Row="0"
+					Grid.Column="0"
+					Margin="5"
+					Text="Код и субъект Российской Федерации"/>
+				<Grid Grid.Row="0"
+					  Grid.Column="1"
+				      ColumnDefinitions="40,*" 
+					  Margin="5">
+				    <TextBox 
+					    Grid.Row="0"
+					    Grid.Column="0"
 						Margin="0,0,0,3"
-						Text="{Binding Storage.Rows40[0].Year.Value}"/>
+						Text="{Binding CodeOfSubjectRF}"
+						MaxLength="2"/>
+				    <AutoCompleteBox
+					    Grid.Row="0"
+					    Grid.Column="1"
+					    MaxDropDownHeight="300"
+					    Items="{Binding SubjectRFCollection}"
+					    FilterMode="Contains"
+					    Margin="0,0,0,3"
+					    Text="{Binding NameOfSubjectRF}">
+				    </AutoCompleteBox>
+				</Grid>
+
+				<StackPanel 
+					    Grid.Row="1"
+					    Grid.Column="0" 
+						Grid.ColumnSpan="2"
+						Orientation="Horizontal">
+				    <Button
+					    Content="Сохранить"
+					    Margin ="10,5,5,5"
+					    Command="{Binding SaveReport}"/>
 				</StackPanel>
 			</Grid>
-
 		</Border>
 		<!-- ScrollData -->
 		<ScrollViewer
@@ -104,7 +95,7 @@
                     BorderBrush="Black"
                     BorderThickness="1"
                     CornerRadius="5">
-					<Grid ColumnDefinitions="330,500" RowDefinitions="*,*">
+					<Grid ColumnDefinitions="330,550" RowDefinitions="*,*">
 						<!-- Орган управления- Наименования полей -->
 						<TextBlock
                             Grid.Row="0"
@@ -215,7 +206,7 @@
                     BorderBrush="Black"
                     BorderThickness="1"
                     CornerRadius="5">
-					<Grid ColumnDefinitions="330,500" RowDefinitions="*,*">
+					<Grid ColumnDefinitions="330,550" RowDefinitions="*,*">
 						<!-- Региональный информационно-аналитический центр - Наименования полей -->
 						<TextBlock
                             Grid.Row="0"

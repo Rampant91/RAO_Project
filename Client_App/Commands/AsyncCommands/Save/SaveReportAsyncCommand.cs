@@ -138,11 +138,6 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
                 Storages.Master.Rows20[1].OrganUprav.Value = Storages.Master.Rows20[0].OrganUprav.Value;
                 Storages.Master.Rows20[1].RegNo.Value = Storages.Master.Rows20[0].RegNo.Value;
             }
-            if (Storages.Master.Rows40.Count != 0)
-            {
-                Storages.Master.Rows40[1].NameOrganUprav.Value = Storages.Master.Rows40[0].NameOrganUprav.Value;
-                Storages.Master.Rows40[1].NameRiac.Value = Storages.Master.Rows40[0].NameRiac.Value;
-            }
             Storages.Report_Collection.Sorted = false;
             await Storages.Report_Collection.QuickSortAsync();
         }

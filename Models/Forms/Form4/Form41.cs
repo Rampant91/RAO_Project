@@ -428,7 +428,25 @@ public partial class Form41 : Form
 
     public override void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
-        throw new NotImplementedException();
+            NumberInOrder_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 1].Value), out var intValue)
+                ? intValue
+                : 0;
+        
+        RegNo_DB = Convert.ToString(worksheet.Cells[row, 2].Value).Trim();
+
+        Okpo_DB = Convert.ToString(worksheet.Cells[row, 3].Value).Trim();
+
+        OrganizationName_DB = Convert.ToString(worksheet.Cells[row, 4].Value).Trim();
+
+        LicenseOrRegistrationInfo_DB = Convert.ToString(worksheet.Cells[row, 5].Value).Trim();
+
+        NumOfFormsWithInventarizationInfo_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 6].Value), out intValue) ? intValue : 0;
+
+        NumOfFormsWithoutInventarizationInfo_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 7].Value), out intValue) ? intValue : 0;
+
+        NumOfForms212_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 8].Value), out intValue) ? intValue : 0;
+
+        Note_DB = Convert.ToString(worksheet.Cells[row, 9].Value).Trim();
     }
 
     public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")

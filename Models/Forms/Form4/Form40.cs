@@ -28,7 +28,60 @@ public partial class Form40 : Form
 
     #region Properties
 
-    #region SubjectRF (2)
+    #region CodeSubjectRF (2)
+
+    [MaxLength(2)]
+    [Column(TypeName = "varchar(2)")]
+    public string CodeSubjectRF_DB { get; set; } = "";
+
+    [NotMapped]
+    public RamAccess<string> CodeSubjectRF
+    {
+        get
+        {
+            if (Dictionary.TryGetValue(nameof(CodeSubjectRF), out var value))
+            {
+                ((RamAccess<string>)value).Value = CodeSubjectRF_DB;
+                return (RamAccess<string>)value;
+            }
+            var rm = new RamAccess<string>(CodeSubjectRF_Validation, CodeSubjectRF_DB);
+            rm.PropertyChanged += CodeSubjectRF_ValueChanged;
+            Dictionary.Add(nameof(CodeSubjectRF), rm);
+            return (RamAccess<string>)Dictionary[nameof(CodeSubjectRF)];
+        }
+        set
+        {
+            CodeSubjectRF_DB = ParseInnerText(value.Value);
+            OnPropertyChanged();
+        }
+    }
+
+    private void CodeSubjectRF_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+
+        if (value1 is null) return;
+
+        value1 = value1.Length > 64
+            ? value1[..64]
+            : value1;
+
+        if (CodeSubjectRF_DB != value1)
+        {
+            CodeSubjectRF_DB = value1;
+        }
+    }
+
+    private bool CodeSubjectRF_Validation(RamAccess<string> value)
+    {
+        value.ClearErrors();
+        return true;
+    }
+
+    #endregion
+
+    #region SubjectRF (3)
 
     [MaxLength(64)]
     [Column(TypeName = "varchar(64)")]
@@ -81,51 +134,9 @@ public partial class Form40 : Form
 
     #endregion
 
-    #region Year (3)
+    // Form41.Year (4)
 
-    public int Year_DB { get; set; }
-
-    [NotMapped]
-    public RamAccess<int> Year
-    {
-        get
-        {
-            if (Dictionary.TryGetValue(nameof(Year), out var value))
-            {
-                ((RamAccess<int>)value).Value = Year_DB;
-                return (RamAccess<int>)value;
-            }
-            var rm = new RamAccess<int>(Year_Validation, Year_DB);
-            rm.PropertyChanged += Year_ValueChanged;
-            Dictionary.Add(nameof(Year), rm);
-            return (RamAccess<int>)Dictionary[nameof(Year)];
-        }
-        set
-        {
-            Year_DB = value.Value;
-            OnPropertyChanged();
-        }
-    }
-
-    private void Year_ValueChanged(object value, PropertyChangedEventArgs args)
-    {
-        if (args.PropertyName != "Value") return;
-        var value1 = ((RamAccess<int>)value).Value;
-        if (Year_DB != value1)
-        {
-            Year_DB = value1;
-        }
-    }
-
-    private bool Year_Validation(RamAccess<int> value)
-    {
-        value.ClearErrors();
-        return true;
-    }
-
-    #endregion
-
-    #region NameOrganUprav (4)
+    #region NameOrganUprav (5)
 
     [MaxLength(256)]
     [Column(TypeName = "varchar(256)")]
@@ -177,7 +188,7 @@ public partial class Form40 : Form
 
     #endregion
 
-    #region ShortNameOrganUprav (5)
+    #region ShortNameOrganUprav (6)
 
     [MaxLength(256)]
     [Column(TypeName = "varchar(256)")]
@@ -231,7 +242,7 @@ public partial class Form40 : Form
 
     #endregion
 
-    #region AddressOrganUprav (6)
+    #region AddressOrganUprav (7)
 
     [MaxLength(256)]
     [Column(TypeName = "varchar(256)")]
@@ -282,10 +293,10 @@ public partial class Form40 : Form
 
     #endregion
 
-    #region GradeFioDirectorOrganUprav (7)
+    #region GradeFioDirectorOrganUprav (8)
 
-    [MaxLength(64)]
-    [Column(TypeName = "varchar(64)")]
+    [MaxLength(256)]
+    [Column(TypeName = "varchar(256)")]
     [AllowNull]
     public string? GradeFioDirectorOrganUprav_DB { get; set; }
 
@@ -318,8 +329,8 @@ public partial class Form40 : Form
 
         if (value1 is null) return;
 
-        value1 = value1.Length > 64
-            ? value1[..64]
+        value1 = value1.Length > 256
+            ? value1[..256]
             : value1;
         if (GradeFioDirectorOrganUprav_DB != value1)
         {
@@ -335,10 +346,10 @@ public partial class Form40 : Form
 
     #endregion
 
-    #region GradeFioExecutorOrganUprav (8)
+    #region GradeFioExecutorOrganUprav (9)
 
-    [MaxLength(64)]
-    [Column(TypeName = "varchar(64)")]
+    [MaxLength(256)]
+    [Column(TypeName = "varchar(256)")]
     [AllowNull]
     public string? GradeFioExecutorOrganUprav_DB { get; set; }
 
@@ -371,8 +382,8 @@ public partial class Form40 : Form
 
         if (value1 is null) return;
 
-        value1 = value1.Length > 64
-            ? value1[..64]
+        value1 = value1.Length > 256
+            ? value1[..256]
             : value1;
         if (GradeFioExecutorOrganUprav_DB != value1)
         {
@@ -388,7 +399,7 @@ public partial class Form40 : Form
 
     #endregion
 
-    #region TelephoneOrganUprav (9)
+    #region TelephoneOrganUprav (10)
 
     [MaxLength(64)]
     [Column(TypeName = "varchar(64)")]
@@ -440,7 +451,7 @@ public partial class Form40 : Form
 
     #endregion
 
-    #region FaxOrganUprav (10)
+    #region FaxOrganUprav (11)
 
     [MaxLength(64)]
     [Column(TypeName = "varchar(64)")]
@@ -492,7 +503,7 @@ public partial class Form40 : Form
 
     #endregion
 
-    #region EmailOrganUprav (11)
+    #region EmailOrganUprav (12)
 
     [MaxLength(256)]
     [Column(TypeName = "varchar(256)")]
@@ -545,7 +556,7 @@ public partial class Form40 : Form
 
     #endregion
 
-    #region NameRiac (12)
+    #region NameRiac (13)
 
     [MaxLength(256)]
     [Column(TypeName = "varchar(256)")]
@@ -597,7 +608,7 @@ public partial class Form40 : Form
 
     #endregion
 
-    #region ShortNameRiac (13)
+    #region ShortNameRiac (14)
 
     [MaxLength(256)]
     [Column(TypeName = "varchar(256)")]
@@ -651,7 +662,7 @@ public partial class Form40 : Form
 
     #endregion
 
-    #region AddressRiac (14)
+    #region AddressRiac (15)
 
     [MaxLength(256)]
     [Column(TypeName = "varchar(256)")]
@@ -703,10 +714,10 @@ public partial class Form40 : Form
 
     #endregion
 
-    #region GradeFioDirectorRiac (15)
+    #region GradeFioDirectorRiac (16)
 
-    [MaxLength(64)]
-    [Column(TypeName = "varchar(64)")]
+    [MaxLength(256)]
+    [Column(TypeName = "varchar(256)")]
     [AllowNull]
     public string? GradeFioDirectorRiac_DB { get; set; }
 
@@ -739,8 +750,8 @@ public partial class Form40 : Form
 
         if (value1 is null) return;
 
-        value1 = value1.Length > 64
-            ? value1[..64]
+        value1 = value1.Length > 256
+            ? value1[..256]
             : value1;
         if (GradeFioDirectorRiac_DB != value1)
         {
@@ -756,10 +767,10 @@ public partial class Form40 : Form
 
     #endregion
 
-    #region GradeFioExecutorRiac (16)
+    #region GradeFioExecutorRiac (17)
 
-    [MaxLength(64)]
-    [Column(TypeName = "varchar(64)")]
+    [MaxLength(256)]
+    [Column(TypeName = "varchar(256)")]
     [AllowNull]
     public string GradeFioExecutorRiac_DB { get; set; }
 
@@ -792,8 +803,8 @@ public partial class Form40 : Form
 
         if (value1 is null) return;
 
-        value1 = value1.Length > 64
-            ? value1[..64]
+        value1 = value1.Length > 256
+            ? value1[..256]
             : value1;
         if (GradeFioExecutorRiac_DB != value1)
         {
@@ -809,7 +820,7 @@ public partial class Form40 : Form
 
     #endregion
 
-    #region TelephoneRiac (17)
+    #region TelephoneRiac (18)
 
     [MaxLength(64)]
     [Column(TypeName = "varchar(64)")]
@@ -861,7 +872,7 @@ public partial class Form40 : Form
 
     #endregion
 
-    #region FaxRiac (18)
+    #region FaxRiac (19)
 
     [MaxLength(64)]
     [Column(TypeName = "varchar(64)")]
@@ -913,7 +924,7 @@ public partial class Form40 : Form
 
     #endregion
 
-    #region EmailRiac (19)
+    #region EmailRiac (20)
 
     [MaxLength(256)]
     [Column(TypeName = "varchar(256)")]
@@ -970,8 +981,8 @@ public partial class Form40 : Form
 
     public override bool Object_Validation()
     {
-        return !(SubjectRF.HasErrors ||
-                 Year.HasErrors ||
+        return !(CodeSubjectRF.HasErrors || 
+                 SubjectRF.HasErrors ||
                  NameOrganUprav.HasErrors ||
                  ShortNameOrganUprav.HasErrors ||
                  AddressOrganUprav.HasErrors ||

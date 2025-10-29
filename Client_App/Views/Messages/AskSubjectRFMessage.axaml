@@ -10,7 +10,7 @@
 		CanResize="False"
 		WindowStartupLocation="CenterOwner">
 	<StackPanel>
-		<TextBlock Margin="10,5,10,5" Text="Выберите субъект Российской Федерации" TextWrapping="Wrap"/>
+		<TextBlock Margin="10,5,10,5" Text="{Binding Text}" TextWrapping="Wrap"/>
 		<Grid ColumnDefinitions="30,*" Margin="15">
 			<TextBox Grid.Column="0"
 					 Height="26"
