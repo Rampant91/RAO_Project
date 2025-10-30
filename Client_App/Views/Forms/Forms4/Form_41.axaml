@@ -55,7 +55,7 @@
 					<Grid Margin="5" RowDefinitions="*,*,*,*,*">
 
 						<Grid ColumnDefinitions="*,*"  Grid.Row="0">
-							<TextBlock Grid.Column="0" Margin="5" >Отчетный период</TextBlock>
+							<TextBlock Grid.Column="0" Margin="5" >Отчетный год</TextBlock>
 							<TextBox Grid.Column="1" Text="{Binding Report.Year.Value}"/>
 						</Grid>
 
