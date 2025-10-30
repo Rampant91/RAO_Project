@@ -94,8 +94,14 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                     impReps.Master.Rows20[1].RegNo_DB = impReps.Master.Rows20[0].RegNo_DB;
                 }
 
+                if (impReps.Master.Rows40.Count != 0)
+                {
+                    impReps.Master_DB.ReportChangedDate = dateTime;
+                }
+
                 var baseReps11 = GetReports11FromLocalEqual(impReps);
                 var baseReps21 = GetReports21FromLocalEqual(impReps);
+                var baseReps41 = GetReports41FromLocalEqual(impReps);
                 FillEmptyRegNo(ref baseReps11);
                 FillEmptyRegNo(ref baseReps21);
                 impReps.CleanIds();
@@ -103,9 +109,12 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
 
                 ImpRepFormCount = impReps.Report_Collection.Count;
                 ImpRepFormNum = impReps.Master.FormNum_DB;
-                BaseRepsOkpo = impReps.Master.OkpoRep.Value;
-                BaseRepsRegNum = impReps.Master.RegNoRep.Value;
-                BaseRepsShortName = impReps.Master.ShortJurLicoRep.Value;
+                if (impReps.Master.OkpoRep!= null)
+                    BaseRepsOkpo = impReps.Master.OkpoRep.Value;
+                if (impReps.Master.RegNoRep != null)
+                    BaseRepsRegNum = impReps.Master.RegNoRep.Value;
+                if (impReps.Master.ShortJurLicoRep != null)
+                    BaseRepsShortName = impReps.Master.ShortJurLicoRep.Value;
 
                 foreach (var key in impReps.Report_Collection)
                 {
@@ -121,7 +130,11 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                 {
                     await ProcessIfHasReports21(baseReps21, impReps, impRepsReportList);
                 }
-                else if (baseReps11 == null && baseReps21 == null)
+                else if (baseReps41 != null)
+                {
+                    await ProcessIfHasReports41(baseReps41, impReps, impRepsReportList);
+                }
+                else if (baseReps11 == null && baseReps21 == null && baseReps41 == null)
                 {
                     #region AddNewOrg
 
@@ -236,6 +249,9 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                     case "2.0":
                         await impReps.Master_DB.Rows20.QuickSortAsync();
                         break;
+                    case "4.0":
+                        await impReps.Master_DB.Rows40.QuickSortAsync();
+                        break;
                 }
             }
 
@@ -255,13 +271,16 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
         {
             var comparator = new CustomReportsComparer();
             var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
-            var tmpReportsOrderedEnum = tmpReportsList
-                .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
-                .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator);
+            if (tmpReportsList.All(x => x.Master_DB.RegNoRep != null && x.Master_DB.OkpoRep != null))
+            {
+                var tmpReportsOrderedEnum = tmpReportsList
+                    .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
+                    .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator);
 
-            ReportsStorage.LocalReports.Reports_Collection.Clear();
-            ReportsStorage.LocalReports.Reports_Collection
-                .AddRange(tmpReportsOrderedEnum);
+                ReportsStorage.LocalReports.Reports_Collection.Clear();
+                ReportsStorage.LocalReports.Reports_Collection
+                    .AddRange(tmpReportsOrderedEnum);
+            }
         }
         catch (Exception ex)
         {
@@ -306,6 +325,9 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                 .ShowDialog(Desktop.MainWindow));
 
             #endregion
+
+            var mainWindowVM = Desktop.MainWindow.DataContext as MainWindowVM;
+            mainWindowVM.UpdateReports();
         }
         else
         {
@@ -326,6 +348,7 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
 
             #endregion
         }
+
     }
 
     #region GetReportsFromDataBase

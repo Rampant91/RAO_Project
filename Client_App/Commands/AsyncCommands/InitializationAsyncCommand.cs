@@ -665,6 +665,12 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     it.Master_DB.Rows20.Add(ty1);
                     it.Master_DB.Rows20.Add(ty2);
                 }
+                if (it.Master_DB.Rows40.Count == 0)
+                {
+                    var ty = (Form40)FormCreator.Create("4.0");
+                    ty.NumberInOrder_DB = 1;
+                    it.Master_DB.Rows40.Add(ty);
+                }
 
                 //if (it.Master_DB.Rows40.Count == 0)
                 //{
@@ -678,9 +684,11 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
                 it.Master_DB.Rows10.Sorted = false;
                 it.Master_DB.Rows20.Sorted = false;
+                it.Master_DB.Rows40.Sorted = false;
                 //it.Master_DB.Rows40.Sorted = false;
                 await it.Master_DB.Rows10.QuickSortAsync();
                 await it.Master_DB.Rows20.QuickSortAsync();
+                await it.Master_DB.Rows40.QuickSortAsync();
                 //await it.Master_DB.Rows40.QuickSortAsync();
             }
         }

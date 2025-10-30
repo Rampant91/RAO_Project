@@ -526,6 +526,34 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #endregion
 
+    #region GetReports41FromLocalEqual
+
+    /// <summary>
+    /// Ищет в БД организацию, с тем же кодом субъекта, что у импортируемой и возвращает её.
+    /// </summary>
+    /// <param name="reps">Импортируемая организация.</param>
+    /// <returns>Соответствующая организация из БД.</returns>
+    private protected static Reports? GetReports41FromLocalEqual(Reports reps)
+    {
+        try
+        {
+            //if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('2')) || item.Master_DB.FormNum_DB is not "2.0")
+            if (reps.Master_DB.FormNum_DB is not "4.0")
+            {
+                return null;
+            }
+
+            return ReportsStorage.LocalReports.Reports_Collection40
+                       .FirstOrDefault(t => t.Master_DB.Rows40[0].CodeSubjectRF_DB == reps.Master_DB.Rows40[0].CodeSubjectRF_DB);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    #endregion
+
     #region GetSelectedFilesFromDialog
 
     /// <summary>
@@ -1828,12 +1856,14 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     /// <summary>
     /// Изменяет номер страницы таблицы организаций, чтобы отображалась добавленная организация (только для одной добавленной организации).
+    /// (Не работает для РИАЦ)
     /// </summary>
     /// <param name="impReportsList">Список организаций, добавленных в ходе импорта.</param>
     private protected static Task SetDataGridPage(List<Reports> impReportsList)
     {
         if (impReportsList.Count > 0
-            && impReportsList.All(x => x.Master_DB.RegNoRep.Value == impReportsList.First().Master_DB.RegNoRep.Value
+            && impReportsList.All(x => x.Master_DB.FormNum_DB.Split('.')[0] is "1" or "2" 
+                                       && x.Master_DB.RegNoRep.Value == impReportsList.First().Master_DB.RegNoRep.Value
                                        && x.Master_DB.OkpoRep.Value == impReportsList.First().Master_DB.OkpoRep.Value))
         {
             var impReports = impReportsList.First();
