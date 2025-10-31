@@ -1,20 +1,21 @@
-﻿using Models.DBRealization;
+﻿using Avalonia.Controls;
+using Avalonia.Threading;
+using Client_App.ViewModels.Messages;
+using Client_App.ViewModels.ProgressBar;
+using Client_App.Views;
+using Client_App.Views.Messages;
+using Client_App.Views.ProgressBar;
+using MessageBox.Avalonia.DTO;
+using Microsoft.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
+using Models.Collections;
+using Models.DBRealization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
-using Avalonia.Controls;
-using Avalonia.Threading;
-using Client_App.Views;
-using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using Client_App.ViewModels.ProgressBar;
-using Models.Collections;
-using Client_App.ViewModels.Messages;
-using Client_App.Views.Messages;
 using CustomSnkEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkEqualityComparer;
 using CustomSnkNumberEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkNumberEqualityComparer;
 using CustomSnkRadionuclidsEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkRadionuclidsEqualityComparer;
@@ -301,7 +302,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         Dictionary<UniqueUnitDto, List<ShortFormDTO>> uniqueUnitWithAllOperationDictionary = [];
         foreach (var group in groupedOperationList)
         {
-            foreach (var form in group)
+            foreach (var form in group.Where(x => x.PasNum is "2641/25"))
             {
                 var dto = new UniqueUnitDto(form.FacNum, form.PasNum, form.Radionuclids, form.Type, form.Quantity, form.PackNumber);
 
@@ -311,7 +312,9 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                         && numberComparer.Equals(keyValuePair.Key.FacNum, form.FacNum)
                         && radsComparer.Equals(keyValuePair.Key.Radionuclids, form.Radionuclids)
                         && comparer.Equals(keyValuePair.Key.Type, form.Type)
-                        && (numberComparer.Equals(keyValuePair.Key.PackNumber, form.PackNumber) || form.OpCode is "53" or "54")
+                        && (numberComparer.Equals(keyValuePair.Key.PackNumber, form.PackNumber) 
+                            || form.OpCode is "53" or "54" 
+                            || keyValuePair.Value.All(x => x.OpCode is "53" or "54"))
                         && (formNum is "1.3" 
                             || SerialNumbersIsEmpty(keyValuePair.Key.PasNum, keyValuePair.Key.FacNum)
                             || keyValuePair.Key.Quantity == form.Quantity))
@@ -324,10 +327,68 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                     continue;
                 }
 
-                // Если операция приема/передачи/инвентаризации/нулевая и есть совпадение с имеющейся, то добавляем операцию к уже имеющейся в словаре.
+                // Если операция приема/передачи/инвентаризации/нулевая и есть совпадение с имеющейся,
+                // то добавляем операцию к уже имеющейся в словаре.
                 if (form.OpCode is not "53" and not "54")
                 {
-                    filteredDictionary.First().Value.Add(form);
+                    var flag = true;
+                        
+                    //.Any(keyValuePair =>
+                    //    numberComparer.Equals(keyValuePair.Key.PasNum, form.PasNum)
+                    //    && numberComparer.Equals(keyValuePair.Key.FacNum, form.FacNum)
+                    //    && radsComparer.Equals(keyValuePair.Key.Radionuclids, form.Radionuclids)
+                    //    && comparer.Equals(keyValuePair.Key.Type, form.Type)
+                    //    && keyValuePair.Value.All(x => x.OpCode is "53" or "54")
+                    //    && (formNum is "1.3"
+                    //        || SerialNumbersIsEmpty(keyValuePair.Key.PasNum, keyValuePair.Key.FacNum)
+                    //        || keyValuePair.Key.Quantity == form.Quantity));
+
+                    //Если самая первая операция с источником 53/54 и в тот же день есть другие операции,
+                    //то она должна быть в конце операций этого дня.
+                    if (flag)
+                    {
+                        var keyToReplace = filteredDictionary.First().Key;
+                        var newValue = filteredDictionary.First().Value.Prepend(form).ToList();
+                        filteredDictionary[keyToReplace] = newValue;
+
+                        var lastOpDate = filteredDictionary
+                            .SelectMany(x => x.Value)
+                            .OrderByDescending(y => y.OpDate)
+                            .First().OpDate;
+
+                        //Если в последнюю дату несколько операций - берём за последнюю не минусовую.
+                        ShortFormDTO? lastForm;
+                        if (filteredDictionary
+                                .SelectMany(x => x.Value)
+                                .Where(x => x.OpCode != "10")
+                                .Count(x => x.OpDate == lastOpDate) > 1)
+                        {
+                            lastForm = filteredDictionary
+                                .SelectMany(x => x.Value)
+                                .Where(x => x.OpCode != "10" && !GetMinusOperationsArray(formNum).Contains(x.OpCode))
+                                .OrderByDescending(y => y.OpDate)
+                                .ThenByDescending(x => x.RepDto.StartPeriod)
+                                .ThenByDescending(x => x.RepDto.EndPeriod)
+                                .ThenByDescending(x => x.NumberInOrder)
+                                .First();
+                        }
+                        else
+                        {
+                            lastForm = filteredDictionary
+                                .SelectMany(x => x.Value)
+                                .OrderByDescending(y => y.OpDate)
+                                .First();
+                        }
+                        var pairWithLastOpDate = filteredDictionary
+                            .First(x => x.Value.Contains(lastForm));
+
+                        uniqueUnitWithAllOperationDictionary.Remove(pairWithLastOpDate.Key);
+                        uniqueUnitWithAllOperationDictionary.Add(dto, pairWithLastOpDate.Value);
+                    }
+                    else
+                    {
+                        filteredDictionary.First().Value.Add(form);
+                    }
                 }
 
                 // Если операция перезарядки, то суммируем количество, если серийные номера пусты и заменяем запись в словаре
@@ -397,6 +458,9 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         List<List<ShortFormDTO>> groupedOperationList = [];
         List<ShortFormDTO> currentGroup = [];
         var opCount = 0;
+
+        var minDate = unionOperationList.Min(x => x.OpDate);
+
         foreach (var form in unionOperationList
                      .OrderBy(x => x.OpDate)
                      .ThenBy(x => x.RepDto.StartPeriod)

@@ -983,7 +983,7 @@ public abstract class CheckF12 : CheckBase
         List<CheckError> result = new();
         var okpoRegexApplicable = new Regex(@"^\d+[_]?\d*$");
         var creatorOkpo = ReplaceNullAndTrim(forms[line].CreatorOKPO_DB);
-        if (!okpoRegexApplicable.IsMatch(creatorOkpo)) return result;
+        //if (!okpoRegexApplicable.IsMatch(creatorOkpo)) return result;
         var valid = !string.IsNullOrEmpty(creatorOkpo)
                     && OkpoRegex.IsMatch(creatorOkpo);
         if (!valid)

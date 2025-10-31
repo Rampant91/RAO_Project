@@ -802,8 +802,11 @@ public class Form12 : Form1
     private void SignedServicePeriod_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        SignedServicePeriod_DB = tmp.Trim();
+        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+
+        //if ()
+
+        SignedServicePeriod_DB = tmp;
     }
 
     private bool SignedServicePeriod_Validation(RamAccess<string> value)//Ready

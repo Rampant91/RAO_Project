@@ -17,6 +17,7 @@
     d:DesignWidth="900"
     x:DataType="vm:Form_11VM"
     mc:Ignorable="d"
+	KeyDown="DataGrid_KeyDown"
 	KeyUp="DataGrid_KeyUp"
 	x:Name="1.1"
 	WindowStartupLocation="CenterScreen"
@@ -819,6 +820,7 @@
 						   Margin="5"/>
 			</Grid>
 		</Border>
+		
 		<Expander Grid.Row ="3"
 				  IsExpanded="True"
 				  ExpandDirection="Up"

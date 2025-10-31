@@ -33,6 +33,11 @@ public partial class Form_11 : BaseWindow<Form_11VM>
 
     private bool _isCloseConfirmed;
 
+    private bool _isCtrlPressed = false;
+    private bool _cKeyPressed = false;
+    private bool _vKeyPressed = false;
+    private bool _aKeyPressed = false;
+
     public Form_11()
     {
         InitializeComponent();
@@ -70,29 +75,87 @@ public partial class Form_11 : BaseWindow<Form_11VM>
         }
     }
 
+    #region DataGrid_KeyDown
+
+    private void DataGrid_KeyDown(object? sender, KeyEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case Key.LeftCtrl:
+            case Key.RightCtrl:
+                _isCtrlPressed = true;
+                break;
+            case Key.C:
+                _cKeyPressed = true;
+                break;
+            case Key.V:
+                _vKeyPressed = true;
+                break;
+            case Key.A:
+                _aKeyPressed = true;
+                break;
+        }
+    }
+
+    #endregion
+
     #region DataGrid_KeyUp
 
     private void DataGrid_KeyUp(object? sender, KeyEventArgs e)
     {
-        if (DataContext is not Form_11VM vm)
-            return;
+        if (DataContext is not Form_11VM vm) return;
 
         var dataGrid = this.FindControl<DataGrid>("dataGrid");
         var dataContext = dataGrid?.DataContext;
-        if (dataContext is null || dataGrid is null)
-            return;
+        if (dataContext is null || dataGrid is null) return;
 
         var selectedForms = vm.SelectedForms;
 
-        if (!dataGrid.IsPointerOver || e.KeyModifiers is not KeyModifiers.Control) return;
+        if (!dataGrid.IsPointerOver || !_isCtrlPressed) return;
 
-        switch (e.Key)
+        //ќтдельно обрабатываем хоткеи, которые срабатывают только, если мы не редактируем €чейку
+        if (!vm.DataGridIsEditing)
         {
-            case Key.A: // Select All
+            if (_cKeyPressed || e.Key is Key.C)
             {
+                _isCtrlPressed = false;
+                _cKeyPressed = false;
+                if (selectedForms is { Count: > 0 })
+                {
+                    vm.CopyRows.Execute(selectedForms);
+                    e.Handled = true;
+                }
+                return;
+            }
+            else if (_vKeyPressed || e.Key is Key.V)
+            {
+                _isCtrlPressed = false;
+                _vKeyPressed = false;
+                if (selectedForms is { Count: > 0 })
+                {
+                    vm.PasteRows.Execute(selectedForms);
+                    e.Handled = true;
+                }
+                return;
+            }
+            else if (_aKeyPressed || e.Key is Key.A)
+            {
+                _isCtrlPressed = false;
+                _aKeyPressed = false;
                 vm.SelectAll.Execute(null);
                 e.Handled = true;
+                return;
+            }
 
+        }
+        
+        //ќтдельно остальные хоткеи
+        switch (e.Key)
+        {
+            case Key.LeftCtrl:
+            case Key.RightCtrl:
+            {
+                _isCtrlPressed = false;
                 break;
             }
             case Key.T: // Add Row
@@ -179,31 +242,6 @@ public partial class Form_11 : BaseWindow<Form_11VM>
                 if (vm.SelectedForm is not null)
                 {
                     vm.SourceTransmission.Execute(vm.SelectedForm);
-                    e.Handled = true;
-                }
-
-                break;
-            }
-        }
-
-        if (vm.DataGridIsEditing) return;
-        switch (e.Key)
-        {
-            case Key.C: // Copy Rows
-            {
-                if (selectedForms is { Count: > 0 })
-                {
-                    vm.CopyRows.Execute(selectedForms);
-                    e.Handled = true;
-                }
-
-                break;
-            }
-            case Key.V: // Paste Rows
-            {
-                if (selectedForms is { Count: > 0 })
-                {
-                    vm.PasteRows.Execute(selectedForms);
                     e.Handled = true;
                 }
 

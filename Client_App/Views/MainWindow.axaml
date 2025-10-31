@@ -61,7 +61,7 @@
 
             <MenuItem 
                 Name="ExcelMenu"
-                Header="_Excel">
+                Header="_Аналитика">
                 <MenuItem Header="Список организаций">
                     <MenuItem 
                         Command="{Binding ExcelExportListOfOrgs}" 
