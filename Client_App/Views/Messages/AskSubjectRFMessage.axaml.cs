@@ -32,19 +32,21 @@ public partial class AskSubjectRFMessage : Window, INotifyPropertyChanged
         }
     }
 
-    public int CodeOfSubjectRF
+    public int? CodeOfSubjectRF
     {
         get
         {
-            var code = Spravochniks.DictionaryOfSubjectRF
+            int? code = Spravochniks.DictionaryOfSubjectRF
                 .FirstOrDefault(x => x.Value == NameOfSubjectRF)
                 .Key;
+            if (code == 0)
+                code = null;
             return code;
         }
         set
         {
-            if (Spravochniks.DictionaryOfSubjectRF.ContainsKey(value))
-                NameOfSubjectRF = Spravochniks.DictionaryOfSubjectRF[value];
+            if (Spravochniks.DictionaryOfSubjectRF.ContainsKey(value ?? 0))
+                NameOfSubjectRF = Spravochniks.DictionaryOfSubjectRF[value ?? 0];
 
             OnPropertyChanged(nameof(NameOfSubjectRF));
             OnPropertyChanged(nameof(CodeOfSubjectRF));
@@ -89,10 +91,10 @@ public partial class AskSubjectRFMessage : Window, INotifyPropertyChanged
 
     private void Accept_Click(object sender, RoutedEventArgs e)
     {
-        int code = ((AskSubjectRFMessage)DataContext).CodeOfSubjectRF;
+        int code = ((AskSubjectRFMessage)DataContext).CodeOfSubjectRF ?? 0;
         string name = ((AskSubjectRFMessage)DataContext).NameOfSubjectRF;
 
-        if ((code == 0) || (name == ""))
+        if ((code is 0) || (name == ""))
             Close(null);
         else
         {

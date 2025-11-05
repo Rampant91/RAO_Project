@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
+using Avalonia.Input;
 
 namespace Client_App;
 
@@ -79,8 +80,8 @@ public partial class AskForm41Message : Window, INotifyPropertyChanged
     }
     private void Accept_Click(object sender, RoutedEventArgs e)
     {
+        this.Cursor = new Cursor(StandardCursorType.Wait);
         Report? result = SelectedReport;
-
         if (result != null)
         {
             var dBModel = StaticConfiguration.DBModel;
@@ -92,6 +93,8 @@ public partial class AskForm41Message : Window, INotifyPropertyChanged
             result.Rows41 = dbReport.Rows41;
         }
         // Return the integer result from ViewModel
+
+        this.Cursor = new Cursor(StandardCursorType.Arrow);
         Close(result);
     }
 

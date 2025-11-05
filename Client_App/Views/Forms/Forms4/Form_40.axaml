@@ -52,6 +52,7 @@
 					    Grid.Row="0"
 					    Grid.Column="0"
 						Margin="0,0,0,3"
+						Watermark="Код"
 						Text="{Binding CodeOfSubjectRF}"
 						MaxLength="2"/>
 				    <AutoCompleteBox
@@ -61,6 +62,7 @@
 					    Items="{Binding SubjectRFCollection}"
 					    FilterMode="Contains"
 					    Margin="0,0,0,3"
+						Watermark="Субъект Российской Федерации"
 					    Text="{Binding NameOfSubjectRF}">
 				    </AutoCompleteBox>
 				</Grid>

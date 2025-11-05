@@ -1,10 +1,12 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input;
 using Avalonia.Threading;
 using Client_App.Behaviors;
 using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Messages;
+using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands
@@ -38,7 +41,6 @@ namespace Client_App.Commands.AsyncCommands
             var owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
                 .FirstOrDefault(w => w.IsActive);
 
-
             if (owner == null) return;
 
             #region ShowAskMessages
@@ -49,8 +51,12 @@ namespace Client_App.Commands.AsyncCommands
             if (await ShowAskDependOnReportOrNotMessage(owner))
             {
                 var report =  await ShowAskReportMessage(owner);
+                
+                
                 if (report != null)
                     CopyRowsFromReport(report);
+
+
             }
 
             formVM.UpdateFormList();
@@ -58,21 +64,29 @@ namespace Client_App.Commands.AsyncCommands
 
             if (await ShowAskAllOrOneSubjectRFMessage(owner))
                 codeSubjectRF = await ShowAskSubjectRFMessage(owner);
-
+            
             if (!int.TryParse(Report.Year.Value, out year))
             {
                 year = await ShowAskYearMessage(owner);
                 Report.Year.Value = year.ToString();
             }
-            #endregion 
+            #endregion
 
-            organizations10 = GetOrganizationsList("1.0");
-            organizations20 = GetOrganizationsList("2.0"); 
+            var cts = new CancellationTokenSource();
+
+
+
+            organizations10 = await GetOrganizationsList("1.0");
+            organizations20 = await GetOrganizationsList("2.0");
+
+
 
             if (codeSubjectRF != null)
             {
                 FilterAllByCodeSubjectRF(codeSubjectRF);
             }
+
+
 
             foreach (var organization10 in organizations10)
             {
@@ -90,6 +104,7 @@ namespace Client_App.Commands.AsyncCommands
                         numWithoutInventarizationForm: numWithoutInventarizationForm);
             }
 
+
             foreach (var organization20 in organizations20)
             {
                 int numForm212 = GetNumOfForm212(organization20, year);
@@ -104,9 +119,12 @@ namespace Client_App.Commands.AsyncCommands
 
             }
 
+
+
             //Выставляем номера строк
             for (int i = 0; i < Report.Rows41.Count; i++)
                 Report.Rows41[i].NumberInOrder_DB = i + 1;
+
 
             //Обновляем таблицу
             formVM.UpdateFormList();
@@ -302,7 +320,7 @@ namespace Client_App.Commands.AsyncCommands
         #endregion
 
         #region Requests
-        private List<Reports> GetOrganizationsList(string formNum)
+        private async Task<List<Reports>> GetOrganizationsList(string formNum)
         {
             return dbModel.ReportsCollectionDbSet
                             .AsSplitQuery()

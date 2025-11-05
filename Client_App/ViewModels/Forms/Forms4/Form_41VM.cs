@@ -46,7 +46,7 @@ namespace Client_App.ViewModels.Forms.Forms4
         public ICommand OpenPas => new OpenPasAsyncCommand();
         public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);
         public ICommand GenerateForm41 => new GenerateForm41AsyncCommand(this);
-
+        
         #endregion
 
     }

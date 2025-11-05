@@ -25,6 +25,7 @@
 		<converter:DataGridLengthToGridLengthConverter x:Key="LengthConverter"/>
 		<converter:NullToStringConverter x:Key="NullToStringConverter"/>
 		<converter:DateConverter x:Key="DateConverter"/>
+		<converter:IntToEmptyStringConverter x:Key="IntToEmptyStringConverter"/>
 	</Window.Resources>
 
 	<Design.DataContext>
@@ -348,7 +349,7 @@
 
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate x:DataType="forms4:Form41">
-									<TextBox Text="{Binding NumOfFormsWithInventarizationInfo.Value, Mode=TwoWay}"/>
+									<TextBox Text="{Binding NumOfFormsWithInventarizationInfo.Value, Mode=TwoWay, Converter={StaticResource IntToEmptyStringConverter}}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
@@ -367,7 +368,7 @@
 
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate x:DataType="forms4:Form41">
-									<TextBox Text="{Binding NumOfFormsWithoutInventarizationInfo.Value, Mode=TwoWay}"/>
+									<TextBox Text="{Binding NumOfFormsWithoutInventarizationInfo.Value, Mode=TwoWay, Converter={StaticResource IntToEmptyStringConverter}}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
@@ -386,7 +387,7 @@
 
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate x:DataType="forms4:Form41">
-									<TextBox Text="{Binding NumOfForms212.Value, Mode=TwoWay}"/>
+									<TextBox Text="{Binding NumOfForms212.Value, Mode=TwoWay,  Converter={StaticResource IntToEmptyStringConverter}}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>

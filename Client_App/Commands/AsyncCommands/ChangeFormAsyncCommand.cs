@@ -200,8 +200,8 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                     }
                 case "4.1":
                     {
-                        var form19VM = new Form_41VM(frm.Storage);
-                        var window = new Form_41(form19VM);
+                        var form41VM = new Form_41VM(frm.Storage);
+                        var window = new Form_41(form41VM);
                         await window.ShowDialog(t);
                         break;
                     }
