@@ -302,7 +302,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         Dictionary<UniqueUnitDto, List<ShortFormDTO>> uniqueUnitWithAllOperationDictionary = [];
         foreach (var group in groupedOperationList)
         {
-            foreach (var form in group.Where(x => x.PasNum is "2641/25"))
+            foreach (var form in group)
             {
                 var dto = new UniqueUnitDto(form.FacNum, form.PasNum, form.Radionuclids, form.Type, form.Quantity, form.PackNumber);
 
