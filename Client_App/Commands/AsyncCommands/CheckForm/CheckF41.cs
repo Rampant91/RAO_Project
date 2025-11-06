@@ -97,8 +97,12 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 }
             });
 
+
             await Task.WhenAll(tasks);
             errorList = errorBag.ToList();
+
+            progressBar.Close();
+
             return errorList;
         }
 
