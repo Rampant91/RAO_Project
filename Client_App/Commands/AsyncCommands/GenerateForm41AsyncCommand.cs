@@ -109,6 +109,11 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                     numForm212: numForm212);
         }
 
+        // Сортируем по Рег.Номеру
+        var orderedRows = Report.Rows41.OrderBy(row => row.RegNo_DB).ToList();
+        Report.Rows41.Clear();
+        Report.Rows41.AddRange(orderedRows);
+
         //Выставляем номера строк
         for (int i = 0; i < Report.Rows41.Count; i++)
             Report.Rows41[i].NumberInOrder_DB = i + 1;
