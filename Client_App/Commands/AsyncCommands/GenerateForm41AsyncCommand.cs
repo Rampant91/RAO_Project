@@ -299,11 +299,12 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         organizations20 = organizations20.FindAll(reports => reports.Master.RegNoRep != null
                     && reports.Master.RegNoRep.Value.StartsWith(codeSubjectRF));
     }
-    private bool IsRowWithOrganizationExist(Reports organization )
+    private bool IsRowWithOrganizationExist(Reports organization)
     {
         return (organization.Master.RegNoRep != null) &&
                 Report.Rows41.Any(form =>
-                form.RegNo_DB == organization.Master.RegNoRep.Value);
+                form.RegNo_DB == organization.Master.RegNoRep.Value
+                && form.Okpo_DB == organization.Master.OkpoRep.Value);
     }
     private void UpdateRow(
         Reports organization, 
@@ -338,7 +339,8 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         {
             RegNo_DB = organization.Master.RegNoRep == null ? "" : organization.Master.RegNoRep.Value,
             Okpo_DB = organization.Master.OkpoRep == null ? "" : organization.Master.OkpoRep.Value,
-            OrganizationName_DB = organization.Master.ShortJurLicoRep == null ? "" : organization.Master.ShortJurLicoRep.Value
+            OrganizationName_DB = organization.Master.ShortJurLicoRep == null ? "" : organization.Master.ShortJurLicoRep.Value,
+            Report = formVM.Report
         };
 
         if (numInventarizationForm >= 0)
