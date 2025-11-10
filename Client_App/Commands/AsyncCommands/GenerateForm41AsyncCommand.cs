@@ -2,8 +2,11 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using Client_App.Interfaces.BackgroundLoader;
 using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Messages;
+using Client_App.ViewModels.ProgressBar;
+using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
@@ -34,14 +37,19 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
+        
         var owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
             .FirstOrDefault(w => w.IsActive);
 
         if (owner == null) return;
 
+        var cts = new CancellationTokenSource();
+
+
+
         #region ShowAskMessages
 
-        if(Report.Rows41.Count != 0)
+        if (Report.Rows41.Count != 0)
         {
             if (!await ShowConfirmationMessage(owner)) return;
         }
@@ -69,19 +77,32 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         }
 
         #endregion
+        var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
-        var cts = new CancellationTokenSource();
+
+        progressBarVM.SetProgressBar(5, $"Загрузка организаций");
+        await Task.Yield(); // Именно в этой команде без Yield progressBar не обновляется
+
 
         organizations10 = await GetOrganizationsList("1.0");
         organizations20 = await GetOrganizationsList("2.0");
 
         if (codeSubjectRF != null)
         {
+            progressBarVM.SetProgressBar(7, $"Фильтрация записей по коду субъекта РФ");
+            await Task.Yield(); // Именно в этой команде без Yield progressBar не обновляется
             FilterAllByCodeSubjectRF(codeSubjectRF);
         }
-
+        double currentProgress = 14.0;
+        double incProgress = (90.0 - currentProgress) / (organizations10.Count() + organizations20.Count());
         foreach (var organization10 in organizations10)
         {
+            progressBarVM.SetProgressBar(
+                (int)currentProgress, 
+                $"Подсчет форм 1.1 - 1.4 у организации {organization10.Master.Rows10[0].RegNo_DB}");
+            await Task.Yield(); // Именно в этой команде без Yield progressBar не обновляется
+
             int numInventarizationForm = await GetNumOfReportWithInventarization(organization10.Id, year.ToString());
             int numWithoutInventarizationForm = await GetNumOfReportWithoutInventarization(organization10.Id, year.ToString());
 
@@ -94,11 +115,19 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 CreateRow(organization10,
                     numInventarizationForm: numInventarizationForm,
                     numWithoutInventarizationForm: numWithoutInventarizationForm);
+
+            currentProgress += incProgress;
         }
 
 
         foreach (var organization20 in organizations20)
         {
+
+            progressBarVM.SetProgressBar(
+                (int)currentProgress,
+                $"Подсчет форм 2.12 у организации {organization20.Master.Rows20[0].RegNo_DB}");
+            await Task.Yield(); // Именно в этой команде без Yield progressBar не обновляется
+
             int numForm212 = await GetNumOfForm212(organization20, year);
 
             if (IsRowWithOrganizationExist(organization20))
@@ -109,18 +138,36 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                     numForm212: numForm212);
         }
 
+
+        progressBarVM.SetProgressBar(
+            90,
+            $"Сортировка записей по рег. номеру");
+        await Task.Yield(); // Именно в этой команде без Yield progressBar не обновляется
+
         // Сортируем по Рег.Номеру
         var orderedRows = Report.Rows41.OrderBy(row => row.RegNo_DB).ToList();
         Report.Rows41.Clear();
         Report.Rows41.AddRange(orderedRows);
 
+
+        progressBarVM.SetProgressBar(
+            95,
+            $"Выставляем номера строк");
+        await Task.Yield(); // Именно в этой команде без Yield progressBar не обновляется
+
         //Выставляем номера строк
         for (int i = 0; i < Report.Rows41.Count; i++)
             Report.Rows41[i].NumberInOrder_DB = i + 1;
 
+        progressBarVM.SetProgressBar(
+            100,
+            $"Завершаем формирование отчета");
+        await Task.Yield(); // Именно в этой команде без Yield progressBar не обновляется
         //Обновляем таблицу
         formVM.UpdateFormList();
         formVM.UpdatePageInfo();
+
+        progressBar.Close();
     }
 
     #region AskMessages
