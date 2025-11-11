@@ -281,7 +281,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             Okpo_DB = original.Okpo_DB,
             OrganizationName_DB = original.OrganizationName_DB,
             LicenseOrRegistrationInfo_DB = original.LicenseOrRegistrationInfo_DB,
-
+            Report = formVM.Report,
             Note_DB = original.Note_DB,
         });
         Report.Rows41.AddRange(copiedRows);

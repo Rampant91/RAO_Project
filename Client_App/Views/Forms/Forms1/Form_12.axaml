@@ -98,7 +98,7 @@
 
 				<Border Classes="borderContainer">
 					<controls:ExecutorDataControl
-						DataContext="{Binding ExecutorDataControlVM}"></controls:ExecutorDataControl>
+						DataContext="{Binding ExecutorDataControlVM}"/>
 				</Border>
 
 				<Border Classes="borderContainer">
