@@ -48,38 +48,11 @@
                   Header="Скрыть/Раскрыть верхнюю панель">
 			<WrapPanel Classes="header">
 				<Border Classes="borderContainer">
-<<<<<<<<< Temporary merge branch 1
 						<controls:SelectReportPopup
 							Grid.Row="1"
 							DataContext="{Binding SelectReportPopupVM}"
 							HorizontalAlignment="Center"
 							VerticalAlignment="Center"/>
-=========
-					<Grid RowDefinitions="Auto,*,Auto">
-						<Button Command="{Binding SwitchToNextReport}"
-								Grid.Row="0" 
-								VerticalContentAlignment="Center" 
-								Height="75" 
-								FontSize="48" 
-								Content="🠕"/>
-						
-						<!--
-                        
-						<Button Grid.Row="1" Content="Поиск"
-								local:YearPickerButtonBehavior.IsEnabled="True"
-								local:YearPickerButtonBehavior.ItemsSource="{Binding Reports.Report_Collection}"
-								local:YearPickerButtonBehavior.SelectedYear="{Binding SelectedYear, Mode=TwoWay}"/>
-								
-							-->
-						
-						<Button Command="{Binding SwitchToPreviousReport}"
-								Grid.Row="2" 
-								VerticalContentAlignment="Center" 
-								Height="75" 
-								FontSize="48" 
-								Content="🠗"/>
-					</Grid>
->>>>>>>>> Temporary merge branch 2
 				</Border>
 				<Border Classes="borderContainer">
 					<Grid RowDefinitions="*,*,*,*,*" Margin="5">
@@ -390,15 +363,6 @@
 											Width="40"
 											IsReadOnly="True"
 											x:DataType="forms1:Form11">
-<<<<<<<<< Temporary merge branch 1
-							<DataGridTextColumn.HeaderTemplate>
-								<DataTemplate>
-									<Border Classes="headerTemplate">
-										<Grid ColumnDefinitions="*,Auto">
-											<TextBlock Grid.Column="0" Text="1"/>
-
-										</Grid>
-=========
                             <DataGridTextColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -410,21 +374,8 @@
                                 </DataTemplate>
                             </DataGridTextColumn.HeaderTemplate>
                         </DataGridTextColumn>
->>>>>>>>> Temporary merge branch 2
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="2"/>
-                                            <!--<Button Grid.Column="1"/>-->
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
 
-<<<<<<<<< Temporary merge branch 1
 						<DataGridTemplateColumn> 
 							<DataGridTemplateColumn.HeaderTemplate>
 								<DataTemplate>

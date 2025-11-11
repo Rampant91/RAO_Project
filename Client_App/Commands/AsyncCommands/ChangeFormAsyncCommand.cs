@@ -218,7 +218,7 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                         var form41VM = new Form_41VM(frm.Storage);
                         var window = new Form_41(form41VM) { OwnerPrevState = mainWindow.WindowState };
                         mainWindow.WindowState = WindowState.Minimized;
-                        await window.ShowDialog(t);
+                        await window.ShowDialog(mainWindow);
                         break;
                     }
                 default:

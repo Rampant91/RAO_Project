@@ -232,9 +232,8 @@
 					SelectedItem="{Binding SelectedForm}">
 
 					<interactivity:Interaction.Behaviors>
-						<local:DataGridDragSelectionBehavior/>
+						<local:DataGridPointerBehavior/>
 						<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
-						<local:DataGridDoubleClickBehavior/>
 						<local:DeselectDataGridOnClickOutsideBehavior/>
 					</interactivity:Interaction.Behaviors>
 
