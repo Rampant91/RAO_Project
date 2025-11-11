@@ -4,6 +4,7 @@ using Client_App.Commands.AsyncCommands.Calculator;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
+using Client_App.ViewModels.Controls;
 using Models.Collections;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,7 @@ namespace Client_App.ViewModels.Forms.Forms4
             };
 
             Reports = reps;
+            SelectReportPopupVM = new SelectReportPopupVM(this);
         }
 
         #endregion
