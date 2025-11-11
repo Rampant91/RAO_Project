@@ -395,6 +395,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         for (var i = 0; i < rep.Notes.Count - 1; i++)
         {
             worksheet.InsertRow(start + 1, 1, start);
+            if (i == 0) //Костыль, чтобы у первой строки тоже высота автоматически подбиралась.
+            {
+                worksheet.DeleteRow(start);
+                worksheet.InsertRow(start + 1, 1, start);
+            }
             var cells = worksheet.Cells[$"A{start + 1}:B{start + 1}"];
             foreach (var cell in cells)
             {
@@ -455,6 +460,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         for (var i = 0; i < rep[formNum].Count - 1; i++)
         {
             worksheet.InsertRow(start + 1, 1, start);
+            if (i == 0) //Костыль, чтобы у первой строки тоже высота автоматически подбиралась.
+            {
+                worksheet.DeleteRow(start);
+                worksheet.InsertRow(start + 1, 1, start);
+            }
             var cells = worksheet.Cells[$"A{start + 1}:B{start + 1}"];
             foreach (var cell in cells)
             {

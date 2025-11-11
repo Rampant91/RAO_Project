@@ -2123,7 +2123,7 @@ public abstract class CheckF16 : CheckBase
         var stateRao = codeRao[..1];
         if (raoTypes1.Contains(typeRao))
         {
-            if (!quantityOziiiExists)
+            if (!quantityOziiiExists && quantityOziii is not "прим.")
             {
                 result.Add(new CheckError
                 {

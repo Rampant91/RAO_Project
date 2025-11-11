@@ -22,6 +22,7 @@ public class OpenFileAsyncCommand : BaseAsyncCommand
             {
                 "changelog" => $"Changelog.txt",
                 "manual" => "Инструкция_МПЗФ.pdf",
+                "snk" => "Инструкция_по_функциям_расчёта_СНК.docx",
                 "radsDictionary" => Path.Combine("Spravochniki", "R.xlsx"),
                 _ => ""
             };
