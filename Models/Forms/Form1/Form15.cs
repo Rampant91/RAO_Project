@@ -121,6 +121,7 @@ public partial class Form15 : Form1
         var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (OperationCode_DB != value1)
         {
+            if (value1 is "41") return;
             OperationCode_DB = value1;
             if (Report is { AutoReplace: true })
             {
@@ -578,7 +579,13 @@ public partial class Form15 : Form1
     private void Activity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        Activity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
+
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        if (Activity_DB != value1)
+        {
+            Activity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
+        }
+        
     }
 
     private bool Activity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
@@ -1816,6 +1823,9 @@ public partial class Form15 : Form1
             $"{Activity.Value}\t" +
             $"{CreationDate.Value}\t" +
             $"{StatusRAO.Value}\t" +
+            $"{DocumentVid.Value}\t" +
+            $"{DocumentNumber.Value}\t" +
+            $"{DocumentDate.Value}\t" +
             $"{ProviderOrRecieverOKPO.Value}\t" +
             $"{TransporterOKPO.Value}\t" +
             $"{PackName.Value}\t" +

@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Models.CheckForm;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -843,7 +844,7 @@ public abstract partial class CheckF11 : CheckBase
 
     #region Check023
 
-    //Дата операции входит в отчетный период (графа 3)
+    //Дата операции входит в отчетный период и не совпадает с его началом (графа 3)
     private static List<CheckError> Check_023(List<Form11> forms, Report rep, int line)
     {
         List<CheckError> result = new();
@@ -858,7 +859,28 @@ public abstract partial class CheckF11 : CheckBase
         {
             return result;
         }
-        var valid = opDate >= pStart && opDate <= pEnd;
+
+        var repCollection = rep.Reports.Report_Collection.ToList().FindAll(x => x.FormNum_DB == rep.FormNum_DB);
+        var repIndex = repCollection.IndexOf(rep);
+        var previousRepExist = repIndex + 1 < repCollection.Count;
+
+        if (opDate == pStart && previousRepExist)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line + 1).ToString(),
+                Column = "OperationDate_DB",
+                Value = opDateStr,
+                Message = "Дата операции не должна совпадать с датой начала периода, " +
+                          "если имеется хотя бы один более ранний отчёт по данной форме. " +
+                          "См. приказ №1/1623-П раздел 5.2.",
+                IsCritical = true
+            });
+            return result;
+        }
+
+        var valid = opDate > pStart && opDate <= pEnd;
         if (!valid)
         {
             result.Add(new CheckError
@@ -2717,31 +2739,39 @@ public abstract partial class CheckF11 : CheckBase
     private static List<CheckError> Check_072(List<Form11> forms, int line)
     {
         List<CheckError> result = new();
+
+        var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var packName = ReplaceNullAndTrim(forms[line].PackName_DB);
         var packType = ReplaceNullAndTrim(forms[line].PackType_DB);
 
-        if (IOU11.Any(x => ReplaceSimilarCharsAndCheckToContains(x, packName)))
+        if (operationCode.Length != 2) return result;
+
+        if (operationCode is "10" || operationCode[0] is '2' or '3')
         {
-            result.Add(new CheckError
+            if (IOU11.Any(x => ReplaceSimilarCharsAndCheckToContains(x, packName)))
             {
-                FormNum = "form_11",
-                Row = (line + 1).ToString(),
-                Column = "PackName_DB",
-                Value = packName,
-                Message = "Для данного наименования упаковки, должна быть заполнена форма 1.2 (информационное сообщение, не ошибка)."
-            });
-        }
-        else if (IOU11.Any(x => ReplaceSimilarCharsAndCheckToContains(x, packType)))
-        {
-            result.Add(new CheckError
+                result.Add(new CheckError
+                {
+                    FormNum = "form_11",
+                    Row = (line + 1).ToString(),
+                    Column = "PackName_DB",
+                    Value = packName,
+                    Message = "Для данного наименования упаковки, должна быть заполнена форма 1.2 (информационное сообщение, не ошибка)."
+                });
+            }
+            else if (IOU11.Any(x => ReplaceSimilarCharsAndCheckToContains(x, packType)))
             {
-                FormNum = "form_11",
-                Row = (line + 1).ToString(),
-                Column = "PackType_DB",
-                Value = packType,
-                Message = "Для данного типа упаковки, должна быть заполнена форма 1.2 (информационное сообщение, не ошибка)."
-            });
+                result.Add(new CheckError
+                {
+                    FormNum = "form_11",
+                    Row = (line + 1).ToString(),
+                    Column = "PackType_DB",
+                    Value = packType,
+                    Message = "Для данного типа упаковки, должна быть заполнена форма 1.2 (информационное сообщение, не ошибка)."
+                });
+            }
         }
+        
         return result;
     }
 

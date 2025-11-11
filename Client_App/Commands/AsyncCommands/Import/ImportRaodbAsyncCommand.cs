@@ -46,8 +46,19 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
             TmpImpFilePath = GetRaoFileName();
             SourceFile = new FileInfo(path);
             SourceFile.CopyTo(TmpImpFilePath, true);
-            var reportsCollection = await GetReportsFromDataBase(TmpImpFilePath);
-            if (reportsCollection.Count == 0)
+
+            var reportsCollection = new List<Reports>();
+            var fileIsCorrupted = false;
+            try
+            {
+                reportsCollection = await GetReportsFromDataBase(TmpImpFilePath);
+            }
+            catch
+            {
+                fileIsCorrupted = true;
+            }
+
+            if (fileIsCorrupted || reportsCollection.Count == 0)
             {
                 #region MessageFailedToReadFile
 

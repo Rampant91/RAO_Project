@@ -682,7 +682,7 @@ public abstract class CheckF13 : CheckBase
 
     #region Check024
 
-    //Дата документа входит в отчетный период (графа 3)
+    //Дата операции входит в отчетный период (графа 3)
     private static List<CheckError> Check_024(List<Form13> forms, Report rep, int line)
     {
         List<CheckError> result = new();
@@ -690,11 +690,35 @@ public abstract class CheckF13 : CheckBase
         var stPerStr = ReplaceNullAndTrim(rep.StartPeriod_DB);
         var endPerStr = ReplaceNullAndTrim(rep.EndPeriod_DB);
         var opDateStr = ReplaceNullAndTrim(forms[line].OperationDate_DB);
-        if (opCode is "10" 
+        if (opCode is "10"
             || !DateOnly.TryParse(stPerStr, out var pStart)
             || !DateOnly.TryParse(endPerStr, out var pEnd)
-            || !DateOnly.TryParse(opDateStr, out var opDate)) return result;
-        var valid = opDate >= pStart && opDate <= pEnd;
+            || !DateOnly.TryParse(opDateStr, out var opDate))
+        {
+            return result;
+        }
+
+        var repCollection = rep.Reports.Report_Collection.ToList().FindAll(x => x.FormNum_DB == rep.FormNum_DB);
+        var repIndex = repCollection.IndexOf(rep);
+        var previousRepExist = repIndex + 1 < repCollection.Count;
+
+        if (opDate == pStart && previousRepExist)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_13",
+                Row = (line + 1).ToString(),
+                Column = "OperationDate_DB",
+                Value = opDateStr,
+                Message = "Дата операции не должна совпадать с датой начала периода, " +
+                          "если имеется хотя бы один более ранний отчёт по данной форме. " +
+                          "См. приказ №1/1623-П раздел 5.2.",
+                IsCritical = true
+            });
+            return result;
+        }
+
+        var valid = opDate > pStart && opDate <= pEnd;
         if (!valid)
         {
             result.Add(new CheckError
@@ -841,7 +865,7 @@ public abstract class CheckF13 : CheckBase
             if (phEntry is null) return result;
             var unit = phEntry["unit"];
             var value = phEntry["value"].Replace('.', ',');
-            if (!TryParseDoubleExtended(value, out var halfLife)) continue;
+            if (!TryParseDoubleExtended(value, out var halfLife)) return result;
             switch (unit)
             {
                 case "лет":
@@ -856,7 +880,7 @@ public abstract class CheckF13 : CheckBase
                     halfLife /= 1440;
                     break;
                 default:
-                    continue;
+                    return result;
             }
             if (halfLife >= 60 && rad != "иод-125") return result;  //Если встречаем хоть один не короткоживущий - ошибки нет
         }

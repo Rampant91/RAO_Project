@@ -675,15 +675,39 @@ public abstract class CheckF16 : CheckBase
     private static List<CheckError> Check_003_non10(List<Form16> forms, Report rep, int line)
     {
         List<CheckError> result = new();
-        string[] nonApplicableOperationCodes = { "01", "10" };
+        string[] nonApplicableOperationCodes = ["01", "10"];
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
-        var operationDate = ReplaceNullAndTrim(forms[line].OperationDate_DB);
-        if (nonApplicableOperationCodes.Contains(operationCode)) return result;
-        var valid = rep is { StartPeriod_DB: not null, EndPeriod_DB: not null } 
-                    && DateOnly.TryParse(rep.StartPeriod_DB, out var pStart) 
-                    && DateOnly.TryParse(rep.EndPeriod_DB, out var pEnd) 
-                    && DateOnly.TryParse(operationDate, out var pMid) 
-                    && pMid >= pStart && pMid <= pEnd;
+        var opDateStr = ReplaceNullAndTrim(forms[line].OperationDate_DB);
+        if (nonApplicableOperationCodes.Contains(operationCode)
+            || !(rep is { StartPeriod_DB: not null, EndPeriod_DB: not null }
+                 && DateOnly.TryParse(rep.StartPeriod_DB, out var pStart)
+                 && DateOnly.TryParse(rep.EndPeriod_DB, out var pEnd)
+                 && DateOnly.TryParse(opDateStr, out var opDate)))
+        {
+            return result;
+        }
+
+        var repCollection = rep.Reports.Report_Collection.ToList().FindAll(x => x.FormNum_DB == rep.FormNum_DB);
+        var repIndex = repCollection.IndexOf(rep);
+        var previousRepExist = repIndex + 1 < repCollection.Count;
+
+        if (opDate == pStart && previousRepExist)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_16",
+                Row = (line + 1).ToString(),
+                Column = "OperationDate_DB",
+                Value = opDateStr,
+                Message = "Дата операции не должна совпадать с датой начала периода, " +
+                          "если имеется хотя бы один более ранний отчёт по данной форме. " +
+                          "См. приказ №1/1623-П раздел 5.2.",
+                IsCritical = true
+            });
+            return result;
+        }
+
+        var valid = opDate > pStart && opDate <= pEnd;
         if (!valid)
         {
             result.Add(new CheckError
@@ -691,7 +715,7 @@ public abstract class CheckF16 : CheckBase
                 FormNum = "form_16",
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "OperationDate_DB",
-                Value = operationDate,
+                Value = opDateStr,
                 Message = "Дата операции не входит в отчетный период.",
                 IsCritical = true
             });
@@ -1261,8 +1285,7 @@ public abstract class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
                         Value = codeRao4HasNuclears,
-                        Message = 
-                                  "4-ый символ кода РАО не может быть равен 1 при коде операции 12."
+                        Message = "4-ый символ кода РАО не может быть равен 1 при коде операции 12."
                     });
                 }
                 //else if (operations11.Contains(operationCode))
@@ -1300,8 +1323,7 @@ public abstract class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
                         Value = $"{codeRao4HasNuclears} (4-ый символ кода РАО)",
-                        Message = 
-                                  "4-ый символ кода РАО не может быть равен 2 при кодах операции 11, 13, 14, 16 и 41."
+                        Message = "4-ый символ кода РАО не может быть равен 2 при кодах операции 11, 13, 14, 16 и 41."
                     });
                 }
                 else
@@ -1314,8 +1336,7 @@ public abstract class CheckF16 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = $"{codeRao4HasNuclears} (4-ый символ кода РАО)",
-                            Message = 
-                                      "4-ый символ кода РАО может быть равен 2 при данном коде операции только при указании радионуклидов, " +
+                            Message = "4-ый символ кода РАО может быть равен 2 при данном коде операции только при указании радионуклидов, " +
                                       "которые могут быть отнесены к ЯМ."
                         });
                     }
@@ -1788,7 +1809,8 @@ public abstract class CheckF16 : CheckBase
             .Select(x => x.Okpo_DB)
             .Where(x => !string.IsNullOrWhiteSpace(x))
             .ToList();
-        var valid = repOKPOList.Contains(statusRaoDB);
+        var valid = repOKPOList.Contains(statusRaoDB) 
+            || (operationCode == "12" && statusRaoDB == "2");
         if (!valid)
         {
             result.Add(new CheckError

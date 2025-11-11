@@ -128,6 +128,7 @@ public partial class Form16 : Form1
         var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (OperationCode_DB != value1)
         {
+            if (value1 is "41") return;
             OperationCode_DB = value1;
             if (Report is { AutoReplace: true })
             {

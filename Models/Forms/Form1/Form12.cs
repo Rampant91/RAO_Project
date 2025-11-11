@@ -1,4 +1,5 @@
-﻿using Models.Attributes;
+﻿using Microsoft.EntityFrameworkCore.Update.Internal;
+using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
@@ -802,7 +803,8 @@ public class Form12 : Form1
     private void SignedServicePeriod_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
+        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim().ToLower();
+
         SignedServicePeriod_DB = tmp;
     }
 
@@ -1285,7 +1287,7 @@ public class Form12 : Form1
         worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ConvertToExcelString(CreatorOKPO_DB);
         worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ConvertToExcelDate(CreationDate_DB, worksheet, row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0));
         
-        worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Style.Numberformat.Format = "0.##E+00";
+        //worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Style.Numberformat.Format = "0.##E+00";
         worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = ConvertToExcelDouble(SignedServicePeriod_DB);
 
         worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = PropertyCode_DB is null ? "-" : PropertyCode_DB;

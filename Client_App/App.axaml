@@ -1,5 +1,7 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	         xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+			 xmlns:behaviors="using:Client_App.Behaviors"
              xmlns:local="using:Client_App"
              xmlns:resources="clr-namespace:Client_App.Resources"
 			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
@@ -82,7 +84,9 @@
             <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="IsVisible" Value="False"/>
         </Style>
-		
+		<Style Selector="CalendarDatePicker.buttonOnly">
+			<Setter Property="behaviors:ScrollBlock.BlockPointerWheel" Value="True"/>
+		</Style>
 		<Style Selector="Border#Background">
 			<Setter Property="Background" Value="#f0f8ff"/>
         </Style>
@@ -230,14 +234,16 @@
         <Style Selector="DataGrid.notesTable">
             <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="Width" Value="660"/>
-            <Setter Property="MaxHeight" Value="180"/>
+            <Setter Property="MaxHeight" Value="210"/>
+			<Setter Property="Height" Value="210"/>
 			<Setter Property="ColumnHeaderHeight" Value="25"/>
-			<Setter Property="RowHeight" Value="35" />
             <Setter Property="RowBackground" Value="White"/>
+			<Setter Property="Background" Value="LightGray"/>
 			<Setter Property="SelectionMode" Value="Extended"/>
             <Setter Property="AlternatingRowBackground" Value="White"/>
             <Setter Property="Margin" Value="5"/>
 			<Setter Property="GridLinesVisibility" Value="All"></Setter>
+			<Setter Property="HorizontalScrollBarVisibility" Value="Hidden"></Setter>
         </Style>
 
 		<Style Selector="DataGrid.notesTable DataGridColumnHeader">
@@ -247,6 +253,9 @@
 		<Style Selector="DataGrid.notesTable TextBox">
 			<Setter Property="BorderThickness" Value="0.5"/>
 			<Setter Property="Margin" Value="0,0,0,0"/>
+			<Setter Property="MinHeight" Value="25"/>
+			<Setter Property="MaxHeight" Value="100"/>
+			<Setter Property="TextWrapping" Value="Wrap"/>
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
 			<Setter Property="IsHitTestVisible" Value="False"/>
 		</Style>

@@ -5,7 +5,6 @@ using Client_App.ViewModels.Forms;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
 using Models.Forms.Form1;
-using System;
 using System.Threading.Tasks;
 using Models.Forms;
 using JetBrains.Annotations;
@@ -24,30 +23,30 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     private Form SelectedForm => formVM.SelectedForm;
 
     private string FormType => formVM.FormType;
+
     private byte? ConvertStringToByte(string str)
     {
-        byte result;
-        if (byte.TryParse(str, out result))
+        if (byte.TryParse(str, out var result))
         {
             return result;
         }
         else
             return null;
     }
+
     private int? ConvertStringToInt(string str)
     {
-        int result;
-        if (int.TryParse(str, out result))
+        if (int.TryParse(str, out var result))
         {
             return result;
         }
         else
             return null;
     }
+
     private short? ConvertStringToShort(string str)
     {
-        short result;
-        if (short.TryParse(str, out result))
+        if (short.TryParse(str, out var result))
         {
             return result;
         }
@@ -56,8 +55,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     }
     private float? ConvertStringToFloat(string str)
     {
-        float result;
-        if (float.TryParse(str, out result))
+        if (float.TryParse(str, out var result))
         {
             return result;
         }
@@ -454,135 +452,137 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                 #region 1.5
 
                 case "1.5":
+                {
+                    var form15 = Storage.Rows.Get<Form15>(i + start);
+                    if (parsedRows[i].Length == 24)
                     {
-                        var form15 = Storage.Rows.Get<Form15>(i + start);
-                        if (parsedRows[i].Length == 24)
-                        {
-                            form15.OperationCode.Value = parsedRows[i][0];
-                            form15.OperationDate.Value = parsedRows[i][1];
-                            form15.PassportNumber.Value = parsedRows[i][2];
-                            form15.Type.Value = parsedRows[i][3];
-                            form15.Radionuclids.Value = parsedRows[i][4];
-                            form15.FactoryNumber.Value = parsedRows[i][5];
-                            form15.Quantity.Value = ConvertStringToByte(parsedRows[i][6]);
-                            form15.Activity.Value = parsedRows[i][7];
-                            form15.CreationDate.Value = parsedRows[i][8];
-                            form15.StatusRAO.Value = parsedRows[i][9];
-                            form15.DocumentVid.Value = ConvertStringToByte(parsedRows[i][10]);
-                            form15.DocumentNumber.Value = parsedRows[i][11];
-                            form15.DocumentDate.Value = parsedRows[i][12];
-                            form15.ProviderOrRecieverOKPO.Value = parsedRows[i][13];
-                            form15.TransporterOKPO.Value = parsedRows[i][14];
-                            form15.PackName.Value = parsedRows[i][15];
-                            form15.PackType.Value = parsedRows[i][16];
-                            form15.PackNumber.Value = parsedRows[i][17];
-                            form15.StoragePlaceName.Value = parsedRows[i][18];
-                            form15.StoragePlaceCode.Value = parsedRows[i][19];
-                            form15.RefineOrSortRAOCode.Value = parsedRows[i][20];
-                            form15.Subsidy.Value = parsedRows[i][21];
-                            form15.FcpNumber.Value = parsedRows[i][22];
-                            form15.ContractNumber.Value = parsedRows[i][23];
-                        }
-                        else if (parsedRows[i].Length == 25)
-                        {
-                            form15.OperationCode.Value = parsedRows[i][1];
-                            form15.OperationDate.Value = parsedRows[i][2];
-                            form15.PassportNumber.Value = parsedRows[i][3];
-                            form15.Type.Value = parsedRows[i][4];
-                            form15.Radionuclids.Value = parsedRows[i][5];
-                            form15.FactoryNumber.Value = parsedRows[i][6];
-                            form15.Quantity.Value = ConvertStringToByte(parsedRows[i][7]);
-                            form15.Activity.Value = parsedRows[i][8];
-                            form15.CreationDate.Value = parsedRows[i][9];
-                            form15.StatusRAO.Value = parsedRows[i][10];
-                            form15.DocumentVid.Value = ConvertStringToByte(parsedRows[i][11]);
-                            form15.DocumentNumber.Value = parsedRows[i][12];
-                            form15.DocumentDate.Value = parsedRows[i][13];
-                            form15.ProviderOrRecieverOKPO.Value = parsedRows[i][14];
-                            form15.TransporterOKPO.Value = parsedRows[i][15];
-                            form15.PackName.Value = parsedRows[i][16];
-                            form15.PackType.Value = parsedRows[i][17];
-                            form15.PackNumber.Value = parsedRows[i][18];
-                            form15.StoragePlaceName.Value = parsedRows[i][19];
-                            form15.StoragePlaceCode.Value = parsedRows[i][20];
-                            form15.RefineOrSortRAOCode.Value = parsedRows[i][21];
-                            form15.Subsidy.Value = parsedRows[i][22];
-                            form15.FcpNumber.Value = parsedRows[i][23];
-                            form15.ContractNumber.Value = parsedRows[i][24];
-                        }
-                        break;
+                        form15.OperationCode.Value = parsedRows[i][0] is not "41" ? parsedRows[i][0] : string.Empty;
+                        form15.OperationDate.Value = parsedRows[i][1];
+                        form15.PassportNumber.Value = parsedRows[i][2];
+                        form15.Type.Value = parsedRows[i][3];
+                        form15.Radionuclids.Value = parsedRows[i][4];
+                        form15.FactoryNumber.Value = parsedRows[i][5];
+                        form15.Quantity.Value = ConvertStringToByte(parsedRows[i][6]);
+                        form15.Activity.Value = parsedRows[i][7];
+                        form15.CreationDate.Value = parsedRows[i][8];
+                        form15.StatusRAO.Value = parsedRows[i][9];
+                        form15.DocumentVid.Value = ConvertStringToByte(parsedRows[i][10]);
+                        form15.DocumentNumber.Value = parsedRows[i][11];
+                        form15.DocumentDate.Value = parsedRows[i][12];
+                        form15.ProviderOrRecieverOKPO.Value = parsedRows[i][13];
+                        form15.TransporterOKPO.Value = parsedRows[i][14];
+                        form15.PackName.Value = parsedRows[i][15];
+                        form15.PackType.Value = parsedRows[i][16];
+                        form15.PackNumber.Value = parsedRows[i][17];
+                        form15.StoragePlaceName.Value = parsedRows[i][18];
+                        form15.StoragePlaceCode.Value = parsedRows[i][19];
+                        form15.RefineOrSortRAOCode.Value = parsedRows[i][20];
+                        form15.Subsidy.Value = parsedRows[i][21];
+                        form15.FcpNumber.Value = parsedRows[i][22];
+                        form15.ContractNumber.Value = parsedRows[i][23];
                     }
+                    else if (parsedRows[i].Length == 25)
+                    {
+                        form15.OperationCode.Value = parsedRows[i][1];
+                        form15.OperationDate.Value = parsedRows[i][2];
+                        form15.PassportNumber.Value = parsedRows[i][3];
+                        form15.Type.Value = parsedRows[i][4];
+                        form15.Radionuclids.Value = parsedRows[i][5];
+                        form15.FactoryNumber.Value = parsedRows[i][6];
+                        form15.Quantity.Value = ConvertStringToByte(parsedRows[i][7]);
+                        form15.Activity.Value = parsedRows[i][8];
+                        form15.CreationDate.Value = parsedRows[i][9];
+                        form15.StatusRAO.Value = parsedRows[i][10];
+                        form15.DocumentVid.Value = ConvertStringToByte(parsedRows[i][11]);
+                        form15.DocumentNumber.Value = parsedRows[i][12];
+                        form15.DocumentDate.Value = parsedRows[i][13];
+                        form15.ProviderOrRecieverOKPO.Value = parsedRows[i][14];
+                        form15.TransporterOKPO.Value = parsedRows[i][15];
+                        form15.PackName.Value = parsedRows[i][16];
+                        form15.PackType.Value = parsedRows[i][17];
+                        form15.PackNumber.Value = parsedRows[i][18];
+                        form15.StoragePlaceName.Value = parsedRows[i][19];
+                        form15.StoragePlaceCode.Value = parsedRows[i][20];
+                        form15.RefineOrSortRAOCode.Value = parsedRows[i][21];
+                        form15.Subsidy.Value = parsedRows[i][22];
+                        form15.FcpNumber.Value = parsedRows[i][23];
+                        form15.ContractNumber.Value = parsedRows[i][24];
+                    }
+                    break;
+                }
 
                 #endregion
 
                 #region 1.6
 
                 case "1.6":
+                {
+                    var form16 = Storage.Rows.Get<Form16>(i + start);
+
+                    if (parsedRows[i].Length == 27)
                     {
-                        var form16 = Storage.Rows.Get<Form16>(i + start);
-                        if (parsedRows[i].Length == 27)
-                        {
-                            form16.OperationCode.Value = parsedRows[i][0];
-                            form16.OperationDate.Value = parsedRows[i][1];
-                            form16.CodeRAO.Value = parsedRows[i][2];
-                            form16.StatusRAO.Value = parsedRows[i][3];
-                            form16.Volume.Value = parsedRows[i][4];
-                            form16.Mass.Value = parsedRows[i][5];
-                            form16.QuantityOZIII.Value = parsedRows[i][6];
-                            form16.MainRadionuclids.Value = parsedRows[i][7];
-                            form16.TritiumActivity.Value = parsedRows[i][8];
-                            form16.BetaGammaActivity.Value = parsedRows[i][9];
-                            form16.AlphaActivity.Value = parsedRows[i][10];
-                            form16.TransuraniumActivity.Value = parsedRows[i][11];
-                            form16.ActivityMeasurementDate.Value = parsedRows[i][12];
-                            form16.DocumentVid.Value = ConvertStringToByte(parsedRows[i][13]);
-                            form16.DocumentNumber.Value = parsedRows[i][14];
-                            form16.DocumentDate.Value = parsedRows[i][15];
-                            form16.ProviderOrRecieverOKPO.Value = parsedRows[i][16];
-                            form16.TransporterOKPO.Value = parsedRows[i][17];
-                            form16.StoragePlaceName.Value = parsedRows[i][18];
-                            form16.StoragePlaceCode.Value = parsedRows[i][19];
-                            form16.RefineOrSortRAOCode.Value = parsedRows[i][20];
-                            form16.PackName.Value = parsedRows[i][21];
-                            form16.PackType.Value = parsedRows[i][22];
-                            form16.PackNumber.Value = parsedRows[i][23];
-                            form16.Subsidy.Value = parsedRows[i][24];
-                            form16.FcpNumber.Value = parsedRows[i][25];
-                            form16.ContractNumber.Value = parsedRows[i][26];
-                        }
-                        else if (parsedRows[i].Length == 28)
-                        {
-                            form16.OperationCode.Value = parsedRows[i][1];
-                            form16.OperationDate.Value = parsedRows[i][2];
-                            form16.CodeRAO.Value = parsedRows[i][3];
-                            form16.StatusRAO.Value = parsedRows[i][4];
-                            form16.Volume.Value = parsedRows[i][5];
-                            form16.Mass.Value = parsedRows[i][6];
-                            form16.QuantityOZIII.Value = parsedRows[i][7];
-                            form16.MainRadionuclids.Value = parsedRows[i][8];
-                            form16.TritiumActivity.Value = parsedRows[i][9];
-                            form16.BetaGammaActivity.Value = parsedRows[i][10];
-                            form16.AlphaActivity.Value = parsedRows[i][11];
-                            form16.TransuraniumActivity.Value = parsedRows[i][12];
-                            form16.ActivityMeasurementDate.Value = parsedRows[i][13];
-                            form16.DocumentVid.Value = ConvertStringToByte(parsedRows[i][14]);
-                            form16.DocumentNumber.Value = parsedRows[i][15];
-                            form16.DocumentDate.Value = parsedRows[i][16];
-                            form16.ProviderOrRecieverOKPO.Value = parsedRows[i][17];
-                            form16.TransporterOKPO.Value = parsedRows[i][18];
-                            form16.StoragePlaceName.Value = parsedRows[i][19];
-                            form16.StoragePlaceCode.Value = parsedRows[i][20];
-                            form16.RefineOrSortRAOCode.Value = parsedRows[i][21];
-                            form16.PackName.Value = parsedRows[i][22];
-                            form16.PackType.Value = parsedRows[i][23];
-                            form16.PackNumber.Value = parsedRows[i][24];
-                            form16.Subsidy.Value = parsedRows[i][25];
-                            form16.FcpNumber.Value = parsedRows[i][26];
-                            form16.ContractNumber.Value = parsedRows[i][27];
-                        }
+                        form16.OperationCode.Value = parsedRows[i][0] is not "41" ? parsedRows[i][0] : string.Empty;
+                        form16.OperationDate.Value = parsedRows[i][1];
+                        form16.CodeRAO.Value = parsedRows[i][2];
+                        form16.StatusRAO.Value = parsedRows[i][3];
+                        form16.Volume.Value = parsedRows[i][4];
+                        form16.Mass.Value = parsedRows[i][5];
+                        form16.QuantityOZIII.Value = parsedRows[i][6];
+                        form16.MainRadionuclids.Value = parsedRows[i][7];
+                        form16.TritiumActivity.Value = parsedRows[i][8];
+                        form16.BetaGammaActivity.Value = parsedRows[i][9];
+                        form16.AlphaActivity.Value = parsedRows[i][10];
+                        form16.TransuraniumActivity.Value = parsedRows[i][11];
+                        form16.ActivityMeasurementDate.Value = parsedRows[i][12];
+                        form16.DocumentVid.Value = ConvertStringToByte(parsedRows[i][13]);
+                        form16.DocumentNumber.Value = parsedRows[i][14];
+                        form16.DocumentDate.Value = parsedRows[i][15];
+                        form16.ProviderOrRecieverOKPO.Value = parsedRows[i][16];
+                        form16.TransporterOKPO.Value = parsedRows[i][17];
+                        form16.StoragePlaceName.Value = parsedRows[i][18];
+                        form16.StoragePlaceCode.Value = parsedRows[i][19];
+                        form16.RefineOrSortRAOCode.Value = parsedRows[i][20];
+                        form16.PackName.Value = parsedRows[i][21];
+                        form16.PackType.Value = parsedRows[i][22];
+                        form16.PackNumber.Value = parsedRows[i][23];
+                        form16.Subsidy.Value = parsedRows[i][24];
+                        form16.FcpNumber.Value = parsedRows[i][25];
+                        form16.ContractNumber.Value = parsedRows[i][26];
 
                         break;
                     }
+                    else if (parsedRows[i].Length == 28)
+                    {
+                        form16.OperationCode.Value = parsedRows[i][1];
+                        form16.OperationDate.Value = parsedRows[i][2];
+                        form16.CodeRAO.Value = parsedRows[i][3];
+                        form16.StatusRAO.Value = parsedRows[i][4];
+                        form16.Volume.Value = parsedRows[i][5];
+                        form16.Mass.Value = parsedRows[i][6];
+                        form16.QuantityOZIII.Value = parsedRows[i][7];
+                        form16.MainRadionuclids.Value = parsedRows[i][8];
+                        form16.TritiumActivity.Value = parsedRows[i][9];
+                        form16.BetaGammaActivity.Value = parsedRows[i][10];
+                        form16.AlphaActivity.Value = parsedRows[i][11];
+                        form16.TransuraniumActivity.Value = parsedRows[i][12];
+                        form16.ActivityMeasurementDate.Value = parsedRows[i][13];
+                        form16.DocumentVid.Value = ConvertStringToByte(parsedRows[i][14]);
+                        form16.DocumentNumber.Value = parsedRows[i][15];
+                        form16.DocumentDate.Value = parsedRows[i][16];
+                        form16.ProviderOrRecieverOKPO.Value = parsedRows[i][17];
+                        form16.TransporterOKPO.Value = parsedRows[i][18];
+                        form16.StoragePlaceName.Value = parsedRows[i][19];
+                        form16.StoragePlaceCode.Value = parsedRows[i][20];
+                        form16.RefineOrSortRAOCode.Value = parsedRows[i][21];
+                        form16.PackName.Value = parsedRows[i][22];
+                        form16.PackType.Value = parsedRows[i][23];
+                        form16.PackNumber.Value = parsedRows[i][24];
+                        form16.Subsidy.Value = parsedRows[i][25];
+                        form16.FcpNumber.Value = parsedRows[i][26];
+                        form16.ContractNumber.Value = parsedRows[i][27];
+                    }
+                    break;
+                }
 
                 #endregion
 

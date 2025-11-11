@@ -41,6 +41,8 @@ public class NewCheckFormAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         var reps = formVM.Reports;
         var rep = formVM.Report;
 
+        var window = Desktop.Windows.FirstOrDefault(x => x.Name == rep.FormNum_DB);
+
         await using var db = new DBModel(StaticConfiguration.DBPath);
         List<CheckError> result = [];
         try
@@ -142,7 +144,7 @@ public class NewCheckFormAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                             MinHeight = 150,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(Desktop.MainWindow));
+                        .ShowDialog(window ?? Desktop.MainWindow));
 
                     #endregion
 
@@ -169,7 +171,7 @@ public class NewCheckFormAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowDialog(window ?? Desktop.MainWindow));
 
             #endregion
 
@@ -191,7 +193,7 @@ public class NewCheckFormAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowDialog(window ?? Desktop.MainWindow));
 
             #endregion
         }

@@ -1,4 +1,4 @@
-﻿using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.Delete;
@@ -11,6 +11,7 @@ using Models.Collections;
 using Models.Forms;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -24,6 +25,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     #region Properties
 
     public abstract string FormType { get; }
+
     public string WindowTitle 
     {
         get
@@ -37,7 +39,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     
     }
 
-    protected ObservableCollection<Form> _formList = [];
+    private ObservableCollection<Form> _formList = [];
     public ObservableCollection<Form> FormList
     {
         get => _formList;
@@ -47,7 +49,8 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-    protected ObservableCollection<Note> _noteList = [];
+
+    private ObservableCollection<Note> _noteList = [];
     public ObservableCollection<Note> NoteList
     {
         get => _noteList;
@@ -60,7 +63,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
     #region Report
 
-    protected Report _report;
+    private Report _report;
     public Report Report
     {
         get => _report;
@@ -108,8 +111,8 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
-    protected Form _selectedForm;
-    public Form SelectedForm
+    private Form? _selectedForm;
+    public Form? SelectedForm
     {
         get => _selectedForm;
         set
@@ -118,7 +121,8 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-    protected ObservableCollection<Form> _selectedForms = [];
+
+    private ObservableCollection<Form> _selectedForms = [];
     public ObservableCollection<Form> SelectedForms
     {
         get => _selectedForms;
@@ -126,12 +130,85 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         {
             if (_selectedForms != value)
             {
+                UnsubscribeSelectedForms(_selectedForms);
                 _selectedForms = value;
+                SubscribeSelectedForms(_selectedForms);
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(AnyRowSelected));
+                OnPropertyChanged(nameof(OnlyOneRowSelected));
+            }
+        }
+    }
+
+    #region AnyRowSelected
+
+    private bool _anyRowSelected;
+    public bool AnyRowSelected
+    {
+        get => SelectedForms.Any();
+        set
+        {
+            if (_anyRowSelected != value)
+            {
+                _anyRowSelected = value;
                 OnPropertyChanged();
             }
         }
     }
-    protected Note _selectedNote;
+
+    #endregion
+
+    private bool _dataGridIsEditing;
+    public bool DataGridIsEditing
+    {
+        get => _dataGridIsEditing;
+        set
+        {
+            if (_dataGridIsEditing != value)
+            {
+                _dataGridIsEditing = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    #region OnlyOneRowSelected
+
+    private bool _onlyOneRowSelected;
+    public bool OnlyOneRowSelected
+    {
+        get => SelectedForms.Count == 1;
+        set
+        {
+            if (_onlyOneRowSelected != value)
+            {
+                _onlyOneRowSelected = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    #endregion
+
+    #region SkipChangeTacking
+
+    private bool _skipChangeTacking;
+    public bool SkipChangeTacking
+    {
+        get => _skipChangeTacking;
+        set
+        {
+            if (_skipChangeTacking != value)
+            {
+                _skipChangeTacking = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    #endregion
+
+    private Note _selectedNote;
     public Note SelectedNote
     {
         get => _selectedNote;
@@ -141,7 +218,8 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-    protected ObservableCollection<Note> _selectedNotes = [];
+
+    private ObservableCollection<Note> _selectedNotes = [];
     public ObservableCollection<Note> SelectedNotes
     {
         get => _selectedNotes;
@@ -154,7 +232,8 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
-    protected int _rowCount = 30;
+
+    private int _rowCount = 30;
     public int RowCount
     {
         get => _rowCount;
@@ -176,7 +255,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    protected int _currentPage = 1;
+    private int _currentPage = 1;
     public int CurrentPage
     {
         get => _currentPage;
@@ -212,7 +291,8 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
     public int TotalRows => Report.Rows.Count;
 
-    protected bool _isAutoReplaceEnabled = true;
+
+    private bool _isAutoReplaceEnabled = true;
     public bool IsAutoReplaceEnabled
     {
         get => _isAutoReplaceEnabled;
@@ -227,19 +307,17 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    public int _selectedYear = DateTime.Now.Year;
+    private int _selectedYear = DateTime.Now.Year;
     public int SelectedYear
     {
-        get
-        {
-            return _selectedYear;
-        }
+        get => _selectedYear;
         set
         {
             _selectedYear = value;
             OnPropertyChanged();
         }
     }
+
     private SelectReportPopupVM _selectReportVM;
     public SelectReportPopupVM SelectReportPopupVM
     {
@@ -247,19 +325,25 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         {
             return _selectReportVM;
         }
+        set
+        {
+            _selectReportVM = value;
+        }
     }
 
-    public int NoteTableHeight
-    {
-        get { return 25 + (35 + 1) * NoteList.Count + 3; }  // Хардкод: ColumnHeaderHeight + (RowHeight + отступ) * NoteList.Count + отступ;
-                                                            //отступы корректируют высоту, учитывая BorderThickness
-    }
     #endregion
 
     #region Constructors
 
-    public BaseFormVM() { }
+    public BaseFormVM() 
+    { 
+        SubscribeSelectedForms(_selectedForms);
+    }
 
+    /// <summary>
+    /// Редактирование ранее созданного отчёта.
+    /// </summary>
+    /// <param name="report">Отчёт.</param>
     public BaseFormVM(Report report)
     {
         _report = report;
@@ -268,6 +352,8 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         UpdateFormList();
         UpdatePageInfo();
         NoteList = Report.Notes;
+
+        SubscribeSelectedForms(_selectedForms);
         _selectReportVM = new SelectReportPopupVM(this);
     }
 
@@ -294,13 +380,47 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand CopyNotes => new NewCopyNotesAsyncCommand();
     public ICommand PasteNotes => new NewPasteNotesAsyncCommand(this);
     public ICommand DeleteNotes => new NewDeleteNoteAsyncCommand(this);
+    public ICommand SwitchToSelectedReport => new SwitchToSelectedReportAsyncCommand(this);
+
     #endregion
+
+    #region SelectionChangeWiring
+
+    /// <summary>
+    /// Обновление списка выделенных строчек.
+    /// </summary>
+    /// <param name="collection"></param>
+    private void SubscribeSelectedForms(ObservableCollection<Form> collection)
+    {
+        if (collection is INotifyCollectionChanged notify)
+        {
+            notify.CollectionChanged += SelectedForms_CollectionChanged;
+        }
+    }
+
+    private void UnsubscribeSelectedForms(ObservableCollection<Form> collection)
+    {
+        if (collection is INotifyCollectionChanged notify)
+        {
+            notify.CollectionChanged -= SelectedForms_CollectionChanged;
+        }
+    }
+
+    private void SelectedForms_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        OnPropertyChanged(nameof(AnyRowSelected));
+        OnPropertyChanged(nameof(OnlyOneRowSelected));
+    }
+
+    #endregion
+
     #region  UpdateNoteList
+
     public void UpdateNoteList()
     {
         NoteList = new ObservableCollection<Note>( Report.Notes.ToList<Note>());
-        OnPropertyChanged(nameof(NoteTableHeight));
     }
+
     #endregion
 
     #region UpdateFormList

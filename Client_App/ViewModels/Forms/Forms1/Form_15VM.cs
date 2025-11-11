@@ -1,6 +1,5 @@
 using Client_App.Commands.AsyncCommands.ExcelExport;
-using Client_App.Commands.AsyncCommands.SourceTransmission;
-using Models.Attributes;
+using Client_App.ViewModels.Controls;
 using Models.Collections;
 using System;
 using System.Linq;
@@ -36,6 +35,8 @@ public class Form_15VM : BaseFormVM
         };
 
         Reports = reps;
+
+        SelectReportPopupVM = new SelectReportPopupVM(this);
     }
 
     #endregion

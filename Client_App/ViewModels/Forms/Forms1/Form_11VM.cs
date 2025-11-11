@@ -1,8 +1,9 @@
-﻿using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Calculator;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
+using Client_App.ViewModels.Controls;
 using Models.Collections;
 using System;
 using System.Linq;
@@ -38,6 +39,8 @@ public class Form_11VM : BaseFormVM
         };
 
         Reports = reps;
+
+        SelectReportPopupVM = new SelectReportPopupVM(this);
     }
 
     #endregion
@@ -51,7 +54,6 @@ public class Form_11VM : BaseFormVM
     public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);
 
     #endregion
-
 
     //public ObservableCollection<Form12> Form12List => new(FormList.Cast<Form12>());
 

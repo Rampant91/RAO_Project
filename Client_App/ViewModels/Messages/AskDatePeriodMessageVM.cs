@@ -22,7 +22,7 @@ public class AskDatePeriodMessageVM : INotifyPropertyChanged
         }
     }
 
-    private string _residualDate = DateOnly.FromDateTime(DateTime.Now).ToShortDateString();
+    private string _residualDate =  string.Empty;        //DateOnly.FromDateTime(DateTime.Now).ToShortDateString();
     public string ResidualDate
     {
         get => _residualDate;

@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
-using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using DynamicData;
 using MessageBox.Avalonia.DTO;
@@ -15,6 +14,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Client_App.ViewModels;
+using Client_App.ViewModels.Forms;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -185,77 +186,39 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
 
             switch (rep.FormNum_DB)
             {
-                case "1.1":
+                case "1.1" or "1.2" or "1.3" or "1.4" or "1.5" or "1.6" or "1.7" or "1.8":
                 {
-                    var vm = new Form_11VM(rep.Reports);
+                    var vm = await CreateFormVM(rep.FormNum_DB, rep);
                     await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList).Show());
 
                     break;
                 }
-                case "1.2":
+                case "2.1" or "2.2" or "2.3" or "2.4" or "2.5" or "2.6" or "2.7" or "2.8" or "2.9" or "2.10" or "2.11" or "2.12":
                 {
-                    var vm = new Form_12VM(rep.Reports);
-                    await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList).Show());
+                    await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(new ChangeOrCreateVM(rep.FormNum_DB, rep), errorList));
 
                     break;
                 }
-                case "1.3":
-                {
-                    var vm = new Form_13VM(rep.Reports);
-                    await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList).Show());
-
-                    break;
-                }
-                case "1.4":
-                {
-                    var vm = new Form_14VM(rep.Reports);
-                    await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList).Show());
-
-                    break;
-                }
-                case "1.5":
-                {
-                    var vm = new Form_15VM(rep.Reports);
-                    await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList).Show());
-
-                    break;
-                }
-                case "1.6":
-                {
-                    var vm = new Form_16VM(rep.Reports);
-                    await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList).Show());
-
-                    break;
-                }
-                case "1.7":
-                {
-                    var vm = new Form_17VM(rep.Reports);
-                    await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList).Show());
-
-                    break;
-                }
-                case "1.8":
-                {
-                    var vm = new Form_18VM(rep.Reports);
-                    await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList).Show());
-
-                    break;
-                }
-                case "1.9":
-                {
-                    var vm = new Form_19VM(rep.Reports);
-                    await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList).Show());
-
-                    break;
-                }
-                default:
-                {
-                    var vm = new ChangeOrCreateVM(rep.FormNum_DB, rep);
-                    await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(vm, errorList));
-
-                    break;
-                }
+                default: return;
             }
         }
+    }
+
+    private static Task<BaseFormVM?> CreateFormVM(string formNum, Report rep)
+    {
+        BaseFormVM? vm = formNum switch
+        {
+            "1.1" => new Form_11VM(rep.Reports) { Report = rep },
+            "1.2" => new Form_12VM(rep.Reports) { Report = rep },
+            "1.3" => new Form_12VM(rep.Reports) { Report = rep },
+            "1.4" => new Form_12VM(rep.Reports) { Report = rep },
+            "1.5" => new Form_12VM(rep.Reports) { Report = rep },
+            "1.6" => new Form_12VM(rep.Reports) { Report = rep },
+            "1.7" => new Form_12VM(rep.Reports) { Report = rep },
+            "1.8" => new Form_12VM(rep.Reports) { Report = rep },
+            _ => null
+        };
+
+        return Task.FromResult(vm);
     }
 }

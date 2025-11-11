@@ -13,6 +13,8 @@ using Client_App.ViewModels.Forms.Forms1;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
+using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -20,18 +22,18 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Client_App.Views.Forms.Forms1;
 
 public partial class Form_19 : BaseWindow<Form_19VM>
 {
-
     //private Form_19VM _vm = null!;
 
+    private bool _isCloseConfirmed;
+
     #region Constructors
-    
+
     public Form_19()
     {
         InitializeComponent();
@@ -81,89 +83,92 @@ public partial class Form_19 : BaseWindow<Form_19VM>
 
         var selectedForms = vm.SelectedForms;
 
-        if (dataGrid.IsPointerOver && e.KeyModifiers is KeyModifiers.Control)
+        if (!dataGrid.IsPointerOver || e.KeyModifiers is not KeyModifiers.Control) return;
+
+        switch (e.Key)
         {
-            switch (e.Key)
+            case Key.A: // Select All
             {
-                case Key.A: // Select All
+                vm.SelectAll.Execute(null);
+                e.Handled = true;
+
+                break;
+            }
+            case Key.T: // Add Row
+            {
+                vm.AddRow.Execute(null);
+                e.Handled = true;
+
+                break;
+            }
+            case Key.N: // Add N Rows
+            {
+                vm.AddRows.Execute(null);
+                e.Handled = true;
+
+                break;
+            }
+            case Key.I: // Add N Rows Before
+            {
+                if (selectedForms is { Count: > 0 })
                 {
-                    vm.SelectAll.Execute(null);
+                    vm.AddRowsIn.Execute(selectedForms);
                     e.Handled = true;
-
-                    break;
                 }
-                case Key.T: // Add Row
+
+                break;
+            }
+            case Key.D: // Delete Selected Rows
+            {
+                if (selectedForms is { Count: > 0 })
                 {
-                    vm.AddRow.Execute(null);
+                    vm.DeleteRows.Execute(selectedForms);
                     e.Handled = true;
-
-                    break;
                 }
-                case Key.N: // Add N Rows
+
+                break;
+            }
+            case Key.O: // Set Number Order
+            {
+                vm.SetNumberOrder.Execute(null);
+                e.Handled = true;
+
+                break;
+            }
+            case Key.U: // Clear Rows
+            {
+                if (selectedForms is { Count: > 0 })
                 {
-                    vm.AddRows.Execute(null);
+                    vm.DeleteDataInRows.Execute(selectedForms);
                     e.Handled = true;
-
-                    break;
                 }
-                case Key.I: // Add N Rows Before
-                {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.AddRowsIn.Execute(selectedForms);
-                        e.Handled = true;
-                    }
 
-                    break;
-                }
-                case Key.C: // Copy Rows
-                {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.CopyRows.Execute(selectedForms);
-                        e.Handled = true;
-                    }
+                break;
+            }
+        }
 
-                    break;
-                }
-                case Key.V: // Paste Rows
+        if (vm.DataGridIsEditing) return;
+        switch (e.Key)
+        {
+            case Key.C: // Copy Rows
+            {
+                if (selectedForms is { Count: > 0 })
                 {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.PasteRows.Execute(selectedForms);
-                        e.Handled = true;
-                    }
-
-                    break;
-                }
-                case Key.D: // Delete Selected Rows
-                {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.DeleteRows.Execute(selectedForms);
-                        e.Handled = true;
-                    }
-
-                    break;
-                }
-                case Key.O: // Set Number Order
-                {
-                    vm.SetNumberOrder.Execute(null);
+                    vm.CopyRows.Execute(selectedForms);
                     e.Handled = true;
-
-                    break;
                 }
-                case Key.K: // Clear Rows
+
+                break;
+            }
+            case Key.V: // Paste Rows
+            {
+                if (selectedForms is { Count: > 0 })
                 {
-                    if (selectedForms is { Count: > 0 })
-                    {
-                        vm.DeleteDataInRows.Execute(selectedForms);
-                        e.Handled = true;
-                    }
-
-                    break;
+                    vm.PasteRows.Execute(selectedForms);
+                    e.Handled = true;
                 }
-                default: return;
+
+                break;
             }
         }
     }
@@ -174,6 +179,12 @@ public partial class Form_19 : BaseWindow<Form_19VM>
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
+        args.Cancel = true; // Сразу запрещаем закрытие окна, т.к. из-за асинхроности окно может закрыться в любой момент
+
+
+        _isCloseConfirmed = true; // перед выходом из обработчика события стоит проверка на _isCloseConfirmed,
+                                  // если true, то окно закроется,
+                                  // если false, то не закроется
         if (DataContext is not Form_19VM vm) return;
 
         try
@@ -190,9 +201,23 @@ public partial class Form_19 : BaseWindow<Form_19VM>
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
         try
         {
-            if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges())
+            var db = StaticConfiguration.DBModel;
+
+            var modifiedEntities = db.ChangeTracker.Entries()
+                .Where(x => x.State != EntityState.Unchanged);
+
+            if (modifiedEntities.All(x => x.Entity is Report rep && rep.FormNum_DB != vm.FormType)
+                || !db.ChangeTracker.HasChanges() || vm.SkipChangeTacking)
             {
-                desktop.MainWindow.WindowState = WindowState.Normal;
+                if (vm.SkipChangeTacking) vm.SkipChangeTacking = false;
+                desktop.MainWindow.WindowState = OwnerPrevState;
+
+                if (_isCloseConfirmed) //выход из обработчика события
+                {
+                    Closing -= OnStandardClosing;
+                    Close();
+                }
+
                 return;
             }
         }
@@ -203,17 +228,18 @@ public partial class Form_19 : BaseWindow<Form_19VM>
             ServiceExtension.LoggerManager.Error(msg);
         }
 
-        var flag = false;
+        args.Cancel = true;
 
-        #region MessageRemoveEmptyForms
+        #region MessageSaveChanges
 
-        var res = Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
+        var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
                     new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" }
+                    new ButtonDefinition { Name = "Нет" },
+                    new ButtonDefinition { Name = "Отмена" }
                 ],
                 ContentTitle = "Сохранение изменений",
                 ContentHeader = "Уведомление",
@@ -221,16 +247,17 @@ public partial class Form_19 : BaseWindow<Form_19VM>
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .ShowDialog(desktop.MainWindow));
+            .ShowDialog(this));
 
         #endregion
 
-        await res.WaitAsync(new CancellationToken());
         var dbm = StaticConfiguration.DBModel;
-        switch (res.Result)
+        switch (res)
         {
             case "Да":
                 {
+                    _isCloseConfirmed = true;
+
                     //Перед тем как сохранить данные пользователю предлагают удалить пустые строчки
                     try
                     {
@@ -245,15 +272,21 @@ public partial class Form_19 : BaseWindow<Form_19VM>
 
                     await dbm.SaveChangesAsync();
                     await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+
                     if (desktop.Windows.Count == 1)
                     {
-                        desktop.MainWindow.WindowState = WindowState.Normal;
+                        desktop.MainWindow.WindowState = OwnerPrevState;
+
+                        break;
                     }
+
+                    args.Cancel = false;
+
                     return;
                 }
             case "Нет":
                 {
-                    flag = true;
+                    _isCloseConfirmed = true;
                     dbm.Restore();
                     new NewSortFormSyncCommand(vm).Execute(null);
                     await dbm.SaveChangesAsync();
@@ -262,11 +295,16 @@ public partial class Form_19 : BaseWindow<Form_19VM>
 
                     foreach (var key in lst)
                     {
+
                         var item = (Form)key;
                         if (item.Id == 0)
                         {
                             vm.Report[vm.Report.FormNum_DB].Remove(item);
                         }
+
+                        dbm.Restore();
+                        new SortFormSyncCommand(vm).Execute(null);
+                        await dbm.SaveChangesAsync();
                     }
 
                     var lstNote = vm.Report.Notes.ToList<Note>();
@@ -274,7 +312,6 @@ public partial class Form_19 : BaseWindow<Form_19VM>
                     {
                         vm.Report.Notes.Remove(item);
                     }
-
                     if (vm.FormType is not "1.0" and not "2.0")
                     {
                         if (vm.FormType.Split('.')[0] == "1")
@@ -295,17 +332,21 @@ public partial class Form_19 : BaseWindow<Form_19VM>
                         vm.Report.OnPropertyChanged(nameof(vm.Report.ShortJurLicoRep));
                         vm.Report.OnPropertyChanged(nameof(vm.Report.OkpoRep));
                     }
-
                     break;
                 }
+            case "Отмена" or null:
+                {
+                    _isCloseConfirmed = false;
+                    return;
+                }
         }
+        desktop.MainWindow.WindowState = OwnerPrevState;
 
-        desktop.MainWindow.WindowState = WindowState.Normal;
-        if (flag)
+        if (_isCloseConfirmed)      //выход из обработчика события
         {
+            Closing -= OnStandardClosing;
             Close();
         }
-        args.Cancel = true;
     }
 
     #region CheckPeriod
@@ -315,7 +356,7 @@ public partial class Form_19 : BaseWindow<Form_19VM>
     /// </summary>
     /// <param name="vm">Модель открытого отчёта.</param>
     /// <returns>Сообщение о наличии пересечения.</returns>
-    private static async Task CheckPeriod(Form_19VM vm)
+    private async Task CheckPeriod(Form_19VM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
         if (vm.Report.FormNum_DB is "1.0" or "2.0") return;
@@ -348,7 +389,7 @@ public partial class Form_19 : BaseWindow<Form_19VM>
                             MinHeight = 170,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(desktop.MainWindow));
+                        .ShowDialog(this));
 
                     #endregion
 
@@ -367,7 +408,7 @@ public partial class Form_19 : BaseWindow<Form_19VM>
     /// </summary>
     /// <param name="vm">Модель открытого отчёта.</param>
     /// <returns>Сообщение с предложением удалить пустые строчки.</returns>
-    private static async Task RemoveEmptyForms(Form_19VM vm)
+    private async Task RemoveEmptyForms(Form_19VM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
         List<Form> formToDeleteList = [];
@@ -406,7 +447,7 @@ public partial class Form_19 : BaseWindow<Form_19VM>
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(desktop.MainWindow));
+                .ShowDialog(this));
 
             #endregion
 

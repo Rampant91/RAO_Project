@@ -414,7 +414,7 @@ public abstract partial class Form : IKey, IDataGridColumn
     {
         var strValue = Convert.ToString(value);
         return double.TryParse(strValue, out var doubleValue)
-            ? doubleValue.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
+            ? doubleValue.ToString("0.00######################################################e+00", CultureInfo.CreateSpecificCulture("ru-RU"))
             : strValue;
     }
 

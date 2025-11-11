@@ -63,6 +63,7 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                     case "1.1":
                     {
                         var form11Window = new Form_11(new Form_11VM(selectedReports));
+                        mainWindow.WindowState = WindowState.Minimized;
                         await form11Window.ShowDialog(mainWindow);
                         mainWindow.SelectedReports = tmp;
                         await selectedReports.Report_Collection.QuickSortAsync();
@@ -71,6 +72,7 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                     case "1.2":
                     {
                         var form11Window = new Form_12(new Form_12VM(selectedReports));
+                        mainWindow.WindowState = WindowState.Minimized;
                         await form11Window.ShowDialog(mainWindow);
                         mainWindow.SelectedReports = tmp;
                         await selectedReports.Report_Collection.QuickSortAsync();
@@ -79,6 +81,7 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                     case "1.3":
                     {
                         var form11Window = new Form_13(new Form_13VM(selectedReports));
+                        mainWindow.WindowState = WindowState.Minimized;
                         await form11Window.ShowDialog(mainWindow);
                         mainWindow.SelectedReports = tmp;
                         await selectedReports.Report_Collection.QuickSortAsync();
@@ -87,6 +90,7 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                     case "1.4":
                     {
                         var form11Window = new Form_14(new Form_14VM(selectedReports));
+                        mainWindow.WindowState = WindowState.Minimized;
                         await form11Window.ShowDialog(mainWindow);
                         mainWindow.SelectedReports = tmp;
                         await selectedReports.Report_Collection.QuickSortAsync();
@@ -95,6 +99,7 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                     case "1.5":
                     {
                         var form11Window = new Form_15(new Form_15VM(selectedReports));
+                        mainWindow.WindowState = WindowState.Minimized;
                         await form11Window.ShowDialog(mainWindow);
                         mainWindow.SelectedReports = tmp;
                         await selectedReports.Report_Collection.QuickSortAsync();
@@ -103,6 +108,7 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                     case "1.6":
                     {
                         var form11Window = new Form_16(new Form_16VM(selectedReports));
+                        mainWindow.WindowState = WindowState.Minimized;
                         await form11Window.ShowDialog(mainWindow);
                         mainWindow.SelectedReports = tmp;
                         await selectedReports.Report_Collection.QuickSortAsync();
@@ -111,6 +117,7 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                     case "1.7":
                     {
                         var form11Window = new Form_17(new Form_17VM(selectedReports));
+                        mainWindow.WindowState = WindowState.Minimized;
                         await form11Window.ShowDialog(mainWindow);
                         mainWindow.SelectedReports = tmp;
                         await selectedReports.Report_Collection.QuickSortAsync();
@@ -119,6 +126,7 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                     case "1.8":
                     {
                         var form11Window = new Form_18(new Form_18VM(selectedReports));
+                        mainWindow.WindowState = WindowState.Minimized;
                         await form11Window.ShowDialog(mainWindow);
                         mainWindow.SelectedReports = tmp;
                         await selectedReports.Report_Collection.QuickSortAsync();
@@ -127,6 +135,7 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                     case "1.9":
                     {
                         var form11Window = new Form_19(new Form_19VM(selectedReports));
+                        mainWindow.WindowState = WindowState.Minimized;
                         await form11Window.ShowDialog(mainWindow);
                         mainWindow.SelectedReports = tmp;
                         await selectedReports.Report_Collection.QuickSortAsync();

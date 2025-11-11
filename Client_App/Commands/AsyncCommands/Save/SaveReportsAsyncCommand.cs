@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.Interfaces.Logger;
 using Models.DBRealization;
-using Client_App.Resources;
 using Models.Collections;
 using System.Collections.Generic;
 using System.Linq;

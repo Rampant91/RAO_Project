@@ -148,7 +148,16 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                 .AsQueryable()
                 .FirstAsync(x => x.Id == repId, cancellationToken: cts.Token);
 
-            loadStatus = $"Загрузка отчёта {tmpRep.FormNum_DB}_{tmpRep.StartPeriod_DB}_{tmpRep.EndPeriod_DB}";
+            if (!string.IsNullOrEmpty(tmpRep.FormNum_DB))
+            {
+                loadStatus = tmpRep.FormNum_DB[0] switch
+                {
+                    '1' => $"Загрузка отчёта {tmpRep.FormNum_DB}_{tmpRep.StartPeriod_DB}_{tmpRep.EndPeriod_DB}",
+                    '2' => $"Загрузка отчёта {tmpRep.FormNum_DB}_{tmpRep.Year_DB}",
+                    _ => "Загрузка отчёта"
+                };
+            }
+
             progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
             //TODO

@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Client_App.Commands.AsyncCommands.CheckForm;
+using Client_App.Properties;
 using MessageBox.Avalonia.Enums;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
@@ -132,8 +133,9 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
 
         //TODO
         //Нужно переделать с использованием фабрики, но так, чтобы работала асинхронность (почему-то запрос к ДБ в ней выполняется синхронно)
+
         #region GetReportWithForm
-        
+
         var exportReport = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
@@ -162,8 +164,30 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
             .Include(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows41.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Notes.OrderBy(x => x.Order))
-            .FirstAsync(x => x.Id == repId, cancellationToken: cts.Token); 
-        
+            .FirstAsync(x => x.Id == repId, cancellationToken: cts.Token);
+
+        if (exportReport.Rows.Count is 0)
+        {
+            #region FailedToExportReportMessage
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+                MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = ButtonEnum.Ok,
+                        ContentTitle = "Выгрузка в .raodb",
+                        ContentHeader = "Ошибка",
+                        ContentMessage = "Не удалось выгрузить отчёт, поскольку в нём отсутствуют заполненные строчки.",
+                        MinWidth = 400,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    }).ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+
         #endregion
 
         #region Progress = 25
@@ -192,8 +216,8 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
 
         exportReport.Reports = orgWithExpForm;
 
-        //progressBarVM.SetProgressBar(28, "Проверка отчёта");
-        //await CheckForm(exportReport, cts, progressBar);
+        progressBarVM.SetProgressBar(28, "Проверка отчёта");
+        await CheckForm(exportReport, cts, progressBar);
 
         var filename = reportWithoutRows.Reports.Master_DB.FormNum_DB switch
         {
@@ -244,7 +268,7 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
                         .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                         {
                             ButtonDefinitions = ButtonEnum.Ok,
-                            ContentTitle = "Выгрузка в Excel",
+                            ContentTitle = "Выгрузка в .raodb",
                             ContentHeader = "Ошибка",
                             ContentMessage =
                                 "Не удалось сохранить файл по пути:" +
@@ -445,6 +469,15 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
                 "1.8" => CheckF18.Check_Total(exportReport.Reports, exportReport),
                 //"2.1" => await new CheckF21().AsyncExecute(exportReport),
                 //"2.2" => await new CheckF22().AsyncExecute(exportReport),
+                //"2.3" => await new CheckF23().AsyncExecute(exportReport),
+                //"2.4" => await new CheckF24().AsyncExecute(exportReport),
+                //"2.5" => await new CheckF25().AsyncExecute(exportReport),
+                //"2.6" => await new CheckF26().AsyncExecute(exportReport),
+                //"2.7" => await new CheckF27().AsyncExecute(exportReport),
+                //"2.8" => await new CheckF28().AsyncExecute(exportReport),
+                //"2.9" => await new CheckF29().AsyncExecute(exportReport),
+                //"2.10" => await new CheckF210().AsyncExecute(exportReport),
+                //"2.11" => await new CheckF211().AsyncExecute(exportReport),
                 _ => []
             });
         }
@@ -453,7 +486,9 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
             //ignored
         }
 
-        if (errorList.Any(x => x.IsCritical))
+        if (!errorList.Any(x => x.IsCritical)) return;
+
+        if (!Settings.Default.AppLaunchedInNorao)
         {
             #region ExportTerminatedDueToCriticalErrors
 
@@ -462,7 +497,7 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в .RAODB",
+                        ContentTitle = "Выгрузка в .raodb",
                         ContentHeader = "Ошибка",
                         ContentMessage = "Выгрузка отчёта невозможна из-за наличия в нём критических ошибок (выделены красным)." +
                                          $"{Environment.NewLine}Устраните ошибки и повторите операцию выгрузки.",
@@ -473,6 +508,35 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
 
             #endregion
 
+            await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(new ChangeOrCreateVM(exportReport.FormNum_DB, exportReport), errorList));
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+        else
+        {
+            #region ReportHasCriticalErrors
+
+            var answer = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions =
+                    [
+                        new ButtonDefinition { Name = "Да" },
+                        new ButtonDefinition { Name = "Отмена" }
+                    ],
+                    ContentTitle = "Выгрузка в .raodb",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"В отчёте присутствуют критические ошибки (выделены красным). " +
+                                     $"{Environment.NewLine}Всё равно выгрузить отчёт?",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            if (answer is "Да") return;
+            
             await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(new ChangeOrCreateVM(exportReport.FormNum_DB, exportReport), errorList));
 
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);

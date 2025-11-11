@@ -41,7 +41,8 @@ public class NewCheckForm : BaseWindow<CheckFormVM>
         {
             e.Row.Background = e.Row.DataContext switch
             {
-                CheckError { IsCritical: true } => Brushes.RosyBrown,
+                CheckError { IsCritical: true } => SolidColorBrush.Parse("#EADBDB"),
+                //Brushes.RosyBrown,
 
                 CheckError { IsCritical: false } => e.Row.GetIndex() % 2 == 0
                     ? Brushes.LightBlue

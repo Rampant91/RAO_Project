@@ -34,14 +34,15 @@ namespace Client_App.ViewModels;
 public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 {
     #region SelectedReportType
+
     private byte _selectedReportType = 1;
 
     public byte SelectedReportType
     {
-        get => (byte)(_selectedReportType);
+        get => _selectedReportType;
         set
         {
-            if (_selectedReportType != (byte)(value))
+            if (_selectedReportType != value)
             {
                 SelectedReports = null; // узко специализрованное решение: очищает выбранную организацию при переключении на другую панель
                 _selectedReportType = (byte)(value);
@@ -49,13 +50,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             }
         }
     }
-    public string SelectedReportTypeToString
-    {
-        get
-        {
-            return $"{_selectedReportType}.0";
-        }
-    }
+    public string SelectedReportTypeToString => $"{_selectedReportType}.0";
+
     #endregion
 
     #region Current_Db

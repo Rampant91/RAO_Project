@@ -639,7 +639,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
 
         return formNum switch
         {
-            "1.1" => await query.Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
+            "1.1" =>await query.Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
                 .Where(x => x.DBObservable != null)
                 .SelectMany(reps => reps.Report_Collection
                     .Where(rep => rep.FormNum_DB == "1.1")

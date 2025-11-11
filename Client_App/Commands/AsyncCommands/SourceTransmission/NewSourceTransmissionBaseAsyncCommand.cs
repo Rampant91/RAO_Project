@@ -87,8 +87,10 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     #endregion
                 };
                 var comparator = new CustomForm11ToForm15Comparer();
-                var isDuplicate = rep.Rows15
-                    .Any(currentForm => comparator.Compare(newForm15, currentForm) == 0);
+
+                var forms15Array = await db.form_15.Where(x => x.ReportId == rep.Id).ToArrayAsync();
+
+                var isDuplicate = forms15Array.Any(currentForm => comparator.Compare(newForm15, currentForm) == 0);
                 if (!isDuplicate)
                 {
                     db.form_15.Add(newForm15);
@@ -385,7 +387,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     Activity_DB = form11.Activity_DB,
                     Quantity_DB = form11.Quantity_DB,
                     CreationDate_DB = form11.CreationDate_DB,
-                    StatusRAO_DB = Reports.Master_DB.OkpoRep.Value,
+                    StatusRAO_DB = SelectedReports.Master_DB.OkpoRep.Value,
                     DocumentVid_DB = form11.DocumentVid_DB,
                     DocumentNumber_DB = form11.DocumentNumber_DB,
                     DocumentDate_DB = form11.DocumentDate_DB,
@@ -457,7 +459,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     OperationCode_DB = form12.OperationCode_DB,
                     OperationDate_DB = form12.OperationDate_DB,
                     CodeRAO_DB = "22511300522",
-                    StatusRAO_DB = Reports.Master_DB.OkpoRep.Value,
+                    StatusRAO_DB = SelectedReports.Master_DB.OkpoRep.Value,
                     Mass_DB = massTon,
                     QuantityOZIII_DB = "-",
                     MainRadionuclids_DB = "уран-238; торий-234; протактиний-234м; уран-234",
@@ -469,7 +471,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     DocumentVid_DB = form12.DocumentVid_DB,
                     DocumentNumber_DB = form12.DocumentNumber_DB,
                     DocumentDate_DB = form12.DocumentDate_DB,
-                    ProviderOrRecieverOKPO_DB = Reports.Master_DB.OkpoRep.Value,
+                    ProviderOrRecieverOKPO_DB = SelectedReports.Master_DB.OkpoRep.Value,
                     TransporterOKPO_DB = "-",
                     RefineOrSortRAOCode_DB = "-",
                     PackName_DB = form12.PackName_DB,
@@ -528,7 +530,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     OperationCode_DB = form13.OperationCode_DB,
                     OperationDate_DB = form13.OperationDate_DB,
                     CodeRAO_DB = codeRao,
-                    StatusRAO_DB = Reports.Master_DB.OkpoRep.Value,
+                    StatusRAO_DB = SelectedReports.Master_DB.OkpoRep.Value,
                     QuantityOZIII_DB = "-",
                     MainRadionuclids_DB = form13.Radionuclids_DB,
                     TritiumActivity_DB = activitiesDictionary["tritium"],
@@ -539,7 +541,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     DocumentVid_DB = form13.DocumentVid_DB,
                     DocumentNumber_DB = form13.DocumentNumber_DB,
                     DocumentDate_DB = form13.DocumentDate_DB,
-                    ProviderOrRecieverOKPO_DB = Reports.Master_DB.OkpoRep.Value,
+                    ProviderOrRecieverOKPO_DB = SelectedReports.Master_DB.OkpoRep.Value,
                     TransporterOKPO_DB = "-",
                     RefineOrSortRAOCode_DB = "-",
                     PackName_DB = form13.PackName_DB,
@@ -608,7 +610,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     OperationCode_DB = form14.OperationCode_DB,
                     OperationDate_DB = form14.OperationDate_DB,
                     CodeRAO_DB = codeRao,
-                    StatusRAO_DB = Reports.Master_DB.OkpoRep.Value,
+                    StatusRAO_DB = SelectedReports.Master_DB.OkpoRep.Value,
                     Volume_DB = form14.Volume_DB,
                     Mass_DB = massTon,
                     QuantityOZIII_DB = "-",
@@ -621,7 +623,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     DocumentVid_DB = form14.DocumentVid_DB,
                     DocumentNumber_DB = form14.DocumentNumber_DB,
                     DocumentDate_DB = form14.DocumentDate_DB,
-                    ProviderOrRecieverOKPO_DB = Reports.Master_DB.OkpoRep.Value,
+                    ProviderOrRecieverOKPO_DB = SelectedReports.Master_DB.OkpoRep.Value,
                     TransporterOKPO_DB = "-",
                     RefineOrSortRAOCode_DB = "-",
                     PackName_DB = form14.PackName_DB,

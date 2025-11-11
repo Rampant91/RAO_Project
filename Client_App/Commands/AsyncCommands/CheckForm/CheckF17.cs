@@ -76,8 +76,10 @@ public abstract class CheckF17 : CheckBase
         {
             List<int> packLines = [currentFormLine];
             currentFormLine++;
-            if (currentFormLine >= formsList.Count) break;
-            while (string.IsNullOrWhiteSpace(formsList[currentFormLine].PackType_DB) || formsList[currentFormLine].PackType_DB.Trim() == "-")
+
+            while (currentFormLine < formsList.Count
+                && (string.IsNullOrWhiteSpace(formsList[currentFormLine].PackType_DB)
+                    || formsList[currentFormLine].PackType_DB.Trim() == "-"))
             {
                 packLines.Add(currentFormLine);
                 currentFormLine++;
@@ -328,8 +330,10 @@ public abstract class CheckF17 : CheckBase
         var applicableOperationCodes = new[] { "12", "42" };
         var requiredNuclids = new[]
         {
-            "плутоний", "уран-233", "уран-235", "уран-238", "нептуний-237", "америций-241", 
-            "америций-243", "калифорний-252", "торий", "литий-6", "тритий"
+           "уран-230", "уран-231", "уран-232", "уран-233", "уран-234", "уран-235",
+           "уран-236", "уран-237", "уран-238", "уран-239", "уран-240",
+           "уран естественный", "уран обедненный", "уран обогащенный", "сумма нуклидов урана",
+           "америций-241",  "америций-243", "калифорний-252", "литий-6", "нептуний-237", "плутоний", "торий", "тритий"
         };
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var nuclids = rads.Split(';');
@@ -448,15 +452,39 @@ public abstract class CheckF17 : CheckBase
     private static List<CheckError> Check_004_non10(List<Form17> forms, Report rep, int line)
     {
         List<CheckError> result = new();
-        string[] nonApplicableOperationCodes = { "01", "10"  };
+        string[] nonApplicableOperationCodes = ["01", "10"];
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
-        var operationDate = ReplaceNullAndTrim(forms[line].OperationDate_DB); 
-        if (nonApplicableOperationCodes.Contains(operationCode)) return result;
-        var valid = rep is { StartPeriod_DB: not null, EndPeriod_DB: not null } 
-                     && DateOnly.TryParse(rep.StartPeriod_DB, out var pStart)
-                     && DateOnly.TryParse(rep.EndPeriod_DB, out var pEnd)
-                     && DateOnly.TryParse(operationDate, out var pMid)
-                     && pMid >= pStart && pMid <= pEnd;
+        var opDateStr = ReplaceNullAndTrim(forms[line].OperationDate_DB);
+        if (nonApplicableOperationCodes.Contains(operationCode)
+            || !(rep is { StartPeriod_DB: not null, EndPeriod_DB: not null }
+                 && DateOnly.TryParse(rep.StartPeriod_DB, out var pStart)
+                 && DateOnly.TryParse(rep.EndPeriod_DB, out var pEnd)
+                 && DateOnly.TryParse(opDateStr, out var opDate)))
+        {
+            return result;
+        }
+
+        var repCollection = rep.Reports.Report_Collection.ToList().FindAll(x => x.FormNum_DB == rep.FormNum_DB);
+        var repIndex = repCollection.IndexOf(rep);
+        var previousRepExist = repIndex + 1 < repCollection.Count;
+
+        if (opDate == pStart && previousRepExist)
+        {
+            result.Add(new CheckError
+            {
+                FormNum = "form_17",
+                Row = (line + 1).ToString(),
+                Column = "OperationDate_DB",
+                Value = opDateStr,
+                Message = "Дата операции не должна совпадать с датой начала периода, " +
+                          "если имеется хотя бы один более ранний отчёт по данной форме. " +
+                          "См. приказ №1/1623-П раздел 5.2.",
+                IsCritical = true
+            });
+            return result;
+        }
+
+        var valid = opDate > pStart && opDate <= pEnd;
         if (!valid)
         {
             result.Add(new CheckError
@@ -464,7 +492,7 @@ public abstract class CheckF17 : CheckBase
                 FormNum = "form_17",
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "OperationDate_DB",
-                Value = Convert.ToString(operationDate),
+                Value = Convert.ToString(opDateStr),
                 Message = "Дата операции не входит в отчетный период."
             });
         }
@@ -2112,8 +2140,10 @@ public abstract class CheckF17 : CheckBase
             {
                 var nuclears = new []
                 {
-                    "плутоний", "уран-233", "уран-235", "уран-238", "нептуний-237", "америций-241", 
-                    "америций-243", "калифорний-252", "торий", "литий-6", "тритий"
+                    "уран-230", "уран-231", "уран-232", "уран-233", "уран-234", "уран-235", 
+                    "уран-236", "уран-237", "уран-238", "уран-239", "уран-240", 
+                    "уран естественный", "уран обедненный", "уран обогащенный", "сумма нуклидов урана",
+                    "америций-241",  "америций-243", "калифорний-252", "литий-6", "нептуний-237", "плутоний", "торий", "тритий"
                 };
                 var operations12 = new [] { "12" };
                 var operations11 = new [] { "11", "13", "14", "16", "41" };
@@ -2711,7 +2741,8 @@ public abstract class CheckF17 : CheckBase
         {
             var statusRaoDB = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
             if (statusRaoDB is "" or "-") continue;
-            var valid = repOKPOList.Contains(statusRaoDB);
+            var valid = repOKPOList.Contains(statusRaoDB) 
+                || (operationCode == "12" && statusRaoDB == "2");
             if (!valid)
             {
                 result.Add(new CheckError

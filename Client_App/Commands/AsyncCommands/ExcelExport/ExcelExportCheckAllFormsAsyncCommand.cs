@@ -134,7 +134,18 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
                     "1.6" => CheckF16.Check_Total(rep.Reports, rep),
                     "1.7" => CheckF17.Check_Total(rep.Reports, rep),
                     "1.8" => CheckF18.Check_Total(rep.Reports, rep),
-                    _ => throw new Exception()
+                    "2.1" => CheckF18.Check_Total(rep.Reports, rep),
+                    "2.2" => CheckF18.Check_Total(rep.Reports, rep),
+                    "2.3" => CheckF18.Check_Total(rep.Reports, rep),
+                    "2.4" => CheckF18.Check_Total(rep.Reports, rep),
+                    "2.5" => CheckF18.Check_Total(rep.Reports, rep),
+                    "2.6" => CheckF18.Check_Total(rep.Reports, rep),
+                    "2.7" => CheckF18.Check_Total(rep.Reports, rep),
+                    "2.8" => CheckF18.Check_Total(rep.Reports, rep),
+                    "2.9" => CheckF18.Check_Total(rep.Reports, rep),
+                    "2.10" => CheckF18.Check_Total(rep.Reports, rep),
+                    "2.11" => CheckF18.Check_Total(rep.Reports, rep),
+                    _ => []
                 };
             }
             catch (Exception ex)
