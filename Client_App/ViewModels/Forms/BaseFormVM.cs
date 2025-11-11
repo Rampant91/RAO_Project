@@ -318,6 +318,15 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
+    private ExecutorDataControlVM _executorDataControlVM;
+    public ExecutorDataControlVM ExecutorDataControlVM
+    {
+        get
+        {
+            return _executorDataControlVM;
+        }
+    }
+
     private SelectReportPopupVM _selectReportVM;
     public SelectReportPopupVM SelectReportPopupVM
     {
@@ -330,7 +339,6 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             _selectReportVM = value;
         }
     }
-
     #endregion
 
     #region Constructors
@@ -354,9 +362,14 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         NoteList = Report.Notes;
 
         SubscribeSelectedForms(_selectedForms);
-        _selectReportVM = new SelectReportPopupVM(this);
+        InitializeUserControls();
     }
 
+    public void InitializeUserControls()
+    {
+        _selectReportVM = new SelectReportPopupVM(this);
+        _executorDataControlVM = new ExecutorDataControlVM(this.Report);
+    }
     #endregion
 
     #region Commands
@@ -380,9 +393,9 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand CopyNotes => new NewCopyNotesAsyncCommand();
     public ICommand PasteNotes => new NewPasteNotesAsyncCommand(this);
     public ICommand DeleteNotes => new NewDeleteNoteAsyncCommand(this);
-    public ICommand SwitchToSelectedReport => new SwitchToSelectedReportAsyncCommand(this);
-
+    public ICommand SetDefaultColumnWidth => new SetDefaultColumnWidthAsyncCommand();
     #endregion
+
 
     #region SelectionChangeWiring
 

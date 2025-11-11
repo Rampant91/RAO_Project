@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Client_App.Behaviors;
 
-public class NumericUpDownDigitValidationBehavior : Behavior<NumericUpDown>
+public class TextBoxDigitValidationBehavior : Behavior<TextBox>
 {
     protected override void OnAttached()
     {

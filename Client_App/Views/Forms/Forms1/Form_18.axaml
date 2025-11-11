@@ -57,30 +57,24 @@
 				<Border Classes="borderContainer">
 					<Grid Margin="5" RowDefinitions="*,*,*,*,*">
 
-						<Grid ColumnDefinitions="*,*,*" Grid.Row="0">
-							<TextBlock Grid.Column="0"
-									   Margin="5,11"
-									   Text="Дата окончания предыдущего отчетного периода:"/>
-							<TextBox Grid.Column="1"
-									 Text="{Binding Report.StartPeriod.Value}"
-									 MinWidth="83"
-									 Watermark="дд.мм.гггг"/>
-							<CalendarDatePicker	Classes="buttonOnly"
-								                Grid.Column="2"
-								                SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource DateConverter}}"/>
+						<Grid ColumnDefinitions="*,*,*"  Grid.Row="0">
+							<TextBlock Grid.Column="0" Margin="5" >Дата окончания предыдущего отчетного периода:</TextBlock>
+							<TextBox Grid.Column="1" Text="{Binding Report.StartPeriod.Value}"/>
+							<CalendarDatePicker Classes="buttonOnly"  
+								Grid.Column="2"
+								SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource DateConverter}}"
+								Watermark="дд.мм.гггг"/>
 						</Grid>
 
 						<Grid ColumnDefinitions="*,*,*"  Grid.Row="1">
-							<TextBlock Grid.Column="0"
-									   Margin="5,13"
-									   Text="Дата окончания настоящего отчетного периода:"/>
-							<TextBox Grid.Column="1"
-									 Margin="11,3,0,0"
-									 Text="{Binding Report.EndPeriod.Value}"
-									 Watermark="дд.мм.гггг"/>
-							<CalendarDatePicker Classes="buttonOnly"
-								                Grid.Column="2"
-								                SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource DateConverter}}"								/>
+							<TextBlock Grid.Column="0" Margin="5" >Дата окончания настоящего отчетного периода:</TextBlock>
+							<TextBox Grid.Column="1" 
+								Margin="10.5,3,0,0"
+								Text="{Binding Report.EndPeriod.Value}"/>
+							<CalendarDatePicker Classes="buttonOnly" 
+								Grid.Column="2"
+								SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource DateConverter}}"
+								Watermark="дд.мм.гггг"/>
 						</Grid>
 
 						<StackPanel  Orientation="Horizontal" Grid.Row="2">
@@ -98,55 +92,25 @@
 				</Border>
 
 				<Border Classes="borderContainer">
-					<Grid Margin="5" RowDefinitions ="*,*,*,*,*" ColumnDefinitions="*,2*">
-						<TextBlock Grid.Row="0"
-								   Grid.Column="0"
-								   Margin="5"
-								   Text="ФИО исполнителя:"/>
-						<TextBox Grid.Row="0"
-								 Grid.Column="1"
-								 Margin="5"
-								 Text="{Binding Path=Report.FIOexecutor.Value}"/>
-						<TextBlock Grid.Row="1"
-								   Grid.Column="0"
-								   Margin="5"
-								   Text="Должность:"/>
-						<TextBox Grid.Row="1"
-								 Grid.Column="1"
-								 Margin="5"
-								Text="{Binding Path=Report.GradeExecutor.Value}"/>
-						<TextBlock Grid.Row="2"
-								   Grid.Column="0"
-								   Margin="5"
-								   Text="Телефон:"/>
-						<TextBox Grid.Row="2"
-								 Grid.Column="1"
-								 Margin="5"
-								 Text="{Binding Path=Report.ExecPhone.Value}"/>
-						<TextBlock Grid.Row="3"
-								   Grid.Column="0"
-								   Margin="5"
-								   Text="Электронная почта:"/>
-						<TextBox Grid.Row="3"
-								 Grid.Column="1"
-								 Margin="5"
-								 Text="{Binding Path=Report.ExecEmail.Value}"/>
-						<Button Grid.Row="4"
-								Grid.Column="0"
-								Grid.ColumnSpan="2"
-								Margin="5"
-								Click="CopyExecutorData_Click"
-								Content="Скопировать данные предыдущей формы"/>
-					</Grid>
+					<controls:ExecutorDataControl
+						DataContext="{Binding ExecutorDataControlVM}"></controls:ExecutorDataControl>
 				</Border>
+				
 				<Border Classes="borderContainer">
-					<Grid Margin="5" RowDefinitions="Auto,Auto">
+					<Grid Margin="5" RowDefinitions="Auto,Auto,Auto">
+
+
 						<StackPanel Grid.Row="1" Orientation="Horizontal">
 							<TextBlock Margin="5" >Автозаполнение:</TextBlock>
 							<CheckBox Margin="5" IsChecked="{Binding IsAutoReplaceEnabled}"></CheckBox>
 						</StackPanel>
+						<Button Grid.Row="2" Margin="5"
+								Command="{Binding SetDefaultColumnWidth}"
+                                CommandParameter="{Binding ElementName=dataGrid}"
+								Content="Выставить ширину колонок по умолчанию"/>
 					</Grid>
 				</Border>
+
 			</WrapPanel>
 		</Expander>
 
@@ -194,7 +158,7 @@
                         <MenuItem Header="Очистить строчки"
                                   Command="{Binding DeleteDataInRows}"
                                   CommandParameter="{Binding SelectedForms}"
-                                  InputGesture="Ctrl+K"
+                                  InputGesture="Ctrl+U"
                                   IsVisible="{Binding AnyRowSelected}"/>
                     </ContextMenu>
 				</Grid.ContextMenu>
@@ -209,8 +173,8 @@
 
 					<!--Первый уровень заголовков-->
 
-					<Border Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" BorderThickness="1,1,1,0">
-						<TextBlock>№ п/п</TextBlock>
+					<Border Grid.Column="0" Grid.Row="0">
+						<TextBlock></TextBlock>
 					</Border>
 					<Border Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
 						<TextBlock>Сведения об операции</TextBlock>
@@ -230,164 +194,94 @@
 					<Border Grid.Column="17" Grid.Row="0" Grid.ColumnSpan="9">
 						<TextBlock>Характеристика ЖРО</TextBlock>
 					</Border>
-					<Border Grid.Column="26" Grid.Row="0" Grid.RowSpan="3" BorderThickness="1,1,1,0">
-						<TextBlock>Субсидия, %</TextBlock>
+					<Border Grid.Column="26" Grid.Row="0">
+						<TextBlock></TextBlock>
 					</Border>
-					<Border Grid.Column="27" Grid.Row="0" Grid.RowSpan="3" BorderThickness="1,1,1,0">
-						<TextBlock>Номер мероприятия ФЦП</TextBlock>
+					<Border Grid.Column="27" Grid.Row="0">
+						<TextBlock></TextBlock>
 					</Border>
 					<Border Grid.Column="28" Grid.Row="0">
 						<TextBlock>Договор</TextBlock>
 					</Border>
-
 					<!--Второй уровень заголовков-->
 
-					<Border Grid.Column="0" Grid.Row="1" BorderThickness="1,0,1,0">
-						<TextBlock></TextBlock>
-					</Border>
-					<Border Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-						<TextBlock>код</TextBlock>
-					</Border>
-					<Border Grid.Column="2" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-						<TextBlock>дата</TextBlock>
-					</Border>
-					<Border Grid.Column="3" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-						<TextBlock>индивидуальный номер (идентификационный код) партии ЖРО</TextBlock>
-					</Border>
-					<Border Grid.Column="4" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-						<TextBlock>номер паспорта</TextBlock>
-					</Border>
-					<Border Grid.Column="5" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-						<TextBlock>объем, куб. м</TextBlock>
-					</Border>
-					<Border Grid.Column="6" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-						<TextBlock>масса, т</TextBlock>
-					</Border>
-					<Border Grid.Column="7" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-						<TextBlock>солесодержание, г/л</TextBlock>
-					</Border>
 					<Border Grid.Column="8" Grid.Row="1" Grid.ColumnSpan="2">
-						<TextBlock>радионуклидный состав</TextBlock>
-					</Border>
-					<Border Grid.Column="10" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-						<TextBlock>вид</TextBlock>
-					</Border>
-					<Border Grid.Column="11" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-						<TextBlock>номер</TextBlock>
-					</Border>
-					<Border Grid.Column="12" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-						<TextBlock>дата</TextBlock>
-					</Border>
-					<Border Grid.Column="13" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-						<TextBlock>поставщика или получателя</TextBlock>
-					</Border>
-					<Border Grid.Column="14" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-						<TextBlock>перевозчика</TextBlock>
-					</Border>
-					<Border Grid.Column="15" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-						<TextBlock>наименование</TextBlock>
-					</Border>
-					<Border Grid.Column="16" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-						<TextBlock>код</TextBlock>
-					</Border>
-					<Border Grid.Column="17" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-						<TextBlock>код</TextBlock>
-					</Border>
-					<Border Grid.Column="18" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-						<TextBlock>статус</TextBlock>
-					</Border>
-					<Border Grid.Column="19" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-						<TextBlock>объем, куб. м</TextBlock>
-					</Border>
-					<Border Grid.Column="20" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-						<TextBlock>масса, т</TextBlock>
+						<TextBlock>Радионуклидный состав</TextBlock>
 					</Border>
 					<Border Grid.Column="21" Grid.Row="1" Grid.ColumnSpan="4">
-						<TextBlock>суммарная активность, Бк</TextBlock>
+						<TextBlock>Суммарная активность, Бк</TextBlock>
 					</Border>
-					<Border Grid.Column="25" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-						<TextBlock>код переработки/сортировки РАО</TextBlock>
-					</Border>
-					<Border Grid.Column="26" Grid.Row="1" BorderThickness="1,0,1,0">
-						<TextBlock></TextBlock>
-					</Border>
-					<Border Grid.Column="27" Grid.Row="1" BorderThickness="1,0,1,0">
-						<TextBlock></TextBlock>
-					</Border>
-					<Border Grid.Column="28" Grid.Row="1" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-						<TextBlock>номер</TextBlock>
-					</Border>
-
+					
 					<!--Третий уровень заголовков-->
 
-					<Border Grid.Column="0" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="0" Grid.Row="0" Grid.RowSpan="3">
+						<TextBlock>№ п/п</TextBlock>
 					</Border>
-					<Border Grid.Column="1" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="1" Grid.Row="1" Grid.RowSpan="2">
+						<TextBlock>код</TextBlock>
 					</Border>
-					<Border Grid.Column="2" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="2" Grid.Row="1" Grid.RowSpan="2">
+						<TextBlock>дата</TextBlock>
 					</Border>
-					<Border Grid.Column="3" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="3" Grid.Row="1" Grid.RowSpan="2">
+						<TextBlock>индивидуальный номер (идентификационный код) партии ЖРО</TextBlock>
 					</Border>
-					<Border Grid.Column="4" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="4" Grid.Row="1" Grid.RowSpan="2">
+						<TextBlock>номер паспорта</TextBlock>
 					</Border>
-					<Border Grid.Column="5" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="5" Grid.Row="1" Grid.RowSpan="2">
+						<TextBlock>объем, куб. м</TextBlock>
 					</Border>
-					<Border Grid.Column="6" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="6" Grid.Row="1" Grid.RowSpan="2">
+						<TextBlock>масса, т</TextBlock>
 					</Border>
-					<Border Grid.Column="7" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="7" Grid.Row="1" Grid.RowSpan="2">
+						<TextBlock>солесодержание, г/л</TextBlock>
 					</Border>
 					<Border Grid.Column="8" Grid.Row="2">
 						<TextBlock>наименование радионуклида</TextBlock>
 					</Border>
 					<Border Grid.Column="9" Grid.Row="2">
-						<TextBlock>удельная активность, Бк/г</TextBlock>
+						<TextBlock>удельная активность, БК/г</TextBlock>
 					</Border>
-					<Border Grid.Column="10" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="10" Grid.Row="1" Grid.RowSpan="2">
+						<TextBlock>вид</TextBlock>
 					</Border>
-					<Border Grid.Column="11" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="11" Grid.Row="1" Grid.RowSpan="2">
+						<TextBlock>номер</TextBlock>
 					</Border>
-					<Border Grid.Column="12" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="12" Grid.Row="1" Grid.RowSpan="2">
+						<TextBlock>дата</TextBlock>
 					</Border>
-					<Border Grid.Column="13" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="13" Grid.Row="1" Grid.RowSpan="2">
+						<TextBlock>поставщика или получателя</TextBlock>
 					</Border>
-					<Border Grid.Column="14" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="14" Grid.Row="1" Grid.RowSpan="2">
+						<TextBlock>перевозчика</TextBlock>
 					</Border>
-					<Border Grid.Column="15" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="15" Grid.Row="1" Grid.RowSpan="2">
+						<TextBlock>наименование</TextBlock>
 					</Border>
-					<Border Grid.Column="16" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="16" Grid.Row="1" Grid.RowSpan="2">
+						<TextBlock>код</TextBlock>
 					</Border>
-					<Border Grid.Column="17" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="17" Grid.Row="1" Grid.RowSpan="2">
+						<TextBlock>код</TextBlock>
 					</Border>
-					<Border Grid.Column="18" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="18" Grid.Row="1" Grid.RowSpan="2">
+						<TextBlock>статус</TextBlock>
 					</Border>
-					<Border Grid.Column="19" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="19" Grid.Row="1" Grid.RowSpan="2">
+						<TextBlock>объем, куб. м</TextBlock>
 					</Border>
-					<Border Grid.Column="20" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="20" Grid.Row="1" Grid.RowSpan="2">
+						<TextBlock>масса, т</TextBlock>
 					</Border>
 					<Border Grid.Column="21" Grid.Row="2">
 						<TextBlock>тритий</TextBlock>
 					</Border>
 					<Border Grid.Column="22" Grid.Row="2">
-						<TextBlock>бета-, гамма-излучающие радионуклиды(исключая тритий)</TextBlock>
+						<TextBlock>бета-, гамма-излучающие радионуклиды (исключая тритий)</TextBlock>
 					</Border>
 					<Border Grid.Column="23" Grid.Row="2">
 						<TextBlock>альфа-излучающие радионуклиды (исключая трансурановые)</TextBlock>
@@ -395,17 +289,17 @@
 					<Border Grid.Column="24" Grid.Row="2">
 						<TextBlock>трансурановые радионуклиды</TextBlock>
 					</Border>
-					<Border Grid.Column="25" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="25" Grid.Row="1" Grid.RowSpan="2">
+						<TextBlock>код переработки/сортировки РАО</TextBlock>
 					</Border>
-					<Border Grid.Column="26" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="26" Grid.Row="0" Grid.RowSpan="3">
+						<TextBlock>Субсидия, %</TextBlock>
 					</Border>
-					<Border Grid.Column="27" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="27" Grid.Row="0" Grid.RowSpan="3">
+						<TextBlock>Номер мероприятия ФЦП</TextBlock>
 					</Border>
-					<Border Grid.Column="28" Grid.Row="2" BorderThickness="1,0,1,1">
-						<TextBlock></TextBlock>
+					<Border Grid.Column="28" Grid.Row="0" Grid.RowSpan="3">
+						<TextBlock>номер</TextBlock>
 					</Border>
 				</Grid>
 
@@ -416,14 +310,14 @@
 					x:Name="dataGrid"
 					Items="{Binding FormList}"
 					SelectedItem="{Binding SelectedForm}"
-					ColumnWidth="125">
-
-                    <interactivity:Interaction.Behaviors>
-						<local:DataGridPointerBehavior/>
+					ColumnWidth ="125">
+					<interactivity:Interaction.Behaviors>
 						<local:DataGridColumnWidthLoadBehavior FormNum="1.8"/>
+						<local:DataGridPointerBehavior/>
 						<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
 						<local:DeselectDataGridOnClickOutsideBehavior/>
 						<local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}"/>
+						<local:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}"/>
 					</interactivity:Interaction.Behaviors>
 
 					<DataGrid.Columns>
@@ -437,6 +331,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="1"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -449,6 +344,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="2"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -466,6 +362,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="3"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -488,6 +385,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="4"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -505,6 +403,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="5"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -522,6 +421,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="6"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -539,6 +439,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="7"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -556,6 +457,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="8"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -573,6 +475,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="9"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -590,6 +493,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="10"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -607,6 +511,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="11"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -624,6 +529,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="12"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -641,6 +547,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="13"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -663,6 +570,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="14"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -680,6 +588,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="15"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -697,6 +606,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="16"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -713,6 +623,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="17"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -730,6 +641,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="18"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -747,6 +659,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="19"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -764,6 +677,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="20"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -781,6 +695,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="21"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -798,6 +713,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="22"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -815,6 +731,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="23"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -832,6 +749,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="24"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -849,6 +767,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="25"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -866,6 +785,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="26"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -883,6 +803,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="27"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -900,6 +821,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="28"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -917,6 +839,7 @@
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto">
 											<TextBlock Grid.Column="0" Text="29"/>
+											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
@@ -927,74 +850,45 @@
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
-						
 					</DataGrid.Columns>
 				</DataGrid>
 			</Grid>
 		</ScrollViewer>
 
-		<Border Grid.Row="2" 
-				Classes="pageControlContainer">
+		<Border Grid.Row="2" Classes="pageControlContainer">
 			<Grid RowDefinitions="Auto,Auto"
 				  ColumnDefinitions="Auto,Auto,Auto,Auto">
 				<TextBlock Text="Текущая страница"
-						   Grid.Row="0" 
-						   Grid.Column="0" 
-						   Margin="5"/>
-				
-				<NumericUpDown Value="{Binding CurrentPage}" 
-							   Increment="-1"
-							   Grid.Row="0" 
-							   Grid.Column="1" 
-							   Margin="5">
-					<interactivity:Interaction.Behaviors>
-						<local:NumericUpDownDigitValidationBehavior/>
-					</interactivity:Interaction.Behaviors>
-				</NumericUpDown>
-				
+					Grid.Row="0" Grid.Column="0" Margin="5"/>
+				<controls:NumericLeftRight
+					Grid.Row="0" Grid.Column="1" Margin="5"
+					Value="{Binding CurrentPage}"
+					Minimum="1"/>
 				<TextBlock Text ="Кол-во страниц:"
-						   Grid.Row="0" 
-						   Grid.Column="2"
-						   Margin="5"/>
+					Grid.Row="0" Grid.Column="2" Margin="5"/>
 				<TextBlock Text="{Binding TotalPages}"
-						   Grid.Row="0" 
-						   Grid.Column="3"
-						   Margin="5"/>
+					Grid.Row="0" Grid.Column="3" Margin="5"/>
 				<TextBlock Text="Кол-во строчек на странице"
-						   Grid.Row="1" 
-						   Grid.Column="0" 
-						   Margin="5"/>
-				
-				<NumericUpDown Value="{Binding RowCount}" 
-							   Minimum="1"
-							   Grid.Row="1" 
-							   Grid.Column="1" 
-							   Margin="5">
-					<interactivity:Interaction.Behaviors>
-						<local:NumericUpDownDigitValidationBehavior/>
-					</interactivity:Interaction.Behaviors>
-				</NumericUpDown>
+					Grid.Row="1" Grid.Column="0" Margin="5"/>
+				<controls:NumericLeftRight
+					Grid.Row="1" Grid.Column="1" Margin="5"
+					Value="{Binding RowCount}"
+					Minimum="1"/>
 
 				<TextBlock Text="Всего строчек:"
-						   Grid.Row="1" 
-						   Grid.Column="2"
-						   Margin="5"/>
+					Grid.Row="1" Grid.Column="2" Margin="5"/>
 				<TextBlock Text="{Binding TotalRows}"
-						   Grid.Row="1"
-						   Grid.Column="3" 
-						   Margin="5"/>
+					Grid.Row="1" Grid.Column="3" Margin="5"/>
 			</Grid>
 		</Border>
-		
 		<Expander Grid.Row ="3"
 				  IsExpanded="True"
 				  ExpandDirection="Up" 
                   Header="Скрыть/Раскрыть нижнюю панель">
             <Border Classes="notesContainer">
-				<StackPanel>
-					<StackPanel.ContextMenu>
-						<ContextMenu x:CompileBindings="True"
-                                     x:DataType="vm:Form_18VM">
+				<Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto">
+					<Grid.ContextMenu>
+						<ContextMenu>
 							<MenuItem Header="Добавить строку"
 									  Command="{Binding AddNote}"/>
 							<MenuItem Header="Добавить N строк"
@@ -1008,15 +902,15 @@
 									  Command="{Binding DeleteNotes}"
 									  CommandParameter="{Binding SelectedNotes}"/>
 						</ContextMenu>
-					</StackPanel.ContextMenu>
-					<TextBlock Margin="5">Примечания</TextBlock>
-
-					<DataGrid Classes="notesTable"
+					</Grid.ContextMenu>
+					<TextBlock Grid.Row="0" Margin="5">Примечания</TextBlock>
+					<DataGrid Grid.Row="1" Classes="notesTable"
 							  x:CompileBindings="True"
 							  Items="{Binding NoteList}"
 							  SelectedItem="{Binding SelectedNote}">
 
 						<interactivity:Interaction.Behaviors>
+							<local:DataGridColumnWidthLoadBehavior FormNum="notes"/>
 							<local:DataGridPointerBehavior/>
 							<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
 						</interactivity:Interaction.Behaviors>
@@ -1048,7 +942,7 @@
 
 						</DataGrid.Columns>
 					</DataGrid>
-				</StackPanel>
+				</Grid>
 			</Border>
 		</Expander>
 	</Grid>

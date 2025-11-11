@@ -97,57 +97,24 @@
 				</Border>
 
 				<Border Classes="borderContainer">
-					<Grid Margin="5" RowDefinitions ="*,*,*,*,*" ColumnDefinitions="*,2*">
-						<TextBlock Grid.Row="0"
-								   Grid.Column="0"
-								   Margin="5"
-								   Text="ФИО исполнителя:"/>
-						<TextBox Grid.Row="0"
-								 Grid.Column="1"
-								 Margin="5"
-								 Text="{Binding Path=Report.FIOexecutor.Value}">
-							</TextBox>
-						<TextBlock Grid.Row="1"
-								   Grid.Column="0"
-								   Margin="5"
-								   Text="Должность:"/>
-						<TextBox Grid.Row="1"
-								 Grid.Column="1"
-								 Margin="5"
-								Text="{Binding Path=Report.GradeExecutor.Value}"/>
-						<TextBlock Grid.Row="2"
-								   Grid.Column="0"
-								   Margin="5"
-								   Text="Телефон:"/>
-						<TextBox Grid.Row="2"
-								 Grid.Column="1"
-								 Margin="5"
-								 Text="{Binding Path=Report.ExecPhone.Value}"/>
-						<TextBlock Grid.Row="3"
-								   Grid.Column="0"
-								   Margin="5"
-								   Text="Электронная почта:"/>
-						<TextBox Grid.Row="3"
-								 Grid.Column="1"
-								 Margin="5"
-								 Text="{Binding Path=Report.ExecEmail.Value}"/>
-						<Button Grid.Row="4"
-								Grid.Column="0"
-								Grid.ColumnSpan="2"
-								Margin="5"
-								Click="CopyExecutorData_Click"
-								Content="Скопировать данные предыдущей формы"/>
-					</Grid>
+					<controls:ExecutorDataControl
+						DataContext="{Binding ExecutorDataControlVM}"></controls:ExecutorDataControl>
 				</Border>
+				
 				<Border Classes="borderContainer">
-					<Grid Margin="5" RowDefinitions="Auto,Auto">
-
+					<Grid Margin="5" RowDefinitions="Auto,Auto,Auto">
+						
 						<Button Grid.Row="0" Command="{Binding SourceTransmissionAll}"> Перевести все РВ в РАО</Button>
 
 						<StackPanel Grid.Row="1" Orientation="Horizontal">
 							<TextBlock Margin="5" >Автозаполнение:</TextBlock>
 							<CheckBox Margin="5" IsChecked="{Binding IsAutoReplaceEnabled}"></CheckBox>
 						</StackPanel>
+
+						<Button Grid.Row="2" Margin="5" 
+								Command="{Binding SetDefaultColumnWidth}" 
+                                CommandParameter="{Binding ElementName=dataGrid}"  
+								Content="Выставить ширину колонок по умолчанию"/>
 					</Grid>
 				</Border>
 
@@ -356,6 +323,8 @@
 						<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
 						<local:DeselectDataGridOnClickOutsideBehavior/>
                         <local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}"/>
+						<local:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}"/>
+                    
 					</interactivity:Interaction.Behaviors>
 
 					<DataGrid.Columns>
@@ -781,20 +750,11 @@
 			<Grid RowDefinitions="Auto,Auto"
 				  ColumnDefinitions="Auto,Auto,Auto,Auto">
 				<TextBlock Text="Текущая страница"
-						   Grid.Row="0"
-						   Grid.Column="0"
-						   Margin="5"/>
-
-				<NumericUpDown Value="{Binding CurrentPage}"
-							   Increment="-1"
-							   Grid.Row="0"
-							   Grid.Column="1"
-							   Margin="5">
-					<interactivity:Interaction.Behaviors>
-						<local:NumericUpDownDigitValidationBehavior/>
-					</interactivity:Interaction.Behaviors>
-				</NumericUpDown>
-
+					Grid.Row="0" Grid.Column="0" Margin="5"/>
+				<controls:NumericLeftRight 
+					Grid.Row="0" Grid.Column="1" Margin="5"
+					Value="{Binding CurrentPage}" 
+					Minimum="1"/>
 				<TextBlock Text ="Кол-во страниц:"
 						   Grid.Row="0"
 						   Grid.Column="2"
@@ -804,19 +764,11 @@
 						   Grid.Column="3"
 						   Margin="5"/>
 				<TextBlock Text="Кол-во строчек на странице"
-						   Grid.Row="1"
-						   Grid.Column="0"
-						   Margin="5"/>
-
-				<NumericUpDown Value="{Binding RowCount}"
-							   Minimum="1"
-							   Grid.Row="1"
-							   Grid.Column="1"
-							   Margin="5">
-					<interactivity:Interaction.Behaviors>
-						<local:NumericUpDownDigitValidationBehavior/>
-					</interactivity:Interaction.Behaviors>
-				</NumericUpDown>
+					Grid.Row="1" Grid.Column="0" Margin="5"/>
+				<controls:NumericLeftRight 
+					Grid.Row="1" Grid.Column="1" Margin="5"
+					Value="{Binding RowCount}" 
+					Minimum="1"/>
 
 				<TextBlock Text="Всего строчек:"
 						   Grid.Row="1"
@@ -833,9 +785,9 @@
 				  IsExpanded="True"
 				  ExpandDirection="Up"
                   Header="Скрыть/Раскрыть нижнюю панель">
-			<Border Classes="notesContainer">
-				<StackPanel>
-					<StackPanel.ContextMenu>
+            <Border Classes="notesContainer">
+				<Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto">
+					<Grid.ContextMenu>
 						<ContextMenu>
 							<MenuItem Header="Добавить строку"
 									  Command="{Binding AddNote}"/>
@@ -850,15 +802,17 @@
 									  Command="{Binding DeleteNotes}"
 									  CommandParameter="{Binding SelectedNotes}"/>
 						</ContextMenu>
-					</StackPanel.ContextMenu>
-					<TextBlock Margin="5">Примечания</TextBlock>
-					<DataGrid x:Name="notesTable"
+					</Grid.ContextMenu>
+					<TextBlock Grid.Row="0" Margin="5">Примечания</TextBlock>
+					<DataGrid Grid.Row="1" 
+							  x:Name="notesTable"
 							  Classes="notesTable"
 							  x:CompileBindings="True"
 							  Items="{Binding NoteList}"
 							  SelectedItem="{Binding SelectedNote}">
-
+						
 						<interactivity:Interaction.Behaviors>
+							<local:DataGridColumnWidthLoadBehavior FormNum="notes"/>
 							<local:DataGridPointerBehavior/>
 							<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}"/>
 						</interactivity:Interaction.Behaviors>
@@ -881,7 +835,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 
-							<DataGridTemplateColumn Header="Пояснения" Width="*">
+							<DataGridTemplateColumn Header="Пояснения" Width="250">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate x:DataType="forms:Note">
 										<TextBox Text="{Binding Comment.Value, Mode=TwoWay}"/>
@@ -891,7 +845,7 @@
 
 						</DataGrid.Columns>
 					</DataGrid>
-				</StackPanel>
+				</Grid>
 			</Border>
 		</Expander>
 	</Grid>

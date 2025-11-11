@@ -1,0 +1,24 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:local="using:Client_App.Behaviors"
+			 xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Client_App.Controls.NumericLeftRight">
+	<Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto">
+		<Button Grid.Column="0" 
+					  Classes="DecreasePart" 
+					  Command="{Binding Decrease, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+					  Content="❮" />
+		<TextBox Grid.Column="1" Text="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}}">
+			<interactivity:Interaction.Behaviors>
+				<local:TextBoxDigitValidationBehavior/>
+			</interactivity:Interaction.Behaviors>
+		</TextBox>
+		<Button Grid.Column="2" 
+					  Classes="IncreasePart" 
+					  Command="{Binding Increase, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+					  Content="❯" />
+	</Grid>
+</UserControl>
