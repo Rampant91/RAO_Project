@@ -637,14 +637,15 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 {
                     #region BindData_27
 
-                        impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G3"].Value);
-                        impRep.PermissionNumber27_DB = Convert.ToString(worksheet1.Cells["G4"].Value);
-                        impRep.ValidBegin27_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
-                        impRep.ValidThru27_DB = Convert.ToString(worksheet1.Cells["J5"].Value);
-                        impRep.PermissionDocumentName27_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
-                        impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
+                    impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G3"].Value);
+                    impRep.PermissionNumber27_DB = Convert.ToString(worksheet1.Cells["G4"].Value);
+                    impRep.PermissionIssueDate27_DB = Convert.ToString(worksheet1.Cells["J4"].Value);
+                    impRep.ValidBegin27_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
+                    impRep.ValidThru27_DB = Convert.ToString(worksheet1.Cells["J5"].Value);
+                    impRep.PermissionDocumentName27_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
+                    impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
 
-                        #endregion
+                    #endregion
                 
                     break;
                 }
@@ -654,17 +655,23 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
                     impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G3"].Value);
                     impRep.PermissionNumber_28_DB = Convert.ToString(worksheet1.Cells["G4"].Value);
+                    impRep.PermissionIssueDate_28_DB = Convert.ToString(worksheet1.Cells["K5"].Value);
                     impRep.ValidBegin_28_DB = Convert.ToString(worksheet1.Cells["K4"].Value);
                     impRep.ValidThru_28_DB = Convert.ToString(worksheet1.Cells["N4"].Value);
                     impRep.PermissionDocumentName_28_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
+
                     impRep.PermissionNumber1_28_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
+                    impRep.PermissionIssueDate1_28_DB = Convert.ToString(worksheet1.Cells["K7"].Value);
                     impRep.ValidBegin1_28_DB = Convert.ToString(worksheet1.Cells["K6"].Value);
                     impRep.ValidThru1_28_DB = Convert.ToString(worksheet1.Cells["N6"].Value);
                     impRep.PermissionDocumentName1_28_DB = Convert.ToString(worksheet1.Cells["G7"].Value);
+
                     impRep.ContractNumber_28_DB = Convert.ToString(worksheet1.Cells["G8"].Value);
+                    impRep.ContractIssueDate2_28_DB = Convert.ToString(worksheet1.Cells["K9"].Value);
                     impRep.ValidBegin2_28_DB = Convert.ToString(worksheet1.Cells["K8"].Value);
                     impRep.ValidThru2_28_DB = Convert.ToString(worksheet1.Cells["N8"].Value);
                     impRep.OrganisationReciever_28_DB = Convert.ToString(worksheet1.Cells["G9"].Value);
+
                     impRep.GradeExecutor_DB = Convert.ToString(worksheet1.Cells["D21"].Value);
                     impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells["F21"].Value);
                     impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells["I21"].Value);

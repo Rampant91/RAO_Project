@@ -2044,6 +2044,7 @@ public partial class Form17 : Form1
         RefineOrSortRAOCode_DB = Convert.ToString(worksheet.Cells[row, 30].Value);
         Subsidy_DB = Convert.ToString(worksheet.Cells[row, 31].Value);
         FcpNumber_DB = Convert.ToString(worksheet.Cells[row, 32].Value);
+        ContractNumber_DB = Convert.ToString(worksheet.Cells[row, 33].Value);
     }
 
     public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
@@ -2081,10 +2082,7 @@ public partial class Form17 : Form1
         worksheet.Cells[row + (!transpose ? 26 : 0), column + (transpose ? 26 : 0)].Value = ConvertToExcelString(RefineOrSortRAOCode_DB);
         worksheet.Cells[row + (!transpose ? 27 : 0), column + (transpose ? 27 : 0)].Value = ConvertToExcelString(Subsidy_DB);
         worksheet.Cells[row + (!transpose ? 28 : 0), column + (transpose ? 28 : 0)].Value = ConvertToExcelString(FcpNumber_DB);
-        if (worksheet.Name is "Отчеты 1.7")
-        {
-            worksheet.Cells[row + (!transpose ? 29 : 0), column + (transpose ? 29 : 0)].Value = ConvertToExcelString(ContractNumber_DB);
-        }
+        worksheet.Cells[row + (!transpose ? 29 : 0), column + (transpose ? 29 : 0)].Value = ConvertToExcelString(ContractNumber_DB);
 
         return 30;
     }
