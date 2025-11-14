@@ -174,6 +174,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                     .Where(reps => reps.DBObservable != null && reps.Id == organization.Id)
                     .SelectMany(x => x.Report_Collection
                         .Where(y => y.EndPeriod_DB.EndsWith(form41.Report.Year_DB)
+                        && y.CorrectionNumber_DB == 0
                         &&
                         (
                             y.FormNum_DB == "1.1" && y.Rows11.All(form => form.OperationCode_DB != "10")
@@ -234,6 +235,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 .Where(reps => reps.DBObservable != null && reps.Id == organization.Id)
                 .SelectMany(x => x.Report_Collection
                     .Where(y => y.EndPeriod_DB.EndsWith(form41.Report.Year_DB)
+                    && y.CorrectionNumber_DB == 0
                     &&
                     (
                         y.FormNum_DB == "1.1" && y.Rows11.Any(form => form.OperationCode_DB == "10")
@@ -285,6 +287,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                     .Where(report => report.Reports.Id == organization.Id)
                     .Where(report => report.Year_DB == form41.Report.Year_DB)
                     .Where(report => report.FormNum_DB == "2.12")
+                    .Where(report => report.CorrectionNumber_DB == 0)
                     .CountAsync();
             }
 
