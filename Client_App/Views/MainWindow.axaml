@@ -450,7 +450,7 @@
 								<DataGrid 
 									      Grid.Row="1" Margin="5"
 					                      x:CompileBindings="True"
-									      Items="{Binding Reports40}"
+									      Items="{Binding ReportsCollection}"
 										  SelectionMode="Single"
 										  SelectedItem="{Binding SelectedReports}"
 										  RowHeight="25"
@@ -565,7 +565,7 @@
 
 										<TextBlock Text="Кол-во отчетов:"
 											Grid.Row="1" Grid.Column="4" Margin="5"/>
-										<TextBlock 
+										<TextBlock Text="{Binding TotalForms}"
 											Grid.Row="1" Grid.Column="5" Margin="5"/>
 									</Grid>
 								</Border>
@@ -711,7 +711,7 @@
 
 										<TextBlock Text="Кол-во строчек:"
 											Grid.Row="1" Grid.Column="4" Margin="5"/>
-										<TextBlock
+										<TextBlock Text="{Binding NumFormInReport}"
 											Grid.Row="1" Grid.Column="5" Margin="5"/>
 									</Grid>
 								</Border>

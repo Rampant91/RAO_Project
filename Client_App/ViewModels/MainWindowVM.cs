@@ -22,12 +22,16 @@ using Client_App.Views.Forms.Forms1;
 using Client_App.Views.Forms.Forms4;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData.Binding;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
+using Models.DBRealization;
+using Models.Forms;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 namespace Client_App.ViewModels;
@@ -48,6 +52,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                 SelectedReports = null; // узко специализрованное решение: очищает выбранную организацию при переключении на другую панель
                 _selectedReportType = (byte)(value);
                 OnPropertyChanged();
+                UpdateReports();
+                UpdatePageInfo();
             }
         }
     }
@@ -97,6 +103,26 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
     #endregion
 
+    private ObservableCollection<Reports> _reportsCollection = [];
+    public ObservableCollection<Reports> ReportsCollection
+    {
+        get
+        {
+            return _reportsCollection;
+        }
+        set
+        {
+            _reportsCollection = value;
+            OnPropertyChanged();
+        }
+    }
+    public void UpdateReportsCollection()
+    {
+        ReportsCollection = new ObservableCollection<Reports>(Reports40
+                .ToList()
+                .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
+                .Take(RowsCountOrgs)); //Нужна оптимизация
+    }
     #region SelectedReports
 
     private Reports? _selectedReports;
@@ -142,6 +168,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         {
             _rowsCountOrgs = value;
             OnPropertyChanged();
+            UpdateReportsCollection();
             OnPropertyChanged(nameof(TotalPagesOrgs));
         }
     }
@@ -150,11 +177,15 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     {
         get
         {
-            return _currentPageOrgs;
+            if (_currentPageOrgs <= TotalPagesOrgs)
+                return _currentPageOrgs;
+            else
+                return TotalPagesOrgs;
         }
         set
         {
             _currentPageOrgs = value;
+            UpdateReportsCollection();
             OnPropertyChanged();
         }
     }
@@ -162,7 +193,10 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     {
         get
         {
-            return TotalRowsForms / RowsCountForms;
+            var result = TotalRowsForms / RowsCountForms;
+            if (TotalRowsForms % RowsCountForms > 0)
+                result++;
+            return result;
         }
     }
     public int TotalRowsForms
@@ -186,6 +220,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             _rowsCountForms = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(TotalPagesForms));
+            OnPropertyChanged(nameof(ReportList));
         }
     }
     private int _currentPageForms = 1;
@@ -193,19 +228,28 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     {
         get
         {
-            return _currentPageForms;
+            if (_currentPageForms <= TotalPagesForms)
+                return _currentPageForms;
+            else
+                return TotalPagesForms;
         }
         set
         {
             _currentPageForms = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(ReportList));
         }
     }
     public int TotalForms
     {
         get
         {
-            return 0;
+
+            var result = StaticConfiguration.DBModel.ReportCollectionDbSet
+                .Where(rep => rep.FormNum_DB.StartsWith($"{SelectedReportType}")
+                    && !rep.FormNum_DB.EndsWith(".0"))
+                .CountAsync().Result;
+            return result;
         }
     }
 
@@ -213,6 +257,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     {
         get
         {
+            if (SelectedReport!=null)
+                return ReportsStorage.GetReportRowsCount(SelectedReport).Result;
             return 0;
         }
     }
@@ -226,7 +272,12 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         {
             if (SelectedReports is null) return null;
 
-            return SelectedReports.Report_Collection;
+            return new ObservableCollection<Report>(
+                SelectedReports
+                .Report_Collection
+                .ToList()
+                .Skip((CurrentPageForms - 1) * RowsCountForms)
+                .Take(RowsCountForms));
         }
     }
 
@@ -245,6 +296,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         {
             _selectedReport = value;
             OnPropertyChanged();
+            UpdatePageInfo();
         }
     }
 
@@ -253,8 +305,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     #region UpdateReports
     public void UpdateReports()
     {
-        OnPropertyChanged(nameof(ReportsStorage.LocalReports));
-        OnPropertyChanged(nameof(Reports40));
+        UpdateReportsCollection();
         OnPropertyChanged(nameof(ReportList));
     }
 
@@ -431,6 +482,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         OpenCalculator = new OpenCalculatorAsyncCommand();
         OpenFile = new OpenFileAsyncCommand();
         OpenFolder = new OpenFolderAsyncCommand();
+
+        UpdateReports();
     }
 
     #endregion
@@ -441,6 +494,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
         OnPropertyChanged(nameof(TotalRowsForms));
         OnPropertyChanged(nameof(TotalPagesForms));
+
+        OnPropertyChanged(nameof(TotalForms));
+        OnPropertyChanged(nameof(NumFormInReport));
     }
 
     #region Interactions
