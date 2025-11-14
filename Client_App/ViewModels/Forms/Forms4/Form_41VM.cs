@@ -35,7 +35,8 @@ namespace Client_App.ViewModels.Forms.Forms4
             };
 
             Reports = reps;
-            SelectReportPopupVM = new SelectReportPopupVM(this);
+
+            base.InitializeUserControls();
         }
 
         #endregion

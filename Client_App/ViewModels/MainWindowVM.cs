@@ -21,6 +21,7 @@ using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
 using Client_App.Views.Forms.Forms4;
 using CommunityToolkit.Mvvm.ComponentModel;
+using DynamicData.Binding;
 using Models.Collections;
 using ReactiveUI;
 using System.Collections.Generic;
@@ -84,6 +85,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             {
                 ReportsStorage.LocalReports = value;
             }
+            
         }
     }
 
@@ -109,13 +111,115 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             _selectedReports = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(ReportList));
+            UpdatePageInfo();
+        }
+    }
+    public int TotalPagesOrgs
+    {
+        get
+        {
+            var result = TotalRowsOrgs / RowsCountOrgs;
+            if (TotalRowsOrgs % RowsCountOrgs > 0)
+                result++;
+            return result;
+        }
+    }
+    public int TotalRowsOrgs
+    {
+        get
+        {
+            return Reports40.Count;
+        }
+    }
+    private int _rowsCountOrgs = 10;
+    public int RowsCountOrgs
+    {
+        get
+        {
+            return _rowsCountOrgs;
+        }
+        set
+        {
+            _rowsCountOrgs = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(TotalPagesOrgs));
+        }
+    }
+    private int _currentPageOrgs = 1;
+    public int CurrentPageOrgs
+    {
+        get
+        {
+            return _currentPageOrgs;
+        }
+        set
+        {
+            _currentPageOrgs = value;
+            OnPropertyChanged();
+        }
+    }
+    public int TotalPagesForms
+    {
+        get
+        {
+            return TotalRowsForms / RowsCountForms;
+        }
+    }
+    public int TotalRowsForms
+    {
+        get
+        {
+            if (SelectedReports!= null)
+                return SelectedReports.Report_Collection.Count;
+            return 0;
+        }
+    }
+    private int _rowsCountForms = 10;
+    public int RowsCountForms
+    {
+        get
+        {
+            return _rowsCountForms;
+        }
+        set
+        {
+            _rowsCountForms = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(TotalPagesForms));
+        }
+    }
+    private int _currentPageForms = 1;
+    public int CurrentPageForms
+    {
+        get
+        {
+            return _currentPageForms;
+        }
+        set
+        {
+            _currentPageForms = value;
+            OnPropertyChanged();
+        }
+    }
+    public int TotalForms
+    {
+        get
+        {
+            return 0;
         }
     }
 
+    public int NumFormInReport
+    {
+        get
+        {
+            return 0;
+        }
+    }
     #endregion
 
     #region ReportList
-    
+
     public ObservableCollection<Report> ReportList
     {
         get
@@ -327,10 +431,17 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         OpenCalculator = new OpenCalculatorAsyncCommand();
         OpenFile = new OpenFileAsyncCommand();
         OpenFolder = new OpenFolderAsyncCommand();
-
     }
 
     #endregion
+    public void UpdatePageInfo()
+    {
+        OnPropertyChanged(nameof(TotalRowsOrgs));
+        OnPropertyChanged(nameof(TotalPagesOrgs));
+
+        OnPropertyChanged(nameof(TotalRowsForms));
+        OnPropertyChanged(nameof(TotalPagesForms));
+    }
 
     #region Interactions
 

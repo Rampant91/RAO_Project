@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.BackgroundLoader;
 using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Messages;
@@ -12,6 +13,7 @@ using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
+using Models.Forms;
 using Models.Forms.Form4;
 using System;
 using System.Collections.Generic;
@@ -157,16 +159,22 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
 
         //Выставляем номера строк
         for (int i = 0; i < Report.Rows41.Count; i++)
-            Report.Rows41[i].NumberInOrder_DB = i + 1;
+        {
+            Report.Rows41[i].SetOrder(i + 1);
+        }
 
         progressBarVM.SetProgressBar(
             100,
             $"Завершаем формирование отчета");
+
+
         await Task.Yield(); // Именно в этой команде без Yield progressBar не обновляется
+
+
+
         //Обновляем таблицу
         formVM.UpdateFormList();
         formVM.UpdatePageInfo();
-
         progressBar.Close();
     }
 
@@ -331,10 +339,11 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
 
     private void CreateRow(
         Reports organization, 
-        int numInventarizationForm = -1,        // Необязательный параметр
-        int numWithoutInventarizationForm = -1, // Необязательный параметр
-        int numForm212 = -1)                    // Необязательный параметр
+        int numInventarizationForm = 0,        // Необязательный параметр
+        int numWithoutInventarizationForm = 0, // Необязательный параметр
+        int numForm212 = 0)                    // Необязательный параметр
     {
+
         var form41 = new Form41()
         {
             RegNo_DB = organization.Master.RegNoRep == null ? "" : organization.Master.RegNoRep.Value,
@@ -343,16 +352,17 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             Report = formVM.Report
         };
 
-        if (numInventarizationForm >= 0)
+        if (numInventarizationForm > 0)
             form41.NumOfFormsWithInventarizationInfo_DB = numInventarizationForm;
 
-        if (numWithoutInventarizationForm >= 0)
+        if (numWithoutInventarizationForm > 0)
             form41.NumOfFormsWithoutInventarizationInfo_DB = numWithoutInventarizationForm;
 
-        if (numForm212 >= 0)
+        if (numForm212 > 0)
             form41.NumOfForms212_DB = numForm212;
 
-        Report.Rows41.Add(form41);
+
+        Report[Report.FormNum_DB].Add(form41);
 
     }
 
@@ -373,7 +383,6 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     private async Task<int> GetNumOfReportWithInventarization(int organizationId, string year)
     {
         return await dbModel.ReportsCollectionDbSet
-            .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
             .Include(x => x.DBObservable)
@@ -398,7 +407,6 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     private async Task<int> GetNumOfReportWithoutInventarization(int organizationId, string year)
     {
         return await dbModel.ReportsCollectionDbSet
-            .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
             .Include(x => x.DBObservable)

@@ -138,7 +138,10 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             }
 
 
-
+            for (int i =0; i < errorList.Count; i++)
+            {
+                errorList[i].Index = i + 1;
+            }
             progressBarVM.SetProgressBar(100, $"Проверка выполнена успешно");
             await progressBar.CloseAsync();
             return errorList;
@@ -197,8 +200,8 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         {
                             FormNum = "form_41",
                             Row = $"{form41.NumberInOrder_DB}",
-                            Column = $"-",
-                            Value = $"-",
+                            Column = $"7",
+                            Value = $"{form41.NumOfFormsWithoutInventarizationInfo_DB}",
                             Message = $"У организации №{form41.RegNo_DB} указано {form41.NumOfFormsWithoutInventarizationInfo_DB} отчетов 1.1-1.4 без инвентаризации, когда в БД их {count}"
                         };
                 else return null;
@@ -252,8 +255,8 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                     {
                         FormNum = "form_41",
                         Row = $"{form41.NumberInOrder_DB}",
-                        Column = $"-",
-                        Value = $"-",
+                        Column = $"6",
+                        Value = $"{form41.NumOfFormsWithInventarizationInfo_DB}",
                         Message = $"У организации №{form41.RegNo_DB} указано {form41.NumOfFormsWithInventarizationInfo_DB} инвентаризационных отчетов 1.1-1.4,когда в БД их {count}"
                     };
             else return null;
@@ -297,8 +300,8 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         {
                             FormNum = "form_41",
                             Row = $"{form41.NumberInOrder_DB}",
-                            Column = $"-",
-                            Value = $"-",
+                            Column = $"8",
+                            Value = $"{form41.NumOfForms212_DB}",
                             Message = $"У организации №{form41.RegNo_DB} указано {form41.NumOfForms212_DB} количество отчетов по форме по 2.12, когда в БД их {count}"
                         };
             else return null;
