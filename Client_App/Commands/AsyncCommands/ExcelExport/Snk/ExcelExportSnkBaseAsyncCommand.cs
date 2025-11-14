@@ -331,64 +331,45 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 // то добавляем операцию к уже имеющейся в словаре.
                 if (form.OpCode is not "53" and not "54")
                 {
-                    var flag = true;
-                        
-                    //.Any(keyValuePair =>
-                    //    numberComparer.Equals(keyValuePair.Key.PasNum, form.PasNum)
-                    //    && numberComparer.Equals(keyValuePair.Key.FacNum, form.FacNum)
-                    //    && radsComparer.Equals(keyValuePair.Key.Radionuclids, form.Radionuclids)
-                    //    && comparer.Equals(keyValuePair.Key.Type, form.Type)
-                    //    && keyValuePair.Value.All(x => x.OpCode is "53" or "54")
-                    //    && (formNum is "1.3"
-                    //        || SerialNumbersIsEmpty(keyValuePair.Key.PasNum, keyValuePair.Key.FacNum)
-                    //        || keyValuePair.Key.Quantity == form.Quantity));
+                    filteredDictionary.First().Value.Add(form);
 
-                    //Если самая первая операция с источником 53/54 и в тот же день есть другие операции,
-                    //то она должна быть в конце операций этого дня.
-                    if (flag)
-                    {
-                        var keyToReplace = filteredDictionary.First().Key;
-                        var newValue = filteredDictionary.First().Value.Prepend(form).ToList();
-                        filteredDictionary[keyToReplace] = newValue;
+                    var keyToReplace = filteredDictionary.First().Key;
+                    var newValue = filteredDictionary.First().Value.Prepend(form).ToList();
+                    filteredDictionary[keyToReplace] = newValue;
 
-                        var lastOpDate = filteredDictionary
+                    var lastOpDate = filteredDictionary
+                        .SelectMany(x => x.Value)
+                        .OrderByDescending(y => y.OpDate)
+                        .First().OpDate;
+
+                    //Если в последнюю дату несколько операций - берём за последнюю не минусовую.
+                    ShortFormDTO? lastForm;
+                    if (filteredDictionary
                             .SelectMany(x => x.Value)
+                            .Where(x => x.OpCode != "10")
+                            .Count(x => x.OpDate == lastOpDate) > 1)
+                    {
+                        lastForm = filteredDictionary
+                            .SelectMany(x => x.Value)
+                            .Where(x => x.OpCode != "10" && !GetMinusOperationsArray(formNum).Contains(x.OpCode))
                             .OrderByDescending(y => y.OpDate)
-                            .First().OpDate;
-
-                        //Если в последнюю дату несколько операций - берём за последнюю не минусовую.
-                        ShortFormDTO? lastForm;
-                        if (filteredDictionary
-                                .SelectMany(x => x.Value)
-                                .Where(x => x.OpCode != "10")
-                                .Count(x => x.OpDate == lastOpDate) > 1)
-                        {
-                            lastForm = filteredDictionary
-                                .SelectMany(x => x.Value)
-                                .Where(x => x.OpCode != "10" && !GetMinusOperationsArray(formNum).Contains(x.OpCode))
-                                .OrderByDescending(y => y.OpDate)
-                                .ThenByDescending(x => x.RepDto.StartPeriod)
-                                .ThenByDescending(x => x.RepDto.EndPeriod)
-                                .ThenByDescending(x => x.NumberInOrder)
-                                .First();
-                        }
-                        else
-                        {
-                            lastForm = filteredDictionary
-                                .SelectMany(x => x.Value)
-                                .OrderByDescending(y => y.OpDate)
-                                .First();
-                        }
-                        var pairWithLastOpDate = filteredDictionary
-                            .First(x => x.Value.Contains(lastForm));
-
-                        uniqueUnitWithAllOperationDictionary.Remove(pairWithLastOpDate.Key);
-                        uniqueUnitWithAllOperationDictionary.Add(dto, pairWithLastOpDate.Value);
+                            .ThenByDescending(x => x.RepDto.StartPeriod)
+                            .ThenByDescending(x => x.RepDto.EndPeriod)
+                            .ThenByDescending(x => x.NumberInOrder)
+                            .First();
                     }
                     else
                     {
-                        filteredDictionary.First().Value.Add(form);
+                        lastForm = filteredDictionary
+                            .SelectMany(x => x.Value)
+                            .OrderByDescending(y => y.OpDate)
+                            .First();
                     }
+                    var pairWithLastOpDate = filteredDictionary
+                        .First(x => x.Value.Contains(lastForm));
+
+                    uniqueUnitWithAllOperationDictionary.Remove(pairWithLastOpDate.Key);
+                    uniqueUnitWithAllOperationDictionary.Add(dto, pairWithLastOpDate.Value);
                 }
 
                 // Если операция перезарядки, то суммируем количество, если серийные номера пусты и заменяем запись в словаре
@@ -458,8 +439,6 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         List<List<ShortFormDTO>> groupedOperationList = [];
         List<ShortFormDTO> currentGroup = [];
         var opCount = 0;
-
-        var minDate = unionOperationList.Min(x => x.OpDate);
 
         foreach (var form in unionOperationList
                      .OrderBy(x => x.OpDate)
