@@ -56,6 +56,12 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             if (!await ShowConfirmationMessage(owner)) return;
         }
 
+        var formContainRowAtStart = Report.Rows.Count > 0;
+        if (!formContainRowAtStart)
+        {
+            await new SaveReportAsyncCommand(formVM).AsyncExecute(null);
+        }
+
         Report.Rows41.Clear();
 
         if (await ShowAskDependOnReportOrNotMessage(owner))
