@@ -219,7 +219,7 @@ public abstract class CheckF18 : CheckBase
                 var dupStrByGroups = ConvertSequenceSetToRangeString(group);
                 result.Add(new CheckError
                 {
-                    FormNum = "form_17",
+                    FormNum = "form_18",
                     Row = dupStrByGroups,
                     Column = "2 - 18",
                     Value = "",
@@ -1385,7 +1385,7 @@ public abstract class CheckF18 : CheckBase
             {
                 result.Add(new CheckError
                 {
-                    FormNum = "form_17",
+                    FormNum = "form_18",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "26-29 (Активность)",
                     Value = "",
@@ -1397,7 +1397,7 @@ public abstract class CheckF18 : CheckBase
             {
                 result.Add(new CheckError
                 {
-                    FormNum = "form_17",
+                    FormNum = "form_18",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "MassOutOfPack_DB",
                     Value = nuclidMassOutOfPack,
@@ -1409,7 +1409,7 @@ public abstract class CheckF18 : CheckBase
             {
                 result.Add(new CheckError
                 {
-                    FormNum = "form_17",
+                    FormNum = "form_18",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "VolumeOutOfPack_DB",
                     Value = volumeOutOfPack,
@@ -1424,7 +1424,7 @@ public abstract class CheckF18 : CheckBase
             {
                 result.Add(new CheckError
                 {
-                    FormNum = "form_17",
+                    FormNum = "form_18",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "RefineOrSortRAOCode_DB",
                     Value = forms[line].RefineOrSortRAOCode_DB,
@@ -2455,14 +2455,13 @@ public abstract class CheckF18 : CheckBase
             {
                 result.Add(new CheckError
                 {
-                    FormNum = "form_17",
+                    FormNum = "form_18",
                     Row = forms[currentLine].NumberInOrder_DB.ToString(),
                     Column = "RefineOrSortRAOCode_DB",
                     Value = forms[currentLine].RefineOrSortRAOCode_DB,
                     Message = $"Для головной строчки ({lines[0] + 1}) контейнера, указан код переработки {forms[lines[0]].RefineOrSortRAOCode_DB}, " +
                               $"а для строчки {currentLine + 1} код переработки не указан. " +
-                              "Проверьте правильность заполнения кода переработки.",
-                    IsCritical = true
+                              "Проверьте правильность заполнения кода переработки."
                 });
             }
         }

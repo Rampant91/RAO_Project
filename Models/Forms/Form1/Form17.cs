@@ -180,7 +180,9 @@ public partial class Form17 : Form1
         }
         if (!TwoNumRegex().IsMatch(value.Value)
             || !byte.TryParse(value.Value, out var byteValue)
-            || byteValue is not (1 or 10 or 12 or 18 or >= 21 and <= 29 or >= 31 and <= 39 or 51 or 52 or 55 or 63 or 64 or 68 or 97 or 98 or 99))
+            || byteValue is not 
+            (10 or 11 or 12 or 13 or 14 or 16 or 18 or 21 or 22 or 25 or 26 or 27 or 28 or 29 or 31 or 32 or 35 
+            or 36 or 37 or 38 or 39 or 43 or 44 or 45 or 51 or 52 or 55 or 63 or 64 or 68 or 71 or 97 or 98))
         {
             value.AddError("Код операции не может быть использован в форме 1.7");
             return false;

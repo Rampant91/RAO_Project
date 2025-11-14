@@ -2614,9 +2614,9 @@ public abstract class CheckF16 : CheckBase
         List<CheckError> result = new();
         var activityDate = ReplaceNullAndTrim(forms[line].ActivityMeasurementDate_DB);
         var operationDate = ReplaceNullAndTrim(forms[line].OperationDate_DB);
-        var operationDateReal = DateTime.UnixEpoch;
-        var valid = DateTime.TryParse(activityDate, out var activityDateReal) 
-                    && DateTime.TryParse(operationDate, out operationDateReal);
+        var operationDateReal = DateOnly.FromDateTime(DateTime.UnixEpoch);
+        var valid = DateOnly.TryParse(activityDate, out var activityDateReal) 
+                    && DateOnly.TryParse(operationDate, out operationDateReal);
         if (valid)
         {
             valid = activityDateReal <= operationDateReal;
