@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Models.CheckForm;
+﻿using Models.CheckForm;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -351,8 +350,13 @@ public abstract partial class CheckF11 : CheckBase
         var radionuclids = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
         var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         if (!applicableOperationCodes.Contains(opCode)) return result;
-        var valid = Radionuclids_YAM_DB_Valids.Any(nuclid =>
-            radionuclids.Contains(nuclid, StringComparison.CurrentCultureIgnoreCase));
+        var nuclids = radionuclids.ToLower().Split(';');
+
+        var valid = nuclids.Any(nuclid => nuclid.Contains("плутоний")
+                || nuclid.Contains("уран")
+                || nuclid.Contains("торий")
+                || nuclid is "америций-241" or "америций-243" or "калифорний-252" or "литий-6" or "нептуний-237" or "тритий");
+
         if (!valid)
         {
             result.Add(new CheckError
@@ -2895,57 +2899,6 @@ public abstract partial class CheckF11 : CheckBase
     [
         "11", "12", "15", "28", "38", "41", "63", "64", "65", "73", "81", "85", "88"
     ];  
-
-    private static readonly string[] Radionuclids_YAM_DB_Valids =
-    [
-        "америций-241",
-        "америций-243",
-        "калифорний-252",
-        "литий-6",
-        "нептуний-237",
-        "плутоний-234",
-        "плутоний-235",
-        "плутоний-236",
-        "плутоний-237",
-        "плутоний-238",
-        "плутоний-239",
-        "плутоний-240",
-        "плутоний-241",
-        "плутоний-242",
-        "плутоний-243",
-        "плутоний-244",
-        "плутоний-245",
-        "плутоний-246",
-        "сумма радионуклидов урана",
-        "торий-226",
-        "торий-227",
-        "торий-228",
-        "торий-229",
-        "торий-230",
-        "торий-231",
-        "торий-232",
-        "торий-234",
-        "торий естественный",
-        "торий-естественный",
-        "торий природный",
-        "торий-природный",
-        "тритий",
-        "уран-230",
-        "уран-231",
-        "уран-232",
-        "уран-233",
-        "уран-234",
-        "уран-235",
-        "уран-236",
-        "уран-237",
-        "уран естественный",
-        "уран-естественный",
-        "уран-238",
-        "уран-239",
-        "уран-240",
-        "уран природный",
-        "уран-природный"
-    ];
 
     private static readonly string[] Type_DB_Valids = Array.Empty<string>();
 

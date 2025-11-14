@@ -322,29 +322,16 @@ public abstract class CheckF16 : CheckBase
         List<CheckError> result = new();
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var applicableOperationCodes = new[] { "12", "42" };
-        var requiredNuclids = new []
-        {
-            "америций-241", "америций-243", "калифорний-252", "литий-6", "нептуний-237", 
-            "плутоний-234", "плутоний-235", "плутоний-236", "плутоний-237", "плутоний-238", "плутоний-239", "плутоний-240", 
-            "плутоний-241", "плутоний-242", "плутоний-243", "плутоний-244", "плутоний-245", "плутоний-246",
-            "сумма радионуклидов урана", "торий-226", "торий-227", "торий-228", "торий-229", "торий-230", "торий-231", "торий-232",
-            "торий-234", "торий естественный", "торий-естественный", "торий природный", "торий-природный", "тритий", 
-            "уран-230", "уран-231", "уран-232", "уран-233", "уран-234", "уран-235", "уран-236", "уран-237",
-            "уран естественный", "уран-естественный", "уран-238", "уран-239", "уран-240", "уран природный", "уран-природный"
-        };
+       
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var mainRad = ReplaceNullAndTrim(forms[line].MainRadionuclids_DB);
-        var nuclids = mainRad.Split(';');
-        var valid = false;
-        for (var i = 0; i < nuclids.Length; i++)
-        {
-            nuclids[i] = nuclids[i].Trim().ToLower();
-            if (requiredNuclids.Contains(nuclids[i]))
-            {
-                valid = true;
-                break;
-            }
-        }
+        var nuclids = mainRad.ToLower().Split(';');
+
+        var valid = nuclids.Any(nuclid => nuclid.Contains("плутоний")
+                || nuclid.Contains("уран")
+                || nuclid.Contains("торий")
+                || nuclid is "америций-241" or "америций-243" or "калифорний-252" or "литий-6" or "нептуний-237" or "тритий");
+
         if (!valid)
         {
             result.Add(new CheckError

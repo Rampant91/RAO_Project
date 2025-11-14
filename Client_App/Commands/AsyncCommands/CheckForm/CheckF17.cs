@@ -327,24 +327,15 @@ public abstract class CheckF17 : CheckBase
         List<CheckError> result = new();
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var rads = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
-        var applicableOperationCodes = new[] { "12", "42" };
-        var requiredNuclids = new[]
-        {
-           "уран-230", "уран-231", "уран-232", "уран-233", "уран-234", "уран-235",
-           "уран-236", "уран-237", "уран-238", "уран-239", "уран-240",
-           "уран естественный", "уран обедненный", "уран обогащенный", "сумма нуклидов урана",
-           "америций-241",  "америций-243", "калифорний-252", "литий-6", "нептуний-237", "плутоний", "торий", "тритий"
-        };
-        if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var nuclids = rads.Split(';');
-        var valid = false;
-        for (var i = 0; i < nuclids.Length; i++)
-        {
-            nuclids[i] = nuclids[i].Trim().ToLower();
-            if (!requiredNuclids.Contains(nuclids[i])) continue;
-            valid = true;
-            break;
-        }
+        var requiredNuclids = new[] { "америций-241", "америций-243", "калифорний-252", "литий-6", "нептуний-237", "тритий" };
+        if (operationCode is not "12") return result;
+        var nuclids = rads.ToLower().Split(';');
+
+        var valid = nuclids.Any(nuclid => nuclid.Contains("плутоний")
+                || nuclid.Contains("уран")
+                || nuclid.Contains("торий")
+                || nuclid is "америций-241" or "америций-243" or "калифорний-252" or "литий-6" or "нептуний-237" or "тритий");
+
         if (!valid)
         {
             result.Add(new CheckError
