@@ -162,13 +162,17 @@ public abstract class CheckF18 : CheckBase
         var comparator = new CustomNullStringWithTrimComparer();
         for (var i = 0; i < forms.Count; i++)
         {
-            if (duplicatesGroupsSet.Any(set => set.Contains(i + 1))) continue;
             var currentForm = forms[i];
+            if (currentForm.OperationCode_DB is null or "" or "-" 
+                || duplicatesGroupsSet.Any(set => set.Contains(i + 1))) continue;
+
             var hasDuplicate = false;
             for (var j = i + 1; j < forms.Count; j++)
             {
-                if (duplicatesGroupsSet.Any(set => set.Contains(j + 1))) continue;
                 var formToCompare = forms[j];
+                if (formToCompare.OperationCode_DB is null or "" or "-" 
+                    || duplicatesGroupsSet.Any(set => set.Contains(j + 1))) continue;
+                
                 var isDuplicate = !string.IsNullOrWhiteSpace(currentForm.OperationCode_DB)
                                   && comparator.Compare(formToCompare.OperationCode_DB, currentForm.OperationCode_DB) == 0
                                   && comparator.Compare(formToCompare.OperationDate_DB, currentForm.OperationDate_DB) == 0

@@ -474,7 +474,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             }
         }
         DbFileName = $"Local_{i}";
-        mainWindowViewModel.Current_Db = $"Интерактивное пособие по вводу данных ver.{Assembly.GetExecutingAssembly().GetName().Version} " +
+        mainWindowViewModel.Current_Db = $"МПЗФ ver.{Assembly.GetExecutingAssembly().GetName().Version} " +
                                          $"Текущая база данных - {DbFileName}";
         StaticConfiguration.DBPath = Path.Combine(RaoDirectory, $"{DbFileName}.RAODB");
         StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
