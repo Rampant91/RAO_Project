@@ -445,7 +445,7 @@
 					<Border Classes="borderContainer">
 						<Grid RowDefinitions="*,*" ColumnDefinitions="5*,3*" >
 							<Grid Grid.Row ="0" Grid.Column="0" RowDefinitions="Auto,*,Auto">
-								<TextBox Grid.Row="0" Margin="5" Watermark ="Поиск..." />
+								<TextBox Text="{Binding SearchText}" Grid.Row="0" Margin="5" Watermark ="Поиск..." />
 								<!--Ошибка в этом DataGrid-->
 								<DataGrid 
 									      Grid.Row="1" Margin="5"
@@ -577,7 +577,7 @@
 							</StackPanel>
 							<Grid Grid.Row ="1" Grid.Column="0" Grid.ColumnSpan="2" RowDefinitions="*,Auto" >
 								<DataGrid Grid.Row="0" Margin="5"
-										  Items="{Binding ReportList}"
+										  Items="{Binding ReportCollection}"
 										  SelectedItem="{Binding SelectedReport}"
 										  RowHeight="25"
 										  GridLinesVisibility="All"

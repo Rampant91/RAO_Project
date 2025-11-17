@@ -375,7 +375,6 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     #endregion
 
     #region Requests
-
     private async Task<List<Reports>> GetOrganizationsList(string formNum)
     {
         return await dbModel.ReportsCollectionDbSet
@@ -385,7 +384,6 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                         .Where(reports => reports.Master_DB.FormNum_DB == formNum)
                         .ToListAsync();
     }
-
     private async Task<int> GetNumOfReportWithInventarization(int organizationId, string year)
     {
         return await dbModel.ReportsCollectionDbSet
@@ -409,7 +407,6 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 )))
             .CountAsync();
     }
-
     private async Task<int> GetNumOfReportWithoutInventarization(int organizationId, string year)
     {
         return await dbModel.ReportsCollectionDbSet
@@ -433,7 +430,6 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 )))
             .CountAsync();
     }
-
     private async Task<int> GetNumOfForm212(Reports organization20, int year)
     {
         return await dbModel.ReportCollectionDbSet

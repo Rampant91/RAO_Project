@@ -127,6 +127,7 @@ public class NewAddFormAsyncCommand : BaseAsyncCommand
                             break;
                         }
                 }
+                mainWindowVM.UpdateReport();
 
                 /*
                 if(param == "1.2")

@@ -60,6 +60,7 @@ public class NewChangeFormAsyncCommand : BaseAsyncCommand
         {
 
             var t = Desktop.MainWindow as MainWindow;
+
             var numForm = report.FormNum.Value;
             var dBModel = StaticConfiguration.DBModel;
             
@@ -206,6 +207,7 @@ public class NewChangeFormAsyncCommand : BaseAsyncCommand
                         break;
                     }
             }
+
         }
     }
 

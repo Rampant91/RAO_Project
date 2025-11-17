@@ -55,9 +55,11 @@ public class NewDeleteFormAsyncCommand : BaseAsyncCommand
                 }
 
 
-                mainWindowVM.UpdateReports();
 
+                mainWindowVM.UpdateReports();
                 mainWindowVM.SelectedReports = mainWindowVM.Reports40[selectedIndex];   // Чтобы не слетала выбранная организация
+
+                mainWindowVM.UpdateReport();
             }
             await StaticConfiguration.DBModel.SaveChangesAsync();
         }
