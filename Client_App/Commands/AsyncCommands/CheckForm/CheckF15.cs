@@ -848,8 +848,7 @@ public abstract class CheckF15 : CheckBase
                     Column = "FactoryNumber_DB",
                     Value = factoryNum,
                     Message = "Для упаковки однотипных ЗРИ, имеющей один паспорт (сертификат), " +
-                              "заводские номера в списке разделяются точкой с запятой.",
-                    IsCritical = true
+                              "заводские номера в списке разделяются точкой с запятой."
                 });
             }
         }

@@ -1255,7 +1255,8 @@ public abstract class CheckF13 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "CreatorOKPO_DB",
                 Value = creatorOkpo,
-                Message = "Формат ввода данных не соответствует приказу. Укажите код ОКПО организации изготовителя."
+                Message = "Формат ввода данных не соответствует приказу. " +
+                "Укажите код ОКПО организации изготовителя или страну-изготовитель из справочника ОКСМ."
             });
         }
         return result;

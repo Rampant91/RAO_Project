@@ -10,7 +10,6 @@
 	xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
     xmlns:forms1="clr-namespace:Models.Forms.Form1;assembly=Models"
     xmlns:forms="clr-namespace:Models.Forms;assembly=Models"
-	xmlns:behaviors="using:Avalonia.Xaml.Interactions.Core"
 	xmlns:controls="clr-namespace:Client_App.Controls"
     Title="{Binding WindowTitle}"
     d:DesignHeight="450"
@@ -42,19 +41,22 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Expander Grid.Row ="0"
-                  IsExpanded="True" 
+		<!-- #region Верхний блок данных -->
+		
+		<Expander Grid.Row ="0"
+                  IsExpanded="True"
                   Header="Скрыть/Раскрыть верхнюю панель">
-            <WrapPanel Classes="header">
-                <Border Classes="borderContainer">
-					<controls:SelectReportPopup
-							Grid.Row="1"
-							DataContext="{Binding SelectReportPopupVM}"
-							HorizontalAlignment="Center"
-							VerticalAlignment="Center"/>
-                </Border>
-                <Border Classes="borderContainer">
-                    <Grid Margin="5" RowDefinitions="*,*,*,*,*">
+			<WrapPanel Classes="header">
+
+				<!-- #region Отчёт -->
+
+				<Border Classes="borderContainer">
+					<controls:SelectReportPopup DataContext="{Binding SelectReportPopupVM}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"/>
+				</Border>
+				<Border Classes="borderContainer">
+					<Grid Margin="5" RowDefinitions="*,*,*,*,*">
 
 						<Grid ColumnDefinitions="*,*,*" Grid.Row="0">
 							<TextBlock Grid.Column="0"
@@ -82,727 +84,771 @@
 								                SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource DateConverter}}"								/>
 						</Grid>
 
-                        <StackPanel  Orientation="Horizontal" Grid.Row="2">
-                            <TextBlock Margin="5">Номер корректировки:</TextBlock>
-                            <TextBox Margin="5" Width="75"
-                                Text="{Binding Path=Report.CorrectionNumber.Value}"></TextBox>
-                        </StackPanel>
+						<StackPanel  Orientation="Horizontal" Grid.Row="2">
+							<TextBlock Margin="5" Text="Номер корректировки:"/>
+							<TextBox Margin="5" 
+                                     Width="75" 
+                                     Text="{Binding Path=Report.CorrectionNumber.Value}"/>
+						</StackPanel>
 
-                        <StackPanel Orientation="Horizontal" Grid.Row="3">
-                            <Button Margin="5" Command="{Binding CheckForm}">Проверить</Button>
-                            <Button Margin="5" Command="{Binding SaveReport}">Сохранить</Button>
-                        </StackPanel>
+						<StackPanel Orientation="Horizontal" Grid.Row="3">
+							<Button Margin="5" Command="{Binding CheckForm}">Проверить</Button>
+							<Button Margin="5" Command="{Binding SaveReport}">Сохранить</Button>
+						</StackPanel>
 
-                    </Grid>
-                </Border>
+					</Grid>
+				</Border>
+				
+				<!-- #endregion Отчёт -->
 
-                <Border Classes="borderContainer">
-                    <Grid Margin="5" RowDefinitions ="*,*,*,*,*" ColumnDefinitions="*,2*">
-                        <TextBlock Grid.Row="0"
+				<!-- #region Исполнитель -->
+				
+				<Border Classes="borderContainer">
+					<Grid Margin="5" RowDefinitions ="*,*,*,*,*" ColumnDefinitions="*,2*">
+						<TextBlock Grid.Row="0"
                                    Grid.Column="0"
                                    Margin="5"
                                    Text="ФИО исполнителя:"/>
-                        <TextBox Grid.Row="0"
+						<TextBox Grid.Row="0"
                                  Grid.Column="1"
                                  Margin="5"
                                  Text="{Binding Path=Report.FIOexecutor.Value}"/>
-                        <TextBlock Grid.Row="1"
+						<TextBlock Grid.Row="1"
                                    Grid.Column="0"
                                    Margin="5"
                                    Text="Должность:"/>
-                        <TextBox Grid.Row="1"
+						<TextBox Grid.Row="1"
                                  Grid.Column="1"
                                  Margin="5"
                                 Text="{Binding Path=Report.GradeExecutor.Value}"/>
-                        <TextBlock Grid.Row="2"
+						<TextBlock Grid.Row="2"
                                    Grid.Column="0"
                                    Margin="5"
                                    Text="Телефон:"/>
-                        <TextBox Grid.Row="2"
+						<TextBox Grid.Row="2"
                                  Grid.Column="1"
                                  Margin="5"
                                  Text="{Binding Path=Report.ExecPhone.Value}"/>
-                        <TextBlock Grid.Row="3"
+						<TextBlock Grid.Row="3"
                                    Grid.Column="0"
                                    Margin="5"
                                    Text="Электронная почта:"/>
-                        <TextBox Grid.Row="3"
+						<TextBox Grid.Row="3"
                                  Grid.Column="1"
                                  Margin="5"
                                  Text="{Binding Path=Report.ExecEmail.Value}"/>
-                        <Button Grid.Row="4"
+						<Button Grid.Row="4"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="2"
                                 Margin="5"
                                 Click="CopyExecutorData_Click"
                                 Content="Скопировать данные предыдущей формы"/>
-                    </Grid>
-                </Border>
+					</Grid>
+				</Border>
+				
+				<!-- #endregion Исполнитель -->
 
+				<!-- #region Дополнительные функции -->
+				
 				<Border Classes="borderContainer">
 					<Grid Margin="5" RowDefinitions="Auto,Auto">
 
-						<Button Grid.Row="0" Command="{Binding SourceTransmissionAll}"> Перевести все РВ в РАО</Button>
+						<Button Grid.Row="0" 
+                                Command="{Binding SourceTransmissionAll}" 
+                                Content="Перевести все РВ в РАО"/>
 
 						<StackPanel Grid.Row="1" Orientation="Horizontal">
-							<TextBlock Margin="5" >Автозаполнение:</TextBlock>
-							<CheckBox Margin="5" IsChecked="{Binding IsAutoReplaceEnabled}"></CheckBox>
+							<TextBlock Margin="5" Text="Автозаполнение:"/>
+							<CheckBox Margin="5" IsChecked="{Binding IsAutoReplaceEnabled}"/>
 						</StackPanel>
 					</Grid>
 				</Border>
-            </WrapPanel>
-        </Expander>
+				
+				<!-- #endregion Дополнительные функции -->
+				
+			</WrapPanel>
+		</Expander>
+		
+		<!-- #endregion Верхний блок данных -->
 
-        <ScrollViewer Classes="tableScrollViewer" Grid.Row="1">
-            <Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="Auto">
-                <Grid.ContextMenu>
-                    <ContextMenu x:CompileBindings="True" 
-                                 x:DataType="vm:Form_12VM" 
+		<!-- #region Таблица -->
+		
+		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1">
+			<Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="Auto">
+
+				<!-- #region Контекстное меню -->
+				
+				<Grid.ContextMenu>
+					<ContextMenu x:CompileBindings="True"
+                                 x:DataType="vm:Form_12VM"
                                  DataContext="{Binding DataContext, ElementName=dataGrid}">
-                        <MenuItem Header="Выделить всё"
+						<MenuItem Header="Выделить всё"
                                   Command="{Binding SelectAll}"
                                   IsHitTestVisible="True"
                                   InputGesture="Ctrl+A"/>
-                        <MenuItem Header="Добавить строку"
+						<MenuItem Header="Добавить строку"
                                   Command="{Binding AddRow}"
                                   InputGesture="Ctrl+T"/>
-                        <MenuItem Header="Добавить N строк"
+						<MenuItem Header="Добавить N строк"
                                   Command="{Binding AddRows}"
                                   InputGesture="Ctrl+N"/>
-                        <MenuItem Header="Добавить N строк перед"
+						<MenuItem Header="Добавить N строк перед"
                                   Command="{Binding AddRowsIn}"
                                   CommandParameter="{Binding SelectedForms}"
                                   InputGesture="Ctrl+I"
                                   IsVisible="{Binding AnyRowSelected}"/>
-                        <MenuItem Header="Копировать"
+						<MenuItem Header="Копировать"
                                   Command="{Binding CopyRows}"
                                   CommandParameter="{Binding SelectedForms}"
                                   InputGesture="Ctrl+C"
                                   IsVisible="{Binding AnyRowSelected}"/>
-                        <MenuItem Header="Вставить"
+						<MenuItem Header="Вставить"
                                   Command="{Binding PasteRows}"
                                   InputGesture="Ctrl+V"
                                   IsVisible="{Binding AnyRowSelected}"/>
-                        <MenuItem Header="Удалить выбранные строчки"
+						<MenuItem Header="Удалить выбранные строчки"
                                   Command="{Binding DeleteRows}"
                                   CommandParameter="{Binding SelectedForms}"
                                   InputGesture="Ctrl+D"
                                   IsVisible="{Binding AnyRowSelected}"/>
-                        <MenuItem Header="Выставить номер"
+						<MenuItem Header="Выставить номер"
                                   Command="{Binding SetNumberOrder}"
                                   InputGesture="Ctrl+O"/>
-                        <!--<MenuItem Header="Сортировать по номеру п/п	Ctrl+L"
+						<!--<MenuItem Header="Сортировать по номеру п/п	Ctrl+L"
                                       Command="{Binding SortForms}"
                                       HotKey="Ctrl+L"/> -->
-                        <MenuItem Header="Очистить строчки"
+						<MenuItem Header="Очистить строчки"
                                   Command="{Binding DeleteDataInRows}"
                                   CommandParameter="{Binding SelectedForms}"
                                   InputGesture="Ctrl+U"
                                   IsVisible="{Binding AnyRowSelected}"/>
-                        <MenuItem Header="Перевести РВ в РАО"
+						<MenuItem Header="Перевести РВ в РАО"
                                   Command="{Binding SourceTransmission}"
                                   CommandParameter="{Binding SelectedForm}"
                                   InputGesture="Ctrl+J">
-                            <MenuItem.IsVisible>
-                                <MultiBinding Converter="{StaticResource Op41AndOneSelectedConverter}">
-                                    <Binding Path="OnlyOneRowSelected"/>
-                                    <Binding Path="SelectedForm"/>
-                                </MultiBinding>
-                            </MenuItem.IsVisible>
-                        </MenuItem>
-                    </ContextMenu>
-                </Grid.ContextMenu>
-                <Grid Classes="tableHeader" Grid.Row="0"
+							<MenuItem.IsVisible>
+								<MultiBinding Converter="{StaticResource Op41AndOneSelectedConverter}">
+									<Binding Path="OnlyOneRowSelected"/>
+									<Binding Path="SelectedForm"/>
+								</MultiBinding>
+							</MenuItem.IsVisible>
+						</MenuItem>
+					</ContextMenu>
+				</Grid.ContextMenu>
+				
+				<!-- #endregion Контекстное меню -->
+				
+				<Grid Classes="tableHeader" Grid.Row="0"
                       Width="{Binding ElementName=dataGrid.Width}"
                       ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
                       RowDefinitions="Auto,Auto">
 
-                    <interactivity:Interaction.Behaviors>
-                        <local:ColumnWidthSyncBehavior	SourceDataGrid="{Binding ElementName=dataGrid}"/>
-                    </interactivity:Interaction.Behaviors>
+					<interactivity:Interaction.Behaviors>
+						<local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"/>
+					</interactivity:Interaction.Behaviors>
 
-                    <!--Первый уровень заголовков-->
+					<!-- #region Первый уровень заголовков -->
+					
+					<Border Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" BorderThickness="1,1,1,0">
+						<TextBlock>№ п/п</TextBlock>
+					</Border>
+					<Border Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
+						<TextBlock>Сведения об операции</TextBlock>
+					</Border>
+					<Border Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="7">
+						<TextBlock>Сведения из паспорта на изделие из обедненного урана</TextBlock>
+					</Border>
+					<Border Grid.Column="10" Grid.Row="0" Grid.ColumnSpan="2">
+						<TextBlock>Право собственности на ИОУ</TextBlock>
+					</Border>
+					<Border Grid.Column="12" Grid.Row="0" Grid.ColumnSpan="3">
+						<TextBlock>Документ</TextBlock>
+					</Border>
+					<Border Grid.Column="15" Grid.Row="0" Grid.ColumnSpan="2">
+						<TextBlock>Код ОКПО</TextBlock>
+					</Border>
+					<Border Grid.Column="17" Grid.Row="0" Grid.ColumnSpan="3">
+						<TextBlock>Прибор (установка), УКТ или иная упаковка</TextBlock>
+					</Border>
+					
+					<!-- #endregion Первый уровень заголовков -->
 
-                    <Border Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" BorderThickness="1,1,1,0">
-                        <TextBlock>№ п/п</TextBlock>
-                    </Border>
-                    <Border Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
-                        <TextBlock>Сведения об операции</TextBlock>
-                    </Border>
-                    <Border Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="7">
-                        <TextBlock>Сведения из паспорта на изделие из обедненного урана</TextBlock>
-                    </Border>
-                    <Border Grid.Column="10" Grid.Row="0" Grid.ColumnSpan="2">
-                        <TextBlock>Право собственности на ИОУ</TextBlock>
-                    </Border>
-                    <Border Grid.Column="12" Grid.Row="0" Grid.ColumnSpan="3">
-                        <TextBlock>Документ</TextBlock>
-                    </Border>
-                    <Border Grid.Column="15" Grid.Row="0" Grid.ColumnSpan="2">
-                        <TextBlock>Код ОКПО</TextBlock>
-                    </Border>
-                    <Border Grid.Column="17" Grid.Row="0" Grid.ColumnSpan="3">
-                        <TextBlock>Прибор (установка), УКТ или иная упаковка</TextBlock>
-                    </Border>
+					<!-- #region Второй уровень заголовков-->
 
-                    <!--Второй уровень заголовков-->
+					<Border Grid.Column="0" Grid.Row="1" BorderThickness="1,0,1,1">
+						<TextBlock></TextBlock>
+					</Border>
+					<Border Grid.Column="1" Grid.Row="1">
+						<TextBlock>код</TextBlock>
+					</Border>
+					<Border Grid.Column="2" Grid.Row="1">
+						<TextBlock>дата</TextBlock>
+					</Border>
+					<Border Grid.Column="3" Grid.Row="1">
+						<TextBlock>номер паспорта</TextBlock>
+					</Border>
+					<Border Grid.Column="4" Grid.Row="1">
+						<TextBlock>наименование</TextBlock>
+					</Border>
+					<Border Grid.Column="5" Grid.Row="1">
+						<TextBlock>номер</TextBlock>
+					</Border>
+					<Border Grid.Column="6" Grid.Row="1">
+						<TextBlock>масса обедненного урана, кг</TextBlock>
+					</Border>
+					<Border Grid.Column="7" Grid.Row="1">
+						<TextBlock>код ОКПО изготовителя</TextBlock>
+					</Border>
+					<Border Grid.Column="8" Grid.Row="1">
+						<TextBlock>дата выпуска</TextBlock>
+					</Border>
+					<Border Grid.Column="9" Grid.Row="1">
+						<TextBlock>НСС, мес</TextBlock>
+					</Border>
+					<Border Grid.Column="10" Grid.Row="1">
+						<TextBlock>код формы собственности</TextBlock>
+					</Border>
+					<Border Grid.Column="11" Grid.Row="1">
+						<TextBlock>код ОКПО правообладателя</TextBlock>
+					</Border>
+					<Border Grid.Column="12" Grid.Row="1">
+						<TextBlock>вид</TextBlock>
+					</Border>
+					<Border Grid.Column="13" Grid.Row="1">
+						<TextBlock>номер</TextBlock>
+					</Border>
+					<Border Grid.Column="14" Grid.Row="1">
+						<TextBlock>дата</TextBlock>
+					</Border>
+					<Border Grid.Column="15" Grid.Row="1">
+						<TextBlock>поставщика или получателя</TextBlock>
+					</Border>
+					<Border Grid.Column="16" Grid.Row="1">
+						<TextBlock>перевозчика</TextBlock>
+					</Border>
+					<Border Grid.Column="17" Grid.Row="1">
+						<TextBlock>наименование</TextBlock>
+					</Border>
+					<Border Grid.Column="18" Grid.Row="1">
+						<TextBlock>тип</TextBlock>
+					</Border>
+					<Border Grid.Column="19" Grid.Row="1">
+						<TextBlock>номер</TextBlock>
+					</Border>
 
-                    <Border Grid.Column="0" Grid.Row="1"  BorderThickness="1,0,1,1">
-                        <TextBlock></TextBlock>
-                    </Border>
-                    <Border Grid.Column="1" Grid.Row="1">
-                        <TextBlock>код</TextBlock>
-                    </Border>
-                    <Border Grid.Column="2" Grid.Row="1">
-                        <TextBlock>дата</TextBlock>
-                    </Border>
-                    <Border Grid.Column="3" Grid.Row="1">
-                        <TextBlock>номер паспорта</TextBlock>
-                    </Border>
-                    <Border Grid.Column="4" Grid.Row="1">
-                        <TextBlock>наименование</TextBlock>
-                    </Border>
-                    <Border Grid.Column="5" Grid.Row="1">
-                        <TextBlock>номер</TextBlock>
-                    </Border>
-                    <Border Grid.Column="6" Grid.Row="1">
-                        <TextBlock>масса обедненного урана, кг</TextBlock>
-                    </Border>
-                    <Border Grid.Column="7" Grid.Row="1">
-                        <TextBlock>код ОКПО изготовителя</TextBlock>
-                    </Border>
-                    <Border Grid.Column="8" Grid.Row="1">
-                        <TextBlock>дата выпуска</TextBlock>
-                    </Border>
-                    <Border Grid.Column="9" Grid.Row="1">
-                        <TextBlock>НСС, мес</TextBlock>
-                    </Border>
-                    <Border Grid.Column="10" Grid.Row="1">
-                        <TextBlock>код формы собственности</TextBlock>
-                    </Border>
-                    <Border Grid.Column="11" Grid.Row="1">
-                        <TextBlock>код ОКПО правообладателя</TextBlock>
-                    </Border>
-                    <Border Grid.Column="12" Grid.Row="1">
-                        <TextBlock>вид</TextBlock>
-                    </Border>
-                    <Border Grid.Column="13" Grid.Row="1">
-                        <TextBlock>номер</TextBlock>
-                    </Border>
-                    <Border Grid.Column="14" Grid.Row="1">
-                        <TextBlock>дата</TextBlock>
-                    </Border>
-                    <Border Grid.Column="15" Grid.Row="1">
-                        <TextBlock>поставщика или получателя</TextBlock>
-                    </Border>
-                    <Border Grid.Column="16" Grid.Row="1">
-                        <TextBlock>перевозчика</TextBlock>
-                    </Border>
-                    <Border Grid.Column="17" Grid.Row="1">
-                        <TextBlock>наименование</TextBlock>
-                    </Border>
-                    <Border Grid.Column="18" Grid.Row="1">
-                        <TextBlock>тип</TextBlock>
-                    </Border>
-                    <Border Grid.Column="19" Grid.Row="1">
-                        <TextBlock>номер</TextBlock>
-                    </Border>
+					<!-- #endregion Второй уровень заголовков -->
 
-                </Grid>
+				</Grid>
 
-                <DataGrid
-                    Grid.Row="1"
-                    Classes="table"
-                    x:CompileBindings="True"
-                    x:Name="dataGrid"
-                    Items="{Binding FormList}"
-                    SelectedItem="{Binding SelectedForm}"
-					ColumnWidth="125">
+				<!-- #region DataGrid -->
+				
+				<DataGrid Grid.Row="1"
+                          Classes="table"
+                          x:CompileBindings="True"
+                          x:Name="dataGrid"
+                          Items="{Binding FormList}"
+                          SelectedItem="{Binding SelectedForm}"
+                          ColumnWidth="125">
 
-                    <interactivity:Interaction.Behaviors>
+					<interactivity:Interaction.Behaviors>
 						<local:DataGridColumnWidthLoadBehavior FormNum="1.2"/>
 						<local:DataGridPointerBehavior/>
-                        <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}"/>
-                        <local:DeselectDataGridOnClickOutsideBehavior/>
+						<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}"/>
+						<local:DeselectDataGridOnClickOutsideBehavior/>
 						<local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}"/>
-                    </interactivity:Interaction.Behaviors>
+					</interactivity:Interaction.Behaviors>
 
-                    <DataGrid.Columns>
+					<DataGrid.Columns>
 
-                        <DataGridTextColumn Binding="{Binding NumberInOrder.Value}"
+						<DataGridTextColumn Binding="{Binding NumberInOrder.Value}"
                                             Width="40"
                                             IsReadOnly="True"
                                             x:DataType="forms1:Form12">
-                            <DataGridTextColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="1"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTextColumn.HeaderTemplate>
-                        </DataGridTextColumn>
+							<DataGridTextColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="1"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTextColumn.HeaderTemplate>
+						</DataGridTextColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="2"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form12">
-                                    <TextBox Text="{Binding OperationCode.Value, Mode=TwoWay}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="2"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form12">
+									<TextBox Text="{Binding OperationCode.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="3"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form12">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <TextBox Grid.Column="0" Text="{Binding OperationDate.Value, Mode=TwoWay}"/>
-                                        <CalendarDatePicker Classes="buttonOnly"  Grid.Column="1"
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="3"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form12">
+									<Grid ColumnDefinitions="*,Auto">
+										<TextBox Grid.Column="0" Text="{Binding OperationDate.Value, Mode=TwoWay}"/>
+										<CalendarDatePicker Classes="buttonOnly" 
+                                                            Grid.Column="1"
                                                             SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, 
-                                                                Converter={StaticResource DateConverter}}"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+															    Converter={StaticResource DateConverter}}"/>
+									</Grid>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="4"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form12">
-                                    <TextBox Text="{Binding PassportNumber.Value, Mode=TwoWay}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="4"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form12">
+									<TextBox Text="{Binding PassportNumber.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="5"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form12">
-                                    <TextBox Text="{Binding NameIOU.Value, Mode=TwoWay}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="5"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form12">
+									<TextBox Text="{Binding NameIOU.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="6"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form12">
-                                    <TextBox Text="{Binding FactoryNumber.Value, Mode=TwoWay}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="6"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form12">
+									<TextBox Text="{Binding FactoryNumber.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="7"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form12">
-                                    <TextBox Text="{Binding Mass.Value, Mode=TwoWay}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="7"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form12">
+									<TextBox Text="{Binding Mass.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="8"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form12">
-                                    <TextBox Text="{Binding CreatorOKPO.Value, Mode=TwoWay}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="8"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form12">
+									<TextBox Text="{Binding CreatorOKPO.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="9"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form12">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <TextBox Grid.Column="0" Text="{Binding CreationDate.Value, Mode=TwoWay}"/>
-                                        <CalendarDatePicker Classes="buttonOnly"  Grid.Column="1"
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="9"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form12">
+									<Grid ColumnDefinitions="*,Auto">
+										<TextBox Grid.Column="0" Text="{Binding CreationDate.Value, Mode=TwoWay}"/>
+										<CalendarDatePicker Classes="buttonOnly"  Grid.Column="1"
                                                             SelectedDate="{Binding CreationDate.Value, Mode=TwoWay, 
                                                                 Converter={StaticResource DateConverter}}"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+									</Grid>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="10"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form12">
-                                    <TextBox Text="{Binding SignedServicePeriod.Value, Mode=TwoWay}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="10"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form12">
+									<TextBox Text="{Binding SignedServicePeriod.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="11"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form12">
-                                    <TextBox Text="{Binding PropertyCode.Value, Mode=TwoWay}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="11"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form12">
+									<TextBox Text="{Binding PropertyCode.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="12"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form12">
-                                    <TextBox Text="{Binding Owner.Value, Mode=TwoWay}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="12"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form12">
+									<TextBox Text="{Binding Owner.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="13"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form12">
-                                    <TextBox Text="{Binding DocumentVid.Value, Mode=TwoWay}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="13"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form12">
+									<TextBox Text="{Binding DocumentVid.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="14"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form12">
-                                    <TextBox Text="{Binding DocumentNumber.Value, Mode=TwoWay}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="14"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form12">
+									<TextBox Text="{Binding DocumentNumber.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="15"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="15"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
 
-                                <DataTemplate x:DataType="forms1:Form12">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <TextBox Grid.Column="0" Text="{Binding DocumentDate.Value, Mode=TwoWay}"/>
-                                        <CalendarDatePicker Classes="buttonOnly"  Grid.Column="1"
+								<DataTemplate x:DataType="forms1:Form12">
+									<Grid ColumnDefinitions="*,Auto">
+										<TextBox Grid.Column="0" Text="{Binding DocumentDate.Value, Mode=TwoWay}"/>
+										<CalendarDatePicker Classes="buttonOnly"  Grid.Column="1"
                                                             SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay, 
                                                                 Converter={StaticResource DateConverter}}"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+									</Grid>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="16"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form12">
-                                    <TextBox Text="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="16"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form12">
+									<TextBox Text="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="17"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form12">
-                                    <TextBox Text="{Binding TransporterOKPO.Value, Mode=TwoWay}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="17"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form12">
+									<TextBox Text="{Binding TransporterOKPO.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="18"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form12">
-                                    <TextBox Text="{Binding PackName.Value, Mode=TwoWay}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="18"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form12">
+									<TextBox Text="{Binding PackName.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="19"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form12">
-                                    <TextBox Text="{Binding PackType.Value, Mode=TwoWay}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="19"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form12">
+									<TextBox Text="{Binding PackType.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="20"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form12">
-                                    <TextBox Text="{Binding PackNumber.Value, Mode=TwoWay}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="20"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form12">
+									<TextBox Text="{Binding PackNumber.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Grid>
-        </ScrollViewer>
+					</DataGrid.Columns>
+				</DataGrid>
+				
+				<!-- #endregion DataGrid -->
+			
+			</Grid>
+		</ScrollViewer>
+		
+		<!-- #endregion Таблица -->
 
-        <Border Grid.Row="2" Classes="pageControlContainer">
-            <Grid RowDefinitions="Auto,Auto" 
+		<!-- #region Выбор страницы -->
+		
+		<Border Grid.Row="2" Classes="pageControlContainer">
+			<Grid RowDefinitions="Auto,Auto"
 				  ColumnDefinitions="Auto,Auto,Auto,Auto">
-                <TextBlock Text="Текущая страница"
-						   Grid.Row="0" 
+				<TextBlock Text="Текущая страница"
+						   Grid.Row="0"
 						   Grid.Column="0"
 						   Margin="5"/>
-				
-                <NumericUpDown Value="{Binding CurrentPage}" 
-							   Increment="-1" 
+
+				<NumericUpDown Value="{Binding CurrentPage}"
+							   Increment="-1"
 							   Grid.Row="0"
-							   Grid.Column="1" 
+							   Grid.Column="1"
 							   Margin="5">
-                    <interactivity:Interaction.Behaviors>
-                        <local:NumericUpDownDigitValidationBehavior/>
-                    </interactivity:Interaction.Behaviors>
-                </NumericUpDown>
-				
-                <TextBlock Text ="Кол-во страниц:"
-						   Grid.Row="0" 
+					<interactivity:Interaction.Behaviors>
+						<local:NumericUpDownDigitValidationBehavior/>
+					</interactivity:Interaction.Behaviors>
+				</NumericUpDown>
+
+				<TextBlock Text ="Кол-во страниц:"
+						   Grid.Row="0"
 						   Grid.Column="2"
 						   Margin="5"/>
-                <TextBlock Text="{Binding TotalPages}" 
+				<TextBlock Text="{Binding TotalPages}"
 						   Grid.Row="0"
 						   Grid.Column="3"
 						   Margin="5"/>
-                <TextBlock Text="Кол-во строчек на странице" 
-						   Grid.Row="1" 
-						   Grid.Column="0" 
+				<TextBlock Text="Кол-во строчек на странице"
+						   Grid.Row="1"
+						   Grid.Column="0"
 						   Margin="5"/>
-                
-				<NumericUpDown Value="{Binding RowCount}" 
-							   Minimum="1" 
-							   Grid.Row="1" 
-							   Grid.Column="1" 
-							   Margin="5">
-                    <interactivity:Interaction.Behaviors>
-                        <local:NumericUpDownDigitValidationBehavior/>
-                    </interactivity:Interaction.Behaviors>
-                </NumericUpDown>
 
-                <TextBlock Text="Всего строчек:" 
-						   Grid.Row="1" 
+				<NumericUpDown Value="{Binding RowCount}"
+							   Minimum="1"
+							   Grid.Row="1"
+							   Grid.Column="1"
+							   Margin="5">
+					<interactivity:Interaction.Behaviors>
+						<local:NumericUpDownDigitValidationBehavior/>
+					</interactivity:Interaction.Behaviors>
+				</NumericUpDown>
+
+				<TextBlock Text="Всего строчек:"
+						   Grid.Row="1"
 						   Grid.Column="2"
 						   Margin="5"/>
-                <TextBlock Text="{Binding TotalRows}" 
-						   Grid.Row="1" 
-						   Grid.Column="3" 
+				<TextBlock Text="{Binding TotalRows}"
+						   Grid.Row="1"
+						   Grid.Column="3"
 						   Margin="5"/>
-            </Grid>
-        </Border>
-									
-        <Expander Grid.Row ="3"
+			</Grid>
+		</Border>
+		
+		<!-- #endregion Выбор страницы -->
+
+		<!-- #region Примечания -->
+		
+		<Expander Grid.Row ="3"
                   IsExpanded="True"
-                  ExpandDirection="Up" 
+                  ExpandDirection="Up"
                   Header="Скрыть/Раскрыть нижнюю панель">
 
-            <Border Classes="notesContainer">
-                <StackPanel>
-                    <StackPanel.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Добавить строку"
+			<Border Classes="notesContainer">
+				<StackPanel>
+					<StackPanel.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Добавить строку"
                                       Command="{Binding AddNote}"/>
-                            <MenuItem Header="Добавить N строк"
+							<MenuItem Header="Добавить N строк"
                                       Command="{Binding AddNotes}"/>
-                            <MenuItem Header="Копировать"
+							<MenuItem Header="Копировать"
                                       Command="{Binding CopyNotes}"
                                       CommandParameter="{Binding SelectedNotes}"/>
-                            <MenuItem Header="Вставить"
+							<MenuItem Header="Вставить"
                                       Command="{Binding PasteNotes}"/>
-                            <MenuItem Header="Удалить выбранные строчки"
+							<MenuItem Header="Удалить выбранные строчки"
                                       Command="{Binding DeleteNotes}"
                                       CommandParameter="{Binding SelectedNotes}"/>
-                        </ContextMenu>
-                    </StackPanel.ContextMenu>
-                    <TextBlock Margin="5">Примечания</TextBlock>
-                    <DataGrid Classes="notesTable"
+						</ContextMenu>
+					</StackPanel.ContextMenu>
+					<TextBlock Margin="5">Примечания</TextBlock>
+					<DataGrid Classes="notesTable"
                               x:CompileBindings="True"
                               Items="{Binding NoteList}"
                               SelectedItem="{Binding SelectedNote}">
 
-                        <interactivity:Interaction.Behaviors>
+						<interactivity:Interaction.Behaviors>
 							<local:DataGridPointerBehavior/>
-                            <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
-                        </interactivity:Interaction.Behaviors>
+							<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}"/>
+						</interactivity:Interaction.Behaviors>
 
-                        <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="№ строки" Width="80">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:DataType="forms:Note">
-                                        <TextBox Text="{Binding RowNumber.Value, Mode=TwoWay}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+						<DataGrid.Columns>
+							<DataGridTemplateColumn Header="№ строки" Width="80">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate x:DataType="forms:Note">
+										<TextBox Text="{Binding RowNumber.Value, Mode=TwoWay}"/>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Header="№ графы" Width="80">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:DataType="forms:Note">
-                                        <TextBox Text="{Binding GraphNumber.Value, Mode=TwoWay}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+							<DataGridTemplateColumn Header="№ графы" Width="80">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate x:DataType="forms:Note">
+										<TextBox Text="{Binding GraphNumber.Value, Mode=TwoWay}"/>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Header="Пояснения" Width="*">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate x:DataType="forms:Note">
-                                        <TextBox Text="{Binding Comment.Value, Mode=TwoWay}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+							<DataGridTemplateColumn Header="Пояснения" Width="*">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate x:DataType="forms:Note">
+										<TextBox Text="{Binding Comment.Value, Mode=TwoWay}"/>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
 
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </StackPanel>
-            </Border>
-        </Expander>					
+						</DataGrid.Columns>
+					</DataGrid>
+				</StackPanel>
+			</Border>
+		</Expander>
+		
+		<!-- #endregion Примечания -->
+		
     </Grid>
 </Window>

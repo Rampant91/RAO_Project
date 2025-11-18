@@ -105,13 +105,9 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
         #endregion
 
-        var test1 = dbm.ReportCollectionDbSet;
-
         onStartProgressBarVm.LoadStatus = "Сортировка организаций";
         mainWindowViewModel.OnStartProgressBar = 80;
         await ProcessDataBaseFillEmpty(dbm);
-
-        var test2 = dbm.ReportCollectionDbSet;
 
         onStartProgressBarVm.LoadStatus = "Сортировка примечаний";
         mainWindowViewModel.OnStartProgressBar = 85;

@@ -984,7 +984,9 @@ public abstract class CheckF12 : CheckBase
         var creatorOkpo = ReplaceNullAndTrim(forms[line].CreatorOKPO_DB);
         //if (!okpoRegexApplicable.IsMatch(creatorOkpo)) return result;
         var valid = !string.IsNullOrEmpty(creatorOkpo)
-                    && OkpoRegex.IsMatch(creatorOkpo);
+                   && (OkpoRegex.IsMatch(creatorOkpo)
+                       || creatorOkpo is "прим."
+                       || OKSM.Any(oksmEntry => oksmEntry["shortname"] == creatorOkpo));
         if (!valid)
         {
             result.Add(new CheckError
@@ -993,7 +995,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "CreatorOKPO_DB",
                 Value = creatorOkpo,
-                Message = "Формат ввода данных не соответствует приказу. Укажите код ОКПО организации изготовителя."
+                Message = "Формат ввода данных не соответствует приказу. " +
+                "Укажите код ОКПО организации изготовителя или страну-изготовитель из справочника ОКСМ."
             });
         }
         return result;

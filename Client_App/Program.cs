@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using System.Text;
 using Avalonia;
 using Avalonia.ReactiveUI;
 using Client_App.Properties;

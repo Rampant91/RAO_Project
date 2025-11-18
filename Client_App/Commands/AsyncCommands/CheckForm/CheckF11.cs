@@ -66,7 +66,7 @@ public abstract partial class CheckF11 : CheckBase
             errorList.AddRange(Check_039(formsList, notes, currentFormLine));
             errorList.AddRange(Check_040(formsList, currentFormLine));
             errorList.AddRange(Check_041(formsList, currentFormLine));
-            errorList.AddRange(Check_042(formsList, currentFormLine));
+            errorList.AddRange(Check_042(formsList, notes, currentFormLine));
             errorList.AddRange(Check_043(formsList, currentFormLine));
             errorList.AddRange(Check_044(formsList, currentFormLine));
             errorList.AddRange(Check_045(formsList, notes, currentFormLine));
@@ -1216,8 +1216,7 @@ public abstract partial class CheckF11 : CheckBase
                     Column = "FactoryNumber_DB",
                     Value = factoryNum,
                     Message = "Для упаковки однотипных ЗРИ, имеющей один паспорт (сертификат), " +
-                              "заводские номера в списке разделяются точкой с запятой.",
-                    IsCritical = true
+                              "заводские номера в списке разделяются точкой с запятой."
                 });
             }
         }
@@ -1260,6 +1259,7 @@ public abstract partial class CheckF11 : CheckBase
         List<CheckError> result = new();
         var rad = ReplaceNullAndTrim(forms[line].Radionuclids_DB).ToLower();
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
+        var category = forms[line].Category_DB;
         var quantity = forms[line].Quantity_DB ?? 0;
 
         if (R.All(x => x["name"] != rad) 
@@ -1282,7 +1282,7 @@ public abstract partial class CheckF11 : CheckBase
                 Message = "Сведения, указанные в графе 9 (Суммарная активность) ниже МЗА, " +
                           "ЗРИ не является объектом учёта СГУК РВ и РАО. Сверьте сведения, указанные в отчёте, с паспортом на ЗРИ. " +
                           "Обратите внимание на размерность активности, указанной в паспорте на ЗРИ (Бк, МБк, ТБк).",
-                IsCritical = true
+                IsCritical = category is not 5
             });
         }
         return result;
@@ -1518,7 +1518,8 @@ public abstract partial class CheckF11 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "CreatorOKPO_DB",
                 Value = creatorOkpo,
-                Message = "Формат ввода данных не соответствует приказу. Укажите код ОКПО организации изготовителя.",
+                Message = "Формат ввода данных не соответствует приказу. " +
+                "Укажите код ОКПО организации изготовителя или страну-изготовитель из справочника ОКСМ.",
                 IsCritical = true
             });
         }
@@ -1580,6 +1581,7 @@ public abstract partial class CheckF11 : CheckBase
         }
         else if (!DateOnly.TryParse(creationDate, out _))
         {
+            var isNote = creationDate.ToLower() is "прим.";
             result.Add(new CheckError
             {
                 FormNum = "form_11",
@@ -1588,7 +1590,7 @@ public abstract partial class CheckF11 : CheckBase
                 Value = creationDate,
                 Message = "Формат ввода данных не соответствует приказу. Некорректно заполнена дата выпуска. " +
                           "Если известен только год, то указывается 1 января этого года.",
-                IsCritical = true
+                IsCritical = isNote!
             });
         }
         return result;
@@ -1630,7 +1632,7 @@ public abstract partial class CheckF11 : CheckBase
     #region Check042
 
     //Соответствие категории ЗРИ (графа 12)
-    private static List<CheckError> Check_042(List<Form11> forms, int line)
+    private static List<CheckError> Check_042(List<Form11> forms, List<Note> notes, int line)
     {
         List<CheckError> result = new();
         var dbBounds = new Dictionary<short, (decimal, decimal)>
@@ -1722,6 +1724,18 @@ public abstract partial class CheckF11 : CheckBase
         }
         if (!valid)
         {
+            var rad = ReplaceNullAndTrim(forms[line].Radionuclids_DB).ToLower();
+
+            if (R.All(x => x["name"] != rad)
+                || quantity <= 0
+                || !TryParseDoubleExtended(activity, out var activityDoubleValue)
+                || activityDoubleValue <= 0) return result;
+
+            var mza = R.First(x => x["name"] == rad)["MZA"];
+            if (!TryParseDoubleExtended(mza, out var mzaDoubleValue)) return result;
+
+            var mzaValid = activityDoubleValue / quantity >= mzaDoubleValue;
+            var isCritical = category is not 5 && !CheckNotePresence(notes, line, 12) && !mzaValid;
             result.Add(new CheckError
             {
                 FormNum = "form_11",
@@ -1730,7 +1744,7 @@ public abstract partial class CheckF11 : CheckBase
                 Value = category.ToString(),
                 Message = "Расчетное значение категории ЗРИ не соответствует представленному в отчёте. " +
                           "Проверьте правильность указания категории ЗРИ, сведений о суммарной активности и радионуклидах.",
-                IsCritical = category is not 5
+                IsCritical = isCritical
             });
         }
         return result;
