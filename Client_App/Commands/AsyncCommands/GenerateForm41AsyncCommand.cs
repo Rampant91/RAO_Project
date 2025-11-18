@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
+using Models.Forms.Form2;
 using Models.Forms.Form4;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     private Report Report => formVM.Report;
 
     private DBModel dbModel = StaticConfiguration.DBModel;
+    private DBModel secondDB;
 
     private List<Reports> organizations10;
     private List<Reports> organizations20;
@@ -93,8 +95,27 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         await Task.Yield(); // Именно в этой команде без Yield progressBar не обновляется
 
 
-        organizations10 = await GetOrganizationsList("1.0");
-        organizations20 = await GetOrganizationsList("2.0");
+        organizations10 = await GetOrganizationsList("1.0", dbModel);
+        organizations20 = await GetOrganizationsList("2.0", dbModel);
+
+        if (organizations20.Count <= 0)
+        {
+            if (await ShowAskSecondDB(owner))
+            {
+                var dialog = new OpenFileDialog()
+                {
+                    AllowMultiple = false,
+                };
+                var path = await dialog.ShowAsync(owner);
+                if (path != null)
+                {
+                    secondDB = new DBModel(path[0]);
+                    organizations20 = await GetOrganizationsList("2.0", secondDB);
+                }
+
+            }
+        }
+
 
         if (codeSubjectRF != null)
         {
@@ -111,8 +132,8 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 $"Подсчет форм 1.1 - 1.4 у организации {organization10.Master.Rows10[0].RegNo_DB}");
             await Task.Yield(); // Именно в этой команде без Yield progressBar не обновляется
 
-            int numInventarizationForm = await GetNumOfReportWithInventarization(organization10.Id, year.ToString());
-            int numWithoutInventarizationForm = await GetNumOfReportWithoutInventarization(organization10.Id, year.ToString());
+            int numInventarizationForm = await GetNumOfReportWithInventarization(organization10.Id, year.ToString(), dbModel);
+            int numWithoutInventarizationForm = await GetNumOfReportWithoutInventarization(organization10.Id, year.ToString(), dbModel);
 
             //Если запись об организации существует
             if (IsRowWithOrganizationExist(organization10))
@@ -130,19 +151,22 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
 
         foreach (var organization20 in organizations20)
         {
-
             progressBarVM.SetProgressBar(
                 (int)currentProgress,
-                $"Подсчет форм 2.12 у организации {organization20.Master.Rows20[0].RegNo_DB}");
+                $"Подсчет форм 2.12 у организации {organization20.Master_DB.Rows20[0].RegNo_DB}");
             await Task.Yield(); // Именно в этой команде без Yield progressBar не обновляется
+            int numForm212;
 
-            int numForm212 = await GetNumOfForm212(organization20, year);
+            if (secondDB != null)
+                numForm212 = await GetNumOfForm212(organization20, year, secondDB);
+            else
+                numForm212 = await GetNumOfForm212(organization20, year, dbModel);
 
             if (IsRowWithOrganizationExist(organization20))
-                UpdateRow(organization20, 
+                UpdateRow(organization20,
                     numForm212: numForm212);
             else
-                CreateRow(organization20, 
+                CreateRow(organization20,
                     numForm212: numForm212);
         }
 
@@ -175,8 +199,6 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
 
 
         await Task.Yield(); // Именно в этой команде без Yield progressBar не обновляется
-
-
 
         //Обновляем таблицу
         formVM.UpdateFormList();
@@ -283,6 +305,31 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         string? codeSubjectRF = await dialog.ShowDialog<string?>(owner);
         return codeSubjectRF;
     }
+    private async Task<bool> ShowAskSecondDB(Window owner)
+    {
+        string answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions =
+                [
+                    new ButtonDefinition { Name = "Да" },
+                    new ButtonDefinition { Name = "Нет" },
+                ],
+                CanResize = true,
+                ContentTitle = "Формирование нового отчета",
+                ContentMessage = "Не удалось найти годовые отчеты\n" +
+                "Вы хотите указать путь на базу данных с годовыми отчетами?",
+                MinWidth = 300,
+                MinHeight = 125,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(owner));
+
+        if (answer == "Да")
+            return true;
+        else
+            return false;
+    }
     #endregion
 
     #region private Functions
@@ -375,18 +422,19 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     #endregion
 
     #region Requests
-    private async Task<List<Reports>> GetOrganizationsList(string formNum)
+    private async Task<List<Reports>> GetOrganizationsList(string formNum, DBModel DB)
     {
-        return await dbModel.ReportsCollectionDbSet
+        return await DB.ReportsCollectionDbSet
                         .AsSplitQuery()
                         .AsQueryable()
-                        .Include(reports => reports.Master_DB)
+                        .Include(reports => reports.Master_DB).ThenInclude(reports =>reports.Rows10)
+                        .Include(reports => reports.Master_DB).ThenInclude(reports => reports.Rows20)
                         .Where(reports => reports.Master_DB.FormNum_DB == formNum)
                         .ToListAsync();
     }
-    private async Task<int> GetNumOfReportWithInventarization(int organizationId, string year)
+    private async Task<int> GetNumOfReportWithInventarization(int organizationId, string year, DBModel DB)
     {
-        return await dbModel.ReportsCollectionDbSet
+        return await DB.ReportsCollectionDbSet
             .AsSplitQuery()
             .AsQueryable()
             .Include(x => x.DBObservable)
@@ -407,9 +455,9 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 )))
             .CountAsync();
     }
-    private async Task<int> GetNumOfReportWithoutInventarization(int organizationId, string year)
+    private async Task<int> GetNumOfReportWithoutInventarization(int organizationId, string year, DBModel DB)
     {
-        return await dbModel.ReportsCollectionDbSet
+        return await DB.ReportsCollectionDbSet
             .AsSplitQuery()
             .AsQueryable()
             .Include(x => x.DBObservable)
@@ -430,9 +478,9 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 )))
             .CountAsync();
     }
-    private async Task<int> GetNumOfForm212(Reports organization20, int year)
+    private async Task<int> GetNumOfForm212(Reports organization20, int year, DBModel DB)
     {
-        return await dbModel.ReportCollectionDbSet
+        return await DB.ReportCollectionDbSet
                     .AsSplitQuery()
                     .AsQueryable()
                     .Include(report => report.Reports)

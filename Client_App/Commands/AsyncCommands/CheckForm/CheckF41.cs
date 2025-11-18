@@ -1,10 +1,13 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Client_App.Views.Forms.Forms4;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Models.CheckForm;
 using Models.Collections;
@@ -35,6 +38,8 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
         #endregion
         public static async Task<List<CheckError>> Check_Total(object? parameter)
         {
+
+            DBModel secondDB = null; // Пользователь может указать другую БД, в которой хранятся годовые отчеты (2.X)
             var cts = new CancellationTokenSource();
             List<CheckError> errorList = [];
             var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
@@ -56,8 +61,8 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                     .Include(reps => reps.Master_DB).ThenInclude(rep => rep.Rows10)
                     .Where(reps => reps.Master_DB.FormNum_DB == "1.0");
 
-                
-                foreach(var reports in reportsQuery)
+
+                foreach (var reports in reportsQuery)
                 {
                     if (formList.Any(form41 =>
                     form41.RegNo_DB == reports.Master_DB.Rows10[0].RegNo_DB
@@ -80,16 +85,37 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             }
 
 
-            try 
+            try
             {
-                    
-               var reportsQuery = dbModel.ReportsCollectionDbSet
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Include(reps => reps.Master_DB).ThenInclude(rep => rep.Rows20)
-                    .Where(reps => reps.Master_DB.FormNum_DB == "2.0");
+                var reportsQuery = dbModel.ReportsCollectionDbSet
+                     .AsSplitQuery()
+                     .AsQueryable()
+                     .Include(reps => reps.Master_DB).ThenInclude(rep => rep.Rows20)
+                     .Where(reps => reps.Master_DB.FormNum_DB == "2.0");
 
-                
+                if (reportsQuery.Count() == 0)
+                {
+                    var owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
+                        .FirstOrDefault(w => w.IsActive);
+                    if (await ShowAskSecondDB(owner))
+                    {
+                        var dialog = new OpenFileDialog()
+                        {
+                            AllowMultiple = false,
+                        };
+                        var path = await dialog.ShowAsync(owner);
+                        if (path != null)
+                        {
+                            secondDB = new DBModel(path[0]);
+                            reportsQuery = secondDB.ReportsCollectionDbSet
+                             .AsSplitQuery()
+                             .AsQueryable()
+                             .Include(reps => reps.Master_DB).ThenInclude(rep => rep.Rows20)
+                             .Where(reps => reps.Master_DB.FormNum_DB == "2.0");
+                        }
+                    }
+                }
+
                 foreach (var reports in reportsQuery)
                 {
                     if (formList.Any(form41 =>
@@ -106,7 +132,6 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         });
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -118,7 +143,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 var regNo = form41.RegNo_DB == null ? "_____" : form41.RegNo_DB;
                 progressBarVM.SetProgressBar((int)currentProgress, $"Проверка организации №{regNo}");
 
-                var error = await CheckPresenceOfForm19(form41);
+                var error = await CheckPresenceOfForm19(form41, secondDB);
                 if (error != null)
                     errorList.Add(error);
 
@@ -130,7 +155,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 if (error != null)
                     errorList.Add(error);
 
-                error = await CheckComplianceNumOfReports212(form41);
+                error = await CheckComplianceNumOfReports212(form41, secondDB);
                 if (error != null)
                     errorList.Add(error);
 
@@ -138,11 +163,15 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             }
 
 
-            for (int i =0; i < errorList.Count; i++)
+            for (int i = 0; i < errorList.Count; i++)
             {
                 errorList[i].Index = i + 1;
             }
             progressBarVM.SetProgressBar(100, $"Проверка выполнена успешно");
+            //Освобождаем память
+            if (secondDB != null)
+                secondDB.Dispose();
+
             await progressBar.CloseAsync();
             return errorList;
         }
@@ -155,14 +184,14 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
         private static async Task<CheckError?> CheckComplianceNumWithoutInventarizationReports(Form41 form41)
         {
             var dbModel = StaticConfiguration.DBModel;
-            int count =0;
+            int count = 0;
             try
             {
                 var organization = organizations10.FirstOrDefault(org =>
                     org.RegNo == form41.RegNo_DB
                     && (org.Okpo0 == form41.Okpo_DB || org.Okpo1 == form41.Okpo_DB));
 
-                
+
 
 
                 if (organization != null)
@@ -189,23 +218,23 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 }
 
             }
-            catch( Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
 
             if (count != form41.NumOfFormsWithoutInventarizationInfo_DB)
-                    return
-                        new CheckError()
-                        {
-                            FormNum = "form_41",
-                            Row = $"{form41.NumberInOrder_DB}",
-                            Column = $"7",
-                            Value = $"{form41.NumOfFormsWithoutInventarizationInfo_DB}",
-                            Message = $"У организации №{form41.RegNo_DB} указано {form41.NumOfFormsWithoutInventarizationInfo_DB} отчетов 1.1-1.4 без инвентаризации, когда в БД их {count}"
-                        };
-                else return null;
-            }
+                return
+                    new CheckError()
+                    {
+                        FormNum = "form_41",
+                        Row = $"{form41.NumberInOrder_DB}",
+                        Column = $"7",
+                        Value = $"{form41.NumOfFormsWithoutInventarizationInfo_DB}",
+                        Message = $"У организации №{form41.RegNo_DB} указано {form41.NumOfFormsWithoutInventarizationInfo_DB} отчетов 1.1-1.4 без инвентаризации, когда в БД их {count}"
+                    };
+            else return null;
+        }
 
         /// <summary>
         /// Проверка соответствия количества отчетов имеющемуся в БД
@@ -268,9 +297,11 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
         /// </summary>
         /// <param name="form41"></param>
         /// <returns></returns>
-        private static async Task<CheckError?> CheckComplianceNumOfReports212(Form41 form41)
+        private static async Task<CheckError?> CheckComplianceNumOfReports212(Form41 form41, DBModel secondDB = null)
         {
-            var dbModel = StaticConfiguration.DBModel; 
+            var dbModel = StaticConfiguration.DBModel;
+            if (secondDB == null)
+                secondDB = dbModel;
             int count;
 
             var organization = organizations20.FirstOrDefault(org =>
@@ -283,7 +314,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             }
             else
             {
-                count = await dbModel.ReportCollectionDbSet
+                count = await secondDB.ReportCollectionDbSet
                     .AsSplitQuery()
                     .AsQueryable()
                     .Include(report => report.Reports)
@@ -295,15 +326,15 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             }
 
             if (count != form41.NumOfForms212_DB)
-                    return
-                        new CheckError()
-                        {
-                            FormNum = "form_41",
-                            Row = $"{form41.NumberInOrder_DB}",
-                            Column = $"8",
-                            Value = $"{form41.NumOfForms212_DB}",
-                            Message = $"У организации №{form41.RegNo_DB} указано {form41.NumOfForms212_DB} количество отчетов по форме по 2.12, когда в БД их {count}"
-                        };
+                return
+                    new CheckError()
+                    {
+                        FormNum = "form_41",
+                        Row = $"{form41.NumberInOrder_DB}",
+                        Column = $"8",
+                        Value = $"{form41.NumOfForms212_DB}",
+                        Message = $"У организации №{form41.RegNo_DB} указано {form41.NumOfForms212_DB} количество отчетов по форме по 2.12, когда в БД их {count}"
+                    };
             else return null;
         }
         /// <summary>
@@ -311,73 +342,75 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
         /// Если нет отчета по 2.12 и 1.9, но в предыдущем отчете есть 2.12 – предупреждение «Проверьте организацию на необходимость представления отчета по ф.2.12
         /// </summary>
         /// <returns></returns>
-        private static async Task<CheckError?> CheckPresenceOfForm19(Form41 form41)
+        private static async Task<CheckError?> CheckPresenceOfForm19(Form41 form41, DBModel secondDB = null)
         {
             string regNo = form41.RegNo.Value;
             string year = form41.Report.Year_DB;
             DBModel dbModel = StaticConfiguration.DBModel;
+            if (secondDB == null)
+                secondDB = dbModel;
 
-                var organization20 = dbModel.ReportsCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Include(x => x.DBObservable)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                    .Where(x => x.Master_DB.Rows20.Any(y => y.RegNo_DB == regNo))
-                    .Include(x => x.Report_Collection)
-                    .ThenInclude(x => x.Rows212).FirstOrDefault();
+            var organization20 = secondDB.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.DBObservable)
+                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                .Where(x => x.Master_DB.Rows20.Any(y => y.RegNo_DB == regNo))
+                .Include(x => x.Report_Collection)
+                .ThenInclude(x => x.Rows212).FirstOrDefault();
 
-                //Если отчет 2.12 есть, то Выход
-                if ((organization20 != null) && organization20.Report_Collection
-                    .Any(report =>
-                    report.FormNum_DB == "2.12"
-                    && report.Year_DB == year))
-                    return null;
-
-
-
-                var organization10 = dbModel.ReportsCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Include(x => x.DBObservable)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                    .Where(x => x.Master_DB.Rows10.Any(y => y.RegNo_DB == regNo))
-                    .Include(x => x.Report_Collection)
-                    .ThenInclude(x => x.Rows19).FirstOrDefault();
+            //Если отчет 2.12 есть, то Выход
+            if ((organization20 != null) && organization20.Report_Collection
+                .Any(report =>
+                report.FormNum_DB == "2.12"
+                && report.Year_DB == year))
+                return null;
 
 
-                //Если есть отчеты 1.9, то Выход с ошибкой
-                if ((organization10 != null) && organization10.Report_Collection
-                    .Any(report =>
-                    report.FormNum_DB == "1.9"
-                    && DateOnly.TryParse(report.EndPeriod_DB, out var dateOnly)
-                    && dateOnly.Year.ToString() == year))
-                    return
-                        new CheckError()
-                        {
-                            FormNum = "form_41",
-                            Row = $"{form41.NumberInOrder_DB}",
-                            Column = $"-",
-                            Value = $"-",
-                            Message = $"У организации №{regNo} Должен быть отчет по форме 2.12."
-                        };
 
-                if ((organization20 != null) && organization20.Report_Collection
-                    .Any(report =>
-                    report.FormNum_DB == "2.12"
-                    && int.TryParse(year, out var intYear)
-                    && report.Year_DB == (intYear - 1).ToString())) //проверка на предыдущий отчет
-                    return new CheckError()
+            var organization10 = dbModel.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.DBObservable)
+                .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                .Where(x => x.Master_DB.Rows10.Any(y => y.RegNo_DB == regNo))
+                .Include(x => x.Report_Collection)
+                .ThenInclude(x => x.Rows19).FirstOrDefault();
+
+
+            //Если есть отчеты 1.9, то Выход с ошибкой
+            if ((organization10 != null) && organization10.Report_Collection
+                .Any(report =>
+                report.FormNum_DB == "1.9"
+                && DateOnly.TryParse(report.EndPeriod_DB, out var dateOnly)
+                && dateOnly.Year.ToString() == year))
+                return
+                    new CheckError()
                     {
                         FormNum = "form_41",
                         Row = $"{form41.NumberInOrder_DB}",
                         Column = $"-",
                         Value = $"-",
-                        Message = $"Проверьте организацию №{regNo} на необходимость представления отчета по форме 2.12"
+                        Message = $"У организации №{regNo} Должен быть отчет по форме 2.12."
                     };
 
-                return null;
+            if ((organization20 != null) && organization20.Report_Collection
+                .Any(report =>
+                report.FormNum_DB == "2.12"
+                && int.TryParse(year, out var intYear)
+                && report.Year_DB == (intYear - 1).ToString())) //проверка на предыдущий отчет
+                return new CheckError()
+                {
+                    FormNum = "form_41",
+                    Row = $"{form41.NumberInOrder_DB}",
+                    Column = $"-",
+                    Value = $"-",
+                    Message = $"Проверьте организацию №{regNo} на необходимость представления отчета по форме 2.12"
+                };
+
+            return null;
 
         }
         private static async Task CancelCommandAndCloseProgressBarWindow(CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null)
@@ -386,8 +419,33 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             if (progressBar is not null) await progressBar.CloseAsync();
             cts.Token.ThrowIfCancellationRequested();
         }
-    }
 
+        private static async Task<bool> ShowAskSecondDB(Window owner)
+        {
+            string answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions =
+                    [
+                        new ButtonDefinition { Name = "Да" },
+                    new ButtonDefinition { Name = "Нет" },
+                    ],
+                    CanResize = true,
+                    ContentTitle = "Формирование нового отчета",
+                    ContentMessage = "Не удалось найти годовые отчеты\n" +
+                    "Вы хотите указать путь на базу данных с годовыми отчетами?",
+                    MinWidth = 300,
+                    MinHeight = 125,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(owner));
+
+            if (answer == "Да")
+                return true;
+            else
+                return false;
+        }
+    }
     class Organization
     {
         public int Id { get; set; }
