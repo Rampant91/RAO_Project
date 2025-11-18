@@ -583,7 +583,7 @@ public partial class Form16 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("-"))
+        if (value.Value.Equals("-") || value.Value.Equals("прим."))
         {
             return true;
         }

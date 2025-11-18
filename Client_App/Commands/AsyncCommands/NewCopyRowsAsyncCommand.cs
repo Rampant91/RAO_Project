@@ -1,9 +1,5 @@
 ﻿using Avalonia;
-using Avalonia.Input;
-using Client_App.ViewModels.Forms;
-using Models.Collections;
-using Models.Forms;
-using Models.Forms.Form1; 
+using Models.Forms; 
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +21,7 @@ public class NewCopyRowsAsyncCommand() : BaseAsyncCommand
     /// <returns></returns>
     public override async Task AsyncExecute(object? parameter)
     {
+        if (parameter is null) return;
         var forms = (IEnumerable<Form>)parameter;
         if (forms == null || !forms.Any()) return;
 
@@ -35,8 +32,10 @@ public class NewCopyRowsAsyncCommand() : BaseAsyncCommand
             plainText.AppendLine(form.ConvertToTSVstring());
         }
 
-        var clipboard = Application.Current.Clipboard;
-
-        await clipboard.SetTextAsync(plainText.ToString());
+        var clipboard = Application.Current!.Clipboard;
+        if (clipboard != null) 
+        {
+            await clipboard.SetTextAsync(plainText.ToString());
+        }
     }
 }

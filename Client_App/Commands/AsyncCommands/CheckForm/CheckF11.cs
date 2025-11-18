@@ -878,8 +878,7 @@ public abstract partial class CheckF11 : CheckBase
                 Value = opDateStr,
                 Message = "Дата операции не должна совпадать с датой начала периода, " +
                           "если имеется хотя бы один более ранний отчёт по данной форме. " +
-                          "См. приказ №1/1623-П раздел 5.2.",
-                IsCritical = true
+                          "См. приказ №1/1628-П раздел 5.2."
             });
             return result;
         }
@@ -2826,9 +2825,14 @@ public abstract partial class CheckF11 : CheckBase
             .Replace('т', 't')
             .Replace('у', 'y')
             .Replace('х', 'x');
+        
+        if (tmp1 == string.Empty || tmp2 == string.Empty)
+        {
+            return false;
+        }
 
         return tmp1.Contains(tmp2);
-    }
+    } 
 
     #endregion
 

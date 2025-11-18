@@ -186,10 +186,10 @@ public class Report : IKey, IDataGridColumn
     #endregion
 
     #region Order
-
-    //Отвечает за сортировку отчётов
+    
     public void SetOrder(long index) { }
 
+    //Отвечает за сортировку отчётов
     public long Order
     {
         get

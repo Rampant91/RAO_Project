@@ -105,9 +105,13 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
         #endregion
 
+        var test1 = dbm.ReportCollectionDbSet;
+
         onStartProgressBarVm.LoadStatus = "Сортировка организаций";
         mainWindowViewModel.OnStartProgressBar = 80;
         await ProcessDataBaseFillEmpty(dbm);
+
+        var test2 = dbm.ReportCollectionDbSet;
 
         onStartProgressBarVm.LoadStatus = "Сортировка примечаний";
         mainWindowViewModel.OnStartProgressBar = 85;
@@ -439,7 +443,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                 dbFileInfo = fileInfo;
                 DbFileName = Path.GetFileNameWithoutExtension(fileInfo.Name);
                 mainWindowViewModel.Current_Db =
-                    $"Интерактивное пособие по вводу данных ver.{Assembly.GetExecutingAssembly().GetName().Version} Текущая база данных - {DbFileName}";
+                    $"МПЗФ ver.{Assembly.GetExecutingAssembly().GetName().Version} Текущая база данных - {DbFileName}";
                 StaticConfiguration.DBPath = fileInfo.FullName;
                 StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                 dbm = StaticConfiguration.DBModel;

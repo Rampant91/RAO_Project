@@ -10,7 +10,7 @@
     d:DesignHeight="600"
     d:DesignWidth="800"
     Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.75', FallbackValue='600', Mode=OneWay}"
-    Height="{Binding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.8', FallbackValue='800', Mode=OneWay}"
+    Height="{Binding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.81', FallbackValue='800', Mode=OneWay}"
     MinWidth="200"
     MinHeight="200"
     x:CompileBindings="True"
