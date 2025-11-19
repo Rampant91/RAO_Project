@@ -1,10 +1,8 @@
-﻿using Client_App.Controls;
-using Client_App.ViewModels;
+﻿using Client_App.ViewModels;
 using Models.JSON.ExecutorData;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -12,7 +10,7 @@ namespace Client_App.Properties.ColumnWidthSettings
 {
     public static class ExecutorDataManager
     {
-        private static readonly string SettingsPath = BaseVM.ConfigDirectory + "\\executorData.json";
+        private static readonly string SettingsPath = Path.Combine(BaseVM.ConfigDirectory, "executorData.json");
 
         // Опции для сериализации с обработкой ошибок
         private static readonly JsonSerializerOptions Options = new JsonSerializerOptions

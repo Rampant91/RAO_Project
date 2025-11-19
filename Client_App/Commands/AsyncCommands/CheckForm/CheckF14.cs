@@ -2097,6 +2097,11 @@ public abstract class CheckF14 : CheckBase
                     && CheckNotePresence(notes, line, graphNumber));
         if (!valid)
         {
+            string[] dashesOperationCodes =
+            {
+                "21", "22", "25", "26", "27", "28", "29", "31",
+                "32", "35", "36", "37", "38", "39", "61", "62"
+            };
             result.Add(new CheckError
             {
                 FormNum = "form_14",
@@ -2104,7 +2109,7 @@ public abstract class CheckF14 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Необходимо указать код ОКПО организации перевозчика.",
-                IsCritical = true
+                IsCritical = !(dashesOperationCodes.Contains(operationCode) && transporterOkpo is "-")
             });
         }
         return result;
@@ -2133,7 +2138,7 @@ public abstract class CheckF14 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек.",
-                IsCritical = true
+                IsCritical = transporterOkpo is not "-"
             });
         }
         return result;

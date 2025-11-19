@@ -1095,7 +1095,7 @@ public abstract class CheckF18 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Для выбранного кода операции указывается код ОКПО перевозчика, либо «Минобороны» без кавычек.",
-                IsCritical = true
+                IsCritical = transporterOkpo is not "-"
             });
         }
         return result;

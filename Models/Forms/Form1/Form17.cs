@@ -1123,26 +1123,12 @@ public partial class Form17 : Form1
     private static bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            return true;
-        }
-        if (value.Value.Equals("Минобороны"))
+        if (string.IsNullOrEmpty(value.Value) 
+            || value.Value.Equals("прим.") 
+            || value.Value.Equals("Минобороны") 
+            || Spravochniks.OKSM.Contains(value.Value.ToUpper()))
         {
             return true;
-        }
-        if (Spravochniks.OKSM.Contains(value.Value.ToUpper()))
-        {
-            return true;
-        }
-        if (value.Value.Length is not (8 or 14))
-        {
-            value.AddError("Недопустимое значение"); 
-            return false;
         }
         if (!OkpoRegex().IsMatch(value.Value))
         {
@@ -1453,7 +1439,7 @@ public partial class Form17 : Form1
     private static bool CodeRAO_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
+        if (string.IsNullOrEmpty(value.Value) || value.Value is "-")
         {
             return true;
         }
@@ -1507,7 +1493,7 @@ public partial class Form17 : Form1
     private static bool StatusRAO_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
+        if (string.IsNullOrEmpty(value.Value) || value.Value is "-")
         {
             return true;
         }
@@ -1519,11 +1505,6 @@ public partial class Form17 : Form1
                 return false;
             }
             return true;
-        }
-        if (value.Value.Length is not (8 or 14))
-        {
-            value.AddError("Недопустимое значение"); 
-            return false;
         }
         if (!OkpoRegex().IsMatch(value.Value))
         {

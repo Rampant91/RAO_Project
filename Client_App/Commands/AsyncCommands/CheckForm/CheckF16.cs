@@ -2935,6 +2935,11 @@ public abstract class CheckF16 : CheckBase
                     || transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase);
         if (!valid)
         {
+            string[] dashesOperationCodes =
+            {
+                "21", "22", "25", "26", "27", "28", "29", "31",
+                "32", "35", "36", "37", "38", "39", "61", "62"
+            };
             result.Add(new CheckError
             {
                 FormNum = "form_16",
@@ -2942,7 +2947,7 @@ public abstract class CheckF16 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOKPO,
                 Message = "Необходимо указать код ОКПО организации перевозчика, либо \"прим.\" без кавычек.",
-                IsCritical = true
+                IsCritical = !(dashesOperationCodes.Contains(operationCode) && transporterOKPO is "-")
             });
         }
         else if (transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase) && !noteExists)
@@ -2986,7 +2991,7 @@ public abstract class CheckF16 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOKPO,
                 Message = "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек, либо \"прим.\" без кавычек.",
-                IsCritical = true
+                IsCritical = transporterOKPO is not "-"
             });
         }
         else if (transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase) && !noteExists)
@@ -3029,8 +3034,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "TransporterOKPO_DB",
                 Value = transporterOKPO,
-                Message = 
-                          "Необходимо указать код ОКПО организации перевозчика, либо \"-\" без кавычек, либо \"прим.\" без кавычек.",
+                Message = "Необходимо указать код ОКПО организации перевозчика, либо \"-\" без кавычек, либо \"прим.\" без кавычек.",
                 IsCritical = true
             });
         }
