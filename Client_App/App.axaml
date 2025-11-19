@@ -88,6 +88,8 @@
 		<Style Selector="Border#Background">
 			<Setter Property="Background" Value="#f0f8ff"/>
         </Style>
+		
+			
         <!--Стили для окон редактирования форм-->
         <!--Header-->
         <Style Selector="CheckBox.hideButton">
@@ -150,6 +152,7 @@
 		<Style Selector="DataGrid.table DataGridColumnHeader">
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="Padding" Value="0"/>
+			
         </Style>
 		
 		<Style Selector="Border.headerTemplate">
@@ -225,17 +228,16 @@
         </Style>
         <Style Selector="DataGrid.notesTable">
             <Setter Property="CornerRadius" Value="5"/>
-            <Setter Property="Width" Value="660"/>
             <Setter Property="MaxHeight" Value="210"/>
 			<Setter Property="Height" Value="210"/>
 			<Setter Property="ColumnHeaderHeight" Value="25"/>
             <Setter Property="RowBackground" Value="White"/>
 			<Setter Property="Background" Value="LightGray"/>
 			<Setter Property="SelectionMode" Value="Extended"/>
+			<Setter Property="CanUserResizeColumns" Value="True"/>
             <Setter Property="AlternatingRowBackground" Value="White"/>
             <Setter Property="Margin" Value="5"/>
 			<Setter Property="GridLinesVisibility" Value="All"></Setter>
-			<Setter Property="HorizontalScrollBarVisibility" Value="Hidden"></Setter>
         </Style>
 		
 		<Style Selector="DataGrid.notesTable TextBox">

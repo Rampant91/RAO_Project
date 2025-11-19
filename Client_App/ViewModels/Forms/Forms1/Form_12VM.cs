@@ -32,8 +32,10 @@ public class Form_12VM : BaseFormVM
                     .LastOrDefault() ?? ""
             },
             Reports = reps
+
         };
 
+        base.InitializeUserControls();
         Reports = reps;
 
         SelectReportPopupVM = new SelectReportPopupVM(this);

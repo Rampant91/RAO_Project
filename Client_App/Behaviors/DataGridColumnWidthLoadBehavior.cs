@@ -42,7 +42,7 @@ namespace Client_App.Behaviors
 
             var columns = AssociatedObject.Columns;
 
-            for (int i = 0; i < columnWidths.Count || i<columnWidths.Count; i++)
+            for (int i = 0; i < columnWidths.Count; i++)
             {
                 columns[i].Width = new DataGridLength(columnWidths[i]);
             }

@@ -32,6 +32,7 @@ public class Form_18VM : BaseFormVM
             Reports = reps
         };
 
+        base.InitializeUserControls();
         Reports = reps;
 
         SelectReportPopupVM = new SelectReportPopupVM(this);
