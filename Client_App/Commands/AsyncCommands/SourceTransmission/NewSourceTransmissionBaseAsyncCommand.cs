@@ -47,15 +47,14 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
             case "1.1":
             {
                 var form11 = (Form11)form;
-                var numberInOrder = await db.ReportCollectionDbSet
+
+                var numberInOrder = await db.form_15
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
-                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                    .Include(x => x.Rows15)
-                    .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Id == rep.Id)
-                    .SelectMany(x => x.Rows15)
+                    .Where(x => x.ReportId == rep.Id)
                     .CountAsync() + 1;
+
                 var newForm15 = new Form15
                 {
                     #region BindingData
@@ -94,6 +93,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 if (!isDuplicate)
                 {
                     db.form_15.Add(newForm15);
+                    //await db.SaveChangesAsync();
                     formIsAdded = true;
                 }
                 break;
@@ -106,19 +106,19 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
             case "1.2":
             {
                 var form12 = (Form12)form;
-                var numberInOrder = await db.ReportCollectionDbSet
+
+                var numberInOrder = await db.form_16
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
-                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                    .Include(x => x.Rows16)
-                    .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Id == rep.Id)
-                    .SelectMany(x => x.Rows16)
+                    .Where(x => x.ReportId == rep.Id)
                     .CountAsync() + 1;
+
                 var massTmp = (form12.Mass_DB ?? "")
                     .Replace(".", ",")
                     .Replace("(", "")
                     .Replace(")", "");
+
                 var massTon = double.TryParse(massTmp,
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
                     CultureInfo.CreateSpecificCulture("ru-RU"),
@@ -188,20 +188,20 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
             {
                 R_Populate_From_File();
                 var form13 = (Form13)form;
-                var numberInOrder = await db.ReportCollectionDbSet
+
+                var numberInOrder = await db.form_16
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
-                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                    .Include(x => x.Rows16)
-                    .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Id == rep.Id)
-                    .SelectMany(x => x.Rows16)
+                    .Where(x => x.ReportId == rep.Id)
                     .CountAsync() + 1;
+
                 var nuclidsArray = form13.Radionuclids_DB
                     .Replace(" ", string.Empty)
                     .ToLower()
                     .Replace(',', ';')
                     .Split(';');
+
                 var nuclidTypeArray = R
                     .Where(x => nuclidsArray.Contains(x["name"]))
                     .Select(x => x["code"])
@@ -260,24 +260,25 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
             {
                 R_Populate_From_File();
                 var form14 = (Form14)form;
-                var numberInOrder = await db.ReportCollectionDbSet
+
+                var numberInOrder = await db.form_16
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
-                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                    .Include(x => x.Rows16)
-                    .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.Id == rep.Id)
-                    .SelectMany(x => x.Rows16)
+                    .Where(x => x.ReportId == rep.Id)
                     .CountAsync() + 1;
+
                 var nuclidsArray = form14.Radionuclids_DB
                     .Replace(" ", string.Empty)
                     .ToLower()
                     .Replace(',', ';')
                     .Split(';');
+
                 var nuclidTypeArray = R
                     .Where(x => nuclidsArray.Contains(x["name"]))
                     .Select(x => x["code"])
                     .ToArray();
+
                 var massTmp = (form14.Mass_DB ?? "")
                     .ToLower()
                     .Replace(".", ",")
@@ -285,6 +286,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .Replace(")", "")
                     .Replace('е', 'e')
                     .Trim();
+
                 var massTon = double.TryParse(massTmp,
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
                     CultureInfo.CreateSpecificCulture("ru-RU"),

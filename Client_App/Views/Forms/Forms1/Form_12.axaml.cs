@@ -306,16 +306,11 @@ public partial class Form_12 : BaseWindow<Form_12VM>
 
                     foreach (var key in lst)
                     {
-
                         var item = (Form)key;
                         if (item.Id == 0)
                         {
                             vm.Report[vm.Report.FormNum_DB].Remove(item);
                         }
-
-                        dbm.Restore();
-                        new SortFormSyncCommand(vm).Execute(null);
-                        await dbm.SaveChangesAsync();
                     }
 
                     var lstNote = vm.Report.Notes.ToList<Note>();
