@@ -737,8 +737,7 @@ public abstract class CheckF12 : CheckBase
                 Value = opDateStr,
                 Message = "Дата операции не должна совпадать с датой начала периода, " +
                           "если имеется хотя бы один более ранний отчёт по данной форме. " +
-                          "См. приказ №1/1623-П раздел 5.2.",
-                IsCritical = true
+                          "См. приказ №1/1628-П раздел 5.2."
             });
             return result;
         }
@@ -985,7 +984,9 @@ public abstract class CheckF12 : CheckBase
         var creatorOkpo = ReplaceNullAndTrim(forms[line].CreatorOKPO_DB);
         //if (!okpoRegexApplicable.IsMatch(creatorOkpo)) return result;
         var valid = !string.IsNullOrEmpty(creatorOkpo)
-                    && OkpoRegex.IsMatch(creatorOkpo);
+                   && (OkpoRegex.IsMatch(creatorOkpo)
+                       || creatorOkpo is "прим."
+                       || OKSM.Any(oksmEntry => oksmEntry["shortname"] == creatorOkpo));
         if (!valid)
         {
             result.Add(new CheckError
@@ -994,7 +995,8 @@ public abstract class CheckF12 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "CreatorOKPO_DB",
                 Value = creatorOkpo,
-                Message = "Формат ввода данных не соответствует приказу. Укажите код ОКПО организации изготовителя."
+                Message = "Формат ввода данных не соответствует приказу. " +
+                "Укажите код ОКПО организации изготовителя или страну-изготовитель из справочника ОКСМ."
             });
         }
         return result;
@@ -1876,6 +1878,11 @@ public abstract class CheckF12 : CheckBase
         var valid = OkpoRegex.IsMatch(transporterOkpo);
         if (!valid)
         {
+            string[] dashesOperationCodes =
+            {
+                "21", "22", "25", "26", "27", "28", "29", "31",
+                "32", "35", "36", "37", "38", "39", "61", "62"
+            };
             result.Add(new CheckError
             {
                 FormNum = "form_12",
@@ -1883,7 +1890,7 @@ public abstract class CheckF12 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Необходимо указать код ОКПО организации перевозчика.",
-                IsCritical = true
+                IsCritical = !(dashesOperationCodes.Contains(operationCode) && transporterOkpo is "-")
             });
         }
         return result;
@@ -1912,7 +1919,7 @@ public abstract class CheckF12 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек.",
-                IsCritical = true
+                IsCritical = transporterOkpo is not "-"
             });
         }
         return result;

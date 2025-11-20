@@ -1,11 +1,14 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Commands.AsyncCommands.CheckForm;
+using Client_App.Properties;
 using Client_App.Resources;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
 using DynamicData;
 using FirebirdSql.Data.FirebirdClient;
 using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.CheckForm;
@@ -17,13 +20,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Client_App.Commands.AsyncCommands.CheckForm;
-using Client_App.Properties;
-using MessageBox.Avalonia.Enums;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
@@ -331,7 +332,7 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
         await tempDb.Database.CloseConnectionAsync();
 
         #region Progress = 95
-        
+
         loadStatus = "Копирование файла в папку назначения";
         progressBarVM.ValueBar = 95;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})"; 
@@ -366,8 +367,24 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
 
+        //Создаёт .zip архив рядом с файлом выгрузки.
+
+        //var sourceFile = fullPath;
+        //var parentDirectory = Path.GetDirectoryName(sourceFile);
+        //if (!string.IsNullOrEmpty(parentDirectory))
+        //{
+        //    var zipName = Path.GetFileNameWithoutExtension(sourceFile) + ".zip";
+        //    var destinationArchive = Path.Combine(parentDirectory, zipName);
+        //    if (File.Exists(destinationArchive))
+        //    {
+        //        try { File.Delete(destinationArchive); } catch { }
+        //    }
+        //    using var archive = ZipFile.Open(destinationArchive, ZipArchiveMode.Create);
+        //    archive.CreateEntryFromFile(sourceFile, Path.GetFileName(sourceFile), CompressionLevel.SmallestSize);
+        //}
+
         #region Progress = 100
-        
+
         loadStatus = "Завершение выгрузки";
         progressBarVM.ValueBar = 100;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})"; 

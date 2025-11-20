@@ -310,10 +310,6 @@ public partial class Form_14 : BaseWindow<Form_14VM>
                         {
                             vm.Report[vm.Report.FormNum_DB].Remove(item);
                         }
-
-                        dbm.Restore();
-                        new SortFormSyncCommand(vm).Execute(null);
-                        await dbm.SaveChangesAsync();
                     }
 
                     var lstNote = vm.Report.Notes.ToList<Note>();

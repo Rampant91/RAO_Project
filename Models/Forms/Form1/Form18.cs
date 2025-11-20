@@ -81,30 +81,6 @@ public partial class Form18 : Form1
                  StoragePlaceCode.HasErrors);
     }
 
-    protected override bool OperationCode_Validation(RamAccess<string> value)//OK
-    {
-        value.ClearErrors();
-        if (value.Value == null)
-        {
-            return true;
-        }
-        if (!Spravochniks.SprOpCodes.Contains(value.Value))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (!TwoNumRegex().IsMatch(value.Value)
-            || !byte.TryParse(value.Value, out var byteValue)
-            || byteValue is not (1 or >= 10 and <= 13 or >= 25 and <= 29 or 31 or 32 or >= 35 and <= 39 
-            or 42 or 51 or 52 or 55 or 63 or 64 or 68 or 97 or 98))
-        {
-            value.AddError("Код операции не может быть использован в форме 1.8");
-            return false;
-        }
-
-        return true;
-    }
-
     protected override bool DocumentNumber_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
@@ -213,6 +189,30 @@ public partial class Form18 : Form1
                 AutoReplaceByOpCode(value1);
             }
         }
+    }
+
+    protected override bool OperationCode_Validation(RamAccess<string> value)//OK
+    {
+        value.ClearErrors();
+        if (value.Value is null or "-" or "")
+        {
+            return true;
+        }
+        if (!Spravochniks.SprOpCodes.Contains(value.Value))
+        {
+            value.AddError("Недопустимое значение");
+            return false;
+        }
+        if (!TwoNumRegex().IsMatch(value.Value)
+            || !byte.TryParse(value.Value, out var byteValue)
+            || byteValue is not (1 or >= 10 and <= 13 or >= 25 and <= 29 or 31 or 32 or >= 35 and <= 39
+            or 42 or 51 or 52 or 55 or 63 or 64 or 68 or 97 or 98))
+        {
+            value.AddError("Код операции не может быть использован в форме 1.8");
+            return false;
+        }
+
+        return true;
     }
 
     #region AutoReplaceByOpCode
@@ -358,6 +358,13 @@ public partial class Form18 : Form1
     }
 
     #endregion
+
+    #endregion
+
+    #region OperationDate (3)
+
+    protected override bool OperationDate_Validation(RamAccess<string> value)
+        => string.IsNullOrWhiteSpace(value.Value) || DateString_Validation(value);
 
     #endregion
 
@@ -548,7 +555,8 @@ public partial class Form18 : Form1
         Volume6_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private static bool Volume6_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
+    private static bool Volume6_Validation(RamAccess<string> value) => 
+        string.IsNullOrWhiteSpace(value.Value) || ExponentialString_Validation(value);
 
     #endregion
 
@@ -603,7 +611,8 @@ public partial class Form18 : Form1
         Mass7_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private static bool Mass7_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
+    private static bool Mass7_Validation(RamAccess<string> value) => 
+        string.IsNullOrWhiteSpace(value.Value) || ExponentialString_Validation(value);
 
     #endregion
 
@@ -658,7 +667,8 @@ public partial class Form18 : Form1
         SaltConcentration_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private static bool SaltConcentration_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
+    private static bool SaltConcentration_Validation(RamAccess<string> value) => 
+        string.IsNullOrWhiteSpace(value.Value) || ExponentialString_Validation(value);
 
     #endregion
 
@@ -964,8 +974,7 @@ public partial class Form18 : Form1
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
         {
-            value.AddError("Недопустимое значение");
-            return false;
+            return true;
         }
         //List<string> spr = new List<string>();
         //if (!spr.Contains(value.Value))
@@ -1037,7 +1046,10 @@ public partial class Form18 : Form1
         //    value.AddError("Недопустимое значение"); return false;
         //}
         //return true;
-        if (value.Value == "-") return true;
+        if (value.Value is null or "" or "-")
+        {
+            return true;
+        }
         if (!StoragePlaceCodeRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение"); 
@@ -1229,7 +1241,8 @@ public partial class Form18 : Form1
         Volume20_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private static bool Volume20_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
+    private static bool Volume20_Validation(RamAccess<string> value) => 
+        string.IsNullOrWhiteSpace(value.Value) || ExponentialString_Validation(value);
 
     #endregion
 
@@ -1266,7 +1279,8 @@ public partial class Form18 : Form1
         Mass21_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private static bool Mass21_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
+    private static bool Mass21_Validation(RamAccess<string> value) => 
+        string.IsNullOrWhiteSpace(value.Value) || ExponentialString_Validation(value);
 
     #endregion
 
@@ -1303,7 +1317,8 @@ public partial class Form18 : Form1
         TritiumActivity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private static bool TritiumActivity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
+    private static bool TritiumActivity_Validation(RamAccess<string> value) => 
+        string.IsNullOrWhiteSpace(value.Value) || ExponentialString_Validation(value);
 
     #endregion
 
@@ -1340,7 +1355,8 @@ public partial class Form18 : Form1
         BetaGammaActivity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private static bool BetaGammaActivity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
+    private static bool BetaGammaActivity_Validation(RamAccess<string> value) => 
+        string.IsNullOrWhiteSpace(value.Value) || ExponentialString_Validation(value);
 
     #endregion
 
@@ -1377,7 +1393,8 @@ public partial class Form18 : Form1
         AlphaActivity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private static bool AlphaActivity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
+    private static bool AlphaActivity_Validation(RamAccess<string> value) => 
+        string.IsNullOrWhiteSpace(value.Value) || ExponentialString_Validation(value);
 
     #endregion
 
@@ -1414,7 +1431,8 @@ public partial class Form18 : Form1
         TransuraniumActivity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private static bool TransuraniumActivity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
+    private static bool TransuraniumActivity_Validation(RamAccess<string> value) => 
+        string.IsNullOrWhiteSpace(value.Value) || ExponentialString_Validation(value);
 
     #endregion
 
@@ -1652,6 +1670,7 @@ public partial class Form18 : Form1
         RefineOrSortRAOCode_DB = Convert.ToString(worksheet.Cells[row, 26].Value);
         Subsidy_DB = Convert.ToString(worksheet.Cells[row, 27].Value);
         FcpNumber_DB = Convert.ToString(worksheet.Cells[row, 28].Value);
+        ContractNumber_DB = Convert.ToString(worksheet.Cells[row, 29].Value);
     }
 
     public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
@@ -1685,10 +1704,7 @@ public partial class Form18 : Form1
         worksheet.Cells[row + (!transpose ? 22 : 0), column + (transpose ? 22 : 0)].Value = ConvertToExcelString(RefineOrSortRAOCode_DB);
         worksheet.Cells[row + (!transpose ? 23 : 0), column + (transpose ? 23 : 0)].Value = ConvertToExcelString(Subsidy_DB);
         worksheet.Cells[row + (!transpose ? 24 : 0), column + (transpose ? 24 : 0)].Value = ConvertToExcelString(FcpNumber_DB);
-        if (worksheet.Name is "Отчеты 1.8")
-        {
-            worksheet.Cells[row + (!transpose ? 25 : 0), column + (transpose ? 25 : 0)].Value = ConvertToExcelString(ContractNumber_DB);
-        }
+        worksheet.Cells[row + (!transpose ? 25 : 0), column + (transpose ? 25 : 0)].Value = ConvertToExcelString(ContractNumber_DB);
 
         return 26;
     }

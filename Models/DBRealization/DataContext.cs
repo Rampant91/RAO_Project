@@ -13,7 +13,7 @@ namespace Models.DBRealization;
 
 public class DataContext : DbContext
 {
-    private string Path { get; set; }
+    private string Path { get; set; } 
 
     #region Constructor
     

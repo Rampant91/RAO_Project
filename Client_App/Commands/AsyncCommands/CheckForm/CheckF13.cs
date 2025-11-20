@@ -317,22 +317,18 @@ public abstract class CheckF13 : CheckBase
     {
         List<CheckError> result = new();
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
-        var radionuclid = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
+        var radionuclids = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
         string[] applicableOperationCodes = { "12", "42" };
-        var radionuclidValid = new[]
-        {
-            "америций-241", "америций-243", "калифорний-252", "литий-6", "нептуний-237",
-            "плутоний-234", "плутоний-235", "плутоний-236", "плутоний-237", "плутоний-238", "плутоний-239", "плутоний-240",
-            "плутоний-241", "плутоний-242", "плутоний-243", "плутоний-244", "плутоний-245", "плутоний-246",
-            "сумма радионуклидов урана", "торий-226", "торий-227", "торий-228", "торий-229", "торий-230", "торий-231", "торий-232",
-            "торий-234", "торий естественный", "торий-естественный", "торий природный", "торий-природный", "тритий",
-            "уран-230", "уран-231", "уран-232", "уран-233", "уран-234", "уран-235", "уран-236", "уран-237",
-            "уран естественный", "уран-естественный", "уран-238", "уран-239", "уран-240", "уран природный", "уран-природный"
-        };
+
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var valid = radionuclidValid
-            .Any(nuclid => radionuclid
-                .Contains(nuclid, StringComparison.CurrentCultureIgnoreCase));
+
+        var nuclids = radionuclids.ToLower().Split(';');
+
+        var valid = nuclids.Any(nuclid => nuclid.Contains("плутоний")
+                || nuclid.Contains("уран")
+                || nuclid.Contains("торий")
+                || nuclid is "америций-241" or "америций-243" or "калифорний-252" or "литий-6" or "нептуний-237" or "тритий");
+
         if (!valid)
         {
             result.Add(new CheckError
@@ -340,7 +336,7 @@ public abstract class CheckF13 : CheckBase
                 FormNum = "form_13",
                 Row = (line + 1).ToString(),
                 Column = "Radionuclids_DB",
-                Value = radionuclid,
+                Value = radionuclids,
                 Message = "В графе 6 не представлены сведения о радионуклидах, которые могут быть отнесены к ЯМ. " +
                           "Проверьте правильность выбранного кода операции.",
                 IsCritical = true
@@ -712,8 +708,7 @@ public abstract class CheckF13 : CheckBase
                 Value = opDateStr,
                 Message = "Дата операции не должна совпадать с датой начала периода, " +
                           "если имеется хотя бы один более ранний отчёт по данной форме. " +
-                          "См. приказ №1/1623-П раздел 5.2.",
-                IsCritical = true
+                          "См. приказ №1/1628-П раздел 5.2."
             });
             return result;
         }
@@ -1260,7 +1255,8 @@ public abstract class CheckF13 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "CreatorOKPO_DB",
                 Value = creatorOkpo,
-                Message = "Формат ввода данных не соответствует приказу. Укажите код ОКПО организации изготовителя."
+                Message = "Формат ввода данных не соответствует приказу. " +
+                "Укажите код ОКПО организации изготовителя или страну-изготовитель из справочника ОКСМ."
             });
         }
         return result;
@@ -2015,6 +2011,11 @@ public abstract class CheckF13 : CheckBase
                     && CheckNotePresence(notes, line, graphNumber));
         if (!valid)
         {
+            string[] dashesOperationCodes =
+            {
+                "21", "22", "25", "26", "27", "28", "29", "31",
+                "32", "35", "36", "37", "38", "39", "61", "62"
+            };
             result.Add(new CheckError
             {
                 FormNum = "form_13",
@@ -2022,7 +2023,7 @@ public abstract class CheckF13 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Необходимо указать код ОКПО организации перевозчика.",
-                IsCritical = true
+                IsCritical = !(dashesOperationCodes.Contains(operationCode) && transporterOkpo is "-")
             });
         }
         return result;
@@ -2051,7 +2052,7 @@ public abstract class CheckF13 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек.",
-                IsCritical = true
+                IsCritical = transporterOkpo is not "-"
             });
         }
         return result;

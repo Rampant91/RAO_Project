@@ -8,7 +8,7 @@ namespace Client_App.Properties.ColumnWidthSettings
 {
     public static class ColumnSettingsManager
     {
-        private static readonly string SettingsPath = BaseVM.ConfigDirectory + "\\columnWidthsSettings.json";
+        private static readonly string SettingsPath = Path.Combine(BaseVM.ConfigDirectory, "columnWidthsSettings.json");
 
         // Опции для сериализации с обработкой ошибок
         private static readonly JsonSerializerOptions Options = new JsonSerializerOptions

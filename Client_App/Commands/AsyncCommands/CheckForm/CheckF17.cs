@@ -199,13 +199,17 @@ public abstract class CheckF17 : CheckBase
         var comparator = new CustomNullStringWithTrimComparer();
         for (var i = 0; i < forms.Count; i++)
         {
-            if (duplicatesGroupsSet.Any(set => set.Contains(i + 1))) continue;
             var currentForm = forms[i];
+            if (currentForm.OperationCode_DB is null or "" or "-"
+                || duplicatesGroupsSet.Any(set => set.Contains(i + 1))) continue;
+
             var hasDuplicate = false;
             for (var j = i + 1; j < forms.Count; j++)
             {
-                if (duplicatesGroupsSet.Any(set => set.Contains(j + 1))) continue;
                 var formToCompare = forms[j];
+                if (formToCompare.OperationCode_DB is null or "" or "-"
+                    || duplicatesGroupsSet.Any(set => set.Contains(j + 1))) continue;
+
                 var isDuplicate = !string.IsNullOrWhiteSpace(currentForm.OperationCode_DB) 
                                   && comparator.Compare(formToCompare.OperationCode_DB, currentForm.OperationCode_DB) == 0
                                   && comparator.Compare(formToCompare.OperationDate_DB, currentForm.OperationDate_DB) == 0
@@ -327,24 +331,15 @@ public abstract class CheckF17 : CheckBase
         List<CheckError> result = new();
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var rads = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
-        var applicableOperationCodes = new[] { "12", "42" };
-        var requiredNuclids = new[]
-        {
-           "уран-230", "уран-231", "уран-232", "уран-233", "уран-234", "уран-235",
-           "уран-236", "уран-237", "уран-238", "уран-239", "уран-240",
-           "уран естественный", "уран обедненный", "уран обогащенный", "сумма нуклидов урана",
-           "америций-241",  "америций-243", "калифорний-252", "литий-6", "нептуний-237", "плутоний", "торий", "тритий"
-        };
-        if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var nuclids = rads.Split(';');
-        var valid = false;
-        for (var i = 0; i < nuclids.Length; i++)
-        {
-            nuclids[i] = nuclids[i].Trim().ToLower();
-            if (!requiredNuclids.Contains(nuclids[i])) continue;
-            valid = true;
-            break;
-        }
+        var requiredNuclids = new[] { "америций-241", "америций-243", "калифорний-252", "литий-6", "нептуний-237", "тритий" };
+        if (operationCode is not "12") return result;
+        var nuclids = rads.ToLower().Split(';');
+
+        var valid = nuclids.Any(nuclid => nuclid.Contains("плутоний")
+                || nuclid.Contains("уран")
+                || nuclid.Contains("торий")
+                || nuclid is "америций-241" or "америций-243" or "калифорний-252" or "литий-6" or "нептуний-237" or "тритий");
+
         if (!valid)
         {
             result.Add(new CheckError
@@ -478,8 +473,7 @@ public abstract class CheckF17 : CheckBase
                 Value = opDateStr,
                 Message = "Дата операции не должна совпадать с датой начала периода, " +
                           "если имеется хотя бы один более ранний отчёт по данной форме. " +
-                          "См. приказ №1/1623-П раздел 5.2.",
-                IsCritical = true
+                          "См. приказ №1/1628-П раздел 5.2."
             });
             return result;
         }

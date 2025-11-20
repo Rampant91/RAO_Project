@@ -362,6 +362,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 {
                     worksheet.Cells["G3"].Value = rep.CorrectionNumber_DB;
                     worksheet.Cells["G4"].Value = rep.PermissionNumber27_DB;
+                    worksheet.Cells["J4"].Value = rep.PermissionIssueDate27_DB;
                     worksheet.Cells["G5"].Value = rep.ValidBegin27_DB;
                     worksheet.Cells["J5"].Value = rep.ValidThru27_DB;
                     worksheet.Cells["G6"].Value = rep.PermissionDocumentName27_DB;
@@ -371,16 +372,19 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 {
                     worksheet.Cells["G3"].Value = rep.CorrectionNumber_DB;
                     worksheet.Cells["G4"].Value = rep.PermissionNumber_28_DB;
+                    worksheet.Cells["K5"].Value = rep.PermissionIssueDate_28_DB; 
                     worksheet.Cells["K4"].Value = rep.ValidBegin_28_DB;
                     worksheet.Cells["N4"].Value = rep.ValidThru_28_DB;
                     worksheet.Cells["G5"].Value = rep.PermissionDocumentName_28_DB;
 
                     worksheet.Cells["G6"].Value = rep.PermissionNumber1_28_DB;
+                    worksheet.Cells["K7"].Value = rep.PermissionIssueDate1_28_DB;
                     worksheet.Cells["K6"].Value = rep.ValidBegin1_28_DB;
                     worksheet.Cells["N6"].Value = rep.ValidThru1_28_DB;
                     worksheet.Cells["G7"].Value = rep.PermissionDocumentName1_28_DB;
 
                     worksheet.Cells["G8"].Value = rep.ContractNumber_28_DB;
+                    worksheet.Cells["K9"].Value = rep.ContractIssueDate2_28_DB;
                     worksheet.Cells["K8"].Value = rep.ValidBegin2_28_DB;
                     worksheet.Cells["N8"].Value = rep.ValidThru2_28_DB;
                     worksheet.Cells["G9"].Value = rep.OrganisationReciever_28_DB;
@@ -440,6 +444,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         for (var i = 0; i < rep.Notes.Count - 1; i++)
         {
             worksheet.InsertRow(start + 1, 1, start);
+            if (i == 0) //Костыль, чтобы у первой строки тоже высота автоматически подбиралась.
+            {
+                worksheet.DeleteRow(start);
+                worksheet.InsertRow(start + 1, 1, start);
+            }
             var cells = worksheet.Cells[$"A{start + 1}:B{start + 1}"];
             foreach (var cell in cells)
             {
@@ -511,6 +520,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         for (var i = 0; i < rep[formNum].Count - 1; i++)
         {
             worksheet.InsertRow(start + 1, 1, start);
+            if (i == 0) //Костыль, чтобы у первой строки тоже высота автоматически подбиралась.
+            {
+                worksheet.DeleteRow(start);
+                worksheet.InsertRow(start + 1, 1, start);
+            }
             var cells = worksheet.Cells[$"A{start + 1}:B{start + 1}"];
             foreach (var cell in cells)
             {

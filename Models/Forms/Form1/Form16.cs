@@ -583,7 +583,7 @@ public partial class Form16 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("-"))
+        if (value.Value.Equals("-") || value.Value.Equals("прим."))
         {
             return true;
         }
@@ -1500,6 +1500,7 @@ public partial class Form16 : Form1
         PackNumber_DB = Convert.ToString(worksheet.Cells[row, 25].Value);
         Subsidy_DB = Convert.ToString(worksheet.Cells[row, 26].Value);
         FcpNumber_DB = Convert.ToString(worksheet.Cells[row, 27].Value);
+        ContractNumber_DB = Convert.ToString(worksheet.Cells[row, 28].Value);
     }
 
     public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
@@ -1532,10 +1533,7 @@ public partial class Form16 : Form1
         worksheet.Cells[row + (!transpose ? 21 : 0), column + (transpose ? 21 : 0)].Value = ConvertToExcelString(PackNumber_DB);
         worksheet.Cells[row + (!transpose ? 22 : 0), column + (transpose ? 22 : 0)].Value = ConvertToExcelString(Subsidy_DB);
         worksheet.Cells[row + (!transpose ? 23 : 0), column + (transpose ? 23 : 0)].Value = ConvertToExcelString(FcpNumber_DB);
-        if (worksheet.Name is "Отчеты 1.6")
-        {
-            worksheet.Cells[row + (!transpose ? 24 : 0), column + (transpose ? 24 : 0)].Value = ConvertToExcelString(ContractNumber_DB);
-        }
+        worksheet.Cells[row + (!transpose ? 24 : 0), column + (transpose ? 24 : 0)].Value = ConvertToExcelString(ContractNumber_DB);
 
         return 25;
     }

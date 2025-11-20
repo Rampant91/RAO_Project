@@ -162,13 +162,17 @@ public abstract class CheckF18 : CheckBase
         var comparator = new CustomNullStringWithTrimComparer();
         for (var i = 0; i < forms.Count; i++)
         {
-            if (duplicatesGroupsSet.Any(set => set.Contains(i + 1))) continue;
             var currentForm = forms[i];
+            if (currentForm.OperationCode_DB is null or "" or "-" 
+                || duplicatesGroupsSet.Any(set => set.Contains(i + 1))) continue;
+
             var hasDuplicate = false;
             for (var j = i + 1; j < forms.Count; j++)
             {
-                if (duplicatesGroupsSet.Any(set => set.Contains(j + 1))) continue;
                 var formToCompare = forms[j];
+                if (formToCompare.OperationCode_DB is null or "" or "-" 
+                    || duplicatesGroupsSet.Any(set => set.Contains(j + 1))) continue;
+                
                 var isDuplicate = !string.IsNullOrWhiteSpace(currentForm.OperationCode_DB)
                                   && comparator.Compare(formToCompare.OperationCode_DB, currentForm.OperationCode_DB) == 0
                                   && comparator.Compare(formToCompare.OperationDate_DB, currentForm.OperationDate_DB) == 0
@@ -215,7 +219,7 @@ public abstract class CheckF18 : CheckBase
                 var dupStrByGroups = ConvertSequenceSetToRangeString(group);
                 result.Add(new CheckError
                 {
-                    FormNum = "form_17",
+                    FormNum = "form_18",
                     Row = dupStrByGroups,
                     Column = "2 - 18",
                     Value = "",
@@ -502,8 +506,7 @@ public abstract class CheckF18 : CheckBase
                 Value = opDateStr,
                 Message = "Дата операции не должна совпадать с датой начала периода, " +
                           "если имеется хотя бы один более ранний отчёт по данной форме. " +
-                          "См. приказ №1/1623-П раздел 5.2.",
-                IsCritical = true
+                          "См. приказ №1/1628-П раздел 5.2."
             });
             return result;
         }
@@ -1092,7 +1095,7 @@ public abstract class CheckF18 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Для выбранного кода операции указывается код ОКПО перевозчика, либо «Минобороны» без кавычек.",
-                IsCritical = true
+                IsCritical = transporterOkpo is not "-"
             });
         }
         return result;
@@ -1381,7 +1384,7 @@ public abstract class CheckF18 : CheckBase
             {
                 result.Add(new CheckError
                 {
-                    FormNum = "form_17",
+                    FormNum = "form_18",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "26-29 (Активность)",
                     Value = "",
@@ -1393,7 +1396,7 @@ public abstract class CheckF18 : CheckBase
             {
                 result.Add(new CheckError
                 {
-                    FormNum = "form_17",
+                    FormNum = "form_18",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "MassOutOfPack_DB",
                     Value = nuclidMassOutOfPack,
@@ -1405,7 +1408,7 @@ public abstract class CheckF18 : CheckBase
             {
                 result.Add(new CheckError
                 {
-                    FormNum = "form_17",
+                    FormNum = "form_18",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "VolumeOutOfPack_DB",
                     Value = volumeOutOfPack,
@@ -1420,7 +1423,7 @@ public abstract class CheckF18 : CheckBase
             {
                 result.Add(new CheckError
                 {
-                    FormNum = "form_17",
+                    FormNum = "form_18",
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "RefineOrSortRAOCode_DB",
                     Value = forms[line].RefineOrSortRAOCode_DB,
@@ -2451,14 +2454,13 @@ public abstract class CheckF18 : CheckBase
             {
                 result.Add(new CheckError
                 {
-                    FormNum = "form_17",
+                    FormNum = "form_18",
                     Row = forms[currentLine].NumberInOrder_DB.ToString(),
                     Column = "RefineOrSortRAOCode_DB",
                     Value = forms[currentLine].RefineOrSortRAOCode_DB,
                     Message = $"Для головной строчки ({lines[0] + 1}) контейнера, указан код переработки {forms[lines[0]].RefineOrSortRAOCode_DB}, " +
                               $"а для строчки {currentLine + 1} код переработки не указан. " +
-                              "Проверьте правильность заполнения кода переработки.",
-                    IsCritical = true
+                              "Проверьте правильность заполнения кода переработки."
                 });
             }
         }

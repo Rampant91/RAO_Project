@@ -322,29 +322,16 @@ public abstract class CheckF16 : CheckBase
         List<CheckError> result = new();
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var applicableOperationCodes = new[] { "12", "42" };
-        var requiredNuclids = new []
-        {
-            "америций-241", "америций-243", "калифорний-252", "литий-6", "нептуний-237", 
-            "плутоний-234", "плутоний-235", "плутоний-236", "плутоний-237", "плутоний-238", "плутоний-239", "плутоний-240", 
-            "плутоний-241", "плутоний-242", "плутоний-243", "плутоний-244", "плутоний-245", "плутоний-246",
-            "сумма радионуклидов урана", "торий-226", "торий-227", "торий-228", "торий-229", "торий-230", "торий-231", "торий-232",
-            "торий-234", "торий естественный", "торий-естественный", "торий природный", "торий-природный", "тритий", 
-            "уран-230", "уран-231", "уран-232", "уран-233", "уран-234", "уран-235", "уран-236", "уран-237",
-            "уран естественный", "уран-естественный", "уран-238", "уран-239", "уран-240", "уран природный", "уран-природный"
-        };
+       
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var mainRad = ReplaceNullAndTrim(forms[line].MainRadionuclids_DB);
-        var nuclids = mainRad.Split(';');
-        var valid = false;
-        for (var i = 0; i < nuclids.Length; i++)
-        {
-            nuclids[i] = nuclids[i].Trim().ToLower();
-            if (requiredNuclids.Contains(nuclids[i]))
-            {
-                valid = true;
-                break;
-            }
-        }
+        var nuclids = mainRad.ToLower().Split(';');
+
+        var valid = nuclids.Any(nuclid => nuclid.Contains("плутоний")
+                || nuclid.Contains("уран")
+                || nuclid.Contains("торий")
+                || nuclid is "америций-241" or "америций-243" or "калифорний-252" or "литий-6" or "нептуний-237" or "тритий");
+
         if (!valid)
         {
             result.Add(new CheckError
@@ -701,8 +688,7 @@ public abstract class CheckF16 : CheckBase
                 Value = opDateStr,
                 Message = "Дата операции не должна совпадать с датой начала периода, " +
                           "если имеется хотя бы один более ранний отчёт по данной форме. " +
-                          "См. приказ №1/1623-П раздел 5.2.",
-                IsCritical = true
+                          "См. приказ №1/1628-П раздел 5.2."
             });
             return result;
         }
@@ -2123,7 +2109,7 @@ public abstract class CheckF16 : CheckBase
         var stateRao = codeRao[..1];
         if (raoTypes1.Contains(typeRao))
         {
-            if (!quantityOziiiExists)
+            if (!quantityOziiiExists && quantityOziii is not "прим.")
             {
                 result.Add(new CheckError
                 {
@@ -2627,9 +2613,9 @@ public abstract class CheckF16 : CheckBase
         List<CheckError> result = new();
         var activityDate = ReplaceNullAndTrim(forms[line].ActivityMeasurementDate_DB);
         var operationDate = ReplaceNullAndTrim(forms[line].OperationDate_DB);
-        var operationDateReal = DateTime.UnixEpoch;
-        var valid = DateTime.TryParse(activityDate, out var activityDateReal) 
-                    && DateTime.TryParse(operationDate, out operationDateReal);
+        var operationDateReal = DateOnly.FromDateTime(DateTime.UnixEpoch);
+        var valid = DateOnly.TryParse(activityDate, out var activityDateReal) 
+                    && DateOnly.TryParse(operationDate, out operationDateReal);
         if (valid)
         {
             valid = activityDateReal <= operationDateReal;
@@ -2949,6 +2935,11 @@ public abstract class CheckF16 : CheckBase
                     || transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase);
         if (!valid)
         {
+            string[] dashesOperationCodes =
+            {
+                "21", "22", "25", "26", "27", "28", "29", "31",
+                "32", "35", "36", "37", "38", "39", "61", "62"
+            };
             result.Add(new CheckError
             {
                 FormNum = "form_16",
@@ -2956,7 +2947,7 @@ public abstract class CheckF16 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOKPO,
                 Message = "Необходимо указать код ОКПО организации перевозчика, либо \"прим.\" без кавычек.",
-                IsCritical = true
+                IsCritical = !(dashesOperationCodes.Contains(operationCode) && transporterOKPO is "-")
             });
         }
         else if (transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase) && !noteExists)
@@ -3000,7 +2991,7 @@ public abstract class CheckF16 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOKPO,
                 Message = "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек, либо \"прим.\" без кавычек.",
-                IsCritical = true
+                IsCritical = transporterOKPO is not "-"
             });
         }
         else if (transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase) && !noteExists)
@@ -3043,8 +3034,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "TransporterOKPO_DB",
                 Value = transporterOKPO,
-                Message = 
-                          "Необходимо указать код ОКПО организации перевозчика, либо \"-\" без кавычек, либо \"прим.\" без кавычек.",
+                Message = "Необходимо указать код ОКПО организации перевозчика, либо \"-\" без кавычек, либо \"прим.\" без кавычек.",
                 IsCritical = true
             });
         }

@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Models.CheckForm;
+﻿using Models.CheckForm;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -67,7 +66,7 @@ public abstract partial class CheckF11 : CheckBase
             errorList.AddRange(Check_039(formsList, notes, currentFormLine));
             errorList.AddRange(Check_040(formsList, currentFormLine));
             errorList.AddRange(Check_041(formsList, currentFormLine));
-            errorList.AddRange(Check_042(formsList, currentFormLine));
+            errorList.AddRange(Check_042(formsList, notes, currentFormLine));
             errorList.AddRange(Check_043(formsList, currentFormLine));
             errorList.AddRange(Check_044(formsList, currentFormLine));
             errorList.AddRange(Check_045(formsList, notes, currentFormLine));
@@ -351,8 +350,13 @@ public abstract partial class CheckF11 : CheckBase
         var radionuclids = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
         var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         if (!applicableOperationCodes.Contains(opCode)) return result;
-        var valid = Radionuclids_YAM_DB_Valids.Any(nuclid =>
-            radionuclids.Contains(nuclid, StringComparison.CurrentCultureIgnoreCase));
+        var nuclids = radionuclids.ToLower().Split(';');
+
+        var valid = nuclids.Any(nuclid => nuclid.Contains("плутоний")
+                || nuclid.Contains("уран")
+                || nuclid.Contains("торий")
+                || nuclid is "америций-241" or "америций-243" or "калифорний-252" or "литий-6" or "нептуний-237" or "тритий");
+
         if (!valid)
         {
             result.Add(new CheckError
@@ -874,8 +878,7 @@ public abstract partial class CheckF11 : CheckBase
                 Value = opDateStr,
                 Message = "Дата операции не должна совпадать с датой начала периода, " +
                           "если имеется хотя бы один более ранний отчёт по данной форме. " +
-                          "См. приказ №1/1623-П раздел 5.2.",
-                IsCritical = true
+                          "См. приказ №1/1628-П раздел 5.2."
             });
             return result;
         }
@@ -1213,8 +1216,7 @@ public abstract partial class CheckF11 : CheckBase
                     Column = "FactoryNumber_DB",
                     Value = factoryNum,
                     Message = "Для упаковки однотипных ЗРИ, имеющей один паспорт (сертификат), " +
-                              "заводские номера в списке разделяются точкой с запятой.",
-                    IsCritical = true
+                              "заводские номера в списке разделяются точкой с запятой."
                 });
             }
         }
@@ -1257,6 +1259,7 @@ public abstract partial class CheckF11 : CheckBase
         List<CheckError> result = new();
         var rad = ReplaceNullAndTrim(forms[line].Radionuclids_DB).ToLower();
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
+        var category = forms[line].Category_DB;
         var quantity = forms[line].Quantity_DB ?? 0;
 
         if (R.All(x => x["name"] != rad) 
@@ -1279,7 +1282,7 @@ public abstract partial class CheckF11 : CheckBase
                 Message = "Сведения, указанные в графе 9 (Суммарная активность) ниже МЗА, " +
                           "ЗРИ не является объектом учёта СГУК РВ и РАО. Сверьте сведения, указанные в отчёте, с паспортом на ЗРИ. " +
                           "Обратите внимание на размерность активности, указанной в паспорте на ЗРИ (Бк, МБк, ТБк).",
-                IsCritical = true
+                IsCritical = category is not 5
             });
         }
         return result;
@@ -1295,6 +1298,7 @@ public abstract partial class CheckF11 : CheckBase
         List<CheckError> result = new();
         var rads = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
+        var category = forms[line].Category_DB;
         var quantity = forms[line].Quantity_DB ?? 0;
         var radsSet = rads
             .ToLower()
@@ -1340,7 +1344,7 @@ public abstract partial class CheckF11 : CheckBase
                 Message = "Сведения, указанные в графе 9 (Суммарная активность) ниже МЗА, " +
                           "ЗРИ не является объектом учёта СГУК РВ и РАО. Сверьте сведения, указанные в отчёте, с паспортом на ЗРИ. " +
                           "Обратите внимание на размерность активности, указанной в паспорте на ЗРИ (Бк, МБк, ТБк).",
-                IsCritical = true
+                IsCritical = category is not 5
             });
         }
         return result;
@@ -1356,6 +1360,7 @@ public abstract partial class CheckF11 : CheckBase
         List<CheckError> result = new();
         var rads = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
+        var category = forms[line].Category_DB;
         var quantity = forms[line].Quantity_DB ?? 0;
         var radsSet = rads
             .ToLower()
@@ -1400,7 +1405,7 @@ public abstract partial class CheckF11 : CheckBase
                 Message = "Сведения, указанные в графе 9 (Суммарная активность) ниже МЗА, " +
                           "ЗРИ не является объектом учёта СГУК РВ и РАО. Сверьте сведения, указанные в отчёте, с паспортом на ЗРИ. " +
                           "Обратите внимание на размерность активности, указанной в паспорте на ЗРИ (Бк, МБк, ТБк).",
-                IsCritical = true
+                IsCritical = category is not 5
             });
         }
         return result;
@@ -1515,7 +1520,8 @@ public abstract partial class CheckF11 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "CreatorOKPO_DB",
                 Value = creatorOkpo,
-                Message = "Формат ввода данных не соответствует приказу. Укажите код ОКПО организации изготовителя.",
+                Message = "Формат ввода данных не соответствует приказу. " +
+                "Укажите код ОКПО организации изготовителя или страну-изготовитель из справочника ОКСМ.",
                 IsCritical = true
             });
         }
@@ -1577,6 +1583,7 @@ public abstract partial class CheckF11 : CheckBase
         }
         else if (!DateOnly.TryParse(creationDate, out _))
         {
+            var isNote = creationDate.ToLower() is "прим.";
             result.Add(new CheckError
             {
                 FormNum = "form_11",
@@ -1585,7 +1592,7 @@ public abstract partial class CheckF11 : CheckBase
                 Value = creationDate,
                 Message = "Формат ввода данных не соответствует приказу. Некорректно заполнена дата выпуска. " +
                           "Если известен только год, то указывается 1 января этого года.",
-                IsCritical = true
+                IsCritical = isNote!
             });
         }
         return result;
@@ -1627,7 +1634,7 @@ public abstract partial class CheckF11 : CheckBase
     #region Check042
 
     //Соответствие категории ЗРИ (графа 12)
-    private static List<CheckError> Check_042(List<Form11> forms, int line)
+    private static List<CheckError> Check_042(List<Form11> forms, List<Note> notes, int line)
     {
         List<CheckError> result = new();
         var dbBounds = new Dictionary<short, (decimal, decimal)>
@@ -1656,6 +1663,8 @@ public abstract partial class CheckF11 : CheckBase
 
         var valid = dbBounds.ContainsKey(category)
                     && radsSet.Count > 0;
+
+        var calculatedCategoryIsFourOrLess = false;
         if (valid)
         {
             foreach (var nuclid in radsSet)
@@ -1671,29 +1680,8 @@ public abstract partial class CheckF11 : CheckBase
                     dValueList.Add(decimal.Multiply(value, 1e12m));
                 }
             }
-            //if (dValueList.Count == 0)
-            //{
-            //    foreach (var nuclid in nuclidsList)
-            //    {
-            //        foreach (var key in D.Keys.Where(key => key.Contains(nuclid)))
-            //        {
-            //            dValueList.Add(D[key] / (quantity != null && quantity != 0
-            //                ? (double)quantity
-            //                : 1.0));
-            //            break;
-            //        }
-            //    }
-            //}
             if (dValueList.Count == 0)
             {
-                //result.Add(new CheckError
-                //{
-                //    FormNum = "form_11",
-                //    Row = (line + 1).ToString(),
-                //    Column = "Radionuclids_DB",
-                //    Value = radionuclids,
-                //    Message = "Проверьте правильность заполнения графы 6."
-                //});
                 return result;
             }
             var dMinValue = dValueList.Min();
@@ -1713,12 +1701,30 @@ public abstract partial class CheckF11 : CheckBase
                 var adMaxBound = dMinValue == 0.0m
                     ? decimal.MaxValue
                     : aValue / dMinValue;
+
                 valid = dbBounds[category].Item1 <= adMinBound
                         && dbBounds[category].Item2 > adMaxBound;
+
+                if (adMaxBound < 1) calculatedCategoryIsFourOrLess = true;
             }
         }
         if (!valid)
         {
+            var rad = ReplaceNullAndTrim(forms[line].Radionuclids_DB).ToLower();
+
+            if (R.All(x => x["name"] != rad)
+                || quantity <= 0
+                || !TryParseDoubleExtended(activity, out var activityDoubleValue)
+                || activityDoubleValue <= 0) return result;
+
+            var mza = R.First(x => x["name"] == rad)["MZA"];
+            if (!TryParseDoubleExtended(mza, out var mzaDoubleValue)) return result;
+
+            var mzaValid = activityDoubleValue / quantity >= mzaDoubleValue;
+            var noteIsPresent = CheckNotePresence(notes, line, 12);
+
+            var isNotCritical = category is 5 && (!mzaValid || (calculatedCategoryIsFourOrLess && noteIsPresent));
+
             result.Add(new CheckError
             {
                 FormNum = "form_11",
@@ -1727,7 +1733,7 @@ public abstract partial class CheckF11 : CheckBase
                 Value = category.ToString(),
                 Message = "Расчетное значение категории ЗРИ не соответствует представленному в отчёте. " +
                           "Проверьте правильность указания категории ЗРИ, сведений о суммарной активности и радионуклидах.",
-                IsCritical = category is not 5
+                IsCritical = !isNotCritical
             });
         }
         return result;
@@ -2611,12 +2617,18 @@ public abstract partial class CheckF11 : CheckBase
             "21", "25", "27", "28", "29", "31", "35", "37", "38", "39", 
             "61", "62", "81", "82", "83", "84", "85", "86", "87", "88"
         };
+        
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var transporterOkpo = ReplaceNullAndTrim(forms[line].TransporterOKPO_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var valid = OkpoRegex.IsMatch(transporterOkpo);
         if (!valid)
         {
+            string[] dashesOperationCodes =
+            {
+                "21", "22", "25", "26", "27", "28", "29", "31",
+                "32", "35", "36", "37", "38", "39", "61", "62"
+            };
             result.Add(new CheckError
             {
                 FormNum = "form_11",
@@ -2624,7 +2636,7 @@ public abstract partial class CheckF11 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Необходимо указать код ОКПО организации перевозчика.",
-                IsCritical = true
+                IsCritical = !(dashesOperationCodes.Contains(operationCode) && transporterOkpo is "-")
             });
         }
         return result;
@@ -2653,7 +2665,7 @@ public abstract partial class CheckF11 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек.",
-                IsCritical = true
+                IsCritical = transporterOkpo is not "-"
             });
         }
         return result;
@@ -2822,9 +2834,14 @@ public abstract partial class CheckF11 : CheckBase
             .Replace('т', 't')
             .Replace('у', 'y')
             .Replace('х', 'x');
+        
+        if (tmp1 == string.Empty || tmp2 == string.Empty)
+        {
+            return false;
+        }
 
         return tmp1.Contains(tmp2);
-    }
+    } 
 
     #endregion
 
@@ -2895,57 +2912,6 @@ public abstract partial class CheckF11 : CheckBase
     [
         "11", "12", "15", "28", "38", "41", "63", "64", "65", "73", "81", "85", "88"
     ];  
-
-    private static readonly string[] Radionuclids_YAM_DB_Valids =
-    [
-        "америций-241",
-        "америций-243",
-        "калифорний-252",
-        "литий-6",
-        "нептуний-237",
-        "плутоний-234",
-        "плутоний-235",
-        "плутоний-236",
-        "плутоний-237",
-        "плутоний-238",
-        "плутоний-239",
-        "плутоний-240",
-        "плутоний-241",
-        "плутоний-242",
-        "плутоний-243",
-        "плутоний-244",
-        "плутоний-245",
-        "плутоний-246",
-        "сумма радионуклидов урана",
-        "торий-226",
-        "торий-227",
-        "торий-228",
-        "торий-229",
-        "торий-230",
-        "торий-231",
-        "торий-232",
-        "торий-234",
-        "торий естественный",
-        "торий-естественный",
-        "торий природный",
-        "торий-природный",
-        "тритий",
-        "уран-230",
-        "уран-231",
-        "уран-232",
-        "уран-233",
-        "уран-234",
-        "уран-235",
-        "уран-236",
-        "уран-237",
-        "уран естественный",
-        "уран-естественный",
-        "уран-238",
-        "уран-239",
-        "уран-240",
-        "уран природный",
-        "уран-природный"
-    ];
 
     private static readonly string[] Type_DB_Valids = Array.Empty<string>();
 

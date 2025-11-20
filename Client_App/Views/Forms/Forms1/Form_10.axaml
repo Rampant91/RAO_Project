@@ -2,13 +2,13 @@
     x:Class="Client_App.Views.Forms.Forms1.Form_10"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
+    xmlns:customConverters="clr-namespace:Client_App.Resources.CustomConverters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
-    xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
-    xmlns:customConverters="clr-namespace:Client_App.Resources.CustomConverters"
-    Title="{Binding WindowHeader, Mode=OneTime}"
     Name="Форма 1.0"
+    Title="{Binding WindowHeader, Mode=OneTime}"
     Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.5', FallbackValue='600', Mode=OneTime}"
     Height="{Binding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.75', FallbackValue='800', Mode=OneTime}"
     MinWidth="950"
@@ -19,16 +19,17 @@
     mc:Ignorable="d">
 
     <Design.DataContext>
-        <vm:Form_10VM/>
+        <vm:Form_10VM />
     </Design.DataContext>
 
     <Grid>
-
-        <!--  TopTable  -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" MaxHeight="200"/>
-            <RowDefinition Height="5*" MinHeight="400"/>
+            <RowDefinition Height="*" MaxHeight="200" />
+            <RowDefinition Height="5*" MinHeight="400" />
         </Grid.RowDefinitions>
+
+        <!--#region Верхняя таблица-->
+
         <Border
             Grid.Row="0"
             MinHeight="140"
@@ -41,60 +42,61 @@
             CornerRadius="5">
 
             <Grid ColumnDefinitions="330,500">
-                <StackPanel Grid.Column="0"
-                            Orientation="Vertical">
+                <StackPanel Grid.Column="0" Orientation="Vertical">
                     <TextBlock
                         Height="32"
                         Margin="5,25,0,0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="Орган управления использованием атомной энергии"/>
+                        Text="Орган управления использованием атомной энергии" />
                     <TextBlock
                         Height="32"
                         Margin="5,8,0,0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="Регистрационный номер:"/>
-                    <StackPanel
-                        Orientation = "Horizontal">
-                        <Button 
-                            Content="Поменять местами"
-                            IsVisible="{Binding IsSeparateDivision}"
-                            IsEnabled="{Binding IsSeparateDivision}"
-                            Height="32"
-                            Margin ="5,0,0,0"
-                            Command="{Binding ChangeReportOrder}"/>
-                        <Button 
-                            Content="Реорганизовать"
-                            Height="30"
-                            Margin ="5,0,0,0"
-                            Command = "{Binding Reorganize}"/>
+                        Text="Регистрационный номер:" />
+                    <StackPanel Orientation="Horizontal">
                         <Button
-                            Content="Сохранить"
                             Height="32"
-                            Margin ="5,0,0,0"
-                            Command="{Binding SaveReport}"/>
+                            Margin="5,0,0,0"
+                            Command="{Binding ChangeReportOrder}"
+                            Content="Поменять местами"
+                            IsEnabled="{Binding IsSeparateDivision}"
+                            IsVisible="{Binding IsSeparateDivision}" />
+                        <Button
+                            Height="30"
+                            Margin="5,0,0,0"
+                            Command="{Binding Reorganize}"
+                            Content="Реорганизовать" />
+                        <Button
+                            Height="32"
+                            Margin="5,0,0,0"
+                            Command="{Binding SaveReport}"
+                            Content="Сохранить" />
                     </StackPanel>
                 </StackPanel>
-                <StackPanel Grid.Column="1"
-                            Orientation="Vertical">
+                <StackPanel Grid.Column="1" Orientation="Vertical">
                     <TextBox
                         Width="500"
                         Height="42"
-                        Margin="0, 13, 0, 3"
+                        Margin="0,13,0,3"
                         ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                        TextWrapping="Wrap"
-                        Text="{Binding Storage.Rows10[0].OrganUprav.Value}"/>
+                        Text="{Binding Storage.Rows10[0].OrganUprav.Value}"
+                        TextWrapping="Wrap" />
                     <TextBox
                         Width="500"
                         Height="26"
                         Margin="0,3"
-                        Text="{Binding Storage.RegNoRep.Value}"/>
+                        Text="{Binding Storage.RegNoRep.Value}" />
                 </StackPanel>
             </Grid>
-			
+
         </Border>
-        <!-- ScrollData -->
+
+        <!--#endregion Верхняя таблица-->
+
+        <!--#region ScrollViewer-->
+
         <ScrollViewer
             Grid.Row="1"
             MinHeight="400"
@@ -103,7 +105,9 @@
             VerticalContentAlignment="Stretch"
             VerticalScrollBarVisibility="Hidden">
             <StackPanel>
-                <!-- Юридическое лицо -->
+
+                <!--#region Юридическое лицо-->
+
                 <Border
                     Margin="5,15,5,20"
                     Padding="3,3,3,3"
@@ -113,7 +117,9 @@
                     BorderThickness="1"
                     CornerRadius="5">
                     <Grid ColumnDefinitions="330,500" RowDefinitions="*,*">
-                        <!-- Юридическое лицо - Наименования полей -->
+
+                        <!--#region Юридическое лицо - Наименования полей-->
+
                         <TextBlock
                             Grid.Row="0"
                             Grid.Column="0"
@@ -123,7 +129,7 @@
                             VerticalAlignment="Top"
                             FontSize="18"
                             FontWeight="Bold"
-                            Text="Юридическое лицо"/>
+                            Text="Юридическое лицо" />
                         <StackPanel
                             Grid.Row="1"
                             Grid.Column="0"
@@ -131,73 +137,77 @@
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="Субъект Российской федерации"/>
+                                Text="Субъект Российской федерации" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,8"
-                                Text="Наименование юр. лица"/>
+                                Text="Наименование юр. лица" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="Сокращенное наименование"/>
+                                Text="Сокращенное наименование" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,8"
-                                Text="Адрес места нахождения юр. лица"/>
+                                Text="Адрес места нахождения юр. лица" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,8"
-                                Text="Фактический адрес юр. лица"/>
+                                Text="Фактический адрес юр. лица" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,8"
-                                Text="ФИО, должность руководителя"/>
+                                Text="ФИО, должность руководителя" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="Телефон организации"/>
+                                Text="Телефон организации" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="Факс организации"/>
+                                Text="Факс организации" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="Электронная почта организации"/>
+                                Text="Электронная почта организации" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="ОКПО"/>
+                                Text="ОКПО" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="ОКВЭД"/>
+                                Text="ОКВЭД" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="ОКОГУ"/>
+                                Text="ОКОГУ" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="ОКТМО"/>
+                                Text="ОКТМО" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="ИНН"/>
+                                Text="ИНН" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="КПП"/>
+                                Text="КПП" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="ОКОПФ"/>
+                                Text="ОКОПФ" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="ОКФС"/>
+                                Text="ОКФС" />
                         </StackPanel>
-                        <!-- Юридическое лицо - Значения в базе -->
+
+                        <!--#endregion Юридическое лицо - Наименования полей-->
+
+                        <!--#region Юридическое лицо - Значения в базе-->
+
                         <StackPanel
                             Grid.Row="1"
                             Grid.Column="1"
@@ -206,87 +216,94 @@
                             <TextBox
                                 Height="26"
                                 Margin="0,0,0,3"
-                                Text="{Binding  Storage.Rows10[0].SubjectRF.Value}"/>
+                                Text="{Binding Storage.Rows10[0].SubjectRF.Value}" />
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                TextWrapping="Wrap"
-                                Text="{Binding Storage.Rows10[0].JurLico.Value}"/>
+                                Text="{Binding Storage.Rows10[0].JurLico.Value}"
+                                TextWrapping="Wrap" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].ShortJurLico.Value}"/>
+                                Text="{Binding Storage.Rows10[0].ShortJurLico.Value}" />
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                TextWrapping="Wrap"
-                                Text="{Binding Storage.Rows10[0].JurLicoAddress.Value}"/>
+                                Text="{Binding Storage.Rows10[0].JurLicoAddress.Value}"
+                                TextWrapping="Wrap" />
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                TextWrapping="Wrap"
-                                Text="{Binding Storage.Rows10[0].JurLicoFactAddress.Value}"/>
+                                Text="{Binding Storage.Rows10[0].JurLicoFactAddress.Value}"
+                                TextWrapping="Wrap" />
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                TextWrapping="Wrap"
-                                Text="{Binding Storage.Rows10[0].GradeFIO.Value}"/>
+                                Text="{Binding Storage.Rows10[0].GradeFIO.Value}"
+                                TextWrapping="Wrap" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Telephone.Value}"/>
+                                Text="{Binding Storage.Rows10[0].Telephone.Value}" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Fax.Value}"/>
+                                Text="{Binding Storage.Rows10[0].Fax.Value}" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Email.Value}"/>
+                                Text="{Binding Storage.Rows10[0].Email.Value}" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Okpo.Value}"/>
+                                Text="{Binding Storage.Rows10[0].Okpo.Value}" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Okved.Value}"/>
+                                Text="{Binding Storage.Rows10[0].Okved.Value}" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Okogu.Value}"/>
+                                Text="{Binding Storage.Rows10[0].Okogu.Value}" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Oktmo.Value}"/>
+                                Text="{Binding Storage.Rows10[0].Oktmo.Value}" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Inn.Value}"/>
+                                Text="{Binding Storage.Rows10[0].Inn.Value}" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Kpp.Value}"/>
+                                Text="{Binding Storage.Rows10[0].Kpp.Value}" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Okopf.Value}"/>
+                                Text="{Binding Storage.Rows10[0].Okopf.Value}" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[0].Okfs.Value}"/>
+                                Text="{Binding Storage.Rows10[0].Okfs.Value}" />
                         </StackPanel>
+
+                        <!--#endregion Юридическое лицо - Значения в базе-->
+
                     </Grid>
                 </Border>
-                <!-- Территориальное обособленное подразделение -->
+
+                <!--#endregion Юридическое лицо-->
+
+                <!--#region Территориальное обособленное подразделение-->
+
                 <Border
                     Margin="5,0,5,20"
                     Padding="3"
@@ -297,7 +314,9 @@
                     CornerRadius="5"
                     IsVisible="{Binding IsSeparateDivision}">
                     <Grid ColumnDefinitions="330,500" RowDefinitions="*,*">
-                        <!-- Территориальное обособленное подразделение - Наименования полей -->
+
+                        <!--#region Территориальное обособленное подразделение - Наименования полей-->
+
                         <TextBlock
                             Grid.Row="0"
                             Grid.Column="0"
@@ -307,7 +326,7 @@
                             VerticalAlignment="Top"
                             FontSize="18"
                             FontWeight="Bold"
-                            Text="Территориальное обособленное подразделение"/>
+                            Text="Территориальное обособленное подразделение" />
                         <StackPanel
                             Grid.Row="1"
                             Grid.Column="0"
@@ -315,73 +334,77 @@
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="Субъект Российской федерации"/>
+                                Text="Субъект Российской федерации" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,8"
-                                Text="Наименование юр. лица"/>
+                                Text="Наименование юр. лица" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="Сокращенное наименование"/>
+                                Text="Сокращенное наименование" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,8"
-                                Text="Адрес места нахождения юр. лица"/>
+                                Text="Адрес места нахождения юр. лица" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,8"
-                                Text="Фактический адрес юр. лица"/>
+                                Text="Фактический адрес юр. лица" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,8"
-                                Text="ФИО, должность руководителя"/>
+                                Text="ФИО, должность руководителя" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="Телефон организации"/>
+                                Text="Телефон организации" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="Факс организации"/>
+                                Text="Факс организации" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="Электронная почта организации"/>
+                                Text="Электронная почта организации" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="ОКПО"/>
+                                Text="ОКПО" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="ОКВЭД"/>
+                                Text="ОКВЭД" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="ОКОГУ"/>
+                                Text="ОКОГУ" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="ОКТМО"/>
+                                Text="ОКТМО" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="ИНН"/>
+                                Text="ИНН" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="КПП"/>
+                                Text="КПП" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="ОКОПФ"/>
+                                Text="ОКОПФ" />
                             <TextBlock
                                 Height="32"
                                 Margin="5,0"
-                                Text="ОКФС"/>
+                                Text="ОКФС" />
                         </StackPanel>
-                        <!-- Территориальное обособленное подразделение - Значения в базе -->
+
+                        <!--#endregion Территориальное обособленное подразделение - Наименования полей-->
+
+                        <!--#region Территориальное обособленное подразделение - Значения в базе-->
+
                         <StackPanel
                             Grid.Row="1"
                             Grid.Column="1"
@@ -390,86 +413,95 @@
                             <TextBox
                                 Height="26"
                                 Margin="0,0,0,3"
-                                Text="{Binding Storage.Rows10[1].SubjectRF.Value}"/>
+                                Text="{Binding Storage.Rows10[1].SubjectRF.Value}" />
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                TextWrapping="Wrap"
-                                Text="{Binding Storage.Rows10[1].JurLico.Value}"/>
+                                Text="{Binding Storage.Rows10[1].JurLico.Value}"
+                                TextWrapping="Wrap" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].ShortJurLico.Value}"/>
+                                Text="{Binding Storage.Rows10[1].ShortJurLico.Value}" />
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                TextWrapping="Wrap"
-                                Text="{Binding Storage.Rows10[1].JurLicoAddress.Value}"/>
+                                Text="{Binding Storage.Rows10[1].JurLicoAddress.Value}"
+                                TextWrapping="Wrap" />
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding Storage.Rows10[1].JurLicoFactAddress.Value}"/>
+                                Text="{Binding Storage.Rows10[1].JurLicoFactAddress.Value}" />
                             <TextBox
                                 Height="42"
                                 Margin="0,3"
                                 AcceptsReturn="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                TextWrapping="Wrap"
-                                Text="{Binding Storage.Rows10[1].GradeFIO.Value}"/>
+                                Text="{Binding Storage.Rows10[1].GradeFIO.Value}"
+                                TextWrapping="Wrap" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Telephone.Value}"/>
+                                Text="{Binding Storage.Rows10[1].Telephone.Value}" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Fax.Value}"/>
+                                Text="{Binding Storage.Rows10[1].Fax.Value}" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Email.Value}"/>
+                                Text="{Binding Storage.Rows10[1].Email.Value}" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Okpo.Value}"/>
+                                Text="{Binding Storage.Rows10[1].Okpo.Value}" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Okved.Value}"/>
+                                Text="{Binding Storage.Rows10[1].Okved.Value}" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Okogu.Value}"/>
+                                Text="{Binding Storage.Rows10[1].Okogu.Value}" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Oktmo.Value}"/>
+                                Text="{Binding Storage.Rows10[1].Oktmo.Value}" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Inn.Value}"/>
+                                Text="{Binding Storage.Rows10[1].Inn.Value}" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Kpp.Value}"/>
+                                Text="{Binding Storage.Rows10[1].Kpp.Value}" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Okopf.Value}"/>
+                                Text="{Binding Storage.Rows10[1].Okopf.Value}" />
                             <TextBox
                                 Height="26"
                                 Margin="0,3"
-                                Text="{Binding Storage.Rows10[1].Okfs.Value}"/>
+                                Text="{Binding Storage.Rows10[1].Okfs.Value}" />
                         </StackPanel>
+
+                        <!--#endregion Территориальное обособленное подразделение - Значения в базе-->
+
                     </Grid>
                 </Border>
+
+                <!--#endregion Территориальное обособленное подразделение-->
+
             </StackPanel>
         </ScrollViewer>
+
+        <!--#endregion ScrollViewer-->
+
     </Grid>
 </Window>

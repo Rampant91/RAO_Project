@@ -589,8 +589,7 @@ public abstract class CheckF15 : CheckBase
                 Value = opDateStr,
                 Message = "Дата операции не должна совпадать с датой начала периода, " +
                           "если имеется хотя бы один более ранний отчёт по данной форме. " +
-                          "См. приказ №1/1623-П раздел 5.2.",
-                IsCritical = true
+                          "См. приказ №1/1628-П раздел 5.2."
             });
             return result;
         }
@@ -849,8 +848,7 @@ public abstract class CheckF15 : CheckBase
                     Column = "FactoryNumber_DB",
                     Value = factoryNum,
                     Message = "Для упаковки однотипных ЗРИ, имеющей один паспорт (сертификат), " +
-                              "заводские номера в списке разделяются точкой с запятой.",
-                    IsCritical = true
+                              "заводские номера в списке разделяются точкой с запятой."
                 });
             }
         }
@@ -1596,6 +1594,11 @@ public abstract class CheckF15 : CheckBase
         var valid = OkpoRegex.IsMatch(transporterOkpo);
         if (!valid)
         {
+            string[] dashesOperationCodes =
+            {
+                "21", "22", "25", "26", "27", "28", "29", "31",
+                "32", "35", "36", "37", "38", "39", "61", "62"
+            };
             result.Add(new CheckError
             {
                 FormNum = "form_15",
@@ -1603,7 +1606,7 @@ public abstract class CheckF15 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Необходимо указать код ОКПО организации перевозчика.",
-                IsCritical = true
+                IsCritical = !(dashesOperationCodes.Contains(opCode) && transporterOkpo is "-")
             });
         }
         return result;
@@ -1632,7 +1635,7 @@ public abstract class CheckF15 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек.",
-                IsCritical = true
+                IsCritical = transporterOkpo is not "-"
             });
         }
         return result;

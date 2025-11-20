@@ -180,7 +180,9 @@ public partial class Form17 : Form1
         }
         if (!TwoNumRegex().IsMatch(value.Value)
             || !byte.TryParse(value.Value, out var byteValue)
-            || byteValue is not (1 or 10 or 18 or >= 21 and <= 29 or >= 31 and <= 39 or 51 or 52 or 55 or 63 or 64 or 68 or 97 or 98 or 99))
+            || byteValue is not 
+            (10 or 11 or 12 or 13 or 14 or 16 or 18 or 21 or 22 or 25 or 26 or 27 or 28 or 29 or 31 or 32 or 35 
+            or 36 or 37 or 38 or 39 or 43 or 44 or 45 or 51 or 52 or 55 or 63 or 64 or 68 or 71 or 97 or 98))
         {
             value.AddError("Код операции не может быть использован в форме 1.7");
             return false;
@@ -1121,26 +1123,12 @@ public partial class Form17 : Form1
     private static bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            return false;
-        }
-        if (value.Value.Equals("прим."))
-        {
-            return true;
-        }
-        if (value.Value.Equals("Минобороны"))
+        if (string.IsNullOrEmpty(value.Value) 
+            || value.Value.Equals("прим.") 
+            || value.Value.Equals("Минобороны") 
+            || Spravochniks.OKSM.Contains(value.Value.ToUpper()))
         {
             return true;
-        }
-        if (Spravochniks.OKSM.Contains(value.Value.ToUpper()))
-        {
-            return true;
-        }
-        if (value.Value.Length is not (8 or 14))
-        {
-            value.AddError("Недопустимое значение"); 
-            return false;
         }
         if (!OkpoRegex().IsMatch(value.Value))
         {
@@ -1451,7 +1439,7 @@ public partial class Form17 : Form1
     private static bool CodeRAO_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
+        if (string.IsNullOrEmpty(value.Value) || value.Value is "-")
         {
             return true;
         }
@@ -1505,7 +1493,7 @@ public partial class Form17 : Form1
     private static bool StatusRAO_Validation(RamAccess<string> value)//TODO
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
+        if (string.IsNullOrEmpty(value.Value) || value.Value is "-")
         {
             return true;
         }
@@ -1517,11 +1505,6 @@ public partial class Form17 : Form1
                 return false;
             }
             return true;
-        }
-        if (value.Value.Length is not (8 or 14))
-        {
-            value.AddError("Недопустимое значение"); 
-            return false;
         }
         if (!OkpoRegex().IsMatch(value.Value))
         {
@@ -2044,6 +2027,7 @@ public partial class Form17 : Form1
         RefineOrSortRAOCode_DB = Convert.ToString(worksheet.Cells[row, 30].Value);
         Subsidy_DB = Convert.ToString(worksheet.Cells[row, 31].Value);
         FcpNumber_DB = Convert.ToString(worksheet.Cells[row, 32].Value);
+        ContractNumber_DB = Convert.ToString(worksheet.Cells[row, 33].Value);
     }
 
     public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
@@ -2081,10 +2065,7 @@ public partial class Form17 : Form1
         worksheet.Cells[row + (!transpose ? 26 : 0), column + (transpose ? 26 : 0)].Value = ConvertToExcelString(RefineOrSortRAOCode_DB);
         worksheet.Cells[row + (!transpose ? 27 : 0), column + (transpose ? 27 : 0)].Value = ConvertToExcelString(Subsidy_DB);
         worksheet.Cells[row + (!transpose ? 28 : 0), column + (transpose ? 28 : 0)].Value = ConvertToExcelString(FcpNumber_DB);
-        if (worksheet.Name is "Отчеты 1.7")
-        {
-            worksheet.Cells[row + (!transpose ? 29 : 0), column + (transpose ? 29 : 0)].Value = ConvertToExcelString(ContractNumber_DB);
-        }
+        worksheet.Cells[row + (!transpose ? 29 : 0), column + (transpose ? 29 : 0)].Value = ConvertToExcelString(ContractNumber_DB);
 
         return 30;
     }
