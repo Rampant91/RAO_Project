@@ -78,6 +78,14 @@
 					<controls:ExecutorDataControl DataContext="{Binding ExecutorDataControlVM}"/>
 				</Border>
 
+				<Border Classes="borderContainer">
+					<Button
+						Margin="5"
+						Command="{Binding SetDefaultColumnWidth}"
+						CommandParameter="{Binding ElementName=dataGrid}"
+						Content="Выставить ширину колонок по умолчанию" />
+				</Border>
+
 			</WrapPanel>
 		</Expander>
 
