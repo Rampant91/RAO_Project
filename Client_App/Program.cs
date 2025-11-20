@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.ReactiveUI;
 using Client_App.Properties;
+using System;
 
 namespace Client_App;
 

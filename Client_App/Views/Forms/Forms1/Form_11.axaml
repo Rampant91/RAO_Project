@@ -120,7 +120,8 @@
 
 				<Border Classes="borderContainer">
 					<controls:ExecutorDataControl
-						DataContext="{Binding ExecutorDataControlVM}"></controls:ExecutorDataControl>
+						DataContext="{Binding ExecutorDataControlVM}">
+					</controls:ExecutorDataControl>
 				</Border>
 				
 				<Border Classes="borderContainer">
@@ -394,7 +395,6 @@
                     Grid.Row="1"
 					Classes="table"
 					x:CompileBindings="True"
-					x:Name="dataGrid"
 					CanUserSortColumns="True"
 					CanUserReorderColumns="False"
 					Items="{Binding FormList}"
