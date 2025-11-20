@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:Client_App.ViewModels"
     xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
+	xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
 	xmlns:local="using:Client_App.Behaviors"
 	xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 	xmlns:models="clr-namespace:Models.Collections;assembly=Models"
@@ -28,6 +29,10 @@
     <Design.DataContext>
         <vm:MainWindowVM/>
     </Design.DataContext>
+
+	<Window.Resources>
+		<converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
+	</Window.Resources>
     
     <DockPanel>
         <Menu 
@@ -516,12 +521,8 @@
 											</DataGridTextColumn.HeaderTemplate>
 										</DataGridTextColumn>
 
-										<DataGridTextColumn
-											x:DataType="models:Reports"
-											Width="*"
-											IsReadOnly="True"
-											Binding="{Binding Master.Rows40[0].ShortNameRiac.Value}">
-											<DataGridTextColumn.HeaderTemplate>
+										<DataGridTemplateColumn Width="*" IsReadOnly="True">
+											<DataGridTemplateColumn.HeaderTemplate>
 												<DataTemplate>
 													<Border Classes="headerTemplate">
 														<Grid ColumnDefinitions="*,Auto" Margin="3">
@@ -530,8 +531,20 @@
 														</Grid>
 													</Border>
 												</DataTemplate>
-											</DataGridTextColumn.HeaderTemplate>
-										</DataGridTextColumn>
+											</DataGridTemplateColumn.HeaderTemplate>
+											<DataGridTemplateColumn.CellTemplate>
+												<DataTemplate x:DataType="models:Reports">
+													<TextBlock Margin="5">
+														<TextBlock.Text>
+															<MultiBinding Converter="{StaticResource IfNullShowAnotherValue}">
+																<Binding Path="Master.Rows40[0].ShortNameRiac.Value"/>
+																<Binding Path="Master.Rows40[0].NameRiac.Value"/>
+															</MultiBinding>
+														</TextBlock.Text>
+													</TextBlock>
+												</DataTemplate>
+											</DataGridTemplateColumn.CellTemplate>
+										</DataGridTemplateColumn>
 
 								    </DataGrid.Columns>
 								</DataGrid>
