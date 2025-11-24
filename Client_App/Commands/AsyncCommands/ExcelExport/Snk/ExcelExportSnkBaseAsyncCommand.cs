@@ -6,7 +6,6 @@ using Client_App.Views;
 using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
-using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -326,96 +325,52 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                     uniqueUnitWithAllOperationDictionary.Add(dto, [form]);
                     continue;
                 }
-
-                // Если операция приема/передачи/инвентаризации/нулевая и есть совпадение с имеющейся,
-                // то добавляем операцию к уже имеющейся в словаре.
-                if (form.OpCode is not "53" and not "54")
+                else if (filteredDictionary.Values.First().All(x => x.OpCode is "53" or "54"))
                 {
-                    filteredDictionary.First().Value.Add(form);
-
-                    var keyToReplace = filteredDictionary.First().Key;
-                    var newValue = filteredDictionary.First().Value.Prepend(form).ToList();
-                    filteredDictionary[keyToReplace] = newValue;
-
-                    var lastOpDate = filteredDictionary
-                        .SelectMany(x => x.Value)
-                        .OrderByDescending(y => y.OpDate)
-                        .First().OpDate;
-
-                    //Если в последнюю дату несколько операций - берём за последнюю не минусовую.
-                    ShortFormDTO? lastForm;
-                    if (filteredDictionary
-                            .SelectMany(x => x.Value)
-                            .Where(x => x.OpCode != "10")
-                            .Count(x => x.OpDate == lastOpDate) > 1)
-                    {
-                        lastForm = filteredDictionary
-                            .SelectMany(x => x.Value)
-                            .Where(x => x.OpCode != "10" && !GetMinusOperationsArray(formNum).Contains(x.OpCode))
-                            .OrderByDescending(y => y.OpDate)
-                            .ThenByDescending(x => x.RepDto.StartPeriod)
-                            .ThenByDescending(x => x.RepDto.EndPeriod)
-                            .ThenByDescending(x => x.NumberInOrder)
-                            .First();
-                    }
-                    else
-                    {
-                        lastForm = filteredDictionary
-                            .SelectMany(x => x.Value)
-                            .OrderByDescending(y => y.OpDate)
-                            .First();
-                    }
-                    var pairWithLastOpDate = filteredDictionary
-                        .First(x => x.Value.Contains(lastForm));
-
-                    uniqueUnitWithAllOperationDictionary.Remove(pairWithLastOpDate.Key);
-                    uniqueUnitWithAllOperationDictionary.Add(dto, pairWithLastOpDate.Value);
+                    uniqueUnitWithAllOperationDictionary.Values.First().Insert(0, form);
+                    continue;
                 }
 
-                // Если операция перезарядки, то суммируем количество, если серийные номера пусты и заменяем запись в словаре
+                var lastOpDate = filteredDictionary
+                    .SelectMany(x => x.Value)
+                    .OrderByDescending(y => y.OpDate)
+                    .First().OpDate;
+
+                //Если в последнюю дату несколько операций - берём за последнюю не минусовую.
+                ShortFormDTO? lastForm;
+                if (filteredDictionary
+                        .SelectMany(x => x.Value)
+                        .Where(x => x.OpCode != "10")
+                        .Count(x => x.OpDate == lastOpDate) > 1)
+                {
+                    lastForm = filteredDictionary
+                        .SelectMany(x => x.Value)
+                        .Where(x => x.OpCode != "10" && !GetMinusOperationsArray(formNum).Contains(x.OpCode))
+                        .OrderByDescending(y => y.OpDate)
+                        .ThenByDescending(x => x.RepDto.StartPeriod)
+                        .ThenByDescending(x => x.RepDto.EndPeriod)
+                        .ThenByDescending(x => x.NumberInOrder)
+                        .First();
+                }
                 else
                 {
-                    var lastOpDate = filteredDictionary
+                    lastForm = filteredDictionary
                         .SelectMany(x => x.Value)
                         .OrderByDescending(y => y.OpDate)
-                        .First().OpDate;
-
-                    //Если в последнюю дату несколько операций - берём за последнюю не минусовую.
-                    ShortFormDTO? lastForm;
-                    if (filteredDictionary
-                            .SelectMany(x => x.Value)
-                            .Where(x => x.OpCode != "10")
-                            .Count(x => x.OpDate == lastOpDate) > 1)
-                    {
-                        lastForm = filteredDictionary
-                            .SelectMany(x => x.Value)
-                            .Where(x => x.OpCode != "10" && !GetMinusOperationsArray(formNum).Contains(x.OpCode))
-                            .OrderByDescending(y => y.OpDate)
-                            .ThenByDescending(x => x.RepDto.StartPeriod)
-                            .ThenByDescending(x => x.RepDto.EndPeriod)
-                            .ThenByDescending(x => x.NumberInOrder)
-                            .First();
-                    }
-                    else
-                    {
-                        lastForm = filteredDictionary
-                            .SelectMany(x => x.Value)
-                            .OrderByDescending(y => y.OpDate)
-                            .First();
-                    }
-
-                    var pairWithLastOpDate = filteredDictionary
-                        .First(x => x.Value.Contains(lastForm));
-
-                    if (formNum is "1.3" ||SerialNumbersIsEmpty(pairWithLastOpDate.Key.PasNum, pairWithLastOpDate.Key.FacNum))
-                    {
-                        var quantity = await SumQuantityForEmptySerialNums(pairWithLastOpDate, formNum);
-                        if (form.Quantity != quantity) continue;
-                    }
-                    pairWithLastOpDate.Value.Add(form);
-                    uniqueUnitWithAllOperationDictionary.Remove(pairWithLastOpDate.Key);
-                    uniqueUnitWithAllOperationDictionary.Add(dto, pairWithLastOpDate.Value);
+                        .First();
                 }
+
+                var pairWithLastOpDate = filteredDictionary
+                    .First(x => x.Value.Contains(lastForm));
+
+                if (formNum is "1.3" || SerialNumbersIsEmpty(pairWithLastOpDate.Key.PasNum, pairWithLastOpDate.Key.FacNum))
+                {
+                    var quantity = await SumQuantityForEmptySerialNums(pairWithLastOpDate, formNum);
+                    if (form.Quantity != quantity) continue;
+                }
+                pairWithLastOpDate.Value.Add(form);
+                uniqueUnitWithAllOperationDictionary.Remove(pairWithLastOpDate.Key);
+                uniqueUnitWithAllOperationDictionary.Add(dto, pairWithLastOpDate.Value);
             }
         }
 
@@ -474,20 +429,21 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     /// <param name="pairWithLastOpDate">Пара ключ-значение из DTO уникальной учётной единицы и списка операций с ней.</param>
     /// <param name="formNum">Номер формы.</param>
     /// <returns>Суммированное количество.</returns>
-    private static Task<int> SumQuantityForEmptySerialNums(KeyValuePair<UniqueUnitDto, List<ShortFormDTO>> pairWithLastOpDate, string formNum)
+    private static Task<int> SumQuantityForEmptySerialNums(KeyValuePair<UniqueUnitDto, List<ShortFormDTO>> pairWithLastOpDate, 
+        string formNum)
     {
         var quantity = pairWithLastOpDate.Value
             .FirstOrDefault(x => x.OpCode == "10")
             ?.Quantity ?? 0; ;
-        foreach (var form11Dto in pairWithLastOpDate.Value)
+        foreach (var formDto in pairWithLastOpDate.Value)
         {
-            if (GetPlusOperationsArray(formNum).Contains(form11Dto.OpCode))
+            if (GetPlusOperationsArray(formNum).Contains(formDto.OpCode))
             {
-                quantity += form11Dto.Quantity;
+                quantity += formDto.Quantity;
             }
-            else if (GetMinusOperationsArray(formNum).Contains(form11Dto.OpCode))
+            else if (GetMinusOperationsArray(formNum).Contains(formDto.OpCode))
             {
-                quantity -= form11Dto.Quantity;
+                quantity -= formDto.Quantity;
                 quantity = Math.Max(0, quantity);
             }
         }
@@ -798,8 +754,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     /// <param name="snkParams">DTO состоящий из bool флагов, показывающих, по каким параметрам необходимо выполнять поиск учётной единицы.
     /// Может быть null, тогда поиск ведётся по всем параметрам.</param>
     /// <returns>Список DTO форм с операциями приёма передачи, отсортированный по датам.</returns>
-    private protected static async Task<List<ShortFormDTO>> GetPlusMinusFormsDtoList(DBModel db, List<int> reportIds, string formNum,
-        DateOnly firstSnkDate, DateOnly endSnkDate, CancellationTokenSource cts, SnkParamsDto? snkParams = null)
+    private protected static async Task<List<ShortFormDTO>> GetPlusMinusFormsDtoList(DBModel db, List<int> reportIds,
+        string formNum, DateOnly firstSnkDate, DateOnly endSnkDate, CancellationTokenSource cts, SnkParamsDto? snkParams = null)
     {
         var plusOperationArray = GetPlusOperationsArray(formNum);
         var minusOperationArray = GetMinusOperationsArray(formNum);
@@ -807,7 +763,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         var plusMinusOperationDtoList = formNum switch
         {
             #region 1.1
-            
+
             "1.1" => await db.form_11
                 .AsNoTracking()
                 .AsSplitQuery()
@@ -848,7 +804,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             #endregion
 
             #region 1.3
-            
+
             "1.3" => await db.form_13
                 .AsNoTracking()
                 .AsSplitQuery()
@@ -884,20 +840,20 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                         ? form.Type_DB
                         : string.Empty
                 })
-                .ToListAsync(cts.Token), 
-            
+                .ToListAsync(cts.Token),
+
             #endregion
 
             _ => throw new ArgumentOutOfRangeException(nameof(formNum), formNum, null)
         };
 
-        return plusMinusOperationDtoList
+        var plusMinusOperationDtoListWithDateOnly = plusMinusOperationDtoList
             .Where(x => DateTime.TryParse(x.OpDate, out var opDateTime)
-                                             && DateOnly.TryParse(x.StDate, out _)
-                                             && DateOnly.TryParse(x.EndDate, out _)
-                                             && DateOnly.FromDateTime(opDateTime) >= firstSnkDate
-                                             && DateOnly.FromDateTime(opDateTime) <= endSnkDate)
-            .Select(x => new ShortFormDTO 
+                        && DateOnly.TryParse(x.StDate, out _)
+                        && DateOnly.TryParse(x.EndDate, out _)
+                        && DateOnly.FromDateTime(opDateTime) >= firstSnkDate
+                        && DateOnly.FromDateTime(opDateTime) <= endSnkDate)
+            .Select(x => new ShortFormDTO
             {
                 Id = x.Id,
                 NumberInOrder = x.NumberInOrder,
@@ -915,7 +871,52 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             .ThenBy(x => x.RepDto.StartPeriod)
             .ThenBy(x => x.RepDto.EndPeriod)
             .ToList();
+
+        var summedPlusMinusOperationDtoList = await GetSummedPlusMinusDtoList(plusMinusOperationDtoListWithDateOnly, formNum);
+
+        return summedPlusMinusOperationDtoList;
     }
+
+    #region GetSummedInventoryDtoList
+
+    /// <summary>
+    /// Суммирует операции инвентаризации для первой даты по количеству и возвращает список DTO.
+    /// </summary>
+    /// <param name="plusMinusDtoList">Список DTO операций приёма передачи.</param>
+    /// <param name="formNum">Номер формы.</param>
+    /// <returns>Список DTO операций инвентаризации, просуммированный по количеству для первой даты.</returns>
+    private static Task<List<ShortFormDTO>> GetSummedPlusMinusDtoList(List<ShortFormDTO> plusMinusDtoList, string formNum)
+    {
+        List<ShortFormDTO> newPlusMinusDtoList = [];
+
+        var comparer = new CustomSnkEqualityComparer();
+        var radsComparer = new CustomSnkRadionuclidsEqualityComparer();
+        foreach (var form in plusMinusDtoList)
+        {
+            var matchingForm = newPlusMinusDtoList.FirstOrDefault(x =>
+                x.OpDate == form.OpDate
+                && comparer.Equals(x.PasNum, form.PasNum)
+                && comparer.Equals(x.FacNum, form.FacNum)
+                && radsComparer.Equals(x.Radionuclids, form.Radionuclids)
+                && comparer.Equals(x.Type, form.Type)
+                && comparer.Equals(x.PackNumber, form.PackNumber));
+
+            if (matchingForm != null)
+            {
+                if (formNum is "1.3" || SerialNumbersIsEmpty(form.PasNum, form.FacNum))
+                {
+                    matchingForm.Quantity += form.Quantity;
+                }
+            }
+            else
+            {
+                newPlusMinusDtoList.Add(form);
+            }
+        }
+        return Task.FromResult(newPlusMinusDtoList);
+    }
+
+    #endregion
 
     #endregion
 
