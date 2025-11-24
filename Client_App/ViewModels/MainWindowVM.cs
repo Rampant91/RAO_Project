@@ -229,7 +229,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         ChangePasFolder = new ChangePasFolderAsyncCommand();
         ChangeReports = new ChangeReportsAsyncCommand();
         CheckFormFromMain = new CheckFormFromMainAsyncCommand();
-        DeleteForm = new DeleteFormAsyncCommand();
+        DeleteForm = new DeleteReportAsyncCommand();
         DeleteReports = new DeleteReportsAsyncCommand();
         ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand();
         ImportExcel = new ImportExcelAsyncCommand();

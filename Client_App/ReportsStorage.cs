@@ -89,6 +89,10 @@ public static class ReportsStorage
 
         return rep.FormNum_DB switch
         {
+            "1.0" => await query.Include(x => x.Rows10)
+               .SelectMany(x => x.Rows10)
+               .CountAsync(),
+
             "1.1" => await query.Include(x => x.Rows11)
                 .SelectMany(x => x.Rows11)
                 .CountAsync(),
@@ -123,6 +127,10 @@ public static class ReportsStorage
 
             "1.9" => await query.Include(x => x.Rows19)
                 .SelectMany(x => x.Rows19)
+                .CountAsync(),
+
+            "2.0" => await query.Include(x => x.Rows20)
+                .SelectMany(x => x.Rows20)
                 .CountAsync(),
 
             "2.1" => await query.Include(x => x.Rows21)

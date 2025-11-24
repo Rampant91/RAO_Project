@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections;
-using System.Linq;
-using Models.Collections;
-using Models.DBRealization;
-using System.Threading.Tasks;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
+using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
+using Client_App.Logging;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
-using Avalonia.Threading;
+using Models.Collections;
+using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
+using System;
+using System.Collections;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.Delete;
 
@@ -48,11 +49,24 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
         try
         {
             var enumerable = parameter as IEnumerable;
-            var repsList = enumerable!.Cast<Reports>().ToList();
+            var reps = enumerable!.Cast<Reports>().First();
+            var masterRep = reps.Master_DB;
 
             var db = StaticConfiguration.DBModel;
-            db.ReportCollectionDbSet.Remove(repsList[0].Master_DB);
-            db.ReportsCollectionDbSet.Remove(repsList[0]);
+
+            await ReportDeletionLogger.LogDeletionAsync(masterRep);
+
+            foreach (var item in reps.Report_Collection)
+            {
+                var report = (Report)item;
+                db.ReportCollectionDbSet.Remove(report);
+                await ReportDeletionLogger.LogDeletionAsync(report);
+            }
+
+            db.ReportCollectionDbSet.Remove(masterRep);
+            
+
+            db.ReportsCollectionDbSet.Remove(reps);
             await db.SaveChangesAsync();
 
             await ProcessDataBaseFillEmpty(db);
