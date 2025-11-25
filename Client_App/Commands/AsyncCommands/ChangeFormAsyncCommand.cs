@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+﻿ using Avalonia.Controls;
 using Client_App.Commands.AsyncCommands.SumRow;
 using Client_App.Resources;
 using Client_App.ViewModels;
@@ -17,6 +17,8 @@ using System.Threading.Tasks;
 using Client_App.Resources;
 using Client_App.ViewModels.Forms.Forms4;
 using Client_App.Views.Forms.Forms4;
+using Client_App.Views.Forms.Forms2;
+using Client_App.ViewModels.Forms.Forms2;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -212,7 +214,103 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                     mainWindow.WindowState = WindowState.Minimized;
                     await window.ShowDialog(mainWindow);
                     break;
-                }
+                    }
+                case "2.1":
+                    {
+                        var form21VM = new Form_21VM(frm.Storage);
+                        var window = new Form_21(form21VM) { OwnerPrevState = mainWindow.WindowState };
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await window.ShowDialog(mainWindow);
+                        break;
+                    }
+                case "2.2":
+                    {
+                        var form22VM = new Form_22VM(frm.Storage);
+                        var window = new Form_22(form22VM) { OwnerPrevState = mainWindow.WindowState };
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await window.ShowDialog(mainWindow);
+                        break;
+                    }
+                case "2.3":
+                    {
+                        var form23VM = new Form_23VM(frm.Storage);
+                        var window = new Form_23(form23VM) { OwnerPrevState = mainWindow.WindowState };
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await window.ShowDialog(mainWindow);
+                        break;
+                    }
+                case "2.4":
+                    {
+                        var form24VM = new Form_24VM(frm.Storage);
+                        var window = new Form_24(form24VM) { OwnerPrevState = mainWindow.WindowState };
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await window.ShowDialog(mainWindow);
+                        break;
+                    }
+                case "2.5":
+                    {
+                        var form25VM = new Form_25VM(frm.Storage);
+                        var window = new Form_25(form25VM) { OwnerPrevState = mainWindow.WindowState };
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await window.ShowDialog(mainWindow);
+                        break;
+                    }
+                case "2.6":
+                    {
+                        var form26VM = new Form_26VM(frm.Storage);
+                        var window = new Form_26(form26VM) { OwnerPrevState = mainWindow.WindowState };
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await window.ShowDialog(mainWindow);
+                        break;
+                    }
+                case "2.7":
+                    {
+                        var form27VM = new Form_27VM(frm.Storage);
+                        var window = new Form_27(form27VM) { OwnerPrevState = mainWindow.WindowState };
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await window.ShowDialog(mainWindow);
+                        break;
+                    }
+                case "2.8":
+                    {
+                        var form28VM = new Form_28VM(frm.Storage);
+                        var window = new Form_28(form28VM) { OwnerPrevState = mainWindow.WindowState };
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await window.ShowDialog(mainWindow);
+                        break;
+                    }
+                case "2.9":
+                    {
+                        var form29VM = new Form_29VM(frm.Storage);
+                        var window = new Form_29(form29VM) { OwnerPrevState = mainWindow.WindowState };
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await window.ShowDialog(mainWindow);
+                        break;
+                    }
+                case "2.10":
+                    {
+                        var form210VM = new Form_210VM(frm.Storage);
+                        var window = new Form_210(form210VM) { OwnerPrevState = mainWindow.WindowState };
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await window.ShowDialog(mainWindow);
+                        break;
+                    }
+                case "2.11":
+                    {
+                        var form211VM = new Form_211VM(frm.Storage);
+                        var window = new Form_211(form211VM) { OwnerPrevState = mainWindow.WindowState };
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await window.ShowDialog(mainWindow);
+                        break;
+                    }
+                case "2.12":
+                    {
+                        var form212VM = new Form_212VM(frm.Storage);
+                        var window = new Form_212(form212VM) { OwnerPrevState = mainWindow.WindowState };
+                        mainWindow.WindowState = WindowState.Minimized;
+                        await window.ShowDialog(mainWindow);
+                        break;
+                    }
                 case "4.1":
                     {
                         var form41VM = new Form_41VM(frm.Storage);

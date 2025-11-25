@@ -84,6 +84,42 @@
     <Compile Update="Views\Forms\Forms1\Form_14.axaml.cs">
       <DependentUpon>Form_14.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_212.axaml.cs">
+      <DependentUpon>Form_212.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_211.axaml.cs">
+      <DependentUpon>Form_211.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_210.axaml.cs">
+      <DependentUpon>Form_210.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_29.axaml.cs">
+      <DependentUpon>Form_29.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_28.axaml.cs">
+      <DependentUpon>Form_28.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_27.axaml.cs">
+      <DependentUpon>Form_27.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_26.axaml.cs">
+      <DependentUpon>Form_26.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_25.axaml.cs">
+      <DependentUpon>Form_25.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_24.axaml.cs">
+      <DependentUpon>Form_24.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_23.axaml.cs">
+      <DependentUpon>Form_23.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_22.axaml.cs">
+      <DependentUpon>Form_22.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_21.axaml.cs">
+      <DependentUpon>Form_21.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Forms\NewCheckForm.axaml.cs">
       <DependentUpon>NewCheckForm.axaml</DependentUpon>
     </Compile>
