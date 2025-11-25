@@ -1,5 +1,4 @@
-﻿using Avalonia.Controls;
-using Models.CheckForm;
+﻿using Models.CheckForm;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -8,7 +7,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using static OfficeOpenXml.ExcelErrorValue;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -3423,10 +3421,11 @@ public abstract class CheckF16 : CheckBase
     //Наличие строк дубликатов
     private static List<CheckError> Check_028(List<Form16> forms)
     {
-        List<CheckError> result = new();
-        HashSet<int> duplicatesLinesSet = new();
-        List<HashSet<int>> duplicatesGroupsSet = new();
+        List<CheckError> result = [];
+        HashSet<int> duplicatesLinesSet = [];
+        List<HashSet<int>> duplicatesGroupsSet = [];
         var comparator = new CustomNullStringWithTrimComparer();
+        var exponentialComparator = new CustomNullExponentialStringWithTrimComparer();
         for (var i = 0; i < forms.Count; i++)
         {
             if (duplicatesGroupsSet.Any(set => set.Contains(i + 1))) continue;
@@ -3440,14 +3439,14 @@ public abstract class CheckF16 : CheckBase
                                   && comparator.Compare(formToCompare.OperationDate_DB, currentForm.OperationDate_DB) == 0
                                   && comparator.Compare(formToCompare.CodeRAO_DB, currentForm.CodeRAO_DB) == 0
                                   && comparator.Compare(formToCompare.StatusRAO_DB, currentForm.StatusRAO_DB) == 0
-                                  && comparator.Compare(formToCompare.Volume_DB, currentForm.Volume_DB) == 0
-                                  && comparator.Compare(formToCompare.Mass_DB, currentForm.Mass_DB) == 0
+                                  && exponentialComparator.Compare(formToCompare.Volume_DB, currentForm.Volume_DB) == 0
+                                  && exponentialComparator.Compare(formToCompare.Mass_DB, currentForm.Mass_DB) == 0
                                   && formToCompare.QuantityOZIII_DB == currentForm.QuantityOZIII_DB
                                   && comparator.Compare(formToCompare.MainRadionuclids_DB, currentForm.MainRadionuclids_DB) == 0
-                                  && comparator.Compare(formToCompare.TritiumActivity_DB, currentForm.TritiumActivity_DB) == 0
-                                  && comparator.Compare(formToCompare.BetaGammaActivity_DB, currentForm.BetaGammaActivity_DB) == 0
-                                  && comparator.Compare(formToCompare.AlphaActivity_DB, currentForm.AlphaActivity_DB) == 0
-                                  && comparator.Compare(formToCompare.TransuraniumActivity_DB, currentForm.TransuraniumActivity_DB) == 0
+                                  && exponentialComparator.Compare(formToCompare.TritiumActivity_DB, currentForm.TritiumActivity_DB) == 0
+                                  && exponentialComparator.Compare(formToCompare.BetaGammaActivity_DB, currentForm.BetaGammaActivity_DB) == 0
+                                  && exponentialComparator.Compare(formToCompare.AlphaActivity_DB, currentForm.AlphaActivity_DB) == 0
+                                  && exponentialComparator.Compare(formToCompare.TransuraniumActivity_DB, currentForm.TransuraniumActivity_DB) == 0
                                   && comparator.Compare(formToCompare.ActivityMeasurementDate_DB, currentForm.ActivityMeasurementDate_DB) == 0
                                   && formToCompare.DocumentVid_DB == currentForm.DocumentVid_DB
                                   && comparator.Compare(formToCompare.DocumentNumber_DB, currentForm.DocumentNumber_DB) == 0

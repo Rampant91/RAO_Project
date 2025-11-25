@@ -178,10 +178,11 @@ public abstract class CheckF14 : CheckBase
     //Наличие строк дубликатов (графы 2 - 18, 22)
     private static List<CheckError> Check_004(List<Form14> forms)
     {
-        List<CheckError> result = new();
-        HashSet<int> duplicatesLinesSet = new();
-        List<HashSet<int>> duplicatesGroupsSet = new();
+        List<CheckError> result = [];
+        HashSet<int> duplicatesLinesSet = [];
+        List<HashSet<int>> duplicatesGroupsSet = [];
         var comparator = new CustomNullStringWithTrimComparer();
+        var exponentialComparator = new CustomNullExponentialStringWithTrimComparer();
         for (var i = 0; i < forms.Count; i++)
         {
             if (duplicatesGroupsSet.Any(set => set.Contains(i + 1))) continue;
@@ -197,10 +198,10 @@ public abstract class CheckF14 : CheckBase
                                   && comparator.Compare(formToCompare.Name_DB, currentForm.Name_DB) == 0
                                   && formToCompare.Sort_DB == currentForm.Sort_DB
                                   && comparator.Compare(formToCompare.Radionuclids_DB, currentForm.Radionuclids_DB) == 0
-                                  && comparator.Compare(formToCompare.Activity_DB, currentForm.Activity_DB) == 0
+                                  && exponentialComparator.Compare(formToCompare.Activity_DB, currentForm.Activity_DB) == 0
                                   && comparator.Compare(formToCompare.ActivityMeasurementDate_DB, currentForm.ActivityMeasurementDate_DB) == 0
-                                  && comparator.Compare(formToCompare.Volume_DB, currentForm.Volume_DB) == 0
-                                  && comparator.Compare(formToCompare.Mass_DB, currentForm.Mass_DB) == 0
+                                  && exponentialComparator.Compare(formToCompare.Volume_DB, currentForm.Volume_DB) == 0
+                                  && exponentialComparator.Compare(formToCompare.Mass_DB, currentForm.Mass_DB) == 0
                                   && formToCompare.AggregateState_DB == currentForm.AggregateState_DB
                                   && formToCompare.PropertyCode_DB == currentForm.PropertyCode_DB
                                   && comparator.Compare(formToCompare.Owner_DB, currentForm.Owner_DB) == 0
