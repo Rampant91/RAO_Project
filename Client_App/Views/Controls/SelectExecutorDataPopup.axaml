@@ -15,15 +15,15 @@
 
 	<StackPanel>
 		
-		<Button 	Name="ToggleButton"
+		<Button Name="ToggleButton"
 				Content="Выбрать исполнителя"
 				Command="{Binding OpenPopupCommand}"/>
-
-		<Popup	Name="ExecutorPopup"
-				IsLightDismissEnabled="True"
-				IsOpen="{Binding PopupIsOpen, Mode=TwoWay}"
-				PlacementMode="Right"
-				PlacementTarget="{Binding ElementName=ToggleButton}">
+        
+        <Popup Name="ExecutorPopup"
+               IsLightDismissEnabled="True"
+               IsOpen="{Binding PopupIsOpen, Mode=TwoWay}"
+               PlacementMode="Right"
+               PlacementTarget="{Binding ElementName=ToggleButton}">
 			
 			<Border Background="White"
 					BorderBrush="Gray"
@@ -38,7 +38,7 @@
 							 SelectionMode="Single">
 						<ListBox.ItemTemplate>
 							<DataTemplate>
-								<TextBlock Height="20" Grid.Column="0">
+								<TextBlock Height="20">
 									<TextBlock.Text>
 										<MultiBinding x:DataType="m:ExecutorDataDTO" 
 													  StringFormat="{}{0}, {1}, {2}, {3}">
@@ -55,7 +55,5 @@
 				</StackPanel>
 			</Border>
 		</Popup>
-		
 	</StackPanel>
-	
 </UserControl>

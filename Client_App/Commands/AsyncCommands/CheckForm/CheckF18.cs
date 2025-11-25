@@ -5,7 +5,6 @@ using Models.Forms.Form1;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
@@ -2444,26 +2443,6 @@ public abstract class CheckF18 : CheckBase
                           "если при кондиционировании не использовались установки переработки, укажите символ «-» без кавычек.",
                 IsCritical = true
             });
-        }
-        foreach (var currentLine in lines)
-        {
-            if (currentLine == lines[0]) continue;
-            var currentForm = forms[currentLine];
-            if (forms[lines[0]].OperationCode_DB is "55"
-                && forms[lines[0]].RefineOrSortRAOCode_DB is not ("" or "-")
-                && currentForm.RefineOrSortRAOCode_DB is "" or "-")
-            {
-                result.Add(new CheckError
-                {
-                    FormNum = "form_18",
-                    Row = forms[currentLine].NumberInOrder_DB.ToString(),
-                    Column = "RefineOrSortRAOCode_DB",
-                    Value = forms[currentLine].RefineOrSortRAOCode_DB,
-                    Message = $"Для головной строчки ({lines[0] + 1}) контейнера, указан код переработки {forms[lines[0]].RefineOrSortRAOCode_DB}, " +
-                              $"а для строчки {currentLine + 1} код переработки не указан. " +
-                              "Проверьте правильность заполнения кода переработки."
-                });
-            }
         }
         return result;
     }

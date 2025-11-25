@@ -1,8 +1,7 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace Client_App.Controls;
+namespace Client_App.Views.Controls;
 
 public partial class FilterPopup : UserControl
 {
@@ -13,6 +12,5 @@ public partial class FilterPopup : UserControl
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
-
     }
 }

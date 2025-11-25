@@ -4,7 +4,7 @@ using Client_App.Commands.AsyncCommands.SwitchReport;
 using Client_App.ViewModels.Controls;
 using Models.Collections;
 
-namespace Client_App.Controls;
+namespace Client_App.Views.Controls;
 
 public partial class SelectReportPopup : UserControl
 {
@@ -21,7 +21,7 @@ public partial class SelectReportPopup : UserControl
     }
     public void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs args)
     {
-        Report newSelectedReport = (sender as ListBox).SelectedItem as Report; 
+        var newSelectedReport = (sender as ListBox).SelectedItem as Report; 
         new SwitchToSelectedReportAsyncCommand(vm.FormVM).AsyncExecute(newSelectedReport);
     }
 }

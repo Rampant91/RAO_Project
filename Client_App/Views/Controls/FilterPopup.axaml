@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="clr-namespace:Client_App.ViewModels.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Client_App.Controls.FilterPopup"
+             x:Class="Client_App.Views.Controls.FilterPopup"
 			 x:DataType="vm:FilterPopupVM">
 	<StackPanel>
 	    <Button Name="ToggleButton" 
