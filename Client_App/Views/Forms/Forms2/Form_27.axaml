@@ -231,128 +231,43 @@
 
                     <!--#region Первый уровень заголовков-->
 
-                    <Border
+
+					<Border
                         Grid.Row="0"
-                        Grid.RowSpan="3"
+						Grid.RowSpan="2"
                         Grid.Column="0">
-                        <TextBlock Text="№ п/п"/>
-                    </Border>
-                    <Border
-                        Grid.Row="0"
-                        Grid.RowSpan="2"
-                        Grid.Column="1"
-                        Grid.ColumnSpan="4">
-                        <TextBlock Text="Установки переработки"/>
-                    </Border>
-                    <Border
-                        Grid.Row="0"
-                        Grid.Column="5"
-                        Grid.ColumnSpan="9">
-                        <TextBlock Text="Поступило РАО на переработку, кондиционирование"/>
-                    </Border>
-                    <Border
-                        Grid.Row="0"
-                        Grid.Column="14"
-                        Grid.ColumnSpan="9">
-                        <TextBlock Text="Образовалось РАО после переработки, кондиционирования"/>
-                    </Border>
+						<TextBlock Text="№ п/п"/>
+					</Border>
 
+					<Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="1">
+						<TextBlock Text="Наименование, номер источника выбросов"/>
+					</Border>
+					<Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="2">
+						<TextBlock Text="Наименование радионуклида"/>
+					</Border>
+					<Border Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2">
+						<TextBlock Text="Выброс радионуклида в атмосферу за отчетный год, Бк"/>
+					</Border>
+					<Border Grid.Row="0"  Grid.Column="5">
+						<TextBlock Text="Выброс радионуклида в атмосферу за предыдущий год, БК"/>
+					</Border>
                     <!--#endregion Второй уровень заголовков-->
 
                     <Border
                         Grid.Row="1"
-                        Grid.Column="7"
-                        Grid.ColumnSpan="3">
-                        <TextBlock Text="количество"/>
+                        Grid.Column="3">
+                        <TextBlock Text="разрешенный"/>
                     </Border>
 					<Border
                         Grid.Row="1"
-                        Grid.Column="10"
-                        Grid.ColumnSpan="4">
-                        <TextBlock Text="Суммарная активность, Бк"/>
+                        Grid.Column="4">
+                        <TextBlock Text="фактический"/>
                     </Border>
 					<Border
                         Grid.Row="1"
-                        Grid.Column="16"
-                        Grid.ColumnSpan="3">
-                        <TextBlock Text="количество"/>
-                    </Border>
-					<Border
-                        Grid.Row="1"
-                        Grid.Column="19"
-                        Grid.ColumnSpan="4">
-                        <TextBlock Text="суммарная активность, Бк"/>
-                    </Border>
-                    <!--#region Третий уровень заголовков-->
-
-                    <Border Grid.Row="2" Grid.Column="1">
-                        <TextBlock Text="наименование"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="2">
-                        <TextBlock Text="код"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="3">
-                        <TextBlock Text="мощность, куб. м/год"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="4">
-                        <TextBlock Text="количество часов работы за год"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.RowSpan="2" Grid.Column="5">
-                        <TextBlock Text="код РАО"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.RowSpan="2" Grid.Column="6">
-                        <TextBlock Text="статус РАО"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="7">
-                        <TextBlock Text="объем без упаковки, куб. м"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="8">
-                        <TextBlock Text="масса без упаковки (нетто), т"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="9">
-                        <TextBlock Text="ОЗИИИ, шт"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="10">
-                        <TextBlock Text="тритий"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="11">
-                        <TextBlock Text="бета-, гамма-излучающие радионуклиды (исключая тритий)"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="12">
-                        <TextBlock Text="альфа-излучающие радионуклиды (исключая трансурановые)"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="13">
-                        <TextBlock Text="трансурановые радионуклиды"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.RowSpan="2" Grid.Column="14">
-                        <TextBlock Text="код РАО"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.RowSpan="2" Grid.Column="15">
-                        <TextBlock Text="статус РАО"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="16">
-                        <TextBlock Text="объем без упаковки, куб.м"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="17">
-                        <TextBlock Text="масса без упаковки (нетто), т"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="18">
-                        <TextBlock Text="ОЗИИИ, шт."/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="19">
-                        <TextBlock Text="тритий"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="20">
-                        <TextBlock Text="бета-, гамма- излучающие радионуклиды (исключая тритий)"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="21">
-                        <TextBlock Text="альфа-излучающие радионуклиды (исключая трансурановые)"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="22">
-                        <TextBlock Text="трансурановые радионуклиды"/>
-                    </Border>
-
-                    <!--#endregion Второй уровень заголовков-->
+                        Grid.Column="5">
+						<TextBlock Text="фактический"/>
+					</Border>
 
                 </Grid>
 
