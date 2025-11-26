@@ -23,6 +23,7 @@ public partial class Form41 : Form
 
     public Form41()
     {
+        var x = this;
         FormNum.Value = "4.1";
     }
 
@@ -432,11 +433,18 @@ public partial class Form41 : Form
                 ? intValue
                 : 0;
         
+
         RegNo_DB = Convert.ToString(worksheet.Cells[row, 2].Value).Trim();
+        if(RegNo_DB.Count() > 5)
+            RegNo_DB = RegNo_DB[..5];
 
         Okpo_DB = Convert.ToString(worksheet.Cells[row, 3].Value).Trim();
+        if (Okpo_DB.Count() > 14)
+            Okpo_DB = Okpo_DB[..14];
 
         OrganizationName_DB = Convert.ToString(worksheet.Cells[row, 4].Value).Trim();
+        if (OrganizationName_DB.Count() > 256)
+            OrganizationName_DB = OrganizationName_DB[..256];
 
         LicenseOrRegistrationInfo_DB = Convert.ToString(worksheet.Cells[row, 5].Value).Trim();
 

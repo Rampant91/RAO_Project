@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.BackgroundLoader;
 using Client_App.ViewModels.Forms;
@@ -134,12 +135,13 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
 
             int numInventarizationForm = await GetNumOfReportWithInventarization(organization10.Id, year.ToString(), dbModel);
             int numWithoutInventarizationForm = await GetNumOfReportWithoutInventarization(organization10.Id, year.ToString(), dbModel);
-
-            //Если запись об организации существует
             if (IsRowWithOrganizationExist(organization10))
+            {
+                //Если запись об организации существует
                 UpdateRow(organization10,
-                    numInventarizationForm : numInventarizationForm,
-                    numWithoutInventarizationForm : numWithoutInventarizationForm);
+                    numInventarizationForm: numInventarizationForm,
+                    numWithoutInventarizationForm: numWithoutInventarizationForm);
+            }
             else
                 CreateRow(organization10,
                     numInventarizationForm: numInventarizationForm,
@@ -375,9 +377,8 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     {
 
         var form41 = Report.Rows41.FirstOrDefault(form41 =>
-                form41.RegNo_DB == organization.Master.RegNoRep.Value);
+                form41.RegNo_DB == organization.Master.RegNoRep.Value && form41.Okpo_DB == organization.Master.OkpoRep.Value);
 
-        form41.Okpo_DB = organization.Master.OkpoRep.Value;
         form41.OrganizationName_DB = organization.Master.ShortJurLicoRep.Value;
 
         if (numInventarizationForm >= 0)

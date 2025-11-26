@@ -69,13 +69,18 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                     && (form41.Okpo_DB == reports.Master_DB.Rows10[0].Okpo_DB
                     || form41.Okpo_DB == reports.Master_DB.Rows10[1].Okpo_DB)))
                     {
+                        string okpo;
+                        if (reports.Master_DB.Rows10[1].Okpo_DB is "" or "-" or null)
+                            okpo = reports.Master_DB.Rows10[0].Okpo_DB;
+                        else
+                            okpo = reports.Master_DB.Rows10[1].Okpo_DB;
+
                         organizations10.Add(new Organization()
-                        {
-                            Id = reports.Id,
-                            RegNo = reports.Master_DB.Rows10[0].RegNo_DB,
-                            Okpo0 = reports.Master_DB.Rows10[0].Okpo_DB,
-                            Okpo1 = reports.Master_DB.Rows10[1].Okpo_DB,
-                        });
+                            {
+                                Id = reports.Id,
+                                RegNo = reports.Master_DB.Rows10[0].RegNo_DB,
+                                Okpo = okpo,
+                            });
                     }
                 }
             }
@@ -123,12 +128,17 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                     && (form41.Okpo_DB == reports.Master_DB.Rows20[0].Okpo_DB
                     || form41.Okpo_DB == reports.Master_DB.Rows20[1].Okpo_DB)))
                     {
+                        string okpo;
+                        if (reports.Master_DB.Rows20[1].Okpo_DB is "" or "-" or null)
+                            okpo = reports.Master_DB.Rows20[0].Okpo_DB;
+                        else
+                            okpo = reports.Master_DB.Rows20[1].Okpo_DB;
+
                         organizations20.Add(new Organization()
                         {
                             Id = reports.Id,
                             RegNo = reports.Master_DB.Rows20[0].RegNo_DB,
-                            Okpo0 = reports.Master_DB.Rows20[0].Okpo_DB,
-                            Okpo1 = reports.Master_DB.Rows20[1].Okpo_DB
+                            Okpo = okpo,
                         });
                     }
                 }
@@ -189,7 +199,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             {
                 var organization = organizations10.FirstOrDefault(org =>
                     org.RegNo == form41.RegNo_DB
-                    && (org.Okpo0 == form41.Okpo_DB || org.Okpo1 == form41.Okpo_DB));
+                    && (org.Okpo == form41.Okpo_DB));
 
 
 
@@ -247,7 +257,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             int count;
             var organization = organizations10.FirstOrDefault(org =>
                     org.RegNo == form41.RegNo_DB
-                    && (org.Okpo0 == form41.Okpo_DB || org.Okpo1 == form41.Okpo_DB));
+                    && (org.Okpo == form41.Okpo_DB));
 
             if (organization == null)
             {
@@ -306,7 +316,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
 
             var organization = organizations20.FirstOrDefault(org =>
                     org.RegNo == form41.RegNo_DB
-                    && (org.Okpo0 == form41.Okpo_DB || org.Okpo1 == form41.Okpo_DB));
+                    && (org.Okpo == form41.Okpo_DB));
 
             if (organization == null)
             {
@@ -452,7 +462,6 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
 
         public string RegNo { get; set; }
 
-        public string Okpo0 { get; set; }
-        public string Okpo1 { get; set; }
+        public string Okpo { get; set; }
     }
 }
