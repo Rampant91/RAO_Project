@@ -33,6 +33,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
 
     private DBModel dbModel = StaticConfiguration.DBModel;
     private DBModel secondDB;
+    private Window? owner;
 
     private List<Reports> organizations10;
     private List<Reports> organizations20;
@@ -43,7 +44,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         
-        var owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
+        owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
             .FirstOrDefault(w => w.IsActive);
 
         if (owner == null) return;
@@ -111,6 +112,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 if (path != null)
                 {
                     secondDB = new DBModel(path[0]);
+                    
                     organizations20 = await GetOrganizationsList("2.0", secondDB);
                 }
 
@@ -425,13 +427,36 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     #region Requests
     private async Task<List<Reports>> GetOrganizationsList(string formNum, DBModel DB)
     {
-        return await DB.ReportsCollectionDbSet
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Include(reports => reports.Master_DB).ThenInclude(reports =>reports.Rows10)
-                        .Include(reports => reports.Master_DB).ThenInclude(reports => reports.Rows20)
-                        .Where(reports => reports.Master_DB.FormNum_DB == formNum)
-                        .ToListAsync();
+        try
+        {
+            return await DB.ReportsCollectionDbSet
+                            .AsSplitQuery()
+                            .AsQueryable()
+                            .Include(reports => reports.Master_DB).ThenInclude(reports => reports.Rows10)
+                            .Include(reports => reports.Master_DB).ThenInclude(reports => reports.Rows20)
+                            .Where(reports => reports.Master_DB.FormNum_DB == formNum)
+                            .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+               .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+               {
+                   ButtonDefinitions =
+                   [
+                       new ButtonDefinition { Name = "Ок" },
+                   ],
+                   CanResize = true,
+                   ContentTitle = "Формирование нового отчета",
+                   ContentMessage = "Произошла ошибка:\n" +
+                   "Не удалось открыть базу данных с годовыми отчетами",
+                   MinWidth = 300,
+                   MinHeight = 125,
+                   WindowStartupLocation = WindowStartupLocation.CenterOwner
+               })
+               .ShowDialog(owner));
+            return new List<Reports>();
+        }
     }
     private async Task<int> GetNumOfReportWithInventarization(int organizationId, string year, DBModel DB)
     {

@@ -112,11 +112,35 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         if (path != null)
                         {
                             secondDB = new DBModel(path[0]);
-                            reportsQuery = secondDB.ReportsCollectionDbSet
-                             .AsSplitQuery()
-                             .AsQueryable()
-                             .Include(reps => reps.Master_DB).ThenInclude(rep => rep.Rows20)
-                             .Where(reps => reps.Master_DB.FormNum_DB == "2.0");
+                            try
+                            {
+                                reportsQuery = secondDB.ReportsCollectionDbSet
+                                 .AsSplitQuery()
+                                 .AsQueryable()
+                                 .Include(reps => reps.Master_DB).ThenInclude(rep => rep.Rows20)
+                                 .Where(reps => reps.Master_DB.FormNum_DB == "2.0");
+
+                                reportsQuery.Count();//Небольшой запрос, чтобы проверить подключение к БД
+                            }
+                            catch (Exception ex)
+                            {
+                                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                                   .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                   {
+                                       ButtonDefinitions =
+                                       [
+                                           new ButtonDefinition { Name = "Ок" },
+                                       ],
+                                       CanResize = true,
+                                       ContentTitle = "Формирование нового отчета",
+                                       ContentMessage = "Произошла ошибка:\n" +
+                                       "Не удалось открыть базу данных с годовыми отчетами",
+                                       MinWidth = 300,
+                                       MinHeight = 125,
+                                       WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                   })
+                                   .ShowDialog(owner));
+                            }
                         }
                     }
                 }
