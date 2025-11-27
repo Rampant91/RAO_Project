@@ -70,6 +70,7 @@ public partial class Form41 : Form
         if (RegNo_DB != value1)
         {
             RegNo_DB = value1;
+            OnPropertyChanged(nameof(RowColor));
         }
     }
 
@@ -119,6 +120,7 @@ public partial class Form41 : Form
         if (Okpo_DB != value1)
         {
             Okpo_DB = value1;
+            OnPropertyChanged(nameof(RowColor));
         }
     }
 
@@ -168,6 +170,7 @@ public partial class Form41 : Form
         if (OrganizationName_DB != value1)
         {
             OrganizationName_DB = value1;
+            OnPropertyChanged(nameof(RowColor));
         }
     }
 
@@ -212,6 +215,7 @@ public partial class Form41 : Form
         if (LicenseOrRegistrationInfo_DB != value1)
         {
             LicenseOrRegistrationInfo_DB = value1;
+            OnPropertyChanged(nameof(RowColor));
         }
     }
 
@@ -256,6 +260,7 @@ public partial class Form41 : Form
         if (NumOfFormsWithInventarizationInfo_DB != value1)
         {
             NumOfFormsWithInventarizationInfo_DB = value1;
+            OnPropertyChanged(nameof(RowColor));
         }
     }
 
@@ -300,6 +305,7 @@ public partial class Form41 : Form
         if (NumOfFormsWithoutInventarizationInfo_DB != value1)
         {
             NumOfFormsWithoutInventarizationInfo_DB = value1;
+            OnPropertyChanged(nameof(RowColor));
         }
     }
 
@@ -344,6 +350,7 @@ public partial class Form41 : Form
         if (NumOfForms212_DB != value1)
         {
             NumOfForms212_DB = value1;
+            OnPropertyChanged(nameof(RowColor));
         }
     }
 
@@ -388,6 +395,7 @@ public partial class Form41 : Form
         if (Note_DB != value1)
         {
             Note_DB = value1;
+            OnPropertyChanged(nameof(RowColor));
         }
     }
 
@@ -399,7 +407,31 @@ public partial class Form41 : Form
 
     #endregion
 
+    #region RowColor
+    public Color RowColor
+    {
+        get
+        {
+            if (LicenseOrRegistrationInfo.Value is "" or null
+                && NumOfFormsWithInventarizationInfo.Value <= 0
+                && NumOfFormsWithoutInventarizationInfo.Value <= 0
+                && NumOfForms212.Value <= 0
+                && Note.Value is "" or null)
+                return Color.FromArgb(50, 255, 255, 0);
 
+            if ((NumOfFormsWithInventarizationInfo.Value > 0
+                || NumOfFormsWithoutInventarizationInfo.Value > 0
+                || NumOfForms212.Value > 0)
+                && LicenseOrRegistrationInfo.Value is "" or null)
+                return Color.FromArgb(50, 139, 0, 255);
+
+            if (NumOfFormsWithInventarizationInfo.Value <= 0)
+                return Color.FromArgb(50, 255, 0, 0);
+
+            return Color.FromArgb(0,255,255,255); // Значение по умолчанию
+        }
+    }
+    #endregion 
     #endregion
 
     #region Validation

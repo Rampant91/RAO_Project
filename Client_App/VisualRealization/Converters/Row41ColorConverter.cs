@@ -16,20 +16,20 @@ namespace Client_App.VisualRealization.Converters
         {
             if (value is Form41 form41)
             {
-                if (form41.LicenseOrRegistrationInfo_DB is "" or null
-                    && form41.NumOfFormsWithInventarizationInfo_DB <=0
-                    && form41.NumOfFormsWithoutInventarizationInfo_DB <=0
-                    && form41.NumOfForms212_DB <= 0
-                    && form41.Note_DB is "" or null)
+                if (form41.LicenseOrRegistrationInfo.Value is "" or null
+                    && form41.NumOfFormsWithInventarizationInfo.Value <=0
+                    && form41.NumOfFormsWithoutInventarizationInfo.Value <=0
+                    && form41.NumOfForms212.Value <= 0
+                    && form41.Note.Value is "" or null)
                     return new SolidColorBrush(new Color(50, 255, 255, 0));
 
-                if ((form41.NumOfFormsWithInventarizationInfo_DB > 0
-                    ||form41.NumOfFormsWithoutInventarizationInfo_DB >0
-                    ||form41.NumOfForms212_DB>0)
-                    && form41.LicenseOrRegistrationInfo_DB is "" or null)
+                if ((form41.NumOfFormsWithInventarizationInfo.Value > 0
+                    ||form41.NumOfFormsWithoutInventarizationInfo.Value >0
+                    ||form41.NumOfForms212.Value>0)
+                    && form41.LicenseOrRegistrationInfo.Value is "" or null)
                     return new SolidColorBrush(new Color(50, 139, 0, 255));
 
-                if (form41.NumOfFormsWithInventarizationInfo_DB <= 0)
+                if (form41.NumOfFormsWithInventarizationInfo.Value <= 0)
                     return new SolidColorBrush(new Color(50, 255, 0, 0));
             }
             return Brushes.Transparent; // Значение по умолчанию

@@ -28,6 +28,7 @@
 		<converter:IntToEmptyStringConverter x:Key="IntToEmptyStringConverter"/>
 		<converter:RowColorConverter x:Key="RowColorConverter"/>
 		<converter:ColorBlendConverter x:Key="ColorBlendConverter"/>
+		<converter:SystemDrawingColorToSolidColorBrush x:Key="SystemDrawingColorToSolidColorBrush"/>
 	</Window.Resources>
 
 	<Design.DataContext>
@@ -204,7 +205,7 @@
 					<DataGrid.Styles>
 						<Style Selector="DataGridCell">
 							<Setter Property="Background"
-									Value="{Binding Converter={StaticResource RowColorConverter}}"/>
+									x:DataType="forms4:Form41" Value="{Binding RowColor, Converter={ StaticResource SystemDrawingColorToSolidColorBrush}}"/>
 						</Style>
 						<Style Selector="DataGrid DataGridRow:selected DataGridCell">
 							<Setter Property="CornerRadius" Value="5"/>
@@ -213,7 +214,7 @@
 								<MultiBinding Converter="{StaticResource ColorBlendConverter}">
 									<Binding Source="LightBlue"/>
 									<!-- Базовый цвет выделения -->
-									<Binding Path="." Converter="{StaticResource RowColorConverter}"/>
+									<Binding x:DataType="forms4:Form41" Path="RowColor"/>
 									<!-- Цвет из условия -->
 								</MultiBinding>
 							</Setter>
@@ -225,7 +226,7 @@
 								<MultiBinding Converter="{StaticResource ColorBlendConverter}">
 									<Binding Source="LightGray"/>
 									<!-- Базовый цвет наведения -->
-									<Binding Path="." Converter="{StaticResource RowColorConverter}"/>
+									<Binding x:DataType="forms4:Form41" Path="RowColor"/>
 									<!-- Цвет из условия -->
 								</MultiBinding>
 							</Setter>

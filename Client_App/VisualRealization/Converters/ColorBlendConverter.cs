@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Data.Converters;
 using Avalonia.Media;
+using Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -24,6 +25,10 @@ namespace Client_App.VisualRealization.Converters
                 Color.TryParse(str1, out var baseColor);
                 baseColorBrush = new SolidColorBrush(baseColor);
             }
+            else if (values[0] is System.Drawing.Color systemBaseColor)
+            {
+                baseColorBrush = new SolidColorBrush(new Color(systemBaseColor.A, systemBaseColor.R, systemBaseColor.G, systemBaseColor.B));
+            }
             else if (values[0] is SolidColorBrush colorBrush1)
             {
                 baseColorBrush = colorBrush1;
@@ -33,7 +38,11 @@ namespace Client_App.VisualRealization.Converters
             if (values[1] is string str2)
             {
                 Color.TryParse(str2, out var baseColor);
-                baseColorBrush = new SolidColorBrush(baseColor);
+                conditionColorBrush = new SolidColorBrush(baseColor);
+            }
+            else if (values[1] is System.Drawing.Color systemConditionColor)
+            {
+                conditionColorBrush = new SolidColorBrush(new Color(systemConditionColor.A, systemConditionColor.R, systemConditionColor.G, systemConditionColor.B));
             }
             else if (values[1] is SolidColorBrush colorBrush2)
             {
