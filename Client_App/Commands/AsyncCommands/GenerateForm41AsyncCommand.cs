@@ -185,6 +185,10 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         Report.Rows41.Clear();
         Report.Rows41.AddRange(orderedRows);
 
+        //Заполняем пробелы РегНомеров 
+        FillSpaceByRegNo();
+
+
 
         progressBarVM.SetProgressBar(
             95,
@@ -421,6 +425,28 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         Report[Report.FormNum_DB].Add(form41);
 
     }
+
+    // Эта функция создает пустые записи для организаций, не представленных в базе данных или в отчете по форме 4.1, на основе которого генерируется этот отчет
+    private void FillSpaceByRegNo()
+    {
+        for (int i = 0; i < Report.Rows41.Count - 1; i++)
+        {
+            if (!int.TryParse(Report.Rows41[i].RegNo_DB, out var current)) return; 
+            if (!int.TryParse(Report.Rows41[i + 1].RegNo_DB, out var next)) return;
+
+            // Если Третий символ РегНомера это 9 или 8, то значит это временный РегНомер 
+            // и программа не должна заполнять пробелы
+            if (Report.Rows41[i + 1].RegNo_DB[2] is '9' or '8') return; 
+                                                                                    
+
+            if (current+1 < next)
+            {
+                Report.Rows41.Insert(i + 1, new Form41() { RegNo_DB = $"{current + 1}" });
+            }
+        }
+    }
+        
+        
 
     #endregion
 

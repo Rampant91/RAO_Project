@@ -26,6 +26,8 @@
 		<converter:NullToStringConverter x:Key="NullToStringConverter"/>
 		<converter:DateConverter x:Key="DateConverter"/>
 		<converter:IntToEmptyStringConverter x:Key="IntToEmptyStringConverter"/>
+		<converter:RowColorConverter x:Key="RowColorConverter"/>
+		<converter:ColorBlendConverter x:Key="ColorBlendConverter"/>
 	</Window.Resources>
 
 	<Design.DataContext>
@@ -199,6 +201,38 @@
 					Items="{Binding FormList}"
 					SelectedItem="{Binding SelectedForm}">
 
+					<DataGrid.Styles>
+						<Style Selector="DataGridCell">
+							<Setter Property="Background"
+									Value="{Binding Converter={StaticResource RowColorConverter}}"/>
+						</Style>
+						<Style Selector="DataGrid DataGridRow:selected DataGridCell">
+							<Setter Property="CornerRadius" Value="5"/>
+							<Setter Property="Foreground" Value="Black"/>
+							<Setter Property="Background">
+								<MultiBinding Converter="{StaticResource ColorBlendConverter}">
+									<Binding Source="LightBlue"/>
+									<!-- Базовый цвет выделения -->
+									<Binding Path="." Converter="{StaticResource RowColorConverter}"/>
+									<!-- Цвет из условия -->
+								</MultiBinding>
+							</Setter>
+						</Style>
+
+						<Style Selector="DataGrid DataGridRow:pointerover:not(:selected) DataGridCell">
+							<Setter Property="Foreground" Value="Black"/>
+							<Setter Property="Background">
+								<MultiBinding Converter="{StaticResource ColorBlendConverter}">
+									<Binding Source="LightGray"/>
+									<!-- Базовый цвет наведения -->
+									<Binding Path="." Converter="{StaticResource RowColorConverter}"/>
+									<!-- Цвет из условия -->
+								</MultiBinding>
+							</Setter>
+						</Style>
+
+					</DataGrid.Styles>
+					
 					<interactivity:Interaction.Behaviors>
 						<local:DataGridColumnWidthLoadBehavior FormNum="4.1"/>
 						<local:DataGridPointerBehavior/>

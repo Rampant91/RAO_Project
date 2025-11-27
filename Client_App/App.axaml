@@ -190,14 +190,9 @@
             <Setter Property="Foreground" Value="Black"/>
 		    <Setter Property="Background" Value="LightGray"/>
         </Style>
-        <Style Selector="DataGrid DataGridRow:selected TextBox">
-            <Setter Property="Foreground" Value="Black"/>
-		    <Setter Property="Background" Value="LightBlue"/>
-        </Style>
-        <Style Selector="DataGrid DataGridRow:pointerover:not(:selected) TextBox">
-            <Setter Property="Foreground" Value="Black"/>
-		    <Setter Property="Background" Value="LightGray"/>
-        </Style>
+		<Style Selector="DataGrid TextBox">
+			<Setter Property="Background" Value="Transparent"/>
+		</Style>
 		
         <Style Selector="DataGrid.table TextBox">
             <Setter Property="Margin" Value="-1,-1,-1,-1"/>
