@@ -279,6 +279,34 @@ public class Form13 : Form1
 
             #endregion
 
+            #region 21, 25, 27, 28, 29, 31, 35, 37, 38, 39, 81, 82, 83, 84, 85, 86, 87, 88
+
+            case "21" or "25" or "27" or "28" or "29" or "31" or "35" or "37" or "38" 
+                or "39" or "81" or "82" or "83" or "84" or "85" or "86" or "87" or "88":
+            {
+                #region ProviderOrRecieverOKPO (17)
+
+                if (ProviderOrRecieverOKPO_DB is not "")
+                {
+                    ProviderOrRecieverOKPO.Value = string.Empty;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (18)
+
+                if (TransporterOKPO_DB is not "")
+                {
+                    TransporterOKPO.Value = string.Empty;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
             #region 22, 32
 
             case "22" or "32":
