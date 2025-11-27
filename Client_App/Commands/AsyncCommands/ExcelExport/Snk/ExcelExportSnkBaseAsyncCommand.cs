@@ -26,6 +26,27 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 /// </summary>
 public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 {
+    private sealed class SnkGroupKeyComparer : IEqualityComparer<(string PasNum, string FacNum, string Radionuclids, string Type)>
+    {
+        private readonly CustomSnkNumberEqualityComparer _numberComparer = new();
+        private readonly CustomSnkRadionuclidsEqualityComparer _radsComparer = new();
+        private readonly CustomSnkEqualityComparer _stringComparer = new();
+
+        public bool Equals((string PasNum, string FacNum, string Radionuclids, string Type) x,
+            (string PasNum, string FacNum, string Radionuclids, string Type) y)
+        {
+            return _numberComparer.Equals(x.PasNum, y.PasNum)
+                   && _numberComparer.Equals(x.FacNum, y.FacNum)
+                   && _radsComparer.Equals(x.Radionuclids, y.Radionuclids)
+                   && _stringComparer.Equals(x.Type, y.Type);
+        }
+
+        public int GetHashCode((string PasNum, string FacNum, string Radionuclids, string Type) obj)
+        {
+            return 0;
+        }
+    }
+
     #region Properties
 
     /// <summary>
@@ -142,7 +163,6 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    CanResize = true,
                     ContentTitle = "Выгрузка в Excel",
                     ContentMessage = "Выгрузка не выполнена, поскольку введена дата ранее вступления в силу приказа.",
                     MinWidth = 400,
@@ -293,7 +313,15 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 .ToList();
         }
 
-        var groupedOperationList = await GetGroupedOperationList(unionOperationList);
+        //var groupedOperationList = await GetGroupedOperationList(unionOperationList);
+
+        var groupedOperationList = unionOperationList
+            .OrderBy(x => x.OpDate)
+            .ThenBy(x => x.RepDto.StartPeriod)
+            .ThenBy(x => x.RepDto.EndPeriod)
+            .ThenBy(x => x.NumberInOrder)
+            .GroupBy(x => (x.PasNum, x.FacNum, x.Radionuclids, x.Type), new SnkGroupKeyComparer())
+            .ToList();
 
         var comparer = new CustomSnkEqualityComparer();
         var numberComparer = new CustomSnkNumberEqualityComparer();
@@ -394,6 +422,16 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         List<List<ShortFormDTO>> groupedOperationList = [];
         List<ShortFormDTO> currentGroup = [];
         var opCount = 0;
+
+        unionOperationList = unionOperationList.Where(x => x.PasNum is "55297").ToList();
+
+        var newGroupByList = unionOperationList
+            .OrderBy(x => x.OpDate)
+            .ThenBy(x => x.RepDto.StartPeriod)
+            .ThenBy(x => x.RepDto.EndPeriod)
+            .ThenBy(x => x.NumberInOrder)
+            .GroupBy(x => (x.PasNum, x.FacNum, x.Radionuclids, x.Type), new SnkGroupKeyComparer())
+            .ToList();
 
         foreach (var form in unionOperationList
                      .OrderBy(x => x.OpDate)
