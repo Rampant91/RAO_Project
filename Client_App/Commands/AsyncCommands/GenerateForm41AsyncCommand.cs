@@ -5,6 +5,7 @@ using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.BackgroundLoader;
+using Client_App.Interfaces.Logger;
 using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Messages;
 using Client_App.ViewModels.ProgressBar;
@@ -40,6 +41,22 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     private string codeSubjectRF;
     private int year = 0;
     #endregion
+    public override async void Execute(object? parameter)
+    {
+        IsExecute = true;
+        try
+        {
+            await Task.Run(() => AsyncExecute(parameter));
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg);
+        }
+        IsExecute = false;
+    }
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -94,7 +111,6 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
 
 
         progressBarVM.SetProgressBar(5, $"Загрузка организаций");
-        await Task.Yield(); // Именно в этой команде без Yield progressBar не обновляется
 
 
         organizations10 = await GetOrganizationsList("1.0", dbModel);
@@ -123,7 +139,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         if (codeSubjectRF != null)
         {
             progressBarVM.SetProgressBar(7, $"Фильтрация записей по коду субъекта РФ");
-            await Task.Yield(); // Именно в этой команде без Yield progressBar не обновляется
+
             FilterAllByCodeSubjectRF(codeSubjectRF);
         }
         double currentProgress = 14.0;
@@ -133,7 +149,6 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             progressBarVM.SetProgressBar(
                 (int)currentProgress, 
                 $"Подсчет форм 1.1 - 1.4 у организации {organization10.Master.Rows10[0].RegNo_DB}");
-            await Task.Yield(); // Именно в этой команде без Yield progressBar не обновляется
 
             int numInventarizationForm = await GetNumOfReportWithInventarization(organization10.Id, year.ToString(), dbModel);
             int numWithoutInventarizationForm = await GetNumOfReportWithoutInventarization(organization10.Id, year.ToString(), dbModel);
@@ -158,7 +173,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             progressBarVM.SetProgressBar(
                 (int)currentProgress,
                 $"Подсчет форм 2.12 у организации {organization20.Master_DB.Rows20[0].RegNo_DB}");
-            await Task.Yield(); // Именно в этой команде без Yield progressBar не обновляется
+
             int numForm212;
 
             if (secondDB != null)
@@ -178,7 +193,6 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         progressBarVM.SetProgressBar(
             90,
             $"Сортировка записей по рег. номеру");
-        await Task.Yield(); // Именно в этой команде без Yield progressBar не обновляется
 
         // Сортируем по Рег.Номеру
         var orderedRows = Report.Rows41.OrderBy(row => row.RegNo_DB).ToList();
@@ -193,7 +207,6 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         progressBarVM.SetProgressBar(
             95,
             $"Выставляем номера строк");
-        await Task.Yield(); // Именно в этой команде без Yield progressBar не обновляется
 
         //Выставляем номера строк
         for (int i = 0; i < Report.Rows41.Count; i++)
@@ -206,12 +219,10 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             $"Завершаем формирование отчета");
 
 
-        await Task.Yield(); // Именно в этой команде без Yield progressBar не обновляется
 
         //Обновляем таблицу
         formVM.UpdateFormList();
         formVM.UpdatePageInfo();
-        progressBar.Close();
     }
 
     #region AskMessages
