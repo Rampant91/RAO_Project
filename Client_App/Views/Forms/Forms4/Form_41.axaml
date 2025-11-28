@@ -205,7 +205,11 @@
 					<DataGrid.Styles>
 						<Style Selector="DataGridCell">
 							<Setter Property="Background"
-									x:DataType="forms4:Form41" Value="{Binding RowColor, Converter={ StaticResource SystemDrawingColorToSolidColorBrush}}"/>
+									x:DataType="forms4:Form41" 
+									Value="{Binding RowColor, Converter={ StaticResource SystemDrawingColorToSolidColorBrush}}"/>
+							<Setter Property="ToolTip.Tip" 
+									x:DataType="forms4:Form41"
+									Value="{Binding ToolTipText}"/> 
 						</Style>
 						<Style Selector="DataGrid DataGridRow:selected DataGridCell">
 							<Setter Property="CornerRadius" Value="5"/>

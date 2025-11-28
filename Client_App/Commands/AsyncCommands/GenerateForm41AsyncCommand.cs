@@ -89,7 +89,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         }
 
         #endregion
-        var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
+        var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts, owner));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
 
@@ -325,8 +325,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 ],
                 CanResize = true,
                 ContentTitle = "Формирование нового отчета",
-                ContentMessage = "Не удалось найти годовые отчеты\n" +
-                "Вы хотите указать путь на базу данных с годовыми отчетами?",
+                ContentMessage = "Хотите указать путь к базе данных с годовыми отчетами по форме 2.12?",
                 MinWidth = 300,
                 MinHeight = 125,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner

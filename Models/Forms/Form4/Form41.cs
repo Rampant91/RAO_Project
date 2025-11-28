@@ -408,6 +408,8 @@ public partial class Form41 : Form
     #endregion
 
     #region RowColor
+
+    [NotMapped]
     public Color RowColor
     {
         get
@@ -417,18 +419,47 @@ public partial class Form41 : Form
                 && NumOfFormsWithoutInventarizationInfo.Value <= 0
                 && NumOfForms212.Value <= 0
                 && Note.Value is "" or null)
+            {
+                ToolTipText = "Если у организации нет отчетов и сведений о лицензии, необходимо заполнить ячейку \"Примечение\"";
                 return Color.FromArgb(50, 255, 255, 0);
+            }
+
+            if (NumOfFormsWithInventarizationInfo.Value <= 0)
+            {
+                ToolTipText = "Нет инвентаризационного отчета";
+                return Color.FromArgb(50, 255, 0, 0);
+            }
 
             if ((NumOfFormsWithInventarizationInfo.Value > 0
                 || NumOfFormsWithoutInventarizationInfo.Value > 0
                 || NumOfForms212.Value > 0)
                 && LicenseOrRegistrationInfo.Value is "" or null)
+            {
+                ToolTipText = "Если у организации есть, хотя бы 1 отчет, то необходимо заполнить \"Сведения о лицензии\"";
                 return Color.FromArgb(50, 139, 0, 255);
+            }
 
-            if (NumOfFormsWithInventarizationInfo.Value <= 0)
-                return Color.FromArgb(50, 255, 0, 0);
 
+
+            ToolTipText = "";
             return Color.FromArgb(0,255,255,255); // Значение по умолчанию
+        }
+    }
+
+    [NotMapped]
+    private string _toolTipText = "";
+
+    [NotMapped]
+    public string ToolTipText
+    {
+        get
+        {
+            return _toolTipText;
+        }
+        set
+        {
+            _toolTipText = value;
+            OnPropertyChanged();
         }
     }
     #endregion 

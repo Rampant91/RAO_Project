@@ -466,8 +466,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                     ],
                     CanResize = true,
                     ContentTitle = "Формирование нового отчета",
-                    ContentMessage = "Не удалось найти годовые отчеты\n" +
-                    "Вы хотите указать путь на базу данных с годовыми отчетами?",
+                    ContentMessage = "Хотите указать путь к базе данных с годовыми отчетами по форме 2.12?",
                     MinWidth = 300,
                     MinHeight = 125,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
