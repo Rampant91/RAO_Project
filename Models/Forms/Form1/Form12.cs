@@ -715,9 +715,18 @@ public class Form12 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (Spravochniks.OKSM.Contains(value.Value.ToUpper()) && OperationCode_DB is "81" or "83" or "84" or "85" or "86" or "88")
+        if (!Spravochniks.OKSM.Contains(value.Value.ToUpper()) 
+            && OperationCode_DB is "84" or "85")
         {
-            return true;
+            value.AddError($"При коде {OperationCode_DB} допускается только ОКСМ");
+            return false;
+        }
+        if ((value.Value.Length != 8 && value.Value.Length != 14
+            || !OkpoRegex().IsMatch(value.Value))
+            && OperationCode_DB is "11" or "81" or "88")
+        {
+            value.AddError($"При коде {OperationCode_DB} ОКСМ не допускается");
+            return false;
         }
         if (value.Value.Equals("прим."))
         {
@@ -725,8 +734,9 @@ public class Form12 : Form1
             //    value.AddError( "Заполните примечание");
             return true;
         }
-        if (value.Value.Length != 8 && value.Value.Length != 14
-            || !OkpoRegex().IsMatch(value.Value))
+        if (!Spravochniks.OKSM.Contains(value.Value.ToUpper())
+            && (value.Value.Length != 8 && value.Value.Length != 14
+            || !OkpoRegex().IsMatch(value.Value)))
         {
             value.AddError("Недопустимое значение");
             return false;
