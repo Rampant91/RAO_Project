@@ -45,6 +45,7 @@ namespace Client_App.ViewModels.Controls
         }
 
         #region Property
+
         #region ExecutorData
 
         public ExecutorData Executor

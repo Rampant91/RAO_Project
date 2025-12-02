@@ -24,6 +24,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
+using Models.Forms.Form2;
 
 namespace Client_App.Views.Forms.Forms2;
 
@@ -487,31 +488,16 @@ public partial class Form_26 : BaseWindow<Form_26VM>
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
         List<Form> formToDeleteList = [];
-        var lst = vm.Report[vm.FormType].ToList<Form11>();
+        var lst = vm.Report[vm.FormType].ToList<Form26>();
         foreach (var form in lst)
         {
-            if (string.IsNullOrWhiteSpace(form.OperationCode_DB)
-                && string.IsNullOrWhiteSpace(form.OperationDate_DB)
-                && string.IsNullOrWhiteSpace(form.PassportNumber_DB)
-                && string.IsNullOrWhiteSpace(form.Type_DB)
-                && string.IsNullOrWhiteSpace(form.Radionuclids_DB)
-                && string.IsNullOrWhiteSpace(form.FactoryNumber_DB)
-                && form.Quantity_DB is null
-                && string.IsNullOrWhiteSpace(form.Activity_DB)
-                && string.IsNullOrWhiteSpace(form.CreatorOKPO_DB)
-                && string.IsNullOrWhiteSpace(form.CreationDate_DB)
-                && form.Category_DB is null
-                && form.SignedServicePeriod_DB is null
-                && form.PropertyCode_DB is null
-                && string.IsNullOrWhiteSpace(form.Owner_DB)
-                && form.DocumentVid_DB is null
-                && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
-                && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
-                && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
-                && string.IsNullOrWhiteSpace(form.TransporterOKPO_DB)
-                && string.IsNullOrWhiteSpace(form.PackName_DB)
-                && string.IsNullOrWhiteSpace(form.PackType_DB)
-                && string.IsNullOrWhiteSpace(form.PackNumber_DB))
+            if (string.IsNullOrWhiteSpace(form.ObservedSourceNumber_DB)
+                && string.IsNullOrWhiteSpace(form.ControlledAreaName_DB)
+                && string.IsNullOrWhiteSpace(form.SupposedWasteSource_DB)
+                && string.IsNullOrWhiteSpace(form.DistanceToWasteSource_DB)
+                && string.IsNullOrWhiteSpace(form.TestDepth_DB)
+                && string.IsNullOrWhiteSpace(form.RadionuclidName_DB)
+                && string.IsNullOrWhiteSpace(form.AverageYearConcentration_DB))
             {
                 formToDeleteList.Add(form);
             }

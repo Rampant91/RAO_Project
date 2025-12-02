@@ -209,6 +209,9 @@
     <Compile Update="Views\Forms\Forms2\Form_20.axaml.cs">
       <DependentUpon>Form_20.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\MainWindowTabs\Forms4TabControl.axaml.cs">
+      <DependentUpon>Forms4TabControl.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Messages\AskSubjectRFMessage.axaml.cs">
       <DependentUpon>AskSubjectRFMessage.axaml</DependentUpon>
     </Compile>

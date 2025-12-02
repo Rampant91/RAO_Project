@@ -24,6 +24,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
+using Models.Forms.Form2;
 
 namespace Client_App.Views.Forms.Forms2;
 
@@ -487,32 +488,29 @@ public partial class Form_22 : BaseWindow<Form_22VM>
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
         List<Form> formToDeleteList = [];
-        var lst = vm.Report[vm.FormType].ToList<Form11>();
+        var lst = vm.Report[vm.FormType].ToList<Form22>();
         foreach (var form in lst)
         {
-            if (string.IsNullOrWhiteSpace(form.OperationCode_DB)
-                && string.IsNullOrWhiteSpace(form.OperationDate_DB)
-                && string.IsNullOrWhiteSpace(form.PassportNumber_DB)
-                && string.IsNullOrWhiteSpace(form.Type_DB)
-                && string.IsNullOrWhiteSpace(form.Radionuclids_DB)
-                && string.IsNullOrWhiteSpace(form.FactoryNumber_DB)
-                && form.Quantity_DB is null
-                && string.IsNullOrWhiteSpace(form.Activity_DB)
-                && string.IsNullOrWhiteSpace(form.CreatorOKPO_DB)
-                && string.IsNullOrWhiteSpace(form.CreationDate_DB)
-                && form.Category_DB is null
-                && form.SignedServicePeriod_DB is null
-                && form.PropertyCode_DB is null
-                && string.IsNullOrWhiteSpace(form.Owner_DB)
-                && form.DocumentVid_DB is null
-                && string.IsNullOrWhiteSpace(form.DocumentNumber_DB)
-                && string.IsNullOrWhiteSpace(form.DocumentDate_DB)
-                && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
-                && string.IsNullOrWhiteSpace(form.TransporterOKPO_DB)
+            if (string.IsNullOrWhiteSpace(form.StoragePlaceName_DB)
+                && string.IsNullOrWhiteSpace(form.StoragePlaceCode_DB)
                 && string.IsNullOrWhiteSpace(form.PackName_DB)
                 && string.IsNullOrWhiteSpace(form.PackType_DB)
-                && string.IsNullOrWhiteSpace(form.PackNumber_DB))
-            {
+                && string.IsNullOrWhiteSpace(form.PackQuantity_DB)
+                && string.IsNullOrWhiteSpace(form.CodeRAO_DB)
+                && string.IsNullOrWhiteSpace(form.StatusRAO_DB)
+                && string.IsNullOrWhiteSpace(form.VolumeOutOfPack_DB)
+                && string.IsNullOrWhiteSpace(form.VolumeInPack_DB)
+                && string.IsNullOrWhiteSpace(form.MassOutOfPack_DB)
+                && string.IsNullOrWhiteSpace(form.MassInPack_DB)
+                && string.IsNullOrWhiteSpace(form.QuantityOZIII_DB)
+                && string.IsNullOrWhiteSpace(form.TritiumActivity_DB)
+                && string.IsNullOrWhiteSpace(form.BetaGammaActivity_DB)
+                && string.IsNullOrWhiteSpace(form.AlphaActivity_DB)
+                && string.IsNullOrWhiteSpace(form.TransuraniumActivity_DB)
+                && string.IsNullOrWhiteSpace(form.MainRadionuclids_DB)
+                && string.IsNullOrWhiteSpace(form.Subsidy_DB)
+                && string.IsNullOrWhiteSpace(form.FcpNumber_DB))
+            { 
                 formToDeleteList.Add(form);
             }
         }

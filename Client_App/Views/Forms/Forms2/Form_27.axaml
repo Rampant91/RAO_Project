@@ -61,7 +61,7 @@
                 </Border>
 
                 <Border Classes="borderContainer">
-                    <Grid Margin="5" RowDefinitions="*,*,*,*,*">
+                    <Grid Margin="5" RowDefinitions="*,*,*,*,*,*">
 
                         <Grid ColumnDefinitions="*,*"  Grid.Row="0">
 							<TextBlock Grid.Column="0" Margin="5" >Отчетный год</TextBlock>
@@ -91,6 +91,21 @@
                                 Command="{Binding SaveReport}"
                                 Content="Сохранить" />
                         </StackPanel>
+						<StackPanel Grid.Row="4" Orientation="Horizontal">
+							<TextBlock Margin="5,10" Text="Разрешение на допустимые выбросы радионуклидов в атмосферу №" />
+							<TextBox Text="{Binding Report.PermissionNumber27.Value}" />
+							<TextBlock Margin="5,10" Text="от" />
+							<TextBox Text="{Binding Report.PermissionIssueDate27.Value}" />
+							<TextBlock Margin="5,10" Text="Срок действия с" />
+							<TextBox Text="{Binding Report.ValidBegin27.Value}" />
+							<TextBlock Margin="5,10" Text="до" />
+							<TextBox Text="{Binding Report.ValidThru27.Value}" />
+						</StackPanel>
+
+						<StackPanel Grid.Row="5" Orientation="Horizontal">
+							<TextBlock Margin="5,10" Text="Наименование разрешительного документа на допустимые выбросы радионуклидов в атмосферу"/>
+							<TextBox Text="{Binding Report.PermissionDocumentName27.Value}" />
+						</StackPanel>
 
                     </Grid>
                 </Border>

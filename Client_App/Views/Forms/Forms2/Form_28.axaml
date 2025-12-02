@@ -94,7 +94,58 @@
 
                     </Grid>
                 </Border>
+				<Border Classes="borderContainer">
+					<Grid RowDefinitions="*,*,*,*,*,*">
+						
+						<StackPanel Grid.Row="0" Orientation="Horizontal">
+							<TextBlock Margin="5,10" Text="Разрешение на сброс радионуклидов в водные объекты №" />
+							<TextBox Margin="5" Text="{Binding Report.PermissionNumber_28.Value}" />
+							<TextBlock Margin="5,10" Text="от" />
+							<TextBox Margin="5" Text="{Binding Report.PermissionIssueDate_28.Value}" />
+							<TextBlock Margin="5,10" Text="Срок действия с" />
+							<TextBox Margin="5" Text="{Binding Report.ValidBegin_28.Value}" />
+							<TextBlock Margin="5,10" Text="по" />
+							<TextBox Text="{Binding Report.ValidThru_28.Value}" />
+						</StackPanel>
 
+						<Grid ColumnDefinitions="*,*" Grid.Row="1" >
+							<TextBlock Grid.Column="0" Margin="5,10" Text="Наименование разрешительного документа на сброс:"/>
+							<TextBox Margin="5" Grid.Column="1" Text="{Binding Report.PermissionDocumentName_28.Value}" />
+						</Grid>
+					
+					    <StackPanel Grid.Row="2" Orientation="Horizontal">
+							<TextBlock Margin="5,10" Text="Разрешение на сброс радионуклидов на рельеф местности №" />
+							<TextBox Margin="5" Text="{Binding Report.PermissionNumber1_28.Value}" />
+							<TextBlock Margin="5,10" Text="от" />
+							<TextBox Margin="5" Text="{Binding Report.PermissionIssueDate1_28.Value}" />
+							<TextBlock Margin="5,10" Text="Срок действия с" />
+							<TextBox Margin="5" Text="{Binding Report.ValidBegin1_28.Value}" />
+							<TextBlock Margin="5,10" Text="по" />
+							<TextBox Margin="5" Text="{Binding Report.ValidThru1_28.Value}" />
+						</StackPanel>
+
+						<Grid ColumnDefinitions="*,*" Grid.Row="3" >
+							<TextBlock Grid.Column="0" Margin="5,10" Text="Наименование разрешительного документа на сброс:"/>
+							<TextBox Margin="5" Grid.Column="1" Text="{Binding Report.PermissionDocumentName1_28.Value}" />
+						</Grid>
+					
+				        <StackPanel Grid.Row="4" Orientation="Horizontal">
+							<TextBlock Margin="5,10" Text="Договор на передачу сточных вод в сети канализации №" />
+							<TextBox Margin="5" Text="{Binding Report.ContractNumber_28.Value}" />
+							<TextBlock Margin="5,10" Text="от" />
+							<TextBox Margin="5" Text="{Binding Report.ContractIssueDate2_28.Value}" />
+							<TextBlock Margin="5,10" Text="Срок действия с" />
+							<TextBox Margin="5" Text="{Binding Report.ValidBegin2_28.Value}" />
+							<TextBlock Margin="5,10" Text="по" />
+							<TextBox Margin="5" Text="{Binding Report.ValidThru2_28.Value}" />
+						</StackPanel>
+
+						<Grid ColumnDefinitions="*,*" Grid.Row="5">
+							<TextBlock Grid.Column="0" Margin="5,10" Text="Организация, осуществляющая прием сточных вод:"/>
+							<TextBox Margin="5" Grid.Column="1" Text="{Binding Report.OrganisationReciever_28.Value}" />
+						</Grid>
+					</Grid>
+				</Border>
 				<Border Classes="borderContainer">
 					<controls:ExecutorDataControl
 						DataContext="{Binding ExecutorDataControlVM}">
@@ -239,121 +290,46 @@
                     </Border>
                     <Border
                         Grid.Row="0"
-                        Grid.RowSpan="2"
-                        Grid.Column="1"
-                        Grid.ColumnSpan="4">
-                        <TextBlock Text="Установки переработки"/>
-                    </Border>
-                    <Border
-                        Grid.Row="0"
-                        Grid.Column="5"
-                        Grid.ColumnSpan="9">
-                        <TextBlock Text="Поступило РАО на переработку, кондиционирование"/>
-                    </Border>
-                    <Border
-                        Grid.Row="0"
-                        Grid.Column="14"
-                        Grid.ColumnSpan="9">
-                        <TextBlock Text="Образовалось РАО после переработки, кондиционирования"/>
+                        Grid.Column="2"
+                        Grid.ColumnSpan="3">
+                        <TextBlock Text="Приемник отведенных вод"/>
                     </Border>
 
                     <!--#endregion Второй уровень заголовков-->
 
                     <Border
-                        Grid.Row="1"
-                        Grid.Column="7"
-                        Grid.ColumnSpan="3">
-                        <TextBlock Text="количество"/>
+                        Grid.Row="0"
+                        Grid.RowSpan="2"
+                        Grid.Column="1">
+                        <TextBlock Text="Наименование, номер выпуска сточных вод"/>
                     </Border>
 					<Border
                         Grid.Row="1"
-                        Grid.Column="10"
-                        Grid.ColumnSpan="4">
-                        <TextBlock Text="Суммарная активность, Бк"/>
-                    </Border>
-					<Border
-                        Grid.Row="1"
-                        Grid.Column="16"
-                        Grid.ColumnSpan="3">
-                        <TextBlock Text="количество"/>
-                    </Border>
-					<Border
-                        Grid.Row="1"
-                        Grid.Column="19"
-                        Grid.ColumnSpan="4">
-                        <TextBlock Text="суммарная активность, Бк"/>
-                    </Border>
-                    <!--#region Третий уровень заголовков-->
-
-                    <Border Grid.Row="2" Grid.Column="1">
+                        Grid.Column="2">
                         <TextBlock Text="наименование"/>
                     </Border>
-                    <Border Grid.Row="2" Grid.Column="2">
-                        <TextBlock Text="код"/>
+					<Border
+                        Grid.Row="1"
+                        Grid.Column="3">
+                        <TextBlock Text="код типа приемника"/>
                     </Border>
-                    <Border Grid.Row="2" Grid.Column="3">
-                        <TextBlock Text="мощность, куб. м/год"/>
+					<Border
+                        Grid.Row="1"
+                        Grid.Column="4">
+                        <TextBlock Text="наименование бассейного округа"/>
                     </Border>
-                    <Border Grid.Row="2" Grid.Column="4">
-                        <TextBlock Text="количество часов работы за год"/>
+					<Border
+                        Grid.Row="0"
+						Grid.RowSpan="2"
+                        Grid.Column="5">
+                        <TextBlock Text="Допустимый объем водоотведения за год, тыс. куб. м"/>
                     </Border>
-                    <Border Grid.Row="1" Grid.RowSpan="2" Grid.Column="5">
-                        <TextBlock Text="код РАО"/>
+					<Border
+                        Grid.Row="0"
+						Grid.RowSpan="2"
+                        Grid.Column="6">
+                        <TextBlock Text="Отведено за отчетный год, тыс. куб. м"/>
                     </Border>
-                    <Border Grid.Row="1" Grid.RowSpan="2" Grid.Column="6">
-                        <TextBlock Text="статус РАО"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="7">
-                        <TextBlock Text="объем без упаковки, куб. м"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="8">
-                        <TextBlock Text="масса без упаковки (нетто), т"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="9">
-                        <TextBlock Text="ОЗИИИ, шт"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="10">
-                        <TextBlock Text="тритий"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="11">
-                        <TextBlock Text="бета-, гамма-излучающие радионуклиды (исключая тритий)"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="12">
-                        <TextBlock Text="альфа-излучающие радионуклиды (исключая трансурановые)"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="13">
-                        <TextBlock Text="трансурановые радионуклиды"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.RowSpan="2" Grid.Column="14">
-                        <TextBlock Text="код РАО"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.RowSpan="2" Grid.Column="15">
-                        <TextBlock Text="статус РАО"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="16">
-                        <TextBlock Text="объем без упаковки, куб.м"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="17">
-                        <TextBlock Text="масса без упаковки (нетто), т"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="18">
-                        <TextBlock Text="ОЗИИИ, шт."/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="19">
-                        <TextBlock Text="тритий"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="20">
-                        <TextBlock Text="бета-, гамма- излучающие радионуклиды (исключая тритий)"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="21">
-                        <TextBlock Text="альфа-излучающие радионуклиды (исключая трансурановые)"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="22">
-                        <TextBlock Text="трансурановые радионуклиды"/>
-                    </Border>
-
-                    <!--#endregion Второй уровень заголовков-->
-
                 </Grid>
 
                 <!--#endregion Заголовки таблицы-->

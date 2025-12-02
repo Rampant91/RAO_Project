@@ -13,7 +13,7 @@ namespace Client_App.ViewModels.Forms.Forms2;
 
 public class Form_211VM : BaseFormVM
 {
-    public override string FormType => "2.1";
+    public override string FormType => "2.11";
 
     #region Constructors
 
