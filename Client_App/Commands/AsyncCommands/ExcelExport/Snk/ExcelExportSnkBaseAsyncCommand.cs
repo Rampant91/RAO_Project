@@ -662,27 +662,30 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                             .ThenByDescending(x => x.RepDto.StartPeriod)
                             .ThenByDescending(x => x.RepDto.EndPeriod)
                             .ThenByDescending(x => x.NumberInOrder)
-                            .First();
+                            .FirstOrDefault();
                     }
                     else
                     {
                         lastForm = filteredDictionary
                             .SelectMany(x => x.Value)
                             .OrderByDescending(y => y.OpDate)
-                            .First();
+                            .FirstOrDefault();
                     }
 
-                    var pairWithLastOpDate = filteredDictionary
-                        .First(x => x.Value.Contains(lastForm));
-
-                    if (formNum is "1.3" || SerialNumbersIsEmpty(pairWithLastOpDate.Key.PasNum, pairWithLastOpDate.Key.FacNum))
+                    if (lastForm is not null)
                     {
-                        var quantity = await SumQuantityForEmptySerialNums(pairWithLastOpDate, formNum);
-                        if (form.Quantity != quantity) continue;
+                        var pairWithLastOpDate = filteredDictionary
+                            .First(x => x.Value.Contains(lastForm));
+
+                        if (formNum is "1.3" || SerialNumbersIsEmpty(pairWithLastOpDate.Key.PasNum, pairWithLastOpDate.Key.FacNum))
+                        {
+                            var quantity = await SumQuantityForEmptySerialNums(pairWithLastOpDate, formNum);
+                            if (form.Quantity != quantity) continue;
+                        }
+                        pairWithLastOpDate.Value.Add(form);
+                        uniqueUnitWithAllOperationDictionary.Remove(pairWithLastOpDate.Key);
+                        uniqueUnitWithAllOperationDictionary.Add(dto, pairWithLastOpDate.Value);
                     }
-                    pairWithLastOpDate.Value.Add(form);
-                    uniqueUnitWithAllOperationDictionary.Remove(pairWithLastOpDate.Key);
-                    uniqueUnitWithAllOperationDictionary.Add(dto, pairWithLastOpDate.Value);
                 }
             }
         }
