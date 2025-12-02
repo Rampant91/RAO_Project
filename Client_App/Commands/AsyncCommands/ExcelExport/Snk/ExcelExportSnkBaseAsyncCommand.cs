@@ -299,24 +299,21 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 .First();
 
         var firstDateInventoryList = inventoryFormsDtoList
-            .Where(x => x.OpDate == firstInventoryDate)
-            .ToList();
+            .Where(x => x.OpDate == firstInventoryDate);
 
-        List<ShortFormDTO> unionOperationList;
+        IEnumerable<ShortFormDTO> unionOperationList;
         if (zeroFormsDtoList is null)
         {
             unionOperationList = firstDateInventoryList
                 .Union(plusMinusFormsDtoList)
-                .Union(rechargeFormsDtoList)
-                .ToList();
+                .Union(rechargeFormsDtoList);
         }
         else
         {
             unionOperationList = inventoryFormsDtoList
                 .Union(plusMinusFormsDtoList)
                 .Union(rechargeFormsDtoList)
-                .Union(zeroFormsDtoList)
-                .ToList();
+                .Union(zeroFormsDtoList);
         }
 
         var snkGroupKeyComparer = new SnkGroupKeyComparer();
@@ -348,9 +345,10 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         var numberComparer = new CustomSnkNumberEqualityComparer();
         var radsComparer = new CustomSnkRadionuclidsEqualityComparer();
         Dictionary<UniqueUnitDto, List<ShortFormDTO>> uniqueUnitWithAllOrderedOperationDictionary = [];
-
+        var j = 0;
         foreach (var (unit, formsByDateDictionary) in groupedOperationListDictionary)
         {
+            j++;
             var currentPackNumber = "";
             var currentQuantity = 0;
 
@@ -485,10 +483,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                     {
                         //Если нет в наличии или (нет других операций с тем же номером упаковки или операций перезарядки)
                         if (!inStock
-                            || subsequentElementsList
-                                .All(x => 
-                                    numberComparer.Equals(x.PackNumber, currentPackNumber) 
-                                    && x.OpCode is not ("53" or "54")))
+                            || subsequentElementsList.All(x => 
+                                GetPlusOperationsArray(formNum).Contains(x.OpCode)))
                         {
                             newOperationOrderList.Add(form);
                             inStock = true;
@@ -514,8 +510,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                         //или (нет других операций с тем же номером упаковки или операций перезарядки)
                         if ((inStock && numberComparer.Equals(currentPackNumber, form.PackNumber))
                             || subsequentElementsList.All(x =>
-                                !numberComparer.Equals(currentPackNumber, form.PackNumber) 
-                                && x.OpCode is not ("53" or "54")))
+                                GetMinusOperationsArray(formNum).Contains(x.OpCode))
+                            )
                         {
                             newOperationOrderList.Add(form);
                             inStock = false;
@@ -567,8 +563,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         }
 
         var orderedOperationList = uniqueUnitWithAllOrderedOperationDictionary
-            .Select(x => x.Value)
-            .ToList();
+            .Select(x => x.Value);
 
         //var groupedOperationList = await GetGroupedOperationList(orderedOperationList);
 
