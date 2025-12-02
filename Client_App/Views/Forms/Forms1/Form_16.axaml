@@ -54,7 +54,6 @@
 
                 <Border Classes="borderContainer">
                     <controls:SelectReportPopup
-                        Grid.Row="1"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         DataContext="{Binding SelectReportPopupVM}" />
@@ -478,6 +477,7 @@
                     SelectedItem="{Binding SelectedForm}">
                     <interactivity:Interaction.Behaviors>
                         <local:DataGridColumnWidthLoadBehavior FormNum="1.6" />
+                        <local:DataGridPointerBehavior />
                         <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
                         <local:DeselectDataGridOnClickOutsideBehavior />
                         <local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />

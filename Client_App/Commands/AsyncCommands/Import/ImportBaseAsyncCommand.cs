@@ -1,24 +1,25 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Threading;
+using Client_App.Controls.DataGrid.DataGrids;
+using Client_App.Interfaces.Logger;
+using Client_App.Logging;
+using Client_App.Resources.CustomComparers;
+using Client_App.ViewModels;
+using DynamicData;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
+using Models.DBRealization;
+using Models.DTO;
+using Models.Forms;
 using Models.Forms.Form1;
+using Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
-using Client_App.Interfaces.Logger;
-using Models.DTO;
-using Models.Interfaces;
-using Client_App.ViewModels;
 using System.Linq;
-using DynamicData;
-using Microsoft.EntityFrameworkCore;
-using Models.DBRealization;
-using Models.Forms;
-using Avalonia.Threading;
-using Client_App.Controls.DataGrid.DataGrids;
-using Client_App.Resources.CustomComparers;
+using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -168,6 +169,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 }
                 baseReps.Report_Collection.Replace(oldReport, newReport);
                 StaticConfiguration.DBModel.Remove(oldReport!);
+                await ReportDeletionLogger.LogDeletionAsync(oldReport!);
                 AtLeastOneImportDone = true;
                 Act = "Замена (пересечение)\t";
                 LoggerImportDTO = new LoggerImportDTO
@@ -204,6 +206,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 newReport.Notes.AddRange<IKey>(0, oldReport.Notes);
                 baseReps.Report_Collection.Replace(oldReport, newReport);
                 StaticConfiguration.DBModel.Remove(oldReport);
+                await ReportDeletionLogger.LogDeletionAsync(oldReport);
                 AtLeastOneImportDone = true;
                 Act = "Дополнение (совпадение)\t";
                 LoggerImportDTO = new LoggerImportDTO

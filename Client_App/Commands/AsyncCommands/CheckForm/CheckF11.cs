@@ -1724,7 +1724,7 @@ public abstract partial class CheckF11 : CheckBase
             var mzaValid = activityDoubleValue / quantity >= mzaDoubleValue;
             var noteIsPresent = CheckNotePresence(notes, line, 12);
 
-            var isNotCritical = category is 5 && (!mzaValid || (calculatedCategoryIsFourOrLess && noteIsPresent));
+            var isNotCritical = (!mzaValid && category is 5) || (mzaValid && noteIsPresent);
 
             result.Add(new CheckError
             {

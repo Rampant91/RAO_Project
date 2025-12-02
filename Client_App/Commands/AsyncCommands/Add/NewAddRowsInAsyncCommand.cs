@@ -56,6 +56,7 @@ public class NewAddRowsInAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         {
             var frm = FormCreator.Create(FormType);
             frm.NumberInOrder_DB = numberCell;
+            frm.Report = Storage;
             lst.Add(frm);
             numberCell++;
         }
