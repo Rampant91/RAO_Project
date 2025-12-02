@@ -620,20 +620,24 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                             .ThenByDescending(x => x.RepDto.StartPeriod)
                             .ThenByDescending(x => x.RepDto.EndPeriod)
                             .ThenByDescending(x => x.NumberInOrder)
-                            .First();
+                            .FirstOrDefault();
                     }
                     else
                     {
                         lastForm = filteredDictionary
                             .SelectMany(x => x.Value)
                             .OrderByDescending(y => y.OpDate)
-                            .First();
+                            .FirstOrDefault();
                     }
-                    var pairWithLastOpDate = filteredDictionary
-                        .First(x => x.Value.Contains(lastForm));
 
-                    uniqueUnitWithAllOperationDictionary.Remove(pairWithLastOpDate.Key);
-                    uniqueUnitWithAllOperationDictionary.Add(dto, pairWithLastOpDate.Value);
+                    if (lastForm is not null)
+                    {
+                        var pairWithLastOpDate = filteredDictionary
+                            .First(x => x.Value.Contains(lastForm));
+
+                        uniqueUnitWithAllOperationDictionary.Remove(pairWithLastOpDate.Key);
+                        uniqueUnitWithAllOperationDictionary.Add(dto, pairWithLastOpDate.Value);
+                    }
                 }
 
                 // Если операция перезарядки, то суммируем количество, если серийные номера пусты и заменяем запись в словаре
