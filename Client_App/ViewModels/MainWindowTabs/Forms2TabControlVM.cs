@@ -53,9 +53,9 @@ namespace Client_App.ViewModels.MainWindowTabs
         }
         #endregion
 
-        #region Reports40
+        #region Reports20
 
-        public ObservableCollection<Reports> Reports40 => ReportsStorage.LocalReports.Reports_Collection40;
+        public ObservableCollection<Reports> Reports20 => ReportsStorage.LocalReports.Reports_Collection20;
 
         #endregion
 
@@ -68,17 +68,16 @@ namespace Client_App.ViewModels.MainWindowTabs
                 if (!string.IsNullOrEmpty(SearchText))
                 {
                     var search = SearchText.ToLower().Trim();
-                    return new ObservableCollection<Reports>(Reports40
-                    .Where(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB.ToString().Contains(search)
-                    || reps.Master_DB.Rows40[0].SubjectRF_DB.ToLower().Contains(search)
-                    || (!string.IsNullOrEmpty(reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB)
-                       && reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB.ToLower().Contains(search))
+                    return new ObservableCollection<Reports>(Reports20
+                    .Where(reps => reps.Master_DB.Rows10[0].RegNo_DB.ToLower().Contains(search)
+                    || reps.Master_DB.Rows20[0].Okpo_DB.ToLower().Contains(search)
+                    || reps.Master_DB.Rows20[0].ShortJurLico_DB.ToLower().Contains(search)
                       )
                     .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
                     .Take(RowsCountOrgs));
                 }
                 else
-                    return new ObservableCollection<Reports>(Reports40
+                    return new ObservableCollection<Reports>(Reports20
                     .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
                     .Take(RowsCountOrgs));
             }
@@ -120,7 +119,7 @@ namespace Client_App.ViewModels.MainWindowTabs
         {
             get
             {
-                return Reports40.Count;
+                return Reports20.Count;
             }
         }
 

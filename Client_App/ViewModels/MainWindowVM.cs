@@ -109,6 +109,18 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
     #endregion
 
+    #region Forms2TabControlVM
+    private Forms2TabControlVM _forms2TabControlVM;
+    public Forms2TabControlVM Forms2TabControlVM
+    {
+        get
+        {
+            return _forms2TabControlVM;
+        }
+    }
+
+    #endregion
+
     #region Forms4TabControlVM
     private Forms4TabControlVM _forms4TabControlVM;
     public Forms4TabControlVM Forms4TabControlVM
@@ -130,6 +142,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             {
                 case 1:
                     return Forms1TabControlVM.SelectedReports;
+                case 2:
+                    return Forms2TabControlVM.SelectedReports;
                 case 4:
                     return Forms4TabControlVM.SelectedReports;
                 default:
@@ -148,6 +162,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             case 1:
                 Forms1TabControlVM.UpdateReports();
                 break;
+            case 2:
+                Forms2TabControlVM.UpdateReports();
+                break;
             case 4:
                 Forms4TabControlVM.UpdateReports();
                 break;
@@ -165,6 +182,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             case 1:
                 Forms1TabControlVM.UpdateReport();
                 break;
+            case 2:
+                Forms2TabControlVM.UpdateReport();
+                break;
             case 4:
                 Forms4TabControlVM.UpdateReport();
                 break;
@@ -181,6 +201,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         {
             case 1:
                 Forms1TabControlVM.UpdatePageInfo();
+                break;
+            case 2:
+                Forms2TabControlVM.UpdateReport();
                 break;
             case 4:
                 Forms4TabControlVM.UpdatePageInfo();
@@ -364,6 +387,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         OpenFolder = new OpenFolderAsyncCommand();
 
         _forms1TabControlVM = new Forms1TabControlVM(this);
+        _forms2TabControlVM = new Forms2TabControlVM(this);
         _forms4TabControlVM = new Forms4TabControlVM(this);
 
 

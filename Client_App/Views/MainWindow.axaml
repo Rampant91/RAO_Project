@@ -390,43 +390,14 @@
 				<TabItem IsVisible="False"/>
 
 				<TabItem x:Name="Forms1" Header="Формы 1" >
-					<tabs:Forms1TabControl DataContext="{Binding Forms1TabControlVM}">
-
-					</tabs:Forms1TabControl>
+					<tabs:Forms1TabControl DataContext="{Binding Forms1TabControlVM}"/>
 				</TabItem>
-                <TabItem x:Name="Forms2" Header="Формы 2">
-                    <Panel x:Name="Forms_p2" 
-                           VerticalAlignment="Stretch">
-                        <ScrollViewer>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" MinHeight="220"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <Grid Grid.Row="0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="3*"/>
-                                        <ColumnDefinition Width="2.2*" MaxWidth="625"/>
-                                    </Grid.ColumnDefinitions>
-                                    <ScrollViewer Grid.Column="0">
-                                        <Panel x:Name="Forms_p2_0"/>
-                                    </ScrollViewer>
-                                    <Panel x:Name="Forms_p2_B" Grid.Column="1"/>
-                                </Grid>
-                                <Panel
-                                    x:Name="Forms_p2_X"
-                                    Grid.Row="1"
-                                    Margin="0,5,0,0"
-                                    VerticalAlignment="Stretch"/>
-                            </Grid>
-                        </ScrollViewer>
-                    </Panel>
-                </TabItem>
+				<TabItem x:Name="Forms2" Header="Формы 2" >
+					<tabs:Forms2TabControl DataContext="{Binding Forms2TabControlVM}"/>
+				</TabItem>
 				<TabItem x:Name="Forms3" Header="Формы 3" IsVisible="False"/>
 				<TabItem x:Name="Forms4" Header="Формы 4" >
-					<tabs:Forms4TabControl DataContext="{Binding Forms4TabControlVM}">
-						
-					</tabs:Forms4TabControl>
+					<tabs:Forms4TabControl DataContext="{Binding Forms4TabControlVM}"/>
 			    </TabItem>
             </TabControl>
         </Panel>
