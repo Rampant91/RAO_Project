@@ -388,42 +388,12 @@
                 <!--Пустой элемент для начала отсчета индекса с 1 -->
 
 				<TabItem IsVisible="False"/>
-                <TabItem 
-                    x:Name="Forms1" 
-                    Header="Формы 1">
-                    <Panel 
-                        x:Name="Forms_p1"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch">
-                        <ScrollViewer>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" MinHeight="200"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <Grid Grid.Row="0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="3*"/>
-                                        <ColumnDefinition Width="2.7*" MaxWidth="460"/>
-                                    </Grid.ColumnDefinitions>
-                                    <ScrollViewer Grid.Column="0">
-                                        <Panel x:Name="Forms_p1_0" HorizontalAlignment="Stretch"/>
-                                    </ScrollViewer>
-                                    <Panel 
-                                        x:Name="Forms_p1_B"
-                                        Grid.Column="1"
-                                        HorizontalAlignment="Stretch"/>
-                                </Grid>
-                                <Panel 
-                                    x:Name="Forms_p1_X"
-                                    Grid.Row="1"
-                                    Margin="0,5,0,0"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"/>
-                            </Grid>
-                        </ScrollViewer>
-                    </Panel>
-                </TabItem>
+
+				<TabItem x:Name="Forms1" Header="Формы 1" >
+					<tabs:Forms1TabControl DataContext="{Binding Forms1TabControlVM}">
+
+					</tabs:Forms1TabControl>
+				</TabItem>
                 <TabItem x:Name="Forms2" Header="Формы 2">
                     <Panel x:Name="Forms_p2" 
                            VerticalAlignment="Stretch">

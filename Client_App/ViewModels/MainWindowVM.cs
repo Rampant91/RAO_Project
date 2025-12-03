@@ -97,6 +97,18 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
     #endregion
 
+    #region Forms1TabControlVM
+    private Forms1TabControlVM _forms1TabControlVM;
+    public Forms1TabControlVM Forms1TabControlVM
+    {
+        get
+        {
+            return _forms1TabControlVM;
+        }
+    }
+
+    #endregion
+
     #region Forms4TabControlVM
     private Forms4TabControlVM _forms4TabControlVM;
     public Forms4TabControlVM Forms4TabControlVM
@@ -114,7 +126,16 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     {
         get
         {
-            return Forms4TabControlVM.SelectedReports;
+            switch (SelectedReportType)
+            {
+                case 1:
+                    return Forms1TabControlVM.SelectedReports;
+                case 4:
+                    return Forms4TabControlVM.SelectedReports;
+                default:
+                    return null;
+            }
+               
         }
     }
     #endregion
@@ -122,21 +143,51 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     #region UpdateReports
     public void UpdateReports()
     {
-        Forms4TabControlVM.UpdateReports();
+        switch (SelectedReportType)
+        {
+            case 1:
+                Forms1TabControlVM.UpdateReports();
+                break;
+            case 4:
+                Forms4TabControlVM.UpdateReports();
+                break;
+            default:
+                break;
+        }
     }
     #endregion
 
     #region UpdateReport
     public void UpdateReport()
     {
-        Forms4TabControlVM.UpdateReport();
+        switch (SelectedReportType)
+        {
+            case 1:
+                Forms1TabControlVM.UpdateReport();
+                break;
+            case 4:
+                Forms4TabControlVM.UpdateReport();
+                break;
+            default:
+                break;
+        }
     }
     #endregion
 
     #region UpdatePageInfo
     public void UpdatePageInfo()
     {
-        Forms4TabControlVM.UpdatePageInfo();
+        switch (SelectedReportType)
+        {
+            case 1:
+                Forms1TabControlVM.UpdatePageInfo();
+                break;
+            case 4:
+                Forms4TabControlVM.UpdatePageInfo();
+                break;
+            default:
+                break;
+        }
     }
     #endregion
 
@@ -312,7 +363,10 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         OpenFile = new OpenFileAsyncCommand();
         OpenFolder = new OpenFolderAsyncCommand();
 
+        _forms1TabControlVM = new Forms1TabControlVM(this);
         _forms4TabControlVM = new Forms4TabControlVM(this);
+
+
         UpdateReports();
     }
 
