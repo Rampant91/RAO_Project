@@ -23,7 +23,7 @@
 						  Grid.Row="1" Margin="5"
 						  Items="{Binding ReportsCollection}"
 						  SelectionMode="Single"
-						  SelectedItem="{Binding MainWindowVM.SelectedReports}"
+						  SelectedItem="{Binding SelectedReports}"
 						  RowHeight="25"
 						  GridLinesVisibility="All"
 						  AlternatingRowBackground="White"

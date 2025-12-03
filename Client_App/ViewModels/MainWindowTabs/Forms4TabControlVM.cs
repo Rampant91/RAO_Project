@@ -263,7 +263,7 @@ namespace Client_App.ViewModels.MainWindowTabs
             {
 
                 var result = StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .Where(rep => rep.FormNum_DB.StartsWith($"{SelectedReportType}")
+                    .Where(rep => rep.FormNum_DB.StartsWith($"{MainWindowVM.SelectedReportType}")
                         && !rep.FormNum_DB.EndsWith(".0"))
                     .CountAsync().Result;
                 return result;
@@ -305,6 +305,14 @@ namespace Client_App.ViewModels.MainWindowTabs
         public void UpdateReport()
         {
             OnPropertyChanged(nameof(ReportCollection));
+        }
+
+        #endregion
+
+        #region UpdateReports
+        public void UpdateReports()
+        {
+            OnPropertyChanged(nameof(ReportsCollection));
         }
 
         #endregion

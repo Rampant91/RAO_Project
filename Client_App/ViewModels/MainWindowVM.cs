@@ -50,7 +50,6 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         {
             if (_selectedReportType != value)
             {
-                SelectedReports = null; // узко специализрованное решение: очищает выбранную организацию при переключении на другую панель
                 _selectedReportType = (byte)(value);
                 OnPropertyChanged();
                 UpdateReports();
@@ -108,6 +107,37 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         }
     }
 
+    #endregion
+
+    #region SelectedReports
+    public Reports? SelectedReports
+    {
+        get
+        {
+            return Forms4TabControlVM.SelectedReports;
+        }
+    }
+    #endregion
+
+    #region UpdateReports
+    public void UpdateReports()
+    {
+        Forms4TabControlVM.UpdateReports();
+    }
+    #endregion
+
+    #region UpdateReport
+    public void UpdateReport()
+    {
+        Forms4TabControlVM.UpdateReport();
+    }
+    #endregion
+
+    #region UpdatePageInfo
+    public void UpdatePageInfo()
+    {
+        Forms4TabControlVM.UpdatePageInfo();
+    }
     #endregion
 
     #region OnStartProgressBar
