@@ -490,6 +490,7 @@ public partial class Form41 : Form
     {
         // Создаем текстовое представление (TSV - tab-separated values)
         var str =
+            $"{NumberInOrder.Value}\t" +
             $"{RegNo.Value}\t" +
             $"{Okpo.Value}\t" +
             $"{OrganizationName.Value}\t" +
@@ -497,7 +498,7 @@ public partial class Form41 : Form
             $"{NumOfFormsWithInventarizationInfo.Value}\t" +
             $"{NumOfFormsWithoutInventarizationInfo.Value}\t" +
             $"{NumOfForms212.Value}\t" +
-            $"{Note.Value}\t";
+            $"{Note.Value}";
         return str;
     }
 
