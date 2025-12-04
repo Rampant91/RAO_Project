@@ -884,7 +884,7 @@ public abstract partial class CheckF11 : CheckBase
             return result;
         }
 
-        var valid = opDate >= pStart && opDate <= pEnd;
+        var valid = opDate > pStart && opDate <= pEnd;
         if (!valid)
         {
             result.Add(new CheckError
@@ -1430,8 +1430,7 @@ public abstract partial class CheckF11 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "Activity_DB",
                 Value = activity,
-                Message = "Заполните сведения о суммарной активности ЗРИ, переведенных в ОЗИИИ. " +
-                          "Оценочные сведения приводятся в круглых скобках.",
+                Message = "Проверьте правильность предоставления сведений по активности.",
                 IsCritical = true
             });
         }

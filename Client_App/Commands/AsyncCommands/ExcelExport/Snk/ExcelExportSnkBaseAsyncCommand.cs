@@ -1318,7 +1318,14 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             {
                 if (formNum is "1.3" || SerialNumbersIsEmpty(form.PasNum, form.FacNum))
                 {
-                    matchingForm.Quantity += form.Quantity;
+                    if (GetPlusOperationsArray(formNum).Contains(form.OpCode))
+                    {
+                        matchingForm.Quantity += form.Quantity;
+                    }
+                    else if (GetMinusOperationsArray(formNum).Contains(form.OpCode))
+                    {
+                        matchingForm.Quantity -= form.Quantity;
+                    }
                 }
                 else
                 {

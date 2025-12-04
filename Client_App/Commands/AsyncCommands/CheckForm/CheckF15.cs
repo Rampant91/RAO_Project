@@ -595,7 +595,7 @@ public abstract class CheckF15 : CheckBase
             return result;
         }
 
-        var valid = opDate >= pStart && opDate <= pEnd;
+        var valid = opDate > pStart && opDate <= pEnd;
         if (!valid)
         {
             result.Add(new CheckError
