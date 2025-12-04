@@ -203,7 +203,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                 Forms1TabControlVM.UpdatePageInfo();
                 break;
             case 2:
-                Forms2TabControlVM.UpdateReport();
+                Forms2TabControlVM.UpdatePageInfo();
                 break;
             case 4:
                 Forms4TabControlVM.UpdatePageInfo();

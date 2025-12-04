@@ -1975,7 +1975,7 @@ public class Report : IKey, IDataGridColumn
                 }
                 case "2.0":
                 {
-                    RamAccess<string> tmp;
+                    RamAccess<string> tmp;s
                     if ((Rows20[1].RegNo.Value != "" || Rows20[1].Okpo_DB == "-") && Rows20[1].Okpo.Value != "")
                     {
                         tmp = Rows20[1].RegNo;

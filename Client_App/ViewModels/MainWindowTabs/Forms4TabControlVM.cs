@@ -160,7 +160,6 @@ namespace Client_App.ViewModels.MainWindowTabs
         }
         #endregion
 
-
         #region ReportCollection
 
         public ObservableCollection<Report> ReportCollection
@@ -254,7 +253,6 @@ namespace Client_App.ViewModels.MainWindowTabs
             }
         }
         #endregion
-
 
         #region TotalForms
         public int TotalForms

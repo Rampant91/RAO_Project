@@ -37,18 +37,18 @@
 									  Command="{Binding MainWindowVM.NewChangeReports}"/>
 							<MenuItem Header="Удалить форму"
 									  Command="{Binding MainWindowVM.DeleteReports}"
-									  CommandParameter="{Binding MainWindowVM.SelectedReports}"/>
+									  CommandParameter="{Binding SelectedReports}"/>
 							<MenuItem Header="Выгрузить организацию"
 									  Command="{Binding MainWindowVM.ExportReports}"
-									  CommandParameter="{Binding MainWindowVM.SelectedReports}"/>
+									  CommandParameter="{Binding SelectedReports}"/>
 							<MenuItem Header="Выгрузить организацию с указанием диапазона дат"
 									  Command="{Binding MainWindowVM.ExportReportsWithDateRange}"
-									  CommandParameter="{Binding MainWindowVM.SelectedReports}"/>
+									  CommandParameter="{Binding SelectedReports}"/>
 							<MenuItem Header="Выгрузить все организации в один файл"
 									  Command="{Binding MainWindowVM.ExportAllReportsOneFile}"/>
 							<MenuItem Header="Выгрузить все организации в отдельные файлы"
 									  Command="{Binding ExportAllReports}"
-									  CommandParameter="{Binding MainWindowVM.SelectedReports}"/>
+									  CommandParameter="{Binding SelectedReports}"/>
 						</ContextMenu>
 					</DataGrid.ContextMenu>
 

@@ -69,7 +69,7 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
             await ProcessDataBaseFillEmpty(db);
 
             var mainWindow = (Desktop.MainWindow as MainWindow)!;
-            var mainWindowVM = (mainWindow.DataContext as MainWindowVM);
+            var mainWindowVM = (mainWindow.DataContext as MainWindowVM)!;
             mainWindowVM.UpdateReports();
         }
         catch (Exception ex)
@@ -80,6 +80,7 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
         }
 
         //await Local_Reports.Reports_Collection.QuickSortAsync();
+    
     }
 
     public static async Task ProcessDataBaseFillEmpty(DataContext dbm)
