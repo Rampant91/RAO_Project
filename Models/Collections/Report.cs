@@ -1924,7 +1924,8 @@ public class Report : IKey, IDataGridColumn
                     Rows20[0].Okpo.PropertyChanged -= OkpoRep_ValueChanged;
                     Rows20[0].Okpo.PropertyChanged += OkpoRep_ValueChanged;
                     break;
-                    //
+                default: 
+                    return new RamAccess<string>() { Value = _OkpoRep };
             }
             return tmp;
         }
@@ -1975,7 +1976,7 @@ public class Report : IKey, IDataGridColumn
                 }
                 case "2.0":
                 {
-                    RamAccess<string> tmp;s
+                    RamAccess<string> tmp;
                     if ((Rows20[1].RegNo.Value != "" || Rows20[1].Okpo_DB == "-") && Rows20[1].Okpo.Value != "")
                     {
                         tmp = Rows20[1].RegNo;
@@ -1988,7 +1989,7 @@ public class Report : IKey, IDataGridColumn
                     tmp.PropertyChanged += RegNoRep_ValueChanged;
                     return tmp;
                 }
-                default: return null;
+                default: return new RamAccess<string>() { Value = _RegNoRep};
             }
         }
         set
