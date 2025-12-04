@@ -463,7 +463,7 @@ public abstract class CheckF16 : CheckBase
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var applicableOperationCodes = new []
         {
-            "10", "11", "12", "13", "14", "16", "18", "31", "32", "35", "36", "37", "38", "41", "56", "57", "59", "97"
+            "10", "11", "12", "13", "14", "16", "18", "31", "32", "35", "36", "37", "38", "41", "44", "56", "57", "59", "97"
         };
         if (!applicableOperationCodes.Contains(operationCode)) return result;
         var mass = ConvertStringToExponential(forms[line].Mass_DB);
@@ -3136,7 +3136,7 @@ public abstract class CheckF16 : CheckBase
     private static List<CheckError> Check_022_44(List<Form16> forms, int line)
     {
         List<CheckError> result = new();
-        var applicableOperationCodes = new[] { "44" };
+        var applicableOperationCodes = new[] { "44", "56" };
         var applicableValues = new[] {
             "11","12","13","14","15","16","17","19",
             "21","22","23","24",               "29",
