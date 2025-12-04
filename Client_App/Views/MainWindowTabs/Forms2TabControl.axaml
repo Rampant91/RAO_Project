@@ -36,7 +36,7 @@
 							<MenuItem Header="Редактировать форму"
 									  Command="{Binding MainWindowVM.NewChangeReports}"/>
 							<MenuItem Header="Удалить форму"
-									  Command="{Binding MainWindowVM.NewDeleteReports}"
+									  Command="{Binding MainWindowVM.DeleteReports}"
 									  CommandParameter="{Binding SelectedReports}"/>
 							<MenuItem Header="Выгрузить организацию"
 									  Command="{Binding MainWindowVM.ExportReports}"
