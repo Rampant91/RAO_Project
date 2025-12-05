@@ -986,8 +986,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                 var currentOperations = allOperations
                     .Where(x => x.OpDate >= previousInventoryDate && x.OpDate <= inventoryDate)
                     .OrderBy(x => x.OpDate)
-                    .ThenBy(x => x.RepDto.StartPeriod)
-                    .ThenBy(x => x.NumberInOrder)
+                    //.ThenBy(x => x.RepDto.StartPeriod)
+                    //.ThenBy(x => x.NumberInOrder)
                     .ToList();
 
                 var secondInventoryOperation = currentOperations

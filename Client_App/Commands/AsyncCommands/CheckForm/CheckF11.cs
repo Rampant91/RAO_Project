@@ -879,7 +879,8 @@ public abstract partial class CheckF11 : CheckBase
                 Value = opDateStr,
                 Message = "Дата операции не должна совпадать с датой начала периода, " +
                           "если имеется хотя бы один более ранний отчёт по данной форме. " +
-                          "См. приказ №1/1628-П раздел 5.2."
+                          "См. приказ №1/1628-П раздел 5.2.",
+                IsCritical = true
             });
             return result;
         }

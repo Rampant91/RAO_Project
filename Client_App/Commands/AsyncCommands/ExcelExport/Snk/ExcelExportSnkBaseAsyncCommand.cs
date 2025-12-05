@@ -347,6 +347,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         Dictionary<UniqueUnitDto, List<ShortFormDTO>> uniqueUnitWithAllOrderedOperationDictionary = [];
         var j = 0;
         foreach (var (unit, formsByDateDictionary) in groupedOperationListDictionary)
+                     //.Where(x => x.Key.PasNum is "1231"))
         {
             j++;
             var currentPackNumber = "";
