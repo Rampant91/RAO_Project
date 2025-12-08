@@ -34,7 +34,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
 
     private DBModel dbModel = StaticConfiguration.DBModel;
     private DBModel secondDB;
-    private Window? owner;
+    private Window owner;
 
     private List<Reports> organizations10;
     private List<Reports> organizations20;

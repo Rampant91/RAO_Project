@@ -14,6 +14,7 @@ using Models.Collections;
 using Models.DBRealization;
 using Models.Forms.Form4;
 using OfficeOpenXml.Drawing.Controls;
+using Spravochniki;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -195,7 +196,21 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
 
                 currentProgress += incProgress;
             }
-
+            foreach (var organization in organizations10)
+            {
+                var massBalance12 = await CountMassBalanceForm12(organization.Id);
+                var massBalance14 = await CountMassBalanceForm14(organization.Id);
+                errorList.Add(new CheckError()
+                {
+                    Message =
+                    $"РегНомер - {organization.RegNo}\n" +
+                    $"ОКПО - {organization.Okpo}\n" +
+                    $"0 - {massBalance12}\n" +
+                    $"1 - {massBalance14.Item1}\n" +
+                    $"2 - {massBalance14.Item2}\n" +
+                    $"3 - {massBalance14.Item3}\n"
+                });
+            }
 
             for (int i = 0; i < errorList.Count; i++)
             {
@@ -478,6 +493,76 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             else
                 return false;
         }
+
+        private static async Task<double> CountMassBalanceForm12 (int reportsID)
+        {
+            double massBalance = 0;
+            var dbModel = StaticConfiguration.DBModel;
+            var reports = dbModel.ReportsCollectionDbSet.FirstOrDefault(reps => reps.Id == reportsID);
+            var reportCollection = reports.Report_Collection.ToList().FindAll(rep => rep.FormNum_DB == "1.2");
+            for (int i = reportCollection.Count - 1; i >= 0; i--)
+            {
+                var report = reportCollection[i];
+                for (int j = 0; j<report.Rows12.Count; j++)
+                {
+                    if (double.TryParse(report.Rows12[j].Mass_DB, out var mass))
+                    {
+                        if (Spravochniks.SignsOperation["1.2"][$"{report.Rows12[j].OperationCode_DB}"] == '+')
+                            massBalance += mass;
+                        if (Spravochniks.SignsOperation["1.2"][$"{report.Rows12[j].OperationCode_DB}"] == '-')
+                            massBalance -= mass;
+                    }
+                }
+            }
+            return massBalance;
+        }
+        private static async Task<Tuple<double,double,double>> CountMassBalanceForm14(int reportsID)
+        {
+            double massBalanceLiquid = 0;
+            double massBalanceSolid = 0;
+            double massBalanceGas = 0;
+            var dbModel = StaticConfiguration.DBModel;
+            var reports = dbModel.ReportsCollectionDbSet.FirstOrDefault(reps => reps.Id == reportsID);
+            var reportCollection = reports.Report_Collection.ToList().FindAll(rep => rep.FormNum_DB == "1.4");
+            for (int i = reportCollection.Count - 1; i >= 0; i--)
+            {
+                var report = reportCollection[i];
+                for (int j = 0; j < report.Rows14.Count; j++)
+                {
+                    var aggregateState = report.Rows14[j].AggregateState_DB;
+                    if (double.TryParse(report.Rows14[j].Mass_DB, out var mass) && ( 0< aggregateState && aggregateState <= 3 ))
+                    {
+                        if (Spravochniks.SignsOperation["1.4"][$"{report.Rows14[j].OperationCode_DB}"] == '+')
+                            switch (aggregateState)
+                            {
+                                case 1:
+                                    massBalanceLiquid += mass;
+                                    break;
+                                case 2:
+                                    massBalanceSolid += mass;
+                                    break;
+                                case 3:
+                                    massBalanceGas += mass;
+                                    break;
+                            }
+                        if (Spravochniks.SignsOperation["1.4"][$"{report.Rows14[j].OperationCode_DB}"] == '-')
+                            switch (aggregateState)
+                            {
+                                case 1:
+                                    massBalanceLiquid -= mass;
+                                    break;
+                                case 2:
+                                    massBalanceSolid -= mass;
+                                    break;
+                                case 3:
+                                    massBalanceGas -= mass;
+                                    break;
+                            }
+                    }
+                }
+            }
+            return new Tuple<double, double,double>(massBalanceLiquid, massBalanceSolid, massBalanceGas);
+        }
     }
     class Organization
     {
@@ -486,5 +571,11 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
         public string RegNo { get; set; }
 
         public string Okpo { get; set; }
+    }
+
+    class OperationCodeAndMass
+    {
+        public string OperationCode { get; set; }
+        public int Mass { get; set; }
     }
 }
