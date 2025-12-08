@@ -210,6 +210,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                     $"2 - {massBalance14.Item2}\n" +
                     $"3 - {massBalance14.Item3}\n"
                 });
+
             }
 
             for (int i = 0; i < errorList.Count; i++)

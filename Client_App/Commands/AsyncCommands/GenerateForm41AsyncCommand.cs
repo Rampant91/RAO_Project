@@ -62,7 +62,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     {
         
         owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
-            .FirstOrDefault(w => w.IsActive);
+            .FirstOrDefault(w => w.Name == "4.1");
 
         if (owner == null) return;
 
@@ -87,7 +87,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
 
         if (await ShowAskDependOnReportOrNotMessage(owner))
         {
-            var report =  await ShowAskReportMessage(owner);
+            var report = await Dispatcher.UIThread.InvokeAsync(async () => await ShowAskReportMessage(owner));
             
             if (report != null)
                 CopyRowsFromReport(report);
@@ -97,16 +97,16 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         formVM.UpdatePageInfo();
 
         if (await ShowAskAllOrOneSubjectRFMessage(owner))
-            codeSubjectRF = await ShowAskSubjectRFMessage(owner);
+            codeSubjectRF = await Dispatcher.UIThread.InvokeAsync(async () => await ShowAskSubjectRFMessage(owner));
         
         if (!int.TryParse(Report.Year.Value, out year))
         {
-            year = await ShowAskYearMessage(owner);
+            year = await Dispatcher.UIThread.InvokeAsync(async () => await ShowAskYearMessage(owner));
             Report.Year.Value = year.ToString();
         }
 
         #endregion
-        var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts, owner));
+        var progressBar = await Dispatcher.UIThread.InvokeAsync(async () => new AnyTaskProgressBar(cts, owner));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
 
@@ -200,7 +200,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         Report.Rows41.AddRange(orderedRows);
 
         //Заполняем пробелы РегНомеров 
-        FillSpaceByRegNo();
+        FillSpaceByRegNo(progressBarVM);
 
 
 
@@ -219,10 +219,10 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             $"Завершаем формирование отчета");
 
 
-
         //Обновляем таблицу
         formVM.UpdateFormList();
         formVM.UpdatePageInfo();
+        await Dispatcher.UIThread.InvokeAsync(async () => progressBar.Close());
     }
 
     #region AskMessages
@@ -437,21 +437,31 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     }
 
     // Эта функция создает пустые записи для организаций, не представленных в базе данных или в отчете по форме 4.1, на основе которого генерируется этот отчет
-    private void FillSpaceByRegNo()
+    private void FillSpaceByRegNo(AnyTaskProgressBarVM? progressBarVM)
     {
         for (int i = 0; i < Report.Rows41.Count - 1; i++)
         {
-            if (!int.TryParse(Report.Rows41[i].RegNo_DB, out var current)) return; 
-            if (!int.TryParse(Report.Rows41[i + 1].RegNo_DB, out var next)) return;
+            var codeSubjectRF = Report.Rows41[i].RegNo_DB.Substring(0, 2);
+            if (codeSubjectRF != Report.Rows41[i + 1].RegNo_DB.Substring(0, 2)) continue;
 
-            // Если Третий символ РегНомера это 9 или 8, то значит это временный РегНомер 
-            // и программа не должна заполнять пробелы
-            if (Report.Rows41[i + 1].RegNo_DB[2] is '9' or '8') return; 
-                                                                                    
+            if (!int.TryParse(Report.Rows41[i].RegNo_DB.Substring(2, 3), out var current)) continue; 
+            if (!int.TryParse(Report.Rows41[i + 1].RegNo_DB.Substring(2, 3), out var next)) continue;
+
+            if (next / 100 is 8 or 9) continue;
+
+
+            
 
             if (current+1 < next)
             {
-                Report.Rows41.Insert(i + 1, new Form41() { RegNo_DB = $"{current + 1}" });
+                string regNo = codeSubjectRF;
+                if ((current + 1) / 100 == 0)
+                    regNo += "0";
+                if ((current + 1) / 10 == 0)
+                    regNo += "0";
+                regNo += $"{current + 1}";
+                Report.Rows41.Insert(i + 1, new Form41() 
+                { RegNo_DB = $"{regNo}" });
             }
         }
     }

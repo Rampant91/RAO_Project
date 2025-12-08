@@ -126,6 +126,9 @@ public class NewCheckFormAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                 case "2.11":
                     result.AddRange(await CheckF211.Check_Total(rep));
                     break;
+                case "2.12":
+                    result.AddRange(await CheckF212.Check_Total(rep));
+                    break;
                 case "4.1":
                     result.AddRange(await CheckF41.Check_Total(rep));
                     break;
