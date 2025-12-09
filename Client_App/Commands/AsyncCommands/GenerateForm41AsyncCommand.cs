@@ -461,7 +461,9 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                     regNo += "0";
                 regNo += $"{current + 1}";
                 Report.Rows41.Insert(i + 1, new Form41() 
-                { RegNo_DB = $"{regNo}" });
+                { RegNo_DB = $"{regNo}",
+                  Report = formVM.Report // в форме указываем связь с отчетом, в котором создается эта форма
+                }); 
             }
         }
     }

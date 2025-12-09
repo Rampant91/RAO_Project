@@ -6,6 +6,7 @@ using Client_App.Views.Forms.Forms4;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -46,6 +47,10 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
             var progressBarVM = progressBar.AnyTaskProgressBarVM;
             var rep = parameter as Report;
+
+            organizations10.Clear();
+            organizations20.Clear();
+
             if (rep is null) await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
 
             double currentProgress = 5;
@@ -194,6 +199,10 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 if (error != null)
                     errorList.Add(error);
 
+                error = await CheckPresenceOfDepletedUraniumProducts(form41);
+                if (error != null)
+                    errorList.Add(error);
+
                 currentProgress += incProgress;
             }
             foreach (var organization in organizations10)
@@ -203,12 +212,12 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 errorList.Add(new CheckError()
                 {
                     Message =
-                    $"РегНомер - {organization.RegNo}\n" +
-                    $"ОКПО - {organization.Okpo}\n" +
-                    $"0 - {massBalance12}\n" +
-                    $"1 - {massBalance14.Item1}\n" +
-                    $"2 - {massBalance14.Item2}\n" +
-                    $"3 - {massBalance14.Item3}\n"
+                    $"РегНомер: {organization.RegNo}\n" +
+                    $"ОКПО: {organization.Okpo}\n" +
+                    $"Уран = {massBalance12}\n" +
+                    $"Жидкое РВ  = {massBalance14.Item1}\n" +
+                    $"Твердое РВ = {massBalance14.Item2}\n" +
+                    $"Газовое РВ = {massBalance14.Item3}\n"
                 });
 
             }
@@ -463,6 +472,25 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             return null;
 
         }
+        private static async Task<CheckError?> CheckPresenceOfDepletedUraniumProducts(Form41 form41)
+        {
+            if (form41.NumOfFormsWithInventarizationInfo_DB <= 0) return null;
+
+            var organization = organizations10
+                .FirstOrDefault(org => 
+                org.RegNo == form41.RegNo_DB 
+                && org.Okpo == form41.Okpo_DB);
+
+            if (organization == null) return null; 
+
+            if (await CountMassBalanceForm12(organization.Id) > 0)
+                return new CheckError()
+                {
+                    Message = "На момент проведения инвентаризации по форме 1.1 " +
+                    "присутствовали изделия из обедненного урана"
+                };
+            return null;
+        }
         private static async Task CancelCommandAndCloseProgressBarWindow(CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null)
         {
             await cts.CancelAsync();
@@ -498,71 +526,85 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
         private static async Task<double> CountMassBalanceForm12 (int reportsID)
         {
             double massBalance = 0;
+            bool InventarizationFlag = false;
             var dbModel = StaticConfiguration.DBModel;
-            var reports = dbModel.ReportsCollectionDbSet.FirstOrDefault(reps => reps.Id == reportsID);
-            var reportCollection = reports.Report_Collection.ToList().FindAll(rep => rep.FormNum_DB == "1.2");
+            var reports = dbModel.ReportsCollectionDbSet
+                .Include(reps => reps.Report_Collection)
+                .ThenInclude(rep => rep.Rows12)
+                .FirstOrDefault(reps => reps.Id == reportsID);
+            var reportCollection = reports.Report_Collection.ToList()
+                .FindAll(rep => rep.FormNum_DB == "1.2");
             for (int i = reportCollection.Count - 1; i >= 0; i--)
             {
                 var report = reportCollection[i];
                 for (int j = 0; j<report.Rows12.Count; j++)
                 {
-                    if (double.TryParse(report.Rows12[j].Mass_DB, out var mass))
+                    if (!InventarizationFlag)
                     {
-                        if (Spravochniks.SignsOperation["1.2"][$"{report.Rows12[j].OperationCode_DB}"] == '+')
-                            massBalance += mass;
-                        if (Spravochniks.SignsOperation["1.2"][$"{report.Rows12[j].OperationCode_DB}"] == '-')
-                            massBalance -= mass;
+                        if (report.Rows12[j].OperationCode_DB == "10")
+                        {
+                            InventarizationFlag = true;
+                            double.TryParse(report.Rows12[j].Mass_DB, out massBalance);
+                        }
                     }
+                    else
+                    {
+                        if (double.TryParse(report.Rows12[j].Mass_DB, out var mass))
+                        {
+
+                            if (Spravochniks.SignsOperation["1.2"][$"{report.Rows12[j].OperationCode_DB}"] == '+')
+                                massBalance += mass;
+                            if (Spravochniks.SignsOperation["1.2"][$"{report.Rows12[j].OperationCode_DB}"] == '-')
+                                massBalance -= mass;
+                        }
+                    }
+
                 }
             }
             return massBalance;
         }
         private static async Task<Tuple<double,double,double>> CountMassBalanceForm14(int reportsID)
         {
-            double massBalanceLiquid = 0;
-            double massBalanceSolid = 0;
-            double massBalanceGas = 0;
+            double[] massBalances = new double[3];
+            bool[] inventarizationFlags = new bool[3];
+
             var dbModel = StaticConfiguration.DBModel;
-            var reports = dbModel.ReportsCollectionDbSet.FirstOrDefault(reps => reps.Id == reportsID);
+            var reports = dbModel.ReportsCollectionDbSet
+                .Include(reps => reps.Report_Collection)
+                .ThenInclude(rep => rep.Rows14)
+                .FirstOrDefault(reps => reps.Id == reportsID);
             var reportCollection = reports.Report_Collection.ToList().FindAll(rep => rep.FormNum_DB == "1.4");
+
+
             for (int i = reportCollection.Count - 1; i >= 0; i--)
             {
                 var report = reportCollection[i];
                 for (int j = 0; j < report.Rows14.Count; j++)
                 {
-                    var aggregateState = report.Rows14[j].AggregateState_DB;
-                    if (double.TryParse(report.Rows14[j].Mass_DB, out var mass) && ( 0< aggregateState && aggregateState <= 3 ))
+                    byte aggregateState = report.Rows14[j].AggregateState_DB ?? 0; 
+
+                    if (( aggregateState < 1) || (aggregateState > 3)) continue;  // значение AggregateState_DB может быть только 1,2,3
+
+                    if (!double.TryParse(report.Rows14[j].Mass_DB, out var mass)) continue;
+
+                    if (!inventarizationFlags[aggregateState - 1])
+                    {
+                        if (report.Rows14[j].OperationCode_DB == "10")
+                        {
+                            inventarizationFlags[aggregateState - 1] = true;
+                            massBalances[aggregateState - 1] = mass;
+                        }
+                    }
+                    else
                     {
                         if (Spravochniks.SignsOperation["1.4"][$"{report.Rows14[j].OperationCode_DB}"] == '+')
-                            switch (aggregateState)
-                            {
-                                case 1:
-                                    massBalanceLiquid += mass;
-                                    break;
-                                case 2:
-                                    massBalanceSolid += mass;
-                                    break;
-                                case 3:
-                                    massBalanceGas += mass;
-                                    break;
-                            }
+                        massBalances[aggregateState - 1] += mass;
                         if (Spravochniks.SignsOperation["1.4"][$"{report.Rows14[j].OperationCode_DB}"] == '-')
-                            switch (aggregateState)
-                            {
-                                case 1:
-                                    massBalanceLiquid -= mass;
-                                    break;
-                                case 2:
-                                    massBalanceSolid -= mass;
-                                    break;
-                                case 3:
-                                    massBalanceGas -= mass;
-                                    break;
-                            }
+                            massBalances[aggregateState - 1] -= mass;
                     }
                 }
             }
-            return new Tuple<double, double,double>(massBalanceLiquid, massBalanceSolid, massBalanceGas);
+            return new Tuple<double, double,double>(massBalances[0], massBalances[1], massBalances[2]);
         }
     }
     class Organization
