@@ -1209,7 +1209,7 @@ public partial class Form15 : Form1
     private bool Subsidy_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
-        if (value.Value.Equals("-"))
+        if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
         {
             return true;
         }

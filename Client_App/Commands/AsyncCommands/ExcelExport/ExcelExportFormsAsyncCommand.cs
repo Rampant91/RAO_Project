@@ -215,7 +215,7 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
     {
         string fileName;
 
-        if (selectedReports is null)
+        if (forSelectedOrg && selectedReports is null)
         {
             #region MessageExcelExportFail
 
