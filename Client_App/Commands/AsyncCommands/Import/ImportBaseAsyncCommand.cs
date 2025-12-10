@@ -410,7 +410,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 return null;
             }
 
-            return ReportsStorage.LocalReports.Reports_Collection10
+            return StaticConfiguration.DBModel.ReportsCollectionDbSet
                        .FirstOrDefault(t =>
 
                            // обособленные пусты и в базе и в импорте, то сверяем головное
@@ -436,8 +436,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                            && reps.Master.Rows10[1].Okpo_DB != ""
                            && t.Master.Rows10[1].RegNo_DB == "")
 
-                   ?? ReportsStorage.LocalReports
-                       .Reports_Collection10 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
+                   ?? StaticConfiguration.DBModel.ReportsCollectionDbSet// если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
                        .FirstOrDefault(t =>
 
                            // юр лицо в базе совпадает с обособленным в импорте
@@ -477,7 +476,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 return null;
             }
 
-            return ReportsStorage.LocalReports.Reports_Collection20
+            return StaticConfiguration.DBModel.ReportsCollectionDbSet
                        .FirstOrDefault(t =>
 
                            // обособленные пусты и в базе и в импорте, то сверяем головное
@@ -503,7 +502,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                            && reps.Master.Rows20[1].Okpo_DB != ""
                            && t.Master.Rows20[1].RegNo_DB == "")
 
-                   ?? ReportsStorage.LocalReports.Reports_Collection20 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
+                   ?? StaticConfiguration.DBModel.ReportsCollectionDbSet // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
                        .FirstOrDefault(t =>
 
                            // юр лицо в базе совпадает с обособленным в импорте
@@ -543,7 +542,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 return null;
             }
 
-            return ReportsStorage.LocalReports.Reports_Collection40
+            return StaticConfiguration.DBModel.ReportsCollectionDbSet
                        .FirstOrDefault(t => t.Master_DB.Rows40[0].CodeSubjectRF_DB == reps.Master_DB.Rows40[0].CodeSubjectRF_DB);
         }
         catch
