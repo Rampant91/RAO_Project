@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CommunityToolkit.Mvvm.Input;
+using DynamicData;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using System;
@@ -97,7 +99,10 @@ namespace Client_App.ViewModels.MainWindowTabs
             {
                 _selectedReports = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(ReportCollection));
+                if (CurrentPageForms != 1)
+                    CurrentPageForms = 1;
+                else
+                    UpdateReport();
                 UpdatePageInfo();
             }
         }
@@ -167,7 +172,6 @@ namespace Client_App.ViewModels.MainWindowTabs
             {
                 if (SelectedReports is null) return null;
 
-                CurrentPageForms = 1;
                 return new ObservableCollection<Report>(
                     SelectedReports
                     .Report_Collection
@@ -224,6 +228,7 @@ namespace Client_App.ViewModels.MainWindowTabs
         {
             get
             {
+                
                 return _rowsCountForms;
             }
             set
@@ -231,6 +236,7 @@ namespace Client_App.ViewModels.MainWindowTabs
                 _rowsCountForms = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(TotalPagesForms));
+                UpdateReport();
             }
         }
 
@@ -240,7 +246,7 @@ namespace Client_App.ViewModels.MainWindowTabs
         {
             get
             {
-                if (_currentPageForms > TotalPagesForms)
+                if ((_currentPageForms > TotalPagesForms) && (TotalPagesForms >0))
                     _currentPageForms = TotalPagesForms;
 
                 return _currentPageForms;
@@ -249,6 +255,7 @@ namespace Client_App.ViewModels.MainWindowTabs
             {
                 _currentPageForms = value;
                 OnPropertyChanged();
+                UpdateReport();
             }
         }
         #endregion
@@ -279,6 +286,7 @@ namespace Client_App.ViewModels.MainWindowTabs
             }
         }
         #endregion
+
 
         #endregion
 
@@ -312,6 +320,19 @@ namespace Client_App.ViewModels.MainWindowTabs
             OnPropertyChanged(nameof(ReportsCollection));
         }
 
+        #endregion
+
+        #region GoToFormNum
+        public void GoToFormNum (string formNum)
+        {
+            if (SelectedReports is null) return;
+
+            var report = SelectedReports.Report_Collection.FirstOrDefault(rep => rep.FormNum_DB == formNum);
+            if (report == null) return;
+
+            var index = SelectedReports.Report_Collection.IndexOf(report);
+            CurrentPageForms = (index / RowsCountForms) + 1;
+        }
         #endregion
 
         #endregion

@@ -214,6 +214,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     }
     #endregion
 
+    
+
     #region OnStartProgressBar
 
     private double _OnStartProgressBar;
@@ -356,7 +358,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                                                                             //public ICommand UnaccountedRad { get; set; }                    
                                                                             //  Радионуклиды, отсутствующие в справочнике
 
-
+    public ICommand GoToFormNum { get; set; }
+    
     #endregion
 
     #region Constructor
@@ -385,6 +388,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         OpenCalculator = new OpenCalculatorAsyncCommand();
         OpenFile = new OpenFileAsyncCommand();
         OpenFolder = new OpenFolderAsyncCommand();
+        GoToFormNum = new GoToFormNumAsyncCommand(this);
 
         _forms1TabControlVM = new Forms1TabControlVM(this);
         _forms2TabControlVM = new Forms2TabControlVM(this);

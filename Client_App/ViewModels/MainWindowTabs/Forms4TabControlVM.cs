@@ -285,6 +285,19 @@ namespace Client_App.ViewModels.MainWindowTabs
 
         #region Functions
 
+        #region GoToFormNum
+        public void GoToFormNum(string formNum)
+        {
+            if (SelectedReports is null) return;
+
+            var report = SelectedReports.Report_Collection.FirstOrDefault(rep => rep.FormNum_DB == formNum);
+            if (report == null) return;
+
+            var index = SelectedReports.Report_Collection.IndexOf(report);
+            CurrentPageForms = (index / RowsCountForms) + 1;
+        }
+        #endregion
+
         #region UpdatePageInfo
         public void UpdatePageInfo()
         {
