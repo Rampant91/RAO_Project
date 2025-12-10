@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Client_App.Services;
 using Client_App.ViewModels;
 using Models.Collections;
 
@@ -37,6 +39,20 @@ public static class ReportDeletionLogger
                     : await ReportsStorage.GetReportRowsCount(report)
             };
 
+            // Краткая запись об удалении в общий FirebirdLogger
+            try
+            {
+                var shortInfo =
+                    $"RegNum={logEntry.RegNum}; Okpo={logEntry.Okpo}; Form={logEntry.FormNum}; " +
+                    $"Period={logEntry.StartPeriod}-{logEntry.EndPeriod}; Rows={logEntry.RowsCount}";
+
+                FirebirdLogger.Log("Report deleted", shortInfo);
+            }
+            catch
+            {
+                // Ошибки вторичного логгера здесь глушим, чтобы не мешать основному LogDeletionAsync
+            }
+
             var entries = new List<JsonElement>();
             if (File.Exists(logFile))
             {
@@ -49,7 +65,7 @@ public static class ReportDeletionLogger
                         using var doc = JsonDocument.Parse(content);
                         if (doc.RootElement.ValueKind == JsonValueKind.Array)
                         {
-                            foreach (var el in doc.RootElement.EnumerateArray()) entries.Add(el.Clone());
+                            entries.AddRange(doc.RootElement.EnumerateArray().Select(el => el.Clone()));
                             loaded = true;
                         }
                     }
