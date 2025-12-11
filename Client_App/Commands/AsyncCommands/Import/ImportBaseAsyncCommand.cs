@@ -404,52 +404,59 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     {
         try
         {
-            //if (!reps.Report_Collection.Any(x => x.FormNum_DB[0].Equals('1')) || reps.Master_DB.FormNum_DB is not "1.0")
             if (reps.Master_DB.FormNum_DB is not "1.0")
             {
                 return null;
             }
 
             return StaticConfiguration.DBModel.ReportsCollectionDbSet
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(reports => reports.Master_DB)
+                .ThenInclude(report => report.Rows10)
+                .ToList()
+                .FirstOrDefault(t =>
+                    // обособленные пусты и в базе и в импорте, то сверяем головное
+                    (reps.Master.Rows10[0].Okpo_DB == t.Master_DB.Rows10[0].Okpo_DB
+                     && reps.Master.Rows10[0].RegNo_DB == t.Master_DB.Rows10[0].RegNo_DB
+                     && reps.Master.Rows10[1].Okpo_DB == ""
+                     && t.Master_DB.Rows10[1].Okpo_DB == "")
+                    ||
+                    // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                    (reps.Master.Rows10[0].Okpo_DB == t.Master_DB.Rows10[0].Okpo_DB
+                     && reps.Master.Rows10[0].RegNo_DB == t.Master_DB.Rows10[1].RegNo_DB
+                     && reps.Master.Rows10[1].Okpo_DB == ""
+                     && t.Master_DB.Rows10[1].Okpo_DB == "")
+                    ||
+                    // обособленные не пусты, их и сверяем
+                    (reps.Master.Rows10[1].Okpo_DB == t.Master_DB.Rows10[1].Okpo_DB
+                     && reps.Master.Rows10[1].RegNo_DB == t.Master_DB.Rows10[1].RegNo_DB
+                     && reps.Master.Rows10[1].Okpo_DB != "")
+                    ||
+                    // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                    (reps.Master.Rows10[1].Okpo_DB == t.Master_DB.Rows10[1].Okpo_DB
+                     && reps.Master.Rows10[1].RegNo_DB == t.Master_DB.Rows10[0].RegNo_DB
+                     && reps.Master.Rows10[1].Okpo_DB != ""
+                     && t.Master_DB.Rows10[1].RegNo_DB == ""))
+
+                   ?? StaticConfiguration.DBModel.ReportsCollectionDbSet
+                       .AsSplitQuery()
+                       .AsQueryable()
+                       .Include(reports => reports.Master_DB)
+                       .ThenInclude(report => report.Rows10)
+                       .ToList()
                        .FirstOrDefault(t =>
-
-                           // обособленные пусты и в базе и в импорте, то сверяем головное
-                           reps.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
-                           && reps.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB
-                           && reps.Master.Rows10[1].Okpo_DB == ""
-                           && t.Master.Rows10[1].Okpo_DB == ""
-
-                           // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                           || reps.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
-                           && reps.Master.Rows10[0].RegNo_DB == t.Master.Rows10[1].RegNo_DB
-                           && reps.Master.Rows10[1].Okpo_DB == ""
-                           && t.Master.Rows10[1].Okpo_DB == ""
-
-                           // обособленные не пусты, их и сверяем
-                           || reps.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB
-                           && reps.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB
-                           && reps.Master.Rows10[1].Okpo_DB != ""
-
-                           // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                           || reps.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB
-                           && reps.Master.Rows10[1].RegNo_DB == t.Master.Rows10[0].RegNo_DB
-                           && reps.Master.Rows10[1].Okpo_DB != ""
-                           && t.Master.Rows10[1].RegNo_DB == "")
-
-                   ?? StaticConfiguration.DBModel.ReportsCollectionDbSet// если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
-                       .FirstOrDefault(t =>
-
                            // юр лицо в базе совпадает с обособленным в импорте
-                           reps.Master.Rows10[1].Okpo_DB != ""
-                           && t.Master.Rows10[1].Okpo_DB == ""
-                           && reps.Master.Rows10[1].Okpo_DB == t.Master.Rows10[0].Okpo_DB
-                           && reps.Master.Rows10[1].RegNo_DB == t.Master.Rows10[0].RegNo_DB
-
+                           (reps.Master.Rows10[1].Okpo_DB != ""
+                            && t.Master_DB.Rows10[1].Okpo_DB == ""
+                            && reps.Master.Rows10[1].Okpo_DB == t.Master_DB.Rows10[0].Okpo_DB
+                            && reps.Master.Rows10[1].RegNo_DB == t.Master_DB.Rows10[0].RegNo_DB)
+                           ||
                            // юр лицо в импорте совпадает с обособленным в базе
-                           || reps.Master.Rows10[1].Okpo_DB == ""
-                           && t.Master.Rows10[1].Okpo_DB != ""
-                           && reps.Master.Rows10[0].Okpo_DB == t.Master.Rows10[1].Okpo_DB
-                           && reps.Master.Rows10[0].RegNo_DB == t.Master.Rows10[1].RegNo_DB);
+                           (reps.Master.Rows10[1].Okpo_DB == ""
+                            && t.Master_DB.Rows10[1].Okpo_DB != ""
+                            && reps.Master.Rows10[0].Okpo_DB == t.Master_DB.Rows10[1].Okpo_DB
+                            && reps.Master.Rows10[0].RegNo_DB == t.Master_DB.Rows10[1].RegNo_DB));
         }
         catch
         {
@@ -476,7 +483,11 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 return null;
             }
 
-            return StaticConfiguration.DBModel.ReportsCollectionDbSet
+            return StaticConfiguration.DBModel.ReportsCollectionDbSet.AsSplitQuery()
+                .AsQueryable()
+                .Include(reports => reports.Master_DB)
+                .ThenInclude(report => report.Rows10)
+                .ToList()
                        .FirstOrDefault(t =>
 
                            // обособленные пусты и в базе и в импорте, то сверяем головное
@@ -502,7 +513,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                            && reps.Master.Rows20[1].Okpo_DB != ""
                            && t.Master.Rows20[1].RegNo_DB == "")
 
-                   ?? StaticConfiguration.DBModel.ReportsCollectionDbSet // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
+                   ?? StaticConfiguration.DBModel.ReportsCollectionDbSet
+                   .AsSplitQuery()
+                .AsQueryable()
+                .Include(reports => reports.Master_DB)
+                .ThenInclude(report => report.Rows10)
+                .ToList()// если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
                        .FirstOrDefault(t =>
 
                            // юр лицо в базе совпадает с обособленным в импорте
@@ -543,7 +559,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             }
 
             return StaticConfiguration.DBModel.ReportsCollectionDbSet
-                       .FirstOrDefault(t => t.Master_DB.Rows40[0].CodeSubjectRF_DB == reps.Master_DB.Rows40[0].CodeSubjectRF_DB);
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(reports => reports.Master_DB)
+                .ThenInclude(report => report.Rows10)
+                .ToList()
+                .FirstOrDefault(t => t.Master_DB.Rows40[0].CodeSubjectRF_DB == reps.Master_DB.Rows40[0].CodeSubjectRF_DB);
         }
         catch
         {

@@ -1,26 +1,29 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Resources.CustomComparers;
+using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
+using Client_App.ViewModels.Forms.Forms4;
 using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
 using Client_App.Views.Forms.Forms2;
+using DynamicData.Kernel;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;
+using Models.DBRealization;
 using Models.Interfaces;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Client_App.Commands.AsyncCommands.Save;
-using Client_App.ViewModels;
-using Client_App.ViewModels.Forms.Forms4;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
 /// <summary>
-/// Создать и открыть новое окно формы организации (1.0 и 2.0).
+/// Создать и открыть новое окно формы организации (1.0 и 2.0 и 4.0).
 /// </summary>
 public class AddReportsAsyncCommand : BaseAsyncCommand
 {
@@ -28,7 +31,7 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
     {
         var mainWindow = (Desktop.MainWindow as MainWindow)!;
         var mainWindowVM = (mainWindow.DataContext as MainWindowVM);
-
+        var dbModel = StaticConfiguration.DBModel;
         var selectedReports = mainWindow.SelectedReports;
 
 
@@ -81,7 +84,7 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
         {
             case "1.0":
                 {
-                    var form10VM = new Form_10VM(ReportsStorage.LocalReports);
+                    var form10VM = new Form_10VM(dbModel.DBObservableDbSet.FirstOrDefault());
                     form10VM.IsSeparateDivision = isSeparateDivision;
                     var window = new Form_10(form10VM) { DataContext = form10VM };
                     await new SaveReportAsyncCommand(form10VM).AsyncExecute(null);
@@ -91,7 +94,7 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
                 }
             case "2.0":
                 {
-                    var form20VM = new Form_20VM(ReportsStorage.LocalReports);
+                    var form20VM = new Form_20VM(dbModel.DBObservableDbSet.FirstOrDefault());
                     form20VM.IsSeparateDivision = isSeparateDivision;
                     var window = new Form_20(form20VM) { DataContext = form20VM };
                     await new SaveReportAsyncCommand(form20VM).AsyncExecute(null);
@@ -101,7 +104,7 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
                 }
             case "4.0":
                 {
-                    var form40VM = new Form_40VM(ReportsStorage.LocalReports);
+                    var form40VM = new Form_40VM(dbModel.DBObservableDbSet.FirstOrDefault());
                     var window = new Form_40(form40VM) { DataContext = form40VM };
                     await new SaveReportAsyncCommand(form40VM).AsyncExecute(null);
                     await window.ShowDialog(mainWindow);
@@ -115,12 +118,15 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
 
 
         var comparator = new CustomReportsComparer();
-        var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
-        ReportsStorage.LocalReports.Reports_Collection.Clear();
-        ReportsStorage.LocalReports.Reports_Collection
-            .AddRange(tmpReportsList
-                .OrderBy(x => x.Master_DB.RegNoRep?.Value, comparator)
-                .ThenBy(x => x.Master_DB.OkpoRep?.Value, comparator));
+
+        //TODO
+        //// Сортировка по РегНомеру и ОКПО
+        //
+        //var sortedReports = dbModel.ReportsCollectionDbSet
+        //.OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
+        //.ThenBy(x => x.Master_DB.OkpoRep.Value, comparator)
+        //.ToList();
+
 
         mainWindowVM.UpdateReports();
 
