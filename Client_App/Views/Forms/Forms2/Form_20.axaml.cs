@@ -1,23 +1,28 @@
+using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels.Forms.Forms2;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.Forms;
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
-using Avalonia;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
-using Avalonia.Controls;
 
 namespace Client_App.Views.Forms.Forms2;
 
 public partial class Form_20 : BaseWindow<Form_20VM>
 {
+    private protected static readonly IClassicDesktopStyleApplicationLifetime Desktop =
+        (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
+
     private Form_20VM _vm = null!;
 
     public Form_20() { }
@@ -49,6 +54,48 @@ public partial class Form_20 : BaseWindow<Form_20VM>
             var msg = $"{Environment.NewLine}Message: {ex.Message}" +
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Error(msg);
+        }
+
+        var db = StaticConfiguration.DBModel;
+        var window = Desktop.Windows.FirstOrDefault(x => x.Name is "2.0");
+        var reportsAlreadyExist = db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.DBObservable)
+            .Include(reps => reps.Master_DB)
+            .ThenInclude(report => report.Rows20)
+            .Where(reps => reps.DBObservable != null)
+            .ToList()
+            .Any(x => x.Master_DB.RegNoRep.Value == _vm.Storage.RegNoRep.Value
+                      && !string.IsNullOrWhiteSpace(_vm.Storage.RegNoRep.Value)
+                      && x.Master_DB.OkpoRep.Value == _vm.Storage.OkpoRep.Value
+                      && !string.IsNullOrWhiteSpace(_vm.Storage.OkpoRep.Value)
+                      && x.Master_DB.Id != _vm.Storage.Id);
+
+        if (reportsAlreadyExist)
+        {
+            args.Cancel = true;
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Ошибка при сохранении титульного листа организации",
+                    ContentHeader = "Ошибка",
+                    ContentMessage =
+                        $"Не удалось сохранить изменения в титульном листе организации, " +
+                        $"поскольку организация с данными ОКПО и рег.№ уже существует в базе данных. " +
+                        $"Убедитесь в правильности заполнения ОКПО и рег.№.",
+                    MinWidth = 400,
+                    MaxWidth = 600,
+                    MinHeight = 150,
+                    MaxHeight = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(window ?? Desktop.MainWindow));
+
+            return;
         }
 
         var flag = false;
