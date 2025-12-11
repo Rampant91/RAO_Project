@@ -115,7 +115,7 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                 var baseReps41 = GetReports41FromLocalEqual(impReps);
                 FillEmptyRegNo(ref baseReps11);
                 FillEmptyRegNo(ref baseReps21);
-                impReps.CleanIds();
+                //impReps.CleanIds();
                 ProcessIfNoteOrder0(impReps);
 
                 ImpRepFormCount = impReps.Report_Collection.Count;
@@ -216,7 +216,14 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
 
                     if (an is "Добавить" or "Да для всех")
                     {
-                        ReportsStorage.LocalReports.Reports_Collection.Add(impReps);
+                        try
+                        {
+                            StaticConfiguration.DBModel.ReportsCollectionDbSet.Add(impReps);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw ex;
+                        }
                         AtLeastOneImportDone = true;
 
                         #region LoggerImport
@@ -278,30 +285,30 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
             }
         }
 
-        try
-        {
-            var comparator = new CustomReportsComparer();
-            var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
-            if (tmpReportsList.All(x => x.Master_DB.RegNoRep != null && x.Master_DB.OkpoRep != null))
-            {
-                var tmpReportsOrderedEnum = tmpReportsList
-                    .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
-                    .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator);
+        //TODO
+        //try
+        //{
+        //    var comparator = new CustomReportsComparer();
+        //    var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+        //    if (tmpReportsList.All(x => x.Master_DB.RegNoRep != null && x.Master_DB.OkpoRep != null))
+        //    {
+        //        var tmpReportsOrderedEnum = tmpReportsList
+        //            .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
+        //            .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator);
 
-                ReportsStorage.LocalReports.Reports_Collection.Clear();
-                ReportsStorage.LocalReports.Reports_Collection
-                    .AddRange(tmpReportsOrderedEnum);
-            }
-        }
-        catch (Exception ex)
-        {
-            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
-                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-            ServiceExtension.LoggerManager.Warning(msg);
-            return;
-        }
+        //        ReportsStorage.LocalReports.Reports_Collection.Clear();
+        //        ReportsStorage.LocalReports.Reports_Collection
+        //            .AddRange(tmpReportsOrderedEnum);
+        //    }
+        //}
+        //catch (Exception ex)
+        //{
+        //    var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+        //              $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+        //    ServiceExtension.LoggerManager.Warning(msg);
+        //    return;
+        //}
 
-        //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
 
         try
         {
@@ -382,7 +389,7 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
 
         return db.DBObservableDbSet.Local.First().Reports_Collection.ToList().Count != 0
             ? db.DBObservableDbSet.Local.First().Reports_Collection.ToList()
-            : await db.ReportsCollectionDbSet.ToListAsync();
+            : await db.ReportsCollectionDbSet.AsNoTracking().ToListAsync();
     }
 
     #endregion
