@@ -142,9 +142,18 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                         "Пожалуйста, укажите субъект Российской Федерации вручную");
                     codeSubjectRF = await dialog.ShowDialog<string?>(Desktop.MainWindow);
                 }
-
-                baseReps = ReportsStorage.LocalReports.Reports_Collection40
-                    .FirstOrDefault(reports => reports.Master_DB.Rows40[0].CodeSubjectRF_DB == codeSubjectRF);
+                try
+                {
+                    baseReps = StaticConfiguration.DBModel.ReportsCollectionDbSet
+                        .Include(reports => reports.Master_DB).ThenInclude(report => report.Rows40)
+                        .Where(reports => reports.Master_DB.FormNum_DB == "4.0")
+                        .ToList()
+                        .FirstOrDefault(reports => reports.Master_DB.Rows40[0].CodeSubjectRF_DB == codeSubjectRF);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
             }
             
             //Импортируем все остальные данные из титульника
@@ -368,17 +377,18 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             }
         }
 
-        var comparator = new CustomReportsComparer();
-        var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+        //TODO
+        //var comparator = new CustomReportsComparer();
+        //var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
 
-        if (tmpReportsList.All(x => x.Master_DB.FormNum_DB is "1.0" or "2.0"))
-        {
-            ReportsStorage.LocalReports.Reports_Collection.Clear();
-            ReportsStorage.LocalReports.Reports_Collection
-                .AddRange(tmpReportsList
-                    .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
-                    .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
-        }
+        //if (tmpReportsList.All(x => x.Master_DB.FormNum_DB is "1.0" or "2.0"))
+        //{
+        //    ReportsStorage.LocalReports.Reports_Collection.Clear();
+        //    ReportsStorage.LocalReports.Reports_Collection
+        //        .AddRange(tmpReportsList
+        //            .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
+        //            .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
+        //}
 
             //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
 
@@ -476,7 +486,10 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
         return worksheet0.Name switch
         {
-            "1.0" => ReportsStorage.LocalReports.Reports_Collection10
+            "1.0" => StaticConfiguration.DBModel.ReportsCollectionDbSet
+                    .Include(reps => reps.Master_DB).ThenInclude(rep => rep.Rows10)
+                    .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
+                    .ToList()
                          .FirstOrDefault(t =>
                          
                              // обособленные пусты и в базе и в импорте, то сверяем головное
@@ -502,8 +515,10 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                              && excelOkpo1 != ""
                              && t.Master.Rows10[1].RegNo_DB == "")
 
-                     ?? ReportsStorage.LocalReports
-                         .Reports_Collection10 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
+                     ?? StaticConfiguration.DBModel.ReportsCollectionDbSet
+                        .Include(reps => reps.Master_DB).ThenInclude(rep => rep.Rows10)
+                        .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
+                        .ToList() // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
                          .FirstOrDefault(t =>
 
                              // юр лицо в базе совпадает с обособленным в импорте
@@ -518,7 +533,10 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                              && excelOkpo0 == t.Master.Rows10[1].Okpo_DB
                              && excelRegNo == t.Master.Rows10[1].RegNo_DB),
 
-            "2.0" => ReportsStorage.LocalReports.Reports_Collection20
+            "2.0" => StaticConfiguration.DBModel.ReportsCollectionDbSet
+                    .Include(reps => reps.Master_DB).ThenInclude(rep => rep.Rows20)
+                    .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
+                    .ToList()
                        .FirstOrDefault(t =>
 
                            // обособленные пусты и в базе и в импорте, то сверяем головное
@@ -544,7 +562,10 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                            && excelOkpo1 != ""
                            && t.Master.Rows20[1].RegNo_DB == "")
 
-                   ?? ReportsStorage.LocalReports.Reports_Collection20 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
+                   ?? StaticConfiguration.DBModel.ReportsCollectionDbSet
+                    .Include(reps => reps.Master_DB).ThenInclude(rep => rep.Rows20)
+                    .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
+                    .ToList() // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
                        .FirstOrDefault(t =>
 
                            // юр лицо в базе совпадает с обособленным в импорте

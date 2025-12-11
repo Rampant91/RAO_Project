@@ -97,11 +97,6 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
     #endregion
 
-    #region Reports40
-
-    public ObservableCollection<Reports> Reports40 => ReportsStorage.LocalReports.Reports_Collection40;
-
-    #endregion
 
     #region SearchText
     private string _searchText = "";
@@ -127,7 +122,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             if (!string.IsNullOrEmpty(SearchText))
             {
                 var search = SearchText.ToLower().Trim();
-                return new ObservableCollection<Reports>(Reports40
+                return new ObservableCollection<Reports>(
+                    StaticConfiguration.DBModel.ReportsCollectionDbSet
+                    .Where(reps=> reps.Master_DB.FormNum_DB == "4.0")
                 .Where(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB.ToString().Contains(search)
                 || reps.Master_DB.Rows40[0].SubjectRF_DB.ToLower().Contains(search)
                 ||(!string.IsNullOrEmpty(reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB)
@@ -137,7 +134,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                 .Take(RowsCountOrgs));
             }
             else
-                return new ObservableCollection<Reports>(Reports40
+                return new ObservableCollection<Reports>(
+                    StaticConfiguration.DBModel.ReportsCollectionDbSet
+                    .Where(reps => reps.Master_DB.FormNum_DB == "4.0")
                 .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
                 .Take(RowsCountOrgs)); 
         }
@@ -174,7 +173,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     {
         get
         {
-            return Reports40.Count;
+            return StaticConfiguration.DBModel.ReportsCollectionDbSet
+                   .Where(reps => reps.Master_DB.FormNum_DB == "4.0").Count();
         }
     }
     private int _rowsCountOrgs = 10;

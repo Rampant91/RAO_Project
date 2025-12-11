@@ -54,6 +54,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                 SourceFile.CopyTo(file, true);
                 var jsonString = await File.ReadAllTextAsync(file);
                 var jsonObject = JsonConvert.DeserializeObject<JsonModel>(jsonString)!;
+
                 List<Reports> reportsJsonCollection = [];
 
                 var dateTime = DateTime.Now;
@@ -431,7 +432,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                         }
                         if (an is "Добавить" or "Да для всех")
                         {
-                            ReportsStorage.LocalReports.Reports_Collection.Add(impReps);
+                            StaticConfiguration.DBModel.ReportsCollectionDbSet.Add(impReps);
                             countNewReps++;
                             AtLeastOneImportDone = true;
 
@@ -488,13 +489,14 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
             }
         }
 
-        var comparator = new CustomReportsComparer();
-        var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
-        ReportsStorage.LocalReports.Reports_Collection.Clear();
-        ReportsStorage.LocalReports.Reports_Collection
-            .AddRange(tmpReportsList
-                .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
-                .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
+        //TODO
+        //var comparator = new CustomReportsComparer();
+        //var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+        //ReportsStorage.LocalReports.Reports_Collection.Clear();
+        //ReportsStorage.LocalReports.Reports_Collection
+        //    .AddRange(tmpReportsList
+        //        .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
+        //        .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
 
         await StaticConfiguration.DBModel.SaveChangesAsync().ConfigureAwait(false);
 

@@ -89,7 +89,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #region Add
 
             case "Да" or "Да для всех" or "Добавить":
-                if (ExcelImportNewReps) ReportsStorage.LocalReports.Reports_Collection.Add(baseReps);
+                if (ExcelImportNewReps) StaticConfiguration.DBModel.ReportsCollectionDbSet.Add(baseReps);
                 if (!RepsWhereTitleFormCheckIsCancel.Contains((BaseRepsRegNum, BaseRepsOkpo)))
                 {
                     await CheckTitleFormAsync(baseReps, impReps, RepsWhereTitleFormCheckIsCancel);

@@ -47,7 +47,7 @@ public class NewDeleteFormAsyncCommand : BaseAsyncCommand
             if (mainWindowVM.SelectedReports != null)
             {
                 var selectedReports = mainWindowVM.SelectedReports;
-                var selectedIndex = mainWindowVM.Reports40.IndexOf(selectedReports);
+                var selectedIndex = mainWindowVM.ReportsCollection.IndexOf(selectedReports);
 
                 if (parameter is Report selectedReport) 
                 {
@@ -57,7 +57,7 @@ public class NewDeleteFormAsyncCommand : BaseAsyncCommand
 
 
                 mainWindowVM.UpdateReports();
-                mainWindowVM.SelectedReports = mainWindowVM.Reports40[selectedIndex];   // Чтобы не слетала выбранная организация
+                mainWindowVM.SelectedReports = mainWindowVM.ReportsCollection[selectedIndex];   // Чтобы не слетала выбранная организация
 
                 mainWindowVM.UpdateReport();
             }

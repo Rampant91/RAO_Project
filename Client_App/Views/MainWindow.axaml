@@ -453,7 +453,7 @@
                 </TabItem>
 				<TabItem x:Name="Forms3" Header="Формы 3" IsVisible="False"/>
 				<!--Формы 4-->
-				<TabItem x:Name="Forms4" Header="Формы 4" IsVisible ="False">
+				<TabItem x:Name="Forms4" Header="Формы 4" IsVisible ="True">
 					<Border Classes="borderContainer">
 						<Grid RowDefinitions="*,*" ColumnDefinitions="5*,3*" >
 							<Grid Grid.Row ="0" Grid.Column="0" RowDefinitions="Auto,*,Auto">
