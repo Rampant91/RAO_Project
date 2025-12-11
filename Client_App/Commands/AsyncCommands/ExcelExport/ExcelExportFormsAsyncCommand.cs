@@ -395,7 +395,7 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
-        if (ReportsStorage.LocalReports.Reports_Collection.Count == 0)
+        if (StaticConfiguration.DBModel.ReportsCollectionDbSet.Count() == 0)
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
