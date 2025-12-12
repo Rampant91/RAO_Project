@@ -16,8 +16,8 @@ using Models.DBRealization;
 using Models.DTO;
 using static Client_App.Commands.AsyncCommands.Import.ImportJson.ImportJsonMethods;
 using Avalonia.Threading;
-using Client_App.Resources;
-using Client_App.Resources.CustomComparers;
+using Client_App.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Client_App.Commands.AsyncCommands.Import.ImportJson;
 
@@ -49,7 +49,13 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
             try
             {
                 if (path == "") continue;
-                var file = GetRaoFileName();
+                var count = 0;
+                string? file;
+                do
+                {
+                    file = Path.Combine(BaseVM.TmpDirectory, $"file_imp_{count++}.raodb");
+                } while (File.Exists(file));
+
                 SourceFile = new FileInfo(path);
                 SourceFile.CopyTo(file, true);
                 var jsonString = await File.ReadAllTextAsync(file);
@@ -326,8 +332,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
 
                 foreach (var impReps in orgListToAdd)
                 {
-                    var baseReps11 = GetReports11FromLocalEqual(impReps);
-                    var baseReps21 = GetReports21FromLocalEqual(impReps);
+                    var baseReps11 = await GetReports11FromDbEqualAsync(impReps);
+                    var baseReps21 = await GetReports21FromDbEqualAsync(impReps);
                     FillEmptyRegNo(ref baseReps11);
                     FillEmptyRegNo(ref baseReps21);
                     impReps.CleanIds();
@@ -431,7 +437,13 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                         }
                         if (an is "Добавить" or "Да для всех")
                         {
-                            ReportsStorage.LocalReports.Reports_Collection.Add(impReps);
+                            var db = StaticConfiguration.DBModel;
+                            var dbObservable = db.DBObservableDbSet.Local.FirstOrDefault()
+                                               ?? await db.DBObservableDbSet.FirstAsync();
+
+                            impReps.DBObservable = dbObservable;
+                            db.ReportsCollectionDbSet.Add(impReps);
+
                             countNewReps++;
                             AtLeastOneImportDone = true;
 
@@ -488,15 +500,9 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
             }
         }
 
-        var comparator = new CustomReportsComparer();
-        var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
-        ReportsStorage.LocalReports.Reports_Collection.Clear();
-        ReportsStorage.LocalReports.Reports_Collection
-            .AddRange(tmpReportsList
-                .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
-                .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
-
         await StaticConfiguration.DBModel.SaveChangesAsync().ConfigureAwait(false);
+
+        await SortReportsCollectionAsync();
 
         #region Suffix
 

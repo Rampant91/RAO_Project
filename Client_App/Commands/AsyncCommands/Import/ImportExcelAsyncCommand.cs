@@ -8,12 +8,10 @@ using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Avalonia.Threading;
-using Client_App.Resources.CustomComparers;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -101,8 +99,13 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 timeCreate[1] = $"0{timeCreate[1]}";
             }
 
-            var baseReps = GetBaseReps(worksheet0);
             var impReps = GetImportReps(worksheet0);
+            var baseReps = worksheet0.Name switch
+            {
+                "1.0" => await GetReports11FromDbEqualAsync(impReps),
+                "2.0" => await GetReports21FromDbEqualAsync(impReps),
+                _ => null
+            };
 
             impReportsList.Add(impReps);
             if (baseReps is null)
@@ -253,17 +256,6 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             }
         }
 
-        var comparator = new CustomReportsComparer();
-        var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
-        ReportsStorage.LocalReports.Reports_Collection.Clear();
-        ReportsStorage.LocalReports.Reports_Collection
-            .AddRange(tmpReportsList
-                .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
-                .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
-
-        //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
-
-
         try
         {
             await StaticConfiguration.DBModel.SaveChangesAsync();
@@ -290,6 +282,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             return;
         }
 
+        await SortReportsCollectionAsync();
         await SetDataGridPage(impReportsList);
 
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
@@ -334,111 +327,6 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             #endregion
         }
     }
-
-    #region GetBaseReps
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="worksheet0">Лист Excel.</param>
-    /// <returns></returns>
-    private static Reports? GetBaseReps(ExcelWorksheet worksheet0)
-    {
-        var excelOkpo0 = Convert.ToString(worksheet0.Cells["B36"].Value);
-        var excelOkpo1= Convert.ToString(worksheet0.Cells["B37"].Value);
-
-        var excelRegNo = Convert.ToString(worksheet0.Cells["F6"].Value);
-
-        return worksheet0.Name switch
-        {
-            "1.0" => ReportsStorage.LocalReports.Reports_Collection10
-                         .FirstOrDefault(t =>
-                         
-                             // обособленные пусты и в базе и в импорте, то сверяем головное
-                             excelOkpo0 == t.Master.Rows10[0].Okpo_DB
-                             && excelRegNo == t.Master.Rows10[0].RegNo_DB
-                             && excelOkpo1 == ""
-                             && t.Master.Rows10[1].Okpo_DB == ""
-
-                             // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                             || excelOkpo0 == t.Master.Rows10[0].Okpo_DB
-                             && excelRegNo == t.Master.Rows10[1].RegNo_DB
-                             && excelOkpo1 == ""
-                             && t.Master.Rows10[1].Okpo_DB == ""
-
-                             // обособленные не пусты, их и сверяем
-                             || excelOkpo1 == t.Master.Rows10[1].Okpo_DB
-                             && excelRegNo == t.Master.Rows10[1].RegNo_DB
-                             && excelOkpo1 != ""
-
-                             // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                             || excelOkpo1 == t.Master.Rows10[1].Okpo_DB
-                             && excelRegNo == t.Master.Rows10[0].RegNo_DB
-                             && excelOkpo1 != ""
-                             && t.Master.Rows10[1].RegNo_DB == "")
-
-                     ?? ReportsStorage.LocalReports
-                         .Reports_Collection10 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
-                         .FirstOrDefault(t =>
-
-                             // юр лицо в базе совпадает с обособленным в импорте
-                             excelOkpo1 != ""
-                             && t.Master.Rows10[1].Okpo_DB == ""
-                             && excelOkpo1 == t.Master.Rows10[0].Okpo_DB
-                             && excelRegNo == t.Master.Rows10[0].RegNo_DB
-
-                             // юр лицо в импорте совпадает с обособленным в базе
-                             || excelOkpo1 == ""
-                             && t.Master.Rows10[1].Okpo_DB != ""
-                             && excelOkpo0 == t.Master.Rows10[1].Okpo_DB
-                             && excelRegNo == t.Master.Rows10[1].RegNo_DB),
-
-            "2.0" => ReportsStorage.LocalReports.Reports_Collection20
-                       .FirstOrDefault(t =>
-
-                           // обособленные пусты и в базе и в импорте, то сверяем головное
-                           excelOkpo0 == t.Master.Rows20[0].Okpo_DB
-                           && excelRegNo == t.Master.Rows20[0].RegNo_DB
-                           && excelOkpo1 == ""
-                           && t.Master.Rows20[1].Okpo_DB == ""
-
-                           // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                           || excelOkpo0 == t.Master.Rows20[0].Okpo_DB
-                           && excelRegNo == t.Master.Rows20[1].RegNo_DB
-                           && excelOkpo1 == ""
-                           && t.Master.Rows20[1].Okpo_DB == ""
-
-                           // обособленные не пусты, их и сверяем
-                           || excelOkpo1 == t.Master.Rows20[1].Okpo_DB
-                           && excelRegNo == t.Master.Rows20[1].RegNo_DB
-                           && excelOkpo1 != ""
-
-                           // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                           || excelOkpo1 == t.Master.Rows20[1].Okpo_DB
-                           && excelRegNo == t.Master.Rows20[0].RegNo_DB
-                           && excelOkpo1 != ""
-                           && t.Master.Rows20[1].RegNo_DB == "")
-
-                   ?? ReportsStorage.LocalReports.Reports_Collection20 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
-                       .FirstOrDefault(t =>
-
-                           // юр лицо в базе совпадает с обособленным в импорте
-                           excelOkpo1 != ""
-                           && t.Master.Rows20[1].Okpo_DB == ""
-                           && excelOkpo1 == t.Master.Rows20[0].Okpo_DB
-                           && excelRegNo == t.Master.Rows20[0].RegNo_DB
-
-                           // юр лицо в импорте совпадает с обособленным в базе
-                           || excelOkpo1 == ""
-                           && t.Master.Rows20[1].Okpo_DB != ""
-                           && excelOkpo0 == t.Master.Rows20[1].Okpo_DB
-                           && excelRegNo == t.Master.Rows20[1].RegNo_DB),
-
-            _ => null
-        };
-    }
-
-    #endregion
 
     #region GetDataFromRow
 

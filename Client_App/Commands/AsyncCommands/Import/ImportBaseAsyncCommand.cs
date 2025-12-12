@@ -4,7 +4,6 @@ using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.Interfaces.Logger;
 using Client_App.Logging;
 using Client_App.Resources.CustomComparers;
-using Client_App.ViewModels;
 using DynamicData;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
@@ -17,6 +16,7 @@ using Models.Forms.Form1;
 using Models.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -83,7 +83,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     /// <param name="newReport">Новый отчёт.</param>
     /// <param name="addToDB">Флаг добавления в БД.</param>
     /// <returns></returns>
-    private protected async Task CheckAnswer(string an, Reports baseReps, Reports impReps, Report? oldReport = null, Report? newReport = null, bool addToDB = true)
+    private protected async Task CheckAnswer(string an, Reports baseReps, Reports impReps, Report? oldReport = null,
+        Report? newReport = null, bool addToDB = true)
     {
         switch (an)
         {
@@ -95,11 +96,13 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 {
                     await CheckTitleFormAsync(baseReps, impReps, RepsWhereTitleFormCheckIsCancel);
                 }
+
                 if (addToDB)
                 {
                     baseReps.Report_Collection.Add(newReport);
                     AtLeastOneImportDone = true;
                 }
+
                 Act = "\t\t\t";
                 LoggerImportDTO = new LoggerImportDTO
                 {
@@ -125,17 +128,19 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #endregion
 
             #region SaveBoth
-            
+
             case "Сохранить оба":
                 if (!RepsWhereTitleFormCheckIsCancel.Contains((BaseRepsRegNum, BaseRepsOkpo)))
                 {
                     await CheckTitleFormAsync(baseReps, impReps, RepsWhereTitleFormCheckIsCancel);
                 }
+
                 if (addToDB)
                 {
                     baseReps.Report_Collection.Add(newReport);
                     AtLeastOneImportDone = true;
                 }
+
                 Act = "Сохранены оба (пересечение)";
                 LoggerImportDTO = new LoggerImportDTO
                 {
@@ -161,12 +166,13 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #endregion
 
             #region Ok
-            
+
             case "Заменить" or "Заменять все формы":
                 if (!RepsWhereTitleFormCheckIsCancel.Contains((BaseRepsRegNum, BaseRepsOkpo)))
                 {
                     await CheckTitleFormAsync(baseReps, impReps, RepsWhereTitleFormCheckIsCancel);
                 }
+
                 baseReps.Report_Collection.Replace(oldReport, newReport);
                 StaticConfiguration.DBModel.Remove(oldReport!);
                 await ReportDeletionLogger.LogDeletionAsync(oldReport!);
@@ -196,12 +202,13 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #endregion
 
             #region Supplement
-            
+
             case "Дополнить" when newReport != null && oldReport != null:
                 if (!RepsWhereTitleFormCheckIsCancel.Contains((BaseRepsRegNum, BaseRepsOkpo)))
                 {
                     await CheckTitleFormAsync(baseReps, impReps, RepsWhereTitleFormCheckIsCancel);
                 }
+
                 newReport.Rows.AddRange<IKey>(0, oldReport.Rows.GetEnumerable());
                 newReport.Notes.AddRange<IKey>(0, oldReport.Notes);
                 baseReps.Report_Collection.Replace(oldReport, newReport);
@@ -233,17 +240,17 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #endregion
 
             #region CancelForAll
-            
+
             case "Отменить для всех пересечений":
                 SkipInter = true;
-                break; 
+                break;
 
             #endregion
 
             #region Cancel
 
             case "Отменить импорт формы" or "Нет":
-                break; 
+                break;
 
             #endregion
         }
@@ -258,9 +265,13 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     /// </summary>
     /// <param name="baseReps">Форма организации в БД.</param>
     /// <param name="impReps">Импортируемая форма организации.</param>
-    /// <param name="repsWhereTitleFormCheckIsCancel">Список организаций (рег.№, ОКПО), где проверка отключена.</param>
-    /// <returns>Если отличия присутствуют, выполняет команду на открытие окна сравнения.</returns>
-    private static async Task CheckTitleFormAsync(Reports baseReps, Reports impReps, List<(string, string)> repsWhereTitleFormCheckIsCancel)
+    /// <param name="repsWhereTitleFormCheckIsCancel">
+    /// Список организаций (рег.№, ОКПО), где проверка отключена.
+    /// </param>
+    private static async Task CheckTitleFormAsync(
+        Reports baseReps,
+        Reports impReps,
+        List<(string, string)> repsWhereTitleFormCheckIsCancel)
     {
         var comparator = new CustomStringTitleFormComparer();
         if (baseReps.Master.FormNum_DB is "1.0"
@@ -334,7 +345,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     || comparator.Compare(baseReps.Master.Rows20[1].Okopf_DB, impReps.Master.Rows20[1].Okopf_DB) != 0
                     || comparator.Compare(baseReps.Master.Rows20[1].Okfs_DB, impReps.Master.Rows20[1].Okfs_DB) != 0)))
         {
-            var newTitleRep = await new CompareReportsTitleFormAsyncCommand(baseReps.Master, impReps.Master, repsWhereTitleFormCheckIsCancel).AsyncExecute(null);
+            var newTitleRep = await new CompareReportsTitleFormAsyncCommand(baseReps.Master, impReps.Master,
+                repsWhereTitleFormCheckIsCancel).AsyncExecute(null);
             baseReps.Master = newTitleRep;
         }
     }
@@ -352,22 +364,29 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         if (reps is null) return;
         if (reps.Master.Rows10.Count >= 2)
         {
-            if (reps.Master.Rows10[0].RegNo_DB is "" && reps.Master.Rows10[1].RegNo_DB is not "" && reps.Master.Rows10[0].Okpo_DB is not "")
+            if (reps.Master.Rows10[0].RegNo_DB is "" && reps.Master.Rows10[1].RegNo_DB is not "" &&
+                reps.Master.Rows10[0].Okpo_DB is not "")
             {
                 reps.Master.Rows10[0].RegNo_DB = reps.Master.Rows10[1].RegNo_DB;
             }
-            if (reps.Master.Rows10[1].RegNo_DB is "" && reps.Master.Rows10[0].RegNo_DB is not "" && reps.Master.Rows10[1].Okpo_DB is not "")
+
+            if (reps.Master.Rows10[1].RegNo_DB is "" && reps.Master.Rows10[0].RegNo_DB is not "" &&
+                reps.Master.Rows10[1].Okpo_DB is not "")
             {
                 reps.Master.Rows10[1].RegNo_DB = reps.Master.Rows10[0].RegNo_DB;
             }
         }
+
         if (reps.Master.Rows20.Count >= 2)
         {
-            if (reps.Master.Rows20[0].RegNo_DB is "" && reps.Master.Rows20[1].RegNo_DB is not "" && reps.Master.Rows20[0].Okpo_DB is not "")
+            if (reps.Master.Rows20[0].RegNo_DB is "" && reps.Master.Rows20[1].RegNo_DB is not "" &&
+                reps.Master.Rows20[0].Okpo_DB is not "")
             {
                 reps.Master.Rows20[0].RegNo_DB = reps.Master.Rows20[1].RegNo_DB;
             }
-            if (reps.Master.Rows20[1].RegNo_DB is "" && reps.Master.Rows20[0].RegNo_DB is not "" && reps.Master.Rows20[1].Okpo_DB is not "")
+
+            if (reps.Master.Rows20[1].RegNo_DB is "" && reps.Master.Rows20[0].RegNo_DB is not "" &&
+                reps.Master.Rows20[1].Okpo_DB is not "")
             {
                 reps.Master.Rows20[1].RegNo_DB = reps.Master.Rows20[0].RegNo_DB;
             }
@@ -376,84 +395,120 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #endregion
 
-    #region GetRaoFileName
+    #region GetReportsFromDbEqual
 
-    /// <summary>
-    /// Получить полное имя временного файла .RAODB.
-    /// </summary>
-    /// <returns>Полное имя временного файла .RAODB.</returns>
-    private protected static string GetRaoFileName()
+    private protected static async Task<Reports?> GetReports11FromDbEqualAsync(Reports reps)
     {
-        var count = 0;
-        string? file;
-        do
+        if (reps.Master_DB.FormNum_DB is not "1.0")
         {
-            file = Path.Combine(BaseVM.TmpDirectory, $"file_imp_{count++}.raodb");
-        } while (File.Exists(file));
+            return null;
+        }
 
-        return file;
+        var db = StaticConfiguration.DBModel;
+
+        var repsList = await db.ReportsCollectionDbSet
+            .Include(t => t.Master_DB).ThenInclude(m => m.Rows10)
+            .Where(t => t.DBObservableId != null && t.Master_DB.FormNum_DB == "1.0")
+            .ToListAsync();
+
+        return FindMatchingReports(
+            reps,
+            repsList,
+            r => (
+                r.Master.Rows10[0].RegNo_DB,
+                r.Master.Rows10[0].Okpo_DB,
+                r.Master.Rows10[1].RegNo_DB,
+                r.Master.Rows10[1].Okpo_DB));
     }
 
-    #endregion
+    private protected static async Task<Reports?> GetReports21FromDbEqualAsync(Reports reps)
+    {
+        if (reps.Master_DB.FormNum_DB is not "2.0")
+        {
+            return null;
+        }
 
-    #region GetReports11FromLocalEqual
+        var db = StaticConfiguration.DBModel;
 
-    /// <summary>
-    /// Ищет в БД организацию, с тем же рег.№ и ОКПО, что у импортируемой и возвращает её.
-    /// </summary>
-    /// <param name="reps">Импортируемая организация.</param>
-    /// <returns>Соответствующая организация из БД.</returns>
-    private protected static Reports? GetReports11FromLocalEqual(Reports reps)
+        var repsList = await db.ReportsCollectionDbSet
+            .Include(t => t.Master_DB).ThenInclude(m => m.Rows20)
+            .Where(t => t.DBObservableId != null && t.Master_DB.FormNum_DB == "2.0")
+            .ToListAsync();
+
+        return FindMatchingReports(
+            reps,
+            repsList,
+            r => (
+                r.Master.Rows20[0].RegNo_DB,
+                r.Master.Rows20[0].Okpo_DB,
+                r.Master.Rows20[1].RegNo_DB,
+                r.Master.Rows20[1].Okpo_DB));
+    }
+
+    #region FindMatchingReports
+
+    private static Reports? FindMatchingReports(
+        Reports reps,
+        IEnumerable<Reports> candidates,
+        Func<Reports, (string reg0, string okpo0, string reg1, string okpo1)> getOrgData)
     {
         try
         {
-            //if (!reps.Report_Collection.Any(x => x.FormNum_DB[0].Equals('1')) || reps.Master_DB.FormNum_DB is not "1.0")
-            if (reps.Master_DB.FormNum_DB is not "1.0")
+            var list = candidates as IList<Reports> ?? candidates.ToList();
+
+            var (impReg0, impOkpo0, impReg1, impOkpo1) = getOrgData(reps);
+
+            var first = list.FirstOrDefault(t =>
             {
-                return null;
+                var (baseReg0, baseOkpo0, baseReg1, baseOkpo1) = getOrgData(t);
+
+                return
+                    // обособленные пусты и в базе и в импорте, то сверяем головное
+                    (impReg0 == baseReg0
+                     && impOkpo0 == baseOkpo0
+                     && impReg1 == ""
+                     && baseReg1 == "")
+                    ||
+                    // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                    (impOkpo0 == baseOkpo0
+                     && impReg0 == baseReg1
+                     && impOkpo1 == ""
+                     && baseOkpo1 == "")
+                    ||
+                    // обособленные не пусты, их и сверяем
+                    (impOkpo1 == baseOkpo1
+                     && impReg1 == baseReg1
+                     && impOkpo1 != "")
+                    ||
+                    // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                    (impOkpo1 == baseOkpo1
+                     && impReg1 == baseReg0
+                     && impOkpo1 != ""
+                     && baseReg1 == "");
+            });
+
+            if (first != null)
+            {
+                return first;
             }
 
-            return ReportsStorage.LocalReports.Reports_Collection10
-                       .FirstOrDefault(t =>
+            return list.FirstOrDefault(t =>
+            {
+                var (baseReg0, baseOkpo0, baseReg1, baseOkpo1) = getOrgData(t);
 
-                           // обособленные пусты и в базе и в импорте, то сверяем головное
-                           reps.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
-                           && reps.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB
-                           && reps.Master.Rows10[1].Okpo_DB == ""
-                           && t.Master.Rows10[1].Okpo_DB == ""
-
-                           // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                           || reps.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
-                           && reps.Master.Rows10[0].RegNo_DB == t.Master.Rows10[1].RegNo_DB
-                           && reps.Master.Rows10[1].Okpo_DB == ""
-                           && t.Master.Rows10[1].Okpo_DB == ""
-
-                           // обособленные не пусты, их и сверяем
-                           || reps.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB
-                           && reps.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB
-                           && reps.Master.Rows10[1].Okpo_DB != ""
-
-                           // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                           || reps.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB
-                           && reps.Master.Rows10[1].RegNo_DB == t.Master.Rows10[0].RegNo_DB
-                           && reps.Master.Rows10[1].Okpo_DB != ""
-                           && t.Master.Rows10[1].RegNo_DB == "")
-
-                   ?? ReportsStorage.LocalReports
-                       .Reports_Collection10 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
-                       .FirstOrDefault(t =>
-
-                           // юр лицо в базе совпадает с обособленным в импорте
-                           reps.Master.Rows10[1].Okpo_DB != ""
-                           && t.Master.Rows10[1].Okpo_DB == ""
-                           && reps.Master.Rows10[1].Okpo_DB == t.Master.Rows10[0].Okpo_DB
-                           && reps.Master.Rows10[1].RegNo_DB == t.Master.Rows10[0].RegNo_DB
-
-                           // юр лицо в импорте совпадает с обособленным в базе
-                           || reps.Master.Rows10[1].Okpo_DB == ""
-                           && t.Master.Rows10[1].Okpo_DB != ""
-                           && reps.Master.Rows10[0].Okpo_DB == t.Master.Rows10[1].Okpo_DB
-                           && reps.Master.Rows10[0].RegNo_DB == t.Master.Rows10[1].RegNo_DB);
+                return
+                    // юр лицо в базе совпадает с обособленным в импорте
+                    (impOkpo1 != ""
+                     && baseOkpo1 == ""
+                     && impOkpo1 == baseOkpo0
+                     && impReg1 == baseReg0)
+                    ||
+                    // юр лицо в импорте совпадает с обособленным в базе
+                    (impOkpo1 == ""
+                     && baseOkpo1 != ""
+                     && impOkpo0 == baseOkpo1
+                     && impReg0 == baseReg1);
+            });
         }
         catch
         {
@@ -462,70 +517,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     }
 
     #endregion
-
-    #region GetReports21FromLocalEqual
-
-    /// <summary>
-    /// Ищет в БД организацию, с тем же рег.№ и ОКПО, что у импортируемой и возвращает её.
-    /// </summary>
-    /// <param name="reps">Импортируемая организация.</param>
-    /// <returns>Соответствующая организация из БД.</returns>
-    private protected static Reports? GetReports21FromLocalEqual(Reports reps)
-    {
-        try
-        {
-            //if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('2')) || item.Master_DB.FormNum_DB is not "2.0")
-            if (reps.Master_DB.FormNum_DB is not "2.0")
-            {
-                return null;
-            }
-
-            return ReportsStorage.LocalReports.Reports_Collection20
-                       .FirstOrDefault(t =>
-
-                           // обособленные пусты и в базе и в импорте, то сверяем головное
-                           reps.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
-                           && reps.Master.Rows20[0].RegNo_DB == t.Master.Rows20[0].RegNo_DB
-                           && reps.Master.Rows20[1].Okpo_DB == ""
-                           && t.Master.Rows20[1].Okpo_DB == ""
-
-                           // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                           || reps.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
-                           && reps.Master.Rows20[0].RegNo_DB == t.Master.Rows20[1].RegNo_DB
-                           && reps.Master.Rows20[1].Okpo_DB == ""
-                           && t.Master.Rows20[1].Okpo_DB == ""
-
-                           // обособленные не пусты, их и сверяем
-                           || reps.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB
-                           && reps.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB
-                           && reps.Master.Rows20[1].Okpo_DB != ""
-
-                           // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                           || reps.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB
-                           && reps.Master.Rows20[1].RegNo_DB == t.Master.Rows20[0].RegNo_DB
-                           && reps.Master.Rows20[1].Okpo_DB != ""
-                           && t.Master.Rows20[1].RegNo_DB == "")
-
-                   ?? ReportsStorage.LocalReports.Reports_Collection20 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
-                       .FirstOrDefault(t =>
-
-                           // юр лицо в базе совпадает с обособленным в импорте
-                           reps.Master.Rows20[1].Okpo_DB != ""
-                           && t.Master.Rows20[1].Okpo_DB == ""
-                           && reps.Master.Rows20[1].Okpo_DB == t.Master.Rows20[0].Okpo_DB
-                           && reps.Master.Rows20[1].RegNo_DB == t.Master.Rows20[0].RegNo_DB
-
-                           // юр лицо в импорте совпадает с обособленным в базе
-                           || reps.Master.Rows20[1].Okpo_DB == ""
-                           && t.Master.Rows20[1].Okpo_DB != ""
-                           && reps.Master.Rows20[0].Okpo_DB == t.Master.Rows20[1].Okpo_DB
-                           && reps.Master.Rows20[0].RegNo_DB == t.Master.Rows20[1].RegNo_DB);
-        }
-        catch
-        {
-            return null;
-        }
-    }
 
     #endregion
 
@@ -1442,6 +1433,39 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             }
         }
     }
+
+    #endregion
+
+    #region SortReportsCollection
+
+    /// <summary>
+    /// Сортирует основную коллекцию организаций по рег.№, затем по ОКПО.
+    /// Используется после операций импорта для восстановления привычного порядка.
+    /// </summary>
+    #pragma warning disable
+    [SuppressMessage("ReSharper", "EntityFramework.NPlusOne.IncompleteDataUsage")]
+    [SuppressMessage("ReSharper", "EntityFramework.NPlusOne.IncompleteDataQuery")]
+    private protected static async Task SortReportsCollectionAsync()
+    {
+        var db = StaticConfiguration.DBModel;
+
+        var dbObservable = db.DBObservableDbSet.Local.FirstOrDefault()
+                           ?? await db.DBObservableDbSet.FirstAsync();
+
+        var comparator = new CustomReportsComparer();
+
+        var sorted = dbObservable.Reports_Collection
+            .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
+            .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator)
+            .ToList();
+
+        dbObservable.Reports_Collection.Clear();
+        foreach (var reps in sorted)
+        {
+            dbObservable.Reports_Collection.Add(reps);
+        }
+    }
+    #pragma warning restore
 
     #endregion
 

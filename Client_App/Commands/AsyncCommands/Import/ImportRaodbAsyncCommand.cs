@@ -13,7 +13,6 @@ using Client_App.Interfaces.Logger;
 using MessageBox.Avalonia.Enums;
 using Models.DTO;
 using Avalonia.Threading;
-using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels;
 
 namespace Client_App.Commands.AsyncCommands.Import;
@@ -21,6 +20,8 @@ namespace Client_App.Commands.AsyncCommands.Import;
 //  Импорт -> Из RAODB
 public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyncCommand
 {
+    #region AsyncExecute
+
     public override async Task AsyncExecute(object? parameter)
     {
         RepsWhereTitleFormCheckIsCancel.Clear();
@@ -43,7 +44,14 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
         foreach (var path in answer) // Для каждого импортируемого файла
         {
             if (path == "") continue;
-            TmpImpFilePath = GetRaoFileName();
+            var count = 0;
+            string? tmpFile;
+            do
+            {
+                tmpFile = Path.Combine(BaseVM.TmpDirectory, $"file_imp_{count++}.raodb");
+            } while (File.Exists(tmpFile));
+
+            TmpImpFilePath = tmpFile;
             SourceFile = new FileInfo(path);
             SourceFile.CopyTo(TmpImpFilePath, true);
 
@@ -74,13 +82,14 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
-                    .ShowDialog(Desktop.MainWindow)); 
+                    .ShowDialog(Desktop.MainWindow));
 
                 #endregion
 
                 countReadFiles--;
                 continue;
             }
+
             if (!HasMultipleReport)
             {
                 HasMultipleReport = reportsCollection.Sum(x => x.Report_Collection.Count) > 1 || answer.Length > 1;
@@ -89,6 +98,8 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
             foreach (var impReps in reportsCollection) // Для каждой импортируемой организации
             {
                 var dateTime = DateTime.Now;
+
+                if (impReps.Master_DB.FormNum_DB is not ("1.0" or "2.0")) continue;
 
                 impReportsList.Add(impReps);
                 await impReps.SortAsync();
@@ -105,8 +116,9 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                     impReps.Master.Rows20[1].RegNo_DB = impReps.Master.Rows20[0].RegNo_DB;
                 }
 
-                var baseReps11 = GetReports11FromLocalEqual(impReps);
-                var baseReps21 = GetReports21FromLocalEqual(impReps);
+                var baseReps11 = await GetReports11FromDbEqualAsync(impReps);
+                var baseReps21 = await GetReports21FromDbEqualAsync(impReps);
+
                 FillEmptyRegNo(ref baseReps11);
                 FillEmptyRegNo(ref baseReps21);
                 impReps.CleanIds();
@@ -114,8 +126,8 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
 
                 ImpRepFormCount = impReps.Report_Collection.Count;
                 ImpRepFormNum = impReps.Master.FormNum_DB;
-                BaseRepsOkpo = impReps.Master.OkpoRep.Value;
-                BaseRepsRegNum = impReps.Master.RegNoRep.Value;
+                BaseRepsOkpo = impReps.Master.OkpoRep?.Value ?? "";
+                BaseRepsRegNum = impReps.Master.RegNoRep?.Value ?? "";
                 BaseRepsShortName = impReps.Master.ShortJurLicoRep.Value;
 
                 foreach (var key in impReps.Report_Collection)
@@ -123,6 +135,7 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                     var report = (Report)key;
                     report.ReportChangedDate = dateTime;
                 }
+
                 var impRepsReportList = impReps.Report_Collection.ToList();
                 if (baseReps11 != null)
                 {
@@ -155,14 +168,14 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                                     ContentTitle = "Импорт из .raodb",
                                     ContentHeader = "Уведомление",
                                     ContentMessage =
-                                        $"Будет добавлена новая организация ({ImpRepFormNum}) содержащая {ImpRepFormCount} форм отчетности." +
-                                        $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
-                                        $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
-                                        $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
-                                        $"{Environment.NewLine}импортировать все новые организации.",
+                                        $"Будет добавлена новая организация ({ImpRepFormNum}) содержащая {ImpRepFormCount} форм отчетности."
+                                        + $"{Environment.NewLine}" 
+                                        + $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" 
+                                        + $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" 
+                                        + $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" 
+                                        + $"{Environment.NewLine}" 
+                                        + $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " 
+                                        + $"{Environment.NewLine}импортировать все новые организации.",
                                     MinWidth = 400,
                                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                                 })
@@ -186,12 +199,12 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                                     ],
                                     ContentTitle = "Импорт из .raodb",
                                     ContentHeader = "Уведомление",
-                                    ContentMessage =
-                                        $"Будет добавлена новая организация ({ImpRepFormNum}) содержащая {ImpRepFormCount} форм отчетности." +
-                                        $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
-                                        $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
+                                    ContentMessage = $"Будет добавлена новая организация ({ImpRepFormNum}) "
+                                                     + $"содержащая {ImpRepFormCount} форм отчетности."
+                                                     + $"{Environment.NewLine}" 
+                                                     + $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" 
+                                                     + $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" 
+                                                     + $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
                                     MinWidth = 400,
                                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                                 })
@@ -203,7 +216,13 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
 
                     if (an is "Добавить" or "Да для всех")
                     {
-                        ReportsStorage.LocalReports.Reports_Collection.Add(impReps);
+                        var db = StaticConfiguration.DBModel;
+                        var dbObservable = db.DBObservableDbSet.Local.FirstOrDefault() 
+                                           ?? await db.DBObservableDbSet.FirstAsync();
+
+                        impReps.DBObservable = dbObservable;
+                        db.ReportsCollectionDbSet.Add(impReps);
+
                         AtLeastOneImportDone = true;
 
                         #region LoggerImport
@@ -223,10 +242,19 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                             Act = "\t\t\t";
                             LoggerImportDTO = new LoggerImportDTO
                             {
-                                Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
-                                FormCount = ImpRepFormCount, FormNum = ImpRepFormNum, StartPeriod = ImpRepStartPeriod,
-                                Okpo = BaseRepsOkpo, OperationDate = OperationDate, RegNum = BaseRepsRegNum,
-                                ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
+                                Act = Act,
+                                CorNum = ImpRepCorNum,
+                                CurrentLogLine = CurrentLogLine,
+                                EndPeriod = ImpRepEndPeriod,
+                                FormCount = ImpRepFormCount,
+                                FormNum = ImpRepFormNum,
+                                StartPeriod = ImpRepStartPeriod,
+                                Okpo = BaseRepsOkpo,
+                                OperationDate = OperationDate,
+                                RegNum = BaseRepsRegNum,
+                                ShortName = BaseRepsShortName,
+                                SourceFileFullPath = SourceFile!.FullName,
+                                Year = ImpRepYear
                             };
                             ServiceExtension.LoggerManager.Import(LoggerImportDTO);
                             IsFirstLogLine = false;
@@ -264,28 +292,6 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
 
         try
         {
-            var comparator = new CustomReportsComparer();
-            var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
-            var tmpReportsOrderedEnum = tmpReportsList
-                .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
-                .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator);
-
-            ReportsStorage.LocalReports.Reports_Collection.Clear();
-            ReportsStorage.LocalReports.Reports_Collection
-                .AddRange(tmpReportsOrderedEnum);
-        }
-        catch (Exception ex)
-        {
-            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
-                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-            ServiceExtension.LoggerManager.Warning(msg);
-            return;
-        }
-
-        //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
-
-        try
-        {
             await StaticConfiguration.DBModel.SaveChangesAsync();
         }
         catch (Exception ex)
@@ -293,23 +299,25 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
 
         }
 
+        await SortReportsCollectionAsync();
         await SetDataGridPage(impReportsList);
 
-        var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
-                ? "а"
-                : "ов";
+        var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11") 
+            ? "а"
+            : "ов";
 
         if (AtLeastOneImportDone)
         {
             #region MessageImportDone
-            
+
             await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Импорт из .raodb",
                     ContentHeader = "Уведомление",
-                    ContentMessage = $"Импорт {countReadFiles} из {answer.Length} файл{suffix} .raodb успешно завершен.",
+                    ContentMessage =
+                        $"Импорт {countReadFiles} из {answer.Length} файл{suffix} .raodb успешно завершен.",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -337,7 +345,9 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
 
             #endregion
         }
-    }
+    } 
+
+    #endregion
 
     #region GetReportsFromDataBase
 
@@ -347,9 +357,9 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
 
         #region Test Version
 
-        var t = await db.Database.GetPendingMigrationsAsync();
-        var a = db.Database.GetMigrations();
-        var b = await db.Database.GetAppliedMigrationsAsync();
+        //var t = await db.Database.GetPendingMigrationsAsync();
+        //var a = db.Database.GetMigrations();
+        //var b = await db.Database.GetAppliedMigrationsAsync();
 
         #endregion
 
@@ -446,4 +456,131 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
     }
 
     #endregion
+
+    #region GetReportsFromDbEqual
+
+    private static async Task<Reports?> GetReports11FromDbEqualAsync(Reports reps)
+    {
+        if (reps.Master_DB.FormNum_DB is not "1.0")
+        {
+            return null;
+        }
+
+        var db = StaticConfiguration.DBModel;
+
+        var repsList = await db.ReportsCollectionDbSet
+            .Include(t => t.Master_DB).ThenInclude(m => m.Rows10)
+            .Where(t => t.DBObservableId != null && t.Master_DB.FormNum_DB == "1.0")
+            .ToListAsync();
+
+        return FindMatchingReports(
+            reps,
+            repsList,
+            r => (
+                r.Master.Rows10[0].RegNo_DB,
+                r.Master.Rows10[0].Okpo_DB,
+                r.Master.Rows10[1].RegNo_DB,
+                r.Master.Rows10[1].Okpo_DB));
+    }
+
+
+    private static async Task<Reports?> GetReports21FromDbEqualAsync(Reports reps)
+    {
+        if (reps.Master_DB.FormNum_DB is not "2.0")
+        {
+            return null;
+        }
+
+        var db = StaticConfiguration.DBModel;
+
+        var repsList = await db.ReportsCollectionDbSet
+            .Include(t => t.Master_DB).ThenInclude(m => m.Rows20)
+            .Where(t => t.DBObservableId != null && t.Master_DB.FormNum_DB == "2.0")
+            .ToListAsync();
+
+        return FindMatchingReports(
+            reps,
+            repsList,
+            r => (
+                r.Master.Rows20[0].RegNo_DB,
+                r.Master.Rows20[0].Okpo_DB,
+                r.Master.Rows20[1].RegNo_DB,
+                r.Master.Rows20[1].Okpo_DB));
+    }
+
+    #region FindMatchingReports
+
+    private static Reports? FindMatchingReports(
+        Reports reps,
+        IEnumerable<Reports> candidates,
+        Func<Reports, (string reg0, string okpo0, string reg1, string okpo1)> getOrgData)
+    {
+        try
+        {
+            var list = candidates as IList<Reports> ?? candidates.ToList();
+
+            var (impReg0, impOkpo0, impReg1, impOkpo1) = getOrgData(reps);
+
+            var first = list.FirstOrDefault(t =>
+            {
+                var (baseReg0, baseOkpo0, baseReg1, baseOkpo1) = getOrgData(t);
+
+                return
+                    // обособленные пусты и в базе и в импорте, то сверяем головное
+                    (impReg0 == baseReg0 
+                     && impOkpo0 == baseOkpo0 
+                     && impReg1 == "" 
+                     && baseReg1 == "") 
+                    ||
+                    // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                    (impOkpo0 == baseOkpo0 
+                     && impReg0 == baseReg1 
+                     && impOkpo1 == "" 
+                     && baseOkpo1 == "") 
+                    ||
+                    // обособленные не пусты, их и сверяем
+                    (impOkpo1 == baseOkpo1 
+                     && impReg1 == baseReg1 
+                     && impOkpo1 != "") 
+                    ||
+                    // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                    (impOkpo1 == baseOkpo1 
+                     && impReg1 == baseReg0 
+                     && impOkpo1 != "" 
+                     && baseReg1 == "");
+            });
+
+            if (first != null)
+            {
+                return first;
+            }
+
+            return list.FirstOrDefault(t =>
+            {
+                var (baseReg0, baseOkpo0, baseReg1, baseOkpo1) = getOrgData(t);
+
+                return
+                    // юр лицо в базе совпадает с обособленным в импорте
+                    (impOkpo1 != "" 
+                     && baseOkpo1 == "" 
+                     && impOkpo1 == baseOkpo0 
+                     && impReg1 == baseReg0) ||
+
+                    // юр лицо в импорте совпадает с обособленным в базе
+                    (impOkpo1 == "" 
+                     && baseOkpo1 != "" 
+                     && impOkpo0 == baseOkpo1 
+                     && impReg0 == baseReg1);
+            });
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    #endregion
+
+    #endregion
+
 }
