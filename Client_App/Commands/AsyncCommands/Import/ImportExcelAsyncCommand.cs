@@ -8,10 +8,12 @@ using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Avalonia.Threading;
+using Microsoft.EntityFrameworkCore;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -39,6 +41,11 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         AtLeastOneImportDone = false;
 
         var impReportsList = new List<Reports>();
+
+        // Локальный кэш организаций в рамках одного запуска импорта Excel.
+        // Не даёт создавать несколько записей Reports для одной и той же организации,
+        // если выбрано несколько файлов сразу.
+        var orgCache = new Dictionary<(string RegNo, string Okpo, string FormNum), Reports>();
         foreach (var res in answer) // Для каждого импортируемого файла
         {
             var impDateTime = DateTime.Now;
@@ -100,19 +107,59 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             }
 
             var impReps = GetImportReps(worksheet0);
-            var baseReps = worksheet0.Name switch
+
+            // Ключ организации по данным заголовка отчёта
+            (string RegNo, string Okpo, string FormNum) GetOrgKey(Reports reps)
             {
-                "1.0" => await GetReports11FromDbEqualAsync(impReps),
-                "2.0" => await GetReports21FromDbEqualAsync(impReps),
-                _ => null
-            };
+                return reps.Master_DB.FormNum_DB switch
+                {
+                    "1.0" => (
+                        reps.Master_DB.Rows10[0].RegNo_DB ?? string.Empty,
+                        reps.Master_DB.Rows10[0].Okpo_DB ?? string.Empty,
+                        reps.Master_DB.FormNum_DB
+                    ),
+                    "2.0" => (
+                        reps.Master_DB.Rows20[0].RegNo_DB ?? string.Empty,
+                        reps.Master_DB.Rows20[0].Okpo_DB ?? string.Empty,
+                        reps.Master_DB.FormNum_DB
+                    ),
+                    _ => (string.Empty, string.Empty, reps.Master_DB.FormNum_DB)
+                };
+            }
+
+            Reports? baseReps = null;
+            var key = GetOrgKey(impReps);
+
+            // Сначала пробуем найти организацию в кэше этого запуска.
+            if (orgCache.TryGetValue(key, out var cachedReps))
+            {
+                baseReps = cachedReps;
+            }
+            else
+            {
+                // Если в кэше нет, пробуем найти в БД.
+                baseReps = worksheet0.Name switch
+                {
+                    "1.0" => await GetReports11FromDbEqualAsync(impReps),
+                    "2.0" => await GetReports21FromDbEqualAsync(impReps),
+                    _ => null
+                };
+
+                // Если нашли в БД, добавляем в кэш.
+                if (baseReps != null)
+                {
+                    orgCache[key] = baseReps;
+                }
+            }
 
             impReportsList.Add(impReps);
             if (baseReps is null)
             {
-                ExcelImportNewReps = true;
+                // Новая организация: используем impReps как базовую и кладём её в кэш.
                 baseReps = impReps;
+                orgCache[key] = baseReps;
             }
+
             baseReps.Master_DB.ReportChangedDate = impDateTime;
 
             BaseRepsOkpo = baseReps.Master.OkpoRep.Value;
@@ -248,6 +295,16 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
                         #endregion
                     }
+                }
+
+                if (an is "Добавить" or "Да для всех")
+                {
+                    var db = StaticConfiguration.DBModel;
+                    var dbObservable = db.DBObservableDbSet.Local.FirstOrDefault()
+                                       ?? await db.DBObservableDbSet.FirstAsync();
+
+                    baseReps.DBObservable = dbObservable;
+                    db.ReportsCollectionDbSet.Add(baseReps);
                 }
 
                 await CheckAnswer(an, baseReps, impReps, null, impRep);

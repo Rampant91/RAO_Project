@@ -91,7 +91,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             #region Add
 
             case "Да" or "Да для всех" or "Добавить":
-                if (ExcelImportNewReps) ReportsStorage.LocalReports.Reports_Collection.Add(baseReps);
                 if (!RepsWhereTitleFormCheckIsCancel.Contains((BaseRepsRegNum, BaseRepsOkpo)))
                 {
                     await CheckTitleFormAsync(baseReps, impReps, RepsWhereTitleFormCheckIsCancel);
@@ -415,10 +414,10 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             reps,
             repsList,
             r => (
-                r.Master.Rows10[0].RegNo_DB,
-                r.Master.Rows10[0].Okpo_DB,
-                r.Master.Rows10[1].RegNo_DB,
-                r.Master.Rows10[1].Okpo_DB));
+                r.Master_DB.Rows10[0].RegNo_DB,
+                r.Master_DB.Rows10[0].Okpo_DB,
+                r.Master_DB.Rows10[1].RegNo_DB,
+                r.Master_DB.Rows10[1].Okpo_DB));
     }
 
     private protected static async Task<Reports?> GetReports21FromDbEqualAsync(Reports reps)
@@ -439,10 +438,10 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             reps,
             repsList,
             r => (
-                r.Master.Rows20[0].RegNo_DB,
-                r.Master.Rows20[0].Okpo_DB,
-                r.Master.Rows20[1].RegNo_DB,
-                r.Master.Rows20[1].Okpo_DB));
+                r.Master_DB.Rows20[0].RegNo_DB,
+                r.Master_DB.Rows20[0].Okpo_DB,
+                r.Master_DB.Rows20[1].RegNo_DB,
+                r.Master_DB.Rows20[1].Okpo_DB));
     }
 
     #region FindMatchingReports
