@@ -205,6 +205,9 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
 
                 currentProgress += incProgress;
             }
+
+
+            #if DEBUG
             foreach (var organization in organizations10)
             {
                 var massBalance12 = await CountMassBalanceForm12(organization.Id);
@@ -221,6 +224,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 });
 
             }
+            #endif
 
             for (int i = 0; i < errorList.Count; i++)
             {
@@ -533,7 +537,10 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 .ThenInclude(rep => rep.Rows12)
                 .FirstOrDefault(reps => reps.Id == reportsID);
             var reportCollection = reports.Report_Collection.ToList()
-                .FindAll(rep => rep.FormNum_DB == "1.2");
+                .FindAll(rep => rep.FormNum_DB == "1.2" 
+                && DateTime.TryParse(rep.StartPeriod_DB, out var date)
+                && DateTime.TryParse(rep.EndPeriod_DB, out date));
+
             for (int i = reportCollection.Count - 1; i >= 0; i--)
             {
                 var report = reportCollection[i];
