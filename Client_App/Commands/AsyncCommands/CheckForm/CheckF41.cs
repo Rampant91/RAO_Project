@@ -294,7 +294,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         Row = $"{form41.NumberInOrder_DB}",
                         Column = $"7",
                         Value = $"{form41.NumOfFormsWithoutInventarizationInfo_DB}",
-                        Message = $"У организации №{form41.RegNo_DB} указано {form41.NumOfFormsWithoutInventarizationInfo_DB} отчетов 1.1-1.4 без инвентаризации, когда в БД их {count}"
+                        Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\"  указано {form41.NumOfFormsWithoutInventarizationInfo_DB} отчетов 1.1-1.4 без инвентаризации, когда в БД их {count}"
                     };
             else return null;
         }
@@ -349,7 +349,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         Row = $"{form41.NumberInOrder_DB}",
                         Column = $"6",
                         Value = $"{form41.NumOfFormsWithInventarizationInfo_DB}",
-                        Message = $"У организации №{form41.RegNo_DB} указано {form41.NumOfFormsWithInventarizationInfo_DB} инвентаризационных отчетов 1.1-1.4,когда в БД их {count}"
+                        Message = $"У организации  Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" указано {form41.NumOfFormsWithInventarizationInfo_DB} инвентаризационных отчетов 1.1-1.4,когда в БД их {count}"
                     };
             else return null;
         }
@@ -396,7 +396,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         Row = $"{form41.NumberInOrder_DB}",
                         Column = $"8",
                         Value = $"{form41.NumOfForms212_DB}",
-                        Message = $"У организации №{form41.RegNo_DB} указано {form41.NumOfForms212_DB} количество отчетов по форме по 2.12, когда в БД их {count}"
+                        Message = $"У организации  Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" указано {form41.NumOfForms212_DB} количество отчетов по форме по 2.12, когда в БД их {count}"
                     };
             else return null;
         }
@@ -456,7 +456,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         Row = $"{form41.NumberInOrder_DB}",
                         Column = $"-",
                         Value = $"-",
-                        Message = $"У организации №{regNo} Должен быть отчет по форме 2.12."
+                        Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" Должен быть отчет по форме 2.12."
                     };
 
             if ((organization20 != null) && organization20.Report_Collection
@@ -485,12 +485,12 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 org.RegNo == form41.RegNo_DB 
                 && org.Okpo == form41.Okpo_DB);
 
-            if (organization == null) return null; 
+            if (organization == null) return null;
 
             if (await CountMassBalanceForm12(organization.Id) > 0)
                 return new CheckError()
                 {
-                    Message = "На момент проведения инвентаризации по форме 1.1 " +
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на момент проведения инвентаризации по форме 1.1 " +
                     "присутствовали изделия из обедненного урана"
                 };
             return null;
