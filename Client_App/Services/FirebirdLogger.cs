@@ -3,15 +3,16 @@ using System.IO;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
+using Client_App.ViewModels;
 
 namespace Client_App.Services;
 
 public static class FirebirdLogger
 {
-    private static readonly string LogDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
+    private static readonly string LogDirectory = Path.Combine(BaseVM.RaoDirectory, "data", "logs");
     private static readonly Lock _lock = new();
     private static StreamWriter _logWriter;
-    private static bool _isInitialized = false;
+    private static bool _isInitialized;
 
     public static void Initialize()
     {

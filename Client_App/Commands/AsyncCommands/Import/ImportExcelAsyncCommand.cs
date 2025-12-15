@@ -90,7 +90,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             }
             readAnyExcel = true;
 
-            var timeCreate = new List<string>()
+            var timeCreate = new List<string>
             {
                 excelPackage.File.CreationTime.Day.ToString(),
                 excelPackage.File.CreationTime.Month.ToString(),

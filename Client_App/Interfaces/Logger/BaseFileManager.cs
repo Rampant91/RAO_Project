@@ -35,7 +35,7 @@ public class BaseFileManager : IFileManager
         {
             await Task.Run(() =>
             {
-                using var fileStream = (TextWriter)new StreamWriter(File.Open(path, append?FileMode.Append:FileMode.Create));
+                using TextWriter fileStream = new StreamWriter(File.Open(path, append?FileMode.Append:FileMode.Create));
                 fileStream.Write(msg);
             });
         });
