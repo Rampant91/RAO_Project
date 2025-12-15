@@ -22,6 +22,7 @@ public class NewAddRowAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         var currentPageIsLastPage = formVM.CurrentPage == formVM.TotalPages || formVM.TotalPages == 0;
         var frm = FormCreator.Create(FormType);
         frm.NumberInOrder_DB = GetNumberInOrder(Storage[Storage.FormNum_DB]);
+        frm.Report = Storage;
         var formContainRowAtStart = Storage.Rows.Count > 0;
         Storage[Storage.FormNum_DB].Add(frm);
         await Storage.SortAsync();

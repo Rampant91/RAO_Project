@@ -335,16 +335,10 @@
                     CommandParameter="category" 
                     Header="Расчёт категории"/>
                 <Separator/>
-				<MenuItem Header="Инструкции">
-					<MenuItem
-                        Command="{Binding OpenFile}"
-						CommandParameter="manual"
-                        Header="Руководство пользователя"/>
-					<MenuItem
-                        Command="{Binding OpenFile}"
-                        CommandParameter="snk"
-                        Header="Расчёт СНК"/>
-				</MenuItem>
+                <MenuItem
+                    Command="{Binding OpenFile}"
+                    CommandParameter="manual"
+                    Header="Руководство пользователя"/>
 				<Separator/>
 			    <MenuItem
                     Command="{Binding OpenFolder}"

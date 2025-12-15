@@ -986,8 +986,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                 var currentOperations = allOperations
                     .Where(x => x.OpDate >= previousInventoryDate && x.OpDate <= inventoryDate)
                     .OrderBy(x => x.OpDate)
-                    .ThenBy(x => x.RepDto.StartPeriod)
-                    .ThenBy(x => x.NumberInOrder)
+                    //.ThenBy(x => x.RepDto.StartPeriod)
+                    //.ThenBy(x => x.NumberInOrder)
                     .ToList();
 
                 var secondInventoryOperation = currentOperations
@@ -1187,7 +1187,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                         errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.InventoriedUnitReceived, firstPlusMinusOperation));
                     }
 
-                    foreach (var form in allOperations.Where(x => x.OpDate <= inventoryDate))
+                    foreach (var form in allOperationsWithoutMutuallyExclusive.Where(x => x.OpDate <= inventoryDate))
                     {
                         if (IsZeroOperation(form, formNum)
                             && !inStock
@@ -1203,8 +1203,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                     }
 
                     var lastOperationWithUnit = operationsWithoutMutuallyExclusive
-                        .OrderByDescending(x => x.OpDate)
-                        .FirstOrDefault();
+                        .OrderBy(x => x.OpDate)
+                        .LastOrDefault();
 
                     if (lastOperationWithUnit == null) continue;
 

@@ -13,6 +13,8 @@ public class SelectExecutorPopupVM : INotifyPropertyChanged
 {
     #region Constructor
 
+    public SelectExecutorPopupVM() { }
+
     public SelectExecutorPopupVM(BaseFormVM formVM)
     {
         _formVM = formVM;
@@ -57,6 +59,7 @@ public class SelectExecutorPopupVM : INotifyPropertyChanged
     }
 
     private List<ExecutorDataDTO> _executorDataCollection;
+
     public List<ExecutorDataDTO> ExecutorDataCollection => _executorDataCollection;
 
     #endregion

@@ -3,7 +3,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behaviors="using:Avalonia.Xaml.Interactions.Core"
-    xmlns:controls="clr-namespace:Client_App.Controls"
+    xmlns:controls="clr-namespace:Client_App.Views.Controls"
     xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:forms="clr-namespace:Models.Forms;assembly=Models"
@@ -54,7 +54,6 @@
 
                 <Border Classes="borderContainer">
                     <controls:SelectReportPopup
-                        Grid.Row="1"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         DataContext="{Binding SelectReportPopupVM}" />
@@ -478,6 +477,7 @@
                     SelectedItem="{Binding SelectedForm}">
                     <interactivity:Interaction.Behaviors>
                         <local:DataGridColumnWidthLoadBehavior FormNum="1.6" />
+                        <local:DataGridPointerBehavior />
                         <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
                         <local:DeselectDataGridOnClickOutsideBehavior />
                         <local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />

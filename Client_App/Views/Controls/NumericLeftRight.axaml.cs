@@ -1,103 +1,100 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml;
-using CommunityToolkit.Mvvm.Input;
 using ReactiveUI;
 using System.Windows.Input;
 
-namespace Client_App.Controls
+namespace Client_App.Views.Controls;
+
+public partial class NumericLeftRight : UserControl
 {
-    public partial class NumericLeftRight : UserControl
+    #region Property
+    // Определение StyledProperty для Value
+    public static readonly StyledProperty<int> ValueProperty =
+        AvaloniaProperty.Register<NumericLeftRight, int>(
+            nameof(Value),
+            defaultValue: 0,
+            defaultBindingMode: BindingMode.TwoWay);
+
+    public int Value
     {
-        #region Property
-        // Определение StyledProperty для Value
-        public static readonly StyledProperty<int> ValueProperty =
-            AvaloniaProperty.Register<NumericLeftRight, int>(
-                nameof(Value),
-                defaultValue: 0,
-                defaultBindingMode: BindingMode.TwoWay);
+        get => GetValue(ValueProperty);
+        set => SetValue(ValueProperty, CoerceValue(value));
+    }
 
-        public int Value
-        {
-            get => GetValue(ValueProperty);
-            set => SetValue(ValueProperty, CoerceValue(value));
-        }
+    // Свойство Minimum
+    public static readonly StyledProperty<int> MinimumProperty =
+        AvaloniaProperty.Register<NumericLeftRight, int>(
+            nameof(Minimum),
+            defaultValue: int.MinValue,
+            defaultBindingMode: BindingMode.TwoWay);
 
-        // Свойство Minimum
-        public static readonly StyledProperty<int> MinimumProperty =
-            AvaloniaProperty.Register<NumericLeftRight, int>(
-                nameof(Minimum),
-                defaultValue: int.MinValue,
-                defaultBindingMode: BindingMode.TwoWay);
+    public int Minimum
+    {
+        get => GetValue(MinimumProperty);
+        set => SetValue(MinimumProperty, value);
+    }
 
-        public int Minimum
-        {
-            get => GetValue(MinimumProperty);
-            set => SetValue(MinimumProperty, value);
-        }
+    // Свойство Maximum
+    public static readonly StyledProperty<int> MaximumProperty =
+        AvaloniaProperty.Register<NumericLeftRight, int>(
+            nameof(Maximum),
+            defaultValue: int.MaxValue,
+            defaultBindingMode: BindingMode.TwoWay);
 
-        // Свойство Maximum
-        public static readonly StyledProperty<int> MaximumProperty =
-            AvaloniaProperty.Register<NumericLeftRight, int>(
-                nameof(Maximum),
-                defaultValue: int.MaxValue,
-                defaultBindingMode: BindingMode.TwoWay);
+    public int Maximum
+    {
+        get => GetValue(MaximumProperty);
+        set => SetValue(MaximumProperty, value);
+    }
 
-        public int Maximum
-        {
-            get => GetValue(MaximumProperty);
-            set => SetValue(MaximumProperty, value);
-        }
+    // Свойство Increment
+    public static readonly StyledProperty<int> IncrementProperty =
+        AvaloniaProperty.Register<NumericLeftRight, int>(
+            nameof(Increment),
+            defaultValue: 1);
 
-        // Свойство Increment
-        public static readonly StyledProperty<int> IncrementProperty =
-            AvaloniaProperty.Register<NumericLeftRight, int>(
-                nameof(Increment),
-                defaultValue: 1);
+    public int Increment
+    {
+        get => GetValue(IncrementProperty);
+        set => SetValue(IncrementProperty, value);
+    }
 
-        public int Increment
-        {
-            get => GetValue(IncrementProperty);
-            set => SetValue(IncrementProperty, value);
-        }
+    #endregion
 
-        #endregion
-
-        #region Commands
-        public ICommand Decrease { get; set; }
-        public ICommand Increase { get; set; }
+    #region Commands
+    public ICommand Decrease { get; set; }
+    public ICommand Increase { get; set; }
         
-        #endregion
+    #endregion
 
-        public NumericLeftRight()
+    public NumericLeftRight()
+    {
+        Decrease = ReactiveCommand.Create(() =>
         {
-            Decrease = ReactiveCommand.Create(() =>
-            {
-                Value -= Increment;
-            });
+            Value -= Increment;
+        });
 
-            Increase = ReactiveCommand.Create(() =>
-            {
-                Value += Increment;
-            });
-            InitializeComponent();
-        }
-
-        private void InitializeComponent()
+        Increase = ReactiveCommand.Create(() =>
         {
-            AvaloniaXamlLoader.Load(this);
+            Value += Increment;
+        });
+        InitializeComponent();
+    }
 
-        }
-        // Метод для ограничения значения в пределах Minimum/Maximum
-        private int CoerceValue(int value)
-        {
-            if (value < Minimum)
-                return Minimum;
-            if (value > Maximum)
-                return Maximum;
-            return value;
-        }
+    private void InitializeComponent()
+    {
+        AvaloniaXamlLoader.Load(this);
+
+    }
+    // Метод для ограничения значения в пределах Minimum/Maximum
+    private int CoerceValue(int value)
+    {
+        if (value < Minimum)
+            return Minimum;
+        if (value > Maximum)
+            return Maximum;
+        return value;
     }
 }

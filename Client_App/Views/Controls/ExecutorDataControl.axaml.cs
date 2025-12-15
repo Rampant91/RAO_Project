@@ -1,14 +1,9 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Data;
 using Avalonia.Markup.Xaml;
-using Client_App.Controls;
 using Client_App.ViewModels.Controls;
 using Models.JSON.ExecutorData;
-using System.Diagnostics;
-using System.Numerics;
 
-namespace Client_App.Controls;
+namespace Client_App.Views.Controls;
 
 public partial class ExecutorDataControl : UserControl
 {
@@ -49,7 +44,4 @@ public partial class ExecutorDataControl : UserControl
         AvaloniaXamlLoader.Load(this);
 
     }
-
 }
-
-

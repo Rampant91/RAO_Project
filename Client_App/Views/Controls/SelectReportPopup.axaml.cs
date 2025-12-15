@@ -10,7 +10,7 @@ using Models.Collections;
 using Models.Interfaces;
 using System.Collections.Generic;
 
-namespace Client_App.Controls;
+namespace Client_App.Views.Controls;
 
 public partial class SelectReportPopup : UserControl
 {

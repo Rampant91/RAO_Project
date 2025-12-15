@@ -31,10 +31,9 @@ public class NewAddRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         if (owner == null) return;
 
         var dialog = new AskIntMessageWindow(new AskIntMessageVM("Введите количество строк"));
-        int? rowCount = await dialog.ShowDialog<int?>(owner); 
+        var rowCount = await dialog.ShowDialog<int?>(owner);
 
 
-        if (rowCount == null) return;
         if (rowCount > 0)
         {
             var number = GetNumberInOrder(Storage.Rows);
@@ -43,6 +42,7 @@ public class NewAddRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             {
                 var frm = FormCreator.Create(FormType);
                 frm.NumberInOrder_DB = number;
+                frm.Report = Storage;
                 lst.Add(frm);
                 number++;
             }

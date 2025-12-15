@@ -324,7 +324,9 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
         AnyTaskProgressBarVM progressBarVM, ExcelPackage excelPackage, CancellationTokenSource cts)
     {
         double progressBarDoubleValue = progressBarVM.ValueBar;
-        foreach (var reps in repsList.OrderBy(x => x.Master_DB.RegNoRep.Value))
+        foreach (var reps in repsList.OrderBy(x => x.Master_DB.RegNoRep.Value)
+            //.Where(x => x.Master_DB.RegNoRep.Value is "12006")
+            )
         {
             var repsWithRows = new Reports { Master = reps.Master };
             foreach (var rep in reps.Report_Collection

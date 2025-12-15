@@ -304,9 +304,53 @@ public abstract class CheckBase : BaseAsyncCommand
 
     #endregion
 
-    #region CustomComparator
+    #region CustomComparators
 
-    //  Performance realisation for Compare with Trim()
+    #region CustomNullExponentialStringWithTrimComparer
+
+    /// <summary>
+    /// Кроме простого сравнения ещё и преобразует строку в экспоненциальную форму с 3 знаками после запятой.
+    /// </summary>
+    private protected class CustomNullExponentialStringWithTrimComparer : IComparer<string>
+    {
+        public int Compare(string? x, string? y)
+        {
+            if (ReferenceEquals(x, y))
+                return 0;
+            if (x is null)
+                return -1;
+            if (y is null)
+                return 1;
+
+            // Memory allocation free trimming
+            var span1 = x.AsSpan().Trim();
+            var span2 = y.AsSpan().Trim();
+
+            if (span1.CompareTo(span2, StringComparison.OrdinalIgnoreCase) is 0)
+                return 0;
+
+            x = ConvertStringToExponential(x);
+            y = ConvertStringToExponential(y);
+
+            x = double.TryParse(x, out var doubleValueX)
+                ? doubleValueX.ToString("0.00######################################################e+00", CultureInfo.CreateSpecificCulture("ru-RU"))
+                : x;
+
+            y = double.TryParse(y, out var doubleValueY)
+                ? doubleValueY.ToString("0.00######################################################e+00", CultureInfo.CreateSpecificCulture("ru-RU"))
+                : y;
+
+            return string.Compare(x, y, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    #endregion
+
+    #region CustomNullStringWithTrimComparer
+
+    /// <summary>
+    /// Performance realisation for Compare with Trim()
+    /// </summary>
     private protected class CustomNullStringWithTrimComparer : IComparer<string>
     {
         public int Compare(string? x, string? y)
@@ -323,13 +367,10 @@ public abstract class CheckBase : BaseAsyncCommand
             var span2 = y.AsSpan().Trim();
 
             return span1.CompareTo(span2, StringComparison.OrdinalIgnoreCase);
-
-            // Old realisation
-            //var strA = ReplaceNullAndTrim(x).ToLower();
-            //var strB = ReplaceNullAndTrim(y).ToLower();
-            //return string.CompareOrdinal(strA, strB);
         }
     }
+
+    #endregion
 
     #endregion
 

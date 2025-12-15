@@ -492,8 +492,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         ChangeReports = new ChangeReportsAsyncCommand();
         NewChangeReports = new NewChangeReportsAsyncCommand();
         CheckFormFromMain = new CheckFormFromMainAsyncCommand();
-        DeleteForm = new DeleteFormAsyncCommand();
         NewDeleteForm = new NewDeleteFormAsyncCommand();
+        DeleteForm = new DeleteReportAsyncCommand();
         DeleteReports = new DeleteReportsAsyncCommand();
         ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand();
         ImportExcel = new ImportExcelAsyncCommand();

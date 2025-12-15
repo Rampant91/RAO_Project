@@ -4,6 +4,7 @@ using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.ViewModels;
 using Client_App.Views;
+using Client_App.Logging;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;
@@ -61,9 +62,25 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
         try
         {
+            var enumerable = parameter as IEnumerable;
+            var reps = enumerable!.Cast<Reports>().First();
+            var masterRep = reps.Master_DB;
+
             var db = StaticConfiguration.DBModel;
-            db.ReportCollectionDbSet.Remove(reports.Master_DB);
-            db.ReportsCollectionDbSet.Remove(reports);
+
+            await ReportDeletionLogger.LogDeletionAsync(masterRep);
+
+            foreach (var item in reps.Report_Collection)
+            {
+                var report = (Report)item;
+                db.ReportCollectionDbSet.Remove(report);
+                await ReportDeletionLogger.LogDeletionAsync(report);
+            }
+
+            db.ReportCollectionDbSet.Remove(masterRep);
+            
+
+            db.ReportsCollectionDbSet.Remove(reps);
             await db.SaveChangesAsync();
 
             await ProcessDataBaseFillEmpty(db);

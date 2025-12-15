@@ -1,14 +1,19 @@
 ﻿using System;
+using System.Linq;
 using Client_App.ViewModels;
 using Models.Collections;
 using Models.DBRealization;
 using System.Threading.Tasks;
+using Avalonia.Controls;
+using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
 using Client_App.ViewModels.Forms.Forms4;
+using MessageBox.Avalonia.DTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace Client_App.Commands.AsyncCommands.Save;
 
@@ -100,6 +105,71 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
+        //Если это титульная форма, то разрешаем сохранение только если организаций с такими ОКПО + рег.№ отсутствуют в базе.
+        if (_formType is "1.0" or "2.0")
+        {
+            var dbm = StaticConfiguration.DBModel;
+            var window = Desktop.Windows.FirstOrDefault(x => x.Name == _formType);
+
+            var reportsAlreadyExist = _formType switch
+            {
+                "1.0" => dbm.ReportsCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Include(x => x.DBObservable)
+                    .Include(reps => reps.Master_DB)
+                    .ThenInclude(report => report.Rows10)
+                    .Where(reps => reps.DBObservable != null)
+                    .ToList()
+                    .Any(x => x.Master_DB.RegNoRep.Value == _form10VM.Storage.RegNoRep.Value 
+                              && !string.IsNullOrWhiteSpace(_form10VM.Storage.RegNoRep.Value)
+                              && x.Master_DB.OkpoRep.Value == _form10VM.Storage.OkpoRep.Value
+                              && !string.IsNullOrWhiteSpace(_form10VM.Storage.OkpoRep.Value)
+                              && x.Master_DB.Id != _form10VM.Storage.Id),
+
+                "2.0" => dbm.ReportsCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Include(x => x.DBObservable)
+                    .Include(reps => reps.Master_DB)
+                    .ThenInclude(report => report.Rows20)
+                    .Where(reps => reps.DBObservable != null)
+                    .ToList()
+                    .Any(x => x.Master_DB.RegNoRep.Value == _form20VM.Storage.RegNoRep.Value
+                              && !string.IsNullOrWhiteSpace(_form20VM.Storage.RegNoRep.Value)
+                              && x.Master_DB.OkpoRep.Value == _form20VM.Storage.OkpoRep.Value
+                              && !string.IsNullOrWhiteSpace(_form20VM.Storage.OkpoRep.Value)
+                              && x.Master_DB.Id != _form20VM.Storage.Id),
+
+                _ => false
+            };
+
+            if (reportsAlreadyExist)
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = "Ошибка при сохранении титульного листа организации",
+                        ContentHeader = "Ошибка",
+                        ContentMessage =
+                            $"Не удалось сохранить изменения в титульном листе организации, " +
+                            $"поскольку организация с данными ОКПО и рег.№ уже существует в базе данных. " +
+                            $"Убедитесь в правильности заполнения ОКПО и рег.№.",
+                        MinWidth = 400,
+                        MaxWidth = 600,
+                        MinHeight = 150,
+                        MaxHeight = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(window ?? Desktop.MainWindow));
+
+                return;
+            }
+        }
+
         if (VM.DBO != null)
         {
             var tmp = new Reports { Master = Storage };

@@ -4,10 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Client_App.Controls.SelectReportPopup">
-	<UserControl.Resources>
-		<converter:LogicalNotConverter x:Key="LogicalNotConverter"/>
-	</UserControl.Resources>
+             x:Class="Client_App.Views.Controls.SelectReportPopup">
 	
 	<StackPanel>
 		<Button Command="{Binding SwitchNextReportCommand}"

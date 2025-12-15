@@ -193,10 +193,11 @@ public abstract class CheckF17 : CheckBase
     //Наличие строк дубликатов
     private static List<CheckError> Check_002(List<Form17> forms)
     {
-        List<CheckError> result = new();
-        HashSet<int> duplicatesLinesSet = new();
-        List<HashSet<int>> duplicatesGroupsSet = new();
+        List<CheckError> result = [];
+        HashSet<int> duplicatesLinesSet = [];
+        List<HashSet<int>> duplicatesGroupsSet = [];
         var comparator = new CustomNullStringWithTrimComparer();
+        var exponentialComparator = new CustomNullExponentialStringWithTrimComparer();
         for (var i = 0; i < forms.Count; i++)
         {
             var currentForm = forms[i];
@@ -219,10 +220,10 @@ public abstract class CheckF17 : CheckBase
                                   && comparator.Compare(formToCompare.PackNumber_DB, currentForm.PackNumber_DB) == 0
                                   && comparator.Compare(formToCompare.FormingDate_DB, currentForm.FormingDate_DB) == 0
                                   && comparator.Compare(formToCompare.PassportNumber_DB, currentForm.PassportNumber_DB) == 0
-                                  && comparator.Compare(formToCompare.Volume_DB, currentForm.Volume_DB) == 0
-                                  && comparator.Compare(formToCompare.Mass_DB, currentForm.Mass_DB) == 0
+                                  && exponentialComparator.Compare(formToCompare.Volume_DB, currentForm.Volume_DB) == 0
+                                  && exponentialComparator.Compare(formToCompare.Mass_DB, currentForm.Mass_DB) == 0
                                   && comparator.Compare(formToCompare.Radionuclids_DB, currentForm.Radionuclids_DB) == 0
-                                  && comparator.Compare(formToCompare.SpecificActivity_DB, currentForm.SpecificActivity_DB) == 0
+                                  && exponentialComparator.Compare(formToCompare.SpecificActivity_DB, currentForm.SpecificActivity_DB) == 0
                                   && formToCompare.DocumentVid_DB == currentForm.DocumentVid_DB
                                   && comparator.Compare(formToCompare.DocumentNumber_DB, currentForm.DocumentNumber_DB) == 0
                                   && comparator.Compare(formToCompare.DocumentDate_DB, currentForm.DocumentDate_DB) == 0
@@ -232,13 +233,13 @@ public abstract class CheckF17 : CheckBase
                                   && comparator.Compare(formToCompare.StoragePlaceCode_DB, currentForm.StoragePlaceCode_DB) == 0
                                   && comparator.Compare(formToCompare.CodeRAO_DB, currentForm.CodeRAO_DB) == 0
                                   && comparator.Compare(formToCompare.StatusRAO_DB, currentForm.StatusRAO_DB) == 0
-                                  && comparator.Compare(formToCompare.VolumeOutOfPack_DB, currentForm.VolumeOutOfPack_DB) == 0
-                                  && comparator.Compare(formToCompare.MassOutOfPack_DB, currentForm.MassOutOfPack_DB) == 0
+                                  && exponentialComparator.Compare(formToCompare.VolumeOutOfPack_DB, currentForm.VolumeOutOfPack_DB) == 0
+                                  && exponentialComparator.Compare(formToCompare.MassOutOfPack_DB, currentForm.MassOutOfPack_DB) == 0
                                   && comparator.Compare(formToCompare.Quantity_DB, currentForm.Quantity_DB) == 0
-                                  && comparator.Compare(formToCompare.TritiumActivity_DB, currentForm.TritiumActivity_DB) == 0
-                                  && comparator.Compare(formToCompare.BetaGammaActivity_DB, currentForm.BetaGammaActivity_DB) == 0
-                                  && comparator.Compare(formToCompare.AlphaActivity_DB, currentForm.AlphaActivity_DB) == 0
-                                  && comparator.Compare(formToCompare.TransuraniumActivity_DB, currentForm.TransuraniumActivity_DB) == 0
+                                  && exponentialComparator.Compare(formToCompare.TritiumActivity_DB, currentForm.TritiumActivity_DB) == 0
+                                  && exponentialComparator.Compare(formToCompare.BetaGammaActivity_DB, currentForm.BetaGammaActivity_DB) == 0
+                                  && exponentialComparator.Compare(formToCompare.AlphaActivity_DB, currentForm.AlphaActivity_DB) == 0
+                                  && exponentialComparator.Compare(formToCompare.TransuraniumActivity_DB, currentForm.TransuraniumActivity_DB) == 0
                                   && comparator.Compare(formToCompare.RefineOrSortRAOCode_DB, currentForm.RefineOrSortRAOCode_DB) == 0
                                   && comparator.Compare(formToCompare.Subsidy_DB, currentForm.Subsidy_DB) == 0
                                   && comparator.Compare(formToCompare.FcpNumber_DB, currentForm.FcpNumber_DB) == 0;
@@ -473,7 +474,8 @@ public abstract class CheckF17 : CheckBase
                 Value = opDateStr,
                 Message = "Дата операции не должна совпадать с датой начала периода, " +
                           "если имеется хотя бы один более ранний отчёт по данной форме. " +
-                          "См. приказ №1/1628-П раздел 5.2."
+                          "См. приказ №1/1628-П раздел 5.2.",
+                IsCritical = true
             });
             return result;
         }
@@ -3159,26 +3161,6 @@ public abstract class CheckF17 : CheckBase
                 Message = "Заполните сведения о коде переработки/сортировки. В случае, если при кондиционировании ничего не использовалось, " +
                           "укажите символ «-» без кавычек."
             });
-        }
-        foreach (var currentLine in lines)
-        {
-            if (currentLine == lines[0]) continue;
-            var currentForm = forms[currentLine];
-            if (forms[lines[0]].OperationCode_DB is "55"
-                && forms[lines[0]].RefineOrSortRAOCode_DB is not ("" or "-")
-                && currentForm.RefineOrSortRAOCode_DB is "" or "-")
-            {
-                result.Add(new CheckError
-                {
-                    FormNum = "form_17",
-                    Row = forms[currentLine].NumberInOrder_DB.ToString(),
-                    Column = "RefineOrSortRAOCode_DB",
-                    Value = forms[currentLine].RefineOrSortRAOCode_DB,
-                    Message = $"Для головной строчки ({lines[0] + 1}) контейнера, указан код переработки {forms[lines[0]].RefineOrSortRAOCode_DB}, " +
-                              $"а для строчки {currentLine + 1} код переработки не указан. " +
-                              "Проверьте правильность заполнения кода переработки."
-                });
-            }
         }
         return result;
     }

@@ -5,7 +5,7 @@
 			 xmlns:local="using:Client_App.Behaviors"
 			 xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Client_App.Controls.NumericLeftRight">
+             x:Class="Client_App.Views.Controls.NumericLeftRight">
 	<Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto">
 		<Button Grid.Column="0" 
 					  Classes="DecreasePart" 
