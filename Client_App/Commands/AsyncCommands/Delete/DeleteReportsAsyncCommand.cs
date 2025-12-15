@@ -62,15 +62,13 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
         try
         {
-            var enumerable = parameter as IEnumerable;
-            var reps = enumerable!.Cast<Reports>().First();
-            var masterRep = reps.Master_DB;
+            var masterRep = reports.Master_DB;
 
             var db = StaticConfiguration.DBModel;
 
             await ReportDeletionLogger.LogDeletionAsync(masterRep);
 
-            foreach (var item in reps.Report_Collection)
+            foreach (var item in reports.Report_Collection)
             {
                 var report = (Report)item;
                 db.ReportCollectionDbSet.Remove(report);
@@ -80,7 +78,7 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
             db.ReportCollectionDbSet.Remove(masterRep);
             
 
-            db.ReportsCollectionDbSet.Remove(reps);
+            db.ReportsCollectionDbSet.Remove(reports);
             await db.SaveChangesAsync();
 
             await ProcessDataBaseFillEmpty(db);

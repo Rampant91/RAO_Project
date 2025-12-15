@@ -5,7 +5,9 @@
 			 xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Client_App.Views.Controls.SelectReportPopup">
-	
+	<UserControl.Resources>
+		<converter:LogicalNotConverter x:Key="LogicalNotConverter"/>
+	</UserControl.Resources>
 	<StackPanel>
 		<Button Command="{Binding SwitchNextReportCommand}"
 				Grid.Row="0"
