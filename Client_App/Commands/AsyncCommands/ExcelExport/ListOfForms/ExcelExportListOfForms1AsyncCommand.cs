@@ -19,7 +19,7 @@ using static Client_App.Resources.StaticStringMethods;
 namespace Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
 
 /// <summary>
-/// Excel -> Список форм 1.
+/// Аналитика -> Список форм 1.
 /// </summary>
 public class ExcelExportListOfForms1AsyncCommand : ExcelExportListOfFormsBaseAsyncCommand
 {

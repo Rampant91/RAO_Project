@@ -19,7 +19,7 @@ using Client_App.ViewModels.ProgressBar;
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
 /// <summary>
-/// Выгрузка в .xlsx СНК на дату.
+/// Аналитика -> Выбранная организация -> СНК на дату.
 /// </summary>
 public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
 {

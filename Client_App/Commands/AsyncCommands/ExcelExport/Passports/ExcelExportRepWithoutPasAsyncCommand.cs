@@ -19,7 +19,7 @@ using static Client_App.Resources.StaticStringMethods;
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 
 /// <summary>
-/// Excel -> Паспорта -> Отчеты без паспортов.
+/// Аналитика -> Паспорта -> Отчеты без паспортов.
 /// </summary>
 public partial class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncCommand
 {

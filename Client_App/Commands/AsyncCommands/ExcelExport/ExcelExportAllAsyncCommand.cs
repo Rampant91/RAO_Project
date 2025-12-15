@@ -22,7 +22,7 @@ using static Client_App.Resources.StaticStringMethods;
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 /// <summary>
-/// Excel -> Все формы и Excel -> Выбранная организация -> Все формы.
+/// Аналитика -> Все формы и Аналитика -> Выбранная организация -> Все формы.
 /// </summary>
 public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
 {

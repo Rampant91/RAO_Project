@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 namespace Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
 
 /// <summary>
-/// Excel -> Список форм 2.
+/// Аналитика -> Список форм 2.
 /// </summary>
 public class ExcelExportListOfForms2AsyncCommand : ExcelExportListOfFormsBaseAsyncCommand
 {

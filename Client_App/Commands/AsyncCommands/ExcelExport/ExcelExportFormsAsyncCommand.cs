@@ -24,7 +24,7 @@ using OfficeOpenXml;
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 /// <summary>
-/// Excel -> Формы 1.x, 2.x и Excel -> Выбранная организация -> Формы 1.x, 2.x.
+/// Аналитика -> Формы 1.x, 2.x и Excel -> Выбранная организация -> Формы 1.x, 2.x.
 /// </summary>
 public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
 {

@@ -1951,6 +1951,7 @@ public class Report : IKey, IDataGridColumn
                 case "1.0":
                 {
                     RamAccess<string> tmp = null;
+                    if (Rows10.Count < 2) return tmp;
                     if ((Rows10[1].RegNo.Value != "" || Rows10[1].Okpo_DB == "-") && Rows10[1].Okpo.Value != "")
                     {
                         tmp = Rows10[1].RegNo;
@@ -1965,7 +1966,8 @@ public class Report : IKey, IDataGridColumn
                 }
                 case "2.0":
                 {
-                    RamAccess<string> tmp;
+                    RamAccess<string> tmp = null;
+                    if (Rows20.Count < 2) return tmp;
                     if ((Rows20[1].RegNo.Value != "" || Rows20[1].Okpo_DB == "-") && Rows20[1].Okpo.Value != "")
                     {
                         tmp = Rows20[1].RegNo;

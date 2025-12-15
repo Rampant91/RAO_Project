@@ -13,6 +13,9 @@ using MessageBox.Avalonia.DTO;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
 
+/// <summary>
+/// Базовый абстрактный класс выгрузки списка форм в .xlsx.
+/// </summary>
 public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCommand
 {
     #region GetReportsList

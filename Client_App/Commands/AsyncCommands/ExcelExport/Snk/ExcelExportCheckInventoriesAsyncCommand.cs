@@ -25,7 +25,7 @@ using CustomSnkRadionuclidsEqualityComparer = Client_App.Resources.CustomCompare
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
 /// <summary>
-/// Excel -> Проверка инвентаризаций.
+/// Аналитика -> Проверка инвентаризаций.
 /// </summary>
 public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCommand
 {

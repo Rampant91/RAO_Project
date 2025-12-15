@@ -19,7 +19,7 @@ using OfficeOpenXml;
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 /// <summary>
-/// Excel -> Список организаций.
+/// Аналитика -> Список организаций.
 /// </summary>
 public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
 {

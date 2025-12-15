@@ -22,7 +22,7 @@ using static Client_App.Resources.StaticStringMethods;
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
 /// <summary>
-/// Excel -> Проверка последней инвентаризации
+/// Аналитика -> Проверка последней инвентаризации
 /// </summary>
 public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExportSnkBaseAsyncCommand
 {

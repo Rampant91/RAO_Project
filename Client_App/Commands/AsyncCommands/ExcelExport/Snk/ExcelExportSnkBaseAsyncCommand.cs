@@ -22,7 +22,7 @@ using CustomSnkRadionuclidsEqualityComparer = Client_App.Resources.CustomCompare
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
 /// <summary>
-/// Базовый класс выгрузки СНК в Excel.
+/// Базовый класс выгрузки СНК на дату в .xlsx.
 /// </summary>
 public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCommand
 {

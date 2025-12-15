@@ -19,7 +19,7 @@ using Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 /// <summary>
-/// Excel -> Список исполнителей.
+/// Аналитика -> Список исполнителей.
 /// </summary>
 public class ExcelExportExecutorsAsyncCommand : ExcelExportListOfFormsBaseAsyncCommand
 {

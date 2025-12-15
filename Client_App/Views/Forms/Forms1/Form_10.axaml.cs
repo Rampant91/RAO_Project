@@ -64,11 +64,12 @@ public partial class Form_10 : BaseWindow<Form_10VM>
             .AsSplitQuery()
             .AsQueryable()
             .Include(x => x.DBObservable)
-            .Include(reps => reps.Master_DB)
-            .ThenInclude(report => report.Rows10)
+            .Include(reps => reps.Master_DB).ThenInclude(report => report.Rows10)
+            .Include(reps => reps.Master_DB).ThenInclude(report => report.Rows20)
             .Where(reps => reps.DBObservable != null)
             .ToList()
-            .Any(x => x.Master_DB.RegNoRep.Value == _vm.Storage.RegNoRep.Value
+            .Any(x => x.Master_DB.FormNum_DB == "1.0"
+                      && x.Master_DB.RegNoRep.Value == _vm.Storage.RegNoRep.Value
                       && !string.IsNullOrWhiteSpace(_vm.Storage.RegNoRep.Value)
                       && x.Master_DB.OkpoRep.Value == _vm.Storage.OkpoRep.Value
                       && !string.IsNullOrWhiteSpace(_vm.Storage.OkpoRep.Value)

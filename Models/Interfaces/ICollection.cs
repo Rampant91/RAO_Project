@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace Models.Interfaces;
 
-public interface IKeyCollection
+public interface IKeyCollection : IEnumerable
 {
     void Add<T1>(T1 obj) where T1 : class, IKey;
     void Remove<T1>(T1 obj) where T1 : class, IKey;

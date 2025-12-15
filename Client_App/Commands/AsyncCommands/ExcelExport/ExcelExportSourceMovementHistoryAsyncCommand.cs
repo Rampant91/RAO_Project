@@ -18,7 +18,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using static Client_App.Resources.StaticStringMethods;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 

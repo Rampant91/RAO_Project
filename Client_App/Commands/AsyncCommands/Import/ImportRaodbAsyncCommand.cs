@@ -17,75 +17,29 @@ using Client_App.ViewModels;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
-//  Импорт -> Из RAODB
-public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyncCommand
+/// <summary>
+/// Импорт -> Из RAODB
+/// </summary>
+public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 {
     #region AsyncExecute
 
     public override async Task AsyncExecute(object? parameter)
     {
-        RepsWhereTitleFormCheckIsCancel.Clear();
-        IsFirstLogLine = true;
-        CurrentLogLine = 1;
-        string[] extensions = ["raodb", "RAODB"];
-        var answer = await GetSelectedFilesFromDialog("RAODB", extensions);
+        var answer = await InitializeImportProcess();
         if (answer is null) return;
-        SkipNewOrg = false;
-        SkipInter = false;
-        SkipLess = false;
-        SkipNew = false;
-        SkipReplace = false;
-        HasMultipleReport = false;
-        AtLeastOneImportDone = false;
 
         var countReadFiles = answer.Length;
-
         var impReportsList = new List<Reports>();
-        foreach (var path in answer) // Для каждого импортируемого файла
+
+        //Для каждого импортируемого файла
+        foreach (var path in answer)
         {
             if (path == "") continue;
-            var count = 0;
-            string? tmpFile;
-            do
+            
+            var reportsCollection = await ProcessImportFile(path);
+            if (reportsCollection is null) 
             {
-                tmpFile = Path.Combine(BaseVM.TmpDirectory, $"file_imp_{count++}.raodb");
-            } while (File.Exists(tmpFile));
-
-            TmpImpFilePath = tmpFile;
-            SourceFile = new FileInfo(path);
-            SourceFile.CopyTo(TmpImpFilePath, true);
-
-            var reportsCollection = new List<Reports>();
-            var fileIsCorrupted = false;
-            try
-            {
-                reportsCollection = await GetReportsFromDataBase(TmpImpFilePath);
-            }
-            catch
-            {
-                fileIsCorrupted = true;
-            }
-
-            if (fileIsCorrupted || reportsCollection.Count == 0)
-            {
-                #region MessageFailedToReadFile
-
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Импорт из .raodb",
-                        ContentHeader = "Ошибка",
-                        ContentMessage =
-                            $"Не удалось прочесть файл {path}," +
-                            $"{Environment.NewLine}файл поврежден или не содержит данных.",
-                        MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(Desktop.MainWindow));
-
-                #endregion
-
                 countReadFiles--;
                 continue;
             }
@@ -95,208 +49,369 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                 HasMultipleReport = reportsCollection.Sum(x => x.Report_Collection.Count) > 1 || answer.Length > 1;
             }
 
-            foreach (var impReps in reportsCollection) // Для каждой импортируемой организации
-            {
-                var dateTime = DateTime.Now;
-
-                if (impReps.Master_DB.FormNum_DB is not ("1.0" or "2.0")) continue;
-
-                impReportsList.Add(impReps);
-                await impReps.SortAsync();
-                await RestoreReportsOrders(impReps);
-                if (impReps.Master.Rows10.Count != 0)
-                {
-                    impReps.Master_DB.ReportChangedDate = dateTime;
-                    impReps.Master.Rows10[1].RegNo_DB = impReps.Master.Rows10[0].RegNo_DB;
-                }
-
-                if (impReps.Master.Rows20.Count != 0)
-                {
-                    impReps.Master_DB.ReportChangedDate = dateTime;
-                    impReps.Master.Rows20[1].RegNo_DB = impReps.Master.Rows20[0].RegNo_DB;
-                }
-
-                var baseReps11 = await GetReports11FromDbEqualAsync(impReps);
-                var baseReps21 = await GetReports21FromDbEqualAsync(impReps);
-
-                FillEmptyRegNo(ref baseReps11);
-                FillEmptyRegNo(ref baseReps21);
-                impReps.CleanIds();
-                ProcessIfNoteOrder0(impReps);
-
-                ImpRepFormCount = impReps.Report_Collection.Count;
-                ImpRepFormNum = impReps.Master.FormNum_DB;
-                BaseRepsOkpo = impReps.Master.OkpoRep?.Value ?? "";
-                BaseRepsRegNum = impReps.Master.RegNoRep?.Value ?? "";
-                BaseRepsShortName = impReps.Master.ShortJurLicoRep.Value;
-
-                foreach (var key in impReps.Report_Collection)
-                {
-                    var report = (Report)key;
-                    report.ReportChangedDate = dateTime;
-                }
-
-                var impRepsReportList = impReps.Report_Collection.ToList();
-                if (baseReps11 != null)
-                {
-                    await ProcessIfHasReports11(baseReps11, impReps, impRepsReportList);
-                }
-                else if (baseReps21 != null)
-                {
-                    await ProcessIfHasReports21(baseReps21, impReps, impRepsReportList);
-                }
-                else if (baseReps11 == null && baseReps21 == null)
-                {
-                    #region AddNewOrg
-
-                    var an = "Добавить";
-                    if (!SkipNewOrg)
-                    {
-                        if (answer.Length > 1 || reportsCollection.Count > 1)
-                        {
-                            #region MessageNewOrg
-
-                            an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                                {
-                                    ButtonDefinitions =
-                                    [
-                                        new ButtonDefinition { Name = "Добавить", IsDefault = true },
-                                        new ButtonDefinition { Name = "Да для всех" },
-                                        new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
-                                    ],
-                                    ContentTitle = "Импорт из .raodb",
-                                    ContentHeader = "Уведомление",
-                                    ContentMessage =
-                                        $"Будет добавлена новая организация ({ImpRepFormNum}) содержащая {ImpRepFormCount} форм отчетности."
-                                        + $"{Environment.NewLine}" 
-                                        + $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" 
-                                        + $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" 
-                                        + $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" 
-                                        + $"{Environment.NewLine}" 
-                                        + $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " 
-                                        + $"{Environment.NewLine}импортировать все новые организации.",
-                                    MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                })
-                                .ShowDialog(Desktop.MainWindow));
-
-                            #endregion
-
-                            if (an is "Да для всех") SkipNewOrg = true;
-                        }
-                        else
-                        {
-                            #region MessageNewOrg
-
-                            an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                                {
-                                    ButtonDefinitions =
-                                    [
-                                        new ButtonDefinition { Name = "Добавить", IsDefault = true },
-                                        new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
-                                    ],
-                                    ContentTitle = "Импорт из .raodb",
-                                    ContentHeader = "Уведомление",
-                                    ContentMessage = $"Будет добавлена новая организация ({ImpRepFormNum}) "
-                                                     + $"содержащая {ImpRepFormCount} форм отчетности."
-                                                     + $"{Environment.NewLine}" 
-                                                     + $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" 
-                                                     + $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" 
-                                                     + $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
-                                    MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                })
-                                .ShowDialog(Desktop.MainWindow));
-
-                            #endregion
-                        }
-                    }
-
-                    if (an is "Добавить" or "Да для всех")
-                    {
-                        var db = StaticConfiguration.DBModel;
-                        var dbObservable = db.DBObservableDbSet.Local.FirstOrDefault() 
-                                           ?? await db.DBObservableDbSet.FirstAsync();
-
-                        impReps.DBObservable = dbObservable;
-                        db.ReportsCollectionDbSet.Add(impReps);
-
-                        AtLeastOneImportDone = true;
-
-                        #region LoggerImport
-
-                        var sortedRepList = impReps.Report_Collection
-                            .OrderBy(x => x.FormNum_DB)
-                            .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
-                            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
-                            .ToList();
-                        foreach (var rep in sortedRepList)
-                        {
-                            ImpRepCorNum = rep.CorrectionNumber_DB;
-                            ImpRepFormCount = rep.Rows.Count;
-                            ImpRepFormNum = rep.FormNum_DB;
-                            ImpRepStartPeriod = rep.StartPeriod_DB;
-                            ImpRepEndPeriod = rep.EndPeriod_DB;
-                            Act = "\t\t\t";
-                            LoggerImportDTO = new LoggerImportDTO
-                            {
-                                Act = Act,
-                                CorNum = ImpRepCorNum,
-                                CurrentLogLine = CurrentLogLine,
-                                EndPeriod = ImpRepEndPeriod,
-                                FormCount = ImpRepFormCount,
-                                FormNum = ImpRepFormNum,
-                                StartPeriod = ImpRepStartPeriod,
-                                Okpo = BaseRepsOkpo,
-                                OperationDate = OperationDate,
-                                RegNum = BaseRepsRegNum,
-                                ShortName = BaseRepsShortName,
-                                SourceFileFullPath = SourceFile!.FullName,
-                                Year = ImpRepYear
-                            };
-                            ServiceExtension.LoggerManager.Import(LoggerImportDTO);
-                            IsFirstLogLine = false;
-                            CurrentLogLine++;
-                        }
-
-                        #endregion
-                    }
-
-                    #endregion
-                }
-
-                switch (impReps.Master_DB.FormNum_DB)
-                {
-                    case "1.0":
-                        await impReps.Master_DB.Rows10.QuickSortAsync();
-                        break;
-                    case "2.0":
-                        await impReps.Master_DB.Rows20.QuickSortAsync();
-                        break;
-                }
-            }
-
-            // Если убрать сохранение, то не перезаписывается базовый отчёт (номер корректировки) и при импорте нескольких файлов одинакового отчёта,
-            // но с разными номерами, в организации появлялись дубли, вместо перезаписи имеющегося отчёта.
-            try
-            {
-                await StaticConfiguration.DBModel.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-
-            }
+            await ProcessReportsCollection(reportsCollection, impReportsList);
         }
 
+        await FinalizeImportProcess(answer, countReadFiles, impReportsList);
+    } 
+
+    #endregion
+
+    #region Methods
+
+    /// <summary>
+    /// Инициализирует процесс импорта: сбрасывает флаги и получает список файлов для импорта
+    /// </summary>
+    /// <returns>Массив путей к выбранным файлам или null если отмена</returns>
+    private async Task<string[]?> InitializeImportProcess()
+    {
+        RepsWhereTitleFormCheckIsCancel.Clear();
+        IsFirstLogLine = true;
+        CurrentLogLine = 1;
+        string[] extensions = ["raodb", "RAODB"];
+        var answer = await GetSelectedFilesFromDialog("RAODB", extensions);
+        if (answer is null) return null;
+        
+        SkipNewOrg = false;
+        SkipInter = false;
+        SkipLess = false;
+        SkipNew = false;
+        SkipReplace = false;
+        HasMultipleReport = false;
+        AtLeastOneImportDone = false;
+        
+        return answer;
+    }
+
+    /// <summary>
+    /// Обрабатывает один файл импорта: копирует во временную папку и пытается прочитать данные
+    /// </summary>
+    /// <param name="path">Путь к исходному файлу</param>
+    /// <returns>Коллекция отчетов или null если файл поврежден</returns>
+    private async Task<List<Reports>?> ProcessImportFile(string path)
+    {
+        var count = 0;
+        string? tmpFile;
+        do
+        {
+            tmpFile = Path.Combine(BaseVM.TmpDirectory, $"file_imp_{count++}.raodb");
+        } while (File.Exists(tmpFile));
+
+        TmpImpFilePath = tmpFile;
+        SourceFile = new FileInfo(path);
+        SourceFile.CopyTo(TmpImpFilePath, true);
+
+        var reportsCollection = new List<Reports>();
+        var fileIsCorrupted = false;
+        try
+        {
+            reportsCollection = await GetReportsFromDataBase(TmpImpFilePath);
+        }
+        catch
+        {
+            fileIsCorrupted = true;
+        }
+
+        if (fileIsCorrupted || reportsCollection.Count == 0)
+        {
+            await ShowFileCorruptedMessage(path);
+            return null;
+        }
+
+        return reportsCollection;
+    }
+
+    /// <summary>
+    /// Показывает сообщение о поврежденном файле
+    /// </summary>
+    /// <param name="path">Путь к поврежденному файлу</param>
+    private static async Task ShowFileCorruptedMessage(string path)
+    {
+        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            {
+                ButtonDefinitions = ButtonEnum.Ok,
+                ContentTitle = "Импорт из .raodb",
+                ContentHeader = "Ошибка",
+                ContentMessage = $"Не удалось прочесть файл {path}," +
+                                 $"{Environment.NewLine}файл поврежден или не содержит данных.",
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(Desktop.MainWindow));
+    }
+
+    /// <summary>
+    /// Обрабатывает коллекцию отчетов из одного файла
+    /// </summary>
+    /// <param name="reportsCollection">Коллекция отчетов для обработки</param>
+    /// <param name="impReportsList">Общий список импортированных отчетов</param>
+    private async Task ProcessReportsCollection(List<Reports> reportsCollection, List<Reports> impReportsList)
+    {
+        foreach (var impReps in reportsCollection)
+        {
+            await ProcessSingleReport(impReps);
+            impReportsList.Add(impReps);
+        }
+
+        // Сохранение для предотвращения дубликатов при импорте нескольких файлов
         try
         {
             await StaticConfiguration.DBModel.SaveChangesAsync();
         }
         catch (Exception ex)
         {
+            // Логирование ошибки при необходимости
+        }
+    }
 
+    /// <summary>
+    /// Обрабатывает один отчет (организацию) из коллекции
+    /// </summary>
+    /// <param name="impReps">Отчет для обработки</param>
+    private async Task ProcessSingleReport(Reports impReps)
+    {
+        var dateTime = DateTime.Now;
+
+        if (impReps.Master_DB.FormNum_DB is not ("1.0" or "2.0")) return;
+
+        await impReps.SortAsync();
+        await RestoreReportsOrders(impReps);
+        UpdateReportDates(impReps, dateTime);
+
+        var baseReps11 = await GetReports11FromDbEqualAsync(impReps);
+        var baseReps21 = await GetReports21FromDbEqualAsync(impReps);
+
+        FillEmptyRegNo(ref baseReps11);
+        FillEmptyRegNo(ref baseReps21);
+        impReps.CleanIds();
+        ProcessIfNoteOrder0(impReps);
+
+        SetImportReportInfo(impReps);
+        UpdateAllReportChangeDate(impReps, dateTime);
+
+        var impRepsReportList = impReps.Report_Collection.ToList();
+        if (baseReps11 != null)
+        {
+            await ProcessIfHasReports11(baseReps11, impReps, impRepsReportList);
+        }
+        else if (baseReps21 != null)
+        {
+            await ProcessIfHasReports21(baseReps21, impReps, impRepsReportList);
+        }
+        else
+        {
+            await AddNewOrganization(impReps);
+        }
+
+        await SortReportRows(impReps);
+    }
+
+    /// <summary>
+    /// Обновляет даты отчетов и регистрационные номера
+    /// </summary>
+    /// <param name="impReps">Отчет для обновления</param>
+    /// <param name="dateTime">Текущая дата</param>
+    private static void UpdateReportDates(Reports impReps, DateTime dateTime)
+    {
+        if (impReps.Master.Rows10.Count != 0)
+        {
+            impReps.Master_DB.ReportChangedDate = dateTime;
+            impReps.Master.Rows10[1].RegNo_DB = impReps.Master.Rows10[0].RegNo_DB;
+        }
+
+        if (impReps.Master.Rows20.Count != 0)
+        {
+            impReps.Master_DB.ReportChangedDate = dateTime;
+            impReps.Master.Rows20[1].RegNo_DB = impReps.Master.Rows20[0].RegNo_DB;
+        }
+    }
+
+    /// <summary>
+    /// Устанавливает информацию об импортируемом отчете
+    /// </summary>
+    /// <param name="impReps">Отчет для установки информации</param>
+    private void SetImportReportInfo(Reports impReps)
+    {
+        ImpRepFormCount = impReps.Report_Collection.Count;
+        ImpRepFormNum = impReps.Master.FormNum_DB;
+        BaseRepsOkpo = impReps.Master.OkpoRep?.Value ?? "";
+        BaseRepsRegNum = impReps.Master.RegNoRep?.Value ?? "";
+        BaseRepsShortName = impReps.Master.ShortJurLicoRep.Value;
+    }
+
+    /// <summary>
+    /// Обновляет дату изменения для всех отчетов в коллекции
+    /// </summary>
+    /// <param name="impReps">Коллекция отчетов</param>
+    /// <param name="dateTime">Текущая дата</param>
+    private static void UpdateAllReportChangeDate(Reports impReps, DateTime dateTime)
+    {
+        impReps.Report_Collection.ToList<Report>().ForEach(x => x.ReportChangedDate = dateTime);
+
+        foreach (var key in impReps.Report_Collection)
+        {
+            var report = (Report)key;
+            report.ReportChangedDate = dateTime;
+        }
+    }
+
+    /// <summary>
+    /// Сортирует строки отчета в зависимости от типа формы
+    /// </summary>
+    /// <param name="impReps">Отчет для сортировки</param>
+    private static async Task SortReportRows(Reports impReps)
+    {
+        switch (impReps.Master_DB.FormNum_DB)
+        {
+            case "1.0":
+                await impReps.Master_DB.Rows10.QuickSortAsync();
+                break;
+            case "2.0":
+                await impReps.Master_DB.Rows20.QuickSortAsync();
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Добавляет новую организацию в базу данных
+    /// </summary>
+    /// <param name="impReps">Отчет новой организации</param>
+    private async Task AddNewOrganization(Reports impReps)
+    {
+        var userChoice = await GetNewOrganizationUserChoice();
+        
+        if (userChoice is "Добавить" or "Да для всех")
+        {
+            var db = StaticConfiguration.DBModel;
+            var dbObservable = db.DBObservableDbSet.Local.FirstOrDefault() 
+                               ?? await db.DBObservableDbSet.FirstAsync();
+
+            impReps.DBObservable = dbObservable;
+            db.ReportsCollectionDbSet.Add(impReps);
+
+            AtLeastOneImportDone = true;
+            await LogImportedReports(impReps);
+        }
+    }
+
+    /// <summary>
+    /// Получает выбор пользователя о добавлении новой организации
+    /// </summary>
+    /// <returns>Выбор пользователя</returns>
+    private async Task<string> GetNewOrganizationUserChoice()
+    {
+        var an = "Добавить";
+        if (SkipNewOrg) return an;
+
+        var isMultipleFiles = false; // Будет определено в контексте вызова
+            
+        an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions = isMultipleFiles
+                    ? [
+                        new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                        new ButtonDefinition { Name = "Да для всех" },
+                        new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
+                    ]
+                    : [
+                        new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                        new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
+                    ],
+                ContentTitle = "Импорт из .raodb",
+                ContentHeader = "Уведомление",
+                ContentMessage = GetNewOrgMessage(isMultipleFiles),
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(Desktop.MainWindow));
+
+        if (an is "Да для всех") SkipNewOrg = true;
+
+        return an;
+    }
+
+    /// <summary>
+    /// Формирует сообщение о добавлении новой организации
+    /// </summary>
+    /// <param name="isMultipleFiles">Множественный импорт</param>
+    /// <returns>Текст сообщения</returns>
+    private string GetNewOrgMessage(bool isMultipleFiles)
+    {
+        var baseMessage = $"Будет добавлена новая организация ({ImpRepFormNum}) содержащая {ImpRepFormCount} форм отчетности."
+                         + $"{Environment.NewLine}"
+                         + $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}"
+                         + $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}"
+                         + $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}";
+        
+        if (isMultipleFiles)
+        {
+            baseMessage += $"{Environment.NewLine}"
+                          + $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений "
+                          + $"{Environment.NewLine}импортировать все новые организации.";
+        }
+        
+        return baseMessage;
+    }
+
+    /// <summary>
+    /// Логирует импортированные отчеты
+    /// </summary>
+    /// <param name="impReps">Импортированные отчеты</param>
+    private async Task LogImportedReports(Reports impReps)
+    {
+        var sortedRepList = impReps.Report_Collection
+            .OrderBy(x => x.FormNum_DB)
+            .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
+            .ToList();
+            
+        foreach (var rep in sortedRepList)
+        {
+            ImpRepCorNum = rep.CorrectionNumber_DB;
+            ImpRepFormCount = rep.Rows.Count;
+            ImpRepFormNum = rep.FormNum_DB;
+            ImpRepStartPeriod = rep.StartPeriod_DB;
+            ImpRepEndPeriod = rep.EndPeriod_DB;
+            Act = "\t\t\t";
+            LoggerImportDTO = new LoggerImportDTO
+            {
+                Act = Act,
+                CorNum = ImpRepCorNum,
+                CurrentLogLine = CurrentLogLine,
+                EndPeriod = ImpRepEndPeriod,
+                FormCount = ImpRepFormCount,
+                FormNum = ImpRepFormNum,
+                StartPeriod = ImpRepStartPeriod,
+                Okpo = BaseRepsOkpo,
+                OperationDate = OperationDate,
+                RegNum = BaseRepsRegNum,
+                ShortName = BaseRepsShortName,
+                SourceFileFullPath = SourceFile!.FullName,
+                Year = ImpRepYear
+            };
+            ServiceExtension.LoggerManager.Import(LoggerImportDTO);
+            IsFirstLogLine = false;
+            CurrentLogLine++;
+        }
+    }
+
+    /// <summary>
+    /// Завершает процесс импорта: сохраняет изменения, обновляет UI и показывает результат
+    /// </summary>
+    /// <param name="answer">Массив путей к файлам</param>
+    /// <param name="countReadFiles">Количество успешно обработанных файлов</param>
+    /// <param name="impReportsList">Список импортированных отчетов</param>
+    private async Task FinalizeImportProcess(string[] answer, int countReadFiles, List<Reports> impReportsList)
+    {
+        try
+        {
+            await StaticConfiguration.DBModel.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            // Логирование ошибки при необходимости
         }
 
         await SortReportsCollectionAsync();
@@ -306,46 +421,35 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
             ? "а"
             : "ов";
 
-        if (AtLeastOneImportDone)
-        {
-            #region MessageImportDone
+        await ShowImportResultMessage(answer.Length, countReadFiles, suffix, AtLeastOneImportDone);
+    }
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = ButtonEnum.Ok,
-                    ContentTitle = "Импорт из .raodb",
-                    ContentHeader = "Уведомление",
-                    ContentMessage =
-                        $"Импорт {countReadFiles} из {answer.Length} файл{suffix} .raodb успешно завершен.",
-                    MinWidth = 400,
-                    MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
+    /// <summary>
+    /// Показывает сообщение о результате импорта
+    /// </summary>
+    /// <param name="totalFiles">Общее количество файлов</param>
+    /// <param name="successFiles">Количество успешно импортированных файлов</param>
+    /// <param name="suffix">Суффикс для склонения слова "файл"</param>
+    /// <param name="hasSuccess">Был ли хотя бы один успешный импорт</param>
+    private static async Task ShowImportResultMessage(int totalFiles, int successFiles, string suffix, bool hasSuccess)
+    {
+        var message = hasSuccess
+            ? $"Импорт {successFiles} из {totalFiles} файл{suffix} .raodb успешно завершен."
+            : $"Импорт из {totalFiles} файл{suffix} .raodb был отменен.";
 
-            #endregion
-        }
-        else
-        {
-            #region MessageImportCancel
-
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = ButtonEnum.Ok,
-                    ContentTitle = "Импорт из .raodb",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = $"Импорт из {answer.Length} файл{suffix} .raodb был отменен.",
-                    MinWidth = 400,
-                    MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
-
-            #endregion
-        }
-    } 
+        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            {
+                ButtonDefinitions = ButtonEnum.Ok,
+                ContentTitle = "Импорт из .raodb",
+                ContentHeader = "Уведомление",
+                ContentMessage = message,
+                MinWidth = 400,
+                MinHeight = 150,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(Desktop.MainWindow));
+    }
 
     #endregion
 

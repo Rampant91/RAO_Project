@@ -20,7 +20,7 @@ using static Client_App.Resources.StaticStringMethods;
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 /// <summary>
-/// Excel -> Разрывы и пересечения.
+/// Аналитика -> Разрывы и пересечения.
 /// </summary>
 public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
 {
