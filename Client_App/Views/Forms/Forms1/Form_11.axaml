@@ -118,28 +118,38 @@
                     </Grid>
                 </Border>
 
-				<Border Classes="borderContainer">
-					<controls:ExecutorDataControl
-						DataContext="{Binding ExecutorDataControlVM}">
-					</controls:ExecutorDataControl>
-				</Border>
-				
-				<Border Classes="borderContainer">
-					<Grid Margin="5" RowDefinitions="Auto,Auto,Auto">
-						
-						<Button Grid.Row="0" Command="{Binding SourceTransmissionAll}"> Перевести все РВ в РАО</Button>
+                <!--#endregion Отчёт-->
+
+                <!--#region Исполнитель-->
+
+                <Border Classes="borderContainer">
+                    <controls:ExecutorDataControl DataContext="{Binding ExecutorDataControlVM}" />
+                </Border>
+
+                <!--#endregion Исполнитель-->
+
+                <!--#region Дополнительные функции-->
+
+                <Border Classes="borderContainer">
+                    <Grid Margin="5" RowDefinitions="Auto,Auto,Auto,Auto">
+
+                        <Button Grid.Row="0" Command="{Binding SourceTransmissionAll}">Перевести все РВ в РАО</Button>
 
                         <StackPanel Grid.Row="1" Orientation="Horizontal">
                             <TextBlock Margin="5" Text="Автозаполнение:" />
                             <CheckBox Margin="5" IsChecked="{Binding IsAutoReplaceEnabled}" />
+
                         </StackPanel>
 
                         <Button
+							
                             Grid.Row="2"
                             Margin="5"
                             Command="{Binding SetDefaultColumnWidth}"
                             CommandParameter="{Binding ElementName=dataGrid}"
                             Content="Выставить ширину колонок по умолчанию" />
+
+						<CheckBox Grid.Row="3" Margin="5" IsChecked ="{Binding DataGridIsEditing}"/>
                     </Grid>
                 </Border>
 
@@ -921,6 +931,7 @@
                             <local:DataGridColumnWidthLoadBehavior FormNum="notes" />
                             <local:DataGridPointerBehavior />
                             <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
+							<local:DataGridSwitchToNotesBehavior SourceDataGrid="{Binding ElementName=dataGrid}"/>
                         </interactivity:Interaction.Behaviors>
 
                         <DataGrid.Columns>
