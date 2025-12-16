@@ -148,51 +148,51 @@
 				<StackPanel>
 				
 					<Button Margin="0,0,0,5" 
-							Command="{Binding MainWindowVM.NewAddForm}"
+							Command="{Binding MainWindowVM.AddForm}"
 							CommandParameter="2.1"
 							Content="Форма 2.1: Сортировка, переработка и кондиционирование РАО на установках"></Button>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.NewAddForm}"
+							Command="{Binding MainWindowVM.AddForm}"
 							CommandParameter="2.2"
 							Content="Форма 2.2: Наличие РАО в пунктах хранения, местах сбора и/или временного хранения"></Button>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.NewAddForm}"
+							Command="{Binding MainWindowVM.AddForm}"
 							CommandParameter="2.3"
 							Content="Форма 2.3: Разрешение на размещенеие РАО в пунктах хранения, местах сбора и/или временного хранения"></Button>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.NewAddForm}"
+							Command="{Binding MainWindowVM.AddForm}"
 							CommandParameter="2.4"
 							Content="Форма 2.4: Постановка на учет и снятие с учета РВ, содержащихся в отработавшем ядерном топливе"></Button>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.NewAddForm}"
+							Command="{Binding MainWindowVM.AddForm}"
 							CommandParameter="2.5"
 							Content="Форма 2.5: Наличие РВ, содержащихся в ядерном топливе, в пунктах хранения"></Button>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.NewAddForm}"
+							Command="{Binding MainWindowVM.AddForm}"
 							CommandParameter="2.6"
 							Content="Форма 2.6: Контроль загрязнения подземных вод РВ"></Button>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.NewAddForm}"
+							Command="{Binding MainWindowVM.AddForm}"
 							CommandParameter="2.7"
 							Content="Форма 2.7: Поступление радионуклидов в атмосферный воздух"></Button>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.NewAddForm}"
+							Command="{Binding MainWindowVM.AddForm}"
 							CommandParameter="2.8"
 							Content="Форма 2.8: Отведение сточных вод, содержащих радионуклиды"></Button>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.NewAddForm}"
+							Command="{Binding MainWindowVM.AddForm}"
 							CommandParameter="2.9"
 							Content="Форма 2.9: Активность радионуклидов, отведенных со сточными водами"></Button>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.NewAddForm}"
+							Command="{Binding MainWindowVM.AddForm}"
 							CommandParameter="2.10"
 							Content="Форма 2.10: Территории, загрязненные радионуклидами"></Button>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.NewAddForm}"
+							Command="{Binding MainWindowVM.AddForm}"
 							CommandParameter="2.11"
 							Content="Форма 2.11: Радионуклидный состав загрязненных участков территорий"></Button>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.NewAddForm}"
+							Command="{Binding MainWindowVM.AddForm}"
 							CommandParameter="2.12"
 							Content="Форма 2.12: Суммарные сведения о РВ не в составе ЗРИ"></Button>
 				</StackPanel>
@@ -208,7 +208,7 @@
 					<DataGrid.ContextMenu>
 						<ContextMenu>
 							<MenuItem Header="Редактировать форму"
-									  Command="{Binding MainWindowVM.NewChangeForm}"
+									  Command="{Binding MainWindowVM.ChangeForm}"
 									  CommandParameter="{Binding SelectedReport}"/>
 							<MenuItem Header="Удалить форму"
 									  Command="{Binding MainWindowVM.NewDeleteForm}"

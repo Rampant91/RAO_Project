@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Avalonia;
+using Client_App.Views;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using System;
@@ -96,8 +98,8 @@ namespace Client_App.ViewModels.MainWindowTabs
             set
             {
                 _selectedReports = value;
+                var mainWindow = Application.Current?.ApplicationLifetime as MainWindow;
 
-                
 
                 OnPropertyChanged();
 

@@ -25,10 +25,17 @@ public class AddFormAsyncCommand : BaseAsyncCommand
         if (parameter is string param)
         {
             var mainWindow = Desktop.MainWindow as MainWindow;
-            if (mainWindow?.SelectedReports is null
-                || !mainWindow.SelectedReports.Any()
-                || ((Reports)mainWindow.SelectedReports.First()).Master.FormNum_DB[0] != param[0])
+            var mainWindowVM = mainWindow.DataContext as MainWindowVM;
+
+            Reports? selectedReports;
+
+            if (mainWindowVM.SelectedReports is not null)
             {
+                selectedReports = mainWindowVM.SelectedReports;     //новая реализация
+            }
+            else
+            {
+
                 #region MessageFailedToOpenForm
 
                 await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
@@ -50,10 +57,10 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                 return;
             }
 
-            var selectedReports = mainWindow.SelectedReports.First() as Reports;
+
+
             if (selectedReports?.Master.FormNum_DB.Split(".")[0] == param.Split(".")[0])
             {
-                var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(mainWindow.SelectedReports);
 
                 ChangeOrCreateVM frm = new(param, selectedReports);
 
@@ -65,7 +72,6 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                         var form11Window = new Form_11(new Form_11VM(selectedReports));
                         mainWindow.WindowState = WindowState.Minimized;
                         await form11Window.ShowDialog(mainWindow);
-                        mainWindow.SelectedReports = tmp;
                         await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
@@ -74,7 +80,6 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                         var form11Window = new Form_12(new Form_12VM(selectedReports));
                         mainWindow.WindowState = WindowState.Minimized;
                         await form11Window.ShowDialog(mainWindow);
-                        mainWindow.SelectedReports = tmp;
                         await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
@@ -83,7 +88,6 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                         var form11Window = new Form_13(new Form_13VM(selectedReports));
                         mainWindow.WindowState = WindowState.Minimized;
                         await form11Window.ShowDialog(mainWindow);
-                        mainWindow.SelectedReports = tmp;
                         await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
@@ -91,8 +95,7 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                     {
                         var form11Window = new Form_14(new Form_14VM(selectedReports));
                         mainWindow.WindowState = WindowState.Minimized;
-                        await form11Window.ShowDialog(mainWindow);
-                        mainWindow.SelectedReports = tmp;
+                            await form11Window.ShowDialog(mainWindow);
                         await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
@@ -101,7 +104,6 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                         var form11Window = new Form_15(new Form_15VM(selectedReports));
                         mainWindow.WindowState = WindowState.Minimized;
                         await form11Window.ShowDialog(mainWindow);
-                        mainWindow.SelectedReports = tmp;
                         await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
@@ -110,7 +112,6 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                         var form11Window = new Form_16(new Form_16VM(selectedReports));
                         mainWindow.WindowState = WindowState.Minimized;
                         await form11Window.ShowDialog(mainWindow);
-                        mainWindow.SelectedReports = tmp;
                         await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
@@ -119,7 +120,6 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                         var form11Window = new Form_17(new Form_17VM(selectedReports));
                         mainWindow.WindowState = WindowState.Minimized;
                         await form11Window.ShowDialog(mainWindow);
-                        mainWindow.SelectedReports = tmp;
                         await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
@@ -128,7 +128,6 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                         var form11Window = new Form_18(new Form_18VM(selectedReports));
                         mainWindow.WindowState = WindowState.Minimized;
                         await form11Window.ShowDialog(mainWindow);
-                        mainWindow.SelectedReports = tmp;
                         await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
@@ -137,7 +136,6 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                         var form11Window = new Form_19(new Form_19VM(selectedReports));
                         mainWindow.WindowState = WindowState.Minimized;
                         await form11Window.ShowDialog(mainWindow);
-                        mainWindow.SelectedReports = tmp;
                         await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
@@ -151,7 +149,6 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                                 _ => Form2_Visual.tmpVM
                             };
                             await MainWindowVM.ShowDialog.Handle(frm);
-                            mainWindow.SelectedReports = tmp;
                             await selectedReports.Report_Collection.QuickSortAsync();
                         }
 

@@ -71,29 +71,27 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
 
     private static async Task OpenReport(object? parameter)
     {
+        if (parameter is not Report report) return;
+
         var db = StaticConfiguration.DBModel;
         var modifiedEntities = db.ChangeTracker.Entries()
             .Where(x => x.State != EntityState.Unchanged);
 
-        if (parameter is ObservableCollectionWithItemPropertyChanged<IKey> { Count: > 0 } param && param.First() is { } obj)
+        var mainWindow = Desktop.MainWindow as MainWindow;
+        //var tre = ReportsStorage.LocalReports.Reports_Collection
+        //    .FirstOrDefault(i => i.Report_Collection.Contains(report));
+        var numForm = report.FormNum.Value;
+
+        var frm = new ChangeOrCreateVM(numForm, report);
+
+        switch (numForm)
         {
-            var mainWindow = Desktop.MainWindow as MainWindow;
-            var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(mainWindow.SelectedReports);
-            var rep = (Report)obj;
-            //var tre = ReportsStorage.LocalReports.Reports_Collection
-            //    .FirstOrDefault(i => i.Report_Collection.Contains(rep));
-            var numForm = rep.FormNum.Value;
-
-            var frm = new ChangeOrCreateVM(numForm, rep);
-
-            switch (numForm)
-            {
-                case "1.1":
+            case "1.1":
                 {
                     Form1_Visual.tmpVM = frm;
                     break;
                 }
-                case "2.1":
+            case "2.1":
                 {
                     Form2_Visual.tmpVM = frm;
                     if (frm.isSum)
@@ -106,7 +104,7 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
 
                     break;
                 }
-                case "2.2":
+            case "2.2":
                 Form2_Visual.tmpVM = frm;
                 if (frm.isSum)
                 {
@@ -139,11 +137,11 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                 }
 
                 break;
-            }
+        }
 
-            switch (numForm)
-            {
-                case "1.1":
+        switch (numForm)
+        {
+            case "1.1":
                 {
                     var form11VM = new Form_11VM(frm.Storage);
                     var form11Window = new Form_11(form11VM) { OwnerPrevState = mainWindow.WindowState };
@@ -151,7 +149,7 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                     await form11Window.ShowDialog(mainWindow);
                     break;
                 }
-                case "1.2":
+            case "1.2":
                 {
                     var form12VM = new Form_12VM(frm.Storage);
                     var window = new Form_12(form12VM) { OwnerPrevState = mainWindow.WindowState };
@@ -159,7 +157,7 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                     await window.ShowDialog(mainWindow);
                     break;
                 }
-                case "1.3":
+            case "1.3":
                 {
                     var form13VM = new Form_13VM(frm.Storage);
                     var window = new Form_13(form13VM) { OwnerPrevState = mainWindow.WindowState };
@@ -167,7 +165,7 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                     await window.ShowDialog(mainWindow);
                     break;
                 }
-                case "1.4":
+            case "1.4":
                 {
                     var form14VM = new Form_14VM(frm.Storage);
                     var window = new Form_14(form14VM) { OwnerPrevState = mainWindow.WindowState };
@@ -175,7 +173,7 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                     await window.ShowDialog(mainWindow);
                     break;
                 }
-                case "1.5":
+            case "1.5":
                 {
                     var form15VM = new Form_15VM(frm.Storage);
                     var window = new Form_15(form15VM) { OwnerPrevState = mainWindow.WindowState };
@@ -183,7 +181,7 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                     await window.ShowDialog(mainWindow);
                     break;
                 }
-                case "1.6":
+            case "1.6":
                 {
                     var form16VM = new Form_16VM(frm.Storage);
                     var window = new Form_16(form16VM) { OwnerPrevState = mainWindow.WindowState };
@@ -191,7 +189,7 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                     await window.ShowDialog(mainWindow);
                     break;
                 }
-                case "1.7":
+            case "1.7":
                 {
                     var form17VM = new Form_17VM(frm.Storage);
                     var window = new Form_17(form17VM) { OwnerPrevState = mainWindow.WindowState };
@@ -199,7 +197,7 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                     await window.ShowDialog(mainWindow);
                     break;
                 }
-                case "1.8":
+            case "1.8":
                 {
                     var form18VM = new Form_18VM(frm.Storage);
                     var window = new Form_18(form18VM) { OwnerPrevState = mainWindow.WindowState };
@@ -207,127 +205,29 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                     await window.ShowDialog(mainWindow);
                     break;
                 }
-                case "1.9":
+            case "1.9":
                 {
                     var form19VM = new Form_19VM(frm.Storage);
                     var window = new Form_19(form19VM) { OwnerPrevState = mainWindow.WindowState };
                     mainWindow.WindowState = WindowState.Minimized;
                     await window.ShowDialog(mainWindow);
                     break;
-                    }
-                case "2.1":
-                    {
-                        var form21VM = new Form_21VM(frm.Storage);
-                        var window = new Form_21(form21VM) { OwnerPrevState = mainWindow.WindowState };
-                        mainWindow.WindowState = WindowState.Minimized;
-                        await window.ShowDialog(mainWindow);
-                        break;
-                    }
-                case "2.2":
-                    {
-                        var form22VM = new Form_22VM(frm.Storage);
-                        var window = new Form_22(form22VM) { OwnerPrevState = mainWindow.WindowState };
-                        mainWindow.WindowState = WindowState.Minimized;
-                        await window.ShowDialog(mainWindow);
-                        break;
-                    }
-                case "2.3":
-                    {
-                        var form23VM = new Form_23VM(frm.Storage);
-                        var window = new Form_23(form23VM) { OwnerPrevState = mainWindow.WindowState };
-                        mainWindow.WindowState = WindowState.Minimized;
-                        await window.ShowDialog(mainWindow);
-                        break;
-                    }
-                case "2.4":
-                    {
-                        var form24VM = new Form_24VM(frm.Storage);
-                        var window = new Form_24(form24VM) { OwnerPrevState = mainWindow.WindowState };
-                        mainWindow.WindowState = WindowState.Minimized;
-                        await window.ShowDialog(mainWindow);
-                        break;
-                    }
-                case "2.5":
-                    {
-                        var form25VM = new Form_25VM(frm.Storage);
-                        var window = new Form_25(form25VM) { OwnerPrevState = mainWindow.WindowState };
-                        mainWindow.WindowState = WindowState.Minimized;
-                        await window.ShowDialog(mainWindow);
-                        break;
-                    }
-                case "2.6":
-                    {
-                        var form26VM = new Form_26VM(frm.Storage);
-                        var window = new Form_26(form26VM) { OwnerPrevState = mainWindow.WindowState };
-                        mainWindow.WindowState = WindowState.Minimized;
-                        await window.ShowDialog(mainWindow);
-                        break;
-                    }
-                case "2.7":
-                    {
-                        var form27VM = new Form_27VM(frm.Storage);
-                        var window = new Form_27(form27VM) { OwnerPrevState = mainWindow.WindowState };
-                        mainWindow.WindowState = WindowState.Minimized;
-                        await window.ShowDialog(mainWindow);
-                        break;
-                    }
-                case "2.8":
-                    {
-                        var form28VM = new Form_28VM(frm.Storage);
-                        var window = new Form_28(form28VM) { OwnerPrevState = mainWindow.WindowState };
-                        mainWindow.WindowState = WindowState.Minimized;
-                        await window.ShowDialog(mainWindow);
-                        break;
-                    }
-                case "2.9":
-                    {
-                        var form29VM = new Form_29VM(frm.Storage);
-                        var window = new Form_29(form29VM) { OwnerPrevState = mainWindow.WindowState };
-                        mainWindow.WindowState = WindowState.Minimized;
-                        await window.ShowDialog(mainWindow);
-                        break;
-                    }
-                case "2.10":
-                    {
-                        var form210VM = new Form_210VM(frm.Storage);
-                        var window = new Form_210(form210VM) { OwnerPrevState = mainWindow.WindowState };
-                        mainWindow.WindowState = WindowState.Minimized;
-                        await window.ShowDialog(mainWindow);
-                        break;
-                    }
-                case "2.11":
-                    {
-                        var form211VM = new Form_211VM(frm.Storage);
-                        var window = new Form_211(form211VM) { OwnerPrevState = mainWindow.WindowState };
-                        mainWindow.WindowState = WindowState.Minimized;
-                        await window.ShowDialog(mainWindow);
-                        break;
-                    }
-                case "2.12":
-                    {
-                        var form212VM = new Form_212VM(frm.Storage);
-                        var window = new Form_212(form212VM) { OwnerPrevState = mainWindow.WindowState };
-                        mainWindow.WindowState = WindowState.Minimized;
-                        await window.ShowDialog(mainWindow);
-                        break;
-                    }
-                case "4.1":
-                    {
-                        var form41VM = new Form_41VM(frm.Storage);
-                        var window = new Form_41(form41VM) { OwnerPrevState = mainWindow.WindowState };
-                        mainWindow.WindowState = WindowState.Minimized;
-                        await window.ShowDialog(mainWindow);
-                        break;
-                    }
-                default:
+                }
+            case "4.1":
                 {
-                    await MainWindowVM.ShowDialog.Handle(frm);
-                    mainWindow.SelectedReports = tmp;
+                    var form41VM = new Form_41VM(frm.Storage);
+                    var window = new Form_41(form41VM) { OwnerPrevState = mainWindow.WindowState };
+                    mainWindow.WindowState = WindowState.Minimized;
+                    await window.ShowDialog(mainWindow);
                     break;
                 }
-            }
-
+            default:
+                {
+                    await MainWindowVM.ShowDialog.Handle(frm);
+                    break;
+                }
         }
+
     }
 
     #endregion
