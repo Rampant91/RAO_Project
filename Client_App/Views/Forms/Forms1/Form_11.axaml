@@ -149,7 +149,6 @@
                             CommandParameter="{Binding ElementName=dataGrid}"
                             Content="Выставить ширину колонок по умолчанию" />
 
-						<CheckBox Grid.Row="3" Margin="5" IsChecked ="{Binding DataGridIsEditing}"/>
                     </Grid>
                 </Border>
 
@@ -931,7 +930,7 @@
                             <local:DataGridColumnWidthLoadBehavior FormNum="notes" />
                             <local:DataGridPointerBehavior />
                             <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
-							<local:DataGridSwitchToNotesBehavior SourceDataGrid="{Binding ElementName=dataGrid}"/>
+							<local:DataGridSwitchToNotesBehavior SourceDataGrid="{Binding #dataGrid}"/>
                         </interactivity:Interaction.Behaviors>
 
                         <DataGrid.Columns>
