@@ -55,12 +55,6 @@ namespace Client_App.ViewModels.MainWindowTabs
         }
         #endregion
 
-        #region Reports10
-
-        public ObservableCollection<Reports> Reports10 => ReportsStorage.LocalReports.Reports_Collection10;
-
-        #endregion
-
 
         #region ReportsCollection
         public ObservableCollection<Reports> ReportsCollection
@@ -70,7 +64,8 @@ namespace Client_App.ViewModels.MainWindowTabs
                 if (!string.IsNullOrEmpty(SearchText))
                 {
                     var search = SearchText.ToLower().Trim();
-                    return new ObservableCollection<Reports>(Reports10
+                    return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
+                    .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
                     .Where(reps => reps.Master_DB.Rows10[0].RegNo_DB.ToLower().Contains(search)
                     || reps.Master_DB.Rows10[0].Okpo_DB.ToLower().Contains(search)
                     || reps.Master_DB.Rows10[0].ShortJurLico_DB.ToLower().Contains(search)
@@ -79,7 +74,8 @@ namespace Client_App.ViewModels.MainWindowTabs
                     .Take(RowsCountOrgs));
                 }
                 else
-                    return new ObservableCollection<Reports>(Reports10
+                    return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
+                    .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
                     .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
                     .Take(RowsCountOrgs));
             }
@@ -124,7 +120,8 @@ namespace Client_App.ViewModels.MainWindowTabs
         {
             get
             {
-                return Reports10.Count;
+                return StaticConfiguration.DBModel.ReportsCollectionDbSet
+                    .Where(reps => reps.Master_DB.FormNum_DB == "1.0").Count();
             }
         }
 
