@@ -41,7 +41,6 @@ public class Form_11VM : BaseFormVM
         base.InitializeUserControls();
         Reports = reps;
 
-        SelectReportPopupVM = new SelectReportPopupVM(this);
     }
 
     #endregion

@@ -1,10 +1,9 @@
-﻿using System;
-using Avalonia;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Client_App.Properties;
 using Client_App.Views;
-using System.Threading;
-using Avalonia.Controls;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using Client_App.Properties;
@@ -20,7 +19,7 @@ public class App : Application
     
     public override void Initialize()
     {
-        // Инициализация логгера Firebird
+        // ������������� ������� Firebird
         FirebirdLogger.Initialize();
         FirebirdLogger.Log("Application Initialize started");
 

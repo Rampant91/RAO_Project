@@ -67,7 +67,7 @@ public class Form19 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        var tmp = value.Value.Trim();
+        var tmp = value.Value;
         if (!DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
         {
             value.AddError("Недопустимое значение");
@@ -84,7 +84,7 @@ public class Form19 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        var tmp = value.Value.Trim();
+        var tmp = value.Value;
         if (!DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
         {
             value.AddError("Недопустимое значение");
@@ -193,7 +193,7 @@ public class Form19 : Form1
     private void Radionuclids_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         Radionuclids_DB = tmp;
     }
 

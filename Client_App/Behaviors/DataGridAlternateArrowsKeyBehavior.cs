@@ -136,11 +136,14 @@ namespace Client_App.Behaviors
                     var textBox = newCell.FindDescendantOfType<TextBox>();
                     if (textBox != null)
                     {
+                        AssociatedObject.SelectedIndex = newRowIndex;
+                        AssociatedObject.CurrentColumn = newColumn;
                         textBox.Focus();
                         Dispatcher.UIThread.Post(() =>
                         {
                             textBox.SelectAll();
                         }, DispatcherPriority.Background);
+
                     }
                 }
             }, DispatcherPriority.Background);

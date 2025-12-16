@@ -46,6 +46,8 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
         if (answer is not "Да") return;
 
+        
+
         try
         {
             var enumerable = parameter as IEnumerable;
@@ -70,6 +72,10 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
             await db.SaveChangesAsync();
 
             await ProcessDataBaseFillEmpty(db);
+
+            var mainWindow = (Desktop.MainWindow as MainWindow)!;
+            var mainWindowVM = (mainWindow.DataContext as MainWindowVM)!;
+            mainWindowVM.UpdateReports();
         }
         catch (Exception ex)
         {
@@ -79,6 +85,7 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
         }
 
         //await Local_Reports.Reports_Collection.QuickSortAsync();
+    
     }
 
     public static async Task ProcessDataBaseFillEmpty(DataContext dbm)

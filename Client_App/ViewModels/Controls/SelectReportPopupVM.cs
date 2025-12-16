@@ -61,6 +61,17 @@ public class SelectReportPopupVM : INotifyPropertyChanged
         }
     }
 
+    public bool YearMode
+    {
+        get
+        {
+            var formType = FormVM.FormType;
+            if (formType[0] is '2' or '4')
+                return true;
+
+            return false;
+        }
+    }
     private Report _selectedReport;
     public Report SelectedReport
     {

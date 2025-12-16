@@ -2218,6 +2218,156 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_29", (string)null);
                 });
 
+            modelBuilder.Entity("Models.Forms.Form4.Form40", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AddressOrganUprav_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("AddressRiac_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("CodeSubjectRF_DB")
+                        .HasMaxLength(2)
+                        .HasColumnType("varchar(2)");
+
+                    b.Property<string>("EmailOrganUprav_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("EmailRiac_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("FaxOrganUprav_DB")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<string>("FaxRiac_DB")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<string>("FormNum_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("GradeFioDirectorOrganUprav_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("GradeFioDirectorRiac_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("GradeFioExecutorOrganUprav_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("GradeFioExecutorRiac_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("NameOrganUprav_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("NameRiac_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<int>("NumberInOrder_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NumberOfFields_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ReportId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ShortNameOrganUprav_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("ShortNameRiac_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("SubjectRF_DB")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<string>("TelephoneOrganUprav_DB")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<string>("TelephoneRiac_DB")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportId");
+
+                    b.ToTable("form_40", (string)null);
+                });
+
+            modelBuilder.Entity("Models.Forms.Form4.Form41", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("FormNum_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("LicenseOrRegistrationInfo_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("Note_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<int>("NumOfForms212_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NumOfFormsWithInventarizationInfo_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NumOfFormsWithoutInventarizationInfo_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NumberInOrder_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NumberOfFields_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Okpo_DB")
+                        .HasMaxLength(14)
+                        .HasColumnType("varchar(14)");
+
+                    b.Property<string>("OrganizationName_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("RegNo_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<int?>("ReportId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportId");
+
+                    b.ToTable("form_41", (string)null);
+                });
+
             modelBuilder.Entity("Models.Forms.Note", b =>
                 {
                     b.Property<int>("Id")
@@ -2506,6 +2656,26 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Navigation("Report");
                 });
 
+            modelBuilder.Entity("Models.Forms.Form4.Form40", b =>
+                {
+                    b.HasOne("Models.Collections.Report", "Report")
+                        .WithMany("Rows40")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
+                });
+
+            modelBuilder.Entity("Models.Forms.Form4.Form41", b =>
+                {
+                    b.HasOne("Models.Collections.Report", "Report")
+                        .WithMany("Rows41")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
+                });
+
             modelBuilder.Entity("Models.Forms.Note", b =>
                 {
                     b.HasOne("Models.Collections.Report", "Report")
@@ -2571,6 +2741,10 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Navigation("Rows28");
 
                     b.Navigation("Rows29");
+
+                    b.Navigation("Rows40");
+
+                    b.Navigation("Rows41");
                 });
 
             modelBuilder.Entity("Models.Collections.Reports", b =>

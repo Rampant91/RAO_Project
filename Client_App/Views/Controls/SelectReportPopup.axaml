@@ -2,38 +2,46 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Client_App.Views.Controls.SelectReportPopup">
+             x:Class="Client_App.Controls.SelectReportPopup">
+	<UserControl.Resources>
+		<converter:LogicalNotConverter x:Key="LogicalNotConverter"/>
+	</UserControl.Resources>
 	
 	<StackPanel>
-		
 		<Button Command="{Binding SwitchNextReportCommand}"
-			Grid.Row="0"
-			VerticalContentAlignment="Center"
-			Height="75"
-			FontSize="48"
-			Content="🠕"/>
+				Grid.Row="0"
+				VerticalContentAlignment="Center"
+				Height="75"
+				FontSize="48"
+				Content="🠕"/>
 		
-		<Button Name="ToggleButton" 
-				Content="Выбрать отчет" 
-				Command="{Binding OpenPopupCommand}"/>
-			
-		<Popup	Name="PartPopup"
+		<Button  Name="ToggleButton" 
+				 Content="Выбрать отчет" 
+				 Command="{Binding OpenPopupCommand}">
+		</Button>
+		<Popup Name="PartPopup"
 				IsOpen="{Binding PopupIsOpen, Mode=TwoWay}"
 				PlacementTarget="{Binding ElementName=ToggleButton}"
 				PlacementMode="Right"
 				IsLightDismissEnabled="True">
 			<Border Background="White"
-		            BorderBrush="Gray"
-		            BorderThickness="1"
-		            CornerRadius="4"
-		            Padding="10">				
+					BorderBrush="Gray"
+					BorderThickness="1"
+					CornerRadius="4"
+					Padding="10">
 				<StackPanel>
 					<TextBlock Text="Выбор отчета"/>
-					<ListBox Items="{Binding ReportCollection}"
-							 SelectedItem="{Binding SelectedReport, Mode=TwoWay}"
-							 SelectionChanged="ListBox_SelectionChanged"
-							 SelectionMode="Single">
+					
+					<!--Для формы 1.X-->
+					<ListBox
+						IsEnabled="{Binding YearMode, Converter={StaticResource LogicalNotConverter}}"
+						IsVisible="{Binding YearMode, Converter={StaticResource LogicalNotConverter}}"
+						Items="{Binding ReportCollection}"
+						SelectedItem="{Binding SelectedReport, Mode=TwoWay}"
+						SelectionChanged="ListBox_SelectionChanged"
+						SelectionMode="Single">
 						<ListBox.ItemTemplate>
 							<DataTemplate>
 								<TextBlock Height="20" Grid.Column="0">
@@ -47,16 +55,29 @@
 							</DataTemplate>
 						</ListBox.ItemTemplate>
 					</ListBox>
+					<!--Для годовых форм 2.X или 4.X-->
+					<ListBox
+						IsEnabled="{Binding YearMode}"
+						IsVisible="{Binding YearMode}"
+						Items="{Binding ReportCollection}"
+						SelectedItem="{Binding SelectedReport, Mode=TwoWay}"
+						SelectionMode="Single">
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<TextBlock
+									Height="20" Grid.Column="0"
+									Text="{Binding Year.Value}"/>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
 				</StackPanel>
 			</Border>
 		</Popup>
-			
 		<Button Command="{Binding SwitchPreviousReportCommand}"
-				Grid.Row="2"
-				VerticalContentAlignment="Center"
-				Height="75"
-				FontSize="48"
-				Content="🠗"/>
-		
+			Grid.Row="2"
+			VerticalContentAlignment="Center"
+			Height="75"
+			FontSize="48"
+			Content="🠗"/>
 	</StackPanel>
 </UserControl>

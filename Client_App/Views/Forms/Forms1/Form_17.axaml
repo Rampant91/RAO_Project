@@ -1202,6 +1202,7 @@
                             <local:DataGridColumnWidthLoadBehavior FormNum="notes" />
                             <local:DataGridPointerBehavior />
                             <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
+							<local:DataGridSwitchToNotesBehavior SourceDataGrid="{Binding #dataGrid}"/>
                         </interactivity:Interaction.Behaviors>
 
                         <DataGrid.Columns>

@@ -419,6 +419,7 @@ public partial class Form10 : Form
         {
             Telephone_DB = ((RamAccess<string>)value).Value;
         }
+
     }
 
     private bool Telephone_Validation(RamAccess<string> value) //Ready

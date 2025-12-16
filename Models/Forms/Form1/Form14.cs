@@ -117,7 +117,7 @@ public class Form14 : Form1
     {
         if (args.PropertyName != "Value") return;
 
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
 
         if (OperationCode_DB != value1)
         {
@@ -432,7 +432,7 @@ public class Form14 : Form1
     {
         if (args.PropertyName != "Value") return;
 
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (OperationDate_DB != value1)
         {
             OperationDate_DB = DateString_ValueChanged(value1);
@@ -497,7 +497,7 @@ public class Form14 : Form1
     {
         if (args.PropertyName != "Value") return;
 
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty);
         if (PassportNumber_DB != value1)
         {
             PassportNumber_DB = value1;
@@ -571,7 +571,7 @@ public class Form14 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        Name_DB = tmp.Trim();
+        Name_DB = tmp;
     }
 
     private static bool Name_Validation(RamAccess<string> value)//TODO
@@ -669,7 +669,7 @@ public class Form14 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        Radionuclids_DB = tmp.Trim();
+        Radionuclids_DB = tmp;
     }
 
     private static bool Radionuclids_Validation(RamAccess<string> value) => NuclidString_Validation(value);
@@ -957,7 +957,7 @@ public class Form14 : Form1
     private void Owner_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
         {
             tmp = tmp.ToUpper();
@@ -1022,7 +1022,7 @@ public class Form14 : Form1
     private void ProviderOrRecieverOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = (((RamAccess<string>)value).Value ?? string.Empty);
         if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
         {
             tmp = tmp.ToUpper();
@@ -1108,7 +1108,7 @@ public class Form14 : Form1
     private void TransporterOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
         {
             tmp = tmp.ToUpper();
@@ -1171,7 +1171,7 @@ public class Form14 : Form1
     private void PackName_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         PackName_DB = tmp;
     }
 
@@ -1220,7 +1220,7 @@ public class Form14 : Form1
     private void PackType_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         PackType_DB = tmp;
     }
 
@@ -1269,7 +1269,7 @@ public class Form14 : Form1
     private void PackNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         PackNumber_DB = tmp;
     }
 

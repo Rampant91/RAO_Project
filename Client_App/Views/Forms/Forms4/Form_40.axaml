@@ -1,0 +1,315 @@
+<Window
+    x:Class="Client_App.Form_40"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms4"
+    xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
+    xmlns:customConverters="clr-namespace:Client_App.Resources.CustomConverters"
+    Title="Форма 4.0"
+    Name="Форма 4.0"
+    Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.5', FallbackValue='600', Mode=OneTime}"
+    Height="{Binding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.75', FallbackValue='800', Mode=OneTime}"
+    MinWidth="950"
+    MinHeight="600"
+    x:CompileBindings="True"
+    x:DataType="vm:Form_40VM"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+
+	<Design.DataContext>
+		<vm:Form_40VM/>
+	</Design.DataContext>
+
+	<Grid>
+
+		<!--  TopTable  -->
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" MaxHeight="200"/>
+			<RowDefinition Height="5*" MinHeight="400"/>
+		</Grid.RowDefinitions>
+		<Border
+            Grid.Row="0"
+            Margin="5,15,5,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            BorderBrush="Black"
+            BorderThickness="1"
+            CornerRadius="5">
+
+			<Grid RowDefinitions="Auto,Auto" ColumnDefinitions="330, 550">
+				<TextBlock
+					Grid.Row="0"
+					Grid.Column="0"
+					Margin="5"
+					Text="Код и субъект Российской Федерации"/>
+				<Grid Grid.Row="0"
+					  Grid.Column="1"
+				      ColumnDefinitions="40,*" 
+					  Margin="5">
+				    <TextBox 
+					    Grid.Row="0"
+					    Grid.Column="0"
+						Margin="0,0,0,3"
+						Watermark="Код"
+						Text="{Binding CodeOfSubjectRF}"
+						MaxLength="2"/>
+				    <AutoCompleteBox
+					    Grid.Row="0"
+					    Grid.Column="1"
+					    MaxDropDownHeight="300"
+					    Items="{Binding SubjectRFCollection}"
+					    FilterMode="Contains"
+					    Margin="0,0,0,3"
+						Watermark="Субъект Российской Федерации"
+					    Text="{Binding NameOfSubjectRF}">
+				    </AutoCompleteBox>
+				</Grid>
+
+				<StackPanel 
+					    Grid.Row="1"
+					    Grid.Column="0" 
+						Grid.ColumnSpan="2"
+						Orientation="Horizontal">
+				    <Button
+					    Content="Сохранить"
+					    Margin ="10,5,5,5"
+					    Command="{Binding SaveReport}"/>
+				</StackPanel>
+			</Grid>
+		</Border>
+		<!-- ScrollData -->
+		<ScrollViewer
+            Grid.Row="1"
+            MinHeight="400"
+            Margin="0,5,0,0"
+            VerticalAlignment="Top"
+            VerticalContentAlignment="Stretch"
+            VerticalScrollBarVisibility="Hidden">
+			<StackPanel>
+				<!-- Орган управления -->
+				<Border
+                    Margin="5,15,5,20"
+                    Padding="3,3,3,3"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    BorderBrush="Black"
+                    BorderThickness="1"
+                    CornerRadius="5">
+					<Grid ColumnDefinitions="330,550" RowDefinitions="*,*">
+						<!-- Орган управления- Наименования полей -->
+						<TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Height="32"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Top"
+                            FontSize="18"
+                            FontWeight="Bold"
+                            Text="Орган управления"/>
+						<StackPanel
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="0,5,0,0">
+							<TextBlock
+                                Height="32"
+                                Margin="5,8"
+                                Text="Наименование органа исполнительной власти субъекта Российской Федерации"/>
+							<TextBlock
+                                Height="32"
+                                Margin="5,0"
+                                Text="Сокращенное наименование органа исполнительной власти субъекта Российской Федерации (при наличии)"/>
+							<TextBlock
+                                Height="32"
+                                Margin="5,8"
+                                Text="Место нахождения органа управления"/>
+							<TextBlock
+                                Height="32"
+                                Margin="5,8"
+                                Text="Должность, фамилия, имя, отчество (при наличии) руководителя"/>
+							<TextBlock
+                                Height="32"
+                                Margin="5,8"
+                                Text="Должность, фамилия, имя, отчество (при наличии) ответственного исполнителя"/>
+							<TextBlock
+                                Height="32"
+                                Margin="5,0"
+                                Text="Телефон"/>
+							<TextBlock
+                                Height="32"
+                                Margin="5,0"
+                                Text="Факс"/>
+							<TextBlock
+                                Height="32"
+                                Margin="5,0"
+                                Text="Адрес электронной почты (при наличии)"/>
+						</StackPanel>
+						<!-- Орган управления - Значения в базе -->
+						<StackPanel
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Top">
+							<TextBox
+                                Height="42"
+                                Margin="0,3"
+                                AcceptsReturn="True"
+                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                TextWrapping="Wrap"
+                                Text="{Binding Storage.Rows40[0].NameOrganUprav.Value}"/>
+							<TextBox
+                                Height="26"
+                                Margin="0,3"
+                                Text="{Binding Storage.Rows40[0].ShortNameOrganUprav.Value}"/>
+							<TextBox
+                                Height="42"
+                                Margin="0,3"
+                                AcceptsReturn="True"
+                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                TextWrapping="Wrap"
+                                Text="{Binding Storage.Rows40[0].AddressOrganUprav.Value}"/>
+							<TextBox
+                                Height="42"
+                                Margin="0,3"
+                                AcceptsReturn="True"
+                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                TextWrapping="Wrap"
+                                Text="{Binding Storage.Rows40[0].GradeFioDirectorOrganUprav.Value}"/>
+							<TextBox
+                                Height="42"
+                                Margin="0,3"
+                                AcceptsReturn="True"
+                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                TextWrapping="Wrap"
+                                Text="{Binding Storage.Rows40[0].GradeFioExecutorOrganUprav.Value}"/>
+							<TextBox
+                                Height="26"
+                                Margin="0,3"
+                                Text="{Binding Storage.Rows40[0].TelephoneOrganUprav.Value}"/>
+							<TextBox
+                                Height="26"
+                                Margin="0,3"
+                                Text="{Binding Storage.Rows40[0].FaxOrganUprav.Value}"/>
+							<TextBox
+                                Height="26"
+                                Margin="0,3"
+                                Text="{Binding Storage.Rows40[0].EmailOrganUprav.Value}"/>
+						</StackPanel>
+					</Grid>
+				</Border>
+				<!-- Региональный информационно-аналитический центр -->
+				<Border
+                    Margin="5,0,5,20"
+                    Padding="3"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    BorderBrush="Black"
+                    BorderThickness="1"
+                    CornerRadius="5">
+					<Grid ColumnDefinitions="330,550" RowDefinitions="*,*">
+						<!-- Региональный информационно-аналитический центр - Наименования полей -->
+						<TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Height="32"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Top"
+                            FontSize="18"
+                            FontWeight="Bold"
+                            Text="Региональный информационно-аналитический центр"/>
+						<StackPanel
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="0,5,0,0">
+							<TextBlock
+                                Height="32"
+                                Margin="5,8"
+                                Text="Наименование организации"/>
+							<TextBlock
+                                Height="32"
+                                Margin="5,0"
+                                Text="Сокращенное наименование организации (при наличии)"/>
+							<TextBlock
+                                Height="32"
+                                Margin="5,8"
+                                Text="Адрес РИАЦ"/>
+							<TextBlock
+                                Height="32"
+                                Margin="5,8"
+                                Text="Должность, фамилия, имя, отчество (при наличии) руководителя"/>
+							<TextBlock
+                                Height="32"
+                                Margin="5,0"
+                                Text="Должность, фамилия, имя, отчество (при наличии) ответственного исполнителя"/>
+							<TextBlock
+                                Height="32"
+                                Margin="5,0"
+                                Text="Телефон"/>
+							<TextBlock
+                                Height="32"
+                                Margin="5,0"
+                                Text="Факс"/>
+							<TextBlock
+                                Height="32"
+                                Margin="5,0"
+                                Text="Адрес электронной почты (при наличии)"/>
+						</StackPanel>
+						<!-- Региональный информационно-аналитический центр - Значения в базе -->
+						<StackPanel
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Top">
+							<TextBox
+                                Height="26"
+                                Margin="0,0,0,3"
+                                Text="{Binding Storage.Rows40[0].NameRiac.Value}"/>
+							<TextBox
+                                Height="42"
+                                Margin="0,3"
+                                AcceptsReturn="True"
+                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                TextWrapping="Wrap"
+                                Text="{Binding Storage.Rows40[0].ShortNameRiac.Value}"/>
+							<TextBox
+                                Height="26"
+                                Margin="0,3"
+                                Text="{Binding Storage.Rows40[0].AddressRiac.Value}"/>
+							<TextBox
+                                Height="42"
+                                Margin="0,3"
+                                AcceptsReturn="True"
+                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                TextWrapping="Wrap"
+                                Text="{Binding Storage.Rows40[0].GradeFioDirectorRiac.Value}"/>
+							<TextBox
+                                Height="42"
+                                Margin="0,3"
+                                AcceptsReturn="True"
+                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                Text="{Binding Storage.Rows40[0].GradeFioExecutorRiac.Value}"/>
+							<TextBox
+                                Height="42"
+                                Margin="0,3"
+                                AcceptsReturn="True"
+                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                TextWrapping="Wrap"
+                                Text="{Binding Storage.Rows40[0].TelephoneRiac.Value}"/>
+							<TextBox
+                                Height="26"
+                                Margin="0,3"
+                                Text="{Binding Storage.Rows40[0].FaxRiac.Value}"/>
+							<TextBox
+                                Height="26"
+                                Margin="0,3"
+                                Text="{Binding Storage.Rows40[0].EmailRiac.Value}"/>
+						</StackPanel>
+					</Grid>
+				</Border>
+			</StackPanel>
+		</ScrollViewer>
+	</Grid>
+</Window>

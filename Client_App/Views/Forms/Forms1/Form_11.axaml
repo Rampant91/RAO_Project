@@ -131,21 +131,24 @@
                 <!--#region Дополнительные функции-->
 
                 <Border Classes="borderContainer">
-                    <Grid Margin="5" RowDefinitions="Auto,Auto,Auto">
+                    <Grid Margin="5" RowDefinitions="Auto,Auto,Auto,Auto">
 
                         <Button Grid.Row="0" Command="{Binding SourceTransmissionAll}">Перевести все РВ в РАО</Button>
 
                         <StackPanel Grid.Row="1" Orientation="Horizontal">
                             <TextBlock Margin="5" Text="Автозаполнение:" />
                             <CheckBox Margin="5" IsChecked="{Binding IsAutoReplaceEnabled}" />
+
                         </StackPanel>
 
                         <Button
+							
                             Grid.Row="2"
                             Margin="5"
                             Command="{Binding SetDefaultColumnWidth}"
                             CommandParameter="{Binding ElementName=dataGrid}"
                             Content="Выставить ширину колонок по умолчанию" />
+
                     </Grid>
                 </Border>
 
@@ -154,18 +157,9 @@
             </WrapPanel>
         </Expander>
 
-        <!--#endregion Верхний блок данных-->
+		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1">
 
-        <!--#region Таблица-->
-
-        <ScrollViewer Grid.Row="1" Classes="tableScrollViewer">
-            <Grid
-                x:Name="Table"
-                ColumnDefinitions="Auto"
-                RowDefinitions="Auto,*">
-
-                <!--#region Контекстное меню-->
-
+            <Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="Auto">
                 <Grid.ContextMenu>
                     <ContextMenu
                         x:CompileBindings="True"
@@ -408,13 +402,13 @@
                 <DataGrid
                     x:Name="dataGrid"
                     Grid.Row="1"
-                    x:CompileBindings="True"
-                    CanUserReorderColumns="False"
-                    CanUserSortColumns="True"
-                    Classes="table"
-                    ColumnWidth="125"
-                    Items="{Binding FormList}"
-                    SelectedItem="{Binding SelectedForm}">
+					Classes="table"
+					x:CompileBindings="True"
+					CanUserSortColumns="True"
+					CanUserReorderColumns="False"
+					Items="{Binding FormList}"
+					SelectedItem="{Binding SelectedForm}"
+					ColumnWidth="125">
 
                     <interactivity:Interaction.Behaviors>
                         <local:DataGridColumnWidthLoadBehavior FormNum="1.1" />
@@ -425,40 +419,38 @@
                         <local:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
                     </interactivity:Interaction.Behaviors>
 
-                    <DataGrid.Columns>
+					<DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding NumberInOrder.Value}"
+											Width="40"
+											IsReadOnly="True"
+											x:DataType="forms1:Form11">
+							<DataGridTextColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="1"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTextColumn.HeaderTemplate>
+						</DataGridTextColumn>
 
-                        <DataGridTextColumn
-                            Width="40"
-                            x:DataType="forms1:Form11"
-                            Binding="{Binding NumberInOrder.Value}"
-                            IsReadOnly="True">
-                            <DataGridTextColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="1" />
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTextColumn.HeaderTemplate>
-                        </DataGridTextColumn>
-
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="2" />
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding OperationCode.Value, Mode=TwoWay}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="2"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form11">
+									<TextBox Text="{Binding OperationCode.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
                         <DataGridTemplateColumn>
                             <DataGridTemplateColumn.HeaderTemplate>
@@ -938,6 +930,7 @@
                             <local:DataGridColumnWidthLoadBehavior FormNum="notes" />
                             <local:DataGridPointerBehavior />
                             <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
+							<local:DataGridSwitchToNotesBehavior SourceDataGrid="{Binding #dataGrid}"/>
                         </interactivity:Interaction.Behaviors>
 
                         <DataGrid.Columns>
