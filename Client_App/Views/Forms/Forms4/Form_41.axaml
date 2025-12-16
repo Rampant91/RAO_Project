@@ -11,7 +11,7 @@
     xmlns:forms4="clr-namespace:Models.Forms.Form4;assembly=Models"
     xmlns:forms="clr-namespace:Models.Forms;assembly=Models"
 	xmlns:behaviors="using:Avalonia.Xaml.Interactions.Core"
-	xmlns:controls="clr-namespace:Client_App.Controls"
+	xmlns:controls="clr-namespace:Client_App.Views.Controls"
     Title="Форма 4.1"
     d:DesignHeight="450"
     d:DesignWidth="900"

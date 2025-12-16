@@ -10,7 +10,7 @@
 	xmlns:local="using:Client_App.Behaviors"
 	xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 	xmlns:models="clr-namespace:Models.Collections;assembly=Models"
-	xmlns:controls="clr-namespace:Client_App.Controls"
+    xmlns:controls="clr-namespace:Client_App.Views.Controls"
 	xmlns:tabs="clr-namespace:Client_App.Views.MainWindowTabs"
     Title="{Binding Current_Db, Mode=OneWay}"
     d:DesignHeight="600"
