@@ -63,20 +63,23 @@ namespace Client_App.ViewModels.MainWindowTabs
                 {
                     var search = SearchText.ToLower().Trim();
                     return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .Where(reps => reps.Master_DB.FormNum_DB == "4.0")
-                    .Where(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB.ToString().Contains(search)
-                    || reps.Master_DB.Rows40[0].SubjectRF_DB.ToLower().Contains(search)
-                    || (!string.IsNullOrEmpty(reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB)
-                       && reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB.ToLower().Contains(search))
-                      )
-                    .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                    .Take(RowsCountOrgs));
+                        .AsEnumerable()
+                        .Where(reps => reps.Master_DB.FormNum_DB == "4.0")
+                        .Where(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB.ToString().Contains(search)
+                        || reps.Master_DB.Rows40[0].SubjectRF_DB.ToLower().Contains(search)
+                        || (!string.IsNullOrEmpty(reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB)
+                           && reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB.ToLower().Contains(search)))
+                        .OrderBy(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB)
+                        .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
+                        .Take(RowsCountOrgs).ToList());
                 }
                 else
                     return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .Where(reps => reps.Master_DB.FormNum_DB == "4.0")
-                    .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                    .Take(RowsCountOrgs));
+                        .AsEnumerable()
+                        .Where(reps => reps.Master_DB.FormNum_DB == "4.0")
+                        .OrderBy(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB)
+                        .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
+                        .Take(RowsCountOrgs).ToList());
             }
         }
         #endregion
@@ -175,6 +178,12 @@ namespace Client_App.ViewModels.MainWindowTabs
                 return new ObservableCollection<Report>(
                     SelectedReports
                     .Report_Collection
+                    .AsEnumerable()
+                    .OrderBy(x => x.FormNum_DB)
+                    .ThenBy(x => x.Year_DB == null ||
+                                 !int.TryParse(x.Year_DB, out _) ?
+                                 int.MinValue :
+                                 int.Parse(x.Year_DB))
                     .Skip((CurrentPageForms - 1) * RowsCountForms)
                     .Take(RowsCountForms));
             }

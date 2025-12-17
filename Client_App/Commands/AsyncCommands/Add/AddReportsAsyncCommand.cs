@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms4;
+using Models.DBRealization;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
@@ -121,6 +122,7 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
             .AddRange(tmpReportsList
                 .OrderBy(x => x.Master_DB.RegNoRep?.Value, comparator)
                 .ThenBy(x => x.Master_DB.OkpoRep?.Value, comparator));
+
 
         mainWindowVM.UpdateReportsCollection();
         mainWindowVM.UpdateOrgsPageInfo();

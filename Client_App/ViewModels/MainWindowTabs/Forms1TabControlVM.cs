@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using Client_App.Resources.CustomComparers;
+using CommunityToolkit.Mvvm.Input;
 using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -61,23 +63,30 @@ namespace Client_App.ViewModels.MainWindowTabs
         {
             get
             {
+                var comparator = new CustomReportsComparer();
                 if (!string.IsNullOrEmpty(SearchText))
                 {
                     var search = SearchText.ToLower().Trim();
+
                     return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
-                    .Where(reps => reps.Master_DB.Rows10[0].RegNo_DB.ToLower().Contains(search)
-                    || reps.Master_DB.Rows10[0].Okpo_DB.ToLower().Contains(search)
-                    || reps.Master_DB.Rows10[0].ShortJurLico_DB.ToLower().Contains(search)
-                      )
-                    .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                    .Take(RowsCountOrgs));
+                        .AsEnumerable()
+                        .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
+                        .Where(reps => reps.Master_DB.Rows10[0].RegNo_DB.ToLower().Contains(search)
+                        || reps.Master_DB.Rows10[0].Okpo_DB.ToLower().Contains(search)
+                        || reps.Master_DB.Rows10[0].ShortJurLico_DB.ToLower().Contains(search))
+                        .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
+                        .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
+                        .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
+                        .Take(RowsCountOrgs).ToList());
                 }
                 else
                     return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
-                    .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                    .Take(RowsCountOrgs));
+                        .AsEnumerable()
+                        .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
+                        .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
+                        .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
+                        .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
+                        .Take(RowsCountOrgs));
             }
         }
         #endregion
@@ -172,9 +181,21 @@ namespace Client_App.ViewModels.MainWindowTabs
             {
                 if (SelectedReports is null) return null;
 
+
                 return new ObservableCollection<Report>(
                     SelectedReports
                     .Report_Collection
+                    .AsEnumerable()
+                    .OrderBy(x => x.FormNum_DB)
+                    // Сортируем по валидным датам, некорректные уходят в начало/конец
+                    .ThenBy(x => x.StartPeriod_DB == null ||
+                                 !DateTime.TryParse(x.StartPeriod_DB, out _) ?
+                                 DateTime.MinValue :
+                                 DateTime.Parse(x.StartPeriod_DB))
+                    .ThenBy(x => x.EndPeriod_DB == null ||
+                                 !DateTime.TryParse(x.EndPeriod_DB, out _) ?
+                                 DateTime.MinValue :
+                                 DateTime.Parse(x.EndPeriod_DB))
                     .Skip((CurrentPageForms - 1) * RowsCountForms)
                     .Take(RowsCountForms));
             }

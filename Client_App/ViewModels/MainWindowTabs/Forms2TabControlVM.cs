@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Client_App.Resources.CustomComparers;
 using Client_App.Views;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
@@ -63,23 +64,29 @@ namespace Client_App.ViewModels.MainWindowTabs
         {
             get
             {
+                var comparator = new CustomReportsComparer();
                 if (!string.IsNullOrEmpty(SearchText))
                 {
                     var search = SearchText.ToLower().Trim();
                     return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
-                    .Where(reps => reps.Master_DB.Rows20[0].RegNo_DB.ToLower().Contains(search)
-                    || reps.Master_DB.Rows20[0].Okpo_DB.ToLower().Contains(search)
-                    || reps.Master_DB.Rows20[0].ShortJurLico_DB.ToLower().Contains(search)
-                      )
-                    .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                    .Take(RowsCountOrgs));
+                        .AsEnumerable()
+                        .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
+                        .Where(reps => reps.Master_DB.Rows20[0].RegNo_DB.ToLower().Contains(search)
+                        || reps.Master_DB.Rows20[0].Okpo_DB.ToLower().Contains(search)
+                        || reps.Master_DB.Rows20[0].ShortJurLico_DB.ToLower().Contains(search))
+                        .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
+                        .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
+                        .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
+                        .Take(RowsCountOrgs).ToList());
                 }
                 else
                     return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
-                    .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                    .Take(RowsCountOrgs));
+                        .AsEnumerable()
+                        .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
+                        .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
+                        .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
+                        .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
+                        .Take(RowsCountOrgs).ToList());
             }
         }
         #endregion
@@ -178,6 +185,12 @@ namespace Client_App.ViewModels.MainWindowTabs
                 return new ObservableCollection<Report>(
                     SelectedReports
                     .Report_Collection
+                    .AsEnumerable()
+                    .OrderBy(x => x.FormNum_DB)
+                    .ThenBy(x => x.Year_DB == null ||
+                                 !int.TryParse(x.Year_DB, out _) ?
+                                 int.MinValue :
+                                 int.Parse(x.Year_DB))
                     .Skip((CurrentPageForms - 1) * RowsCountForms)
                     .Take(RowsCountForms));
             }
