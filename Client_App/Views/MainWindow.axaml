@@ -390,7 +390,7 @@
 					<tabs:Forms2TabControl DataContext="{Binding Forms2TabControlVM}"/>
 				</TabItem>
 				<TabItem x:Name="Forms3" Header="Формы 3" IsVisible="False"/>
-				<TabItem x:Name="Forms4" Header="Формы 4" IsVisible="True">
+				<TabItem x:Name="Forms4" Header="Формы 4" IsVisible="False">
 					<tabs:Forms4TabControl DataContext="{Binding Forms4TabControlVM}"/>
 			    </TabItem>
             </TabControl>
