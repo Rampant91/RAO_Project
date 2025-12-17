@@ -123,6 +123,7 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
                 .ThenBy(x => x.Master_DB.OkpoRep?.Value, comparator));
 
         mainWindowVM.UpdateReportsCollection();
+        mainWindowVM.UpdateOrgsPageInfo();
 
 
         //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync(); не нужно

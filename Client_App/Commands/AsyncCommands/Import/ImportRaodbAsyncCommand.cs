@@ -339,6 +339,7 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
 
             var mainWindowVM = Desktop.MainWindow.DataContext as MainWindowVM;
             mainWindowVM.UpdateReportsCollection();
+            mainWindowVM.UpdateOrgsPageInfo();
             mainWindowVM.UpdateTotalReportCount();
         }
         else

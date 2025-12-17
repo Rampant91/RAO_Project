@@ -214,6 +214,7 @@ public class NewAddFormAsyncCommand : BaseAsyncCommand
                         }
                 }
                 mainWindowVM.UpdateReportCollection();
+                mainWindowVM.UpdateFormsPageInfo();
                 mainWindowVM.UpdateTotalReportCount();
 
                 /*

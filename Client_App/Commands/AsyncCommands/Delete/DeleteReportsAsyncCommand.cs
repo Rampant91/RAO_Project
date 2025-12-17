@@ -83,6 +83,7 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
             var mainWindow = (Desktop.MainWindow as MainWindow)!;
             var mainWindowVM = (mainWindow.DataContext as MainWindowVM)!;
             mainWindowVM.UpdateReportsCollection();
+            mainWindowVM.UpdateOrgsPageInfo();
         }
         catch (Exception ex)
         {

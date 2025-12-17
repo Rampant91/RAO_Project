@@ -195,7 +195,6 @@ namespace Client_App.ViewModels.MainWindowTabs
             {
                 _selectedReport = value;
                 OnPropertyChanged();
-                UpdateFormsPageInfo();
                 OnPropertyChanged(nameof(InSelectedReportFormsCount));
             }
         }

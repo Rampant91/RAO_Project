@@ -126,7 +126,7 @@ namespace Client_App.ViewModels.MainWindowTabs
         {
             get
             {
-                return StaticConfiguration.DBModel.ReportsCollectionDbSet.CountAsync(reps => reps.Master_DB.FormNum_DB == "4.0").Result;
+                return StaticConfiguration.DBModel.ReportsCollectionDbSet.CountAsync(reps => reps.Master_DB.FormNum_DB == "2.0").Result;
             }
         }
 
@@ -199,7 +199,6 @@ namespace Client_App.ViewModels.MainWindowTabs
                 _selectedReport = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(InSelectedReportFormsCount));
-                UpdateFormsPageInfo();
             }
         }
 

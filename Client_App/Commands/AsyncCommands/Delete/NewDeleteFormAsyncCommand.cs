@@ -54,9 +54,8 @@ public class NewDeleteFormAsyncCommand : BaseAsyncCommand
                 }
 
 
-
-                mainWindowVM.UpdateReportsCollection();
                 mainWindowVM.UpdateReportCollection();
+                mainWindowVM.UpdateFormsPageInfo();
 
                 mainWindowVM.SelectedReports = selectedReports;
             }
