@@ -27,7 +27,8 @@
 						  RowHeight="25"
 						  GridLinesVisibility="All"
 						  AlternatingRowBackground="White"
-						  RowBackground="White">
+						  RowBackground="White"
+						  CanUserSortColumns="False">
 
 					<DataGrid.ContextMenu>
 						<ContextMenu>
@@ -56,12 +57,8 @@
 					</DataGrid.ContextMenu>
 
 					<DataGrid.Columns>
-						<DataGridTextColumn
-							x:DataType="models:Reports"
-							Width="60"
-							IsReadOnly="True"
-							Binding="{Binding Master.Rows10[0].RegNo.Value}">
-							<DataGridTextColumn.HeaderTemplate>
+						<DataGridTemplateColumn Width="60" IsReadOnly="True">
+							<DataGridTemplateColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto" Margin="3">
@@ -70,15 +67,16 @@
 										</Grid>
 									</Border>
 								</DataTemplate>
-							</DataGridTextColumn.HeaderTemplate>
-						</DataGridTextColumn>
-
-						<DataGridTextColumn
-							x:DataType="models:Reports"
-							Width="*"
-							IsReadOnly="True"
-							Binding="{Binding Master.Rows10[0].ShortJurLico.Value}">
-							<DataGridTextColumn.HeaderTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="models:Reports">
+									<TextBlock Margin="5" Text="{Binding Master.RegNoRep.Value}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						
+						<DataGridTemplateColumn Width="*" IsReadOnly="True">
+							<DataGridTemplateColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto" Margin="3">
@@ -87,15 +85,23 @@
 										</Grid>
 									</Border>
 								</DataTemplate>
-							</DataGridTextColumn.HeaderTemplate>
-						</DataGridTextColumn>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="models:Reports">
+									<TextBlock Margin="5">
+										<TextBlock.Text>
+											<MultiBinding Converter="{StaticResource IfNullShowAnotherValue}">
+												<Binding Path="Master.Rows10[1].ShortJurLico.Value"/>
+												<Binding Path="Master.Rows10[0].ShortJurLico.Value"/>
+											</MultiBinding>
+										</TextBlock.Text>
+									</TextBlock>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-						<DataGridTextColumn
-							x:DataType="models:Reports"
-							Width="80"
-							IsReadOnly="True"
-							Binding="{Binding Master.Rows10[0].Okpo.Value}">
-							<DataGridTextColumn.HeaderTemplate>
+						<DataGridTemplateColumn Width="100" IsReadOnly="True">
+							<DataGridTemplateColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto" Margin="3">
@@ -104,8 +110,13 @@
 										</Grid>
 									</Border>
 								</DataTemplate>
-							</DataGridTextColumn.HeaderTemplate>
-						</DataGridTextColumn>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="models:Reports">
+									<TextBlock Margin="5" Text="{Binding Master.OkpoRep.Value}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
 					</DataGrid.Columns>
 				</DataGrid>
@@ -192,7 +203,8 @@
 						  RowHeight="25"
 						  GridLinesVisibility="All"
 						  AlternatingRowBackground="White"
-						  RowBackground="White">
+						  RowBackground="White"
+						  CanUserSortColumns="False">
 					<DataGrid.ContextMenu>
 						<ContextMenu>
 							<MenuItem Header="Редактировать форму"

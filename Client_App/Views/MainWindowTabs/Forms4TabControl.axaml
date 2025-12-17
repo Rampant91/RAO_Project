@@ -27,7 +27,8 @@
 						  RowHeight="25"
 						  GridLinesVisibility="All"
 						  AlternatingRowBackground="White"
-						  RowBackground="White">
+						  RowBackground="White"
+						  CanUserSortColumns="False">
 
 					<DataGrid.ContextMenu>
 						<ContextMenu>
@@ -161,7 +162,8 @@
 						  RowHeight="25"
 						  GridLinesVisibility="All"
 						  AlternatingRowBackground="White"
-						  RowBackground="White">
+						  RowBackground="White"
+						  CanUserSortColumns="False">
 					<DataGrid.ContextMenu>
 						<ContextMenu>
 							<MenuItem Header="Редактировать форму"

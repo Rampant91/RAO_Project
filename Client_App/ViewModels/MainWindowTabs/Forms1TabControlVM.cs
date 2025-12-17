@@ -50,6 +50,8 @@ namespace Client_App.ViewModels.MainWindowTabs
             }
             set
             {
+                if (CurrentPageOrgs != 1)
+                    CurrentPageOrgs = 1;
                 _searchText = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(ReportsCollection));
@@ -71,9 +73,10 @@ namespace Client_App.ViewModels.MainWindowTabs
                     return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
                         .AsEnumerable()
                         .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
-                        .Where(reps => reps.Master_DB.Rows10[0].RegNo_DB.ToLower().Contains(search)
-                        || reps.Master_DB.Rows10[0].Okpo_DB.ToLower().Contains(search)
-                        || reps.Master_DB.Rows10[0].ShortJurLico_DB.ToLower().Contains(search))
+                        .Where(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
+                        || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
+                        || reps.Master_DB.Rows10[0].ShortJurLico_DB.ToLower().Contains(search)
+                        || reps.Master_DB.Rows10[1].ShortJurLico_DB.ToLower().Contains(search))
                         .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
                         .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
                         .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)

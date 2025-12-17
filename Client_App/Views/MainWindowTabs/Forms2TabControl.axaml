@@ -27,7 +27,8 @@
 						  RowHeight="25"
 						  GridLinesVisibility="All"
 						  AlternatingRowBackground="White"
-						  RowBackground="White">
+						  RowBackground="White"
+						  CanUserSortColumns="False">
 
 					<DataGrid.ContextMenu>
 						<ContextMenu>
@@ -55,57 +56,67 @@
 						</ContextMenu>
 					</DataGrid.ContextMenu>
 
-					<DataGrid.Columns>
-						<DataGridTextColumn
-							x:DataType="models:Reports"
-							Width="60"
-							IsReadOnly="True"
-							Binding="{Binding Master.Rows20[0].RegNo.Value}">
-							<DataGridTextColumn.HeaderTemplate>
-								<DataTemplate>
-									<Border Classes="headerTemplate">
-										<Grid ColumnDefinitions="*,Auto" Margin="3">
-											<TextBlock Grid.Column="0" Text="Рег. №"/>
-											<!--<Button Grid.Column="1"/>-->
-										</Grid>
-									</Border>
-								</DataTemplate>
-							</DataGridTextColumn.HeaderTemplate>
-						</DataGridTextColumn>
+						<DataGrid.Columns>
+							<DataGridTemplateColumn Width="60" IsReadOnly="True">
+								<DataGridTemplateColumn.HeaderTemplate>
+									<DataTemplate>
+										<Border Classes="headerTemplate">
+											<Grid ColumnDefinitions="*,Auto" Margin="3">
+												<TextBlock Grid.Column="0" Text="Рег. №"/>
+												<!--<Button Grid.Column="1"/>-->
+											</Grid>
+										</Border>
+									</DataTemplate>
+								</DataGridTemplateColumn.HeaderTemplate>
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate x:DataType="models:Reports">
+										<TextBlock Margin="5" Text="{Binding Master.RegNoRep.Value}"/>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
 
-						<DataGridTextColumn
-							x:DataType="models:Reports"
-							Width="*"
-							IsReadOnly="True"
-							Binding="{Binding Master.Rows20[0].ShortJurLico.Value}">
-							<DataGridTextColumn.HeaderTemplate>
-								<DataTemplate>
-									<Border Classes="headerTemplate">
-										<Grid ColumnDefinitions="*,Auto" Margin="3">
-											<TextBlock Grid.Column="0" Text="Сокращенное наименование"/>
-											<!--<Button Grid.Column="1"/>-->
-										</Grid>
-									</Border>
-								</DataTemplate>
-							</DataGridTextColumn.HeaderTemplate>
-						</DataGridTextColumn>
+							<DataGridTemplateColumn Width="*" IsReadOnly="True">
+								<DataGridTemplateColumn.HeaderTemplate>
+									<DataTemplate>
+										<Border Classes="headerTemplate">
+											<Grid ColumnDefinitions="*,Auto" Margin="3">
+												<TextBlock Grid.Column="0" Text="Сокращенное наименование"/>
+												<!--<Button Grid.Column="1"/>-->
+											</Grid>
+										</Border>
+									</DataTemplate>
+								</DataGridTemplateColumn.HeaderTemplate>
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate x:DataType="models:Reports">
+										<TextBlock Margin="5">
+											<TextBlock.Text>
+												<MultiBinding Converter="{StaticResource IfNullShowAnotherValue}">
+													<Binding Path="Master.Rows20[1].ShortJurLico.Value"/>
+													<Binding Path="Master.Rows20[0].ShortJurLico.Value"/>
+												</MultiBinding>
+											</TextBlock.Text>
+										</TextBlock>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
 
-						<DataGridTextColumn
-							x:DataType="models:Reports"
-							Width="80"
-							IsReadOnly="True"
-							Binding="{Binding Master.Rows20[0].Okpo.Value}">
-							<DataGridTextColumn.HeaderTemplate>
-								<DataTemplate>
-									<Border Classes="headerTemplate">
-										<Grid ColumnDefinitions="*,Auto" Margin="3">
-											<TextBlock Grid.Column="0" Text="ОКПО"/>
-											<!--<Button Grid.Column="1"/>-->
-										</Grid>
-									</Border>
-								</DataTemplate>
-							</DataGridTextColumn.HeaderTemplate>
-						</DataGridTextColumn>
+							<DataGridTemplateColumn Width="100" IsReadOnly="True">
+								<DataGridTemplateColumn.HeaderTemplate>
+									<DataTemplate>
+										<Border Classes="headerTemplate">
+											<Grid ColumnDefinitions="*,Auto" Margin="3">
+												<TextBlock Grid.Column="0" Text="ОКПО"/>
+												<!--<Button Grid.Column="1"/>-->
+											</Grid>
+										</Border>
+									</DataTemplate>
+								</DataGridTemplateColumn.HeaderTemplate>
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate x:DataType="models:Reports">
+										<TextBlock Margin="5" Text="{Binding Master.OkpoRep.Value}"/>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
 
 					</DataGrid.Columns>
 				</DataGrid>
@@ -204,7 +215,8 @@
 						  RowHeight="25"
 						  GridLinesVisibility="All"
 						  AlternatingRowBackground="White"
-						  RowBackground="White">
+						  RowBackground="White"
+						  CanUserSortColumns="False">
 					<DataGrid.ContextMenu>
 						<ContextMenu>
 							<MenuItem Header="Редактировать форму"
