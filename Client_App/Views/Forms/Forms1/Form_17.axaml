@@ -446,7 +446,7 @@
                         <TextBlock>дата</TextBlock>
                     </Border>
                     <Border Grid.Row="2" Grid.Column="16">
-                        <TextBlock>постащика или получателя</TextBlock>
+                        <TextBlock>поставщика или получателя</TextBlock>
                     </Border>
                     <Border Grid.Row="2" Grid.Column="17">
                         <TextBlock>перевозчика</TextBlock>

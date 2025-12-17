@@ -16,7 +16,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Client_App.Commands.AsyncCommands.Save;
 
-//  Сохранить отчет
+/// <summary>
+/// Сохранение отчёта
+/// </summary>
 public class SaveReportAsyncCommand : BaseAsyncCommand
 {
     private dynamic VM

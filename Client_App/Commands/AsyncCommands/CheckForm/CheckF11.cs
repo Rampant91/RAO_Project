@@ -2761,7 +2761,7 @@ public abstract partial class CheckF11 : CheckBase
 
         if (operationCode is "10" || operationCode[0] is '2' or '3')
         {
-            if (IOU11.Any(x => ReplaceSimilarCharsAndCheckToContains(x, packName)))
+            if (IOU11.Any(x => ReplaceSimilarCharsAndCheckToContains(packName, x)))
             {
                 result.Add(new CheckError
                 {
@@ -2772,7 +2772,7 @@ public abstract partial class CheckF11 : CheckBase
                     Message = "Для данного наименования упаковки, должна быть заполнена форма 1.2 (информационное сообщение, не ошибка)."
                 });
             }
-            else if (IOU11.Any(x => ReplaceSimilarCharsAndCheckToContains(x, packType)))
+            else if (IOU11.Any(x => ReplaceSimilarCharsAndCheckToContains(packType, x)))
             {
                 result.Add(new CheckError
                 {
