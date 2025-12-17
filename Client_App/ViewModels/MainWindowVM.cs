@@ -50,10 +50,11 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         {
             if (_selectedReportType != value)
             {
-                _selectedReportType = (byte)(value);
+                _selectedReportType = value;
                 OnPropertyChanged();
-                UpdateReports();
-                UpdatePageInfo();
+                UpdateReportsCollection();
+                UpdateOrgsPageInfo();
+                UpdateFormsPageInfo();
             }
         }
     }
@@ -149,24 +150,42 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                 default:
                     return null;
             }
-               
+        }
+        set
+        {
+            switch (SelectedReportType)
+            {
+                case 1:
+                    Forms1TabControlVM.SelectedReports = value;
+                    OnPropertyChanged();
+                    break;
+                case 2:
+                    Forms2TabControlVM.SelectedReports = value;
+                    OnPropertyChanged();
+                    break;
+                case 4:
+                    Forms4TabControlVM.SelectedReports = value;
+                    OnPropertyChanged();
+                    break;
+            }
         }
     }
     #endregion
 
-    #region UpdateReports
-    public void UpdateReports()
+
+    #region UpdateReportsCollection
+    public void UpdateReportsCollection()
     {
         switch (SelectedReportType)
         {
             case 1:
-                Forms1TabControlVM.UpdateReports();
+                Forms1TabControlVM.UpdateReportsCollection();
                 break;
             case 2:
-                Forms2TabControlVM.UpdateReports();
+                Forms2TabControlVM.UpdateReportsCollection();
                 break;
             case 4:
-                Forms4TabControlVM.UpdateReports();
+                Forms4TabControlVM.UpdateReportsCollection();
                 break;
             default:
                 break;
@@ -174,19 +193,19 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     }
     #endregion
 
-    #region UpdateReport
-    public void UpdateReport()
+    #region UpdateReportCollection
+    public void UpdateReportCollection()
     {
         switch (SelectedReportType)
         {
             case 1:
-                Forms1TabControlVM.UpdateReport();
+                Forms1TabControlVM.UpdateReportCollection();
                 break;
             case 2:
-                Forms2TabControlVM.UpdateReport();
+                Forms2TabControlVM.UpdateReportCollection();
                 break;
             case 4:
-                Forms4TabControlVM.UpdateReport();
+                Forms4TabControlVM.UpdateReportCollection();
                 break;
             default:
                 break;
@@ -194,27 +213,67 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     }
     #endregion
 
-    #region UpdatePageInfo
-    public void UpdatePageInfo()
+    #region UpdateOrgsPageInfo
+    public void UpdateOrgsPageInfo()
     {
         switch (SelectedReportType)
         {
             case 1:
-                Forms1TabControlVM.UpdatePageInfo();
+                Forms1TabControlVM.UpdateOrgsPageInfo();
                 break;
             case 2:
-                Forms2TabControlVM.UpdatePageInfo();
+                Forms2TabControlVM.UpdateOrgsPageInfo();
                 break;
             case 4:
-                Forms4TabControlVM.UpdatePageInfo();
+                Forms4TabControlVM.UpdateOrgsPageInfo();
                 break;
             default:
                 break;
         }
     }
     #endregion
-
     
+    #region UpdateFormsPageInfo
+    public void UpdateFormsPageInfo()
+    {
+        switch (SelectedReportType)
+        {
+            case 1:
+                Forms1TabControlVM.UpdateFormsPageInfo();
+                break;
+            case 2:
+                Forms2TabControlVM.UpdateFormsPageInfo();
+                break;
+            case 4:
+                Forms4TabControlVM.UpdateFormsPageInfo();
+                break;
+            default:
+                break;
+        }
+    }
+    #endregion
+
+    #region TotalReportCount
+    public void UpdateTotalReportCount()
+    {
+        switch (SelectedReportType)
+        {
+            case 1:
+                Forms1TabControlVM.UpdateTotalReportCount();
+                break;
+            case 2:
+                Forms2TabControlVM.UpdateTotalReportCount();
+                break;
+            case 4:
+                Forms4TabControlVM.UpdateTotalReportCount();
+                break;
+            default:
+                break;
+        }
+    }
+    #endregion
+
+
 
     #region OnStartProgressBar
 
@@ -395,7 +454,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         _forms4TabControlVM = new Forms4TabControlVM(this);
 
 
-        UpdateReports();
+        UpdateReportsCollection();
     }
 
     #endregion

@@ -55,9 +55,10 @@ public class NewDeleteFormAsyncCommand : BaseAsyncCommand
 
 
 
-                mainWindowVM.UpdateReports();
+                mainWindowVM.UpdateReportsCollection();
+                mainWindowVM.UpdateReportCollection();
 
-                mainWindowVM.UpdateReport();
+                mainWindowVM.SelectedReports = selectedReports;
             }
             await StaticConfiguration.DBModel.SaveChangesAsync();
         }

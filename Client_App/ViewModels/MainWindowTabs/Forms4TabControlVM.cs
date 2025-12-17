@@ -94,8 +94,15 @@ namespace Client_App.ViewModels.MainWindowTabs
             {
                 _selectedReports = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(ReportCollection));
-                UpdatePageInfo();
+
+                // UpdateReportCollection выполняется в CurrentPageForms
+                // Чтобы не вызывать метод дважды используется if else
+                if (CurrentPageForms != 1)
+                    CurrentPageForms = 1;
+                else
+                    UpdateReportCollection();
+
+                UpdateFormsPageInfo();
             }
         }
         #endregion
@@ -120,7 +127,6 @@ namespace Client_App.ViewModels.MainWindowTabs
                     .Where(reps => reps.Master_DB.FormNum_DB == "4.0").Count();
             }
         }
-
 
         private int _rowsCountOrgs = 10;
         public int RowsCountOrgs
@@ -189,7 +195,8 @@ namespace Client_App.ViewModels.MainWindowTabs
             {
                 _selectedReport = value;
                 OnPropertyChanged();
-                UpdatePageInfo();
+                OnPropertyChanged(nameof(InSelectedReportFormsCount));
+                UpdateFormsPageInfo();
             }
         }
 
@@ -251,29 +258,29 @@ namespace Client_App.ViewModels.MainWindowTabs
         }
         #endregion
 
-        #region TotalForms
-        public int TotalForms
+        #region TotalReportCount
+        public int TotalReportCount
         {
             get
             {
-
-                var result = StaticConfiguration.DBModel.ReportCollectionDbSet
+                return StaticConfiguration.DBModel.ReportCollectionDbSet
                     .Where(rep => rep.FormNum_DB.StartsWith($"{MainWindowVM.SelectedReportType}")
                         && !rep.FormNum_DB.EndsWith(".0"))
                     .CountAsync().Result;
-                return result;
             }
         }
         #endregion
 
-        #region NumFormInReport
-        public int NumFormInReport
+        #region InSelectedReportFormsCount
+        public int InSelectedReportFormsCount
         {
             get
             {
-                if (SelectedReport != null)
-                    return ReportsStorage.GetReportRowsCount(SelectedReport).Result;
-                return 0;
+                if (SelectedReport is null) return 0;
+                return StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .Include(rep => rep.Rows41)
+                    .FirstOrDefault(rep => rep.Id == SelectedReport.Id)
+                    .Rows.Count;
             }
         }
         #endregion
@@ -295,30 +302,41 @@ namespace Client_App.ViewModels.MainWindowTabs
         }
         #endregion
 
-        #region UpdatePageInfo
-        public void UpdatePageInfo()
+        #region UpdateOrgsPageInfo
+        public void UpdateOrgsPageInfo()
         {
-            OnPropertyChanged(nameof(TotalRowsOrgs));
-            OnPropertyChanged(nameof(TotalPagesOrgs));
-
             OnPropertyChanged(nameof(TotalRowsForms));
             OnPropertyChanged(nameof(TotalPagesForms));
 
-            OnPropertyChanged(nameof(TotalForms));
-            OnPropertyChanged(nameof(NumFormInReport));
         }
         #endregion
 
-        #region UpdateReport
-        public void UpdateReport()
+        #region UpdateFormsPageInfo
+        public void UpdateFormsPageInfo()
+        {
+            OnPropertyChanged(nameof(TotalRowsForms));
+            OnPropertyChanged(nameof(TotalPagesForms));
+
+        }
+        #endregion
+
+        #region TotalReportCount
+        public void UpdateTotalReportCount()
+        {
+            OnPropertyChanged(nameof(TotalReportCount));
+        }
+        #endregion
+
+        #region UpdateReportCollection
+        public void UpdateReportCollection()
         {
             OnPropertyChanged(nameof(ReportCollection));
         }
 
         #endregion
 
-        #region UpdateReports
-        public void UpdateReports()
+        #region UpdateReportsCollection
+        public void UpdateReportsCollection()
         {
             OnPropertyChanged(nameof(ReportsCollection));
         }

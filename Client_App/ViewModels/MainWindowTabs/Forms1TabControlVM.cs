@@ -95,11 +95,15 @@ namespace Client_App.ViewModels.MainWindowTabs
             {
                 _selectedReports = value;
                 OnPropertyChanged();
+
+                // UpdateReportCollection выполняется в CurrentPageForms
+                // Чтобы не вызывать метод дважды используется if else
                 if (CurrentPageForms != 1)
                     CurrentPageForms = 1;
                 else
-                    UpdateReport();
-                UpdatePageInfo();
+                    UpdateReportCollection();
+
+                UpdateFormsPageInfo();
             }
         }
         #endregion
@@ -124,7 +128,6 @@ namespace Client_App.ViewModels.MainWindowTabs
                     .Where(reps => reps.Master_DB.FormNum_DB == "1.0").Count();
             }
         }
-
 
         private int _rowsCountOrgs = 10;
         public int RowsCountOrgs
@@ -192,7 +195,8 @@ namespace Client_App.ViewModels.MainWindowTabs
             {
                 _selectedReport = value;
                 OnPropertyChanged();
-                UpdatePageInfo();
+                UpdateFormsPageInfo();
+                OnPropertyChanged(nameof(InSelectedReportFormsCount));
             }
         }
 
@@ -225,7 +229,6 @@ namespace Client_App.ViewModels.MainWindowTabs
         {
             get
             {
-                
                 return _rowsCountForms;
             }
             set
@@ -233,7 +236,7 @@ namespace Client_App.ViewModels.MainWindowTabs
                 _rowsCountForms = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(TotalPagesForms));
-                UpdateReport();
+                UpdateReportCollection();
             }
         }
 
@@ -252,34 +255,42 @@ namespace Client_App.ViewModels.MainWindowTabs
             {
                 _currentPageForms = value;
                 OnPropertyChanged();
-                UpdateReport();
+                UpdateReportCollection();
             }
         }
         #endregion
 
-        #region TotalForms
-        public int TotalForms
+        #region TotalReportCount
+        public int TotalReportCount
         {
             get
             {
-
-                var result = StaticConfiguration.DBModel.ReportCollectionDbSet
+                return StaticConfiguration.DBModel.ReportCollectionDbSet
                     .Where(rep => rep.FormNum_DB.StartsWith($"{MainWindowVM.SelectedReportType}")
                         && !rep.FormNum_DB.EndsWith(".0"))
                     .CountAsync().Result;
-                return result;
             }
         }
         #endregion
 
-        #region NumFormInReport
-        public int NumFormInReport
+        #region InSelectedReportFormsCount
+        public int InSelectedReportFormsCount
         {
             get
             {
-                if (SelectedReport != null)
-                    return ReportsStorage.GetReportRowsCount(SelectedReport).Result;
-                return 0;
+                if (SelectedReport is null) return 0;
+                return StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .Include(rep => rep.Rows11)
+                    .Include(rep => rep.Rows12)
+                    .Include(rep => rep.Rows13)
+                    .Include(rep => rep.Rows14)
+                    .Include(rep => rep.Rows15)
+                    .Include(rep => rep.Rows16)
+                    .Include(rep => rep.Rows17)
+                    .Include(rep => rep.Rows18)
+                    .Include(rep => rep.Rows19)
+                    .FirstOrDefault(rep => rep.Id == SelectedReport.Id)
+                    .Rows.Count;
             }
         }
         #endregion
@@ -289,34 +300,41 @@ namespace Client_App.ViewModels.MainWindowTabs
 
         #region Functions
 
-        #region UpdatePageInfo
-        public void UpdatePageInfo()
+        #region UpdateOrgsPageInfo
+        public void UpdateOrgsPageInfo()
         {
             OnPropertyChanged(nameof(TotalRowsOrgs));
             OnPropertyChanged(nameof(TotalPagesOrgs));
-
-            OnPropertyChanged(nameof(TotalRowsForms));
-            OnPropertyChanged(nameof(TotalPagesForms));
-
-            OnPropertyChanged(nameof(TotalForms));
-            OnPropertyChanged(nameof(NumFormInReport));
         }
         #endregion
 
-        #region UpdateReport
-        public void UpdateReport()
+        #region UpdateFormsPageInfo
+        public void UpdateFormsPageInfo()
+        {
+            OnPropertyChanged(nameof(TotalRowsForms));
+            OnPropertyChanged(nameof(TotalPagesForms));
+        }
+        #endregion
+
+        #region TotalReportCount
+        public void UpdateTotalReportCount()
+        {
+            OnPropertyChanged(nameof(TotalReportCount));
+        }
+        #endregion
+
+        #region UpdateReportCollection
+        public void UpdateReportCollection()
         {
             OnPropertyChanged(nameof(ReportCollection));
         }
-
         #endregion
 
-        #region UpdateReports
-        public void UpdateReports()
+        #region UpdateReportsCollection
+        public void UpdateReportsCollection()
         {
             OnPropertyChanged(nameof(ReportsCollection));
         }
-
         #endregion
 
         #region GoToFormNum

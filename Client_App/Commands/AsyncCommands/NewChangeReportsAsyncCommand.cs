@@ -55,7 +55,7 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
                 }
         }
 
-        mainWindowVM.UpdateReports();
+        mainWindowVM.UpdateReportsCollection();
 
     }
 }

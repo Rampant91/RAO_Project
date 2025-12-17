@@ -52,8 +52,13 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
         try
         {
-            var enumerable = parameter as IEnumerable;
-            var reps = enumerable!.Cast<Reports>().First();
+            Reports reps;
+            if (parameter is IEnumerable enumerable)
+                reps = enumerable!.Cast<Reports>().First();
+            else if (parameter is Reports reports)
+                reps = reports;
+            else return;
+
             var masterRep = reps.Master_DB;
 
             var db = StaticConfiguration.DBModel;
@@ -77,7 +82,7 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
             var mainWindow = (Desktop.MainWindow as MainWindow)!;
             var mainWindowVM = (mainWindow.DataContext as MainWindowVM)!;
-            mainWindowVM.UpdateReports();
+            mainWindowVM.UpdateReportsCollection();
         }
         catch (Exception ex)
         {

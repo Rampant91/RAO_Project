@@ -139,7 +139,7 @@
 
 						<TextBlock Text="Кол-во отчетов:"
 							Grid.Row="1" Grid.Column="4" Margin="5"/>
-						<TextBlock Text="{Binding TotalForms}"
+						<TextBlock Text="{Binding TotalReportCount}"
 							Grid.Row="1" Grid.Column="5" Margin="5"/>
 					</Grid>
 				</Border>
@@ -339,7 +339,7 @@
 
 						<TextBlock Text="Кол-во строчек:"
 							Grid.Row="1" Grid.Column="4" Margin="5"/>
-						<TextBlock Text="{Binding NumFormInReport}"
+						<TextBlock Text="{Binding InSelectedReportFormsCount}"
 							Grid.Row="1" Grid.Column="5" Margin="5"/>
 						
 						<StackPanel Grid.Row="0" Grid.RowSpan="2"

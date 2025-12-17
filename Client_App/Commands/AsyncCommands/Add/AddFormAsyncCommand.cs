@@ -156,7 +156,8 @@ public class AddFormAsyncCommand : BaseAsyncCommand
                     }
 
                 }
-                mainWindowVM.UpdateReport();
+                mainWindowVM.UpdateReportCollection();
+                mainWindowVM.UpdateTotalReportCount();
 
                 /*
                 if(param == "1.2")

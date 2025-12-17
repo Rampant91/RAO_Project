@@ -429,7 +429,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             #endregion
 
             var mainWindowVM = Desktop.MainWindow.DataContext as MainWindowVM;
-            mainWindowVM.UpdateReports();
+            mainWindowVM.UpdateReportsCollection();
         }
         else
         {

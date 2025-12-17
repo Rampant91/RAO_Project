@@ -96,16 +96,16 @@ namespace Client_App.ViewModels.MainWindowTabs
             set
             {
                 _selectedReports = value;
-                var mainWindow = Application.Current?.ApplicationLifetime as MainWindow;
-
-
                 OnPropertyChanged();
 
+                // UpdateReportCollection выполняется в CurrentPageForms
+                // Чтобы не вызывать метод дважды используется if else
                 if (CurrentPageForms != 1)
-                    CurrentPageForms = 1;
+                    CurrentPageForms = 1;       
                 else
-                    UpdateReport();
-                UpdatePageInfo();
+                    UpdateReportCollection();   
+
+                UpdateFormsPageInfo();
             }
         }
         #endregion
@@ -126,8 +126,7 @@ namespace Client_App.ViewModels.MainWindowTabs
         {
             get
             {
-                return StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .Where(reps => reps.Master_DB.FormNum_DB == "4.0").Count();
+                return StaticConfiguration.DBModel.ReportsCollectionDbSet.CountAsync(reps => reps.Master_DB.FormNum_DB == "4.0").Result;
             }
         }
 
@@ -199,7 +198,8 @@ namespace Client_App.ViewModels.MainWindowTabs
             {
                 _selectedReport = value;
                 OnPropertyChanged();
-                UpdatePageInfo();
+                OnPropertyChanged(nameof(InSelectedReportFormsCount));
+                UpdateFormsPageInfo();
             }
         }
 
@@ -239,7 +239,7 @@ namespace Client_App.ViewModels.MainWindowTabs
                 _rowsCountForms = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(TotalPagesForms)); 
-                UpdateReport();
+                UpdateReportCollection();
             }
         }
 
@@ -258,35 +258,45 @@ namespace Client_App.ViewModels.MainWindowTabs
             {
                 _currentPageForms = value;
                 OnPropertyChanged();
-                UpdateReport();
+                UpdateReportCollection();
             }
         }
         #endregion
 
 
-        #region TotalForms
-        public int TotalForms
+        #region TotalReportCount
+        public int TotalReportCount
         {
             get
             {
-
-                var result = StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .Where(rep => rep.FormNum_DB.StartsWith($"{MainWindowVM.SelectedReportType}")
-                        && !rep.FormNum_DB.EndsWith(".0"))
-                    .CountAsync().Result;
-                return result;
+                return StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .CountAsync(rep => rep.FormNum_DB.StartsWith($"{MainWindowVM.SelectedReportType}")
+                        && !rep.FormNum_DB.EndsWith(".0")).Result;
             }
         }
         #endregion
 
-        #region NumFormInReport
-        public int NumFormInReport
+        #region InSelectedReportFormsCount
+        public int InSelectedReportFormsCount
         {
             get
             {
-                if (SelectedReport != null)
-                    return ReportsStorage.GetReportRowsCount(SelectedReport).Result;
-                return 0;
+                if (SelectedReport is null) return 0;
+                return StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .Include(rep => rep.Rows21)
+                    .Include(rep => rep.Rows22)
+                    .Include(rep => rep.Rows23)
+                    .Include(rep => rep.Rows24)
+                    .Include(rep => rep.Rows25)
+                    .Include(rep => rep.Rows26)
+                    .Include(rep => rep.Rows27)
+                    .Include(rep => rep.Rows28)
+                    .Include(rep => rep.Rows29)
+                    .Include(rep => rep.Rows210)
+                    .Include(rep => rep.Rows211)
+                    .Include(rep => rep.Rows212)
+                    .FirstOrDefault(rep => rep.Id == SelectedReport.Id)
+                    .Rows.Count;
             }
         }
         #endregion
@@ -308,30 +318,38 @@ namespace Client_App.ViewModels.MainWindowTabs
         }
         #endregion
 
-        #region UpdatePageInfo
-        public void UpdatePageInfo()
+        #region UpdateOrgsPageInfo
+        public void UpdateOrgsPageInfo()
         {
             OnPropertyChanged(nameof(TotalRowsOrgs));
             OnPropertyChanged(nameof(TotalPagesOrgs));
-
-            OnPropertyChanged(nameof(TotalRowsForms));
-            OnPropertyChanged(nameof(TotalPagesForms));
-
-            OnPropertyChanged(nameof(TotalForms));
-            OnPropertyChanged(nameof(NumFormInReport));
         }
         #endregion
 
-        #region UpdateReport
-        public void UpdateReport()
+        #region UpdateFormsPageInfo
+        public void UpdateFormsPageInfo()
+        {
+            OnPropertyChanged(nameof(TotalRowsForms));
+            OnPropertyChanged(nameof(TotalPagesForms));
+        }
+        #endregion
+
+        #region TotalReportCount
+        public void UpdateTotalReportCount()
+        {
+            OnPropertyChanged(nameof(TotalReportCount));
+        }
+        #endregion
+
+        #region UpdateReportCollection
+        public void UpdateReportCollection()
         {
             OnPropertyChanged(nameof(ReportCollection));
         }
-
         #endregion
 
-        #region UpdateReports
-        public void UpdateReports()
+        #region UpdateReportsCollection
+        public void UpdateReportsCollection()
         {
             OnPropertyChanged(nameof(ReportsCollection));
         }
