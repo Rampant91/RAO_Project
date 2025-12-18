@@ -80,7 +80,7 @@ namespace Client_App.ViewModels.MainWindowTabs
                         .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
                         .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
                         .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                        .Take(RowsCountOrgs).ToList());
+                        .Take(RowsCountOrgs));
                 }
                 else
                     return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
@@ -89,7 +89,7 @@ namespace Client_App.ViewModels.MainWindowTabs
                         .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
                         .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
                         .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                        .Take(RowsCountOrgs).ToList());
+                        .Take(RowsCountOrgs));
             }
         }
         #endregion
@@ -194,6 +194,7 @@ namespace Client_App.ViewModels.MainWindowTabs
                                  !int.TryParse(x.Year_DB, out _) ?
                                  int.MaxValue :
                                  int.Parse(x.Year_DB))
+                    .ThenBy(rep => rep.CorrectionNumber_DB)
                     .Skip((CurrentPageForms - 1) * RowsCountForms)
                     .Take(RowsCountForms));
             }

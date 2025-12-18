@@ -71,7 +71,7 @@ namespace Client_App.ViewModels.MainWindowTabs
                            && reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB.ToLower().Contains(search)))
                         .OrderBy(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB)
                         .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                        .Take(RowsCountOrgs).ToList());
+                        .Take(RowsCountOrgs));
                 }
                 else
                     return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
@@ -79,7 +79,7 @@ namespace Client_App.ViewModels.MainWindowTabs
                         .Where(reps => reps.Master_DB.FormNum_DB == "4.0")
                         .OrderBy(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB)
                         .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                        .Take(RowsCountOrgs).ToList());
+                        .Take(RowsCountOrgs));
             }
         }
         #endregion
@@ -184,6 +184,7 @@ namespace Client_App.ViewModels.MainWindowTabs
                                  !int.TryParse(x.Year_DB, out _) ?
                                  int.MaxValue :
                                  int.Parse(x.Year_DB))
+                    .ThenBy(rep => rep.CorrectionNumber_DB)
                     .Skip((CurrentPageForms - 1) * RowsCountForms)
                     .Take(RowsCountForms));
             }
