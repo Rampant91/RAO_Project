@@ -16,8 +16,12 @@ public class SelectReportPopupVM : INotifyPropertyChanged
     public SelectReportPopupVM(BaseFormVM formVM)
     {
         _formVM = formVM;
-        _reportCollection = FormVM.Report.Reports.Report_Collection.ToList().FindAll(x => x.FormNum.Value == formVM.FormType);
+
+        _reportCollection = FormVM.Report.Reports.Report_Collection.ToList();
+
         _selectedReport = Report;
+        CurrentFormNum = Report.FormNum_DB;
+
         OpenPopupCommand = ReactiveCommand.Create(() =>
         {
             PopupIsOpen = !PopupIsOpen;
@@ -34,6 +38,10 @@ public class SelectReportPopupVM : INotifyPropertyChanged
             if (index + 1 < ReportCollection.Count)
                 SelectedReport = ReportCollection[index + 1];
         });
+        SetCurrentFormNum = ReactiveCommand.Create((string newFormNum) =>
+        {
+            CurrentFormNum = newFormNum;
+        });
     }
 
     #endregion
@@ -45,11 +53,13 @@ public class SelectReportPopupVM : INotifyPropertyChanged
     public ICommand SwitchNextReportCommand { get; }
 
     public ICommand SwitchPreviousReportCommand { get; }
+    public ICommand SetCurrentFormNum { get; }
 
     #endregion
 
     #region Properties
 
+    #region PopupIsOpen
     private bool _popupIsOpen = false;
     public bool PopupIsOpen
     {
@@ -60,7 +70,9 @@ public class SelectReportPopupVM : INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+    #endregion
 
+    #region YearMode
     public bool YearMode
     {
         get
@@ -72,26 +84,86 @@ public class SelectReportPopupVM : INotifyPropertyChanged
             return false;
         }
     }
+    #endregion
+
+    public bool IsForm1
+    {
+        get
+        {
+            return FormVM.FormType[0] is '1';
+        }
+    }
+    public bool IsForm2
+    {
+        get
+        {
+            return FormVM.FormType[0] is '2';
+        }
+    }
+
+    #region CurrentFormNum
+    private string _currentFormNum;
+    public string CurrentFormNum
+    {
+        get
+        {
+            return _currentFormNum;
+        }
+        set
+        {
+            _currentFormNum = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(ReportCollection));
+            if (_currentFormNum == Report.FormNum_DB)
+                SelectedReport = Report;
+        }
+    }
+    #endregion
+
+    #region SelectedReport
     private Report _selectedReport;
     public Report SelectedReport
     {
-        get => _selectedReport;
+        get
+        {
+            return _selectedReport;
+        }
         set
         {
+
             _selectedReport = value;
             OnPropertyChanged();
         }
     }
+    #endregion
 
+    #region BaseFormVM
     private BaseFormVM _formVM;
     public BaseFormVM FormVM => _formVM;
+    #endregion
 
+    #region Report
     public Report Report => FormVM.Report;
+    #endregion
 
+    #region ReportCollections
     private List<Report> _reportCollection;
-    public List<Report> ReportCollection => _reportCollection;
+
+    public List<Report> ReportCollection
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(CurrentFormNum))
+                return _reportCollection.FindAll(x => x.FormNum.Value == CurrentFormNum);
+            else
+                return _reportCollection;
+        }
+    }
 
     #endregion
+
+    #endregion
+
 
     #region OnPropertyChanged
 
