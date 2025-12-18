@@ -190,9 +190,9 @@ namespace Client_App.ViewModels.MainWindowTabs
                     .Report_Collection
                     .AsEnumerable()
                     .OrderBy(x => x.FormNum_DB)
-                    .ThenBy(x => x.Year_DB == null ||
+                    .ThenByDescending(x => x.Year_DB == null ||
                                  !int.TryParse(x.Year_DB, out _) ?
-                                 int.MinValue :
+                                 int.MaxValue :
                                  int.Parse(x.Year_DB))
                     .Skip((CurrentPageForms - 1) * RowsCountForms)
                     .Take(RowsCountForms));

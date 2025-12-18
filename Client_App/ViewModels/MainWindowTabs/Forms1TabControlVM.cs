@@ -191,13 +191,13 @@ namespace Client_App.ViewModels.MainWindowTabs
                     .AsEnumerable()
                     .OrderBy(x => x.FormNum_DB)
                     // Сортируем по валидным датам, некорректные уходят в начало/конец
-                    .ThenBy(x => x.StartPeriod_DB == null ||
+                    .ThenByDescending(x => x.StartPeriod_DB == null ||
                                  !DateTime.TryParse(x.StartPeriod_DB, out _) ?
-                                 DateTime.MinValue :
+                                 DateTime.MaxValue :
                                  DateTime.Parse(x.StartPeriod_DB))
-                    .ThenBy(x => x.EndPeriod_DB == null ||
+                    .ThenByDescending(x => x.EndPeriod_DB == null ||
                                  !DateTime.TryParse(x.EndPeriod_DB, out _) ?
-                                 DateTime.MinValue :
+                                 DateTime.MaxValue :
                                  DateTime.Parse(x.EndPeriod_DB))
                     .Skip((CurrentPageForms - 1) * RowsCountForms)
                     .Take(RowsCountForms));
