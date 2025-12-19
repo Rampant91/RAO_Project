@@ -25,7 +25,8 @@
 				IsOpen="{Binding PopupIsOpen, Mode=TwoWay}"
 				PlacementTarget="{Binding ElementName=ToggleButton}"
 				PlacementMode="Right"
-				IsLightDismissEnabled="True">
+				IsLightDismissEnabled="True"
+			    Height="400">
 			<Border Background="White"
 					BorderBrush="Gray"
 					BorderThickness="1"
@@ -57,11 +58,18 @@
 						<Button Margin="0,0,5,0" Width="30" Height="30" Content="2.11" Command="{Binding SetCurrentFormNum}" CommandParameter="2.11"/>
 						<Button Margin="0,0,5,0" Width="30" Height="30" Content="2.12" Command="{Binding SetCurrentFormNum}" CommandParameter="2.12"/>
 					</StackPanel>
-					<StackPanel Grid.Column="1" >
-						<TextBlock Text="Выбор отчета"/>
+					<Grid Grid.Column="1" RowDefinitions="Auto,Auto,*">
+						
+						<TextBox Grid.Row="0" Margin="5" Watermark="Введите год" Text="{Binding YearSearch}"/>
+
+						<Grid Grid.Row="1" ColumnDefinitions="Auto,Auto">
+							<TextBlock Grid.Column="0" Text="Выбор отчета по форме: "/>
+							<TextBlock Grid.Column="1" Text="{Binding CurrentFormNum}"/>
+						</Grid>
 					
 						<!--Для формы 1.X-->
 						<ListBox
+							Grid.Row="2"
 							IsEnabled="{Binding YearMode, Converter={StaticResource LogicalNotConverter}}"
 							IsVisible="{Binding YearMode, Converter={StaticResource LogicalNotConverter}}"
 							Items="{Binding ReportCollection}"
@@ -83,6 +91,7 @@
 						</ListBox>
 						<!--Для годовых форм 2.X или 4.X-->
 						<ListBox
+							Grid.Row="2"
 							IsEnabled="{Binding YearMode}"
 							IsVisible="{Binding YearMode}"
 							Items="{Binding ReportCollection}"
@@ -97,7 +106,7 @@
 								</DataTemplate>
 							</ListBox.ItemTemplate>
 						</ListBox>
-					</StackPanel>
+					</Grid>
 				</Grid>
 			</Border>
 		</Popup>

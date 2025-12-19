@@ -1,6 +1,7 @@
 ﻿using Client_App.ViewModels.Forms;
 using Models.Collections;
 using ReactiveUI;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -71,6 +72,21 @@ public class SelectReportPopupVM : INotifyPropertyChanged
         }
     }
     #endregion
+
+    private string _yearSearch;
+    public string YearSearch
+    {
+        get
+        {
+            return _yearSearch;
+        }
+        set
+        {
+            _yearSearch = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(ReportCollection));
+        }
+    }
 
     #region YearMode
     public bool YearMode
@@ -153,10 +169,30 @@ public class SelectReportPopupVM : INotifyPropertyChanged
     {
         get
         {
+            var result = _reportCollection;
+
             if (!string.IsNullOrEmpty(CurrentFormNum))
-                return _reportCollection.FindAll(x => x.FormNum.Value == CurrentFormNum);
-            else
-                return _reportCollection;
+                result = result.FindAll(x => x.FormNum.Value == CurrentFormNum);
+
+            if (int.TryParse(YearSearch, out var year))
+            {
+                if (YearMode)
+                    result = result.FindAll(x =>
+                        int.TryParse(x.Year_DB, out _)
+                        && int.Parse(x.Year_DB) == year);
+                        
+                else
+                    result = result
+                        .FindAll(x =>
+                            DateTime.TryParse(x.StartPeriod_DB, out _)
+                            && DateTime.Parse(x.StartPeriod_DB).Year <= year)
+                        .FindAll(x =>
+                            DateTime.TryParse(x.EndPeriod_DB, out _)
+                            && DateTime.Parse(x.EndPeriod_DB).Year >= year);
+
+            }
+
+            return result;
         }
     }
 
