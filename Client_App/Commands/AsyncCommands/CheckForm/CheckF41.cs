@@ -456,7 +456,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         Row = $"{form41.NumberInOrder_DB}",
                         Column = $"-",
                         Value = $"-",
-                        Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" Должен быть отчет по форме 2.12."
+                        Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" Должен быть отчет по форме 2.12, потому что у нее есть отчет по форме 1.9"
                     };
 
             if ((organization20 != null) && organization20.Report_Collection
@@ -490,7 +490,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             if (await CountMassBalanceForm12(organization.Id) > 0)
                 return new CheckError()
                 {
-                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на момент проведения инвентаризации по форме 1.1 " +
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на момент проведения инвентаризации по форме 1.2 " +
                     "присутствовали изделия из обедненного урана"
                 };
             return null;
@@ -541,32 +541,40 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 && DateTime.TryParse(rep.StartPeriod_DB, out var date)
                 && DateTime.TryParse(rep.EndPeriod_DB, out date));
 
-            for (int i = reportCollection.Count - 1; i >= 0; i--)
+            try
             {
-                var report = reportCollection[i];
-                for (int j = 0; j<report.Rows12.Count; j++)
+
+
+                for (int i = reportCollection.Count - 1; i >= 0; i--)
                 {
-                    if (!InventarizationFlag)
+                    var report = reportCollection[i];
+                    for (int j = 0; j < report.Rows12.Count; j++)
                     {
-                        if (report.Rows12[j].OperationCode_DB == "10")
+                        if (!InventarizationFlag)
                         {
-                            InventarizationFlag = true;
-                            double.TryParse(report.Rows12[j].Mass_DB, out massBalance);
+                            if (report.Rows12[j].OperationCode_DB == "10")
+                            {
+                                InventarizationFlag = true;
+                                double.TryParse(report.Rows12[j].Mass_DB, out massBalance);
+                            }
                         }
-                    }
-                    else
-                    {
-                        if (double.TryParse(report.Rows12[j].Mass_DB, out var mass))
+                        else
                         {
-
-                            if (Spravochniks.SignsOperation["1.2"][$"{report.Rows12[j].OperationCode_DB}"] == '+')
-                                massBalance += mass;
-                            if (Spravochniks.SignsOperation["1.2"][$"{report.Rows12[j].OperationCode_DB}"] == '-')
-                                massBalance -= mass;
+                            if (double.TryParse(report.Rows12[j].Mass_DB, out var mass)
+                                && Spravochniks.SignsOperation["1.2"].ContainsKey($"{report.Rows12[j].OperationCode_DB}"))
+                            {
+                                if (Spravochniks.SignsOperation["1.2"][$"{report.Rows12[j].OperationCode_DB}"] == '+')
+                                    massBalance += mass;
+                                else if (Spravochniks.SignsOperation["1.2"][$"{report.Rows12[j].OperationCode_DB}"] == '-')
+                                    massBalance -= mass;
+                            }
                         }
-                    }
 
+                    }
                 }
+            } catch (Exception ex)
+            {
+                throw ex;
             }
             return massBalance;
         }
