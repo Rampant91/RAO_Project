@@ -118,6 +118,7 @@ public partial class ExportAllReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                         .AsQueryable()
                         .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
                         .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows40)
                         .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
                         .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows12.OrderBy(x => x.NumberInOrder_DB))
                         .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows13.OrderBy(x => x.NumberInOrder_DB))
@@ -139,6 +140,7 @@ public partial class ExportAllReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                         .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows210.OrderBy(x => x.NumberInOrder_DB))
                         .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
                         .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
+                        .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows41.OrderBy(x => x.NumberInOrder_DB))
                         .Include(reports => reports.Report_Collection).ThenInclude(x => x.Notes.OrderBy(x => x.Order))
                         .FirstAsync(x => x.Id == repsId, cancellationToken: parallelCts);
 
@@ -147,10 +149,20 @@ public partial class ExportAllReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                     var dt = DateTime.Now;
                     var fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}_{dt.Millisecond}_{dt.Microsecond}";
                     var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}.RAODB");
-                    var filename = $"{StaticStringMethods.RemoveForbiddenChars(repsFull.Master.RegNoRep.Value)}" +
-                                   $"_{StaticStringMethods.RemoveForbiddenChars(repsFull.Master.OkpoRep.Value)}" +
-                                   $"_{repsFull.Master.FormNum_DB[0]}.x" +
-                                   $"_{Assembly.GetExecutingAssembly().GetName().Version}";
+                    string? filename = null;
+                    if (repsFull.Master.FormNum_DB is "1.0" or "2.0")
+                    {
+                        filename = $"{StaticStringMethods.RemoveForbiddenChars(repsFull.Master.RegNoRep.Value)}" +
+                                       $"_{StaticStringMethods.RemoveForbiddenChars(repsFull.Master.OkpoRep.Value)}" +
+                                       $"_{repsFull.Master.FormNum_DB[0]}.x" +
+                                       $"_{Assembly.GetExecutingAssembly().GetName().Version}";
+                    }
+                    else if (repsFull.Master.FormNum_DB is "4.0")
+                    {
+                        filename = $"{repsFull.Master.Rows40[0].CodeSubjectRF_DB}" +
+                                       $"_{repsFull.Master.FormNum_DB[0]}.x" +
+                                       $"_{Assembly.GetExecutingAssembly().GetName().Version}";
+                    }
                     var fullPath = Path.Combine(folderPath, $"{filename}.RAODB");
 
                     fullPathTmp = InsertIndexInFilePath(fullPathTmp);

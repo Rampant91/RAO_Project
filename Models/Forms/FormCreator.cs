@@ -1,5 +1,6 @@
 ﻿using Models.Forms.Form1;
 using Models.Forms.Form2;
+using Models.Forms.Form4;
 
 namespace Models.Forms;
 
@@ -32,6 +33,8 @@ public static class FormCreator
             "2.10" => new Form210(),
             "2.11" => new Form211(),
             "2.12" => new Form212(),
+            "4.0" => new Form40(),
+            "4.1" => new Form41(),
             _ => null
         };
         if (tmp != null)

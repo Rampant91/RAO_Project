@@ -6,6 +6,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:Client_App.ViewModels"
     xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
+	xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
+	xmlns:local="using:Client_App.Behaviors"
+	xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+	xmlns:models="clr-namespace:Models.Collections;assembly=Models"
+    xmlns:controls="clr-namespace:Client_App.Views.Controls"
+	xmlns:tabs="clr-namespace:Client_App.Views.MainWindowTabs"
     Title="{Binding Current_Db, Mode=OneWay}"
     d:DesignHeight="600"
     d:DesignWidth="800"
@@ -24,6 +30,10 @@
     <Design.DataContext>
         <vm:MainWindowVM/>
     </Design.DataContext>
+
+	<Window.Resources>
+		<converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
+	</Window.Resources>
     
     <DockPanel>
         <Menu 
@@ -372,70 +382,17 @@
                 <!--Пустой элемент для начала отсчета индекса с 1 -->
 
 				<TabItem IsVisible="False"/>
-                <TabItem 
-                    x:Name="Forms1" 
-                    Header="Формы 1">
-                    <Panel 
-                        x:Name="Forms_p1"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch">
-                        <ScrollViewer>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" MinHeight="200"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <Grid Grid.Row="0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="3*"/>
-                                        <ColumnDefinition Width="2.7*" MaxWidth="460"/>
-                                    </Grid.ColumnDefinitions>
-                                    <ScrollViewer Grid.Column="0">
-                                        <Panel x:Name="Forms_p1_0" HorizontalAlignment="Stretch"/>
-                                    </ScrollViewer>
-                                    <Panel 
-                                        x:Name="Forms_p1_B"
-                                        Grid.Column="1"
-                                        HorizontalAlignment="Stretch"/>
-                                </Grid>
-                                <Panel 
-                                    x:Name="Forms_p1_X"
-                                    Grid.Row="1"
-                                    Margin="0,5,0,0"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"/>
-                            </Grid>
-                        </ScrollViewer>
-                    </Panel>
-                </TabItem>
-                <TabItem x:Name="Forms2" Header="Формы 2">
-                    <Panel x:Name="Forms_p2" 
-                           VerticalAlignment="Stretch">
-                        <ScrollViewer>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" MinHeight="220"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <Grid Grid.Row="0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="3*"/>
-                                        <ColumnDefinition Width="2.2*" MaxWidth="625"/>
-                                    </Grid.ColumnDefinitions>
-                                    <ScrollViewer Grid.Column="0">
-                                        <Panel x:Name="Forms_p2_0"/>
-                                    </ScrollViewer>
-                                    <Panel x:Name="Forms_p2_B" Grid.Column="1"/>
-                                </Grid>
-                                <Panel
-                                    x:Name="Forms_p2_X"
-                                    Grid.Row="1"
-                                    Margin="0,5,0,0"
-                                    VerticalAlignment="Stretch"/>
-                            </Grid>
-                        </ScrollViewer>
-                    </Panel>
-                </TabItem>
+
+				<TabItem x:Name="Forms1" Header="Формы 1" >
+					<tabs:Forms1TabControl DataContext="{Binding Forms1TabControlVM}"/>
+				</TabItem>
+				<TabItem x:Name="Forms2" Header="Формы 2" >
+					<tabs:Forms2TabControl DataContext="{Binding Forms2TabControlVM}"/>
+				</TabItem>
+				<TabItem x:Name="Forms3" Header="Формы 3" IsVisible="False"/>
+				<TabItem x:Name="Forms4" Header="Формы 4" IsVisible="False">
+					<tabs:Forms4TabControl DataContext="{Binding Forms4TabControlVM}"/>
+			    </TabItem>
             </TabControl>
         </Panel>
 

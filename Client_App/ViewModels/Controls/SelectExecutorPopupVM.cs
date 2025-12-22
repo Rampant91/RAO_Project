@@ -42,10 +42,14 @@ public class SelectExecutorPopupVM : INotifyPropertyChanged
 
     #region Properties
 
-    #region PopupIsOpen
 
+    #region BaseFormVM
     private BaseFormVM _formVM;
     public BaseFormVM FormVM => _formVM;
+    #endregion
+
+
+    #region PopupIsOpen
 
     private bool _popupIsOpen = false;
     public bool PopupIsOpen
@@ -57,6 +61,9 @@ public class SelectExecutorPopupVM : INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+    #endregion
+
+    #region ExecutorDataCollection
 
     private List<ExecutorDataDTO> _executorDataCollection;
 

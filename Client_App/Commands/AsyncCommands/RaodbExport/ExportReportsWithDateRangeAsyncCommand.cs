@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
@@ -18,7 +20,21 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
 {
     public override async Task AsyncExecute(object? parameter)
     {
-        if (parameter is not ObservableCollectionWithItemPropertyChanged<IKey> param) return;
+        Reports reports;
+        switch (parameter)
+        {
+            case ObservableCollectionWithItemPropertyChanged<IKey> param:
+                {
+                    reports = (Reports)param.First();
+                    break;
+                }
+            case Reports reps:
+                {
+                    reports = reps;
+                    break;
+                }
+            default: return;
+        }
 
         #region MessageAskStartDate
 
@@ -93,19 +109,24 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
             return;
         }
 
-        var org = (Reports)param.First();
+        var org = reports;
         var repInRange = org.Report_Collection
-            .Where(rep => DateOnly.TryParse(rep.StartPeriod_DB, out var repStartDateTime)
+            .Where(rep => (DateOnly.TryParse(rep.StartPeriod_DB, out var repStartDateTime)
                           && DateOnly.TryParse(rep.EndPeriod_DB, out var repEndDateTime)
                           && startDateTime <= repEndDateTime && endDateTime >= repStartDateTime)
+                          ||
+                          (int.TryParse(rep.Year_DB, out var year)
+                          && startDateTime.Year <= year && year <= endDateTime.Year))
             .ToArray();
 
         Reports exportOrg = new() { Master = org.Master, Id = org.Id };
         exportOrg.Report_Collection.AddRangeNoChange(repInRange);
 
-        if (MainWindowVM.ExportReports.CanExecute(null))
+        ICommand ExportReports = new ExportReportsAsyncCommand();
+        if (ExportReports.CanExecute(null))
         {
-            MainWindowVM.ExportReports.Execute(exportOrg);
+            ExportReports.Execute(exportOrg);
         }
+    
     }
 }

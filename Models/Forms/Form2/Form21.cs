@@ -320,7 +320,10 @@ public partial class Form21 : Form2, IBaseColor
 
     #region MachineCode (3)
 
-    public byte? MachineCode_DB { get; set; }
+    public byte? MachineCode_DB { 
+        get; 
+        set; 
+    }
 
     public bool _MachineCode_Hidden_Get { get; set; } = true;
 

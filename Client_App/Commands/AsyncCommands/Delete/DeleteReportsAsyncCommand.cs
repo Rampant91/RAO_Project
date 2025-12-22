@@ -3,6 +3,8 @@ using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.Logging;
+using Client_App.ViewModels;
+using Client_App.Views;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;
@@ -46,10 +48,17 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
         if (answer is not "Да") return;
 
+        
+
         try
         {
-            var enumerable = parameter as IEnumerable;
-            var reps = enumerable!.Cast<Reports>().First();
+            Reports reps;
+            if (parameter is IEnumerable enumerable)
+                reps = enumerable!.Cast<Reports>().First();
+            else if (parameter is Reports reports)
+                reps = reports;
+            else return;
+
             var masterRep = reps.Master_DB;
 
             var db = StaticConfiguration.DBModel;
@@ -70,6 +79,11 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
             await db.SaveChangesAsync();
 
             await ProcessDataBaseFillEmpty(db);
+
+            var mainWindow = (Desktop.MainWindow as MainWindow)!;
+            var mainWindowVM = (mainWindow.DataContext as MainWindowVM)!;
+            mainWindowVM.UpdateReportsCollection();
+            mainWindowVM.UpdateOrgsPageInfo();
         }
         catch (Exception ex)
         {
@@ -79,6 +93,7 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
         }
 
         //await Local_Reports.Reports_Collection.QuickSortAsync();
+    
     }
 
     public static async Task ProcessDataBaseFillEmpty(DataContext dbm)

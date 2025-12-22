@@ -195,7 +195,7 @@ public partial class Form17 : Form1
     {
         if (args.PropertyName != "Value") return;
 
-        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (OperationCode_DB != value1)
         {
             OperationCode_DB = value1;
@@ -440,7 +440,7 @@ public partial class Form17 : Form1
     private void PackName_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         PackName_DB = tmp;
     }
 
@@ -506,7 +506,7 @@ public partial class Form17 : Form1
     private void PackType_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         PackType_DB = tmp;
     }
 
@@ -566,7 +566,7 @@ public partial class Form17 : Form1
     private void PackFactoryNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         PackFactoryNumber_DB = tmp;
     }
 
@@ -626,7 +626,7 @@ public partial class Form17 : Form1
     private void PackNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         PackNumber_DB = tmp;
     }
 
@@ -742,7 +742,7 @@ public partial class Form17 : Form1
     private void PassportNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         PassportNumber_DB = tmp;
     }
 
@@ -896,7 +896,7 @@ public partial class Form17 : Form1
     private void Radionuclids_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         Radionuclids_DB = tmp;
     }
 
@@ -1112,7 +1112,7 @@ public partial class Form17 : Form1
     private void ProviderOrRecieverOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
         {
             tmp = tmp.ToUpper();
@@ -1188,7 +1188,7 @@ public partial class Form17 : Form1
     private void TransporterOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         TransporterOKPO_DB = tmp;
     }
 
@@ -1272,7 +1272,7 @@ public partial class Form17 : Form1
     private void StoragePlaceName_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         StoragePlaceName_DB = tmp;
     }
 
@@ -1342,7 +1342,7 @@ public partial class Form17 : Form1
     private void StoragePlaceCode_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         StoragePlaceCode_DB = tmp;
     }
 
@@ -1359,7 +1359,7 @@ public partial class Form17 : Form1
         {
             return true;
         }
-        var tmp = value.Value.Trim();
+        var tmp = value.Value;
         if (!StoragePlaceCodeRegex().IsMatch(tmp))
         {
             value.AddError("Недопустимое значение"); 
@@ -1430,7 +1430,7 @@ public partial class Form17 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = (((RamAccess<string>)value).Value ?? string.Empty)
-            .Trim()
+            
             .ToLower()
             .Replace("х", "x");
         CodeRAO_DB = tmp;
@@ -1486,7 +1486,7 @@ public partial class Form17 : Form1
     private void StatusRAO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         StatusRAO_DB = tmp;
     }
 
@@ -1622,7 +1622,7 @@ public partial class Form17 : Form1
     private void Quantity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         Quantity_DB = tmp;
     }
 
@@ -1633,7 +1633,7 @@ public partial class Form17 : Form1
         {
             return true;
         }
-        var tmp = value.Value.Trim();
+        var tmp = value.Value;
         if (!int.TryParse(tmp, out var intValue))
         {
             value.AddError("Недопустимое значение");
@@ -1831,7 +1831,7 @@ public partial class Form17 : Form1
     private void RefineOrSortRAOCode_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         RefineOrSortRAOCode_DB = tmp;
     }
 
@@ -1882,7 +1882,7 @@ public partial class Form17 : Form1
     private void Subsidy_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         Subsidy_DB = tmp;
     }
 
@@ -1933,7 +1933,7 @@ public partial class Form17 : Form1
     private void FcpNumberValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         FcpNumber_DB = tmp;
     }
 
@@ -1977,7 +1977,7 @@ public partial class Form17 : Form1
     private void ContractNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         ContractNumber_DB = tmp.Length > 100
             ? tmp[..100]
             : tmp;

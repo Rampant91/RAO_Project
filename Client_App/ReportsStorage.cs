@@ -1,15 +1,15 @@
-﻿using Models.Collections;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Client_App.DBAPIFactory;
+﻿using Client_App.DBAPIFactory;
 using Client_App.ViewModels;
 using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Client_App;
 
@@ -86,8 +86,7 @@ public static class ReportsStorage
             .AsQueryable()
             .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
             .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id);
-
-        return rep.FormNum_DB switch
+        var result = rep.FormNum_DB switch
         {
             "1.0" => await query.Include(x => x.Rows10)
                .SelectMany(x => x.Rows10)
@@ -181,8 +180,13 @@ public static class ReportsStorage
                 .SelectMany(x => x.Rows212)
                 .CountAsync(),
 
+            "4.1" => await query.Include(x => x.Rows41)
+                .SelectMany(x => x.Rows41)
+                .CountAsync(),
+
             _ => 0
         };
+        return result;
     }
 
     #endregion
