@@ -1,11 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform;
 using Avalonia.ReactiveUI;
-using Client_App.ViewModels;
+using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
+using Client_App.ViewModels;
+using System;
+using System.Threading.Tasks;
 
 namespace Client_App.Views;
 
@@ -16,46 +18,69 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>
     public override async void Show()
     {
         base.Show();
-        await Task.Delay(1);
+
+        await Task.Delay(1).ContinueWith(_ => { Dispatcher.UIThread.Post(PositionWindowOnOwnerScreen); });
+    }
+
+    #region PositionWindowOnOwnerScreen
+
+    private void PositionWindowOnOwnerScreen()
+    {
         try
         {
-            SetWindowStartupLocationWorkaroundForLinux();
+            var appLifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+            var mainWindow = appLifetime?.MainWindow;
+
+            if (mainWindow?.Screens != null)
+            {
+                // Get the screen where the MAIN window is located
+                Screen? ownerScreen = null;
+
+                // First try to get screen from main window
+                if (mainWindow.PlatformImpl != null)
+                {
+                    try
+                    {
+                        ownerScreen = mainWindow.Screens.ScreenFromWindow(mainWindow.PlatformImpl);
+                    }
+                    catch
+                    {
+                        // Fallback for Linux if ScreenFromWindow fails
+                    }
+                }
+
+                // Fallback to primary screen
+                if (ownerScreen == null)
+                {
+                    ownerScreen = mainWindow.Screens.Primary;
+                }
+
+                if (ownerScreen != null)
+                {
+                    // Get DPI scaling factor
+                    var scale = ownerScreen.PixelDensity;
+                    if (scale <= 0) scale = 1.0;
+
+                    var windowWidth = Width;
+                    var windowHeight = Height;
+
+                    // Calculate center position in physical pixels
+                    var centerX = ownerScreen.WorkingArea.X + (ownerScreen.WorkingArea.Width - windowWidth * scale) / 2;
+                    var centerY = ownerScreen.WorkingArea.Y + (ownerScreen.WorkingArea.Height - windowHeight * scale) / 2;
+
+                    Position = new PixelPoint((int)Math.Round(centerX), (int)Math.Round(centerY));
+                }
+            }
         }
         catch (Exception ex)
         {
+            // Fallback to default behavior if positioning fails
+            // Let the window use default positioning (will be centered on primary screen)
             var msg = $"{Environment.NewLine}Message: {ex.Message}" +
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Error(msg);
         }
     }
 
-    private void SetWindowStartupLocationWorkaroundForLinux()
-    {
-        if(OperatingSystem.IsWindows()) return;
-        var scale = PlatformImpl?.DesktopScaling ?? 1.0;
-        var windowBase = Owner?.PlatformImpl;
-        if (windowBase != null) 
-        {
-            scale = windowBase.DesktopScaling;
-        }
-        var rect = new PixelRect(PixelPoint.Origin, PixelSize.FromSize(ClientSize, scale));
-        if (WindowStartupLocation == WindowStartupLocation.CenterScreen)// && Name != "MainWindow") 
-        {
-            var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime).MainWindow;
-            var screens = mainWindow.Screens;
-            var screen = screens.ScreenFromWindow(mainWindow.PlatformImpl);
-            //var screen = Name == "MainWindow" ? Screens.Primary : Screens.ScreenFromPoint(windowBase?.Position ?? Position);
-            if (screen == null) return;
-            Position = screen.WorkingArea.CenterRect(rect).Position;
-            //ServiceExtension.LoggerManager.Warning($"{Environment.NewLine}Rect: x: {rect.X}, y: {rect.Y}, w: {rect.Width}, h: {rect.Height}" +
-            //                                       $"{Environment.NewLine}Screen: x: {screen.WorkingArea.X}, y: {screen.WorkingArea.Y}, w: {screen.WorkingArea.Width}, h: {screen.WorkingArea.Height}" +
-            //                                       $"{Environment.NewLine}Position: {Position.X}_{Position.Y}");
-        }
-        else 
-        {
-            if(windowBase == null || WindowStartupLocation != WindowStartupLocation.CenterOwner) return;
-            Position = new PixelRect(windowBase.Position, PixelSize.FromSize(windowBase.ClientSize, scale))
-                .CenterRect(rect).Position;
-        }
-    }
+    #endregion
 }

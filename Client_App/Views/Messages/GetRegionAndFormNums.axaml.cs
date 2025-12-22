@@ -1,8 +1,6 @@
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using Avalonia.Threading;
 using Client_App.ViewModels.Messages;
 
 namespace Client_App.Views.Messages;

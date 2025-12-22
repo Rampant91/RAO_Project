@@ -4,18 +4,15 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Client_App.ViewModels.Messages"
-    xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
+    xmlns:behaviors="clr-namespace:Client_App.Behaviors"
     mc:Ignorable="d"
-    Width="{CompiledBinding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.25', FallbackValue='250', Mode=OneWay}"
-    Height="{CompiledBinding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.2', FallbackValue='400', Mode=OneWay}"
-    MaxHeight="300"
-    MaxWidth="500"
-    MinHeight="175"
-    MinWidth="350"
+    behaviors:WindowScreenSizeBehavior.WidthRatio="0.25"
+    behaviors:WindowScreenSizeBehavior.HeightRatio="0.2"
+    CanResize="True"
     x:Class="Client_App.Views.Messages.AskDatePeriodMessageWindow"
     x:DataType="vm:AskDatePeriodMessageVM"
     Title="Запрос периода дат"
-    WindowStartupLocation="CenterScreen">
+    WindowStartupLocation="Manual">
 
     <Design.DataContext>
         <vm:AskDatePeriodMessageVM/>

@@ -1,6 +1,7 @@
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Client_App.ViewModels.Messages;
+using JetBrains.Annotations;
 using System;
 
 namespace Client_App.Views.Messages;
@@ -32,7 +33,7 @@ public partial class AskDatePeriodMessageWindow : BaseWindow<AskDatePeriodMessag
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-
+    [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     private void OnCancelButtonClicked(object? sender, RoutedEventArgs e)
     {
         Close(("Отмена", DateOnly.MinValue, DateOnly.MaxValue));
@@ -47,6 +48,7 @@ public partial class AskDatePeriodMessageWindow : BaseWindow<AskDatePeriodMessag
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
+    [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     private void OnOkButtonClicked(object? sender, RoutedEventArgs e)
     {
         if (!DateOnly.TryParse(_askDatePeriodMessageVM.InitialDate, out var initialDateOnly)) initialDateOnly = DateOnly.MinValue;

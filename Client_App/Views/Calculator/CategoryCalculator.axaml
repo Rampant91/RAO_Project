@@ -5,16 +5,16 @@
         xmlns:vm="clr-namespace:Client_App.ViewModels.Calculator"
         xmlns:m="clr-namespace:Models.DTO;assembly=Models"
         xmlns:converter="clr-namespace:Client_App.Resources.CustomConverters"
-        xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
+        xmlns:behaviors="clr-namespace:Client_App.Behaviors"
         mc:Ignorable="d" 
         x:Class="Client_App.Views.Calculator.CategoryCalculator"
         x:DataType="vm:CategoryCalculatorVM"
         Icon="/Assets/Radiation_sign.ico"
-        Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.4', FallbackValue='600', Mode=OneWay}"
-        Height="{Binding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.75', FallbackValue='800', Mode=OneWay}"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.5"
+        behaviors:WindowScreenSizeBehavior.HeightRatio="0.85"
         MinHeight="450"
         MinWidth="600"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="Manual"
         Title="Расчёт категории">
 
     <Design.DataContext>

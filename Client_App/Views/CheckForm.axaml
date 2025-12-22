@@ -8,7 +8,7 @@
     xmlns:behaviors="clr-namespace:Client_App.Behaviors"
     Name="FormCheckerWindow"
     Title="{Binding Path=TitleName, Mode=OneWay}"
-    behaviors:WindowScreenSizeBehavior.WidthRatio="0.45"
+    behaviors:WindowScreenSizeBehavior.WidthRatio="0.7"
     behaviors:WindowScreenSizeBehavior.HeightRatio="0.85"
     x:DataType="vm:CheckFormVM"
     WindowStartupLocation="Manual"

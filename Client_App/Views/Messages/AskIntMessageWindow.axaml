@@ -2,19 +2,40 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="Client_App.AskIntMessageWindow"
+        xmlns:vm="clr-namespace:Client_App.ViewModels.Messages"
+        xmlns:behaviors="clr-namespace:Client_App.Behaviors"
+        mc:Ignorable="d" 
+        x:Class="Client_App.Views.Messages.AskIntMessageWindow"
+        x:CompileBindings="True"
+        x:DataType="vm:AskIntMessageVM"
         Title="Введите число"
-		Width="320"
-		Height="200"
-		CanResize="False"
-		WindowStartupLocation="CenterOwner">
-	<StackPanel>
-		<TextBlock Margin="10,5,10,5" Text="{Binding Text}" TextWrapping="Wrap"/>
-		<TextBox x:Name="textbox" Margin="10,5,10,5" Text="{Binding Result}"/>
-		<WrapPanel HorizontalAlignment="Right" Margin="0,15,0,0">
-			<Button IsDefault="True" Click="Accept_Click" MinWidth="60" Margin="0,0,5,0">Подтвердить</Button>
-			<Button Margin="0,0,10,0" Content="Отмена" Click="Cancel_Click"/>
-		</WrapPanel>
+        MinWidth="150"
+        MinHeight="80"
+        d:DesignWidth="180" 
+        d:DesignHeight="120"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.15"
+        behaviors:WindowScreenSizeBehavior.HeightRatio="0.08"
+        WindowStartupLocation="Manual"
+		CanResize="True">
+
+    <StackPanel>
+		<TextBlock Margin="10,5,10,5" 
+                   Text="{Binding Text}" 
+                   TextWrapping="Wrap"/>
+		<TextBox x:Name="Textbox" 
+                 Margin="10,5,10,5" 
+                 Text="{Binding Result}"/>
+		<StackPanel HorizontalAlignment="Center" 
+                   Orientation="Horizontal"
+                   Margin="0,15,0,0">
+			<Button IsDefault="True" 
+                    Click="Accept_Click" 
+                    MinWidth="60" 
+                    Margin="0,0,5,0" 
+                    Content="Подтвердить"/>
+			<Button Margin="0,0,10,0" 
+                    Content="Отмена" 
+                    Click="Cancel_Click"/>
+		</StackPanel>
 	</StackPanel>
 </Window>
