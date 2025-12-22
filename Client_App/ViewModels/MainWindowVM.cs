@@ -292,6 +292,13 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             return new ObservableCollection<Report>(
                 SelectedReports
                 .Report_Collection
+                .OrderBy(x => x.FormNum_DB)
+                .ThenByDescending(x => 
+                x.Year_DB == null 
+                || !int.TryParse(x.Year_DB, out _) 
+                ? int.MaxValue 
+                :int.Parse(x.Year_DB))
+                .ThenByDescending(rep => rep.CorrectionNumber_DB)
                 .Skip((CurrentPageForms - 1) * RowsCountForms)
                 .Take(RowsCountForms));
         }

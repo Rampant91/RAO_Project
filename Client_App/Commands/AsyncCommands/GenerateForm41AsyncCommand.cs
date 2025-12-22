@@ -519,7 +519,6 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             .Where(reps => reps.DBObservable != null && reps.Id == organizationId)
             .SelectMany(x => x.Report_Collection
                 .Where(y => y.EndPeriod_DB.EndsWith(year) 
-                && y.CorrectionNumber_DB == 0
                 && 
                 (
                     y.FormNum_DB == "1.1" && y.Rows11.Any(form => form.OperationCode_DB == "10")
@@ -542,7 +541,6 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             .Where(reps => reps.DBObservable != null && reps.Id == organizationId)
             .SelectMany(x => x.Report_Collection
                 .Where(y => y.EndPeriod_DB.EndsWith(year)
-                && y.CorrectionNumber_DB == 0
                 &&
                 (
                     y.FormNum_DB == "1.1" && y.Rows11.All(form => form.OperationCode_DB != "10")
@@ -561,7 +559,6 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                     .Where(report => report.Reports.Id == organization20.Id)
                     .Where(report => report.Year_DB == year.ToString())
                     .Where(report => report.FormNum_DB == "2.12")
-                    .Where(report => report.CorrectionNumber_DB == 0)
                     .CountAsync();
     }
     #endregion

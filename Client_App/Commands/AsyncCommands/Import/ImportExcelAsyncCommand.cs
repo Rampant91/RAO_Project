@@ -56,6 +56,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using ExcelPackage excelPackage = new(SourceFile);
             var worksheet0 = excelPackage.Workbook.Worksheets[0];
+            var worksheet1 = excelPackage.Workbook.Worksheets[1];
             // Проверка формата формы, записанного в Excel
             var val = worksheet0.Name == "1.0"
                       && Convert.ToString(worksheet0.Cells["A3"].Value)
@@ -128,6 +129,8 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 codeSubjectRF = Convert.ToString(worksheet0.Cells["B8"].Value);
 
                 var subjectRF = Convert.ToString(worksheet0.Cells["B9"].Value);
+
+                //Автоматическое определение кода субъекта РФ
                 if (Spravochniks.DictionaryOfSubjectRF.ContainsValue(subjectRF))
                 {
                     codeSubjectRF = Spravochniks.DictionaryOfSubjectRF.FirstOrDefault(x => x.Value == subjectRF).Key.ToString();
@@ -135,17 +138,21 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                         codeSubjectRF = "0" + codeSubjectRF;
                 }
 
+                //Продолжение автоматического определения кода субъекта
                 if (codeSubjectRF is "" or null)
                 {
-                    var dialog = new AskSubjectRFMessage(
-                        "Не удалось автоматически определить код субъекта\n" +
-                        "Пожалуйста, укажите субъект Российской Федерации вручную");
-                    codeSubjectRF = await dialog.ShowDialog<string?>(Desktop.MainWindow);
+                    if (worksheet1 is not null
+                        && worksheet1.Cells["B9"].Value is string str
+                        && !string.IsNullOrEmpty(str))
+                    {
+                        codeSubjectRF = str.Substring(0, 2);
+                    }
                 }
 
                 baseReps = ReportsStorage.LocalReports.Reports_Collection40
                     .FirstOrDefault(reports => reports.Master_DB.Rows40[0].CodeSubjectRF_DB == codeSubjectRF);
             }
+
             
             //Импортируем все остальные данные из титульника
             var impReps = GetImportReps(worksheet0);
@@ -169,7 +176,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 BaseRepsShortName = baseReps.Master.ShortJurLicoRep.Value;
             }
 
-            var worksheet1 = excelPackage.Workbook.Worksheets[1];
+            
 
             var repNumber = worksheet0.Name;
             if (repNumber == "Форма 4.0")
@@ -207,6 +214,9 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 end = $"A{start}";
                 value = worksheet1.Cells[end].Value;
             }
+
+            
+
             NumberInOrder = 1;
 
             // Импортируем примечания

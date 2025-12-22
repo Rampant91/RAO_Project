@@ -269,7 +269,6 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                     .Where(reps => reps.DBObservable != null && reps.Id == organization.Id)
                     .SelectMany(x => x.Report_Collection
                         .Where(y => y.EndPeriod_DB.EndsWith(form41.Report.Year_DB)
-                        && y.CorrectionNumber_DB == 0
                         &&
                         (
                             y.FormNum_DB == "1.1" && y.Rows11.All(form => form.OperationCode_DB != "10")
@@ -294,7 +293,9 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         Row = $"{form41.NumberInOrder_DB}",
                         Column = $"7",
                         Value = $"{form41.NumOfFormsWithoutInventarizationInfo_DB}",
-                        Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\"  указано {form41.NumOfFormsWithoutInventarizationInfo_DB} отчетов 1.1-1.4 без инвентаризации, когда в БД их {count}"
+                        Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" не совпадает количество отчётов 1.1 - 1.4 без инвентаризации:\n" +
+                        $"Указано: {form41.NumOfForms212_DB},\n" +
+                        $"Найдено в базе данных: {count}"
                     };
             else return null;
         }
@@ -330,7 +331,6 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 .Where(reps => reps.DBObservable != null && reps.Id == organization.Id)
                 .SelectMany(x => x.Report_Collection
                     .Where(y => y.EndPeriod_DB.EndsWith(form41.Report.Year_DB)
-                    && y.CorrectionNumber_DB == 0
                     &&
                     (
                         y.FormNum_DB == "1.1" && y.Rows11.Any(form => form.OperationCode_DB == "10")
@@ -349,7 +349,9 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         Row = $"{form41.NumberInOrder_DB}",
                         Column = $"6",
                         Value = $"{form41.NumOfFormsWithInventarizationInfo_DB}",
-                        Message = $"У организации  Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" указано {form41.NumOfFormsWithInventarizationInfo_DB} инвентаризационных отчетов 1.1-1.4,когда в БД их {count}"
+                        Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" не совпадает количество инвентаризационных отчётов 1.1-1.4:\n" +
+                        $"Указано: {form41.NumOfForms212_DB},\n" +
+                        $"Найдено в базе данных: {count}"
                     };
             else return null;
         }
@@ -384,7 +386,6 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                     .Where(report => report.Reports.Id == organization.Id)
                     .Where(report => report.Year_DB == form41.Report.Year_DB)
                     .Where(report => report.FormNum_DB == "2.12")
-                    .Where(report => report.CorrectionNumber_DB == 0)
                     .CountAsync();
             }
 
@@ -396,7 +397,9 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         Row = $"{form41.NumberInOrder_DB}",
                         Column = $"8",
                         Value = $"{form41.NumOfForms212_DB}",
-                        Message = $"У организации  Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" указано {form41.NumOfForms212_DB} количество отчетов по форме по 2.12, когда в БД их {count}"
+                        Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" не совпадает количество отчётов 2.12:\n" +
+                        $"Указано: {form41.NumOfForms212_DB},\n" +
+                        $"Найдено в базе данных: {count}"
                     };
             else return null;
         }
@@ -456,7 +459,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         Row = $"{form41.NumberInOrder_DB}",
                         Column = $"-",
                         Value = $"-",
-                        Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" Должен быть отчет по форме 2.12, потому что у нее есть отчет по форме 1.9"
+                        Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" должен быть отчет по форме 2.12, потому что у нее есть отчет по форме 1.9"
                     };
 
             if ((organization20 != null) && organization20.Report_Collection
@@ -490,8 +493,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             if (await CountMassBalanceForm12(organization.Id) > 0)
                 return new CheckError()
                 {
-                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на момент проведения инвентаризации по форме 1.2 " +
-                    "присутствовали изделия из обедненного урана"
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют изделия из обедненного урана"
                 };
             return null;
         }

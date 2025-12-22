@@ -62,7 +62,14 @@ public partial class AskForm41Message : Window, INotifyPropertyChanged
     public AskForm41Message(Report report)
     {
         Reports = report.Reports;
-        ReportList = new ObservableCollection<Report>(Reports.Report_Collection);
+        ReportList = new ObservableCollection<Report>(Reports.Report_Collection
+                .OrderBy(x => x.FormNum_DB)
+                .ThenByDescending(x =>
+                x.Year_DB == null
+                || !int.TryParse(x.Year_DB, out _)
+                ? int.MaxValue
+                : int.Parse(x.Year_DB))
+                .ThenByDescending(rep => rep.CorrectionNumber_DB));
         ReportList.Remove(report);
 
         DataContext = this;

@@ -424,11 +424,11 @@ public partial class Form41 : Form
                 return Color.FromArgb(50, 255, 255, 0);
             }
 
-            if (NumOfFormsWithInventarizationInfo.Value <= 0)
-            {
-                ToolTipText = "Нет инвентаризационного отчета";
-                return Color.FromArgb(50, 255, 0, 0);
-            }
+            //if (NumOfFormsWithInventarizationInfo.Value <= 0)
+            //{
+            //    ToolTipText = "Нет инвентаризационного отчета";
+            //    return Color.FromArgb(50, 255, 0, 0);
+            //}
 
             if ((NumOfFormsWithInventarizationInfo.Value > 0
                 || NumOfFormsWithoutInventarizationInfo.Value > 0
