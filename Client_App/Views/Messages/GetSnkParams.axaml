@@ -9,12 +9,9 @@
         x:CompileBindings="True"
         x:DataType="vm:GetSnkParamsVM"
         Title="{Binding CommandName}"
-        MinWidth="300"
-        MinHeight="400"
-        d:DesignWidth="420"
-        d:DesignHeight="420"
-        behaviors:WindowScreenSizeBehavior.WidthRatio="0.25"
-        behaviors:WindowScreenSizeBehavior.HeightRatio="0.45"
+        MinWidth="300" MinHeight="400"
+        d:DesignWidth="420" d:DesignHeight="420"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.25" behaviors:WindowScreenSizeBehavior.HeightRatio="0.45"
         WindowStartupLocation="Manual"
         CanResize="True">
 

@@ -22,9 +22,9 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
     public AnyTaskProgressBar(CancellationTokenSource cts)
     {
         InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
+//#if DEBUG
+//        this.AttachDevTools();
+//#endif
         
         var vm = new AnyTaskProgressBarVM(this, cts, new BackgroundLoader());
         DataContext = vm;

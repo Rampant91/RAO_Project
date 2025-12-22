@@ -7,7 +7,7 @@ using System;
 namespace Client_App.Views.Messages;
 
 /// <summary>
-/// Окно, запрашивающее у пользователя начальную и конечную даты.
+/// Окно, запрашивающее у пользователя начальную и конечную даты при использовании "Аналитика -> Список форм 1".
 /// </summary>
 public partial class AskDatePeriodMessageWindow : BaseWindow<AskDatePeriodMessageVM>
 {

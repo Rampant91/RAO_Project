@@ -7,6 +7,8 @@ using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Client_App.Views;
@@ -24,52 +26,50 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>
 
     #region PositionWindowOnOwnerScreen
 
-    private void PositionWindowOnOwnerScreen()
+    protected virtual void PositionWindowOnOwnerScreen()
     {
         try
         {
-            var appLifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-            var mainWindow = appLifetime?.MainWindow;
+            var ownerWindow = GetOwnerWindow();
 
-            if (mainWindow?.Screens != null)
+            if (ownerWindow?.Screens == null) return;
+
+            // Get the screen where the OWNER window is located
+            Screen? ownerScreen = null;
+
+            // First try to get screen from owner window
+            if (ownerWindow.PlatformImpl != null)
             {
-                // Get the screen where the MAIN window is located
-                Screen? ownerScreen = null;
-
-                // First try to get screen from main window
-                if (mainWindow.PlatformImpl != null)
+                try
                 {
-                    try
-                    {
-                        ownerScreen = mainWindow.Screens.ScreenFromWindow(mainWindow.PlatformImpl);
-                    }
-                    catch
-                    {
-                        // Fallback for Linux if ScreenFromWindow fails
-                    }
+                    ownerScreen = ownerWindow.Screens.ScreenFromWindow(ownerWindow.PlatformImpl);
                 }
-
-                // Fallback to primary screen
-                if (ownerScreen == null)
+                catch
                 {
-                    ownerScreen = mainWindow.Screens.Primary;
+                    // Fallback for Linux if ScreenFromWindow fails
                 }
+            }
 
-                if (ownerScreen != null)
-                {
-                    // Get DPI scaling factor
-                    var scale = ownerScreen.PixelDensity;
-                    if (scale <= 0) scale = 1.0;
+            // Fallback to primary screen
+            if (ownerScreen == null)
+            {
+                ownerScreen = ownerWindow.Screens.Primary;
+            }
 
-                    var windowWidth = Width;
-                    var windowHeight = Height;
+            if (ownerScreen != null)
+            {
+                // Get DPI scaling factor
+                var scale = ownerScreen.PixelDensity;
+                if (scale <= 0) scale = 1.0;
 
-                    // Calculate center position in physical pixels
-                    var centerX = ownerScreen.WorkingArea.X + (ownerScreen.WorkingArea.Width - windowWidth * scale) / 2;
-                    var centerY = ownerScreen.WorkingArea.Y + (ownerScreen.WorkingArea.Height - windowHeight * scale) / 2;
+                var windowWidth = Width;
+                var windowHeight = Height;
 
-                    Position = new PixelPoint((int)Math.Round(centerX), (int)Math.Round(centerY));
-                }
+                // Calculate center position in physical pixels
+                var centerX = ownerScreen.WorkingArea.X + (ownerScreen.WorkingArea.Width - windowWidth * scale) / 2;
+                var centerY = ownerScreen.WorkingArea.Y + (ownerScreen.WorkingArea.Height - windowHeight * scale) / 2;
+
+                Position = new PixelPoint((int)Math.Round(centerX), (int)Math.Round(centerY));
             }
         }
         catch (Exception ex)
@@ -80,6 +80,46 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Error(msg);
         }
+    }
+
+    private Window? GetOwnerWindow()
+    {
+        // Try to find the most recent active window that could be the owner
+        var appLifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+        var windows = appLifetime?.Windows;
+
+        if (windows == null) return null;
+
+        // Find windows that are not this window and have been activated recently
+        var candidateWindows = new List<Window>();
+        foreach (var window in windows)
+        {
+            if (window != this && window.WindowState != WindowState.Minimized)
+            {
+                candidateWindows.Add(window);
+            }
+        }
+
+        // If we have candidate windows, return last not MainWindow, if we have only MainWindow, return it
+        if (candidateWindows.Count > 0)
+        {
+            var notMainWindowCandidates = candidateWindows
+                .Where(x => x.Name != "MainWindow")
+                .ToList();
+
+            return notMainWindowCandidates.Count > 0
+                ? notMainWindowCandidates.LastOrDefault()
+                : candidateWindows.LastOrDefault();
+        }
+            
+        // Fallback: if all windows are minimized, return the main window
+        var mainWindow = appLifetime.MainWindow;
+        if (mainWindow != null && mainWindow != this)
+        {
+            return mainWindow;
+        }
+
+        return null;
     }
 
     #endregion

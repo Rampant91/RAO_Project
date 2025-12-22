@@ -6,16 +6,17 @@
         xmlns:m="clr-namespace:Models.DTO;assembly=Models"
         xmlns:converter="clr-namespace:Client_App.Resources.CustomConverters"
         xmlns:behaviors="clr-namespace:Client_App.Behaviors"
-        mc:Ignorable="d" 
+        mc:Ignorable="d"
         x:Class="Client_App.Views.Calculator.CategoryCalculator"
+        x:CompileBindings="True"
         x:DataType="vm:CategoryCalculatorVM"
+        Title="Расчёт категории"
+        MinHeight="500" MinWidth="500"
+        d:DesignWidth="700" d:DesignHeight="700"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.5" behaviors:WindowScreenSizeBehavior.HeightRatio="0.75"
         Icon="/Assets/Radiation_sign.ico"
-        behaviors:WindowScreenSizeBehavior.WidthRatio="0.5"
-        behaviors:WindowScreenSizeBehavior.HeightRatio="0.85"
-        MinHeight="450"
-        MinWidth="600"
         WindowStartupLocation="Manual"
-        Title="Расчёт категории">
+        CanResize="True">
 
     <Design.DataContext>
         <vm:CategoryCalculatorVM/>
@@ -32,77 +33,68 @@
         </Style>
     </Window.Styles>
 
-    <Grid
-        ColumnDefinitions="0.4*,0.6*"
-        RowDefinitions="0.1*,0.9*">
+    <Grid ColumnDefinitions="0.4*,0.6*"
+          RowDefinitions="0.1*,0.9*">
 
-        <HeaderedContentControl
-            Grid.Column="0"
-            Grid.Row="0"
-            Grid.RowSpan="2"
-            Margin="5,5,0,5"
-            Header="Справочник радионуклидов">
+        <HeaderedContentControl Grid.Column="0"
+                                Grid.Row="0"
+                                Grid.RowSpan="2"
+                                Margin="5,5,0,5"
+                                Header="Справочник радионуклидов">
 
             <Grid RowDefinitions="Auto,*">
 
-                <TextBox
-                    Grid.Row="0"
-                    Margin="5"
-                    Text="{Binding Path=Filter}"
-                    Watermark="Фильтр"/>
+                <TextBox Grid.Row="0"
+                         Margin="5"
+                         Text="{Binding Path=Filter}"
+                         Watermark="Фильтр"/>
 
-                <DataGrid
-                    Grid.Row="1"
-                    AutoGenerateColumns="False"
-                    CanUserResizeColumns="True"
-                    CanUserReorderColumns="False"
-                    DoubleTapped="OnAddButtonClicked"
-                    Margin="5"
-                    SelectionMode="Single"
-                    Items="{Binding Path=RadionuclidDictionary}"
-                    SelectedItem="{Binding Path=SelectedDictionaryNuclid, Mode=TwoWay}">
+                <DataGrid Grid.Row="1"
+                          AutoGenerateColumns="False"
+                          CanUserResizeColumns="True"
+                          CanUserReorderColumns="False"
+                          DoubleTapped="OnAddButtonClicked"
+                          Margin="5"
+                          SelectionMode="Single"
+                          Items="{Binding Path=RadionuclidDictionary}"
+                          SelectedItem="{Binding Path=SelectedDictionaryNuclid, Mode=TwoWay}">
 
                     <DataGrid.Columns>
 
-                        <DataGridTextColumn
-                            x:DataType="m:CalculatorRadionuclidDTO"
-                            Width="0.6*"
-                            Header="Радионуклид"
-                            IsReadOnly="True"
-                            Binding="{Binding Path=Name}"/>
+                        <DataGridTextColumn x:DataType="m:CalculatorRadionuclidDTO"
+                                            Width="0.6*"
+                                            Header="Радионуклид"
+                                            IsReadOnly="True"
+                                            Binding="{Binding Path=Name}"/>
 
-                        <DataGridTextColumn
-                            x:DataType="m:CalculatorRadionuclidDTO"
-                            Width="0.4*"
-                            Header="Обозначение"
-                            IsReadOnly="True"
-                            Binding="{Binding Path=Abbreviation}"/>
+                        <DataGridTextColumn x:DataType="m:CalculatorRadionuclidDTO"
+                                            Width="0.4*"
+                                            Header="Обозначение"
+                                            IsReadOnly="True"
+                                            Binding="{Binding Path=Abbreviation}"/>
 
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
         </HeaderedContentControl>
         
-        <StackPanel 
-            Grid.Column="1"
-            Grid.Row="0" 
-            Grid.RowSpan="2"
-            Orientation="Vertical"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch">
+        <StackPanel Grid.Column="1"
+                    Grid.Row="0" 
+                    Grid.RowSpan="2"
+                    Orientation="Vertical"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch">
 
-            <Expander
-                ExpandDirection="Down"
-                IsExpanded="True"
-                Header="Раскрыть/Скрыть верхнюю панель"
-                HorizontalAlignment="Stretch"
-                HorizontalContentAlignment="Stretch"
-                Margin="5"
-                VerticalAlignment="Top">
+            <Expander ExpandDirection="Down"
+                      IsExpanded="True"
+                      Header="Раскрыть/Скрыть верхнюю панель"
+                      HorizontalAlignment="Stretch"
+                      HorizontalContentAlignment="Stretch"
+                      Margin="5"
+                      VerticalAlignment="Top">
 
-                <HeaderedContentControl
-                    Header="Выбранный радионуклид"
-                    Margin="5, 0,5,5">
+                <HeaderedContentControl Header="Выбранный радионуклид"
+                                        Margin="5, 0,5,5">
                     <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.25*" MinWidth="125"/>
@@ -110,162 +102,144 @@
                             <ColumnDefinition Width="0.1*" MinWidth="50"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock
-                            Grid.Column="0"
-                            Grid.Row="0"
-                            Margin="5"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Text="Обозначение"/>
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="0"
+                                   Margin="5"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Text="Обозначение"/>
 
-                        <TextBox
-                            Grid.Column="1"
-                            Grid.ColumnSpan="2"
-                            Grid.Row="0"
-                            ContextMenu="{x:Null}"
-                            IsHitTestVisible="False"
-                            IsReadOnly="True"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Left"
-                            Margin="5"
-                            VerticalAlignment="Center"
-                            Text="{Binding SelectedNuclid.Abbreviation}">
-                        </TextBox>
+                        <TextBox Grid.Column="1"
+                                 Grid.ColumnSpan="2"
+                                 Grid.Row="0"
+                                 ContextMenu="{x:Null}"
+                                 IsHitTestVisible="False"
+                                 IsReadOnly="True"
+                                 HorizontalAlignment="Stretch"
+                                 HorizontalContentAlignment="Left"
+                                 Margin="5"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding SelectedNuclid.Abbreviation}"/>
 
-                        <TextBlock
-                            Grid.Column="0"
-                            Grid.Row="1"
-                            Margin="5"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Text="Наименование"/>
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="1"
+                                   Margin="5"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Text="Наименование"/>
 
-                        <TextBox
-                            Grid.Column="1"
-                            Grid.ColumnSpan="2"
-                            Grid.Row="1"
-                            IsHitTestVisible="False"
-                            IsReadOnly="True"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Left"
-                            Margin="5"
-                            VerticalAlignment="Center"
-                            Text="{Binding SelectedNuclid.Name}"/>
+                        <TextBox Grid.Column="1"
+                                 Grid.ColumnSpan="2"
+                                 Grid.Row="1"
+                                 IsHitTestVisible="False"
+                                 IsReadOnly="True"
+                                 HorizontalAlignment="Stretch"
+                                 HorizontalContentAlignment="Left"
+                                 Margin="5"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding SelectedNuclid.Name}"/>
 
-                        <TextBlock
-                            Grid.Column="0"
-                            Grid.Row="2"
-                            Margin="5"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Text="Период полураспада"/>
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="2"
+                                   Margin="5"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Text="Период полураспада"/>
 
-                        <TextBox
-                            Grid.Column="1"
-                            Grid.Row="2"
-                            IsHitTestVisible="False"
-                            IsReadOnly="True"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Left"
-                            Margin="5"
-                            VerticalAlignment="Center"
-                            Text="{Binding SelectedNuclid.Halflife}"/>
+                        <TextBox Grid.Column="1"
+                                 Grid.Row="2"
+                                 IsHitTestVisible="False"
+                                 IsReadOnly="True"
+                                 HorizontalAlignment="Stretch"
+                                 HorizontalContentAlignment="Left"
+                                 Margin="5"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding SelectedNuclid.Halflife}"/>
 
-                        <TextBlock
-                            Grid.Column="2"
-                            Grid.Row="2"
-                            Margin="5"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Text="{Binding SelectedNuclid.Unit}"/>
+                        <TextBlock Grid.Column="2"
+                                   Grid.Row="2"
+                                   Margin="5"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding SelectedNuclid.Unit}"/>
 
-                        <TextBlock
-                            Grid.Column="0"
-                            Grid.Row="3"
-                            Margin="5"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Text="D-величина (ТБк):"/>
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="3"
+                                   Margin="5"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Text="D-величина (ТБк):"/>
 
-                        <TextBox
-                            Grid.Column="1"
-                            Grid.ColumnSpan="2"
-                            Grid.Row="3"
-                            IsHitTestVisible="False"
-                            IsReadOnly="True"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Left"
-                            Margin="5"
-                            VerticalAlignment="Center"
-                            Text="{Binding SelectedNuclid.D}"/>
+                        <TextBox Grid.Column="1"
+                                 Grid.ColumnSpan="2"
+                                 Grid.Row="3"
+                                 IsHitTestVisible="False"
+                                 IsReadOnly="True"
+                                 HorizontalAlignment="Stretch"
+                                 HorizontalContentAlignment="Left"
+                                 Margin="5"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding SelectedNuclid.D}"/>
 
-                        <TextBlock
-                            Grid.Column="0"
-                            Grid.Row="4"
-                            Margin="5"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Text="МЗА (Бк):"/>
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="4"
+                                   Margin="5"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Text="МЗА (Бк):"/>
 
-                        <TextBox
-                            Grid.Column="1"
-                            Grid.ColumnSpan="2"
-                            Grid.Row="4"
-                            IsHitTestVisible="False"
-                            IsReadOnly="True"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Left"
-                            Margin="5"
-                            VerticalAlignment="Center"
-                            Text="{Binding SelectedNuclid.Mza}"/>
+                        <TextBox Grid.Column="1"
+                                 Grid.ColumnSpan="2"
+                                 Grid.Row="4"
+                                 IsHitTestVisible="False"
+                                 IsReadOnly="True"
+                                 HorizontalAlignment="Stretch"
+                                 HorizontalContentAlignment="Left"
+                                 Margin="5"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding SelectedNuclid.Mza}"/>
 
                     </Grid>
                 </HeaderedContentControl>
             </Expander>
 
-            <HeaderedContentControl
-                    Margin="5"
-                    Header="Список радионуклидов">
-                <Grid
-                    ColumnDefinitions="0.1*,0.45*,0.45*"
-                    RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+            <HeaderedContentControl Margin="5"
+                                    Header="Список радионуклидов">
+                <Grid ColumnDefinitions="0.1*,0.45*,0.45*"
+                      RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
                     
-                    <TextBlock
-                        Grid.Column="0"
-                        Grid.ColumnSpan="3"
-                        Grid.Row="0"
-                        FontSize="12"
-                        HorizontalAlignment="Center"
-                        Margin="0,0,0,10"
-                        Text="Добавьте радионуклиды в список, укажите активность в Бк и количество (1 по умолчанию)"
-                        TextWrapping="WrapWithOverflow"/>
+                    <TextBlock Grid.Column="0"
+                               Grid.ColumnSpan="3"
+                               Grid.Row="0"
+                               FontSize="12"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,10"
+                               Text="Добавьте радионуклиды в список, укажите активность в Бк и количество (1 по умолчанию)"
+                               TextWrapping="WrapWithOverflow"/>
 
-                    <Button
-                        Grid.Column="0"
-                        Grid.Row="1"
-                        Click="OnAddButtonClicked"
-                        FontSize="16"
-                        Height="30"
-                        VerticalAlignment="Bottom"
-                        VerticalContentAlignment="Center"
-                        Width="30">
-
-                        <TextBlock
+                    <Button Grid.Column="0"
+                            Grid.Row="1"
+                            Click="OnAddButtonClicked"
                             FontSize="16"
-                            HorizontalAlignment="Center"
-                            Margin="-3"
-                            Text="&gt;"
-                            VerticalAlignment="Center"/>
+                            Height="30"
+                            VerticalAlignment="Bottom"
+                            VerticalContentAlignment="Center"
+                            Width="30">
+
+                        <TextBlock FontSize="16"
+                                   HorizontalAlignment="Center"
+                                   Margin="-3"
+                                   Text="&gt;"
+                                   VerticalAlignment="Center"/>
                     </Button>
 
-                    <Button
-                        Grid.Column="0"
-                        Grid.Row="2"
-                        Click="OnRemoveButtonClicked"
-                        Height="30"
-                        VerticalAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Width="30">
+                    <Button Grid.Column="0"
+                            Grid.Row="2"
+                            Click="OnRemoveButtonClicked"
+                            Height="30"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Width="30">
 
                         <TextBlock
                             FontSize="16"
@@ -275,71 +249,64 @@
                             VerticalAlignment="Center"/>
                     </Button>
 
-                    <Button
-                        Grid.Column="0"
-                        Grid.Row="3"
-                        Click="OnClearButtonClicked"
-                        FontSize="16"
-                        Height="30"
-                        VerticalAlignment="Top"
-                        VerticalContentAlignment="Center"
-                        Width="30">
-
-                        <TextBlock
+                    <Button Grid.Column="0"
+                            Grid.Row="3"
+                            Click="OnClearButtonClicked"
                             FontSize="16"
-                            HorizontalAlignment="Center"
-                            Margin="-3"
-                            Text="&lt;&lt;"
-                            VerticalAlignment="Center"/>
+                            Height="30"
+                            VerticalAlignment="Top"
+                            VerticalContentAlignment="Center"
+                            Width="30">
+
+                        <TextBlock FontSize="16"
+                                   HorizontalAlignment="Center"
+                                   Margin="-3"
+                                   Text="&lt;&lt;"
+                                   VerticalAlignment="Center"/>
                     </Button>
 
-                    <DataGrid
-                        Grid.Column="1"
-                        Grid.ColumnSpan="2"
-                        Grid.Row="1"
-                        Grid.RowSpan="3"
-                        AutoGenerateColumns="False"
-                        CanUserResizeColumns="True"
-                        CanUserReorderColumns="False"
-                        Margin="5"
-                        MinHeight="150"
-                        MaxHeight="175"
-                        SelectionMode="Single"
-                        Items="{Binding Path=SelectedRadionuclids}"
-                        SelectedItem="{Binding Path=SelectedNuclid, Mode=TwoWay}">
+                    <DataGrid Grid.Column="1"
+                              Grid.ColumnSpan="2"
+                              Grid.Row="1"
+                              Grid.RowSpan="3"
+                              AutoGenerateColumns="False"
+                              CanUserResizeColumns="True"
+                              CanUserReorderColumns="False"
+                              Margin="5"
+                              MinHeight="150"
+                              MaxHeight="175"
+                              SelectionMode="Single"
+                              Items="{Binding Path=SelectedRadionuclids}"
+                              SelectedItem="{Binding Path=SelectedNuclid, Mode=TwoWay}">
                         <DataGrid.Columns>
 
-                            <DataGridTextColumn
-                                x:DataType="m:CalculatorRadionuclidDTO"
-                                Width="0.3*"
-                                MinWidth="50"
-                                Header="Радионуклид"
-                                IsReadOnly="True"
-                                Binding="{Binding Path=Name}"/>
+                            <DataGridTextColumn x:DataType="m:CalculatorRadionuclidDTO"
+                                                Width="0.3*"
+                                                MinWidth="50"
+                                                Header="Радионуклид"
+                                                IsReadOnly="True"
+                                                Binding="{Binding Path=Name}"/>
 
-                            <DataGridTextColumn
-                                x:DataType="m:CalculatorRadionuclidDTO"
-                                Width="0.3*"
-                                MinWidth="50"
-                                Header="Обозначение"
-                                IsReadOnly="True"
-                                Binding="{Binding Path=Abbreviation}"/>
+                            <DataGridTextColumn x:DataType="m:CalculatorRadionuclidDTO"
+                                                Width="0.3*"
+                                                MinWidth="50"
+                                                Header="Обозначение"
+                                                IsReadOnly="True"
+                                                Binding="{Binding Path=Abbreviation}"/>
 
-                            <DataGridTextColumn 
-                                Width="0.4*"
-                                MinWidth="100"
-                                Header="Активность, Бк"
-                                IsVisible="{Binding IsSingleActivity, Converter={StaticResource BoolInverterConverter}}"
-                                Binding="{Binding Path=Activity, Mode=TwoWay}"/>
+                            <DataGridTextColumn Width="0.4*"
+                                                MinWidth="100"
+                                                Header="Активность, Бк"
+                                                IsVisible="{Binding IsSingleActivity, Converter={StaticResource BoolInverterConverter}}"
+                                                Binding="{Binding Path=Activity, Mode=TwoWay}"/>
 
                         </DataGrid.Columns>
                     </DataGrid>
-                    <Grid 
-                        Grid.Column="0"
-                        Grid.ColumnSpan="3"
-                        Grid.Row="4"
-                        ColumnDefinitions="Auto,Auto,Auto,Auto"
-                        RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                    <Grid Grid.Column="0"
+                          Grid.ColumnSpan="3"
+                          Grid.Row="4"
+                          ColumnDefinitions="Auto,Auto,Auto,Auto"
+                          RowDefinitions="Auto,Auto,Auto,Auto,Auto">
 
                         <!-- 1 ряд: Раздельная активность + Общая активность -->
 

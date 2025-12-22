@@ -9,12 +9,9 @@
         x:CompileBindings="True"
         x:DataType="vm:AskYearPeriodMessageVM"
         Title="Запрос периода"
-        MinWidth="250"
-        MinHeight="250"
-        d:DesignWidth ="500"
-        d:DesignHeight ="250"
-        behaviors:WindowScreenSizeBehavior.WidthRatio="0.25"
-        behaviors:WindowScreenSizeBehavior.HeightRatio="0.2"
+        MinWidth="250" MinHeight="250"
+        d:DesignWidth ="500" d:DesignHeight ="250"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.25" behaviors:WindowScreenSizeBehavior.HeightRatio="0.2"
         WindowStartupLocation="Manual"
         CanResize="True">
 
