@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Client_App.Views.Messages;
 
 namespace Client_App.Commands.AsyncCommands;
 

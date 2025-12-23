@@ -1,80 +1,80 @@
-﻿using Client_App.ViewModels;
+﻿using Client_App.Properties.UnifiedConfig;
 using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Diagnostics;
 
-namespace Client_App.Properties.ColumnWidthSettings
+namespace Client_App.Properties.ColumnWidthSettings;
+
+/// <summary>
+/// Менеджер настроек ширины колонок
+/// Теперь использует единый файл конфигурации unifiedConfig.json
+/// </summary>
+public static class ColumnSettingsManager
 {
-    public static class ColumnSettingsManager
+    /// <summary>
+    /// Загружает настройки ширины колонок для указанной формы
+    /// </summary>
+    /// <param name="formNum">Номер формы (например, "1.1", "1.2", ...)</param>
+    /// <returns>Список ширин колонок</returns>
+    public static List<double> LoadSettings(string formNum)
     {
-        private static readonly string SettingsPath = Path.Combine(BaseVM.ConfigDirectory, "columnWidthsSettings.json");
-
-        // Опции для сериализации с обработкой ошибок
-        private static readonly JsonSerializerOptions Options = new JsonSerializerOptions
+        try
         {
-            WriteIndented = true,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            NumberHandling = JsonNumberHandling.AllowReadingFromString
-        };
-
-        public static List<double> LoadSettings(string formNum)
-        {
-            if (!File.Exists(SettingsPath))
-                return new List<double>();
-
-            try
-            {
-                var json = File.ReadAllText(SettingsPath);
-                if (string.IsNullOrWhiteSpace(json))
-                    return new List<double>();
-
-                var settings = JsonSerializer.Deserialize<Dictionary<string, List<double>>>(json, Options);
-
-                return settings?.GetValueOrDefault(formNum) ?? new List<double>();
-            }
-            catch
-            {
-                return new List<double>();
-            }
+            return UnifiedConfigManager.LoadColumnWidths(formNum);
         }
-
-        public static void SaveSettings(List<double> formSettings, string formNum)
+        catch (System.Exception ex)
         {
-            var currentSettings = LoadAllSettings();
-            currentSettings[formNum] = formSettings ?? new List<double>();
-            SaveAllSettings(currentSettings);
+            Debug.WriteLine($"Failed to load column widths for form {formNum}: {ex.Message}");
+            return new List<double>();
         }
+    }
 
-        private static Dictionary<string, List<double>> LoadAllSettings()
+    /// <summary>
+    /// Сохраняет настройки ширины колонок для указанной формы
+    /// </summary>
+    /// <param name="formSettings">Список ширин колонок</param>
+    /// <param name="formNum">Номер формы</param>
+    public static void SaveSettings(List<double> formSettings, string formNum)
+    {
+        try
         {
-            if (!File.Exists(SettingsPath))
-                return new Dictionary<string, List<double>>();
-
-            try
-            {
-                var json = File.ReadAllText(SettingsPath);
-                return JsonSerializer.Deserialize<Dictionary<string, List<double>>>(json, Options)
-                       ?? new Dictionary<string, List<double>>();
-            }
-            catch
-            {
-                return new Dictionary<string, List<double>>();
-            }
+            UnifiedConfigManager.SaveColumnWidths(formSettings, formNum);
         }
-
-        private static void SaveAllSettings(Dictionary<string, List<double>> settings)
+        catch (System.Exception ex)
         {
-            try
-            {
-                var json = JsonSerializer.Serialize(settings, Options);
-                File.WriteAllText(SettingsPath, json);
-            }
-            catch (System.Exception ex)
-            {
-                // Логирование ошибки
-                System.Diagnostics.Debug.WriteLine($"Failed to save settings: {ex.Message}");
-            }
+            Debug.WriteLine($"Failed to save column widths for form {formNum}: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Загружает все настройки ширины колонок
+    /// </summary>
+    /// <returns>Словарь настроек для всех форм</returns>
+    public static Dictionary<string, List<double>> LoadAllSettings()
+    {
+        try
+        {
+            return UnifiedConfigManager.LoadAllColumnWidths();
+        }
+        catch (System.Exception ex)
+        {
+            Debug.WriteLine($"Failed to load all column widths: {ex.Message}");
+            return new Dictionary<string, List<double>>();
+        }
+    }
+
+    /// <summary>
+    /// Сохраняет все настройки ширины колонок
+    /// </summary>
+    /// <param name="settings">Словарь настроек для всех форм</param>
+    public static void SaveAllSettings(Dictionary<string, List<double>> settings)
+    {
+        try
+        {
+            UnifiedConfigManager.SaveAllColumnWidths(settings);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.WriteLine($"Failed to save all column widths: {ex.Message}");
         }
     }
 }
