@@ -210,14 +210,12 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             #if DEBUG
             foreach (var organization in organizations10)
             {
-                var massBalance12 = await CountMassBalanceForm12(organization.Id);
                 var massBalance14 = await CountMassBalanceForm14(organization.Id);
                 errorList.Add(new CheckError()
                 {
                     Message =
                     $"РегНомер: {organization.RegNo}\n" +
                     $"ОКПО: {organization.Okpo}\n" +
-                    $"Уран = {massBalance12}\n" +
                     $"Жидкое РВ  = {massBalance14.Item1}\n" +
                     $"Твердое РВ = {massBalance14.Item2}\n" +
                     $"Газовое РВ = {massBalance14.Item3}\n"
@@ -490,10 +488,56 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
 
             if (organization == null) return null;
 
-            if (await CountMassBalanceForm12(organization.Id) > 0)
+            double massBalance = 0;
+            bool InventarizationFlag = false;
+            var dbModel = StaticConfiguration.DBModel;
+            var reports = dbModel.ReportsCollectionDbSet
+                .Include(reps => reps.Report_Collection)
+                .ThenInclude(rep => rep.Rows12)
+                .FirstOrDefault(reps => reps.Id == organization.Id);
+            var reportCollection = reports.Report_Collection.ToList()
+                .FindAll(rep => rep.FormNum_DB == "1.2"
+                && DateTime.TryParse(rep.StartPeriod_DB, out var date)
+                && DateTime.TryParse(rep.EndPeriod_DB, out date));
+
+            try
+            {
+
+
+                for (int i = reportCollection.Count - 1; i >= 0; i--)
+                {
+                    var report = reportCollection[i];
+                    for (int j = 0; j < report.Rows12.Count; j++)
+                    {
+                        if (report.Rows12[j].OperationCode_DB == "10" && !InventarizationFlag)
+                        {
+                            InventarizationFlag = true;
+                            double.TryParse(report.Rows12[j].Mass_DB, out massBalance);
+                        }
+                        else if (double.TryParse(report.Rows12[j].Mass_DB, out var mass)
+                            && Spravochniks.SignsOperation["1.2"].ContainsKey($"{report.Rows12[j].OperationCode_DB}"))
+                        {
+                            if (Spravochniks.SignsOperation["1.2"][$"{report.Rows12[j].OperationCode_DB}"] == '+')
+                                massBalance += mass;
+                            else if (Spravochniks.SignsOperation["1.2"][$"{report.Rows12[j].OperationCode_DB}"] == '-')
+                                massBalance -= mass;
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            if (!InventarizationFlag && massBalance > 0)
                 return new CheckError()
                 {
-                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют изделия из обедненного урана"
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют изделия из обедненного урана. " +
+                    $"Необходимо проинвентаризировать по форме 1.2\n" +
+                    $"Инвентаризация: {InventarizationFlag}\n" +
+                    $"Баланс: {massBalance}"
                 };
             return null;
         }
@@ -529,57 +573,6 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 return false;
         }
 
-        private static async Task<double> CountMassBalanceForm12 (int reportsID)
-        {
-            double massBalance = 0;
-            bool InventarizationFlag = false;
-            var dbModel = StaticConfiguration.DBModel;
-            var reports = dbModel.ReportsCollectionDbSet
-                .Include(reps => reps.Report_Collection)
-                .ThenInclude(rep => rep.Rows12)
-                .FirstOrDefault(reps => reps.Id == reportsID);
-            var reportCollection = reports.Report_Collection.ToList()
-                .FindAll(rep => rep.FormNum_DB == "1.2" 
-                && DateTime.TryParse(rep.StartPeriod_DB, out var date)
-                && DateTime.TryParse(rep.EndPeriod_DB, out date));
-
-            try
-            {
-
-
-                for (int i = reportCollection.Count - 1; i >= 0; i--)
-                {
-                    var report = reportCollection[i];
-                    for (int j = 0; j < report.Rows12.Count; j++)
-                    {
-                        if (!InventarizationFlag)
-                        {
-                            if (report.Rows12[j].OperationCode_DB == "10")
-                            {
-                                InventarizationFlag = true;
-                                double.TryParse(report.Rows12[j].Mass_DB, out massBalance);
-                            }
-                        }
-                        else
-                        {
-                            if (double.TryParse(report.Rows12[j].Mass_DB, out var mass)
-                                && Spravochniks.SignsOperation["1.2"].ContainsKey($"{report.Rows12[j].OperationCode_DB}"))
-                            {
-                                if (Spravochniks.SignsOperation["1.2"][$"{report.Rows12[j].OperationCode_DB}"] == '+')
-                                    massBalance += mass;
-                                else if (Spravochniks.SignsOperation["1.2"][$"{report.Rows12[j].OperationCode_DB}"] == '-')
-                                    massBalance -= mass;
-                            }
-                        }
-
-                    }
-                }
-            } catch (Exception ex)
-            {
-                throw ex;
-            }
-            return massBalance;
-        }
         private static async Task<Tuple<double,double,double>> CountMassBalanceForm14(int reportsID)
         {
             double[] massBalances = new double[3];
