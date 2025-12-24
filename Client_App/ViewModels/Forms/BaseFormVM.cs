@@ -4,9 +4,9 @@ using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.Delete;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
-using Client_App.Commands.AsyncCommands.SwitchReport;
 using Client_App.Commands.SyncCommands;
 using Client_App.ViewModels.Controls;
+using Client_App.Properties.UnifiedConfig;
 using Models.Collections;
 using Models.Forms;
 using System;
@@ -36,7 +36,6 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
                    + $"{Reports.Master_DB.ShortJurLicoRep.Value}  "
                    + $"{Reports.Master_DB.OkpoRep.Value}";
         }
-    
     }
 
     private ObservableCollection<Form> _formList = [];
@@ -286,13 +285,11 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
                 result++;
             return result;
         }
-
     }
 
     public int TotalRows => Report.Rows.Count;
 
-
-    private bool _isAutoReplaceEnabled = true;
+    private bool _isAutoReplaceEnabled;
     public bool IsAutoReplaceEnabled
     {
         get => _isAutoReplaceEnabled;
@@ -303,42 +300,15 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
                 _isAutoReplaceEnabled = value;
                 Report.AutoReplace = value;
                 OnPropertyChanged();
+                UnifiedConfigManager.SaveAutoReplaceEnabled(value);
             }
         }
     }
 
-    private int _selectedYear = DateTime.Now.Year;
-    public int SelectedYear
-    {
-        get => _selectedYear;
-        set
-        {
-            _selectedYear = value;
-            OnPropertyChanged();
-        }
-    }
+    public ExecutorDataControlVM ExecutorDataControlVM { get; private set; }
 
-    private ExecutorDataControlVM _executorDataControlVM;
-    public ExecutorDataControlVM ExecutorDataControlVM
-    {
-        get
-        {
-            return _executorDataControlVM;
-        }
-    }
+    public SelectReportPopupVM SelectReportPopupVM { get; set; }
 
-    private SelectReportPopupVM _selectReportVM;
-    public SelectReportPopupVM SelectReportPopupVM
-    {
-        get
-        {
-            return _selectReportVM;
-        }
-        set
-        {
-            _selectReportVM = value;
-        }
-    }
     #endregion
 
     #region Constructors
@@ -346,6 +316,8 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public BaseFormVM() 
     { 
         SubscribeSelectedForms(_selectedForms);
+        // Загружаем сохранённую настройку автозаполнения
+        _isAutoReplaceEnabled = UnifiedConfigManager.LoadAutoReplaceEnabled();
     }
 
     /// <summary>
@@ -363,12 +335,17 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
         SubscribeSelectedForms(_selectedForms);
         InitializeUserControls();
+        
+        // Загружаем сохранённую настройку автозаполнения
+        _isAutoReplaceEnabled = UnifiedConfigManager.LoadAutoReplaceEnabled();
+        // Применяем настройку к текущему отчёту
+        Report.AutoReplace = _isAutoReplaceEnabled;
     }
 
     public void InitializeUserControls()
     {
-        _selectReportVM = new SelectReportPopupVM(this);
-        _executorDataControlVM = new ExecutorDataControlVM(this.Report);
+        SelectReportPopupVM = new SelectReportPopupVM(this);
+        ExecutorDataControlVM = new ExecutorDataControlVM(this.Report);
     }
     #endregion
 

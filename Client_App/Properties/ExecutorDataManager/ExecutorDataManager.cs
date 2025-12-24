@@ -32,7 +32,7 @@ public static class ExecutorDataManager
                 && x.GradeExecutor == executorData.GradeExecutor
                 && x.FIOexecutor == executorData.FIOexecutor)) return;
 
-        //Записываем в начало списка, чтобы в начале списка хранились последние исполнители  
+        //Записываем в начало списка, чтобы в начале списка хранились последние исполнители
         executors.Insert(0,executorData);
         SaveAllExecutorData(executors);
     }

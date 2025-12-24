@@ -6,7 +6,6 @@ using Client_App.Properties;
 using Client_App.Views;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
-using Client_App.Properties;
 using Client_App.Services;
 using System.Threading;
 using System;

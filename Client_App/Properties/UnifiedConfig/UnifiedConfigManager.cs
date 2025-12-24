@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Unicode;
 using Client_App.ViewModels;
 
 namespace Client_App.Properties.UnifiedConfig;
@@ -25,7 +27,8 @@ public static class UnifiedConfigManager
         WriteIndented = true,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         NumberHandling = JsonNumberHandling.AllowReadingFromString,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // Разрешает больше символов без экранирования
     };
 
     #region Paths
@@ -70,7 +73,15 @@ public static class UnifiedConfigManager
                 return new UnifiedConfig();
             }
 
-            return JsonSerializer.Deserialize<UnifiedConfig>(json, Options) ?? new UnifiedConfig();
+            // Проверяем, есть ли комментарии в файле
+            if (json.Contains("_comment"))
+            {
+                return LoadConfigWithComments(json);
+            }
+            else
+            {
+                return JsonSerializer.Deserialize<UnifiedConfig>(json, Options) ?? new UnifiedConfig();
+            }
         }
         catch (Exception ex) when (ex is JsonException or IOException)
         {
@@ -79,7 +90,82 @@ public static class UnifiedConfigManager
     }
 
     /// <summary>
-    /// Сохраняет полную конфигурацию приложения
+    /// Загружает конфигурацию из JSON с комментариями
+    /// </summary>
+    private static UnifiedConfig LoadConfigWithComments(string json)
+    {
+        try
+        {
+            var configDict = JsonSerializer.Deserialize<Dictionary<string, object>>(json, Options);
+            if (configDict == null)
+                return new UnifiedConfig();
+
+            var config = new UnifiedConfig();
+            
+            // Загружаем основные параметры, игнорируя комментарии
+            if (configDict.TryGetValue("version", out var versionValue))
+                config.Version = versionValue?.ToString() ?? "1.0";
+            
+            if (configDict.TryGetValue("lastModified", out var lastModifiedValue))
+            {
+                if (DateTime.TryParse(lastModifiedValue?.ToString(), out var lastModified))
+                    config.LastModified = lastModified;
+            }
+            
+            // Загружаем настройки ширины колонок
+            if (configDict.TryGetValue("columnWidths", out var columnWidthsValue))
+            {
+                var columnWidthsDict = JsonSerializer.Deserialize<Dictionary<string, object>>(columnWidthsValue?.ToString()!, Options);
+                if (columnWidthsDict?.TryGetValue("columnWidthSettings", out var settingsValue) == true)
+                {
+                    var settingsDict = JsonSerializer.Deserialize<Dictionary<string, List<double>>>(settingsValue?.ToString()!, Options);
+                    if (settingsDict != null)
+                    {
+                        var orderedSettings = new OrderedDictionary();
+                        foreach (var kvp in settingsDict)
+                        {
+                            orderedSettings[kvp.Key] = kvp.Value;
+                        }
+                        config.ColumnWidths.ColumnWidthSettings = orderedSettings;
+                    }
+                }
+            }
+            
+            // Загружаем настройки количества строк
+            if (configDict.TryGetValue("rowCounts", out var rowCountsValue))
+            {
+                var rowCountsDict = JsonSerializer.Deserialize<Dictionary<string, object>>(rowCountsValue?.ToString()!, Options);
+                if (rowCountsDict?.TryGetValue("rowCountSettings", out var settingsValue) == true)
+                {
+                    var settingsDict = JsonSerializer.Deserialize<Dictionary<string, RowCountSettings>>(settingsValue?.ToString()!, Options);
+                    if (settingsDict != null)
+                    {
+                        config.RowCounts.RowCountSettings = settingsDict;
+                    }
+                }
+            }
+            
+            // Загружаем настройки автозаполнения
+            if (configDict.TryGetValue("autoReplace", out var autoReplaceValue))
+            {
+                var autoReplaceDict = JsonSerializer.Deserialize<Dictionary<string, object>>(autoReplaceValue?.ToString()!, Options);
+                if (autoReplaceDict?.TryGetValue("isEnabled", out var isEnabledValue) == true)
+                {
+                    if (bool.TryParse(isEnabledValue?.ToString(), out var isEnabled))
+                        config.AutoReplace.IsEnabled = isEnabled;
+                }
+            }
+            
+            return config;
+        }
+        catch
+        {
+            return new UnifiedConfig();
+        }
+    }
+
+    /// <summary>
+    /// Сохраняет полную конфигурацию приложения с комментариями
     /// </summary>
     public static void SaveConfig(UnifiedConfig config)
     {
@@ -93,13 +179,67 @@ public static class UnifiedConfigManager
                 Directory.CreateDirectory(directory);
             }
             
-            var json = JsonSerializer.Serialize(config, Options);
+            // Создаем конфигурацию с комментариями
+            var configWithComments = CreateConfigWithComments(config);
+            var json = JsonSerializer.Serialize(configWithComments, Options);
             File.WriteAllText(configPath, json);
         }
         catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException)
         {
             // Ошибка сохранения конфигурации
         }
+    }
+
+    /// <summary>
+    /// Создает конфигурацию с добавлением комментариев
+    /// </summary>
+    private static Dictionary<string, object> CreateConfigWithComments(UnifiedConfig config)
+    {
+        var result = new Dictionary<string, object>
+        {
+            ["_comment"] = "Конфигурация ПО «МПЗФ». Автоматически генерируется, не редактируйте вручную основные параметры.",
+            ["_comment_version"] = "Версия формата конфигурации",
+            ["version"] = config.Version,
+            
+            ["_comment_lastModified"] = "Дата последнего изменения конфигурации",
+            ["lastModified"] = config.LastModified,
+            
+            ["_comment_columnWidths"] = "Настройки ширины колонок для всех форм. Ключ: номер формы (1.1, 1.2, notes), Значение: список ширин колонок",
+            ["columnWidths"] = new Dictionary<string, object>
+            {
+                ["_comment"] = "Упорядоченный словарь настроек ширины колонок",
+                ["columnWidthSettings"] = ConvertOrderedDictionaryToDictionary(config.ColumnWidths.ColumnWidthSettings)
+            },
+            
+            ["_comment_rowCounts"] = "Настройки количества строк таблиц организаций и отчётов. Ключ: префикс формы (form1, form2), Значение: настройки количества строк",
+            ["rowCounts"] = new Dictionary<string, object>
+            {
+                ["_comment"] = "Словарь настроек количества строк для организаций и форм",
+                ["rowCountSettings"] = config.RowCounts.RowCountSettings
+            },
+            
+            ["_comment_autoReplace"] = "Настройки автозаполнения в формах",
+            ["autoReplace"] = new Dictionary<string, object>
+            {
+                ["_comment_isEnabled"] = "Включено ли автозаполнение по умолчанию для всех форм",
+                ["isEnabled"] = config.AutoReplace.IsEnabled
+            }
+        };
+        
+        return result;
+    }
+
+    /// <summary>
+    /// Конвертирует OrderedDictionary в обычный Dictionary для сериализации
+    /// </summary>
+    private static Dictionary<string, object> ConvertOrderedDictionaryToDictionary(OrderedDictionary orderedDict)
+    {
+        var result = new Dictionary<string, object>();
+        foreach (DictionaryEntry entry in orderedDict)
+        {
+            result[entry.Key.ToString()!] = entry.Value;
+        }
+        return result;
     }
     #endregion
 
@@ -289,6 +429,27 @@ public static class UnifiedConfigManager
     }
     #endregion
 
+    #region Auto Replace Methods
+    /// <summary>
+    /// Загружает настройку автозаполнения
+    /// </summary>
+    public static bool LoadAutoReplaceEnabled()
+    {
+        var config = LoadConfig();
+        return config.AutoReplace.IsEnabled;
+    }
+
+    /// <summary>
+    /// Сохраняет настройку автозаполнения
+    /// </summary>
+    public static void SaveAutoReplaceEnabled(bool isEnabled)
+    {
+        var config = LoadConfig();
+        config.AutoReplace.IsEnabled = isEnabled;
+        SaveConfig(config);
+    }
+    #endregion
+
     #region Helper Methods
     /// <summary>
     /// Переупорядочивает ключи в ColumnWidthSettings в правильном порядке
@@ -407,6 +568,11 @@ public class UnifiedConfig
     /// Значение: настройки количества строк для организаций и форм
     /// </summary>
     public RowCountsConfig RowCounts { get; set; } = new();
+    
+    /// <summary>
+    /// Настройки автозаполнения
+    /// </summary>
+    public AutoReplaceConfig AutoReplace { get; set; } = new();
 }
 
 /// <summary>
@@ -443,6 +609,17 @@ public class RowCountSettings
 {
     public int RowsCountOrgs { get; set; } = 6;
     public int RowsCountForms { get; set; } = 8;
+}
+
+/// <summary>
+/// Конфигурация автозаполнения
+/// </summary>
+public class AutoReplaceConfig
+{
+    /// <summary>
+    /// Включено ли автозаполнение по умолчанию
+    /// </summary>
+    public bool IsEnabled { get; set; } = true;
 }
 
 /// <summary>
