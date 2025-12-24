@@ -1,4 +1,4 @@
-﻿using Client_App.Resources.CustomComparers;
+﻿using Client_App.Properties.UnifiedConfig;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Client_App.Resources.CustomComparers;
 
 namespace Client_App.ViewModels.MainWindowTabs;
 
@@ -22,7 +23,7 @@ public class Forms2TabControlVM : INotifyPropertyChanged
     
     private void SaveRowCountSettings()
     {
-        Client_App.Properties.RowCountSettings.RowCountSettingsManager.SaveSettings(
+        UnifiedConfigManager.SaveRowCountSettings(
             "form2", 
             _rowsCountOrgs, 
             _rowsCountForms);
@@ -149,7 +150,7 @@ public class Forms2TabControlVM : INotifyPropertyChanged
         {
             if (_rowsCountOrgs == 0) // If not loaded yet
             {
-                var (orgs, _) = Client_App.Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
+                var (orgs, _) = UnifiedConfigManager.LoadRowCountSettings(
                     "form2", 6, 8);
                 _rowsCountOrgs = orgs;
             }
@@ -261,7 +262,7 @@ public class Forms2TabControlVM : INotifyPropertyChanged
         {
             if (_rowsCountForms == 0) // If not loaded yet
             {
-                var (_, forms) = Client_App.Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
+                var (_, forms) = UnifiedConfigManager.LoadRowCountSettings(
                     "form2", 6, 8);
                 _rowsCountForms = forms;
             }

@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Xaml.Interactivity;
-using Client_App.Properties.ColumnWidthSettings;
+using Client_App.Properties.UnifiedConfig;
 using Client_App.ViewModels.Forms;
 using DynamicData;
 using System;
@@ -38,7 +38,7 @@ namespace Client_App.Behaviors
         private void AssociatedObject_Initialized(object? sender, EventArgs e)
         {
             // Восстановление ширины колонок
-            columnWidths = ColumnSettingsManager.LoadSettings(FormNum);
+            columnWidths = UnifiedConfigManager.LoadColumnWidths(FormNum);
 
             var columns = AssociatedObject.Columns;
 
@@ -69,7 +69,7 @@ namespace Client_App.Behaviors
                 else
                     columnWidths.Add(AssociatedObject.ColumnWidth.Value);
             }
-            ColumnSettingsManager.SaveSettings(columnWidths, FormNum);
+            UnifiedConfigManager.SaveColumnWidths(columnWidths, FormNum);
         }
     }
 }

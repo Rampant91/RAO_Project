@@ -1,4 +1,4 @@
-﻿using Client_App.Resources.CustomComparers;
+﻿using Client_App.Properties.UnifiedConfig;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Client_App.Resources.CustomComparers;
 
 namespace Client_App.ViewModels.MainWindowTabs;
 
@@ -27,10 +28,7 @@ public class Forms1TabControlVM : INotifyPropertyChanged
     
     private void SaveRowCountSettings()
     {
-        Client_App.Properties.RowCountSettings.RowCountSettingsManager.SaveSettings(
-            "form1", 
-            _rowsCountOrgs, 
-            _rowsCountForms);
+        UnifiedConfigManager.SaveRowCountSettings("form1", RowsCountOrgs, RowsCountForms);
     }
     #endregion
 
@@ -137,8 +135,7 @@ public class Forms1TabControlVM : INotifyPropertyChanged
         {
             if (_rowsCountOrgs == 0) // If not loaded yet
             {
-                var (orgs, _) = Client_App.Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
-                    "form1", 6, 8);
+                var (orgs, _) = UnifiedConfigManager.LoadRowCountSettings("form1", 6, 8);
                 _rowsCountOrgs = orgs;
             }
             return _rowsCountOrgs;
@@ -251,8 +248,7 @@ public class Forms1TabControlVM : INotifyPropertyChanged
         {
             if (_rowsCountForms == 0) // If not loaded yet
             {
-                var (_, forms) = Client_App.Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
-                    "form1", 6, 8);
+                var (_, forms) = UnifiedConfigManager.LoadRowCountSettings("form1", 6, 8);
                 _rowsCountForms = forms;
             }
             return _rowsCountForms;

@@ -7,20 +7,18 @@ using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.Unicode;
 using Client_App.ViewModels;
 
 namespace Client_App.Properties.UnifiedConfig;
 
 /// <summary>
-/// Единый менеджер конфигурации приложения
-/// Объединяет настройки ширины колонок и количества строк в один файл
+/// Единый менеджер конфигурации приложения.
+/// Объединяет настройки ширины колонок и количества строк в один файл.
 /// </summary>
 public static class UnifiedConfigManager
 {
     private const string UnifiedConfigFileName = "Config.json";
     private const string OldColumnWidthsFileName = "columnWidthsSettings.json";
-    private const string OldRowCountsFileName = "rowCountSettings.json";
     
     private static readonly JsonSerializerOptions Options = new()
     {
@@ -40,11 +38,6 @@ public static class UnifiedConfigManager
     private static string GetOldColumnWidthsPath()
     {
         return Path.Combine(BaseVM.ConfigDirectory, OldColumnWidthsFileName);
-    }
-
-    private static string GetOldRowCountsPath()
-    {
-        return Path.Combine(BaseVM.ConfigDirectory, OldRowCountsFileName);
     }
     #endregion
 
@@ -327,7 +320,7 @@ public static class UnifiedConfigManager
         {
             return config.ColumnWidths.ColumnWidthSettings[formNum] as List<double> ?? new List<double>();
         }
-        return new List<double>();
+        return [];
     }
 
     /// <summary>
@@ -344,57 +337,6 @@ public static class UnifiedConfigManager
         SaveConfig(config);
     }
 
-    /// <summary>
-    /// Загружает все настройки ширины колонок
-    /// </summary>
-    public static Dictionary<string, List<double>> LoadAllColumnWidths()
-    {
-        var config = LoadConfig();
-        var result = new Dictionary<string, List<double>>();
-        
-        foreach (DictionaryEntry entry in config.ColumnWidths.ColumnWidthSettings)
-        {
-            var key = entry.Key.ToString();
-            if (key != null && entry.Value is List<double> value)
-            {
-                result[key] = value;
-            }
-        }
-        
-        return result;
-    }
-
-    /// <summary>
-    /// Сохраняет все настройки ширины колонок
-    /// </summary>
-    public static void SaveAllColumnWidths(Dictionary<string, List<double>> settings)
-    {
-        var config = LoadConfig();
-        
-        // Создаем новый OrderedDictionary с нужным порядком
-        var orderedSettings = new OrderedDictionary();
-        var order = new[] { "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9", 
-                           "2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "2.8", "2.9", "2.10", "2.11", "2.12", 
-                           "notes" };
-        
-        // Добавляем в нужном порядке
-        foreach (var key in order)
-        {
-            if (settings.ContainsKey(key))
-            {
-                orderedSettings[key] = settings[key];
-            }
-        }
-        
-        // Добавляем любые другие ключи, которых нет в списке
-        foreach (var kvp in settings.Where(x => !order.Contains(x.Key)))
-        {
-            orderedSettings[kvp.Key] = kvp.Value;
-        }
-        
-        config.ColumnWidths.ColumnWidthSettings = orderedSettings;
-        SaveConfig(config);
-    }
     #endregion
 
     #region Row Count Methods (для совместимости)
@@ -535,7 +477,7 @@ public static class UnifiedConfigManager
                 }
                 catch (Exception ex)
                 {
-                    // Ошибка удаления старого файла
+                    // Ошибка удаления старого файла ширины колонок
                 }
             }
         }
@@ -547,6 +489,7 @@ public static class UnifiedConfigManager
     #endregion
 }
 
+#region Configuration Classes
 /// <summary>
 /// Единая конфигурация приложения
 /// </summary>
@@ -555,37 +498,18 @@ public class UnifiedConfig
     public string Version { get; set; } = "1.0";
     public DateTime LastModified { get; set; } = DateTime.Now;
     
-    /// <summary>
-    /// Настройки ширины колонок для всех форм
-    /// Ключ: номер формы (например, "1.1", "1.2", "notes", ...)
-    /// Значение: список ширин колонок
-    /// </summary>
     public ColumnWidthsConfig ColumnWidths { get; set; } = new();
     
-    /// <summary>
-    /// Настройки количества строк для DataGrid
-    /// Ключ: префикс формы (например, "form1", "form2", ...)
-    /// Значение: настройки количества строк для организаций и форм
-    /// </summary>
     public RowCountsConfig RowCounts { get; set; } = new();
     
-    /// <summary>
-    /// Настройки автозаполнения
-    /// </summary>
     public AutoReplaceConfig AutoReplace { get; set; } = new();
 }
 
 /// <summary>
-/// Конфигурация ширин колонок
+/// Конфигурация ширины колонок
 /// </summary>
 public class ColumnWidthsConfig
 {
-    /// <summary>
-    /// Упорядоченный словарь настроек ширины колонок
-    /// Ключ: номер формы (например, "1.1", "1.2", "notes", ...)
-    /// Значение: список ширин колонок для этой формы
-    /// </summary>
-    [JsonConverter(typeof(OrderedDictionaryConverter))]
     public OrderedDictionary ColumnWidthSettings { get; set; } = new();
 }
 
@@ -594,11 +518,6 @@ public class ColumnWidthsConfig
 /// </summary>
 public class RowCountsConfig
 {
-    /// <summary>
-    /// Словарь настроек количества строк
-    /// Ключ: префикс формы (например, "form1", "form2", ...)
-    /// Значение: настройки количества строк для организаций и форм
-    /// </summary>
     public Dictionary<string, RowCountSettings> RowCountSettings { get; set; } = new();
 }
 
@@ -616,60 +535,6 @@ public class RowCountSettings
 /// </summary>
 public class AutoReplaceConfig
 {
-    /// <summary>
-    /// Включено ли автозаполнение по умолчанию
-    /// </summary>
     public bool IsEnabled { get; set; } = true;
 }
-
-/// <summary>
-/// JsonConverter для OrderedDictionary
-/// Обеспечивает сериализацию и десериализацию OrderedDictionary в JSON
-/// </summary>
-public class OrderedDictionaryConverter : JsonConverter<OrderedDictionary>
-{
-    public override OrderedDictionary Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        var result = new OrderedDictionary();
-        
-        if (reader.TokenType != JsonTokenType.StartObject)
-        {
-            return result;
-        }
-
-        while (reader.Read())
-        {
-            if (reader.TokenType == JsonTokenType.EndObject)
-            {
-                break;
-            }
-
-            if (reader.TokenType == JsonTokenType.PropertyName)
-            {
-                var key = reader.GetString();
-                reader.Read(); // Move to value
-                
-                var value = JsonSerializer.Deserialize<List<double>>(ref reader, options);
-                result[key] = value;
-            }
-        }
-
-        return result;
-    }
-
-    public override void Write(Utf8JsonWriter writer, OrderedDictionary value, JsonSerializerOptions options)
-    {
-        writer.WriteStartObject();
-        
-        foreach (DictionaryEntry entry in value)
-        {
-            var key = entry.Key.ToString();
-            var list = entry.Value as List<double>;
-            
-            writer.WritePropertyName(key);
-            JsonSerializer.Serialize(writer, list, options);
-        }
-        
-        writer.WriteEndObject();
-    }
-}
+#endregion
