@@ -7,7 +7,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
 using Client_App.Resources.CustomComparers;
 
 namespace Client_App.ViewModels.MainWindowTabs;
@@ -188,7 +187,6 @@ public class Forms2TabControlVM : INotifyPropertyChanged
     }
     #endregion
 
-
     #region ReportCollection
 
     public ObservableCollection<Report> ReportCollection
@@ -201,12 +199,12 @@ public class Forms2TabControlVM : INotifyPropertyChanged
                 SelectedReports
                     .Report_Collection
                     .AsEnumerable()
-                    .OrderBy(x => x.FormNum_DB)
+                    .OrderBy(x => x.FormNum_DB, new FormNumberComparer())
                     .ThenByDescending(x => x.Year_DB == null ||
                                            !int.TryParse(x.Year_DB, out _) ?
                         int.MaxValue :
                         int.Parse(x.Year_DB))
-                    .ThenBy(rep => rep.CorrectionNumber_DB)
+                    .ThenByDescending(rep => rep.CorrectionNumber_DB)
                     .Skip((CurrentPageForms - 1) * RowsCountForms)
                     .Take(RowsCountForms));
         }
@@ -300,7 +298,6 @@ public class Forms2TabControlVM : INotifyPropertyChanged
         }
     }
     #endregion
-
 
     #region TotalReportCount
     public int TotalReportCount

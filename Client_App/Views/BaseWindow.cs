@@ -30,6 +30,10 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>
     {
         try
         {
+            // Don't reposition if window is maximized
+            if (WindowState == WindowState.Maximized)
+                return;
+
             var ownerWindow = GetOwnerWindow();
 
             if (ownerWindow?.Screens == null) return;

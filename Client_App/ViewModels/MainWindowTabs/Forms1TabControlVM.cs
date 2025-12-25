@@ -63,6 +63,7 @@ public class Forms1TabControlVM : INotifyPropertyChanged
         get
         {
             var comparator = new CustomReportsComparer();
+            
             if (!string.IsNullOrEmpty(SearchText))
             {
                 var search = SearchText.ToLower().Trim();
@@ -74,7 +75,8 @@ public class Forms1TabControlVM : INotifyPropertyChanged
                                    || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
                                    || reps.Master_DB.Rows10[0].ShortJurLico_DB.ToLower().Contains(search)
                                    || reps.Master_DB.Rows10[1].ShortJurLico_DB.ToLower().Contains(search))
-                    .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
+                    .OrderBy(reps => reps.Master_DB.FormNum_DB)
+                    .ThenBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
                     .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
                     .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
                     .Take(RowsCountOrgs));
@@ -83,7 +85,8 @@ public class Forms1TabControlVM : INotifyPropertyChanged
                 return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
                     .AsEnumerable()
                     .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
-                    .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
+                    .OrderBy(reps => reps.Master_DB.FormNum_DB)
+                    .ThenBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
                     .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
                     .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
                     .Take(RowsCountOrgs));
@@ -180,7 +183,6 @@ public class Forms1TabControlVM : INotifyPropertyChanged
         {
             if (SelectedReports is null) return null;
 
-
             return new ObservableCollection<Report>(
                 SelectedReports
                     .Report_Collection
@@ -195,7 +197,7 @@ public class Forms1TabControlVM : INotifyPropertyChanged
                                            !DateOnly.TryParse(x.EndPeriod_DB, out _) ?
                         DateOnly.MaxValue :
                         DateOnly.Parse(x.EndPeriod_DB))
-                    .ThenBy(rep => rep.CorrectionNumber_DB)
+                    .ThenByDescending(rep => rep.CorrectionNumber_DB)
                     .Skip((CurrentPageForms - 1) * RowsCountForms)
                     .Take(RowsCountForms));
         }

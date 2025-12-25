@@ -52,6 +52,16 @@ public static class UnifiedConfigManager
         // Выполняем миграцию при необходимости
         MaybeMigrateOldSettings();
         
+        return LoadConfigWithoutMigration();
+    }
+
+    /// <summary>
+    /// Загружает конфигурацию без выполнения миграции
+    /// </summary>
+    private static UnifiedConfig LoadConfigWithoutMigration()
+    {
+        var configPath = GetUnifiedConfigPath();
+        
         if (!File.Exists(configPath))
         {
             return new UnifiedConfig(); // Возвращаем конфигурацию по умолчанию
@@ -245,8 +255,8 @@ public static class UnifiedConfigManager
         var configPath = GetUnifiedConfigPath();
         var oldColumnWidthsPath = GetOldColumnWidthsPath();
 
-        // Если новый файл уже существует, миграция не нужна
-        if (File.Exists(configPath))
+        // Если старого файла нет, миграция не нужна
+        if (!File.Exists(oldColumnWidthsPath))
         {
             return;
         }
@@ -254,7 +264,21 @@ public static class UnifiedConfigManager
         var config = new UnifiedConfig();
         var migrated = false;
 
-        // Миграция настроек ширины колонок
+        // Если новый файл существует, загружаем его для слияния
+        if (File.Exists(configPath))
+        {
+            try
+            {
+                config = LoadConfigWithoutMigration();
+            }
+            catch (Exception ex)
+            {
+                // Если не удалось загрузить новый файл, начинаем с чистого конфига
+                config = new UnifiedConfig();
+            }
+        }
+
+        // Миграция настроек ширины колонок из старого файла
         if (File.Exists(oldColumnWidthsPath))
         {
             try
@@ -272,23 +296,43 @@ public static class UnifiedConfigManager
                                            "2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "2.8", "2.9", "2.10", "2.11", "2.12", 
                                            "notes" };
                         
-                        // Добавляем в нужном порядке
+                        // Сначала добавляем существующие настройки из нового файла (если есть)
+                        foreach (var key in order)
+                        {
+                            if (config.ColumnWidths.ColumnWidthSettings.Contains(key))
+                            {
+                                orderedSettings[key] = config.ColumnWidths.ColumnWidthSettings[key];
+                            }
+                        }
+                        
+                        // Затем добавляем/обновляем из старого файла (старые данные имеют приоритет)
                         foreach (var key in order)
                         {
                             if (oldSettings.ContainsKey(key))
                             {
                                 orderedSettings[key] = oldSettings[key];
+                                migrated = true;
                             }
                         }
                         
-                        // Добавляем любые другие ключи, которых нет в списке
+                        // Добавляем любые другие ключи из старого файла
                         foreach (var kvp in oldSettings.Where(x => !order.Contains(x.Key)))
                         {
                             orderedSettings[kvp.Key] = kvp.Value;
+                            migrated = true;
+                        }
+                        
+                        // Добавляем оставшиеся ключи из нового файла
+                        foreach (DictionaryEntry entry in config.ColumnWidths.ColumnWidthSettings)
+                        {
+                            var key = entry.Key.ToString();
+                            if (key != null && !orderedSettings.Contains(key))
+                            {
+                                orderedSettings[key] = entry.Value;
+                            }
                         }
                         
                         config.ColumnWidths.ColumnWidthSettings = orderedSettings;
-                        migrated = true;
                     }
                 }
             }
@@ -298,12 +342,10 @@ public static class UnifiedConfigManager
             }
         }
 
-        // Если была миграция, сохраняем новый файл
+        // Если была миграция, сохраняем и очищаем старые файлы
         if (migrated)
         {
             SaveConfig(config);
-            
-            // Безопасно удаляем старые файлы после успешной миграции
             CleanupOldConfigFiles();
         }
     }
@@ -455,7 +497,7 @@ public static class UnifiedConfigManager
             // Проверяем, что в новом файле есть данные ширины колонок
             try
             {
-                var config = LoadConfig();
+                var config = LoadConfigWithoutMigration();
                 var hasColumnWidths = config.ColumnWidths.ColumnWidthSettings.Count > 0;
                 
                 if (!hasColumnWidths)
