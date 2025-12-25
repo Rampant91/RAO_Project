@@ -292,7 +292,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         Column = $"7",
                         Value = $"{form41.NumOfFormsWithoutInventarizationInfo_DB}",
                         Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" не совпадает количество отчётов 1.1 - 1.4 без инвентаризации:\n" +
-                        $"Указано: {form41.NumOfForms212_DB},\n" +
+                        $"Указано: {form41.NumOfFormsWithoutInventarizationInfo_DB},\n" +
                         $"Найдено в базе данных: {count}"
                     };
             else return null;
@@ -348,7 +348,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         Column = $"6",
                         Value = $"{form41.NumOfFormsWithInventarizationInfo_DB}",
                         Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" не совпадает количество инвентаризационных отчётов 1.1-1.4:\n" +
-                        $"Указано: {form41.NumOfForms212_DB},\n" +
+                        $"Указано: {form41.NumOfFormsWithInventarizationInfo_DB},\n" +
                         $"Найдено в базе данных: {count}"
                     };
             else return null;
