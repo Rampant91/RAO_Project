@@ -110,40 +110,63 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
         {
             var dbm = StaticConfiguration.DBModel;
             var window = Desktop.Windows.FirstOrDefault(x => x.Name == _formType);
-
-            var reportsAlreadyExist = _formType switch
+            bool reportsAlreadyExist;
+            switch (_formType)
             {
-                "1.0" => dbm.ReportsCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Include(x => x.DBObservable)
-                    .Include(reps => reps.Master_DB)
-                    .ThenInclude(report => report.Rows10)
-                    .Where(reps => reps.DBObservable != null)
-                    .ToList()
-                    .Any(x => x.Master_DB.RegNoRep.Value == _form10VM.Storage.RegNoRep.Value 
-                              && !string.IsNullOrWhiteSpace(_form10VM.Storage.RegNoRep.Value)
-                              && x.Master_DB.OkpoRep.Value == _form10VM.Storage.OkpoRep.Value
-                              && !string.IsNullOrWhiteSpace(_form10VM.Storage.OkpoRep.Value)
-                              && x.Master_DB.Id != _form10VM.Storage.Id),
 
-                "2.0" => dbm.ReportsCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Include(x => x.DBObservable)
-                    .Include(reps => reps.Master_DB)
-                    .ThenInclude(report => report.Rows20)
-                    .Where(reps => reps.DBObservable != null)
-                    .ToList()
-                    .Any(x => x.Master_DB.RegNoRep.Value == _form20VM.Storage.RegNoRep.Value
+                case "1.0":
+                    try
+                    {
+                        reportsAlreadyExist = dbm.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Include(x => x.DBObservable)
+                        .Include(reps => reps.Master_DB)
+                        .ThenInclude(report => report.Rows10)
+                        .Where(reps => reps.DBObservable != null)
+                        .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
+                        .ToList()
+                        .Any(x => x.Master_DB.RegNoRep.Value == _form10VM.Storage.RegNoRep.Value
+                                  && !string.IsNullOrWhiteSpace(_form10VM.Storage.RegNoRep.Value)
+                                  && x.Master_DB.OkpoRep.Value == _form10VM.Storage.OkpoRep.Value
+                                  && !string.IsNullOrWhiteSpace(_form10VM.Storage.OkpoRep.Value)
+                                  && x.Master_DB.Id != _form10VM.Storage.Id);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                    break;
+
+                case "2.0":
+                    try
+                    {
+                        reportsAlreadyExist = dbm.ReportsCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
+                        .AsQueryable()
+                        .Include(x => x.DBObservable)
+                        .Include(reps => reps.Master_DB)
+                        .ThenInclude(report => report.Rows20)
+                        .Where(reps => reps.DBObservable != null)
+                        .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
+                        .ToList()
+                        .Any(x => x.Master_DB.RegNoRep.Value == _form20VM.Storage.RegNoRep.Value
                               && !string.IsNullOrWhiteSpace(_form20VM.Storage.RegNoRep.Value)
                               && x.Master_DB.OkpoRep.Value == _form20VM.Storage.OkpoRep.Value
                               && !string.IsNullOrWhiteSpace(_form20VM.Storage.OkpoRep.Value)
-                              && x.Master_DB.Id != _form20VM.Storage.Id),
+                              && x.Master_DB.Id != _form20VM.Storage.Id);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                    break;
 
-                _ => false
+                default:
+                    reportsAlreadyExist = false;
+                    break;
             };
 
             if (reportsAlreadyExist)
