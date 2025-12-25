@@ -28,13 +28,13 @@ public class NewPasteNotesAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         var rows = pastedString.Split("\r\n");
 
         //Последняя строка пустая, поэтому выделяем память на одну ячейку меньше
-        string[][] parsedRows = new string[rows.Length-1][];
-        for(int i =0; i< parsedRows.Length;i++)
+        var parsedRows = new string[rows.Length-1][];
+        for(var i =0; i< parsedRows.Length;i++)
         {
             parsedRows[i] = rows[i].Split('\t');
         }
 
-        int start = formVM.Report.Notes.IndexOf(SelectedNote);
+        var start = formVM.Report.Notes.IndexOf(SelectedNote);
 
         if (start + parsedRows.Length > Storage.Notes.Count)
         {
@@ -53,7 +53,7 @@ public class NewPasteNotesAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     .ShowDialog(Desktop.MainWindow));
         }
 
-        for (int i = 0; i < parsedRows.Length && i+start<Storage.Notes.Count; i++)
+        for (var i = 0; i < parsedRows.Length && i+start<Storage.Notes.Count; i++)
         {
             var note = Storage.Notes.Get<Note>(i+start);
 

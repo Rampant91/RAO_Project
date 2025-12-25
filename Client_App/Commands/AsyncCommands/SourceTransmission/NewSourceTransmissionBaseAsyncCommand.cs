@@ -121,19 +121,19 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
                 var massTon = double.TryParse(massTmp,
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                    new CultureInfo("ru-RU", false),
                     out var massDoubleValue)
                     ? $"{massDoubleValue / 1000:0.######################################################e+00}"
                     : "";
                 var betaGammaActivity = double.TryParse(massTon,
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent,
-                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                    new CultureInfo("ru-RU", false),
                     out var betaActivityDoubleValue)
                     ? $"{betaActivityDoubleValue * 25_000_000_000:0.######################################################e+00}"
                     : "";
                 var alphaActivity = double.TryParse(massTon,
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent,
-                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                    new CultureInfo("ru-RU", false),
                     out var alphaActivityDoubleValue)
                     ? $"{alphaActivityDoubleValue * 16_100_000_000:0.######################################################e+00}"
                     : "";
@@ -289,7 +289,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
                 var massTon = double.TryParse(massTmp,
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                    new CultureInfo("ru-RU", false),
                     out var massDoubleValue)
                     ? $"{massDoubleValue / 1000:0.######################################################e+00}"
                     : "";
@@ -436,19 +436,19 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .Replace(")", "");
                 var massTon = double.TryParse(massTmp,
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                    new CultureInfo("ru-RU", false),
                     out var massDoubleValue)
                     ? $"{massDoubleValue / 1000:0.######################################################e+00}"
                     : "";
                 var betaGammaActivity = double.TryParse(massTon,
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent,
-                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                    new CultureInfo("ru-RU", false),
                     out var betaActivityDoubleValue)
                     ? $"{betaActivityDoubleValue * 25_000_000_000:0.######################################################e+00}"
                     : "";
                 var alphaActivity = double.TryParse(massTon,
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent,
-                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                    new CultureInfo("ru-RU", false),
                     out var alphaActivityDoubleValue)
                     ? $"{alphaActivityDoubleValue * 16_100_000_000:0.######################################################e+00}"
                     : "";
@@ -595,7 +595,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .Replace(")", "");
                 var massTon = double.TryParse(massTmp,
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                    new CultureInfo("ru-RU", false),
                     out var massDoubleValue)
                     ? $"{massDoubleValue / 1000:0.######################################################e+00}"
                     : "";
@@ -797,7 +797,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
         var activity = double.TryParse(activityTmp,
             NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-            CultureInfo.CreateSpecificCulture("ru-RU"),
+            new CultureInfo("ru-RU", false),
             out var activityDoubleValue)
             ? $"{activityDoubleValue:0.######################################################e+00}"
             : activityTmp;
@@ -924,7 +924,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
             var periodValue = nuclidDictionary["periodValue"].Replace('.', ',');
             if (!double.TryParse(periodValue,
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                    new CultureInfo("ru-RU", false),
                     out var halfLife
                 )) continue;
             switch (unit)

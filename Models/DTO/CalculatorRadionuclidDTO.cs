@@ -63,7 +63,7 @@ public partial class CalculatorRadionuclidDTO
         }
         if (double.TryParse(tmp,
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                CultureInfo.CreateSpecificCulture("ru-RU"),
+                new CultureInfo("ru-RU", false),
                 out var doubleValue))
         {
             tmp = $"{doubleValue:0.######################################################e+00}";

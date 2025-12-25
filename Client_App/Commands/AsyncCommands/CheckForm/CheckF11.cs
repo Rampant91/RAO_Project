@@ -1675,7 +1675,7 @@ public abstract partial class CheckF11 : CheckBase
                 var expFromR = ConvertStringToExponential(nuclidFromR["D"]);
                 if (decimal.TryParse((expFromR),
                         NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-                        CultureInfo.CreateSpecificCulture("ru-RU"),
+                        new CultureInfo("ru-RU", false),
                         out var value))
                 {
                     dValueList.Add(decimal.Multiply(value, 1e12m));
@@ -1689,7 +1689,7 @@ public abstract partial class CheckF11 : CheckBase
             var dMaxValue = dValueList.Max();
             valid = decimal.TryParse(ConvertStringToExponential(activity),
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-                CultureInfo.CreateSpecificCulture("ru-RU"),
+                new CultureInfo("ru-RU", false),
                 out var aValue);
             aValue /= quantity != 0
                 ? quantity

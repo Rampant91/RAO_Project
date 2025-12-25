@@ -68,7 +68,7 @@ public class Form19 : Form1
             return false;
         }
         var tmp = value.Value;
-        if (!DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
+        if (!DateOnly.TryParse(tmp, new CultureInfo("ru-RU", false), out _))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -85,7 +85,7 @@ public class Form19 : Form1
             return false;
         }
         var tmp = value.Value;
-        if (!DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
+        if (!DateOnly.TryParse(tmp, new CultureInfo("ru-RU", false), out _))
         {
             value.AddError("Недопустимое значение");
             return false;

@@ -7,18 +7,8 @@ using Client_App.ViewModels.Forms;
 using Client_App.Views.Forms.Forms4;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
-using MessageBox.Avalonia.Models;
-using Microsoft.EntityFrameworkCore.Update.Internal;
-using Models.Classes;
 using Models.Collections;
-using Models.DBRealization;
-using Models.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.SwitchReport
@@ -32,8 +22,6 @@ namespace Client_App.Commands.AsyncCommands.SwitchReport
         /// <returns></returns>
         public override async Task AsyncExecute(object? parameter)
         {
-            if (parameter is null) return;
-
             if (parameter is not Report selectedReport) return;
 
             // Проверяем изменения и предлагаем сохранить

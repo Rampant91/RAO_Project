@@ -507,7 +507,7 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
     {
         return double.TryParse(ConvertStringToExponential(str),
             NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-            CultureInfo.CreateSpecificCulture("ru-RU"),
+            new CultureInfo("ru-RU", false),
             out val);
     }
 
@@ -538,7 +538,7 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
             });
             if (string.IsNullOrWhiteSpace(r[^1]["D"]) || !double.TryParse(r[^1]["D"], out var val1) || val1 < 0)
             {
-                r[^1]["D"] = double.MaxValue.ToString(CultureInfo.CreateSpecificCulture("ru-RU"));
+                r[^1]["D"] = double.MaxValue.ToString(new CultureInfo("ru-RU", false));
             }
             i++;
         }

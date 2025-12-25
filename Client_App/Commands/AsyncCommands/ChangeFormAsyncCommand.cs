@@ -9,16 +9,12 @@ using Client_App.VisualRealization.Long_Visual;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
-using Models.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Client_App.Resources;
 using Client_App.ViewModels.Forms.Forms4;
 using Client_App.Views.Forms.Forms4;
-using Client_App.Views.Forms.Forms2;
-using Client_App.ViewModels.Forms.Forms2;
 
 namespace Client_App.Commands.AsyncCommands;
 

@@ -24,7 +24,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 
     private string FormType => formVM.FormType;
 
-    private byte? ConvertStringToByte(string str)
+    private static byte? ConvertStringToByte(string str)
     {
         if (byte.TryParse(str, out var result))
         {
@@ -34,7 +34,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             return null;
     }
 
-    private int? ConvertStringToInt(string str)
+    private static int? ConvertStringToInt(string str)
     {
         if (int.TryParse(str, out var result))
         {
@@ -44,7 +44,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             return null;
     }
 
-    private short? ConvertStringToShort(string str)
+    private static short? ConvertStringToShort(string str)
     {
         if (short.TryParse(str, out var result))
         {
@@ -53,7 +53,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         else
             return null;
     }
-    private float? ConvertStringToFloat(string str)
+    private static float? ConvertStringToFloat(string str)
     {
         if (float.TryParse(str, out var result))
         {
@@ -69,7 +69,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     //Например ячейка   ("Ячейка1"  - все еще ячейка1)
     //в формате TSV будет выглядеть так (\t\"\"\"Ячейка1\"\"\t- все еще ячейка1\"\t)
     //поэтому после обновления Авалонии необходимо переписать всю команду вставки
-    private string CutTabulationInCells(string row)
+    private static string CutTabulationInCells(string row)
     {
         //Начало раздробленной ячейки
         if (row.Contains("\t\""))
@@ -105,7 +105,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 
         return row;
     }
-    private string[] PrepareRowsForParsing(string[] rows)
+    private static string[] PrepareRowsForParsing(string[] rows)
     {
         for (int i = 0; i < rows.Length; i++)
         {
@@ -144,17 +144,17 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             parsedRows[i] = rows[i].Split('\t');
         }
 
-        for (int i = 0; i < parsedRows.Length; i++)
+        foreach (var row in parsedRows)
         {
-            for (int j = 0; j < parsedRows[i].Length; j++)
+            for (var j = 0; j < row.Length; j++)
             {
-                var cell = parsedRows[i][j];
+                var cell = row[j];
                 //Тримим каждую ячейку для проверки на кавычки
                 cell = cell.Trim();
 
                 // Убираем все пустые символы что были после кавычек
                 cell = cell.Trim();
-                parsedRows[i][j] = cell;
+                row[j] = cell;
 
                 /*
                 var cell = parsedRows[i][j];

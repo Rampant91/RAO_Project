@@ -156,7 +156,7 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
                 if (!decimal.TryParse(ToExponentialString(dFromR),
                         NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands |
                         NumberStyles.AllowLeadingSign,
-                        CultureInfo.CreateSpecificCulture("ru-RU"),
+                        new CultureInfo("ru-RU", false),
                         out var dValueFromR))
                 {
                     _vm.ActivityToNormalizingD = string.Empty;
@@ -167,7 +167,7 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
 
                 if (!decimal.TryParse(ToExponentialString(nuclid.Mza),
                         NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                        CultureInfo.CreateSpecificCulture("ru-RU"),
+                        new CultureInfo("ru-RU", false),
                         out var mza))
                 {
                     _vm.ActivityToNormalizingD = string.Empty;
@@ -179,7 +179,7 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
                 var activity = decimal.Parse(
                     ToExponentialString(currentActivity),
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                    CultureInfo.CreateSpecificCulture("ru-RU"));
+                    new CultureInfo("ru-RU", false));
 
                 var d = decimal.Multiply(dValueFromR, 1e12m);
 
@@ -223,7 +223,7 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
             var activity = decimal.Parse(
                 ToExponentialString(_vm.Activity),
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                CultureInfo.CreateSpecificCulture("ru-RU"));
+                new CultureInfo("ru-RU", false));
 
             foreach (var nuclid in radsSet)
             {
@@ -235,7 +235,7 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
                 if (decimal.TryParse(ToExponentialString(dFromR),
                         NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands |
                         NumberStyles.AllowLeadingSign,
-                        CultureInfo.CreateSpecificCulture("ru-RU"),
+                        new CultureInfo("ru-RU", false),
                         out var value))
                 {
                     dValueList.Add(decimal.Multiply(value, 1e12m));
@@ -250,7 +250,7 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
 
                 if (!decimal.TryParse(ToExponentialString(nuclid.Mza),
                         NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                        CultureInfo.CreateSpecificCulture("ru-RU"),
+                        new CultureInfo("ru-RU", false),
                         out var mza))
                 {
                     _vm.ActivityToNormalizingD = string.Empty;
@@ -329,14 +329,14 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
         {
             activityValid = decimal.TryParse(ToExponentialString(_vm.Activity),
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                CultureInfo.CreateSpecificCulture("ru-RU"),
+                new CultureInfo("ru-RU", false),
                 out _);
         }
         else if (radsSet.Count == 1)
         {
             activityValid = decimal.TryParse(ToExponentialString(radsSet.First().Activity),
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                CultureInfo.CreateSpecificCulture("ru-RU"),
+                new CultureInfo("ru-RU", false),
                 out _);
         }
         else
@@ -344,7 +344,7 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
             activityValid = radsSet.ToList().All(nuclid =>
                 decimal.TryParse(ToExponentialString(nuclid.Activity),
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                    new CultureInfo("ru-RU", false),
                     out _));
         }
 
@@ -449,7 +449,7 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
         }
         if (double.TryParse(tmp,
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                CultureInfo.CreateSpecificCulture("ru-RU"),
+                new CultureInfo("ru-RU", false),
                 out var doubleValue))
         {
             tmp = $"{doubleValue:0.###e+00}";

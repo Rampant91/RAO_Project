@@ -180,7 +180,7 @@ public class Form13 : Form1
 
                 #region CreationDate (10)
 
-                if (DateOnly.TryParse(OperationDate_DB, CultureInfo.CreateSpecificCulture("ru-RU"), out var operationDate)
+                if (DateOnly.TryParse(OperationDate_DB, new CultureInfo("ru-RU", false), out var operationDate)
                     && CreationDate_DB != operationDate.ToShortDateString())
                 {
                     CreationDate.Value = operationDate.ToShortDateString();
@@ -209,7 +209,7 @@ public class Form13 : Form1
 
                 #region DocumentDate (16)
 
-                if (DateOnly.TryParse(OperationDate_DB, CultureInfo.CreateSpecificCulture("ru-RU"), out _)
+                if (DateOnly.TryParse(OperationDate_DB, new CultureInfo("ru-RU", false), out _)
                     && DocumentDate_DB != operationDate.ToShortDateString())
                 {
                     DocumentDate.Value = operationDate.ToShortDateString();
@@ -247,7 +247,7 @@ public class Form13 : Form1
             {
                 #region DocumentDate (16)
 
-                if (DateOnly.TryParse(OperationDate_DB, CultureInfo.CreateSpecificCulture("ru-RU"), out var operationDate)
+                if (DateOnly.TryParse(OperationDate_DB, new CultureInfo("ru-RU", false), out var operationDate)
                     && DocumentDate_DB != operationDate.ToShortDateString())
                 {
                     DocumentDate.Value = operationDate.ToShortDateString();
@@ -342,7 +342,7 @@ public class Form13 : Form1
 
                 #region DocumentDate (16)
 
-                if (DateOnly.TryParse(OperationDate_DB, CultureInfo.CreateSpecificCulture("ru-RU"), out var operationDate)
+                if (DateOnly.TryParse(OperationDate_DB, new CultureInfo("ru-RU", false), out var operationDate)
                     && DocumentDate_DB != operationDate.ToShortDateString())
                 {
                     DocumentDate.Value = operationDate.ToShortDateString();
@@ -380,7 +380,7 @@ public class Form13 : Form1
             {
                 #region DocumentDate (16)
 
-                if (DateOnly.TryParse(OperationDate_DB, CultureInfo.CreateSpecificCulture("ru-RU"), out var operationDate)
+                if (DateOnly.TryParse(OperationDate_DB, new CultureInfo("ru-RU", false), out var operationDate)
                     && DocumentDate_DB != operationDate.ToShortDateString())
                 {
                     DocumentDate.Value = operationDate.ToShortDateString();
@@ -468,7 +468,7 @@ public class Form13 : Form1
 
     private void AutoReplaceByOpDate()
     {
-        if (!DateOnly.TryParse(OperationDate_DB, CultureInfo.CreateSpecificCulture("ru-RU"), out var opDate)) return;
+        if (!DateOnly.TryParse(OperationDate_DB, new CultureInfo("ru-RU", false), out var opDate)) return;
 
         switch (OperationCode_DB)
         {

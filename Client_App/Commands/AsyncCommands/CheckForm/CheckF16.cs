@@ -2277,7 +2277,7 @@ public abstract class CheckF16 : CheckBase
 
         if (!double.TryParse(tritiumActivity,
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                CultureInfo.CreateSpecificCulture("ru-RU"),
+                new CultureInfo("ru-RU", false),
                 out var activityReal))
         {
             result.Add(new CheckError
@@ -2372,7 +2372,7 @@ public abstract class CheckF16 : CheckBase
 
         if (!double.TryParse(betaActivity,
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                CultureInfo.CreateSpecificCulture("ru-RU"),
+                new CultureInfo("ru-RU", false),
                 out var betaActivityReal))
         {
             result.Add(new CheckError
@@ -2467,7 +2467,7 @@ public abstract class CheckF16 : CheckBase
 
         if (!double.TryParse(ConvertStringToExponential(activity),
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                CultureInfo.CreateSpecificCulture("ru-RU"),
+                new CultureInfo("ru-RU", false),
                 out var activityReal))
         {
             result.Add(new CheckError
