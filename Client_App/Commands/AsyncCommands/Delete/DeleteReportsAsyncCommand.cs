@@ -66,13 +66,13 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
             var db = StaticConfiguration.DBModel;
 
-            await ReportDeletionLogger.LogDeletionAsync(masterRep);
+            //await ReportDeletionLogger.LogDeletionAsync(masterRep);
 
             foreach (var item in reports.Report_Collection)
             {
                 var report = (Report)item;
                 db.ReportCollectionDbSet.Remove(report);
-                await ReportDeletionLogger.LogDeletionAsync(report);
+                //await ReportDeletionLogger.LogDeletionAsync(report);
             }
 
             db.ReportCollectionDbSet.Remove(masterRep);
