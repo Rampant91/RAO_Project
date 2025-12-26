@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Models.CheckForm;
 using Models.Collections;
 using Models.DBRealization;
+using Models.Forms.Form1;
 using Models.Forms.Form4;
 using OfficeOpenXml.Drawing.Controls;
 using Spravochniki;
@@ -181,6 +182,8 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             foreach (Form41 form41 in rep.Rows41)
             {
                 var regNo = form41.RegNo_DB == null ? "_____" : form41.RegNo_DB;
+                if (regNo == "77994")
+                    ;
                 progressBarVM.SetProgressBar((int)currentProgress, $"Проверка организации №{regNo}");
 
                 var error = await CheckPresenceOfForm19(form41, secondDB);
@@ -199,30 +202,26 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 if (error != null)
                     errorList.Add(error);
 
-                error = await CheckPresenceOfDepletedUraniumProducts(form41);
+                error = await CheckPresenceOfForm11(form41);
+                if (error != null)
+                    errorList.Add(error);
+
+                error = await CheckPresenceOfForm12(form41);
+                if (error != null)
+                    errorList.Add(error);
+
+                error = await CheckPresenceOfForm13(form41);
+                if (error != null)
+                    errorList.Add(error);
+
+                error = await CheckPresenceOfForm14(form41);
                 if (error != null)
                     errorList.Add(error);
 
                 currentProgress += incProgress;
             }
 
-
-            #if DEBUG
-            foreach (var organization in organizations10)
-            {
-                var massBalance14 = await CountMassBalanceForm14(organization.Id);
-                errorList.Add(new CheckError()
-                {
-                    Message =
-                    $"РегНомер: {organization.RegNo}\n" +
-                    $"ОКПО: {organization.Okpo}\n" +
-                    $"Жидкое РВ  = {massBalance14.Item1}\n" +
-                    $"Твердое РВ = {massBalance14.Item2}\n" +
-                    $"Газовое РВ = {massBalance14.Item3}\n"
-                });
-
-            }
-            #endif
+            progressBarVM.SetProgressBar(99, $"Нумеруем строки");
 
             for (int i = 0; i < errorList.Count; i++)
             {
@@ -477,9 +476,104 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             return null;
 
         }
-        private static async Task<CheckError?> CheckPresenceOfDepletedUraniumProducts(Form41 form41)
+        private static async Task<CheckError?> CheckPresenceOfForm11(Form41 form41)
         {
             if (form41.NumOfFormsWithInventarizationInfo_DB <= 0) return null;
+
+            int year;
+            if (!int.TryParse(form41.Report.Year_DB, out year)) return null;
+
+
+            var organization = organizations10
+                .FirstOrDefault(org =>
+                org.RegNo == form41.RegNo_DB
+                && org.Okpo == form41.Okpo_DB);
+
+            if (organization == null) return null;
+
+            double quantityBalance = 0;
+            bool InventarizationFlag = false;
+            var dbModel = StaticConfiguration.DBModel;
+
+            var reports = dbModel.ReportsCollectionDbSet
+                .Include(reps => reps.Report_Collection)
+                .ThenInclude(rep => rep.Rows11)
+                .FirstOrDefault(reps => reps.Id == organization.Id);
+
+            var reportCollection = reports.Report_Collection
+                .Where(rep => rep.FormNum_DB == "1.1"
+                && DateTime.TryParse(rep.StartPeriod_DB, out var startPeriod)
+                && DateTime.TryParse(rep.EndPeriod_DB, out var endPeriod))
+                .OrderBy(rep => DateTime.Parse(rep.StartPeriod_DB))
+                .ThenBy(rep => DateTime.Parse(rep.EndPeriod_DB))
+                .ToList();
+
+            var lastInventarizationReport = reportCollection.LastOrDefault(rep =>
+                rep.Rows12.Any(form11 => form11.OperationCode_DB == "10")
+                && DateTime.Parse(rep.EndPeriod_DB).Year < year);
+
+
+            int startIndex = 0;
+            if (lastInventarizationReport != null)
+            {
+                foreach (Form11 row in lastInventarizationReport.Rows11)
+                {
+                    if (row.OperationCode_DB == "10")
+                    {
+                        quantityBalance += (double)row.Quantity_DB;
+                    }
+
+                }
+                startIndex = reportCollection.IndexOf(lastInventarizationReport);
+            }
+
+            try
+            {
+                for (int i = startIndex; i < reportCollection.Count; i++)
+                {
+                    var report = reportCollection[i];
+                    for (int j = 0; j < report.Rows12.Count; j++)
+                    {
+                        if (DateTime.Parse(report.EndPeriod_DB).Year == year
+                            && report.Rows12[j].OperationCode_DB == "10"
+                            && !InventarizationFlag)
+                        {
+                            InventarizationFlag = true;
+                        }
+                        else if (double.TryParse(report.Rows12[j].Mass_DB, out var quantity)
+                            && Spravochniks.SignsOperation["1.2"].ContainsKey($"{report.Rows12[j].OperationCode_DB}"))
+                        {
+                            if (Spravochniks.SignsOperation["1.2"][$"{report.Rows12[j].OperationCode_DB}"] == '+')
+                                quantityBalance += quantity;
+                            else if (Spravochniks.SignsOperation["1.2"][$"{report.Rows12[j].OperationCode_DB}"] == '-')
+                                quantityBalance -= quantity;
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            if (!InventarizationFlag && massBalance > 0)
+                return new CheckError()
+                {
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют изделия из обедненного урана. " +
+                    $"Необходимо проинвентаризировать по форме 1.2\n" +
+                    $"Инвентаризация: {InventarizationFlag}\n" +
+                    $"Баланс: {massBalance}"
+                };
+            return null;
+        }
+        private static async Task<CheckError?> CheckPresenceOfForm12(Form41 form41)
+        {
+            if (form41.NumOfFormsWithInventarizationInfo_DB <= 0) return null;
+
+            int year;
+            if (!int.TryParse(form41.Report.Year_DB, out year)) return null;
+
 
             var organization = organizations10
                 .FirstOrDefault(org => 
@@ -491,28 +585,52 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             double massBalance = 0;
             bool InventarizationFlag = false;
             var dbModel = StaticConfiguration.DBModel;
+
             var reports = dbModel.ReportsCollectionDbSet
                 .Include(reps => reps.Report_Collection)
                 .ThenInclude(rep => rep.Rows12)
                 .FirstOrDefault(reps => reps.Id == organization.Id);
-            var reportCollection = reports.Report_Collection.ToList()
-                .FindAll(rep => rep.FormNum_DB == "1.2"
-                && DateTime.TryParse(rep.StartPeriod_DB, out var date)
-                && DateTime.TryParse(rep.EndPeriod_DB, out date));
+
+            var reportCollection = reports.Report_Collection
+                .Where(rep => rep.FormNum_DB == "1.2"
+                && DateTime.TryParse(rep.StartPeriod_DB, out var startPeriod)
+                && DateTime.TryParse(rep.EndPeriod_DB, out var endPeriod))
+                .OrderBy(rep => DateTime.Parse(rep.StartPeriod_DB))
+                .ThenBy(rep => DateTime.Parse(rep.EndPeriod_DB))
+                .ToList();
+
+            var lastInventarizationReport = reportCollection.LastOrDefault(rep =>
+                rep.Rows12.Any(form12 => form12.OperationCode_DB == "10")
+                && DateTime.Parse(rep.EndPeriod_DB).Year < year);
+
+
+            int startIndex = 0;
+            if (lastInventarizationReport != null)
+            {
+                foreach (Form12 row in lastInventarizationReport.Rows12)
+                {
+                    if (row.OperationCode_DB == "10")
+                    {
+                        double.TryParse(row.Mass_DB, out var mass);
+                        massBalance += mass;
+                    }
+
+                }
+                startIndex = reportCollection.IndexOf(lastInventarizationReport);
+            }
 
             try
             {
-
-
-                for (int i = reportCollection.Count - 1; i >= 0; i--)
+                for (int i = startIndex; i < reportCollection.Count; i++)
                 {
                     var report = reportCollection[i];
                     for (int j = 0; j < report.Rows12.Count; j++)
                     {
-                        if (report.Rows12[j].OperationCode_DB == "10" && !InventarizationFlag)
+                        if (DateTime.Parse(report.EndPeriod_DB).Year == year 
+                            && report.Rows12[j].OperationCode_DB == "10" 
+                            && !InventarizationFlag)
                         {
                             InventarizationFlag = true;
-                            double.TryParse(report.Rows12[j].Mass_DB, out massBalance);
                         }
                         else if (double.TryParse(report.Rows12[j].Mass_DB, out var mass)
                             && Spravochniks.SignsOperation["1.2"].ContainsKey($"{report.Rows12[j].OperationCode_DB}"))
@@ -539,6 +657,19 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                     $"Инвентаризация: {InventarizationFlag}\n" +
                     $"Баланс: {massBalance}"
                 };
+            return null;
+        }
+
+        private static async Task<CheckError?> CheckPresenceOfForm13(Form41 form41)
+        {
+
+            return null;
+        }
+
+        private static async Task<CheckError?> CheckPresenceOfForm14(Form41 form41)
+        {
+
+
             return null;
         }
         private static async Task CancelCommandAndCloseProgressBarWindow(CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null)
