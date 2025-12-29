@@ -495,21 +495,21 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             bool InventarizationFlag = false;
             var dbModel = StaticConfiguration.DBModel;
 
-            var reports = dbModel.ReportsCollectionDbSet
-                .Include(reps => reps.Report_Collection)
-                .ThenInclude(rep => rep.Rows11)
-                .FirstOrDefault(reps => reps.Id == organization.Id);
-
-            var reportCollection = reports.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.1"
-                && DateTime.TryParse(rep.StartPeriod_DB, out var startPeriod)
+            var reportCollection = dbModel.ReportsCollectionDbSet
+                .AsNoTracking()
+                .Where(reps => reps.Id == organization.Id)
+                .SelectMany(reps => reps.Report_Collection)
+                .Where(rep => rep.FormNum_DB == "1.1")
+                .Include(rep => rep.Rows11)
+                .AsEnumerable() // Переходим к клиентской обработке
+                .Where(rep => DateTime.TryParse(rep.StartPeriod_DB, out var startPeriod)
                 && DateTime.TryParse(rep.EndPeriod_DB, out var endPeriod))
                 .OrderBy(rep => DateTime.Parse(rep.StartPeriod_DB))
                 .ThenBy(rep => DateTime.Parse(rep.EndPeriod_DB))
                 .ToList();
 
             var lastInventarizationReport = reportCollection.LastOrDefault(rep =>
-                rep.Rows12.Any(form11 => form11.OperationCode_DB == "10")
+                rep.Rows11.Any(form11 => form11.OperationCode_DB == "10")
                 && DateTime.Parse(rep.EndPeriod_DB).Year < year);
 
 
@@ -532,21 +532,21 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 for (int i = startIndex; i < reportCollection.Count; i++)
                 {
                     var report = reportCollection[i];
-                    for (int j = 0; j < report.Rows12.Count; j++)
+                    for (int j = 0; j < report.Rows11.Count; j++)
                     {
                         if (DateTime.Parse(report.EndPeriod_DB).Year == year
-                            && report.Rows12[j].OperationCode_DB == "10"
+                            && report.Rows11[j].OperationCode_DB == "10"
                             && !InventarizationFlag)
                         {
                             InventarizationFlag = true;
                         }
-                        else if (double.TryParse(report.Rows12[j].Mass_DB, out var quantity)
-                            && Spravochniks.SignsOperation["1.2"].ContainsKey($"{report.Rows12[j].OperationCode_DB}"))
+                        else if (report.Rows11[j].Quantity_DB is not null
+                            && Spravochniks.SignsOperation["1.1"].ContainsKey($"{report.Rows11[j].OperationCode_DB}"))
                         {
-                            if (Spravochniks.SignsOperation["1.2"][$"{report.Rows12[j].OperationCode_DB}"] == '+')
-                                quantityBalance += quantity;
-                            else if (Spravochniks.SignsOperation["1.2"][$"{report.Rows12[j].OperationCode_DB}"] == '-')
-                                quantityBalance -= quantity;
+                            if (Spravochniks.SignsOperation["1.1"][$"{report.Rows11[j].OperationCode_DB}"] == '+')
+                                quantityBalance += (double)report.Rows11[j].Quantity_DB;
+                            else if (Spravochniks.SignsOperation["1.1"][$"{report.Rows11[j].OperationCode_DB}"] == '-')
+                                quantityBalance -= (double)report.Rows11[j].Quantity_DB;
                         }
 
                     }
@@ -557,13 +557,13 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 throw ex;
             }
 
-            if (!InventarizationFlag && massBalance > 0)
+            if (!InventarizationFlag && quantityBalance > 0)
                 return new CheckError()
                 {
-                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют изделия из обедненного урана. " +
-                    $"Необходимо проинвентаризировать по форме 1.2\n" +
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют _____. " +
+                    $"Необходимо проинвентаризировать по форме 1.1\n" +
                     $"Инвентаризация: {InventarizationFlag}\n" +
-                    $"Баланс: {massBalance}"
+                    $"Баланс: {quantityBalance}"
                 };
             return null;
         }
@@ -586,14 +586,14 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             bool InventarizationFlag = false;
             var dbModel = StaticConfiguration.DBModel;
 
-            var reports = dbModel.ReportsCollectionDbSet
-                .Include(reps => reps.Report_Collection)
-                .ThenInclude(rep => rep.Rows12)
-                .FirstOrDefault(reps => reps.Id == organization.Id);
-
-            var reportCollection = reports.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.2"
-                && DateTime.TryParse(rep.StartPeriod_DB, out var startPeriod)
+            var reportCollection = dbModel.ReportsCollectionDbSet
+                .AsNoTracking()
+                .Where(reps => reps.Id == organization.Id)
+                .SelectMany(reps => reps.Report_Collection)
+                .Where(rep => rep.FormNum_DB == "1.2")
+                .Include(rep => rep.Rows12)
+                .AsEnumerable() // Переходим к клиентской обработке
+                .Where(rep => DateTime.TryParse(rep.StartPeriod_DB, out var startPeriod)
                 && DateTime.TryParse(rep.EndPeriod_DB, out var endPeriod))
                 .OrderBy(rep => DateTime.Parse(rep.StartPeriod_DB))
                 .ThenBy(rep => DateTime.Parse(rep.EndPeriod_DB))
@@ -663,13 +663,223 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
         private static async Task<CheckError?> CheckPresenceOfForm13(Form41 form41)
         {
 
+            if (form41.NumOfFormsWithInventarizationInfo_DB <= 0) return null;
+
+            int year;
+            if (!int.TryParse(form41.Report.Year_DB, out year)) return null;
+
+
+            var organization = organizations10
+                .FirstOrDefault(org =>
+                org.RegNo == form41.RegNo_DB
+                && org.Okpo == form41.Okpo_DB);
+
+            if (organization == null) return null;
+
+            double balance = 0;
+            bool InventarizationFlag = false;
+            var dbModel = StaticConfiguration.DBModel;
+
+            var reportCollection = dbModel.ReportsCollectionDbSet
+                .AsNoTracking()
+                .Where(reps => reps.Id == organization.Id)
+                .SelectMany(reps => reps.Report_Collection)
+                .Where(rep => rep.FormNum_DB == "1.3")
+                .Include(rep => rep.Rows13)
+                .AsEnumerable() // Переходим к клиентской обработке
+                .Where(rep => DateTime.TryParse(rep.StartPeriod_DB, out var startPeriod)
+                && DateTime.TryParse(rep.EndPeriod_DB, out var endPeriod))
+                .OrderBy(rep => DateTime.Parse(rep.StartPeriod_DB))
+                .ThenBy(rep => DateTime.Parse(rep.EndPeriod_DB))
+                .ToList();
+
+            var lastInventarizationReport = reportCollection.LastOrDefault(rep =>
+                rep.Rows13.Any(form13 => form13.OperationCode_DB == "10")
+                && DateTime.Parse(rep.EndPeriod_DB).Year < year);
+
+
+            int startIndex = 0;
+            if (lastInventarizationReport != null)
+            {
+                foreach (Form13 row in lastInventarizationReport.Rows13)
+                {
+                    if (row.OperationCode_DB == "10")
+                    {
+                        balance += 1;
+                    }
+
+                }
+                startIndex = reportCollection.IndexOf(lastInventarizationReport);
+            }
+
+            try
+            {
+                for (int i = startIndex; i < reportCollection.Count; i++)
+                {
+                    var report = reportCollection[i];
+                    for (int j = 0; j < report.Rows13.Count; j++)
+                    {
+                        if (DateTime.Parse(report.EndPeriod_DB).Year == year
+                            && report.Rows13[j].OperationCode_DB == "10"
+                            && !InventarizationFlag)
+                        {
+                            InventarizationFlag = true;
+                        }
+                        else if (Spravochniks.SignsOperation["1.3"].ContainsKey($"{report.Rows13[j].OperationCode_DB}"))
+                        {
+                            if (Spravochniks.SignsOperation["1.3"][$"{report.Rows13[j].OperationCode_DB}"] == '+')
+                                balance += 1;
+                            else if (Spravochniks.SignsOperation["1.3"][$"{report.Rows13[j].OperationCode_DB}"] == '-')
+                                balance -= 1;
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            if (!InventarizationFlag && balance > 0)
+                return new CheckError()
+                {
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют _____. " +
+                    $"Необходимо проинвентаризировать по форме 1.3\n" +
+                    $"Инвентаризация: {InventarizationFlag}\n" +
+                    $"Баланс: {balance}"
+                };
             return null;
         }
 
         private static async Task<CheckError?> CheckPresenceOfForm14(Form41 form41)
         {
+            if (form41.NumOfFormsWithInventarizationInfo_DB <= 0) return null;
+
+            int year;
+            if (!int.TryParse(form41.Report.Year_DB, out year)) return null;
+
+            var organization = organizations10
+                .FirstOrDefault(org =>
+                org.RegNo == form41.RegNo_DB
+                && org.Okpo == form41.Okpo_DB);
+
+            if (organization == null) return null;
+
+            double massBalanceLiquid = 0;   //1
+            double massBalanceSolid = 0;    //2
+            double massBalanceGas = 0;      //3
+
+            bool InventarizationFlag = false;
+
+            var dbModel = StaticConfiguration.DBModel;
+
+            var reportCollection = dbModel.ReportsCollectionDbSet
+                .AsNoTracking()
+                .Where(reps => reps.Id == organization.Id)
+                .SelectMany(reps => reps.Report_Collection)
+                .Where(rep => rep.FormNum_DB == "1.4")
+                .Include(rep => rep.Rows14)
+                .AsEnumerable() // Переходим к клиентской обработке
+                .Where(rep => DateTime.TryParse(rep.StartPeriod_DB, out var startPeriod)
+                && DateTime.TryParse(rep.EndPeriod_DB, out var endPeriod))
+                .OrderBy(rep => DateTime.Parse(rep.StartPeriod_DB))
+                .ThenBy(rep => DateTime.Parse(rep.EndPeriod_DB))
+                .ToList();
+
+            var lastInventarizationReport = reportCollection.LastOrDefault(rep =>
+                rep.Rows14.Any(form14 => form14.OperationCode_DB == "10")
+                && DateTime.Parse(rep.EndPeriod_DB).Year < year);
 
 
+            int startIndex = 0;
+            if (lastInventarizationReport != null)
+            {
+                foreach (Form14 row in lastInventarizationReport.Rows14)
+                {
+                    if (row.OperationCode_DB == "10")
+                    {
+                        double.TryParse(row.Mass_DB, out var mass);
+                        switch(row.AggregateState_DB)
+                        {
+                            case 1:
+                                massBalanceLiquid += mass;
+                                break;
+                            case 2:
+                                massBalanceSolid += mass;
+                                break;
+                            case 3:
+                                massBalanceGas += mass;
+                                break;
+                        }
+                    }
+
+                }
+                startIndex = reportCollection.IndexOf(lastInventarizationReport);
+            }
+
+            try
+            {
+                for (int i = startIndex; i < reportCollection.Count; i++)
+                {
+                    var report = reportCollection[i];
+                    for (int j = 0; j < report.Rows14.Count; j++)
+                    {
+                        if (DateTime.Parse(report.EndPeriod_DB).Year == year
+                            && report.Rows14[j].OperationCode_DB == "10"
+                            && !InventarizationFlag)
+                        {
+                            InventarizationFlag = true;
+                        }
+                        else if (double.TryParse(report.Rows14[j].Mass_DB, out var mass)
+                            && Spravochniks.SignsOperation["1.4"].ContainsKey($"{report.Rows14[j].OperationCode_DB}"))
+                        {
+                            if (Spravochniks.SignsOperation["1.4"][$"{report.Rows14[j].OperationCode_DB}"] == '+')
+                                switch (report.Rows14[j].AggregateState_DB)
+                                {
+                                    case 1:
+                                        massBalanceLiquid += mass;
+                                        break;
+                                    case 2:
+                                        massBalanceSolid += mass;
+                                        break;
+                                    case 3:
+                                        massBalanceGas += mass;
+                                        break;
+                                }
+                            else if (Spravochniks.SignsOperation["1.4"][$"{report.Rows14[j].OperationCode_DB}"] == '-')
+                                switch (report.Rows14[j].AggregateState_DB)
+                                {
+                                    case 1:
+                                        massBalanceLiquid -= mass;
+                                        break;
+                                    case 2:
+                                        massBalanceSolid -= mass;
+                                        break;
+                                    case 3:
+                                        massBalanceGas -= mass;
+                                        break;
+                                }
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            if (!InventarizationFlag && (massBalanceLiquid > 0 || massBalanceSolid > 0 || massBalanceGas > 0))
+                return new CheckError()
+                {
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют _____. " +
+                    $"Необходимо проинвентаризировать по форме 1.4\n" +
+                    $"Инвентаризация: {InventarizationFlag}\n" +
+                    $"Баланс жидких РВ: {massBalanceLiquid}\n" +
+                    $"Баланс твердых РВ: {massBalanceSolid}\n" +
+                    $"Баланс газооборазных РВ: {massBalanceGas}\n"
+                };
             return null;
         }
         private static async Task CancelCommandAndCloseProgressBarWindow(CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null)
@@ -704,49 +914,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 return false;
         }
 
-        private static async Task<Tuple<double,double,double>> CountMassBalanceForm14(int reportsID)
-        {
-            double[] massBalances = new double[3];
-            bool[] inventarizationFlags = new bool[3];
-
-            var dbModel = StaticConfiguration.DBModel;
-            var reports = dbModel.ReportsCollectionDbSet
-                .Include(reps => reps.Report_Collection)
-                .ThenInclude(rep => rep.Rows14)
-                .FirstOrDefault(reps => reps.Id == reportsID);
-            var reportCollection = reports.Report_Collection.ToList().FindAll(rep => rep.FormNum_DB == "1.4");
-
-
-            for (int i = reportCollection.Count - 1; i >= 0; i--)
-            {
-                var report = reportCollection[i];
-                for (int j = 0; j < report.Rows14.Count; j++)
-                {
-                    byte aggregateState = report.Rows14[j].AggregateState_DB ?? 0; 
-
-                    if (( aggregateState < 1) || (aggregateState > 3)) continue;  // значение AggregateState_DB может быть только 1,2,3
-
-                    if (!double.TryParse(report.Rows14[j].Mass_DB, out var mass)) continue;
-
-                    if (!inventarizationFlags[aggregateState - 1])
-                    {
-                        if (report.Rows14[j].OperationCode_DB == "10")
-                        {
-                            inventarizationFlags[aggregateState - 1] = true;
-                            massBalances[aggregateState - 1] = mass;
-                        }
-                    }
-                    else
-                    {
-                        if (Spravochniks.SignsOperation["1.4"][$"{report.Rows14[j].OperationCode_DB}"] == '+')
-                        massBalances[aggregateState - 1] += mass;
-                        if (Spravochniks.SignsOperation["1.4"][$"{report.Rows14[j].OperationCode_DB}"] == '-')
-                            massBalances[aggregateState - 1] -= mass;
-                    }
-                }
-            }
-            return new Tuple<double, double,double>(massBalances[0], massBalances[1], massBalances[2]);
-        }
+        
     }
     class Organization
     {
