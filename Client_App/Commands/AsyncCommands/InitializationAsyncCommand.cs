@@ -92,7 +92,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         {
             var msg = $"{Environment.NewLine}Message: {ex.Message}" + 
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-            ServiceExtension.LoggerManager.Error(msg);
+            ServiceExtension.LoggerManager?.Error(msg);
         }
 
         onStartProgressBarVm.LoadStatus = "Загрузка коллекций организаций";
@@ -150,7 +150,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         {
             var msg = $"{Environment.NewLine}Message: {ex.Message}" +
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-            ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.System);
+            ServiceExtension.LoggerManager?.Error(msg, ErrorCodeLogger.System);
         }
         return Task.CompletedTask;
     }
@@ -181,7 +181,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         {
             var msg = $"{Environment.NewLine}Message: {ex.Message}" +
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-            ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.System);
+            ServiceExtension.LoggerManager?.Error(msg, ErrorCodeLogger.System);
         }
 
         var fl = Directory.GetFiles(TmpDirectory, ".");
@@ -288,7 +288,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                 {
                     var msg = $"{Environment.NewLine}Message: {ex.Message}" +
                               $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-                    ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
+                    ServiceExtension.LoggerManager?.Error(msg, ErrorCodeLogger.DataBase);
                 }
                 Settings.Default.LastDbBackupDate = DateTime.Now;
                 Settings.Default.Save();
@@ -315,7 +315,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     {
                         var msg = $"{Environment.NewLine}Message: {ex.Message}" +
                                   $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-                        ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
+                        ServiceExtension.LoggerManager?.Error(msg, ErrorCodeLogger.DataBase);
                     }
                 }
                 Settings.Default.LastDbBackupDate = DateTime.Now;
@@ -469,14 +469,14 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                           $"{Environment.NewLine}StackTrace: {fbEx.StackTrace}" +
                           $"{Environment.NewLine}ErrorCode: {fbEx.ErrorCode}" +
                           $"{Environment.NewLine}SQLSTATE: {fbEx.SQLSTATE}";
-                ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo.FullName);
+                ServiceExtension.LoggerManager?.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo?.FullName);
             }
             catch (Exception ex)
             {
                 loadDbFileError = true;
                 var msg =  $"{Environment.NewLine}Message: {ex.Message}" + 
                            $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-                ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo.FullName);
+                ServiceExtension.LoggerManager?.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo?.FullName);
             }
         }
         DbFileName = $"Local_{i}";
@@ -517,7 +517,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                         ContentTitle = "Ошибка при чтении файла .RAODB",
                         ContentHeader = "Ошибка",
                         ContentMessage = $"Возникла ошибка при чтении файла базы данных (БД)" +
-                                         $"{Environment.NewLine}{dbFileInfo.FullName}." +
+                                         $"{Environment.NewLine}{dbFileInfo?.FullName}." +
                                          $"{Environment.NewLine}Файл БД был перемещён по пути " +
                                          $"{Environment.NewLine}{actualReserveFileFullPath}." +
                                          $"{Environment.NewLine}Программа запущена с новым пустым файлом БД" +
@@ -555,7 +555,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                           $"{Environment.NewLine}StackTrace: {fbEx.StackTrace}" +
                           $"{Environment.NewLine}ErrorCode: {fbEx.ErrorCode}" +
                           $"{Environment.NewLine}SQLSTATE: {fbEx.SQLSTATE}";
-                ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo.FullName);
+                ServiceExtension.LoggerManager?.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo?.FullName);
                 Console.WriteLine(fbEx.Message);
                 Environment.Exit(0);
             }
@@ -580,7 +580,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
                 var msg = $"{Environment.NewLine}Message: {ex.Message}" +
                           $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-                ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo.FullName);
+                ServiceExtension.LoggerManager?.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo?.FullName);
                 Console.WriteLine(ex.Message);
                 Environment.Exit(0);
             }
@@ -613,7 +613,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                       $"{Environment.NewLine}StackTrace: {fbEx.StackTrace}" +
                       $"{Environment.NewLine}ErrorCode: {fbEx.ErrorCode}" +
                       $"{Environment.NewLine}SQLSTATE: {fbEx.SQLSTATE}";
-            ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo.FullName);
+            ServiceExtension.LoggerManager?.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo?.FullName);
             Console.WriteLine(fbEx.Message);
             Environment.Exit(0);
         }
@@ -639,7 +639,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             
             var msg = $"{Environment.NewLine}Message: {ex.Message}" +
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-            ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo.FullName);
+            ServiceExtension.LoggerManager?.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo?.FullName);
             Console.WriteLine(ex.Message);
             Environment.Exit(0);
         }

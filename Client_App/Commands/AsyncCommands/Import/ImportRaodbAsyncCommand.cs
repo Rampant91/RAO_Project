@@ -19,7 +19,7 @@ using Client_App.ViewModels;
 namespace Client_App.Commands.AsyncCommands.Import;
 
 //  Импорт -> Из RAODB
-public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyncCommand
+public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -285,8 +285,8 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
             if (tmpReportsList.All(x => x.Master_DB.RegNoRep != null && x.Master_DB.OkpoRep != null))
             {
                 var tmpReportsOrderedEnum = tmpReportsList
-                    .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
-                    .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator);
+                    .OrderBy(x => x.Master_DB?.RegNoRep?.Value, comparator)
+                    .ThenBy(x => x.Master_DB?.OkpoRep?.Value, comparator);
 
                 ReportsStorage.LocalReports.Reports_Collection.Clear();
                 ReportsStorage.LocalReports.Reports_Collection
@@ -337,7 +337,7 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
 
             #endregion
 
-            var mainWindowVM = Desktop.MainWindow.DataContext as MainWindowVM;
+            var mainWindowVM = (Desktop.MainWindow.DataContext as MainWindowVM)!;
             mainWindowVM.UpdateReportsCollection();
             mainWindowVM.UpdateOrgsPageInfo();
             mainWindowVM.UpdateTotalReportCount();

@@ -6,7 +6,7 @@ namespace Client_App.Resources.CustomComparers;
 /// <summary>
 /// Компаратор для сравнения рег.№ и ОКПО при сортировке списка организаций.
 /// </summary>
-public class CustomReportsComparer : IComparer<string>
+public class CustomReportsComparer : IComparer<string?>
 {
     public int Compare(string? str1, string? str2)
     {

@@ -15,9 +15,7 @@ using Models.Forms.Form2;
 using Avalonia.Threading;
 using Client_App.Resources.CustomComparers;
 using Models.Forms.Form4;
-using Client_App.Views;
 using Spravochniki;
-using Microsoft.EntityFrameworkCore;
 using Client_App.ViewModels;
 
 namespace Client_App.Commands.AsyncCommands.Import;
@@ -97,7 +95,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             }
             readAnyExcel = true;
 
-            var timeCreate = new List<string>()
+            var timeCreate = new List<string>
             {
                 excelPackage.File.CreationTime.Day.ToString(),
                 excelPackage.File.CreationTime.Month.ToString(),
@@ -114,7 +112,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             }
 
             Reports? baseReps = null ;
-            string? codeSubjectRF = "";
+            var codeSubjectRF = "";
 
             if (worksheet0.Name is "1.0" or "2.0")
                 baseReps = GetBaseReps(worksheet0);
@@ -176,20 +174,12 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             var impRep = GetReportWithDataFromExcel(worksheet0, worksheet1, formNumber, timeCreate);
             impRep.ReportChangedDate = impDateTime;
 
-            int start;
-            switch (formNumber)
+            var start = formNumber switch
             {
-                case "2.8":
-                    start = 14;
-                    break;
-                case "4.1":
-                    start = 9;
-                    break;
-                default:
-                    start = 11;
-                    break;
-            }
-
+                "2.8" => 14,
+                "4.1" => 9,
+                _ => 11
+            };
 
             var end = $"A{start}";
             var value = worksheet1.Cells[end].Value;
@@ -208,16 +198,15 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             else if (Convert.ToString(value)?.ToLower() is "примечание:" or "примечания:")
                 start += 2;
 
-
-                while (worksheet1.Cells[$"A{start}"].Value != null ||
-                       worksheet1.Cells[$"B{start}"].Value != null ||
-                       worksheet1.Cells[$"C{start}"].Value != null)
-                {
-                    Note newNote = new();
-                    newNote.ExcelGetRow(worksheet1, start);
-                    impRep.Notes.Add(newNote);
-                    start++;
-                }
+            while (worksheet1.Cells[$"A{start}"].Value != null ||
+                   worksheet1.Cells[$"B{start}"].Value != null ||
+                   worksheet1.Cells[$"C{start}"].Value != null)
+            {
+                Note newNote = new();
+                newNote.ExcelGetRow(worksheet1, start);
+                impRep.Notes.Add(newNote);
+                start++;
+            }
 
             ImpRepCorNum = impRep.CorrectionNumber_DB;
             ImpRepEndPeriod = impRep.EndPeriod_DB;
@@ -363,8 +352,8 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         {
             ReportsStorage.LocalReports.Reports_Collection
                 .AddRange(tmpReportsList
-                    .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
-                    .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
+                    .OrderBy(x => x.Master_DB?.RegNoRep?.Value, comparator)
+                    .ThenBy(x => x.Master_DB?.OkpoRep?.Value, comparator));
         }
         else
         {
@@ -372,34 +361,33 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 .AddRange(tmpReportsList);
         }
 
-            //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
+        //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
 
+        try
+        {
+            await StaticConfiguration.DBModel.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            #region MessageImportError
 
-            try
-            {
-                await StaticConfiguration.DBModel.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                #region MessageImportError
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Импорт из .xlsx",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"При сохранении импортированных данных возникла ошибка.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Импорт из .xlsx",
-                        ContentHeader = "Уведомление",
-                        ContentMessage = $"При сохранении импортированных данных возникла ошибка.",
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+            #endregion
 
-                #endregion
-
-                return;
-            }
+            return;
+        }
 
         if (impReportsList.All(x => x.Master_DB.FormNum_DB is "1.0" or "2.0"))
         {
@@ -429,7 +417,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             #endregion
 
             var mainWindowVM = Desktop.MainWindow.DataContext as MainWindowVM;
-            mainWindowVM.UpdateReportsCollection();
+            mainWindowVM!.UpdateReportsCollection();
         }
         else
         {
@@ -772,8 +760,8 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             switch (formNumber)
             {
                 case "2.6":
-                    {
-                        #region BindData_26
+                {
+                    #region BindData_26
 
                         impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
                         impRep.SourcesQuantity26_DB = Convert.ToInt32(worksheet1.Cells["G5"].Value);
@@ -781,11 +769,11 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
                         #endregion
 
-                        break;
-                    }
+                    break;
+                }
                 case "2.7":
-                    {
-                        #region BindData_27
+                {
+                    #region BindData_27
 
                     impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G3"].Value);
                     impRep.PermissionNumber27_DB = Convert.ToString(worksheet1.Cells["G4"].Value);
@@ -800,8 +788,8 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     break;
                 }
                 case "2.8":
-                    {
-                        #region BindData_28
+                {
+                    #region BindData_28
 
                     impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G3"].Value);
                     impRep.PermissionNumber_28_DB = Convert.ToString(worksheet1.Cells["G4"].Value);
@@ -830,19 +818,19 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
                         #endregion
 
-                        break;
-                    }
+                    break;
+                }
                 default:
-                    {
-                        #region BindData_2.x
+                {
+                    #region BindData_2.x
 
-                        impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
-                        impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Text);
+                    impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
+                    impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Text);
 
-                        #endregion
+                    #endregion
 
-                        break;
-                    }
+                    break;
+                }
             }
         }
         else if (formNumber.Split('.')[0] == "4")
@@ -875,9 +863,9 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells[$"B{index}"].Value);
         }
 
-            #endregion
+        #endregion
 
-            return impRep;
+        return impRep;
     }
 
     #endregion
