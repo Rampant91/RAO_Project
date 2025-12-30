@@ -449,10 +449,22 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
 
             if (next / 100 is 8 or 9) continue;
 
+            if (i+1 < current)
+            {
+                string regNo = codeSubjectRF;
+                if ((i + 1) / 100 == 0)
+                    regNo += "0";
+                if ((i + 1) / 10 == 0)
+                    regNo += "0";
+                regNo += $"{i+1}";
+                Report.Rows41.Insert(i , new Form41()
+                {
+                    RegNo_DB = $"{regNo}",
+                    Report = formVM.Report // в форме указываем связь с отчетом, в котором создается эта форма
+                });
 
-            
-
-            if (current+1 < next)
+            }
+            else if (current+1 < next)
             {
                 string regNo = codeSubjectRF;
                 if ((current + 1) / 100 == 0)
