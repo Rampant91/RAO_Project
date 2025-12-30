@@ -2205,7 +2205,7 @@ public abstract class CheckF16 : CheckBase
                 .AddRange(radsSet
                     .Where(rad => R
                         .All(phEntry => phEntry["name"]
-                            .Replace(" ", string.Empty) != rad)));
+                            .Replace(" ", string.Empty) != rad.Replace(" ", string.Empty))));
             var valid = unknownNuclids.Count == 0;
             if (!valid)
             {
