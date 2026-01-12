@@ -59,15 +59,13 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
                 reps = reports;
             else return;
 
-        try
-        {
-            var masterRep = reports.Master_DB;
+            var masterRep = reps.Master_DB;
 
             var db = StaticConfiguration.DBModel;
 
             //await ReportDeletionLogger.LogDeletionAsync(masterRep);
 
-            foreach (var item in reports.Report_Collection)
+            foreach (var item in reps.Report_Collection)
             {
                 var report = (Report)item;
                 db.ReportCollectionDbSet.Remove(report);
@@ -77,7 +75,7 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
             db.ReportCollectionDbSet.Remove(masterRep);
             
 
-            db.ReportsCollectionDbSet.Remove(reports);
+            db.ReportsCollectionDbSet.Remove(reps);
             await db.SaveChangesAsync();
 
             await ProcessDataBaseFillEmpty(db);
