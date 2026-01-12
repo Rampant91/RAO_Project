@@ -439,32 +439,49 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     // Эта функция создает пустые записи для организаций, не представленных в базе данных или в отчете по форме 4.1, на основе которого генерируется этот отчет
     private void FillSpaceByRegNo(AnyTaskProgressBarVM? progressBarVM)
     {
-        for (int i = 0; i < Report.Rows41.Count - 1; i++)
+        var regNoIndex = 1;
+        for (int i = 0; i < Report.Rows41.Count; i++)
         {
+            if (Report.Rows41[i].RegNo_DB is "55505")
+                ;
             var codeSubjectRF = Report.Rows41[i].RegNo_DB.Substring(0, 2);
-            if (codeSubjectRF != Report.Rows41[i + 1].RegNo_DB.Substring(0, 2)) continue;
 
             if (!int.TryParse(Report.Rows41[i].RegNo_DB.Substring(2, 3), out var current)) continue; 
-            if (!int.TryParse(Report.Rows41[i + 1].RegNo_DB.Substring(2, 3), out var next)) continue;
-
-            if (next / 100 is 8 or 9) continue;
-
-            if (i+1 < current)
+            
+            // Если текущая организация временная, то переходим к следующей
+            if (current / 100 is 8 or 9) 
+            { 
+                regNoIndex = 1; 
+                continue; 
+            }
+            // Заполняем пробелы РегНомеров ПЕРЕД текущей организации 
+            while (regNoIndex < current)
             {
                 string regNo = codeSubjectRF;
-                if ((i + 1) / 100 == 0)
+                if (regNoIndex / 100 == 0)
                     regNo += "0";
-                if ((i + 1) / 10 == 0)
+                if (regNoIndex / 10 == 0)
                     regNo += "0";
-                regNo += $"{i+1}";
-                Report.Rows41.Insert(i , new Form41()
+                regNo += $"{regNoIndex}";
+                Report.Rows41.Insert(i, new Form41()
                 {
-                    RegNo_DB = $"{regNo}",
+                    RegNo_DB = regNo,
                     Report = formVM.Report // в форме указываем связь с отчетом, в котором создается эта форма
                 });
-
+                regNoIndex++;
+                i++;
             }
-            else if (current+1 < next)
+
+            //Если текущая запись последняя, то прекращаем выполнение функции
+            if (i + 1 >= Report.Rows41.Count) return;
+            
+            var nextSubjectFlag = codeSubjectRF != Report.Rows41[i + 1].RegNo_DB.Substring(0, 2);
+            
+            if (!int.TryParse(Report.Rows41[i + 1].RegNo_DB.Substring(2, 3), out var next)) continue;
+            //Если следующая организация временная, то переходим к следующей
+            if (next / 100 is 8 or 9) continue;
+            // Если есть пробел между текущей и следующей организацией, то создаем новую запись между ними
+            if (!nextSubjectFlag && (current+1 < next))
             {
                 string regNo = codeSubjectRF;
                 if ((current + 1) / 100 == 0)
@@ -472,11 +489,17 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 if ((current + 1) / 10 == 0)
                     regNo += "0";
                 regNo += $"{current + 1}";
-                Report.Rows41.Insert(i + 1, new Form41() 
-                { RegNo_DB = $"{regNo}",
-                  Report = formVM.Report // в форме указываем связь с отчетом, в котором создается эта форма
-                }); 
+                Report.Rows41.Insert(i + 1, new Form41()
+                {
+                    RegNo_DB = $"{regNo}",
+                    Report = formVM.Report // в форме указываем связь с отчетом, в котором создается эта форма
+                });
             }
+
+            if (nextSubjectFlag)
+                regNoIndex = 1;
+            else
+                regNoIndex++;
         }
     }
         
