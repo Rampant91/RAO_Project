@@ -446,7 +446,7 @@
                         <TextBlock>дата</TextBlock>
                     </Border>
                     <Border Grid.Row="2" Grid.Column="16">
-                        <TextBlock>постащика или получателя</TextBlock>
+                        <TextBlock>поставщика или получателя</TextBlock>
                     </Border>
                     <Border Grid.Row="2" Grid.Column="17">
                         <TextBlock>перевозчика</TextBlock>
@@ -1202,6 +1202,7 @@
                             <local:DataGridColumnWidthLoadBehavior FormNum="notes" />
                             <local:DataGridPointerBehavior />
                             <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
+							<local:DataGridSwitchToNotesBehavior SourceDataGrid="{Binding #dataGrid}"/>
                         </interactivity:Interaction.Behaviors>
 
                         <DataGrid.Columns>

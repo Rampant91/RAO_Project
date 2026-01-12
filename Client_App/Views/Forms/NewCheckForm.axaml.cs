@@ -8,7 +8,7 @@ using Models.CheckForm;
 
 namespace Client_App.Views.Forms;
 
-public class NewCheckForm : BaseWindow<CheckFormVM>
+public class NewCheckForm : BaseWindow<NewCheckFormVM>
 {
     #region Constructor
 

@@ -15,6 +15,7 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Client_App.Views.Forms.Forms2;
 
@@ -58,20 +59,38 @@ public partial class Form_20 : BaseWindow<Form_20VM>
 
         var db = StaticConfiguration.DBModel;
         var window = Desktop.Windows.FirstOrDefault(x => x.Name is "2.0");
-        var reportsAlreadyExist = db.ReportsCollectionDbSet
+
+        var query = db.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
             .Include(x => x.DBObservable)
-            .Include(reps => reps.Master_DB)
-            .ThenInclude(report => report.Rows20)
-            .Where(reps => reps.DBObservable != null)
-            .ToList()
-            .Any(x => x.Master_DB.RegNoRep.Value == _vm.Storage.RegNoRep.Value
-                      && !string.IsNullOrWhiteSpace(_vm.Storage.RegNoRep.Value)
-                      && x.Master_DB.OkpoRep.Value == _vm.Storage.OkpoRep.Value
-                      && !string.IsNullOrWhiteSpace(_vm.Storage.OkpoRep.Value)
-                      && x.Master_DB.Id != _vm.Storage.Id);
+            .Include(reps => reps.Master_DB).ThenInclude(report => report.Rows10)
+            .Include(reps => reps.Master_DB).ThenInclude(report => report.Rows20)
+            .Where(reps => reps.DBObservable != null);
+
+        var regNum = _vm.Storage.RegNoRep.Value;
+        var okpo = _vm.Storage.OkpoRep.Value;
+        bool reportsAlreadyExist;
+
+        if (string.IsNullOrWhiteSpace(_vm.Storage.RegNoRep.Value)
+            && string.IsNullOrWhiteSpace(_vm.Storage.OkpoRep.Value) 
+            || !await query
+                .AnyAsync(reps => reps.Master_DB.Rows20
+                    .Any(form20 => form20.RegNo_DB == regNum
+                                   && form20.Okpo_DB == okpo)))
+        {
+            reportsAlreadyExist = false;
+        }
+        else
+        {
+            reportsAlreadyExist = query
+                .ToList()
+                .Any(x => x.Master_DB.FormNum_DB == _vm.FormType
+                          && x.Master_DB.RegNoRep.Value == regNum
+                          && x.Master_DB.OkpoRep.Value == okpo
+                          && x.Master_DB.Id != _vm.Storage.Id);
+        }
 
         if (reportsAlreadyExist)
         {
@@ -125,47 +144,47 @@ public partial class Form_20 : BaseWindow<Form_20VM>
         switch (res.Result)
         {
             case "Да":
+            {
+                try
                 {
-                    try
-                    {
-                        await dbm.SaveChangesAsync();
-                        await new SaveReportAsyncCommand(vm).AsyncExecute(null);
-                    }
-                    catch { }
-
-                    if (desktop.Windows.Count == 1)
-                    {
-                        desktop.MainWindow.WindowState = WindowState.Normal;
-                    }
-                    return;
+                    await dbm.SaveChangesAsync();
+                    await new SaveReportAsyncCommand(vm).AsyncExecute(null);
                 }
+                catch { }
+
+                if (desktop.Windows.Count == 1)
+                {
+                    desktop.MainWindow.WindowState = WindowState.Normal;
+                }
+                return;
+            }
             case "Нет":
+            {
+                flag = true;
+                dbm.Restore();
+                try
                 {
-                    flag = true;
-                    dbm.Restore();
-                    try
-                    {
-                        await dbm.SaveChangesAsync();
-                    }
-                    catch { }
-
-                    var lst = vm.Storage[vm.FormType];
-
-                    foreach (var key in lst)
-                    {
-                        var item = (Form)key;
-                        if (item.Id == 0)
-                        {
-                            vm.Storage[vm.Storage.FormNum_DB].Remove(item);
-                        }
-                    }
-
-                    vm.Storage.OnPropertyChanged(nameof(vm.Storage.RegNoRep));
-                    vm.Storage.OnPropertyChanged(nameof(vm.Storage.ShortJurLicoRep));
-                    vm.Storage.OnPropertyChanged(nameof(vm.Storage.OkpoRep));
-
-                    break;
+                    await dbm.SaveChangesAsync();
                 }
+                catch { }
+
+                var lst = vm.Storage[vm.FormType];
+
+                foreach (var key in lst)
+                {
+                    var item = (Form)key;
+                    if (item.Id == 0)
+                    {
+                        vm.Storage[vm.Storage.FormNum_DB].Remove(item);
+                    }
+                }
+
+                vm.Storage.OnPropertyChanged(nameof(vm.Storage.RegNoRep));
+                vm.Storage.OnPropertyChanged(nameof(vm.Storage.ShortJurLicoRep));
+                vm.Storage.OnPropertyChanged(nameof(vm.Storage.OkpoRep));
+
+                break;
+            }
         }
         desktop.MainWindow.WindowState = WindowState.Normal;
         if (flag)

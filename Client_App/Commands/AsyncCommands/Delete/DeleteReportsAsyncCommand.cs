@@ -48,17 +48,16 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
         if (answer is not "Да") return;
 
-        Reports reports;
-        if (parameter is IEnumerable enumerable)
+        
+
+        try
         {
-            enumerable = parameter as IEnumerable;
-            reports = enumerable!.Cast<Reports>().ToList().First();
-        }
-        else if (parameter is Reports)
-        {
-            reports = (Reports)parameter;
-        }
-        else return;
+            Reports reps;
+            if (parameter is IEnumerable enumerable)
+                reps = enumerable!.Cast<Reports>().First();
+            else if (parameter is Reports reports)
+                reps = reports;
+            else return;
 
         try
         {
@@ -84,8 +83,9 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
             await ProcessDataBaseFillEmpty(db);
 
             var mainWindow = (Desktop.MainWindow as MainWindow)!;
-            var mainWindowVM = (mainWindow.DataContext as MainWindowVM);
-            mainWindowVM.UpdateReports();
+            var mainWindowVM = (mainWindow.DataContext as MainWindowVM)!;
+            mainWindowVM.UpdateReportsCollection();
+            mainWindowVM.UpdateOrgsPageInfo();
         }
         catch (Exception ex)
         {
@@ -95,6 +95,7 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
         }
 
         //await Local_Reports.Reports_Collection.QuickSortAsync();
+    
     }
 
     public static async Task ProcessDataBaseFillEmpty(DataContext dbm)

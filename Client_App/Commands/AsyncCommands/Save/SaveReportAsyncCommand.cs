@@ -17,12 +17,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Client_App.Commands.AsyncCommands.Save;
 
-//  Сохранить отчет
+/// <summary>
+/// Сохранение отчёта
+/// </summary>
 public class SaveReportAsyncCommand : BaseAsyncCommand
 {
-    private dynamic VM 
+    private dynamic VM
     {
-        get 
+        get
         {
             if (_formVM != null)
                 return _formVM;
@@ -110,86 +112,85 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
         {
             var dbm = StaticConfiguration.DBModel;
             var window = Desktop.Windows.FirstOrDefault(x => x.Name == _formType);
-            bool reportsAlreadyExist;
-            switch (_formType)
+            try
             {
+                var query = dbm.ReportsCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Include(x => x.DBObservable)
+                    .Include(reps => reps.Master_DB).ThenInclude(report => report.Rows10)
+                    .Include(reps => reps.Master_DB).ThenInclude(report => report.Rows20)
+                    .Where(reps => reps.DBObservable != null);
 
-                case "1.0":
-                    try
-                    {
-                        reportsAlreadyExist = dbm.ReportsCollectionDbSet
-                        .AsNoTracking()
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Include(x => x.DBObservable)
-                        .Include(reps => reps.Master_DB)
-                        .ThenInclude(report => report.Rows10)
-                        .Where(reps => reps.DBObservable != null)
-                        .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
-                        .ToList()
-                        .Any(x => x.Master_DB.RegNoRep.Value == _form10VM.Storage.RegNoRep.Value
-                                  && !string.IsNullOrWhiteSpace(_form10VM.Storage.RegNoRep.Value)
-                                  && x.Master_DB.OkpoRep.Value == _form10VM.Storage.OkpoRep.Value
-                                  && !string.IsNullOrWhiteSpace(_form10VM.Storage.OkpoRep.Value)
-                                  && x.Master_DB.Id != _form10VM.Storage.Id);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw ex;
-                    }
-                    break;
+                var regNum = _formType switch
+                {
+                    "1.0" => _form10VM.Storage.RegNoRep.Value,
+                    "2.0" => _form20VM.Storage.RegNoRep.Value,
+                    _ => ""
+                };
 
-                case "2.0":
-                    try
-                    {
-                        reportsAlreadyExist = dbm.ReportsCollectionDbSet
-                        .AsNoTracking()
-                        .AsSplitQuery()
-                        .AsQueryable()
-                        .Include(x => x.DBObservable)
-                        .Include(reps => reps.Master_DB)
-                        .ThenInclude(report => report.Rows20)
-                        .Where(reps => reps.DBObservable != null)
-                        .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
-                        .ToList()
-                        .Any(x => x.Master_DB.RegNoRep.Value == _form20VM.Storage.RegNoRep.Value
-                              && !string.IsNullOrWhiteSpace(_form20VM.Storage.RegNoRep.Value)
-                              && x.Master_DB.OkpoRep.Value == _form20VM.Storage.OkpoRep.Value
-                              && !string.IsNullOrWhiteSpace(_form20VM.Storage.OkpoRep.Value)
-                              && x.Master_DB.Id != _form20VM.Storage.Id);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw ex;
-                    }
-                    break;
+                var okpo = _formType switch
+                {
+                    "1.0" => _form10VM.Storage.OkpoRep.Value,
+                    "2.0" => _form20VM.Storage.OkpoRep.Value,
+                    _ => ""
+                };
+                bool reportsAlreadyExist;
 
-                default:
+                if (string.IsNullOrWhiteSpace(regNum)
+                    && string.IsNullOrWhiteSpace(okpo))
+                {
                     reportsAlreadyExist = false;
-                    break;
-            };
-
-            if (reportsAlreadyExist)
-            {
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                }
+                else
+                {
+                    reportsAlreadyExist = _formType switch
                     {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Ошибка при сохранении титульного листа организации",
-                        ContentHeader = "Ошибка",
-                        ContentMessage =
-                            $"Не удалось сохранить изменения в титульном листе организации, " +
-                            $"поскольку организация с данными ОКПО и рег.№ уже существует в базе данных. " +
-                            $"Убедитесь в правильности заполнения ОКПО и рег.№.",
-                        MinWidth = 400,
-                        MaxWidth = 600,
-                        MinHeight = 150,
-                        MaxHeight = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(window ?? Desktop.MainWindow));
+                        "1.0" => query
+                            .ToList()
+                            .Any(x => x.Master_DB.FormNum_DB == _formType
+                                      && x.Master_DB.RegNoRep.Value == regNum
+                                      && x.Master_DB.OkpoRep.Value == okpo
+                                      && x.Master_DB.Id != _form10VM.Storage.Id),
 
-                return;
+                        "2.0" => query
+                            .ToList()
+                            .Any(x => x.Master_DB.FormNum_DB == _formType
+                                      && x.Master_DB.RegNoRep.Value == regNum
+                                      && x.Master_DB.OkpoRep.Value == okpo
+                                      && x.Master_DB.Id != _form20VM.Storage.Id),
+
+                        _ => false
+                    };
+                }
+
+                if (reportsAlreadyExist)
+                {
+                    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        {
+                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ContentTitle = "Ошибка при сохранении титульного листа организации",
+                            ContentHeader = "Ошибка",
+                            ContentMessage =
+                                $"Не удалось сохранить изменения в титульном листе организации, " +
+                                $"поскольку организация с данными ОКПО и рег.№ уже существует в базе данных. " +
+                                $"Убедитесь в правильности заполнения ОКПО и рег.№.",
+                            MinWidth = 400,
+                            MaxWidth = 600,
+                            MinHeight = 150,
+                            MaxHeight = 400,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(window ?? Desktop.MainWindow));
+
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+
             }
         }
 

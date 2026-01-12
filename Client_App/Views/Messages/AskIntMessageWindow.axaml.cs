@@ -1,13 +1,12 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Client_App.ViewModels.Messages;
-using System;
-using System.Windows;
-namespace Client_App;
 
-public partial class AskIntMessageWindow : Window
+namespace Client_App.Views.Messages;
+
+public partial class AskIntMessageWindow : BaseWindow<AskIntMessageVM>
 {
     public AskIntMessageWindow(AskIntMessageVM vm)
     {
@@ -15,11 +14,10 @@ public partial class AskIntMessageWindow : Window
         DataContext = vm;
         Dispatcher.UIThread.InvokeAsync(() =>
         {
-            var textbox = this.FindControl<TextBox>("textbox");
+            var textbox = this.FindControl<TextBox>("Textbox");
             textbox.Focus();
         }, DispatcherPriority.Loaded);
     }
-
 
     public AskIntMessageWindow()
     {
@@ -28,14 +26,14 @@ public partial class AskIntMessageWindow : Window
 
         Dispatcher.UIThread.InvokeAsync(() =>
         {
-            var textbox = this.FindControl<TextBox>("textbox");
+            var textbox = this.FindControl<TextBox>("Textbox");
             textbox.Focus();
         }, DispatcherPriority.Loaded);
     }
     
     private void Accept_Click(object sender, RoutedEventArgs e)
     {
-        int? result = ((AskIntMessageVM)DataContext).Result;
+        var result = ((AskIntMessageVM)DataContext).Result;
         // Return the integer result from ViewModel
         if (result == null)
             Close(0);
@@ -48,6 +46,4 @@ public partial class AskIntMessageWindow : Window
         // Return a cancellation indicator (could use null or sentinel value)
         Close(null);
     }
-
-
 }

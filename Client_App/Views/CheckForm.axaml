@@ -1,18 +1,19 @@
-<Window
-    x:Class="Client_App.Views.CheckForm"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:Client_App.ViewModels"
-    xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
-    Name="FormCheckerWindow"
-    Title="{Binding Path=TitleName, Mode=OneWay}"
-    Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.45', FallbackValue='500', Mode=OneWay}"
-    Height="{Binding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.85', FallbackValue='800', Mode=OneWay}"
-    x:DataType="vm:CheckFormVM"
-    WindowStartupLocation="CenterScreen"
-    mc:Ignorable="d">
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Client_App.ViewModels"
+        xmlns:behaviors="clr-namespace:Client_App.Behaviors"
+        mc:Ignorable="d"
+        x:Class="Client_App.Views.CheckForm"
+        x:DataType="vm:CheckFormVM"
+        Name="FormCheckerWindow"
+        Title="{Binding Path=TitleName, Mode=OneWay}"
+        MinWidth="600" MinHeight="500"
+        d:DesignWidth="600" d:DesignHeight="500"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.7" behaviors:WindowScreenSizeBehavior.HeightRatio="0.85"
+        WindowStartupLocation="Manual"
+        CanResize="True">
 
     <Design.DataContext>
         <vm:CheckFormVM/>
@@ -20,65 +21,57 @@
 
     <Grid RowDefinitions="40,*">
         <Grid Row="0">
-            <Button
-                Width="200"
-                Margin="5"
-                Content="Сохранить отчёт"
-                Command="{Binding Path=ExcelExportCheckForm}"
-                CommandParameter="{Binding }"/>
+            <Button Width="200"
+                    Margin="5"
+                    Content="Сохранить отчёт"
+                    Command="{Binding Path=ExcelExportCheckForm}"
+                    CommandParameter="{Binding }"/>
         </Grid>
-        <DataGrid
-            Grid.Row="1"
-            Name="CheckErrorsDataGrid"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            CanUserReorderColumns="True"
-            CanUserResizeColumns="True"
-            CanUserSortColumns="True"
-            GridLinesVisibility="All"
-            IsReadOnly="True"
-            Items="{Binding Path=CheckError, Mode=OneWay}">
+        <DataGrid Grid.Row="1"
+                  Name="CheckErrorsDataGrid"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Top"
+                  CanUserReorderColumns="True"
+                  CanUserResizeColumns="True"
+                  CanUserSortColumns="True"
+                  GridLinesVisibility="All"
+                  IsReadOnly="True"
+                  Items="{Binding Path=CheckError, Mode=OneWay}">
             <DataGrid.Styles>
                 <Style Selector="TextBlock">
                     <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
                 </Style>
             </DataGrid.Styles>
             <DataGrid.Columns>
-                <DataGridTextColumn
-                    Width="0.8*"
-                    Binding="{Binding Path=Index, Mode=OneWay}"
-                    CellStyleClasses="cell_tooltip"
-                    FontSize="11"
-                    FontWeight="Bold"
-                    Header="№ п/п">
-                </DataGridTextColumn>
-                <DataGridTextColumn 
-                    Width="*"
-                    Binding="{Binding Path=Row, Mode=TwoWay}"
-                    CellStyleClasses="cell_tooltip"
-                    FontSize="11"
-                    FontWeight="Bold"
-                    Header="стр."/>
-                <DataGridTextColumn
-                    Width="2.5*"
-                    Binding="{Binding Path=Column, Mode=OneWay}"
-                    CellStyleClasses="cell_tooltip"
-                    FontSize="11"
-                    FontWeight="Bold"
-                    Header="Графа"/>
-                <DataGridTextColumn
-                    Width="3*"
-                    Binding="{Binding Path=Value, Mode=OneWay}"
-                    CellStyleClasses="cell_tooltip"
-                    FontSize="11"
-                    FontWeight="Bold"
-                    Header="Значение"/>
-                <DataGridTextColumn
-                    Width="10*"
-                    Binding="{Binding Path=Message, Mode=OneWay}"
-                    CellStyleClasses="cell_tooltip"
-                    FontSize="11"
-                    Header="Сообщение"/>
+                <DataGridTextColumn Width="0.8*"
+                                    Binding="{Binding Path=Index, Mode=OneWay}"
+                                    CellStyleClasses="cell_tooltip"
+                                    FontSize="11"
+                                    FontWeight="Bold"
+                                    Header="№ п/п"/>
+                <DataGridTextColumn Width="*"
+                                    Binding="{Binding Path=Row, Mode=TwoWay}"
+                                    CellStyleClasses="cell_tooltip"
+                                    FontSize="11"
+                                    FontWeight="Bold"
+                                    Header="стр."/>
+                <DataGridTextColumn Width="2.5*"
+                                    Binding="{Binding Path=Column, Mode=OneWay}"
+                                    CellStyleClasses="cell_tooltip"
+                                    FontSize="11"
+                                    FontWeight="Bold"
+                                    Header="Графа"/>
+                <DataGridTextColumn Width="3*"
+                                    Binding="{Binding Path=Value, Mode=OneWay}"
+                                    CellStyleClasses="cell_tooltip"
+                                    FontSize="11"
+                                    FontWeight="Bold"
+                                    Header="Значение"/>
+                <DataGridTextColumn Width="10*"
+                                    Binding="{Binding Path=Message, Mode=OneWay}"
+                                    CellStyleClasses="cell_tooltip"
+                                    FontSize="11"
+                                    Header="Сообщение"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

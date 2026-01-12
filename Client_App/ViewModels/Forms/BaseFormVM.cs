@@ -396,7 +396,6 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand SetDefaultColumnWidth => new SetDefaultColumnWidthAsyncCommand();
     #endregion
 
-
     #region SelectionChangeWiring
 
     /// <summary>

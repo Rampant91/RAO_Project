@@ -52,7 +52,7 @@ namespace Client_App.Commands.AsyncCommands.SwitchReport
             {
                 var windowParam = new FormParameter()
                 {
-                    Parameter = new ObservableCollectionWithItemPropertyChanged<IKey>(new List<Report> { selectedReport }),
+                    Parameter = selectedReport,
                     Window = window
                 };
 

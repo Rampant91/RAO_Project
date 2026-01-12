@@ -1,6 +1,8 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using Avalonia.VisualTree;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.SwitchReport;
 using Client_App.ViewModels.Controls;
@@ -25,16 +27,30 @@ public partial class SelectReportPopup : UserControl
         AvaloniaXamlLoader.Load(this);
         
     }
-    public void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs args)
+
+    private void ListBox_PointerReleased(object sender, PointerReleasedEventArgs e)
     {
-        Report newSelectedReport = (sender as ListBox).SelectedItem as Report;
+        // Проверяем, что клик был левой кнопкой мыши
+        if (e.InitialPressMouseButton != MouseButton.Left)
+            return;
 
-        // При инициализации View Model формы происходит ложное срабатывание события
-        // Поэтому проверяем был ли выбран элемент до срабатывания,
-        // Если нет то значит событие было вызвано при инициализации DataContext`а формы
+        // Находим элемент ListBoxItem, на который был произведен клик
+        var listBoxItem = FindVisualParent<ListBoxItem>(e.Source as Control);
 
-        if (args.RemovedItems.Count>0) // проверка прошлого выбранного итема.
-            new SwitchToSelectedReportAsyncCommand(vm.FormVM).AsyncExecute(newSelectedReport);
+        if (listBoxItem == null || listBoxItem.DataContext is not Report selectedReport)
+            return;
 
+        if (selectedReport != vm.Report)
+            new SwitchToSelectedReportAsyncCommand(vm.FormVM).AsyncExecute(selectedReport);
+
+    }
+    // Вспомогательные методы для поиска в визуальном дереве
+    public static T FindVisualParent<T>(Visual visual) where T : Visual
+    {
+        while (visual != null && !(visual is T))
+        {
+            visual = (Visual)visual.GetVisualParent();
+        }
+        return visual as T;
     }
 }

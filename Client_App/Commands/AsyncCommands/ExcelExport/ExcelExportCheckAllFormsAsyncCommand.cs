@@ -32,8 +32,13 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
-        if (parameter is not IKeyCollection collection) return;
-        var par = collection.ToList<Reports>().First();
+        Reports? par;
+        if (parameter is IKeyCollection collection)
+            par = collection.ToList<Reports>().First();
+        else if (parameter is Reports)
+            par = (Reports)parameter;
+        else return;
+
         var cts = new CancellationTokenSource();
         ExportType = $"Проверка_отчётов_{par.Master_DB.RegNoRep.Value}_{par.Master_DB.OkpoRep.Value}";
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));

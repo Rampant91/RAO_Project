@@ -155,7 +155,7 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
     protected override void OnOpened(EventArgs e)
     {
         base.OnOpened(e);
-        ShowInit();
+        //ShowInit();
     }
 
     protected override void OnClosing(CancelEventArgs e)
@@ -341,36 +341,37 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
 
         #endregion
     }
+    /* 
+ private void ShowInit()
+   {
+       var dataContext = (MainWindowVM)DataContext;
 
-    private void ShowInit()
-    {
-        var dataContext = (MainWindowVM)DataContext;
+       var tab10 = this.FindControl<Panel>("Forms_p1_0");
+       var tab1X = this.FindControl<Panel>("Forms_p1_X");
+       var tab1B = this.FindControl<Panel>("Forms_p1_B");
+       Form1_Visual.FormF_Visual(this, tab10, tab1X, tab1B);
 
-        var tab10 = this.FindControl<Panel>("Forms_p1_0");
-        var tab1X = this.FindControl<Panel>("Forms_p1_X");
-        var tab1B = this.FindControl<Panel>("Forms_p1_B");
-        Form1_Visual.FormF_Visual(this, tab10, tab1X, tab1B);
+       #region Form10 DataGrid
+       var grd1 = (DataGrid<Reports>)tab10.Children[0];
+       var grd2 = (DataGrid<Report>)tab1X.Children[0];
 
-        #region Form10 DataGrid
-        var grd1 = (DataGrid<Reports>)tab10.Children[0];
-        var grd2 = (DataGrid<Report>)tab1X.Children[0];
+       SetCommandList(grd1, grd2, "1.0", dataContext);
+       #endregion
 
-        SetCommandList(grd1, grd2, "1.0", dataContext);
-        #endregion
+       var tab20 = this.FindControl<Panel>("Forms_p2_0");
+       var tab2X = this.FindControl<Panel>("Forms_p2_X");
+       var tab2B = this.FindControl<Panel>("Forms_p2_B");
+       Form2_Visual.FormF_Visual(this, tab20, tab2X, tab2B);
 
-        var tab20 = this.FindControl<Panel>("Forms_p2_0");
-        var tab2X = this.FindControl<Panel>("Forms_p2_X");
-        var tab2B = this.FindControl<Panel>("Forms_p2_B");
-        Form2_Visual.FormF_Visual(this, tab20, tab2X, tab2B);
+       #region Form20 DataGrid
+       var grd3 = (DataGrid<Reports>)tab20.Children[0];
+       var grd4 = (DataGrid<Report>)tab2X.Children[0];
 
-        #region Form20 DataGrid
-        var grd3 = (DataGrid<Reports>)tab20.Children[0];
-        var grd4 = (DataGrid<Report>)tab2X.Children[0];
-
-        SetCommandList(grd3, grd4, "2.0", dataContext);
-        #endregion
-    }
-
+       SetCommandList(grd3, grd4, "2.0", dataContext);
+       #endregion
+   }
+    
+  */
     #endregion
 
     #region TabControl_SelectionChanged

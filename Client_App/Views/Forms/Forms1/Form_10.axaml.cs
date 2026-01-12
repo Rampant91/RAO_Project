@@ -6,7 +6,6 @@ using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels.Forms.Forms1;
-using Client_App.ViewModels.Forms.Forms2;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
@@ -59,20 +58,38 @@ public partial class Form_10 : BaseWindow<Form_10VM>
 
         var db = StaticConfiguration.DBModel;
         var window = Desktop.Windows.FirstOrDefault(x => x.Name is "1.0");
-        var reportsAlreadyExist = db.ReportsCollectionDbSet
+
+        var query = db.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
             .Include(x => x.DBObservable)
-            .Include(reps => reps.Master_DB)
-            .ThenInclude(report => report.Rows10)
-            .Where(reps => reps.DBObservable != null)
-            .ToList()
-            .Any(x => x.Master_DB.RegNoRep.Value == _vm.Storage.RegNoRep.Value
-                      && !string.IsNullOrWhiteSpace(_vm.Storage.RegNoRep.Value)
-                      && x.Master_DB.OkpoRep.Value == _vm.Storage.OkpoRep.Value
-                      && !string.IsNullOrWhiteSpace(_vm.Storage.OkpoRep.Value)
-                      && x.Master_DB.Id != _vm.Storage.Id);
+            .Include(reps => reps.Master_DB).ThenInclude(report => report.Rows10)
+            .Include(reps => reps.Master_DB).ThenInclude(report => report.Rows20)
+            .Where(reps => reps.DBObservable != null);
+
+        var regNum = _vm.Storage.RegNoRep.Value;
+        var okpo = _vm.Storage.OkpoRep.Value;
+        bool reportsAlreadyExist;
+
+        if (string.IsNullOrWhiteSpace(regNum)
+            && string.IsNullOrWhiteSpace(okpo) 
+            || !await query
+                .AnyAsync(reps => reps.Master_DB.Rows10
+                    .Any(form10 => form10.RegNo_DB == regNum 
+                                   && form10.Okpo_DB == okpo)))
+        {
+            reportsAlreadyExist = false;
+        }
+        else
+        {
+            reportsAlreadyExist = query
+                .ToList()
+                .Any(x => x.Master_DB.FormNum_DB == vm.FormType
+                          && x.Master_DB.RegNoRep.Value == regNum
+                          && x.Master_DB.OkpoRep.Value == okpo
+                          && x.Master_DB.Id != _vm.Storage.Id);
+        }
 
         if (reportsAlreadyExist)
         {
@@ -191,7 +208,7 @@ public partial class Form_10 : BaseWindow<Form_10VM>
                     await new SaveReportAsyncCommand(vm).AsyncExecute(null);
                 }
                 catch { }
-                
+
                 if (desktop.Windows.Count == 1)
                 {
                     desktop.MainWindow.WindowState = WindowState.Normal;

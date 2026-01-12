@@ -1,22 +1,24 @@
-using Avalonia.Controls;
+п»їusing Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 using Client_App.ViewModels;
 using Models.CheckForm;
 using System.Collections.Generic;
-using Avalonia.Media;
 
 namespace Client_App.Views;
 
-public class CheckForm : BaseWindow<CheckFormVM>
+public partial class CheckForm : BaseWindow<CheckFormVM>
 {
     #region Constructor
 
-    public CheckForm() { }
+    public CheckForm() 
+    {
+        AvaloniaXamlLoader.Load(this);
+    }
 
     public CheckForm(ChangeOrCreateVM changeOrCreateVM, List<CheckError> checkError)
     {
         AvaloniaXamlLoader.Load(this);
-
         DataContext = new CheckFormVM(changeOrCreateVM, checkError);
 
         var dataGrid = this.Get<DataGrid>("CheckErrorsDataGrid");
@@ -30,7 +32,7 @@ public class CheckForm : BaseWindow<CheckFormVM>
     #region Events
 
     /// <summary>
-    /// Устанавливает цвет строки в зависимости от того, является ли ошибка критической.
+    /// РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ С†РІРµС‚ СЃС‚СЂРѕРєРё РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РѕРіРѕ, СЏРІР»СЏРµС‚СЃСЏ Р»Рё РѕС€РёР±РєР° РєСЂРёС‚РёС‡РµСЃРєРѕР№.
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
