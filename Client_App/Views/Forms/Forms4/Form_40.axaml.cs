@@ -1,3 +1,6 @@
+using System;
+using System.ComponentModel;
+using System.Threading;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -6,16 +9,12 @@ using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels.Forms.Forms4;
-using Client_App.Views;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.Forms;
-using System;
-using System.ComponentModel;
-using System.Threading;
 
-namespace Client_App;
+namespace Client_App.Views.Forms.Forms4;
 
 public partial class Form_40 : BaseWindow<Form_40VM>
 {
@@ -29,7 +28,6 @@ public partial class Form_40 : BaseWindow<Form_40VM>
         _vm = vm;
         Closing += OnStandardClosing;
     }
-
 
     #region OnStandartClosing
 

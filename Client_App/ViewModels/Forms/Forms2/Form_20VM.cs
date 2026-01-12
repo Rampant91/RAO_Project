@@ -123,7 +123,7 @@ public class Form_20VM : BaseVM, INotifyPropertyChanged
 
     public Form_20VM() { }
 
-    public Form_20VM(in DBObservable reps)
+    public Form_20VM(in DBObservable dbObservable)
     {
         Storage = new Report { FormNum_DB = "2.0" };
 
@@ -133,7 +133,7 @@ public class Form_20VM : BaseVM, INotifyPropertyChanged
         ty2.NumberInOrder_DB = 2;
         Storage.Rows20.Add(ty1);
         Storage.Rows20.Add(ty2);
-        DBO = reps;
+        DBO = dbObservable;
     }
 
     public Form_20VM(string formNum, in Report rep)

@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms4;
-using Models.DBRealization;
+using Client_App.Views.Forms.Forms4;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
@@ -30,10 +30,7 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
         var mainWindow = (Desktop.MainWindow as MainWindow)!;
         var mainWindowVM = (mainWindow.DataContext as MainWindowVM);
 
-        var selectedReports = mainWindow.SelectedReports;
-
-
-        bool isSeparateDivision = true;
+        var isSeparateDivision = true;
 
         if (mainWindowVM.SelectedReportTypeToString is "1.0" or "2.0")
         {
@@ -82,8 +79,7 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
         {
             case "1.0":
                 {
-                    var form10VM = new Form_10VM(ReportsStorage.LocalReports);
-                    form10VM.IsSeparateDivision = isSeparateDivision;
+                    var form10VM = new Form_10VM(ReportsStorage.LocalReports) { IsSeparateDivision = isSeparateDivision };
                     var window = new Form_10(form10VM) { DataContext = form10VM };
                     await new SaveReportAsyncCommand(form10VM).AsyncExecute(null);
                     await window.ShowDialog(mainWindow);
@@ -92,8 +88,7 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
                 }
             case "2.0":
                 {
-                    var form20VM = new Form_20VM(ReportsStorage.LocalReports);
-                    form20VM.IsSeparateDivision = isSeparateDivision;
+                    var form20VM = new Form_20VM(ReportsStorage.LocalReports) { IsSeparateDivision = isSeparateDivision };
                     var window = new Form_20(form20VM) { DataContext = form20VM };
                     await new SaveReportAsyncCommand(form20VM).AsyncExecute(null);
                     await window.ShowDialog(mainWindow);
@@ -123,10 +118,8 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
                 .OrderBy(x => x.Master_DB.RegNoRep?.Value, comparator)
                 .ThenBy(x => x.Master_DB.OkpoRep?.Value, comparator));
 
-
         mainWindowVM.UpdateReportsCollection();
         mainWindowVM.UpdateOrgsPageInfo();
-
 
         //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync(); не нужно
     }
