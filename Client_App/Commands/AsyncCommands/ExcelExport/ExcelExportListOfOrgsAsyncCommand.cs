@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.ProgressBar;
@@ -15,6 +9,13 @@ using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using OfficeOpenXml;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -96,9 +97,11 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         var checkedLst = new List<Reports>();
         var row = 2;
         double progressBarDoubleValue = progressBarVM.ValueBar;
+
+        var comparator = new CustomReportsComparer();
         foreach (var reps in repsList
-                     .OrderBy(x => x.Master_DB.RegNoRep.Value)
-                     .ThenBy(x => x.Master_DB.OkpoRep.Value))
+                     .OrderBy(x => x.Master_DB?.RegNoRep?.Value, comparator)
+                     .ThenBy(x => x.Master_DB?.OkpoRep?.Value, comparator))
         {
             if (checkedLst.Any(x => x.Master_DB.RegNoRep == reps.Master_DB.RegNoRep
                                     && x.Master_DB.OkpoRep == reps.Master_DB.OkpoRep))

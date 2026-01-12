@@ -1,4 +1,5 @@
 ﻿using Avalonia.Threading;
+using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.Messages;
@@ -118,9 +119,10 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelExportListOfFormsBaseAsy
         ExcelWorksheet worksheet)
     {
         var row = 2;
+        var comparator = new CustomReportsComparer();
         foreach (var reps in repsList
-                     .OrderBy(x => x.Master_DB.RegNoRep.Value)
-                     .ThenBy(x => x.Master_DB.OkpoRep.Value))
+                     .OrderBy(x => x.Master_DB?.RegNoRep?.Value, comparator)
+                     .ThenBy(x => x.Master_DB?.OkpoRep?.Value, comparator))
         {
             var repList = reps.Report_Collection
                 .Where(x =>
