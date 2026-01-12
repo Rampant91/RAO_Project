@@ -1,22 +1,23 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Resources.CustomComparers;
+using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
+using Client_App.ViewModels.Forms.Forms4;
 using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
 using Client_App.Views.Forms.Forms2;
+using Client_App.Views.Forms.Forms4;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;
+using Models.DBRealization;
 using Models.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Client_App.Commands.AsyncCommands.Save;
-using Client_App.ViewModels;
-using Client_App.ViewModels.Forms.Forms4;
-using Client_App.Views.Forms.Forms4;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
@@ -109,14 +110,13 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
             ? []
             : new ObservableCollectionWithItemPropertyChanged<IKey>(mainWindow.SelectedReports);
 
-
         var comparator = new CustomReportsComparer();
         var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
         ReportsStorage.LocalReports.Reports_Collection.Clear();
         ReportsStorage.LocalReports.Reports_Collection
             .AddRange(tmpReportsList
-                .OrderBy(x => x.Master_DB.RegNoRep?.Value, comparator)
-                .ThenBy(x => x.Master_DB.OkpoRep?.Value, comparator));
+                .OrderBy(x => x.Master_DB?.RegNoRep?.Value, comparator)
+                .ThenBy(x => x.Master_DB?.OkpoRep?.Value, comparator));
 
         mainWindowVM.UpdateReportsCollection();
         mainWindowVM.UpdateOrgsPageInfo();

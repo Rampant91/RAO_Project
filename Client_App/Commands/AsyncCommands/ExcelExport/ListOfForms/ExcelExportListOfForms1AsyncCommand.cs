@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using Avalonia.Threading;
+﻿using Avalonia.Threading;
+using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.Messages;
@@ -14,6 +8,13 @@ using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using OfficeOpenXml;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
@@ -121,9 +122,10 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelExportListOfFormsBaseAsy
         ExcelWorksheet worksheet)
     {
         var row = 2;
+        var comparator = new CustomReportsComparer();
         foreach (var reps in repsList
-                     .OrderBy(x => x.Master_DB.RegNoRep.Value)
-                     .ThenBy(x => x.Master_DB.OkpoRep.Value))
+                     .OrderBy(x => x.Master_DB?.RegNoRep?.Value, comparator)
+                     .ThenBy(x => x.Master_DB?.OkpoRep?.Value, comparator))
         {
             var repList = reps.Report_Collection
                 .Where(x =>
