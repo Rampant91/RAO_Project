@@ -174,7 +174,6 @@ namespace Client_App.ViewModels.MainWindowTabs
             {
                 if (SelectedReports is null) return null;
 
-                CurrentPageForms = 1;
                 return new ObservableCollection<Report>(
                     SelectedReports
                     .Report_Collection
@@ -244,6 +243,7 @@ namespace Client_App.ViewModels.MainWindowTabs
             {
                 _rowsCountForms = value;
                 OnPropertyChanged();
+                UpdateReportCollection();
                 OnPropertyChanged(nameof(TotalPagesForms));
             }
         }
@@ -263,6 +263,7 @@ namespace Client_App.ViewModels.MainWindowTabs
             {
                 _currentPageForms = value;
                 OnPropertyChanged();
+                UpdateReportCollection();
             }
         }
         #endregion
