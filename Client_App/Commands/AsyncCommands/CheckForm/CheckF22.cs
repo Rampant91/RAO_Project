@@ -483,7 +483,8 @@ public class CheckF22 : CheckBase
             var form = (Form22)key1;
             double subsidy = -1.0;
             TryParseDoubleExtended(form.Subsidy_DB.Replace("%", ""), out subsidy);
-            if (form.CodeRAO_DB != "-" && !string.IsNullOrWhiteSpace(form.CodeRAO_DB))
+            if (form.CodeRAO_DB != "-" && !string.IsNullOrWhiteSpace(form.CodeRAO_DB)
+                && form.StatusRAO_DB != "-" && !string.IsNullOrWhiteSpace(form.StatusRAO_DB))
             {
                 var key = (
                     keyInclude1 ? form.StoragePlaceName_DB.Replace(" ", "").ToLower() : "",
@@ -505,14 +506,14 @@ public class CheckF22 : CheckBase
                     CheckError? errorDouble = errorList.SingleOrDefault(x => string.Equals(errorValue, x.Value) && string.Equals(errorMessage, x.Message));
                     if (errorDouble == null)
                     {
-                        errorList.Add(new CheckError
-                        {
-                            FormNum = "form_22",
-                            Row = form.NumberInOrder_DB.ToString(),
-                            Column = "-",
-                            Value = errorValue,
-                            Message = errorMessage
-                        });
+                        //errorList.Add(new CheckError
+                        //{
+                        //    FormNum = "form_22",
+                        //    Row = form.NumberInOrder_DB.ToString(),
+                        //    Column = "-",
+                        //    Value = errorValue,
+                        //    Message = errorMessage
+                        //});
                     }
                     else
                     {
@@ -536,14 +537,14 @@ public class CheckF22 : CheckBase
                             CheckError? errorDouble = errorList.SingleOrDefault(x => string.Equals(errorValue, x.Value) && string.Equals(errorMessage, x.Message));
                             if (errorDouble == null)
                             {
-                                errorList.Add(new CheckError
-                                {
-                                    FormNum = "form_22",
-                                    Row = formSub.NumberInOrder_DB.ToString(),
-                                    Column = "-",
-                                    Value = errorValue,
-                                    Message = errorMessage
-                                });
+                                //errorList.Add(new CheckError
+                                //{
+                                //    FormNum = "form_22",
+                                //    Row = formSub.NumberInOrder_DB.ToString(),
+                                //    Column = "-",
+                                //    Value = errorValue,
+                                //    Message = errorMessage
+                                //});
                             }
                             else
                             {
