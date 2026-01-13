@@ -478,7 +478,6 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
         }
         private static async Task<CheckError?> CheckPresenceOfForm11(Form41 form41)
         {
-            if (form41.NumOfFormsWithInventarizationInfo_DB <= 0) return null;
 
             int year;
             if (!int.TryParse(form41.Report.Year_DB, out year)) return null;
@@ -507,6 +506,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 .OrderBy(rep => DateTime.Parse(rep.StartPeriod_DB))
                 .ThenBy(rep => DateTime.Parse(rep.EndPeriod_DB))
                 .ToList();
+
 
             var lastInventarizationReport = reportCollection.LastOrDefault(rep =>
                 rep.Rows11.Any(form11 => form11.OperationCode_DB == "10")
@@ -560,7 +560,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             if (!InventarizationFlag && quantityBalance > 0)
                 return new CheckError()
                 {
-                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют _____. " +
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют радионуклиды. " +
                     $"Необходимо проинвентаризировать по форме 1.1\n" +
                     $"Инвентаризация: {InventarizationFlag}\n" +
                     $"Баланс: {quantityBalance}"
@@ -569,7 +569,6 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
         }
         private static async Task<CheckError?> CheckPresenceOfForm12(Form41 form41)
         {
-            if (form41.NumOfFormsWithInventarizationInfo_DB <= 0) return null;
 
             int year;
             if (!int.TryParse(form41.Report.Year_DB, out year)) return null;
@@ -663,7 +662,6 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
         private static async Task<CheckError?> CheckPresenceOfForm13(Form41 form41)
         {
 
-            if (form41.NumOfFormsWithInventarizationInfo_DB <= 0) return null;
 
             int year;
             if (!int.TryParse(form41.Report.Year_DB, out year)) return null;
@@ -744,7 +742,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             if (!InventarizationFlag && balance > 0)
                 return new CheckError()
                 {
-                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют _____. " +
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют радионуклиды. " +
                     $"Необходимо проинвентаризировать по форме 1.3\n" +
                     $"Инвентаризация: {InventarizationFlag}\n" +
                     $"Баланс: {balance}"
@@ -754,8 +752,6 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
 
         private static async Task<CheckError?> CheckPresenceOfForm14(Form41 form41)
         {
-            if (form41.NumOfFormsWithInventarizationInfo_DB <= 0) return null;
-
             int year;
             if (!int.TryParse(form41.Report.Year_DB, out year)) return null;
 
@@ -873,7 +869,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             if (!InventarizationFlag && (massBalanceLiquid > 0 || massBalanceSolid > 0 || massBalanceGas > 0))
                 return new CheckError()
                 {
-                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют _____. " +
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют радионуклиды. " +
                     $"Необходимо проинвентаризировать по форме 1.4\n" +
                     $"Инвентаризация: {InventarizationFlag}\n" +
                     $"Баланс жидких РВ: {massBalanceLiquid}\n" +

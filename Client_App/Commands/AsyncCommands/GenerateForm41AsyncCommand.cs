@@ -443,8 +443,6 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         var regNoIndex = 1;
         for (int i = 0; i < Report.Rows41.Count; i++)
         {
-            if (Report.Rows41[i].RegNo_DB is "55505")
-                ;
             var codeSubjectRF = Report.Rows41[i].RegNo_DB.Substring(0, 2);
 
             if (!int.TryParse(Report.Rows41[i].RegNo_DB.Substring(2, 3), out var current)) continue; 
