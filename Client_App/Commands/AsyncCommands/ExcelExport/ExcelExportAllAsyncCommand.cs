@@ -30,7 +30,6 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
-        if (parameter is null) return;
         var cts = new CancellationTokenSource();
         IsSelectedOrg = parameter is "SelectedOrg";
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));

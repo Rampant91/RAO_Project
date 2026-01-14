@@ -381,27 +381,30 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
         // ¬кладки: индекс 0 Ч скрытый, 1 Ч Forms1, 2 Ч Forms2 и т.д.
         var target = SelectedReports; // по умолчанию текущее значение
 
-        if (tc.SelectedIndex == 1)
+        switch (tc.SelectedIndex)
         {
-            target = SelectedReports1;
-        }
-        else if (tc.SelectedIndex == 2)
-        {
-            target = SelectedReports2;
-        }
-        else
-        {
-            // –езервна€ логика через тип формы из VM
-            if (DataContext is ViewModels.MainWindowVM vm)
+            case 1:
+                target = SelectedReports1;
+                break;
+            case 2:
+                target = SelectedReports2;
+                break;
+            default:
             {
-                var formNum = vm.SelectedReportTypeToString;
-                if (!string.IsNullOrEmpty(formNum))
+                // –езервна€ логика через тип формы из VM
+                if (DataContext is MainWindowVM vm)
                 {
-                    if (formNum.StartsWith("1"))
-                        target = SelectedReports1;
-                    else if (formNum.StartsWith("2"))
-                        target = SelectedReports2;
+                    var formNum = vm.SelectedReportTypeToString;
+                    if (!string.IsNullOrEmpty(formNum))
+                    {
+                        if (formNum.StartsWith('1'))
+                            target = SelectedReports1;
+                        else if (formNum.StartsWith('2'))
+                            target = SelectedReports2;
+                    }
                 }
+
+                break;
             }
         }
 

@@ -93,13 +93,14 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
     /// <summary>
     /// Команды, выполняющиеся автоматически при запуске программы с ключом "-p" (оперативная отчётность).
     /// </summary>
-    private async Task BackgroundWorkThenAppLaunchedWithOperParameter()
+    private static async Task BackgroundWorkThenAppLaunchedWithOperParameter()
     {
-        await new ExcelExportListOfOrgsAsyncCommand().AsyncExecute(this);
-        await new ExcelExportExecutorsAsyncCommand().AsyncExecute(this);
-        await new ExcelExportIntersectionsAsyncCommand().AsyncExecute(this);
-        await new ExcelExportListOfForms1AsyncCommand().AsyncExecute(this);
-        await new ExcelExportAllAsyncCommand().AsyncExecute(this);
+        await new ExcelExportListOfOrgsAsyncCommand().AsyncExecute("full");
+        await new ExcelExportListOfOrgsAsyncCommand().AsyncExecute(null);
+        await new ExcelExportExecutorsAsyncCommand().AsyncExecute(null);
+        await new ExcelExportIntersectionsAsyncCommand().AsyncExecute(null);
+        await new ExcelExportListOfForms1AsyncCommand().AsyncExecute(null);
+        await new ExcelExportAllAsyncCommand().AsyncExecute(null);
     }
 
     #endregion
@@ -109,12 +110,13 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
     /// <summary>
     /// Команды, выполняющиеся автоматически при запуске программы с ключом "-y" (годовая отчётность).
     /// </summary>
-    private async Task BackgroundWorkThenAppLaunchedWithYearParameter()
+    private static async Task BackgroundWorkThenAppLaunchedWithYearParameter()
     {
-        await new ExcelExportListOfOrgsAsyncCommand().AsyncExecute(this);
-        await new ExcelExportExecutorsAsyncCommand().AsyncExecute(this);
-        await new ExcelExportListOfForms2AsyncCommand().AsyncExecute(this);
-        await new ExcelExportAllAsyncCommand().AsyncExecute(this);
+        await new ExcelExportListOfOrgsAsyncCommand().AsyncExecute("full");
+        await new ExcelExportListOfOrgsAsyncCommand().AsyncExecute(null);
+        await new ExcelExportExecutorsAsyncCommand().AsyncExecute(null);
+        await new ExcelExportListOfForms2AsyncCommand().AsyncExecute(null);
+        await new ExcelExportAllAsyncCommand().AsyncExecute(null);
     }
 
     #endregion 
