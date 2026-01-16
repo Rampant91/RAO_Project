@@ -271,8 +271,7 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                 .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator);
 
             ReportsStorage.LocalReports.Reports_Collection.Clear();
-            ReportsStorage.LocalReports.Reports_Collection
-                .AddRange(tmpReportsOrderedEnum);
+            ReportsStorage.LocalReports.Reports_Collection.AddRange(tmpReportsOrderedEnum);
         }
         catch (Exception ex)
         {
@@ -287,13 +286,12 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
         try
         {
             await StaticConfiguration.DBModel.SaveChangesAsync();
+            await SetDataGridPage(impReportsList);
         }
         catch (Exception ex)
         {
 
         }
-
-        await SetDataGridPage(impReportsList);
 
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"
