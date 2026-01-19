@@ -24,6 +24,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm
 {
@@ -245,6 +246,8 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
         {
             var dbModel = StaticConfiguration.DBModel;
             int count = 0;
+            IQueryable<Report>? query = null;
+
             try
             {
                 var organization = organizations10.FirstOrDefault(org =>
@@ -256,7 +259,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
 
                 if (organization != null)
                 {
-                    count = await dbModel.ReportsCollectionDbSet
+                    query =  dbModel.ReportsCollectionDbSet
                     .AsNoTracking()
                     .Include(x => x.DBObservable)
                     .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows11)
@@ -272,8 +275,8 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                             || y.FormNum_DB == "1.2" && y.Rows12.All(form => form.OperationCode_DB != "10")
                             || y.FormNum_DB == "1.3" && y.Rows13.All(form => form.OperationCode_DB != "10")
                             || y.FormNum_DB == "1.4" && y.Rows14.All(form => form.OperationCode_DB != "10")
-                        )))
-                    .CountAsync();
+                        )));
+                    count = await query.CountAsync();
                 }
 
             }
@@ -283,6 +286,18 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             }
 
             if (count != form41.NumOfFormsWithoutInventarizationInfo_DB)
+            {
+                string message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" не совпадает количество отчётов 1.1 - 1.4 без инвентаризации:\n" +
+                        $"Указано: {form41.NumOfFormsWithInventarizationInfo_DB},\n" +
+                        $"Найдено в базе данных: {count}\n";
+
+                if (count != null && query != null)
+                {
+                    foreach (var report in query)
+                    {
+                        message += $"{report.FormNum_DB} | {report.StartPeriod_DB}-{report.EndPeriod_DB}\n";
+                    }
+                }
                 return
                     new CheckError()
                     {
@@ -290,10 +305,9 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         Row = $"{form41.NumberInOrder_DB}",
                         Column = $"7",
                         Value = $"{form41.NumOfFormsWithoutInventarizationInfo_DB}",
-                        Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" не совпадает количество отчётов 1.1 - 1.4 без инвентаризации:\n" +
-                        $"Указано: {form41.NumOfFormsWithoutInventarizationInfo_DB},\n" +
-                        $"Найдено в базе данных: {count}"
+                        Message = message
                     };
+            }
             else return null;
         }
 
@@ -306,6 +320,8 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
         {
             var dbModel = StaticConfiguration.DBModel;
             int count;
+            IQueryable<Report>? query = null;
+
             var organization = organizations10.FirstOrDefault(org =>
                     org.RegNo == form41.RegNo_DB
                     && (org.Okpo == form41.Okpo_DB));
@@ -316,7 +332,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             }
             else
             {
-                count = await dbModel.ReportsCollectionDbSet
+                query = dbModel.ReportsCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
@@ -334,11 +350,25 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         || y.FormNum_DB == "1.2" && y.Rows12.Any(form => form.OperationCode_DB == "10")
                         || y.FormNum_DB == "1.3" && y.Rows13.Any(form => form.OperationCode_DB == "10")
                         || y.FormNum_DB == "1.4" && y.Rows14.Any(form => form.OperationCode_DB == "10")
-                    )))
-                .CountAsync();
+                    )));
+
+                count = await query.CountAsync();
             }
 
             if (count != form41.NumOfFormsWithInventarizationInfo_DB)
+            {
+                string message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" не совпадает количество инвентаризационных отчётов 1.1-1.4:\n" +
+                        $"Указано: {form41.NumOfFormsWithInventarizationInfo_DB},\n" +
+                        $"Найдено в базе данных: {count}\n";
+
+                if (count != null && query != null)
+                {
+                    foreach (var report in query)
+                    {
+                        message += $"{report.FormNum_DB} | {report.StartPeriod_DB}-{report.EndPeriod_DB}\n";
+                    }
+                }
+
                 return
                     new CheckError()
                     {
@@ -346,10 +376,9 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         Row = $"{form41.NumberInOrder_DB}",
                         Column = $"6",
                         Value = $"{form41.NumOfFormsWithInventarizationInfo_DB}",
-                        Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" не совпадает количество инвентаризационных отчётов 1.1-1.4:\n" +
-                        $"Указано: {form41.NumOfFormsWithInventarizationInfo_DB},\n" +
-                        $"Найдено в базе данных: {count}"
+                        Message = message
                     };
+            }
             else return null;
         }
 
@@ -365,6 +394,8 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             if (secondDB == null)
                 secondDB = dbModel;
             int count;
+            IQueryable<Report>? query = null;
+
 
             var organization = organizations20.FirstOrDefault(org =>
                     org.RegNo == form41.RegNo_DB
@@ -376,17 +407,29 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             }
             else
             {
-                count = await secondDB.ReportCollectionDbSet
+                query = secondDB.ReportCollectionDbSet
                     .AsSplitQuery()
                     .AsQueryable()
                     .Include(report => report.Reports)
                     .Where(report => report.Reports.Id == organization.Id)
                     .Where(report => report.Year_DB == form41.Report.Year_DB)
-                    .Where(report => report.FormNum_DB == "2.12")
-                    .CountAsync();
+                    .Where(report => report.FormNum_DB == "2.12");
+                count = await query.CountAsync();
             }
 
             if (count != form41.NumOfForms212_DB)
+            {
+                string message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" не совпадает количество отчётов 2.12:\n" +
+                        $"Указано: {form41.NumOfForms212_DB},\n" +
+                        $"Найдено в базе данных: {count}\n";
+
+                if (count != null && query != null)
+                {
+                    foreach (var report in query)
+                    {
+                        message += $"{report.FormNum_DB} | {report.Year_DB}\n";
+                    }
+                }
                 return
                     new CheckError()
                     {
@@ -394,10 +437,9 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         Row = $"{form41.NumberInOrder_DB}",
                         Column = $"8",
                         Value = $"{form41.NumOfForms212_DB}",
-                        Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" не совпадает количество отчётов 2.12:\n" +
-                        $"Указано: {form41.NumOfForms212_DB},\n" +
-                        $"Найдено в базе данных: {count}"
+                        Message = message
                     };
+            }
             else return null;
         }
         /// <summary>
