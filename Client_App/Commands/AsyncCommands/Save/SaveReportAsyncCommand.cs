@@ -14,6 +14,7 @@ using Client_App.ViewModels.Forms.Forms2;
 using Client_App.ViewModels.Forms.Forms4;
 using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
+using Client_App.ViewModels.Forms.Forms5;
 
 namespace Client_App.Commands.AsyncCommands.Save;
 
@@ -36,6 +37,8 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
                 return _form20VM;
             else if (_form40VM != null)
                 return _form40VM;
+            else if (_form50VM != null)
+                return _form50VM;
             else
                 return null;
         }
@@ -47,6 +50,7 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
     private readonly Form_10VM _form10VM = null!;
     private readonly Form_20VM _form20VM = null!;
     private readonly Form_40VM _form40VM = null!;
+    private readonly Form_50VM _form50VM = null!;
 
     private readonly string _formType = null!;
     private Report Storage => VM is BaseFormVM ? VM.Report : VM.Storage;
@@ -73,8 +77,14 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
                 _formType = form40VM.FormType;
                 _form40VM = form40VM;
                 break;
-            }
-        case BaseFormVM formVM:
+                }
+            case Form_50VM form50VM:
+                {
+                    _formType = form50VM.FormType;
+                    _form50VM = form50VM;
+                    break;
+                }
+            case BaseFormVM formVM:
             {
                 _formType = formVM.FormType;
                 _formVM = formVM;
@@ -103,6 +113,11 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
     {
         _formType = formViewModel.FormType;
         _form40VM = formViewModel;
+    }
+    public SaveReportAsyncCommand(Form_50VM formViewModel)
+    {
+        _formType = formViewModel.FormType;
+        _form50VM = formViewModel;
     }
 
     public override async Task AsyncExecute(object? parameter)
@@ -212,10 +227,14 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
                 tmp.Master.Rows40[1].NameOrganUprav.Value = tmp.Master.Rows40[0].NameOrganUprav.Value;
                 tmp.Master.Rows40[1].NameRiac.Value = tmp.Master.Rows40[0].NameRiac.Value;
             }
+            if (tmp.Master.Rows50.Count != 0)
+            {
+                tmp.Master.Rows50[1].Name.Value = tmp.Master.Rows50[0].Name.Value;
+            }
             VM.DBO.Reports_Collection.Add(tmp);
             VM.DBO = null;
         }
-        else if (Storages != null && _formType is not ("1.0" or "2.0" or "4.0") && !Storages.Report_Collection.Contains(Storage))
+        else if (Storages != null && _formType is not ("1.0" or "2.0" or "4.0" or "5.0") && !Storages.Report_Collection.Contains(Storage))
         {
             Storages.Report_Collection.Add(Storage);
         }

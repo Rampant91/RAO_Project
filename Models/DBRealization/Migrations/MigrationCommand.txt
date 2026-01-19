@@ -1,4 +1,4 @@
-﻿Add-Migration DataModel_28 -Context DBModel -OutputDir DBRealization\Migrations\DataModel
+﻿Add-Migration DataModel_36 -Context DBModel -OutputDir DBRealization\Migrations\DataModel
 
 Remove-Migration -Context DbModel
 

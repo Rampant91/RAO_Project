@@ -171,9 +171,19 @@ public class Reports : IKey, IDataGridColumn
             rep.Rows210.Clear();
             rep.Rows211.Clear();
             rep.Rows212.Clear();
+            rep.Rows41.Clear();
+            rep.Rows51.Clear();
+            rep.Rows52.Clear();
+            rep.Rows53.Clear();
+            rep.Rows54.Clear();
+            rep.Rows55.Clear();
+            rep.Rows56.Clear();
+            rep.Rows57.Clear();
         }
         Master.Rows10.Clear();
         Master.Rows20.Clear();
+        Master.Rows40.Clear();
+        Master.Rows50.Clear();
         Report_Collection.Clear();
     }
 

@@ -1,0 +1,287 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:controls="clr-namespace:Client_App.Views.Controls"
+	         xmlns:models="clr-namespace:Models.Collections;assembly=Models"
+			 xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
+			 xmlns:vm="using:Client_App.ViewModels.MainWindowTabs"
+			 x:DataType="vm:Forms5TabControlVM"
+             x:Class="Client_App.Views.MainWindowTabs.Forms5TabControl">
+
+	<UserControl.Resources>
+		<converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
+	</UserControl.Resources>
+	
+	<Border Classes="borderContainer">
+		<Grid RowDefinitions="*,*" ColumnDefinitions="5*,3*" >
+			<Grid Grid.Row ="0" Grid.Column="0" RowDefinitions="Auto,*,Auto">
+				<TextBox Text="{Binding SearchText}" Grid.Row="0" Margin="5" Watermark ="Поиск..." />
+				<!--Ошибка в этом DataGrid-->
+				<DataGrid
+						  Grid.Row="1" Margin="5"
+						  Items="{Binding ReportsCollection}"
+						  SelectionMode="Single"
+						  SelectedItem="{Binding SelectedReports}"
+						  RowHeight="25"
+						  GridLinesVisibility="All"
+						  AlternatingRowBackground="White"
+						  RowBackground="White"
+						  CanUserSortColumns="False">
+
+					<DataGrid.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Добавить форму"
+									  Command="{Binding MainWindowVM.AddReports}"/>
+							<MenuItem Header="Редактировать форму"
+									  Command="{Binding MainWindowVM.NewChangeReports}"/>
+							<MenuItem Header="Удалить форму"
+									  Command="{Binding MainWindowVM.DeleteReports}"
+									  CommandParameter="{Binding SelectedReports}"/>
+							<MenuItem Header="Выгрузить организацию"
+									  Command="{Binding MainWindowVM.ExportReports}"
+									  CommandParameter="{Binding SelectedReports}"/>
+							<MenuItem Header="Выгрузить организацию с указанием диапазона дат"
+									  Command="{Binding MainWindowVM.ExportReportsWithDateRange}"
+									  CommandParameter="{Binding SelectedReports}"/>
+							<MenuItem Header="Выгрузить все организации в один файл"
+									  Command="{Binding MainWindowVM.ExportAllReportsOneFile}"/>
+							<MenuItem Header="Выгрузить все организации в отдельные файлы"
+									  Command="{Binding ExportAllReports}"
+									  CommandParameter="{Binding SelectedReports}"/>
+						</ContextMenu>
+					</DataGrid.ContextMenu>
+
+					<DataGrid.Columns>
+						
+						<DataGridTemplateColumn Width="*" IsReadOnly="True">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto" Margin="3">
+											<TextBlock Grid.Column="0" Text="Сокращенное наименование РИАЦ"/>
+											<!--<Button Grid.Column="1"/>-->
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="models:Reports">
+									<TextBlock Margin="5">
+										<TextBlock.Text>
+											<MultiBinding Converter="{StaticResource IfNullShowAnotherValue}">
+												<Binding Path="Master.Rows50[0].ShortName.Value"/>
+												<Binding Path="Master.Rows50[0].Name.Value"/>
+											</MultiBinding>
+										</TextBlock.Text>
+									</TextBlock>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+					</DataGrid.Columns>
+				</DataGrid>
+				<Border Grid.Row="2" Classes="pageControlContainer">
+					<Grid
+						  RowDefinitions="Auto,Auto"
+						  ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+						<TextBlock Text="Текущая страница"
+							Grid.Row="0" Grid.Column="0" Margin="5"/>
+
+						<controls:NumericLeftRight
+							Value="{Binding CurrentPageOrgs}"
+							Grid.Row="0" Grid.Column="1" Margin="5"
+							Minimum="1"/>
+						<TextBlock Text ="Кол-во страниц:"
+							Grid.Row="0" Grid.Column="2" Margin="5"/>
+						<TextBlock
+							Text="{Binding TotalPagesOrgs}"
+							Grid.Row="0" Grid.Column="3" Margin="5"/>
+						<TextBlock Text="Кол-во строчек на странице"
+							Grid.Row="1" Grid.Column="0" Margin="5"/>
+						<controls:NumericLeftRight
+							Value="{Binding RowsCountOrgs}"
+							Grid.Row="1" Grid.Column="1" Margin="5"
+							Minimum="1"/>
+						<TextBlock Text="Кол-во строчек:"
+							Grid.Row="1" Grid.Column="2" Margin="5"/>
+						<TextBlock
+							Text="{Binding TotalRowsOrgs}"
+							Grid.Row="1" Grid.Column="3" Margin="5"/>
+
+						<TextBlock Text="Кол-во отчетов:"
+							Grid.Row="1" Grid.Column="4" Margin="5"/>
+						<TextBlock Text="{Binding TotalReportCount}"
+							Grid.Row="1" Grid.Column="5" Margin="5"/>
+					</Grid>
+				</Border>
+			</Grid>
+			<StackPanel Grid.Row ="0" Grid.Column="1" Margin="5">
+				<Button Command="{Binding MainWindowVM.NewAddForm}"
+						CommandParameter="5.1"
+						Content="Форма 5.1"></Button>
+				<Button Command="{Binding MainWindowVM.NewAddForm}"
+						CommandParameter="5.2"
+						Content="Форма 5.2"></Button>
+				<Button Command="{Binding MainWindowVM.NewAddForm}"
+						CommandParameter="5.3"
+						Content="Форма 5.3"></Button>
+				<Button Command="{Binding MainWindowVM.NewAddForm}"
+						CommandParameter="5.4"
+						Content="Форма 5.4"></Button>
+				<Button Command="{Binding MainWindowVM.NewAddForm}"
+						CommandParameter="5.5"
+						Content="Форма 5.5"></Button>
+				<Button Command="{Binding MainWindowVM.NewAddForm}"
+						CommandParameter="5.6"
+						Content="Форма 5.6"></Button>
+				<Button Command="{Binding MainWindowVM.NewAddForm}"
+						CommandParameter="5.7"
+						Content="Форма 5.7"></Button>
+			</StackPanel>
+			<Grid Grid.Row ="1" Grid.Column="0" Grid.ColumnSpan="2" RowDefinitions="*,Auto" >
+				<DataGrid Grid.Row="0" Margin="5"
+						  Items="{Binding ReportCollection}"
+						  SelectedItem="{Binding SelectedReport}"
+						  RowHeight="25"
+						  GridLinesVisibility="All"
+						  AlternatingRowBackground="White"
+						  RowBackground="White"
+						  CanUserSortColumns="False">
+					<DataGrid.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Редактировать форму"
+									  Command="{Binding MainWindowVM.NewChangeForm}"
+									  CommandParameter="{Binding SelectedReport}"/>
+							<MenuItem Header="Удалить форму"
+									  Command="{Binding MainWindowVM.NewDeleteForm}"
+									  CommandParameter="{Binding SelectedReport}"/>
+							<MenuItem Header="Выгрузить форму в Excel"
+									  Command="{Binding MainWindowVM.ExcelExportFormPrint}"
+									  CommandParameter="{Binding SelectedReport}"/>
+							<MenuItem Header="Выгрузить"
+									  Command="{Binding MainWindowVM.ExportForm}"
+									  CommandParameter="{Binding SelectedReport}"/>
+						</ContextMenu>
+					</DataGrid.ContextMenu>
+
+					<DataGrid.Columns>
+						<DataGridTextColumn
+								x:DataType="models:Report"
+								Width="*"
+								IsReadOnly="True"
+								Binding="{Binding FormNum.Value}">
+							<DataGridTextColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto" Margin="3">
+											<TextBlock Grid.Column="0" Text="Форма"/>
+											<!--<Button Grid.Column="1"/>-->
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTextColumn.HeaderTemplate>
+						</DataGridTextColumn>
+						<DataGridTextColumn
+								x:DataType="models:Report"
+								Width="*"
+								IsReadOnly="True"
+								Binding="{Binding Year.Value}">
+							<DataGridTextColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto" Margin="3">
+											<TextBlock Grid.Column="0" Text="Год"/>
+											<!--<Button Grid.Column="1"/>-->
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTextColumn.HeaderTemplate>
+						</DataGridTextColumn>
+						<DataGridTextColumn
+								x:DataType="models:Report"
+								Width="2*"
+								IsReadOnly="True"
+								Binding="{Binding ExportDate.Value}">
+							<DataGridTextColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto" Margin="3">
+											<TextBlock Grid.Column="0" Text="Дата выгрузки"/>
+											<!--<Button Grid.Column="1"/>-->
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTextColumn.HeaderTemplate>
+						</DataGridTextColumn>
+						<DataGridTextColumn
+								x:DataType="models:Report"
+								Width="2*"
+								IsReadOnly="True"
+								Binding="{Binding CorrectionNumber.Value}">
+							<DataGridTextColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto" Margin="3">
+											<TextBlock Grid.Column="0" Text="Номер корректировки"/>
+											<!--<Button Grid.Column="1"/>-->
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTextColumn.HeaderTemplate>
+						</DataGridTextColumn>
+						<DataGridTextColumn
+								x:DataType="models:Report"
+								Width="4*"
+								IsReadOnly="False"
+								Binding="{Binding Comments.Value}">
+							<DataGridTextColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto" Margin="3">
+											<TextBlock Grid.Column="0" Text="Комментарий"/>
+											<!--<Button Grid.Column="1"/>-->
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTextColumn.HeaderTemplate>
+						</DataGridTextColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+				<Border Grid.Row="1" Classes="pageControlContainer">
+					<Grid
+						  RowDefinitions="Auto,Auto"
+						  ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+						<TextBlock Text="Текущая страница"
+							Grid.Row="0" Grid.Column="0" Margin="5"/>
+
+						<controls:NumericLeftRight
+							Value="{Binding CurrentPageForms}"
+							Grid.Row="0" Grid.Column="1" Margin="5"
+							Minimum="1"/>
+						<TextBlock Text ="Кол-во страниц:"
+							Grid.Row="0" Grid.Column="2" Margin="5"/>
+						<TextBlock Text="{Binding TotalPagesForms}"
+							Grid.Row="0" Grid.Column="3" Margin="5"/>
+						<TextBlock Text="Кол-во строчек на странице"
+							Grid.Row="1" Grid.Column="0" Margin="5"/>
+						<controls:NumericLeftRight
+							Value="{Binding RowsCountForms}"
+							Grid.Row="1" Grid.Column="1" Margin="5"
+							Minimum="1"/>
+						<TextBlock Text="Кол-во отчетов:"
+							Grid.Row="1" Grid.Column="2" Margin="5"/>
+						<TextBlock Text="{Binding TotalRowsForms}"
+							Grid.Row="1" Grid.Column="3" Margin="5"/>
+
+						<TextBlock Text="Кол-во строчек:"
+							Grid.Row="1" Grid.Column="4" Margin="5"/>
+						<TextBlock Text="{Binding InSelectedReportFormsCount}"
+							Grid.Row="1" Grid.Column="5" Margin="5"/>
+					</Grid>
+				</Border>
+			</Grid>
+		</Grid>
+	</Border>
+</UserControl>

@@ -107,6 +107,46 @@ public class ReportConfiguration : IEntityTypeConfiguration<Report>
             .WithOne(x => x.Report)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.HasMany(x => x.Rows40)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.Rows41)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.Rows50)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.Rows51)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.Rows52)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.Rows53)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.Rows54)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.Rows55)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.Rows56)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.Rows57)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.HasMany(x => x.Notes)
             .WithOne(x => x.Report)
             .OnDelete(DeleteBehavior.Cascade);

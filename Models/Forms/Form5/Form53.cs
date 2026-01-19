@@ -483,22 +483,22 @@ namespace Models.Forms.Form5
 
         #region Quantity (11)
 
-        public int Quantity_DB { get; set; } = 0;
+        public int? Quantity_DB { get; set; } = 0;
 
         [NotMapped]
-        public RamAccess<int> Quantity
+        public RamAccess<int?> Quantity
         {
             get
             {
                 if (Dictionary.TryGetValue(nameof(Quantity), out var value))
                 {
-                    ((RamAccess<int>)value).Value = Quantity_DB;
-                    return (RamAccess<int>)value;
+                    ((RamAccess<int?>)value).Value = Quantity_DB;
+                    return (RamAccess<int?>)value;
                 }
-                var rm = new RamAccess<int>(Quantity_Validation, Quantity_DB);
+                var rm = new RamAccess<int?>(Quantity_Validation, Quantity_DB);
                 rm.PropertyChanged += Quantity_ValueChanged;
                 Dictionary.Add(nameof(Quantity), rm);
-                return (RamAccess<int>)Dictionary[nameof(Quantity)];
+                return (RamAccess<int?>)Dictionary[nameof(Quantity)];
             }
             set
             {
@@ -510,14 +510,14 @@ namespace Models.Forms.Form5
         private void Quantity_ValueChanged(object value, PropertyChangedEventArgs args)
         {
             if (args.PropertyName != "Value") return;
-            var value1 = ((RamAccess<int>)value).Value;
+            var value1 = ((RamAccess<int?>)value).Value;
             if (Quantity_DB != value1)
             {
                 Quantity_DB = value1;
             }
         }
 
-        private bool Quantity_Validation(RamAccess<int> value)
+        private bool Quantity_Validation(RamAccess<int?> value)
         {
             value.ClearErrors();
             return true;

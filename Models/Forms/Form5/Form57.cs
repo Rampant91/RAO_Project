@@ -31,7 +31,56 @@ namespace Models.Forms.Form5
 
         #region Properties
 
-        #region OKPO (2)
+        #region RegNo (2)
+
+        [MaxLength(5)]
+        [Column(TypeName = "varchar(5)")]
+        public string RegNo_DB { get; set; } = "";
+
+        [NotMapped]
+        public RamAccess<string> RegNo
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(RegNo), out var value))
+                {
+                    ((RamAccess<string>)value).Value = RegNo_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(RegNo_Validation, RegNo_DB);
+                rm.PropertyChanged += RegNo_ValueChanged;
+                Dictionary.Add(nameof(RegNo), rm);
+                return (RamAccess<string>)Dictionary[nameof(RegNo)];
+            }
+            set
+            {
+                RegNo_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void RegNo_ValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName != "Value") return;
+            var value1 = ((RamAccess<string>)value).Value;
+            value1 = value1.Length > 5
+                ? value1[..5]
+                : value1;
+            if (RegNo_DB != value1)
+            {
+                RegNo_DB = value1;
+            }
+        }
+
+        private bool RegNo_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+
+        #endregion
+
+        #region OKPO (3)
 
         [MaxLength(14)]
         [Column(TypeName = "varchar(14)")]
@@ -80,7 +129,7 @@ namespace Models.Forms.Form5
 
         #endregion
 
-        #region Name (3)
+        #region Name (4)
 
         public string Name_DB { get; set; } = "";
 
@@ -130,7 +179,7 @@ namespace Models.Forms.Form5
 
         #endregion
 
-        #region Recognizance (4)
+        #region Recognizance (5)
 
         [MaxLength(256)]
         [Column(TypeName = "varchar(256)")]
@@ -179,7 +228,7 @@ namespace Models.Forms.Form5
 
         #endregion
 
-        #region License (5)
+        #region License (6)
 
         [MaxLength(256)]
         [Column(TypeName = "varchar(256)")]
@@ -228,7 +277,7 @@ namespace Models.Forms.Form5
 
         #endregion
 
-        #region StartDate (6)
+        #region StartDate (7)
 
         [MaxLength(10)]
         [Column(TypeName = "varchar(10)")]
@@ -275,7 +324,7 @@ namespace Models.Forms.Form5
 
         #endregion
 
-        #region EndDate (7)
+        #region EndDate (8)
 
         [MaxLength(10)]
         [Column(TypeName = "varchar(10)")]
@@ -322,7 +371,7 @@ namespace Models.Forms.Form5
 
         #endregion
 
-        #region Practice (8)
+        #region Practice (9)
 
         public string Practice_DB { get; set; } = "";
 

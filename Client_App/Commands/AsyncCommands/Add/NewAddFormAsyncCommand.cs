@@ -16,6 +16,8 @@ using Client_App.ViewModels.Forms.Forms4;
 using Client_App.Views.Forms.Forms4;
 using Client_App.Views.Forms.Forms2;
 using Client_App.ViewModels.Forms.Forms2;
+using Client_App.Views.Forms.Forms5;
+using Client_App.ViewModels.Forms.Forms5;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
@@ -209,6 +211,55 @@ public class NewAddFormAsyncCommand : BaseAsyncCommand
                         {
                             var form41Window = new Form_41(new Form_41VM(selectedReports));
                             await form41Window.ShowDialog(mainWindow);
+                            await selectedReports.Report_Collection.QuickSortAsync();
+                            break;
+                        }
+                    case "5.1":
+                        {
+                            var form51Window = new Form_51(new Form_51VM(selectedReports));
+                            await form51Window.ShowDialog(mainWindow);
+                            await selectedReports.Report_Collection.QuickSortAsync();
+                            break;
+                        }
+                    case "5.2":
+                        {
+                            var form52Window = new Form_52(new Form_52VM(selectedReports));
+                            await form52Window.ShowDialog(mainWindow);
+                            await selectedReports.Report_Collection.QuickSortAsync();
+                            break;
+                        }
+                    case "5.3":
+                        {
+                            var form53Window = new Form_53(new Form_53VM(selectedReports));
+                            await form53Window.ShowDialog(mainWindow);
+                            await selectedReports.Report_Collection.QuickSortAsync();
+                            break;
+                        }
+                    case "5.4":
+                        {
+                            var form54Window = new Form_54(new Form_54VM(selectedReports));
+                            await form54Window.ShowDialog(mainWindow);
+                            await selectedReports.Report_Collection.QuickSortAsync();
+                            break;
+                        }
+                    case "5.5":
+                        {
+                            var form55Window = new Form_55(new Form_55VM(selectedReports));
+                            await form55Window.ShowDialog(mainWindow);
+                            await selectedReports.Report_Collection.QuickSortAsync();
+                            break;
+                        }
+                    case "5.6":
+                        {
+                            var form56Window = new Form_56(new Form_56VM(selectedReports));
+                            await form56Window.ShowDialog(mainWindow);
+                            await selectedReports.Report_Collection.QuickSortAsync();
+                            break;
+                        }
+                    case "5.7":
+                        {
+                            var form57Window = new Form_57(new Form_57VM(selectedReports));
+                            await form57Window.ShowDialog(mainWindow);
                             await selectedReports.Report_Collection.QuickSortAsync();
                             break;
                         }

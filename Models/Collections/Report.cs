@@ -17,6 +17,7 @@ using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Models.Interfaces;
 using Models.Forms.Form4;
+using Models.Forms.Form5;
 
 namespace Models.Collections;
 
@@ -112,6 +113,30 @@ public class Report : IKey, IDataGridColumn
         Rows41 = new ObservableCollectionWithItemPropertyChanged<Form41>();
         Rows41.CollectionChanged += CollectionChanged41;
 
+        Rows50 = new ObservableCollectionWithItemPropertyChanged<Form50>();
+        Rows50.CollectionChanged += CollectionChanged50;
+
+        Rows51 = new ObservableCollectionWithItemPropertyChanged<Form51>();
+        Rows51.CollectionChanged += CollectionChanged51;
+
+        Rows52 = new ObservableCollectionWithItemPropertyChanged<Form52>();
+        Rows52.CollectionChanged += CollectionChanged52;
+
+        Rows53 = new ObservableCollectionWithItemPropertyChanged<Form53>();
+        Rows53.CollectionChanged += CollectionChanged53;
+
+        Rows54 = new ObservableCollectionWithItemPropertyChanged<Form54>();
+        Rows54.CollectionChanged += CollectionChanged54;
+
+        Rows55 = new ObservableCollectionWithItemPropertyChanged<Form55>();
+        Rows55.CollectionChanged += CollectionChanged55;
+
+        Rows56 = new ObservableCollectionWithItemPropertyChanged<Form56>();
+        Rows56.CollectionChanged += CollectionChanged56;
+
+        Rows57 = new ObservableCollectionWithItemPropertyChanged<Form57>();
+        Rows57.CollectionChanged += CollectionChanged57;
+
         Notes = new ObservableCollectionWithItemPropertyChanged<Note>();
         Notes.CollectionChanged += CollectionChangedNotes;
     }
@@ -147,7 +172,15 @@ public class Report : IKey, IDataGridColumn
         Form211,
         Form212,
         Form40,
-        Form41
+        Form41,
+        Form50,
+        Form51,
+        Form52,
+        Form53,
+        Form54,
+        Form55,
+        Form56,
+        Form57,
     }
 
     [NotMapped]
@@ -2845,7 +2878,178 @@ public class Report : IKey, IDataGridColumn
         OnPropertyChanged(nameof(Rows41));
     }
 
-    #endregion 
+    #endregion
+
+    #region Rows50
+
+    ObservableCollectionWithItemPropertyChanged<Form50> Rows50_DB;
+
+    public virtual ObservableCollectionWithItemPropertyChanged<Form50> Rows50
+    {
+        get => Rows50_DB;
+        set
+        {
+            Rows50_DB = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void CollectionChanged50(object sender, NotifyCollectionChangedEventArgs args)
+    {
+        OnPropertyChanged(nameof(RegNoRep));
+        OnPropertyChanged(nameof(OkpoRep));
+        OnPropertyChanged(nameof(ShortJurLicoRep));
+        OnPropertyChanged(nameof(Rows50));
+    }
+
+    #endregion
+
+    #region Rows51
+
+    ObservableCollectionWithItemPropertyChanged<Form51> Rows51_DB;
+
+    public virtual ObservableCollectionWithItemPropertyChanged<Form51> Rows51
+    {
+        get => Rows51_DB;
+        set
+        {
+            Rows51_DB = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void CollectionChanged51(object sender, NotifyCollectionChangedEventArgs args)
+    {
+        OnPropertyChanged(nameof(Rows51));
+    }
+
+    #endregion
+
+    #region Rows52
+
+    ObservableCollectionWithItemPropertyChanged<Form52> Rows52_DB;
+
+    public virtual ObservableCollectionWithItemPropertyChanged<Form52> Rows52
+    {
+        get => Rows52_DB;
+        set
+        {
+            Rows52_DB = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void CollectionChanged52(object sender, NotifyCollectionChangedEventArgs args)
+    {
+        OnPropertyChanged(nameof(Rows52));
+    }
+
+    #endregion
+
+    #region Rows53
+
+    ObservableCollectionWithItemPropertyChanged<Form53> Rows53_DB;
+
+    public virtual ObservableCollectionWithItemPropertyChanged<Form53> Rows53
+    {
+        get => Rows53_DB;
+        set
+        {
+            Rows53_DB = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void CollectionChanged53(object sender, NotifyCollectionChangedEventArgs args)
+    {
+        OnPropertyChanged(nameof(Rows53));
+    }
+
+    #endregion
+
+    #region Rows54
+
+    ObservableCollectionWithItemPropertyChanged<Form54> Rows54_DB;
+
+    public virtual ObservableCollectionWithItemPropertyChanged<Form54> Rows54
+    {
+        get => Rows54_DB;
+        set
+        {
+            Rows54_DB = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void CollectionChanged54(object sender, NotifyCollectionChangedEventArgs args)
+    {
+        OnPropertyChanged(nameof(Rows54));
+    }
+
+    #endregion
+
+    #region Rows55
+
+    ObservableCollectionWithItemPropertyChanged<Form55> Rows55_DB;
+
+    public virtual ObservableCollectionWithItemPropertyChanged<Form55> Rows55
+    {
+        get => Rows55_DB;
+        set
+        {
+            Rows55_DB = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void CollectionChanged55(object sender, NotifyCollectionChangedEventArgs args)
+    {
+        OnPropertyChanged(nameof(Rows55));
+    }
+
+    #endregion
+
+    #region Rows56
+
+    ObservableCollectionWithItemPropertyChanged<Form56> Rows56_DB;
+
+    public virtual ObservableCollectionWithItemPropertyChanged<Form56> Rows56
+    {
+        get => Rows56_DB;
+        set
+        {
+            Rows56_DB = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void CollectionChanged56(object sender, NotifyCollectionChangedEventArgs args)
+    {
+        OnPropertyChanged(nameof(Rows56));
+    }
+
+    #endregion
+
+    #region Rows57
+
+    ObservableCollectionWithItemPropertyChanged<Form57> Rows57_DB;
+
+    public virtual ObservableCollectionWithItemPropertyChanged<Form57> Rows57
+    {
+        get => Rows57_DB;
+        set
+        {
+            Rows57_DB = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void CollectionChanged57(object sender, NotifyCollectionChangedEventArgs args)
+    {
+        OnPropertyChanged(nameof(Rows57));
+    }
+
+    #endregion
 
     #endregion
 
@@ -2879,6 +3083,14 @@ public class Report : IKey, IDataGridColumn
         Rows212.CleanIds();
         Rows40.CleanIds();
         Rows41.CleanIds();
+        Rows50.CleanIds();
+        Rows51.CleanIds();
+        Rows52.CleanIds();
+        Rows53.CleanIds();
+        Rows54.CleanIds();
+        Rows55.CleanIds();
+        Rows56.CleanIds();
+        Rows57.CleanIds();
         Notes.CleanIds();
     }
 
@@ -2918,7 +3130,15 @@ public class Report : IKey, IDataGridColumn
                 "2.12" => Rows212,
                 "4.0" => Rows40,
                 "4.1" => Rows41,
-                _ => null
+                "5.0" => Rows50,
+                "5.1" => Rows51,
+                "5.2" => Rows52,
+                "5.3" => Rows53,
+                "5.4" => Rows54,
+                "5.5" => Rows55,
+                "5.6" => Rows56,
+                "5.7" => Rows57,
+                _=> null
             };
         }
     }
@@ -2957,6 +3177,14 @@ public class Report : IKey, IDataGridColumn
         Rows212.CollectionChanged -= CollectionChanged212;
         Rows40.CollectionChanged -= CollectionChanged40;
         Rows41.CollectionChanged -= CollectionChanged41;
+        Rows50.CollectionChanged -= CollectionChanged50;
+        Rows51.CollectionChanged -= CollectionChanged51;
+        Rows52.CollectionChanged -= CollectionChanged52;
+        Rows53.CollectionChanged -= CollectionChanged53;
+        Rows54.CollectionChanged -= CollectionChanged54;
+        Rows55.CollectionChanged -= CollectionChanged55;
+        Rows56.CollectionChanged -= CollectionChanged56;
+        Rows57.CollectionChanged -= CollectionChanged57;
         Notes.CollectionChanged -= CollectionChangedNotes;
     }
 
@@ -2988,6 +3216,13 @@ public class Report : IKey, IDataGridColumn
         Rows211.QuickSort();
         Rows212.QuickSort();
         Rows41.QuickSort();
+        Rows51.QuickSort();
+        Rows52.QuickSort();
+        Rows53.QuickSort();
+        Rows54.QuickSort();
+        Rows55.QuickSort();
+        Rows56.QuickSort();
+        Rows57.QuickSort();
         Notes.QuickSort();
     }
 
@@ -3019,6 +3254,13 @@ public class Report : IKey, IDataGridColumn
         await Rows211.QuickSortAsync();
         await Rows212.QuickSortAsync();
         await Rows41.QuickSortAsync();
+        await Rows51.QuickSortAsync();
+        await Rows52.QuickSortAsync();
+        await Rows53.QuickSortAsync();
+        await Rows54.QuickSortAsync();
+        await Rows55.QuickSortAsync();
+        await Rows56.QuickSortAsync();
+        await Rows57.QuickSortAsync();
         await Notes.QuickSortAsync();
     }
 

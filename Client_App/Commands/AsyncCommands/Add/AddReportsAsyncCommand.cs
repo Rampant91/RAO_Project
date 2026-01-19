@@ -17,11 +17,12 @@ using Client_App.Commands.AsyncCommands.Save;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms4;
 using Models.DBRealization;
+using Client_App.ViewModels.Forms.Forms5;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
 /// <summary>
-/// Создать и открыть новое окно формы организации (1.0 и 2.0).
+/// Создать и открыть новое окно формы организации (1.0, 2.0, 4.0, 5.0).
 /// </summary>
 public class AddReportsAsyncCommand : BaseAsyncCommand
 {
@@ -105,6 +106,15 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
                     var form40VM = new Form_40VM(ReportsStorage.LocalReports);
                     var window = new Form_40(form40VM) { DataContext = form40VM };
                     await new SaveReportAsyncCommand(form40VM).AsyncExecute(null);
+                    await window.ShowDialog(mainWindow);
+
+                    break;
+                }
+            case "5.0":
+                {
+                    var form50VM = new Form_50VM(ReportsStorage.LocalReports);
+                    var window = new Form_50(form50VM) { DataContext = form50VM };
+                    await new SaveReportAsyncCommand(form50VM).AsyncExecute(null);
                     await window.ShowDialog(mainWindow);
 
                     break;
