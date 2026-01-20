@@ -15,9 +15,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using CustomSnkEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkEqualityComparer;
-using CustomSnkNumberEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkNumberEqualityComparer;
-using CustomSnkRadionuclidsEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkRadionuclidsEqualityComparer;
+using CustomSnkEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.SnkEqualityComparer;
+using CustomSnkNumberEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.SnkNumberEqualityComparer;
+using CustomSnkRadionuclidsEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.SnkRadionuclidsEqualityComparer;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
@@ -347,7 +347,6 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         Dictionary<UniqueUnitDto, List<ShortFormDTO>> uniqueUnitWithAllOrderedOperationDictionary = [];
         var j = 0;
         foreach (var (unit, formsByDateDictionary) in groupedOperationListDictionary)
-                     //.Where(x => x.Key.PasNum is "1231"))
         {
             j++;
             var currentPackNumber = "";
@@ -369,6 +368,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
             foreach (var (_, formsList) in formsByDateDictionary)
             {
+                var iteration = 1;
                 List<ShortFormDTO> newOperationOrderList = [];
 
                 var editedFormsList = formsList.ToList();
@@ -537,6 +537,10 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                     }
 
                     #endregion
+
+                    if (iteration > 1000) i++;
+
+                    iteration++;
                 }
 
                 var uniqueDto = new UniqueUnitDto(unit.FacNum, unit.PasNum, unit.Radionuclids, 
@@ -833,7 +837,6 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     }
 
     #endregion
-
 
     #region SumQuantityForEmptySerialNums
 
@@ -1846,7 +1849,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
     #region ShortFormDTO
 
-    private protected class ShortFormDTO
+    public class ShortFormDTO
     {
         public int Id { get; set; }
 
@@ -1957,7 +1960,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         public readonly string EndPeriod = endPeriod;
     }
 
-    private protected class ShortReportDTO(int id, DateOnly startPeriod, DateOnly endPeriod)
+    public class ShortReportDTO(int id, DateOnly startPeriod, DateOnly endPeriod)
     {
         public readonly int Id = id;
 

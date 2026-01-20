@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Client_App.ViewModels.Messages;
@@ -14,6 +15,16 @@ public class GetSnkParams : BaseWindow<GetSnkParamsVM>
     public GetSnkParams()
     {
         InitializeComponent();
+
+        // Добавляем обработчик события ввода текста для поля региона
+        var regionBox = this.FindControl<TextBox>("RegionBox");
+        regionBox?.AddHandler(InputElement.TextInputEvent, (sender, e) =>
+        {
+            if (e.Text != null && !char.IsDigit(e.Text, 0))
+            {
+                e.Handled = true;
+            }
+        }, RoutingStrategies.Tunnel);
     }
 
     private void InitializeComponent()

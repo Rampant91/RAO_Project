@@ -185,6 +185,11 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand ExcelExportCheckInventories => new ExcelExportCheckInventoriesAsyncCommand();
 
     /// <summary>
+    /// Excel -> Выбранная организация -> Проверка инвентаризаций -> По региону
+    /// </summary>
+    public ICommand ExcelExportLostUnitsByRegion => new ExcelExportLostUnitsByRegionAsyncCommand();
+
+    /// <summary>
     /// Экспорт всех организаций организации в отдельные файлы .RAODB
     /// </summary>
     public ICommand ExportAllReports => new ExportAllReportsAsyncCommand();
