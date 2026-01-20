@@ -72,7 +72,13 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                           "Конфиденциальность гарантируется получателем информации"
                       || Convert.ToString(worksheet0.Cells["A6"].Value) //Новый шаблон
                           is "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ\n" +
-                          "Конфиденциальность гарантируется получателем информации");
+                          "Конфиденциальность гарантируется получателем информации")
+                      || worksheet0.Name == "Форма 5.0"
+                      && Convert.ToString(worksheet0.Cells["A7"].Value)
+                          is "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ\r\n" +
+                          "Конфиденциальность гарантируется получателем информации";
+
+
             if (!val)
             {
                 #region InvalidDataFormatMessage
@@ -179,11 +185,15 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             
 
             var repNumber = worksheet0.Name;
-            if (repNumber == "Форма 4.0")
-                repNumber = repNumber.Split(' ')[1];
+            // В некоторых шаблонах в наименовании листа Excel перед номером формы добавляется слово "Форма". Например "Форма 4.0"
+            // а в других просто пишется номер формы. Например "1.0"
+            if (repNumber.ToLower().StartsWith("форма "))   
+                repNumber = repNumber.Split(' ')[1];  
 
             var formNumber = worksheet1.Name;
-            if (formNumber == "форма 4.1")
+            // В некоторых шаблонах в наименовании листа Excel перед номером формы добавляется слово "Форма". Например "Форма 4.1"
+            // а в других просто пишется номер формы. Например "1.1"
+            if (formNumber.ToLower().StartsWith("форма ")) 
                 formNumber = formNumber.Split(' ')[1];
 
             //Импортируем отчет
@@ -198,6 +208,9 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     break;
                 case "4.1":
                     start = 9;
+                    break;
+                case "5.1" or "5.2" or "5.3" or "5.4":
+                    start = 12;
                     break;
                 default:
                     start = 11;
@@ -219,24 +232,31 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
             NumberInOrder = 1;
 
+            while (value is null)
+            {
+                start += 1; 
+                end = $"A{start}";
+                value = worksheet1.Cells[end].Value;
+            }
+
             // Импортируем примечания
             // У форм 4.X нет примечаний
-            if (repNumber is "1.0" or "2.0")
+            if ((repNumber is "1.0" or "2.0" or "5.0") 
+                && (formNumber is not "5.7"))
             {
-                if (value is null)
-                    start += 3;
-                else if (Convert.ToString(value)?.ToLower() is "примечание:" or "примечания:")
+                if (Convert.ToString(value)?.ToLower() is "примечание:" or "примечания:")
+                {
                     start += 2;
 
-
-                while (worksheet1.Cells[$"A{start}"].Value != null ||
-                       worksheet1.Cells[$"B{start}"].Value != null ||
-                       worksheet1.Cells[$"C{start}"].Value != null)
-                {
-                    Note newNote = new();
-                    newNote.ExcelGetRow(worksheet1, start);
-                    impRep.Notes.Add(newNote);
-                    start++;
+                    while (worksheet1.Cells[$"A{start}"].Value != null ||
+                           worksheet1.Cells[$"B{start}"].Value != null ||
+                           worksheet1.Cells[$"C{start}"].Value != null)
+                    {
+                        Note newNote = new();
+                        newNote.ExcelGetRow(worksheet1, start);
+                        impRep.Notes.Add(newNote);
+                        start++;
+                    }
                 }
             }
 
@@ -255,7 +275,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             var impRepList = new List<Report> { impRep };
             if (baseReps.Report_Collection.Count != 0)
             {
-                switch (worksheet0.Name)
+                switch (worksheet0.Name.ToLower())
                 {
                     case "1.0":
                     {
@@ -267,9 +287,9 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                         await ProcessIfHasReports21(baseReps, impReps, impRepList);
                         break;
                     }
-                    case "Форма 4.0":
+                    case "форма 4.0" or "форма 5.0":
                     {
-                        await ProcessIfHasReports41(baseReps, impReps, impRepList);
+                        await ProcessIfHasReports41And51(baseReps, impReps, impRepList);
                         break;
                     }
                 }
@@ -313,9 +333,9 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
                             #endregion
                         }
-                        else if (worksheet0.Name is "4.0")
+                        else if (worksheet0.Name.ToLower() is "Форма 4.0" or "Форма 5.0")
                         {
-                            #region MessageNewOrg 4.0
+                            #region MessageNewOrg 4.0 5.0
                             an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                                 {
@@ -825,7 +845,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
     #region GetReportDataFromExcel
 
-    private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, ExcelWorksheet worksheet1, string formNumber, List<string> timeCreate)
+    private static Report  GetReportWithDataFromExcel(ExcelWorksheet worksheet0, ExcelWorksheet worksheet1, string formNumber, List<string> timeCreate)
     {
         var impRep = new Report
         {
@@ -925,6 +945,11 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B1"].Value);
             impRep.Year_DB = Convert.ToString(worksheet0.Cells["B15"].Text);
         }
+        else if (formNumber.Split('.')[0] == "5")
+        {
+            impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B7"].Value);
+            impRep.Year_DB = Convert.ToString(worksheet0.Cells["B16"].Text);
+        }
 
         #region BindCommonData
 
@@ -935,10 +960,24 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells[$"I{worksheet1.Dimension.Rows - 1}"].Value);
             impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells[$"K{worksheet1.Dimension.Rows - 1}"].Value);
         }
-        else if(formNumber.Split('.')[0] is "4")
+        else if (formNumber.Split('.')[0] is "4")
         {
             var address = worksheet1.Cells.FirstOrDefault(cell => Convert.ToString(cell.Value).ToLower() == "должность исполнителя").LocalAddress;
-            address = address.Remove(0,1);
+            address = address.Remove(0, 1);
+            int.TryParse(address, out var index);
+
+            impRep.GradeExecutor_DB = Convert.ToString(worksheet1.Cells[$"B{index}"].Value);
+            index++;
+            impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells[$"B{index}"].Value);
+            index++;
+            impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells[$"B{index}"].Value);
+            index++;
+            impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells[$"B{index}"].Value);
+        }
+        else if (formNumber.Split('.')[0] is "5")
+        {
+            var address = worksheet1.Cells.FirstOrDefault(cell => Convert.ToString(cell.Value).ToLower() == "должность").LocalAddress;
+            address = address.Remove(0, 1);
             int.TryParse(address, out var index);
 
             impRep.GradeExecutor_DB = Convert.ToString(worksheet1.Cells[$"B{index}"].Value);

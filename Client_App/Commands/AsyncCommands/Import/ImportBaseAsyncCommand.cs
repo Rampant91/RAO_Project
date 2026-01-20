@@ -557,6 +557,34 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #endregion
 
+    #region GetReports51FromLocalEqual
+
+    /// <summary>
+    /// Ищет в БД организацию, с тем же кодом субъекта, что у импортируемой и возвращает её.
+    /// </summary>
+    /// <param name="reps">Импортируемая организация.</param>
+    /// <returns>Соответствующая организация из БД.</returns>
+    private protected static Reports? GetReports51FromLocalEqual(Reports reps)
+    {
+        try
+        {
+            //if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('2')) || item.Master_DB.FormNum_DB is not "2.0")
+            if (reps.Master_DB.FormNum_DB is not "5.0")
+            {
+                return null;
+            }
+
+            return ReportsStorage.LocalReports.Reports_Collection50
+                       .FirstOrDefault(t => t.Master_DB.Rows50[0].Name_DB == reps.Master_DB.Rows50[0].Name_DB);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    #endregion
+
     #region GetSelectedFilesFromDialog
 
     /// <summary>
@@ -1461,9 +1489,17 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     /// <param name="impReps">Импортируемая организация.</param>
     /// <param name="impRepList">Список импортируемых отчётов.</param>
     /// <returns>Сообщение пользователю, логирование и сохранение изменений.</returns>
-    private protected async Task ProcessIfHasReports41(Reports baseReps, Reports impReps, List<Report> impRepList)
+    private protected async Task ProcessIfHasReports41And51(Reports baseReps, Reports impReps, List<Report> impRepList)
     {
-        BaseRepsShortName = baseReps.Master.Rows40[0].ShortNameRiac.Value;
+        switch (baseReps.Master.FormNum_DB)
+        {
+            case "4.0":
+                BaseRepsShortName = baseReps.Master.Rows40[0].ShortNameRiac.Value;
+                break;
+            case "5.0":
+                BaseRepsShortName = baseReps.Master.Rows50[0].ShortName.Value;
+                break;
+        }
 
         foreach (var impRep in impRepList) //Для каждой импортируемой формы
         {
@@ -1830,6 +1866,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     }
 
     #endregion
+
 
     #region ProcessIfNoteOrder0
 

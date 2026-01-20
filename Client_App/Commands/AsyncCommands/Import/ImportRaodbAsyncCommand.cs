@@ -105,7 +105,8 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                     impReps.Master.Rows20[1].RegNo_DB = impReps.Master.Rows20[0].RegNo_DB;
                 }
 
-                if (impReps.Master.Rows40.Count != 0)
+                if (impReps.Master.Rows40.Count != 0
+                    || impReps.Master.Rows50.Count !=0)
                 {
                     impReps.Master_DB.ReportChangedDate = dateTime;
                 }
@@ -113,6 +114,7 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                 var baseReps11 = GetReports11FromLocalEqual(impReps);
                 var baseReps21 = GetReports21FromLocalEqual(impReps);
                 var baseReps41 = GetReports41FromLocalEqual(impReps);
+                var baseReps51 = GetReports51FromLocalEqual(impReps);
                 FillEmptyRegNo(ref baseReps11);
                 FillEmptyRegNo(ref baseReps21);
                 impReps.CleanIds();
@@ -143,9 +145,13 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                 }
                 else if (baseReps41 != null)
                 {
-                    await ProcessIfHasReports41(baseReps41, impReps, impRepsReportList);
+                    await ProcessIfHasReports41And51(baseReps41, impReps, impRepsReportList);
                 }
-                else if (baseReps11 == null && baseReps21 == null && baseReps41 == null)
+                else if (baseReps51 != null)
+                {
+                    await ProcessIfHasReports41And51(baseReps51, impReps, impRepsReportList);
+                }
+                else if (baseReps11 == null && baseReps21 == null && baseReps41 == null && baseReps51 == null)
                 {
                     #region AddNewOrg
 
@@ -262,6 +268,9 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                         break;
                     case "4.0":
                         await impReps.Master_DB.Rows40.QuickSortAsync();
+                        break;
+                    case "5.0":
+                        await impReps.Master_DB.Rows50.QuickSortAsync();
                         break;
                 }
             }

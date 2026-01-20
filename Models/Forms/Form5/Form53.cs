@@ -238,8 +238,8 @@ namespace Models.Forms.Form5
 
         #region ProviderOrRecieverOKPO (6)
 
-        [MaxLength(14)]
-        [Column(TypeName = "varchar(14)")]
+        [MaxLength(64)]
+        [Column(TypeName = "varchar(64)")]
         public string ProviderOrRecieverOKPO_DB { get; set; } = "";
 
         [NotMapped]
@@ -268,8 +268,8 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            value1 = value1.Length > 14
-                ? value1[..14]
+            value1 = value1.Length > 64
+                ? value1[..64]
                 : value1;
             if (ProviderOrRecieverOKPO_DB != value1)
             {
@@ -603,8 +603,8 @@ namespace Models.Forms.Form5
             AggregateState_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 5].Value), out byteValue) ? byteValue : (byte)0;
 
             ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 6].Value).Trim();
-            if (ProviderOrRecieverOKPO_DB.Count() > 14)
-                ProviderOrRecieverOKPO_DB = ProviderOrRecieverOKPO_DB[..14];
+            if (ProviderOrRecieverOKPO_DB.Count() > 64)
+                ProviderOrRecieverOKPO_DB = ProviderOrRecieverOKPO_DB[..64];
 
             Radionuclids_DB = Convert.ToString(worksheet.Cells[row, 7].Value).Trim();
             if (Radionuclids_DB.Count() > 256)

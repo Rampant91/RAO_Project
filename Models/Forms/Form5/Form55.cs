@@ -133,8 +133,8 @@ namespace Models.Forms.Form5
 
         #region ProviderOrRecieverOKPO (4)
 
-        [MaxLength(14)]
-        [Column(TypeName = "varchar(14)")]
+        [MaxLength(64)]
+        [Column(TypeName = "varchar(64)")]
         public string ProviderOrRecieverOKPO_DB { get; set; } = "";
 
         [NotMapped]
@@ -163,8 +163,8 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            value1 = value1.Length > 14
-                ? value1[..14]
+            value1 = value1.Length > 64
+                ? value1[..64]
                 : value1;
             if (ProviderOrRecieverOKPO_DB != value1)
             {
@@ -340,8 +340,8 @@ namespace Models.Forms.Form5
                 OperationCode_DB = OperationCode_DB[..2];
 
             ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 4].Value).Trim();
-            if (ProviderOrRecieverOKPO_DB.Count() > 14)
-                ProviderOrRecieverOKPO_DB = ProviderOrRecieverOKPO_DB[..14];
+            if (ProviderOrRecieverOKPO_DB.Count() > 64)
+                ProviderOrRecieverOKPO_DB = ProviderOrRecieverOKPO_DB[..64];
 
             Quantity_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 5].Value), out intValue) ? intValue : 0;
 
