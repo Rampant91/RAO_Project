@@ -63,40 +63,12 @@
                 <Border Classes="borderContainer">
                     <Grid Margin="5" RowDefinitions="*,*,*,*,*">
 
-                        <Grid Grid.Row="0" ColumnDefinitions="*,*,*">
-                            <TextBlock
-                                Grid.Column="0"
-                                Margin="5,11"
-                                Text="Дата окончания предыдущего отчетного периода:" />
-                            <TextBox
-                                Grid.Column="1"
-                                MinWidth="83"
-                                Text="{Binding Report.StartPeriod.Value}"
-                                Watermark="дд.мм.гггг" />
-                            <CalendarDatePicker
-                                Grid.Column="2"
-                                Classes="buttonOnly"
-                                SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource DateConverter}}" />
-                        </Grid>
+						<Grid ColumnDefinitions="*,*"  Grid.Row="0">
+							<TextBlock Grid.Column="0" Margin="5" >Отчетный год</TextBlock>
+							<TextBox Grid.Column="1" Text="{Binding Report.Year.Value}"/>
+						</Grid>
 
-                        <Grid Grid.Row="1" ColumnDefinitions="*,*,*">
-                            <TextBlock
-                                Grid.Column="0"
-                                Margin="5,13"
-                                Text="Дата окончания настоящего отчетного периода:" />
-                            <TextBox
-                                Grid.Column="1"
-                                MinWidth="83"
-                                Margin="11,3,0,0"
-                                Text="{Binding Report.EndPeriod.Value}"
-                                Watermark="дд.мм.гггг" />
-                            <CalendarDatePicker
-                                Grid.Column="2"
-                                Classes="buttonOnly"
-                                SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource DateConverter}}" />
-                        </Grid>
-
-                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
                             <TextBlock Margin="5,10" Text="Номер корректировки:" />
                             <TextBox
                                 Width="75"
@@ -104,7 +76,7 @@
                                 Text="{Binding Path=Report.CorrectionNumber.Value}" />
                         </StackPanel>
 
-                        <StackPanel Grid.Row="3" Orientation="Horizontal">
+                        <StackPanel Grid.Row="2" Orientation="Horizontal">
                             <Button
                                 Margin="5"
                                 Command="{Binding CheckForm}"
@@ -490,6 +462,82 @@
 
         <!--#endregion Выбор страницы-->
 
+		<!--#region Примечания-->
+
+		<Expander
+            Grid.Row="3"
+            ExpandDirection="Up"
+            Header="Скрыть/Раскрыть нижнюю панель"
+            IsExpanded="True">
+			<Border Classes="notesContainer">
+				<Grid ColumnDefinitions="Auto" RowDefinitions="Auto,Auto">
+					<Grid.ContextMenu>
+						<ContextMenu>
+							<MenuItem Command="{Binding AddNote}" Header="Добавить строку" />
+							<MenuItem Command="{Binding AddNotes}" Header="Добавить N строк" />
+							<MenuItem
+                                Command="{Binding CopyNotes}"
+                                CommandParameter="{Binding SelectedNotes}"
+                                Header="Копировать" />
+							<MenuItem Command="{Binding PasteNotes}" Header="Вставить" />
+							<MenuItem
+                                Command="{Binding DeleteNotes}"
+                                CommandParameter="{Binding SelectedNotes}"
+                                Header="Удалить выбранные строчки" />
+						</ContextMenu>
+					</Grid.ContextMenu>
+					<TextBlock
+                        Grid.Row="0"
+                        Margin="5"
+                        Text="Примечания" />
+					<DataGrid
+                        x:Name="notesTable"
+                        Grid.Row="1"
+                        x:CompileBindings="True"
+                        Classes="notesTable"
+                        Items="{Binding NoteList}"
+                        SelectedItem="{Binding SelectedNote}">
+
+						<interactivity:Interaction.Behaviors>
+							<local:DataGridColumnWidthLoadBehavior FormNum="notes" />
+							<local:DataGridPointerBehavior />
+							<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
+							<local:DataGridSwitchToNotesBehavior SourceDataGrid="{Binding #dataGrid}"/>
+						</interactivity:Interaction.Behaviors>
+
+						<DataGrid.Columns>
+
+							<DataGridTemplateColumn Width="80" Header="№ строки">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate x:DataType="forms:Note">
+										<TextBox Text="{Binding RowNumber.Value, Mode=TwoWay}" />
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+
+							<DataGridTemplateColumn Width="80" Header="№ графы">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate x:DataType="forms:Note">
+										<TextBox Text="{Binding GraphNumber.Value, Mode=TwoWay}" />
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+
+							<DataGridTemplateColumn Width="250" Header="Пояснения">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate x:DataType="forms:Note">
+										<TextBox Text="{Binding Comment.Value, Mode=TwoWay}" />
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+
+						</DataGrid.Columns>
+					</DataGrid>
+				</Grid>
+			</Border>
+		</Expander>
+
+		<!--#endregion Примечания-->
 
     </Grid>
 </Window>

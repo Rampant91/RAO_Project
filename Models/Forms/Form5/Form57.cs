@@ -277,101 +277,7 @@ namespace Models.Forms.Form5
 
         #endregion
 
-        #region StartDate (7)
-
-        [MaxLength(10)]
-        [Column(TypeName = "varchar(10)")]
-        public string StartDate_DB { get; set; } = "";
-
-        [NotMapped]
-        [FormProperty(true, "Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "дата выпуска", "11")]
-        public RamAccess<string> StartDate
-        {
-            get
-            {
-                if (Dictionary.TryGetValue(nameof(StartDate), out var value))
-                {
-                    ((RamAccess<string>)value).Value = StartDate_DB;
-                    return (RamAccess<string>)value;
-                }
-                var rm = new RamAccess<string>(StartDate_Validation, StartDate_DB);
-                rm.PropertyChanged += StartDate_ValueChanged;
-                Dictionary.Add(nameof(StartDate), rm);
-                return (RamAccess<string>)Dictionary[nameof(StartDate)];
-            }
-            set
-            {
-                StartDate_DB = value.Value;
-                OnPropertyChanged();
-            }
-        }
-
-        private void StartDate_ValueChanged(object value, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName != "Value") return;
-
-            var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
-            value1 = value1.Length > 10
-                ? value1[..10]
-                : value1;
-            if (StartDate_DB != value1)
-            {
-                StartDate_DB = DateString_ValueChanged(value1);
-            }
-        }
-
-        private bool StartDate_Validation(RamAccess<string> value) => DateString_Validation(value);
-
-        #endregion
-
-        #region EndDate (8)
-
-        [MaxLength(10)]
-        [Column(TypeName = "varchar(10)")]
-        public string EndDate_DB { get; set; } = "";
-
-        [NotMapped]
-        [FormProperty(true, "Сведения из паспорта (сертификата) на закрытый радионуклидный источник", "дата выпуска", "11")]
-        public RamAccess<string> EndDate
-        {
-            get
-            {
-                if (Dictionary.TryGetValue(nameof(EndDate), out var value))
-                {
-                    ((RamAccess<string>)value).Value = EndDate_DB;
-                    return (RamAccess<string>)value;
-                }
-                var rm = new RamAccess<string>(EndDate_Validation, EndDate_DB);
-                rm.PropertyChanged += EndDate_ValueChanged;
-                Dictionary.Add(nameof(EndDate), rm);
-                return (RamAccess<string>)Dictionary[nameof(EndDate)];
-            }
-            set
-            {
-                EndDate_DB = value.Value;
-                OnPropertyChanged();
-            }
-        }
-
-        private void EndDate_ValueChanged(object value, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName != "Value") return;
-
-            var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
-            value1 = value1.Length > 10
-                ? value1[..10]
-                : value1;
-            if (EndDate_DB != value1)
-            {
-                EndDate_DB = DateString_ValueChanged(value1);
-            }
-        }
-
-        private bool EndDate_Validation(RamAccess<string> value) => DateString_Validation(value);
-
-        #endregion
-
-        #region Practice (9)
+        #region Practice (7)
 
         public string Practice_DB { get; set; } = "";
 
@@ -416,6 +322,51 @@ namespace Models.Forms.Form5
 
         #endregion
 
+        #region Note (8)
+
+        public string Note_DB { get; set; } = "";
+
+        [NotMapped]
+        public RamAccess<string> Note
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(Note), out var value))
+                {
+                    ((RamAccess<string>)value).Value = Note_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(Note_Validation, Note_DB);
+                rm.PropertyChanged += Note_ValueChanged;
+                Dictionary.Add(nameof(Note), rm);
+                return (RamAccess<string>)Dictionary[nameof(Note)];
+            }
+            set
+            {
+                Note_DB = ParseInnerText(value.Value);
+                OnPropertyChanged();
+            }
+        }
+
+        private void Note_ValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName != "Value") return;
+            var value1 = ((RamAccess<string>)value).Value;
+            if (Note_DB != value1)
+            {
+                Note_DB = value1;
+                OnPropertyChanged(nameof(RowColor));
+            }
+        }
+
+        private bool Note_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+
+        #endregion
+
 
         #region RowColor
 
@@ -451,13 +402,13 @@ namespace Models.Forms.Form5
 
         public override bool Object_Validation()
         {
-            return !(OKPO.HasErrors ||
+            return !(RegNo.HasErrors || 
+                     OKPO.HasErrors ||
                      Name.HasErrors ||
                      Recognizance.HasErrors ||
                      License.HasErrors ||
-                     StartDate.HasErrors ||
-                     EndDate.HasErrors ||
-                     Practice.HasErrors);
+                     Practice.HasErrors ||
+                     Note.HasErrors);
         }
 
         #endregion
@@ -477,6 +428,10 @@ namespace Models.Forms.Form5
                 ? intValue
                 : 0;
 
+            RegNo_DB = Convert.ToString(worksheet.Cells[row, 2].Value).Trim();
+            if (RegNo_DB.Count() > 5)
+                RegNo_DB = RegNo_DB[..5];
+
             OKPO_DB = Convert.ToString(worksheet.Cells[row, 2].Value).Trim();
             if (OKPO_DB.Count() > 14)
                 OKPO_DB = OKPO_DB[..14];
@@ -493,28 +448,22 @@ namespace Models.Forms.Form5
             if (License_DB.Count() > 256)
                 License_DB = License_DB[..256];
 
-            StartDate_DB = Convert.ToString(worksheet.Cells[row, 4].Value).Trim();
-            if (StartDate_DB.Count() > 10)
-                StartDate_DB = StartDate_DB[..10];
-
-            EndDate_DB = Convert.ToString(worksheet.Cells[row, 2].Value).Trim();
-            if (EndDate_DB.Count() > 10)
-                EndDate_DB = EndDate_DB[..10];
-
             Practice_DB = Convert.ToString(worksheet.Cells[row, 2].Value).Trim();
+
+            Note_DB = Convert.ToString(worksheet.Cells[row, 2].Value).Trim();
 
         }
 
         public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
         {
             worksheet.Cells[row + 0, column + 0].Value = NumberInOrder_DB;
-            worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelString(OKPO_DB);
-            worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(Name_DB);
-            worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelString(Recognizance_DB);
-            worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelString(License_DB);
-            worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelString(StartDate_DB);
-            worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelString(EndDate_DB);
-            worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelString(Practice_DB);
+            worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(RegNo_DB);
+            worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelString(OKPO_DB);
+            worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelString(Name_DB);
+            worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ConvertToExcelString(Recognizance_DB);
+            worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ConvertToExcelString(License_DB);
+            worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = ConvertToExcelString(Practice_DB);
+            worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = ConvertToExcelString(Note_DB);
 
             return 9;
         }
@@ -546,13 +495,13 @@ namespace Models.Forms.Form5
             // Создаем текстовое представление (TSV - tab-separated values)
             var str =
                 $"{NumberInOrder.Value}\t" +
+                $"{RegNo.Value}\t" +
                 $"{OKPO.Value}\t" +
                 $"{Name.Value}\t" +
                 $"{Recognizance.Value}\t" +
                 $"{License.Value}\t" +
-                $"{StartDate.Value}\t" +
-                $"{EndDate.Value}\t" +
-                $"{Practice.Value}";
+                $"{Practice.Value}\t" +
+                $"{Note.Value}";
             return str;
         }
 

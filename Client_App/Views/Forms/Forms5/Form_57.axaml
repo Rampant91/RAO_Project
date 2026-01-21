@@ -63,40 +63,12 @@
                 <Border Classes="borderContainer">
                     <Grid Margin="5" RowDefinitions="*,*,*,*,*">
 
-                        <Grid Grid.Row="0" ColumnDefinitions="*,*,*">
-                            <TextBlock
-                                Grid.Column="0"
-                                Margin="5,11"
-                                Text="Дата окончания предыдущего отчетного периода:" />
-                            <TextBox
-                                Grid.Column="1"
-                                MinWidth="83"
-                                Text="{Binding Report.StartPeriod.Value}"
-                                Watermark="дд.мм.гггг" />
-                            <CalendarDatePicker
-                                Grid.Column="2"
-                                Classes="buttonOnly"
-                                SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource DateConverter}}" />
-                        </Grid>
+						<Grid ColumnDefinitions="*,*"  Grid.Row="0">
+							<TextBlock Grid.Column="0" Margin="5" >Отчетный год</TextBlock>
+							<TextBox Grid.Column="1" Text="{Binding Report.Year.Value}"/>
+						</Grid>
 
-                        <Grid Grid.Row="1" ColumnDefinitions="*,*,*">
-                            <TextBlock
-                                Grid.Column="0"
-                                Margin="5,13"
-                                Text="Дата окончания настоящего отчетного периода:" />
-                            <TextBox
-                                Grid.Column="1"
-                                MinWidth="83"
-                                Margin="11,3,0,0"
-                                Text="{Binding Report.EndPeriod.Value}"
-                                Watermark="дд.мм.гггг" />
-                            <CalendarDatePicker
-                                Grid.Column="2"
-                                Classes="buttonOnly"
-                                SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource DateConverter}}" />
-                        </Grid>
-
-                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
                             <TextBlock Margin="5,10" Text="Номер корректировки:" />
                             <TextBox
                                 Width="75"
@@ -104,7 +76,7 @@
                                 Text="{Binding Path=Report.CorrectionNumber.Value}" />
                         </StackPanel>
 
-                        <StackPanel Grid.Row="3" Orientation="Horizontal">
+                        <StackPanel Grid.Row="2" Orientation="Horizontal">
                             <Button
                                 Margin="5"
                                 Command="{Binding CheckForm}"
@@ -279,42 +251,37 @@
 					<Border
                         Grid.Row="0"
                         Grid.Column="1">
-						<TextBlock>Рег.№</TextBlock>
+						<TextBlock>Рег.№ организации в СГУК РВ и РАО</TextBlock>
 					</Border>
 					<Border
                         Grid.Row="0"
                         Grid.Column="2">
-						<TextBlock>ОКПО</TextBlock>
+						<TextBlock>Код ОКПО организации</TextBlock>
 					</Border>
 					<Border
                         Grid.Row="0"
                         Grid.Column="3">
-						<TextBlock>Наименование</TextBlock>
+						<TextBlock>Наименование организации (сокращенное наименование при наличии)</TextBlock>
 					</Border>
 					<Border
                         Grid.Row="0"
                         Grid.Column="4">
-						<TextBlock>Признание</TextBlock>
+						<TextBlock>Наименование и номер документа о признании</TextBlock>
 					</Border>
 					<Border
                         Grid.Row="0"
                         Grid.Column="5">
-						<TextBlock>Лицензия</TextBlock>
+						<TextBlock>Наименование и номер разрешительного документа</TextBlock>
 					</Border>
 					<Border
                         Grid.Row="0"
                         Grid.Column="6">
-						<TextBlock>Начало</TextBlock>
+						<TextBlock>Разрешенный вид деятельности</TextBlock>
 					</Border>
 					<Border
                         Grid.Row="0"
                         Grid.Column="7">
-						<TextBlock>Конец</TextBlock>
-					</Border>
-					<Border
-                        Grid.Row="0"
-                        Grid.Column="8">
-						<TextBlock>Вид деятельности</TextBlock>
+						<TextBlock>Примечание</TextBlock>
 					</Border>
                 </Grid>
 
@@ -455,13 +422,7 @@
 							</DataGridTemplateColumn.HeaderTemplate>
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate x:DataType="forms5:Form57">
-									<Grid ColumnDefinitions="*,Auto">
-										<TextBox Grid.Column="0" Text="{Binding StartDate.Value, Mode=TwoWay}" />
-										<CalendarDatePicker
-                                            Grid.Column="1"
-                                            Classes="buttonOnly"
-                                            SelectedDate="{Binding StartDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
-									</Grid>
+									<TextBox Text="{Binding Practice.Value, Mode=TwoWay}" />
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
@@ -478,30 +439,7 @@
 							</DataGridTemplateColumn.HeaderTemplate>
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate x:DataType="forms5:Form57">
-									<Grid ColumnDefinitions="*,Auto">
-										<TextBox Grid.Column="0" Text="{Binding EndDate.Value, Mode=TwoWay}" />
-										<CalendarDatePicker
-                                            Grid.Column="1"
-                                            Classes="buttonOnly"
-                                            SelectedDate="{Binding EndDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
-									</Grid>
-								</DataTemplate>
-							</DataGridTemplateColumn.CellTemplate>
-						</DataGridTemplateColumn>
-
-						<DataGridTemplateColumn>
-							<DataGridTemplateColumn.HeaderTemplate>
-								<DataTemplate>
-									<Border Classes="headerTemplate">
-										<Grid ColumnDefinitions="*,Auto">
-											<TextBlock Grid.Column="0" Text="9" />
-										</Grid>
-									</Border>
-								</DataTemplate>
-							</DataGridTemplateColumn.HeaderTemplate>
-							<DataGridTemplateColumn.CellTemplate>
-								<DataTemplate x:DataType="forms5:Form57">
-									<TextBox Text="{Binding Practice.Value, Mode=TwoWay}" />
+									<TextBox Text="{Binding Note.Value, Mode=TwoWay}" />
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>

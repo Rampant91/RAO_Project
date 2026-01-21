@@ -494,9 +494,8 @@ public partial class Form_57 : BaseWindow<Form_57VM>
                 && string.IsNullOrWhiteSpace(form.Name_DB)
                 && string.IsNullOrWhiteSpace(form.Recognizance_DB)
                 && string.IsNullOrWhiteSpace(form.License_DB)
-                && string.IsNullOrWhiteSpace(form.StartDate_DB)
-                && string.IsNullOrWhiteSpace(form.EndDate_DB)
-                && string.IsNullOrWhiteSpace(form.Practice_DB))
+                && string.IsNullOrWhiteSpace(form.Practice_DB)
+                && string.IsNullOrWhiteSpace(form.Note_DB))
             {
                 formToDeleteList.Add(form);
             }

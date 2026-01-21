@@ -75,7 +75,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                           "Конфиденциальность гарантируется получателем информации")
                       || worksheet0.Name == "Форма 5.0"
                       && Convert.ToString(worksheet0.Cells["A7"].Value)
-                          is "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ\r\n" +
+                          is "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ\n" +
                           "Конфиденциальность гарантируется получателем информации";
 
 
@@ -289,9 +289,15 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     }
                     case "форма 4.0" or "форма 5.0":
                     {
-                        await ProcessIfHasReports41And51(baseReps, impReps, impRepList);
+                        await ProcessIfHasReports41(baseReps, impReps, impRepList);
                         break;
                     }
+                    case "форма 5.0":
+                        {
+                            await ProcessIfHasReports51(baseReps, impReps, impRepList);
+                            break;
+                        }
+
                 }
             }
             else
@@ -333,7 +339,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
                             #endregion
                         }
-                        else if (worksheet0.Name.ToLower() is "Форма 4.0" or "Форма 5.0")
+                        else if (worksheet0.Name.ToLower() is "форма 4.0" or "форма 5.0")
                         {
                             #region MessageNewOrg 4.0 5.0
                             an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
@@ -796,7 +802,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
     private static Reports GetImportReps(ExcelWorksheet worksheet0)
     {
         var name = worksheet0.Name;
-        if (name == "Форма 4.0")
+        if (name.ToLower().StartsWith("форма "))
         {
             name = name.Split(' ')[1];
         }

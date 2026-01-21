@@ -145,11 +145,11 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                 }
                 else if (baseReps41 != null)
                 {
-                    await ProcessIfHasReports41And51(baseReps41, impReps, impRepsReportList);
+                    await ProcessIfHasReports41(baseReps41, impReps, impRepsReportList);
                 }
                 else if (baseReps51 != null)
                 {
-                    await ProcessIfHasReports41And51(baseReps51, impReps, impRepsReportList);
+                    await ProcessIfHasReports51(baseReps51, impReps, impRepsReportList);
                 }
                 else if (baseReps11 == null && baseReps21 == null && baseReps41 == null && baseReps51 == null)
                 {

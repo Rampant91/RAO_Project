@@ -1489,15 +1489,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     /// <param name="impReps">Импортируемая организация.</param>
     /// <param name="impRepList">Список импортируемых отчётов.</param>
     /// <returns>Сообщение пользователю, логирование и сохранение изменений.</returns>
-    private protected async Task ProcessIfHasReports41And51(Reports baseReps, Reports impReps, List<Report> impRepList)
+    private protected async Task ProcessIfHasReports41(Reports baseReps, Reports impReps, List<Report> impRepList)
     {
         switch (baseReps.Master.FormNum_DB)
         {
             case "4.0":
                 BaseRepsShortName = baseReps.Master.Rows40[0].ShortNameRiac.Value;
-                break;
-            case "5.0":
-                BaseRepsShortName = baseReps.Master.Rows50[0].ShortName.Value;
                 break;
         }
 

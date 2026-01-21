@@ -207,7 +207,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 
         ExcelPrintSubMainExport(rep.FormNum_DB, worksheetMain, rep);
 
-        if (worksheetTitle.Name is "1.0" or "2.0")
+        if (worksheetTitle.Name is "1.0" or "2.0" or "Форма 5.0" && (worksheetMain.Name is not "Форма 5.7"))
             ExcelPrintNotesExport(rep.FormNum_DB, worksheetMain, rep);
 
 
@@ -263,8 +263,15 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                 }
             case '4':
                 {
+                    var codeSubjectRF = RemoveForbiddenChars(rep.Reports.Master_DB.Rows40[0].CodeSubjectRF.Value);
                     var year = RemoveForbiddenChars(rep.Year_DB);
-                    fileName = $"{regNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
+                    fileName = $"{codeSubjectRF}_{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
+                    break;
+                }
+            case '5':
+                {
+                    var year = RemoveForbiddenChars(rep.Year_DB);
+                    fileName = $"{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
                     break;
                 }
             default:
@@ -299,6 +306,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                 .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
                 .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows20)
                 .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows40)
+                .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows50)
                 .Include(rep => rep.Rows11.OrderBy(form => form.NumberInOrder_DB))
                 .Include(rep => rep.Rows12.OrderBy(form => form.NumberInOrder_DB))
                 .Include(rep => rep.Rows13.OrderBy(form => form.NumberInOrder_DB))
@@ -321,6 +329,13 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                 .Include(rep => rep.Rows211.OrderBy(form => form.NumberInOrder_DB))
                 .Include(rep => rep.Rows212.OrderBy(form => form.NumberInOrder_DB))
                 .Include(rep => rep.Rows41.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows51.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows52.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows53.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows54.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows55.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows56.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows57.OrderBy(form => form.NumberInOrder_DB))
                 .Include(rep => rep.Notes.OrderBy(note => note.Order))
                 .Where(rep => rep.Reports != null && rep.Reports.DBObservable != null)
                 .FirstAsync(rep => rep.Id == repId, cts.Token);
@@ -355,13 +370,13 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         ExcelPackage excelPackage = new(new FileInfo(fullPath), new FileInfo(appFolderPath));
 
         var strTitle = $"{rep.FormNum_DB.Split('.')[0]}.0";
-        if (strTitle == "4.0")
-            strTitle = "Форма 4.0";
+        if (strTitle is "4.0" or "5.0")
+            strTitle = "Форма " + $"{strTitle}";
         var worksheetTitle = excelPackage.Workbook.Worksheets[strTitle];
 
         var strMain = rep.FormNum_DB;
-        if (strMain == "4.1")
-            strMain = "Форма 4.1";
+        if (strMain is "4.1" or "5.1" or "5.2" or "5.3" or "5.4" or "5.5" or "5.6" or "5.7")
+            strMain = "Форма " + $"{strMain}";
         var worksheetMain = excelPackage.Workbook.Worksheets[strMain];
 
         worksheetTitle.Cells.Style.ShrinkToFit = true;

@@ -64,18 +64,22 @@ namespace Client_App.ViewModels.MainWindowTabs
                     var search = SearchText.ToLower().Trim();
                     return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
                         .AsEnumerable()
-                        .Where(reps => 
+                        .Where(reps =>
                         (!string.IsNullOrEmpty(reps.Master_DB.Rows50[0].ShortName_DB)
                            && reps.Master_DB.Rows50[0].ShortName_DB.ToLower().Contains(search)))
                         .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
                         .Take(RowsCountOrgs));
                 }
                 else
-                    return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
+                {
+                    var result = new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
                         .AsEnumerable()
                         .Where(reps => reps.Master_DB.FormNum_DB == "5.0")
                         .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
                         .Take(RowsCountOrgs));
+                    ;
+                    return result;
+                }
             }
         }
         #endregion
