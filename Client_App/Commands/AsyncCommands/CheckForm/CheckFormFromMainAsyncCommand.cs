@@ -44,8 +44,14 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
-        if (parameter is not IKeyCollection collection) return;
-        var par = collection.ToList<Report>().First();
+        Report? par;
+        if (parameter is IKeyCollection collection)
+            par = collection.ToList<Report>().First();
+        else if (parameter is Report)
+            par = (Report)parameter;
+        else
+            return;
+
         await using var db = new DBModel(StaticConfiguration.DBPath);
 
         var cts = new CancellationTokenSource();

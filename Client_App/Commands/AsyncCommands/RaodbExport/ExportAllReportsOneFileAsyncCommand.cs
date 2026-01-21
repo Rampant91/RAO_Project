@@ -129,6 +129,7 @@ public partial class ExportAllReportsOneFileAsyncCommand : ExportRaodbBaseAsyncC
                     .AsQueryable()
                     .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
                     .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows40)
                     .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
                     .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows12.OrderBy(x => x.NumberInOrder_DB))
                     .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows13.OrderBy(x => x.NumberInOrder_DB))
@@ -150,6 +151,7 @@ public partial class ExportAllReportsOneFileAsyncCommand : ExportRaodbBaseAsyncC
                     .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows210.OrderBy(x => x.NumberInOrder_DB))
                     .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
                     .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
+                    .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows41.OrderBy(x => x.NumberInOrder_DB))
                     .Include(reports => reports.Report_Collection).ThenInclude(x => x.Notes.OrderBy(x => x.Order))
                     .FirstAsync(x => x.Id == repsId, cancellationToken: cts.Token);
 

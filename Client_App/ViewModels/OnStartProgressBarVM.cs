@@ -22,6 +22,8 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
 
     #region Constructor
 
+    public OnStartProgressBarVM() {}
+
     public OnStartProgressBarVM(IBackgroundLoader backgroundWorker)
     {
         ShowDialog = new Interaction<MainWindowVM, object>();

@@ -54,7 +54,7 @@ public class DeleteReportAsyncCommand : BaseAsyncCommand
 
         selectedReportsFirst!.Report_Collection.Remove(report);
 
-        await ReportDeletionLogger.LogDeletionAsync(report);
+        //await ReportDeletionLogger.LogDeletionAsync(report);
 
         mainWindow.SelectedReports = selectedReports;
 

@@ -81,6 +81,7 @@ public class NewCheckFormAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                         .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                         .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
                         .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows40)
                         .Include(x => x.Rows21.OrderBy(form => form.NumberInOrder_DB))
                         .Include(x => x.Notes.OrderBy(note => note.Order))
                         .Where(x => x.Reports != null && x.Reports.DBObservable != null)
@@ -96,6 +97,7 @@ public class NewCheckFormAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                         .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
                         .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
                         .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows40)
                         .Include(x => x.Rows22.OrderBy(form => form.NumberInOrder_DB))
                         .Include(x => x.Notes.OrderBy(note => note.Order))
                         .Where(x => x.Reports != null && x.Reports.DBObservable != null)
@@ -123,6 +125,9 @@ public class NewCheckFormAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     break;
                 case "2.11":
                     result.AddRange(await CheckF211.Check_Total(rep));
+                    break;
+                case "4.1":
+                    result.AddRange(await CheckF41.Check_Total(rep));
                     break;
                 default:
                 {

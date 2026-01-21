@@ -85,7 +85,15 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #region Progress = 10
 
-        progressBarVM.ExportName = $"Выгрузка организации {exportOrg.Master_DB.RegNoRep.Value}_{exportOrg.Master_DB.OkpoRep.Value}";
+        if (exportOrg.Master_DB.FormNum_DB.Split('.')[0] is "1" or "2")
+        {
+            progressBarVM.ExportName = $"Выгрузка организации {exportOrg.Master_DB.RegNoRep.Value}_{exportOrg.Master_DB.OkpoRep.Value}";
+        }
+        else if (exportOrg.Master_DB.FormNum_DB.Split('.')[0] is "4")
+        {
+            progressBarVM.ExportName = $"Выгрузка РИАЦ {exportOrg.Master_DB.Rows40[0].CodeSubjectRF_DB}_{exportOrg.Master_DB.Rows40[0].SubjectRF_DB}";
+        }
+
         loadStatus = "Загрузка данных организации";
         progressBarVM.ValueBar = 10;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
@@ -100,6 +108,7 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
             .AsQueryable()
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows40)
             .Include(reports => reports.Report_Collection)
             .FirstAsync(x => x.Id == repsId, cancellationToken: cts.Token); 
         
@@ -180,6 +189,7 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                 .Include(x => x.Rows210.OrderBy(x => x.NumberInOrder_DB))
                 .Include(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
                 .Include(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows41.OrderBy(x => x.NumberInOrder_DB))
                 .Include(x => x.Notes.OrderBy(x => x.Order))
                 .FirstAsync(x => x.Id == repId, cancellationToken: cts.Token);
 
@@ -194,10 +204,20 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
         }
 
         var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}_exp.RAODB");
-        var filename = $"{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
+        string? filename = "";
+        if (exportOrg.Master_DB.FormNum_DB.Split('.')[0] is "1" or "2")
+        {
+            filename = $"{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
                        $"_{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +
                        $"_{exportOrg.Master.FormNum_DB[0]}.x" +
                        $"_{Assembly.GetExecutingAssembly().GetName().Version}";
+        }
+        else if (exportOrg.Master_DB.FormNum_DB.Split('.')[0] is "4")
+        {
+            filename = $"{exportOrg.Master.Rows40[0].CodeSubjectRF_DB}" +
+                       $"_{exportOrg.Master.FormNum_DB[0]}.x" +
+                       $"_{Assembly.GetExecutingAssembly().GetName().Version}";
+        }
 
         var fullPath = Path.Combine(folderPath, $"{filename}.RAODB");
 
@@ -322,9 +342,14 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 
         if (!cts.IsCancellationRequested)
         {
-            #region ExportDoneMessage
+           
 
-            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            string? answer = null;
+            if (exportOrg.Master.FormNum_DB.Split('.')[0] is "1" or "2")
+            {
+                #region ExportDoneMessage 1.X or 2.X
+
+                answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
@@ -346,7 +371,36 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
                 }).ShowDialog(Desktop.MainWindow));
 
-            #endregion
+                #endregion
+            }
+            else if (exportOrg.Master.FormNum_DB.Split('.')[0] is "4")
+            {
+                #region ExportDoneMessage 4.X
+
+                answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions =
+                    [
+                        new ButtonDefinition { Name = "Ок", IsDefault = true },
+                        new ButtonDefinition { Name = "Открыть расположение файла" }
+                    ],
+                    ContentTitle = "Выгрузка",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        $"Экспорт завершен. Файл экспорта РИАЦ ({exportOrg.Master.FormNum_DB[0]}.x) сохранен по пути:" +
+                        $"{Environment.NewLine}{fullPath}" +
+                        $"{Environment.NewLine}" +
+                        $"{Environment.NewLine}Код субъекта - {exportOrg.Master.Rows40[0].CodeSubjectRF_DB}" +
+                        $"{Environment.NewLine}Субъект - {exportOrg.Master.Rows40[0].SubjectRF_DB}" +
+                        $"{Environment.NewLine}Сокращенное наименование - {exportOrg.Master.Rows40[0].ShortNameRiac_DB}",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen
+                }).ShowDialog(Desktop.MainWindow));
+
+                #endregion
+            }
 
             if (answer is "Открыть расположение файла")
             {

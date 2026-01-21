@@ -1,26 +1,40 @@
-﻿using Models.Collections;
-using ReactiveUI;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
+﻿
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.Calculator;
+using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.Delete;
 using Client_App.Commands.AsyncCommands.ExcelExport;
+using Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
 using Client_App.Commands.AsyncCommands.ExcelExport.Passports;
+using Client_App.Commands.AsyncCommands.ExcelExport.Snk;
+using Client_App.Commands.AsyncCommands.Hidden;
 using Client_App.Commands.AsyncCommands.Import;
 using Client_App.Commands.AsyncCommands.Import.ImportJson;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
-using Client_App.Commands.AsyncCommands.Hidden;
-using Client_App.Commands.AsyncCommands.CheckForm;
-using Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
-using Client_App.Commands.AsyncCommands.ExcelExport.Snk;
+using Client_App.ViewModels.MainWindowTabs;
+using Client_App.Views;
+using Client_App.Views.Forms.Forms1;
+using Client_App.Views.Forms.Forms4;
 using CommunityToolkit.Mvvm.ComponentModel;
-
+using DynamicData.Binding;
+using Microsoft.EntityFrameworkCore;
+using Models.Collections;
+using Models.DBRealization;
+using Models.Forms;
+using ReactiveUI;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Windows.Input;
 namespace Client_App.ViewModels;
 
 public class MainWindowVM : ObservableObject, INotifyPropertyChanged
@@ -28,7 +42,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     #region SelectedReportType
 
     private byte _selectedReportType = 1;
-    
+
     public byte SelectedReportType
     {
         get => _selectedReportType;
@@ -38,6 +52,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             {
                 _selectedReportType = value;
                 OnPropertyChanged();
+                UpdateReportsCollection();
+                UpdateOrgsPageInfo();
+                UpdateFormsPageInfo();
             }
         }
     }
@@ -75,10 +92,188 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             {
                 ReportsStorage.LocalReports = value;
             }
+            
         }
     }
 
     #endregion
+
+    #region Forms1TabControlVM
+    private Forms1TabControlVM _forms1TabControlVM;
+    public Forms1TabControlVM Forms1TabControlVM
+    {
+        get
+        {
+            return _forms1TabControlVM;
+        }
+    }
+
+    #endregion
+
+    #region Forms2TabControlVM
+    private Forms2TabControlVM _forms2TabControlVM;
+    public Forms2TabControlVM Forms2TabControlVM
+    {
+        get
+        {
+            return _forms2TabControlVM;
+        }
+    }
+
+    #endregion
+
+    #region Forms4TabControlVM
+    private Forms4TabControlVM _forms4TabControlVM;
+    public Forms4TabControlVM Forms4TabControlVM
+    {
+        get
+        {
+            return _forms4TabControlVM;
+        }
+    }
+
+    #endregion
+
+    #region SelectedReports
+    public Reports? SelectedReports
+    {
+        get
+        {
+            switch (SelectedReportType)
+            {
+                case 1:
+                    return Forms1TabControlVM.SelectedReports;
+                case 2:
+                    return Forms2TabControlVM.SelectedReports;
+                case 4:
+                    return Forms4TabControlVM.SelectedReports;
+                default:
+                    return null;
+            }
+        }
+        set
+        {
+            switch (SelectedReportType)
+            {
+                case 1:
+                    Forms1TabControlVM.SelectedReports = value;
+                    OnPropertyChanged();
+                    break;
+                case 2:
+                    Forms2TabControlVM.SelectedReports = value;
+                    OnPropertyChanged();
+                    break;
+                case 4:
+                    Forms4TabControlVM.SelectedReports = value;
+                    OnPropertyChanged();
+                    break;
+            }
+        }
+    }
+    #endregion
+
+
+    #region UpdateReportsCollection
+    public void UpdateReportsCollection()
+    {
+        switch (SelectedReportType)
+        {
+            case 1:
+                Forms1TabControlVM.UpdateReportsCollection();
+                break;
+            case 2:
+                Forms2TabControlVM.UpdateReportsCollection();
+                break;
+            case 4:
+                Forms4TabControlVM.UpdateReportsCollection();
+                break;
+            default:
+                break;
+        }
+    }
+    #endregion
+
+    #region UpdateReportCollection
+    public void UpdateReportCollection()
+    {
+        switch (SelectedReportType)
+        {
+            case 1:
+                Forms1TabControlVM.UpdateReportCollection();
+                break;
+            case 2:
+                Forms2TabControlVM.UpdateReportCollection();
+                break;
+            case 4:
+                Forms4TabControlVM.UpdateReportCollection();
+                break;
+            default:
+                break;
+        }
+    }
+    #endregion
+
+    #region UpdateOrgsPageInfo
+    public void UpdateOrgsPageInfo()
+    {
+        switch (SelectedReportType)
+        {
+            case 1:
+                Forms1TabControlVM.UpdateOrgsPageInfo();
+                break;
+            case 2:
+                Forms2TabControlVM.UpdateOrgsPageInfo();
+                break;
+            case 4:
+                Forms4TabControlVM.UpdateOrgsPageInfo();
+                break;
+            default:
+                break;
+        }
+    }
+    #endregion
+    
+    #region UpdateFormsPageInfo
+    public void UpdateFormsPageInfo()
+    {
+        switch (SelectedReportType)
+        {
+            case 1:
+                Forms1TabControlVM.UpdateFormsPageInfo();
+                break;
+            case 2:
+                Forms2TabControlVM.UpdateFormsPageInfo();
+                break;
+            case 4:
+                Forms4TabControlVM.UpdateFormsPageInfo();
+                break;
+            default:
+                break;
+        }
+    }
+    #endregion
+
+    #region TotalReportCount
+    public void UpdateTotalReportCount()
+    {
+        switch (SelectedReportType)
+        {
+            case 1:
+                Forms1TabControlVM.UpdateTotalReportCount();
+                break;
+            case 2:
+                Forms2TabControlVM.UpdateTotalReportCount();
+                break;
+            case 4:
+                Forms4TabControlVM.UpdateTotalReportCount();
+                break;
+            default:
+                break;
+        }
+    }
+    #endregion
+
+
 
     #region OnStartProgressBar
 
@@ -99,15 +294,19 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
     #region Commands
 
-    public ICommand AddForm { get; set; }                           //  Создать и открыть новое окно формы для выбранной организации
-    public ICommand AddReports { get; set; }                        //  Создать и открыть новое окно формы организации (1.0 и 2.0)
-    public ICommand ChangeForm { get; set; }                        //  Открыть окно редактирования выбранной формы
+    public ICommand AddForm { get; set; }                           //  Создать и открыть новое окно формы для выбранной организации (1.0, 2.0)
+    public ICommand NewAddForm { get; set; }                        //  Создать и открыть новое окно формы для выбранной организации (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
+    public ICommand AddReports { get; set; }                        //  Создать и открыть новое окно формы организации (1.0, 2.0, 4.0)
+    public ICommand ChangeForm { get; set; }                        //  Открыть окно редактирования выбранной формы (1.0, 2.0)
+    public ICommand NewChangeForm { get; set; }                     //  Открыть окно редактирования выбранной формы (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
     public ICommand ChangePasFolder { get; set; }                   //  Excel -> Паспорта -> Изменить расположение паспортов по умолчанию
     public ICommand ChangeReports { get; set; }                     //  Изменить Формы организации (1.0 и 2.0)
+    public ICommand NewChangeReports { get; set; }                  //  Изменить Формы организации (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
     public ICommand ExcelExportCheckAllForms { get; set; }          //  Проверить все формы у организации
     public ICommand CheckFormFromMain { get; set; }                 //  Проверить форму
-    public ICommand DeleteForm { get; set; }                        //  Удалить выбранную форму у выбранной организации
-    public ICommand DeleteReports { get; set; }                     //  Удалить выбранную организацию
+    public ICommand DeleteForm { get; set; }                        //  Удалить выбранную форму у выбранной организации (1.0, 2.0)
+    public ICommand NewDeleteForm { get; set; }                     //  Удалить выбранную форму у выбранной организации  (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
+    public ICommand DeleteReports { get; set; }                     //  Удалить выбранную организацию (1.0, 2.0, 4.0)
 
     /// <summary>
     /// Excel -> Все формы и Excel -> Выбранная организация -> Все формы
@@ -197,12 +396,12 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     /// <summary>
     /// Экспорт организации в файл .RAODB
     /// </summary>
-    public static ICommand ExportReports => new ExportReportsAsyncCommand();
+    public ICommand ExportReports => new ExportReportsAsyncCommand();
 
     /// <summary>
     /// Экспорт организации в файл .RAODB с указанием диапазона дат выгружаемых форм
     /// </summary>
-    public static ICommand ExportReportsWithDateRange => new ExportReportsWithDateRangeAsyncCommand();
+    public ICommand ExportReportsWithDateRange => new ExportReportsWithDateRangeAsyncCommand();
 
     /// <summary>
     /// Импорт отчёта из Excel.
@@ -215,7 +414,10 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand OpenFile { get; set; }                                  //  Открыть файл
     public ICommand OpenFolder { get; set; }                                //  Открыть папку
     public ICommand SaveReports { get; set; }                               //  Сохраняет текущую базу, используется только для сохранения комментария формы
-    //public ICommand UnaccountedRad { get; set; }                    //  Радионуклиды, отсутствующие в справочнике
+                                                                            //public ICommand UnaccountedRad { get; set; }                    
+                                                                            //  Радионуклиды, отсутствующие в справочнике
+
+    public ICommand GoToFormNum { get; set; }
     
     #endregion
 
@@ -224,11 +426,15 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public MainWindowVM()
     {
         AddForm = new AddFormAsyncCommand();
+        NewAddForm = new NewAddFormAsyncCommand();
         AddReports = new AddReportsAsyncCommand();
         ChangeForm = new ChangeFormAsyncCommand();
+        NewChangeForm = new NewChangeFormAsyncCommand();
         ChangePasFolder = new ChangePasFolderAsyncCommand();
         ChangeReports = new ChangeReportsAsyncCommand();
+        NewChangeReports = new NewChangeReportsAsyncCommand();
         CheckFormFromMain = new CheckFormFromMainAsyncCommand();
+        NewDeleteForm = new NewDeleteFormAsyncCommand();
         DeleteForm = new DeleteReportAsyncCommand();
         DeleteReports = new DeleteReportsAsyncCommand();
         ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand();
@@ -241,6 +447,14 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         OpenCalculator = new OpenCalculatorAsyncCommand();
         OpenFile = new OpenFileAsyncCommand();
         OpenFolder = new OpenFolderAsyncCommand();
+        GoToFormNum = new GoToFormNumAsyncCommand(this);
+
+        _forms1TabControlVM = new Forms1TabControlVM(this);
+        _forms2TabControlVM = new Forms2TabControlVM(this);
+        _forms4TabControlVM = new Forms4TabControlVM(this);
+
+
+        UpdateReportsCollection();
     }
 
     #endregion

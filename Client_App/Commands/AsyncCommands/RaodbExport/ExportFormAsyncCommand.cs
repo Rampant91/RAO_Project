@@ -35,20 +35,39 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
-        if (parameter is not ObservableCollectionWithItemPropertyChanged<IKey> param) return;
-        var cts = new CancellationTokenSource();
-
-        foreach (var item in param)
+        int repId;
+        string formNum;
+        if (parameter is ObservableCollectionWithItemPropertyChanged<IKey> param)
+        {
+            foreach (var item in param)
+            {
+                var a = DateTime.Now.Date;
+                var aDay = a.Day.ToString();
+                var aMonth = a.Month.ToString();
+                if (aDay.Length < 2) aDay = $"0{aDay}";
+                if (aMonth.Length < 2) aMonth = $"0{aMonth}";
+                ((Report)item).ExportDate.Value = $"{aDay}.{aMonth}.{a.Year}";
+            }
+            repId = param.First().Id;
+            formNum = ((Report)param.First()).FormNum.Value;
+        }
+        else if (parameter is Report report)
         {
             var a = DateTime.Now.Date;
             var aDay = a.Day.ToString();
             var aMonth = a.Month.ToString();
             if (aDay.Length < 2) aDay = $"0{aDay}";
             if (aMonth.Length < 2) aMonth = $"0{aMonth}";
-            ((Report)item).ExportDate.Value = $"{aDay}.{aMonth}.{a.Year}";
-        }
+            report.ExportDate.Value = $"{aDay}.{aMonth}.{a.Year}";
 
-        var repId = param.First().Id;
+            repId = report.Id;
+            formNum = report.FormNum.Value;
+        }
+        else return;
+        var cts = new CancellationTokenSource();
+
+
+        
 
         #region ProgressBarInitialization
 
@@ -86,17 +105,27 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
             .AsQueryable()
             .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
             .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
+            .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows40)
             .First(x => x.Id == repId);
 
         #endregion
 
         #region Progress = 15
 
-        progressBarVM.ExportName = $"Выгрузка отчёта {reportWithoutRows.Reports.Master_DB.RegNoRep.Value}_" +
+        if (formNum.Split('.')[0] is "1" or "2")
+        {
+            progressBarVM.ExportName = $"Выгрузка отчёта {reportWithoutRows.Reports.Master_DB.RegNoRep.Value}_" +
                                    $"{reportWithoutRows.Reports.Master_DB.OkpoRep.Value}_" +
                                    $"{reportWithoutRows.FormNum_DB}_" +
                                    $"{reportWithoutRows.StartPeriod_DB}_" +
                                    $"{reportWithoutRows.EndPeriod_DB}";
+        }
+        else if (formNum.Split('.')[0] is "4")
+        {
+            progressBarVM.ExportName = $"Выгрузка отчёта " +
+                                   $"{reportWithoutRows.FormNum_DB}_" +
+                                   $"{reportWithoutRows.Year_DB}_";
+        }
         loadStatus = "Загрузка отчёта";
         progressBarVM.ValueBar = 15;
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
@@ -134,6 +163,7 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
             .Include(x => x.Rows210.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows41.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Notes.OrderBy(x => x.Order))
             .FirstAsync(x => x.Id == repId, cancellationToken: cts.Token);
 
@@ -204,6 +234,13 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
             "2.0" when orgWithExpForm.Master.Rows20.Count > 0 =>
                 StaticStringMethods.RemoveForbiddenChars(orgWithExpForm.Master.RegNoRep.Value) +
                 $"_{StaticStringMethods.RemoveForbiddenChars(orgWithExpForm.Master.OkpoRep.Value)}" +
+                $"_{exportReport.FormNum_DB}" +
+                $"_{StaticStringMethods.RemoveForbiddenChars(exportReport.Year_DB)}" +
+                $"_{exportReport.CorrectionNumber_DB}" +
+                $"_{Assembly.GetExecutingAssembly().GetName().Version}",
+
+            "4.0" when orgWithExpForm.Master.Rows40.Count > 0 =>
+                $"{orgWithExpForm.Master.Rows40[0].CodeSubjectRF_DB}" +
                 $"_{exportReport.FormNum_DB}" +
                 $"_{StaticStringMethods.RemoveForbiddenChars(exportReport.Year_DB)}" +
                 $"_{exportReport.CorrectionNumber_DB}" +
@@ -356,37 +393,72 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
 
         if (!cts.IsCancellationRequested)
         {
-            #region ExportCompliteMessage
+            string? answer = null;
+            if (orgWithExpForm.Master.FormNum_DB is "1.0" or "2.0")
+            {
+                #region ExportCompliteMessage 1.0, 2.0
 
-            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                {
-                    ButtonDefinitions =
-                    [
-                        new ButtonDefinition { Name = "Ок", IsDefault = true },
+                answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    {
+                        ButtonDefinitions =
+                        [
+                            new ButtonDefinition { Name = "Ок", IsDefault = true },
                         new ButtonDefinition { Name = "Открыть расположение файла" }
-                    ],
-                    ContentTitle = "Выгрузка в .raodb",
-                    ContentHeader = "Уведомление",
-                    ContentMessage =
-                        "Файл экспорта формы сохранен по пути:" +
-                        $"{Environment.NewLine}{fullPath}" +
-                        $"{Environment.NewLine}" +
-                        $"{Environment.NewLine}Регистрационный номер - {orgWithExpForm.Master.RegNoRep.Value}" +
-                        $"{Environment.NewLine}ОКПО - {orgWithExpForm.Master.OkpoRep.Value}" +
-                        $"{Environment.NewLine}Сокращенное наименование - {orgWithExpForm.Master.ShortJurLicoRep.Value}" +
-                        $"{Environment.NewLine}" +
-                        $"{Environment.NewLine}Номер формы - {exportReport.FormNum_DB}" +
-                        $"{Environment.NewLine}Начало отчетного периода - {exportReport.StartPeriod_DB}" +
-                        $"{Environment.NewLine}Конец отчетного периода - {exportReport.EndPeriod_DB}" +
-                        $"{Environment.NewLine}Дата выгрузки - {exportReport.ExportDate_DB}" +
-                        $"{Environment.NewLine}Номер корректировки - {exportReport.CorrectionNumber_DB}" +
-                        $"{Environment.NewLine}Количество строк - {exportReport.Rows.Count}{InventoryCheck(exportReport)}",
-                    MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterScreen
-                }).ShowDialog(Desktop.MainWindow));
+                        ],
+                        ContentTitle = "Выгрузка в .raodb",
+                        ContentHeader = "Уведомление",
+                        ContentMessage =
+                            "Файл экспорта формы сохранен по пути:" +
+                            $"{Environment.NewLine}{fullPath}" +
+                            $"{Environment.NewLine}" +
+                            $"{Environment.NewLine}Регистрационный номер - {orgWithExpForm.Master.RegNoRep.Value}" +
+                            $"{Environment.NewLine}ОКПО - {orgWithExpForm.Master.OkpoRep.Value}" +
+                            $"{Environment.NewLine}Сокращенное наименование - {orgWithExpForm.Master.ShortJurLicoRep.Value}" +
+                            $"{Environment.NewLine}" +
+                            $"{Environment.NewLine}Номер формы - {exportReport.FormNum_DB}" +
+                            $"{Environment.NewLine}Начало отчетного периода - {exportReport.StartPeriod_DB}" +
+                            $"{Environment.NewLine}Конец отчетного периода - {exportReport.EndPeriod_DB}" +
+                            $"{Environment.NewLine}Дата выгрузки - {exportReport.ExportDate_DB}" +
+                            $"{Environment.NewLine}Номер корректировки - {exportReport.CorrectionNumber_DB}" +
+                            $"{Environment.NewLine}Количество строк - {exportReport.Rows.Count}{InventoryCheck(exportReport)}",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen
+                    }).ShowDialog(Desktop.MainWindow));
 
-            #endregion
+                #endregion
+            }
+            else if (orgWithExpForm.Master.FormNum_DB is "4.0")
+            {
+                #region ExportCompliteMessage 4.0
+
+                answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    {
+                        ButtonDefinitions =
+                        [
+                            new ButtonDefinition { Name = "Ок", IsDefault = true },
+                        new ButtonDefinition { Name = "Открыть расположение файла" }
+                        ],
+                        ContentTitle = "Выгрузка в .raodb",
+                        ContentHeader = "Уведомление",
+                        ContentMessage =
+                            "Файл экспорта формы сохранен по пути:" +
+                            $"{Environment.NewLine}{fullPath}" +
+                            $"{Environment.NewLine}" +
+                            $"{Environment.NewLine}Сокращенное наименование - {orgWithExpForm.Master.Rows40[0].SubjectRF.Value}" +
+                            $"{Environment.NewLine}" +
+                            $"{Environment.NewLine}Номер формы - {exportReport.FormNum_DB}" +
+                            $"{Environment.NewLine}Год - {exportReport.Year_DB}" +
+                            $"{Environment.NewLine}Дата выгрузки - {exportReport.ExportDate_DB}" +
+                            $"{Environment.NewLine}Номер корректировки - {exportReport.CorrectionNumber_DB}" +
+                            $"{Environment.NewLine}Количество строк - {exportReport.Rows.Count}{InventoryCheck(exportReport)}",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen
+                    }).ShowDialog(Desktop.MainWindow));
+
+                #endregion
+            }
 
             if (answer is "Открыть расположение файла")
             {

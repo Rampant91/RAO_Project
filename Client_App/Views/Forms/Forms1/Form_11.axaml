@@ -120,7 +120,7 @@
                 <!--#region Дополнительные функции-->
 
                 <Border Classes="borderContainer">
-                    <Grid Margin="5" RowDefinitions="Auto,Auto,Auto">
+                    <Grid Margin="5" RowDefinitions="Auto,Auto,Auto,Auto">
 
                         <Button Grid.Row="0" 
                                 Command="{Binding SourceTransmissionAll}" 
@@ -129,6 +129,7 @@
                         <StackPanel Grid.Row="1" Orientation="Horizontal">
                             <TextBlock Margin="5" Text="Автозаполнение:" />
                             <CheckBox Margin="5" IsChecked="{Binding IsAutoReplaceEnabled}" />
+
                         </StackPanel>
 
                         <Button Grid.Row="2"
@@ -389,7 +390,21 @@
                         <local:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
                     </interactivity:Interaction.Behaviors>
 
-                    <DataGrid.Columns>
+					<DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding NumberInOrder.Value}"
+											Width="40"
+											IsReadOnly="True"
+											x:DataType="forms1:Form11">
+							<DataGridTextColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="1"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTextColumn.HeaderTemplate>
+						</DataGridTextColumn>
 
                         <DataGridTextColumn Width="40"
                                             x:DataType="forms1:Form11"
@@ -887,6 +902,7 @@
                             <local:DataGridColumnWidthLoadBehavior FormNum="notes" />
                             <local:DataGridPointerBehavior />
                             <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
+							<local:DataGridSwitchToNotesBehavior SourceDataGrid="{Binding #dataGrid}"/>
                         </interactivity:Interaction.Behaviors>
 
                         <DataGrid.Columns>

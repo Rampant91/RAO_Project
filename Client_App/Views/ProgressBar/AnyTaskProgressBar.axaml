@@ -3,65 +3,56 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:Client_App.ViewModels.ProgressBar"
+        xmlns:behaviors="clr-namespace:Client_App.Behaviors"
         mc:Ignorable="d"
         x:Class="Client_App.Views.ProgressBar.AnyTaskProgressBar"
+        x:CompileBindings="True"
+        x:DataType="vm:AnyTaskProgressBarVM"
         Title="{Binding ExportType, Mode=OneWay}"
-        d:DesignWidth="300" 
-        d:DesignHeight="90"
-        Width="300"
-        Height="150"
-        MinWidth="300"
-        MinHeight="150"
-        MaxWidth="600"
-        MaxHeight="300"
-        SystemDecorations="Full"
-        WindowStartupLocation="CenterScreen">
+        MinWidth="300" MinHeight="150"
+        MaxWidth="600" MaxHeight="300"
+        d:DesignWidth="300"  d:DesignHeight="150"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.2" behaviors:WindowScreenSizeBehavior.HeightRatio="0.2"
+        WindowStartupLocation="Manual"
+        SystemDecorations="Full">
 
     <Design.DataContext>
         <vm:AnyTaskProgressBarVM/>
     </Design.DataContext>
     
-    <Grid 
-        PointerMoved="InputElement_OnPointerMoved"
-        PointerPressed="InputElement_OnPointerPressed"
-        PointerReleased="InputElement_OnPointerReleased" 
-        RowDefinitions="40,10,50,10,40">
+    <Grid PointerMoved="InputElement_OnPointerMoved"
+          PointerPressed="InputElement_OnPointerPressed"
+          PointerReleased="InputElement_OnPointerReleased" 
+          RowDefinitions="40,10,50,10,40">
         <Grid Grid.Row="0" MinHeight="30">
-            <TextBlock 
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Padding="5,0"
-                TextWrapping="Wrap"
-                Text="{Binding ExportName, Mode=OneWay}">
-            </TextBlock>
+            <TextBlock HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       Padding="5,0"
+                       TextWrapping="Wrap"
+                       Text="{Binding ExportName, Mode=OneWay}"/>
         </Grid>
         <Grid Grid.Row="2">
-            <ProgressBar
-                Height="50"
-                Maximum="100"
-                Minimum="0"
-                Value="{Binding ValueBar, Mode=OneWay}">
-            </ProgressBar>
-            <TextBlock
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Padding="0,5"
-                Text="{Binding LoadStatus, Mode=OneWay}">
-            </TextBlock>
+            <ProgressBar Height="50"
+                         Maximum="100"
+                         Minimum="0"
+                         Value="{Binding ValueBar, Mode=OneWay}"/>
+            <TextBlock HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Padding="0,5"
+                       Text="{Binding LoadStatus, Mode=OneWay}"/>
         </Grid>
         <Grid Grid.Row="4">
-            <Button
-                Height="30"
-                Width="50"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Margin="20,5,5,20"
-                Padding="0,5"
-                IsCancel="True"
-                IsEnabled="True"
-                Content="Отмена"
-                Command="{Binding ExcelExportCancel, Mode=OneWay}"
-                CommandParameter="{Binding CancellationTokenSource}"/>
+            <Button Height="30"
+                    Width="50"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Margin="20,5,5,20"
+                    Padding="0,5"
+                    IsCancel="True"
+                    IsEnabled="True"
+                    Content="Отмена"
+                    Command="{Binding ExcelExportCancel, Mode=OneWay}"
+                    CommandParameter="{Binding CancellationTokenSource}"/>
         </Grid>
     </Grid>
 </Window>

@@ -1,133 +1,121 @@
-<Window
-    x:Class="Client_App.Views.CompareReportsTitleForm"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:Client_App.ViewModels"
-    xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
-    Title="{Binding Title, Mode=OneTime}"
-    Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.5', FallbackValue='600', Mode=OneTime}"
-    Height="{Binding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.75', FallbackValue='800', Mode=OneTime}"
-    MinWidth="950"
-    MinHeight="600"
-    x:CompileBindings="True"
-    x:DataType="vm:CompareReportsTitleFormVM"
-    WindowStartupLocation="CenterScreen"
-    mc:Ignorable="d">
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Client_App.ViewModels"
+        xmlns:behaviors="clr-namespace:Client_App.Behaviors"
+        mc:Ignorable="d"
+        x:Class="Client_App.Views.CompareReportsTitleForm"
+        x:CompileBindings="True"
+        x:DataType="vm:CompareReportsTitleFormVM"
+        Title="{Binding Title, Mode=OneTime}"
+        MinWidth="600" MinHeight="500"
+        d:DesignWidth="700" d:DesignHeight="700"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.6" behaviors:WindowScreenSizeBehavior.HeightRatio="0.85"
+        WindowStartupLocation="Manual"
+        CanResize="True">
 
     <Design.DataContext>
         <vm:CompareReportsTitleFormVM/>
     </Design.DataContext>
 
     <Grid>
-        <!--  TopTable  -->
         <Grid.RowDefinitions>
             <RowDefinition Height="*" MaxHeight="200"/>
             <RowDefinition Height="2*" MinHeight="400"/>
         </Grid.RowDefinitions>
-        <Border
-            Grid.Row="0"
-            MinHeight="200"
-            MaxHeight="200"
-            Margin="5,5,5,0"
-            Padding="0,5,0,0"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            BorderBrush="Black"
-            BorderThickness="1"
-            CornerRadius="5">
+
+        <!-- #region TopTable-->
+
+        <Border Grid.Row="0"
+                MinHeight="200"
+                MaxHeight="200"
+                Margin="5,5,5,0"
+                Padding="0,5,0,0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                BorderBrush="Black"
+                BorderThickness="1"
+                CornerRadius="5">
             <Grid ColumnDefinitions="250,400" RowDefinitions="*,*,*,*,*">
-                <TextBlock
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    Margin="5,3,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Text="Регистрационный номер:"/>
-                <TextBox
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    Width="300"
-                    Height="30"
-                    Margin="0,3,5,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    IsReadOnly="True"
-                    Text="{Binding RegNo, Mode=OneTime}"/>
-                <TextBlock
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Margin="5,0,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Text="Сокращенное наименование:"/>
-                <TextBox
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Width="300"
-                    Height="30"
-                    Margin="0,0,5,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    IsReadOnly="True"
-                    Text="{Binding ShortJurLico, Mode=OneTime}"/>
-                <TextBlock
-                    Grid.Row="2"
-                    Grid.Column="0"
-                    Margin="5,0,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Text="ОКПО:"/>
-                <TextBox
-                    Grid.Row="2"
-                    Grid.Column="1"
-                    Width="300"
-                    Height="30"
-                    Margin="0,0,5,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    IsReadOnly="True"
-                    Text="{Binding Okpo, Mode=OneTime}"/>
-                <WrapPanel
-                    Grid.Row="3"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="2"
-                    Margin="20,30,0,20">
-                    <Button
-                        Name="Replace"
-                        Width="80"
-                        Height="30"
-                        Margin="0,0,20,0"
-                        Click="ReplaceButtonClick"
-                        Content="Заменить"/>
-                    <Button
-                        Name="CloseWithoutReplace"
-                        Width="80"
-                        Height="30"
-                        Margin="0,0,20,0"
-                        Click="CloseWithoutReplaceButtonClick"
-                        Content="Не заменять"/>
-                    <Button
-                        Name="CloseWithoutReplaceForThisReps"
-                        Width="150"
-                        Height="30"
-                        Margin="0,0,143,0"
-                        Click="CloseWithoutReplaceForThisRepsButtonClick"
-                        Content="Не заменять у этой орг."/>
-                    <Button
-                        Name="SelectAll"
-                        Width="80"
-                        Height="30"
-                        Click="SelectAllButtonClick"
-                        Content="Выбрать всё"/>
+                <TextBlock Grid.Row="0"
+                           Grid.Column="0"
+                           Margin="5,3,0,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           Text="Регистрационный номер:"/>
+                <TextBox Grid.Row="0"
+                         Grid.Column="1"
+                         Width="300"
+                         Height="30"
+                         Margin="0,3,5,0"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Center"
+                         IsReadOnly="True"
+                         Text="{Binding RegNo, Mode=OneTime}"/>
+                <TextBlock Grid.Row="1"
+                           Grid.Column="0"
+                           Margin="5,0,0,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           Text="Сокращенное наименование:"/>
+                <TextBox Grid.Row="1"
+                         Grid.Column="1"
+                         Width="300"
+                         Height="30"
+                         Margin="0,0,5,0"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Center"
+                         IsReadOnly="True"
+                         Text="{Binding ShortJurLico, Mode=OneTime}"/>
+                <TextBlock Grid.Row="2"
+                           Grid.Column="0"
+                           Margin="5,0,0,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           Text="ОКПО:"/>
+                <TextBox Grid.Row="2"
+                         Grid.Column="1"
+                         Width="300"
+                         Height="30"
+                         Margin="0,0,5,0"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Center"
+                         IsReadOnly="True"
+                         Text="{Binding Okpo, Mode=OneTime}"/>
+                <WrapPanel Grid.Row="3"
+                           Grid.Column="0"
+                           Grid.ColumnSpan="2"
+                           Margin="20,30,0,20">
+                    <Button Name="Replace"
+                            Width="80"
+                            Height="30"
+                            Margin="0,0,20,0"
+                            Click="ReplaceButtonClick"
+                            Content="Заменить"/>
+                    <Button Name="CloseWithoutReplace"
+                            Width="80"
+                            Height="30"
+                            Margin="0,0,20,0"
+                            Click="CloseWithoutReplaceButtonClick"
+                            Content="Не заменять"/>
+                    <Button Name="CloseWithoutReplaceForThisReps"
+                            Width="150"
+                            Height="30"
+                            Margin="0,0,143,0"
+                            Click="CloseWithoutReplaceForThisRepsButtonClick"
+                            Content="Не заменять у этой орг."/>
+                    <Button Name="SelectAll"
+                            Width="80"
+                            Height="30"
+                            Click="SelectAllButtonClick"
+                            Content="Выбрать всё"/>
                 </WrapPanel>
-                <StackPanel
-                    Grid.Row="4"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="2"
-                    VerticalAlignment="Bottom"
-                    Orientation="Horizontal">
+                <StackPanel Grid.Row="4"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            VerticalAlignment="Bottom"
+                            Orientation="Horizontal">
                     <TextBlock Margin="320,0,0,0" Text="Значения в базе"/>
                     <TextBlock Margin="117,0,0,0" Text="Заменить"/>
                     <TextBlock Margin="85,0,0,0" Text="Импортируемые значения"/>
@@ -135,814 +123,714 @@
             </Grid>
 
         </Border>
-        <!--  ScrollData  -->
-        <ScrollViewer
-            Grid.Row="1"
-            MinHeight="400"
-            Margin="0,5,0,0"
-            VerticalAlignment="Top"
-            VerticalContentAlignment="Stretch"
-            VerticalScrollBarVisibility="Hidden">
+
+        <!-- #endregion TopTable-->
+
+        <!-- #region ScrollViewer-->
+
+        <ScrollViewer Grid.Row="1"
+                      MinHeight="400"
+                      Margin="0,5,0,0"
+                      VerticalAlignment="Top"
+                      VerticalContentAlignment="Stretch"
+                      VerticalScrollBarVisibility="Hidden">
             <StackPanel>
-                <!--  Орган управления  -->
-                <Border
-                    Margin="5"
-                    Padding="3"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    BorderBrush="Black"
-                    BorderThickness="1"
-                    CornerRadius="5">
+                
+                <!-- #region Орган управления-->
+
+                <Border Margin="5"
+                        Padding="3"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        BorderBrush="Black"
+                        BorderThickness="1"
+                        CornerRadius="5">
                     <Grid VerticalAlignment="Center" ColumnDefinitions="210,300,75,300">
-                        <TextBlock
-                            Grid.Column="0"
-                            Height="32"
-                            Margin="5,0,0,0"
-                            IsEnabled="False"
-                            Text="Орган управления использованием атомной энергии"
-                            TextWrapping="Wrap"/>
-                        <TextBox
-                            Grid.Column="1"
-                            Height="42"
-                            Margin="0,3"
-                            AcceptsReturn="True"
-                            IsReadOnly="True"
-                            ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                            Text="{Binding OldOrganUprav, Mode=OneTime}"
-                            TextWrapping="Wrap"/>
-                        <CheckBox
-                            Grid.Column="2"
-                            Margin="0,14"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            IsChecked="{Binding ReplaceOrganUprav, Mode=TwoWay}"/>
-                        <TextBox
-                            Grid.Column="3"
-                            Height="42"
-                            Margin="0,3"
-                            AcceptsReturn="True"
-                            ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                            Text="{Binding NewOrganUprav, Mode=TwoWay}"
-                            TextWrapping="Wrap"/>
+                        <TextBlock Grid.Column="0"
+                                   Height="32"
+                                   Margin="5,0,0,0"
+                                   IsEnabled="False"
+                                   Text="Орган управления использованием атомной энергии"
+                                   TextWrapping="Wrap"/>
+                        <TextBox Grid.Column="1"
+                                 Height="42"
+                                 Margin="0,3"
+                                 AcceptsReturn="True"
+                                 IsReadOnly="True"
+                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                 Text="{Binding OldOrganUprav, Mode=OneTime}"
+                                 TextWrapping="Wrap"/>
+                        <CheckBox Grid.Column="2"
+                                  Margin="0,14"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding ReplaceOrganUprav, Mode=TwoWay}"/>
+                        <TextBox Grid.Column="3"
+                                 Height="42"
+                                 Margin="0,3"
+                                 AcceptsReturn="True"
+                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                 Text="{Binding NewOrganUprav, Mode=TwoWay}"
+                                 TextWrapping="Wrap"/>
                     </Grid>
                 </Border>
-                <!--  Юридическое лицо  -->
-                <Border
-                    Margin="5"
-                    Padding="3"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    BorderBrush="Black"
-                    BorderThickness="1"
-                    CornerRadius="5">
+
+                <!-- #endregion Орган управления-->
+
+                <!-- #region Юридическое лицо-->
+
+                <Border Margin="5"
+                        Padding="3"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        BorderBrush="Black"
+                        BorderThickness="1"
+                        CornerRadius="5">
                     <Grid ColumnDefinitions="210,300,75,300" RowDefinitions="*,*">
-                        <!--  Юридическое лицо - Наименования полей  -->
-                        <TextBlock
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            Grid.ColumnSpan="4"
-                            Height="32"
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Top"
-                            FontSize="18"
-                            FontWeight="Bold"
-                            Text="Юридическое лицо"/>
-                        <StackPanel
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            Margin="0,5,0,0">
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="Субъект Российской федерации"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,8"
-                                Text="Наименование юр. лица"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="Сокращенное наименование"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,8"
-                                Text="Адрес места нахождения юр. лица"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,8"
-                                Text="Фактический адрес юр. лица"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,8"
-                                Text="ФИО, должность руководителя"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="Телефон организации"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="Факс организации"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="Электронная почта организации"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="ОКПО"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="ОКВЭД"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="ОКОГУ"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="ОКТМО"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="ИНН"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="КПП"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="ОКОПФ"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="ОКФС"/>
+
+                        <!-- #region Юридическое лицо - Наименования полей-->
+
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="0"
+                                   Grid.ColumnSpan="4"
+                                   Height="32"
+                                   Margin="5,0,0,0"
+                                   VerticalAlignment="Top"
+                                   FontSize="18"
+                                   FontWeight="Bold"
+                                   Text="Юридическое лицо"/>
+                        <StackPanel Grid.Row="1"
+                                    Grid.Column="0"
+                                    Margin="0,5,0,0">
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="Субъект Российской федерации"/>
+                            <TextBlock Height="32"
+                                       Margin="5,8"
+                                       Text="Наименование юр. лица"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="Сокращенное наименование"/>
+                            <TextBlock Height="32"
+                                       Margin="5,8"
+                                       Text="Адрес места нахождения юр. лица"/>
+                            <TextBlock Height="32"
+                                       Margin="5,8"
+                                       Text="Фактический адрес юр. лица"/>
+                            <TextBlock Height="32"
+                                       Margin="5,8"
+                                       Text="ФИО, должность руководителя"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="Телефон организации"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="Факс организации"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="Электронная почта организации"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="ОКПО"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="ОКВЭД"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="ОКОГУ"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="ОКТМО"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="ИНН"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="КПП"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="ОКОПФ"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="ОКФС"/>
                         </StackPanel>
-                        <!--  Юридическое лицо - Значения в базе  -->
-                        <StackPanel
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Top">
-                            <TextBox
-                                Height="26"
-                                Margin="0,0,0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldSubjectRF0, Mode=OneTime}"/>
-                            <TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                IsReadOnly="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding OldJurLico0, Mode=OneTime}"
-                                TextWrapping="Wrap"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldShortJurLico0, Mode=OneTime}"/>
-                            <TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                IsReadOnly="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding OldJurLicoAddress0, Mode=OneTime}"
-                                TextWrapping="Wrap"/>
-                            <TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                IsReadOnly="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding OldJurLicoFactAddress0, Mode=OneTime}"
-                                TextWrapping="Wrap"/>
-                            <TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                IsReadOnly="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding OldGradeFIO0, Mode=OneTime}"
-                                TextWrapping="Wrap"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldTelephone0, Mode=OneTime}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldFax0, Mode=OneTime}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldEmail0, Mode=OneTime}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldOkpo0, Mode=OneTime}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldOkved0, Mode=OneTime}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldOkogu0, Mode=OneTime}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldOktmo0, Mode=OneTime}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldInn0, Mode=OneTime}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldKpp0, Mode=OneTime}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldOkopf0, Mode=OneTime}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldOkfs0, Mode=OneTime}"/>
+
+                        <!-- #endregion Юридическое лицо - Наименования полей-->
+
+                        <!-- #region Юридическое лицо - Значения в базе-->
+
+                        <StackPanel Grid.Row="1"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top">
+                            <TextBox Height="26"
+                                     Margin="0,0,0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldSubjectRF0, Mode=OneTime}"/>
+                            <TextBox Height="42"
+                                     Margin="0,3"
+                                     AcceptsReturn="True"
+                                     IsReadOnly="True"
+                                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                     Text="{Binding OldJurLico0, Mode=OneTime}"
+                                     TextWrapping="Wrap"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldShortJurLico0, Mode=OneTime}"/>
+                            <TextBox Height="42"
+                                     Margin="0,3"
+                                     AcceptsReturn="True"
+                                     IsReadOnly="True"
+                                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                     Text="{Binding OldJurLicoAddress0, Mode=OneTime}"
+                                     TextWrapping="Wrap"/>
+                            <TextBox Height="42"
+                                     Margin="0,3"
+                                     AcceptsReturn="True"
+                                     IsReadOnly="True"
+                                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                     Text="{Binding OldJurLicoFactAddress0, Mode=OneTime}"
+                                     TextWrapping="Wrap"/>
+                            <TextBox Height="42"
+                                     Margin="0,3"
+                                     AcceptsReturn="True"
+                                     IsReadOnly="True"
+                                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                     Text="{Binding OldGradeFIO0, Mode=OneTime}"
+                                     TextWrapping="Wrap"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldTelephone0, Mode=OneTime}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldFax0, Mode=OneTime}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldEmail0, Mode=OneTime}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldOkpo0, Mode=OneTime}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldOkved0, Mode=OneTime}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldOkogu0, Mode=OneTime}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldOktmo0, Mode=OneTime}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldInn0, Mode=OneTime}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldKpp0, Mode=OneTime}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldOkopf0, Mode=OneTime}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldOkfs0, Mode=OneTime}"/>
                         </StackPanel>
-                        <!--  Юридическое лицо - CheckBox  -->
-                        <StackPanel
-                            Grid.Row="1"
-                            Grid.Column="2"
-                            HorizontalAlignment="Center">
-                            <CheckBox
-                                Margin="0,4,0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceSubjectRF0, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,15"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceJurLico0, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceShortJurLico0, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,15"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceJurLicoAddress0, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,15"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceJurLicoFactAddress0, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,15"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceGradeFIO0, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceTelephone0, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceFax0, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceEmail0, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceOkpo0, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceOkved0, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceOkogu0, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceOktmo0, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceInn0, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceKpp0, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceOkopf0, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceOkfs0, Mode=TwoWay}"/>
+
+                        <!-- #endregion Юридическое лицо - Значения в базе-->
+
+                        <!-- #region Юридическое лицо - CheckBox-->
+
+                        <StackPanel Grid.Row="1"
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Center">
+                            <CheckBox Margin="0,4,0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceSubjectRF0, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,15"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceJurLico0, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceShortJurLico0, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,15"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceJurLicoAddress0, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,15"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceJurLicoFactAddress0, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,15"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceGradeFIO0, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceTelephone0, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceFax0, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceEmail0, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceOkpo0, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceOkved0, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceOkogu0, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceOktmo0, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceInn0, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceKpp0, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceOkopf0, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceOkfs0, Mode=TwoWay}"/>
                         </StackPanel>
-                        <!--  Юридическое лицо - Новые значения  -->
-                        <StackPanel
-                            Grid.Row="1"
-                            Grid.Column="3"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Top">
-                            <TextBox
-                                Height="26"
-                                Margin="0,0,0,3"
-                                Text="{Binding NewSubjectRF0, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding NewJurLico0, Mode=TwoWay}"
-                                TextWrapping="Wrap"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewShortJurLico0, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding NewJurLicoAddress0, Mode=TwoWay}"
-                                TextWrapping="Wrap"/>
-                            <TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding NewJurLicoFactAddress0, Mode=TwoWay}"
-                                TextWrapping="Wrap"/>
-                            <TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding NewGradeFIO0, Mode=TwoWay}"
-                                TextWrapping="Wrap"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewTelephone0, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewFax0, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewEmail0, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewOkpo0, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewOkved0, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewOkogu0, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewOktmo0, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewInn0, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewKpp0, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewOkopf0, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewOkfs0, Mode=TwoWay}"/>
+
+                        <!-- #endregion Юридическое лицо - CheckBox-->
+
+                        <!-- #region Юридическое лицо - Новые значения-->
+
+                        <StackPanel Grid.Row="1"
+                                    Grid.Column="3"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top">
+                            <TextBox Height="26"
+                                     Margin="0,0,0,3"
+                                     Text="{Binding NewSubjectRF0, Mode=TwoWay}"/>
+                            <TextBox Height="42"
+                                     Margin="0,3"
+                                     AcceptsReturn="True"
+                                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                     Text="{Binding NewJurLico0, Mode=TwoWay}"
+                                     TextWrapping="Wrap"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewShortJurLico0, Mode=TwoWay}"/>
+                            <TextBox Height="42"
+                                     Margin="0,3"
+                                     AcceptsReturn="True"
+                                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                     Text="{Binding NewJurLicoAddress0, Mode=TwoWay}"
+                                     TextWrapping="Wrap"/>
+                            <TextBox Height="42"
+                                     Margin="0,3"
+                                     AcceptsReturn="True"
+                                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                     Text="{Binding NewJurLicoFactAddress0, Mode=TwoWay}"
+                                     TextWrapping="Wrap"/>
+                            <TextBox Height="42"
+                                     Margin="0,3"
+                                     AcceptsReturn="True"
+                                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                     Text="{Binding NewGradeFIO0, Mode=TwoWay}"
+                                     TextWrapping="Wrap"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewTelephone0, Mode=TwoWay}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewFax0, Mode=TwoWay}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewEmail0, Mode=TwoWay}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewOkpo0, Mode=TwoWay}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewOkved0, Mode=TwoWay}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewOkogu0, Mode=TwoWay}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewOktmo0, Mode=TwoWay}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewInn0, Mode=TwoWay}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewKpp0, Mode=TwoWay}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewOkopf0, Mode=TwoWay}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewOkfs0, Mode=TwoWay}"/>
                         </StackPanel>
+
+                        <!-- #endregion Юридическое лицо - Новые значения-->
+
                     </Grid>
                 </Border>
-                <!--  Территориальное обособленное подразделение  -->
-                <Border
-                    Margin="5,0,5,5"
-                    Padding="3"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    BorderBrush="Black"
-                    BorderThickness="1"
-                    CornerRadius="5">
+
+                <!-- #endregion Юридическое лицо-->
+
+                <!-- #region Территориальное обособленное подразделение-->
+
+                <Border Margin="5,0,5,5"
+                        Padding="3"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        BorderBrush="Black"
+                        BorderThickness="1"
+                        CornerRadius="5">
                     <Grid ColumnDefinitions="210,300,75,300" RowDefinitions="*,*">
-                        <!--  Территориальное обособленное подразделение - Наименования полей  -->
-                        <TextBlock
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            Grid.ColumnSpan="4"
-                            Height="32"
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Top"
-                            FontSize="18"
-                            FontWeight="Bold"
-                            Text="Территориальное обособленное подразделение"/>
-                        <StackPanel
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            Margin="0,5,0,0">
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="Субъект Российской федерации"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,8"
-                                Text="Наименование юр. лица"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="Сокращенное наименование"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,8"
-                                Text="Адрес места нахождения юр. лица"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,8"
-                                Text="Фактический адрес юр. лица"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,8"
-                                Text="ФИО, должность руководителя"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="Телефон организации"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="Факс организации"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="Электронная почта организации"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="ОКПО"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="ОКВЭД"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="ОКОГУ"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="ОКТМО"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="ИНН"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="КПП"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="ОКОПФ"/>
-                            <TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="ОКФС"/>
+
+                        <!-- #region Территориальное обособленное подразделение - Наименования полей-->
+
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="0"
+                                   Grid.ColumnSpan="4"
+                                   Height="32"
+                                   Margin="5,0,0,0"
+                                   VerticalAlignment="Top"
+                                   FontSize="18"
+                                   FontWeight="Bold"
+                                   Text="Территориальное обособленное подразделение"/>
+                        <StackPanel Grid.Row="1"
+                                    Grid.Column="0"
+                                    Margin="0,5,0,0">
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="Субъект Российской федерации"/>
+                            <TextBlock Height="32"
+                                       Margin="5,8"
+                                       Text="Наименование юр. лица"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="Сокращенное наименование"/>
+                            <TextBlock Height="32"
+                                       Margin="5,8"
+                                       Text="Адрес места нахождения юр. лица"/>
+                            <TextBlock Height="32"
+                                       Margin="5,8"
+                                       Text="Фактический адрес юр. лица"/>
+                            <TextBlock Height="32"
+                                       Margin="5,8"
+                                       Text="ФИО, должность руководителя"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="Телефон организации"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="Факс организации"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="Электронная почта организации"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="ОКПО"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="ОКВЭД"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="ОКОГУ"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="ОКТМО"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="ИНН"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="КПП"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="ОКОПФ"/>
+                            <TextBlock Height="32"
+                                       Margin="5,0"
+                                       Text="ОКФС"/>
                         </StackPanel>
-                        <!--  Территориальное обособленное подразделение - Значения в базе  -->
-                        <StackPanel
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Top">
-                            <TextBox
-                                Height="26"
-                                Margin="0,0,0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldSubjectRF1, Mode=OneTime}"/>
-                            <TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                IsReadOnly="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding OldJurLico1, Mode=OneTime}"
-                                TextWrapping="Wrap"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldShortJurLico1, Mode=OneTime}"/>
-                            <TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                IsReadOnly="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding OldJurLicoAddress1, Mode=OneTime}"
-                                TextWrapping="Wrap"/>
-                            <TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                IsReadOnly="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding OldJurLicoFactAddress1, Mode=OneTime}"
-                                TextWrapping="Wrap"/>
-                            <TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                IsReadOnly="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding OldGradeFIO1, Mode=OneTime}"
-                                TextWrapping="Wrap"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldTelephone1, Mode=OneTime}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldFax1, Mode=OneTime}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldEmail1, Mode=OneTime}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldOkpo1, Mode=OneTime}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldOkved1, Mode=OneTime}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldOkogu1, Mode=OneTime}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldOktmo1, Mode=OneTime}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldInn1, Mode=OneTime}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldKpp1, Mode=OneTime}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldOkopf1, Mode=OneTime}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                IsReadOnly="True"
-                                Text="{Binding OldOkfs1, Mode=OneTime}"/>
+
+                        <!-- #endregion Территориальное обособленное подразделение - Наименования полей-->
+
+                        <!-- #region Территориальное обособленное подразделение - Значения в базе-->
+
+                        <StackPanel Grid.Row="1"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top">
+                            <TextBox Height="26"
+                                     Margin="0,0,0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldSubjectRF1, Mode=OneTime}"/>
+                            <TextBox Height="42"
+                                     Margin="0,3"
+                                     AcceptsReturn="True"
+                                     IsReadOnly="True"
+                                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                     Text="{Binding OldJurLico1, Mode=OneTime}"
+                                     TextWrapping="Wrap"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldShortJurLico1, Mode=OneTime}"/>
+                            <TextBox Height="42"
+                                     Margin="0,3"
+                                     AcceptsReturn="True"
+                                     IsReadOnly="True"
+                                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                     Text="{Binding OldJurLicoAddress1, Mode=OneTime}"
+                                     TextWrapping="Wrap"/>
+                            <TextBox Height="42"
+                                     Margin="0,3"
+                                     AcceptsReturn="True"
+                                     IsReadOnly="True"
+                                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                     Text="{Binding OldJurLicoFactAddress1, Mode=OneTime}"
+                                     TextWrapping="Wrap"/>
+                            <TextBox Height="42"
+                                     Margin="0,3"
+                                     AcceptsReturn="True"
+                                     IsReadOnly="True"
+                                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                     Text="{Binding OldGradeFIO1, Mode=OneTime}"
+                                     TextWrapping="Wrap"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldTelephone1, Mode=OneTime}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldFax1, Mode=OneTime}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldEmail1, Mode=OneTime}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldOkpo1, Mode=OneTime}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldOkved1, Mode=OneTime}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldOkogu1, Mode=OneTime}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldOktmo1, Mode=OneTime}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldInn1, Mode=OneTime}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldKpp1, Mode=OneTime}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldOkopf1, Mode=OneTime}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     IsReadOnly="True"
+                                     Text="{Binding OldOkfs1, Mode=OneTime}"/>
                         </StackPanel>
-                        <!--  Территориальное обособленное подразделение - CheckBox  -->
-                        <StackPanel
-                            Grid.Row="1"
-                            Grid.Column="2"
-                            HorizontalAlignment="Center">
-                            <CheckBox
-                                Margin="0,4,0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceSubjectRF1, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,15"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceJurLico1, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceShortJurLico1, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,15"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceJurLicoAddress1, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,15"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceJurLicoFactAddress1, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,15"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceGradeFIO1, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceTelephone1, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceFax1, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceEmail1, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceOkpo1, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceOkved1, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceOkogu1, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceOktmo1, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceInn1, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceKpp1, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceOkopf1, Mode=TwoWay}"/>
-                            <CheckBox
-                                Margin="0,7"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding ReplaceOkfs1, Mode=TwoWay}"/>
+
+                        <!-- #endregion Территориальное обособленное подразделение - Значения в базе-->
+
+                        <!-- #region Территориальное обособленное подразделение - CheckBox-->
+
+                        <StackPanel Grid.Row="1"
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Center">
+                            <CheckBox Margin="0,4,0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceSubjectRF1, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,15"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceJurLico1, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceShortJurLico1, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,15"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceJurLicoAddress1, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,15"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceJurLicoFactAddress1, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,15"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceGradeFIO1, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceTelephone1, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceFax1, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceEmail1, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceOkpo1, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceOkved1, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceOkogu1, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceOktmo1, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceInn1, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceKpp1, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceOkopf1, Mode=TwoWay}"/>
+                            <CheckBox Margin="0,7"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ReplaceOkfs1, Mode=TwoWay}"/>
                         </StackPanel>
-                        <!--  Территориальное обособленное подразделение - Новые значения  -->
-                        <StackPanel
-                            Grid.Row="1"
-                            Grid.Column="3"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Top">
-                            <TextBox
-                                Height="26"
-                                Margin="0,0,0,3"
-                                Text="{Binding NewSubjectRF1, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding NewJurLico1, Mode=TwoWay}"
-                                TextWrapping="Wrap"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewShortJurLico1, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding NewJurLicoAddress1, Mode=TwoWay}"
-                                TextWrapping="Wrap"/>
-                            <TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding NewJurLicoFactAddress1, Mode=TwoWay}"
-                                TextWrapping="Wrap"/>
-                            <TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                Text="{Binding NewGradeFIO1, Mode=TwoWay}"
-                                TextWrapping="Wrap"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewTelephone1, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewFax1, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewEmail1, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewOkpo1, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewOkved1, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewOkogu1, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewOktmo1, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewInn1, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewKpp1, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewOkopf1, Mode=TwoWay}"/>
-                            <TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding NewOkfs1, Mode=TwoWay}"/>
+
+                        <!-- #endregion Территориальное обособленное подразделение - CheckBox-->
+
+                        <!-- #region Территориальное обособленное подразделение - Новые значения-->
+
+                        <StackPanel Grid.Row="1"
+                                    Grid.Column="3"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top">
+                            <TextBox Height="26"
+                                     Margin="0,0,0,3"
+                                     Text="{Binding NewSubjectRF1, Mode=TwoWay}"/>
+                            <TextBox Height="42"
+                                     Margin="0,3"
+                                     AcceptsReturn="True"
+                                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                     Text="{Binding NewJurLico1, Mode=TwoWay}"
+                                     TextWrapping="Wrap"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewShortJurLico1, Mode=TwoWay}"/>
+                            <TextBox Height="42"
+                                     Margin="0,3"
+                                     AcceptsReturn="True"
+                                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                     Text="{Binding NewJurLicoAddress1, Mode=TwoWay}"
+                                     TextWrapping="Wrap"/>
+                            <TextBox Height="42"
+                                     Margin="0,3"
+                                     AcceptsReturn="True"
+                                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                     Text="{Binding NewJurLicoFactAddress1, Mode=TwoWay}"
+                                     TextWrapping="Wrap"/>
+                            <TextBox Height="42"
+                                     Margin="0,3"
+                                     AcceptsReturn="True"
+                                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                     Text="{Binding NewGradeFIO1, Mode=TwoWay}"
+                                     TextWrapping="Wrap"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewTelephone1, Mode=TwoWay}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewFax1, Mode=TwoWay}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewEmail1, Mode=TwoWay}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewOkpo1, Mode=TwoWay}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewOkved1, Mode=TwoWay}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewOkogu1, Mode=TwoWay}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewOktmo1, Mode=TwoWay}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewInn1, Mode=TwoWay}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewKpp1, Mode=TwoWay}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewOkopf1, Mode=TwoWay}"/>
+                            <TextBox Height="26"
+                                     Margin="0,3"
+                                     Text="{Binding NewOkfs1, Mode=TwoWay}"/>
                         </StackPanel>
+
+                        <!-- #endregion Территориальное обособленное подразделение - Новые значения-->
+
                     </Grid>
                 </Border>
+
+                <!-- #endregion Территориальное обособленное подразделение-->
+
             </StackPanel>
         </ScrollViewer>
+
+        <!-- #endregion ScrollViewer-->
+
     </Grid>
 </Window>

@@ -26,6 +26,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using static Client_App.ViewModels.BaseVM;
+using Client_App.Resources.CustomComparers;
+using Models.Forms.Form4;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -75,6 +77,10 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         onStartProgressBarVm.LoadStatus = "Загрузка форм 2.0";
         mainWindowViewModel.OnStartProgressBar = 45;
         await dbm.form_20.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 4.0";
+        mainWindowViewModel.OnStartProgressBar = 50;
+        await dbm.form_40.LoadAsync();
 
         try
         {
@@ -676,11 +682,31 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     it.Master_DB.Rows20.Add(ty1);
                     it.Master_DB.Rows20.Add(ty2);
                 }
+                if (it.Master_DB.Rows40.Count == 0)
+                {
+                    var ty = (Form40)FormCreator.Create("4.0");
+                    ty.NumberInOrder_DB = 1;
+                    it.Master_DB.Rows40.Add(ty);
+                }
+
+                //if (it.Master_DB.Rows40.Count == 0)
+                //{
+                //    var ty1 = (Form40)FormCreator.Create("4.0");
+                //    ty1.NumberInOrder_DB = 1;
+                //    var ty2 = (Form40)FormCreator.Create("4.0");
+                //    ty2.NumberInOrder_DB = 2;
+                //    it.Master_DB.Rows40.Add(ty1);
+                //    it.Master_DB.Rows40.Add(ty2);
+                //}
 
                 it.Master_DB.Rows10.Sorted = false;
                 it.Master_DB.Rows20.Sorted = false;
+                it.Master_DB.Rows40.Sorted = false;
+                //it.Master_DB.Rows40.Sorted = false;
                 await it.Master_DB.Rows10.QuickSortAsync();
                 await it.Master_DB.Rows20.QuickSortAsync();
+                await it.Master_DB.Rows40.QuickSortAsync();
+                //await it.Master_DB.Rows40.QuickSortAsync();
             }
         }
     }
@@ -714,6 +740,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             await item.SortAsync();
         }
 
+        
         var comparator = new CustomReportsComparer();
         var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
         ReportsStorage.LocalReports.Reports_Collection.Clear();

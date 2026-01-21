@@ -1,0 +1,498 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Client_App.ViewModels;
+
+namespace Client_App.Properties.UnifiedConfig;
+
+/// <summary>
+/// Единый менеджер конфигурации приложения
+/// Объединяет настройки ширины колонок и количества строк в один файл
+/// </summary>
+public static class UnifiedConfigManager
+{
+    private const string UnifiedConfigFileName = "Config.json";
+    private const string OldColumnWidthsFileName = "columnWidthsSettings.json";
+    private const string OldRowCountsFileName = "rowCountSettings.json";
+    
+    private static readonly JsonSerializerOptions Options = new()
+    {
+        WriteIndented = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        NumberHandling = JsonNumberHandling.AllowReadingFromString,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
+    #region Paths
+    private static string GetUnifiedConfigPath()
+    {
+        return Path.Combine(BaseVM.ConfigDirectory, UnifiedConfigFileName);
+    }
+
+    private static string GetOldColumnWidthsPath()
+    {
+        return Path.Combine(BaseVM.ConfigDirectory, OldColumnWidthsFileName);
+    }
+
+    private static string GetOldRowCountsPath()
+    {
+        return Path.Combine(BaseVM.ConfigDirectory, OldRowCountsFileName);
+    }
+    #endregion
+
+    #region Load/Save
+    /// <summary>
+    /// Загружает полную конфигурацию приложения с миграцией старых настроек
+    /// </summary>
+    public static UnifiedConfig LoadConfig()
+    {
+        var configPath = GetUnifiedConfigPath();
+        
+        // Выполняем миграцию при необходимости
+        MaybeMigrateOldSettings();
+        
+        if (!File.Exists(configPath))
+        {
+            return new UnifiedConfig(); // Возвращаем конфигурацию по умолчанию
+        }
+
+        try
+        {
+            var json = File.ReadAllText(configPath);
+            
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return new UnifiedConfig();
+            }
+
+            return JsonSerializer.Deserialize<UnifiedConfig>(json, Options) ?? new UnifiedConfig();
+        }
+        catch (Exception ex) when (ex is JsonException or IOException)
+        {
+            return new UnifiedConfig();
+        }
+    }
+
+    /// <summary>
+    /// Сохраняет полную конфигурацию приложения
+    /// </summary>
+    public static void SaveConfig(UnifiedConfig config)
+    {
+        try
+        {
+            var configPath = GetUnifiedConfigPath();
+            var directory = Path.GetDirectoryName(configPath);
+            
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+            
+            var json = JsonSerializer.Serialize(config, Options);
+            File.WriteAllText(configPath, json);
+        }
+        catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException)
+        {
+            // Ошибка сохранения конфигурации
+        }
+    }
+    #endregion
+
+    #region Migration
+    /// <summary>
+    /// Проверяет и выполняет миграцию старых настроек в новый формат
+    /// </summary>
+    private static void MaybeMigrateOldSettings()
+    {
+        var configPath = GetUnifiedConfigPath();
+        var oldColumnWidthsPath = GetOldColumnWidthsPath();
+
+        // Если новый файл уже существует, миграция не нужна
+        if (File.Exists(configPath))
+        {
+            return;
+        }
+
+        var config = new UnifiedConfig();
+        var migrated = false;
+
+        // Миграция настроек ширины колонок
+        if (File.Exists(oldColumnWidthsPath))
+        {
+            try
+            {
+                var json = File.ReadAllText(oldColumnWidthsPath);
+                
+                if (!string.IsNullOrWhiteSpace(json))
+                {
+                    var oldSettings = JsonSerializer.Deserialize<Dictionary<string, List<double>>>(json, Options);
+                    if (oldSettings != null)
+                    {
+                        // Создаем OrderedDictionary с правильным порядком
+                        var orderedSettings = new OrderedDictionary();
+                        var order = new[] { "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9", 
+                                           "2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "2.8", "2.9", "2.10", "2.11", "2.12", 
+                                           "notes" };
+                        
+                        // Добавляем в нужном порядке
+                        foreach (var key in order)
+                        {
+                            if (oldSettings.ContainsKey(key))
+                            {
+                                orderedSettings[key] = oldSettings[key];
+                            }
+                        }
+                        
+                        // Добавляем любые другие ключи, которых нет в списке
+                        foreach (var kvp in oldSettings.Where(x => !order.Contains(x.Key)))
+                        {
+                            orderedSettings[kvp.Key] = kvp.Value;
+                        }
+                        
+                        config.ColumnWidths.ColumnWidthSettings = orderedSettings;
+                        migrated = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ошибка миграции настроек ширины колонок
+            }
+        }
+
+        // Если была миграция, сохраняем новый файл
+        if (migrated)
+        {
+            SaveConfig(config);
+            
+            // Безопасно удаляем старые файлы после успешной миграции
+            CleanupOldConfigFiles();
+        }
+    }
+    #endregion
+
+    #region Column Widths Methods (для совместимости)
+    /// <summary>
+    /// Загружает настройки ширины колонок для конкретной формы
+    /// </summary>
+    public static List<double> LoadColumnWidths(string formNum)
+    {
+        var config = LoadConfig();
+        if (config.ColumnWidths.ColumnWidthSettings.Contains(formNum))
+        {
+            return config.ColumnWidths.ColumnWidthSettings[formNum] as List<double> ?? new List<double>();
+        }
+        return new List<double>();
+    }
+
+    /// <summary>
+    /// Сохраняет настройки ширины колонок для конкретной формы
+    /// </summary>
+    public static void SaveColumnWidths(List<double> formSettings, string formNum)
+    {
+        var config = LoadConfig();
+        config.ColumnWidths.ColumnWidthSettings[formNum] = formSettings;
+        
+        // Переупорядочиваем ключи после добавления/обновления
+        ReorderColumnWidths(config);
+        
+        SaveConfig(config);
+    }
+
+    /// <summary>
+    /// Загружает все настройки ширины колонок
+    /// </summary>
+    public static Dictionary<string, List<double>> LoadAllColumnWidths()
+    {
+        var config = LoadConfig();
+        var result = new Dictionary<string, List<double>>();
+        
+        foreach (DictionaryEntry entry in config.ColumnWidths.ColumnWidthSettings)
+        {
+            var key = entry.Key.ToString();
+            if (key != null && entry.Value is List<double> value)
+            {
+                result[key] = value;
+            }
+        }
+        
+        return result;
+    }
+
+    /// <summary>
+    /// Сохраняет все настройки ширины колонок
+    /// </summary>
+    public static void SaveAllColumnWidths(Dictionary<string, List<double>> settings)
+    {
+        var config = LoadConfig();
+        
+        // Создаем новый OrderedDictionary с нужным порядком
+        var orderedSettings = new OrderedDictionary();
+        var order = new[] { "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9", 
+                           "2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "2.8", "2.9", "2.10", "2.11", "2.12", 
+                           "notes" };
+        
+        // Добавляем в нужном порядке
+        foreach (var key in order)
+        {
+            if (settings.ContainsKey(key))
+            {
+                orderedSettings[key] = settings[key];
+            }
+        }
+        
+        // Добавляем любые другие ключи, которых нет в списке
+        foreach (var kvp in settings.Where(x => !order.Contains(x.Key)))
+        {
+            orderedSettings[kvp.Key] = kvp.Value;
+        }
+        
+        config.ColumnWidths.ColumnWidthSettings = orderedSettings;
+        SaveConfig(config);
+    }
+    #endregion
+
+    #region Row Count Methods (для совместимости)
+    /// <summary>
+    /// Загружает настройки количества строк для указанной формы
+    /// </summary>
+    public static (int orgs, int forms) LoadRowCountSettings(string formPrefix, int defaultOrgs, int defaultForms)
+    {
+        var config = LoadConfig();
+        if (config.RowCounts.RowCountSettings.TryGetValue(formPrefix, out var settings))
+        {
+            return (settings.RowsCountOrgs, settings.RowsCountForms);
+        }
+        
+        return (defaultOrgs, defaultForms);
+    }
+
+    /// <summary>
+    /// Сохраняет настройки количества строк для указанной формы
+    /// </summary>
+    public static void SaveRowCountSettings(string formPrefix, int rowsCountOrgs, int rowsCountForms)
+    {
+        var config = LoadConfig();
+        if (!config.RowCounts.RowCountSettings.ContainsKey(formPrefix))
+        {
+            config.RowCounts.RowCountSettings[formPrefix] = new RowCountSettings();
+        }
+        
+        config.RowCounts.RowCountSettings[formPrefix].RowsCountOrgs = rowsCountOrgs;
+        config.RowCounts.RowCountSettings[formPrefix].RowsCountForms = rowsCountForms;
+        SaveConfig(config);
+    }
+    #endregion
+
+    #region Helper Methods
+    /// <summary>
+    /// Переупорядочивает ключи в ColumnWidthSettings в правильном порядке
+    /// </summary>
+    private static void ReorderColumnWidths(UnifiedConfig config)
+    {
+        var currentSettings = config.ColumnWidths.ColumnWidthSettings;
+        var orderedSettings = new OrderedDictionary();
+        
+        // Заданный порядок ключей
+        var order = new[] { "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9", 
+                           "2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "2.8", "2.9", "2.10", "2.11", "2.12", 
+                           "notes" };
+        
+        // Добавляем в нужном порядке
+        foreach (var key in order)
+        {
+            if (currentSettings.Contains(key))
+            {
+                orderedSettings[key] = currentSettings[key];
+            }
+        }
+        
+        // Добавляем любые другие ключи, которых нет в списке (в алфавитном порядке)
+        var otherKeys = new List<string>();
+        foreach (DictionaryEntry entry in currentSettings)
+        {
+            var key = entry.Key.ToString();
+            if (key != null && !order.Contains(key))
+            {
+                otherKeys.Add(key);
+            }
+        }
+        
+        foreach (var key in otherKeys.OrderBy(x => x))
+        {
+            orderedSettings[key] = currentSettings[key];
+        }
+        
+        config.ColumnWidths.ColumnWidthSettings = orderedSettings;
+    }
+    #endregion
+
+    #region Cleanup Old Config Files
+    /// <summary>
+    /// Безопасно удаляет старые конфигурационные файлы после успешной миграции
+    /// </summary>
+    private static void CleanupOldConfigFiles()
+    {
+        try
+        {
+            var oldColumnWidthsPath = GetOldColumnWidthsPath();
+            var configPath = GetUnifiedConfigPath();
+
+            // Проверяем, что новый конфигурационный файл существует и не пуст
+            if (!File.Exists(configPath) || new FileInfo(configPath).Length == 0)
+            {
+                return;
+            }
+
+            // Проверяем, что в новом файле есть данные ширины колонок
+            try
+            {
+                var config = LoadConfig();
+                var hasColumnWidths = config.ColumnWidths.ColumnWidthSettings.Count > 0;
+                
+                if (!hasColumnWidths)
+                {
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+
+            // Безопасно удаляем старый файл ширины колонок
+            if (File.Exists(oldColumnWidthsPath))
+            {
+                try
+                {
+                    File.Delete(oldColumnWidthsPath);
+                }
+                catch (Exception ex)
+                {
+                    // Ошибка удаления старого файла
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Ошибка во время очистки конфигурационных файлов
+        }
+    }
+    #endregion
+}
+
+/// <summary>
+/// Единая конфигурация приложения
+/// </summary>
+public class UnifiedConfig
+{
+    public string Version { get; set; } = "1.0";
+    public DateTime LastModified { get; set; } = DateTime.Now;
+    
+    /// <summary>
+    /// Настройки ширины колонок для всех форм
+    /// Ключ: номер формы (например, "1.1", "1.2", "notes", ...)
+    /// Значение: список ширин колонок
+    /// </summary>
+    public ColumnWidthsConfig ColumnWidths { get; set; } = new();
+    
+    /// <summary>
+    /// Настройки количества строк для DataGrid
+    /// Ключ: префикс формы (например, "form1", "form2", ...)
+    /// Значение: настройки количества строк для организаций и форм
+    /// </summary>
+    public RowCountsConfig RowCounts { get; set; } = new();
+}
+
+/// <summary>
+/// Конфигурация ширин колонок
+/// </summary>
+public class ColumnWidthsConfig
+{
+    /// <summary>
+    /// Упорядоченный словарь настроек ширины колонок
+    /// Ключ: номер формы (например, "1.1", "1.2", "notes", ...)
+    /// Значение: список ширин колонок для этой формы
+    /// </summary>
+    [JsonConverter(typeof(OrderedDictionaryConverter))]
+    public OrderedDictionary ColumnWidthSettings { get; set; } = new();
+}
+
+/// <summary>
+/// Конфигурация количества строк
+/// </summary>
+public class RowCountsConfig
+{
+    /// <summary>
+    /// Словарь настроек количества строк
+    /// Ключ: префикс формы (например, "form1", "form2", ...)
+    /// Значение: настройки количества строк для организаций и форм
+    /// </summary>
+    public Dictionary<string, RowCountSettings> RowCountSettings { get; set; } = new();
+}
+
+/// <summary>
+/// Настройки количества строк для конкретной формы
+/// </summary>
+public class RowCountSettings
+{
+    public int RowsCountOrgs { get; set; } = 6;
+    public int RowsCountForms { get; set; } = 8;
+}
+
+/// <summary>
+/// JsonConverter для OrderedDictionary
+/// Обеспечивает сериализацию и десериализацию OrderedDictionary в JSON
+/// </summary>
+public class OrderedDictionaryConverter : JsonConverter<OrderedDictionary>
+{
+    public override OrderedDictionary Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var result = new OrderedDictionary();
+        
+        if (reader.TokenType != JsonTokenType.StartObject)
+        {
+            return result;
+        }
+
+        while (reader.Read())
+        {
+            if (reader.TokenType == JsonTokenType.EndObject)
+            {
+                break;
+            }
+
+            if (reader.TokenType == JsonTokenType.PropertyName)
+            {
+                var key = reader.GetString();
+                reader.Read(); // Move to value
+                
+                var value = JsonSerializer.Deserialize<List<double>>(ref reader, options);
+                result[key] = value;
+            }
+        }
+
+        return result;
+    }
+
+    public override void Write(Utf8JsonWriter writer, OrderedDictionary value, JsonSerializerOptions options)
+    {
+        writer.WriteStartObject();
+        
+        foreach (DictionaryEntry entry in value)
+        {
+            var key = entry.Key.ToString();
+            var list = entry.Value as List<double>;
+            
+            writer.WritePropertyName(key);
+            JsonSerializer.Serialize(writer, list, options);
+        }
+        
+        writer.WriteEndObject();
+    }
+}
