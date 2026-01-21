@@ -295,6 +295,7 @@ public partial class Form_41 : BaseWindow<Form_41VM>
                     flag = true;
                     dbm.Restore();
                     new NewSortFormSyncCommand(vm).Execute(null);
+
                     await dbm.SaveChangesAsync();
 
                     var lst = vm.Report[vm.FormType];

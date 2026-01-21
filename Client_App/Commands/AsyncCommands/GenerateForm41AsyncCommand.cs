@@ -114,8 +114,8 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         progressBarVM.SetProgressBar(5, $"Загрузка организаций");
 
 
-        organizations10 = await GetOrganizationsList("1.0", dbModel);
-        organizations20 = await GetOrganizationsList("2.0", dbModel);
+        organizations10 = await GetOrganizationsList("1.0", dbModel, cts.Token);
+        organizations20 = await GetOrganizationsList("2.0", dbModel, cts.Token);
 
         if (organizations20.Count <= 0)
         {
@@ -130,7 +130,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 {
                     secondDB = new DBModel(path[0]);
                     
-                    organizations20 = await GetOrganizationsList("2.0", secondDB);
+                    organizations20 = await GetOrganizationsList("2.0", secondDB, cts.Token);
                 }
 
             }
@@ -147,12 +147,13 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         double incProgress = (90.0 - currentProgress) / (organizations10.Count() + organizations20.Count());
         foreach (var organization10 in organizations10)
         {
+            cts.Token.ThrowIfCancellationRequested();
             progressBarVM.SetProgressBar(
                 (int)currentProgress, 
                 $"Подсчет форм 1.1 - 1.4 у организации {organization10.Master.Rows10[0].RegNo_DB}");
 
-            int numInventarizationForm = await GetNumOfReportWithInventarization(organization10.Id, year.ToString(), dbModel);
-            int numWithoutInventarizationForm = await GetNumOfReportWithoutInventarization(organization10.Id, year.ToString(), dbModel);
+            int numInventarizationForm = await GetNumOfReportWithInventarization(organization10.Id, year.ToString(), dbModel, cts.Token);
+            int numWithoutInventarizationForm = await GetNumOfReportWithoutInventarization(organization10.Id, year.ToString(), dbModel, cts.Token);
             if (IsRowWithOrganizationExist(organization10))
             {
                 //Если запись об организации существует
@@ -178,9 +179,9 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             int numForm212;
 
             if (secondDB != null)
-                numForm212 = await GetNumOfForm212(organization20, year, secondDB);
+                numForm212 = await GetNumOfForm212(organization20, year, secondDB, cts.Token);
             else
-                numForm212 = await GetNumOfForm212(organization20, year, dbModel);
+                numForm212 = await GetNumOfForm212(organization20, year, dbModel, cts.Token);
 
             if (IsRowWithOrganizationExist(organization20))
                 UpdateRow(organization20,
@@ -201,7 +202,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         Report.Rows41.AddRange(orderedRows);
 
         //Заполняем пробелы РегНомеров 
-        FillSpaceByRegNo(progressBarVM);
+        FillSpaceByRegNo(progressBarVM, cts);
 
 
 
@@ -438,11 +439,12 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     }
 
     // Эта функция создает пустые записи для организаций, не представленных в базе данных или в отчете по форме 4.1, на основе которого генерируется этот отчет
-    private void FillSpaceByRegNo(AnyTaskProgressBarVM? progressBarVM)
+    private void FillSpaceByRegNo(AnyTaskProgressBarVM? progressBarVM, CancellationTokenSource cts)
     {
         var regNoIndex = 1;
         for (int i = 0; i < Report.Rows41.Count; i++)
         {
+            cts.Token.ThrowIfCancellationRequested();
             var codeSubjectRF = Report.Rows41[i].RegNo_DB.Substring(0, 2);
 
             if (!int.TryParse(Report.Rows41[i].RegNo_DB.Substring(2, 3), out var current)) continue; 
@@ -456,6 +458,8 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             // Заполняем пробелы РегНомеров ПЕРЕД текущей организации 
             while (regNoIndex < current)
             {
+                cts.Token.ThrowIfCancellationRequested();
+
                 string regNo = codeSubjectRF;
                 if (regNoIndex / 100 == 0)
                     regNo += "0";
@@ -469,6 +473,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 });
                 regNoIndex++;
                 i++;
+
             }
 
             //Если текущая запись последняя, то прекращаем выполнение функции
@@ -499,6 +504,8 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 regNoIndex = 1;
             else
                 regNoIndex++;
+
+            
         }
     }
         
@@ -507,7 +514,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     #endregion
 
     #region Requests
-    private async Task<List<Reports>> GetOrganizationsList(string formNum, DBModel DB)
+    private async Task<List<Reports>> GetOrganizationsList(string formNum, DBModel DB, CancellationToken cancellationToken)
     {
         try
         {
@@ -517,7 +524,11 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                             .Include(reports => reports.Master_DB).ThenInclude(reports => reports.Rows10)
                             .Include(reports => reports.Master_DB).ThenInclude(reports => reports.Rows20)
                             .Where(reports => reports.Master_DB.FormNum_DB == formNum)
-                            .ToListAsync();
+                            .ToListAsync(cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
         }
         catch (Exception ex)
         {
@@ -540,60 +551,81 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             return new List<Reports>();
         }
     }
-    private async Task<int> GetNumOfReportWithInventarization(int organizationId, string year, DBModel DB)
+    private async Task<int> GetNumOfReportWithInventarization(int organizationId, string year, DBModel DB, CancellationToken cancellationToken)
     {
-        return await DB.ReportsCollectionDbSet
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.DBObservable)
-            .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows11)
-            .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows12)
-            .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows13)
-            .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows14)
-            .Where(reps => reps.DBObservable != null && reps.Id == organizationId)
-            .SelectMany(x => x.Report_Collection
-                .Where(y => y.EndPeriod_DB.EndsWith(year) 
-                && 
-                (
-                    y.FormNum_DB == "1.1" && y.Rows11.Any(form => form.OperationCode_DB == "10")
-                    || y.FormNum_DB == "1.2" && y.Rows12.Any(form => form.OperationCode_DB == "10")
-                    || y.FormNum_DB == "1.3" && y.Rows13.Any(form => form.OperationCode_DB == "10")
-                    || y.FormNum_DB == "1.4" && y.Rows14.Any(form => form.OperationCode_DB == "10")
-                )))
-            .CountAsync();
+        try
+        {
+            return await DB.ReportsCollectionDbSet
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.DBObservable)
+                .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows11)
+                .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows12)
+                .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows13)
+                .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows14)
+                .Where(reps => reps.DBObservable != null && reps.Id == organizationId)
+                .SelectMany(x => x.Report_Collection
+                    .Where(y => y.EndPeriod_DB.EndsWith(year)
+                    &&
+                    (
+                        y.FormNum_DB == "1.1" && y.Rows11.Any(form => form.OperationCode_DB == "10")
+                        || y.FormNum_DB == "1.2" && y.Rows12.Any(form => form.OperationCode_DB == "10")
+                        || y.FormNum_DB == "1.3" && y.Rows13.Any(form => form.OperationCode_DB == "10")
+                        || y.FormNum_DB == "1.4" && y.Rows14.Any(form => form.OperationCode_DB == "10")
+                    )))
+                .CountAsync(cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
     }
-    private async Task<int> GetNumOfReportWithoutInventarization(int organizationId, string year, DBModel DB)
+    private async Task<int> GetNumOfReportWithoutInventarization(int organizationId, string year, DBModel DB, CancellationToken cancellationToken)
     {
-        return await DB.ReportsCollectionDbSet
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.DBObservable)
-            .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows11)
-            .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows12)
-            .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows13)
-            .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows14)
-            .Where(reps => reps.DBObservable != null && reps.Id == organizationId)
-            .SelectMany(x => x.Report_Collection
-                .Where(y => y.EndPeriod_DB.EndsWith(year)
-                &&
-                (
-                    y.FormNum_DB == "1.1" && y.Rows11.All(form => form.OperationCode_DB != "10")
-                    || y.FormNum_DB == "1.2" && y.Rows12.All(form => form.OperationCode_DB != "10")
-                    || y.FormNum_DB == "1.3" && y.Rows13.All(form => form.OperationCode_DB != "10")
-                    || y.FormNum_DB == "1.4" && y.Rows14.All(form => form.OperationCode_DB != "10")
-                )))
-            .CountAsync();
+        try 
+        { 
+            return await DB.ReportsCollectionDbSet
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.DBObservable)
+                .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows11)
+                .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows12)
+                .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows13)
+                .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows14)
+                .Where(reps => reps.DBObservable != null && reps.Id == organizationId)
+                .SelectMany(x => x.Report_Collection
+                    .Where(y => y.EndPeriod_DB.EndsWith(year)
+                    &&
+                    (
+                        y.FormNum_DB == "1.1" && y.Rows11.All(form => form.OperationCode_DB != "10")
+                        || y.FormNum_DB == "1.2" && y.Rows12.All(form => form.OperationCode_DB != "10")
+                        || y.FormNum_DB == "1.3" && y.Rows13.All(form => form.OperationCode_DB != "10")
+                        || y.FormNum_DB == "1.4" && y.Rows14.All(form => form.OperationCode_DB != "10")
+                    )))
+                .CountAsync(cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
     }
-    private async Task<int> GetNumOfForm212(Reports organization20, int year, DBModel DB)
+    private async Task<int> GetNumOfForm212(Reports organization20, int year, DBModel DB,CancellationToken cancellationToken)
     {
-        return await DB.ReportCollectionDbSet
+        try 
+        {
+            return await DB.ReportCollectionDbSet
                     .AsSplitQuery()
                     .AsQueryable()
                     .Include(report => report.Reports)
                     .Where(report => report.Reports.Id == organization20.Id)
                     .Where(report => report.Year_DB == year.ToString())
                     .Where(report => report.FormNum_DB == "2.12")
-                    .CountAsync();
+                    .CountAsync(cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
     }
     #endregion
 }
