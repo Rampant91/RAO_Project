@@ -16,10 +16,10 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Client_App.Resources.CustomComparers.SnkComparers;
 using Client_App.ViewModels;
 using static Client_App.Resources.StaticStringMethods;
-using CustomSnkEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkEqualityComparer;
-using CustomSnkRadionuclidsEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkRadionuclidsEqualityComparer;
+using SnkRadionuclidsEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.SnkRadionuclidsEqualityComparer;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
@@ -941,8 +941,8 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
         var minusOperationArray = GetMinusOperationsArray(formNum);
 
         var currentInventoryDateIndex = 0;
-        var comparer = new CustomSnkEqualityComparer();
-        var radsComparer = new CustomSnkRadionuclidsEqualityComparer();
+        var comparer = new SnkEqualityComparer();
+        var radsComparer = new SnkRadionuclidsEqualityComparer();
         foreach (var inventoryDate in inventoryDatesList)
         {
             // Инициализируем список ошибок, сразу добавляя в него повторные операции инвентаризации.

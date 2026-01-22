@@ -457,13 +457,13 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
     /// Проверяет наличие учётных единиц у организаций из списка, возвращает список DTO организаций, у которых есть учётные единицы в наличии.
     /// </summary>
     /// <param name="tmpDbPath">Путь к временному файлу БД.</param>
-    /// <param name="dtoList">Список DTO организаций.</param>
+    /// <param name="repsDtoList">Список DTO организаций.</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <param name="cts">Токен.</param>
     /// /// <param name="snkParams">DTO состоящий из bool флагов, показывающих, по каким параметрам необходимо выполнять поиск учётной единицы.
     /// Может быть null, тогда поиск ведётся по всем параметрам.</param>
     /// <returns>Список DTO организаций, у которых есть учётные единицы в наличии.</returns>
-    private static async Task<List<ShortReportsDto>> CheckSnk(string tmpDbPath, List<ShortReportsDto> dtoList,
+    private static async Task<List<ShortReportsDto>> CheckSnk(string tmpDbPath, List<ShortReportsDto> repsDtoList,
         AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts, SnkParamsDto? snkParams = null)
     {
         var currentDate = DateOnly.FromDateTime(DateTime.Now);
@@ -531,7 +531,7 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
         #endregion
 
         await using var db = new DBModel(tmpDbPath);
-        foreach (var dto in dtoList)
+        foreach (var dto in repsDtoList)
         {
             currentRepsNum++;
 
@@ -552,12 +552,12 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
             var unitInStockDtoList = await GetUnitInStockDtoList(uniqueUnitWithAllOperationDictionary, dto.FormNum, firstSnkDate, progressBarVM);
             dto.CountUnits = unitInStockDtoList.Sum(x => x.Quantity);
 
-            progressBarDoubleValue += (double)50 / dtoList.Count;
+            progressBarDoubleValue += (double)50 / repsDtoList.Count;
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-                $"Проверено {currentRepsNum} из {dtoList.Count} СНК организаций",
+                $"Проверено {currentRepsNum} из {repsDtoList.Count} СНК организаций",
                 "Проверка последней инвентаризации");
         }
-        return dtoList
+        return repsDtoList
             .Where(x => x.CountUnits != 0)
             .OrderBy(x => x.RegNum)
             .ThenBy(x => x.Okpo)

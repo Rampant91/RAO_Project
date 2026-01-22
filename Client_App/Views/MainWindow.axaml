@@ -248,6 +248,14 @@
                 </MenuItem>
                 <MenuItem Command="{Binding  ExcelExportCheckLastInventoryDate}"
                           Header="Проверка последней инвентаризации"/>
+                <MenuItem Header="Проблемные источники по региону">
+                    <MenuItem Command="{Binding  ExcelExportLostAndExtraUnitsByRegion}"
+                              CommandParameter="1.1"
+                              Header="Форма 1.1"/>
+                    <MenuItem Command="{Binding  ExcelExportLostAndExtraUnitsByRegion}"
+                              CommandParameter="1.3"
+                              Header="Форма 1.3"/>
+                </MenuItem>
                 <!--
                 <MenuItem Command="{Binding MaxGraphsLength, Mode=OneTime}"
                           Header="Максимальная длинна граф"/>

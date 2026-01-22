@@ -14,6 +14,15 @@ public class GetSnkParams : BaseWindow<GetSnkParamsVM>
     public GetSnkParams()
     {
         InitializeComponent();
+
+        var regionBox = this.FindControl<TextBox>("RegionBox");
+        regionBox?.AddHandler(TextInputEvent, (sender, e) =>
+        {
+            if (e.Text != null && !char.IsDigit(e.Text, 0))
+            {
+                e.Handled = true;
+            }
+        }, RoutingStrategies.Tunnel);
     }
 
     private void InitializeComponent()

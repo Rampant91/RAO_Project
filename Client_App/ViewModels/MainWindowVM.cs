@@ -18,21 +18,11 @@ using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.ViewModels.MainWindowTabs;
-using Client_App.Views;
-using Client_App.Views.Forms.Forms1;
-using Client_App.Views.Forms.Forms4;
 using CommunityToolkit.Mvvm.ComponentModel;
-using DynamicData.Binding;
-using Microsoft.EntityFrameworkCore;
 using Models.Collections;
-using Models.DBRealization;
-using Models.Forms;
 using ReactiveUI;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 namespace Client_App.ViewModels;
@@ -273,8 +263,6 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     }
     #endregion
 
-
-
     #region OnStartProgressBar
 
     private double _OnStartProgressBar;
@@ -362,6 +350,11 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     /// Excel -> Список организаций
     /// </summary>
     public ICommand ExcelExportListOfOrgs => new ExcelExportListOfOrgsAsyncCommand();
+
+    /// <summary>
+    /// Excel -> Проблемные источники по региону
+    /// </summary>
+    public ICommand ExcelExportLostAndExtraUnitsByRegion => new ExcelExportLostAndExtraUnitsByRegionAsyncCommand();
 
     /// <summary>
     /// Excel -> Паспорта -> Паспорта без отчетов

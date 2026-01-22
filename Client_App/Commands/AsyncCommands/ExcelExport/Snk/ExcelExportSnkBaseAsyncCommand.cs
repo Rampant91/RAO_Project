@@ -14,9 +14,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using CustomSnkEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkEqualityComparer;
-using CustomSnkNumberEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkNumberEqualityComparer;
-using CustomSnkRadionuclidsEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkRadionuclidsEqualityComparer;
+using Client_App.Resources.CustomComparers.SnkComparers;
+using SnkRadionuclidsEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.SnkRadionuclidsEqualityComparer;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
@@ -27,9 +26,9 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 {
     private sealed class SnkGroupKeyComparer : IEqualityComparer<(string PasNum, string FacNum, string Radionuclids, string Type)>
     {
-        private readonly CustomSnkNumberEqualityComparer _numberComparer = new();
-        private readonly CustomSnkRadionuclidsEqualityComparer _radsComparer = new();
-        private readonly CustomSnkEqualityComparer _stringComparer = new();
+        private readonly SnkNumberEqualityComparer _numberComparer = new();
+        private readonly SnkRadionuclidsEqualityComparer _radsComparer = new();
+        private readonly SnkEqualityComparer _stringComparer = new();
 
         public bool Equals((string PasNum, string FacNum, string Radionuclids, string Type) x,
             (string PasNum, string FacNum, string Radionuclids, string Type) y)
@@ -336,9 +335,9 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             .ThenBy(x => x.Key.FacNum)
             .ToDictionary(x => x.Key, x => x.DateGroups);
 
-        var comparer = new CustomSnkEqualityComparer();
-        var numberComparer = new CustomSnkNumberEqualityComparer();
-        var radsComparer = new CustomSnkRadionuclidsEqualityComparer();
+        var comparer = new SnkEqualityComparer();
+        var numberComparer = new SnkNumberEqualityComparer();
+        var radsComparer = new SnkRadionuclidsEqualityComparer();
         Dictionary<UniqueUnitDto, List<ShortFormDTO>> uniqueUnitWithAllOrderedOperationDictionary = [];
         var j = 0;
         foreach (var (unit, formsByDateDictionary) in groupedOperationListDictionary)
@@ -698,7 +697,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
     private static bool IsPairedList(List<ShortFormDTO> editedFormsList, bool inStock, string currentPackNumber, string formNum)
     {
-        var numberComparer = new CustomSnkNumberEqualityComparer();
+        var numberComparer = new SnkNumberEqualityComparer();
         var plusOperations = GetPlusOperationsArray(formNum);
         var minusOperations = GetMinusOperationsArray(formNum);
         var rechargeOperations = new[] { "53", "54" };
@@ -1048,8 +1047,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         List<ShortFormDTO> newInventoryFormsDtoList = [];
         List<ShortFormDTO> inventoryDuplicateErrors = [];
 
-        var comparer = new CustomSnkEqualityComparer();
-        var radsComparer = new CustomSnkRadionuclidsEqualityComparer();
+        var comparer = new SnkEqualityComparer();
+        var radsComparer = new SnkRadionuclidsEqualityComparer();
         foreach (var form in inventoryFormsDtoList)
         {
             var matchingForm = newInventoryFormsDtoList.FirstOrDefault(x =>
@@ -1299,8 +1298,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     {
         List<ShortFormDTO> newPlusMinusDtoList = [];
 
-        var comparer = new CustomSnkEqualityComparer();
-        var radsComparer = new CustomSnkRadionuclidsEqualityComparer();
+        var comparer = new SnkEqualityComparer();
+        var radsComparer = new SnkRadionuclidsEqualityComparer();
         foreach (var form in plusMinusDtoList)
         {
             var matchingForm = newPlusMinusDtoList.FirstOrDefault(x =>
@@ -1532,8 +1531,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         List<ShortFormDTO> unitInStockList = [];
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentUnitNum = 1;
-        var comparer = new CustomSnkEqualityComparer();
-        var radsComparer = new CustomSnkRadionuclidsEqualityComparer();
+        var comparer = new SnkEqualityComparer();
+        var radsComparer = new SnkRadionuclidsEqualityComparer();
         foreach (var (unit, operations) in uniqueUnitWithAllOperationDictionary)
         {
             #region 1.3 || SerialNumEmpty
@@ -1842,7 +1841,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
     #region ShortFormDTO
 
-    private protected class ShortFormDTO
+    public class ShortFormDTO
     {
         public int Id { get; set; }
 
@@ -1953,7 +1952,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         public readonly string EndPeriod = endPeriod;
     }
 
-    private protected class ShortReportDTO(int id, DateOnly startPeriod, DateOnly endPeriod)
+    public class ShortReportDTO(int id, DateOnly startPeriod, DateOnly endPeriod)
     {
         public readonly int Id = id;
 

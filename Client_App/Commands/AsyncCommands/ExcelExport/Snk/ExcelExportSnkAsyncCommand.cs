@@ -155,17 +155,18 @@ public class ExcelExportSnkAsyncCommand(MainWindowVM mainWindowVM) : ExcelExport
     {
         var worksheet = excelPackage.Workbook.Worksheets.Add($"СНК на {date.ToShortDateString()}");
 
+        worksheet.Cells[1, 1].Value = "№ п/п";
+        worksheet.Cells[1, 2].Value = "Номер паспорта (сертификата)";
+        worksheet.Cells[1, 3].Value = "тип";
+        worksheet.Cells[1, 4].Value = "радионуклиды";
+        worksheet.Cells[1, 5].Value = "номер";
+
         switch (formNum)
         {
             case "1.1":
             {
                 #region Headers
 
-                worksheet.Cells[1, 1].Value = "№ п/п";
-                worksheet.Cells[1, 2].Value = "Номер паспорта (сертификата)";
-                worksheet.Cells[1, 3].Value = "тип";
-                worksheet.Cells[1, 4].Value = "радионуклиды";
-                worksheet.Cells[1, 5].Value = "номер";
                 worksheet.Cells[1, 6].Value = "количество, шт.";
                 worksheet.Cells[1, 7].Value = "суммарная активность, Бк";
                 worksheet.Cells[1, 8].Value = "код ОКПО изготовителя";
@@ -182,11 +183,6 @@ public class ExcelExportSnkAsyncCommand(MainWindowVM mainWindowVM) : ExcelExport
             {
                 #region Headers
 
-                worksheet.Cells[1, 1].Value = "№ п/п";
-                worksheet.Cells[1, 2].Value = "Номер паспорта (сертификата)";
-                worksheet.Cells[1, 3].Value = "тип";
-                worksheet.Cells[1, 4].Value = "радионуклиды";
-                worksheet.Cells[1, 5].Value = "номер";
                 worksheet.Cells[1, 6].Value = "активность, Бк";
                 worksheet.Cells[1, 7].Value = "код ОКПО изготовителя";
                 worksheet.Cells[1, 8].Value = "дата выпуска";

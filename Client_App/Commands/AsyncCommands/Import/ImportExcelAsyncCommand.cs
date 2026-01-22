@@ -386,8 +386,8 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             ReportsStorage.LocalReports.Reports_Collection.Clear();
             ReportsStorage.LocalReports.Reports_Collection
                 .AddRange(tmpReportsList
-                    .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
-                    .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
+                    .OrderBy(x => x.Master_DB.RegNoRep?.Value, comparator)
+                    .ThenBy(x => x.Master_DB.OkpoRep?.Value, comparator));
         }
 
             //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
