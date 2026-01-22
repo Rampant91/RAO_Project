@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels.ProgressBar;
-using Client_App.Views;
 using Client_App.Views.ProgressBar;
 using DynamicData;
 using MessageBox.Avalonia.DTO;
@@ -56,7 +55,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
         await using var db = new DBModel(tmpDbPath);
 
         progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
-        var fileName = $"{ExportType}_{Assembly.GetExecutingAssembly().GetName().Version}";
+        var fileName = $"{exportName}_{Assembly.GetExecutingAssembly().GetName().Version}";
         var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
 
         progressBarVM.SetProgressBar(13, "Формирование списка инвентаризационных отчётов");

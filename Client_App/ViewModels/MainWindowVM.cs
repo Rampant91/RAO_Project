@@ -311,7 +311,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     /// <summary>
     /// Excel -> Все формы и Excel -> Выбранная организация -> Все формы
     /// </summary>
-    public ICommand ExcelExportAll => new ExcelExportAllAsyncCommand();
+    public ICommand ExcelExportAll => new ExcelExportAllAsyncCommand(this);
 
     /// <summary>
     /// Excel -> Список исполнителей
@@ -341,7 +341,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     /// <summary>
     /// Excel -> Формы 1.x, 2.x и Excel -> Выбранная организация -> Формы 1.x, 2.x
     /// </summary>
-    public ICommand ExcelExportForms => new ExcelExportFormsAsyncCommand();
+    public ICommand ExcelExportForms => new ExcelExportFormsAsyncCommand(this);
 
     /// <summary>
     /// Excel -> Разрывы и пересечения

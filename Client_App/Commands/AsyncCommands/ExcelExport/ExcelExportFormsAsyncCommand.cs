@@ -26,7 +26,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 /// <summary>
 /// Excel -> Формы 1.x, 2.x и Excel -> Выбранная организация -> Формы 1.x, 2.x.
 /// </summary>
-public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
+public partial class ExcelExportFormsAsyncCommand(MainWindowVM mainWindowVM) : ExcelExportBaseAllAsyncCommand
 {
     public override bool CanExecute(object? parameter) => true;
 
@@ -36,7 +36,7 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
         var cts = new CancellationTokenSource();
 
         var forSelectedOrg = parameter!.ToString()!.Contains("Org");
-        var selectedReports = (Reports?)mainWindow?.SelectedReports?.FirstOrDefault();
+        var selectedReports = mainWindowVM.SelectedReports;
         var formNum = OnlyDigitsRegex().Replace(parameter.ToString()!, "");
         ExportType = $"Выгрузка форм {formNum}";
 

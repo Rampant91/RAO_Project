@@ -328,8 +328,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                         .GroupBy(x => x.OpDate)
                         .ToDictionary(
                             g => g.Key,
-                            g => g.ToList()
-                        )
+                            g => g.ToList())
                 },
                 snkGroupKeyComparer
             )
@@ -343,7 +342,6 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         Dictionary<UniqueUnitDto, List<ShortFormDTO>> uniqueUnitWithAllOrderedOperationDictionary = [];
         var j = 0;
         foreach (var (unit, formsByDateDictionary) in groupedOperationListDictionary)
-                     //.Where(x => x.Key.PasNum is "1231"))
         {
             j++;
             var currentPackNumber = "";
@@ -406,6 +404,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                     {
                         newOperationOrderList.Add(form);
                         currentPackNumber = form.PackNumber;
+                        if (GetPlusOperationsArray(formNum).Contains(form.OpCode)) inStock = true;
+                        if (GetMinusOperationsArray(formNum).Contains(form.OpCode)) inStock = false;
                         continue;
                     }
 
