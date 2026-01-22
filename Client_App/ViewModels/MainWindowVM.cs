@@ -376,12 +376,12 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     /// <summary>
     /// Excel -> Выбранная организация -> СНК
     /// </summary>
-    public ICommand ExcelExportSnk => new ExcelExportSnkAsyncCommand();
+    public ICommand ExcelExportSnk => new ExcelExportSnkAsyncCommand(this);
 
     /// <summary>
     /// Excel -> Выбранная организация -> Проверка инвентаризаций
     /// </summary>
-    public ICommand ExcelExportCheckInventories => new ExcelExportCheckInventoriesAsyncCommand();
+    public ICommand ExcelExportCheckInventories => new ExcelExportCheckInventoriesAsyncCommand(this);
 
     /// <summary>
     /// Экспорт всех организаций организации в отдельные файлы .RAODB

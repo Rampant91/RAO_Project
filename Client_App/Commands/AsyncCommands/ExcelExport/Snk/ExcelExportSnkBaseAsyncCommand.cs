@@ -2,7 +2,6 @@
 using Avalonia.Threading;
 using Client_App.ViewModels.Messages;
 using Client_App.ViewModels.ProgressBar;
-using Client_App.Views;
 using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
@@ -149,7 +148,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = "Не удалось распознать введённую дату, " +
                                      $"{Environment.NewLine}выгрузка будет выполнена на текущую системную дату.",
                     MinWidth = 400,
@@ -169,7 +168,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = "Выгрузка не выполнена, поскольку введена дата ранее вступления в силу приказа.",
                     MinWidth = 400,
                     MinHeight = 115,
@@ -190,7 +189,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = "Выгрузка не выполнена, поскольку не выбран ни один из параметров, для определения учётной единицы.",
                     MinWidth = 400,
                     MinHeight = 115,
@@ -221,13 +220,12 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     /// В случае отсутствия выводит соответствующее сообщение и закрывает команду.
     /// </summary>
     /// <param name="formNum">Номер формы отчётности.</param>
+    /// <param name="selectedReports">Выбранная организация.</param>
     /// <param name="progressBar">Окно прогрессбара.</param>
     /// <param name="cts">Токен.</param>
-    private protected static async Task<Reports> CheckRepsAndRepPresence(string formNum, AnyTaskProgressBar progressBar, CancellationTokenSource cts)
+    private protected static async Task CheckRepsAndRepPresence(string formNum, Reports? selectedReports, 
+        AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
-        var mainWindow = Desktop.MainWindow as MainWindow;
-        var selectedReports = (Reports?)mainWindow?.SelectedReports?.FirstOrDefault();
-
         if (selectedReports is null)
         {
             #region MessageExcelExportFail
@@ -236,7 +234,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = "Выгрузка не выполнена, поскольку не выбрана организация.",
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -255,11 +253,11 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
-                    ContentMessage =
-                        $"Не удалось совершить выгрузку СНК," +
-                        $"{Environment.NewLine}поскольку у выбранной организации отсутствуют отчёты по форме {formNum}.",
+                    ContentMessage = $"Не удалось совершить выгрузку СНК," +
+                                     $"{Environment.NewLine}поскольку у выбранной организации "
+                                     + $"отсутствуют отчёты по форме {formNum}.",
                     MinWidth = 400,
                     MinHeight = 100,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -270,8 +268,6 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
-
-        return selectedReports!;
     }
 
     #endregion

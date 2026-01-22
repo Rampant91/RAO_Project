@@ -694,7 +694,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage =
                         "Не удалось совершить выгрузку списка всех отчетов по форме 1 с указанием количества строк," +

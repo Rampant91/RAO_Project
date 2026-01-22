@@ -6,7 +6,6 @@ using Client_App.Views.ProgressBar;
 using DynamicData;
 using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
-using Models.Collections;
 using Models.DBRealization;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -18,6 +17,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Client_App.ViewModels;
 using static Client_App.Resources.StaticStringMethods;
 using CustomSnkEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkEqualityComparer;
 using CustomSnkRadionuclidsEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkRadionuclidsEqualityComparer;
@@ -27,7 +27,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 /// <summary>
 /// Excel -> Проверка инвентаризаций.
 /// </summary>
-public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCommand
+public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) : ExcelExportSnkBaseAsyncCommand
 {
     public override bool CanExecute(object? parameter) => true;
 
@@ -36,19 +36,19 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         var cts = new CancellationTokenSource();
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
-        var mainWindow = Desktop.MainWindow as MainWindow;
         var formNum = (parameter as string)!;
 
-        progressBarVM.SetProgressBar(5, "Проверка наличия отчётов", 
-            $"Проверка инвентаризаций {formNum}", ExportType);
-        await CheckRepsAndRepPresence(formNum, progressBar, cts);
-
-        var selectedReports = mainWindow!.SelectedReports.First() as Reports;
+        var selectedReports = mainWindowVM.SelectedReports;
+        var exportName = $"Проверка инвентаризаций {formNum}";
+        ExportType = "Выгрузка в .xlsx";
+        progressBarVM.SetProgressBar(5, "Проверка наличия отчётов", exportName, ExportType);
+        await CheckRepsAndRepPresence(formNum, selectedReports, progressBar, cts);
+        
         var regNum = selectedReports!.Master_DB.RegNoRep.Value;
         var okpo = selectedReports.Master_DB.OkpoRep.Value;
-        ExportType = $"Проверка_инвентаризаций_{formNum}_{regNum}_{okpo}";
+        exportName = $"Проверка_инвентаризаций_{formNum}_{regNum}_{okpo}";
 
-        progressBarVM.SetProgressBar(6, "Запрос даты формирования СНК");
+        progressBarVM.SetProgressBar(6, "Запрос даты формирования СНК", exportName);
         var(endSnkDate, snkParams) = await AskSnkEndDate(progressBar, cts);
 
         progressBarVM.SetProgressBar(8, "Создание временной БД");
@@ -143,7 +143,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = $"Выгрузка не выполнена, поскольку у организации отсутствуют формы {formNum} с кодом операции 10.",
                     MinWidth = 400,
                     MinHeight = 150,

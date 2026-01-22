@@ -104,7 +104,7 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage = $"Время выгрузки составило {diffInSeconds} секунд.",
                     MinHeight = 150,
@@ -148,7 +148,7 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
                     {
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                         CanResize = true,
-                        ContentTitle = "Выгрузка в Excel",
+                        ContentTitle = "Выгрузка в .xlsx",
                         ContentHeader = "Уведомление",
                         ContentMessage = "Выгрузка не выполнена, поскольку в базе отсутствуют формы отчетности организаций.",
                         MinHeight = 175,
@@ -281,7 +281,7 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage = msg,
                     MinHeight = 150,

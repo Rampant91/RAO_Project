@@ -113,7 +113,7 @@ public class ExcelExportExecutorsAsyncCommand : ExcelExportListOfFormsBaseAsyncC
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Выгрузка не выполнена, поскольку в базе отсутствуют формы отчетности организаций.",
                     MinHeight = 150,

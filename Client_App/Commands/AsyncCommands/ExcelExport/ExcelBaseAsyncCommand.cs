@@ -114,7 +114,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                     new ButtonDefinition { Name = "Открыть временную копию" }
                 ],
                 CanResize = true,
-                ContentTitle = "Выгрузка в Excel",
+                ContentTitle = "Выгрузка в .xlsx",
                 ContentHeader = "Уведомление",
                 ContentMessage = "Что бы вы хотели сделать с данной выгрузкой?",
                 MinWidth = 400,
@@ -169,7 +169,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                             {
                                 ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка в Excel",
+                                ContentTitle = "Выгрузка в .xlsx",
                                 ContentHeader = "Ошибка",
                                 ContentMessage =
                                     $"Не удалось сохранить файл по пути: {fullPath}" +
@@ -706,7 +706,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Ошибка",
                     ContentMessage = "Не удалось сохранить файл по указанному пути:" +
                                      $"{Environment.NewLine}{fullPath}",
@@ -742,7 +742,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                         new ButtonDefinition { Name = "Ок" },
                         new ButtonDefinition { Name = "Открыть выгрузку" }
                     ],
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Выгрузка сохранена по пути:" +
                                      $"{Environment.NewLine}{fullPath}",
@@ -796,7 +796,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                     {
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                         CanResize = true,
-                        ContentTitle = "Выгрузка в Excel",
+                        ContentTitle = "Выгрузка в .xlsx",
                         ContentHeader = "Уведомление",
                         ContentMessage = "При создании файла временной БД возникла ошибка." +
                                          $"{Environment.NewLine}Операция выгрузки принудительно завершена.",
@@ -840,7 +840,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Ошибка",
                     ContentMessage = $"Не удалось открыть сетевое хранилище паспортов:" +
                                      $"{Environment.NewLine}{pasFolderDirectory.FullName}",

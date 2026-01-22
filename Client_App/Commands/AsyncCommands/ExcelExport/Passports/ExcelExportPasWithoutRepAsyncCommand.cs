@@ -292,7 +292,7 @@ public partial class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncComman
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage =
                         "Номера категорий не были введены, либо были введены некорректно. " +

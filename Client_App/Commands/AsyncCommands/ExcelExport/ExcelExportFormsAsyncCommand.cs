@@ -118,7 +118,7 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в Excel",
+                        ContentTitle = "Выгрузка в .xlsx",
                         ContentMessage = "Выгрузка не выполнена, поскольку не выбрана организация",
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -140,7 +140,7 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в Excel",
+                        ContentTitle = "Выгрузка в .xlsx",
                         ContentHeader = "Уведомление",
                         ContentMessage =
                             $"Не удалось совершить выгрузку форм {formNum}," +
@@ -223,7 +223,7 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = "Выгрузка не выполнена, поскольку не выбрана организация",
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner

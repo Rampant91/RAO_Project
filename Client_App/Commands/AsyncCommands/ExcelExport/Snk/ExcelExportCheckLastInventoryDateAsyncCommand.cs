@@ -113,7 +113,7 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = "Выгрузка не выполнена, поскольку не выбран ни один номер формы.",
                     MinWidth = 400,
                     MinHeight = 115,
@@ -134,7 +134,7 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = "Выгрузка не выполнена, поскольку не выбран ни один из параметров, для определения учётной единицы.",
                     MinWidth = 400,
                     MinHeight = 115,
@@ -203,7 +203,7 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Не удалось совершить выгрузку, поскольку в БД отсутствуют организации с указанным регионом.",
                     MinWidth = 400,
@@ -243,7 +243,7 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage = $"Не удалось совершить выгрузку, поскольку в БД отсутствуют отчёты по формам {string.Join(", ", formNums)}.",
                     MinWidth = 400,

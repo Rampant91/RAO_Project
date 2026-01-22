@@ -191,7 +191,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ICommand DeleteDataInRows { get; set; }                  //  Удалить данные в выделенных ячейках
     public ICommand DeleteNote { get; set; }                        //  Удалить выбранный комментарий
     public ICommand DeleteRows { get; set; }                        //  Удалить выбранные строчки из формы
-    public ICommand ExcelExportSourceMovementHistory { get; set; }  //  Выгрузка в Excel истории движения источника
+    public ICommand ExcelExportSourceMovementHistory { get; set; }  //  Выгрузка в .xlsx истории движения источника
     public ICommand OpenPas { get; set; }                           //  Найти и открыть соответствующий файл паспорта в сетевом хранилище
     public ICommand PasteRows { get; set; }                         //  Вставить значения из буфера обмена
     public ICommand SaveReport { get; set; }                        //  Сохранить отчет

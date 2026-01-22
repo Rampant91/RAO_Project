@@ -174,7 +174,7 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
                             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                             {
                                 ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка в Excel",
+                                ContentTitle = "Выгрузка в .xlsx",
                                 ContentHeader = "Ошибка",
                                 ContentMessage =
                                     $"Не удалось сохранить файл по пути: {fullPath}" +
