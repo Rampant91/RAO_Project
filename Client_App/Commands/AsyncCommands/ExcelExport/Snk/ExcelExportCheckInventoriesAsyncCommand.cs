@@ -100,7 +100,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
             inventoryDatesList, inventoryDuplicateErrors, firstSnkDate, formNum);
 
         progressBarVM.SetProgressBar(45, "Загрузка и заполнение СНК");
-        await FillSnkPages(db, unitInStockByDateDictionary, inventoryFormsDtoList, formNum, excelPackage, progressBarVM, cts);
+        await FillSnkPages(db, unitInStockByDateDictionary, inventoryFormsDtoList, formNum, excelPackage, snkParams, progressBarVM, cts);
 
         progressBarVM.SetProgressBar(75, "Загрузка и заполнение ошибок");
         await FillInventoryErrorsPages(db, inventoryErrorsByDateDictionary, formNum, excelPackage, progressBarVM, cts);
@@ -505,8 +505,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
     #region FillSnkPages
 
     private static async Task FillSnkPages(DBModel db, Dictionary<DateOnly, List<ShortFormDTO>> unitInStockByDateDictionary, 
-        List<ShortFormDTO> inventoryFormsDtoList, string formNum, 
-        ExcelPackage excelPackage, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
+        List<ShortFormDTO> inventoryFormsDtoList, string formNum, ExcelPackage excelPackage, SnkParamsDto snkParams,
+        AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
         double progressBarDoubleValue = progressBarVM.ValueBar;
         foreach (var (inventoryDate, unitInStockOnDateDtoList) in unitInStockByDateDictionary)
@@ -529,18 +529,18 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
             var fullFormsSnkOrderedList = fullFormsSnkList
                 .OrderByDescending(x => fullFormsInventoryList
-                    .Any(y => x.PasNum == y.PasNum
-                              && x.Type == y.Type
-                              && x.Radionuclids == y.Radionuclids
-                              && x.FacNum == y.FacNum
+                    .Any(y => (!snkParams.CheckPasNum || x.PasNum == y.PasNum)
+                              && (!snkParams.CheckType || x.Type == y.Type)
+                              && (!snkParams.CheckRadionuclids || x.Radionuclids == y.Radionuclids)
+                              && (!snkParams.CheckFacNum || x.FacNum == y.FacNum)
                               && x.Quantity == y.Quantity
-                              && x.PackNumber == y.PackNumber))
-                .ThenBy(x => x.PasNum)
-                .ThenBy(x => x.FacNum)
-                .ThenBy(x => x.Type)
-                .ThenBy(x => x.Radionuclids)
+                              && (!snkParams.CheckPackNumber || x.PackNumber == y.PackNumber)))
+                .ThenBy(x => snkParams.CheckPasNum ? x.PasNum : null)
+                .ThenBy(x => snkParams.CheckFacNum ? x.FacNum : null)
+                .ThenBy(x => snkParams.CheckType ? x.Type : null)
+                .ThenBy(x => snkParams.CheckRadionuclids ? x.Radionuclids : null)
                 .ThenBy(x => x.Quantity)
-                .ThenBy(x => x.PackNumber)
+                .ThenBy(x => snkParams.CheckPackNumber ? x.PackNumber : null)
                 .ToList();
 
             var snkRow = 3;
@@ -613,18 +613,18 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
             var fullFormsInventoryOrderedList = fullFormsInventoryList
                     .OrderByDescending(x => fullFormsSnkList
-                        .Any(y => x.PasNum == y.PasNum
-                                  && x.Type == y.Type
-                                  && x.Radionuclids == y.Radionuclids
-                                  && x.FacNum == y.FacNum
+                        .Any(y => (!snkParams.CheckPasNum || x.PasNum == y.PasNum)
+                                  && (!snkParams.CheckType || x.Type == y.Type)
+                                  && (!snkParams.CheckRadionuclids || x.Radionuclids == y.Radionuclids)
+                                  && (!snkParams.CheckFacNum || x.FacNum == y.FacNum)
                                   && x.Quantity == y.Quantity
-                                  && x.PackNumber == y.PackNumber))
-                    .ThenBy(x => x.PasNum)
-                    .ThenBy(x => x.FacNum)
-                    .ThenBy(x => x.Type)
-                    .ThenBy(x => x.Radionuclids)
+                                  && (!snkParams.CheckPackNumber || x.PackNumber == y.PackNumber)))
+                    .ThenBy(x => snkParams.CheckPasNum ? x.PasNum : null)
+                    .ThenBy(x => snkParams.CheckFacNum ? x.FacNum : null)
+                    .ThenBy(x => snkParams.CheckType ? x.Type : null)
+                    .ThenBy(x => snkParams.CheckRadionuclids ? x.Radionuclids : null)
                     .ThenBy(x => x.Quantity)
-                    .ThenBy(x => x.PackNumber)
+                    .ThenBy(x => snkParams.CheckPackNumber ? x.PackNumber : null)
                     .ToList();
 
             var inventoryRow = 3;
@@ -691,13 +691,13 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
             #region HighlightMatchesWithColor
 
             var countMatches = fullFormsSnkOrderedList
-                    .Count(x => fullFormsInventoryOrderedList
-                        .Any(y => x.PasNum == y.PasNum
-                                  && x.Type == y.Type
-                                  && x.Radionuclids == y.Radionuclids
-                                  && x.FacNum == y.FacNum
-                                  && x.Quantity == y.Quantity
-                                  && x.PackNumber == y.PackNumber));
+                .Count(x => fullFormsInventoryOrderedList
+                    .Any(y => (!snkParams.CheckPasNum || x.PasNum == y.PasNum)
+                              && (!snkParams.CheckType || x.Type == y.Type)
+                              && (!snkParams.CheckRadionuclids || x.Radionuclids == y.Radionuclids)
+                              && (!snkParams.CheckFacNum || x.FacNum == y.FacNum)
+                              && x.Quantity == y.Quantity
+                              && (!snkParams.CheckPackNumber || x.PackNumber == y.PackNumber)));
 
             if (countMatches > 0)
             {
