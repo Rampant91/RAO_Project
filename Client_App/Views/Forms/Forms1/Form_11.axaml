@@ -406,21 +406,6 @@
 							</DataGridTextColumn.HeaderTemplate>
 						</DataGridTextColumn>
 
-                        <DataGridTextColumn Width="40"
-                                            x:DataType="forms1:Form11"
-                                            Binding="{Binding NumberInOrder.Value}"
-                                            IsReadOnly="True">
-                            <DataGridTextColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="1" />
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTextColumn.HeaderTemplate>
-                        </DataGridTextColumn>
-
                         <DataGridTemplateColumn>
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>

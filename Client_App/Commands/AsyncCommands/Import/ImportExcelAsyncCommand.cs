@@ -1,24 +1,25 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Threading;
+using Client_App.Interfaces.Logger;
+using Client_App.Resources.CustomComparers;
+using Client_App.ViewModels;
+using Client_App.Views;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
+using Models.Forms.Form1;
+using Models.Forms.Form2;
+using Models.Forms.Form4;
 using OfficeOpenXml;
+using Spravochniki;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Models.Forms.Form1;
-using Models.Forms.Form2;
-using Avalonia.Threading;
-using Client_App.Resources.CustomComparers;
-using Models.Forms.Form4;
-using Client_App.Views;
-using Spravochniki;
-using Microsoft.EntityFrameworkCore;
-using Client_App.ViewModels;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -378,46 +379,56 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             }
         }
 
-        var comparator = new CustomReportsComparer();
-        var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
-
-        if (tmpReportsList.All(x => x.Master_DB.FormNum_DB is "1.0" or "2.0"))
+        try
         {
-            ReportsStorage.LocalReports.Reports_Collection.Clear();
-            ReportsStorage.LocalReports.Reports_Collection
-                .AddRange(tmpReportsList
-                    .OrderBy(x => x.Master_DB.RegNoRep?.Value, comparator)
-                    .ThenBy(x => x.Master_DB.OkpoRep?.Value, comparator));
+            var comparator = new CustomReportsComparer();
+            var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+            if (tmpReportsList.All(x => x.Master_DB.RegNoRep != null && x.Master_DB.OkpoRep != null))
+            {
+                var tmpReportsOrderedEnum = tmpReportsList
+                    .OrderBy(x => x.Master_DB?.RegNoRep?.Value, comparator)
+                    .ThenBy(x => x.Master_DB?.OkpoRep?.Value, comparator);
+
+                ReportsStorage.LocalReports.Reports_Collection.Clear();
+                ReportsStorage.LocalReports.Reports_Collection.AddRange(tmpReportsOrderedEnum);
+            }
+        }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Warning(msg);
+            return;
         }
 
-            //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
+        //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
 
 
-            try
-            {
-                await StaticConfiguration.DBModel.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                #region MessageImportError
+        try
+        {
+            await StaticConfiguration.DBModel.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            #region MessageImportError
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Импорт из .xlsx",
-                        ContentHeader = "Уведомление",
-                        ContentMessage = $"При сохранении импортированных данных возникла ошибка.\n",
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Импорт из .xlsx",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "При сохранении импортированных данных возникла ошибка.\n",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
 
-                #endregion
+            #endregion
 
-                return;
-            }
+            return;
+        }
 
         if (impReportsList.All(x => x.Master_DB.FormNum_DB is "1.0" or "2.0"))
         {

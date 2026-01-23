@@ -488,15 +488,53 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
             }
         }
 
-        var comparator = new CustomReportsComparer();
-        var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
-        ReportsStorage.LocalReports.Reports_Collection.Clear();
-        ReportsStorage.LocalReports.Reports_Collection
-            .AddRange(tmpReportsList
-                .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
-                .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
+        try
+        {
+            var comparator = new CustomReportsComparer();
+            var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+            if (tmpReportsList.All(x => x.Master_DB.RegNoRep != null && x.Master_DB.OkpoRep != null))
+            {
+                var tmpReportsOrderedEnum = tmpReportsList
+                    .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
+                    .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator);
 
-        await StaticConfiguration.DBModel.SaveChangesAsync().ConfigureAwait(false);
+                ReportsStorage.LocalReports.Reports_Collection.Clear();
+                ReportsStorage.LocalReports.Reports_Collection.AddRange(tmpReportsOrderedEnum);
+            }
+        }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Warning(msg);
+            return;
+        }
+
+        try
+        {
+            await StaticConfiguration.DBModel.SaveChangesAsync().ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            #region MessageImportError
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = ButtonEnum.Ok,
+                    ContentTitle = "Импорт из .xlsx",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"При сохранении импортированных данных возникла ошибка.\n",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            return;
+        }
 
         #region Suffix
 

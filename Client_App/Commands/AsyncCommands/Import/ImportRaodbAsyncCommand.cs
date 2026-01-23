@@ -305,12 +305,37 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
         try
         {
             await StaticConfiguration.DBModel.SaveChangesAsync();
-            await SetDataGridPage(impReportsList);
         }
         catch (Exception ex)
         {
+            #region MessageImportError
 
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Импорт из .xlsx",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "При сохранении импортированных данных возникла ошибка.\n",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            return;
         }
+
+        try
+        {
+            if (impReportsList.All(x => x.Master_DB.FormNum_DB is "1.0" or "2.0"))
+            {
+                await SetDataGridPage(impReportsList);
+            }
+        }
+        catch {}
 
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"

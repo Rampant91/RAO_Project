@@ -193,7 +193,7 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
         if (form.Activity_DB is not string activity 
             || !decimal.TryParse(ToExponentialString(activity), 
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                CultureInfo.CreateSpecificCulture("ru-RU"),
+                new CultureInfo("ru-RU", useUserOverride: false),
                 out var activityValue))
         {
             await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
@@ -265,7 +265,7 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
             if (decimal.TryParse(ToExponentialString(dFromR),
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands |
                     NumberStyles.AllowLeadingSign,
-                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                    new CultureInfo("ru-RU", useUserOverride: false),
                     out var value))
             {
                 dValueList.Add(decimal.Multiply(value, 1e12m));
@@ -291,7 +291,7 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
 
             if (!decimal.TryParse(ToExponentialString(nuclidFromR.Mza),
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                    new CultureInfo("ru-RU", useUserOverride: false),
                     out var mza))
             {
                 await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
@@ -549,7 +549,7 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
         }
         if (double.TryParse(tmp,
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                CultureInfo.CreateSpecificCulture("ru-RU"),
+                new CultureInfo("ru-RU", useUserOverride: false),
                 out var doubleValue))
         {
             tmp = $"{doubleValue:0.###e+00}";
