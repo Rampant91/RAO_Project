@@ -26,7 +26,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using static Client_App.ViewModels.BaseVM;
-using Client_App.Resources.CustomComparers;
 using Models.Forms.Form4;
 
 namespace Client_App.Commands.AsyncCommands;
@@ -746,8 +745,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         ReportsStorage.LocalReports.Reports_Collection.Clear();
         ReportsStorage.LocalReports.Reports_Collection
             .AddRange(tmpReportsList
-                .OrderBy(x => x.Master_DB.RegNoRep?.Value, comparator)
-                .ThenBy(x => x.Master_DB.OkpoRep?.Value, comparator));
+                .OrderBy(x => x.Master_DB?.RegNoRep?.Value, comparator)
+                .ThenBy(x => x.Master_DB?.OkpoRep?.Value, comparator));
 
         //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
     }

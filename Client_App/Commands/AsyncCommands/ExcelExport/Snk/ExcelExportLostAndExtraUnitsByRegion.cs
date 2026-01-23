@@ -17,7 +17,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using static Client_App.Resources.StaticStringMethods;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 

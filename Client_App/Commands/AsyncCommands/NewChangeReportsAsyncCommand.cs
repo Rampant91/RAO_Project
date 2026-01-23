@@ -5,9 +5,6 @@ using Client_App.ViewModels.Forms.Forms4;
 using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
 using Client_App.Views.Forms.Forms2;
-using Models.Collections;
-using Models.Interfaces;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands;
@@ -56,6 +53,5 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
         }
 
         mainWindowVM.UpdateReportsCollection();
-
     }
 }
