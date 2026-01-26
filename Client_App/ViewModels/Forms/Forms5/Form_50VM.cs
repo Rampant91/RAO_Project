@@ -4,6 +4,7 @@ using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form5;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
@@ -72,7 +73,31 @@ namespace Client_App.ViewModels.Forms.Forms5
 
         #endregion
 
+        #region FederalExecutiveAuthorityList
+
+        public ICollection<string> FederalExecutiveAuthorityList
+        {
+            get
+            {
+                return new List<string>()
+                {
+                    "Министерство здравоохранения Российской Федерации",
+                    "Министерство промышленности и торговли Российской Федерации",
+                    "Министерство энергетики Российской Федерации",
+                    "Министерство науки и высшего образования Российской Федерации",
+                    "Федеральное агентство по недропользованию",
+                    "Федеральное агентство по техническому регулированию и метрологии",
+                    "Федеральное агентство морского и речного транспорта",
+                    "Федеральное медико-биологическое агентство"
+                };
+            }
+        }
+
+        #endregion
+
         public string WindowHeader => $"Форма {Storage.FormNum_DB}: Титульный лист организации";
+
+
 
         #region Properties
 
@@ -111,10 +136,7 @@ namespace Client_App.ViewModels.Forms.Forms5
 
             var ty1 = (Form50)FormCreator.Create("5.0");
             ty1.NumberInOrder_DB = 1;
-            var ty2 = (Form50)FormCreator.Create("5.0");
-            ty2.NumberInOrder_DB = 2;
             Storage.Rows50.Add(ty1);
-            Storage.Rows50.Add(ty2);
             DBO = reps;
         }
 

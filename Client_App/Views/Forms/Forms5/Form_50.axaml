@@ -38,10 +38,45 @@
             BorderThickness="1"
             CornerRadius="5">
 
-			<Grid RowDefinitions="Auto,Auto" ColumnDefinitions="330, 550">
-				
+			<Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="330, 550">
+				<TextBlock
+					Grid.Row="0"
+					Grid.Column="0"
+					Margin="5"
+					Text="Федеральный орган исполнительной власти"/>
+				<AutoCompleteBox
+				    Grid.Row="0"
+				    Grid.Column="1"
+				    MaxDropDownHeight="300"
+				    FilterMode="Contains"
+					Items="{Binding FederalExecutiveAuthorityList}"
+				    Margin="0,5,0,3"
+					Text="{Binding Storage.Rows50[0].ExecutiveAuthority.Value}">
+				</AutoCompleteBox>
+				<TextBlock
+					Grid.Row="1"
+					Grid.Column="0"
+					Margin="5"
+					Text="ВИАЦ Госкорпорации &quot;Росатом&quot;" />
+				<CheckBox
+				    Grid.Row="1"
+				    Grid.Column="1"
+				    Margin="0,0,0,3"
+					IsChecked="{Binding Storage.Rows50[0].Rosatom.Value}">
+				</CheckBox>
+				<TextBlock
+					Grid.Row="2"
+					Grid.Column="0"
+					Margin="5"
+					Text="ВИАЦ &quot;Министерства обороны Российской Федерации&quot;" />
+				<CheckBox
+				    Grid.Row="2"
+				    Grid.Column="1"
+				    Margin="0,0,0,3"
+					IsChecked="{Binding Storage.Rows50[0].MinObr.Value}">
+				</CheckBox>
 				<StackPanel 
-					    Grid.Row="0"
+					    Grid.Row="3"
 					    Grid.Column="0" 
 						Grid.ColumnSpan="2"
 						Orientation="Horizontal">

@@ -64,9 +64,12 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            value1 = value1.Length > 64
+            if (value1 != null)
+            {
+                value1 = value1.Length > 64
                 ? value1[..64]
                 : value1;
+            }
             if (Name_DB != value1)
             {
                 Name_DB = value1;
@@ -114,9 +117,12 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            value1 = value1.Length > 2
+            if (value1 != null)
+            {
+                value1 = value1.Length > 2
                 ? value1[..2]
                 : value1;
+            }
             if (OperationCode_DB != value1)
             {
                 OperationCode_DB = value1;
@@ -163,9 +169,12 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            value1 = value1.Length > 64
+            if (value1 != null)
+            {
+                value1 = value1.Length > 64
                 ? value1[..64]
                 : value1;
+            }
             if (ProviderOrRecieverOKPO_DB != value1)
             {
                 ProviderOrRecieverOKPO_DB = value1;
@@ -256,9 +265,12 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            value1 = value1.Length > 16
+            if (value1 != null)
+            {
+                value1 = value1.Length > 16
                 ? value1[..16]
                 : value1;
+            }
             if (Mass_DB != value1)
             {
                 Mass_DB = value1;

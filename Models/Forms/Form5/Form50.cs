@@ -28,6 +28,170 @@ public partial class Form50 : Form
 
     #region Properties
 
+    #region VIAC (1)
+
+    #region ExecutiveAuthority
+
+    [MaxLength(256)]
+    [Column(TypeName = "varchar(256)")]
+    public string ExecutiveAuthority_DB { get; set; } = "";
+
+    [NotMapped]
+    public RamAccess<string> ExecutiveAuthority
+    {
+        get
+        {
+            if (Dictionary.TryGetValue(nameof(ExecutiveAuthority), out var value))
+            {
+                ((RamAccess<string>)value).Value = ExecutiveAuthority_DB;
+                return (RamAccess<string>)value;
+            }
+            var rm = new RamAccess<string>(ExecutiveAuthority_Validation, ExecutiveAuthority_DB);
+            rm.PropertyChanged += ExecutiveAuthority_ValueChanged;
+            Dictionary.Add(nameof(ExecutiveAuthority), rm);
+            return (RamAccess<string>)Dictionary[nameof(ExecutiveAuthority)];
+        }
+        set
+        {
+            ExecutiveAuthority_DB = ParseInnerText(value.Value);
+            OnPropertyChanged();
+        }
+    }
+
+    private void ExecutiveAuthority_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+
+        if (value1 is null) return;
+
+        value1 = value1.Length > 256
+            ? value1[..256]
+            : value1;
+        if (ExecutiveAuthority_DB != value1)
+        {
+            ExecutiveAuthority_DB = value1;
+
+            if (!string.IsNullOrEmpty(value1))
+            {
+                Rosatom.Value = false;
+                MinObr.Value = false;
+            }
+        }
+    }
+
+    private bool ExecutiveAuthority_Validation(RamAccess<string> value)
+    {
+        value.ClearErrors();
+        return true;
+    }
+
+    #endregion
+
+    #region Rosatom
+
+    public bool Rosatom_DB { get; set; } = false;
+
+    [NotMapped]
+    public RamAccess<bool> Rosatom
+    {
+        get
+        {
+            if (Dictionary.TryGetValue(nameof(Rosatom), out var value))
+            {
+                ((RamAccess<bool>)value).Value = Rosatom_DB;
+                return (RamAccess<bool>)value;
+            }
+            var rm = new RamAccess<bool>(Rosatom_Validation, Rosatom_DB);
+            rm.PropertyChanged += Rosatom_ValueChanged;
+            Dictionary.Add(nameof(Rosatom), rm);
+            return (RamAccess<bool>)Dictionary[nameof(Rosatom)];
+        }
+        set
+        {
+            Rosatom_DB = value.Value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void Rosatom_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<bool>)value).Value;
+
+        if (Rosatom_DB != value1)
+        {
+            Rosatom_DB = value1;
+            if (value1 == true)
+            {
+                ExecutiveAuthority.Value = "";
+                MinObr.Value = false;
+            }
+        }
+    }
+
+    private bool Rosatom_Validation(RamAccess<bool> value)
+    {
+        value.ClearErrors();
+        return true;
+    }
+
+    #endregion
+
+    #region MinObr
+
+    public bool MinObr_DB { get; set; } = false;
+
+    [NotMapped]
+    public RamAccess<bool> MinObr
+    {
+        get
+        {
+            if (Dictionary.TryGetValue(nameof(MinObr), out var value))
+            {
+                ((RamAccess<bool>)value).Value = MinObr_DB;
+                return (RamAccess<bool>)value;
+            }
+            var rm = new RamAccess<bool>(MinObr_Validation, MinObr_DB);
+            rm.PropertyChanged += MinObr_ValueChanged;
+            Dictionary.Add(nameof(MinObr), rm);
+            return (RamAccess<bool>)Dictionary[nameof(MinObr)];
+        }
+        set
+        {
+            MinObr_DB = value.Value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void MinObr_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<bool>)value).Value;
+
+        if (MinObr_DB != value1)
+        {
+            MinObr_DB = value1;
+
+            if (value1 == true)
+            {
+                ExecutiveAuthority.Value = "";
+                Rosatom.Value = false;
+            }
+        }
+    }
+
+    private bool MinObr_Validation(RamAccess<bool> value)
+    {
+        value.ClearErrors();
+        return true;
+    }
+
+    #endregion
+
+    #endregion
+
+
     // Form5X.Year (2)
 
     #region Name (3)

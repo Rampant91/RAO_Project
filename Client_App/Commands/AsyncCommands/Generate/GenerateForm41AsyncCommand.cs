@@ -107,6 +107,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         }
 
         #endregion
+
         var progressBar = await Dispatcher.UIThread.InvokeAsync(async () => new AnyTaskProgressBar(cts, owner));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
 

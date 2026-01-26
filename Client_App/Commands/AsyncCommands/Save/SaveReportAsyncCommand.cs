@@ -222,15 +222,6 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
                 tmp.Master.Rows20[1].OrganUprav.Value = tmp.Master.Rows20[0].OrganUprav.Value;
                 tmp.Master.Rows20[1].RegNo.Value = tmp.Master.Rows20[0].RegNo.Value;
             }
-            if (tmp.Master.Rows40.Count != 0)
-            {
-                tmp.Master.Rows40[1].NameOrganUprav.Value = tmp.Master.Rows40[0].NameOrganUprav.Value;
-                tmp.Master.Rows40[1].NameRiac.Value = tmp.Master.Rows40[0].NameRiac.Value;
-            }
-            if (tmp.Master.Rows50.Count != 0)
-            {
-                tmp.Master.Rows50[1].Name.Value = tmp.Master.Rows50[0].Name.Value;
-            }
             VM.DBO.Reports_Collection.Add(tmp);
             VM.DBO = null;
         }

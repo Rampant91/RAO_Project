@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Models.Forms;
 using Models.Forms.Form1;
+using Models.Forms.Form4;
+using Models.Forms.Form5;
 
 namespace Client_App.Commands.AsyncCommands.Delete;
 
@@ -341,6 +343,170 @@ public class NewDeleteDataInRowsAsyncCommand : BaseAsyncCommand
             }
 
             #endregion
+
+            #region 4.1
+
+            if (formCollection.Any(x => x is Form41))
+            {
+                var form41Collection = formCollection.ToList().Cast<Form41>();
+                foreach (var form in form41Collection)
+                {
+                    if (form is null) continue;
+
+                    form.RegNo.Value = null;
+                    form.Okpo.Value = null;
+                    form.OrganizationName.Value = null;
+                    form.LicenseOrRegistrationInfo.Value = null;
+                    form.NumOfFormsWithInventarizationInfo.Value = 0;
+                    form.NumOfFormsWithoutInventarizationInfo.Value = 0;
+                    form.NumOfForms212.Value = 0;
+                    form.Note.Value = null;
+                }
+            }
+
+            #endregion
+
+            #region 5.1
+
+            if (formCollection.Any(x => x is Form51))
+            {
+                var form51Collection = formCollection.ToList().Cast<Form51>();
+                foreach (var form in form51Collection)
+                {
+                    if (form is null) continue;
+
+                    form.OperationCode.Value = null;
+                    form.Category.Value = null;
+                    form.Radionuclids.Value = null;
+                    form.Quantity.Value = null;
+                    form.Activity.Value = null;
+                    form.ProviderOrRecieverOKPO.Value = null;
+                }
+            }
+
+            #endregion
+
+            #region 5.2
+
+            if (formCollection.Any(x => x is Form52))
+            {
+                var form52Collection = formCollection.ToList().Cast<Form52>();
+                foreach (var form in form52Collection)
+                {
+                    if (form is null) continue;
+
+                    form.Category.Value = null;
+                    form.Radionuclids.Value = null;
+                    form.Quantity.Value = null;
+                    form.Activity.Value = null;
+                }
+            }
+
+            #endregion
+
+            #region 5.3
+
+            if (formCollection.Any(x => x is Form53))
+            {
+                var form53Collection = formCollection.ToList().Cast<Form53>();
+                foreach (var form in form53Collection)
+                {
+                    if (form is null) continue;
+
+                    form.OperationCode.Value = null;
+                    form.TypeORI.Value = null;
+                    form.VarietyORI.Value = null;
+                    form.AggregateState.Value = null;
+                    form.ProviderOrRecieverOKPO.Value = null;
+                    form.Radionuclids.Value = null;
+                    form.Activity.Value = null;
+                    form.Mass.Value = null;
+                    form.Volume.Value = null;
+                    form.Quantity.Value = null;
+                }
+            }
+
+            #endregion
+
+            #region 5.4
+
+            if (formCollection.Any(x => x is Form54))
+            {
+                var form54Collection = formCollection.ToList().Cast<Form54>();
+                foreach (var form in form54Collection)
+                {
+                    if (form is null) continue;
+
+                    form.TypeORI.Value = null;
+                    form.VarietyORI.Value = null;
+                    form.AggregateState.Value = null;
+                    form.Radionuclids.Value = null;
+                    form.Activity.Value = null;
+                    form.Mass.Value = null;
+                    form.Volume.Value = null;
+                    form.Quantity.Value = null;
+                }
+            }
+
+            #endregion
+
+            #region 5.5
+
+            if (formCollection.Any(x => x is Form55))
+            {
+                var form55Collection = formCollection.ToList().Cast<Form55>();
+                foreach (var form in form55Collection)
+                {
+                    if (form is null) continue;
+
+                    form.Name.Value = null;
+                    form.OperationCode.Value = null;
+                    form.ProviderOrRecieverOKPO.Value = null;
+                    form.Quantity.Value = null;
+                    form.Mass.Value = null;
+                }
+            }
+
+            #endregion
+
+            #region 5.6
+
+            if (formCollection.Any(x => x is Form56))
+            {
+                var form56Collection = formCollection.ToList().Cast<Form56>();
+                foreach (var form in form56Collection)
+                {
+                    if (form is null) continue;
+
+                    form.Name.Value = null;
+                    form.Quantity.Value = null;
+                    form.Mass.Value = null;
+                }
+            }
+
+            #endregion
+
+            #region 5.7
+
+            if (formCollection.Any(x => x is Form57))
+            {
+                var form57Collection = formCollection.ToList().Cast<Form57>();
+                foreach (var form in form57Collection)
+                {
+                    if (form is null) continue;
+
+                    form.RegNo.Value = null;
+                    form.OKPO.Value = null;
+                    form.Name.Value = null;
+                    form.Recognizance.Value = null;
+                    form.License.Value = null;
+                    form.Practice.Value = null;
+                    form.Note.Value = null;
+                }
+            }
+
+            #endregion
         }
     }
+    
 }

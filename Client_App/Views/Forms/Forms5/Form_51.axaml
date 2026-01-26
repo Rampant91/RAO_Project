@@ -104,18 +104,8 @@
 
                 <Border Classes="borderContainer">
                     <Grid Margin="5" RowDefinitions="Auto,Auto,Auto,Auto">
-
-                        <Button Grid.Row="0" Command="{Binding SourceTransmissionAll}">Перевести все РВ в РАО</Button>
-
-                        <StackPanel Grid.Row="1" Orientation="Horizontal">
-                            <TextBlock Margin="5" Text="Автозаполнение:" />
-                            <CheckBox Margin="5" IsChecked="{Binding IsAutoReplaceEnabled}" />
-
-                        </StackPanel>
-
                         <Button
-							
-                            Grid.Row="2"
+							Grid.Row="2"
                             Margin="5"
                             Command="{Binding SetDefaultColumnWidth}"
                             CommandParameter="{Binding ElementName=dataGrid}"
@@ -186,42 +176,7 @@
                         <!--<MenuItem Header="Сортировать по номеру п/п	Ctrl+L"
                                       Command="{Binding SortForms}"
                                       HotKey="Ctrl+L"/>-->
-                        <MenuItem
-                            Command="{Binding CopyPasName}"
-                            CommandParameter="{Binding SelectedForms}"
-                            Header="Скопировать в буфер имя паспорта"
-                            InputGesture="Ctrl+K"
-                            IsVisible="{Binding OnlyOneRowSelected}" />
-                        <MenuItem
-                            Command="{Binding OpenPas}"
-                            CommandParameter="{Binding SelectedForms}"
-                            Header="Открыть паспорт"
-                            InputGesture="Ctrl+P"
-                            IsVisible="{Binding OnlyOneRowSelected}" />
-                        <MenuItem
-                            Command="{Binding ExcelExportSourceMovementHistory}"
-                            CommandParameter="{Binding SelectedForms}"
-                            Header="Выгрузка истории движения источника"
-                            InputGesture="Ctrl+E"
-                            IsVisible="{Binding OnlyOneRowSelected}" />
-                        <MenuItem
-                            Command="{Binding CategoryCalculationFromReport}"
-                            CommandParameter="{Binding SelectedForms}"
-                            Header="Рассчитать категорию"
-                            InputGesture="Ctrl+Y"
-                            IsVisible="{Binding OnlyOneRowSelected}" />
-                        <MenuItem
-                            Command="{Binding SourceTransmission}"
-                            CommandParameter="{Binding SelectedForm}"
-                            Header="Перевести РВ в РАО"
-                            InputGesture="Ctrl+J">
-                            <MenuItem.IsVisible>
-                                <MultiBinding Converter="{StaticResource Op41AndOneSelectedConverter}">
-                                    <Binding Path="OnlyOneRowSelected" />
-                                    <Binding Path="SelectedForm" />
-                                </MultiBinding>
-                            </MenuItem.IsVisible>
-                        </MenuItem>
+                    
                     </ContextMenu>
                 </Grid.ContextMenu>
 

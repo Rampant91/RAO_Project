@@ -160,10 +160,7 @@ namespace Client_App.ViewModels.Forms.Forms4
 
             var ty1 = (Form40)FormCreator.Create("4.0");
             ty1.NumberInOrder_DB = 1;
-            var ty2 = (Form40)FormCreator.Create("4.0");
-            ty2.NumberInOrder_DB = 2;
             Storage.Rows40.Add(ty1);
-            Storage.Rows40.Add(ty2);
             DBO = reps;
         }
 

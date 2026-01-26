@@ -63,9 +63,12 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            value1 = value1.Length > 5
+            if (value1 != null)
+            {
+                value1 = value1.Length > 5
                 ? value1[..5]
                 : value1;
+            }
             if (RegNo_DB != value1)
             {
                 RegNo_DB = value1;
@@ -112,9 +115,12 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            value1 = value1.Length > 14
+            if (value1 != null)
+            {
+                value1 = value1.Length > 14
                 ? value1[..14]
                 : value1;
+            }
             if (OKPO_DB != value1)
             {
                 OKPO_DB = value1;
@@ -162,9 +168,12 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            value1 = value1.Length > 64
+            if (value1 != null)
+            {
+                value1 = value1.Length > 64
                 ? value1[..64]
                 : value1;
+            }
             if (Name_DB != value1)
             {
                 Name_DB = value1;
@@ -211,9 +220,12 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            value1 = value1.Length > 256
+            if (value1 != null)
+            {
+                value1 = value1.Length > 256
                 ? value1[..256]
                 : value1;
+            }
             if (Recognizance_DB != value1)
             {
                 Recognizance_DB = value1;
@@ -260,9 +272,12 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            value1 = value1.Length > 256
+            if (value1 != null)
+            {
+                value1 = value1.Length > 256
                 ? value1[..256]
                 : value1;
+            }
             if (License_DB != value1)
             {
                 License_DB = value1;

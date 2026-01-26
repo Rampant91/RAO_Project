@@ -133,26 +133,6 @@
 						<!--<MenuItem Header="Сортировать по номеру п/п	Ctrl+L"
                                       Command="{Binding SortForms}"
                                       HotKey="Ctrl+L"/> -->
-						<MenuItem Header="Скопировать в буфер имя паспорта"
-                                  Command="{Binding CopyPasName}"
-                                  CommandParameter="{Binding SelectedForms}"
-                                  InputGesture="Ctrl+U"/>
-						<MenuItem Header="Открыть паспорт"
-                                  Command="{Binding OpenPas}"
-                                  CommandParameter="{Binding SelectedForms}"
-                                  InputGesture="Ctrl+P"/>
-						<MenuItem Header="Выгрузка истории движения источника"
-                                  Command="{Binding ExcelExportSourceMovementHistory}"
-                                  CommandParameter="{Binding SelectedForms}"
-                                  InputGesture="Ctrl+E"/>
-						<MenuItem Header="Рассчитать категорию"
-                                  Command="{Binding CategoryCalculationFromReport}"
-                                  CommandParameter="{Binding SelectedForms}"
-                                  InputGesture="Ctrl+Y"/>
-						<MenuItem Header="Перевести РВ в РАО"
-								  Command="{Binding SourceTransmission}"
-								  CommandParameter="{Binding SelectedForm}"
-                                  InputGesture="Ctrl+J"/>
 					</ContextMenu>
 				</Grid.ContextMenu>
 				<Grid Classes="tableHeader" Grid.Row="0"

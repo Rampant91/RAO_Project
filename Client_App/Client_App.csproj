@@ -244,11 +244,17 @@
     <Compile Update="Views\MainWindowTabs\Forms4TabControl.axaml.cs">
       <DependentUpon>Forms4TabControl.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Messages\AskForm57Message.axaml.cs">
+      <DependentUpon>AskForm57Message.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Messages\AskSubjectRFMessage.axaml.cs">
       <DependentUpon>AskSubjectRFMessage.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\Messages\AskIntMessageWindow.axaml.cs">
       <DependentUpon>AskIntMessageWindow.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Messages\AskViacMessage.axaml.cs">
+      <DependentUpon>AskViacMessage.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\Messages\GetRegionAndFormNums.axaml.cs">
       <DependentUpon>GetRegionAndFormNums.axaml</DependentUpon>
@@ -278,5 +284,5 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ProjectExtensions><VisualStudio><UserProperties properties_4columnwidthsettings_4columnwidthssettings_1json__JsonSchema="https://appsemble.app/api.json" /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 </Project>

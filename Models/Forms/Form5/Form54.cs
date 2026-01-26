@@ -64,9 +64,12 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            value1 = value1.Length > 2
+            if (value1 != null)
+            {
+                value1 = value1.Length > 2
                 ? value1[..2]
                 : value1;
+            }
             if (TypeORI_DB != value1)
             {
                 TypeORI_DB = value1;
@@ -218,9 +221,12 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            value1 = value1.Length > 256
+            if (value1 != null)
+            {
+                value1 = value1.Length > 256
                 ? value1[..256]
                 : value1;
+            }
             if (Radionuclids_DB != value1)
             {
                 Radionuclids_DB = value1;
@@ -267,9 +273,12 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            value1 = value1.Length > 16
+            if (value1 != null)
+            {
+                value1 = value1.Length > 16
                 ? value1[..16]
                 : value1;
+            }
             if (Activity_DB != value1)
             {
                 Activity_DB = value1;
@@ -316,9 +325,12 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            value1 = value1.Length > 16
+            if (value1 != null)
+            {
+                value1 = value1.Length > 16
                 ? value1[..16]
                 : value1;
+            }
             if (Mass_DB != value1)
             {
                 Mass_DB = value1;
@@ -365,9 +377,12 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            value1 = value1.Length > 16
+            if (value1 != null)
+            {
+                value1 = value1.Length > 16
                 ? value1[..16]
                 : value1;
+            }
             if (Volume_DB != value1)
             {
                 Volume_DB = value1;

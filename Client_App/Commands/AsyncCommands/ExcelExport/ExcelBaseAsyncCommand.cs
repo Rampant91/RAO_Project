@@ -336,6 +336,13 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
             worksheet.Cells["B16"].Value = rep.Year_DB;
 
+            worksheet.Cells["A9"].Value = form50.ExecutiveAuthority_DB;
+            if(form50.Rosatom_DB)
+                worksheet.Cells["A10"].Value = form50.Rosatom_DB;
+            if(form50.MinObr_DB)
+                worksheet.Cells["A11"].Value = form50.MinObr_DB;
+
+
             worksheet.Cells["B20"].Value = form50.Name_DB;
             worksheet.Cells["B21"].Value = form50.ShortName_DB;
             worksheet.Cells["B22"].Value = form50.Address_DB;
