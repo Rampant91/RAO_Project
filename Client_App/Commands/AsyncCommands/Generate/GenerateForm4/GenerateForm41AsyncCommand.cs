@@ -26,7 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Client_App.Views.Messages;
 
-namespace Client_App.Commands.AsyncCommands;
+namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm4;
 
 public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
 {
@@ -382,7 +382,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     }
     private bool IsRowWithOrganizationExist(Reports organization)
     {
-        return (organization.Master.RegNoRep != null) &&
+        return organization.Master.RegNoRep != null &&
                 Report.Rows41.Any(form =>
                 form.RegNo_DB == organization.Master.RegNoRep.Value
                 && form.Okpo_DB == organization.Master.OkpoRep.Value);
@@ -483,7 +483,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             //Если следующая организация временная, то переходим к следующей
             if (next / 100 is 8 or 9) continue;
             // Если есть пробел между текущей и следующей организацией, то создаем новую запись между ними
-            if (!nextSubjectFlag && (current+1 < next))
+            if (!nextSubjectFlag && current+1 < next)
             {
                 string regNo = codeSubjectRF;
                 if ((current + 1) / 100 == 0)
