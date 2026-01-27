@@ -49,8 +49,14 @@ namespace Client_App.Behaviors
                 }
                 else if (AssociatedObject?.SelectedItem is Report report)
                 {
-                    var command = new NewChangeFormAsyncCommand();
-                    command.AsyncExecute(report);
+                    BaseAsyncCommand command;
+
+                    if (report.FormNum_DB.Split('.')[0] == "2")
+                        command = new ChangeFormAsyncCommand();
+                    else
+                        command = new NewChangeFormAsyncCommand();
+
+                    command.Execute(report);
                 }
             }
 

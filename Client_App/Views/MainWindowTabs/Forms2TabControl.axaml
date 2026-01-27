@@ -6,6 +6,9 @@
 			 xmlns:controls="clr-namespace:Client_App.Views.Controls"
 	         xmlns:models="clr-namespace:Models.Collections;assembly=Models"
 			 xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
+			 xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+			 xmlns:behaviors="using:Avalonia.Xaml.Interactions.Core"
+			 xmlns:local="using:Client_App.Behaviors"
 			 xmlns:vm="using:Client_App.ViewModels.MainWindowTabs"
 			 x:DataType="vm:Forms2TabControlVM"
              x:Class="Client_App.Views.MainWindowTabs.Forms2TabControl">
@@ -29,6 +32,10 @@
 						  AlternatingRowBackground="White"
 						  RowBackground="White"
 						  CanUserSortColumns="False">
+
+					<interactivity:Interaction.Behaviors>
+						<local:DataGridDoubleClickOpenFormBehavior />
+					</interactivity:Interaction.Behaviors>
 
 					<DataGrid.ContextMenu>
 						<ContextMenu>
@@ -217,6 +224,11 @@
 						  AlternatingRowBackground="White"
 						  RowBackground="White"
 						  CanUserSortColumns="False">
+					
+					<interactivity:Interaction.Behaviors>
+						<local:DataGridDoubleClickOpenFormBehavior />
+					</interactivity:Interaction.Behaviors>
+					
 					<DataGrid.ContextMenu>
 						<ContextMenu>
 							<MenuItem Header="Редактировать форму"
