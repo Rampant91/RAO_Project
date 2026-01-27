@@ -328,14 +328,14 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
             return;
         }
 
-        try
-        {
-            if (impReportsList.All(x => x.Master_DB.FormNum_DB is "1.0" or "2.0"))
-            {
-                await SetDataGridPage(impReportsList);
-            }
-        }
-        catch {}
+        //try
+        //{
+        //    if (impReportsList.All(x => x.Master_DB.FormNum_DB is "1.0" or "2.0"))
+        //    {
+        //        await SetDataGridPage(impReportsList);
+        //    }
+        //}
+        //catch {}
 
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"

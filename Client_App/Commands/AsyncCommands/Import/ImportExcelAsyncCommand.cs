@@ -26,7 +26,7 @@ namespace Client_App.Commands.AsyncCommands.Import;
 /// <summary>
 /// Импорт -> Из Excel.
 /// </summary>
-internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
+internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -430,10 +430,10 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             return;
         }
 
-        if (impReportsList.All(x => x.Master_DB.FormNum_DB is "1.0" or "2.0"))
-        {
-            await SetDataGridPage(impReportsList);
-        }
+        //if (impReportsList.All(x => x.Master_DB.FormNum_DB is "1.0" or "2.0"))
+        //{
+        //    await SetDataGridPage(impReportsList);
+        //}
 
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"

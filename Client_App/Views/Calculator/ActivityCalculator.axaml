@@ -97,8 +97,7 @@
                     HorizontalContentAlignment="Left"
                     Margin="5"
                     VerticalAlignment="Center"
-                    Text="{Binding SelectedDictionaryNuclid.Abbreviation}">
-                </TextBox>
+                    Text="{Binding SelectedDictionaryNuclid.Abbreviation}"/>
                 <TextBlock
                     Grid.Column="0"
                     Grid.Row="1"
@@ -160,15 +159,13 @@
                     Grid.Row="0"
                     Content="по диапазону дат"
                     GroupName="DateType"
-                    IsChecked="{Binding IsDateRange}">
-                </RadioButton>
+                    IsChecked="{Binding IsDateRange}"/>
                 <RadioButton
                     Grid.Column="0"
                     Grid.Row="1"
                     Content="по отрезку времени"
                     GroupName="DateType"
-                    IsChecked="{Binding IsDateRange, Converter={StaticResource BoolInverterConverter}}">
-                </RadioButton>
+                    IsChecked="{Binding IsDateRange, Converter={StaticResource BoolInverterConverter}}"/>
                 <TextBlock
                     Grid.Column="0"
                     Grid.Row="2"
@@ -183,8 +180,7 @@
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
                     VerticalAlignment="Center"
-                    Text="{Binding InitialActivity}">
-                </TextBox>
+                    Text="{Binding InitialActivity}"/>
                 <TextBlock
                     Grid.Column="0"
                     Grid.Row="3"
@@ -250,8 +246,7 @@
                     HorizontalContentAlignment="Left"
                     VerticalAlignment="Center"
                     Items="{Binding TimeUnitArray}"
-                    SelectedItem="{Binding SelectedTimeUnit}">
-                </ComboBox>
+                    SelectedItem="{Binding SelectedTimeUnit}"/>
                 <TextBlock
                     Grid.Column="0"
                     Grid.Row="5"

@@ -19,16 +19,16 @@
 			<Grid Grid.Row ="0" Grid.Column="0" RowDefinitions="Auto,*,Auto">
 				<TextBox Text="{Binding SearchText}" Grid.Row="0" Margin="5" Watermark ="Поиск..." />
 				<!--Ошибка в этом DataGrid-->
-				<DataGrid
-						  Grid.Row="1" Margin="5"
-						  Items="{Binding ReportsCollection}"
-						  SelectionMode="Single"
-						  SelectedItem="{Binding SelectedReports}"
-						  RowHeight="25"
-						  GridLinesVisibility="All"
-						  AlternatingRowBackground="White"
-						  RowBackground="White"
-						  CanUserSortColumns="False">
+				<DataGrid x:Name="ReportsDataGrid"
+                          Grid.Row="1" Margin="5"
+                          Items="{Binding ReportsCollection}"
+                          SelectionMode="Single"
+                          SelectedItem="{Binding SelectedReports}"
+                          RowHeight="25"
+                          GridLinesVisibility="All"
+                          AlternatingRowBackground="White"
+                          RowBackground="White"
+                          CanUserSortColumns="False">
 
 					<DataGrid.ContextMenu>
 						<ContextMenu>

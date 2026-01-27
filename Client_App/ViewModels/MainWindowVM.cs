@@ -1,7 +1,4 @@
 ﻿
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.Calculator;
@@ -431,7 +428,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         DeleteForm = new DeleteReportAsyncCommand();
         DeleteReports = new DeleteReportsAsyncCommand();
         ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand();
-        ImportExcel = new ImportExcelAsyncCommand();
+        ImportExcel = new ImportExcelAsyncCommand(this);
         ImportJson = new ImportJsonAsyncCommand();
         ImportRaodb = new ImportRaodbAsyncCommand(this);
         MaxGraphsLength = new MaxGraphsLengthAsyncCommand();

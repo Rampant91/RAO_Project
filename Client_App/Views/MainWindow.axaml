@@ -312,7 +312,8 @@
 				<TabItem IsVisible="False"/>
 
 				<TabItem x:Name="Forms1" 
-                         Header="Формы 1" >
+                         Header="Формы 1" 
+                         IsSelected="{Binding }">
 					<tabs:Forms1TabControl DataContext="{Binding Forms1TabControlVM}"/>
 				</TabItem>
 				<TabItem x:Name="Forms2" 
