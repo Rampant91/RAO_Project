@@ -18,7 +18,9 @@ public class AnyTaskProgressBarVM : BaseVM, INotifyPropertyChanged
 {
     private IBackgroundLoader _backgroundWorker;
     private Task MainTask { get; set; }
-    private CancellationTokenSource CancellationTokenSource { get; set; }
+    public CancellationTokenSource CancellationTokenSource { 
+        get; 
+        set; }
     private AnyTaskProgressBar AnyTaskProgressBar_DB { get; set; }
 
     public Interaction<MainWindowVM, object> ShowDialog { get; }
