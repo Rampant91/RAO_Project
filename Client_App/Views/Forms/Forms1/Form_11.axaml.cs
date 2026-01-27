@@ -1,4 +1,3 @@
-
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -32,6 +31,7 @@ public partial class Form_11 : BaseWindow<Form_11VM>
     private readonly Form_11VM _vm = null!;
 
     private bool _isCloseConfirmed;
+    protected override bool IsFullScreenWindow => true;
 
     private bool _isCtrlPressed = false;
     private bool _cKeyPressed = false;
@@ -61,8 +61,6 @@ public partial class Form_11 : BaseWindow<Form_11VM>
 #if DEBUG
         this.AttachDevTools();
 #endif
-
-        WindowState = WindowState.Maximized;
     }
 
     //¬ременное узкоспециализированное решение

@@ -1,4 +1,3 @@
-
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -16,7 +15,6 @@ using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.Forms;
-using Models.Forms.Form1;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,6 +31,7 @@ public partial class Form_27 : BaseWindow<Form_27VM>
     private readonly Form_27VM _vm = null!;
 
     private bool _isCloseConfirmed;
+    protected override bool IsFullScreenWindow => true;
 
     private bool _isCtrlPressed = false;
     private bool _cKeyPressed = false;
