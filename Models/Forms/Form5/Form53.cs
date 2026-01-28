@@ -89,8 +89,6 @@ namespace Models.Forms.Form5
         public string TypeORI_DB { get; set; } = "";
 
 
-        [MaxLength(8)]
-        [Column(TypeName = "varchar(8)")]
         [NotMapped]
         public RamAccess<string> TypeORI
         {
@@ -117,12 +115,7 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            if (value1 != null)
-            {
-                value1 = value1.Length > 2
-                ? value1[..2]
-                : value1;
-            }
+
             if (TypeORI_DB != value1)
             {
                 TypeORI_DB = value1;
@@ -296,8 +289,8 @@ namespace Models.Forms.Form5
 
         #region Radionuclids (7)
 
-        [MaxLength(256)]
-        [Column(TypeName = "varchar(256)")]
+        [MaxLength(1024)]
+        [Column(TypeName = "varchar(1024)")]
         public string Radionuclids_DB { get; set; } = "";
 
         [NotMapped]
@@ -326,12 +319,14 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
+
             if (value1 != null)
             {
-                value1 = value1.Length > 256
-                ? value1[..256]
-                : value1;
+                value1 = value1.Length > 1024
+                    ? value1[..1024]
+                    : value1;
             }
+
             if (Radionuclids_DB != value1)
             {
                 Radionuclids_DB = value1;
@@ -348,8 +343,8 @@ namespace Models.Forms.Form5
 
         #region Activity (8)
 
-        [MaxLength(16)]
-        [Column(TypeName = "varchar(16)")]
+        [MaxLength(32)]
+        [Column(TypeName = "varchar(32)")]
         public string Activity_DB { get; set; } = "";
 
         [NotMapped]
@@ -380,9 +375,7 @@ namespace Models.Forms.Form5
             var value1 = ((RamAccess<string>)value).Value;
             if (value1 != null)
             {
-                value1 = value1.Length > 16
-                ? value1[..16]
-                : value1;
+                Activity_DB = ExponentialString_ValueChanged(value1);
             }
             if (Activity_DB != value1)
             {
@@ -400,8 +393,8 @@ namespace Models.Forms.Form5
 
         #region Mass (9)
 
-        [MaxLength(16)]
-        [Column(TypeName = "varchar(16)")]
+        [MaxLength(32)]
+        [Column(TypeName = "varchar(32)")]
         public string Mass_DB { get; set; } = "";
 
         [NotMapped]
@@ -432,9 +425,7 @@ namespace Models.Forms.Form5
             var value1 = ((RamAccess<string>)value).Value;
             if (value1 != null)
             {
-                value1 = value1.Length > 16
-                ? value1[..16]
-                : value1;
+                Mass_DB = ExponentialString_ValueChanged(value1);
             }
             if (Mass_DB != value1)
             {
@@ -452,8 +443,8 @@ namespace Models.Forms.Form5
 
         #region Volume (10)
 
-        [MaxLength(16)]
-        [Column(TypeName = "varchar(16)")]
+        [MaxLength(32)]
+        [Column(TypeName = "varchar(32)")]
         public string Volume_DB { get; set; } = "";
 
         [NotMapped]
@@ -484,9 +475,7 @@ namespace Models.Forms.Form5
             var value1 = ((RamAccess<string>)value).Value;
             if (value1 != null)
             {
-                value1 = value1.Length > 16
-                ? value1[..16]
-                : value1;
+                Volume_DB = ExponentialString_ValueChanged(value1);
             }
             if (Volume_DB != value1)
             {
@@ -615,8 +604,6 @@ namespace Models.Forms.Form5
                 OperationCode_DB = OperationCode_DB[..2];
 
             TypeORI_DB = Convert.ToString(worksheet.Cells[row, 3].Value).Trim();
-            if (TypeORI_DB.Count() > 8)
-                TypeORI_DB = TypeORI_DB[..8];
 
 
             VarietyORI_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 4].Value), out var byteValue) ? byteValue : (byte)0;
@@ -628,20 +615,20 @@ namespace Models.Forms.Form5
                 ProviderOrRecieverOKPO_DB = ProviderOrRecieverOKPO_DB[..64];
 
             Radionuclids_DB = Convert.ToString(worksheet.Cells[row, 7].Value).Trim();
-            if (Radionuclids_DB.Count() > 256)
-                Radionuclids_DB = Radionuclids_DB[..256];
+            if (Radionuclids_DB.Count() > 1024)
+                Radionuclids_DB = Radionuclids_DB[..1024];
 
-            Activity_DB = Convert.ToString(worksheet.Cells[row, 8].Value).Trim();
-            if (Activity_DB.Count() > 16)
-                Activity_DB = Activity_DB[..16];
+            Activity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 8].Value);
+            if (Activity_DB.Count() > 32)
+                Activity_DB = Activity_DB[..32];
 
-            Mass_DB = Convert.ToString(worksheet.Cells[row, 9].Value).Trim();
-            if (Mass_DB.Count() > 16)
-                Mass_DB = Mass_DB[..16];
+            Mass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 9].Value);
+            if (Mass_DB.Count() > 32)
+                Mass_DB = Mass_DB[..32];
 
-            Volume_DB = Convert.ToString(worksheet.Cells[row, 10].Value).Trim();
-            if (Activity_DB.Count() > 16)
-                Activity_DB = Activity_DB[..16];
+            Volume_DB = ConvertFromExcelDouble(worksheet.Cells[row, 10].Value);
+            if (Volume_DB.Count() > 32)
+                Volume_DB = Volume_DB[..32];
 
             Quantity_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 11].Value), out intValue) ? intValue : 0;
         }
@@ -655,9 +642,9 @@ namespace Models.Forms.Form5
             worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = AggregateState_DB == 0 ? "" : AggregateState_DB;
             worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ConvertToExcelString(ProviderOrRecieverOKPO_DB);
             worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = ConvertToExcelString(Radionuclids_DB);
-            worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = ConvertToExcelString(Activity_DB);
-            worksheet.Cells[row + (!transpose ? 8 : 0), column + (transpose ? 8 : 0)].Value = ConvertToExcelString(Mass_DB);
-            worksheet.Cells[row + (!transpose ? 9 : 0), column + (transpose ? 9 : 0)].Value = ConvertToExcelString(Volume_DB);
+            worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = ConvertToExcelDouble(Activity_DB);
+            worksheet.Cells[row + (!transpose ? 8 : 0), column + (transpose ? 8 : 0)].Value = ConvertToExcelDouble(Mass_DB);
+            worksheet.Cells[row + (!transpose ? 9 : 0), column + (transpose ? 9 : 0)].Value = ConvertToExcelDouble(Volume_DB);
             worksheet.Cells[row + (!transpose ? 10 : 0), column + (transpose ? 10 : 0)].Value = Quantity_DB == 0 ? "" : Quantity_DB;
 
             return 11;

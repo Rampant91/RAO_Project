@@ -235,8 +235,8 @@ namespace Models.Forms.Form5
 
         #region Mass (6)
 
-        [MaxLength(16)]
-        [Column(TypeName = "varchar(16)")]
+        [MaxLength(32)]
+        [Column(TypeName = "varchar(32)")]
         public string Mass_DB { get; set; } = "";
 
         [NotMapped]
@@ -267,9 +267,7 @@ namespace Models.Forms.Form5
             var value1 = ((RamAccess<string>)value).Value;
             if (value1 != null)
             {
-                value1 = value1.Length > 16
-                ? value1[..16]
-                : value1;
+                Mass_DB = ExponentialString_ValueChanged(value1);
             }
             if (Mass_DB != value1)
             {
@@ -357,9 +355,9 @@ namespace Models.Forms.Form5
 
             Quantity_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 5].Value), out intValue) ? intValue : 0;
 
-            Mass_DB = Convert.ToString(worksheet.Cells[row, 6].Value).Trim();
-            if (Mass_DB.Count() > 16)
-                Mass_DB = Mass_DB[..16];
+            Mass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 6].Value);
+            if (Mass_DB.Count() > 32)
+                Mass_DB = Mass_DB[..32];
         }
 
         public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
@@ -369,7 +367,7 @@ namespace Models.Forms.Form5
             worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelString(OperationCode_DB);
             worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelString(ProviderOrRecieverOKPO_DB);
             worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = Quantity_DB == 0 ? "" : Quantity_DB;
-            worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ConvertToExcelString(Mass_DB);
+            worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ConvertToExcelDouble(Mass_DB);
 
             return 9;
         }

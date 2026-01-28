@@ -130,8 +130,8 @@ namespace Models.Forms.Form5
 
         #region Mass (4)
 
-        [MaxLength(16)]
-        [Column(TypeName = "varchar(16)")]
+        [MaxLength(32)]
+        [Column(TypeName = "varchar(32)")]
         public string Mass_DB { get; set; } = "";
 
         [NotMapped]
@@ -162,9 +162,7 @@ namespace Models.Forms.Form5
             var value1 = ((RamAccess<string>)value).Value;
             if (value1 != null)
             {
-                value1 = value1.Length > 16
-                ? value1[..16]
-                : value1;
+                Mass_DB = ExponentialString_ValueChanged(value1);
             }
             if (Mass_DB != value1)
             {
@@ -242,9 +240,9 @@ namespace Models.Forms.Form5
 
             Quantity_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 3].Value), out intValue) ? intValue : 0;
 
-            Mass_DB = Convert.ToString(worksheet.Cells[row, 4].Value).Trim();
-            if (Mass_DB.Count() > 16)
-                Mass_DB = Mass_DB[..16];
+            Mass_DB =ConvertFromExcelDouble(worksheet.Cells[row, 4].Value);
+            if (Mass_DB.Count() > 32)
+                Mass_DB = Mass_DB[..32];
         }
 
         public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
@@ -252,7 +250,7 @@ namespace Models.Forms.Form5
             worksheet.Cells[row + 0, column + 0].Value = NumberInOrder_DB;
             worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(Name_DB);
             worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = Quantity_DB == 0 ? "" : Quantity_DB;
-            worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelString(Mass_DB);
+            worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelDouble(Mass_DB);
 
             return 9;
         }

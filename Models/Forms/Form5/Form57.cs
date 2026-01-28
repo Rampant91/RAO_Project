@@ -85,8 +85,8 @@ namespace Models.Forms.Form5
 
         #region OKPO (3)
 
-        [MaxLength(14)]
-        [Column(TypeName = "varchar(14)")]
+        [MaxLength(64)]
+        [Column(TypeName = "varchar(64)")]
         public string OKPO_DB { get; set; } = "";
 
         [NotMapped]

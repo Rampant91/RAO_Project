@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 {
-    public class GenerateForm51AsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
+    public class GenerateForm53AsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     {
         #region private Properties
 
@@ -35,7 +35,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
         private string year => formVM.Report.Year_DB;
 
-        
+
 
         #endregion
         public override async void Execute(object? parameter)
@@ -45,7 +45,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             {
                 await Task.Run(() => AsyncExecute(parameter));
             }
-            catch (OperationCanceledException) { throw ; }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 var msg = $"{Environment.NewLine}Message: {ex.Message}" +
@@ -58,7 +58,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
         {
 
             owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
-                .FirstOrDefault(w => w.Name == "5.1");
+                .FirstOrDefault(w => w.Name == "5.3");
 
             if (owner == null) return;
 
@@ -69,7 +69,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             List<ViacOrganization> loadedList = null;
 
             #region ShowAskMessages
-            if (Report.Rows51.Count != 0)
+            if (Report.Rows53.Count != 0)
             {
                 if (!await ShowConfirmationMessage(owner)) return;
             }
@@ -78,7 +78,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 var answer = await Dispatcher.UIThread.InvokeAsync(async () => await ShowAskYearMessage(owner));
                 Report.Year.Value = answer.ToString();
             }
-            Report.Rows51.Clear();
+            Report.Rows53.Clear();
 
             if (Settings.Default.AppLaunchedInNorao)
             {
@@ -97,25 +97,27 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             var organizations10IdList = await GetOrganizations10List(StaticConfiguration.DBModel, cts.Token, loadedList);
 
             var repList = await LoadReportList(organizations10IdList, progressBarVM, cts);
+            var repList13 = repList.FindAll(rep => rep.FormNum_DB == "1.3");
+            var repList14 = repList.FindAll(rep => rep.FormNum_DB == "1.4");
 
-            var filteredRows11 = await FilterRows11(repList, progressBarVM, cts);
+            var filteredRows13 = await FilterRows13(repList13, progressBarVM, cts);
+            var filteredRows14 = await FilterRows14(repList14, progressBarVM, cts);
 
-            GenerateForm51DependOnFilteredRows11(filteredRows11, progressBarVM, cts);
+            GenerateForm53DependOnFilteredRows13(filteredRows13, progressBarVM, cts);
+            GenerateForm53DependOnFilteredRows14(filteredRows14, progressBarVM, cts);
 
             progressBarVM.SetProgressBar(
             95,
             $"Выставляем номера строк");
 
-
-            var orderedRows = Report.Rows51.OrderBy(row => row.OperationCode_DB).ToList();
-            Report.Rows51.Clear();
-            Report.Rows51.AddRange(orderedRows);
-
+            var orderedRows = Report.Rows53.OrderBy(row => row.OperationCode_DB).ToList();
+            Report.Rows53.Clear();
+            Report.Rows53.AddRange(orderedRows);
 
             //Выставляем номера строк
-            for (int i = 0; i < Report.Rows51.Count; i++)
+            for (int i = 0; i < Report.Rows53.Count; i++)
             {
-                Report.Rows51[i].SetOrder(i + 1);
+                Report.Rows53[i].SetOrder(i + 1);
             }
 
             progressBarVM.SetProgressBar(
@@ -191,7 +193,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                         .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
                         .Where(x => x.Master_DB.FormNum_DB == "1.0")
                         .AsEnumerable()
-                        .Where(reports => loadedList.Any(x => 
+                        .Where(reports => loadedList.Any(x =>
                         x.RegNo == reports.Master_DB.Rows10[0].RegNo_DB
                         && (x.OKPO == reports.Master_DB.Rows10[1].Okpo_DB
                         ||
@@ -230,7 +232,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             double progressBarPercent = 15;
             double progressBarIncrement = (double)(30 - progressBarPercent) / organizations10IdList.Count();
             int iteration = 0;
-            progressBarVM.SetProgressBar((int)progressBarPercent, $"Загружаем отчеты 1.1 для обработки ({iteration}/{organizations10IdList.Count})");
+            progressBarVM.SetProgressBar((int)progressBarPercent, $"Загружаем отчеты 1.3, 1.4 для обработки ({iteration}/{organizations10IdList.Count})");
 
             List<Report> repList = new List<Report>();
 
@@ -242,15 +244,16 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
                     repList.AddRange(StaticConfiguration.DBModel.ReportCollectionDbSet
                         .Where(rep => rep.Reports.Id == id)
-                        .Where(rep => rep.FormNum_DB == "1.1")
+                        .Where(rep => rep.FormNum_DB == "1.3" || rep.FormNum_DB == "1.4")
                         .Where(rep => rep.StartPeriod_DB.EndsWith(year)
                         || rep.EndPeriod_DB.EndsWith(year))
-                        .Include(rep => rep.Rows11));
+                        .Include(rep => rep.Rows13)
+                        .Include(rep => rep.Rows14));
 
 
                     progressBarPercent += progressBarIncrement;
                     iteration++;
-                    progressBarVM.SetProgressBar((int)progressBarPercent, $"Загружаем отчеты 1.1 для обработки ({iteration}/{organizations10IdList.Count})");
+                    progressBarVM.SetProgressBar((int)progressBarPercent, $"Загружаем отчеты 1.3, 1.4 для обработки ({iteration}/{organizations10IdList.Count})");
                 }
                 catch (OperationCanceledException)
                 {
@@ -275,14 +278,14 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             return repList;
         }
 
-        private async Task<List<Form11>> FilterRows11 (List<Report> repList, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
+        private async Task<List<Form13>> FilterRows13(List<Report> repList, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
         {
             double progressBarPercent = 30;
             double progressBarIncrement = (double)(50 - progressBarPercent) / repList.Count;
             int iteration = 0;
-            progressBarVM.SetProgressBar((int)progressBarPercent, $"Загружаем строки из отчетов 1.1 для обработки ({iteration}/{repList.Count})");
+            progressBarVM.SetProgressBar((int)progressBarPercent, $"Загружаем строки из отчетов 1.3 для обработки ({iteration}/{repList.Count})");
 
-            List<Form11> rows11List = new List<Form11>();
+            List<Form13> rows13List = new List<Form13>();
             foreach (var rep in repList)
             {
                 try
@@ -290,19 +293,19 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
                     cts.Token.ThrowIfCancellationRequested();
 
-                    var rows11 = rep.Rows11.Where(row11 => CodeOperationFilter.AllOperationCodes.Contains(row11.OperationCode_DB));
+                    var rows13 = rep.Rows13.Where(row13 => CodeOperationFilter.AllOperationCodes.Contains(row13.OperationCode_DB));
 
                     if (rep.StartPeriod_DB.EndsWith(year)
                     ^ rep.EndPeriod_DB.EndsWith(year))
                     {
-                        rows11 = rows11.Where(row11 => row11.OperationDate_DB.EndsWith(year));
+                        rows13 = rows13.Where(row13 => row13.OperationDate_DB.EndsWith(year));
                     }
 
-                    rows11List.AddRange(rows11);
+                    rows13List.AddRange(rows13);
 
                     progressBarPercent += progressBarIncrement;
                     iteration++;
-                    progressBarVM.SetProgressBar((int)progressBarPercent, $"Фильтруем строки из отчетов 1.1 для обработки ({iteration}/{repList.Count})");
+                    progressBarVM.SetProgressBar((int)progressBarPercent, $"Фильтруем строки из отчетов 1.3 для обработки ({iteration}/{repList.Count})");
                 }
                 catch (OperationCanceledException)
                 {
@@ -324,40 +327,98 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     throw ex;
                 }
             }
-            return rows11List;
+            return rows13List;
         }
 
-        private async Task GenerateForm51DependOnFilteredRows11(List<Form11> filteredRows11, AnyTaskProgressBarVM progressBarVM,CancellationTokenSource cts)
+        private async Task<List<Form14>> FilterRows14(List<Report> repList, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
         {
             double progressBarPercent = 50;
-            double progressBarIncrement = (double)(95 - progressBarPercent) / filteredRows11.Count;
+            double progressBarIncrement = (double)(70 - progressBarPercent) / repList.Count;
             int iteration = 0;
-            progressBarVM.SetProgressBar((int)progressBarPercent, $"Фильтруем строки из отчетов 1.1 для обработки ({iteration}/{filteredRows11.Count})");
+            progressBarVM.SetProgressBar((int)progressBarPercent, $"Загружаем строки из отчетов 1.4 для обработки ({iteration}/{repList.Count})");
 
-            foreach (var row11 in filteredRows11)
+            List<Form14> rows14List = new List<Form14>();
+            foreach (var rep in repList)
             {
                 try
                 {
 
                     cts.Token.ThrowIfCancellationRequested();
 
-                    var row51 = Report.Rows51.FirstOrDefault(r =>
-                        r.OperationCode_DB == row11.OperationCode_DB
-                        && r.Category_DB == row11.Category_DB
-                        && r.Radionuclids_DB == row11.Radionuclids_DB
-                        && r.ProviderOrRecieverOKPO_DB == row11.ProviderOrRecieverOKPO_DB);
-                    if (row51 != null)
+                    var rows14 = rep.Rows14.Where(row14 => CodeOperationFilter.AllOperationCodes.Contains(row14.OperationCode_DB));
+
+                    if (rep.StartPeriod_DB.EndsWith(year)
+                    ^ rep.EndPeriod_DB.EndsWith(year))
+                    {
+                        rows14 = rows14.Where(row14 => row14.OperationDate_DB.EndsWith(year));
+                    }
+
+                    rows14List.AddRange(rows14);
+
+                    progressBarPercent += progressBarIncrement;
+                    iteration++;
+                    progressBarVM.SetProgressBar((int)progressBarPercent, $"Фильтруем строки из отчетов 1.4 для обработки ({iteration}/{repList.Count})");
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    {
+                        CanResize = true,
+                        ContentTitle = "Ошибка",
+                        ContentMessage = ex.Message,
+                        MinWidth = 300,
+                        MinHeight = 125,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(owner));
+                    throw ex;
+                }
+            }
+            return rows14List;
+        }
+
+        private async Task GenerateForm53DependOnFilteredRows13(List<Form13> filteredRows13, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
+        {
+            double progressBarPercent = 70;
+            double progressBarIncrement = (double)(82 - progressBarPercent) / filteredRows13.Count;
+            int iteration = 0;
+            progressBarVM.SetProgressBar((int)progressBarPercent, $"Фильтруем строки из отчетов 1.3 для обработки ({iteration}/{filteredRows13.Count})");
+
+            foreach (var row13 in filteredRows13)
+            {
+                try
+                {
+
+                    cts.Token.ThrowIfCancellationRequested();
+
+                    var row53 = Report.Rows53.FirstOrDefault(r =>
+                        r.OperationCode_DB == row13.OperationCode_DB
+                        && r.TypeORI_DB == "1"
+                        && r.VarietyORI_DB == null
+                        && r.AggregateState_DB == 2
+                        && r.ProviderOrRecieverOKPO_DB == row13.ProviderOrRecieverOKPO_DB);
+                    if (row53 != null)
                     {
                         try
                         {
                             cts.Token.ThrowIfCancellationRequested();
 
-                            row51.Quantity_DB += row11.Quantity_DB;
-                            if (double.TryParse(row51.Activity_DB, out var value) && double.TryParse(row11.Activity_DB, out var inc))
+                            if (double.TryParse(row53.Activity_DB, out var value) && double.TryParse(row13.Activity_DB, out var inc))
                             {
                                 var sumActivity = value + inc;
-                                row51.Activity.Value = sumActivity.ToString();
+                                row53.Activity.Value = sumActivity.ToString();
                             }
+
+                            row53.Quantity_DB += 1;
+
+                            //Упрощенная реализация
+                            if (!row53.Radionuclids_DB.Contains(row13.Radionuclids_DB))         
+                                row53.Radionuclids_DB = row53.Radionuclids_DB + ";" + row13.Radionuclids_DB;
                         }
                         catch (OperationCanceledException)
                         {
@@ -386,14 +447,16 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
                             cts.Token.ThrowIfCancellationRequested();
 
-                            Report.Rows51.Add(new Form51()
+                            Report.Rows53.Add(new Form53()
                             {
-                                OperationCode_DB = row11.OperationCode_DB,
-                                Category_DB = row11.Category_DB,
-                                Radionuclids_DB = row11.Radionuclids_DB,
-                                Quantity_DB = row11.Quantity_DB,
-                                Activity_DB = row11.Activity_DB,
-                                ProviderOrRecieverOKPO_DB = row11.ProviderOrRecieverOKPO_DB
+                                OperationCode_DB = row13.OperationCode_DB,
+                                TypeORI_DB = "1",
+                                VarietyORI_DB = null,
+                                AggregateState_DB = 2,
+                                ProviderOrRecieverOKPO_DB = row13.ProviderOrRecieverOKPO_DB,
+                                Activity_DB = row13.Activity_DB,
+                                Quantity_DB = 1,
+                                Radionuclids_DB = row13.Radionuclids_DB,
                             });
                         }
                         catch (OperationCanceledException)
@@ -418,7 +481,142 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     }
                     progressBarPercent += progressBarIncrement;
                     iteration++;
-                    progressBarVM.SetProgressBar((int)progressBarPercent, $"Обрабатываем строки из отчетов 1.1 для обработки ({iteration}/{filteredRows11.Count})");
+                    progressBarVM.SetProgressBar((int)progressBarPercent, $"Обрабатываем строки из отчетов 1.3 для обработки ({iteration}/{filteredRows13.Count})");
+
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    {
+                        CanResize = true,
+                        ContentTitle = "Ошибка",
+                        ContentMessage = ex.Message,
+                        MinWidth = 300,
+                        MinHeight = 125,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(owner));
+                    throw ex;
+                }
+            }
+        }
+
+        private async Task GenerateForm53DependOnFilteredRows14(List<Form14> filteredRows14, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
+        {
+            double progressBarPercent = 82;
+            double progressBarIncrement = (double)(95 - progressBarPercent) / filteredRows14.Count;
+            int iteration = 0;
+            progressBarVM.SetProgressBar((int)progressBarPercent, $"Фильтруем строки из отчетов 1.4 для обработки ({iteration}/{filteredRows14.Count})");
+
+            foreach (var row14 in filteredRows14)
+            {
+                try
+                {
+
+                    cts.Token.ThrowIfCancellationRequested();
+
+                    var row53 = Report.Rows53.FirstOrDefault(r =>
+                        r.OperationCode_DB == row14.OperationCode_DB
+                        && r.TypeORI_DB == "2"
+                        && r.VarietyORI_DB == row14.Sort_DB
+                        && r.AggregateState_DB == row14.AggregateState_DB
+                        && r.ProviderOrRecieverOKPO_DB == row14.ProviderOrRecieverOKPO_DB);
+                    if (row53 != null)
+                    {
+                        try
+                        {
+                            cts.Token.ThrowIfCancellationRequested();
+
+                            if (double.TryParse(row53.Activity_DB, out var value) && double.TryParse(row14.Activity_DB, out var inc))
+                            {
+                                var sumActivity = value + inc;
+                                row53.Activity.Value = sumActivity.ToString();
+                            }
+
+                            if (double.TryParse(row53.Mass_DB, out value) && double.TryParse(row14.Mass_DB, out inc))
+                            {
+                                var sumMass = value + inc;
+                                row53.Mass.Value = sumMass.ToString();
+                            }
+
+                            if (double.TryParse(row53.Volume_DB, out value) && double.TryParse(row14.Volume_DB, out inc))
+                            {
+                                var sumVolume = value + inc;
+                                row53.Volume.Value = sumVolume.ToString();
+                            }
+
+                            //Упрощенная реализация
+                            if (!row53.Radionuclids_DB.Contains(row14.Radionuclids_DB))
+                                row53.Radionuclids_DB = row53.Radionuclids_DB + ";" + row14.Radionuclids_DB;
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            throw;
+                        }
+                        catch (Exception ex)
+                        {
+                            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                            {
+                                CanResize = true,
+                                ContentTitle = "Ошибка",
+                                ContentMessage = ex.Message,
+                                MinWidth = 300,
+                                MinHeight = 125,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(owner));
+                            throw ex;
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+
+                            cts.Token.ThrowIfCancellationRequested();
+
+                            Report.Rows53.Add(new Form53()
+                            {
+                                OperationCode_DB = row14.OperationCode_DB,
+                                TypeORI_DB = "2",
+                                VarietyORI_DB = row14.Sort_DB,
+                                AggregateState_DB = row14.AggregateState_DB,
+                                ProviderOrRecieverOKPO_DB = row14.ProviderOrRecieverOKPO_DB,
+                                Activity_DB = row14.Activity_DB,
+                                Mass_DB = row14.Mass_DB,
+                                Volume_DB = row14.Volume_DB,
+                                Radionuclids_DB = row14.Radionuclids_DB,
+                            });
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            throw;
+                        }
+                        catch (Exception ex)
+                        {
+                            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                            {
+                                CanResize = true,
+                                ContentTitle = "Ошибка",
+                                ContentMessage = ex.Message,
+                                MinWidth = 300,
+                                MinHeight = 125,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(owner));
+                            throw ex;
+                        }
+                    }
+                    progressBarPercent += progressBarIncrement;
+                    iteration++;
+                    progressBarVM.SetProgressBar((int)progressBarPercent, $"Обрабатываем строки из отчетов 1.4 для обработки ({iteration}/{filteredRows14.Count})");
 
                 }
                 catch (OperationCanceledException)

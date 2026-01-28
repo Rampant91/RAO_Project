@@ -87,6 +87,8 @@
                                 Content="Сохранить" />
                         </StackPanel>
 
+						<Button Grid.Row="3" Content="Сформировать" Command="{Binding GenerateForm55}" ></Button>
+
                     </Grid>
                 </Border>
 

@@ -140,8 +140,8 @@ namespace Models.Forms.Form5
 
         #region Radionuclids (4)
 
-        [MaxLength(64)]
-        [Column(TypeName = "varchar(64)")]
+        [MaxLength(1024)]
+        [Column(TypeName = "varchar(1024)")]
         public string Radionuclids_DB { get; set; } = "";
 
         [NotMapped]
@@ -170,12 +170,14 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            if(value1!= null)
+
+            if (value1 != null)
             {
-                value1 = value1.Length > 64
-                    ? value1[..64]
+                value1 = value1.Length > 1024
+                    ? value1[..1024]
                     : value1;
             }
+
             if (Radionuclids_DB != value1)
             {
                 Radionuclids_DB = value1;
@@ -236,8 +238,8 @@ namespace Models.Forms.Form5
 
         #region Activity (6)
 
-        [MaxLength(16)]
-        [Column(TypeName = "varchar(16)")]
+        [MaxLength(32)]
+        [Column(TypeName = "varchar(32)")]
         public string Activity_DB { get; set; } = "";
 
         [NotMapped]
@@ -268,9 +270,7 @@ namespace Models.Forms.Form5
             var value1 = ((RamAccess<string>)value).Value;
             if (value1 != null)
             {
-                value1 = value1.Length > 16
-                ? value1[..16]
-                : value1;
+                Activity_DB = ExponentialString_ValueChanged(value1);
             }
             if (Activity_DB != value1)
             {
@@ -288,8 +288,8 @@ namespace Models.Forms.Form5
 
         #region ProviderOrRecieverOKPO (7)
 
-        [MaxLength(14)]
-        [Column(TypeName = "varchar(14)")]
+        [MaxLength(64)]
+        [Column(TypeName = "varchar(64)")]
         public string ProviderOrRecieverOKPO_DB { get; set; } = "";
 
         [NotMapped]
@@ -320,8 +320,8 @@ namespace Models.Forms.Form5
             var value1 = ((RamAccess<string>)value).Value;
             if (value1 != null)
             {
-                value1 = value1.Length > 14
-                ? value1[..14]
+                value1 = value1.Length > 64
+                ? value1[..64]
                 : value1;
             }
             if (ProviderOrRecieverOKPO_DB != value1)
@@ -405,18 +405,18 @@ namespace Models.Forms.Form5
             Category_DB = short.TryParse(Convert.ToString(worksheet.Cells[row, 3].Value), out var shortValue) ? shortValue : null;
 
             Radionuclids_DB = Convert.ToString(worksheet.Cells[row, 4].Value).Trim();
-            if (Radionuclids_DB.Count() > 64)
-                Radionuclids_DB = Radionuclids_DB[..64];
+            if (Radionuclids_DB.Count() > 1024)
+                Radionuclids_DB = Radionuclids_DB[..1024];
 
             Quantity_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 5].Value), out intValue) ? intValue : 0;
 
-            Activity_DB = Convert.ToString(worksheet.Cells[row, 6].Value).Trim();
-            if (Activity_DB.Count() > 16)
-                Activity_DB = Activity_DB[..16];
+            Activity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 6].Value);
+            if (Activity_DB.Count() > 32)
+                Activity_DB = Activity_DB[..32];
 
             ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 7].Value).Trim();
-            if (ProviderOrRecieverOKPO_DB.Count() > 14)
-                ProviderOrRecieverOKPO_DB = ProviderOrRecieverOKPO_DB[..14];
+            if (ProviderOrRecieverOKPO_DB.Count() > 64)
+                ProviderOrRecieverOKPO_DB = ProviderOrRecieverOKPO_DB[..64];
         }
 
         public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
@@ -426,7 +426,7 @@ namespace Models.Forms.Form5
             worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = Category_DB == 0 ? "" : Category_DB;
             worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelString(Radionuclids_DB);
             worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = Quantity_DB == 0 ? "" : Quantity_DB;
-            worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ConvertToExcelString(Activity_DB);
+            worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ConvertToExcelDouble(Activity_DB);
             worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = ConvertToExcelString(ProviderOrRecieverOKPO_DB);
 
             return 7;

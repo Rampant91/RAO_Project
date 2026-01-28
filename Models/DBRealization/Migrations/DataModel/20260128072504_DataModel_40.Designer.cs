@@ -3,6 +3,7 @@ using System;
 using FirebirdSql.EntityFrameworkCore.Firebird.Metadata;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models.DBRealization;
 
@@ -11,9 +12,10 @@ using Models.DBRealization;
 namespace Models.DBRealization.Migrations.DataModel
 {
     [DbContext(typeof(DBModel))]
-    partial class DBModelModelSnapshot : ModelSnapshot
+    [Migration("20260128072504_DataModel_40")]
+    partial class DataModel_40
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2444,8 +2446,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Activity_DB")
-                        .HasMaxLength(32)
-                        .HasColumnType("varchar(32)");
+                        .HasMaxLength(16)
+                        .HasColumnType("varchar(16)");
 
                     b.Property<short?>("Category_DB")
                         .HasColumnType("SMALLINT");
@@ -2463,8 +2465,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<string>("ProviderOrRecieverOKPO_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
+                        .HasMaxLength(14)
+                        .HasColumnType("varchar(14)");
 
                     b.Property<int?>("Quantity_DB")
                         .HasColumnType("INTEGER");
@@ -2491,8 +2493,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Activity_DB")
-                        .HasMaxLength(32)
-                        .HasColumnType("varchar(32)");
+                        .HasMaxLength(16)
+                        .HasColumnType("varchar(16)");
 
                     b.Property<short?>("Category_DB")
                         .HasColumnType("SMALLINT");
@@ -2531,8 +2533,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Activity_DB")
-                        .HasMaxLength(32)
-                        .HasColumnType("varchar(32)");
+                        .HasMaxLength(16)
+                        .HasColumnType("varchar(16)");
 
                     b.Property<short?>("AggregateState_DB")
                         .HasColumnType("SMALLINT");
@@ -2541,8 +2543,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<string>("Mass_DB")
-                        .HasMaxLength(32)
-                        .HasColumnType("varchar(32)");
+                        .HasMaxLength(16)
+                        .HasColumnType("varchar(16)");
 
                     b.Property<int>("NumberInOrder_DB")
                         .HasColumnType("INTEGER");
@@ -2574,8 +2576,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("SMALLINT");
 
                     b.Property<string>("Volume_DB")
-                        .HasMaxLength(32)
-                        .HasColumnType("varchar(32)");
+                        .HasMaxLength(16)
+                        .HasColumnType("varchar(16)");
 
                     b.HasKey("Id");
 
@@ -2592,8 +2594,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Activity_DB")
-                        .HasMaxLength(32)
-                        .HasColumnType("varchar(32)");
+                        .HasMaxLength(16)
+                        .HasColumnType("varchar(16)");
 
                     b.Property<short?>("AggregateState_DB")
                         .HasColumnType("SMALLINT");
@@ -2602,8 +2604,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<string>("Mass_DB")
-                        .HasMaxLength(32)
-                        .HasColumnType("varchar(32)");
+                        .HasMaxLength(16)
+                        .HasColumnType("varchar(16)");
 
                     b.Property<int>("NumberInOrder_DB")
                         .HasColumnType("INTEGER");
@@ -2628,8 +2630,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("SMALLINT");
 
                     b.Property<string>("Volume_DB")
-                        .HasMaxLength(32)
-                        .HasColumnType("varchar(32)");
+                        .HasMaxLength(16)
+                        .HasColumnType("varchar(16)");
 
                     b.HasKey("Id");
 
@@ -2649,8 +2651,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<string>("Mass_DB")
-                        .HasMaxLength(32)
-                        .HasColumnType("varchar(32)");
+                        .HasMaxLength(16)
+                        .HasColumnType("varchar(16)");
 
                     b.Property<string>("Name_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -2692,8 +2694,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<string>("Mass_DB")
-                        .HasMaxLength(32)
-                        .HasColumnType("varchar(32)");
+                        .HasMaxLength(16)
+                        .HasColumnType("varchar(16)");
 
                     b.Property<string>("Name_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -2744,8 +2746,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("OKPO_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
+                        .HasMaxLength(14)
+                        .HasColumnType("varchar(14)");
 
                     b.Property<string>("Practice_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
