@@ -167,7 +167,7 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
             .Include(x => x.Notes.OrderBy(x => x.Order))
             .FirstAsync(x => x.Id == repId, cancellationToken: cts.Token);
 
-        if (exportReport.Rows.Count is 0)
+        if (exportReport.Rows.Count is 0 && formNum is not "2.6")   //Для формы 2.6 допустимы отчёты без строчек.
         {
             #region FailedToExportReportMessage
 
