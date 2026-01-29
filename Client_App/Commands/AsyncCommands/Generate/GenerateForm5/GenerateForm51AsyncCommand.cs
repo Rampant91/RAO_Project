@@ -18,6 +18,7 @@ using Models.Forms.Form1;
 using Models.Forms.Form5;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -353,10 +354,17 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                             cts.Token.ThrowIfCancellationRequested();
 
                             row51.Quantity_DB += row11.Quantity_DB;
-                            if (double.TryParse(row51.Activity_DB, out var value) && double.TryParse(row11.Activity_DB, out var inc))
+                            if (double.TryParse(row51.Activity_DB,
+                                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
+                                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                                out var value) 
+                            && double.TryParse(row11.Activity_DB,
+                                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
+                                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                                out var inc))
                             {
                                 var sumActivity = value + inc;
-                                row51.Activity.Value = sumActivity.ToString();
+                                row51.Activity.Value = sumActivity.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
                             }
                         }
                         catch (OperationCanceledException)

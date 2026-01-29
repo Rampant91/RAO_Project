@@ -18,6 +18,7 @@ using Models.Forms.Form1;
 using Models.Forms.Form5;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -408,10 +409,17 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                         {
                             cts.Token.ThrowIfCancellationRequested();
 
-                            if (double.TryParse(row53.Activity_DB, out var value) && double.TryParse(row13.Activity_DB, out var inc))
+                            if (double.TryParse(row53.Activity_DB,
+                                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
+                                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                                out var value) 
+                            && double.TryParse(row13.Activity_DB,
+                                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
+                                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                                out var inc))
                             {
                                 var sumActivity = value + inc;
-                                row53.Activity.Value = sumActivity.ToString();
+                                row53.Activity.Value = sumActivity.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
                             }
 
                             row53.Quantity_DB += 1;
@@ -532,22 +540,43 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                         {
                             cts.Token.ThrowIfCancellationRequested();
 
-                            if (double.TryParse(row53.Activity_DB, out var value) && double.TryParse(row14.Activity_DB, out var inc))
+                            if (double.TryParse(row53.Activity_DB,
+                                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
+                                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                                out var value) 
+                            && double.TryParse(row14.Activity_DB,
+                                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
+                                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                                out var inc))
                             {
                                 var sumActivity = value + inc;
-                                row53.Activity.Value = sumActivity.ToString();
+                                row53.Activity.Value = sumActivity.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
                             }
 
-                            if (double.TryParse(row53.Mass_DB, out value) && double.TryParse(row14.Mass_DB, out inc))
+                            if (double.TryParse(row53.Mass_DB,
+                                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
+                                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                                out value) 
+                            && double.TryParse(row14.Mass_DB,
+                                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
+                                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                                out inc))
                             {
                                 var sumMass = value + inc;
-                                row53.Mass.Value = sumMass.ToString();
+                                row53.Mass.Value = sumMass.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
                             }
 
-                            if (double.TryParse(row53.Volume_DB, out value) && double.TryParse(row14.Volume_DB, out inc))
+                            if (double.TryParse(row53.Volume_DB,
+                                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
+                                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                                out value) 
+                            && double.TryParse(row14.Volume_DB,
+                                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
+                                CultureInfo.CreateSpecificCulture("ru-RU"), 
+                                out inc))
                             {
                                 var sumVolume = value + inc;
-                                row53.Volume.Value = sumVolume.ToString();
+                                row53.Volume.Value = sumVolume.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
                             }
 
                             //Упрощенная реализация
