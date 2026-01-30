@@ -33,5 +33,7 @@ public class NewSortFormSyncCommand(BaseFormVM formVM) : BaseCommand
             form.NumberInOrder.OnPropertyChanged();
             minItem++;
         }
+
+        formVM.UpdateFormList();
     }
 }
