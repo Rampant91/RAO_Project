@@ -242,6 +242,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     cts.Token.ThrowIfCancellationRequested();
 
                     repList.AddRange(StaticConfiguration.DBModel.ReportCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
                         .Where(rep => rep.Reports.Id == id)
                         .Where(rep => rep.FormNum_DB == "1.1")
                         .Where(rep => rep.StartPeriod_DB.EndsWith(year)
@@ -278,8 +280,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
         private async Task<List<Form11>> FilterRows11 (List<Report> repList, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
         {
-            double progressBarPercent = 30;
-            double progressBarIncrement = (double)(50 - progressBarPercent) / repList.Count;
+            double progressBarPercent = 80;
+            double progressBarIncrement = (double)(90 - progressBarPercent) / repList.Count;
             int iteration = 0;
             progressBarVM.SetProgressBar((int)progressBarPercent, $"Загружаем строки из отчетов 1.1 для обработки ({iteration}/{repList.Count})");
 
@@ -291,7 +293,9 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
                     cts.Token.ThrowIfCancellationRequested();
 
-                    var rows11 = rep.Rows11.Where(row11 => CodeOperationFilter.AllOperationCodes.Contains(row11.OperationCode_DB));
+                    var rows11 = rep.Rows11.Where(row11 => 
+                        CodeOperationFilter.PlusOperationsForm51.Contains(row11.OperationCode_DB) 
+                        || CodeOperationFilter.MinusOperationsForm51.Contains(row11.OperationCode_DB));
 
                     if (rep.StartPeriod_DB.EndsWith(year)
                     ^ rep.EndPeriod_DB.EndsWith(year))
@@ -330,7 +334,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
         private async Task GenerateForm51DependOnFilteredRows11(List<Form11> filteredRows11, AnyTaskProgressBarVM progressBarVM,CancellationTokenSource cts)
         {
-            double progressBarPercent = 50;
+            double progressBarPercent = 90;
             double progressBarIncrement = (double)(95 - progressBarPercent) / filteredRows11.Count;
             int iteration = 0;
             progressBarVM.SetProgressBar((int)progressBarPercent, $"Фильтруем строки из отчетов 1.1 для обработки ({iteration}/{filteredRows11.Count})");
@@ -354,6 +358,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                             cts.Token.ThrowIfCancellationRequested();
 
                             row51.Quantity_DB += row11.Quantity_DB;
+
                             if (double.TryParse(row51.Activity_DB,
                                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
                                 CultureInfo.CreateSpecificCulture("ru-RU"), 

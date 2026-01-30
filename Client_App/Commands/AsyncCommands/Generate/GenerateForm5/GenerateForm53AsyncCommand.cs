@@ -231,7 +231,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
         private async Task<List<Report>> LoadReportList(List<int> organizations10IdList, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
         {
             double progressBarPercent = 15;
-            double progressBarIncrement = (double)(30 - progressBarPercent) / organizations10IdList.Count();
+            double progressBarIncrement = (double)(70 - progressBarPercent) / organizations10IdList.Count();
             int iteration = 0;
             progressBarVM.SetProgressBar((int)progressBarPercent, $"Загружаем отчеты 1.3, 1.4 для обработки ({iteration}/{organizations10IdList.Count})");
 
@@ -244,6 +244,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     cts.Token.ThrowIfCancellationRequested();
 
                     repList.AddRange(StaticConfiguration.DBModel.ReportCollectionDbSet
+                        .AsNoTracking()
+                        .AsSplitQuery()
                         .Where(rep => rep.Reports.Id == id)
                         .Where(rep => rep.FormNum_DB == "1.3" || rep.FormNum_DB == "1.4")
                         .Where(rep => rep.StartPeriod_DB.EndsWith(year)
@@ -281,10 +283,10 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
         private async Task<List<Form13>> FilterRows13(List<Report> repList, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
         {
-            double progressBarPercent = 30;
-            double progressBarIncrement = (double)(50 - progressBarPercent) / repList.Count;
+            double progressBarPercent = 70;
+            double progressBarIncrement = (double)(80 - progressBarPercent) / repList.Count;
             int iteration = 0;
-            progressBarVM.SetProgressBar((int)progressBarPercent, $"Загружаем строки из отчетов 1.3 для обработки ({iteration}/{repList.Count})");
+            progressBarVM.SetProgressBar((int)progressBarPercent, $"Фильтруем строки из отчетов 1.3 для обработки ({iteration}/{repList.Count})");
 
             List<Form13> rows13List = new List<Form13>();
             foreach (var rep in repList)
@@ -294,7 +296,9 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
                     cts.Token.ThrowIfCancellationRequested();
 
-                    var rows13 = rep.Rows13.Where(row13 => CodeOperationFilter.AllOperationCodes.Contains(row13.OperationCode_DB));
+                    var rows13 = rep.Rows13.Where(row13 => 
+                        CodeOperationFilter.PlusOperationsForm53.Contains(row13.OperationCode_DB)
+                        || CodeOperationFilter.MinusOperationsForm53.Contains(row13.OperationCode_DB));
 
                     if (rep.StartPeriod_DB.EndsWith(year)
                     ^ rep.EndPeriod_DB.EndsWith(year))
@@ -333,10 +337,10 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
         private async Task<List<Form14>> FilterRows14(List<Report> repList, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
         {
-            double progressBarPercent = 50;
-            double progressBarIncrement = (double)(70 - progressBarPercent) / repList.Count;
+            double progressBarPercent = 80;
+            double progressBarIncrement = (double)(90 - progressBarPercent) / repList.Count;
             int iteration = 0;
-            progressBarVM.SetProgressBar((int)progressBarPercent, $"Загружаем строки из отчетов 1.4 для обработки ({iteration}/{repList.Count})");
+            progressBarVM.SetProgressBar((int)progressBarPercent, $"Фильтруем строки из отчетов 1.4 для обработки ({iteration}/{repList.Count})");
 
             List<Form14> rows14List = new List<Form14>();
             foreach (var rep in repList)
@@ -346,7 +350,9 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
                     cts.Token.ThrowIfCancellationRequested();
 
-                    var rows14 = rep.Rows14.Where(row14 => CodeOperationFilter.AllOperationCodes.Contains(row14.OperationCode_DB));
+                    var rows14 = rep.Rows14.Where(row14 => 
+                        CodeOperationFilter.PlusOperationsForm53.Contains(row14.OperationCode_DB)
+                        || CodeOperationFilter.MinusOperationsForm53.Contains(row14.OperationCode_DB));
 
                     if (rep.StartPeriod_DB.EndsWith(year)
                     ^ rep.EndPeriod_DB.EndsWith(year))
@@ -385,10 +391,10 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
         private async Task GenerateForm53DependOnFilteredRows13(List<Form13> filteredRows13, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
         {
-            double progressBarPercent = 70;
-            double progressBarIncrement = (double)(82 - progressBarPercent) / filteredRows13.Count;
+            double progressBarPercent = 90;
+            double progressBarIncrement = (double)(95 - progressBarPercent) / filteredRows13.Count;
             int iteration = 0;
-            progressBarVM.SetProgressBar((int)progressBarPercent, $"Фильтруем строки из отчетов 1.3 для обработки ({iteration}/{filteredRows13.Count})");
+            progressBarVM.SetProgressBar((int)progressBarPercent, $"Обрабатываем строки из отчетов 1.3 для обработки ({iteration}/{filteredRows13.Count})");
 
             foreach (var row13 in filteredRows13)
             {
@@ -424,9 +430,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
                             row53.Quantity_DB += 1;
 
-                            //Упрощенная реализация
-                            if (!row53.Radionuclids_DB.Contains(row13.Radionuclids_DB))         
-                                row53.Radionuclids_DB = row53.Radionuclids_DB + ";" + row13.Radionuclids_DB;
+                            AddRadionuclids(row53, row13.Radionuclids_DB);
                         }
                         catch (OperationCanceledException)
                         {
@@ -519,7 +523,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             double progressBarPercent = 82;
             double progressBarIncrement = (double)(95 - progressBarPercent) / filteredRows14.Count;
             int iteration = 0;
-            progressBarVM.SetProgressBar((int)progressBarPercent, $"Фильтруем строки из отчетов 1.4 для обработки ({iteration}/{filteredRows14.Count})");
+            progressBarVM.SetProgressBar((int)progressBarPercent, $"Обрабатываем строки из отчетов 1.4 для обработки ({iteration}/{filteredRows14.Count})");
 
             foreach (var row14 in filteredRows14)
             {
@@ -579,9 +583,9 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                                 row53.Volume.Value = sumVolume.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
                             }
 
-                            //Упрощенная реализация
-                            if (!row53.Radionuclids_DB.Contains(row14.Radionuclids_DB))
-                                row53.Radionuclids_DB = row53.Radionuclids_DB + ";" + row14.Radionuclids_DB;
+
+                            AddRadionuclids(row53, row14.Radionuclids_DB);
+
                         }
                         catch (OperationCanceledException)
                         {
@@ -667,6 +671,35 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     .ShowDialog(owner));
                     throw ex;
                 }
+            }
+        }
+
+        private void AddRadionuclids(Form53 row53, string addedString)
+        {
+            var radionuclids = row53.Radionuclids_DB.Split(';').ToList();
+            for (int i = 0; i < radionuclids.Count; i++)
+            {
+                radionuclids[i] = radionuclids[i].Trim();
+            }
+
+            var addedRadionuclids = addedString.Split(';');
+
+            for (int i = 0; i < addedRadionuclids.Length; i++)
+            {
+                addedRadionuclids[i] = addedRadionuclids[i].Trim();
+                if (!radionuclids.Any(rad => rad == addedRadionuclids[i]))
+                {
+                    radionuclids.Add(addedRadionuclids[i]);
+                }
+            }
+            if (radionuclids.Count > 0)
+            {
+                var result = radionuclids[0];
+                for (int i = 1; i < radionuclids.Count; i++)
+                {
+                    result = result + "; " + radionuclids[i];
+                }
+                row53.Radionuclids_DB = result;
             }
         }
 

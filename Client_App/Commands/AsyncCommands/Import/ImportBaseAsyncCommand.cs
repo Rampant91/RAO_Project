@@ -2291,26 +2291,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                        && x.Master_DB.OkpoRep.Value == impReportsList.First().Master_DB.OkpoRep.Value))
         {
             var impReports = impReportsList.First();
-            var repsDataGrid = impReports.Master_DB.FormNum_DB is "1.0" 
-                ? (Desktop.MainWindow.FindControl<Panel>("Forms_p1_0").Children[0] as DataGridReports)!
-                : (Desktop.MainWindow.FindControl<Panel>("Forms_p2_0").Children[0] as DataGridReports)!;
 
-            var repsList = !string.IsNullOrWhiteSpace(repsDataGrid.SearchText) 
-                ? repsDataGrid.ItemsWithSearch!.ToList<Reports>() 
-                : repsDataGrid.Items.ToList<Reports>();
-
-            var repsIndex = repsList.FindIndex(x => x.Master_DB.RegNoRep.Value == impReports.Master_DB.RegNoRep.Value 
-                                                    && x.Master_DB.OkpoRep.Value == impReports.Master_DB.OkpoRep.Value);
-
-            if (repsIndex != -1)
-            {
-                repsDataGrid.NowPage = impReports.Master_DB.FormNum_DB switch
-                {
-                    "1.0" => ((repsIndex + 1) / 5 + 1).ToString(),
-                    "2.0" => ((repsIndex + 1) / 8 + 1).ToString(),
-                    _ => repsDataGrid.NowPage
-                };
-            }
         }
         return Task.CompletedTask;
     }

@@ -9,6 +9,7 @@ using Client_App.ViewModels.Messages;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
+using DynamicData;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 {
-    public class GenerateForm55AsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
+    public class GenerateForm56AsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     {
         #region private Properties
 
@@ -59,7 +60,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
         {
 
             owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
-                .FirstOrDefault(w => w.Name == "5.5");
+                .FirstOrDefault(w => w.Name == "5.6");
 
             if (owner == null) return;
 
@@ -70,7 +71,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             List<ViacOrganization> loadedList = null;
 
             #region ShowAskMessages
-            if (Report.Rows55.Count != 0)
+            if (Report.Rows56.Count != 0)
             {
                 if (!await ShowConfirmationMessage(owner)) return;
             }
@@ -79,7 +80,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 var answer = await Dispatcher.UIThread.InvokeAsync(async () => await ShowAskYearMessage(owner));
                 Report.Year.Value = answer.ToString();
             }
-            Report.Rows55.Clear();
+            Report.Rows56.Clear();
 
             if (Settings.Default.AppLaunchedInNorao)
             {
@@ -97,25 +98,24 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
             var organizations10IdList = await GetOrganizations10List(StaticConfiguration.DBModel, cts.Token, loadedList);
 
-            var repList = await LoadReportList(organizations10IdList, progressBarVM, cts);
+            var repDictionary = await LoadReportDictionary(organizations10IdList, progressBarVM, cts);
 
-            var filteredRows12 = await FilterRows12(repList, progressBarVM, cts);
-
-            GenerateForm55DependOnFilteredRows12(filteredRows12, progressBarVM, cts);
+            GenerateForm56(repDictionary, progressBarVM, cts);
 
             progressBarVM.SetProgressBar(
             95,
             $"Выставляем номера строк");
 
 
-            var orderedRows = Report.Rows55.OrderBy(row => row.OperationCode_DB).ToList();
-            Report.Rows55.Clear();
-            Report.Rows55.AddRange(orderedRows);
+            //var orderedRows = Report.Rows56.OrderBy(row => row.OperationCode_DB).ToList();
+            //Report.Rows56.Clear();
+            //Report.Rows56.AddRange(orderedRows);
+
 
             //Выставляем номера строк
-            for (int i = 0; i < Report.Rows55.Count; i++)
+            for (int i = 0; i < Report.Rows56.Count; i++)
             {
-                Report.Rows55[i].SetOrder(i + 1);
+                Report.Rows56[i].SetOrder(i + 1);
             }
 
             progressBarVM.SetProgressBar(
@@ -169,6 +169,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
         #endregion
 
         #region Requests
+
         private async Task<List<int>> GetOrganizations10List(DBModel DB, CancellationToken cancellationToken, List<ViacOrganization> loadedList = null)
         {
             try
@@ -191,7 +192,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                         .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
                         .Where(x => x.Master_DB.FormNum_DB == "1.0")
                         .AsEnumerable()
-                        .Where(reports => loadedList.Any(x => 
+                        .Where(reports => loadedList.Any(x =>
                         x.RegNo == reports.Master_DB.Rows10[0].RegNo_DB
                         && (x.OKPO == reports.Master_DB.Rows10[1].Okpo_DB
                         ||
@@ -225,14 +226,15 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 return new List<int>();
             }
         }
-        private async Task<List<Report>> LoadReportList(List<int> organizations10IdList, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
+
+        private async Task<Dictionary<int, List<Report>>> LoadReportDictionary(List<int> organizations10IdList, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
         {
             double progressBarPercent = 15;
-            double progressBarIncrement = (double)(80 - progressBarPercent) / organizations10IdList.Count();
+            double progressBarIncrement = (double)(75 - progressBarPercent) / organizations10IdList.Count();
             int iteration = 0;
             progressBarVM.SetProgressBar((int)progressBarPercent, $"Загружаем отчеты 1.2 для обработки ({iteration}/{organizations10IdList.Count})");
 
-            List<Report> repList = new List<Report>();
+            var result = new Dictionary<int, List<Report>>();
 
             foreach (var id in organizations10IdList)
             {
@@ -240,15 +242,39 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 {
                     cts.Token.ThrowIfCancellationRequested();
 
-                    repList.AddRange(StaticConfiguration.DBModel.ReportCollectionDbSet
+                    var reportList = StaticConfiguration.DBModel.ReportCollectionDbSet
                         .AsNoTracking()
                         .AsSplitQuery()
                         .Where(rep => rep.Reports.Id == id)
                         .Where(rep => rep.FormNum_DB == "1.2")
                         .Where(rep => rep.StartPeriod_DB.EndsWith(year)
                         || rep.EndPeriod_DB.EndsWith(year))
-                        .Include(rep => rep.Rows12));
+                        .Include(rep => rep.Rows12)
+                        .ToList()
+                        .Select(rep => new
+                        {
+                            Report = rep,
+                            CanParseStart = DateOnly.TryParse(rep.StartPeriod_DB, out var startDate),
+                            CanParseEnd = DateOnly.TryParse(rep.EndPeriod_DB, out var endDate),
+                            StartDate = startDate,
+                            EndDate = endDate,
+                            StartPeriod = rep.StartPeriod_DB,
+                            EndPeriod = rep.EndPeriod_DB
+                        })
+                        .Where(x => x.CanParseStart && x.CanParseEnd)
+                        .OrderBy(x => x.EndDate)
+                        .Select(x => x.Report)
+                        .ToList();
 
+                    var inventarization = reportList.LastOrDefault(report => 
+                        report.Rows12.Any(row => 
+                            row.OperationCode_DB == "10" 
+                            && row.OperationDate_DB.EndsWith(year)));
+
+                    var i = reportList.IndexOf(inventarization);
+
+                    if(reportList.Skip(i).Count() > 0)
+                        result.Add(id, new List<Report>(reportList.Skip(i)));
 
                     progressBarPercent += progressBarIncrement;
                     iteration++;
@@ -274,170 +300,74 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     throw ex;
                 }
             }
-            return repList;
+            return result;
         }
-
-        private async Task<List<Form12>> FilterRows12 (List<Report> repList, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
+        private async Task GenerateForm56(Dictionary<int, List<Report>> reportDictionary, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
         {
-            double progressBarPercent = 80;
-            double progressBarIncrement = (double)(85 - progressBarPercent) / repList.Count;
+            double progressBarPercent = 75;
+            double progressBarIncrement = (double)(95 - progressBarPercent) / reportDictionary.Count();
             int iteration = 0;
-            progressBarVM.SetProgressBar((int)progressBarPercent, $"Фильтруем строки из отчетов 1.2 для обработки ({iteration}/{repList.Count})");
-
-            List<Form12> rows12List = new List<Form12>();
-            foreach (var rep in repList)
+            progressBarVM.SetProgressBar((int)progressBarPercent, $"Обрабатываем отчеты 1.2 для обработки ({iteration}/{reportDictionary.Count})");
+            try
             {
-                try
+
+                foreach (var item in reportDictionary)
                 {
+                    var reportList = item.Value;
 
-                    cts.Token.ThrowIfCancellationRequested();
+                    ProcessInventoryReport(reportList[0]);
 
-                    var rows12 = rep.Rows12.Where(row12 => 
-                        CodeOperationFilter.PlusOperationsForm55.Contains(row12.OperationCode_DB)
-                        || CodeOperationFilter.MinusOperationsForm55.Contains(row12.OperationCode_DB));
-
-                    if (rep.StartPeriod_DB.EndsWith(year)
-                    ^ rep.EndPeriod_DB.EndsWith(year))
+                    for(int i = 1; i < reportList.Count; i++)
                     {
-                        rows12 = rows12.Where(row12 => row12.OperationDate_DB.EndsWith(year));
-                    }
-
-                    rows12List.AddRange(rows12);
-
-                    progressBarPercent += progressBarIncrement;
-                    iteration++;
-                    progressBarVM.SetProgressBar((int)progressBarPercent, $"Фильтруем строки из отчетов 1.2 для обработки ({iteration}/{repList.Count})");
-                }
-                catch (OperationCanceledException)
-                {
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                    {
-                        CanResize = true,
-                        ContentTitle = "Ошибка",
-                        ContentMessage = ex.Message,
-                        MinWidth = 300,
-                        MinHeight = 125,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(owner));
-                    throw ex;
-                }
-            }
-            return rows12List;
-        }
-
-        private async Task GenerateForm55DependOnFilteredRows12(List<Form12> filteredRows12, AnyTaskProgressBarVM progressBarVM,CancellationTokenSource cts)
-        {
-            double progressBarPercent = 85;
-            double progressBarIncrement = (double)(95 - progressBarPercent) / filteredRows12.Count;
-            int iteration = 0;
-            progressBarVM.SetProgressBar((int)progressBarPercent, $"Обрабатываем строки из отчетов 1.2 для обработки ({iteration}/{filteredRows12.Count})");
-
-            foreach (var row12 in filteredRows12)
-            {
-                try
-                {
-
-                    cts.Token.ThrowIfCancellationRequested();
-
-                    var row55 = Report.Rows55.FirstOrDefault(r =>
-                        r.Name_DB == row12.NameIOU_DB
-                        && r.OperationCode_DB == row12.OperationCode_DB
-                        && r.ProviderOrRecieverOKPO_DB == row12.ProviderOrRecieverOKPO_DB);
-                    if (row55 != null)
-                    {
-                        try
+                        foreach (Form12 row12 in reportList[i].Rows12)
                         {
-                            cts.Token.ThrowIfCancellationRequested();
+                            var matchingForm = FindMatchingForm56(row12);
+                            if (matchingForm == null) continue;
 
-                            row55.Quantity_DB ++;
-
-                            if (double.TryParse(row55.Mass_DB,
-                                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                                out var value) 
-                            && double.TryParse(row12.Mass_DB,
-                                NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                CultureInfo.CreateSpecificCulture("ru-RU"), 
-                                out var inc))
+                            if (CodeOperationFilter.PlusOperationsForm56.Any(x => x == row12.OperationCode_DB))
                             {
-                                var sumMass = value + inc;
-                                row55.Mass.Value = sumMass.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
+                                matchingForm.Quantity_DB += 1;
+
+                                if (double.TryParse(matchingForm.Mass_DB,
+                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
+                                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                                    out var value)
+                                && double.TryParse(row12.Mass_DB,
+                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
+                                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                                    out var inc))
+                                {
+                                    var sumActivity = value + inc;
+                                    matchingForm.Mass.Value = sumActivity.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
+                                }
+                            }
+                            else if (CodeOperationFilter.MinusOperationsForm56.Any(x => x == row12.OperationCode_DB))
+                            {
+                                matchingForm.Quantity_DB -= 1;
+
+                                if (double.TryParse(matchingForm.Mass_DB,
+                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
+                                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                                    out var value)
+                                && double.TryParse(row12.Mass_DB,
+                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
+                                    CultureInfo.CreateSpecificCulture("ru-RU"),
+                                    out var dec))
+                                {
+                                    var sumActivity = value - dec;
+                                    matchingForm.Mass.Value = sumActivity.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
+                                }
                             }
                         }
-                        catch (OperationCanceledException)
-                        {
-                            throw;
-                        }
-                        catch (Exception ex)
-                        {
-                            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                            {
-                                CanResize = true,
-                                ContentTitle = "Ошибка",
-                                ContentMessage = ex.Message,
-                                MinWidth = 300,
-                                MinHeight = 125,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(owner));
-                            throw ex;
-                        }
                     }
-                    else
-                    {
-                        try
-                        {
 
-                            cts.Token.ThrowIfCancellationRequested();
-
-                            Report.Rows55.Add(new Form55()
-                            {
-                                Name_DB = row12.NameIOU_DB,
-                                OperationCode_DB = row12.OperationCode_DB,
-                                ProviderOrRecieverOKPO_DB = row12.ProviderOrRecieverOKPO_DB,
-                                Quantity_DB = 1,
-                                Mass_DB = row12.Mass_DB
-                            });
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            throw;
-                        }
-                        catch (Exception ex)
-                        {
-                            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                            {
-                                CanResize = true,
-                                ContentTitle = "Ошибка",
-                                ContentMessage = ex.Message,
-                                MinWidth = 300,
-                                MinHeight = 125,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(owner));
-                            throw ex;
-                        }
-                    }
                     progressBarPercent += progressBarIncrement;
                     iteration++;
-                    progressBarVM.SetProgressBar((int)progressBarPercent, $"Обрабатываем строки из отчетов 1.2 для обработки ({iteration}/{filteredRows12.Count})");
-
+                    progressBarVM.SetProgressBar((int)progressBarPercent, $"Обрабатываем отчеты 1.2 для обработки ({iteration}/{reportDictionary.Count})");
                 }
-                catch (OperationCanceledException)
-                {
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            } catch (Exception ex)
+            {
+                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                     {
                         CanResize = true,
@@ -448,11 +378,60 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
                     .ShowDialog(owner));
-                    throw ex;
-                }
+                throw ex;
             }
         }
 
         #endregion
+
+        private void ProcessInventoryReport(Report rep)
+        {
+            var rows12 = rep.Rows12;
+            DateOnly inventarizationDate = DateOnly.MinValue;
+            foreach (Form12 row12 in rows12)
+            {
+                if (row12.OperationCode_DB != "10") continue;
+
+                if (DateOnly.TryParse(row12.OperationDate_DB, out var dateOnly)
+                && dateOnly > inventarizationDate)
+                    inventarizationDate = dateOnly;
+
+                var matchingForm = FindMatchingForm56(row12);
+                if (matchingForm != null)
+                {
+                    matchingForm.Quantity_DB += 1;
+
+
+                    if (double.TryParse(matchingForm.Mass_DB,
+                        NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
+                        CultureInfo.CreateSpecificCulture("ru-RU"),
+                        out var value)
+                    && double.TryParse(row12.Mass_DB,
+                        NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
+                        CultureInfo.CreateSpecificCulture("ru-RU"),
+                        out var inc))
+                    {
+                        var sumActivity = value + inc;
+                        matchingForm.Mass.Value = sumActivity.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
+                    }
+                }
+                else
+                {
+                    Report.Rows56.Add(new Form56()
+                    {
+                        Name_DB = row12.NameIOU_DB,
+                        Quantity_DB = 1,
+                        Mass_DB = row12.Mass_DB
+                    });
+                }
+
+            }
+        }
+
+        private Form56? FindMatchingForm56(Form12 row12)
+        {
+            return Report.Rows56.FirstOrDefault(row56 =>
+            row56.Name_DB == row12.NameIOU_DB);
+        }
     }
 }
