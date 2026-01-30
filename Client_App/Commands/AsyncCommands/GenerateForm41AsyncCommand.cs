@@ -25,6 +25,7 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Client_App.Views.Messages;
+using Spravochniki;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -78,8 +79,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             if (!await ShowConfirmationMessage(owner)) return;
         }
 
-        var formContainRowAtStart = Report.Rows.Count > 0;
-        if (!formContainRowAtStart)
+        if (Report.Rows.Count <= 0)
         {
             await new SaveReportAsyncCommand(formVM).AsyncExecute(null);
         }
@@ -97,8 +97,17 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         formVM.UpdateFormList();
         formVM.UpdatePageInfo();
 
-        if (await ShowAskAllOrOneSubjectRFMessage(owner))
+        codeSubjectRF = Report.Reports.Master_DB.Rows40[0].CodeSubjectRF_DB;
+        if (int.TryParse(codeSubjectRF, out var intCode) 
+            && !Spravochniks.DictionaryOfSubjectRF.ContainsKey(intCode))
+        {
             codeSubjectRF = await Dispatcher.UIThread.InvokeAsync(async () => await ShowAskSubjectRFMessage(owner));
+            if(int.TryParse(codeSubjectRF, out intCode))
+            {
+                Report.Reports.Master_DB.Rows40[0].CodeSubjectRF_DB = codeSubjectRF; 
+                Report.Reports.Master_DB.Rows40[0].SubjectRF_DB = Spravochniks.DictionaryOfSubjectRF[intCode];
+            }
+        }
         
         if (!int.TryParse(Report.Year.Value, out year))
         {
