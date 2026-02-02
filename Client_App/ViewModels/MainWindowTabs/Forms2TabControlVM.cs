@@ -200,9 +200,15 @@ public class Forms2TabControlVM : INotifyPropertyChanged
                 SelectedReports
                     .Report_Collection
                     .AsEnumerable()
-                    .OrderBy(x => x.FormNum_DB)
-                    .ThenByDescending(x => x.Year_DB == null ||
-                                           !int.TryParse(x.Year_DB, out _) ?
+                    .OrderBy(x => 
+                    {
+                        if (int.TryParse(x.FormNum_DB.Split('.')[1], out var result))
+                            return result;
+                        return int.MinValue;
+                    })
+                    .ThenByDescending(x => 
+                        x.Year_DB == null ||
+                        !int.TryParse(x.Year_DB, out _) ?
                         int.MaxValue :
                         int.Parse(x.Year_DB))
                     .ThenBy(rep => rep.CorrectionNumber_DB)
@@ -399,9 +405,7 @@ public class Forms2TabControlVM : INotifyPropertyChanged
     #region GoToFormNum
     public void GoToFormNum(string formNum)
     {
-        if (SelectedReports is null) return;
-
-        var report = SelectedReports.Report_Collection.FirstOrDefault(rep => rep.FormNum_DB == formNum);
+        var report = SelectedReports?.Report_Collection.FirstOrDefault(rep => rep.FormNum_DB == formNum);
         if (report == null) return;
 
         var index = SelectedReports.Report_Collection.IndexOf(report);

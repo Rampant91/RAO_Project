@@ -74,6 +74,24 @@ namespace Client_App.ViewModels.Forms.Forms4
 
         #endregion
 
+        #region IsCanSaveReportEnabled
+
+        private bool _isCanSaveReportEnabled;
+        public bool IsCanSaveReportEnabled
+        {
+            get => _isCanSaveReportEnabled;
+            set
+            {
+                if (_isCanSaveReportEnabled != value)
+                {
+                    _isCanSaveReportEnabled = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        #endregion
+
         #region FormType
 
         public string FormType { get; set; } = "4.0";

@@ -235,7 +235,8 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                         foreach (var rep in sortedRepList)
                         {
                             ImpRepCorNum = rep.CorrectionNumber_DB;
-                            ImpRepFormCount = rep.Rows.Count;
+                            if(rep.Rows!=null)
+                                ImpRepFormCount = rep.Rows.Count;
                             ImpRepFormNum = rep.FormNum_DB;
                             ImpRepStartPeriod = rep.StartPeriod_DB;
                             ImpRepEndPeriod = rep.EndPeriod_DB;

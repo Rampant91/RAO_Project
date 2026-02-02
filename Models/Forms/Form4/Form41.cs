@@ -117,11 +117,11 @@ public partial class Form41 : Form
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string>)value).Value;
-        if (value1!= null)
+        if (value1 != null)
         {
             value1 = value1.Length > 14
-                ? value1[..14]
-                : value1;
+            ? value1[..14]
+            : value1;
         }
         if (Okpo_DB != value1)
         {
@@ -170,11 +170,11 @@ public partial class Form41 : Form
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string>)value).Value;
-        if(value1 != null)
+        if (value1 != null)
         {
             value1 = value1.Length > 256
-                ? value1[..256]
-                : value1;
+            ? value1[..256]
+            : value1;
         }
         if (OrganizationName_DB != value1)
         {

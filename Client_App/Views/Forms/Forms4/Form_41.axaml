@@ -17,6 +17,7 @@
     d:DesignWidth="900"
     x:DataType="vm:Form_41VM"
     mc:Ignorable="d"
+    KeyUp="DataGrid_KeyUp"
 	x:Name="4.1"
 	WindowStartupLocation="CenterScreen"
 	MinWidth="800" MinHeight="600">

@@ -665,9 +665,8 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             if (!InventarizationFlag && quantityBalance > 0)
                 return new CheckError()
                 {
-                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют радионуклиды. " +
-                    $"Необходимо проинвентаризировать по форме 1.1\n" +
-                    $"Инвентаризация: {InventarizationFlag}\n" +
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют ЗРИ. " +
+                    $"Необходимо предоставить сведения об инвентаризации по форме 1.1\n" +
                     $"Баланс: {quantityBalance}"
                 };
             return null;
@@ -777,9 +776,8 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             if (!InventarizationFlag && massBalance > 0)
                 return new CheckError()
                 {
-                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют изделия из обедненного урана. " +
-                    $"Необходимо проинвентаризировать по форме 1.2\n" +
-                    $"Инвентаризация: {InventarizationFlag}\n" +
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют ИОУ. " +
+                    $"Необходимо предоставить сведения об инвентаризации по форме 1.2\n" +
                     $"Баланс: {massBalance}"
                 };
             return null;
@@ -884,9 +882,8 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             if (!InventarizationFlag && balance > 0)
                 return new CheckError()
                 {
-                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют радионуклиды. " +
-                    $"Необходимо проинвентаризировать по форме 1.3\n" +
-                    $"Инвентаризация: {InventarizationFlag}\n" +
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют ОРИ. " +
+                    $"Необходимо предоставить сведения об инвентаризации по форме 1.3\n" +
                     $"Баланс: {balance}"
                 };
             return null;
@@ -1031,7 +1028,6 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 {
                     Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют радионуклиды. " +
                     $"Необходимо проинвентаризировать по форме 1.4\n" +
-                    $"Инвентаризация: {InventarizationFlag}\n" +
                     $"Баланс жидких РВ: {massBalanceLiquid}\n" +
                     $"Баланс твердых РВ: {massBalanceSolid}\n" +
                     $"Баланс газооборазных РВ: {massBalanceGas}\n"
@@ -1053,7 +1049,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                     ButtonDefinitions =
                     [
                         new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" },
+                        new ButtonDefinition { Name = "Нет" },
                     ],
                     CanResize = true,
                     ContentTitle = "Формирование нового отчета",
