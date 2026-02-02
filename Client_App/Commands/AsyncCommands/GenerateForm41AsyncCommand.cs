@@ -70,21 +70,19 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
 
         var cts = new CancellationTokenSource();
 
+        cts.Token.Register(() => Report.Rows41.Clear());
 
 
         #region ShowAskMessages
 
-        if (Report.Rows41.Count != 0)
+        if (Report.Rows41.Count > 0)
         {
             if (!await ShowConfirmationMessage(owner)) return;
         }
 
-        if (Report.Rows.Count <= 0)
-        {
-            await new SaveReportAsyncCommand(formVM).AsyncExecute(null);
-        }
-
         Report.Rows41.Clear();
+
+        await new SaveReportAsyncCommand(formVM).AsyncExecute(null);
 
         if (await ShowAskDependOnReportOrNotMessage(owner))
         {
@@ -98,17 +96,18 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         formVM.UpdatePageInfo();
 
         codeSubjectRF = Report.Reports.Master_DB.Rows40[0].CodeSubjectRF_DB;
-        if (int.TryParse(codeSubjectRF, out var intCode) 
-            && !Spravochniks.DictionaryOfSubjectRF.ContainsKey(intCode))
+
+        int intCode;
+        while (!int.TryParse(codeSubjectRF, out intCode)
+           || !Spravochniks.DictionaryOfSubjectRF.ContainsKey(intCode))
         {
             codeSubjectRF = await Dispatcher.UIThread.InvokeAsync(async () => await ShowAskSubjectRFMessage(owner));
-            if(int.TryParse(codeSubjectRF, out intCode))
-            {
-                Report.Reports.Master_DB.Rows40[0].CodeSubjectRF_DB = codeSubjectRF; 
-                Report.Reports.Master_DB.Rows40[0].SubjectRF_DB = Spravochniks.DictionaryOfSubjectRF[intCode];
-            }
+
         }
-        
+
+        Report.Reports.Master_DB.Rows40[0].CodeSubjectRF_DB = codeSubjectRF;
+        Report.Reports.Master_DB.Rows40[0].SubjectRF_DB = Spravochniks.DictionaryOfSubjectRF[intCode];
+
         if (!int.TryParse(Report.Year.Value, out year))
         {
             year = await Dispatcher.UIThread.InvokeAsync(async () => await ShowAskYearMessage(owner));
@@ -152,6 +151,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
 
             FilterAllByCodeSubjectRF(codeSubjectRF);
         }
+
         double currentProgress = 14.0;
         double incProgress = (90.0 - currentProgress) / (organizations10.Count() + organizations20.Count());
         foreach (var organization10 in organizations10)
@@ -178,7 +178,6 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             currentProgress += incProgress;
         }
 
-
         foreach (var organization20 in organizations20)
         {
             progressBarVM.SetProgressBar(
@@ -200,6 +199,8 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                     numForm212: numForm212);
         }
 
+        formVM.UpdateFormList();
+        formVM.UpdatePageInfo();
 
         progressBarVM.SetProgressBar(
             90,
@@ -209,6 +210,10 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         var orderedRows = Report.Rows41.OrderBy(row => row.RegNo_DB).ToList();
         Report.Rows41.Clear();
         Report.Rows41.AddRange(orderedRows);
+
+
+        formVM.UpdateFormList();
+        formVM.UpdatePageInfo();
 
         //Заполняем пробелы РегНомеров 
         FillSpaceByRegNo(progressBarVM, cts);
@@ -378,10 +383,6 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     }
     private void FilterAllByCodeSubjectRF(string codeSubjectRF)
     {
-        var collection = Report.Rows41.ToList().FindAll(form41 => form41.RegNo_DB.StartsWith(codeSubjectRF)); //Фильтруем строчки
-
-        Report.Rows41.Clear();
-        Report.Rows41.AddRange(collection);
 
         organizations10 = organizations10.FindAll(reports => reports.Master.RegNoRep != null
                     && reports.Master.RegNoRep.Value.StartsWith(codeSubjectRF));
@@ -450,51 +451,68 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     // Эта функция создает пустые записи для организаций, не представленных в базе данных или в отчете по форме 4.1, на основе которого генерируется этот отчет
     private void FillSpaceByRegNo(AnyTaskProgressBarVM? progressBarVM, CancellationTokenSource cts)
     {
-        var regNoIndex = 1;
-        for (int i = 0; i < Report.Rows41.Count; i++)
+
+        var codeSubjectRF = Report.Reports.Master.Rows40[0].CodeSubjectRF_DB;
+        int i = 0;
+        int regNoIndex = 1;
+        while(i < Report.Rows41.Count)
         {
-            cts.Token.ThrowIfCancellationRequested();
-            var codeSubjectRF = Report.Rows41[i].RegNo_DB.Substring(0, 2);
-
-            if (!int.TryParse(Report.Rows41[i].RegNo_DB.Substring(2, 3), out var current)) continue; 
-            
-            // Если текущая организация временная, то переходим к следующей
-            if (current / 100 is 8 or 9) 
-            { 
-                regNoIndex = 1; 
-                continue; 
-            }
-            // Заполняем пробелы РегНомеров ПЕРЕД текущей организации 
-            while (regNoIndex < current)
+            if (codeSubjectRF != Report.Rows41[i].RegNo_DB.Substring(0, 2))
             {
-                cts.Token.ThrowIfCancellationRequested();
+                i++;
+                continue;
+            }
+            if (!int.TryParse(Report.Rows41[i].RegNo_DB.Substring(2, 3), out var current))
+            {
+                i++;
+                continue;
+            }
+            // Если текущая организация временная, то переходим к следующей
+            if (current / 100 is 8 or 9) return;
 
+            if (regNoIndex < current)
+            {
                 string regNo = codeSubjectRF;
-                if (regNoIndex / 100 == 0)
+                if ((regNoIndex + 1) / 100 == 0)
                     regNo += "0";
-                if (regNoIndex / 10 == 0)
+                if ((regNoIndex + 1) / 10 == 0)
                     regNo += "0";
                 regNo += $"{regNoIndex}";
                 Report.Rows41.Insert(i, new Form41()
                 {
-                    RegNo_DB = regNo,
+                    RegNo_DB = $"{regNo}",
                     Report = formVM.Report // в форме указываем связь с отчетом, в котором создается эта форма
                 });
                 regNoIndex++;
                 i++;
-
             }
+            else
+                return;
+        }
+        while(i < Report.Rows41.Count)
+        {
+            cts.Token.ThrowIfCancellationRequested();
+
+
+            if (codeSubjectRF != Report.Rows41[i].RegNo_DB.Substring(0, 2)) continue;
+
+            if (!int.TryParse(Report.Rows41[i].RegNo_DB.Substring(2, 3), out var current)) continue;
+
+            // Если текущая организация временная, то переходим к следующей
+            if (current / 100 is 8 or 9) return;
 
             //Если текущая запись последняя, то прекращаем выполнение функции
             if (i + 1 >= Report.Rows41.Count) return;
-            
-            var nextSubjectFlag = codeSubjectRF != Report.Rows41[i + 1].RegNo_DB.Substring(0, 2);
+
+            if (codeSubjectRF != Report.Rows41[i + 1].RegNo_DB.Substring(0, 2)) return;
             
             if (!int.TryParse(Report.Rows41[i + 1].RegNo_DB.Substring(2, 3), out var next)) continue;
+
             //Если следующая организация временная, то переходим к следующей
-            if (next / 100 is 8 or 9) continue;
+            if (next / 100 is 8 or 9) return;
             // Если есть пробел между текущей и следующей организацией, то создаем новую запись между ними
-            if (!nextSubjectFlag && (current+1 < next))
+
+            if (current+1 < next)
             {
                 string regNo = codeSubjectRF;
                 if ((current + 1) / 100 == 0)
@@ -508,13 +526,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                     Report = formVM.Report // в форме указываем связь с отчетом, в котором создается эта форма
                 });
             }
-
-            if (nextSubjectFlag)
-                regNoIndex = 1;
-            else
-                regNoIndex++;
-
-            
+            i++;
         }
     }
         

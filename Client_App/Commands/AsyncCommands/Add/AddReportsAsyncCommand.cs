@@ -97,7 +97,6 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
                     var window = new Form_20(form20VM) { DataContext = form20VM };
                     await new SaveReportAsyncCommand(form20VM).AsyncExecute(null);
                     await window.ShowDialog(mainWindow);
-
                     break;
                 }
             case "4.0":

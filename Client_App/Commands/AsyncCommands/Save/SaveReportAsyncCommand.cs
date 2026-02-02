@@ -1,19 +1,20 @@
-﻿using System;
-using System.Linq;
-using Client_App.ViewModels;
-using Models.Collections;
-using Models.DBRealization;
-using System.Threading.Tasks;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
+using Client_App.ViewModels;
 using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
 using Client_App.ViewModels.Forms.Forms4;
+using Client_App.Views;
 using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
+using Models.Collections;
+using Models.DBRealization;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.Save;
 
@@ -248,5 +249,9 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
         }
+
+            var mainWindow = Desktop.MainWindow as MainWindow;
+            var mainWindowVM = await Dispatcher.UIThread.InvokeAsync(() => mainWindow.DataContext as MainWindowVM);
+            mainWindowVM.UpdateReportsCollection();
     }
 }

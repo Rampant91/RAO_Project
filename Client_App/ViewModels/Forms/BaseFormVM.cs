@@ -111,6 +111,25 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
+    #region IsCanSaveReportEnabled
+
+    private bool _isCanSaveReportEnabled;
+    public bool IsCanSaveReportEnabled
+    {
+        get => _isCanSaveReportEnabled;
+        set
+        {
+            if (_isCanSaveReportEnabled != value)
+            {
+                _isCanSaveReportEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    #endregion
+
+
     private Form? _selectedForm;
     public Form? SelectedForm
     {
