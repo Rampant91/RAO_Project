@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Models.Forms;
 using Models.Forms.Form1;
+using Models.Forms.Form4;
 
 namespace Client_App.Commands.AsyncCommands.Delete;
 
@@ -337,6 +338,28 @@ public class NewDeleteDataInRowsAsyncCommand : BaseAsyncCommand
                     form.CodeTypeAccObject.Value = null;
                     form.Radionuclids.Value = null;
                     form.Activity.Value = null;
+                }
+            }
+
+            #endregion
+
+            #region 4.1
+
+            if (formCollection.Any(x => x is Form41))
+            {
+                var form41Collection = formCollection.ToList().Cast<Form41>();
+                foreach (var form in form41Collection)
+                {
+                    if (form is null) continue;
+
+                    form.RegNo.Value = null;
+                    form.Okpo.Value = null;
+                    form.OrganizationName.Value = null;
+                    form.LicenseOrRegistrationInfo.Value = null;
+                    form.NumOfFormsWithInventarizationInfo.Value = 0;
+                    form.NumOfFormsWithoutInventarizationInfo.Value = 0;
+                    form.NumOfForms212.Value = 0;
+                    form.Note.Value = null;
                 }
             }
 
