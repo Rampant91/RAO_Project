@@ -318,6 +318,28 @@ public partial class Form21 : Form2, IBaseColor
 
     #endregion
 
+    #region HiddenFlagsNormalization
+
+    /// <summary>
+    /// Нормализует флаги скрытия установки/записи для обычных строк
+    /// (не суммарных и не входящих в группу),
+    /// чтобы изменения из UI могли сохраняться в БД.
+    /// </summary>
+    public void NormalizeHiddenFlags()
+    {
+        if (Sum_DB || SumGroup_DB)
+        {
+            return;
+        }
+
+        _RefineMachineName_Hidden_Set = true;
+        _MachineCode_Hidden_Set = true;
+        _MachinePower_Hidden_Set = true;
+        _NumberOfHoursPerYear_Hidden_Set = true;
+    }
+
+    #endregion
+
     #region MachineCode (3)
 
     public byte? MachineCode_DB { 
