@@ -3,7 +3,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Client_App.ViewModels.Messages"
+        xmlns:behaviors="clr-namespace:Client_App.Behaviors"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.35" behaviors:WindowScreenSizeBehavior.HeightRatio="0.75"
         x:Class="Client_App.Views.Messages.SelectReportsMessageWindow"
         Title="{Binding CurrentImportInfo}">
 
@@ -11,21 +13,24 @@
 		<vm:SelectReportsMessageWindowVM/>
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto,Auto,*,Auto">
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto">
 
         <!-- Информация об импортируемом файле -->
         <TextBlock Grid.Row="0" 
                    Text="{Binding ImportInfo}" 
-                   Margin="10" 
-                   FontWeight="Bold"/>
+                   Margin="10"/>
         
         <!-- Информация о форме и периоде -->
         <TextBlock Grid.Row="1" 
                    Text="{Binding FormInfo}" 
                    Margin="10"/>
 
+        <TextBlock Grid.Row="2"
+                   Text="Выберите организацию, в которую будет импортирован вышеуказанный отчёт:"
+                   Margin="10"/>
+
         <!-- Список организаций -->
-        <DataGrid Grid.Row="2"
+        <DataGrid Grid.Row="3"
                   Items="{Binding Organizations}"
                   SelectedItem="{Binding SelectedOrganization}"
                   AutoGenerateColumns="False"
@@ -40,7 +45,7 @@
                   RowBackground="Transparent"
                   Margin="10">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Рег. №" 
+                <DataGridTextColumn Header="Рег. №"
                                     Binding="{Binding RegNum}" 
                                     Width="120"/>
                 <DataGridTextColumn Header="Наименование" 
@@ -53,7 +58,7 @@
         </DataGrid>
 
         <!-- Кнопки -->
-        <StackPanel Grid.Row="3" 
+        <StackPanel Grid.Row="4" 
                     Orientation="Horizontal" 
                     HorizontalAlignment="Right" 
                     Margin="10">

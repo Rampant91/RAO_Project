@@ -19,9 +19,8 @@ public sealed class SelectReportsMessageWindowVM : INotifyPropertyChanged
     private readonly IRelayCommand _okCommand;
     private readonly string _fileName;
     private readonly int _totalReports;
-    private readonly int _currentReportIndex;
     private readonly string _formNum;
-    private readonly string _periodInfo;
+    private readonly int _currentReportIndex;
 
     #endregion
 
@@ -82,12 +81,12 @@ public sealed class SelectReportsMessageWindowVM : INotifyPropertyChanged
     /// <summary>
     /// Информация о текущем импорте
     /// </summary>
-    public string CurrentImportInfo => $"Импорт {_currentReportIndex} из {_totalReports} отчётов.";
+    public static string CurrentImportInfo => "Импорт из .RAODB.";
 
     /// <summary>
     /// Информация о форме и периоде
     /// </summary>
-    public string FormInfo => _periodInfo;
+    public string FormInfo { get; }
 
     #endregion
 
@@ -186,7 +185,7 @@ public sealed class SelectReportsMessageWindowVM : INotifyPropertyChanged
         _currentReportIndex = currentReportIndex;
         _formNum = impReps.Master_DB.FormNum_DB;
 
-        _periodInfo = $"Импортируются отчёты организации {impReps.Master_DB.RegNoRep.Value}_{impReps.Master.OkpoRep.Value} по форме {_formNum}";
+        FormInfo = $"Импортируются отчёты организации {impReps.Master_DB.RegNoRep.Value}_{impReps.Master.OkpoRep.Value} по форме {_formNum}";
 
         // Сортируем организации: по рег.№, потом по ОКПО, потом по наименованию
         var repsDtoList = repsList

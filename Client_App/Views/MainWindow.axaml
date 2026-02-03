@@ -7,7 +7,6 @@
         xmlns:converter="clr-namespace:Client_App.Resources.CustomConverters"
         xmlns:tabs="clr-namespace:Client_App.Views.MainWindowTabs"
         xmlns:behaviors="clr-namespace:Client_App.Behaviors"
-        xmlns:viewModels="clr-namespace:Client_App.ViewModels"
         Title="{Binding Current_Db, Mode=OneWay}"
         d:DesignHeight="600"
         d:DesignWidth="800"

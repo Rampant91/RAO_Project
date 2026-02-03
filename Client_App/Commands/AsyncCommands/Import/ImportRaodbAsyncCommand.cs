@@ -15,14 +15,13 @@ using Models.DTO;
 using Avalonia.Threading;
 using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels;
-using Client_App.Views;
 using Client_App.Views.Messages;
 using static Client_App.ViewModels.Messages.SelectReportsMessageWindowVM;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
 //  Импорт -> Из RAODB
-public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyncCommand
+public class ImportRaodbAsyncCommand() : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {

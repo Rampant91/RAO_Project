@@ -120,17 +120,13 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     {
         get
         {
-            switch (SelectedReportType)
+            return SelectedReportType switch
             {
-                case 1:
-                    return Forms1TabControlVM.SelectedReports;
-                case 2:
-                    return Forms2TabControlVM.SelectedReports;
-                case 4:
-                    return Forms4TabControlVM.SelectedReports;
-                default:
-                    return null;
-            }
+                1 => Forms1TabControlVM.SelectedReports,
+                2 => Forms2TabControlVM.SelectedReports,
+                4 => Forms4TabControlVM.SelectedReports,
+                _ => null
+            };
         }
         set
         {
@@ -424,10 +420,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand();
         ImportExcel = new ImportExcelAsyncCommand(this);
         ImportJson = new ImportJsonAsyncCommand();
-        ImportRaodb = new ImportRaodbAsyncCommand(this);
+        ImportRaodb = new ImportRaodbAsyncCommand();
         MaxGraphsLength = new MaxGraphsLengthAsyncCommand();
         SaveReports = new SaveReportsAsyncCommand();
-        //UnaccountedRad = new UnaccountedRadAsyncCommand(); 
         OpenCalculator = new OpenCalculatorAsyncCommand();
         OpenFile = new OpenFileAsyncCommand();
         OpenFolder = new OpenFolderAsyncCommand();
@@ -436,7 +431,6 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         Forms1TabControlVM = new Forms1TabControlVM(this);
         Forms2TabControlVM = new Forms2TabControlVM(this);
         Forms4TabControlVM = new Forms4TabControlVM(this);
-
 
         UpdateReportsCollection();
     }
