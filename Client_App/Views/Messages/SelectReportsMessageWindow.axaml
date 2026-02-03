@@ -5,7 +5,7 @@
         xmlns:vm="clr-namespace:Client_App.ViewModels.Messages"
         xmlns:behaviors="clr-namespace:Client_App.Behaviors"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        behaviors:WindowScreenSizeBehavior.WidthRatio="0.35" behaviors:WindowScreenSizeBehavior.HeightRatio="0.75"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.45" behaviors:WindowScreenSizeBehavior.HeightRatio="0.75"
         x:Class="Client_App.Views.Messages.SelectReportsMessageWindow"
         Title="{Binding CurrentImportInfo}">
 
