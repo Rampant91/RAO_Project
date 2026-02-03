@@ -14,6 +14,7 @@ using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
+using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form5;
 using System;
@@ -349,6 +350,12 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                         r.Name_DB == row12.NameIOU_DB
                         && r.OperationCode_DB == row12.OperationCode_DB
                         && r.ProviderOrRecieverOKPO_DB == row12.ProviderOrRecieverOKPO_DB);
+
+                    //В только что импортированных отчетах может встречаться 
+                    //некоректная запись экспоненциального формата,
+                    //поэтому на всякий случай прогоняем через Exponentional_ValueChanged
+                    row12.Mass_DB = Form.ConvertStringToExponentialFormat(row12.Mass_DB);
+
                     if (row55 != null)
                     {
                         try

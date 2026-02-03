@@ -14,6 +14,7 @@ using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
+using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form5;
 using System;
@@ -400,6 +401,11 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             {
                 try
                 {
+                    //В только что импортированных отчетах может встречаться 
+                    //некоректная запись экспоненциального формата,
+                    //поэтому на всякий случай прогоняем через Exponentional_ValueChanged
+                    row13.Activity_DB = Form.ConvertStringToExponentialFormat(row13.Activity_DB);
+
 
                     cts.Token.ThrowIfCancellationRequested();
 
@@ -529,6 +535,13 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             {
                 try
                 {
+
+                    //В только что импортированных отчетах может встречаться 
+                    //некоректная запись экспоненциального формата,
+                    //поэтому на всякий случай прогоняем через Exponentional_ValueChanged
+                    row14.Activity_DB = Form.ConvertStringToExponentialFormat(row14.Activity_DB);
+                    row14.Mass_DB = Form.ConvertStringToExponentialFormat(row14.Mass_DB);
+                    row14.Volume_DB = Form.ConvertStringToExponentialFormat(row14.Volume_DB);
 
                     cts.Token.ThrowIfCancellationRequested();
 

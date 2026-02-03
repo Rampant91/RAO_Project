@@ -265,13 +265,9 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            if (value1 != null)
-            {
-                Mass_DB = ExponentialString_ValueChanged(value1);
-            }
             if (Mass_DB != value1)
             {
-                Mass_DB = value1;
+                Mass_DB = ExponentialString_ValueChanged(value1);
             }
         }
 

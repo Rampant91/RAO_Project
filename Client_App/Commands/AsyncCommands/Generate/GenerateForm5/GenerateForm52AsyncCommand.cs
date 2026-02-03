@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Properties;
+using Client_App.Resources.CustomComparers.SnkComparers;
 using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Messages;
 using Client_App.ViewModels.ProgressBar;
@@ -24,6 +25,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Client_App.Resources.CustomComparers.SnkComparers;
+using Models.Forms;
 
 namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 {
@@ -37,7 +40,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
         private string year => formVM.Report.Year_DB;
 
-        
+        CustomSnkRadionuclidsEqualityComparer comparer = new CustomSnkRadionuclidsEqualityComparer();
+
 
         #endregion
         public override async void Execute(object? parameter)
@@ -247,8 +251,6 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                         .AsSplitQuery()
                         .Where(rep => rep.Reports.Id == id)
                         .Where(rep => rep.FormNum_DB == "1.1")
-                        .Where(rep => rep.StartPeriod_DB.EndsWith(year)
-                        || rep.EndPeriod_DB.EndsWith(year))
                         .Include(rep => rep.Rows11)
                         .ToList()
                         .Select(rep => new
@@ -268,8 +270,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
                     var inventarization = reportList.LastOrDefault(report => 
                         report.Rows11.Any(row => 
-                            row.OperationCode_DB == "10" 
-                            && row.OperationDate_DB.EndsWith(year)));
+                            row.OperationCode_DB == "10"));
 
                     var i = reportList.IndexOf(inventarization);
 
@@ -316,18 +317,30 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 {
                     var reportList = item.Value;
 
-                    ProcessInventoryReport(reportList[0]);
-
+                    var inventarizationDate = ProcessInventoryReport(reportList[0]);
+                    int.TryParse(year, out var yearIntValue);
+                    var endOfTheYear = new DateOnly(day: 31, month:12, year: yearIntValue);
                     for(int i = 1; i < reportList.Count; i++)
                     {
                         foreach (Form11 row11 in reportList[i].Rows11)
                         {
+                            if (!(DateOnly.TryParse(row11.OperationDate_DB, out var operationDate)
+                                && inventarizationDate < operationDate
+                                && operationDate <= endOfTheYear))
+                                continue;
+
                             var matchingForm = FindMatchingForm52(row11);
                             if (matchingForm == null) continue;
+
+                            //В только что импортированных отчетах может встречаться 
+                            //некоректная запись экспоненциального формата,
+                            //поэтому на всякий случай прогоняем через Exponentional_ValueChanged
+                            row11.Activity_DB = Form.ConvertStringToExponentialFormat(row11.Activity_DB);
 
                             if (CodeOperationFilter.PlusOperationsForm52.Any(x => x == row11.OperationCode_DB))
                             {
                                 matchingForm.Quantity_DB += row11.Quantity_DB;
+
 
                                 if (double.TryParse(matchingForm.Activity_DB,
                                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
@@ -385,7 +398,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
         #endregion
 
-        private void ProcessInventoryReport(Report rep)
+        private DateOnly ProcessInventoryReport(Report rep)
         {
             var rows11 = rep.Rows11;
             DateOnly inventarizationDate = DateOnly.MinValue;
@@ -397,7 +410,13 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 && dateOnly > inventarizationDate)
                     inventarizationDate = dateOnly;
 
+                //В только что импортированных отчетах может встречаться 
+                //некоректная запись экспоненциального формата,
+                //поэтому на всякий случай прогоняем через Exponentional_ValueChanged
+                row11.Activity_DB = Form.ConvertStringToExponentialFormat(row11.Activity_DB);
+
                 var matchingForm = FindMatchingForm52(row11);
+
                 if (matchingForm != null)
                 {
                     matchingForm.Quantity_DB += row11.Quantity_DB;
@@ -428,13 +447,15 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 }
 
             }
+
+            return inventarizationDate;
         }
 
         private Form52? FindMatchingForm52(Form11 row11)
         {
             return Report.Rows52.FirstOrDefault(row52 =>
             row52.Category_DB == row11.Category_DB
-            && row52.Radionuclids_DB == row11.Radionuclids_DB);
+            && comparer.Equals(row52.Radionuclids_DB, row11.Radionuclids_DB));
         }
     }
 }

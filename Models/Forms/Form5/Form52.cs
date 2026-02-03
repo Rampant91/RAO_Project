@@ -216,13 +216,9 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            if (value1 != null)
-            {
-                Activity_DB = ExponentialString_ValueChanged(value1);
-            }
             if (Activity_DB != value1)
             {
-                Activity_DB = value1;
+                Activity_DB = ExponentialString_ValueChanged(value1);
             }
         }
 

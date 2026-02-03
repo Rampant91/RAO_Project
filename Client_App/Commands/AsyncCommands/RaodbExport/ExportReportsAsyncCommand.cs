@@ -289,9 +289,7 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         #endregion
-
         await tempDb.SaveChangesAsync(cts.Token);
-
         var t = tempDb.Database.GetDbConnection() as FbConnection;
         await t.CloseAsync();
         await t.DisposeAsync();

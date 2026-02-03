@@ -15,6 +15,7 @@ using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
+using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form5;
 using System;
@@ -37,7 +38,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
         private string year => formVM.Report.Year_DB;
 
-        
+
 
         #endregion
         public override async void Execute(object? parameter)
@@ -47,7 +48,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             {
                 await Task.Run(() => AsyncExecute(parameter));
             }
-            catch (OperationCanceledException) { throw ; }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 var msg = $"{Environment.NewLine}Message: {ex.Message}" +
@@ -247,8 +248,6 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                         .AsSplitQuery()
                         .Where(rep => rep.Reports.Id == id)
                         .Where(rep => rep.FormNum_DB == "1.2")
-                        .Where(rep => rep.StartPeriod_DB.EndsWith(year)
-                        || rep.EndPeriod_DB.EndsWith(year))
                         .Include(rep => rep.Rows12)
                         .ToList()
                         .Select(rep => new
@@ -266,14 +265,13 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                         .Select(x => x.Report)
                         .ToList();
 
-                    var inventarization = reportList.LastOrDefault(report => 
-                        report.Rows12.Any(row => 
-                            row.OperationCode_DB == "10" 
-                            && row.OperationDate_DB.EndsWith(year)));
+                    var inventarization = reportList.LastOrDefault(report =>
+                        report.Rows12.Any(row =>
+                            row.OperationCode_DB == "10"));
 
                     var i = reportList.IndexOf(inventarization);
 
-                    if(reportList.Skip(i).Count() > 0)
+                    if (reportList.Skip(i).Count() > 0)
                         result.Add(id, new List<Report>(reportList.Skip(i)));
 
                     progressBarPercent += progressBarIncrement;
@@ -315,14 +313,26 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 {
                     var reportList = item.Value;
 
-                    ProcessInventoryReport(reportList[0]);
+                    var inventarizationDate = ProcessInventoryReport(reportList[0]);
+                    int.TryParse(year, out var yearIntValue);
+                    var endOfTheYear = new DateOnly(day: 31, month: 12, year: yearIntValue);
 
-                    for(int i = 1; i < reportList.Count; i++)
+                    for (int i = 1; i < reportList.Count; i++)
                     {
                         foreach (Form12 row12 in reportList[i].Rows12)
                         {
+                            if (!(DateOnly.TryParse(row12.OperationDate_DB, out var operationDate)
+                                && inventarizationDate < operationDate
+                                && operationDate <= endOfTheYear))
+                                continue;
+
                             var matchingForm = FindMatchingForm56(row12);
                             if (matchingForm == null) continue;
+
+                            //В только что импортированных отчетах может встречаться 
+                            //некоректная запись экспоненциального формата,
+                            //поэтому на всякий случай прогоняем через Exponentional_ValueChanged
+                            row12.Mass_DB = Form.ConvertStringToExponentialFormat(row12.Mass_DB);
 
                             if (CodeOperationFilter.PlusOperationsForm56.Any(x => x == row12.OperationCode_DB))
                             {
@@ -365,7 +375,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     iteration++;
                     progressBarVM.SetProgressBar((int)progressBarPercent, $"Обрабатываем отчеты 1.2 для обработки ({iteration}/{reportDictionary.Count})");
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxCustomWindow(new MessageBoxCustomParams
@@ -384,7 +395,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
         #endregion
 
-        private void ProcessInventoryReport(Report rep)
+        private DateOnly ProcessInventoryReport(Report rep)
         {
             var rows12 = rep.Rows12;
             DateOnly inventarizationDate = DateOnly.MinValue;
@@ -397,6 +408,12 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     inventarizationDate = dateOnly;
 
                 var matchingForm = FindMatchingForm56(row12);
+
+                //В только что импортированных отчетах может встречаться 
+                //некоректная запись экспоненциального формата,
+                //поэтому на всякий случай прогоняем через Exponentional_ValueChanged
+                row12.Mass_DB = Form.ConvertStringToExponentialFormat(row12.Mass_DB);
+
                 if (matchingForm != null)
                 {
                     matchingForm.Quantity_DB += 1;
@@ -426,6 +443,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 }
 
             }
+            return inventarizationDate;
         }
 
         private Form56? FindMatchingForm56(Form12 row12)

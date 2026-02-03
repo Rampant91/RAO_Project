@@ -11,6 +11,11 @@ using Client_App.Views;
 using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
 using Client_App.ViewModels.Forms.Forms5;
+using System.Threading.Tasks;
+using Models.Collections;
+using System;
+using Models.DBRealization;
+using System.Linq;
 
 namespace Client_App.Commands.AsyncCommands.Save;
 

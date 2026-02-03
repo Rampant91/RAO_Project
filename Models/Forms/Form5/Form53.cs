@@ -373,13 +373,9 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            if (value1 != null)
-            {
-                Activity_DB = ExponentialString_ValueChanged(value1);
-            }
             if (Activity_DB != value1)
             {
-                Activity_DB = value1;
+                Activity_DB = ExponentialString_ValueChanged(value1);
             }
         }
 
@@ -423,13 +419,9 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            if (value1 != null)
-            {
-                Mass_DB = ExponentialString_ValueChanged(value1);
-            }
             if (Mass_DB != value1)
             {
-                Mass_DB = value1;
+                Mass_DB = ExponentialString_ValueChanged(value1);
             }
         }
 
@@ -473,13 +465,9 @@ namespace Models.Forms.Form5
         {
             if (args.PropertyName != "Value") return;
             var value1 = ((RamAccess<string>)value).Value;
-            if (value1 != null)
-            {
-                Volume_DB = ExponentialString_ValueChanged(value1);
-            }
             if (Volume_DB != value1)
             {
-                Volume_DB = value1;
+                Volume_DB = ExponentialString_ValueChanged(value1);
             }
         }
 
