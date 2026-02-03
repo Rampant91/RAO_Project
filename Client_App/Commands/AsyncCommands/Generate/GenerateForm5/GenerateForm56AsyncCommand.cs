@@ -103,6 +103,14 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
             GenerateForm56(repDictionary, progressBarVM, cts);
 
+            //Удаляем строчки с количеством и активностью равным нулю
+            Report.Rows56.RemoveMany(
+                Report.Rows56.Where(rep => 
+                rep.Quantity_DB == 0
+                && double.TryParse(rep.Mass_DB, out var value)
+                && value == 0));
+
+
             progressBarVM.SetProgressBar(
             95,
             $"Выставляем номера строк");
