@@ -4,14 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:Client_App.ViewModels"
-        xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
-        xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
+        xmlns:converter="clr-namespace:Client_App.Resources.CustomConverters"
         xmlns:tabs="clr-namespace:Client_App.Views.MainWindowTabs"
+        xmlns:behaviors="clr-namespace:Client_App.Behaviors"
         Title="{Binding Current_Db, Mode=OneWay}"
         d:DesignHeight="600"
         d:DesignWidth="800"
-        Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.75', FallbackValue='600', Mode=OneWay}"
-        Height="{Binding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.81', FallbackValue='800', Mode=OneWay}"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.75" behaviors:WindowScreenSizeBehavior.HeightRatio="0.81"
         MinWidth="200"
         MinHeight="200"
         x:CompileBindings="True"
@@ -27,7 +26,7 @@
     </Design.DataContext>
 
 	<Window.Resources>
-		<converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
+		<converter:BoolInverterConverter x:Key="BoolInverterConverter"/>
 	</Window.Resources>
     
     <DockPanel>
@@ -51,7 +50,8 @@
 
             <MenuItem Name="ImportMenu"
                       Header="_Импорт">
-                <MenuItem Header="Из RAODB">
+                <MenuItem Header="Из RAODB" 
+                          IsVisible="{Binding AppLaunchedAtNORAO}">
                     <MenuItem Command="{Binding ImportRaodb}" 
                               CommandParameter="Auto"
                               Header="Импорт с авто выбором организации"/>
@@ -59,6 +59,9 @@
                               CommandParameter="Selected"
                               Header="Импорт в организацию из списка"/>
                 </MenuItem>
+                <MenuItem Command="{Binding ImportRaodb}"
+                          Header="Из RAODB"
+                          IsVisible="{Binding AppLaunchedAtNORAO, Converter={StaticResource BoolInverterConverter}}"/>
                 <MenuItem Command="{Binding ImportExcel}" 
                           Header="Из Excel"/>
                 <MenuItem Command="{Binding ImportJson}" 

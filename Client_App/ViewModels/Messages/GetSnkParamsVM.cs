@@ -183,8 +183,14 @@ public class GetSnkParamsVM : INotifyPropertyChanged
             if (_commandName == value) return;
             _commandName = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(ShowRegionBlock));
         }
     }
+
+    /// <summary>
+    /// Показывать ли блок выбора региона
+    /// </summary>
+    public bool ShowRegionBlock => CommandName == "Проблемные источники по региону";
 
     #endregion
 

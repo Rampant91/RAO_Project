@@ -125,6 +125,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             {
                 ExcelExportSnkAsyncCommand => "СНК",
                 ExcelExportCheckInventoriesAsyncCommand => "Проверка инвентаризаций",
+                ExcelExportLostAndExtraUnitsByRegionAsyncCommand => "Проблемные источники по региону",
                 _ => ""
             };
             await getSnkParamsWindow.ShowDialog(Desktop.MainWindow);

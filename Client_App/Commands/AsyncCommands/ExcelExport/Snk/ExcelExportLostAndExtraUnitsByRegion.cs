@@ -624,7 +624,7 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
         {
             var vm = new GetSnkParamsVM
             {
-                CommandName = "Параметры СНК и региона"
+                CommandName = "Проблемные источники по региону"
             };
             var window = new GetSnkParams
             {

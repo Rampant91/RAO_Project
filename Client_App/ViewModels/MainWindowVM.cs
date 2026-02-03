@@ -14,6 +14,7 @@ using Client_App.Commands.AsyncCommands.Import.ImportJson;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
+using Client_App.Properties;
 using Client_App.ViewModels.MainWindowTabs;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Models.Collections;
@@ -46,6 +47,12 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         }
     }
     public string SelectedReportTypeToString => $"{_selectedReportType}.0";
+
+    #endregion
+
+    #region LaunchedAtNORAO
+
+    public bool AppLaunchedAtNORAO => Settings.Default.AppLaunchedInNorao;
 
     #endregion
 
@@ -86,6 +93,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     #endregion
 
     #region Forms1TabControlVM
+
     private Forms1TabControlVM _forms1TabControlVM;
     public Forms1TabControlVM Forms1TabControlVM
     {
@@ -98,6 +106,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     #endregion
 
     #region Forms2TabControlVM
+
     private Forms2TabControlVM _forms2TabControlVM;
     public Forms2TabControlVM Forms2TabControlVM
     {
@@ -110,6 +119,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     #endregion
 
     #region Forms4TabControlVM
+
     private Forms4TabControlVM _forms4TabControlVM;
     public Forms4TabControlVM Forms4TabControlVM
     {
