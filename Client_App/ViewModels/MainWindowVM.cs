@@ -51,8 +51,13 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     #endregion
 
     #region LaunchedAtNORAO
+    
+#pragma warning disable CA1822
 
-    public bool AppLaunchedAtNORAO => Settings.Default.AppLaunchedInNorao;
+    // ReSharper disable once MemberCanBeMadeStatic.Global
+    public bool AppLaunchedAtNorao => Settings.Default.AppLaunchedInNorao;
+
+#pragma warning restore CA1822
 
     #endregion
 
@@ -94,40 +99,19 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
     #region Forms1TabControlVM
 
-    private Forms1TabControlVM _forms1TabControlVM;
-    public Forms1TabControlVM Forms1TabControlVM
-    {
-        get
-        {
-            return _forms1TabControlVM;
-        }
-    }
+    public Forms1TabControlVM Forms1TabControlVM { get; }
 
     #endregion
 
     #region Forms2TabControlVM
 
-    private Forms2TabControlVM _forms2TabControlVM;
-    public Forms2TabControlVM Forms2TabControlVM
-    {
-        get
-        {
-            return _forms2TabControlVM;
-        }
-    }
+    public Forms2TabControlVM Forms2TabControlVM { get; }
 
     #endregion
 
     #region Forms4TabControlVM
 
-    private Forms4TabControlVM _forms4TabControlVM;
-    public Forms4TabControlVM Forms4TabControlVM
-    {
-        get
-        {
-            return _forms4TabControlVM;
-        }
-    }
+    public Forms4TabControlVM Forms4TabControlVM { get; }
 
     #endregion
 
@@ -449,9 +433,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         OpenFolder = new OpenFolderAsyncCommand();
         GoToFormNum = new GoToFormNumAsyncCommand(this);
 
-        _forms1TabControlVM = new Forms1TabControlVM(this);
-        _forms2TabControlVM = new Forms2TabControlVM(this);
-        _forms4TabControlVM = new Forms4TabControlVM(this);
+        Forms1TabControlVM = new Forms1TabControlVM(this);
+        Forms2TabControlVM = new Forms2TabControlVM(this);
+        Forms4TabControlVM = new Forms4TabControlVM(this);
 
 
         UpdateReportsCollection();
