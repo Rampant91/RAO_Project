@@ -109,14 +109,14 @@ public static partial class StaticStringMethods
     
     public static object ConvertToExcelDate(string value, ExcelWorksheet worksheet, int row, int column)
     {
-        if (DateTime.TryParse(value, out var dateTime))
+        if (DateOnly.TryParse(value, out var dateOnly))
         {
             worksheet.Cells[row, column].Style.Numberformat.Format = "dd.mm.yyyy";
         }
         return value is null or "" or "-"
             ? "-"
-            : DateTime.TryParse(value, out _)
-                ? dateTime.Date
+            : DateOnly.TryParse(value, out _)
+                ? dateOnly
                 : value;
     }
 

@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using static Client_App.ViewModels.Messages.SelectReportsMessageWindowVM;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -373,6 +374,116 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             }
         }
     }
+
+    #endregion
+
+    #region GetSelectedReportsFromDB
+
+    private protected static async Task<Reports?> GetSelectedReportsFromDB(OrganizationInfo repsDto, string formNum)
+    {
+        await using var db = new DBModel(StaticConfiguration.DBPath);
+
+        switch (formNum)
+        {
+            case "1.0":
+            {
+                var repsFromDB = await db.ReportsCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Include(x => x.DBObservable)
+                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                    .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "1.0")
+                    .Select(reps => new ReportsDTO(
+                        reps.Id,
+                        reps.Master_DB.RegNoRep.Value,
+                        reps.Master_DB.OkpoRep.Value))
+                    .ToListAsync();
+
+                var repsFromDbDto = repsFromDB
+                    .First(x => x.RegNoRep == repsDto.RegNum && x.OkpoRep == repsDto.Okpo);
+
+                //var repsFromDb = await db.ReportsCollectionDbSet
+                //    .Include(x => x.DBObservable)
+                //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                //    .FirstOrDefaultAsync(x => x.Id == repsFromDbDto.Id);
+
+                return await ReportsStorage.ApiReports.GetAsync(repsFromDbDto.Id);
+
+            }
+            case "2.0":
+            {
+                var repsFromDB = await db.ReportsCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Include(x => x.DBObservable)
+                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                    .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "2.0")
+                    .Select(reps => new ReportsDTO(
+                        reps.Id,
+                        reps.Master_DB.RegNoRep.Value,
+                        reps.Master_DB.OkpoRep.Value))
+                    .ToListAsync();
+
+                var repsFromDbDto = repsFromDB
+                    .First(x => x.RegNoRep == repsDto.RegNum && x.OkpoRep == repsDto.Okpo);
+
+                //var repsFromDb = await db.ReportsCollectionDbSet
+                //    .Include(x => x.DBObservable)
+                //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                //    .FirstOrDefaultAsync(x => x.Id == repsFromDbDto.Id);
+
+                return await ReportsStorage.ApiReports.GetAsync(repsFromDbDto.Id);
+            }
+            default: return null;
+        }
+    }
+
+    private class ReportsDTO(int id, string regNoRep, string okpoRep)
+    {
+        public readonly int Id = id;
+
+        public readonly string RegNoRep = regNoRep;
+
+        public readonly string OkpoRep = okpoRep;
+    }
+
+    #endregion
+
+    #region GetReportsListFromDB
+
+    private protected async Task<List<Reports>> GetReportsListFromDB(string formNum)
+    {
+        await using var db = new DBModel(StaticConfiguration.DBPath);
+
+        return formNum switch
+        {
+            "1.0" => await db.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.DBObservable)
+                .Include(x => x.Master_DB)
+                .ThenInclude(x => x.Rows10)
+                .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "1.0")
+                .ToListAsync(),
+
+            "2.0" => await db.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.DBObservable)
+                .Include(x => x.Master_DB)
+                .ThenInclude(x => x.Rows20)
+                .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "2.0")
+                .ToListAsync(),
+
+            _ => []
+        };
+    }
+
+
 
     #endregion
 

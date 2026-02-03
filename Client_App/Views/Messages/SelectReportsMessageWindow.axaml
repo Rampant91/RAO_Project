@@ -1,0 +1,70 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Client_App.ViewModels.Messages"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Client_App.Views.Messages.SelectReportsMessageWindow"
+        Title="{Binding CurrentImportInfo}">
+
+	<Design.DataContext>
+		<vm:SelectReportsMessageWindowVM/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+        <!-- Информация об импортируемом файле -->
+        <TextBlock Grid.Row="0" 
+                   Text="{Binding ImportInfo}" 
+                   Margin="10" 
+                   FontWeight="Bold"/>
+        
+        <!-- Информация о форме и периоде -->
+        <TextBlock Grid.Row="1" 
+                   Text="{Binding FormInfo}" 
+                   Margin="10"/>
+
+        <!-- Список организаций -->
+        <DataGrid Grid.Row="2"
+                  Items="{Binding Organizations}"
+                  SelectedItem="{Binding SelectedOrganization}"
+                  AutoGenerateColumns="False"
+                  SelectionMode="Single"
+                  IsReadOnly="True"
+                  CanUserReorderColumns="False"
+                  CanUserResizeColumns="True"
+                  CanUserSortColumns="False"
+                  GridLinesVisibility="Horizontal"
+                  HeadersVisibility="Column"
+                  AlternatingRowBackground="Transparent"
+                  RowBackground="Transparent"
+                  Margin="10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Рег. №" 
+                                    Binding="{Binding RegNum}" 
+                                    Width="120"/>
+                <DataGridTextColumn Header="Наименование" 
+                                    Binding="{Binding ShortName}" 
+                                    Width="*"/>
+                <DataGridTextColumn Header="ОКПО" 
+                                    Binding="{Binding Okpo}" 
+                                    Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Кнопки -->
+        <StackPanel Grid.Row="3" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right" 
+                    Margin="10">
+            <Button Content="Ок" 
+                    Command="{Binding OkCommand}" 
+                    Width="80" 
+                    Margin="0,0,10,0"/>
+            <Button Content="Отмена" 
+                    Command="{Binding CancelCommand}" 
+                    Width="80"/>
+        </StackPanel>
+    </Grid>
+
+</Window>

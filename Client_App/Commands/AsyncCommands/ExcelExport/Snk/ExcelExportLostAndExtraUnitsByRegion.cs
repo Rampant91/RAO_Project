@@ -16,6 +16,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Client_App.ViewModels.ProgressBar;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
@@ -54,46 +55,8 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
         progressBarVM.SetProgressBar(20, "Получение списка организаций");
         var repsDtoList = await GetReportsListByRegion(db, region!, formNum, cts, progressBar);
 
-        var comparer = new SnkParamsComparer();
-        var lostUnitsCurrentRow = 2;
-        var extraUnitsCurrentRow = 2;
-        double progressBarDoubleValue = progressBarVM.ValueBar;
-        var currentRepsNum = 0;
-        foreach (var repsDto in repsDtoList)
-        {
-            currentRepsNum++;
-
-            var inventoryReportDtoList = await GetInventoryReportDtoList(db, repsDto.Id, formNum, endSnkDate, cts);
-            var (firstSnkDate, inventoryFormsDtoList, _) = await GetInventoryFormsDtoList(db, inventoryReportDtoList, formNum, endSnkDate, cts, snkParams);
-
-            if (inventoryFormsDtoList.Count is 0) continue;
-            var lastInventoryDate = inventoryFormsDtoList.Max(x => x.OpDate);
-            var lastInventoryFormsDtoList = inventoryFormsDtoList
-                .Where(x => x.OpDate == lastInventoryDate)
-                .OrderBy(x => x.PasNum)
-                .ToList();
-
-            var reportIds = await GetReportIds(db, repsDto.Id, formNum, cts);
-            var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, reportIds, formNum, firstSnkDate, lastInventoryDate, cts, snkParams);
-            var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, repsDto.Id, formNum, firstSnkDate, lastInventoryDate, cts, snkParams);
-
-            var uniqueUnitWithAllOperationDictionary = await GetDictionary_UniqueUnitsWithOperations(formNum, inventoryFormsDtoList, plusMinusFormsDtoList, rechargeFormsDtoList);
-            var unitInStockDtoList = await GetUnitInStockDtoList(uniqueUnitWithAllOperationDictionary, formNum, firstSnkDate, progressBarVM);
-
-            var lostUnits = unitInStockDtoList
-                .Except(lastInventoryFormsDtoList, comparer)
-                .ToList();
-            var extraUnits = lastInventoryFormsDtoList
-                .Except(unitInStockDtoList, comparer)
-                .ToList();
-
-            (lostUnitsCurrentRow, extraUnitsCurrentRow) = await FillExcel(excelPackage, repsDto, lostUnits, extraUnits, formNum, lastInventoryDate, lostUnitsCurrentRow, extraUnitsCurrentRow);
-
-            progressBarDoubleValue += (double)75 / repsDtoList.Count;
-            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-                $"Проверено {currentRepsNum} из {repsDtoList.Count} СНК организаций",
-                $"Проблемные_источники_по_региону_{region}_по_форме_{formNum}");
-        }
+        progressBarVM.SetProgressBar(25, "Формирование СНК и списка ошибок");
+        await GetSnkAndErrorsList(db, repsDtoList, formNum, snkParams, endSnkDate, region, excelPackage, progressBarVM, cts);
 
         progressBarVM.SetProgressBar(95, "Сохранение");
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
@@ -112,6 +75,77 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
         await progressBar.CloseAsync();
     }
 
+    #region GetSnkAndErrorsList
+
+    private async Task GetSnkAndErrorsList(DBModel db, List<ShortReportsDto> repsDtoList, string formNum,
+        SnkParamsDto snkParams, DateOnly endSnkDate, string region, ExcelPackage excelPackage, 
+        AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
+    {
+        var comparer = new SnkParamsComparer();
+        var lostUnitsCurrentRow = 2;
+        var extraUnitsCurrentRow = 2;
+        var transferOfMissingUnitCurrentRow = 2;
+        double progressBarDoubleValue = progressBarVM.ValueBar;
+        var currentRepsNum = 0;
+
+        if (repsDtoList.Count > 0)
+        {
+            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+                $"Проверено {currentRepsNum} из {repsDtoList.Count} СНК организаций",
+                $"Проблемные источники по региону {region} по форме {formNum}"
+                + $"{Environment.NewLine}СНК для организации {repsDtoList[0].RegNum}_{repsDtoList[0].Okpo}",
+                "Выгрузка в .xlsx");
+        }
+
+        foreach (var repsDto in repsDtoList)
+        {
+            currentRepsNum++;
+
+            var inventoryReportDtoList = await GetInventoryReportDtoList(db, repsDto.Id, formNum, endSnkDate, cts);
+            var (firstSnkDate, inventoryFormsDtoList, _) = 
+                await GetInventoryFormsDtoList(db, inventoryReportDtoList, formNum, endSnkDate, cts, snkParams);
+
+            if (inventoryFormsDtoList.Count is 0) continue;
+            var lastInventoryDate = inventoryFormsDtoList.Max(x => x.OpDate);
+            var lastInventoryFormsDtoList = inventoryFormsDtoList
+                .Where(x => x.OpDate == lastInventoryDate)
+                .OrderBy(x => x.PasNum)
+                .ToList();
+
+            var reportIds = await GetReportIds(db, repsDto.Id, formNum, cts);
+
+            var plusMinusFormsDtoList = 
+                await GetPlusMinusFormsDtoList(db, reportIds, formNum, firstSnkDate, lastInventoryDate, cts, snkParams);
+            
+            var rechargeFormsDtoList = 
+                await GetRechargeFormsDtoList(db, repsDto.Id, formNum, firstSnkDate, lastInventoryDate, cts, snkParams);
+
+            var uniqueUnitWithAllOperationDictionary = 
+                await GetDictionary_UniqueUnitsWithOperations(formNum, inventoryFormsDtoList, plusMinusFormsDtoList, rechargeFormsDtoList);
+            
+            var (unitInStockDtoList, transferOfMissingUnitOperationList) = 
+                await GetUnitInStockDtoList(uniqueUnitWithAllOperationDictionary, formNum, firstSnkDate);
+
+            var lostUnits = unitInStockDtoList
+                .Except(lastInventoryFormsDtoList, comparer)
+                .ToList();
+
+            var extraUnits = lastInventoryFormsDtoList
+                .Except(unitInStockDtoList, comparer)
+                .ToList();
+
+            (lostUnitsCurrentRow, extraUnitsCurrentRow) = await FillExcel(excelPackage, repsDto, lostUnits, extraUnits, transferOfMissingUnitOperationList, formNum, lastInventoryDate, lostUnitsCurrentRow, extraUnitsCurrentRow, transferOfMissingUnitCurrentRow);
+
+            progressBarDoubleValue += (double)70 / repsDtoList.Count;
+            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+                $"Проверено {currentRepsNum} из {repsDtoList.Count} СНК организаций",
+                $"Проблемные источники по региону {region} по форме {formNum}"
+                + $"{Environment.NewLine}СНК для организации {repsDto.RegNum}_{repsDto.Okpo}");
+        }
+    }
+
+    #endregion
+
     #region FillExcelHeaders
 
     /// <summary>
@@ -121,63 +155,81 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
     /// <param name="excelPackage">Excel пакет.</param>
     private static async Task FillExcelHeaders(string formNum, ExcelPackage excelPackage)
     {
-        var lostUnitsWorksheet = excelPackage.Workbook.Worksheets.Add("Пропавшие источники");
-        var extraUnitsWorksheet = excelPackage.Workbook.Worksheets.Add("Лишние источники");
+        var lostUnitsWorksheet = excelPackage.Workbook.Worksheets.Add("Источники, не отражённые в инв.");
+        var extraUnitsWorksheet = excelPackage.Workbook.Worksheets.Add("Лишние источники в инв.");
+        var transferOfMissingUnitsWorksheet = excelPackage.Workbook.Worksheets.Add("Передача отсутств. источников");
 
         lostUnitsWorksheet.Cells[1, 1].Value = "№ п/п";
         lostUnitsWorksheet.Cells[1, 2].Value = "Рег.№";
         lostUnitsWorksheet.Cells[1, 3].Value = "Наименование";
         lostUnitsWorksheet.Cells[1, 4].Value = "ОКПО";
         lostUnitsWorksheet.Cells[1, 5].Value = "Номер паспорта (сертификата)";
-        lostUnitsWorksheet.Cells[1, 6].Value = "тип";
-        lostUnitsWorksheet.Cells[1, 7].Value = "радионуклиды";
-        lostUnitsWorksheet.Cells[1, 8].Value = "номер";
+        lostUnitsWorksheet.Cells[1, 6].Value = "Тип";
+        lostUnitsWorksheet.Cells[1, 7].Value = "Радионуклиды";
+        lostUnitsWorksheet.Cells[1, 8].Value = "Заводской номер";
 
         extraUnitsWorksheet.Cells[1, 1].Value = "№ п/п";
         extraUnitsWorksheet.Cells[1, 2].Value = "Рег.№";
         extraUnitsWorksheet.Cells[1, 3].Value = "Наименование";
         extraUnitsWorksheet.Cells[1, 4].Value = "ОКПО";
         extraUnitsWorksheet.Cells[1, 5].Value = "Номер паспорта (сертификата)";
-        extraUnitsWorksheet.Cells[1, 6].Value = "тип";
-        extraUnitsWorksheet.Cells[1, 7].Value = "радионуклиды";
-        extraUnitsWorksheet.Cells[1, 8].Value = "номер";
+        extraUnitsWorksheet.Cells[1, 6].Value = "Тип";
+        extraUnitsWorksheet.Cells[1, 7].Value = "Радионуклиды";
+        extraUnitsWorksheet.Cells[1, 8].Value = "Заводской номер";
+
+        transferOfMissingUnitsWorksheet.Cells[1, 1].Value = "№ п/п";
+        transferOfMissingUnitsWorksheet.Cells[1, 2].Value = "Рег.№";
+        transferOfMissingUnitsWorksheet.Cells[1, 3].Value = "Наименование";
+        transferOfMissingUnitsWorksheet.Cells[1, 4].Value = "ОКПО";
+        transferOfMissingUnitsWorksheet.Cells[1, 5].Value = "Код операции";
+        transferOfMissingUnitsWorksheet.Cells[1, 6].Value = "Дата операции";
+        transferOfMissingUnitsWorksheet.Cells[1, 7].Value = "Номер паспорта (сертификата)";
+        transferOfMissingUnitsWorksheet.Cells[1, 8].Value = "Тип";
+        transferOfMissingUnitsWorksheet.Cells[1, 9].Value = "Радионуклиды";
+        transferOfMissingUnitsWorksheet.Cells[1, 10].Value = "Заводской номер";
 
         switch (formNum)
         {
             case "1.1":
-                {
-                    #region Headers
+            {
+                #region Headers
 
-                    lostUnitsWorksheet.Cells[1, 9].Value = "количество, шт.";
-                    lostUnitsWorksheet.Cells[1, 10].Value = "Номер УКТ";
-                    lostUnitsWorksheet.Cells[1, 11].Value = "Дата последней инвентаризации";
+                lostUnitsWorksheet.Cells[1, 9].Value = "количество, шт.";
+                lostUnitsWorksheet.Cells[1, 10].Value = "Номер УКТ";
+                lostUnitsWorksheet.Cells[1, 11].Value = "Дата последней инвентаризации";
 
-                    extraUnitsWorksheet.Cells[1, 9].Value = "количество, шт.";
-                    extraUnitsWorksheet.Cells[1, 10].Value = "Номер УКТ";
-                    extraUnitsWorksheet.Cells[1, 11].Value = "Дата последней инвентаризации";
+                extraUnitsWorksheet.Cells[1, 9].Value = "количество, шт.";
+                extraUnitsWorksheet.Cells[1, 10].Value = "Номер УКТ";
+                extraUnitsWorksheet.Cells[1, 11].Value = "Дата последней инвентаризации";
 
-                    #endregion
+                transferOfMissingUnitsWorksheet.Cells[1, 11].Value = "количество, шт.";
+                transferOfMissingUnitsWorksheet.Cells[1, 12].Value = "Номер УКТ";
 
-                    break;
-                }
-            case "1.3":
-                {
-                    #region Headers
+                #endregion
 
-                    lostUnitsWorksheet.Cells[1, 9].Value = "Номер УКТ";
-                    lostUnitsWorksheet.Cells[1, 10].Value = "Дата последней инвентаризации";
+                break;
+            }
+            case "1.3": 
+            {
+                #region Headers
 
-                    extraUnitsWorksheet.Cells[1, 9].Value = "Номер УКТ";
-                    extraUnitsWorksheet.Cells[1, 10].Value = "Дата последней инвентаризации";
+                lostUnitsWorksheet.Cells[1, 9].Value = "Номер УКТ";
+                lostUnitsWorksheet.Cells[1, 10].Value = "Дата последней инвентаризации";
 
-                    #endregion
+                extraUnitsWorksheet.Cells[1, 9].Value = "Номер УКТ";
+                extraUnitsWorksheet.Cells[1, 10].Value = "Дата последней инвентаризации";
 
-                    break;
-                }
+                transferOfMissingUnitsWorksheet.Cells[1, 11].Value = "Номер УКТ";
+
+                #endregion
+
+                break;
+            }
         }
 
         await AutoFitColumns(lostUnitsWorksheet);
         await AutoFitColumns(extraUnitsWorksheet);
+        await AutoFitColumns(transferOfMissingUnitsWorksheet);
     }
 
     #region AutoFitColumns
@@ -205,9 +257,11 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
     /// Заполняет строчки Excel пакета.
     /// </summary>
     private static Task<(int, int)> FillExcel(ExcelPackage excelPackage, ShortReportsDto reps, List<ShortFormDTO> lostUnits,
-        List<ShortFormDTO> extraUnits, string formNum, DateOnly lastInventoryDate,
-        int lostUnitsCurrentRow, int extraUnitsCurrentRow)
+        List<ShortFormDTO> extraUnits, List<ShortFormDTO>  transferOfMissingUnitOperationList, string formNum, 
+        DateOnly lastInventoryDate, int lostUnitsCurrentRow, int extraUnitsCurrentRow, int transferOfMissingUnitCurrentRow)
     {
+        #region LostUnits
+        
         var lostUnitsWorksheet = excelPackage.Workbook.Worksheets[0];
         foreach (var dto in lostUnits)
         {
@@ -223,32 +277,36 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
             switch (formNum)
             {
                 case "1.1":
-                    {
-                        #region Headers
+                {
+                    #region Headers
 
-                        lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 9].Value = dto.Quantity;
-                        lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 10].Value = dto.PackNumber;
-                        lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 11].Value = ConvertToExcelDate(lastInventoryDate.ToShortDateString(), lostUnitsWorksheet, lostUnitsCurrentRow, 11);
+                    lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 9].Value = dto.Quantity;
+                    lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 10].Value = dto.PackNumber;
+                    lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 11].Value = ConvertToExcelDate(lastInventoryDate.ToShortDateString(), lostUnitsWorksheet, lostUnitsCurrentRow, 11);
 
-                        #endregion
+                    #endregion
 
-                        break;
-                    }
+                    break;
+                }
                 case "1.3":
-                    {
-                        #region Headers
+                {
+                    #region Headers
 
-                        lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 9].Value = dto.PackNumber;
-                        lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 10].Value = ConvertToExcelDate(lastInventoryDate.ToShortDateString(), lostUnitsWorksheet, lostUnitsCurrentRow, 10);
+                    lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 9].Value = dto.PackNumber;
+                    lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 10].Value = ConvertToExcelDate(lastInventoryDate.ToShortDateString(), lostUnitsWorksheet, lostUnitsCurrentRow, 10);
 
-                        #endregion
+                    #endregion
 
-                        break;
-                    }
+                    break;
+                }
             }
 
             lostUnitsCurrentRow++;
         }
+
+        #endregion
+
+        #region ExtraUnits
 
         var extraUnitsWorksheet = excelPackage.Workbook.Worksheets[1];
         foreach (var dto in extraUnits)
@@ -265,37 +323,200 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
             switch (formNum)
             {
                 case "1.1":
-                    {
-                        #region Headers
+                {
+                    #region Headers
 
-                        extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 9].Value = dto.Quantity;
-                        extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 10].Value = dto.PackNumber;
-                        extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 11].Value = ConvertToExcelDate(lastInventoryDate.ToShortDateString(), extraUnitsWorksheet, extraUnitsCurrentRow, 11);
+                    extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 9].Value = dto.Quantity;
+                    extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 10].Value = dto.PackNumber;
+                    extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 11].Value = ConvertToExcelDate(lastInventoryDate.ToShortDateString(), extraUnitsWorksheet, extraUnitsCurrentRow, 11);
 
-                        #endregion
+                    #endregion
 
-                        break;
-                    }
+                    break;
+                }
                 case "1.3":
-                    {
-                        #region Headers
+                {
+                    #region Headers
 
-                        extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 9].Value = dto.PackNumber;
-                        extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 10].Value = ConvertToExcelDate(lastInventoryDate.ToShortDateString(), extraUnitsWorksheet, extraUnitsCurrentRow, 10);
+                    extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 9].Value = dto.PackNumber;
+                    extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 10].Value = ConvertToExcelDate(lastInventoryDate.ToShortDateString(), extraUnitsWorksheet, extraUnitsCurrentRow, 10);
 
-                        #endregion
+                    #endregion
 
-                        break;
-                    }
+                    break;
+                }
             }
 
             extraUnitsCurrentRow++;
         }
 
+        #endregion
+
+        #region TransferMissingUnits
+        
+        var transferOfMissingUnitWorksheet = excelPackage.Workbook.Worksheets[2];
+        foreach (var dto in transferOfMissingUnitOperationList)
+        {
+            transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 1].Value = transferOfMissingUnitCurrentRow - 1;
+            transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 2].Value = ConvertToExcelString(reps.RegNum);
+            transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 3].Value = ConvertToExcelString(reps.ShortName);
+            transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 4].Value = ConvertToExcelString(reps.Okpo);
+            transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 5].Value = ConvertToExcelString(dto.OpCode);
+            transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 6].Value = ConvertToExcelDate(dto.OpDate.ToShortDateString(), transferOfMissingUnitWorksheet, extraUnitsCurrentRow, 6);
+            transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 7].Value = ConvertToExcelString(dto.PasNum);
+            transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 8].Value = ConvertToExcelString(dto.Type);
+            transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 9].Value = ConvertToExcelString(dto.Radionuclids);
+            transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 10].Value = ConvertToExcelString(dto.FacNum);
+
+            switch (formNum)
+            {
+                case "1.1":
+                {
+                    #region Headers
+
+                    transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 11].Value = dto.Quantity;
+                    transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 12].Value = dto.PackNumber;
+
+                    #endregion
+
+                    break;
+                }
+                case "1.3":
+                {
+                    #region Headers
+
+                    transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 11].Value = dto.PackNumber;
+
+                    #endregion
+
+                    break;
+                }
+            }
+
+            transferOfMissingUnitCurrentRow++;
+        }
+
+        #endregion
+
         return Task.FromResult((lostUnitsCurrentRow, extraUnitsCurrentRow));
     }
 
     #endregion
+
+    #region GetUnitInStockDtoList
+
+    /// <summary>
+    /// Для каждой учётной единицы из словаря проверяется её наличие и выводится в общий список наличного количества (СНК).
+    /// </summary>
+    /// <param name="uniqueUnitWithAllOperationDictionary">Словарь из уникальной учётной единицы и списка всех операций с ней.</param>
+    /// <param name="formNum">Номер формы.</param>
+    /// <param name="firstInventoryDate">Дата первой инвентаризации.</param>
+    /// <returns>Список DTO учётных единиц в наличии (СНК).</returns>
+    private protected static async Task<(List<ShortFormDTO>, List<ShortFormDTO>)> GetUnitInStockDtoList(Dictionary<UniqueUnitDto, 
+            List<ShortFormDTO>> uniqueUnitWithAllOperationDictionary, string formNum, DateOnly firstInventoryDate)
+    {
+        var plusOperationArray = GetPlusOperationsArray(formNum);
+        var minusOperationArray = GetMinusOperationsArray(formNum);
+
+        List<ShortFormDTO> unitInStockList = [];
+        List<ShortFormDTO> transferOfMissingUnitOperationList = [];
+        var comparer = new SnkEqualityComparer();
+        var radsComparer = new SnkRadionuclidsEqualityComparer();
+        foreach (var (unit, operations) in uniqueUnitWithAllOperationDictionary)
+        {
+            #region 1.3 || (1.1 && SerialNumEmpty)
+
+            if (formNum is "1.3" || SerialNumbersIsEmpty(unit.PasNum, unit.FacNum))
+            {
+                var quantity = operations
+                    .FirstOrDefault(x => x.OpCode == "10" && x.OpDate == firstInventoryDate)
+                    ?.Quantity ?? 0;
+
+                var inStockOnFirstInventoryDate = operations.Any(x => x.OpCode == "10" && x.OpDate == firstInventoryDate);
+                var operationsWithoutDuplicates = await GetOperationsWithoutDuplicates(operations, formNum);
+
+                foreach (var operation in operationsWithoutDuplicates)
+                {
+                    //Складываем количество, за исключением случая, если получение идёт в дату первичной инвентаризации.
+                    if (plusOperationArray.Contains(operation.OpCode) && (operation.OpDate != firstInventoryDate || !inStockOnFirstInventoryDate))
+                    {
+                        quantity += operation.Quantity;
+                    }
+                    else if (minusOperationArray.Contains(operation.OpCode))
+                    {
+                        if (quantity == 0 || quantity < operation.Quantity)
+                        {
+                            transferOfMissingUnitOperationList.Add(operation);
+                        }
+
+                        quantity -= operation.Quantity;
+                        quantity = Math.Max(0, quantity);
+                    }
+                }
+
+                var lastOperationWithUnit = operations
+                    .OrderByDescending(x => x.OpDate)
+                    .FirstOrDefault();
+
+                if (lastOperationWithUnit == null) continue;
+
+                var currentUnit = unitInStockList
+                    .FirstOrDefault(x => comparer.Equals(x.PasNum, unit.PasNum)
+                                         && comparer.Equals(x.FacNum, unit.FacNum)
+                                         && radsComparer.Equals(x.Radionuclids, unit.Radionuclids)
+                                         && comparer.Equals(x.Type, unit.Type)
+                                         && comparer.Equals(x.PackNumber, unit.PackNumber));
+
+                if (currentUnit != null) unitInStockList.Remove(currentUnit);
+
+                if (quantity > 0)
+                {
+                    lastOperationWithUnit.Quantity = quantity;
+                    unitInStockList.Add(lastOperationWithUnit);
+                }
+            }
+
+            #endregion
+
+            #region 1.1 && SerialNumNotEmpty
+
+            else
+            {
+                var inStock = operations.Any(x => x.OpCode == "10" && x.OpDate == firstInventoryDate);
+
+                var currentOperationsWithoutMutuallyExclusive = await GetOperationsWithoutMutuallyCompensating(operations, formNum);
+                foreach (var form in currentOperationsWithoutMutuallyExclusive)
+                {
+                    if (plusOperationArray.Contains(form.OpCode)) inStock = true;
+                    else if (minusOperationArray.Contains(form.OpCode))
+                    {
+                        if (!inStock)
+                        {
+                            transferOfMissingUnitOperationList.Add(form);
+                        }
+                        inStock = false;
+                    }
+                }
+                if (inStock)
+                {
+                    var lastOperationWithUnit = currentOperationsWithoutMutuallyExclusive
+                        .OrderBy(x => x.OpDate)
+                        .LastOrDefault();
+
+                    if (lastOperationWithUnit != null)
+                    {
+                        unitInStockList.Add(lastOperationWithUnit);
+                    }
+                }
+
+            }
+
+            #endregion
+        }
+        return (unitInStockList, transferOfMissingUnitOperationList);
+    }
+
+#endregion
 
     #region GetReportsListByRegion
 
@@ -396,7 +617,7 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
 
     #region AskSnkParamsAndRegion
 
-    private static async Task<(DateOnly endSnkDate, SnkParamsDto? snkParams, string? region)> AskSnkParamsAndRegion(
+    private static async Task<(DateOnly endSnkDate, SnkParamsDto snkParams, string region)> AskSnkParamsAndRegion(
     AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
         var (endSnkDate, snkParams, region) = await Dispatcher.UIThread.InvokeAsync(async () =>
@@ -433,7 +654,7 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
 
-        return (endSnkDate, snkParams, region);
+        return (endSnkDate, snkParams!, region!);
 
     }
 

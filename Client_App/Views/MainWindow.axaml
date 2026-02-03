@@ -49,11 +49,16 @@
                 </Style>
             </Menu.Styles>
 
-            <MenuItem 
-                Name="ImportMenu"
-                Header="_Импорт">
-                <MenuItem Command="{Binding ImportRaodb}" 
-                          Header="Из RAODB"/>
+            <MenuItem Name="ImportMenu"
+                      Header="_Импорт">
+                <MenuItem Header="Из RAODB">
+                    <MenuItem Command="{Binding ImportRaodb}" 
+                              CommandParameter="Auto"
+                              Header="Импорт с авто выбором организации"/>
+                    <MenuItem Command="{Binding ImportRaodb}"
+                              CommandParameter="Selected"
+                              Header="Импорт в организацию из списка"/>
+                </MenuItem>
                 <MenuItem Command="{Binding ImportExcel}" 
                           Header="Из Excel"/>
                 <MenuItem Command="{Binding ImportJson}" 

@@ -1535,7 +1535,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         var radsComparer = new SnkRadionuclidsEqualityComparer();
         foreach (var (unit, operations) in uniqueUnitWithAllOperationDictionary)
         {
-            #region 1.3 || SerialNumEmpty
+            #region 1.3 || (1.1 && SerialNumEmpty)
 
             if (formNum is "1.3" || SerialNumbersIsEmpty(unit.PasNum, unit.FacNum))
             {
@@ -1584,7 +1584,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
             #endregion
 
-            #region SerialNumNotEmpty
+            #region 1.1 && SerialNumNotEmpty
             
             else
             {
@@ -1629,7 +1629,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     /// <param name="operationList">Список операций.</param>
     /// <param name="formNum">Номер формы.</param>
     /// <returns>Список операций, в котором множество +- операций в одну дату заменено на одну эквивалентную им операцию.</returns>
-    private static Task<List<ShortFormDTO>> GetOperationsWithoutDuplicates(List<ShortFormDTO> operationList, string formNum)
+    private protected static Task<List<ShortFormDTO>> GetOperationsWithoutDuplicates(List<ShortFormDTO> operationList, string formNum)
     {
         var plusOperationsArray = GetPlusOperationsArray(formNum);
         var minusOperationsArray = GetMinusOperationsArray(formNum);
