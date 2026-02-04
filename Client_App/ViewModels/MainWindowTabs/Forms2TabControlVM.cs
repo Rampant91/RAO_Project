@@ -14,6 +14,10 @@ namespace Client_App.ViewModels.MainWindowTabs;
 public class Forms2TabControlVM : INotifyPropertyChanged
 {
     #region Constructor
+    public Forms2TabControlVM()
+    {
+        // Конструктор пуст - настройки загружаются лениво при первом доступе
+    }
     public Forms2TabControlVM (MainWindowVM mainWindowVM)
     {
         _mainWindowVM = mainWindowVM;

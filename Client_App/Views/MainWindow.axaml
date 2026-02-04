@@ -333,7 +333,7 @@
                          IsVisible="False"/>
 				<TabItem x:Name="Forms4" 
                          Header="Формы 4" 
-                         IsVisible="False">
+                         IsVisible="True">
 					<tabs:Forms4TabControl DataContext="{Binding Forms4TabControlVM}"/>
 			    </TabItem>
             </TabControl>
