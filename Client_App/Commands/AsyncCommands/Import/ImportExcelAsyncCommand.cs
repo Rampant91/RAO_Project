@@ -54,7 +54,29 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             if (res is "") continue;
             SourceFile = new FileInfo(res);
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            using ExcelPackage excelPackage = new(SourceFile);
+
+            try
+            {
+                using ExcelPackage excelPackageTry = new(SourceFile);
+            }
+            catch(Exception ex)
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Ошибка",
+                    ContentHeader = $"Произошла ошибка при импорте файла {SourceFile.Name}",
+                    ContentMessage = $"Описание:\n" +
+                                     $"{ex.Message}",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+                return;
+            }
+            ExcelPackage excelPackage = new(SourceFile);
             var worksheet0 = excelPackage.Workbook.Worksheets[0];
             var worksheet1 = excelPackage.Workbook.Worksheets[1];
             // Проверка формата формы, записанного в Excel
@@ -922,8 +944,8 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         }
         else if (formNumber.Split('.')[0] == "4")
         {
-            impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B1"].Value);
-            impRep.Year_DB = Convert.ToString(worksheet0.Cells["B15"].Text);
+            impRep.CorrectionNumber.Value = Convert.ToByte(worksheet1.Cells["B1"].Value);
+            impRep.Year.Value = worksheet0.Cells["B15"].Text;
         }
 
         #region BindCommonData
