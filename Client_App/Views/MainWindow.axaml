@@ -48,24 +48,25 @@
                 </Style>
             </Menu.Styles>
 
-            <MenuItem Name="ImportMenu"
-                      Header="_Импорт">
+            <MenuItem Header="_Импорт"
+                      Name="ImportMenu">
                 <MenuItem Header="Из RAODB" 
-                          IsVisible="{Binding AppLaunchedAtNorao}">
-                    <MenuItem Command="{Binding ImportRaodb}" 
-                              CommandParameter="Auto"
-                              Header="Импорт с авто выбором организации"/>
-                    <MenuItem Command="{Binding ImportRaodb}"
-                              CommandParameter="Selected"
-                              Header="Импорт в организацию из списка"/>
+                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
+                    <MenuItem Header="Импорт с авто выбором организации"
+                              Command="{Binding ImportRaodb}" 
+                              CommandParameter="Auto"/>
+                    <MenuItem Header="Импорт в организацию из списка"
+                              Command="{Binding ImportRaodb}"
+                              CommandParameter="Selected"/>
                 </MenuItem>
-                <MenuItem Command="{Binding ImportRaodb}"
-                          Header="Из RAODB"
+                <MenuItem Header="Из RAODB"
+                          Command="{Binding ImportRaodb}"
+                          CommandParameter="Auto"
                           IsVisible="{Binding AppLaunchedAtNorao, Converter={StaticResource BoolInverterConverter}}"/>
-                <MenuItem Command="{Binding ImportExcel}" 
-                          Header="Из Excel"/>
-                <MenuItem Command="{Binding ImportJson}" 
-                          Header="Из Json"/>
+                <MenuItem Header="Из Excel"
+                          Command="{Binding ImportExcel}"/>
+                <MenuItem Header="Из Json"
+                          Command="{Binding ImportJson}"/>
             </MenuItem>
 
             <MenuItem Name="ExcelMenu"

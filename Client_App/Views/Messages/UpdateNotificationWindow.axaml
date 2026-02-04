@@ -1,0 +1,115 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Client_App.ViewModels.Messages" 
+        xmlns:behaviors="clr-namespace:Client_App.Behaviors"
+        mc:Ignorable="d"
+        x:Class="Client_App.Views.Messages.UpdateNotificationWindow"
+        x:CompileBindings="True"
+        x:DataType="vm:UpdateNotificationVM"
+        Title="Обновление ПО МПЗФ"
+        d:DesignHeight="900"
+        d:DesignWidth="480"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.3" behaviors:WindowScreenSizeBehavior.HeightRatio="0.35"
+        MinHeight="400" MinWidth="550"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        Background="White">
+
+    <Design.DataContext>
+        <vm:UpdateNotificationVM/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- Заголовок -->
+        <StackPanel Grid.Row="0" Margin="20,20,20,10">
+            <TextBlock Text="Доступно обновление ПО МПЗФ" 
+                       FontSize="20" 
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Foreground="#2E7D32"/>
+            <TextBlock Text="ПО МПЗФ" 
+                       FontSize="16"
+                       HorizontalAlignment="Center"
+                       Opacity="0.8"
+                       Margin="0,5,0,0"/>
+        </StackPanel>
+        
+        <!-- Информация об обновлении -->
+        <StackPanel Grid.Row="1" Margin="20,0,20,10">
+            <Border Background="#F1F8E9" 
+                    CornerRadius="8" 
+                    Padding="15"
+                    BorderBrush="#C5E1A5"
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Вышла новая версия:" 
+                               FontWeight="Bold" 
+                               FontSize="14"/>
+                    <TextBlock Text="{Binding UpdateInfo.Version}" 
+                               FontSize="20" 
+                               FontWeight="Bold"
+                               Foreground="#2E7D32"
+                               Margin="10,5,0,0"/>
+                    
+                    <TextBlock Text="Дата выпуска:" 
+                               FontWeight="Bold" 
+                               FontSize="14"
+                               Margin="0,15,0,0"/>
+                    <TextBlock Text="{Binding UpdateInfo.ReleaseDate}" 
+                               FontSize="14"
+                               Margin="10,5,0,0"/>
+                    
+                    <TextBlock Text="Ваша версия:" 
+                               FontWeight="Bold" 
+                               FontSize="14"
+                               Margin="0,15,0,0"/>
+                    <TextBlock Text="{Binding CurrentVersion}" 
+                               FontSize="14"
+                               Margin="10,5,0,0"
+                               Opacity="0.7"/>
+                </StackPanel>
+            </Border>
+            
+            <TextBlock Text="{Binding UpdateInfo.Description}" 
+                       TextWrapping="Wrap"
+                       Margin="0,15,0,0"
+                       FontSize="13"
+                       Opacity="0.8"/>
+        </StackPanel>
+        
+        <!-- Кнопки действий -->
+        <StackPanel Grid.Row="2" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Center"
+                    Margin="0,0,0,20">
+            <Button Content="📥 Скачать обновление" 
+                    Command="{Binding DownloadCommand}"
+                    Background="#4CAF50"
+                    Foreground="White"
+                    Width="160" 
+                    Height="40"
+                    Margin="0,0,10,0"
+                    FontSize="13"
+                    FontWeight="Medium"/>
+            <Button Content="⏰ Напомнить позже" 
+                    Command="{Binding RemindLaterCommand}"
+                    Background="#FF9800"
+                    Foreground="White"
+                    Width="150" 
+                    Height="40"
+                    Margin="0,0,10,0"
+                    FontSize="13"
+                    FontWeight="Medium"/>
+            <Button Content="❌ Пропустить версию" 
+                    Command="{Binding SkipVersionCommand}"
+                    Background="#757575"
+                    Foreground="White"
+                    Width="160" 
+                    Height="40"
+                    FontSize="13"
+                    FontWeight="Medium"/>
+        </StackPanel>
+    </Grid>
+</Window>
