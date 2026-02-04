@@ -240,7 +240,7 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
                 $"_{Assembly.GetExecutingAssembly().GetName().Version}",
 
             "4.0" when orgWithExpForm.Master.Rows40.Count > 0 =>
-                $"{orgWithExpForm.Master.Rows40[0].CodeSubjectRF_DB}" +
+                $"{orgWithExpForm.Master.Rows40.OrderBy(r =>r.NumberInOrder_DB).ToList()[0].CodeSubjectRF_DB}" +
                 $"_{exportReport.FormNum_DB}" +
                 $"_{StaticStringMethods.RemoveForbiddenChars(exportReport.Year_DB)}" +
                 $"_{exportReport.CorrectionNumber_DB}" +

@@ -263,8 +263,9 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                 }
             case '4':
                 {
+                    var codeSubjectRF = rep.Reports.Master.Rows40[0].CodeSubjectRF_DB;
                     var year = RemoveForbiddenChars(rep.Year_DB);
-                    fileName = $"{regNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
+                    fileName = $"{codeSubjectRF}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
                     break;
                 }
             default:
