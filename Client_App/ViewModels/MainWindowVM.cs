@@ -1,5 +1,4 @@
-﻿
-using Client_App.Commands.AsyncCommands;
+﻿using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.Calculator;
 using Client_App.Commands.AsyncCommands.CheckForm;
@@ -15,6 +14,7 @@ using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Properties;
+using Client_App.Services;
 using Client_App.ViewModels.MainWindowTabs;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Models.Collections;
@@ -22,7 +22,9 @@ using ReactiveUI;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Input;
+
 namespace Client_App.ViewModels;
 
 public class MainWindowVM : ObservableObject, INotifyPropertyChanged
@@ -269,6 +271,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
     #region Commands
 
+    private readonly UpdateService _updateService;
+
     public ICommand AddForm { get; set; }                           //  Создать и открыть новое окно формы для выбранной организации (1.0, 2.0)
     public ICommand NewAddForm { get; set; }                        //  Создать и открыть новое окно формы для выбранной организации (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
     public ICommand AddReports { get; set; }                        //  Создать и открыть новое окно формы организации (1.0, 2.0, 4.0)
@@ -405,6 +409,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
     public MainWindowVM()
     {
+        _updateService = new UpdateService();
+        
         AddForm = new AddFormAsyncCommand();
         NewAddForm = new NewAddFormAsyncCommand();
         AddReports = new AddReportsAsyncCommand();
@@ -433,6 +439,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         Forms4TabControlVM = new Forms4TabControlVM(this);
 
         UpdateReportsCollection();
+        
+        // Блокируем конструктор до завершения проверки обновлений
+        _updateService.CheckAndNotifyAsync(AppLaunchedAtNorao).Wait();
     }
 
     #endregion

@@ -71,6 +71,11 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
 
     private async Task Start()
     {
+        Settings.Default.AppLaunchedInNorao = Settings.Default.AppStartupParameters
+            .Trim()
+            .Split(',')
+            .Any(x => x is "-n");
+
         MainWindowVM = new MainWindowVM();
         MainWindowVM.PropertyChanged += OnMainWindowVMPropertyChanged;
         await new InitializationAsyncCommand(MainWindowVM).AsyncExecute(this);
@@ -85,7 +90,7 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
             await BackgroundWorkThenAppLaunchedWithYearParameter();
             Environment.Exit(0);
         }
-        Settings.Default.AppLaunchedInNorao = Settings.Default.AppStartupParameters.Trim().Split(',').Any(x => x is "-n"); 
+        
     }
 
     #region BackgroundWork
