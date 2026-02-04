@@ -47,10 +47,17 @@ internal class CancelSumRowAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel
             .ToList();
         foreach (var row in sumRowsGroup)
         {
+            // Разрешаем запись изменений из UI обратно в БД
+            row._RefineMachineName_Hidden_Set = true;
+            row._MachineCode_Hidden_Set = true;
+            row._MachinePower_Hidden_Set = true;
+            row._NumberOfHoursPerYear_Hidden_Set = true;
+
             row.RefineMachineName_Hidden_Set.Set(true);
             row.MachineCode_Hidden_Set.Set(true);
             row.MachinePower_Hidden_Set.Set(true);
             row.NumberOfHoursPerYear_Hidden_Set.Set(true);
+
             row.RefineMachineName_Hidden_Get.Set(true);
             row.MachineCode_Hidden_Get.Set(true);
             row.MachinePower_Hidden_Get.Set(true);
@@ -86,10 +93,17 @@ internal class CancelSumRowAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel
             .ToList();
         foreach (var row in sumRowsGroup)
         {
+            // Разрешаем запись изменений из UI обратно в БД для ключевых полей группировки
+            row._StoragePlaceName_Hidden_Set = true;
+            row._StoragePlaceCode_Hidden_Set = true;
+            row._PackName_Hidden_Set = true;
+            row._PackType_Hidden_Set = true;
+
             row.StoragePlaceName_Hidden_Set.Set(true);
             row.StoragePlaceCode_Hidden_Set.Set(true);
             row.PackName_Hidden_Set.Set(true);
             row.PackType_Hidden_Set.Set(true);
+
             row.StoragePlaceName_Hidden_Get.Set(true);
             row.StoragePlaceCode_Hidden_Get.Set(true);
             row.PackName_Hidden_Get.Set(true);

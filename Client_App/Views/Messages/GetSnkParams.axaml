@@ -21,7 +21,7 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*" MinHeight="110" MaxHeight="200"/>
+            <RowDefinition Height="1.2*" MinHeight="140" MaxHeight="240"/>
             <RowDefinition Height="3.5*" MinHeight="220" MaxHeight="500"/>
             <RowDefinition Height="0.5*" MinHeight="50" MaxHeight="75"/>
         </Grid.RowDefinitions>
@@ -44,6 +44,20 @@
                                     Watermark="дд.мм.гг"
                                     Width="200"
                                     SelectedDate="{Binding Date, Mode=TwoWay}"/>
+				<Grid Margin="5,19,5,5" 
+                      ColumnDefinitions="Auto, 100"
+                      IsVisible="{Binding ShowRegionBlock}">
+                    <TextBlock Grid.Column="0"
+                               VerticalAlignment="Center"
+                               Text="Регион (00-00:)"
+                               Margin="0,0,10,0"/>
+                    <TextBox x:Name="RegionBox"
+                             Grid.Column="1"
+                             Text="{Binding Region, Mode=TwoWay}"
+                             MaxLength="2"
+                             HorizontalAlignment="Left"
+                             Width="58"/>
+                </Grid>
             </StackPanel>
         </Border>
         <Border Grid.Row="1"

@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using static Client_App.ViewModels.Messages.SelectReportsMessageWindowVM;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -373,6 +374,116 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             }
         }
     }
+
+    #endregion
+
+    #region GetSelectedReportsFromDB
+
+    private protected static async Task<Reports?> GetSelectedReportsFromDB(OrganizationInfo repsDto, string formNum)
+    {
+        await using var db = new DBModel(StaticConfiguration.DBPath);
+
+        switch (formNum)
+        {
+            case "1.0":
+            {
+                var repsFromDB = await db.ReportsCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Include(x => x.DBObservable)
+                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                    .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "1.0")
+                    .Select(reps => new ReportsDTO(
+                        reps.Id,
+                        reps.Master_DB.RegNoRep.Value,
+                        reps.Master_DB.OkpoRep.Value))
+                    .ToListAsync();
+
+                var repsFromDbDto = repsFromDB
+                    .First(x => x.RegNoRep == repsDto.RegNum && x.OkpoRep == repsDto.Okpo);
+
+                //var repsFromDb = await db.ReportsCollectionDbSet
+                //    .Include(x => x.DBObservable)
+                //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                //    .FirstOrDefaultAsync(x => x.Id == repsFromDbDto.Id);
+
+                return await ReportsStorage.ApiReports.GetAsync(repsFromDbDto.Id);
+
+            }
+            case "2.0":
+            {
+                var repsFromDB = await db.ReportsCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Include(x => x.DBObservable)
+                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                    .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "2.0")
+                    .Select(reps => new ReportsDTO(
+                        reps.Id,
+                        reps.Master_DB.RegNoRep.Value,
+                        reps.Master_DB.OkpoRep.Value))
+                    .ToListAsync();
+
+                var repsFromDbDto = repsFromDB
+                    .First(x => x.RegNoRep == repsDto.RegNum && x.OkpoRep == repsDto.Okpo);
+
+                //var repsFromDb = await db.ReportsCollectionDbSet
+                //    .Include(x => x.DBObservable)
+                //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                //    .FirstOrDefaultAsync(x => x.Id == repsFromDbDto.Id);
+
+                return await ReportsStorage.ApiReports.GetAsync(repsFromDbDto.Id);
+            }
+            default: return null;
+        }
+    }
+
+    private class ReportsDTO(int id, string regNoRep, string okpoRep)
+    {
+        public readonly int Id = id;
+
+        public readonly string RegNoRep = regNoRep;
+
+        public readonly string OkpoRep = okpoRep;
+    }
+
+    #endregion
+
+    #region GetReportsListFromDB
+
+    private protected async Task<List<Reports>> GetReportsListFromDB(string formNum)
+    {
+        await using var db = new DBModel(StaticConfiguration.DBPath);
+
+        return formNum switch
+        {
+            "1.0" => await db.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.DBObservable)
+                .Include(x => x.Master_DB)
+                .ThenInclude(x => x.Rows10)
+                .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "1.0")
+                .ToListAsync(),
+
+            "2.0" => await db.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.DBObservable)
+                .Include(x => x.Master_DB)
+                .ThenInclude(x => x.Rows20)
+                .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "2.0")
+                .ToListAsync(),
+
+            _ => []
+        };
+    }
+
+
 
     #endregion
 
@@ -1855,46 +1966,46 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #endregion
 
-    #region SetDataGridPage
+    //#region SetDataGridPage
 
-    /// <summary>
-    /// Изменяет номер страницы таблицы организаций, чтобы отображалась добавленная организация (только для одной добавленной организации).
-    /// (Не работает для РИАЦ)
-    /// </summary>
-    /// <param name="impReportsList">Список организаций, добавленных в ходе импорта.</param>
-    private protected static Task SetDataGridPage(List<Reports> impReportsList)
-    {
-        if (impReportsList.Count > 0
-            && impReportsList.All(x => x.Master_DB.FormNum_DB.Split('.')[0] is "1" or "2" 
-                                       && x.Master_DB.RegNoRep.Value == impReportsList.First().Master_DB.RegNoRep.Value
-                                       && x.Master_DB.OkpoRep.Value == impReportsList.First().Master_DB.OkpoRep.Value))
-        {
-            var impReports = impReportsList.First();
-            var repsDataGrid = impReports.Master_DB.FormNum_DB is "1.0" 
-                ? (Desktop.MainWindow.FindControl<Panel>("Forms_p1_0").Children[0] as DataGridReports)!
-                : (Desktop.MainWindow.FindControl<Panel>("Forms_p2_0").Children[0] as DataGridReports)!;
+    ///// <summary>
+    ///// Изменяет номер страницы таблицы организаций, чтобы отображалась добавленная организация (только для одной добавленной организации).
+    ///// (Не работает для РИАЦ)
+    ///// </summary>
+    ///// <param name="impReportsList">Список организаций, добавленных в ходе импорта.</param>
+    //private protected static Task SetDataGridPage(List<Reports> impReportsList)
+    //{
+    //    if (impReportsList.Count > 0
+    //        && impReportsList.All(x => x.Master_DB.FormNum_DB.Split('.')[0] is "1" or "2" 
+    //                                   && x.Master_DB.RegNoRep.Value == impReportsList.First().Master_DB.RegNoRep.Value
+    //                                   && x.Master_DB.OkpoRep.Value == impReportsList.First().Master_DB.OkpoRep.Value))
+    //    {
+    //        var impReports = impReportsList.First();
+    //        var repsDataGrid = impReports.Master_DB.FormNum_DB is "1.0" 
+    //            ? (Desktop.MainWindow.FindControl<Panel>("Forms_p1_0").Children[0] as DataGridReports)!
+    //            : (Desktop.MainWindow.FindControl<Panel>("Forms_p2_0").Children[0] as DataGridReports)!;
 
-            var repsList = !string.IsNullOrWhiteSpace(repsDataGrid.SearchText) 
-                ? repsDataGrid.ItemsWithSearch!.ToList<Reports>() 
-                : repsDataGrid.Items.ToList<Reports>();
+    //        var repsList = !string.IsNullOrWhiteSpace(repsDataGrid.SearchText) 
+    //            ? repsDataGrid.ItemsWithSearch!.ToList<Reports>() 
+    //            : repsDataGrid.Items.ToList<Reports>();
 
-            var repsIndex = repsList.FindIndex(x => x.Master_DB.RegNoRep.Value == impReports.Master_DB.RegNoRep.Value 
-                                                    && x.Master_DB.OkpoRep.Value == impReports.Master_DB.OkpoRep.Value);
+    //        var repsIndex = repsList.FindIndex(x => x.Master_DB.RegNoRep.Value == impReports.Master_DB.RegNoRep.Value 
+    //                                                && x.Master_DB.OkpoRep.Value == impReports.Master_DB.OkpoRep.Value);
 
-            if (repsIndex != -1)
-            {
-                repsDataGrid.NowPage = impReports.Master_DB.FormNum_DB switch
-                {
-                    "1.0" => ((repsIndex + 1) / 5 + 1).ToString(),
-                    "2.0" => ((repsIndex + 1) / 8 + 1).ToString(),
-                    _ => repsDataGrid.NowPage
-                };
-            }
-        }
-        return Task.CompletedTask;
-    }
+    //        if (repsIndex != -1)
+    //        {
+    //            repsDataGrid.NowPage = impReports.Master_DB.FormNum_DB switch
+    //            {
+    //                "1.0" => ((repsIndex + 1) / 5 + 1).ToString(),
+    //                "2.0" => ((repsIndex + 1) / 8 + 1).ToString(),
+    //                _ => repsDataGrid.NowPage
+    //            };
+    //        }
+    //    }
+    //    return Task.CompletedTask;
+    //}
 
-    #endregion
+    //#endregion
 
     #region FillReportWithFormsInReports
 

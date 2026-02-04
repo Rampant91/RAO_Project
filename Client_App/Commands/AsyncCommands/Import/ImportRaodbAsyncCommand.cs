@@ -15,11 +15,13 @@ using Models.DTO;
 using Avalonia.Threading;
 using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels;
+using Client_App.Views.Messages;
+using static Client_App.ViewModels.Messages.SelectReportsMessageWindowVM;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
 //  Импорт -> Из RAODB
-public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyncCommand
+public class ImportRaodbAsyncCommand() : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -47,18 +49,18 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
             SourceFile = new FileInfo(path);
             SourceFile.CopyTo(TmpImpFilePath, true);
 
-            var reportsCollection = new List<Reports>();
+            var repsList = new List<Reports>();
             var fileIsCorrupted = false;
             try
             {
-                reportsCollection = await GetReportsFromDataBase(TmpImpFilePath);
+                repsList = await GetReportsFromDataBase(TmpImpFilePath);
             }
             catch
             {
                 fileIsCorrupted = true;
             }
 
-            if (fileIsCorrupted || reportsCollection.Count == 0)
+            if (fileIsCorrupted || repsList.Count == 0)
             {
                 #region MessageFailedToReadFile
 
@@ -83,10 +85,10 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
             }
             if (!HasMultipleReport)
             {
-                HasMultipleReport = reportsCollection.Sum(x => x.Report_Collection.Count) > 1 || answer.Length > 1;
+                HasMultipleReport = repsList.Sum(x => x.Report_Collection.Count) > 1 || answer.Length > 1;
             }
 
-            foreach (var impReps in reportsCollection) // Для каждой импортируемой организации
+            foreach (var impReps in repsList) // Для каждой импортируемой организации
             {
                 var dateTime = DateTime.Now;
 
@@ -110,9 +112,31 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                     impReps.Master_DB.ReportChangedDate = dateTime;
                 }
 
-                var baseReps11 = GetReports11FromLocalEqual(impReps);
-                var baseReps21 = GetReports21FromLocalEqual(impReps);
-                var baseReps41 = GetReports41FromLocalEqual(impReps);
+                Reports? baseReps11;
+                Reports? baseReps21;
+                Reports? baseReps41;
+                if (parameter is "Auto")
+                {
+                    baseReps11 = GetReports11FromLocalEqual(impReps);
+                    baseReps21 = GetReports21FromLocalEqual(impReps);
+                    baseReps41 = GetReports41FromLocalEqual(impReps);
+                }
+                else // if "Selected"
+                {
+                    var localRepsList = await GetReportsListFromDB(impReps.Master_DB.FormNum_DB);
+                    var currentReportIndex = impReportsList.IndexOf(impReps) + 1;
+                    var selectReportsMessageWindow = new SelectReportsMessageWindow(localRepsList, SourceFile!.Name, impReportsList.Count, currentReportIndex, impReps);
+                    var selectedReports = await selectReportsMessageWindow.ShowDialog<OrganizationInfo>(Desktop.MainWindow);
+                    if (selectedReports is null)
+                    {
+                        return;
+                    }
+                    var impRepsFromDb = await GetSelectedReportsFromDB(selectedReports, impReps.Master_DB.FormNum_DB);
+                    baseReps11 = GetReports11FromLocalEqual(impRepsFromDb);
+                    baseReps21 = GetReports21FromLocalEqual(impRepsFromDb);
+                    baseReps41 = GetReports41FromLocalEqual(impRepsFromDb);
+                }
+
                 FillEmptyRegNo(ref baseReps11);
                 FillEmptyRegNo(ref baseReps21);
                 impReps.CleanIds();
@@ -152,7 +176,7 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                     var an = "Добавить";
                     if (!SkipNewOrg)
                     {
-                        if (answer.Length > 1 || reportsCollection.Count > 1)
+                        if (answer.Length > 1 || repsList.Count > 1)
                         {
                             #region MessageNewOrg
 
@@ -290,8 +314,7 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                     .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator);
 
                 ReportsStorage.LocalReports.Reports_Collection.Clear();
-                ReportsStorage.LocalReports.Reports_Collection
-                    .AddRange(tmpReportsOrderedEnum);
+                ReportsStorage.LocalReports.Reports_Collection.AddRange(tmpReportsOrderedEnum);
             }
         }
         catch (Exception ex)
@@ -310,10 +333,34 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
         }
         catch (Exception ex)
         {
+            #region MessageImportError
 
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Импорт из .xlsx",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "При сохранении импортированных данных возникла ошибка.\n",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            return;
         }
 
-        await SetDataGridPage(impReportsList);
+        //try
+        //{
+        //    if (impReportsList.All(x => x.Master_DB.FormNum_DB is "1.0" or "2.0"))
+        //    {
+        //        await SetDataGridPage(impReportsList);
+        //    }
+        //}
+        //catch {}
 
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"

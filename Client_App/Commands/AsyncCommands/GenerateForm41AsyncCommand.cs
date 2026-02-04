@@ -2,9 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
-using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.Save;
-using Client_App.Interfaces.BackgroundLoader;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Messages;
@@ -15,13 +13,10 @@ using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
-using Models.Forms;
-using Models.Forms.Form2;
 using Models.Forms.Form4;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Client_App.Views.Messages;
@@ -43,6 +38,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     private string codeSubjectRF;
     private int year = 0;
     #endregion
+
     public override async void Execute(object? parameter)
     {
         IsExecute = true;
@@ -115,12 +111,11 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         }
 
         #endregion
+
         var progressBar = await Dispatcher.UIThread.InvokeAsync(async () => new AnyTaskProgressBar(cts, owner));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
-
         progressBarVM.SetProgressBar(5, $"Загрузка организаций");
-
 
         organizations10 = await GetOrganizationsList("1.0", dbModel, cts.Token);
         organizations20 = await GetOrganizationsList("2.0", dbModel, cts.Token);
@@ -144,7 +139,6 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             }
         }
 
-
         if (codeSubjectRF != null)
         {
             progressBarVM.SetProgressBar(7, $"Фильтрация записей по коду субъекта РФ");
@@ -161,20 +155,22 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 (int)currentProgress, 
                 $"Подсчет форм 1.1 - 1.4 у организации {organization10.Master.Rows10[0].RegNo_DB}");
 
-            int numInventarizationForm = await GetNumOfReportWithInventarization(organization10.Id, year.ToString(), dbModel, cts.Token);
-            int numWithoutInventarizationForm = await GetNumOfReportWithoutInventarization(organization10.Id, year.ToString(), dbModel, cts.Token);
+            var numInventarizationForm = await GetNumOfReportWithInventory(organization10.Id, year.ToString(), dbModel, cts.Token);
+            var numWithoutInventarizationForm = await GetNumOfReportWithoutInventory(organization10.Id, year.ToString(), dbModel, cts.Token);
             if (IsRowWithOrganizationExist(organization10))
             {
                 //Если запись об организации существует
                 UpdateRow(organization10,
-                    numInventarizationForm: numInventarizationForm,
-                    numWithoutInventarizationForm: numWithoutInventarizationForm);
+                    numInventoryForm: numInventarizationForm,
+                    numWithoutInventoryForm: numWithoutInventarizationForm);
             }
             else
+            {
                 CreateRow(organization10,
-                    numInventarizationForm: numInventarizationForm,
-                    numWithoutInventarizationForm: numWithoutInventarizationForm);
-
+                    numInventoryForm: numInventarizationForm,
+                    numWithoutInventoryForm: numWithoutInventarizationForm);
+            }
+            
             currentProgress += incProgress;
         }
 
@@ -204,7 +200,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
 
         progressBarVM.SetProgressBar(
             90,
-            $"Сортировка записей по рег. номеру");
+            "Сортировка записей по рег. номеру");
 
         // Сортируем по Рег.Номеру
         var orderedRows = Report.Rows41.OrderBy(row => row.RegNo_DB).ToList();
@@ -218,14 +214,12 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         //Заполняем пробелы РегНомеров 
         FillSpaceByRegNo(progressBarVM, cts);
 
-
-
         progressBarVM.SetProgressBar(
             95,
             $"Выставляем номера строк");
 
         //Выставляем номера строк
-        for (int i = 0; i < Report.Rows41.Count; i++)
+        for (var i = 0; i < Report.Rows41.Count; i++)
         {
             Report.Rows41[i].SetOrder(i + 1);
         }
@@ -234,7 +228,6 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             100,
             $"Завершаем формирование отчета");
 
-
         //Обновляем таблицу
         formVM.UpdateFormList();
         formVM.UpdatePageInfo();
@@ -242,9 +235,9 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     }
 
     #region AskMessages
-    private async Task<bool> ShowConfirmationMessage(Window owner)
+    private static async Task<bool> ShowConfirmationMessage(Window owner)
     {
-        string answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
@@ -267,9 +260,9 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         else
             return false;
     }
-    private async Task<bool> ShowAskDependOnReportOrNotMessage(Window owner)
+    private static async Task<bool> ShowAskDependOnReportOrNotMessage(Window owner)
     {
-        string answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
@@ -291,14 +284,16 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         else
             return false;
     }
-    private async Task<Report> ShowAskReportMessage(Window owner)
+
+    private async Task<Report?> ShowAskReportMessage(Window owner)
     {
         var dialog = new AskForm41Message(Report);
 
-        Report? report = await dialog.ShowDialog<Report?>(owner);
+        var report = await dialog.ShowDialog<Report?>(owner);
         return report;
     }
-    private async Task<int> ShowAskYearMessage(Window owner)
+
+    private static async Task<int> ShowAskYearMessage(Window owner)
     {
         var dialog = new AskIntMessageWindow(new AskIntMessageVM("Введите год, за который хотите сформировать отчет"));
 
@@ -309,9 +304,10 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
 
         return (int)year;
     }
-    private async Task<bool> ShowAskAllOrOneSubjectRFMessage(Window owner)
+
+    private static async Task<bool> ShowAskAllOrOneSubjectRFMessage(Window owner)
     {
-        string answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
@@ -333,16 +329,18 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         else
             return false;
     }
-    private async Task<string?> ShowAskSubjectRFMessage(Window owner)
+
+    private static async Task<string?> ShowAskSubjectRFMessage(Window owner)
     {
         var dialog = new AskSubjectRFMessage();
 
-        string? codeSubjectRF = await dialog.ShowDialog<string?>(owner);
+        var codeSubjectRF = await dialog.ShowDialog<string?>(owner);
         return codeSubjectRF;
     }
-    private async Task<bool> ShowAskSecondDB(Window owner)
+
+    private static async Task<bool> ShowAskSecondDB(Window owner)
     {
-        string answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
@@ -364,6 +362,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         else
             return false;
     }
+
     #endregion
 
     #region private Functions
@@ -399,21 +398,22 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     }
     private void UpdateRow(
         Reports organization, 
-        int numInventarizationForm = -1,        // Необязательный параметр
-        int numWithoutInventarizationForm = -1, // Необязательный параметр
-        int numForm212 = -1)                    // Необязательный параметр
+        int numInventoryForm = -1,        // Необязательный параметр
+        int numWithoutInventoryForm = -1, // Необязательный параметр
+        int numForm212 = -1)              // Необязательный параметр
     {
 
         var form41 = Report.Rows41.FirstOrDefault(form41 =>
-                form41.RegNo_DB == organization.Master.RegNoRep.Value && form41.Okpo_DB == organization.Master.OkpoRep.Value);
+                form41.RegNo_DB == organization.Master.RegNoRep.Value 
+                && form41.Okpo_DB == organization.Master.OkpoRep.Value);
 
         form41.OrganizationName_DB = organization.Master.ShortJurLicoRep.Value;
 
-        if (numInventarizationForm >= 0)
-            form41.NumOfFormsWithInventarizationInfo_DB = numInventarizationForm;
+        if (numInventoryForm >= 0)
+            form41.NumOfFormsWithInventarizationInfo_DB = numInventoryForm;
 
-        if (numWithoutInventarizationForm >= 0)
-            form41.NumOfFormsWithoutInventarizationInfo_DB = numWithoutInventarizationForm;
+        if (numWithoutInventoryForm >= 0)
+            form41.NumOfFormsWithoutInventarizationInfo_DB = numWithoutInventoryForm;
 
         if (numForm212 >= 0)
             form41.NumOfForms212_DB = numForm212;
@@ -421,24 +421,30 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
 
     private void CreateRow(
         Reports organization, 
-        int numInventarizationForm = 0,        // Необязательный параметр
-        int numWithoutInventarizationForm = 0, // Необязательный параметр
-        int numForm212 = 0)                    // Необязательный параметр
+        int numInventoryForm = 0,        // Необязательный параметр
+        int numWithoutInventoryForm = 0, // Необязательный параметр
+        int numForm212 = 0)              // Необязательный параметр
     {
 
         var form41 = new Form41()
         {
-            RegNo_DB = organization.Master.RegNoRep == null ? "" : organization.Master.RegNoRep.Value,
-            Okpo_DB = organization.Master.OkpoRep == null ? "" : organization.Master.OkpoRep.Value,
-            OrganizationName_DB = organization.Master.ShortJurLicoRep == null ? "" : organization.Master.ShortJurLicoRep.Value,
+            RegNo_DB = organization.Master.RegNoRep == null 
+                ? "" 
+                : organization.Master.RegNoRep.Value,
+            Okpo_DB = organization.Master.OkpoRep == null 
+                ? "" 
+                : organization.Master.OkpoRep.Value,
+            OrganizationName_DB = organization.Master.ShortJurLicoRep == null 
+                ? "" 
+                : organization.Master.ShortJurLicoRep.Value,
             Report = formVM.Report
         };
 
-        if (numInventarizationForm > 0)
-            form41.NumOfFormsWithInventarizationInfo_DB = numInventarizationForm;
+        if (numInventoryForm > 0)
+            form41.NumOfFormsWithInventarizationInfo_DB = numInventoryForm;
 
-        if (numWithoutInventarizationForm > 0)
-            form41.NumOfFormsWithoutInventarizationInfo_DB = numWithoutInventarizationForm;
+        if (numWithoutInventoryForm > 0)
+            form41.NumOfFormsWithoutInventarizationInfo_DB = numWithoutInventoryForm;
 
         if (numForm212 > 0)
             form41.NumOfForms212_DB = numForm212;
@@ -514,7 +520,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
 
             if (current+1 < next)
             {
-                string regNo = codeSubjectRF;
+                var regNo = codeSubjectRF;
                 if ((current + 1) / 100 == 0)
                     regNo += "0";
                 if ((current + 1) / 10 == 0)
@@ -529,17 +535,16 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             i++;
         }
     }
-        
-        
-
+    
     #endregion
 
     #region Requests
-    private async Task<List<Reports>> GetOrganizationsList(string formNum, DBModel DB, CancellationToken cancellationToken)
+
+    private async Task<List<Reports>> GetOrganizationsList(string formNum, DBModel db, CancellationToken cancellationToken)
     {
         try
         {
-            return await DB.ReportsCollectionDbSet
+            return await db.ReportsCollectionDbSet
                             .AsSplitQuery()
                             .AsQueryable()
                             .Include(reports => reports.Master_DB).ThenInclude(reports => reports.Rows10)
@@ -569,14 +574,15 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                    WindowStartupLocation = WindowStartupLocation.CenterOwner
                })
                .ShowDialog(owner));
-            return new List<Reports>();
+            return [];
         }
     }
-    private async Task<int> GetNumOfReportWithInventarization(int organizationId, string year, DBModel DB, CancellationToken cancellationToken)
+
+    private static async Task<int> GetNumOfReportWithInventory(int organizationId, string year, DBModel db, CancellationToken cancellationToken)
     {
         try
         {
-            return await DB.ReportsCollectionDbSet
+            return await db.ReportsCollectionDbSet
                 .AsSplitQuery()
                 .AsQueryable()
                 .Include(x => x.DBObservable)
@@ -589,10 +595,10 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                     .Where(y => y.EndPeriod_DB.EndsWith(year)
                     &&
                     (
-                        y.FormNum_DB == "1.1" && y.Rows11.Any(form => form.OperationCode_DB == "10")
-                        || y.FormNum_DB == "1.2" && y.Rows12.Any(form => form.OperationCode_DB == "10")
-                        || y.FormNum_DB == "1.3" && y.Rows13.Any(form => form.OperationCode_DB == "10")
-                        || y.FormNum_DB == "1.4" && y.Rows14.Any(form => form.OperationCode_DB == "10")
+                        (y.FormNum_DB == "1.1" && y.Rows11.Any(form => form.OperationCode_DB == "10"))
+                        || (y.FormNum_DB == "1.2" && y.Rows12.Any(form => form.OperationCode_DB == "10"))
+                        || (y.FormNum_DB == "1.3" && y.Rows13.Any(form => form.OperationCode_DB == "10"))
+                        || (y.FormNum_DB == "1.4" && y.Rows14.Any(form => form.OperationCode_DB == "10"))
                     )))
                 .CountAsync(cancellationToken);
         }
@@ -601,11 +607,12 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             throw;
         }
     }
-    private async Task<int> GetNumOfReportWithoutInventarization(int organizationId, string year, DBModel DB, CancellationToken cancellationToken)
+
+    private static async Task<int> GetNumOfReportWithoutInventory(int organizationId, string year, DBModel db, CancellationToken cancellationToken)
     {
         try 
         { 
-            return await DB.ReportsCollectionDbSet
+            return await db.ReportsCollectionDbSet
                 .AsSplitQuery()
                 .AsQueryable()
                 .Include(x => x.DBObservable)
@@ -618,10 +625,10 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                     .Where(y => y.EndPeriod_DB.EndsWith(year)
                     &&
                     (
-                        y.FormNum_DB == "1.1" && y.Rows11.All(form => form.OperationCode_DB != "10")
-                        || y.FormNum_DB == "1.2" && y.Rows12.All(form => form.OperationCode_DB != "10")
-                        || y.FormNum_DB == "1.3" && y.Rows13.All(form => form.OperationCode_DB != "10")
-                        || y.FormNum_DB == "1.4" && y.Rows14.All(form => form.OperationCode_DB != "10")
+                        (y.FormNum_DB == "1.1" && y.Rows11.All(form => form.OperationCode_DB != "10"))
+                        || (y.FormNum_DB == "1.2" && y.Rows12.All(form => form.OperationCode_DB != "10"))
+                        || (y.FormNum_DB == "1.3" && y.Rows13.All(form => form.OperationCode_DB != "10"))
+                        || (y.FormNum_DB == "1.4" && y.Rows14.All(form => form.OperationCode_DB != "10"))
                     )))
                 .CountAsync(cancellationToken);
         }
@@ -630,11 +637,12 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             throw;
         }
     }
-    private async Task<int> GetNumOfForm212(Reports organization20, int year, DBModel DB,CancellationToken cancellationToken)
+
+    private static async Task<int> GetNumOfForm212(Reports organization20, int year, DBModel db, CancellationToken cancellationToken)
     {
         try 
         {
-            return await DB.ReportCollectionDbSet
+            return await db.ReportCollectionDbSet
                     .AsSplitQuery()
                     .AsQueryable()
                     .Include(report => report.Reports)
@@ -648,5 +656,6 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             throw;
         }
     }
+
     #endregion
 }

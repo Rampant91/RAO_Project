@@ -16,6 +16,10 @@
 	<UserControl.Resources>
 		<converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
 	</UserControl.Resources>
+
+    <Design.DataContext>
+        <vm:Forms4TabControlVM/>
+    </Design.DataContext>
 	
 	<Border Classes="borderContainer">
 		<Grid RowDefinitions="*,*" ColumnDefinitions="5*,3*" >

@@ -31,6 +31,7 @@ public partial class Form_18 : BaseWindow<Form_18VM>
     //private Form_18VM _vm = null!;
 
     private bool _isCloseConfirmed;
+    protected override bool IsFullScreenWindow => true;
 
     #region Constructors
 

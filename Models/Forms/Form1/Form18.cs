@@ -110,7 +110,7 @@ public partial class Form18 : Form1
         {
             return true;
         }
-        if (!DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
+        if (!DateOnly.TryParse(tmp, new CultureInfo("ru-RU", useUserOverride: false), out _))
         {
             value.AddError("Недопустимое значение");
             return false;

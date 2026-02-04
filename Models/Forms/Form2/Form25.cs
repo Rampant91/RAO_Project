@@ -485,8 +485,8 @@ public partial class Form25 : Form2
         column += transpose ? cnt : 0;
         row += !transpose ? cnt : 0;
 
-        worksheet.Cells[row, column].Value = ConvertToExcelString(StoragePlaceCode_DB);
-        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(StoragePlaceName_DB);
+        worksheet.Cells[row, column].Value = ConvertToExcelString(StoragePlaceName_DB);
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(StoragePlaceCode_DB);
         worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelString(CodeOYAT_DB);
         worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelString(FcpNumber_DB);
         worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ConvertToExcelDouble(FuelMass_DB);

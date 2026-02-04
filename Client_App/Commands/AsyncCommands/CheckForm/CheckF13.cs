@@ -1378,7 +1378,7 @@ public abstract class CheckF13 : CheckBase
                 Row = (line + 1).ToString(),
                 Column = "AggregateState_DB",
                 Value = Convert.ToString(aggregateState),
-                Message = "Выберите значение для агрегатного состояния: 1 - твердое, 2 - жидкое, 3 - газообразное."
+                Message = "Выберите значение для агрегатного состояния: 1 - жидкое, 2 - твёрдое, 3 - газообразное."
             });
         }
         return result;

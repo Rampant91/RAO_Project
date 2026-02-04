@@ -333,11 +333,11 @@ public abstract class CheckBase : BaseAsyncCommand
             y = ConvertStringToExponential(y);
 
             x = double.TryParse(x, out var doubleValueX)
-                ? doubleValueX.ToString("0.00######################################################e+00", CultureInfo.CreateSpecificCulture("ru-RU"))
+                ? doubleValueX.ToString("0.00######################################################e+00", new CultureInfo("ru-RU", useUserOverride: false))
                 : x;
 
             y = double.TryParse(y, out var doubleValueY)
-                ? doubleValueY.ToString("0.00######################################################e+00", CultureInfo.CreateSpecificCulture("ru-RU"))
+                ? doubleValueY.ToString("0.00######################################################e+00", new CultureInfo("ru-RU", useUserOverride: false))
                 : y;
 
             return string.Compare(x, y, StringComparison.OrdinalIgnoreCase);
@@ -548,7 +548,7 @@ public abstract class CheckBase : BaseAsyncCommand
             });
             if (string.IsNullOrWhiteSpace(R[^1]["D"]) || !double.TryParse(R[^1]["D"], out var val1) || val1 < 0)
             {
-                R[^1]["D"] = double.MaxValue.ToString(CultureInfo.CreateSpecificCulture("ru-RU"));
+                R[^1]["D"] = double.MaxValue.ToString(new CultureInfo("ru-RU", useUserOverride: false));
             }
             i++;
         }
@@ -731,7 +731,7 @@ public abstract class CheckBase : BaseAsyncCommand
     {
         return float.TryParse(ConvertStringToExponential(str),
             NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-            CultureInfo.CreateSpecificCulture("ru-RU"),
+            new CultureInfo("ru-RU", useUserOverride: false),
             out val);
     }
 
@@ -743,7 +743,7 @@ public abstract class CheckBase : BaseAsyncCommand
     {
         return double.TryParse(ConvertStringToExponential(str),
             NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-            CultureInfo.CreateSpecificCulture("ru-RU"),
+            new CultureInfo("ru-RU", useUserOverride: false),
             out val);
     }
 

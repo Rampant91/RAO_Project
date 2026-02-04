@@ -11,6 +11,7 @@ using Client_App.Views;
 using Models.DBRealization;
 using System.Reflection;
 using System.Collections.Generic;
+using Client_App.ViewModels;
 using OfficeOpenXml;
 using Microsoft.EntityFrameworkCore;
 using static Client_App.Resources.StaticStringMethods;
@@ -21,7 +22,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 /// <summary>
 /// Выгрузка в .xlsx СНК на дату.
 /// </summary>
-public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
+public class ExcelExportSnkAsyncCommand(MainWindowVM mainWindowVM) : ExcelExportSnkBaseAsyncCommand
 {
     public override bool CanExecute(object? parameter) => true;
 
@@ -33,9 +34,10 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
         var mainWindow = Desktop.MainWindow as MainWindow;
         var formNum = (parameter as string)!;
 
+        var selectedReports = mainWindowVM.SelectedReports;
         progressBarVM.SetProgressBar(5, "Проверка наличия отчётов",
             $"Выгрузка СНК {formNum}", "СНК");
-        var selectedReports = await CheckRepsAndRepPresence(formNum, progressBar, cts);
+        await CheckRepsAndRepPresence(formNum, selectedReports, progressBar, cts);
 
         var regNum = selectedReports!.Master_DB.RegNoRep.Value;
         var okpo = selectedReports.Master_DB.OkpoRep.Value;
@@ -126,7 +128,7 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = $"На {endSnkDate.ToShortDateString()} учётные единицы в наличии отсутствуют.",
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -153,17 +155,18 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
     {
         var worksheet = excelPackage.Workbook.Worksheets.Add($"СНК на {date.ToShortDateString()}");
 
+        worksheet.Cells[1, 1].Value = "№ п/п";
+        worksheet.Cells[1, 2].Value = "Номер паспорта (сертификата)";
+        worksheet.Cells[1, 3].Value = "тип";
+        worksheet.Cells[1, 4].Value = "радионуклиды";
+        worksheet.Cells[1, 5].Value = "номер";
+
         switch (formNum)
         {
             case "1.1":
             {
                 #region Headers
 
-                worksheet.Cells[1, 1].Value = "№ п/п";
-                worksheet.Cells[1, 2].Value = "Номер паспорта (сертификата)";
-                worksheet.Cells[1, 3].Value = "тип";
-                worksheet.Cells[1, 4].Value = "радионуклиды";
-                worksheet.Cells[1, 5].Value = "номер";
                 worksheet.Cells[1, 6].Value = "количество, шт.";
                 worksheet.Cells[1, 7].Value = "суммарная активность, Бк";
                 worksheet.Cells[1, 8].Value = "код ОКПО изготовителя";
@@ -180,11 +183,6 @@ public class ExcelExportSnkAsyncCommand : ExcelExportSnkBaseAsyncCommand
             {
                 #region Headers
 
-                worksheet.Cells[1, 1].Value = "№ п/п";
-                worksheet.Cells[1, 2].Value = "Номер паспорта (сертификата)";
-                worksheet.Cells[1, 3].Value = "тип";
-                worksheet.Cells[1, 4].Value = "радионуклиды";
-                worksheet.Cells[1, 5].Value = "номер";
                 worksheet.Cells[1, 6].Value = "активность, Бк";
                 worksheet.Cells[1, 7].Value = "код ОКПО изготовителя";
                 worksheet.Cells[1, 8].Value = "дата выпуска";

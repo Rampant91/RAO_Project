@@ -1,4 +1,5 @@
 using Client_App.Commands.AsyncCommands.SourceTransmission;
+using Client_App.Commands.SyncCommands;
 using Client_App.ViewModels.Controls;
 using Models.Collections;
 using System;
@@ -45,8 +46,8 @@ public class Form_12VM : BaseFormVM
 
     #region Commands
 
-    public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this); 
-    
+    public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);
+
     #endregion
 
     //public ObservableCollection<Form12> Form12List => new(FormList.Cast<Form12>());

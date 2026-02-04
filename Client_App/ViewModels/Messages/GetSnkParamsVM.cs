@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Client_App.ViewModels.Messages;
@@ -12,6 +13,28 @@ public class GetSnkParamsVM : INotifyPropertyChanged
     public bool Ok = false;
 
     #region Properties
+
+    #region Region
+
+    /// <summary>
+    /// Поле для номера региона. По умолчанию "00".
+    /// </summary>
+    private string _region = "00";
+
+    public string Region
+    {
+        get => _region;
+        set
+        {
+            if (value == null || (value.Length <= 2 && value.All(char.IsDigit)))
+            {
+                _region = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    #endregion
 
     #region Date
 
@@ -160,8 +183,14 @@ public class GetSnkParamsVM : INotifyPropertyChanged
             if (_commandName == value) return;
             _commandName = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(ShowRegionBlock));
         }
     }
+
+    /// <summary>
+    /// Показывать ли блок выбора региона
+    /// </summary>
+    public bool ShowRegionBlock => CommandName == "Проблемные источники по региону";
 
     #endregion
 

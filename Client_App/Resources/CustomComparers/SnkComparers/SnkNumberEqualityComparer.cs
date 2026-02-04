@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Client_App.Resources.CustomComparers.SnkComparers;
 
-public partial class CustomSnkEqualityComparer : IEqualityComparer<string>
+public partial class SnkNumberEqualityComparer : IEqualityComparer<string>
 {
     public bool Equals(string? x, string? y)
     {
@@ -12,7 +12,7 @@ public partial class CustomSnkEqualityComparer : IEqualityComparer<string>
         if (x is null || y is null) return false;
 
         x = SnkRegex()
-            .Replace(x, "")
+            .Replace(x.TrimStart(' ', '0'), "")
             .ToLower()
             .Replace('а', 'a')
             .Replace('б', 'b')
@@ -33,7 +33,7 @@ public partial class CustomSnkEqualityComparer : IEqualityComparer<string>
             .Replace('х', 'x');
 
         y = SnkRegex()
-            .Replace(y, "")
+            .Replace(y.TrimStart(' ', '0'), "")
             .ToLower()
             .Replace('а', 'a')
             .Replace('б', 'b')

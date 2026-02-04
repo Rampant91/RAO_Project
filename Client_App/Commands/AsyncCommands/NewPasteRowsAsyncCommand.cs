@@ -24,7 +24,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 
     private string FormType => formVM.FormType;
 
-    private byte? ConvertStringToByte(string str)
+    private static byte? ConvertStringToByte(string str)
     {
         if (byte.TryParse(str, out var result))
         {
@@ -34,7 +34,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             return null;
     }
 
-    private int? ConvertStringToInt(string str)
+    private static int? ConvertStringToInt(string str)
     {
         if (int.TryParse(str, out var result))
         {
@@ -44,7 +44,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             return null;
     }
 
-    private short? ConvertStringToShort(string str)
+    private static short? ConvertStringToShort(string str)
     {
         if (short.TryParse(str, out var result))
         {
@@ -53,7 +53,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         else
             return null;
     }
-    private float? ConvertStringToFloat(string str)
+    private static float? ConvertStringToFloat(string str)
     {
         if (float.TryParse(str, out var result))
         {
@@ -107,7 +107,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     }
     private string[] PrepareRowsForParsing(string[] rows)
     {
-        for (int i = 0; i < rows.Length; i++)
+        for (var i = 0; i < rows.Length; i++)
         {
 
             //Вырезаем из строк лишние \n
@@ -144,9 +144,9 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             parsedRows[i] = rows[i].Split('\t');
         }
 
-        for (int i = 0; i < parsedRows.Length; i++)
+        for (var i = 0; i < parsedRows.Length; i++)
         {
-            for (int j = 0; j < parsedRows[i].Length; j++)
+            for (var j = 0; j < parsedRows[i].Length; j++)
             {
                 var cell = parsedRows[i][j];
                 //Тримим каждую ячейку для проверки на кавычки

@@ -12,7 +12,7 @@
         MinWidth="300" MinHeight="150"
         MaxWidth="600" MaxHeight="300"
         d:DesignWidth="300"  d:DesignHeight="150"
-        behaviors:WindowScreenSizeBehavior.WidthRatio="0.2" behaviors:WindowScreenSizeBehavior.HeightRatio="0.2"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.2" behaviors:WindowScreenSizeBehavior.HeightRatio="0.15"
         WindowStartupLocation="Manual"
         SystemDecorations="Full">
 

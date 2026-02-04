@@ -25,7 +25,7 @@
 		<Grid RowDefinitions="*,*" ColumnDefinitions="5*,3*" >
 			<Grid Grid.Row ="0" Grid.Column="0" RowDefinitions="Auto,*,Auto">
 				<TextBox Text="{Binding SearchText}" Grid.Row="0" Margin="5" Watermark ="Поиск..." />
-				<DataGrid
+				<DataGrid x:Name="ReportsDataGrid"
 						  Grid.Row="1" Margin="5"
 						  Items="{Binding ReportsCollection}"
 						  SelectionMode="Single"

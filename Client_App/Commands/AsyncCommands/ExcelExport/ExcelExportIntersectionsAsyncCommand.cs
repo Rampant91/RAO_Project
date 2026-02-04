@@ -322,7 +322,7 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage =
                         "Не удалось совершить выгрузку списка разрывов и пересечений дат," +

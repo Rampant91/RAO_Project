@@ -2,10 +2,11 @@
 using Client_App.ViewModels;
 using DynamicData;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
+using Models.Forms.Form2;
+
 using System;
 using System.Linq;
 using System.Threading;
@@ -62,9 +63,51 @@ public static class ReportsStorage
         {
             viewModel.Storage = newRep;
             viewModel.Storages = reps;
+
+            NormalizeHiddenFlagsForReport(newRep);
         }
         return newRep;
     }
+
+    #region NormalizeHiddenFlagsForReport
+
+    /// <summary>
+    /// Нормализует флаги скрытия/записи для строк форм 2.1 и 2.2,
+    /// чтобы обычные строки (не суммы и не группы) всегда оставались редактируемыми. Костыль для исправления старого бага.
+    /// </summary>
+    /// <param name="report">Отчёт, для которого требуется нормализация.</param>
+    private static void NormalizeHiddenFlagsForReport(Report report)
+    {
+        switch (report.FormNum_DB)
+        {
+            case "2.1":
+            {
+                foreach (var item in report.Rows21)
+                {
+                    if (item is Form21 row)
+                    {
+                        row.NormalizeHiddenFlags();
+                    }
+                }
+
+                break;
+            }
+            case "2.2":
+            {
+                foreach (var item in report.Rows22)
+                {
+                    if (item is Form22 row)
+                    {
+                        row.NormalizeHiddenFlags();
+                    }
+                }
+
+                break;
+            }
+        }
+    }
+
+    #endregion
 
     #endregion
 

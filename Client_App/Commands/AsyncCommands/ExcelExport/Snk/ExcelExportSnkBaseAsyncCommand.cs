@@ -2,7 +2,6 @@
 using Avalonia.Threading;
 using Client_App.ViewModels.Messages;
 using Client_App.ViewModels.ProgressBar;
-using Client_App.Views;
 using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
@@ -15,9 +14,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using CustomSnkEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkEqualityComparer;
-using CustomSnkNumberEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkNumberEqualityComparer;
-using CustomSnkRadionuclidsEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkRadionuclidsEqualityComparer;
+using Client_App.Resources.CustomComparers.SnkComparers;
+using SnkRadionuclidsEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.SnkRadionuclidsEqualityComparer;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
@@ -28,9 +26,9 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 {
     private sealed class SnkGroupKeyComparer : IEqualityComparer<(string PasNum, string FacNum, string Radionuclids, string Type)>
     {
-        private readonly CustomSnkNumberEqualityComparer _numberComparer = new();
-        private readonly CustomSnkRadionuclidsEqualityComparer _radsComparer = new();
-        private readonly CustomSnkEqualityComparer _stringComparer = new();
+        private readonly SnkNumberEqualityComparer _numberComparer = new();
+        private readonly SnkRadionuclidsEqualityComparer _radsComparer = new();
+        private readonly SnkEqualityComparer _stringComparer = new();
 
         public bool Equals((string PasNum, string FacNum, string Radionuclids, string Type) x,
             (string PasNum, string FacNum, string Radionuclids, string Type) y)
@@ -127,6 +125,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             {
                 ExcelExportSnkAsyncCommand => "СНК",
                 ExcelExportCheckInventoriesAsyncCommand => "Проверка инвентаризаций",
+                ExcelExportLostAndExtraUnitsByRegionAsyncCommand => "Проблемные источники по региону",
                 _ => ""
             };
             await getSnkParamsWindow.ShowDialog(Desktop.MainWindow);
@@ -149,7 +148,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = "Не удалось распознать введённую дату, " +
                                      $"{Environment.NewLine}выгрузка будет выполнена на текущую системную дату.",
                     MinWidth = 400,
@@ -169,7 +168,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = "Выгрузка не выполнена, поскольку введена дата ранее вступления в силу приказа.",
                     MinWidth = 400,
                     MinHeight = 115,
@@ -190,7 +189,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = "Выгрузка не выполнена, поскольку не выбран ни один из параметров, для определения учётной единицы.",
                     MinWidth = 400,
                     MinHeight = 115,
@@ -221,13 +220,12 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     /// В случае отсутствия выводит соответствующее сообщение и закрывает команду.
     /// </summary>
     /// <param name="formNum">Номер формы отчётности.</param>
+    /// <param name="selectedReports">Выбранная организация.</param>
     /// <param name="progressBar">Окно прогрессбара.</param>
     /// <param name="cts">Токен.</param>
-    private protected static async Task<Reports> CheckRepsAndRepPresence(string formNum, AnyTaskProgressBar progressBar, CancellationTokenSource cts)
+    private protected static async Task CheckRepsAndRepPresence(string formNum, Reports? selectedReports, 
+        AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
-        var mainWindow = Desktop.MainWindow as MainWindow;
-        var selectedReports = (Reports?)mainWindow?.SelectedReports?.FirstOrDefault();
-
         if (selectedReports is null)
         {
             #region MessageExcelExportFail
@@ -236,7 +234,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = "Выгрузка не выполнена, поскольку не выбрана организация.",
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -255,11 +253,11 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
-                    ContentMessage =
-                        $"Не удалось совершить выгрузку СНК," +
-                        $"{Environment.NewLine}поскольку у выбранной организации отсутствуют отчёты по форме {formNum}.",
+                    ContentMessage = $"Не удалось совершить выгрузку СНК," +
+                                     $"{Environment.NewLine}поскольку у выбранной организации "
+                                     + $"отсутствуют отчёты по форме {formNum}.",
                     MinWidth = 400,
                     MinHeight = 100,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -270,8 +268,6 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
-
-        return selectedReports!;
     }
 
     #endregion
@@ -332,8 +328,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                         .GroupBy(x => x.OpDate)
                         .ToDictionary(
                             g => g.Key,
-                            g => g.ToList()
-                        )
+                            g => g.ToList())
                 },
                 snkGroupKeyComparer
             )
@@ -341,13 +336,12 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             .ThenBy(x => x.Key.FacNum)
             .ToDictionary(x => x.Key, x => x.DateGroups);
 
-        var comparer = new CustomSnkEqualityComparer();
-        var numberComparer = new CustomSnkNumberEqualityComparer();
-        var radsComparer = new CustomSnkRadionuclidsEqualityComparer();
+        var comparer = new SnkEqualityComparer();
+        var numberComparer = new SnkNumberEqualityComparer();
+        var radsComparer = new SnkRadionuclidsEqualityComparer();
         Dictionary<UniqueUnitDto, List<ShortFormDTO>> uniqueUnitWithAllOrderedOperationDictionary = [];
         var j = 0;
         foreach (var (unit, formsByDateDictionary) in groupedOperationListDictionary)
-                     //.Where(x => x.Key.PasNum is "1231"))
         {
             j++;
             var currentPackNumber = "";
@@ -410,6 +404,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                     {
                         newOperationOrderList.Add(form);
                         currentPackNumber = form.PackNumber;
+                        if (GetPlusOperationsArray(formNum).Contains(form.OpCode)) inStock = true;
+                        if (GetMinusOperationsArray(formNum).Contains(form.OpCode)) inStock = false;
                         continue;
                     }
 
@@ -702,7 +698,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
     private static bool IsPairedList(List<ShortFormDTO> editedFormsList, bool inStock, string currentPackNumber, string formNum)
     {
-        var numberComparer = new CustomSnkNumberEqualityComparer();
+        var numberComparer = new SnkNumberEqualityComparer();
         var plusOperations = GetPlusOperationsArray(formNum);
         var minusOperations = GetMinusOperationsArray(formNum);
         var rechargeOperations = new[] { "53", "54" };
@@ -1052,8 +1048,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         List<ShortFormDTO> newInventoryFormsDtoList = [];
         List<ShortFormDTO> inventoryDuplicateErrors = [];
 
-        var comparer = new CustomSnkEqualityComparer();
-        var radsComparer = new CustomSnkRadionuclidsEqualityComparer();
+        var comparer = new SnkEqualityComparer();
+        var radsComparer = new SnkRadionuclidsEqualityComparer();
         foreach (var form in inventoryFormsDtoList)
         {
             var matchingForm = newInventoryFormsDtoList.FirstOrDefault(x =>
@@ -1303,8 +1299,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     {
         List<ShortFormDTO> newPlusMinusDtoList = [];
 
-        var comparer = new CustomSnkEqualityComparer();
-        var radsComparer = new CustomSnkRadionuclidsEqualityComparer();
+        var comparer = new SnkEqualityComparer();
+        var radsComparer = new SnkRadionuclidsEqualityComparer();
         foreach (var form in plusMinusDtoList)
         {
             var matchingForm = newPlusMinusDtoList.FirstOrDefault(x =>
@@ -1536,11 +1532,11 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         List<ShortFormDTO> unitInStockList = [];
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentUnitNum = 1;
-        var comparer = new CustomSnkEqualityComparer();
-        var radsComparer = new CustomSnkRadionuclidsEqualityComparer();
+        var comparer = new SnkEqualityComparer();
+        var radsComparer = new SnkRadionuclidsEqualityComparer();
         foreach (var (unit, operations) in uniqueUnitWithAllOperationDictionary)
         {
-            #region 1.3 || SerialNumEmpty
+            #region 1.3 || (1.1 && SerialNumEmpty)
 
             if (formNum is "1.3" || SerialNumbersIsEmpty(unit.PasNum, unit.FacNum))
             {
@@ -1589,7 +1585,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
             #endregion
 
-            #region SerialNumNotEmpty
+            #region 1.1 && SerialNumNotEmpty
             
             else
             {
@@ -1634,7 +1630,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     /// <param name="operationList">Список операций.</param>
     /// <param name="formNum">Номер формы.</param>
     /// <returns>Список операций, в котором множество +- операций в одну дату заменено на одну эквивалентную им операцию.</returns>
-    private static Task<List<ShortFormDTO>> GetOperationsWithoutDuplicates(List<ShortFormDTO> operationList, string formNum)
+    private protected static Task<List<ShortFormDTO>> GetOperationsWithoutDuplicates(List<ShortFormDTO> operationList, string formNum)
     {
         var plusOperationsArray = GetPlusOperationsArray(formNum);
         var minusOperationsArray = GetMinusOperationsArray(formNum);
@@ -1846,7 +1842,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
     #region ShortFormDTO
 
-    private protected class ShortFormDTO
+    public class ShortFormDTO
     {
         public int Id { get; set; }
 
@@ -1957,7 +1953,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         public readonly string EndPeriod = endPeriod;
     }
 
-    private protected class ShortReportDTO(int id, DateOnly startPeriod, DateOnly endPeriod)
+    public class ShortReportDTO(int id, DateOnly startPeriod, DateOnly endPeriod)
     {
         public readonly int Id = id;
 

@@ -26,7 +26,11 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
-        ExportType = "Список_организаций";
+
+        ExportType = parameter is "full"
+            ? "Список_организаций_с_доп_полями"
+            : "Список_организаций";
+
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
@@ -690,7 +694,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage =
                         "Не удалось совершить выгрузку списка всех отчетов по форме 1 с указанием количества строк," +

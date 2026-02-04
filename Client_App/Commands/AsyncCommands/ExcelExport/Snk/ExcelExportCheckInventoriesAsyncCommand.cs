@@ -1,12 +1,10 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels.ProgressBar;
-using Client_App.Views;
 using Client_App.Views.ProgressBar;
 using DynamicData;
 using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
-using Models.Collections;
 using Models.DBRealization;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -18,16 +16,17 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Client_App.Resources.CustomComparers.SnkComparers;
+using Client_App.ViewModels;
 using static Client_App.Resources.StaticStringMethods;
-using CustomSnkEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkEqualityComparer;
-using CustomSnkRadionuclidsEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.CustomSnkRadionuclidsEqualityComparer;
+using SnkRadionuclidsEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.SnkRadionuclidsEqualityComparer;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
 /// <summary>
 /// Excel -> Проверка инвентаризаций.
 /// </summary>
-public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCommand
+public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) : ExcelExportSnkBaseAsyncCommand
 {
     public override bool CanExecute(object? parameter) => true;
 
@@ -36,19 +35,19 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         var cts = new CancellationTokenSource();
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
-        var mainWindow = Desktop.MainWindow as MainWindow;
         var formNum = (parameter as string)!;
 
-        progressBarVM.SetProgressBar(5, "Проверка наличия отчётов", 
-            $"Проверка инвентаризаций {formNum}", ExportType);
-        await CheckRepsAndRepPresence(formNum, progressBar, cts);
-
-        var selectedReports = mainWindow!.SelectedReports.First() as Reports;
+        var selectedReports = mainWindowVM.SelectedReports;
+        var exportName = $"Проверка инвентаризаций {formNum}";
+        ExportType = "Выгрузка в .xlsx";
+        progressBarVM.SetProgressBar(5, "Проверка наличия отчётов", exportName, ExportType);
+        await CheckRepsAndRepPresence(formNum, selectedReports, progressBar, cts);
+        
         var regNum = selectedReports!.Master_DB.RegNoRep.Value;
         var okpo = selectedReports.Master_DB.OkpoRep.Value;
-        ExportType = $"Проверка_инвентаризаций_{formNum}_{regNum}_{okpo}";
+        exportName = $"Проверка_инвентаризаций_{formNum}_{regNum}_{okpo}";
 
-        progressBarVM.SetProgressBar(6, "Запрос даты формирования СНК");
+        progressBarVM.SetProgressBar(6, "Запрос даты формирования СНК", exportName);
         var(endSnkDate, snkParams) = await AskSnkEndDate(progressBar, cts);
 
         progressBarVM.SetProgressBar(8, "Создание временной БД");
@@ -56,7 +55,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         await using var db = new DBModel(tmpDbPath);
 
         progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
-        var fileName = $"{ExportType}_{Assembly.GetExecutingAssembly().GetName().Version}";
+        var fileName = $"{exportName}_{Assembly.GetExecutingAssembly().GetName().Version}";
         var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
 
         progressBarVM.SetProgressBar(13, "Формирование списка инвентаризационных отчётов");
@@ -100,7 +99,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
             inventoryDatesList, inventoryDuplicateErrors, firstSnkDate, formNum);
 
         progressBarVM.SetProgressBar(45, "Загрузка и заполнение СНК");
-        await FillSnkPages(db, unitInStockByDateDictionary, inventoryFormsDtoList, formNum, excelPackage, progressBarVM, cts);
+        await FillSnkPages(db, unitInStockByDateDictionary, inventoryFormsDtoList, formNum, excelPackage, snkParams, progressBarVM, cts);
 
         progressBarVM.SetProgressBar(75, "Загрузка и заполнение ошибок");
         await FillInventoryErrorsPages(db, inventoryErrorsByDateDictionary, formNum, excelPackage, progressBarVM, cts);
@@ -143,7 +142,7 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = $"Выгрузка не выполнена, поскольку у организации отсутствуют формы {formNum} с кодом операции 10.",
                     MinWidth = 400,
                     MinHeight = 150,
@@ -505,8 +504,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
     #region FillSnkPages
 
     private static async Task FillSnkPages(DBModel db, Dictionary<DateOnly, List<ShortFormDTO>> unitInStockByDateDictionary, 
-        List<ShortFormDTO> inventoryFormsDtoList, string formNum, 
-        ExcelPackage excelPackage, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
+        List<ShortFormDTO> inventoryFormsDtoList, string formNum, ExcelPackage excelPackage, SnkParamsDto snkParams,
+        AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
         double progressBarDoubleValue = progressBarVM.ValueBar;
         foreach (var (inventoryDate, unitInStockOnDateDtoList) in unitInStockByDateDictionary)
@@ -529,18 +528,18 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
             var fullFormsSnkOrderedList = fullFormsSnkList
                 .OrderByDescending(x => fullFormsInventoryList
-                    .Any(y => x.PasNum == y.PasNum
-                              && x.Type == y.Type
-                              && x.Radionuclids == y.Radionuclids
-                              && x.FacNum == y.FacNum
+                    .Any(y => (!snkParams.CheckPasNum || x.PasNum == y.PasNum)
+                              && (!snkParams.CheckType || x.Type == y.Type)
+                              && (!snkParams.CheckRadionuclids || x.Radionuclids == y.Radionuclids)
+                              && (!snkParams.CheckFacNum || x.FacNum == y.FacNum)
                               && x.Quantity == y.Quantity
-                              && x.PackNumber == y.PackNumber))
-                .ThenBy(x => x.PasNum)
-                .ThenBy(x => x.FacNum)
-                .ThenBy(x => x.Type)
-                .ThenBy(x => x.Radionuclids)
+                              && (!snkParams.CheckPackNumber || x.PackNumber == y.PackNumber)))
+                .ThenBy(x => snkParams.CheckPasNum ? x.PasNum : null)
+                .ThenBy(x => snkParams.CheckFacNum ? x.FacNum : null)
+                .ThenBy(x => snkParams.CheckType ? x.Type : null)
+                .ThenBy(x => snkParams.CheckRadionuclids ? x.Radionuclids : null)
                 .ThenBy(x => x.Quantity)
-                .ThenBy(x => x.PackNumber)
+                .ThenBy(x => snkParams.CheckPackNumber ? x.PackNumber : null)
                 .ToList();
 
             var snkRow = 3;
@@ -613,18 +612,18 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
 
             var fullFormsInventoryOrderedList = fullFormsInventoryList
                     .OrderByDescending(x => fullFormsSnkList
-                        .Any(y => x.PasNum == y.PasNum
-                                  && x.Type == y.Type
-                                  && x.Radionuclids == y.Radionuclids
-                                  && x.FacNum == y.FacNum
+                        .Any(y => (!snkParams.CheckPasNum || x.PasNum == y.PasNum)
+                                  && (!snkParams.CheckType || x.Type == y.Type)
+                                  && (!snkParams.CheckRadionuclids || x.Radionuclids == y.Radionuclids)
+                                  && (!snkParams.CheckFacNum || x.FacNum == y.FacNum)
                                   && x.Quantity == y.Quantity
-                                  && x.PackNumber == y.PackNumber))
-                    .ThenBy(x => x.PasNum)
-                    .ThenBy(x => x.FacNum)
-                    .ThenBy(x => x.Type)
-                    .ThenBy(x => x.Radionuclids)
+                                  && (!snkParams.CheckPackNumber || x.PackNumber == y.PackNumber)))
+                    .ThenBy(x => snkParams.CheckPasNum ? x.PasNum : null)
+                    .ThenBy(x => snkParams.CheckFacNum ? x.FacNum : null)
+                    .ThenBy(x => snkParams.CheckType ? x.Type : null)
+                    .ThenBy(x => snkParams.CheckRadionuclids ? x.Radionuclids : null)
                     .ThenBy(x => x.Quantity)
-                    .ThenBy(x => x.PackNumber)
+                    .ThenBy(x => snkParams.CheckPackNumber ? x.PackNumber : null)
                     .ToList();
 
             var inventoryRow = 3;
@@ -691,13 +690,13 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
             #region HighlightMatchesWithColor
 
             var countMatches = fullFormsSnkOrderedList
-                    .Count(x => fullFormsInventoryOrderedList
-                        .Any(y => x.PasNum == y.PasNum
-                                  && x.Type == y.Type
-                                  && x.Radionuclids == y.Radionuclids
-                                  && x.FacNum == y.FacNum
-                                  && x.Quantity == y.Quantity
-                                  && x.PackNumber == y.PackNumber));
+                .Count(x => fullFormsInventoryOrderedList
+                    .Any(y => (!snkParams.CheckPasNum || x.PasNum == y.PasNum)
+                              && (!snkParams.CheckType || x.Type == y.Type)
+                              && (!snkParams.CheckRadionuclids || x.Radionuclids == y.Radionuclids)
+                              && (!snkParams.CheckFacNum || x.FacNum == y.FacNum)
+                              && x.Quantity == y.Quantity
+                              && (!snkParams.CheckPackNumber || x.PackNumber == y.PackNumber)));
 
             if (countMatches > 0)
             {
@@ -942,8 +941,8 @@ public class ExcelExportCheckInventoriesAsyncCommand : ExcelExportSnkBaseAsyncCo
         var minusOperationArray = GetMinusOperationsArray(formNum);
 
         var currentInventoryDateIndex = 0;
-        var comparer = new CustomSnkEqualityComparer();
-        var radsComparer = new CustomSnkRadionuclidsEqualityComparer();
+        var comparer = new SnkEqualityComparer();
+        var radsComparer = new SnkRadionuclidsEqualityComparer();
         foreach (var inventoryDate in inventoryDatesList)
         {
             // Инициализируем список ошибок, сразу добавляя в него повторные операции инвентаризации.

@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace Client_App.Resources.CustomComparers.SnkComparers;
 
-public partial class CustomSnkRadionuclidsEqualityComparer : IEqualityComparer<string>
+public partial class SnkRadionuclidsEqualityComparer : IEqualityComparer<string>
 {
     public bool Equals(string? x, string? y)
     {
