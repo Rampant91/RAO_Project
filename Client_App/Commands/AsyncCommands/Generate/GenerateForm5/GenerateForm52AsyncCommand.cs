@@ -2,8 +2,10 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.Logger;
 using Client_App.Properties;
+using Client_App.Resources.CustomComparers.SnkComparers;
 using Client_App.Resources.CustomComparers.SnkComparers;
 using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Messages;
@@ -16,6 +18,7 @@ using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
+using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form5;
 using System;
@@ -25,8 +28,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Client_App.Resources.CustomComparers.SnkComparers;
-using Models.Forms;
 
 namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 {
@@ -84,7 +85,9 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 var answer = await Dispatcher.UIThread.InvokeAsync(async () => await ShowAskYearMessage(owner));
                 Report.Year.Value = answer.ToString();
             }
+
             Report.Rows52.Clear();
+            await new SaveReportAsyncCommand(formVM).AsyncExecute(null);
 
             if (Settings.Default.AppLaunchedInNorao)
             {

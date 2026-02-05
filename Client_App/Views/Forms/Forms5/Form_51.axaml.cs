@@ -10,20 +10,21 @@ using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
 using Client_App.Interfaces.Logger;
+using Client_App.ViewModels.Forms.Forms4;
+using Client_App.ViewModels.Forms.Forms5;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
+using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
+using Models.Forms.Form5;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Models.Collections;
-using Client_App.ViewModels.Forms.Forms5;
-using Models.Forms.Form5;
 
 namespace Client_App.Views.Forms.Forms5;
 
@@ -75,134 +76,119 @@ public partial class Form_51 : BaseWindow<Form_51VM>
         }
     }
 
-    #region DataGrid_KeyDown
-
-    private void DataGrid_KeyDown(object? sender, KeyEventArgs e)
-    {
-        switch (e.Key)
-        {
-            case Key.LeftCtrl:
-            case Key.RightCtrl:
-                _isCtrlPressed = true;
-                break;
-            case Key.C:
-                _cKeyPressed = true;
-                break;
-            case Key.V:
-                _vKeyPressed = true;
-                break;
-            case Key.A:
-                _aKeyPressed = true;
-                break;
-        }
-    }
-
-    #endregion
-
     #region DataGrid_KeyUp
 
     private void DataGrid_KeyUp(object? sender, KeyEventArgs e)
     {
-        if (DataContext is not Form_51VM vm) return;
+        if (DataContext is not Form_51VM vm)
+            return;
 
         var dataGrid = this.FindControl<DataGrid>("dataGrid");
         var dataContext = dataGrid?.DataContext;
-        if (dataContext is null || dataGrid is null) return;
+        if (dataContext is null || dataGrid is null)
+            return;
 
         var selectedForms = vm.SelectedForms;
 
-        if (!dataGrid.IsPointerOver || !_isCtrlPressed) return;
-
-        //ќтдельно обрабатываем хоткеи, которые срабатывают только, если мы не редактируем €чейку
-        if (!vm.DataGridIsEditing)
+        if (dataGrid.IsPointerOver && e.KeyModifiers is KeyModifiers.Control)
         {
-            if (_cKeyPressed || e.Key is Key.C)
+            switch (e.Key)
             {
-                _isCtrlPressed = false;
-                _cKeyPressed = false;
-                if (selectedForms is { Count: > 0 })
-                {
-                    vm.CopyRows.Execute(selectedForms);
-                    e.Handled = true;
-                }
-                return;
-            }
-            else if (_vKeyPressed || e.Key is Key.V)
-            {
-                _isCtrlPressed = false;
-                _vKeyPressed = false;
-                if (selectedForms is { Count: > 0 })
-                {
-                    vm.PasteRows.Execute(selectedForms);
-                    e.Handled = true;
-                }
-                return;
-            }
-            else if (_aKeyPressed || e.Key is Key.A)
-            {
-                _isCtrlPressed = false;
-                _aKeyPressed = false;
-                vm.SelectAll.Execute(null);
-                e.Handled = true;
-                return;
-            }
+                case Key.A: // Select All
+                    {
+                        vm.SelectAll.Execute(null);
+                        e.Handled = true;
 
-        }
-        
-        //ќтдельно остальные хоткеи
-        switch (e.Key)
-        {
-            case Key.LeftCtrl:
-            case Key.RightCtrl:
-            {
-                _isCtrlPressed = false;
-                break;
-            }
-            case Key.T: // Add Row
-            {
-                vm.AddRow.Execute(null);
-                e.Handled = true;
+                        break;
+                    }
+                case Key.T: // Add Row
+                    {
+                        vm.AddRow.Execute(null);
+                        e.Handled = true;
 
-                break;
-            }
-            case Key.N: // Add N Rows
-            {
-                vm.AddRows.Execute(null);
-                e.Handled = true;
+                        break;
+                    }
+                case Key.N: // Add N Rows
+                    {
+                        vm.AddRows.Execute(null);
+                        e.Handled = true;
 
-                break;
-            }
-            case Key.I: // Add N Rows Before
-            {
-                if (selectedForms is { Count: > 0 })
-                {
-                    vm.AddRowsIn.Execute(selectedForms);
-                    e.Handled = true;
-                }
+                        break;
+                    }
+                case Key.I: // Add N Rows Before
+                    {
+                        if (selectedForms is { Count: > 0 })
+                        {
+                            vm.AddRowsIn.Execute(selectedForms);
+                            e.Handled = true;
+                        }
 
-                break;
-            }
-            case Key.D: // Delete Selected Rows
-            {
-                if (selectedForms is { Count: > 0 })
-                {
-                    vm.DeleteRows.Execute(selectedForms);
-                    e.Handled = true;
-                }
+                        break;
+                    }
+                case Key.C: // Copy Rows
+                    {
+                        if (selectedForms is { Count: > 0 })
+                        {
+                            vm.CopyRows.Execute(selectedForms);
+                            e.Handled = true;
+                        }
 
-                break;
-            }
-            case Key.O: // Set Number Order
-            {
-                vm.SetNumberOrder.Execute(null);
-                e.Handled = true;
+                        break;
+                    }
+                case Key.V: // Paste Rows
+                    {
+                        if (selectedForms is { Count: > 0 })
+                        {
+                            vm.PasteRows.Execute(selectedForms);
+                            e.Handled = true;
+                        }
 
-                break;
+                        break;
+                    }
+                case Key.D: // Delete Selected Rows
+                    {
+                        if (selectedForms is { Count: > 0 })
+                        {
+                            vm.DeleteRows.Execute(selectedForms);
+                            e.Handled = true;
+                        }
+
+                        break;
+                    }
+                case Key.O: // Set Number Order
+                    {
+                        vm.SetNumberOrder.Execute(null);
+                        e.Handled = true;
+
+                        break;
+                    }
+                case Key.K: // Clear Rows
+                    {
+                        if (selectedForms is { Count: > 0 })
+                        {
+                            vm.DeleteDataInRows.Execute(selectedForms);
+                            e.Handled = true;
+                        }
+
+                        break;
+                    }
+                case Key.U: // Clear Rows
+                    {
+                        if (selectedForms is { Count: > 0 })
+                        {
+                            vm.DeleteDataInRows.Execute(selectedForms);
+                            e.Handled = true;
+                        }
+
+                        break;
+                    }
+                default: return;
             }
         }
     }
 
     #endregion
+
 
     #region OnStandartClosing
 

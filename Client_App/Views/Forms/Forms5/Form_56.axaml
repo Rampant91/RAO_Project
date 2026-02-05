@@ -18,7 +18,6 @@
     d:DesignHeight="1080"
     d:DesignWidth="1920"
     x:DataType="vm:Form_56VM"
-    KeyDown="DataGrid_KeyDown"
     KeyUp="DataGrid_KeyUp"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">

@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.Logger;
 using Client_App.Properties;
 using Client_App.ViewModels.Forms;
@@ -80,7 +81,9 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 var answer = await Dispatcher.UIThread.InvokeAsync(async () => await ShowAskYearMessage(owner));
                 Report.Year.Value = answer.ToString();
             }
+
             Report.Rows55.Clear();
+            await new SaveReportAsyncCommand(formVM).AsyncExecute(null);
 
             if (Settings.Default.AppLaunchedInNorao)
             {

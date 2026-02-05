@@ -55,7 +55,7 @@
 							<MenuItem Header="Выгрузить все организации в один файл"
 									  Command="{Binding MainWindowVM.ExportAllReportsOneFile}"/>
 							<MenuItem Header="Выгрузить все организации в отдельные файлы"
-									  Command="{Binding ExportAllReports}"
+									  Command="{Binding MainWindowVM.ExportAllReports}"
 									  CommandParameter="{Binding SelectedReports}"/>
 						</ContextMenu>
 					</DataGrid.ContextMenu>

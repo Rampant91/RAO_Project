@@ -84,6 +84,7 @@ public class GenerateForm57AsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         }
 
         Report.Rows57.Clear();
+        await new SaveReportAsyncCommand(formVM).AsyncExecute(null);
 
         if (await ShowAskDependOnReportOrNotMessage(owner))
         {

@@ -164,6 +164,16 @@ public partial class Form_41 : BaseWindow<Form_41VM>
 
                         break;
                     }
+                case Key.U: // Clear Rows
+                    {
+                        if (selectedForms is { Count: > 0 })
+                        {
+                            vm.DeleteDataInRows.Execute(selectedForms);
+                            e.Handled = true;
+                        }
+
+                        break;
+                    }
                 default: return;
             }
         }
