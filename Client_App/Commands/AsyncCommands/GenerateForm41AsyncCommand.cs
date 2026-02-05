@@ -479,9 +479,9 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
             if (regNoIndex < current)
             {
                 string regNo = codeSubjectRF;
-                if ((regNoIndex + 1) / 100 == 0)
+                if ((regNoIndex) / 100 == 0)
                     regNo += "0";
-                if ((regNoIndex + 1) / 10 == 0)
+                if ((regNoIndex) / 10 == 0)
                     regNo += "0";
                 regNo += $"{regNoIndex}";
                 Report.Rows41.Insert(i, new Form41()
@@ -493,7 +493,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 i++;
             }
             else
-                return;
+                break;
         }
         while(i < Report.Rows41.Count)
         {
