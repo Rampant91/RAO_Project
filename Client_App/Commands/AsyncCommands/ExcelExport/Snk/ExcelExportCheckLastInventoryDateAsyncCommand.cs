@@ -460,11 +460,10 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
     /// <param name="repsDtoList">Список DTO организаций.</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <param name="cts">Токен.</param>
-    /// /// <param name="snkParams">DTO состоящий из bool флагов, показывающих, по каким параметрам необходимо выполнять поиск учётной единицы.
-    /// Может быть null, тогда поиск ведётся по всем параметрам.</param>
+    /// <param name="snkParams">DTO состоящий из bool флагов, показывающих, по каким параметрам необходимо выполнять поиск учётной единицы.</param>
     /// <returns>Список DTO организаций, у которых есть учётные единицы в наличии.</returns>
     private static async Task<List<ShortReportsDto>> CheckSnk(string tmpDbPath, List<ShortReportsDto> repsDtoList,
-        AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts, SnkParamsDto? snkParams = null)
+        AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts, SnkParamsDto snkParams)
     {
         var currentDate = DateOnly.FromDateTime(DateTime.Now);
 

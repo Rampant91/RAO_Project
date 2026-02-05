@@ -188,7 +188,7 @@ public class Forms1TabControlVM : INotifyPropertyChanged
                 SelectedReports
                     .Report_Collection
                     .AsEnumerable()
-                    .OrderBy(x => x.FormNum_DB)
+                    .OrderBy(x => x.Order)
                     // Сортируем по валидным датам, некорректные уходят в начало/конец
                     .ThenByDescending(x => x.StartPeriod_DB == null ||
                                            !DateOnly.TryParse(x.StartPeriod_DB, out _) ?

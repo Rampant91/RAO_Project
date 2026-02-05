@@ -200,7 +200,7 @@ public class Forms2TabControlVM : INotifyPropertyChanged
                 SelectedReports
                     .Report_Collection
                     .AsEnumerable()
-                    .OrderBy(x => x.FormNum_DB)
+                    .OrderBy(x => x.Order)
                     .ThenByDescending(x => x.Year_DB == null ||
                                            !int.TryParse(x.Year_DB, out _) ?
                         int.MaxValue :

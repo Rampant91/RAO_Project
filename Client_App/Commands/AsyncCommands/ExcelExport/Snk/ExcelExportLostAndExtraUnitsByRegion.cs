@@ -2,7 +2,6 @@
 using Avalonia.Threading;
 using Client_App.Resources.CustomComparers.SnkComparers;
 using Client_App.ViewModels.Messages;
-using Client_App.Views;
 using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
@@ -29,7 +28,6 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
         var cts = new CancellationTokenSource();
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
-        var mainWindow = Desktop.MainWindow as MainWindow;
         var formNum = (parameter as string)!;
         progressBarVM.SetProgressBar(5, "Проверка наличия отчётов",
             $"Проблемные_источники_по_региону_по_форме_{formNum}", ExportType);
@@ -88,18 +86,12 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentRepsNum = 0;
 
-        if (repsDtoList.Count > 0)
+        foreach (var repsDto in repsDtoList)
         {
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
                 $"Проверено {currentRepsNum} из {repsDtoList.Count} СНК организаций",
                 $"Проблемные источники по региону {region} по форме {formNum}"
-                + $"{Environment.NewLine}СНК для организации {repsDtoList[0].RegNum}_{repsDtoList[0].Okpo}",
-                "Выгрузка в .xlsx");
-        }
-
-        foreach (var repsDto in repsDtoList)
-        {
-            currentRepsNum++;
+                + $"{Environment.NewLine}СНК для организации {repsDto.RegNum}_{repsDto.Okpo}");
 
             var inventoryReportDtoList = await GetInventoryReportDtoList(db, repsDto.Id, formNum, endSnkDate, cts);
             var (firstSnkDate, inventoryFormsDtoList, _) = 
@@ -134,13 +126,12 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
                 .Except(unitInStockDtoList, comparer)
                 .ToList();
 
-            (lostUnitsCurrentRow, extraUnitsCurrentRow) = await FillExcel(excelPackage, repsDto, lostUnits, extraUnits, transferOfMissingUnitOperationList, formNum, lastInventoryDate, lostUnitsCurrentRow, extraUnitsCurrentRow, transferOfMissingUnitCurrentRow);
+            (lostUnitsCurrentRow, extraUnitsCurrentRow, transferOfMissingUnitCurrentRow) = 
+                await FillExcel(excelPackage, repsDto, lostUnits, extraUnits, transferOfMissingUnitOperationList, 
+                    formNum, lastInventoryDate, lostUnitsCurrentRow, extraUnitsCurrentRow, transferOfMissingUnitCurrentRow);
 
             progressBarDoubleValue += (double)70 / repsDtoList.Count;
-            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-                $"Проверено {currentRepsNum} из {repsDtoList.Count} СНК организаций",
-                $"Проблемные источники по региону {region} по форме {formNum}"
-                + $"{Environment.NewLine}СНК для организации {repsDto.RegNum}_{repsDto.Okpo}");
+            currentRepsNum++;
         }
     }
 
@@ -256,7 +247,8 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
     /// <summary>
     /// Заполняет строчки Excel пакета.
     /// </summary>
-    private static Task<(int, int)> FillExcel(ExcelPackage excelPackage, ShortReportsDto reps, List<ShortFormDTO> lostUnits,
+    /// <returns>Кортеж из номеров текущих строк для каждого из 3 листов excelPackage.</returns>
+    private static Task<(int, int, int)> FillExcel(ExcelPackage excelPackage, ShortReportsDto reps, List<ShortFormDTO> lostUnits,
         List<ShortFormDTO> extraUnits, List<ShortFormDTO>  transferOfMissingUnitOperationList, string formNum, 
         DateOnly lastInventoryDate, int lostUnitsCurrentRow, int extraUnitsCurrentRow, int transferOfMissingUnitCurrentRow)
     {
@@ -362,7 +354,7 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
             transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 3].Value = ConvertToExcelString(reps.ShortName);
             transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 4].Value = ConvertToExcelString(reps.Okpo);
             transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 5].Value = ConvertToExcelString(dto.OpCode);
-            transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 6].Value = ConvertToExcelDate(dto.OpDate.ToShortDateString(), transferOfMissingUnitWorksheet, extraUnitsCurrentRow, 6);
+            transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 6].Value = ConvertToExcelDate(dto.OpDate.ToShortDateString(), transferOfMissingUnitWorksheet, transferOfMissingUnitCurrentRow, 6);
             transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 7].Value = ConvertToExcelString(dto.PasNum);
             transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 8].Value = ConvertToExcelString(dto.Type);
             transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 9].Value = ConvertToExcelString(dto.Radionuclids);
@@ -375,7 +367,7 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
                     #region Headers
 
                     transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 11].Value = dto.Quantity;
-                    transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 12].Value = dto.PackNumber;
+                    transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 12].Value = ConvertToExcelString(dto.PackNumber);
 
                     #endregion
 
@@ -385,7 +377,7 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
                 {
                     #region Headers
 
-                    transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 11].Value = dto.PackNumber;
+                    transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 11].Value = ConvertToExcelString(dto.PackNumber);
 
                     #endregion
 
@@ -398,7 +390,7 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
 
         #endregion
 
-        return Task.FromResult((lostUnitsCurrentRow, extraUnitsCurrentRow));
+        return Task.FromResult((lostUnitsCurrentRow, extraUnitsCurrentRow, transferOfMissingUnitCurrentRow));
     }
 
     #endregion
@@ -653,8 +645,8 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
 
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
-
-        return (endSnkDate, snkParams!, region!);
+        snkParams ??= new SnkParamsDto(true, true, true, true, true);
+        return (endSnkDate, snkParams, region!);
 
     }
 
