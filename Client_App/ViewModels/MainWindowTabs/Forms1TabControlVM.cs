@@ -55,6 +55,8 @@ public class Forms1TabControlVM : INotifyPropertyChanged
             _searchText = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(ReportsCollection));
+            OnPropertyChanged(nameof(FilteredRowsOrgs));
+            OnPropertyChanged(nameof(TotalPagesOrgs));
         }
     }
     #endregion
@@ -122,13 +124,33 @@ public class Forms1TabControlVM : INotifyPropertyChanged
     {
         get
         {
-            var result = TotalRowsOrgs / RowsCountOrgs;
-            if (TotalRowsOrgs % RowsCountOrgs > 0)
+            var result = FilteredRowsOrgs / RowsCountOrgs;
+            if (FilteredRowsOrgs % RowsCountOrgs > 0)
                 result++;
             return result;
         }
     }
     public static int TotalRowsOrgs => StaticConfiguration.DBModel.ReportsCollectionDbSet.Count(reps => reps.Master_DB.FormNum_DB == "1.0");
+    
+    public int FilteredRowsOrgs
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(SearchText))
+            {
+                var search = SearchText.ToLower().Trim();
+                return StaticConfiguration.DBModel.ReportsCollectionDbSet
+                    .AsEnumerable()
+                    .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
+                    .Where(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
+                                   || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
+                                   || reps.Master_DB.Rows10[0].ShortJurLico_DB.ToLower().Contains(search)
+                                   || reps.Master_DB.Rows10[1].ShortJurLico_DB.ToLower().Contains(search))
+                    .Count();
+            }
+            return TotalRowsOrgs;
+        }
+    }
 
     private int _rowsCountOrgs;
     public int RowsCountOrgs

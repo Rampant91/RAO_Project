@@ -16,7 +16,9 @@ namespace Client_App.ViewModels.MainWindowTabs
     public class Forms4TabControlVM : INotifyPropertyChanged
     {
         #region Constructor
-        public Forms4TabControlVM (MainWindowVM mainWindowVM)
+
+        public Forms4TabControlVM() { }
+        public Forms4TabControlVM(MainWindowVM mainWindowVM)
         {
             _mainWindowVM = mainWindowVM;
         }
@@ -46,9 +48,13 @@ namespace Client_App.ViewModels.MainWindowTabs
             }
             set
             {
+                if(CurrentPageOrgs != 1)
+                    CurrentPageOrgs = 1;
                 _searchText = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(ReportsCollection));
+                OnPropertyChanged(nameof(FilteredRowsOrgs));
+                OnPropertyChanged(nameof(TotalPagesOrgs));
             }
         }
         #endregion
@@ -116,8 +122,8 @@ namespace Client_App.ViewModels.MainWindowTabs
         {
             get
             {
-                var result = TotalRowsOrgs / RowsCountOrgs;
-                if (TotalRowsOrgs % RowsCountOrgs > 0)
+                var result = FilteredRowsOrgs / RowsCountOrgs;
+                if (FilteredRowsOrgs % RowsCountOrgs > 0)
                     result++;
                 return result;
             }
@@ -128,6 +134,26 @@ namespace Client_App.ViewModels.MainWindowTabs
             {
                 return StaticConfiguration.DBModel.ReportsCollectionDbSet
                     .Where(reps => reps.Master_DB.FormNum_DB == "4.0").Count();
+            }
+        }
+        
+        public int FilteredRowsOrgs
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(SearchText))
+                {
+                    var search = SearchText.ToLower().Trim();
+                    return StaticConfiguration.DBModel.ReportsCollectionDbSet
+                        .AsEnumerable()
+                        .Where(reps => reps.Master_DB.FormNum_DB == "4.0")
+                        .Where(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB.ToString().Contains(search)
+                        || reps.Master_DB.Rows40[0].SubjectRF_DB.ToLower().Contains(search)
+                        || (!string.IsNullOrEmpty(reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB)
+                           && reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB.ToLower().Contains(search)))
+                        .Count();
+                }
+                return TotalRowsOrgs;
             }
         }
 
