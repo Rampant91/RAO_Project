@@ -118,14 +118,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     #endregion
 
     #region Forms5TabControlVM
-    private Forms5TabControlVM _forms5TabControlVM;
-    public Forms5TabControlVM Forms5TabControlVM
-    {
-        get
-        {
-            return _forms5TabControlVM;
-        }
-    }
+    public Forms5TabControlVM Forms5TabControlVM{ get; }
 
     #endregion
 
@@ -136,17 +129,12 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         {
             return SelectedReportType switch
             {
-                case 1:
-                    return Forms1TabControlVM.SelectedReports;
-                case 2:
-                    return Forms2TabControlVM.SelectedReports;
-                case 4:
-                    return Forms4TabControlVM.SelectedReports;
-                case 5:
-                    return Forms5TabControlVM.SelectedReports;
-                default:
-                    return null;
-            }
+                1 => Forms1TabControlVM.SelectedReports,
+                2 => Forms2TabControlVM.SelectedReports,
+                4 => Forms4TabControlVM.SelectedReports,
+                5 => Forms5TabControlVM.SelectedReports,
+                _ => null
+            };
         }
         set
         {

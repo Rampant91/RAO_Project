@@ -122,7 +122,7 @@ public class ImportRaodbAsyncCommand() : ImportBaseAsyncCommand
                     baseReps11 = GetReports11FromLocalEqual(impReps);
                     baseReps21 = GetReports21FromLocalEqual(impReps);
                     baseReps41 = GetReports41FromLocalEqual(impReps);
-                    baseReps41 = GetReports51FromLocalEqual(impReps);
+                    baseReps51 = GetReports51FromLocalEqual(impReps);
                 }
                 else // if "Selected"
                 {

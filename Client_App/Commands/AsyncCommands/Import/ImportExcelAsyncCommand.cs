@@ -92,23 +92,23 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
             var worksheet0 = excelPackage.Workbook.Worksheets[0];
             var worksheet1 = excelPackage.Workbook.Worksheets[1];
             // Проверка формата формы, записанного в Excel
-            var val = worksheet.Name == "1.0"
-                      && Convert.ToString(worksheet.Cells["A3"].Value)
+            var val = worksheet0.Name == "1.0"
+                      && Convert.ToString(worksheet0.Cells["A3"].Value)
                           is "ГОСУДАОСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ"
                           or "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ"
-                      || worksheet.Name == "2.0"
-                      && Convert.ToString(worksheet.Cells["A4"].Value)
+                      || worksheet0.Name == "2.0"
+                      && Convert.ToString(worksheet0.Cells["A4"].Value)
                           is "ГОСУДАОСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ"
                           or "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ"
-                      || worksheet.Name == "Форма 4.0"
-                      && (Convert.ToString(worksheet.Cells["A7"].Value) //Старый шаблон
+                      || worksheet0.Name == "Форма 4.0"
+                      && (Convert.ToString(worksheet0.Cells["A7"].Value) //Старый шаблон
                           is "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ\n" +
                           "Конфиденциальность гарантируется получателем информации"
-                      || Convert.ToString(worksheet.Cells["A6"].Value) //Новый шаблон
+                      || Convert.ToString(worksheet0.Cells["A6"].Value) //Новый шаблон
                           is "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ\n" +
                           "Конфиденциальность гарантируется получателем информации")
-                      || worksheet.Name == "Форма 5.0"
-                      && Convert.ToString(worksheet.Cells["A7"].Value)
+                      || worksheet0.Name == "Форма 5.0"
+                      && Convert.ToString(worksheet0.Cells["A7"].Value)
                           is "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ\n" +
                           "Конфиденциальность гарантируется получателем информации";
 
@@ -163,12 +163,12 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
             // Для 1.0 и 2.0 основные данные - это рег.Номер и ОКПО
             // Для 4.0 основные данные - это код субъекта
             // У Формы 5.0 - полное наименование
-            if (worksheet.Name is "1.0" or "2.0")
-                baseReps = GetBaseReps(worksheet);
-            else if (worksheet.Name is "Форма 4.0")
+            if (worksheet0.Name is "1.0" or "2.0")
+                baseReps = GetBaseReps(worksheet0);
+            else if (worksheet0.Name is "Форма 4.0")
             {
-                codeSubjectRF = Convert.ToString(worksheet.Cells["B8"].Value);
-                var subjectRF = Convert.ToString(worksheet.Cells["B9"].Value);
+                codeSubjectRF = Convert.ToString(worksheet0.Cells["B8"].Value);
+                var subjectRF = Convert.ToString(worksheet0.Cells["B9"].Value);
 
                 //Автоматическое определение кода субъекта РФ
                 if (Spravochniks.DictionaryOfSubjectRF.ContainsValue(subjectRF))
@@ -192,9 +192,9 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                 baseReps = ReportsStorage.LocalReports.Reports_Collection40
                     .FirstOrDefault(reports => reports.Master_DB.Rows40[0].CodeSubjectRF_DB == codeSubjectRF);
             }
-            else if(worksheet.Name is "Форма 5.0")
+            else if(worksheet0.Name is "Форма 5.0")
             {
-                var name = Convert.ToString(worksheet.Cells["B20"].Value);
+                var name = Convert.ToString(worksheet0.Cells["B20"].Value);
                 try
                 {
                     baseReps = StaticConfiguration.DBModel.ReportsCollectionDbSet
@@ -213,7 +213,7 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
 
 
             //Импортируем все остальные данные из титульника
-            var impReps = GetImportReps(worksheet);
+            var impReps = GetImportReps(worksheet0);
             if ((impReps.Master_DB.FormNum_DB == "4.0") && 
                 !(codeSubjectRF is  "" or null))
             {
@@ -227,7 +227,7 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
             }
             baseReps.Master_DB.ReportChangedDate = impDateTime;
 
-            if (worksheet.Name is "1.0" or "2.0")
+            if (worksheet0.Name is "1.0" or "2.0")
             {
                 BaseRepsOkpo = baseReps.Master.OkpoRep.Value;
                 BaseRepsRegNum = baseReps.Master.RegNoRep.Value;
@@ -236,7 +236,7 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
 
             
 
-            var repNumber = worksheet.Name;
+            var repNumber = worksheet0.Name;
             // В некоторых шаблонах в наименовании листа Excel перед номером формы добавляется слово "Форма". Например "Форма 4.0"
             // а в других просто пишется номер формы. Например "1.0"
             if (repNumber.ToLower().StartsWith("форма "))   
@@ -249,7 +249,7 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                 formNumber = formNumber.Split(' ')[1];
 
             //Импортируем отчет
-            var impRep = GetReportWithDataFromExcel(worksheet, worksheet1, formNumber, timeCreate);
+            var impRep = GetReportWithDataFromExcel(worksheet0, worksheet1, formNumber, timeCreate);
             impRep.ReportChangedDate = impDateTime;
 
             int start;
@@ -327,7 +327,7 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
             var impRepList = new List<Report> { impRep };
             if (baseReps.Report_Collection.Count != 0)
             {
-                switch (worksheet.Name.ToLower())
+                switch (worksheet0.Name.ToLower())
                 {
                     case "1.0":
                     {
@@ -361,7 +361,7 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                 {
                     if (answer.Length > 1)
                     {
-                        if (worksheet.Name is "1.0" or "2.0")
+                        if (worksheet0.Name is "1.0" or "2.0")
                         {
                             #region MessageNewOrg 1.0 or 2.0
                             an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
@@ -391,7 +391,7 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
 
                             #endregion
                         }
-                        else if (worksheet.Name.ToLower() is "форма 4.0" or "форма 5.0")
+                        else if (worksheet0.Name.ToLower() is "форма 4.0" or "форма 5.0")
                         {
                             #region MessageNewOrg 4.0 5.0
                             an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager

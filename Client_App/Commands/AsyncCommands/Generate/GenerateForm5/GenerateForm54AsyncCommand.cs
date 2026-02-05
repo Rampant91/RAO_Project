@@ -42,7 +42,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
         private string year => formVM.Report.Year_DB;
 
-        CustomSnkRadionuclidsEqualityComparer comparer = new CustomSnkRadionuclidsEqualityComparer();
+        SnkRadionuclidsEqualityComparer comparer = new SnkRadionuclidsEqualityComparer();
 
         #endregion
         public override async void Execute(object? parameter)
