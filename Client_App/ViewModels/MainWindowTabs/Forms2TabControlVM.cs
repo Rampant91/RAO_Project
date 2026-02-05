@@ -14,6 +14,10 @@ namespace Client_App.ViewModels.MainWindowTabs;
 public class Forms2TabControlVM : INotifyPropertyChanged
 {
     #region Constructor
+    public Forms2TabControlVM()
+    {
+        // Конструктор пуст - настройки загружаются лениво при первом доступе
+    }
     public Forms2TabControlVM (MainWindowVM mainWindowVM)
     {
         _mainWindowVM = mainWindowVM;
@@ -58,6 +62,8 @@ public class Forms2TabControlVM : INotifyPropertyChanged
             _searchText = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(ReportsCollection));
+            OnPropertyChanged(nameof(FilteredRowsOrgs));
+            OnPropertyChanged(nameof(TotalPagesOrgs));
         }
     }
     #endregion
@@ -127,8 +133,8 @@ public class Forms2TabControlVM : INotifyPropertyChanged
     {
         get
         {
-            var result = TotalRowsOrgs / RowsCountOrgs;
-            if (TotalRowsOrgs % RowsCountOrgs > 0)
+            var result = FilteredRowsOrgs / RowsCountOrgs;
+            if (FilteredRowsOrgs % RowsCountOrgs > 0)
                 result++;
             return result;
         }
@@ -138,6 +144,26 @@ public class Forms2TabControlVM : INotifyPropertyChanged
         get
         {
             return StaticConfiguration.DBModel.ReportsCollectionDbSet.CountAsync(reps => reps.Master_DB.FormNum_DB == "2.0").Result;
+        }
+    }
+    
+    public int FilteredRowsOrgs
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(SearchText))
+            {
+                var search = SearchText.ToLower().Trim();
+                return StaticConfiguration.DBModel.ReportsCollectionDbSet
+                    .AsEnumerable()
+                    .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
+                    .Where(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
+                                   || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
+                                   || reps.Master_DB.Rows20[0].ShortJurLico_DB.ToLower().Contains(search)
+                                   || reps.Master_DB.Rows20[1].ShortJurLico_DB.ToLower().Contains(search))
+                    .Count();
+            }
+            return TotalRowsOrgs;
         }
     }
 

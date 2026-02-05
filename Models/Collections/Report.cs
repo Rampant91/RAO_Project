@@ -2325,7 +2325,7 @@ public class Report : IKey, IDataGridColumn
     {
         if (args.PropertyName != "Value") return;
         var k = ((RamAccess<string>)value).Value;
-        Year_DB = k;
+        Year_DB = new string(k.Where(c => char.IsDigit(c)).ToArray());
     }
 
     private static bool Year_Validation(RamAccess<string> value)

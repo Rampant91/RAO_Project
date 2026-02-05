@@ -33,6 +33,7 @@ public partial class Form_21 : BaseWindow<Form_21VM>
     private readonly Form_21VM _vm = null!;
 
     private bool _isCloseConfirmed;
+    protected override bool IsFullScreenWindow => true;
 
     private bool _isCtrlPressed = false;
     private bool _cKeyPressed = false;

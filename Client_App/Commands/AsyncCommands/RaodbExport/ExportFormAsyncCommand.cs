@@ -175,7 +175,7 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
             .Include(x => x.Notes.OrderBy(x => x.Order))
             .FirstAsync(x => x.Id == repId, cancellationToken: cts.Token);
 
-        if (exportReport.Rows.Count is 0)
+        if (exportReport.Rows.Count is 0 && formNum is not "2.6")   //Для формы 2.6 допустимы отчёты без строчек.
         {
             #region FailedToExportReportMessage
 
@@ -248,7 +248,7 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
                 $"_{Assembly.GetExecutingAssembly().GetName().Version}",
 
             "4.0" when orgWithExpForm.Master.Rows40.Count > 0 =>
-                $"{orgWithExpForm.Master.Rows40[0].CodeSubjectRF_DB}" +
+                $"{orgWithExpForm.Master.Rows40.OrderBy(r =>r.NumberInOrder_DB).ToList()[0].CodeSubjectRF_DB}" +
                 $"_{exportReport.FormNum_DB}" +
                 $"_{StaticStringMethods.RemoveForbiddenChars(exportReport.Year_DB)}" +
                 $"_{exportReport.CorrectionNumber_DB}" +

@@ -16,22 +16,26 @@
 	<UserControl.Resources>
 		<converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
 	</UserControl.Resources>
+
+    <Design.DataContext>
+        <vm:Forms2TabControlVM/>
+    </Design.DataContext>
 	
 	<Border Classes="borderContainer">
 		<Grid RowDefinitions="*,*" ColumnDefinitions="5*,3*" >
 			<Grid Grid.Row ="0" Grid.Column="0" RowDefinitions="Auto,*,Auto">
 				<TextBox Text="{Binding SearchText}" Grid.Row="0" Margin="5" Watermark ="Поиск..." />
 				<!--Ошибка в этом DataGrid-->
-				<DataGrid
-						  Grid.Row="1" Margin="5"
-						  Items="{Binding ReportsCollection}"
-						  SelectionMode="Single"
-						  SelectedItem="{Binding SelectedReports}"
-						  RowHeight="25"
-						  GridLinesVisibility="All"
-						  AlternatingRowBackground="White"
-						  RowBackground="White"
-						  CanUserSortColumns="False">
+				<DataGrid x:Name="ReportsDataGrid"
+                          Grid.Row="1" Margin="5"
+                          Items="{Binding ReportsCollection}"
+                          SelectionMode="Single"
+                          SelectedItem="{Binding SelectedReports}"
+                          RowHeight="25"
+                          GridLinesVisibility="All"
+                          AlternatingRowBackground="White"
+                          RowBackground="White"
+                          CanUserSortColumns="False">
 
 					<interactivity:Interaction.Behaviors>
 						<local:DataGridDoubleClickOpenFormBehavior />
@@ -132,33 +136,41 @@
 						  RowDefinitions="Auto,Auto"
 						  ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
 						<TextBlock Text="Текущая страница"
-							Grid.Row="0" Grid.Column="0" Margin="5"/>
+							Grid.Row="0" Grid.Column="0" Margin="5"
+							VerticalAlignment="Center"/>
 
 						<controls:NumericLeftRight
 							Value="{Binding CurrentPageOrgs}"
 							Grid.Row="0" Grid.Column="1" Margin="5"
 							Minimum="1"/>
 						<TextBlock Text ="Кол-во страниц:"
-							Grid.Row="0" Grid.Column="2" Margin="5"/>
+							Grid.Row="0" Grid.Column="2" Margin="5"
+							VerticalAlignment="Center"/>
 						<TextBlock
 							Text="{Binding TotalPagesOrgs}"
-							Grid.Row="0" Grid.Column="3" Margin="5"/>
+							Grid.Row="0" Grid.Column="3" Margin="5"
+							VerticalAlignment="Center"/>
 						<TextBlock Text="Кол-во строчек на странице"
-							Grid.Row="1" Grid.Column="0" Margin="5"/>
+							Grid.Row="1" Grid.Column="0" Margin="5"
+							VerticalAlignment="Center"/>
 						<controls:NumericLeftRight
 							Value="{Binding RowsCountOrgs}"
 							Grid.Row="1" Grid.Column="1" Margin="5"
 							Minimum="1"/>
-						<TextBlock Text="Кол-во строчек:"
-							Grid.Row="1" Grid.Column="2" Margin="5"/>
+						<TextBlock Text="Всего орг.:"
+							Grid.Row="1" Grid.Column="2" Margin="5"
+							VerticalAlignment="Center"/>
 						<TextBlock
-							Text="{Binding TotalRowsOrgs}"
-							Grid.Row="1" Grid.Column="3" Margin="5"/>
+							Text="{Binding FilteredRowsOrgs}"
+							Grid.Row="1" Grid.Column="3" Margin="5"
+							VerticalAlignment="Center"/>
 
 						<TextBlock Text="Кол-во отчетов:"
-							Grid.Row="1" Grid.Column="4" Margin="5"/>
+							Grid.Row="1" Grid.Column="4" Margin="5"
+							VerticalAlignment="Center"/>
 						<TextBlock Text="{Binding TotalReportCount}"
-							Grid.Row="1" Grid.Column="5" Margin="5"/>
+							Grid.Row="1" Grid.Column="5" Margin="5"
+							VerticalAlignment="Center"/>
 					</Grid>
 				</Border>
 			</Grid>

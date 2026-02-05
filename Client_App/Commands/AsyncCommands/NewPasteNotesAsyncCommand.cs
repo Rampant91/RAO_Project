@@ -53,7 +53,7 @@ public class NewPasteNotesAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     .ShowDialog(Desktop.MainWindow));
         }
 
-        for (int i = 0; i < parsedRows.Length && i+start<Storage.Notes.Count; i++)
+        for (var i = 0; i < parsedRows.Length && i+start<Storage.Notes.Count; i++)
         {
             var note = Storage.Notes.Get<Note>(i+start);
 

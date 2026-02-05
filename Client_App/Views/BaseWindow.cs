@@ -17,11 +17,31 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>
 {
     public WindowState OwnerPrevState;
 
+    protected virtual bool IsFullScreenWindow => false;
     public override async void Show()
     {
         base.Show();
+        Opened += OnOpenedForBase;
+        await Task.Delay(1).ContinueWith(_ =>
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (!IsFullScreenWindow)
+                {
+                    PositionWindowOnOwnerScreen();
+                }
+            });
+        });
+    }
 
-        await Task.Delay(1).ContinueWith(_ => { Dispatcher.UIThread.Post(PositionWindowOnOwnerScreen); });
+    private void OnOpenedForBase(object? sender, EventArgs e)
+    {
+        if (IsFullScreenWindow)
+        {
+            // здесь единая логика разворота на весь экран (Maximized/FullScreen)
+            WindowState = WindowState.Maximized; // или FullScreen
+        }
+        Opened -= OnOpenedForBase;
     }
 
     #region PositionWindowOnOwnerScreen
@@ -30,6 +50,8 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>
     {
         try
         {
+            if (WindowState is WindowState.Maximized or WindowState.FullScreen) return;
+
             var ownerWindow = GetOwnerWindow();
 
             if (ownerWindow?.Screens == null) return;

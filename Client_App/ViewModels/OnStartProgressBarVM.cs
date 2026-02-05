@@ -18,7 +18,7 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
 {
     private Task MainTask { get; set; }
 
-    private MainWindowVM VMDataContext { get; set; }
+    private MainWindowVM MainWindowVM { get; set; }
 
     #region Constructor
 
@@ -34,7 +34,7 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
         }, () =>
         {
             MainTask = new Task(async () => await Start().ConfigureAwait(false));
-            MainTask.GetAwaiter().OnCompleted(async () => await ShowDialog.Handle(VMDataContext));
+            MainTask.GetAwaiter().OnCompleted(async () => await ShowDialog.Handle(MainWindowVM));
             MainTask.Start();
         });
     }
@@ -71,9 +71,14 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
 
     private async Task Start()
     {
-        VMDataContext = new MainWindowVM();
-        VMDataContext.PropertyChanged += OnVMPropertyChanged;
-        await new InitializationAsyncCommand(VMDataContext).AsyncExecute(this);
+        Settings.Default.AppLaunchedInNorao = Settings.Default.AppStartupParameters
+            .Trim()
+            .Split(',')
+            .Any(x => x is "-n");
+
+        MainWindowVM = new MainWindowVM();
+        MainWindowVM.PropertyChanged += OnMainWindowVMPropertyChanged;
+        await new InitializationAsyncCommand(MainWindowVM).AsyncExecute(this);
 
         if (Settings.Default.AppStartupParameters.Trim().Split(',').Any(x => x is "-p"))
         {
@@ -85,7 +90,7 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
             await BackgroundWorkThenAppLaunchedWithYearParameter();
             Environment.Exit(0);
         }
-        Settings.Default.AppLaunchedInNorao = Settings.Default.AppStartupParameters.Trim().Split(',').Any(x => x is "-n"); 
+        
     }
 
     #region BackgroundWork
@@ -97,11 +102,12 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
     /// </summary>
     private async Task BackgroundWorkThenAppLaunchedWithOperParameter()
     {
-        await new ExcelExportListOfOrgsAsyncCommand().AsyncExecute(this);
-        await new ExcelExportExecutorsAsyncCommand().AsyncExecute(this);
-        await new ExcelExportIntersectionsAsyncCommand().AsyncExecute(this);
-        await new ExcelExportListOfForms1AsyncCommand().AsyncExecute(this);
-        await new ExcelExportAllAsyncCommand().AsyncExecute(this);
+        await new ExcelExportListOfOrgsAsyncCommand().AsyncExecute("full");
+        await new ExcelExportListOfOrgsAsyncCommand().AsyncExecute(null);
+        await new ExcelExportExecutorsAsyncCommand().AsyncExecute(null);
+        await new ExcelExportIntersectionsAsyncCommand().AsyncExecute(null);
+        await new ExcelExportListOfForms1AsyncCommand().AsyncExecute(null);
+        await new ExcelExportAllAsyncCommand(MainWindowVM).AsyncExecute(null);
     }
 
     #endregion
@@ -113,21 +119,22 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
     /// </summary>
     private async Task BackgroundWorkThenAppLaunchedWithYearParameter()
     {
-        await new ExcelExportListOfOrgsAsyncCommand().AsyncExecute(this);
-        await new ExcelExportExecutorsAsyncCommand().AsyncExecute(this);
-        await new ExcelExportListOfForms2AsyncCommand().AsyncExecute(this);
-        await new ExcelExportAllAsyncCommand().AsyncExecute(this);
+        await new ExcelExportListOfOrgsAsyncCommand().AsyncExecute("full");
+        await new ExcelExportListOfOrgsAsyncCommand().AsyncExecute(null);
+        await new ExcelExportExecutorsAsyncCommand().AsyncExecute(null);
+        await new ExcelExportListOfForms2AsyncCommand().AsyncExecute(null);
+        await new ExcelExportAllAsyncCommand(MainWindowVM).AsyncExecute(null);
     }
 
     #endregion 
     
     #endregion
 
-    private void OnVMPropertyChanged(object sender,PropertyChangedEventArgs args)
+    private void OnMainWindowVMPropertyChanged(object sender,PropertyChangedEventArgs args)
     {
         if(args.PropertyName==nameof(OnStartProgressBar))
         {
-            OnStartProgressBar = VMDataContext.OnStartProgressBar;
+            OnStartProgressBar = MainWindowVM.OnStartProgressBar;
         }
     }
 

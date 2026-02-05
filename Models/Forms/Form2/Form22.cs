@@ -431,8 +431,8 @@ public partial class Form22 : Form2, IBaseColor
         //var spr = new List<string>();//here binds spr
         //if (!spr.Contains(value.Value))
         //{
-        //    value.AddError("Недопустимое значение");
-        //    return false;
+        //    value.AddError( "Недопустимое значение");
+        //return false;
         //}
         //return true;
         if (value.Value == "-") return true;
@@ -472,6 +472,28 @@ public partial class Form22 : Form2, IBaseColor
             value.AddError($"Недопустимый код типа РАО - {tmp.Substring(6, 2)}");
         }
         return !value.HasErrors;
+    }
+
+    #endregion
+
+    #region HiddenFlagsNormalization
+
+    /// <summary>
+    /// Нормализует флаги скрытия установки/записи для обычных строк
+    /// (не суммарных и не входящих в группу),
+    /// чтобы изменения из UI могли сохраняться в БД.
+    /// </summary>
+    public void NormalizeHiddenFlags()
+    {
+        if (Sum_DB || SumGroup_DB)
+        {
+            return;
+        }
+
+        _StoragePlaceName_Hidden_Set = true;
+        _StoragePlaceCode_Hidden_Set = true;
+        _PackName_Hidden_Set = true;
+        _PackType_Hidden_Set = true;
     }
 
     #endregion

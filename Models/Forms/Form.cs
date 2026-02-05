@@ -217,7 +217,7 @@ public abstract partial class Form : IKey, IDataGridColumn
             .Replace('е', 'e');
         if (!double.TryParse(tmp,
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                CultureInfo.CreateSpecificCulture("ru-RU"),
+                new CultureInfo("ru-RU", useUserOverride: false),
                 out var doubleValue)
             || tmp.StartsWith('(') ^ tmp.EndsWith(')'))
         {
@@ -250,7 +250,7 @@ public abstract partial class Form : IKey, IDataGridColumn
         {
             return true;
         }
-        if (!DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var date)
+        if (!DateOnly.TryParse(tmp, new CultureInfo("ru-RU", useUserOverride: false), out var date)
             || date.Year < 1945)
         {
             value.AddError("Недопустимое значение");
@@ -340,7 +340,7 @@ public abstract partial class Form : IKey, IDataGridColumn
         }
         if (double.TryParse(tmp,
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                CultureInfo.CreateSpecificCulture("ru-RU"),
+                new CultureInfo("ru-RU", useUserOverride: false),
                 out var doubleValue))
         {
             tmp = $"{doubleValue:0.######################################################e+00}";
@@ -354,11 +354,11 @@ public abstract partial class Form : IKey, IDataGridColumn
     {
         var tmp = (value ?? string.Empty).Trim();
 
-        if (DateTime.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var dateTime))
+        if (DateTime.TryParse(tmp, new CultureInfo("ru-RU", useUserOverride: false), out var dateTime))
         {
             return dateTime.ToShortDateString();
         }
-        return DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var date)
+        return DateOnly.TryParse(tmp, new CultureInfo("ru-RU", useUserOverride: false), out var date)
             ? date.ToShortDateString()
             : tmp is not ("" or "-" or "прим.")
                 ? ""
@@ -420,7 +420,7 @@ public abstract partial class Form : IKey, IDataGridColumn
     {
         var strValue = Convert.ToString(value);
         return double.TryParse(strValue, out var doubleValue)
-            ? doubleValue.ToString("0.00######################################################e+00", CultureInfo.CreateSpecificCulture("ru-RU"))
+            ? doubleValue.ToString("0.00######################################################e+00", new CultureInfo("ru-RU", useUserOverride: false))
             : strValue;
     }
 

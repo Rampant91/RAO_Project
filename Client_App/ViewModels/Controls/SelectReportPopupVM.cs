@@ -61,6 +61,7 @@ public class SelectReportPopupVM : INotifyPropertyChanged
     public ICommand SwitchNextReportCommand { get; }
 
     public ICommand SwitchPreviousReportCommand { get; }
+
     public ICommand SetCurrentFormNum { get; }
 
     #endregion

@@ -1,7 +1,6 @@
 ﻿using Client_App.ViewModels.Forms;
 using Models.Collections;
 using Models.Forms;
-using Models.Forms.Form2;
 using System.Linq;
 
 namespace Client_App.Commands.SyncCommands;
@@ -35,5 +34,6 @@ public class NewSortFormSyncCommand(BaseFormVM formVM) : BaseCommand
             minItem++;
         }
 
+        formVM.UpdateFormList();
     }
 }

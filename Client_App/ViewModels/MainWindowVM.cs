@@ -1,8 +1,4 @@
-﻿
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using Client_App.Commands.AsyncCommands;
+﻿using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.Calculator;
 using Client_App.Commands.AsyncCommands.CheckForm;
@@ -17,24 +13,18 @@ using Client_App.Commands.AsyncCommands.Import.ImportJson;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
+using Client_App.Properties;
+using Client_App.Services;
 using Client_App.ViewModels.MainWindowTabs;
-using Client_App.Views;
-using Client_App.Views.Forms.Forms1;
-using Client_App.Views.Forms.Forms4;
 using CommunityToolkit.Mvvm.ComponentModel;
-using DynamicData.Binding;
-using Microsoft.EntityFrameworkCore;
 using Models.Collections;
-using Models.DBRealization;
-using Models.Forms;
 using ReactiveUI;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Input;
+
 namespace Client_App.ViewModels;
 
 public class MainWindowVM : ObservableObject, INotifyPropertyChanged
@@ -59,6 +49,17 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         }
     }
     public string SelectedReportTypeToString => $"{_selectedReportType}.0";
+
+    #endregion
+
+    #region LaunchedAtNORAO
+    
+#pragma warning disable CA1822
+
+    // ReSharper disable once MemberCanBeMadeStatic.Global
+    public bool AppLaunchedAtNorao => Settings.Default.AppLaunchedInNorao;
+
+#pragma warning restore CA1822
 
     #endregion
 
@@ -99,38 +100,20 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     #endregion
 
     #region Forms1TabControlVM
-    private Forms1TabControlVM _forms1TabControlVM;
-    public Forms1TabControlVM Forms1TabControlVM
-    {
-        get
-        {
-            return _forms1TabControlVM;
-        }
-    }
+
+    public Forms1TabControlVM Forms1TabControlVM { get; }
 
     #endregion
 
     #region Forms2TabControlVM
-    private Forms2TabControlVM _forms2TabControlVM;
-    public Forms2TabControlVM Forms2TabControlVM
-    {
-        get
-        {
-            return _forms2TabControlVM;
-        }
-    }
+
+    public Forms2TabControlVM Forms2TabControlVM { get; }
 
     #endregion
 
     #region Forms4TabControlVM
-    private Forms4TabControlVM _forms4TabControlVM;
-    public Forms4TabControlVM Forms4TabControlVM
-    {
-        get
-        {
-            return _forms4TabControlVM;
-        }
-    }
+
+    public Forms4TabControlVM Forms4TabControlVM { get; }
 
     #endregion
 
@@ -151,7 +134,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     {
         get
         {
-            switch (SelectedReportType)
+            return SelectedReportType switch
             {
                 case 1:
                     return Forms1TabControlVM.SelectedReports;
@@ -306,8 +289,6 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     }
     #endregion
 
-
-
     #region OnStartProgressBar
 
     private double _OnStartProgressBar;
@@ -327,6 +308,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
     #region Commands
 
+    private readonly UpdateService _updateService;
+
     public ICommand AddForm { get; set; }                           //  Создать и открыть новое окно формы для выбранной организации (1.0, 2.0)
     public ICommand NewAddForm { get; set; }                        //  Создать и открыть новое окно формы для выбранной организации (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
     public ICommand AddReports { get; set; }                        //  Создать и открыть новое окно формы организации (1.0, 2.0, 4.0)
@@ -344,7 +327,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     /// <summary>
     /// Excel -> Все формы и Excel -> Выбранная организация -> Все формы
     /// </summary>
-    public ICommand ExcelExportAll => new ExcelExportAllAsyncCommand();
+    public ICommand ExcelExportAll => new ExcelExportAllAsyncCommand(this);
 
     /// <summary>
     /// Excel -> Список исполнителей
@@ -374,7 +357,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     /// <summary>
     /// Excel -> Формы 1.x, 2.x и Excel -> Выбранная организация -> Формы 1.x, 2.x
     /// </summary>
-    public ICommand ExcelExportForms => new ExcelExportFormsAsyncCommand();
+    public ICommand ExcelExportForms => new ExcelExportFormsAsyncCommand(this);
 
     /// <summary>
     /// Excel -> Разрывы и пересечения
@@ -397,6 +380,11 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand ExcelExportListOfOrgs => new ExcelExportListOfOrgsAsyncCommand();
 
     /// <summary>
+    /// Excel -> Проблемные источники по региону
+    /// </summary>
+    public ICommand ExcelExportLostAndExtraUnitsByRegion => new ExcelExportLostAndExtraUnitsByRegionAsyncCommand();
+
+    /// <summary>
     /// Excel -> Паспорта -> Паспорта без отчетов
     /// </summary>
     public ICommand ExcelExportPasWithoutRep => new ExcelExportPasWithoutRepAsyncCommand();
@@ -409,12 +397,12 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     /// <summary>
     /// Excel -> Выбранная организация -> СНК
     /// </summary>
-    public ICommand ExcelExportSnk => new ExcelExportSnkAsyncCommand();
+    public ICommand ExcelExportSnk => new ExcelExportSnkAsyncCommand(this);
 
     /// <summary>
     /// Excel -> Выбранная организация -> Проверка инвентаризаций
     /// </summary>
-    public ICommand ExcelExportCheckInventories => new ExcelExportCheckInventoriesAsyncCommand();
+    public ICommand ExcelExportCheckInventories => new ExcelExportCheckInventoriesAsyncCommand(this);
 
     /// <summary>
     /// Экспорт всех организаций организации в отдельные файлы .RAODB
@@ -458,6 +446,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
     public MainWindowVM()
     {
+        _updateService = new UpdateService();
+        
         AddForm = new AddFormAsyncCommand();
         NewAddForm = new NewAddFormAsyncCommand();
         AddReports = new AddReportsAsyncCommand();
@@ -471,24 +461,25 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         DeleteForm = new DeleteReportAsyncCommand();
         DeleteReports = new DeleteReportsAsyncCommand();
         ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand();
-        ImportExcel = new ImportExcelAsyncCommand();
+        ImportExcel = new ImportExcelAsyncCommand(this);
         ImportJson = new ImportJsonAsyncCommand();
-        ImportRaodb = new ImportRaodbAsyncCommand(this);
+        ImportRaodb = new ImportRaodbAsyncCommand();
         MaxGraphsLength = new MaxGraphsLengthAsyncCommand();
         SaveReports = new SaveReportsAsyncCommand();
-        //UnaccountedRad = new UnaccountedRadAsyncCommand(); 
         OpenCalculator = new OpenCalculatorAsyncCommand();
         OpenFile = new OpenFileAsyncCommand();
         OpenFolder = new OpenFolderAsyncCommand();
         GoToFormNum = new GoToFormNumAsyncCommand(this);
 
-        _forms1TabControlVM = new Forms1TabControlVM(this);
-        _forms2TabControlVM = new Forms2TabControlVM(this);
-        _forms4TabControlVM = new Forms4TabControlVM(this);
-        _forms5TabControlVM = new Forms5TabControlVM(this);
-
+        Forms1TabControlVM = new Forms1TabControlVM(this);
+        Forms2TabControlVM = new Forms2TabControlVM(this);
+        Forms4TabControlVM = new Forms4TabControlVM(this);
+        Forms5TabControlVM = new Forms5TabControlVM(this);
 
         UpdateReportsCollection();
+        
+        // Блокируем конструктор до завершения проверки обновлений
+        _updateService.CheckAndNotifyAsync(AppLaunchedAtNorao).Wait();
     }
 
     #endregion

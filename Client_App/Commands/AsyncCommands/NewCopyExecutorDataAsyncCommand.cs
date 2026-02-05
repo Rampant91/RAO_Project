@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Models.Collections;
 using Avalonia.Threading;
-using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms;
 
 namespace Client_App.Commands.AsyncCommands;
@@ -14,7 +13,6 @@ namespace Client_App.Commands.AsyncCommands;
 
 public class NewCopyExecutorDataAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
-    
     private Report Storage => formVM.Report;
     private Reports Storages => Storage.Reports;
     private string FormType => formVM.FormType;

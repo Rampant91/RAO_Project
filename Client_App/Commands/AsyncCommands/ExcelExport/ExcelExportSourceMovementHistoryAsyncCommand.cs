@@ -123,7 +123,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
                     CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = "Не удалось выполнить выгрузку в Excel истории движения источника,"
                                      + $"{Environment.NewLine}поскольку не заполнено одно из следующих полей:" +
                                      $"{Environment.NewLine}- номер паспорта (сертификата);" +

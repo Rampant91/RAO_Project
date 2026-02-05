@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using Client_App.Commands.AsyncCommands.SumRow;
 using Client_App.Resources;
-using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms4;
 using Client_App.ViewModels.Forms.Forms5;
@@ -13,11 +12,7 @@ using Client_App.VisualRealization.Long_Visual;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
-using Models.Interfaces;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands;

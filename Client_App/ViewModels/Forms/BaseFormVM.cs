@@ -403,6 +403,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand DeleteRows => new NewDeleteRowsAsyncCommand(this);
     public ICommand SortForm => new NewSortFormSyncCommand(this);
     public ICommand SetNumberOrder => new NewSetNumberOrderSyncCommand(this);
+    public ICommand SortForms => new NewSortFormSyncCommand(this);
     public ICommand CopyRows => new NewCopyRowsAsyncCommand();
     public ICommand PasteRows => new NewPasteRowsAsyncCommand(this);
     public ICommand SelectAll => new SelectAllRowsAsyncCommand(this);

@@ -344,7 +344,7 @@ public class CheckF210 : CheckBase
                     new ButtonDefinition { Name = "Открыть временную копию" }
                 ],
                 CanResize = true,
-                ContentTitle = "Выгрузка в Excel",
+                ContentTitle = "Выгрузка в .xlsx",
                 ContentHeader = "Уведомление",
                 ContentMessage = "Что бы вы хотели сделать с данной выгрузкой?",
                 MinWidth = 400,
@@ -399,7 +399,7 @@ public class CheckF210 : CheckBase
                                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                                 {
                                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                    ContentTitle = "Выгрузка в Excel",
+                                    ContentTitle = "Выгрузка в .xlsx",
                                     ContentHeader = "Ошибка",
                                     ContentMessage =
                                         $"Не удалось сохранить файл по пути: {fullPath}" +

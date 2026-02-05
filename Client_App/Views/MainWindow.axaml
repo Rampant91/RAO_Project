@@ -1,48 +1,41 @@
-<Window
-    x:Class="Client_App.Views.MainWindow"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="using:Client_App.ViewModels"
-    xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
-	xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
-	xmlns:local="using:Client_App.Behaviors"
-	xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-	xmlns:models="clr-namespace:Models.Collections;assembly=Models"
-    xmlns:controls="clr-namespace:Client_App.Views.Controls"
-	xmlns:tabs="clr-namespace:Client_App.Views.MainWindowTabs"
-    Title="{Binding Current_Db, Mode=OneWay}"
-    d:DesignHeight="600"
-    d:DesignWidth="800"
-    Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.75', FallbackValue='600', Mode=OneWay}"
-    Height="{Binding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.81', FallbackValue='800', Mode=OneWay}"
-    MinWidth="200"
-    MinHeight="200"
-    x:CompileBindings="True"
-    x:DataType="vm:MainWindowVM"
-    x:Name="MainWindow"
-    Background="#ffffff"
-    Icon="/Assets/logo.png"
-    WindowStartupLocation="CenterScreen"
-    mc:Ignorable="d">
+<Window x:Class="Client_App.Views.MainWindow"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:Client_App.ViewModels"
+        xmlns:converter="clr-namespace:Client_App.Resources.CustomConverters"
+        xmlns:tabs="clr-namespace:Client_App.Views.MainWindowTabs"
+        xmlns:behaviors="clr-namespace:Client_App.Behaviors"
+        Title="{Binding Current_Db, Mode=OneWay}"
+        d:DesignHeight="600"
+        d:DesignWidth="800"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.75" behaviors:WindowScreenSizeBehavior.HeightRatio="0.81"
+        MinWidth="200"
+        MinHeight="200"
+        x:CompileBindings="True"
+        x:DataType="vm:MainWindowVM"
+        x:Name="MainWindow"
+        Background="#ffffff"
+        Icon="/Assets/logo.png"
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d">
 
     <Design.DataContext>
         <vm:MainWindowVM/>
     </Design.DataContext>
 
 	<Window.Resources>
-		<converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
+		<converter:BoolInverterConverter x:Key="BoolInverterConverter"/>
 	</Window.Resources>
     
     <DockPanel>
-        <Menu 
-            x:Name="SubMenuBorder" 
-            BorderBrush="#FF959595" 
-            BorderThickness="1" 
-            Background="WhiteSmoke"
-            Height="25"
-            DockPanel.Dock="Top">
+        <Menu x:Name="SubMenuBorder" 
+              BorderBrush="#FF959595" 
+              BorderThickness="1" 
+              Background="WhiteSmoke"
+              Height="25"
+              DockPanel.Dock="Top">
             <Menu.Styles>
                 <Style Selector="Separator">
                     <Setter Property="Background" Value="LightGray"/>
@@ -55,267 +48,223 @@
                 </Style>
             </Menu.Styles>
 
-            <MenuItem 
-                Name="ImportMenu"
-                Header="_Импорт">
-                <MenuItem 
-                    Command="{Binding ImportRaodb}" 
-                    Header="Из RAODB"/>
-                <MenuItem 
-                    Command="{Binding ImportExcel}" 
-                    Header="Из Excel"/>
-                <MenuItem 
-                    Command="{Binding ImportJson}" 
-                    Header="Из Json"/>
+            <MenuItem Header="_Импорт"
+                      Name="ImportMenu">
+                <MenuItem Header="Из RAODB" 
+                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
+                    <MenuItem Header="Импорт с авто выбором организации"
+                              Command="{Binding ImportRaodb}" 
+                              CommandParameter="Auto"/>
+                    <MenuItem Header="Импорт в организацию из списка"
+                              Command="{Binding ImportRaodb}"
+                              CommandParameter="Selected"/>
+                </MenuItem>
+                <MenuItem Header="Из RAODB"
+                          Command="{Binding ImportRaodb}"
+                          CommandParameter="Auto"
+                          IsVisible="{Binding AppLaunchedAtNorao, Converter={StaticResource BoolInverterConverter}}"/>
+                <MenuItem Header="Из Excel"
+                          Command="{Binding ImportExcel}"/>
+                <MenuItem Header="Из Json"
+                          Command="{Binding ImportJson}"/>
             </MenuItem>
 
-            <MenuItem 
-                Name="ExcelMenu"
-                Header="_Аналитика">
+            <MenuItem Name="ExcelMenu"
+                      Header="_Аналитика">
                 <MenuItem Header="Список организаций">
-                    <MenuItem 
-                        Command="{Binding ExcelExportListOfOrgs}" 
-                        Header="Количество форм"/>
-                    <MenuItem 
-                        Command="{Binding ExcelExportListOfOrgs}"
-                        CommandParameter="full"
-                        Header="Список с доп. полями"/>
+                    <MenuItem Command="{Binding ExcelExportListOfOrgs}" 
+                              Header="Количество форм"/>
+                    <MenuItem Command="{Binding ExcelExportListOfOrgs}"
+                              CommandParameter="full"
+                              Header="Список с доп. полями"/>
                 </MenuItem>
-                <MenuItem
-                    Command="{Binding ExcelExportExecutors}"
-                    CommandParameter="Executors"
-                    Header="Список исполнителей"/>
-                <MenuItem 
-                    Command="{Binding ExcelExportListOfForms1}" 
-                    Header="Список форм 1"/>
-                <MenuItem 
-                    Command="{Binding ExcelExportListOfForms2}" 
-                    Header="Список форм 2"/>
+                <MenuItem Command="{Binding ExcelExportExecutors}"
+                          CommandParameter="Executors"
+                          Header="Список исполнителей"/>
+                <MenuItem Command="{Binding ExcelExportListOfForms1}" 
+                          Header="Список форм 1"/>
+                <MenuItem Command="{Binding ExcelExportListOfForms2}" 
+                          Header="Список форм 2"/>
                 <Separator/>
-                <MenuItem
-                    Command="{Binding ExcelExportAll}"
-                    CommandParameter="AllReps"
-                    Header="Все формы" />
+                <MenuItem Command="{Binding ExcelExportAll}"
+                          CommandParameter="AllReps"
+                          Header="Все формы" />
                 <MenuItem Header="Формы 1">
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="1.1"
-                        Header="Форма 1.1"/>
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="1.2"
-                        Header="Форма 1.2"/>
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="1.3"
-                        Header="Форма 1.3"/>
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="1.4"
-                        Header="Форма 1.4"/>
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="1.5"
-                        Header="Форма 1.5"/>
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="1.6"
-                        Header="Форма 1.6"/>
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="1.7"
-                        Header="Форма 1.7"/>
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="1.8"
-                        Header="Форма 1.8"/>
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="1.9"
-                        Header="Форма 1.9"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="1.1"
+                              Header="Форма 1.1"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="1.2"
+                              Header="Форма 1.2"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="1.3"
+                              Header="Форма 1.3"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="1.4"
+                              Header="Форма 1.4"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="1.5"
+                              Header="Форма 1.5"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="1.6"
+                              Header="Форма 1.6"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="1.7"
+                              Header="Форма 1.7"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="1.8"
+                              Header="Форма 1.8"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="1.9"
+                              Header="Форма 1.9"/>
                 </MenuItem>
                 <MenuItem Header="Формы 2">
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="2.1"
-                        Header="Форма 2.1"/>
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="2.2"
-                        Header="Форма 2.2"/>
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="2.3"
-                        Header="Форма 2.3"/>
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="2.4"
-                        Header="Форма 2.4"/>
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="2.5"
-                        Header="Форма 2.5"/>
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="2.6"
-                        Header="Форма 2.6"/>
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="2.7"
-                        Header="Форма 2.7"/>
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="2.8"
-                        Header="Форма 2.8"/>
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="2.9"
-                        Header="Форма 2.9"/>
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="2.10"
-                        Header="Форма 2.10"/>
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="2.11"
-                        Header="Форма 2.11"/>
-                    <MenuItem
-                        Command="{Binding ExcelExportForms}"
-                        CommandParameter="2.12"
-                        Header="Форма 2.12"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="2.1"
+                              Header="Форма 2.1"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="2.2"
+                              Header="Форма 2.2"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="2.3"
+                              Header="Форма 2.3"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="2.4"
+                              Header="Форма 2.4"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="2.5"
+                              Header="Форма 2.5"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="2.6"
+                              Header="Форма 2.6"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="2.7"
+                              Header="Форма 2.7"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="2.8"
+                              Header="Форма 2.8"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="2.9"
+                              Header="Форма 2.9"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="2.10"
+                              Header="Форма 2.10"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="2.11"
+                              Header="Форма 2.11"/>
+                    <MenuItem Command="{Binding ExcelExportForms}"
+                              CommandParameter="2.12"
+                              Header="Форма 2.12"/>
                 </MenuItem>
                 <MenuItem Header="Выбранная организация">
-                    <MenuItem
-                        Command="{Binding ExcelExportAll}"
-                        CommandParameter="SelectedOrg"
-                        Header="Все формы"/>
+                    <MenuItem Command="{Binding ExcelExportAll}"
+                              CommandParameter="SelectedOrg"
+                              Header="Все формы"/>
                     <MenuItem Header="Формы 1">
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org1.1"
-                            Header="Форма 1.1"/>
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org1.2"
-                            Header="Форма 1.2"/>
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org1.3"
-                            Header="Форма 1.3"/>
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org1.4"
-                            Header="Форма 1.4"/>
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org1.5"
-                            Header="Форма 1.5"/>
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org1.6"
-                            Header="Форма 1.6"/>
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org1.7"
-                            Header="Форма 1.7"/>
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org1.8"
-                            Header="Форма 1.8"/>
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org1.9"
-                            Header="Форма 1.9"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org1.1"
+                                  Header="Форма 1.1"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org1.2"
+                                  Header="Форма 1.2"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org1.3"
+                                  Header="Форма 1.3"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org1.4"
+                                  Header="Форма 1.4"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org1.5"
+                                  Header="Форма 1.5"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org1.6"
+                                  Header="Форма 1.6"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org1.7"
+                                  Header="Форма 1.7"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org1.8"
+                                  Header="Форма 1.8"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org1.9"
+                                  Header="Форма 1.9"/>
                     </MenuItem>
                     <MenuItem Header="Формы 2">
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org2.1"
-                            Header="Форма 2.1"/>
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org2.2"
-                            Header="Форма 2.2"/>
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org2.3"
-                            Header="Форма 2.3"/>
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org2.4"
-                            Header="Форма 2.4"/>
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org2.5"
-                            Header="Форма 2.5"/>
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org2.6"
-                            Header="Форма 2.6"/>
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org2.7"
-                            Header="Форма 2.7"/>
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org2.8"
-                            Header="Форма 2.8"/>
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org2.9"
-                            Header="Форма 2.9"/>
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org2.10"
-                            Header="Форма 2.10"/>
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org2.11"
-                            Header="Форма 2.11"/>
-                        <MenuItem
-                            Command="{Binding ExcelExportForms}"
-                            CommandParameter="Org2.12"
-                            Header="Форма 2.12"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org2.1"
+                                  Header="Форма 2.1"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org2.2"
+                                  Header="Форма 2.2"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org2.3"
+                                  Header="Форма 2.3"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org2.4"
+                                  Header="Форма 2.4"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org2.5"
+                                  Header="Форма 2.5"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org2.6"
+                                  Header="Форма 2.6"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org2.7"
+                                  Header="Форма 2.7"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org2.8"
+                                  Header="Форма 2.8"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org2.9"
+                                  Header="Форма 2.9"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org2.10"
+                                  Header="Форма 2.10"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org2.11"
+                                  Header="Форма 2.11"/>
+                        <MenuItem Command="{Binding ExcelExportForms}"
+                                  CommandParameter="Org2.12"
+                                  Header="Форма 2.12"/>
                     </MenuItem>
                     <MenuItem Header="СНК на дату">
-                        <MenuItem
-                            Command="{Binding  ExcelExportSnk}"
-                            CommandParameter="1.1"
-                            Header="Форма 1.1"/>
-                        <MenuItem 
-                            Command="{Binding  ExcelExportSnk}"
-                            CommandParameter="1.3"
-                            Header="Форма 1.3"/>
+                        <MenuItem Command="{Binding  ExcelExportSnk}"
+                                  CommandParameter="1.1"
+                                  Header="Форма 1.1"/>
+                        <MenuItem Command="{Binding  ExcelExportSnk}"
+                                  CommandParameter="1.3"
+                                  Header="Форма 1.3"/>
                     </MenuItem>
                     <MenuItem Header="Проверка инвентаризации">
-                        <MenuItem
-                            Command="{Binding  ExcelExportCheckInventories}"
-                            CommandParameter="1.1"
-                            Header="Форма 1.1"/>
-                        <MenuItem 
-                            Command="{Binding  ExcelExportCheckInventories}"
-                            CommandParameter="1.3"
-                            Header="Форма 1.3"/>
-                            </MenuItem>
+                        <MenuItem Command="{Binding  ExcelExportCheckInventories}"
+                                  CommandParameter="1.1"
+                                  Header="Форма 1.1"/>
+                        <MenuItem Command="{Binding  ExcelExportCheckInventories}"
+                                  CommandParameter="1.3"
+                                  Header="Форма 1.3"/>
+                    </MenuItem>
                 </MenuItem>
                 <Separator/>
-                <MenuItem
-                    Command="{Binding ExcelExportIntersections}"
-                    Header="Разрывы и пересечения"/>
+                <MenuItem Command="{Binding ExcelExportIntersections}"
+                          Header="Разрывы и пересечения"/>
                 <MenuItem Header="Паспорта">
-                    <MenuItem
-                        Command="{Binding ExcelExportRepWithoutPas}"
-                        Header="Отчеты без паспортов"/>
-                    <MenuItem
-                        Command="{Binding ExcelExportPasWithoutRep}"
-                        Header="Паспорта без отчетов"/>
-                    <MenuItem
-                        Command="{Binding ChangePasFolder}"
-                        Header="Изменить расположение паспортов по умолчанию"/>
+                    <MenuItem Command="{Binding ExcelExportRepWithoutPas}"
+                              Header="Отчеты без паспортов"/>
+                    <MenuItem Command="{Binding ExcelExportPasWithoutRep}"
+                              Header="Паспорта без отчетов"/>
+                    <MenuItem Command="{Binding ChangePasFolder}"
+                              Header="Изменить расположение паспортов по умолчанию"/>
                 </MenuItem>
-                <MenuItem
-                    Command="{Binding  ExcelExportCheckLastInventoryDate}"
-                    Header="Проверка последней инвентаризации"/>
+                <MenuItem Command="{Binding  ExcelExportCheckLastInventoryDate}"
+                          Header="Проверка последней инвентаризации"/>
+                <MenuItem Header="Проблемные источники по региону">
+                    <MenuItem Command="{Binding  ExcelExportLostAndExtraUnitsByRegion}"
+                              CommandParameter="1.1"
+                              Header="Форма 1.1"/>
+                    <MenuItem Command="{Binding  ExcelExportLostAndExtraUnitsByRegion}"
+                              CommandParameter="1.3"
+                              Header="Форма 1.3"/>
+                </MenuItem>
                 <!--
                 <MenuItem Command="{Binding MaxGraphsLength, Mode=OneTime}"
                           Header="Максимальная длинна граф"/>
@@ -324,73 +273,68 @@
                 -->
             </MenuItem>
 
-            <MenuItem 
-                Name="ServiceMenu"
-                Header="Сервис">
-                <MenuItem
-                    Command="{Binding OpenCalculator}"
-                    CommandParameter="activity"
-                    Header="Пересчёт активности"/>
-                <MenuItem 
-                    Command="{Binding OpenCalculator}" 
-                    CommandParameter="category" 
-                    Header="Расчёт категории"/>
+            <MenuItem Name="ServiceMenu"
+                      Header="Сервис">
+                <MenuItem Command="{Binding OpenCalculator}"
+                          CommandParameter="activity"
+                          Header="Пересчёт активности"/>
+                <MenuItem Command="{Binding OpenCalculator}" 
+                          CommandParameter="category" 
+                          Header="Расчёт категории"/>
                 <Separator/>
-                <MenuItem
-                    Command="{Binding OpenFile}"
-                    CommandParameter="manual"
-                    Header="Руководство пользователя"/>
+                <MenuItem Command="{Binding OpenFile}"
+                          CommandParameter="manual"
+                          Header="Руководство пользователя"/>
 				<Separator/>
-			    <MenuItem
-                    Command="{Binding OpenFolder}"
-                    CommandParameter="rao"
-                    Header="Папка RAO"/>
-                <MenuItem
-                    Command="{Binding OpenFolder}"
-                    CommandParameter="app"
-                    Header="Папка с программой"/>
-                <MenuItem 
-                    Command="{Binding OpenFile}" 
-                    CommandParameter="radsDictionary" 
-                    Header="Справочник радионуклидов"/>
-                <MenuItem 
-                    Command="{Binding OpenFolder}"
-                    CommandParameter="excel"
-                    Header="Шаблоны форм"/>
+			    <MenuItem Command="{Binding OpenFolder}"
+                          CommandParameter="rao"
+                          Header="Папка RAO"/>
+                <MenuItem Command="{Binding OpenFolder}"
+                          CommandParameter="app"
+                          Header="Папка с программой"/>
+                <MenuItem Command="{Binding OpenFile}" 
+                          CommandParameter="radsDictionary" 
+                          Header="Справочник радионуклидов"/>
+                <MenuItem Command="{Binding OpenFolder}"
+                          CommandParameter="excel"
+                          Header="Шаблоны форм"/>
                 <Separator/>
-                <MenuItem
-                    Click="OpenContactsButtonClicked"
-                    Header="Контакты"/>
-                <MenuItem
-                    Command="{Binding OpenFile}"
-                    CommandParameter="changelog"
-                    Header="Список изменений"/>
+                <MenuItem Click="OpenContactsButtonClicked"
+                          Header="Контакты"/>
+                <MenuItem Command="{Binding OpenFile}"
+                          CommandParameter="changelog"
+                          Header="Список изменений"/>
                     
             </MenuItem> 
 
         </Menu>
         
-        <Panel 
-            x:Name="MainPanel"
-            Margin="5,5,5,5"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch">
-            <TabControl 
-                SelectedIndex ="{Binding SelectedReportType}" 
-                SelectionChanged="TabControl_SelectionChanged">
+        <Panel x:Name="MainPanel"
+               Margin="5,5,5,5"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch">
+            <TabControl SelectedIndex ="{Binding SelectedReportType}" 
+                        SelectionChanged="TabControl_SelectionChanged">
 
                 <!--Пустой элемент для начала отсчета индекса с 1 -->
 
 				<TabItem IsVisible="False"/>
 
-				<TabItem x:Name="Forms1" Header="Формы 1" >
+				<TabItem x:Name="Forms1" 
+                         Header="Формы 1" 
+                         IsSelected="{Binding }">
 					<tabs:Forms1TabControl DataContext="{Binding Forms1TabControlVM}"/>
 				</TabItem>
-				<TabItem x:Name="Forms2" Header="Формы 2" >
+				<TabItem x:Name="Forms2" 
+                         Header="Формы 2" >
 					<tabs:Forms2TabControl DataContext="{Binding Forms2TabControlVM}"/>
 				</TabItem>
-				<TabItem x:Name="Forms3" Header="Формы 3" IsVisible="False"/>
-				<TabItem x:Name="Forms4" Header="Формы 4" IsVisible="True">
+				<TabItem x:Name="Forms3" 
+                         Header="Формы 3" 
+                         IsVisible="False"/>
+				<TabItem x:Name="Forms4" 
+                         Header="Формы 4" 
+                         IsVisible="True">
 					<tabs:Forms4TabControl DataContext="{Binding Forms4TabControlVM}"/>
 			    </TabItem>
 				<TabItem x:Name="Forms5" Header="Формы 5" IsVisible="True">

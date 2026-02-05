@@ -1,10 +1,20 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Threading;
+using Client_App.Interfaces.Logger;
+using Client_App.Resources.CustomComparers;
+using Client_App.ViewModels;
+using Client_App.Views;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
+using Models.Forms.Form1;
+using Models.Forms.Form2;
+using Models.Forms.Form4;
 using OfficeOpenXml;
+using Spravochniki;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,7 +37,7 @@ namespace Client_App.Commands.AsyncCommands.Import;
 /// <summary>
 /// Импорт -> Из Excel.
 /// </summary>
-internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
+internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -56,8 +66,30 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             if (res is "") continue;
             SourceFile = new FileInfo(res);
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            using ExcelPackage excelPackage = new(SourceFile);
-            var worksheet = excelPackage.Workbook.Worksheets[0];
+
+            try
+            {
+                using ExcelPackage excelPackageTry = new(SourceFile);
+            }
+            catch(Exception ex)
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Ошибка",
+                    ContentHeader = $"Произошла ошибка при импорте файла {SourceFile.Name}",
+                    ContentMessage = $"Описание:\n" +
+                                     $"{ex.Message}",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+                return;
+            }
+            ExcelPackage excelPackage = new(SourceFile);
+            var worksheet0 = excelPackage.Workbook.Worksheets[0];
             var worksheet1 = excelPackage.Workbook.Worksheets[1];
             // Проверка формата формы, записанного в Excel
             var val = worksheet.Name == "1.0"
@@ -424,51 +456,61 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             }
         }
 
-        var comparator = new CustomReportsComparer();
-        var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
-
-        if (tmpReportsList.All(x => x.Master_DB.FormNum_DB is "1.0" or "2.0"))
+        try
         {
-            ReportsStorage.LocalReports.Reports_Collection.Clear();
-            ReportsStorage.LocalReports.Reports_Collection
-                .AddRange(tmpReportsList
-                    .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
-                    .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
+            var comparator = new CustomReportsComparer();
+            var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+            if (tmpReportsList.All(x => x.Master_DB.RegNoRep != null && x.Master_DB.OkpoRep != null))
+            {
+                var tmpReportsOrderedEnum = tmpReportsList
+                    .OrderBy(x => x.Master_DB?.RegNoRep?.Value, comparator)
+                    .ThenBy(x => x.Master_DB?.OkpoRep?.Value, comparator);
+
+                ReportsStorage.LocalReports.Reports_Collection.Clear();
+                ReportsStorage.LocalReports.Reports_Collection.AddRange(tmpReportsOrderedEnum);
+            }
+        }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Warning(msg);
+            return;
         }
 
-            //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
+        //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
 
 
-            try
-            {
-                await StaticConfiguration.DBModel.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                #region MessageImportError
-
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Импорт из .xlsx",
-                        ContentHeader = "Уведомление",
-                        ContentMessage = $"При сохранении импортированных данных возникла ошибка.\n",
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(Desktop.MainWindow));
-
-                #endregion
-
-                return;
-            }
-
-        if (impReportsList.All(x => x.Master_DB.FormNum_DB is "1.0" or "2.0"))
+        try
         {
-            await SetDataGridPage(impReportsList);
+            await StaticConfiguration.DBModel.SaveChangesAsync();
         }
+        catch (Exception ex)
+        {
+            #region MessageImportError
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Импорт из .xlsx",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "При сохранении импортированных данных возникла ошибка.\n",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            return;
+        }
+
+        //if (impReportsList.All(x => x.Master_DB.FormNum_DB is "1.0" or "2.0"))
+        //{
+        //    await SetDataGridPage(impReportsList);
+        //}
 
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"

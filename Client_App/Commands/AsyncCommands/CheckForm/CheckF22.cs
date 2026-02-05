@@ -483,7 +483,8 @@ public class CheckF22 : CheckBase
             var form = (Form22)key1;
             double subsidy = -1.0;
             TryParseDoubleExtended(form.Subsidy_DB.Replace("%", ""), out subsidy);
-            if (form.CodeRAO_DB != "-" && !string.IsNullOrWhiteSpace(form.CodeRAO_DB))
+            if (form.CodeRAO_DB != "-" && !string.IsNullOrWhiteSpace(form.CodeRAO_DB)
+                && form.StatusRAO_DB != "-" && !string.IsNullOrWhiteSpace(form.StatusRAO_DB))
             {
                 var key = (
                     keyInclude1 ? form.StoragePlaceName_DB.Replace(" ", "").ToLower() : "",
@@ -505,14 +506,14 @@ public class CheckF22 : CheckBase
                     CheckError? errorDouble = errorList.SingleOrDefault(x => string.Equals(errorValue, x.Value) && string.Equals(errorMessage, x.Message));
                     if (errorDouble == null)
                     {
-                        errorList.Add(new CheckError
-                        {
-                            FormNum = "form_22",
-                            Row = form.NumberInOrder_DB.ToString(),
-                            Column = "-",
-                            Value = errorValue,
-                            Message = errorMessage
-                        });
+                        //errorList.Add(new CheckError
+                        //{
+                        //    FormNum = "form_22",
+                        //    Row = form.NumberInOrder_DB.ToString(),
+                        //    Column = "-",
+                        //    Value = errorValue,
+                        //    Message = errorMessage
+                        //});
                     }
                     else
                     {
@@ -536,14 +537,14 @@ public class CheckF22 : CheckBase
                             CheckError? errorDouble = errorList.SingleOrDefault(x => string.Equals(errorValue, x.Value) && string.Equals(errorMessage, x.Message));
                             if (errorDouble == null)
                             {
-                                errorList.Add(new CheckError
-                                {
-                                    FormNum = "form_22",
-                                    Row = formSub.NumberInOrder_DB.ToString(),
-                                    Column = "-",
-                                    Value = errorValue,
-                                    Message = errorMessage
-                                });
+                                //errorList.Add(new CheckError
+                                //{
+                                //    FormNum = "form_22",
+                                //    Row = formSub.NumberInOrder_DB.ToString(),
+                                //    Column = "-",
+                                //    Value = errorValue,
+                                //    Message = errorMessage
+                                //});
                             }
                             else
                             {
@@ -1861,7 +1862,7 @@ public class CheckF22 : CheckBase
                     new ButtonDefinition { Name = "Открыть временную копию" }
                 ],
                 CanResize = true,
-                ContentTitle = "Выгрузка в Excel",
+                ContentTitle = "Выгрузка в .xlsx",
                 ContentHeader = "Уведомление",
                 ContentMessage = "Что бы вы хотели сделать с данной выгрузкой?",
                 MinWidth = 400,
@@ -1916,7 +1917,7 @@ public class CheckF22 : CheckBase
                             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                             {
                                 ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка в Excel",
+                                ContentTitle = "Выгрузка в .xlsx",
                                 ContentHeader = "Ошибка",
                                 ContentMessage =
                                     $"Не удалось сохранить файл по пути: {fullPath}" +
@@ -1979,7 +1980,7 @@ public class CheckF22 : CheckBase
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Ошибка",
                     ContentMessage = "Не удалось сохранить файл по указанному пути:" +
                                      $"{Environment.NewLine}{fullPath}",
@@ -2015,7 +2016,7 @@ public class CheckF22 : CheckBase
                         new ButtonDefinition { Name = "Ок" },
                         new ButtonDefinition { Name = "Открыть выгрузку" }
                     ],
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Выгрузка сохранена по пути:" +
                                      $"{Environment.NewLine}{fullPath}",
