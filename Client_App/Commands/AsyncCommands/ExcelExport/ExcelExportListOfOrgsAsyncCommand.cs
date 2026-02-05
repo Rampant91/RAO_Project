@@ -101,8 +101,8 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         var row = 2;
         double progressBarDoubleValue = progressBarVM.ValueBar;
         foreach (var reps in repsList
-                     .OrderBy(x => x.Master_DB.RegNoRep.Value)
-                     .ThenBy(x => x.Master_DB.OkpoRep.Value))
+                     .OrderBy(x => x.Master_DB.RegNoRep?.Value)
+                     .ThenBy(x => x.Master_DB.OkpoRep?.Value))
         {
             if (checkedLst.Any(x => x.Master_DB.RegNoRep == reps.Master_DB.RegNoRep
                                     && x.Master_DB.OkpoRep == reps.Master_DB.OkpoRep))
