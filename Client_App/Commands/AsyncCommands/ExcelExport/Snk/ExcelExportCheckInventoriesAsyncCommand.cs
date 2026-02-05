@@ -1305,7 +1305,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
     #region GetZeroFormsDtoList
 
     private static async Task<List<ShortFormDTO>> GetZeroFormsDtoList(DBModel db, List<int> reportIds, List<ShortFormDTO> rechargeFormsDtoList, 
-        DateOnly firstSnkDate, DateOnly endSnkDate, string formNum, CancellationTokenSource cts, SnkParamsDto? snkParams = null)
+        DateOnly firstSnkDate, DateOnly endSnkDate, string formNum, CancellationTokenSource cts, SnkParamsDto snkParams)
     {
         var plusOperationsArray = GetPlusOperationsArray(formNum);
         var minusOperationsArray = GetMinusOperationsArray(formNum);
@@ -1333,22 +1333,22 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
                     RepId = form.Report!.Id,
                     StDate = form.Report.StartPeriod_DB,
                     EndDate = form.Report.EndPeriod_DB,
-                    FacNum = snkParams == null || snkParams.CheckFacNum
+                    FacNum = snkParams.CheckFacNum
                         ? form.FactoryNumber_DB
                         : string.Empty,
                     OpCode = form.OperationCode_DB,
                     OpDate = form.OperationDate_DB,
-                    PackNumber = snkParams == null || snkParams.CheckPackNumber
+                    PackNumber = snkParams.CheckPackNumber
                         ? form.PackNumber_DB
                         : string.Empty,
-                    PasNum = snkParams == null || snkParams.CheckPasNum
+                    PasNum = snkParams.CheckPasNum
                         ? form.PassportNumber_DB
                         : string.Empty,
                     Quantity = form.Quantity_DB,
-                    Radionuclids = snkParams == null || snkParams.CheckRadionuclids
+                    Radionuclids = snkParams.CheckRadionuclids
                         ? form.Radionuclids_DB
                         : string.Empty,
-                    Type = snkParams == null || snkParams.CheckType
+                    Type = snkParams.CheckType
                         ? form.Type_DB
                         : string.Empty
                 })
@@ -1377,22 +1377,22 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
                     RepId = form.Report!.Id,
                     StDate = form.Report.StartPeriod_DB,
                     EndDate = form.Report.EndPeriod_DB,
-                    FacNum = snkParams == null || snkParams.CheckFacNum
+                    FacNum = snkParams.CheckFacNum
                         ? form.FactoryNumber_DB
                         : string.Empty,
                     OpCode = form.OperationCode_DB,
                     OpDate = form.OperationDate_DB,
-                    PackNumber = snkParams == null || snkParams.CheckPackNumber
+                    PackNumber = snkParams.CheckPackNumber
                         ? form.PackNumber_DB
                         : string.Empty,
-                    PasNum = snkParams == null || snkParams.CheckPasNum
+                    PasNum = snkParams.CheckPasNum
                         ? form.PassportNumber_DB
                         : string.Empty,
                     Quantity = 1,
-                    Radionuclids = snkParams == null || snkParams.CheckRadionuclids
+                    Radionuclids = snkParams.CheckRadionuclids
                         ? form.Radionuclids_DB
                         : string.Empty,
-                    Type = snkParams == null || snkParams.CheckType
+                    Type = snkParams.CheckType
                         ? form.Type_DB
                         : string.Empty
                 })
