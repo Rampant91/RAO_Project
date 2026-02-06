@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -206,31 +207,55 @@ public class Forms1TabControlVM : INotifyPropertyChanged
             if (SelectedReports is null) return null;
 
 
-            return new ObservableCollection<Report>(
-                SelectedReports
+            var result = SelectedReports
                     .Report_Collection
-                    .AsEnumerable()
-                    .OrderBy(x =>
-                    {
-                        if (int.TryParse(x.FormNum_DB.Split('.')[1], out var result))
-                            return result;
-                        return int.MinValue;
-                    })
-                    // Сортируем по валидным датам, некорректные уходят в начало/конец
-                    .ThenByDescending(x => x.StartPeriod_DB == null ||
-                                           !DateOnly.TryParse(x.StartPeriod_DB, out _) ?
-                        DateOnly.MaxValue :
-                        DateOnly.Parse(x.StartPeriod_DB))
-                    .ThenByDescending(x => x.EndPeriod_DB == null ||
-                                           !DateOnly.TryParse(x.EndPeriod_DB, out _) ?
-                        DateOnly.MaxValue :
-                        DateOnly.Parse(x.EndPeriod_DB))
-                    .ThenBy(rep => rep.CorrectionNumber_DB)
-                    .Skip((CurrentPageForms - 1) * RowsCountForms)
-                    .Take(RowsCountForms));
+                    .AsEnumerable();
+
+            if (!string.IsNullOrEmpty(FormNumWhiteList))
+            {
+                result = result.Where(rep => rep.FormNum_DB == FormNumWhiteList);
+            }
+
+
+            result.OrderBy(x =>
+            {
+                if (int.TryParse(x.FormNum_DB.Split('.')[1], out var result))
+                    return result;
+                return int.MinValue;
+            })
+                // Сортируем по валидным датам, некорректные уходят в начало/конец
+                .ThenByDescending(x => x.StartPeriod_DB == null ||
+                !DateOnly.TryParse(x.StartPeriod_DB, out _) ?
+                    DateOnly.MaxValue :
+                    DateOnly.Parse(x.StartPeriod_DB))
+                .ThenByDescending(x => x.EndPeriod_DB == null ||
+                    !DateOnly.TryParse(x.EndPeriod_DB, out _) ?
+                    DateOnly.MaxValue :
+                    DateOnly.Parse(x.EndPeriod_DB))
+                .ThenBy(rep => rep.CorrectionNumber_DB)
+                .Skip((CurrentPageForms - 1) * RowsCountForms)
+                .Take(RowsCountForms);
+
+            return new ObservableCollection<Report>(result);
         }
     }
 
+    #endregion
+
+    #region FormNumWhiteList
+    private string _formNumWhiteList = "";
+    public string FormNumWhiteList
+    {
+        get
+        {
+            return _formNumWhiteList;
+        }
+        set
+        {
+            _formNumWhiteList = value;
+            OnPropertyChanged();
+        }
+    }
     #endregion
 
     #region SelectedReport
@@ -397,6 +422,8 @@ public class Forms1TabControlVM : INotifyPropertyChanged
 
     #endregion
 
+
+
     #endregion
 
     #region Functions
@@ -441,11 +468,13 @@ public class Forms1TabControlVM : INotifyPropertyChanged
     #region GoToFormNum
     public void GoToFormNum (string formNum)
     {
-        var report = SelectedReports?.Report_Collection.FirstOrDefault(rep => rep.FormNum_DB == formNum);
-        if (report == null) return;
+        if (FormNumWhiteList != formNum)
+            FormNumWhiteList = formNum;
+        else
+            FormNumWhiteList = "";
 
-        var index = SelectedReports.Report_Collection.IndexOf(report);
-        CurrentPageForms = (index / RowsCountForms) + 1;
+        UpdateReportCollection();
+        UpdateFormsPageInfo();
     }
     #endregion
 

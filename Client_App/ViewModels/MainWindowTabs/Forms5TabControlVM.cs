@@ -174,21 +174,56 @@ namespace Client_App.ViewModels.MainWindowTabs
             {
                 if (SelectedReports is null) return null;
 
-                return new ObservableCollection<Report>(
-                    SelectedReports
-                    .Report_Collection
-                    .AsEnumerable()
-                    .OrderBy(x => x.FormNum_DB)
-                    .ThenByDescending(x => x.Year_DB == null ||
-                                 !int.TryParse(x.Year_DB, out _) ?
-                                 int.MaxValue :
-                                 int.Parse(x.Year_DB))
+
+                var result = SelectedReports
+                        .Report_Collection
+                        .AsEnumerable();
+
+                if (!string.IsNullOrEmpty(FormNumWhiteList))
+                {
+                    result = result.Where(rep => rep.FormNum_DB == FormNumWhiteList);
+                }
+
+
+                result.OrderBy(x =>
+                {
+                    if (int.TryParse(x.FormNum_DB.Split('.')[1], out var result))
+                        return result;
+                    return int.MinValue;
+                })
+                    // Сортируем по валидным датам, некорректные уходят в начало/конец
+                    .ThenByDescending(x => x.StartPeriod_DB == null ||
+                    !DateOnly.TryParse(x.StartPeriod_DB, out _) ?
+                        DateOnly.MaxValue :
+                        DateOnly.Parse(x.StartPeriod_DB))
+                    .ThenByDescending(x => x.EndPeriod_DB == null ||
+                        !DateOnly.TryParse(x.EndPeriod_DB, out _) ?
+                        DateOnly.MaxValue :
+                        DateOnly.Parse(x.EndPeriod_DB))
                     .ThenBy(rep => rep.CorrectionNumber_DB)
                     .Skip((CurrentPageForms - 1) * RowsCountForms)
-                    .Take(RowsCountForms));
+                    .Take(RowsCountForms);
+
+                return new ObservableCollection<Report>(result);
             }
         }
 
+        #endregion
+
+        #region FormNumWhiteList
+        private string _formNumWhiteList = "";
+        public string FormNumWhiteList
+        {
+            get
+            {
+                return _formNumWhiteList;
+            }
+            set
+            {
+                _formNumWhiteList = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
 
         #region SelectedReport
@@ -308,13 +343,13 @@ namespace Client_App.ViewModels.MainWindowTabs
         #region GoToFormNum
         public void GoToFormNum(string formNum)
         {
-            if (SelectedReports is null) return;
+            if (FormNumWhiteList != formNum)
+                FormNumWhiteList = formNum;
+            else
+                FormNumWhiteList = "";
 
-            var report = SelectedReports.Report_Collection.FirstOrDefault(rep => rep.FormNum_DB == formNum);
-            if (report == null) return;
-
-            var index = SelectedReports.Report_Collection.IndexOf(report);
-            CurrentPageForms = (index / RowsCountForms) + 1;
+            UpdateReportCollection();
+            UpdateFormsPageInfo();
         }
         #endregion
 

@@ -15,6 +15,7 @@
 
 	<UserControl.Resources>
 		<converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
+		<converter:StringEqualsToColorConverter x:Key="StringEqualsToColor" />
 	</UserControl.Resources>
 
     <Design.DataContext>
@@ -385,23 +386,50 @@
 									Orientation="Horizontal">
 
 							<Button Content="1.1" Width="35" Height="40" Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="1.1"/>
+									Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="1.1" 
+									Background="{Binding FormNumWhiteList, 
+										Converter={StaticResource StringEqualsToColor}, 
+										ConverterParameter=1.1}" />
 							<Button Content="1.2" Width="35" Height="40" Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="1.2"/>
+									Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="1.2"
+								Background="{Binding FormNumWhiteList, 
+										Converter={StaticResource StringEqualsToColor}, 
+										ConverterParameter=1.2}" />
 							<Button Content="1.3" Width="35" Height="40" Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="1.3"/>
+									Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="1.3"
+								Background="{Binding FormNumWhiteList, 
+										Converter={StaticResource StringEqualsToColor}, 
+										ConverterParameter=1.3}" />
 							<Button Content="1.4" Width="35" Height="40" Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="1.4"/>
+									Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="1.4"
+								Background="{Binding FormNumWhiteList, 
+										Converter={StaticResource StringEqualsToColor}, 
+										ConverterParameter=1.4}" />
 							<Button Content="1.5" Width="35" Height="40" Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="1.5"/>
+									Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="1.5"
+								Background="{Binding FormNumWhiteList, 
+										Converter={StaticResource StringEqualsToColor}, 
+										ConverterParameter=1.5}" />
 							<Button Content="1.6" Width="35" Height="40" Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="1.6"/>
+									Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="1.6"
+								Background="{Binding FormNumWhiteList, 
+										Converter={StaticResource StringEqualsToColor}, 
+										ConverterParameter=1.6}" />
 							<Button Content="1.7" Width="35" Height="40" Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="1.7"/>
+									Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="1.7"
+								Background="{Binding FormNumWhiteList, 
+										Converter={StaticResource StringEqualsToColor}, 
+										ConverterParameter=1.7}" />
 							<Button Content="1.8" Width="35" Height="40" Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="1.8"/>
+									Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="1.8"
+								Background="{Binding FormNumWhiteList, 
+										Converter={StaticResource StringEqualsToColor}, 
+										ConverterParameter=1.8}" />
 							<Button Content="1.9" Width="35" Height="40" Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="1.9"/>
+									Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="1.9"
+								Background="{Binding FormNumWhiteList, 
+										Converter={StaticResource StringEqualsToColor}, 
+										ConverterParameter=1.9}" />
 						
 						</StackPanel>
 					</Grid>
