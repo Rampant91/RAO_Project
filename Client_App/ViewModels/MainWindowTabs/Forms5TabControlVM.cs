@@ -260,9 +260,12 @@ namespace Client_App.ViewModels.MainWindowTabs
         {
             get
             {
-                if (SelectedReports != null)
-                    return SelectedReports.Report_Collection.Count;
-                return 0;
+                if (SelectedReports is null) return 0;
+
+                if (!string.IsNullOrEmpty(FormNumWhiteList))
+                    return SelectedReports.Report_Collection.Where(rep => rep.FormNum_DB == FormNumWhiteList).Count();
+
+                return SelectedReports.Report_Collection.Count;
             }
         }
 
