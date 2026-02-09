@@ -61,6 +61,9 @@
 							<MenuItem Header="Выгрузить все организации в отдельные файлы"
 									  Command="{Binding MainWindowVM.ExportAllReports}"
 									  CommandParameter="{Binding SelectedReports}"/>
+							<MenuItem Header="Выгрузить все отчеты в отдельные файлы"
+									  Command="{Binding MainWindowVM.ExportAllReport}"
+									  CommandParameter="{Binding SelectedReports}"/>
 							<MenuItem Header="Проверить все формы организации"
 									  Command="{Binding MainWindowVM.ExcelExportCheckAllForms}"
 									  CommandParameter="{Binding SelectedReports}"/>

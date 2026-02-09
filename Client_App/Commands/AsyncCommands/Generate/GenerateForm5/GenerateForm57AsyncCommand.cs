@@ -37,7 +37,7 @@ using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5;
 
-public class GenerateForm57AsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
+public class GenerateForm57AsyncCommand(BaseFormVM formVM) : BaseGenerateForm5
 {
     #region private Properties
     private Report Report => formVM.Report;
@@ -158,34 +158,6 @@ public class GenerateForm57AsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         formVM.UpdatePageInfo();
         await Dispatcher.UIThread.InvokeAsync(async () => progressBar.Close());
     }
-
-    #region AskMessages
-    private async Task<bool> ShowConfirmationMessage(Window owner)
-    {
-        string answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-            {
-                ButtonDefinitions =
-                [
-                    new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" },
-                ],
-                CanResize = true,
-                ContentTitle = "Формирование нового отчета",
-                ContentMessage = "Все строки будут перезаписаны!\n" +
-                "Вы уверены, что хотите продолжить?",
-                MinWidth = 300,
-                MinHeight = 125,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(owner));
-
-        if (answer == "Да")
-            return true;
-        else
-            return false;
-    }
-    #endregion
 
     #region private Functions
     private async Task<bool> ShowAskDependOnReportOrNotMessage(Window owner)

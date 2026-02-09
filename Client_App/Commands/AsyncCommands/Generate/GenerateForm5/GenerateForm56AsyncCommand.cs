@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 {
-    public class GenerateForm56AsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
+    public class GenerateForm56AsyncCommand(BaseFormVM formVM) : BaseGenerateForm5
     {
         #region private Properties
 
@@ -139,104 +139,6 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             formVM.UpdateFormList();
             formVM.UpdatePageInfo();
             await Dispatcher.UIThread.InvokeAsync(async () => progressBar.Close());
-        }
-
-        #region AskMessages
-        private async Task<bool> ShowConfirmationMessage(Window owner)
-        {
-            string answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                {
-                    ButtonDefinitions =
-                    [
-                        new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" },
-                    ],
-                    CanResize = true,
-                    ContentTitle = "Формирование нового отчета",
-                    ContentMessage = "Все строки будут перезаписаны!\n" +
-                    "Вы уверены, что хотите продолжить?",
-                    MinWidth = 300,
-                    MinHeight = 125,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(owner));
-
-            if (answer == "Да")
-                return true;
-            else
-                return false;
-        }
-        private async Task<int> ShowAskYearMessage(Window owner)
-        {
-            var dialog = new AskIntMessageWindow(new AskIntMessageVM("Введите год, за который хотите сформировать отчет"));
-
-            int? year = await dialog.ShowDialog<int>(owner);
-
-            if (year == null)
-                return 0;
-
-            return (int)year;
-        }
-        #endregion
-
-        #region Requests
-
-        private async Task<List<int>> GetOrganizations10List(DBModel DB, CancellationToken cancellationToken, List<ViacOrganization> loadedList = null)
-        {
-            try
-            {
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                if (loadedList == null || loadedList.Count == 0)
-                    return await DB.ReportsCollectionDbSet
-                        .AsSplitQuery()
-                        .AsNoTracking()
-                        .Include(reports => reports.Master_DB).ThenInclude(reports => reports.Rows10)
-                        .Where(reports => reports.Master_DB.FormNum_DB == "1.0")
-                        .Select(reports => reports.Id)
-                        .ToListAsync(cancellationToken);
-                else
-                    return DB.ReportsCollectionDbSet
-                        .AsSplitQuery()
-                        .AsNoTracking()
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                        .Where(x => x.Master_DB.FormNum_DB == "1.0")
-                        .AsEnumerable()
-                        .Where(reports => loadedList.Any(x =>
-                        x.RegNo == reports.Master_DB.Rows10[0].RegNo_DB
-                        && (x.OKPO == reports.Master_DB.Rows10[1].Okpo_DB
-                        ||
-                        (string.IsNullOrEmpty(reports.Master_DB.Rows10[1].Okpo_DB)
-                        && x.OKPO == reports.Master_DB.Rows10[0].Okpo_DB))))
-                        .Select(reports => reports.Id)
-                        .ToList();
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                   .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                   {
-                       ButtonDefinitions =
-                       [
-                           new ButtonDefinition { Name = "Ок" },
-                       ],
-                       CanResize = true,
-                       ContentTitle = "Формирование нового отчета",
-                       ContentMessage = "Произошла ошибка:\n" +
-                       $"{ex.Message}",
-                       MinWidth = 300,
-                       MinHeight = 125,
-                       WindowStartupLocation = WindowStartupLocation.CenterOwner
-                   })
-                   .ShowDialog(owner));
-                return new List<int>();
-            }
         }
 
         private async Task<Dictionary<int, List<Report>>> LoadReportDictionary(List<int> organizations10IdList, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
@@ -349,35 +251,13 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                             {
                                 matchingForm.Quantity_DB += 1;
 
-                                if (double.TryParse(matchingForm.Mass_DB,
-                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                                    out var value)
-                                && double.TryParse(row12.Mass_DB,
-                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                                    out var inc))
-                                {
-                                    var sumActivity = value + inc;
-                                    matchingForm.Mass.Value = sumActivity.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
-                                }
+                                matchingForm.Mass.Value = SummarizeExponentionalStrings(matchingForm.Mass.Value, row12.Mass.Value);
                             }
                             else if (CodeOperationFilter.MinusOperationsForm56.Any(x => x == row12.OperationCode_DB))
                             {
                                 matchingForm.Quantity_DB -= 1;
 
-                                if (double.TryParse(matchingForm.Mass_DB,
-                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                                    out var value)
-                                && double.TryParse(row12.Mass_DB,
-                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                                    out var dec))
-                                {
-                                    var sumActivity = value - dec;
-                                    matchingForm.Mass.Value = sumActivity.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
-                                }
+                                matchingForm.Mass.Value = SubtractExponentionalStrings(matchingForm.Mass.Value, row12.Mass.Value);
                             }
                         }
                     }
@@ -404,7 +284,6 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             }
         }
 
-        #endregion
 
         private DateOnly ProcessInventoryReport(Report rep)
         {

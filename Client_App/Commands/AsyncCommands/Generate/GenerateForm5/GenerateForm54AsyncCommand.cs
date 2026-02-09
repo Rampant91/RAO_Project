@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 {
-    public class GenerateForm54AsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
+    public class GenerateForm54AsyncCommand(BaseFormVM formVM) : BaseGenerateForm5
     {
         #region private Properties
 
@@ -138,104 +138,9 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             await Dispatcher.UIThread.InvokeAsync(async () => progressBar.Close());
         }
 
-        #region AskMessages
-        private async Task<bool> ShowConfirmationMessage(Window owner)
-        {
-            string answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                {
-                    ButtonDefinitions =
-                    [
-                        new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" },
-                    ],
-                    CanResize = true,
-                    ContentTitle = "Формирование нового отчета",
-                    ContentMessage = "Все строки будут перезаписаны!\n" +
-                    "Вы уверены, что хотите продолжить?",
-                    MinWidth = 300,
-                    MinHeight = 125,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(owner));
-
-            if (answer == "Да")
-                return true;
-            else
-                return false;
-        }
-        private async Task<int> ShowAskYearMessage(Window owner)
-        {
-            var dialog = new AskIntMessageWindow(new AskIntMessageVM("Введите год, за который хотите сформировать отчет"));
-
-            int? year = await dialog.ShowDialog<int>(owner);
-
-            if (year == null)
-                return 0;
-
-            return (int)year;
-        }
-        #endregion
-
         #region Requests
 
-        private async Task<List<int>> GetOrganizations10List(DBModel DB, CancellationToken cancellationToken, List<ViacOrganization> loadedList = null)
-        {
-            try
-            {
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                if (loadedList == null || loadedList.Count == 0)
-                    return await DB.ReportsCollectionDbSet
-                        .AsSplitQuery()
-                        .AsNoTracking()
-                        .Include(reports => reports.Master_DB).ThenInclude(reports => reports.Rows10)
-                        .Where(reports => reports.Master_DB.FormNum_DB == "1.0")
-                        .Select(reports => reports.Id)
-                        .ToListAsync(cancellationToken);
-                else
-                    return DB.ReportsCollectionDbSet
-                        .AsSplitQuery()
-                        .AsNoTracking()
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                        .Where(x => x.Master_DB.FormNum_DB == "1.0")
-                        .AsEnumerable()
-                        .Where(reports => loadedList.Any(x =>
-                        x.RegNo == reports.Master_DB.Rows10[0].RegNo_DB
-                        && (x.OKPO == reports.Master_DB.Rows10[1].Okpo_DB
-                        ||
-                        (string.IsNullOrEmpty(reports.Master_DB.Rows10[1].Okpo_DB)
-                        && x.OKPO == reports.Master_DB.Rows10[0].Okpo_DB))))
-                        .Select(reports => reports.Id)
-                        .ToList();
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                   .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                   {
-                       ButtonDefinitions =
-                       [
-                           new ButtonDefinition { Name = "Ок" },
-                       ],
-                       CanResize = true,
-                       ContentTitle = "Формирование нового отчета",
-                       ContentMessage = "Произошла ошибка:\n" +
-                       $"{ex.Message}",
-                       MinWidth = 300,
-                       MinHeight = 125,
-                       WindowStartupLocation = WindowStartupLocation.CenterOwner
-                   })
-                   .ShowDialog(owner));
-                return new List<int>();
-            }
-        }
-
+       
         private void LoadReportDictionary(List<int> organizations10IdList, out Dictionary<int, List<Report>> rep13Dictionary, out Dictionary<int, List<Report>> rep14Dictionary, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
         {
             double progressBarPercent = 15;
@@ -364,18 +269,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                             {
                                 matchingForm.Quantity_DB += 1;
 
-                                if (double.TryParse(matchingForm.Activity_DB,
-                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                                    out var value)
-                                && double.TryParse(row13.Activity_DB,
-                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                                    out var inc))
-                                {
-                                    var sumActivity = value + inc;
-                                    matchingForm.Activity.Value = sumActivity.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
-                                }
+                                matchingForm.Activity.Value = SummarizeExponentionalStrings(matchingForm.Activity.Value, row13.Activity.Value);
 
 
                                 AddRadionuclids(matchingForm, row13.Radionuclids_DB);
@@ -384,18 +278,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                             {
                                 matchingForm.Quantity_DB -= 1;
 
-                                if (double.TryParse(matchingForm.Activity_DB,
-                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                                    out var value)
-                                && double.TryParse(row13.Activity_DB,
-                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                                    out var dec))
-                                {
-                                    var sumActivity = value - dec;
-                                    matchingForm.Activity.Value = sumActivity.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
-                                }
+                                matchingForm.Activity.Value = SubtractExponentionalStrings(matchingForm.Activity.Value, row13.Activity.Value);
+
                                 RemoveRadionuclids(matchingForm, row13.Radionuclids_DB);
                             }
                         }
@@ -461,89 +345,17 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
                             if (CodeOperationFilter.PlusOperationsForm54.Any(x => x == row14.OperationCode_DB))
                             {
-
-                                if (double.TryParse(matchingForm.Activity_DB,
-                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                                    out var value)
-                                && double.TryParse(row14.Activity_DB,
-                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                                    out var inc))
-                                {
-                                    var sumActivity = value + inc;
-                                    matchingForm.Activity.Value = sumActivity.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
-                                }
-
-                                if (double.TryParse(matchingForm.Mass_DB,
-                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                                    out value)
-                                && double.TryParse(row14.Mass_DB,
-                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                                    out inc))
-                                {
-                                    var sumMass = value + inc;
-                                    matchingForm.Mass.Value = sumMass.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
-                                }
-
-                                if (double.TryParse(matchingForm.Volume_DB,
-                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                                    out value)
-                                && double.TryParse(row14.Volume_DB,
-                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                                    out inc))
-                                {
-                                    var sumVolume = value + inc;
-                                    matchingForm.Volume.Value = sumVolume.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
-                                }
+                                matchingForm.Activity.Value = SummarizeExponentionalStrings(matchingForm.Activity.Value, row14.Activity.Value);
+                                matchingForm.Mass.Value = SummarizeExponentionalStrings(matchingForm.Mass.Value, row14.Mass.Value);
+                                matchingForm.Volume.Value = SummarizeExponentionalStrings(matchingForm.Volume.Value, row14.Volume.Value);
 
                                 AddRadionuclids(matchingForm, row14.Radionuclids_DB);
                             }
                             else if (CodeOperationFilter.MinusOperationsForm54.Any(x => x == row14.OperationCode_DB))
                             {
-
-                                if (double.TryParse(matchingForm.Activity_DB,
-                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                                    out var value)
-                                && double.TryParse(row14.Activity_DB,
-                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                                    out var dec))
-                                {
-                                    var sumActivity = value - dec;
-                                    matchingForm.Activity.Value = sumActivity.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
-                                }
-                                if (double.TryParse(matchingForm.Mass_DB,
-                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                                    out value)
-                                && double.TryParse(row14.Mass_DB,
-                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                                    out dec))
-                                {
-                                    var sumMass = value - dec;
-                                    matchingForm.Mass.Value = sumMass.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
-                                }
-
-                                if (double.TryParse(matchingForm.Volume_DB,
-                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                                    out value)
-                                && double.TryParse(row14.Volume_DB,
-                                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                                    CultureInfo.CreateSpecificCulture("ru-RU"),
-                                    out dec))
-                                {
-                                    var sumVolume = value - dec;
-                                    matchingForm.Volume.Value = sumVolume.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
-                                }
-
+                                matchingForm.Activity.Value = SubtractExponentionalStrings(matchingForm.Activity.Value, row14.Activity.Value);
+                                matchingForm.Mass.Value = SubtractExponentionalStrings(matchingForm.Mass.Value, row14.Mass.Value);
+                                matchingForm.Volume.Value = SubtractExponentionalStrings(matchingForm.Volume.Value, row14.Volume.Value);
 
                                 RemoveRadionuclids(matchingForm, row14.Radionuclids_DB);
                             }
@@ -596,18 +408,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 {
                     matchingForm.Quantity_DB += 1;
 
-                    if (double.TryParse(matchingForm.Activity_DB,
-                        NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                        CultureInfo.CreateSpecificCulture("ru-RU"),
-                        out var value)
-                    && double.TryParse(row13.Activity_DB,
-                        NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                        CultureInfo.CreateSpecificCulture("ru-RU"),
-                        out var inc))
-                    {
-                        var sumActivity = value + inc;
-                        matchingForm.Activity.Value = sumActivity.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
-                    }
+                    matchingForm.Activity.Value = SummarizeExponentionalStrings(matchingForm.Activity.Value, row13.Activity.Value);
 
                     AddRadionuclids(matchingForm, row13.Radionuclids_DB);
                 }
@@ -652,44 +453,9 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 if (matchingForm != null)
                 {
 
-                    if (double.TryParse(matchingForm.Activity_DB,
-                        NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                        CultureInfo.CreateSpecificCulture("ru-RU"),
-                        out var value)
-                    && double.TryParse(row14.Activity_DB,
-                        NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                        CultureInfo.CreateSpecificCulture("ru-RU"),
-                        out var inc))
-                    {
-                        var sumActivity = value + inc;
-                        matchingForm.Activity.Value = sumActivity.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
-                    }
-
-                    if (double.TryParse(matchingForm.Mass_DB,
-                        NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                        CultureInfo.CreateSpecificCulture("ru-RU"),
-                        out value)
-                    && double.TryParse(row14.Mass_DB,
-                        NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                        CultureInfo.CreateSpecificCulture("ru-RU"),
-                        out inc))
-                    {
-                        var sumMass = value + inc;
-                        matchingForm.Mass.Value = sumMass.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
-                    }
-
-                    if (double.TryParse(matchingForm.Volume_DB,
-                        NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                        CultureInfo.CreateSpecificCulture("ru-RU"),
-                        out value)
-                    && double.TryParse(row14.Volume_DB,
-                        NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                        CultureInfo.CreateSpecificCulture("ru-RU"),
-                        out inc))
-                    {
-                        var sumVolume = value + inc;
-                        matchingForm.Volume.Value = sumVolume.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
-                    }
+                    matchingForm.Activity.Value = SummarizeExponentionalStrings(matchingForm.Activity.Value, row14.Activity.Value);
+                    matchingForm.Mass.Value = SummarizeExponentionalStrings(matchingForm.Mass.Value, row14.Mass.Value);
+                    matchingForm.Volume.Value = SummarizeExponentionalStrings(matchingForm.Volume.Value, row14.Volume.Value);
 
                     AddRadionuclids(matchingForm, row14.Radionuclids_DB);
                 }
