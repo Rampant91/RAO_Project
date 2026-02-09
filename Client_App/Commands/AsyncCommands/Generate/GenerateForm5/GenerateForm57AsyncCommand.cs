@@ -42,8 +42,6 @@ public class GenerateForm57AsyncCommand(BaseFormVM formVM) : BaseGenerateForm5
     #region private Properties
     private Report Report => formVM.Report;
 
-    private Window owner;
-
     private int year = 0;
     #endregion
     public override async void Execute(object? parameter)
