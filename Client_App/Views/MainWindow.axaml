@@ -305,7 +305,15 @@
                           CommandParameter="changelog"
                           Header="Список изменений"/>
                     
-            </MenuItem> 
+            </MenuItem>
+
+			<MenuItem Name="Passports"
+                      Header="Паспорта">
+				<MenuItem Command="{Binding AddPackagePassport}"
+						  Header="Добавить паспорт">
+					
+				</MenuItem>
+		    </MenuItem>
 
         </Menu>
         

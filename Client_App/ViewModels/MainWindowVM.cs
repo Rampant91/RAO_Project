@@ -432,7 +432,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                                                                             //  Радионуклиды, отсутствующие в справочнике
 
     public ICommand GoToFormNum { get; set; }
-    
+    public ICommand AddPackagePassport { get; set; }
     #endregion
 
     #region Constructor
@@ -463,6 +463,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         OpenFile = new OpenFileAsyncCommand();
         OpenFolder = new OpenFolderAsyncCommand();
         GoToFormNum = new GoToFormNumAsyncCommand(this);
+        AddPackagePassport = new AddPackagePassportAsyncCommand();
 
         Forms1TabControlVM = new Forms1TabControlVM(this);
         Forms2TabControlVM = new Forms2TabControlVM(this);
