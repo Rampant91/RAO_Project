@@ -3,10 +3,9 @@ using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels;
-using Client_App.Views;
+using Client_App.Views.Messages;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
-using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
@@ -20,13 +19,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using static Client_App.ViewModels.Messages.SelectReportsMessageWindowVM;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
 /// <summary>
 /// Импорт -> Из Excel.
 /// </summary>
-internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyncCommand
+internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -59,7 +60,7 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
             var worksheet0 = excelPackage.Workbook.Worksheets[0];
             var worksheet1 = excelPackage.Workbook.Worksheets[1];
             // Проверка формата формы, записанного в Excel
-            var val = worksheet0.Name == "1.0"
+            var patternIsValid = worksheet0.Name == "1.0"
                       && Convert.ToString(worksheet0.Cells["A3"].Value)
                           is "ГОСУДАОСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ"
                           or "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ"
@@ -74,7 +75,7 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                       || Convert.ToString(worksheet0.Cells["A6"].Value) //Новый шаблон
                           is "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ\n" +
                           "Конфиденциальность гарантируется получателем информации");
-            if (!val)
+            if (!patternIsValid)
             {
                 #region InvalidDataFormatMessage
 
@@ -116,15 +117,39 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                 timeCreate[1] = $"0{timeCreate[1]}";
             }
 
-
-            Reports? baseReps = null ;
+            Reports? baseReps = null;
             string? codeSubjectRF = "";
+
+            //Импортируем все остальные данные из титульника
+            var impReps = GetImportReps(worksheet0);
 
             // В первую очередь записываем основные данные титульного листа (1.0, 2.0, 4.0)
             // Для 1.0 и 2.0 основные данные - это рег.Номер и ОКПО
             // Для 4.0 основные данные - это код субъекта
             if (worksheet0.Name is "1.0" or "2.0")
-                baseReps = GetBaseReps(worksheet0);
+            {
+                if (parameter is "Auto")
+                {
+                    baseReps = GetBaseReps(worksheet0);
+                }
+                else if (parameter is "Selected")
+                {
+                    var localRepsList = await GetReportsListFromDB(impReps.Master_DB.FormNum_DB);
+                    var currentReportIndex = impReportsList.IndexOf(impReps) + 1;
+                    var selectReportsMessageWindow = new SelectReportsMessageWindow(localRepsList, SourceFile!.Name, impReportsList.Count, currentReportIndex, impReps);
+                    var selectedReports = await selectReportsMessageWindow.ShowDialog<OrganizationInfo>(Desktop.MainWindow);
+                    if (selectedReports is null) return;
+
+                    var impRepsFromDb = await GetSelectedReportsFromDB(selectedReports, impReps.Master_DB.FormNum_DB);
+                    baseReps = impReps.Master_DB.FormNum_DB switch
+                    {
+                        "1.0" => GetReports11FromLocalEqual(impRepsFromDb),
+                        "2.0" => GetReports21FromLocalEqual(impRepsFromDb),
+                        _ => baseReps
+                    };
+                }
+            }
+                
             else if (worksheet0.Name is "Форма 4.0")
             {
                 codeSubjectRF = Convert.ToString(worksheet0.Cells["B8"].Value);
@@ -153,12 +178,9 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                 baseReps = ReportsStorage.LocalReports.Reports_Collection40
                     .FirstOrDefault(reports => reports.Master_DB.Rows40[0].CodeSubjectRF_DB == codeSubjectRF);
             }
-
             
-            //Импортируем все остальные данные из титульника
-            var impReps = GetImportReps(worksheet0);
             if ((impReps.Master_DB.FormNum_DB == "4.0") && 
-                !(codeSubjectRF is  "" or null))
+                codeSubjectRF is not ("" or null))
             {
                 impReps.Master_DB.Rows40[0].CodeSubjectRF_DB = codeSubjectRF;
             }    
@@ -177,8 +199,6 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                 BaseRepsShortName = baseReps.Master.ShortJurLicoRep.Value;
             }
 
-            
-
             var repNumber = worksheet0.Name;
             if (repNumber == "Форма 4.0")
                 repNumber = repNumber.Split(' ')[1];
@@ -191,19 +211,12 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
             var impRep = GetReportWithDataFromExcel(worksheet0, worksheet1, formNumber, timeCreate);
             impRep.ReportChangedDate = impDateTime;
 
-            int start;
-            switch (formNumber)
+            var start = formNumber switch
             {
-                case "2.8":
-                    start = 14;
-                    break;
-                case "4.1":
-                    start = 9;
-                    break;
-                default:
-                    start = 11;
-                    break;
-            }
+                "2.8" => 14,
+                "4.1" => 9,
+                _ => 11
+            };
 
             var end = $"A{start}";
             var value = worksheet1.Cells[end].Value;
@@ -215,8 +228,6 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                 end = $"A{start}";
                 value = worksheet1.Cells[end].Value;
             }
-
-            
 
             NumberInOrder = 1;
 
@@ -240,7 +251,6 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                     start++;
                 }
             }
-
 
             ImpRepCorNum = impRep.CorrectionNumber_DB;
             ImpRepEndPeriod = impRep.EndPeriod_DB;
@@ -491,6 +501,7 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
     private static Reports? GetBaseReps(ExcelWorksheet worksheet0)
     {
         // Для форм 1.0, 2.0 (Старое)
+
         var excelOkpo0 = Convert.ToString(worksheet0.Cells["B36"].Value);
         var excelOkpo1= Convert.ToString(worksheet0.Cells["B37"].Value);
         var excelRegNo = Convert.ToString(worksheet0.Cells["F6"].Value);

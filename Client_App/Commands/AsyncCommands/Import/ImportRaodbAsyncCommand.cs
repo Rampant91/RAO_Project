@@ -121,16 +121,14 @@ public class ImportRaodbAsyncCommand() : ImportBaseAsyncCommand
                     baseReps21 = GetReports21FromLocalEqual(impReps);
                     baseReps41 = GetReports41FromLocalEqual(impReps);
                 }
-                else // if "Selected"
+                else //if (parameter is "Selected")
                 {
                     var localRepsList = await GetReportsListFromDB(impReps.Master_DB.FormNum_DB);
                     var currentReportIndex = impReportsList.IndexOf(impReps) + 1;
                     var selectReportsMessageWindow = new SelectReportsMessageWindow(localRepsList, SourceFile!.Name, impReportsList.Count, currentReportIndex, impReps);
                     var selectedReports = await selectReportsMessageWindow.ShowDialog<OrganizationInfo>(Desktop.MainWindow);
-                    if (selectedReports is null)
-                    {
-                        return;
-                    }
+                    if (selectedReports is null) return;
+
                     var impRepsFromDb = await GetSelectedReportsFromDB(selectedReports, impReps.Master_DB.FormNum_DB);
                     baseReps11 = GetReports11FromLocalEqual(impRepsFromDb);
                     baseReps21 = GetReports21FromLocalEqual(impRepsFromDb);

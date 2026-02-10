@@ -63,8 +63,21 @@
                           Command="{Binding ImportRaodb}"
                           CommandParameter="Auto"
                           IsVisible="{Binding AppLaunchedAtNorao, Converter={StaticResource BoolInverterConverter}}"/>
+
                 <MenuItem Header="Из Excel"
-                          Command="{Binding ImportExcel}"/>
+                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
+                    <MenuItem Header="Импорт с авто выбором организации"
+                              Command="{Binding ImportExcel}"
+                              CommandParameter="Auto"/>
+                    <MenuItem Header="Импорт в организацию из списка"
+                              Command="{Binding ImportExcel}"
+                              CommandParameter="Selected"/>
+                </MenuItem>
+                <MenuItem Header="Из Excel"
+                          Command="{Binding ImportExcel}"
+                          CommandParameter="Auto"
+                          IsVisible="{Binding AppLaunchedAtNorao, Converter={StaticResource BoolInverterConverter}}"/>
+
                 <MenuItem Header="Из Json"
                           Command="{Binding ImportJson}"/>
             </MenuItem>

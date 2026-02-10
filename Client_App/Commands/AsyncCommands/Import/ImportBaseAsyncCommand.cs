@@ -1,6 +1,5 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
-using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.Interfaces.Logger;
 using Client_App.Logging;
 using Client_App.Resources.CustomComparers;
@@ -383,64 +382,26 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     {
         await using var db = new DBModel(StaticConfiguration.DBPath);
 
-        switch (formNum)
-        {
-            case "1.0":
-            {
-                var repsFromDB = await db.ReportsCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Include(x => x.DBObservable)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                    .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "1.0")
-                    .Select(reps => new ReportsDTO(
-                        reps.Id,
-                        reps.Master_DB.RegNoRep.Value,
-                        reps.Master_DB.OkpoRep.Value))
-                    .ToListAsync();
+        var repsFromDbDtoId = (await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.DBObservable)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+            .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == formNum)
+            .Select(reps => new ReportsDTO(
+                reps.Id,
+                reps.Master_DB.RegNoRep.Value,
+                reps.Master_DB.OkpoRep.Value))
+            .ToListAsync())
+            .First(x => x.RegNoRep == repsDto.RegNum && x.OkpoRep == repsDto.Okpo)
+            .Id;
 
-                var repsFromDbDto = repsFromDB
-                    .First(x => x.RegNoRep == repsDto.RegNum && x.OkpoRep == repsDto.Okpo);
-
-                //var repsFromDb = await db.ReportsCollectionDbSet
-                //    .Include(x => x.DBObservable)
-                //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                //    .FirstOrDefaultAsync(x => x.Id == repsFromDbDto.Id);
-
-                return await ReportsStorage.ApiReports.GetAsync(repsFromDbDto.Id);
-
-            }
-            case "2.0":
-            {
-                var repsFromDB = await db.ReportsCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Include(x => x.DBObservable)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                    .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "2.0")
-                    .Select(reps => new ReportsDTO(
-                        reps.Id,
-                        reps.Master_DB.RegNoRep.Value,
-                        reps.Master_DB.OkpoRep.Value))
-                    .ToListAsync();
-
-                var repsFromDbDto = repsFromDB
-                    .First(x => x.RegNoRep == repsDto.RegNum && x.OkpoRep == repsDto.Okpo);
-
-                //var repsFromDb = await db.ReportsCollectionDbSet
-                //    .Include(x => x.DBObservable)
-                //    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                //    .FirstOrDefaultAsync(x => x.Id == repsFromDbDto.Id);
-
-                return await ReportsStorage.ApiReports.GetAsync(repsFromDbDto.Id);
-            }
-            default: return null;
-        }
+        return await ReportsStorage.ApiReports.GetAsync(repsFromDbDtoId);
     }
 
-    private class ReportsDTO(int id, string regNoRep, string okpoRep)
+    private protected class ReportsDTO(int id, string regNoRep, string okpoRep)
     {
         public readonly int Id = id;
 
