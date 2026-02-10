@@ -272,8 +272,6 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
                                 matchingForm.Activity.Value = SummarizeExponentionalStrings(matchingForm.Activity.Value, row13.Activity.Value);
 
-
-                                AddRadionuclids(matchingForm, row13.Radionuclids_DB);
                             }
                             else if (CodeOperationFilter.MinusOperationsForm54.Any(x => x == row13.OperationCode_DB))
                             {
@@ -281,7 +279,6 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
                                 matchingForm.Activity.Value = SubtractExponentionalStrings(matchingForm.Activity.Value, row13.Activity.Value);
 
-                                RemoveRadionuclids(matchingForm, row13.Radionuclids_DB);
                             }
                         }
                     }
@@ -421,7 +418,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     {
                         TypeORI_DB = "1",
                         VarietyORI_DB = null,
-                        AggregateState_DB = 2,
+                        AggregateState_DB = row13.AggregateState_DB,
                         Radionuclids_DB = row13.Radionuclids_DB,
                         Quantity_DB = 1,
                         Activity_DB = row13.Activity_DB
@@ -541,10 +538,12 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             switch (form.FormNum_DB)
             {
                 case "1.3":
+                    var row13 = form as Form13;
                     return Report.Rows54.FirstOrDefault(row54 =>
                     row54.TypeORI_DB == "1"
                     && row54.VarietyORI_DB == null
-                    && row54.AggregateState_DB == 2);
+                    && row54.AggregateState_DB == row13.AggregateState_DB
+                    && comparer.Equals(row54.Radionuclids_DB, row13.Radionuclids_DB));
                 case "1.4":
                     var row14 = form as Form14;
                     return Report.Rows54.FirstOrDefault(row54 =>
