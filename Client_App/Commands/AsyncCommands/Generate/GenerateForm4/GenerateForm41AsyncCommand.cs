@@ -104,10 +104,10 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         Report.Reports.Master_DB.Rows40[0].CodeSubjectRF_DB = codeSubjectRF;
         Report.Reports.Master_DB.Rows40[0].SubjectRF_DB = Spravochniks.DictionaryOfSubjectRF[intCode];
 
-        if (!int.TryParse(Report.Year.Value, out year))
+        if (!int.TryParse(Report.Year_DB, out year))
         {
             year = await Dispatcher.UIThread.InvokeAsync(async () => await ShowAskYearMessage(owner));
-            Report.Year.Value = year.ToString();
+            Report.Year_DB = year.ToString();
         }
 
         #endregion
