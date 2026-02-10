@@ -96,19 +96,18 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
             progressBarVM.SetProgressBar(5, $"Загрузка организаций");
 
-
             var organizations10IdList = await GetOrganizations10List(StaticConfiguration.DBModel, cts.Token, loadedList);
 
             var repDictionary = await LoadReportDictionary(organizations10IdList, progressBarVM, cts);
 
             GenerateForm56(repDictionary, progressBarVM, cts);
 
-            //Удаляем строчки с количеством и активностью равным нулю
-            Report.Rows56.RemoveMany(
-                Report.Rows56.Where(rep => 
-                rep.Quantity_DB == 0
-                && double.TryParse(rep.Mass_DB, out var value)
-                && value == 0));
+            ////Удаляем строчки с количеством и активностью равным нулю
+            //Report.Rows56.RemoveMany(
+            //    Report.Rows56.Where(rep => 
+            //    rep.Quantity_DB == 0
+            //    && double.TryParse(rep.Mass_DB, out var value)
+            //    && value == 0));
 
 
             progressBarVM.SetProgressBar(
@@ -224,6 +223,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     var reportList = item.Value;
 
                     var inventarizationDate = ProcessInventoryReport(reportList[0]);
+                    if (inventarizationDate == DateOnly.MinValue)
+                        continue;
                     int.TryParse(year, out var yearIntValue);
                     var endOfTheYear = new DateOnly(day: 31, month: 12, year: yearIntValue);
 

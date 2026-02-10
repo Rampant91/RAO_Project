@@ -242,6 +242,9 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     var reportList = item.Value;
 
                     var inventarizationDate = ProcessInventoryReport13(reportList[0]);
+                    if (inventarizationDate == DateOnly.MinValue)
+                        continue;
+
                     int.TryParse(year, out var yearIntValue);
                     var endOfTheYear = new DateOnly(day: 31, month: 12, year: yearIntValue);
 
@@ -318,7 +321,9 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 {
                     var reportList = item.Value;
 
-                    var inventarizationDate = ProcessInventoryReport14(reportList[0]);
+                    var inventarizationDate = ProcessInventoryReport14(reportList[0]); 
+                    if (inventarizationDate == DateOnly.MinValue)
+                        continue;
                     int.TryParse(year, out var yearIntValue);
                     var endOfTheYear = new DateOnly(day: 31, month: 12, year: yearIntValue);
 

@@ -225,6 +225,9 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     var reportList = item.Value;
 
                     var inventarizationDate = ProcessInventoryReport(reportList[0]);
+                    if (inventarizationDate == DateOnly.MinValue)
+                        continue;
+
                     int.TryParse(year, out var yearIntValue);
                     var endOfTheYear = new DateOnly(day: 31, month:12, year: yearIntValue);
                     for(int i = 1; i < reportList.Count; i++)
