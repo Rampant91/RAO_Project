@@ -14,4 +14,20 @@ public partial class Forms1TabControl : UserControl
     {
         AvaloniaXamlLoader.Load(this);
     }
+    
+    private void ImportRaodb_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        if (DataContext is ViewModels.MainWindowTabs.Forms1TabControlVM vm)
+        {
+            vm.MainWindowVM.ImportRaodb.Execute("Selected");
+        }
+    }
+    
+    private void ImportExcel_Click(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        if (DataContext is ViewModels.MainWindowTabs.Forms1TabControlVM vm)
+        {
+            vm.MainWindowVM.ImportExcel.Execute("Selected");
+        }
+    }
 }

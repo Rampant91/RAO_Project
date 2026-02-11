@@ -57,7 +57,7 @@
                               CommandParameter="Auto"/>
                     <MenuItem Header="Импорт в организацию из списка"
                               Command="{Binding ImportRaodb}"
-                              CommandParameter="Selected"/>
+                              CommandParameter="FromList"/>
                 </MenuItem>
                 <MenuItem Header="Из RAODB"
                           Command="{Binding ImportRaodb}"
@@ -71,7 +71,7 @@
                               CommandParameter="Auto"/>
                     <MenuItem Header="Импорт в организацию из списка"
                               Command="{Binding ImportExcel}"
-                              CommandParameter="Selected"/>
+                              CommandParameter="FromList"/>
                 </MenuItem>
                 <MenuItem Header="Из Excel"
                           Command="{Binding ImportExcel}"

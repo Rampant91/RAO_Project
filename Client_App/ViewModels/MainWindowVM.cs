@@ -22,7 +22,6 @@ using ReactiveUI;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Client_App.ViewModels;
@@ -150,7 +149,6 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         }
     }
     #endregion
-
 
     #region UpdateReportsCollection
     public void UpdateReportsCollection()
@@ -424,7 +422,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         DeleteForm = new DeleteReportAsyncCommand();
         DeleteReports = new DeleteReportsAsyncCommand();
         ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand();
-        ImportExcel = new ImportExcelAsyncCommand();
+        ImportExcel = new ImportExcelAsyncCommand(this);
         ImportJson = new ImportJsonAsyncCommand();
         ImportRaodb = new ImportRaodbAsyncCommand();
         MaxGraphsLength = new MaxGraphsLengthAsyncCommand();

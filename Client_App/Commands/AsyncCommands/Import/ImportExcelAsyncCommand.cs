@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using static Client_App.ViewModels.Messages.SelectReportsMessageWindowVM;
 
 namespace Client_App.Commands.AsyncCommands.Import;
@@ -27,7 +26,7 @@ namespace Client_App.Commands.AsyncCommands.Import;
 /// <summary>
 /// Импорт -> Из Excel.
 /// </summary>
-internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
+internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -128,25 +127,50 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             // Для 4.0 основные данные - это код субъекта
             if (worksheet0.Name is "1.0" or "2.0")
             {
-                if (parameter is "Auto")
+                switch (parameter)
                 {
-                    baseReps = GetBaseReps(worksheet0);
-                }
-                else if (parameter is "Selected")
-                {
-                    var localRepsList = await GetReportsListFromDB(impReps.Master_DB.FormNum_DB);
-                    var currentReportIndex = impReportsList.IndexOf(impReps) + 1;
-                    var selectReportsMessageWindow = new SelectReportsMessageWindow(localRepsList, SourceFile!.Name, impReportsList.Count, currentReportIndex, impReps);
-                    var selectedReports = await selectReportsMessageWindow.ShowDialog<OrganizationInfo>(Desktop.MainWindow);
-                    if (selectedReports is null) return;
-
-                    var impRepsFromDb = await GetSelectedReportsFromDB(selectedReports, impReps.Master_DB.FormNum_DB);
-                    baseReps = impReps.Master_DB.FormNum_DB switch
+                    case "Auto":
                     {
-                        "1.0" => GetReports11FromLocalEqual(impRepsFromDb),
-                        "2.0" => GetReports21FromLocalEqual(impRepsFromDb),
-                        _ => baseReps
-                    };
+                        baseReps = GetBaseReps(worksheet0);
+                        break;
+                    }
+                    case "Selected":
+                    {
+                        var selectedReports = mainWindowVM.SelectedReports;
+                        if (selectedReports is null) return;
+                        var selectedReportsInfo = new OrganizationInfo
+                        {
+                            RegNum = selectedReports.Master_DB.RegNoRep.Value,
+                            Okpo = selectedReports.Master_DB.OkpoRep.Value
+                        };
+
+                        var impRepsFromDb = await GetSelectedReportsFromDB(selectedReportsInfo, impReps.Master_DB.FormNum_DB);
+                        baseReps = impReps.Master_DB.FormNum_DB switch
+                        {
+                            "1.0" => GetReports11FromLocalEqual(impRepsFromDb),
+                            "2.0" => GetReports21FromLocalEqual(impRepsFromDb),
+                            _ => baseReps
+                        };
+                        break;
+                    }
+                    case "FromList":
+                    {
+                        var localRepsList = await GetReportsListFromDB(impReps.Master_DB.FormNum_DB);
+                        var currentReportIndex = impReportsList.IndexOf(impReps) + 1;
+                        var selectReportsMessageWindow = new SelectReportsMessageWindow(localRepsList, SourceFile!.Name, impReportsList.Count, currentReportIndex, impReps);
+                        var selectedReports = await selectReportsMessageWindow.ShowDialog<OrganizationInfo>(Desktop.MainWindow);
+                        if (selectedReports is null) return;
+
+                        var impRepsFromDb = await GetSelectedReportsFromDB(selectedReports, impReps.Master_DB.FormNum_DB);
+                        baseReps = impReps.Master_DB.FormNum_DB switch
+                        {
+                            "1.0" => GetReports11FromLocalEqual(impRepsFromDb),
+                            "2.0" => GetReports21FromLocalEqual(impRepsFromDb),
+                            _ => baseReps
+                        };
+                        break;
+                    }
+                    default: return;
                 }
             }
                 

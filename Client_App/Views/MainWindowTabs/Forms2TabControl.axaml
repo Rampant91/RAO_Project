@@ -9,11 +9,13 @@
 			 xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 			 xmlns:local="using:Client_App.Behaviors"
 			 xmlns:vm="using:Client_App.ViewModels.MainWindowTabs"
+			 xmlns:customConverters="clr-namespace:Client_App.Resources.CustomConverters"
 			 x:DataType="vm:Forms2TabControlVM"
              x:Class="Client_App.Views.MainWindowTabs.Forms2TabControl">
 
 	<UserControl.Resources>
-		<converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
+        <customConverters:BoolInverterConverter x:Key="BoolInverterConverter"/>
+        <converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
 	</UserControl.Resources>
 
     <Design.DataContext>
@@ -46,6 +48,17 @@
 									  Command="{Binding MainWindowVM.AddReports}"/>
 							<MenuItem Header="Редактировать форму"
 									  Command="{Binding MainWindowVM.NewChangeReports}"/>
+                            <MenuItem Header="Импортировать отчёт в организацию"
+                                      Name="ImportMenu">
+                                <MenuItem Header="Из RAODB"
+                                          Command="{Binding MainWindowVM.ImportRaodb}"
+                                          CommandParameter="Selected"
+                                          IsVisible="{Binding MainWindowVM.AppLaunchedAtNorao, Converter={StaticResource BoolInverterConverter}}"/>
+                                <MenuItem Header="Из Excel"
+                                          Command="{Binding MainWindowVM.ImportExcel}"
+                                          CommandParameter="Selected"
+                                          IsVisible="{Binding MainWindowVM.AppLaunchedAtNorao, Converter={StaticResource BoolInverterConverter}}"/>
+                            </MenuItem>
 							<MenuItem Header="Удалить форму"
 									  Command="{Binding MainWindowVM.DeleteReports}"
 									  CommandParameter="{Binding SelectedReports}"/>

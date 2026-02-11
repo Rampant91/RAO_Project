@@ -27,7 +27,7 @@ public class Forms1TabControlVM : INotifyPropertyChanged
     
     private void SaveRowCountSettings()
     {
-        Client_App.Properties.RowCountSettings.RowCountSettingsManager.SaveSettings(
+        Properties.RowCountSettings.RowCountSettingsManager.SaveSettings(
             "form1", 
             _rowsCountOrgs, 
             _rowsCountForms);
@@ -73,6 +73,7 @@ public class Forms1TabControlVM : INotifyPropertyChanged
 
                 return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
                     .AsEnumerable()
+                    .Where(x => x.DBObservable != null)
                     .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
                     .Where(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
                                    || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
@@ -86,6 +87,7 @@ public class Forms1TabControlVM : INotifyPropertyChanged
             else
                 return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
                     .AsEnumerable()
+                    .Where(x => x.DBObservable != null)
                     .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
                     .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
                     .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
@@ -130,7 +132,9 @@ public class Forms1TabControlVM : INotifyPropertyChanged
             return result;
         }
     }
-    public static int TotalRowsOrgs => StaticConfiguration.DBModel.ReportsCollectionDbSet.Count(reps => reps.Master_DB.FormNum_DB == "1.0");
+    public static int TotalRowsOrgs => StaticConfiguration.DBModel.ReportsCollectionDbSet
+        .Where(x => x.DBObservable != null)
+        .Count(reps => reps.Master_DB.FormNum_DB == "1.0");
     
     public int FilteredRowsOrgs
     {
@@ -141,12 +145,12 @@ public class Forms1TabControlVM : INotifyPropertyChanged
                 var search = SearchText.ToLower().Trim();
                 return StaticConfiguration.DBModel.ReportsCollectionDbSet
                     .AsEnumerable()
+                    .Where(x => x.DBObservable != null)
                     .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
-                    .Where(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
+                    .Count(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
                                    || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
                                    || reps.Master_DB.Rows10[0].ShortJurLico_DB.ToLower().Contains(search)
-                                   || reps.Master_DB.Rows10[1].ShortJurLico_DB.ToLower().Contains(search))
-                    .Count();
+                                   || reps.Master_DB.Rows10[1].ShortJurLico_DB.ToLower().Contains(search));
             }
             return TotalRowsOrgs;
         }
