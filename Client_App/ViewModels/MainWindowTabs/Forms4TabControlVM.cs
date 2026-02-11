@@ -54,7 +54,6 @@ namespace Client_App.ViewModels.MainWindowTabs
         }
         #endregion
 
-
         #region ReportsCollection
         public ObservableCollection<Reports> ReportsCollection
         {

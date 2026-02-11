@@ -53,7 +53,6 @@ namespace Client_App.ViewModels.MainWindowTabs
         }
         #endregion
 
-
         #region ReportsCollection
         public ObservableCollection<Reports> ReportsCollection
         {
@@ -185,7 +184,7 @@ namespace Client_App.ViewModels.MainWindowTabs
                 }
 
 
-                result.OrderBy(x =>
+                result = result.OrderBy(x =>
                 {
                     if (int.TryParse(x.FormNum_DB.Split('.')[1], out var result))
                         return result;

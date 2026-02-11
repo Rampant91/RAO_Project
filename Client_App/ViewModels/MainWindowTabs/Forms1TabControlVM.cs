@@ -221,7 +221,7 @@ public class Forms1TabControlVM : INotifyPropertyChanged
             }
 
 
-            result.OrderBy(x =>
+            result = result.OrderBy(x =>
             {
                 if (int.TryParse(x.FormNum_DB.Split('.')[1], out var result))
                     return result;
