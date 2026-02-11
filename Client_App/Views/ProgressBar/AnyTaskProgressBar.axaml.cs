@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
@@ -14,25 +15,32 @@ namespace Client_App.Views.ProgressBar;
 public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
 {
     public AnyTaskProgressBarVM AnyTaskProgressBarVM { get; }
+    private CancellationTokenSource _cancellationTokenSource;
 
     public AnyTaskProgressBar()
     {
 
     }
-    public AnyTaskProgressBar(CancellationTokenSource cts)
+    public AnyTaskProgressBar(CancellationTokenSource cts, Window? owner = null)
     {
         InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
+//#if DEBUG
+//        this.AttachDevTools();
+//#endif
         
         var vm = new AnyTaskProgressBarVM(this, cts, new BackgroundLoader());
         DataContext = vm;
         AnyTaskProgressBarVM = (DataContext as AnyTaskProgressBarVM)!;
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+
+        if (owner == null && Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             if (AnyTaskProgressBarVM.IsShowDialog) ShowDialog(desktop.MainWindow);
             else Show(desktop.MainWindow);
+        }
+        else if (owner != null)
+        {
+            if (AnyTaskProgressBarVM.IsShowDialog) ShowDialog(owner);
+            else Show(owner);
         }
     }
 

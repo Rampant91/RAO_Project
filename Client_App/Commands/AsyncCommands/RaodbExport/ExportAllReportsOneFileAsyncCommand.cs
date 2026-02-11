@@ -129,6 +129,8 @@ public partial class ExportAllReportsOneFileAsyncCommand : ExportRaodbBaseAsyncC
                     .AsQueryable()
                     .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
                     .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows40)
+                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows50)
                     .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
                     .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows12.OrderBy(x => x.NumberInOrder_DB))
                     .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows13.OrderBy(x => x.NumberInOrder_DB))
@@ -150,6 +152,14 @@ public partial class ExportAllReportsOneFileAsyncCommand : ExportRaodbBaseAsyncC
                     .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows210.OrderBy(x => x.NumberInOrder_DB))
                     .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
                     .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
+                    .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows41.OrderBy(x => x.NumberInOrder_DB))
+                    .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows51.OrderBy(x => x.NumberInOrder_DB))
+                    .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows52.OrderBy(x => x.NumberInOrder_DB))
+                    .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows53.OrderBy(x => x.NumberInOrder_DB))
+                    .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows54.OrderBy(x => x.NumberInOrder_DB))
+                    .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows55.OrderBy(x => x.NumberInOrder_DB))
+                    .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows56.OrderBy(x => x.NumberInOrder_DB))
+                    .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows57.OrderBy(x => x.NumberInOrder_DB))
                     .Include(reports => reports.Report_Collection).ThenInclude(x => x.Notes.OrderBy(x => x.Order))
                     .FirstAsync(x => x.Id == repsId, cancellationToken: cts.Token);
 

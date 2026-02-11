@@ -5,13 +5,11 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.ViewModels.ProgressBar;
+using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -56,9 +54,15 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelExportListOfFormsBaseAsy
         }
 
         progressBarVM.SetProgressBar(13, "Запрос периода");
+
         var (startDate, endDate) = !isBackgroundCommand
             ? await InputDateRange(progressBar, cts)
-            : (DateOnly.MinValue, DateOnly.MaxValue);   //default value
+            : (DateOnly.MinValue, DateOnly.MaxValue);
+
+
+        //var (startDate, endDate) = !isBackgroundCommand
+        //    ? await InputDateRange(progressBar, cts)
+        //    : (DateOnly.MinValue, DateOnly.MaxValue);   //default value
 
         progressBarVM.SetProgressBar(15, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath);
@@ -367,47 +371,19 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelExportListOfFormsBaseAsy
     /// <returns>Кортеж из даты начала периода и даты его окончания.</returns>
     private static async Task<(DateOnly startDateOnly, DateOnly endDateOnly)> InputDateRange(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
-        #region MessageInputDateRange
 
-        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxInputWindow(new MessageBoxInputParams
-                {
-                    ButtonDefinitions =
-                    [
-                        new ButtonDefinition { Name = "Ок", IsDefault = true },
-                        new ButtonDefinition { Name = "Отмена", IsCancel = true }
-                    ],
-                    ContentTitle = "Задать период",
-                    ContentMessage = "Введите период дат через дефис (прим: 01.01.2022-07.03.2023)." +
-                                     $"{Environment.NewLine}Если даты незаполненны или введены некорректно," +
-                                     $"{Environment.NewLine}то выгрузка будет осуществляться без фильтра по датам.",
-                    MinWidth = 600,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
+        var res = await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            var window = new AskDatePeriodMessageWindow();
+            return window.ShowDialog<(string command, DateOnly initialDate, DateOnly residualDate)>(Desktop.MainWindow);
+        });
 
-        #endregion
-
-        if (res.Button is null or "Отмена")
+        if (res.command is not "Ок")
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
-        var startDate = DateOnly.MinValue;
-        var endDate = DateOnly.MaxValue;
-        if (res.Message != null && res.Message.Contains('-') && res.Message.Length > 6)
-        {
-            var firstPeriodHalf = res.Message.Split('-')[0].Trim();
-            var secondPeriodHalf = res.Message.Split('-')[1].Trim();
-            if (DateOnly.TryParse(firstPeriodHalf, out var parseStartDate))
-            {
-                startDate = parseStartDate;
-            }
-            if (DateOnly.TryParse(secondPeriodHalf, out var parseEndDate))
-            {
-                endDate = parseEndDate;
-            }
-        }
-        return (startDate, endDate);
+
+        return (res.initialDate, res.residualDate);
     }
 
     #endregion

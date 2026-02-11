@@ -15,7 +15,22 @@ internal class CopyPasNameAsyncCommand : BaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         if (parameter is null) return;
-        StaticMethods.PassportUniqParam(parameter, out var okpo, out var type, out var date, out var pasNum, out var factoryNum);
+
+        //Костыль для старого и нового интерфейса. Нужно убрать, когда откажемся от старого интерфейса форм 1. TODO
+        string? okpo;
+        string? type;
+        string? date;
+        string? pasNum;
+        string? factoryNum;
+        if (parameter is object[])
+        {
+            StaticMethods.PassportUniqParam(parameter, out okpo, out type, out date, out pasNum, out factoryNum);
+        }
+        else
+        {
+            StaticMethods.NewPassportUniqParam(parameter, out okpo, out type, out date, out pasNum, out factoryNum);
+        }
+
         var year = StaticStringMethods.ConvertDateToYear(date);
         if (okpo is null or ""
             || type is null or ""

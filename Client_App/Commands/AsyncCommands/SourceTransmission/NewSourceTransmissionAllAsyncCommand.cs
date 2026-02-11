@@ -1,0 +1,293 @@
+﻿using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Threading;
+using Client_App.Commands.AsyncCommands.Save;
+using Client_App.Interfaces.Logger;
+using Client_App.Resources;
+using Client_App.ViewModels.Forms;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Models;
+using Models.Collections;
+using Models.DBRealization;
+using Models.Forms;
+using Models.Forms.Form1;
+using Models.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Client_App.Commands.AsyncCommands.SourceTransmission;
+
+// Перевод всех источников в форме из РВ в РАО
+public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsyncCommand
+{
+    public NewSourceTransmissionAllAsyncCommand(BaseFormVM formVM)
+    {
+        FormVM = formVM;
+    }
+
+    public override async Task AsyncExecute(object? parameter)
+    {
+        var formWindow = Desktop.Windows.FirstOrDefault(x => x.Name == FormVM.FormType);
+        var desktop = (IClassicDesktopStyleApplicationLifetime)Avalonia.Application.Current?.ApplicationLifetime!;
+        var activeWindow = formWindow ?? desktop.MainWindow;
+
+        var formsWithCode41 = SelectedReport[SelectedReport.FormNum_DB].ToList<Form1>()
+            .Where(x => string.Equals(x.OperationCode_DB.Trim(), "41", StringComparison.Ordinal))
+            .ToList();
+        var linesWithCorruptOpDate = formsWithCode41
+            .Where(x => !DateOnly.TryParse(x.OperationDate_DB, out _))
+            .Select(x => x.NumberInOrder_DB)
+            .ToArray();
+        if (linesWithCorruptOpDate.Length > 0)
+        {
+            #region MessageSourceTransmissionFailed
+
+            var suffix1 = linesWithCorruptOpDate.Length == 1 ? "чке" : "ках";
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Перевод источников",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = $"Некорректно введена дата операции в стро{suffix1} {string.Join(", ", linesWithCorruptOpDate)}.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(activeWindow));
+
+            #endregion
+             
+            return;
+        }
+        if (formsWithCode41.Count == 0)
+        {
+            #region MessageSourceTransmissionFailed
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Перевод источников",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = "В данной форме отсутствуют записи с кодом операции 41.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(activeWindow));
+
+            #endregion
+
+            return;
+        }
+
+        try
+        {
+            if (StaticConfiguration.DBModel.ChangeTracker.HasChanges())
+            {
+                #region MessageSaveChanges
+
+                var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    {
+                        ButtonDefinitions =
+                        [
+                            new ButtonDefinition { Name = "Да" },
+                            new ButtonDefinition { Name = "Отмена" }
+                        ],
+                        ContentTitle = "Сохранение изменений",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = $"Обнаружены изменения." +
+                                         $"{Environment.NewLine}Сохранить форму {FormVM.FormType} перед переводом РВ в РАО?",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(activeWindow));
+
+                #endregion
+
+                var dbm = StaticConfiguration.DBModel;
+                switch (res)
+                {
+                    case "Да":
+                    {
+                        await dbm.SaveChangesAsync();
+                        await new SaveReportAsyncCommand(FormVM).AsyncExecute(null);
+
+                        break;
+                    }
+                    case null or "Отмена":
+                    default:
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg);
+        }
+
+        foreach (var f in formsWithCode41)
+        {
+            var opDate = DateOnly.Parse(f.OperationDate_DB);
+            var repInRange = SelectedReports.Report_Collection
+                .Where(rep => (f.FormNum_DB == "1.1" && rep.FormNum_DB == "1.5"
+                               || f.FormNum_DB == "1.2" && rep.FormNum_DB == "1.6"
+                               || f.FormNum_DB == "1.3" && rep.FormNum_DB == "1.6"
+                               || f.FormNum_DB == "1.4" && rep.FormNum_DB == "1.6")
+                              && (DateOnly.TryParse(rep.StartPeriod_DB, out var repStartDate)
+                                  && DateOnly.TryParse(rep.EndPeriod_DB, out var repEndDate)
+                                  && opDate > repStartDate && opDate <= repEndDate
+                                  || DateOnly.TryParse(rep.StartPeriod_DB, out repStartDate)
+                                      && !DateOnly.TryParse(rep.EndPeriod_DB, out _)
+                                      && opDate > repStartDate))
+                .OrderBy(x => x.EndPeriod_DB)
+                .ToList();
+            if (repInRange.Count == 2
+                && !DateOnly.TryParse(repInRange[0].EndPeriod_DB, out _)
+                && DateOnly.TryParse(repInRange[1].EndPeriod_DB, out _))
+            {
+                repInRange.Remove(repInRange[0]);
+            }
+            if (repInRange.Count > 1)
+            {
+                #region MessageSourceTransmissionFailed
+
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = "Перевод источника в РАО",
+                        ContentHeader = "Ошибка",
+                        ContentMessage =
+                            "У выбранной организации присутствуют отчёты по форме 1.5 с пересекающимися периодами. " +
+                            $"{Environment.NewLine}Устраните данное несоответствие перед операцией перевода источника в РАО.",
+                        MinWidth = 400,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(activeWindow));
+
+                #endregion
+
+                return;
+            }
+        }
+        Report repToOpen = new(){ StartPeriod_DB = "01.01.0001" };
+        var countAddedForm = 0;
+        foreach (var form in formsWithCode41)
+        {
+            var opDate = DateOnly.Parse(form.OperationDate_DB);
+            var repInRange = SelectedReports.Report_Collection
+                .Where(rep => (form.FormNum_DB == "1.1" && rep.FormNum_DB == "1.5"
+                               || form.FormNum_DB == "1.2" && rep.FormNum_DB == "1.6"
+                               || form.FormNum_DB == "1.3" && rep.FormNum_DB == "1.6"
+                               || form.FormNum_DB == "1.4" && rep.FormNum_DB == "1.6")
+                              && (DateOnly.TryParse(rep.StartPeriod_DB, out var repStartDate)
+                                  && DateOnly.TryParse(rep.EndPeriod_DB, out var repEndDate)
+                                  && opDate > repStartDate && opDate <= repEndDate
+                                  || DateOnly.TryParse(rep.StartPeriod_DB, out repStartDate)
+                                      && !DateOnly.TryParse(rep.EndPeriod_DB, out _)
+                                      && opDate > repStartDate))
+                .OrderBy(x => x.EndPeriod_DB)
+                .ToList();
+            if (repInRange.Count == 2
+                && !DateOnly.TryParse(repInRange[0].EndPeriod_DB, out _)
+                && DateOnly.TryParse(repInRange[1].EndPeriod_DB, out _))
+            {
+                repInRange.Remove(repInRange[0]);
+            }
+            await using var db = new DBModel(StaticConfiguration.DBPath);
+            switch (repInRange.Count)
+            {
+                case 1:   // Если есть подходящий отчет, то добавляем форму в него
+                {
+                    var rep = await ReportsStorage.GetReportAsync(repInRange.First().Id);
+                    var formIsAdded = await AddNewFormToExistingReport(rep, form, db);
+                    if (formIsAdded) countAddedForm++;
+                    await db.SaveChangesAsync();
+                    if (DateOnly.TryParse(rep.StartPeriod_DB, out var date)
+                        && DateOnly.TryParse(repToOpen.StartPeriod_DB, out var maxDate)
+                        && date > maxDate)
+                    {
+                        repToOpen = rep;
+                    }
+                    break;
+                }
+                default:    // Если отчета с подходящим периодом нет, создаём новый отчёт и добавляем в него форму 
+                {
+                    var rep = await CreateReportAndAddNewForm(db, form, opDate);
+                    countAddedForm++;
+                    await db.SaveChangesAsync();
+                    var report = await ReportsStorage.Api.GetAsync(rep.Id);
+                    SelectedReports.Report_Collection.Add(report);
+                    if (DateOnly.TryParse(report.StartPeriod_DB, out var date)
+                        && DateOnly.TryParse(repToOpen.StartPeriod_DB, out var maxDate)
+                        && date > maxDate)
+                    {
+                        repToOpen = report;
+                    }
+                    break;
+                }
+            }
+        }
+
+        if (countAddedForm != formsWithCode41.Count)
+        {
+            #region MessageSourceTransmissionFailed
+
+            var repFormNum = SelectedReport.FormNum_DB switch
+            {
+                "1.1" => "1.5",
+                _ => "1.6"
+            };
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Перевод источника в РАО",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"В связи с наличием строчек дубликатов, " +
+                                     $"{Environment.NewLine}было переведено {countAddedForm} строчек форм из {formsWithCode41.Count}. " +
+                                     $"{Environment.NewLine}Проверьте правильность заполнения форм {SelectedReport.FormNum_DB} и {repFormNum}",
+                    CanResize = true,
+                    MinWidth = 450,
+                    MinHeight = 175,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(activeWindow));
+
+            #endregion
+        }
+
+        if (countAddedForm > 0)
+        {
+            await CloseWindowAndOpenNew(repToOpen).ConfigureAwait(false);
+        }
+    }
+
+    #region CloseWindowAndOpenNew
+
+    private static async Task CloseWindowAndOpenNew(Report rep)
+    {
+        var window = Desktop.Windows.First(x => x.Name is "1.1" or "1.2" or "1.3" or "1.4");
+        var vm = (BaseFormVM)window.DataContext;
+        vm.SkipChangeTacking = true;
+        var windowParam = new FormParameter()
+        {
+            Parameter = new ObservableCollectionWithItemPropertyChanged<IKey>(new List<Report> { rep }),
+            Window = window
+        };
+        await new ChangeFormAsyncCommand(windowParam).AsyncExecute(null).ConfigureAwait(false);
+    }
+
+    #endregion
+}

@@ -5,9 +5,9 @@
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU;x86</Platforms>
     <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
-    <AssemblyVersion>1.2.4.0</AssemblyVersion>
-    <FileVersion>1.2.4.0</FileVersion>
-    <Version>1.2.4.0</Version>
+    <AssemblyVersion>1.3.0.4</AssemblyVersion>
+    <FileVersion>1.3.0.4</FileVersion>
+    <Version>1.3.0.4</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
@@ -42,6 +42,7 @@
     <PackageReference Include="Avalonia.Desktop" Version="0.10.22" />
     <PackageReference Include="Avalonia.Diagnostics" Version="0.10.22" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.22" />
+    <PackageReference Include="Avalonia.Win32" Version="0.10.22" />
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.22" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="EPPlus" Version="7.5.2" />
@@ -64,6 +65,87 @@
     <Resource Include="Assets\Radiation_sign.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Views\Forms\Forms1\Form_19.axaml.cs">
+      <DependentUpon>Form_19.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms1\Form_18.axaml.cs">
+      <DependentUpon>Form_18.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms1\Form_17.axaml.cs">
+      <DependentUpon>Form_17.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms1\Form_16.axaml.cs">
+      <DependentUpon>Form_16.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms1\Form_15.axaml.cs">
+      <DependentUpon>Form_15.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms1\Form_14.axaml.cs">
+      <DependentUpon>Form_14.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_212.axaml.cs">
+      <DependentUpon>Form_212.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_211.axaml.cs">
+      <DependentUpon>Form_211.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_210.axaml.cs">
+      <DependentUpon>Form_210.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_29.axaml.cs">
+      <DependentUpon>Form_29.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_28.axaml.cs">
+      <DependentUpon>Form_28.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_27.axaml.cs">
+      <DependentUpon>Form_27.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_26.axaml.cs">
+      <DependentUpon>Form_26.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_25.axaml.cs">
+      <DependentUpon>Form_25.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_24.axaml.cs">
+      <DependentUpon>Form_24.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_23.axaml.cs">
+      <DependentUpon>Form_23.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_22.axaml.cs">
+      <DependentUpon>Form_22.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_21.axaml.cs">
+      <DependentUpon>Form_21.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms5\Form_57.axaml.cs">
+      <DependentUpon>Form_57.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms5\Form_56.axaml.cs">
+      <DependentUpon>Form_56.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms5\Form_55.axaml.cs">
+      <DependentUpon>Form_55.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms5\Form_54.axaml.cs">
+      <DependentUpon>Form_54.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms5\Form_53.axaml.cs">
+      <DependentUpon>Form_53.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms5\Form_52.axaml.cs">
+      <DependentUpon>Form_52.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms5\Form_51.axaml.cs">
+      <DependentUpon>Form_51.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms5\Form_50.axaml.cs">
+      <DependentUpon>Form_50.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\NewCheckForm.axaml.cs">
+      <DependentUpon>NewCheckForm.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Controls\DataGrid\Cell.axaml.cs">
       <DependentUpon>Cell.axaml</DependentUpon>
     </Compile>
@@ -144,7 +226,40 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Update="Views\GetSnkParams.axaml.cs">
+    <Compile Update="Views\Forms\Forms1\Form_12.axaml.cs">
+      <DependentUpon>Form_12.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms2\Form_20.axaml.cs">
+      <DependentUpon>Form_20.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MainWindowTabs\Forms2TabControl.axaml.cs">
+      <DependentUpon>Forms2TabControl.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MainWindowTabs\Forms1TabControl.axaml.cs">
+      <DependentUpon>Forms1TabControl.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MainWindowTabs\Forms5TabControl.axaml.cs">
+      <DependentUpon>Forms5TabControl.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MainWindowTabs\Forms4TabControl.axaml.cs">
+      <DependentUpon>Forms4TabControl.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Messages\AskForm57Message.axaml.cs">
+      <DependentUpon>AskForm57Message.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Messages\AskSubjectRFMessage.axaml.cs">
+      <DependentUpon>AskSubjectRFMessage.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Messages\AskIntMessageWindow.axaml.cs">
+      <DependentUpon>AskIntMessageWindow.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Messages\AskViacMessage.axaml.cs">
+      <DependentUpon>AskViacMessage.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Messages\GetRegionAndFormNums.axaml.cs">
+      <DependentUpon>GetRegionAndFormNums.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Messages\GetSnkParams.axaml.cs">
       <DependentUpon>GetSnkParams.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\Messages\AskDatePeriodMessageWIndow.axaml.cs">
@@ -169,4 +284,5 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 </Project>

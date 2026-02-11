@@ -1,24 +1,25 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Threading;
+using Client_App.Interfaces.Logger;
+using Client_App.Logging;
+using Client_App.Resources.CustomComparers;
+using Client_App.ViewModels;
+using DynamicData;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
+using Models.DBRealization;
+using Models.DTO;
+using Models.Forms;
 using Models.Forms.Form1;
+using Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
-using Client_App.Interfaces.Logger;
-using Models.DTO;
-using Models.Interfaces;
-using Client_App.ViewModels;
 using System.Linq;
-using DynamicData;
-using Microsoft.EntityFrameworkCore;
-using Models.DBRealization;
-using Models.Forms;
-using Avalonia.Threading;
-using Client_App.Controls.DataGrid.DataGrids;
-using Client_App.Resources.CustomComparers;
+using System.Threading.Tasks;
+using static Client_App.ViewModels.Messages.SelectReportsMessageWindowVM;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -168,6 +169,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 }
                 baseReps.Report_Collection.Replace(oldReport, newReport);
                 StaticConfiguration.DBModel.Remove(oldReport!);
+                await ReportDeletionLogger.LogDeletionAsync(oldReport!);
                 AtLeastOneImportDone = true;
                 Act = "Замена (пересечение)\t";
                 LoggerImportDTO = new LoggerImportDTO
@@ -204,6 +206,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 newReport.Notes.AddRange<IKey>(0, oldReport.Notes);
                 baseReps.Report_Collection.Replace(oldReport, newReport);
                 StaticConfiguration.DBModel.Remove(oldReport);
+                await ReportDeletionLogger.LogDeletionAsync(oldReport);
                 AtLeastOneImportDone = true;
                 Act = "Дополнение (совпадение)\t";
                 LoggerImportDTO = new LoggerImportDTO
@@ -373,6 +376,78 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #endregion
 
+    #region GetSelectedReportsFromDB
+
+    private protected static async Task<Reports?> GetSelectedReportsFromDB(OrganizationInfo repsDto, string formNum)
+    {
+        await using var db = new DBModel(StaticConfiguration.DBPath);
+
+        var repsFromDbDtoId = (await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable()
+            .Include(x => x.DBObservable)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+            .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == formNum)
+            .Select(reps => new ReportsDTO(
+                reps.Id,
+                reps.Master_DB.RegNoRep.Value,
+                reps.Master_DB.OkpoRep.Value))
+            .ToListAsync())
+            .First(x => x.RegNoRep == repsDto.RegNum && x.OkpoRep == repsDto.Okpo)
+            .Id;
+
+        return await ReportsStorage.ApiReports.GetAsync(repsFromDbDtoId);
+    }
+
+    private protected class ReportsDTO(int id, string regNoRep, string okpoRep)
+    {
+        public readonly int Id = id;
+
+        public readonly string RegNoRep = regNoRep;
+
+        public readonly string OkpoRep = okpoRep;
+    }
+
+    #endregion
+
+    #region GetReportsListFromDB
+
+    private protected async Task<List<Reports>> GetReportsListFromDB(string formNum)
+    {
+        await using var db = new DBModel(StaticConfiguration.DBPath);
+
+        return formNum switch
+        {
+            "1.0" => await db.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.DBObservable)
+                .Include(x => x.Master_DB)
+                .ThenInclude(x => x.Rows10)
+                .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "1.0")
+                .ToListAsync(),
+
+            "2.0" => await db.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.DBObservable)
+                .Include(x => x.Master_DB)
+                .ThenInclude(x => x.Rows20)
+                .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "2.0")
+                .ToListAsync(),
+
+            _ => []
+        };
+    }
+
+
+
+    #endregion
+
     #region GetRaoFileName
 
     /// <summary>
@@ -517,6 +592,62 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                            && t.Master.Rows20[1].Okpo_DB != ""
                            && reps.Master.Rows20[0].Okpo_DB == t.Master.Rows20[1].Okpo_DB
                            && reps.Master.Rows20[0].RegNo_DB == t.Master.Rows20[1].RegNo_DB);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    #endregion
+
+    #region GetReports41FromLocalEqual
+
+    /// <summary>
+    /// Ищет в БД организацию, с тем же кодом субъекта, что у импортируемой и возвращает её.
+    /// </summary>
+    /// <param name="reps">Импортируемая организация.</param>
+    /// <returns>Соответствующая организация из БД.</returns>
+    private protected static Reports? GetReports41FromLocalEqual(Reports reps)
+    {
+        try
+        {
+            //if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('2')) || item.Master_DB.FormNum_DB is not "2.0")
+            if (reps.Master_DB.FormNum_DB is not "4.0")
+            {
+                return null;
+            }
+
+            return ReportsStorage.LocalReports.Reports_Collection40
+                       .FirstOrDefault(t => t.Master_DB.Rows40[0].CodeSubjectRF_DB == reps.Master_DB.Rows40[0].CodeSubjectRF_DB);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    #endregion
+
+    #region GetReports51FromLocalEqual
+
+    /// <summary>
+    /// Ищет в БД организацию, с тем же кодом субъекта, что у импортируемой и возвращает её.
+    /// </summary>
+    /// <param name="reps">Импортируемая организация.</param>
+    /// <returns>Соответствующая организация из БД.</returns>
+    private protected static Reports? GetReports51FromLocalEqual(Reports reps)
+    {
+        try
+        {
+            //if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('2')) || item.Master_DB.FormNum_DB is not "2.0")
+            if (reps.Master_DB.FormNum_DB is not "5.0")
+            {
+                return null;
+            }
+
+            return ReportsStorage.LocalReports.Reports_Collection50
+                       .FirstOrDefault(t => t.Master_DB.Rows50[0].Name_DB == reps.Master_DB.Rows50[0].Name_DB);
         }
         catch
         {
@@ -1418,6 +1549,781 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #endregion
 
+    #region ProcessIfHasReports41
+
+    /// <summary>
+    /// В случае, если в БД есть организация по форме 4.0, соответствующая импортируемой,
+    /// для каждого импортируемого отчёта сверяются период и номер корректировки.
+    /// Пользователю предлагаются соответствующие команды по добавлению/дополнению/замене отчёта или отмене импорта.
+    /// Происходит логирование и сохранение изменений.
+    /// </summary>
+    /// <param name="baseReps">Организация в БД.</param>
+    /// <param name="impReps">Импортируемая организация.</param>
+    /// <param name="impRepList">Список импортируемых отчётов.</param>
+    /// <returns>Сообщение пользователю, логирование и сохранение изменений.</returns>
+    private protected async Task ProcessIfHasReports41(Reports baseReps, Reports impReps, List<Report> impRepList)
+    {
+        switch (baseReps.Master.FormNum_DB)
+        {
+            case "4.0":
+                BaseRepsShortName = baseReps.Master.Rows40[0].ShortNameRiac.Value;
+                break;
+        }
+
+        foreach (var impRep in impRepList) //Для каждой импортируемой формы
+        {
+            ImpRepFormNum = impRep.FormNum_DB;
+            ImpRepCorNum = impRep.CorrectionNumber_DB;
+            ImpRepFormCount = impRep.Rows.Count;
+            ImpRepExpDate = impRep.ExportDate_DB;
+            ImpRepYear = impRep.Year_DB;
+
+            var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
+            string? res;
+            foreach (var key1 in baseReps.Report_Collection) //Для каждой формы соответствующей организации в базе
+            {
+                var baseRep = (Report)key1;
+                BaseRepFormNum = baseRep.FormNum_DB;
+                BaseRepCorNum = baseRep.CorrectionNumber_DB;
+                BaseRepFormCount = Math.Max(await ReportsStorage.GetReportRowsCount(baseRep), baseRep.Rows.Count);
+                BaseRepExpDate = baseRep.ExportDate_DB;
+                BaseRepYear = baseRep.Year_DB;
+
+                if (BaseRepYear != ImpRepYear || ImpRepFormNum != BaseRepFormNum) continue;
+                impInBase = true;
+
+                #region LessCorrectionNumber
+
+                if (ImpRepCorNum < BaseRepCorNum)
+                {
+                    if (SkipLess) break;
+
+                    #region MessageImportReportHasLowerCorrectionNumber
+
+                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        {
+                            ButtonDefinitions =
+                            [
+                                new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true },
+                                new ButtonDefinition { Name = "Пропустить для всех" }
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
+                            ContentHeader = "Уведомление",
+                            ContentMessage =
+                                "Отчет не будет импортирован, поскольку вы пытаетесь загрузить форму" +
+                                $"{Environment.NewLine}с меньшим номером корректировки, чем у текущего отчета в базе." +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
+                                $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
+                                $"{Environment.NewLine}Дата выгрузки отчета в базе - {BaseRepExpDate}" +
+                                $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {ImpRepExpDate}" +
+                                $"{Environment.NewLine}Номер корректировки отчета в базе - {BaseRepCorNum}" +
+                                $"{Environment.NewLine}Номер корректировки импортируемого отчета - {ImpRepCorNum}" +
+                                $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
+                                $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}" +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Кнопка \"Пропустить для всех\" позволяет не показывать данное уведомление для всех случаев," +
+                                $"{Environment.NewLine}когда номер корректировки импортируемого отчета меньше, чем у имеющегося в базе.",
+                            MinWidth = 400,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(Desktop.MainWindow));
+
+                    #endregion
+
+                    if (res == "Пропустить для всех") SkipLess = true;
+                    Act = "не загружен (меньший № корр.)";
+                    LoggerImportDTO = new LoggerImportDTO
+                    {
+                        Act = Act,
+                        CorNum = ImpRepCorNum,
+                        CurrentLogLine = CurrentLogLine,
+                        EndPeriod = ImpRepEndPeriod,
+                        FormCount = ImpRepFormCount,
+                        FormNum = ImpRepFormNum,
+                        StartPeriod = ImpRepStartPeriod,
+                        Okpo = BaseRepsOkpo,
+                        OperationDate = OperationDate,
+                        RegNum = BaseRepsRegNum,
+                        ShortName = BaseRepsShortName,
+                        SourceFileFullPath = SourceFile!.FullName,
+                        Year = ImpRepYear
+                    };
+                    ServiceExtension.LoggerManager.Import(LoggerImportDTO);
+                    IsFirstLogLine = false;
+                    break;
+                }
+
+                #endregion
+
+                #region SameCorrectionNumber
+
+                if (ImpRepCorNum == BaseRepCorNum)
+                {
+                    #region MessageImportReportHasSameYearCorrectionNumberAndExportDate
+
+                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        {
+                            ButtonDefinitions =
+                            [
+                                new ButtonDefinition { Name = "Заменить", IsDefault = true },
+                                new ButtonDefinition { Name = "Дополнить" },
+                                new ButtonDefinition { Name = "Сохранить оба" },
+                                new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
+                            ContentHeader = "Уведомление",
+                            ContentMessage =
+                                "Импортируемый отчет имеет тот же год и номер корректировки, что и имеющийся в базе." +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
+                                $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
+                                $"{Environment.NewLine}Дата выгрузки отчета в базе - {BaseRepExpDate}" +
+                                $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {ImpRepExpDate}" +
+                                $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
+                                $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
+                                $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}",
+                            MinWidth = 400,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(Desktop.MainWindow));
+
+                    #endregion
+
+                    if (res is "Дополнить" or "Заменить")
+                    {
+                        baseRep = await FillReportWithForms(baseReps, baseRep);
+                    }
+                    await CheckAnswer(res, baseReps, impReps, baseRep, impRep);
+                    break;
+                }
+
+                #endregion
+
+                #region HigherCorrectionNumber
+
+                res = "Заменить";
+                if (!SkipReplace)
+                {
+                    if (HasMultipleReport)
+                    {
+                        #region MessageImportReportHasHigherCorrectionNumber
+
+                        res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                            {
+                                ButtonDefinitions =
+                                [
+                                    new ButtonDefinition { Name = "Заменить", IsDefault = true },
+                                    new ButtonDefinition { Name = "Заменять все формы" },
+                                    new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
+                                ],
+                                ContentTitle = "Импорт из .raodb/.xlsx/.json",
+                                ContentHeader = "Уведомление",
+                                ContentMessage =
+                                    "Импортируемый отчет имеет больший номер корректировки, чем имеющийся в базе." +
+                                    $"{Environment.NewLine}Форма с предыдущим номером корректировки будет безвозвратно удалена." +
+                                    $"{Environment.NewLine}" +
+                                    $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                    $"{Environment.NewLine}" +
+                                    $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
+                                    $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
+                                    $"{Environment.NewLine}Дата выгрузки отчета в базе - {BaseRepExpDate}" +
+                                    $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {ImpRepExpDate}" +
+                                    $"{Environment.NewLine}Номер корректировки отчета в базе - {BaseRepCorNum}" +
+                                    $"{Environment.NewLine}Номер корректировки импортируемого отчета - {ImpRepCorNum}" +
+                                    $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
+                                    $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}" +
+                                    $"{Environment.NewLine}" +
+                                    $"{Environment.NewLine}Кнопка \"Заменять все формы\" заменит без уведомлений" +
+                                    $"{Environment.NewLine}все формы с меньшим номером корректировки.",
+                                MinWidth = 400,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(Desktop.MainWindow));
+
+                        #endregion
+
+                        if (res is "Заменять все формы") SkipReplace = true;
+                    }
+                    else
+                    {
+                        #region MessageImportReportHasHigherCorrectionNumber
+
+                        res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                            {
+                                ButtonDefinitions =
+                                [
+                                    new ButtonDefinition { Name = "Заменить", IsDefault = true },
+                                    new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
+                                ],
+                                ContentTitle = "Импорт из .raodb/.xlsx/.json",
+                                ContentHeader = "Уведомление",
+                                ContentMessage =
+                                    "Импортируемый отчет имеет больший номер корректировки, чем имеющийся в базе." +
+                                    $"{Environment.NewLine}Форма с предыдущим номером корректировки будет безвозвратно удалена." +
+                                    $"{Environment.NewLine}" +
+                                    $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                    $"{Environment.NewLine}" +
+                                    $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
+                                    $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
+                                    $"{Environment.NewLine}Дата выгрузки отчета в базе - {BaseRepExpDate}" +
+                                    $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {ImpRepExpDate}" +
+                                    $"{Environment.NewLine}Номер корректировки отчета в базе - {BaseRepCorNum}" +
+                                    $"{Environment.NewLine}Номер корректировки импортируемого отчета - {ImpRepCorNum}" +
+                                    $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
+                                    $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}",
+                                MinWidth = 400,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(Desktop.MainWindow));
+
+                        #endregion
+                    }
+                }
+                if (res is "Заменить" or "Заменять все формы")
+                {
+                    baseRep = await FillReportWithForms(baseReps, baseRep);
+                }
+                await CheckAnswer(res, baseReps, impReps, baseRep, impRep);
+                break;
+
+                #endregion
+            }
+
+            #region TryAddEmptyOrg
+
+            if (impRepList.Count == 0)
+            {
+                impInBase = true;
+
+                #region MessageNewReport
+
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    {
+                        ButtonDefinitions =
+                        [
+                            new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true }
+                        ],
+                        ContentTitle = "Импорт из .raodb/.xlsx/.json",
+                        ContentHeader = "Уведомление",
+                        ContentMessage =
+                            "Импортируемая организация не содержит отчетов и уже присутствует в базе." +
+                            $"{Environment.NewLine}" +
+                            $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(Desktop.MainWindow));
+
+                #endregion
+
+                Act = "не загружен (имп. орг. без форм)";
+                LoggerImportDTO = new LoggerImportDTO
+                {
+                    Act = Act,
+                    CorNum = ImpRepCorNum,
+                    CurrentLogLine = CurrentLogLine,
+                    EndPeriod = ImpRepEndPeriod,
+                    FormCount = ImpRepFormCount,
+                    FormNum = ImpRepFormNum,
+                    StartPeriod = ImpRepStartPeriod,
+                    Okpo = BaseRepsOkpo,
+                    OperationDate = OperationDate,
+                    RegNum = BaseRepsRegNum,
+                    ShortName = BaseRepsShortName,
+                    SourceFileFullPath = SourceFile!.FullName,
+                    Year = ImpRepYear
+                };
+                ServiceExtension.LoggerManager.Import(LoggerImportDTO);
+                IsFirstLogLine = false;
+            }
+
+            #endregion
+
+            if (impInBase) continue;
+
+            #region AddNewForm
+
+            res = "Да";
+            if (!SkipNew)
+            {
+                if (HasMultipleReport)
+                {
+                    #region MessageNewReport
+
+                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        {
+                            ButtonDefinitions =
+                            [
+                                new ButtonDefinition { Name = "Да", IsDefault = true },
+                                new ButtonDefinition { Name = "Да для всех" },
+                                new ButtonDefinition { Name = "Нет", IsCancel = true }
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
+                            ContentHeader = "Уведомление",
+                            ContentMessage =
+                                "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
+                                $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
+                                $"{Environment.NewLine}Дата выгрузки - {ImpRepExpDate}" +
+                                $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
+                                $"{Environment.NewLine}Количество строк - {ImpRepFormCount}" +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений импортировать" +
+                                $"{Environment.NewLine}все новые формы для уже имеющихся в базе организаций.",
+                            MinWidth = 400,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(Desktop.MainWindow));
+
+                    #endregion
+
+                    if (res == "Да для всех") SkipNew = true;
+                }
+                else
+                {
+                    #region MessageNewReport
+
+                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        {
+                            ButtonDefinitions =
+                            [
+                                new ButtonDefinition { Name = "Да", IsDefault = true },
+                                new ButtonDefinition { Name = "Нет", IsCancel = true }
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
+                            ContentHeader = "Уведомление",
+                            ContentMessage =
+                                "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
+                                $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
+                                $"{Environment.NewLine}Дата выгрузки - {ImpRepExpDate}" +
+                                $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
+                                $"{Environment.NewLine}Количество строк - {ImpRepFormCount}",
+                            MinWidth = 400,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(Desktop.MainWindow));
+
+                    #endregion
+                }
+            }
+
+            await CheckAnswer(res, baseReps, impReps, null, impRep);
+
+            #endregion
+        }
+
+        await baseReps.SortAsync().ConfigureAwait(false);
+    }
+
+    #endregion
+    
+    #region ProcessIfHasReports51
+
+    /// <summary>
+    /// В случае, если в БД есть организация по форме 5.0, соответствующая импортируемой,
+    /// для каждого импортируемого отчёта сверяются период и номер корректировки.
+    /// Пользователю предлагаются соответствующие команды по добавлению/дополнению/замене отчёта или отмене импорта.
+    /// Происходит логирование и сохранение изменений.
+    /// </summary>
+    /// <param name="baseReps">Организация в БД.</param>
+    /// <param name="impReps">Импортируемая организация.</param>
+    /// <param name="impRepList">Список импортируемых отчётов.</param>
+    /// <returns>Сообщение пользователю, логирование и сохранение изменений.</returns>
+    private protected async Task ProcessIfHasReports51(Reports baseReps, Reports impReps, List<Report> impRepList)
+    {
+        switch (baseReps.Master.FormNum_DB)
+        {
+            case "5.0":
+                BaseRepsShortName = baseReps.Master.Rows50[0].ShortName.Value;
+                break;
+        }
+
+        foreach (var impRep in impRepList) //Для каждой импортируемой формы
+        {
+            ImpRepFormNum = impRep.FormNum_DB;
+            ImpRepCorNum = impRep.CorrectionNumber_DB;
+            ImpRepFormCount = impRep.Rows.Count;
+            ImpRepExpDate = impRep.ExportDate_DB;
+            ImpRepYear = impRep.Year_DB;
+
+            var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
+            string? res;
+            foreach (var key1 in baseReps.Report_Collection) //Для каждой формы соответствующей организации в базе
+            {
+                var baseRep = (Report)key1;
+                BaseRepFormNum = baseRep.FormNum_DB;
+                BaseRepCorNum = baseRep.CorrectionNumber_DB;
+                BaseRepFormCount = Math.Max(await ReportsStorage.GetReportRowsCount(baseRep), baseRep.Rows.Count);
+                BaseRepExpDate = baseRep.ExportDate_DB;
+                BaseRepYear = baseRep.Year_DB;
+
+                if (BaseRepYear != ImpRepYear || ImpRepFormNum != BaseRepFormNum) continue;
+                impInBase = true;
+
+                #region LessCorrectionNumber
+
+                if (ImpRepCorNum < BaseRepCorNum)
+                {
+                    if (SkipLess) break;
+
+                    #region MessageImportReportHasLowerCorrectionNumber
+
+                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        {
+                            ButtonDefinitions =
+                            [
+                                new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true },
+                                new ButtonDefinition { Name = "Пропустить для всех" }
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
+                            ContentHeader = "Уведомление",
+                            ContentMessage =
+                                "Отчет не будет импортирован, поскольку вы пытаетесь загрузить форму" +
+                                $"{Environment.NewLine}с меньшим номером корректировки, чем у текущего отчета в базе." +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
+                                $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
+                                $"{Environment.NewLine}Дата выгрузки отчета в базе - {BaseRepExpDate}" +
+                                $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {ImpRepExpDate}" +
+                                $"{Environment.NewLine}Номер корректировки отчета в базе - {BaseRepCorNum}" +
+                                $"{Environment.NewLine}Номер корректировки импортируемого отчета - {ImpRepCorNum}" +
+                                $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
+                                $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}" +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Кнопка \"Пропустить для всех\" позволяет не показывать данное уведомление для всех случаев," +
+                                $"{Environment.NewLine}когда номер корректировки импортируемого отчета меньше, чем у имеющегося в базе.",
+                            MinWidth = 400,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(Desktop.MainWindow));
+
+                    #endregion
+
+                    if (res == "Пропустить для всех") SkipLess = true;
+                    Act = "не загружен (меньший № корр.)";
+                    LoggerImportDTO = new LoggerImportDTO
+                    {
+                        Act = Act,
+                        CorNum = ImpRepCorNum,
+                        CurrentLogLine = CurrentLogLine,
+                        EndPeriod = ImpRepEndPeriod,
+                        FormCount = ImpRepFormCount,
+                        FormNum = ImpRepFormNum,
+                        StartPeriod = ImpRepStartPeriod,
+                        Okpo = BaseRepsOkpo,
+                        OperationDate = OperationDate,
+                        RegNum = BaseRepsRegNum,
+                        ShortName = BaseRepsShortName,
+                        SourceFileFullPath = SourceFile!.FullName,
+                        Year = ImpRepYear
+                    };
+                    ServiceExtension.LoggerManager.Import(LoggerImportDTO);
+                    IsFirstLogLine = false;
+                    break;
+                }
+
+                #endregion
+
+                #region SameCorrectionNumber
+
+                if (ImpRepCorNum == BaseRepCorNum)
+                {
+                    #region MessageImportReportHasSameYearCorrectionNumberAndExportDate
+
+                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        {
+                            ButtonDefinitions =
+                            [
+                                new ButtonDefinition { Name = "Заменить", IsDefault = true },
+                                new ButtonDefinition { Name = "Дополнить" },
+                                new ButtonDefinition { Name = "Сохранить оба" },
+                                new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
+                            ContentHeader = "Уведомление",
+                            ContentMessage =
+                                "Импортируемый отчет имеет тот же год и номер корректировки, что и имеющийся в базе." +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
+                                $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
+                                $"{Environment.NewLine}Дата выгрузки отчета в базе - {BaseRepExpDate}" +
+                                $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {ImpRepExpDate}" +
+                                $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
+                                $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
+                                $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}",
+                            MinWidth = 400,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(Desktop.MainWindow));
+
+                    #endregion
+
+                    if (res is "Дополнить" or "Заменить")
+                    {
+                        baseRep = await FillReportWithForms(baseReps, baseRep);
+                    }
+                    await CheckAnswer(res, baseReps, impReps, baseRep, impRep);
+                    break;
+                }
+
+                #endregion
+
+                #region HigherCorrectionNumber
+
+                res = "Заменить";
+                if (!SkipReplace)
+                {
+                    if (HasMultipleReport)
+                    {
+                        #region MessageImportReportHasHigherCorrectionNumber
+
+                        res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                            {
+                                ButtonDefinitions =
+                                [
+                                    new ButtonDefinition { Name = "Заменить", IsDefault = true },
+                                    new ButtonDefinition { Name = "Заменять все формы" },
+                                    new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
+                                ],
+                                ContentTitle = "Импорт из .raodb/.xlsx/.json",
+                                ContentHeader = "Уведомление",
+                                ContentMessage =
+                                    "Импортируемый отчет имеет больший номер корректировки, чем имеющийся в базе." +
+                                    $"{Environment.NewLine}Форма с предыдущим номером корректировки будет безвозвратно удалена." +
+                                    $"{Environment.NewLine}" +
+                                    $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                    $"{Environment.NewLine}" +
+                                    $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
+                                    $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
+                                    $"{Environment.NewLine}Дата выгрузки отчета в базе - {BaseRepExpDate}" +
+                                    $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {ImpRepExpDate}" +
+                                    $"{Environment.NewLine}Номер корректировки отчета в базе - {BaseRepCorNum}" +
+                                    $"{Environment.NewLine}Номер корректировки импортируемого отчета - {ImpRepCorNum}" +
+                                    $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
+                                    $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}" +
+                                    $"{Environment.NewLine}" +
+                                    $"{Environment.NewLine}Кнопка \"Заменять все формы\" заменит без уведомлений" +
+                                    $"{Environment.NewLine}все формы с меньшим номером корректировки.",
+                                MinWidth = 400,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(Desktop.MainWindow));
+
+                        #endregion
+
+                        if (res is "Заменять все формы") SkipReplace = true;
+                    }
+                    else
+                    {
+                        #region MessageImportReportHasHigherCorrectionNumber
+
+                        res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                            {
+                                ButtonDefinitions =
+                                [
+                                    new ButtonDefinition { Name = "Заменить", IsDefault = true },
+                                    new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
+                                ],
+                                ContentTitle = "Импорт из .raodb/.xlsx/.json",
+                                ContentHeader = "Уведомление",
+                                ContentMessage =
+                                    "Импортируемый отчет имеет больший номер корректировки, чем имеющийся в базе." +
+                                    $"{Environment.NewLine}Форма с предыдущим номером корректировки будет безвозвратно удалена." +
+                                    $"{Environment.NewLine}" +
+                                    $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                    $"{Environment.NewLine}" +
+                                    $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
+                                    $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
+                                    $"{Environment.NewLine}Дата выгрузки отчета в базе - {BaseRepExpDate}" +
+                                    $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {ImpRepExpDate}" +
+                                    $"{Environment.NewLine}Номер корректировки отчета в базе - {BaseRepCorNum}" +
+                                    $"{Environment.NewLine}Номер корректировки импортируемого отчета - {ImpRepCorNum}" +
+                                    $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
+                                    $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}",
+                                MinWidth = 400,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(Desktop.MainWindow));
+
+                        #endregion
+                    }
+                }
+                if (res is "Заменить" or "Заменять все формы")
+                {
+                    baseRep = await FillReportWithForms(baseReps, baseRep);
+                }
+                await CheckAnswer(res, baseReps, impReps, baseRep, impRep);
+                break;
+
+                #endregion
+            }
+
+            #region TryAddEmptyOrg
+
+            if (impRepList.Count == 0)
+            {
+                impInBase = true;
+
+                #region MessageNewReport
+
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    {
+                        ButtonDefinitions =
+                        [
+                            new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true }
+                        ],
+                        ContentTitle = "Импорт из .raodb/.xlsx/.json",
+                        ContentHeader = "Уведомление",
+                        ContentMessage =
+                            "Импортируемая организация не содержит отчетов и уже присутствует в базе." +
+                            $"{Environment.NewLine}" +
+                            $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(Desktop.MainWindow));
+
+                #endregion
+
+                Act = "не загружен (имп. орг. без форм)";
+                LoggerImportDTO = new LoggerImportDTO
+                {
+                    Act = Act,
+                    CorNum = ImpRepCorNum,
+                    CurrentLogLine = CurrentLogLine,
+                    EndPeriod = ImpRepEndPeriod,
+                    FormCount = ImpRepFormCount,
+                    FormNum = ImpRepFormNum,
+                    StartPeriod = ImpRepStartPeriod,
+                    Okpo = BaseRepsOkpo,
+                    OperationDate = OperationDate,
+                    RegNum = BaseRepsRegNum,
+                    ShortName = BaseRepsShortName,
+                    SourceFileFullPath = SourceFile!.FullName,
+                    Year = ImpRepYear
+                };
+                ServiceExtension.LoggerManager.Import(LoggerImportDTO);
+                IsFirstLogLine = false;
+            }
+
+            #endregion
+
+            if (impInBase) continue;
+
+            #region AddNewForm
+
+            res = "Да";
+            if (!SkipNew)
+            {
+                if (HasMultipleReport)
+                {
+                    #region MessageNewReport
+
+                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        {
+                            ButtonDefinitions =
+                            [
+                                new ButtonDefinition { Name = "Да", IsDefault = true },
+                                new ButtonDefinition { Name = "Да для всех" },
+                                new ButtonDefinition { Name = "Нет", IsCancel = true }
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
+                            ContentHeader = "Уведомление",
+                            ContentMessage =
+                                "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
+                                $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
+                                $"{Environment.NewLine}Дата выгрузки - {ImpRepExpDate}" +
+                                $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
+                                $"{Environment.NewLine}Количество строк - {ImpRepFormCount}" +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений импортировать" +
+                                $"{Environment.NewLine}все новые формы для уже имеющихся в базе организаций.",
+                            MinWidth = 400,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(Desktop.MainWindow));
+
+                    #endregion
+
+                    if (res == "Да для всех") SkipNew = true;
+                }
+                else
+                {
+                    #region MessageNewReport
+
+                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        {
+                            ButtonDefinitions =
+                            [
+                                new ButtonDefinition { Name = "Да", IsDefault = true },
+                                new ButtonDefinition { Name = "Нет", IsCancel = true }
+                            ],
+                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
+                            ContentHeader = "Уведомление",
+                            ContentMessage =
+                                "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                $"{Environment.NewLine}" +
+                                $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
+                                $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
+                                $"{Environment.NewLine}Дата выгрузки - {ImpRepExpDate}" +
+                                $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
+                                $"{Environment.NewLine}Количество строк - {ImpRepFormCount}",
+                            MinWidth = 400,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(Desktop.MainWindow));
+
+                    #endregion
+                }
+            }
+
+            await CheckAnswer(res, baseReps, impReps, null, impRep);
+
+            #endregion
+        }
+
+        await baseReps.SortAsync().ConfigureAwait(false);
+    }
+
+    #endregion
+
+
     #region ProcessIfNoteOrder0
 
     /// <summary>
@@ -1442,44 +2348,46 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #endregion
 
-    #region SetDataGridPage
+    //#region SetDataGridPage
 
-    /// <summary>
-    /// Изменяет номер страницы таблицы организаций, чтобы отображалась добавленная организация (только для одной добавленной организации).
-    /// </summary>
-    /// <param name="impReportsList">Список организаций, добавленных в ходе импорта.</param>
-    private protected static Task SetDataGridPage(List<Reports> impReportsList)
-    {
-        if (impReportsList.Count > 0
-            && impReportsList.All(x => x.Master_DB.RegNoRep.Value == impReportsList.First().Master_DB.RegNoRep.Value
-                                       && x.Master_DB.OkpoRep.Value == impReportsList.First().Master_DB.OkpoRep.Value))
-        {
-            var impReports = impReportsList.First();
-            var repsDataGrid = impReports.Master_DB.FormNum_DB is "1.0" 
-                ? (Desktop.MainWindow.FindControl<Panel>("Forms_p1_0").Children[0] as DataGridReports)!
-                : (Desktop.MainWindow.FindControl<Panel>("Forms_p2_0").Children[0] as DataGridReports)!;
+    ///// <summary>
+    ///// Изменяет номер страницы таблицы организаций, чтобы отображалась добавленная организация (только для одной добавленной организации).
+    ///// (Не работает для РИАЦ)
+    ///// </summary>
+    ///// <param name="impReportsList">Список организаций, добавленных в ходе импорта.</param>
+    //private protected static Task SetDataGridPage(List<Reports> impReportsList)
+    //{
+    //    if (impReportsList.Count > 0
+    //        && impReportsList.All(x => x.Master_DB.FormNum_DB.Split('.')[0] is "1" or "2" 
+    //                                   && x.Master_DB.RegNoRep.Value == impReportsList.First().Master_DB.RegNoRep.Value
+    //                                   && x.Master_DB.OkpoRep.Value == impReportsList.First().Master_DB.OkpoRep.Value))
+    //    {
+    //        var impReports = impReportsList.First();
+    //        var repsDataGrid = impReports.Master_DB.FormNum_DB is "1.0" 
+    //            ? (Desktop.MainWindow.FindControl<Panel>("Forms_p1_0").Children[0] as DataGridReports)!
+    //            : (Desktop.MainWindow.FindControl<Panel>("Forms_p2_0").Children[0] as DataGridReports)!;
 
-            var repsList = !string.IsNullOrWhiteSpace(repsDataGrid.SearchText) 
-                ? repsDataGrid.ItemsWithSearch!.ToList<Reports>() 
-                : repsDataGrid.Items.ToList<Reports>();
+    //        var repsList = !string.IsNullOrWhiteSpace(repsDataGrid.SearchText) 
+    //            ? repsDataGrid.ItemsWithSearch!.ToList<Reports>() 
+    //            : repsDataGrid.Items.ToList<Reports>();
 
-            var repsIndex = repsList.FindIndex(x => x.Master_DB.RegNoRep.Value == impReports.Master_DB.RegNoRep.Value 
-                                                    && x.Master_DB.OkpoRep.Value == impReports.Master_DB.OkpoRep.Value);
+    //        var repsIndex = repsList.FindIndex(x => x.Master_DB.RegNoRep.Value == impReports.Master_DB.RegNoRep.Value 
+    //                                                && x.Master_DB.OkpoRep.Value == impReports.Master_DB.OkpoRep.Value);
 
-            if (repsIndex != -1)
-            {
-                repsDataGrid.NowPage = impReports.Master_DB.FormNum_DB switch
-                {
-                    "1.0" => ((repsIndex + 1) / 5 + 1).ToString(),
-                    "2.0" => ((repsIndex + 1) / 8 + 1).ToString(),
-                    _ => repsDataGrid.NowPage
-                };
-            }
-        }
-        return Task.CompletedTask;
-    }
+    //        if (repsIndex != -1)
+    //        {
+    //            repsDataGrid.NowPage = impReports.Master_DB.FormNum_DB switch
+    //            {
+    //                "1.0" => ((repsIndex + 1) / 5 + 1).ToString(),
+    //                "2.0" => ((repsIndex + 1) / 8 + 1).ToString(),
+    //                _ => repsDataGrid.NowPage
+    //            };
+    //        }
+    //    }
+    //    return Task.CompletedTask;
+    //}
 
-    #endregion
+    //#endregion
 
     #region FillReportWithFormsInReports
 

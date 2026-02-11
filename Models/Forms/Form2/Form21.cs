@@ -318,9 +318,34 @@ public partial class Form21 : Form2, IBaseColor
 
     #endregion
 
+    #region HiddenFlagsNormalization
+
+    /// <summary>
+    /// Нормализует флаги скрытия установки/записи для обычных строк
+    /// (не суммарных и не входящих в группу),
+    /// чтобы изменения из UI могли сохраняться в БД.
+    /// </summary>
+    public void NormalizeHiddenFlags()
+    {
+        if (Sum_DB || SumGroup_DB)
+        {
+            return;
+        }
+
+        _RefineMachineName_Hidden_Set = true;
+        _MachineCode_Hidden_Set = true;
+        _MachinePower_Hidden_Set = true;
+        _NumberOfHoursPerYear_Hidden_Set = true;
+    }
+
+    #endregion
+
     #region MachineCode (3)
 
-    public byte? MachineCode_DB { get; set; }
+    public byte? MachineCode_DB { 
+        get; 
+        set; 
+    }
 
     public bool _MachineCode_Hidden_Get { get; set; } = true;
 
@@ -1387,7 +1412,7 @@ public partial class Form21 : Form2, IBaseColor
         {
             tmp = tmp.Remove(len - 1, 1).Remove(0, 1);
         }
-        if (!int.TryParse(tmp, StyleDecimalThousandExp, CultureInfo.CreateSpecificCulture("ru-RU"), out var tmpInt))
+        if (!int.TryParse(tmp, StyleDecimalThousandExp, new CultureInfo("ru-RU", useUserOverride: false), out var tmpInt))
         {
             value1.AddError("Недопустимое значение");
             return false;
@@ -2077,6 +2102,42 @@ public partial class Form21 : Form2, IBaseColor
 
     [GeneratedRegex("^[1]{1}[1-9]{1}|^[0]{1}[1]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1-9]{1}|^[4]{1}[1-6]{1}|^[5]{1}[1-9]{1}|^[6]{1}[1-9]{1}|^[7]{1}[1-9]{1}|^[8]{1}[1-9]{1}|^[9]{1}[1-9]{1}")]
     private static partial Regex CodeRaoInRegex7();
+
+    #endregion
+
+    #region ConvertToTSVstring
+
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        var str =
+            $"{NumberInOrder.Value}\t" +
+            $"{RefineMachineName.Value}\t" +
+            $"{MachineCode.Value}\t" +
+            $"{MachinePower.Value}\t" +
+            $"{NumberOfHoursPerYear.Value}\t" +
+            $"{CodeRAOIn.Value}\t" +
+            $"{StatusRAOIn.Value}\t" +
+            $"{VolumeIn.Value}\t" +
+            $"{MassIn.Value}\t" +
+            $"{QuantityIn.Value}\t" +
+            $"{TritiumActivityIn.Value}\t" +
+            $"{BetaGammaActivityIn.Value}\t" +
+            $"{AlphaActivityIn.Value}\t" +
+            $"{TransuraniumActivityIn.Value}\t" +
+            $"{CodeRAOout.Value}\t" +
+            $"{StatusRAOout.Value}\t" +
+            $"{VolumeOut.Value}\t" +
+            $"{MassOut.Value}\t" +
+            $"{QuantityOZIIIout.Value}\t" +
+            $"{TritiumActivityOut.Value}\t" +
+            $"{BetaGammaActivityOut.Value}\t" +
+            $"{TransuraniumActivityOut.Value}";
+        return str;
+    }
 
     #endregion
 }

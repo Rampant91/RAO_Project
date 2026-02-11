@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Client_App.ViewModels;
+using Client_App.ViewModels.Forms.Forms1;
 using Models.Collections;
 
 namespace Client_App.Commands.AsyncCommands;
@@ -7,10 +8,24 @@ namespace Client_App.Commands.AsyncCommands;
 /// <summary>
 /// Поменять местами юр. лицо и обособленное подразделение.
 /// </summary>
-/// <param name="changeOrCreateViewModel">ViewModel головного отчёта.</param>
-public class ChangeReportOrderAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
+public class ChangeReportOrderAsyncCommand : BaseAsyncCommand
 {
-    private Report Storage => changeOrCreateViewModel.Storage;
+    private readonly dynamic _vm;
+
+    public ChangeReportOrderAsyncCommand(BaseVM vm)
+    {
+        if (vm is ChangeOrCreateVM changeOrCreateVM)
+        {
+            _vm = changeOrCreateVM;
+        }
+        else if (vm is Form_10VM form10VM)
+        {
+            _vm = form10VM;
+        }
+    }
+
+
+    private Report Storage => _vm.Storage;
 
     public override async Task AsyncExecute(object? parameter)
     {

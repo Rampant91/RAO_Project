@@ -128,8 +128,8 @@ public class CheckF22 : CheckBase
                     CanResize = true,
                     ContentTitle = "Проверка формы",
                     ContentHeader = "Ошибка",
-                    ContentMessage = "В текущей базе данных отсутствует форма 1.0 для проверяемой организации." +
-                                     $"{Environment.NewLine}Можете выбрать файл базы данных, содержащий форму 1.0 для данной организации " +
+                    ContentMessage = "В текущей базе данных отсутствует форма 1.X для проверяемой организации." +
+                                     $"{Environment.NewLine}Можете выбрать файл базы данных, содержащий форму 1.X для данной организации " +
                                      $"{Environment.NewLine}или операция проверки формы будет отменена.",
                     MinWidth = 400,
                     MinHeight = 200,
@@ -483,7 +483,8 @@ public class CheckF22 : CheckBase
             var form = (Form22)key1;
             double subsidy = -1.0;
             TryParseDoubleExtended(form.Subsidy_DB.Replace("%", ""), out subsidy);
-            if (form.CodeRAO_DB != "-" && !string.IsNullOrWhiteSpace(form.CodeRAO_DB))
+            if (form.CodeRAO_DB != "-" && !string.IsNullOrWhiteSpace(form.CodeRAO_DB)
+                && form.StatusRAO_DB != "-" && !string.IsNullOrWhiteSpace(form.StatusRAO_DB))
             {
                 var key = (
                     keyInclude1 ? form.StoragePlaceName_DB.Replace(" ", "").ToLower() : "",
@@ -505,14 +506,14 @@ public class CheckF22 : CheckBase
                     CheckError? errorDouble = errorList.SingleOrDefault(x => string.Equals(errorValue, x.Value) && string.Equals(errorMessage, x.Message));
                     if (errorDouble == null)
                     {
-                        errorList.Add(new CheckError
-                        {
-                            FormNum = "form_22",
-                            Row = form.NumberInOrder_DB.ToString(),
-                            Column = "-",
-                            Value = errorValue,
-                            Message = errorMessage
-                        });
+                        //errorList.Add(new CheckError
+                        //{
+                        //    FormNum = "form_22",
+                        //    Row = form.NumberInOrder_DB.ToString(),
+                        //    Column = "-",
+                        //    Value = errorValue,
+                        //    Message = errorMessage
+                        //});
                     }
                     else
                     {
@@ -536,14 +537,14 @@ public class CheckF22 : CheckBase
                             CheckError? errorDouble = errorList.SingleOrDefault(x => string.Equals(errorValue, x.Value) && string.Equals(errorMessage, x.Message));
                             if (errorDouble == null)
                             {
-                                errorList.Add(new CheckError
-                                {
-                                    FormNum = "form_22",
-                                    Row = formSub.NumberInOrder_DB.ToString(),
-                                    Column = "-",
-                                    Value = errorValue,
-                                    Message = errorMessage
-                                });
+                                //errorList.Add(new CheckError
+                                //{
+                                //    FormNum = "form_22",
+                                //    Row = formSub.NumberInOrder_DB.ToString(),
+                                //    Column = "-",
+                                //    Value = errorValue,
+                                //    Message = errorMessage
+                                //});
                             }
                             else
                             {
@@ -1721,22 +1722,22 @@ public class CheckF22 : CheckBase
         wrksht1.Cells[1, 1].SetCellValue(0, 0, "№");
         wrksht1.Cells[1, 2].SetCellValue(0, 0, "Наименование пункта хранения");
         wrksht1.Cells[1, 3].SetCellValue(0, 0, "Код пункта хранения");
-        wrksht1.Cells[1, 4].SetCellValue(0, 0, $"Объем {yearPrev} (всего)");
-        wrksht1.Cells[1, 5].SetCellValue(0, 0, $"Объем {yearCur} (всего)");
-        wrksht1.Cells[1, 6].SetCellValue(0, 0, $"Масса {yearPrev} (всего)");
-        wrksht1.Cells[1, 7].SetCellValue(0, 0, $"Масса {yearCur} (всего)");
-        wrksht1.Cells[1, 8].SetCellValue(0, 0, $"Активность {yearPrev} (всего)");
-        wrksht1.Cells[1, 9].SetCellValue(0, 0, $"Активность {yearCur} (всего)");
-        wrksht1.Cells[1, 10].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearPrev} (всего)");
-        wrksht1.Cells[1, 11].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearCur} (всего)");
-        wrksht1.Cells[1, 12].SetCellValue(0, 0, $"Объем {yearPrev} (суб)");
-        wrksht1.Cells[1, 13].SetCellValue(0, 0, $"Объем {yearCur} (суб)");
-        wrksht1.Cells[1, 14].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearPrev} (суб)");
-        wrksht1.Cells[1, 15].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearCur} (суб)");
-        wrksht1.Cells[1, 16].SetCellValue(0, 0, $"Объем {yearPrev} (накоп)");
-        wrksht1.Cells[1, 17].SetCellValue(0, 0, $"Объем {yearCur} (накоп)");
-        wrksht1.Cells[1, 18].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearPrev} (накоп)");
-        wrksht1.Cells[1, 19].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearCur} (накоп)");
+        wrksht1.Cells[1, 4].SetCellValue(0, 0, $"Объем {yearCur} (всего, ожидаемое значение {yearPrev} год + опер. за {yearCur})");
+        wrksht1.Cells[1, 5].SetCellValue(0, 0, $"Объем {yearCur} (всего, фактическое значение)");
+        wrksht1.Cells[1, 6].SetCellValue(0, 0, $"Масса {yearCur} (всего, ожидаемое значение {yearPrev} год + опер. за {yearCur})");
+        wrksht1.Cells[1, 7].SetCellValue(0, 0, $"Масса {yearCur} (всего, фактическое значение)");
+        wrksht1.Cells[1, 8].SetCellValue(0, 0, $"Активность {yearCur} (всего, ожидаемое значение {yearPrev} год + опер. за {yearCur})");
+        wrksht1.Cells[1, 9].SetCellValue(0, 0, $"Активность {yearCur} (всего, фактическое значение)");
+        wrksht1.Cells[1, 10].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearCur} (всего, ожидаемое значение {yearPrev} год + опер. за {yearCur})");
+        wrksht1.Cells[1, 11].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearCur} (всего, фактическое значение)");
+        wrksht1.Cells[1, 12].SetCellValue(0, 0, $"Объем {yearCur} (суб, ожидаемое значение {yearPrev} год + опер. за {yearCur})");
+        wrksht1.Cells[1, 13].SetCellValue(0, 0, $"Объем {yearCur} (суб, фактическое значение)");
+        wrksht1.Cells[1, 14].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearCur} (суб, ожидаемое значение {yearPrev} год + опер. за {yearCur})");
+        wrksht1.Cells[1, 15].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearCur} (суб, фактическое значение)");
+        wrksht1.Cells[1, 16].SetCellValue(0, 0, $"Объем {yearCur} (накоп, ожидаемое значение {yearPrev} год + опер. за {yearCur})");
+        wrksht1.Cells[1, 17].SetCellValue(0, 0, $"Объем {yearCur} (накоп, фактическое значение)");
+        wrksht1.Cells[1, 18].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearCur} (накоп, ожидаемое значение {yearPrev} год + опер. за {yearCur})");
+        wrksht1.Cells[1, 19].SetCellValue(0, 0, $"Кол-во ОЗИИИ {yearCur} (накоп, фактическое значение)");
         for (var i = 1; i <= 19; i++) wrksht1.Column(i).AutoFit();
         wrksht1.Column(2).Width = wrksht1.Column(1).Width * 3;
         wrksht1.Column(3).Width = wrksht1.Column(1).Width * 2;
@@ -1861,7 +1862,7 @@ public class CheckF22 : CheckBase
                     new ButtonDefinition { Name = "Открыть временную копию" }
                 ],
                 CanResize = true,
-                ContentTitle = "Выгрузка в Excel",
+                ContentTitle = "Выгрузка в .xlsx",
                 ContentHeader = "Уведомление",
                 ContentMessage = "Что бы вы хотели сделать с данной выгрузкой?",
                 MinWidth = 400,
@@ -1916,7 +1917,7 @@ public class CheckF22 : CheckBase
                             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                             {
                                 ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка в Excel",
+                                ContentTitle = "Выгрузка в .xlsx",
                                 ContentHeader = "Ошибка",
                                 ContentMessage =
                                     $"Не удалось сохранить файл по пути: {fullPath}" +
@@ -1959,7 +1960,7 @@ public class CheckF22 : CheckBase
     /// <param name="progressBar">Окно прогрессбара.</param>
     /// <param name="isBackground">Признак выполнения команды в фоне.</param>
     /// <returns>Открывает файл выгрузки в .xlsx.</returns>
-    private protected static async Task ExcelSaveAndOpen(ExcelPackage excelPackage, string fullPath, bool openTemp,
+    private static async Task ExcelSaveAndOpen(ExcelPackage excelPackage, string fullPath, bool openTemp,
         CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null, bool isBackground = false)
     {
         try
@@ -1979,7 +1980,7 @@ public class CheckF22 : CheckBase
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Ошибка",
                     ContentMessage = "Не удалось сохранить файл по указанному пути:" +
                                      $"{Environment.NewLine}{fullPath}",
@@ -2015,7 +2016,7 @@ public class CheckF22 : CheckBase
                         new ButtonDefinition { Name = "Ок" },
                         new ButtonDefinition { Name = "Открыть выгрузку" }
                     ],
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Выгрузка сохранена по пути:" +
                                      $"{Environment.NewLine}{fullPath}",

@@ -47,6 +47,8 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
         var reps = changeOrCreateViewModel.Storages;
         var rep = changeOrCreateViewModel.Storage;
 
+        var window = Desktop.Windows.FirstOrDefault(x => x.Name == rep.FormNum_DB);
+
         await using var db = new DBModel(StaticConfiguration.DBPath);
         List<CheckError> result = [];
         try
@@ -90,6 +92,8 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
                         .Where(x => x.Reports != null && x.Reports.DBObservable != null)
                     .FirstOrDefaultAsync(x => x.Id == rep.Id, cts.Token);
 
+                    var rep21Test = ReportsStorage.Api.GetAsync(rep.Id);
+
                     result.AddRange(await new CheckF21().AsyncExecute(rep21));
                     break;
                 case "2.2":
@@ -107,6 +111,27 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
 
                     result.AddRange(await new CheckF22().AsyncExecute(rep22));
                     break;
+                case "2.3":
+                    result.AddRange(await CheckF23.Check_Total(rep));
+                    break;
+                case "2.6":
+                    result.AddRange(await CheckF26.Check_Total(rep));
+                    break;
+                case "2.7":
+                    result.AddRange(await CheckF27.Check_Total(rep));
+                    break;
+                case "2.8":
+                    result.AddRange(await CheckF28.Check_Total(rep));
+                    break;
+                case "2.9":
+                    result.AddRange(await CheckF29.Check_Total(rep));
+                    break;
+                case "2.10":
+                    result.AddRange(await CheckF210.Check_Total(rep));
+                    break;
+                case "2.11":
+                    result.AddRange(await CheckF211.Check_Total(rep));
+                    break;
                 default:
                 {
                     #region MessageCheckFailed
@@ -122,7 +147,7 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
                             MinHeight = 150,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         })
-                        .ShowDialog(Desktop.MainWindow));
+                        .ShowDialog(window ?? Desktop.MainWindow));
 
                     #endregion
 
@@ -149,7 +174,7 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowDialog(window ?? Desktop.MainWindow));
 
             #endregion
 
@@ -171,7 +196,7 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(Desktop.MainWindow));
+                .ShowDialog(window ?? Desktop.MainWindow));
 
             #endregion
         }

@@ -1,21 +1,19 @@
-﻿using System;
+﻿using Avalonia.Threading;
+using Client_App.ViewModels;
+using Client_App.ViewModels.ProgressBar;
+using Client_App.Views.Messages;
+using Client_App.Views.ProgressBar;
+using Microsoft.EntityFrameworkCore;
+using Models.Collections;
+using Models.DBRealization;
+using OfficeOpenXml;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Controls;
-using Avalonia.Threading;
-using Client_App.ViewModels;
-using Client_App.ViewModels.ProgressBar;
-using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
-using Microsoft.EntityFrameworkCore;
-using Models.Collections;
-using Models.DBRealization;
-using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
 
@@ -371,58 +369,18 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelExportListOfFormsBaseAsy
     /// <returns>Кортеж из года начала периода и года его окончания.</returns>
     private static async Task<(int minYear, int maxYear)> InputDateRange(AnyTaskProgressBar? progressBar, CancellationTokenSource cts)
     {
-        #region MessageInputYearRange
+        var res = await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            var window = new AskYearPeriodMessageWindow();
+            return window.ShowDialog<(string command, int initialYear, int residualYear)>(Desktop.MainWindow);
+        });
 
-        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxInputWindow(new MessageBoxInputParams
-                {
-                    ButtonDefinitions =
-                    [
-                        new ButtonDefinition { Name = "Ок", IsDefault = true },
-                        new ButtonDefinition { Name = "Отмена", IsCancel = true }
-                    ],
-                    ContentTitle = "Задать период",
-                    ContentMessage = "Введите год или период лет через дефис (прим: 2022-2024)." +
-                                     $"{Environment.NewLine}Если поле незаполненно или года введены некорректно," +
-                                     $"{Environment.NewLine}то выгрузка будет осуществляться без фильтра по годам.",
-                    MinWidth = 600,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(progressBar ?? Desktop.MainWindow));
-
-        #endregion
-
-        if (res.Button is null or "Отмена")
+        if (res.command is not "Ок")
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
-        var minYear = 0;
-        var maxYear = 9999;
-        if (res.Message != null)
-        {
-            if (!res.Message.Contains('-'))
-            {
-                if (int.TryParse(res.Message, out var parseYear) && parseYear.ToString().Length == 4)
-                {
-                    minYear = parseYear;
-                    maxYear = parseYear;
-                }
-            }
-            else if (res.Message.Length > 4)
-            {
-                var firstResHalf = res.Message.Split('-')[0].Trim();
-                var secondResHalf = res.Message.Split('-')[1].Trim();
-                if (int.TryParse(firstResHalf, out var minYearParse) && minYearParse.ToString().Length == 4)
-                {
-                    minYear = minYearParse;
-                }
-                if (int.TryParse(secondResHalf, out var maxYearParse) && maxYearParse.ToString().Length == 4)
-                {
-                    maxYear = maxYearParse;
-                }
-            }
-        }
-        return (minYear, maxYear);
+
+        return (res.initialYear, res.residualYear);
     }
 
     #endregion

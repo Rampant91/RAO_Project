@@ -98,6 +98,7 @@ public class RowNumberIn : BaseWindow<ChangeOrCreateVM>, INotifyPropertyChanged
     #endregion
 
     bool flag;
+
     protected override void OnClosing(CancelEventArgs e)
     {
         if(!flag)
@@ -120,6 +121,7 @@ public class RowNumberIn : BaseWindow<ChangeOrCreateVM>, INotifyPropertyChanged
         flag = true;
         Close();
     }
+
     #region INotifyPropertyChanged
     protected void OnPropertyChanged([CallerMemberName] string prop = "")
     {

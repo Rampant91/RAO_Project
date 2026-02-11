@@ -1,507 +1,683 @@
-﻿namespace Models;
+﻿using Models.Attributes;
+using Models.Collections;
+using Models.Forms.DataAccess;
+using OfficeOpenXml;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-//    [Serializable]
-//    [Attributes.Form_Class("Форма 5.3: Сведения о поступлении/передаче в подведомственные организации от сторонних организаций, расходовании и переводе в РАО ОРИ")]
-//    public class Form53 : Abstracts.Form5
-//    {
-//        public Form53() : base()
-//        {
-//            //FormNum.Value = "53";
-//            //NumberOfFields.Value = 13;
-//        }
+namespace Models.Forms.Form5
+{
+    [Serializable]
+    [Form_Class(name: "Форма 5.3: Сведения о закрытых радионуклидных источниках, полученных/переданных  подведомственными организациями сторонним организациям переведенных в радиоактивные отходы")]
+    [Table(name: "form_53")]
+    public class Form53 : Form
+    {
+        #region Constructor
 
-//        [Attributes.Form_Property("Форма")]
-//        public override bool Object_Validation()
-//        {
-//            return false;
-//        }
+        public Form53()
+        {
+            var x = this;
+            FormNum.Value = "5.3";
+        }
 
-//        //OperationCode property
-//        public int? OperationCodeId { get; set; }
-//        [Attributes.Form_Property("Код")]
-//        public virtual RamAccess<short> OperationCode
-//        {
-//            get
-//            {
-                
-//                {
-//                    return DataAccess.Get<short>(nameof(OperationCode));
-                    
-//                }
-                
-//                {
-                    
-//                }
-//            }
-//            set
-//            {
-//                DataAccess.Set(nameof(OperationCode), value);
-//                OnPropertyChanged(nameof(OperationCode));
-//            }
-//        }
+        #endregion
+
+        #region Properties
+
+        #region OperationCode (2)
+
+        public string OperationCode_DB { get; set; } = "";
 
 
-//        private bool OperationCode_Validation(RamAccess<string> value)
-//        {
-//            value.ClearErrors(); return true;}
-//        //OperationCode property
+        [MaxLength(2)]
+        [Column(TypeName = "varchar(2)")]
+        [NotMapped]
+        public RamAccess<string> OperationCode
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(OperationCode), out var value))
+                {
+                    ((RamAccess<string>)value).Value = OperationCode_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(OperationCode_Validation, OperationCode_DB);
+                rm.PropertyChanged += OperationCode_ValueChanged;
+                Dictionary.Add(nameof(OperationCode), rm);
+                return (RamAccess<string>)Dictionary[nameof(OperationCode)];
+            }
+            set
+            {
+                OperationCode_DB = ParseInnerText(value.Value);
+                OnPropertyChanged();
+            }
+        }
 
-//        //TypeOfAccountedParts property
-//        public int? TypeOfAccountedPartsId { get; set; }
-//        [Attributes.Form_Property("Тип учетных единиц")]
-//        public virtual RamAccess<int> TypeOfAccountedParts
-//        {
-//            get
-//            {
-                
-//                {
-//                    return DataAccess.Get<int>(nameof(TypeOfAccountedParts));
-//                }
-                
-//                {
-                    
-//                }
-//            }
-//            set
-//            {
+        private void OperationCode_ValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName != "Value") return;
+            var value1 = ((RamAccess<string>)value).Value;
+            if (value1 != null)
+            {
+                value1 = value1.Length > 2
+                ? value1[..2]
+                : value1;
+            }
+            if (OperationCode_DB != value1)
+            {
+                OperationCode_DB = value1;
+            }
+        }
 
-                
-//                {
-//                    DataAccess.Set(nameof(TypeOfAccountedParts), value);
-//                }
-//                OnPropertyChanged(nameof(TypeOfAccountedParts));
-//            }
-//        }
-//        //1 or 2
-// //1 or 2
-//        private bool TypeOfAccountedParts_Validation(RamAccess<int> value)//Ready
-//        {
-//            value.ClearErrors();
-//            if ((value.Value != 1) && (value.Value != 2))
-//            {
-//                value.AddError("Недопустимое значение"); return false;
-//            }
-//            return true;
-//        }
-//        //TypeOfAccountedParts property
+        private bool OperationCode_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
 
-//        //KindOri property
-//        public int? KindOriId { get; set; }
-//        [Attributes.Form_Property("Вид ОРИ")]
-//        public virtual RamAccess<int> KindOri
-//        {
-//            get
-//            {
-                
-//                {
-//                    return DataAccess.Get<int>(nameof(KindOri));
-//                }
-                
-//                {
-                    
-//                }
-//            }
-//            set
-//            {
+        #endregion
 
-                
-//                {
-//                    DataAccess.Set(nameof(KindOri), value);
-//                }
-//                OnPropertyChanged(nameof(KindOri));
-//            }
-//        }
+        #region TypeORI (3)
+
+        public string TypeORI_DB { get; set; } = "";
 
 
-//        private bool KindOri_Validation(RamAccess<int> value)//TODO
-//        {
-//            return true;
-//        }
-//        //KindOri property
+        [NotMapped]
+        public RamAccess<string> TypeORI
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(TypeORI), out var value))
+                {
+                    ((RamAccess<string>)value).Value = TypeORI_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(TypeORI_Validation, TypeORI_DB);
+                rm.PropertyChanged += TypeORI_ValueChanged;
+                Dictionary.Add(nameof(TypeORI), rm);
+                return (RamAccess<string>)Dictionary[nameof(TypeORI)];
+            }
+            set
+            {
+                TypeORI_DB = ParseInnerText(value.Value);
+                OnPropertyChanged();
+            }
+        }
 
-//        //AggregateState property
-//public int? AggregateStateId { get; set; }
-//        [Attributes.Form_Property("Агрегатное состояние")]
-//        public virtual RamAccess<byte> AggregateState//1 2 3
-//        {
-//            get
-//            {
-                
-//                {
-//                    return DataAccess.Get<byte>(nameof(AggregateState));
-//                }
-                
-//                {
-                    
-//                }
-//            }
-//            set
-//            {
+        private void TypeORI_ValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName != "Value") return;
+            var value1 = ((RamAccess<string>)value).Value;
 
-                
-//                {
-//                    DataAccess.Set(nameof(AggregateState), value);
-//                }
-//                OnPropertyChanged(nameof(AggregateState));
-//            }
-//        }
+            if (TypeORI_DB != value1)
+            {
+                TypeORI_DB = value1;
+            }
+        }
+
+        private bool TypeORI_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+
+        #endregion
+
+        #region VarietyORI (4)
+
+        public byte? VarietyORI_DB { get; set; }
+
+        [NotMapped]
+        public RamAccess<byte?> VarietyORI
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(VarietyORI), out var value))
+                {
+                    ((RamAccess<byte?>)value).Value = VarietyORI_DB;
+                    return (RamAccess<byte?>)value;
+                }
+                var rm = new RamAccess<byte?>(VarietyORI_Validation, VarietyORI_DB);
+                rm.PropertyChanged += VarietyORI_ValueChanged;
+                Dictionary.Add(nameof(VarietyORI), rm);
+                return (RamAccess<byte?>)Dictionary[nameof(VarietyORI)];
+            }//OK
+            set
+            {
+                VarietyORI_DB = value.Value;
+                OnPropertyChanged(nameof(VarietyORI));
+            }
+        }
+
+        private void VarietyORI_ValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName != "Value") return;
+
+            var value1 = ((RamAccess<byte?>)value).Value;
+            if (VarietyORI_DB != value1)
+            {
+                VarietyORI_DB = value1;
+            }
+        }
+
+        private bool VarietyORI_Validation(RamAccess<byte?> value)//TODO
+        {
+            value.ClearErrors();
+            switch (value.Value)
+            {
+                case null:
+                    value.AddError("Поле не заполнено");
+                    return false;
+                case < 4 or > 12:
+                    value.AddError("Недопустимое значение");
+                    return false;
+                default:
+                    return true;
+            }
+        }
+        #endregion
+
+        #region AggregateState (5)
+
+        public byte? AggregateState_DB { get; set; }
+
+        [NotMapped]
+        [FormProperty(true, "Сведения из паспорта на открытый радионуклидный источник", "агрегатное состояние", "12")]
+        public RamAccess<byte?> AggregateState//1 2 3
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(AggregateState), out var value))
+                {
+                    ((RamAccess<byte?>)value).Value = AggregateState_DB;
+                    return (RamAccess<byte?>)value;
+                }
+                var rm = new RamAccess<byte?>(AggregateState_Validation, AggregateState_DB);
+                rm.PropertyChanged += AggregateState_ValueChanged;
+                Dictionary.Add(nameof(AggregateState), rm);
+                return (RamAccess<byte?>)Dictionary[nameof(AggregateState)];
+            }
+            set
+            {
+                AggregateState_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void AggregateState_ValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName != "Value") return;
+            AggregateState_DB = ((RamAccess<byte?>)value).Value;
+        }
+
+        private static bool AggregateState_Validation(RamAccess<byte?> value)//Ready
+        {
+            value.ClearErrors();
+            if (value.Value == null)
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value is not (1 or 2 or 3))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
+
+        #endregion
+
+        #region ProviderOrRecieverOKPO (6)
+
+        [MaxLength(64)]
+        [Column(TypeName = "varchar(64)")]
+        public string ProviderOrRecieverOKPO_DB { get; set; } = "";
+
+        [NotMapped]
+        public RamAccess<string> ProviderOrRecieverOKPO
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(ProviderOrRecieverOKPO), out var value))
+                {
+                    ((RamAccess<string>)value).Value = ProviderOrRecieverOKPO_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
+                rm.PropertyChanged += ProviderOrRecieverOKPO_ValueChanged;
+                Dictionary.Add(nameof(ProviderOrRecieverOKPO), rm);
+                return (RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)];
+            }
+            set
+            {
+                ProviderOrRecieverOKPO_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void ProviderOrRecieverOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName != "Value") return;
+            var value1 = ((RamAccess<string>)value).Value;
+            if (value1 != null)
+            {
+                value1 = value1.Length > 64
+                ? value1[..64]
+                : value1;
+            }
+            if (ProviderOrRecieverOKPO_DB != value1)
+            {
+                ProviderOrRecieverOKPO_DB = value1;
+            }
+        }
+
+        private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+
+        #endregion
+
+        #region Radionuclids (7)
+
+        [MaxLength(1024)]
+        [Column(TypeName = "varchar(1024)")]
+        public string Radionuclids_DB { get; set; } = "";
+
+        [NotMapped]
+        public RamAccess<string> Radionuclids
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(Radionuclids), out var value))
+                {
+                    ((RamAccess<string>)value).Value = Radionuclids_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
+                rm.PropertyChanged += Radionuclids_ValueChanged;
+                Dictionary.Add(nameof(Radionuclids), rm);
+                return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
+            }
+            set
+            {
+                Radionuclids_DB = ParseInnerText(value.Value);
+                OnPropertyChanged();
+            }
+        }
+
+        private void Radionuclids_ValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName != "Value") return;
+            var value1 = ((RamAccess<string>)value).Value;
+
+            if (value1 != null)
+            {
+                value1 = value1.Length > 1024
+                    ? value1[..1024]
+                    : value1;
+            }
+
+            if (Radionuclids_DB != value1)
+            {
+                Radionuclids_DB = value1;
+            }
+        }
+
+        private bool Radionuclids_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+
+        #endregion
+
+        #region Activity (8)
+
+        [MaxLength(32)]
+        [Column(TypeName = "varchar(32)")]
+        public string Activity_DB { get; set; } = "";
+
+        [NotMapped]
+        public RamAccess<string> Activity
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(Activity), out var value))
+                {
+                    ((RamAccess<string>)value).Value = Activity_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(Activity_Validation, Activity_DB);
+                rm.PropertyChanged += Activity_ValueChanged;
+                Dictionary.Add(nameof(Activity), rm);
+                return (RamAccess<string>)Dictionary[nameof(Activity)];
+            }
+            set
+            {
+                Activity_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void Activity_ValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName != "Value") return;
+            var value1 = ((RamAccess<string>)value).Value;
+            if (Activity_DB != value1)
+            {
+                Activity_DB = ExponentialString_ValueChanged(value1);
+            }
+        }
+
+        private bool Activity_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+
+        #endregion
+
+        #region Mass (9)
+
+        [MaxLength(32)]
+        [Column(TypeName = "varchar(32)")]
+        public string Mass_DB { get; set; } = "";
+
+        [NotMapped]
+        public RamAccess<string> Mass
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(Mass), out var value))
+                {
+                    ((RamAccess<string>)value).Value = Mass_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(Mass_Validation, Mass_DB);
+                rm.PropertyChanged += Mass_ValueChanged;
+                Dictionary.Add(nameof(Mass), rm);
+                return (RamAccess<string>)Dictionary[nameof(Mass)];
+            }
+            set
+            {
+                Mass_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void Mass_ValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName != "Value") return;
+            var value1 = ((RamAccess<string>)value).Value;
+            if (Mass_DB != value1)
+            {
+                Mass_DB = ExponentialString_ValueChanged(value1);
+            }
+        }
+
+        private bool Mass_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+
+        #endregion
+
+        #region Volume (10)
+
+        [MaxLength(32)]
+        [Column(TypeName = "varchar(32)")]
+        public string Volume_DB { get; set; } = "";
+
+        [NotMapped]
+        public RamAccess<string> Volume
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(Volume), out var value))
+                {
+                    ((RamAccess<string>)value).Value = Volume_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(Volume_Validation, Volume_DB);
+                rm.PropertyChanged += Volume_ValueChanged;
+                Dictionary.Add(nameof(Volume), rm);
+                return (RamAccess<string>)Dictionary[nameof(Volume)];
+            }
+            set
+            {
+                Volume_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void Volume_ValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName != "Value") return;
+            var value1 = ((RamAccess<string>)value).Value;
+            if (Volume_DB != value1)
+            {
+                Volume_DB = ExponentialString_ValueChanged(value1);
+            }
+        }
+
+        private bool Volume_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+
+        #endregion
+
+        #region Quantity (11)
+
+        public int? Quantity_DB { get; set; } = 0;
+
+        [NotMapped]
+        public RamAccess<int?> Quantity
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(Quantity), out var value))
+                {
+                    ((RamAccess<int?>)value).Value = Quantity_DB;
+                    return (RamAccess<int?>)value;
+                }
+                var rm = new RamAccess<int?>(Quantity_Validation, Quantity_DB);
+                rm.PropertyChanged += Quantity_ValueChanged;
+                Dictionary.Add(nameof(Quantity), rm);
+                return (RamAccess<int?>)Dictionary[nameof(Quantity)];
+            }
+            set
+            {
+                Quantity_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void Quantity_ValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName != "Value") return;
+            var value1 = ((RamAccess<int?>)value).Value;
+            if (Quantity_DB != value1)
+            {
+                Quantity_DB = value1;
+            }
+        }
+
+        private bool Quantity_Validation(RamAccess<int?> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+
+        #endregion
 
 
-//        private bool AggregateState_Validation(RamAccess<byte> value)//Ready
-//        {
-//            value.ClearErrors();
-//            if ((value.Value != 1) && (value.Value != 2) && (value.Value != 3))
-//            {
-//                value.AddError("Недопустимое значение"); return false;
-//            }
-//            return true;
-//        }
-//        //AggregateState property
+        #region RowColor
 
-//        //ProviderOrRecieverOKPO property
-//        public int? ProviderOrRecieverOKPOId { get; set; }
-//        [Attributes.Form_Property("поставщика или получателя")]
-//        public virtual RamAccess<string> ProviderOrRecieverOKPO
-//        {
-//            get
-//            {
-                
-//                {
-//                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
-                    
-//                }
-                
-//                {
-                    
-//                }
-//            }
-//            set
-//            {
+        [NotMapped]
+        public Color RowColor
+        {
+            get
+            {
+                return Color.FromArgb(0, 255, 255, 255); // Значение по умолчанию
+            }
+        }
 
+        [NotMapped]
+        private string _toolTipText = "";
 
-                
-//                {
-//                    DataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
-//                }
-//                OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
-//            }
-//        }
+        [NotMapped]
+        public string ToolTipText
+        {
+            get
+            {
+                return _toolTipText;
+            }
+            set
+            {
+                _toolTipText = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+        #endregion
 
+        #region Validation
 
-//        private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
-//        {
-//            value.ClearErrors();
-//            if (string.IsNullOrEmpty(value.Value))
-//            {
-//                value.AddError("Поле не заполнено");
-//                return false;
-//            }
-//            if ((value.Value.Length != 8) && (value.Value.Length != 14))
-//            {
-//                value.AddError("Недопустимое значение"); return false;
-//            }
-//            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-//            if (!mask.IsMatch(value.Value))
-//            {
-//                value.AddError("Недопустимое значение"); return false;
-//            }
-//            return true;
-//        }
-//        //ProviderOrRecieverOKPO property
+        public override bool Object_Validation()
+        {
+            return !(OperationCode.HasErrors ||
+                     TypeORI.HasErrors ||
+                     VarietyORI.HasErrors ||
+                     AggregateState.HasErrors ||
+                     ProviderOrRecieverOKPO.HasErrors ||
+                     Radionuclids.HasErrors ||
+                     Activity.HasErrors ||
+                     Mass.HasErrors ||
+                     Volume.HasErrors ||
+                     Quantity.HasErrors);
+        }
 
-//        protected List<string> OKSM = new List<string>
-//            {
-//                "АФГАНИСТАН","АЛБАНИЯ","АНТАРКТИДА","АЛЖИР","АМЕРИКАНСКОЕ САМОА","АНДОРРА","АНГОЛА","АНТИГУА И БАРБУДА","АЗЕРБАЙДЖАН","АРГЕНТИНА","АВСТРАЛИЯ","АВСТРИЯ","БАГАМЫ","БАХРЕЙН",
-//                "БАНГЛАДЕШ","АРМЕНИЯ","БАРБАДОС","БЕЛЬГИЯ","БЕРМУДЫ","БУТАН","БОЛИВИЯ, МНОГОНАЦИОНАЛЬНОЕ ГОСУДАРСТВО","БОСНИЯ И ГЕРЦЕГОВИНА","БОТСВАНА","ОСТРОВ БУВЕ","БРАЗИЛИЯ","БЕЛИЗ",
-//                "БРИТАНСКАЯ ТЕРРИТОРИЯ В ИНДИЙСКОМ ОКЕАНЕ","СОЛОМОНОВЫ ОСТРОВА","ВИРГИНСКИЕ ОСТРОВА (БРИТАНСКИЕ)","БРУНЕЙ-ДАРУССАЛАМ","БОЛГАРИЯ","МЬЯНМА","БУРУНДИ","БЕЛАРУСЬ","КАМБОДЖА",
-//                "КАМЕРУН","КАНАДА","КАБО-ВЕРДЕ","ОСТРОВА КАЙМАН","ЦЕНТРАЛЬНО-АФРИКАНСКАЯ РЕСПУБЛИКА","ШРИ-ЛАНКА","ЧАД","ЧИЛИ","КИТАЙ","ТАЙВАНЬ (КИТАЙ)","ОСТРОВ РОЖДЕСТВА","КОКОСОВЫЕ (КИЛИНГ) ОСТРОВА",
-//                "КОЛУМБИЯ","КОМОРЫ","МАЙОТТА","КОНГО","КОНГО, ДЕМОКРАТИЧЕСКАЯ РЕСПУБЛИКА","ОСТРОВА КУКА","КОСТА-РИКА","ХОРВАТИЯ","КУБА","КИПР","ЧЕХИЯ","БЕНИН","ДАНИЯ","ДОМИНИКА","ДОМИНИКАНСКАЯ РЕСПУБЛИКА",
-//                "ЭКВАДОР","ЭЛЬ-САЛЬВАДОР","ЭКВАТОРИАЛЬНАЯ ГВИНЕЯ","ЭФИОПИЯ","ЭРИТРЕЯ","ЭСТОНИЯ","ФАРЕРСКИЕ ОСТРОВА","ФОЛКЛЕНДСКИЕ ОСТРОВА (МАЛЬВИНСКИЕ)","ЮЖНАЯ ДЖОРДЖИЯ И ЮЖНЫЕ САНДВИЧЕВЫ ОСТРОВА",
-//                "ФИНЛЯНДИЯ","ЭЛАНДСКИЕ ОСТРОВА","ФРАНЦИЯ","ФРАНЦУЗСКАЯ ГВИАНА","БОНЭЙР, СИНТ-ЭСТАТИУС И САБА","НОВАЯ КАЛЕДОНИЯ","ВАНУАТУ","НОВАЯ ЗЕЛАНДИЯ","НИКАРАГУА","НИГЕР","ФИДЖИ",
-//                "ФРАНЦУЗСКАЯ ПОЛИНЕЗИЯ","ФРАНЦУЗСКИЕ ЮЖНЫЕ ТЕРРИТОРИИ","ДЖИБУТИ","ГАБОН","ГРУЗИЯ","ГАМБИЯ","ПАЛЕСТИНА, ГОСУДАРСТВО","ГЕРМАНИЯ","ГАНА","ГИБРАЛТАР","КИРИБАТИ","МАЛИ","МАЛЬТА",
-//                "ГРЕЦИЯ","ГРЕНЛАНДИЯ","ГРЕНАДА","ГВАДЕЛУПА","ГУАМ","ГВАТЕМАЛА","ГВИНЕЯ","ГАЙАНА","ГАИТИ","ОСТРОВ ХЕРД И ОСТРОВА МАКДОНАЛЬД","ПАПСКИЙ ПРЕСТОЛ (ГОСУДАРСТВО - ГОРОД ВАТИКАН)",
-//                "ГОНДУРАС","ГОНКОНГ","ВЕНГРИЯ","ИСЛАНДИЯ","ИНДИЯ","ИНДОНЕЗИЯ","ИРАН (ИСЛАМСКАЯ РЕСПУБЛИКА)","ИРАК","ИРЛАНДИЯ","ИЗРАИЛЬ","ИТАЛИЯ","КОТ Д'ИВУАР","ЯМАЙКА","ЯПОНИЯ","МАЛЬДИВЫ",
-//                "КАЗАХСТАН","ИОРДАНИЯ","КЕНИЯ","КОРЕЯ, НАРОДНО-ДЕМОКРАТИЧЕСКАЯ РЕСПУБЛИКА","КОРЕЯ, РЕСПУБЛИКА","КУВЕЙТ","КИРГИЗИЯ","НИГЕРИЯ","НИУЭ","ОСТРОВ НОРФОЛК","НОРВЕГИЯ","СЕВЕРНЫЕ МАРИАНСКИЕ ОСТРОВА",
-//                "ЛАОССКАЯ НАРОДНО-ДЕМОКРАТИЧЕСКАЯ РЕСПУБЛИКА","ЛИВАН","ЛЕСОТО","ЛАТВИЯ","ЛИБЕРИЯ","ЛИВИЯ","ЛИХТЕНШТЕЙН","ЛИТВА","ЛЮКСЕМБУРГ","МАКАО","МАДАГАСКАР","МАЛАВИ","МАЛАЙЗИЯ",
-//                "МАРТИНИКА","МАВРИТАНИЯ","МАВРИКИЙ","МЕКСИКА","МОНАКО","МОНГОЛИЯ","МОЛДОВА, РЕСПУБЛИКА","ЧЕРНОГОРИЯ","МОНТСЕРРАТ","МАРОККО","МОЗАМБИК","ОМАН","НАМИБИЯ","НАУРУ","НЕПАЛ",
-//                "АРУБА","СЕН-МАРТЕН (нидерландская часть)","МАЛЫЕ ТИХООКЕАНСКИЕ ОТДАЛЕННЫЕ ОСТРОВА СОЕДИНЕННЫХ ШТАТОВ","МИКРОНЕЗИЯ, ФЕДЕРАТИВНЫЕ ШТАТЫ","МАРШАЛЛОВЫ ОСТРОВА","КЮРАСАО",
-//                "ПАЛАУ","ПАКИСТАН","ПАНАМА","ПАПУА-НОВАЯ ГВИНЕЯ","ПАРАГВАЙ","ПЕРУ","ФИЛИППИНЫ","ПИТКЕРН","ПОЛЬША","ПОРТУГАЛИЯ","ГВИНЕЯ-БИСАУ","ТИМОР-ЛЕСТЕ","ШВЕЦИЯ","ШВЕЙЦАРИЯ","НИДЕРЛАНДЫ",
-//                "ПУЭРТО-РИКО","КАТАР","РЕЮНЬОН","РУМЫНИЯ","РОССИЯ","РУАНДА","СЕН-БАРТЕЛЕМИ","СВЯТАЯ ЕЛЕНА, ОСТРОВ ВОЗНЕСЕНИЯ, ТРИСТАН-ДА-КУНЬЯ","СЕНТ-КИТС И НЕВИС","АНГИЛЬЯ","СЕНТ-ЛЮСИЯ",
-//                "СЕН-МАРТЕН (французская часть)","СЕН-ПЬЕР И МИКЕЛОН","СЕНТ-ВИНСЕНТ И ГРЕНАДИНЫ","САН-МАРИНО","САН-ТОМЕ И ПРИНСИПИ","САУДОВСКАЯ АРАВИЯ","СЕНЕГАЛ","СЕРБИЯ","СЕЙШЕЛЫ","ЮЖНЫЙ СУДАН",
-//                "СЬЕРРА-ЛЕОНЕ","СИНГАПУР","СЛОВАКИЯ","ВЬЕТНАМ","СЛОВЕНИЯ","СОМАЛИ","ЮЖНАЯ АФРИКА","ЗИМБАБВЕ","ИСПАНИЯ","ЗАПАДНАЯ САХАРА","СУДАН","СУРИНАМ","ШПИЦБЕРГЕН И ЯН МАЙЕН","ЭСВАТИНИ",
-//                "СИРИЙСКАЯ АРАБСКАЯ РЕСПУБЛИКА","ТАДЖИКИСТАН","ТАИЛАНД","ТОГО","ТОКЕЛАУ","ТОНГА","ТРИНИДАД И ТОБАГО","ОБЪЕДИНЕННЫЕ АРАБСКИЕ ЭМИРАТЫ","ТУНИС","ТУРЦИЯ","ТУРКМЕНИСТАН","ОСТРОВА ТЕРКС И КАЙКОС",
-//                "ТУВАЛУ","УГАНДА","УКРАИНА","СЕВЕРНАЯ МАКЕДОНИЯ","ЕГИПЕТ","СОЕДИНЕННОЕ КОРОЛЕВСТВО","ГЕРНСИ","ДЖЕРСИ","ОСТРОВ МЭН","ТАНЗАНИЯ, ОБЪЕДИНЕННАЯ РЕСПУБЛИКА","СОЕДИНЕННЫЕ ШТАТЫ",
-//                "ВИРГИНСКИЕ ОСТРОВА (США)","БУРКИНА-ФАСО","УРУГВАЙ","УЗБЕКИСТАН","ВЕНЕСУЭЛА (БОЛИВАРИАНСКАЯ РЕСПУБЛИКА)","УОЛЛИС И ФУТУНА","САМОА","ЙЕМЕН","ЗАМБИЯ","АБХАЗИЯ","ЮЖНАЯ ОСЕТИЯ"
-//            };
+        #endregion
 
-//        ////ProviderOrRecieverOKPONote property
-//        //public virtual RamAccess<string> ProviderOrRecieverOKPONote
-//        //{
-//        //    get
-//        //    {
-                
-//        //        {
-//        //            return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
-                    
-//        //        }
-                
-//        //        {
-                    
-//        //        }
-//        //    }
-//        //    set
-//        //    {
+        #region ParseInnerText
+        private static string ParseInnerText(string text)
+        {
+            return text.Replace("\r", " ").Replace("\n", " ").Replace("\t", " ");
+        }
+        #endregion
 
-                
-//        //        {
-//        //            DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
-//        //        }
-//        //        OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
-//        //    }
-//        //}
+        #region IExcel
+
+        public override void ExcelGetRow(ExcelWorksheet worksheet, int row)
+        {
+            NumberInOrder_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 1].Value), out var intValue)
+                ? intValue
+                : 0;
+
+            OperationCode_DB = Convert.ToString(worksheet.Cells[row, 2].Value).Trim();
+            if (OperationCode_DB.Count() > 2)
+                OperationCode_DB = OperationCode_DB[..2];
+
+            TypeORI_DB = Convert.ToString(worksheet.Cells[row, 3].Value).Trim();
 
 
-//        //private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
-//        //{
-//        //    value.ClearErrors(); return true;}
-//        ////ProviderOrRecieverOKPONote property
+            VarietyORI_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 4].Value), out var byteValue) ? byteValue : (byte)0;
 
-//        //Radionuclids property
-//        public int? RadionuclidsId { get; set; }
-//        [Attributes.Form_Property("радионуклиды")]
-//        public virtual RamAccess<string> Radionuclids
-//        {
-//            get
-//            {
-                
-//                {
-//                    return DataAccess.Get<string>(nameof(Radionuclids));//OK
-                    
-//                }
-                
-//                {
-                    
-//                }
-//            }
-//            set
-//            {
+            AggregateState_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 5].Value), out byteValue) ? byteValue : (byte)0;
 
+            ProviderOrRecieverOKPO_DB = Convert.ToString(worksheet.Cells[row, 6].Value).Trim();
+            if (ProviderOrRecieverOKPO_DB.Count() > 64)
+                ProviderOrRecieverOKPO_DB = ProviderOrRecieverOKPO_DB[..64];
 
-                
-//                {
-//                    DataAccess.Set(nameof(Radionuclids), value);
-//                }
-//                OnPropertyChanged(nameof(Radionuclids));
-//            }
-//        }
-//        //If change this change validation
+            Radionuclids_DB = Convert.ToString(worksheet.Cells[row, 7].Value).Trim();
+            if (Radionuclids_DB.Count() > 1024)
+                Radionuclids_DB = Radionuclids_DB[..1024];
 
-//        private bool Radionuclids_Validation(RamAccess<string> value)//TODO
-//        {
-//            value.ClearErrors();
-//            if (string.IsNullOrEmpty(value.Value))
-//            {
-//                value.AddError("Поле не заполнено");
-//                return false;
-//            }
-//            string[] nuclids = value.Value.Split("; ");
-//            bool flag = true;
-//            foreach (var nucl in nuclids)
-//            {
-//                var tmp = from item in Spravochniks.SprRadionuclids where nucl == item.Item1 select item.Item1;
-//                if (tmp.Count() == 0)
-//                    flag = false;
-//            }
-//            if (!flag)
-//            {
-//                value.AddError("Недопустимое значение");
-//                return false;
-//            }
-//            return true;
-//        }
-//        //Radionuclids property
+            Activity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 8].Value);
+            if (Activity_DB.Count() > 32)
+                Activity_DB = Activity_DB[..32];
 
-//        //Activity property
-//        public int? ActivityId { get; set; }
-//        [Attributes.Form_Property("активность, Бк")]
-//        public virtual RamAccess<string> Activity
-//        {
-//            get
-//            {
-                
-//                {
-//                    return DataAccess.Get<string>(nameof(Activity));//OK
-                    
-//                }
-                
-//                {
-                    
-//                }
-//            }
-//            set
-//            {
+            Mass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 9].Value);
+            if (Mass_DB.Count() > 32)
+                Mass_DB = Mass_DB[..32];
 
-                
-//                {
-//                    DataAccess.Set(nameof(Activity), value);
-//                }
-//                OnPropertyChanged(nameof(Activity));
-//            }
-//        }
+            Volume_DB = ConvertFromExcelDouble(worksheet.Cells[row, 10].Value);
+            if (Volume_DB.Count() > 32)
+                Volume_DB = Volume_DB[..32];
 
+            Quantity_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 11].Value), out intValue) ? intValue : 0;
+        }
 
-//        private bool Activity_Validation(RamAccess<string> value)//Ready
-//        {
-//            value.ClearErrors();
-//            if (string.IsNullOrEmpty(value.Value))
-//            {
-//                value.AddError( "Поле не заполнено");
-//                return false;
-//            }
-//            if (!(value.Value.Contains('e')))
-//            {
-//                value.AddError( "Недопустимое значение");
-//                return false;
-//            }
-//            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-//               NumberStyles.AllowExponent;
-//            try
-//            {
-//                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-//                {
-//                    value.AddError("Число должно быть больше нуля");
-//                    return false;
-//                }
-//            }
-//            catch
-//            {
-//                value.AddError( "Недопустимое значение");
-//                return false;
-//            }
-//            return true;
-//        }
-//        //Activity property
+        public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
+        {
+            worksheet.Cells[row + 0, column + 0].Value = NumberInOrder_DB;
+            worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(OperationCode_DB);
+            worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelString(TypeORI_DB);
+            worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = VarietyORI_DB == 0 ? "" : VarietyORI_DB;
+            worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = AggregateState_DB == 0 ? "" : AggregateState_DB;
+            worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ConvertToExcelString(ProviderOrRecieverOKPO_DB);
+            worksheet.Cells[row + (!transpose ? 6 : 0), column + (transpose ? 6 : 0)].Value = ConvertToExcelString(Radionuclids_DB);
+            worksheet.Cells[row + (!transpose ? 7 : 0), column + (transpose ? 7 : 0)].Value = ConvertToExcelDouble(Activity_DB);
+            worksheet.Cells[row + (!transpose ? 8 : 0), column + (transpose ? 8 : 0)].Value = ConvertToExcelDouble(Mass_DB);
+            worksheet.Cells[row + (!transpose ? 9 : 0), column + (transpose ? 9 : 0)].Value = ConvertToExcelDouble(Volume_DB);
+            worksheet.Cells[row + (!transpose ? 10 : 0), column + (transpose ? 10 : 0)].Value = Quantity_DB == 0 ? "" : Quantity_DB;
 
-//        //Quantity property
-//        public int? QuantityId { get; set; }
-//        [Attributes.Form_Property("количество, шт.")]
-//        public virtual RamAccess<int> Quantity
-//        {
-//            get
-//            {
-                
-//                {
-//                    return DataAccess.Get<int>(nameof(Quantity));//OK
-                    
-//                }
-                
-//                {
-                    
-//                }
-//            }
-//            set
-//            {
+            return 11;
+        }
 
+        public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string id = "")
+        {
+            throw new NotImplementedException();
+        }
 
+        #endregion
 
-                
-//                {
-//                    DataAccess.Set(nameof(Quantity), value);
-//                }
-//                OnPropertyChanged(nameof(Quantity));
-//            }
-//        }
-//        // positive int.
+        #region IDataGridColumn
 
-//        private bool Quantity_Validation(RamAccess<int> value)//Ready
-//        {
-//            value.ClearErrors();
-//            if (value.Value <= 0)
-//            {
-//                value.AddError( "Недопустимое значение");
-//return false;
-//            }
-//            return true;
-//        }
-//        //Quantity property
+        // Заглушка
+        public override DataGridColumns GetColumnStructure(string param)
+        {
+            return null;
+        }
 
-//        //Volume property
-//        public int? VolumeId { get; set; }
-//        [Attributes.Form_Property("Объем, куб. м")]
-//        public virtual RamAccess<double> Volume
-//        {
-//            get
-//            {
-                
-//                {
-//                    return DataAccess.Get<double>(nameof(Volume));
-//                }
-                
-//                {
-                    
-//                }
-//            }
-//            set
-//            {
+        #endregion
 
-                
-//                {
-//                    DataAccess.Set(nameof(Volume), value);
-//                }
-//                OnPropertyChanged(nameof(Volume));
-//            }
-//        }
+        #region ConvertToTSVstring
 
+        /// <summary>
+        /// </summary>
+        /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+        public override string ConvertToTSVstring()
+        {
+            // Создаем текстовое представление (TSV - tab-separated values)
+            var str =
+                $"{NumberInOrder.Value}\t" +
+                $"{OperationCode.Value}\t" +
+                $"{TypeORI.Value}\t" +
+                $"{VarietyORI.Value}\t" +
+                $"{AggregateState.Value}\t" +
+                $"{ProviderOrRecieverOKPO.Value}\t" +
+                $"{Radionuclids.Value}\t" +
+                $"{Activity.Value}\t" +
+                $"{Mass.Value}\t" +
+                $"{Volume.Value}\t" +
+                $"{Quantity.Value}";
+            return str;
+        }
 
-//        private bool Volume_Validation(RamAccess<double?> value)//TODO
-//        {
-//            value.ClearErrors();
-//            if (value.Value <= 0)
-//            {
-//                value.AddError( "Недопустимое значение");
-//return false;
-//            }
-//            return true;
-//        }
-//        //Volume property
-
-//        //Mass Property
-//        public int? MassId { get; set; }
-//        [Attributes.Form_Property("Масса, кг")]
-//        public virtual RamAccess<double> Mass
-//        {
-//            get
-//            {
-                
-//                {
-//                    return DataAccess.Get<double>(nameof(Mass));
-//                }
-                
-//                {
-                    
-//                }
-//            }
-//            set
-//            {
-
-                
-//                {
-//                    DataAccess.Set(nameof(Mass), value);
-//                }
-//                OnPropertyChanged(nameof(Mass));
-//            }
-//        }
-
-
-//        private bool Mass_Validation(RamAccess<double> value)//TODO
-//        {
-//            value.ClearErrors();
-//            if (value.Value <= 0)
-//            {
-//                value.AddError( "Недопустимое значение");
-//return false;
-//            }
-//            return true;
-//        }
-//        //Mass Property
-//    }
+        #endregion
+    }
+}

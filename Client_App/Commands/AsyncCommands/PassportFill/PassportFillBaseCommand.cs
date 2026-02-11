@@ -174,7 +174,7 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
                             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                             {
                                 ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка в Excel",
+                                ContentTitle = "Выгрузка в .xlsx",
                                 ContentHeader = "Ошибка",
                                 ContentMessage =
                                     $"Не удалось сохранить файл по пути: {fullPath}" +
@@ -507,7 +507,7 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
     {
         return double.TryParse(ConvertStringToExponential(str),
             NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-            CultureInfo.CreateSpecificCulture("ru-RU"),
+            new CultureInfo("ru-RU", useUserOverride: false),
             out val);
     }
 
@@ -538,7 +538,7 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
             });
             if (string.IsNullOrWhiteSpace(r[^1]["D"]) || !double.TryParse(r[^1]["D"], out var val1) || val1 < 0)
             {
-                r[^1]["D"] = double.MaxValue.ToString(CultureInfo.CreateSpecificCulture("ru-RU"));
+                r[^1]["D"] = double.MaxValue.ToString(new CultureInfo("ru-RU", useUserOverride: false));
             }
             i++;
         }

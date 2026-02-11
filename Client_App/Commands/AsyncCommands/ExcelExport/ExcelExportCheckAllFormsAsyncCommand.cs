@@ -32,8 +32,13 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
-        if (parameter is not IKeyCollection collection) return;
-        var par = collection.ToList<Reports>().First();
+        Reports? par;
+        if (parameter is IKeyCollection collection)
+            par = collection.ToList<Reports>().First();
+        else if (parameter is Reports)
+            par = (Reports)parameter;
+        else return;
+
         var cts = new CancellationTokenSource();
         ExportType = $"Проверка_отчётов_{par.Master_DB.RegNoRep.Value}_{par.Master_DB.OkpoRep.Value}";
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
@@ -134,7 +139,18 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
                     "1.6" => CheckF16.Check_Total(rep.Reports, rep),
                     "1.7" => CheckF17.Check_Total(rep.Reports, rep),
                     "1.8" => CheckF18.Check_Total(rep.Reports, rep),
-                    _ => throw new Exception()
+                    "2.1" => CheckF18.Check_Total(rep.Reports, rep),
+                    "2.2" => CheckF18.Check_Total(rep.Reports, rep),
+                    "2.3" => CheckF18.Check_Total(rep.Reports, rep),
+                    "2.4" => CheckF18.Check_Total(rep.Reports, rep),
+                    "2.5" => CheckF18.Check_Total(rep.Reports, rep),
+                    "2.6" => CheckF18.Check_Total(rep.Reports, rep),
+                    "2.7" => CheckF18.Check_Total(rep.Reports, rep),
+                    "2.8" => CheckF18.Check_Total(rep.Reports, rep),
+                    "2.9" => CheckF18.Check_Total(rep.Reports, rep),
+                    "2.10" => CheckF18.Check_Total(rep.Reports, rep),
+                    "2.11" => CheckF18.Check_Total(rep.Reports, rep),
+                    _ => []
                 };
             }
             catch (Exception ex)

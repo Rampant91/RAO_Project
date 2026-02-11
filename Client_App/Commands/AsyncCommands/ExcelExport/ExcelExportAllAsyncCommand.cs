@@ -9,7 +9,6 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.ViewModels.ProgressBar;
-using Client_App.Views;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
@@ -24,13 +23,12 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 /// <summary>
 /// Excel -> Все формы и Excel -> Выбранная организация -> Все формы.
 /// </summary>
-public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
+public class ExcelExportAllAsyncCommand(MainWindowVM mainWindowVM) : ExcelExportBaseAllAsyncCommand
 {
     public override bool CanExecute(object? parameter) => true;
 
     public override async Task AsyncExecute(object? parameter)
     {
-        if (parameter is null) return;
         var cts = new CancellationTokenSource();
         IsSelectedOrg = parameter is "SelectedOrg";
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
@@ -39,9 +37,10 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
         progressBarVM.SetProgressBar(2, "Проверка параметров", "Выгрузка всех отчётов", ExportType);
         var folderPath = await CheckAppParameter();
         var isBackgroundCommand = folderPath != string.Empty;
+        var selectedReports = mainWindowVM.SelectedReports;
 
         progressBarVM.SetProgressBar(3, "Определение имени файла");
-        var fileName = await GetFileName(progressBar, cts);
+        var fileName = await GetFileName(selectedReports, progressBar, cts);
 
         progressBarVM.SetProgressBar(5, "Запрос пути сохранения");
         var (fullPath, openTemp) = !isBackgroundCommand
@@ -105,7 +104,7 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     CanResize = true,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage = $"Время выгрузки составило {diffInSeconds} секунд.",
                     MinHeight = 150,
@@ -149,7 +148,7 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
                     {
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                         CanResize = true,
-                        ContentTitle = "Выгрузка в Excel",
+                        ContentTitle = "Выгрузка в .xlsx",
                         ContentHeader = "Уведомление",
                         ContentMessage = "Выгрузка не выполнена, поскольку в базе отсутствуют формы отчетности организаций.",
                         MinHeight = 175,
@@ -254,10 +253,11 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
     /// <summary>
     /// Определение имени файла.
     /// </summary>
+    /// <param name="selectedReports">Выбранная организация.</param>
     /// <param name="progressBar">Окно прогрессбара.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Имя файла.</returns>
-    private async Task<string> GetFileName(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
+    private async Task<string> GetFileName(Reports? selectedReports, AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
         string fileName;
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
@@ -267,8 +267,6 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
             fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
             return fileName;
         }
-        var mainWindow = Desktop.MainWindow as MainWindow;
-        var selectedReports = (Reports?)mainWindow?.SelectedReports?.FirstOrDefault();
         if (selectedReports is null || selectedReports.Report_Collection.Count == 0)
         {
             #region MessageExcelExportFail
@@ -282,7 +280,7 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Выгрузка в Excel",
+                    ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage = msg,
                     MinHeight = 150,
@@ -324,7 +322,9 @@ public class ExcelExportAllAsyncCommand : ExcelExportBaseAllAsyncCommand
         AnyTaskProgressBarVM progressBarVM, ExcelPackage excelPackage, CancellationTokenSource cts)
     {
         double progressBarDoubleValue = progressBarVM.ValueBar;
-        foreach (var reps in repsList.OrderBy(x => x.Master_DB.RegNoRep.Value))
+        foreach (var reps in repsList.OrderBy(x => x.Master_DB.RegNoRep.Value)
+            //.Where(x => x.Master_DB.RegNoRep.Value is "12006")
+            )
         {
             var repsWithRows = new Reports { Master = reps.Master };
             foreach (var rep in reps.Report_Collection

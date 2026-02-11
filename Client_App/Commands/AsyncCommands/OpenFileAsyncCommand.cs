@@ -2,7 +2,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Client_App.Interfaces.Logger;
@@ -23,6 +22,7 @@ public class OpenFileAsyncCommand : BaseAsyncCommand
             {
                 "changelog" => $"Changelog.txt",
                 "manual" => "Инструкция_МПЗФ.pdf",
+                "snk" => "Инструкция_по_функциям_расчёта_СНК.docx",
                 "radsDictionary" => Path.Combine("Spravochniki", "R.xlsx"),
                 _ => ""
             };

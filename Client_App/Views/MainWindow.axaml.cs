@@ -18,22 +18,69 @@ using Models.Interfaces;
 
 namespace Client_App.Views;
 
-public class MainWindow : BaseWindow<MainWindowVM>
+public partial class MainWindow : BaseWindow<MainWindowVM>
 {
     #region SelectedReports
-
+    // this.SelectedReports Используется в легаси коде
+    // Так как это не соответствует паттерну MVVM, было решено продублировать SelectedReportsProperty в VM
+    // После перерисовки интерфейса нужно будет удалить этот SelectedReports
     public static readonly DirectProperty<MainWindow, IEnumerable<IKey>> SelectedReportsProperty =
         AvaloniaProperty.RegisterDirect<MainWindow, IEnumerable<IKey>>(
             nameof(SelectedReports),
             o => o.SelectedReports,
             (o, v) => o.SelectedReports = v);
 
-    private IEnumerable<IKey> _selectedReports = new ObservableCollectionWithItemPropertyChanged<IKey>();
+    private IEnumerable<IKey>? _selectedReports;
 
-    public IEnumerable<IKey> SelectedReports
+    public IEnumerable<IKey>? SelectedReports
     {
         get => _selectedReports;
-        set => SetAndRaise(SelectedReportsProperty, ref _selectedReports, value); // убрал if (value != null) 
+        set
+        {
+            var tab1 = this.FindControl<TabItem>("Forms1");
+            var tab2 = this.FindControl<TabItem>("Forms2");
+
+            if (tab1.IsSelected)
+            {
+                if (!Equals(SelectedReports1, value)) 
+                    SelectedReports1 = value;
+            }
+            else if (tab2.IsSelected)
+            {
+                if (!Equals(SelectedReports2, value))
+                    SelectedReports2 = value;
+            }
+            SetAndRaise(SelectedReportsProperty, ref _selectedReports, value);
+        }
+        // убрал if (value != null) 
+    }
+
+    private IEnumerable<IKey>? _selectedReports1;
+    private IEnumerable<IKey>? SelectedReports1
+    {
+        get => _selectedReports1;
+        set
+        {
+            if (!Equals(_selectedReports1, value))
+            {
+                _selectedReports1 = value;
+            }
+            if (!ReferenceEquals(SelectedReports, value)) _selectedReports = value;
+        }
+    }
+
+    private IEnumerable<IKey>? _selectedReports2;
+    private IEnumerable<IKey>? SelectedReports2
+    {
+        get => _selectedReports2;
+        set
+        {
+            if (!Equals(_selectedReports2, value))
+            {
+                _selectedReports2 = value;
+            }
+            if (!ReferenceEquals(SelectedReports, value)) _selectedReports = value;
+        }
     }
 
     #endregion
@@ -98,6 +145,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
 
     #region Events
 
+   
     private void OpenContactsButtonClicked(object? sender, RoutedEventArgs e)
     {
         var contactsWindow = new Contacts();
@@ -107,7 +155,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
     protected override void OnOpened(EventArgs e)
     {
         base.OnOpened(e);
-        ShowInit();
+        //ShowInit();
     }
 
     protected override void OnClosing(CancelEventArgs e)
@@ -174,7 +222,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             ContextMenuText = ["Выгрузить организацию"],
-            Command = MainWindowVM.ExportReports
+            Command = dataContext.ExportReports
         });
 
         grd1.CommandsList.Add(new KeyCommand
@@ -183,7 +231,7 @@ public class MainWindow : BaseWindow<MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             ContextMenuText = ["Выгрузить организацию с указанием диапазона дат"],
-            Command = MainWindowVM.ExportReportsWithDateRange
+            Command = dataContext.ExportReportsWithDateRange
         });
 
         grd1.CommandsList.Add(new KeyCommand
@@ -293,34 +341,80 @@ public class MainWindow : BaseWindow<MainWindowVM>
 
         #endregion
     }
+    /* 
+ private void ShowInit()
+   {
+       var dataContext = (MainWindowVM)DataContext;
 
-    private void ShowInit()
+       var tab10 = this.FindControl<Panel>("Forms_p1_0");
+       var tab1X = this.FindControl<Panel>("Forms_p1_X");
+       var tab1B = this.FindControl<Panel>("Forms_p1_B");
+       Form1_Visual.FormF_Visual(this, tab10, tab1X, tab1B);
+
+       #region Form10 DataGrid
+       var grd1 = (DataGrid<Reports>)tab10.Children[0];
+       var grd2 = (DataGrid<Report>)tab1X.Children[0];
+
+       SetCommandList(grd1, grd2, "1.0", dataContext);
+       #endregion
+
+       var tab20 = this.FindControl<Panel>("Forms_p2_0");
+       var tab2X = this.FindControl<Panel>("Forms_p2_X");
+       var tab2B = this.FindControl<Panel>("Forms_p2_B");
+       Form2_Visual.FormF_Visual(this, tab20, tab2X, tab2B);
+
+       #region Form20 DataGrid
+       var grd3 = (DataGrid<Reports>)tab20.Children[0];
+       var grd4 = (DataGrid<Report>)tab2X.Children[0];
+
+       SetCommandList(grd3, grd4, "2.0", dataContext);
+       #endregion
+   }
+    
+  */
+    #endregion
+
+    #region TabControl_SelectionChanged
+
+    private void TabControl_SelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        var dataContext = (MainWindowVM)DataContext;
+        if (sender is not TabControl tc)
+            return;
 
-        var tab10 = this.FindControl<Panel>("Forms_p1_0");
-        var tab1X = this.FindControl<Panel>("Forms_p1_X");
-        var tab1B = this.FindControl<Panel>("Forms_p1_B");
-        Form1_Visual.FormF_Visual(this, tab10, tab1X, tab1B);
+        // Вкладки: индекс 0 — скрытый, 1 — Forms1, 2 — Forms2 и т.д.
+        var target = SelectedReports; // по умолчанию текущее значение
 
-        #region Form10 DataGrid
-        var grd1 = (DataGrid<Reports>)tab10.Children[0];
-        var grd2 = (DataGrid<Report>)tab1X.Children[0];
+        switch (tc.SelectedIndex)
+        {
+            case 1:
+                target = SelectedReports1;
+                break;
+            case 2:
+                target = SelectedReports2;
+                break;
+            default:
+            {
+                // Резервная логика через тип формы из VM
+                if (DataContext is MainWindowVM vm)
+                {
+                    var formNum = vm.SelectedReportTypeToString;
+                    if (!string.IsNullOrEmpty(formNum))
+                    {
+                        if (formNum.StartsWith('1'))
+                            target = SelectedReports1;
+                        else if (formNum.StartsWith('2'))
+                            target = SelectedReports2;
+                    }
+                }
 
-        SetCommandList(grd1, grd2, "1.0", dataContext);
-        #endregion
+                break;
+            }
+        }
 
-        var tab20 = this.FindControl<Panel>("Forms_p2_0");
-        var tab2X = this.FindControl<Panel>("Forms_p2_X");
-        var tab2B = this.FindControl<Panel>("Forms_p2_B");
-        Form2_Visual.FormF_Visual(this, tab20, tab2X, tab2B);
-
-        #region Form20 DataGrid
-        var grd3 = (DataGrid<Reports>)tab20.Children[0];
-        var grd4 = (DataGrid<Report>)tab2X.Children[0];
-
-        SetCommandList(grd3, grd4, "2.0", dataContext);
-        #endregion
+        if (!ReferenceEquals(SelectedReports, target))
+        {
+            SelectedReports = target;
+        }
     }
 
     #endregion

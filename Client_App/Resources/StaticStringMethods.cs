@@ -32,7 +32,7 @@ public static partial class StaticStringMethods
             .Replace('ё', 'e')
             .Replace('к', 'k')
             .Replace('м', 'm')
-            .Replace('о', 'o')
+            .Replace('о', '0')
             .Replace('о', '0')
             .Replace('р', 'p')
             .Replace('с', 'c')
@@ -49,7 +49,7 @@ public static partial class StaticStringMethods
             .Replace('ё', 'e')
             .Replace('к', 'k')
             .Replace('м', 'm')
-            .Replace('о', 'o')
+            .Replace('о', '0')
             .Replace('о', '0')
             .Replace('р', 'p')
             .Replace('с', 'c')
@@ -109,14 +109,14 @@ public static partial class StaticStringMethods
     
     public static object ConvertToExcelDate(string value, ExcelWorksheet worksheet, int row, int column)
     {
-        if (DateTime.TryParse(value, out var dateTime))
+        if (DateOnly.TryParse(value, out var dateOnly))
         {
             worksheet.Cells[row, column].Style.Numberformat.Format = "dd.mm.yyyy";
         }
         return value is null or "" or "-"
             ? "-"
-            : DateTime.TryParse(value, out _)
-                ? dateTime.Date
+            : DateOnly.TryParse(value, out _)
+                ? dateOnly
                 : value;
     }
 
@@ -176,8 +176,9 @@ public static partial class StaticStringMethods
 
     #region RemoveForbiddenChars
 
-    internal static string RemoveForbiddenChars(string str)
+    internal static string RemoveForbiddenChars(string? str)
     {
+        str ??= string.Empty;
         str = str.Replace(" ", "").Replace(Environment.NewLine, "");
         str = RestrictedSymbolsRegex().Replace(str, "");
         return str;

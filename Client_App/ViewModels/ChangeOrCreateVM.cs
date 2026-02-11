@@ -1,28 +1,29 @@
-﻿using Models.Attributes;
+﻿using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands.Add;
+using Client_App.Commands.AsyncCommands.CheckForm;
+using Client_App.Commands.AsyncCommands.Delete;
+using Client_App.Commands.AsyncCommands.ExcelExport;
+using Client_App.Commands.AsyncCommands.PassportFill;
+using Client_App.Commands.AsyncCommands.Passports;
+using Client_App.Commands.AsyncCommands.Save;
+using Client_App.Commands.AsyncCommands.SourceTransmission;
+using Client_App.Commands.SyncCommands;
+using Models.Attributes;
 using Models.Collections;
+using Models.DBRealization;
+using Models.Forms;
+using Models.Forms.Form1;
+using Models.Forms.Form2;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Client_App.Commands.AsyncCommands;
-using Client_App.Commands.AsyncCommands.Add;
-using Client_App.Commands.AsyncCommands.Delete;
-using Models.Forms;
-using Models.Forms.Form1;
-using Models.Forms.Form2;
-using Client_App.Commands.AsyncCommands.ExcelExport;
-using Client_App.Commands.AsyncCommands.Passports;
-using Client_App.Commands.AsyncCommands.Save;
-using Client_App.Commands.SyncCommands;
-using Models.DBRealization;
-using System.Threading;
-using Client_App.Commands.AsyncCommands.CheckForm;
-using Client_App.Commands.AsyncCommands.SourceTransmission;
-using Client_App.Commands.AsyncCommands.PassportFill;
+using Client_App.Commands.AsyncCommands.Calculator;
 
 namespace Client_App.ViewModels;
 
@@ -54,6 +55,21 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
+    private bool _isAutoReplaceEnabled = true;
+    public bool IsAutoReplaceEnabled
+    {
+        get => _isAutoReplaceEnabled;
+        set
+        {
+            if (_isAutoReplaceEnabled != value)
+            {
+                _isAutoReplaceEnabled = value;
+                Storage.AutoReplace = value;
+                NotifyPropertyChanged();
+            }
+        }
+    }
+
     #region IsCanSaveReportEnabled
 
     private bool _isCanSaveReportEnabled;
@@ -75,6 +91,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     #endregion
 
     #region isSum
+
     private bool _isSum;
     public bool isSum
     {
@@ -84,13 +101,15 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             if (_isSum != value)
             {
                 _isSum = value;
-                NotifyPropertyChanged("isSum");
+                NotifyPropertyChanged();
             }
         }
     }
+
     #endregion
 
     #region Storage
+
     private Report _Storage;
     public Report Storage
     {
@@ -104,6 +123,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             }
         }
     }
+
     #endregion
 
     #region Storages
@@ -162,6 +182,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ICommand AddRow { get; set; }                            //  Добавить строку в форму
     public ICommand AddRows { get; set; }                           //  Добавить N строк в форму
     public ICommand AddRowsIn { get; set; }                         //  Добавить N строк в форму перед выбранной строкой
+    public ICommand CategoryCalculationFromReport { get; set; }     //  Расчёт категории источника ЗРИ
     public ICommand ChangeReportOrder { get; set; }                 //  Поменять местами юр. лицо и обособленное подразделение
     public ICommand CheckReport { get; set; }                       //  Открывает окно проверки текущей формы при нажатии кнопки "Проверить"
     public ICommand CopyExecutorData { get; set; }                  //  Скопировать данные исполнителя из предыдущей формы
@@ -170,10 +191,11 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     public ICommand DeleteDataInRows { get; set; }                  //  Удалить данные в выделенных ячейках
     public ICommand DeleteNote { get; set; }                        //  Удалить выбранный комментарий
     public ICommand DeleteRows { get; set; }                        //  Удалить выбранные строчки из формы
-    public ICommand ExcelExportSourceMovementHistory { get; set; }  //  Выгрузка в Excel истории движения источника
+    public ICommand ExcelExportSourceMovementHistory { get; set; }  //  Выгрузка в .xlsx истории движения источника
     public ICommand OpenPas { get; set; }                           //  Найти и открыть соответствующий файл паспорта в сетевом хранилище
     public ICommand PasteRows { get; set; }                         //  Вставить значения из буфера обмена
     public ICommand SaveReport { get; set; }                        //  Сохранить отчет
+    public ICommand SetAutoReplace { get; set; }                     
     public ICommand SetNumberOrder { get; set; }                    //  Выставление порядкового номера
     public ICommand SortForm { get; set; }                          //  Сортировка по порядковому номеру
     public ICommand SourceTransmission { get; set; }                //  Перевод источника из РВ в РАО
@@ -212,7 +234,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
-    #region AddNewForm
+    #region AddNewReport
 
     public ChangeOrCreateVM(string formNum, in Reports reps)
     {
@@ -327,6 +349,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         AddRow = new AddRowAsyncCommand(this);
         AddRows = new AddRowsAsyncCommand(this);
         AddRowsIn = new AddRowsInAsyncCommand(this);
+        CategoryCalculationFromReport = new CategoryCalculationFromReportAsyncCommand();
         ChangeReportOrder = new ChangeReportOrderAsyncCommand(this);
         CheckReport = new CheckFormAsyncCommand(this);
         CopyExecutorData = new CopyExecutorDataAsyncCommand(this);
@@ -339,6 +362,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         OpenPas = new OpenPasAsyncCommand();
         PasteRows = new PasteRowsAsyncCommand();
         SaveReport = new SaveReportAsyncCommand(this);
+        SetAutoReplace = new SetAutoReplaceAsyncCommand(this);
         SetNumberOrder = new SetNumberOrderSyncCommand(this);
         SortForm = new SortFormSyncCommand(this);
         PassportFill = new PassportFillSyncCommand(this);
@@ -346,8 +370,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         ShowDialog = new Interaction<object, int>();
         ShowDialogIn = new Interaction<int, int>();
         ShowMessageT = new Interaction<List<string>, string>();
-        SourceTransmission = new SourceTransmissionAsyncCommand(this);
-        SourceTransmissionAll = new SourceTransmissionAllAsyncCommand(this);
+
         if (!isSum)
         {
             //Storage.Sort();

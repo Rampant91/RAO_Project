@@ -1,0 +1,131 @@
+﻿using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
+using Client_App.ViewModels.Messages;
+
+namespace Client_App.Views.Messages;
+
+public partial class AskIntMessageWindow : BaseWindow<AskIntMessageVM>
+{
+    public AskIntMessageWindow(AskIntMessageVM vm)
+    {
+        AvaloniaXamlLoader.Load(this);
+        DataContext = vm;
+        Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            var textbox = this.FindControl<TextBox>("Textbox");
+            textbox.Focus();
+        }, DispatcherPriority.Loaded);
+    }
+
+    public AskIntMessageWindow()
+    {
+        AvaloniaXamlLoader.Load(this);
+        DataContext = new AskIntMessageVM();
+
+        Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            var textbox = this.FindControl<TextBox>("Textbox");
+            textbox.Focus();
+        }, DispatcherPriority.Loaded);
+    }
+    
+    private void Accept_Click(object sender, RoutedEventArgs e)
+    {
+        var result = ((AskIntMessageVM)DataContext).Result;
+        // Return the integer result from ViewModel
+        if (result == null)
+            Close(0);
+        else
+            Close((int)result);
+    }
+
+    private void Cancel_Click(object sender, RoutedEventArgs e)
+    {
+        // Return a cancellation indicator (could use null or sentinel value)
+        Close(null);
+    }
+
+    protected override void PositionWindowOnOwnerScreen()
+    {
+        try
+        {
+            var ownerWindow = GetOwnerWindow();
+            
+            if (ownerWindow?.Screens != null)
+            {
+                // Get the screen where the OWNER window is located
+                Screen? ownerScreen = null;
+
+                // First try to get screen from owner window
+                if (ownerWindow.PlatformImpl != null)
+                {
+                    try
+                    {
+                        ownerScreen = ownerWindow.Screens.ScreenFromWindow(ownerWindow.PlatformImpl);
+                    }
+                    catch
+                    {
+                        // Fallback for Linux if ScreenFromWindow fails
+                    }
+                }
+
+                // Fallback to primary screen
+                if (ownerScreen == null)
+                {
+                    ownerScreen = ownerWindow.Screens.Primary;
+                }
+
+                if (ownerScreen != null)
+                {
+                    // Get DPI scaling factor
+                    var scale = ownerScreen.PixelDensity;
+                    if (scale <= 0) scale = 1.0;
+
+                    var windowWidth = Width;
+                    var windowHeight = Height;
+
+                    // Calculate center position in physical pixels
+                    var centerX = ownerScreen.WorkingArea.X + (ownerScreen.WorkingArea.Width - windowWidth * scale) / 2;
+                    var centerY = ownerScreen.WorkingArea.Y + (ownerScreen.WorkingArea.Height - windowHeight * scale) / 2;
+
+                    Position = new PixelPoint((int)Math.Round(centerX), (int)Math.Round(centerY));
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Fallback to default behavior if positioning fails
+            // Let the window use default positioning (will be centered on primary screen)
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg);
+        }
+    }
+
+    private Window? GetOwnerWindow()
+    {
+        // Try to find the most recent active window that could be the owner
+        var appLifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+        var windows = appLifetime?.Windows;
+        
+        if (windows != null)
+        {
+            // Find windows that are currently visible and not this window
+            var visibleWindows = new List<Window>();
+            foreach (var window in windows)
+            {
+                if (window != this && window.IsVisible)
+                {
+                    visibleWindows.Add(window);
+                }
+            }
+            
+            // Return the most recently activated window (last in list)
+            return visibleWindows.LastOrDefault();
+        }
+        
+        return null;
+    }
+}

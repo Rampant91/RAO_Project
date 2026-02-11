@@ -1,0 +1,59 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:m="clr-namespace:Models.DTO;assembly=Models"
+			 xmlns:vm="clr-namespace:Client_App.ViewModels.Controls"
+             x:Class="Client_App.Views.Controls.SelectExecutorDataPopup"
+			 x:CompileBindings="True"
+			 x:DataType="vm:SelectExecutorPopupVM"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450">
+
+	<Design.DataContext>
+		<vm:SelectExecutorPopupVM/>
+	</Design.DataContext>
+
+	<StackPanel>
+		
+		<Button Name="ToggleButton"
+				Content="Выбрать исполнителя"
+				Command="{Binding OpenPopupCommand}"/>
+        
+        <Popup Name="ExecutorPopup"
+               IsLightDismissEnabled="True"
+               IsOpen="{Binding PopupIsOpen, Mode=TwoWay}"
+               PlacementMode="Right"
+               PlacementTarget="{Binding ElementName=ToggleButton}">
+			
+			<Border Background="White"
+					BorderBrush="Gray"
+					BorderThickness="1"
+					CornerRadius="4"
+					Padding="10">
+				
+				<StackPanel>
+					<TextBlock Text="Выбор исполнителя"/>
+					<ListBox Items="{Binding ExecutorDataCollection}"
+							 SelectionChanged="ListBox_SelectionChanged"
+							 SelectionMode="Single">
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Height="20">
+									<TextBlock.Text>
+										<MultiBinding x:DataType="m:ExecutorDataDTO" 
+													  StringFormat="{}{0}, {1}, {2}, {3}">
+											<Binding Path="Name"/>
+											<Binding Path="Grade"/>
+											<Binding Path="Phone"/>
+											<Binding Path="Email"/>
+										</MultiBinding>
+									</TextBlock.Text>
+								</TextBlock>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+				</StackPanel>
+			</Border>
+		</Popup>
+	</StackPanel>
+</UserControl>

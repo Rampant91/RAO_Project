@@ -1,15 +1,16 @@
-﻿using Models.Collections;
+﻿using Client_App.DBAPIFactory;
+using Client_App.ViewModels;
+using DynamicData;
+using Microsoft.EntityFrameworkCore;
+using Models.Collections;
+using Models.DBRealization;
+using Models.Forms;
+using Models.Forms.Form2;
+
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Client_App.DBAPIFactory;
-using Client_App.ViewModels;
-using DynamicData;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using Models.DBRealization;
-using Models.Forms;
 
 namespace Client_App;
 
@@ -62,9 +63,51 @@ public static class ReportsStorage
         {
             viewModel.Storage = newRep;
             viewModel.Storages = reps;
+
+            NormalizeHiddenFlagsForReport(newRep);
         }
         return newRep;
     }
+
+    #region NormalizeHiddenFlagsForReport
+
+    /// <summary>
+    /// Нормализует флаги скрытия/записи для строк форм 2.1 и 2.2,
+    /// чтобы обычные строки (не суммы и не группы) всегда оставались редактируемыми. Костыль для исправления старого бага.
+    /// </summary>
+    /// <param name="report">Отчёт, для которого требуется нормализация.</param>
+    private static void NormalizeHiddenFlagsForReport(Report report)
+    {
+        switch (report.FormNum_DB)
+        {
+            case "2.1":
+            {
+                foreach (var item in report.Rows21)
+                {
+                    if (item is Form21 row)
+                    {
+                        row.NormalizeHiddenFlags();
+                    }
+                }
+
+                break;
+            }
+            case "2.2":
+            {
+                foreach (var item in report.Rows22)
+                {
+                    if (item is Form22 row)
+                    {
+                        row.NormalizeHiddenFlags();
+                    }
+                }
+
+                break;
+            }
+        }
+    }
+
+    #endregion
 
     #endregion
 
@@ -86,9 +129,12 @@ public static class ReportsStorage
             .AsQueryable()
             .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
             .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id);
-
-        return rep.FormNum_DB switch
+        var result = rep.FormNum_DB switch
         {
+            "1.0" => await query.Include(x => x.Rows10)
+               .SelectMany(x => x.Rows10)
+               .CountAsync(),
+
             "1.1" => await query.Include(x => x.Rows11)
                 .SelectMany(x => x.Rows11)
                 .CountAsync(),
@@ -123,6 +169,10 @@ public static class ReportsStorage
 
             "1.9" => await query.Include(x => x.Rows19)
                 .SelectMany(x => x.Rows19)
+                .CountAsync(),
+
+            "2.0" => await query.Include(x => x.Rows20)
+                .SelectMany(x => x.Rows20)
                 .CountAsync(),
 
             "2.1" => await query.Include(x => x.Rows21)
@@ -173,8 +223,13 @@ public static class ReportsStorage
                 .SelectMany(x => x.Rows212)
                 .CountAsync(),
 
+            "4.1" => await query.Include(x => x.Rows41)
+                .SelectMany(x => x.Rows41)
+                .CountAsync(),
+
             _ => 0
         };
+        return result;
     }
 
     #endregion

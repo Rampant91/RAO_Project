@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Drawing;
 using System.Globalization;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
 using Client_App.Interfaces.Logger;
 using Client_App.Resources.ConverterType;
-using Size = System.Drawing.Size;
 
 namespace Client_App.Resources;
 
@@ -32,18 +29,67 @@ public partial class RatioConverter : MarkupExtension, IValueConverter
 
             //if (OperatingSystem.IsWindows())
             {
-                var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime).MainWindow;
-                var screens = mainWindow.Screens;
-                var mainScreen = screens.ScreenFromWindow(mainWindow.PlatformImpl);
-                var scale = mainScreen.PixelDensity;
-                var height = mainScreen.WorkingArea.Height * par / scale;
-                var width = mainScreen.WorkingArea.Width * par / scale;
-                //var scale = DisplayTools.GetScalingFactorOnWindows();
-                //var height = System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Height * par / scale);
-                //var width = System.Convert.ToInt32(DisplayTools.GetDisplaySizeOnWindows().Width * par / scale);
+                var appLifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+                
+                // Try to get the target window from binding context
+                Window? targetWindow = null;
+                
+                // Check if we can get the window from the serviceProvider (if available)
+                if (value is IServiceProvider serviceProvider)
+                {
+                    var rootProvider = serviceProvider.GetService(typeof(IRootObjectProvider)) as IRootObjectProvider;
+                    targetWindow = rootProvider?.RootObject as Window;
+                }
+                
+                // Fallback: try to get the active window or main window
+                if (targetWindow == null)
+                {
+                    var mainWindow = appLifetime?.MainWindow;
+                    var screens = mainWindow?.Screens;
+                    
+                    // If we have screens available, try to get the screen where the cursor/current window is
+                    if (screens != null)
+                    {
+                        // In Avalonia 0.10.22, we can't get cursor position, so use primary screen as fallback
+                        var targetScreen = screens.Primary;
+                        
+                        // If cursor screen detection fails, fallback to main window screen
+                        if (targetScreen == null && mainWindow != null)
+                        {
+                            targetScreen = screens.ScreenFromWindow(mainWindow.PlatformImpl);
+                        }
+                        
+                        if (targetScreen != null)
+                        {
+                            var scale = targetScreen.PixelDensity;
+                            var height = targetScreen.WorkingArea.Height * par / scale;
+                            var width = targetScreen.WorkingArea.Width * par / scale;
+                            
+                            return isHeight 
+                                ? height
+                                : width;
+                        }
+                    }
+                }
+                
+                // Final fallback to original logic
+                var mainWindowFallback = appLifetime?.MainWindow;
+                if (mainWindowFallback?.Screens != null)
+                {
+                    var mainScreen = mainWindowFallback.Screens.ScreenFromWindow(mainWindowFallback.PlatformImpl);
+                    var scale = mainScreen.PixelDensity;
+                    var height = mainScreen.WorkingArea.Height * par / scale;
+                    var width = mainScreen.WorkingArea.Width * par / scale;
+                    
+                    return isHeight 
+                        ? height
+                        : width;
+                }
+                
+                // Hardcoded fallback
                 return isHeight 
-                    ? height
-                    : width;
+                    ? 600 * par
+                    : 800 * par;
             }
             //if (OperatingSystem.IsLinux())
             //{
@@ -76,70 +122,4 @@ public partial class RatioConverter : MarkupExtension, IValueConverter
     {
         return _instance ??= new RatioConverter();
     }
-}
-
-internal static partial class DisplayTools
-{
-    [LibraryImport("gdi32.dll")]
-    private static partial int GetDeviceCaps(IntPtr hdc, int nIndex);
-
-    private enum DeviceCap
-    {
-        DesktopVerticalRes = 117,
-        DesktopHorizonRes = 118
-    }
-
-    public static Size GetDisplaySizeOnWindows()
-    {
-        var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime).MainWindow;
-        var screens = mainWindow.Screens;
-        var mainScreen = screens.ScreenFromWindow(mainWindow.PlatformImpl);
-        return new Size(mainScreen.WorkingArea.Width, mainScreen.WorkingArea.Height);
-        ServiceExtension.LoggerManager.Warning($"{mainScreen.WorkingArea.Width}_{mainScreen.WorkingArea.Height}");
-        if (!OperatingSystem.IsWindows()) return new Size(600, 800);
-        using var g = Graphics.FromHwnd(IntPtr.Zero);
-        var desktop = g.GetHdc();
-
-        var physicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.DesktopVerticalRes);
-        var physicalScreenWidth = GetDeviceCaps(desktop, (int)DeviceCap.DesktopHorizonRes);
-
-        return new Size(physicalScreenWidth, physicalScreenHeight);
-    }
-
-    public static Size GetDisplaySizeOnLinux()
-    {
-        // Use xrandr to get size of screen located at offset (0,0).
-        var p = new System.Diagnostics.Process();
-        p.StartInfo.UseShellExecute = false;
-        p.StartInfo.RedirectStandardOutput = true;
-        p.StartInfo.FileName = "xrandr";
-        p.Start();
-        var output = p.StandardOutput.ReadToEnd();
-        p.WaitForExit();
-        var match = DisplayRegex().Match(output);
-        var w = match.Groups[1].Value;
-        var h = match.Groups[2].Value;
-        var r = new Size
-        {
-            Width = int.Parse(w),
-            Height = int.Parse(h)
-        };
-        return r;
-    }
-
-    public static float GetScalingFactorOnWindows()
-    {
-        if (!OperatingSystem.IsWindows()) return 1;
-        using var g = Graphics.FromHwnd(IntPtr.Zero);
-        var desktop = g.GetHdc();
-        var logpixelsy = GetDeviceCaps(desktop, 90);
-        g.ReleaseHdc(desktop);
-
-        var dpiScalingFactor = (float)logpixelsy / 96;
-
-        return dpiScalingFactor;
-    }
-
-    [GeneratedRegex(@"(\d+)x(\d+)\+0\+0")]
-    private static partial Regex DisplayRegex();
 }

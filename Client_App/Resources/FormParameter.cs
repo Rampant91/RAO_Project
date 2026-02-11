@@ -1,7 +1,6 @@
-﻿#nullable enable
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 
-namespace Models.Classes;
+namespace Client_App.Resources;
 
 public class FormParameter
 {

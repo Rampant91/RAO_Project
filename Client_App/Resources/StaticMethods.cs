@@ -1,15 +1,21 @@
-﻿using Models.Attributes;
+﻿using DynamicData.Binding;
+using Models.Attributes;
+using Models.Forms;
 using Models.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection.Metadata;
+using Models.Forms.Form1;
+using static Models.Collections.Report;
 
 namespace Client_App.Resources;
 
 public static class StaticMethods
 {
     //  Из строки формы получаем 5 уникальных параметров имени паспорта.
-    internal static void PassportUniqParam(object param, out string? okpo, out string? type, out string? date,
-        out string? pasNum, out string? factoryNum)
+    public static void PassportUniqParam(object param, out string? okpo, out string? type, out string? date, out string? pasNum, out string? factoryNum)
     {
         var par = param as object[];
         var collection = par?[0] as IKeyCollection;
@@ -64,6 +70,42 @@ public static class StaticMethods
                         break;
                 }
             }
+        }
+    }
+
+    public static void NewPassportUniqParam(object param, out string? okpo, out string? type, out string? date, out string? pasNum, out string? factoryNum)
+    {
+        var forms = ((IEnumerable<Form>)param).ToArray();
+
+        okpo = string.Empty;
+        type = string.Empty;
+        date = string.Empty;
+        pasNum = string.Empty;
+        factoryNum = string.Empty;
+
+        if (forms.Any(x => x is Form11))
+        {
+            var forms11 = forms.Cast<Form11>();
+            var form11 = forms11.MinBy(x => x.Order)!;
+            okpo = StaticStringMethods.ConvertPrimToDash(form11.CreatorOKPO.Value);
+            type = StaticStringMethods.ConvertPrimToDash(form11.Type.Value);
+            date = DateTime.TryParse(form11.CreationDate.Value, out var dateTime1)
+                ? dateTime1.ToShortDateString()
+                : date;
+            pasNum = StaticStringMethods.ConvertPrimToDash(form11.PassportNumber.Value);
+            factoryNum = StaticStringMethods.ConvertPrimToDash(form11.FactoryNumber.Value);
+
+        }
+        else if (forms.Any(x => x is Form15))
+        {
+            var forms15 = forms.Cast<Form15>();
+            var form15 = forms15.MinBy(x => x.Order)!;
+            type = StaticStringMethods.ConvertPrimToDash(form15.Type.Value);
+            date = DateTime.TryParse(form15.CreationDate.Value, out var dateTime2)
+                ? dateTime2.ToShortDateString()
+                : date;
+            pasNum = StaticStringMethods.ConvertPrimToDash(form15.PassportNumber.Value);
+            factoryNum = StaticStringMethods.ConvertPrimToDash(form15.FactoryNumber.Value);
         }
     }
 }

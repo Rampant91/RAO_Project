@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
@@ -9,16 +7,23 @@ using Avalonia.Media;
 using Client_App.Controls.DataGrid;
 using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.Controls.MaskedTextBox;
+using Client_App.ViewModels;
 using Client_App.VisualRealization.Converters;
 using Models.Attributes;
-using Models.DBRealization;
+using System;
+using System.Linq;
+using Client_App.Commands.AsyncCommands;
 
 namespace Client_App.VisualRealization.Long_Visual;
 
 public class Form1_Visual
 {
+    public static ChangeOrCreateVM tmpVM { get; set; }
+
+    #region Create
+
     #region CreateButton
-    
+
     public static Button CreateButton(string content, string thickness, int height, string commProp)
     {
         return new Button
@@ -35,7 +40,7 @@ public class Form1_Visual
     #endregion
 
     #region CreateTextBox
-    
+
     public static Cell CreateTextBox(string thickness, int height, string textProp, double width, INameScope scp, string _flag = "")
     {
         Cell textCell = new()
@@ -83,7 +88,7 @@ public class Form1_Visual
     #endregion
 
     #region CreateTextBlock
-    
+
     public static TextBlock CreateTextBlock(string margin, int height, string text, double width = 0)
     {
         TextBlock tmp = null;
@@ -116,7 +121,7 @@ public class Form1_Visual
     #endregion
 
     #region Create10Item
-    
+
     private static Grid Create10Item(string Property, string BindingPrefix, INameScope scp, int index)
     {
         Grid itemStackPanel = new();
@@ -135,6 +140,8 @@ public class Form1_Visual
         itemStackPanel.Children.Add(tmp2);
         return itemStackPanel;
     }
+
+    #endregion
 
     #endregion
 
@@ -410,7 +417,33 @@ public class Form1_Visual
         };
         content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
         content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
+
         leftStPT.Children.Add(content);
+
+        #region AutoReplaceCheckBox
+
+		var checkBoxStackPanel = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            IsVisible = false,
+            IsEnabled = false
+        };
+        checkBoxStackPanel.Children.Add(CreateTextBlock("5,10,0,5", 30, "Автозаполнение:"));
+
+        var checkBox = new CheckBox
+        {
+            IsThreeState = false,
+            Margin = Thickness.Parse("20, 5, 0, 5"),
+            Height = 30,
+            VerticalAlignment = VerticalAlignment.Top,
+            IsChecked = tmpVM?.IsAutoReplaceEnabled ?? false
+        };
+        checkBox.Checked += new SetAutoReplaceAsyncCommand(tmpVM).Set;
+        checkBox.Unchecked += new SetAutoReplaceAsyncCommand(tmpVM).UnSet;
+        checkBoxStackPanel.Children.Add(checkBox);
+        leftStPT.Children.Add(checkBoxStackPanel);
+
+        #endregion
 
         Border brdC = new()
         {
@@ -617,7 +650,6 @@ public class Form1_Visual
             [!Layoutable.MarginProperty] = ind
         };
 
-
         #region Left
 
         StackPanel leftStPT = new()
@@ -657,6 +689,31 @@ public class Form1_Visual
         content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
         content.Children.Add(CreateButton("Сохранить", "5,0,0,0", 30, "SaveReport"));
         leftStPT.Children.Add(content);
+
+        #region AutoReplaceCheckBox
+
+        var checkBoxStackPanel = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            IsVisible = false,
+            IsEnabled = false
+        };
+        checkBoxStackPanel.Children.Add(CreateTextBlock("5,10,0,5", 30, "Автозаполнение:"));
+
+        var checkBox = new CheckBox
+        {
+            IsThreeState = false,
+            Margin = Thickness.Parse("20, 5, 0, 5"),
+            Height = 30,
+            VerticalAlignment = VerticalAlignment.Top,
+            IsChecked = tmpVM?.IsAutoReplaceEnabled ?? false
+        };
+        checkBox.Checked += new SetAutoReplaceAsyncCommand(tmpVM).Set;
+        checkBox.Unchecked += new SetAutoReplaceAsyncCommand(tmpVM).UnSet;
+        checkBoxStackPanel.Children.Add(checkBox);
+        leftStPT.Children.Add(checkBoxStackPanel);
+
+        #endregion
 
         Border brdC = new()
         {
@@ -904,6 +961,31 @@ public class Form1_Visual
         content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
 
         leftStPT.Children.Add(content);
+
+        #region AutoReplaceCheckBox
+
+        var checkBoxStackPanel = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            IsVisible = false,
+            IsEnabled = false
+        };
+        checkBoxStackPanel.Children.Add(CreateTextBlock("5,10,0,5", 30, "Автозаполнение:"));
+
+        var checkBox = new CheckBox
+        {
+            IsThreeState = false,
+            Margin = Thickness.Parse("20, 5, 0, 5"),
+            Height = 30,
+            VerticalAlignment = VerticalAlignment.Top,
+            IsChecked = tmpVM?.IsAutoReplaceEnabled ?? false
+        };
+        checkBox.Checked += new SetAutoReplaceAsyncCommand(tmpVM).Set;
+        checkBox.Unchecked += new SetAutoReplaceAsyncCommand(tmpVM).UnSet;
+        checkBoxStackPanel.Children.Add(checkBox);
+        leftStPT.Children.Add(checkBoxStackPanel);
+
+        #endregion
 
         Border brdC = new()
         {
@@ -1153,6 +1235,31 @@ public class Form1_Visual
 
         leftStPT.Children.Add(content);
 
+        #region AutoReplaceCheckBox
+
+        var checkBoxStackPanel = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            IsVisible = false,
+            IsEnabled = false
+        };
+        checkBoxStackPanel.Children.Add(CreateTextBlock("5,10,0,5", 30, "Автозаполнение:"));
+
+        var checkBox = new CheckBox
+        {
+            IsThreeState = false,
+            Margin = Thickness.Parse("20, 5, 0, 5"),
+            Height = 30,
+            VerticalAlignment = VerticalAlignment.Top,
+            IsChecked = tmpVM?.IsAutoReplaceEnabled ?? false
+        };
+        checkBox.Checked += new SetAutoReplaceAsyncCommand(tmpVM).Set;
+        checkBox.Unchecked += new SetAutoReplaceAsyncCommand(tmpVM).UnSet;
+        checkBoxStackPanel.Children.Add(checkBox);
+        leftStPT.Children.Add(checkBoxStackPanel);
+
+        #endregion
+
         Border brdC = new()
         {
             BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
@@ -1358,7 +1465,6 @@ public class Form1_Visual
             [!Layoutable.MarginProperty] = ind
         };
 
-
         #region Left
 
         StackPanel leftStPT = new()
@@ -1399,6 +1505,31 @@ public class Form1_Visual
         content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
 
         leftStPT.Children.Add(content);
+
+        #region AutoReplaceCheckBox
+
+        var checkBoxStackPanel = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            IsVisible = false,
+            IsEnabled = false
+        };
+        checkBoxStackPanel.Children.Add(CreateTextBlock("5,10,0,5", 30, "Автозаполнение:"));
+
+        var checkBox = new CheckBox
+        {
+            IsThreeState = false,
+            Margin = Thickness.Parse("20, 5, 0, 5"),
+            Height = 30,
+            VerticalAlignment = VerticalAlignment.Top,
+            IsChecked = tmpVM?.IsAutoReplaceEnabled ?? false
+        };
+        checkBox.Checked += new SetAutoReplaceAsyncCommand(tmpVM).Set;
+        checkBox.Unchecked += new SetAutoReplaceAsyncCommand(tmpVM).UnSet;
+        checkBoxStackPanel.Children.Add(checkBox);
+        leftStPT.Children.Add(checkBoxStackPanel);
+
+        #endregion
 
         Border brdC = new()
         {
@@ -1591,7 +1722,6 @@ public class Form1_Visual
             [!Layoutable.MarginProperty] = ind
         };
 
-
         #region Left
 
         StackPanel leftStPT = new()
@@ -1632,6 +1762,31 @@ public class Form1_Visual
         content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
 
         leftStPT.Children.Add(content);
+
+        #region AutoReplaceCheckBox
+
+        var checkBoxStackPanel = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            IsVisible = false,
+            IsEnabled = false
+        };
+        checkBoxStackPanel.Children.Add(CreateTextBlock("5,10,0,5", 30, "Автозаполнение:"));
+
+        var checkBox = new CheckBox
+        {
+            IsThreeState = false,
+            Margin = Thickness.Parse("20, 5, 0, 5"),
+            Height = 30,
+            VerticalAlignment = VerticalAlignment.Top,
+            IsChecked = tmpVM?.IsAutoReplaceEnabled ?? false
+        };
+        checkBox.Checked += new SetAutoReplaceAsyncCommand(tmpVM).Set;
+        checkBox.Unchecked += new SetAutoReplaceAsyncCommand(tmpVM).UnSet;
+        checkBoxStackPanel.Children.Add(checkBox);
+        leftStPT.Children.Add(checkBoxStackPanel);
+
+        #endregion
 
         Border brdC = new()
         {
@@ -1824,7 +1979,6 @@ public class Form1_Visual
             [!Layoutable.MarginProperty] = ind
         };
 
-
         #region Left
 
         StackPanel leftStPT = new()
@@ -1865,6 +2019,31 @@ public class Form1_Visual
         content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
 
         leftStPT.Children.Add(content);
+
+        #region AutoReplaceCheckBox
+
+        var checkBoxStackPanel = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            IsVisible = false,
+            IsEnabled = false
+        };
+        checkBoxStackPanel.Children.Add(CreateTextBlock("5,10,0,5", 30, "Автозаполнение:"));
+
+        var checkBox = new CheckBox
+        {
+            IsThreeState = false,
+            Margin = Thickness.Parse("20, 5, 0, 5"),
+            Height = 30,
+            VerticalAlignment = VerticalAlignment.Top,
+            IsChecked = tmpVM?.IsAutoReplaceEnabled ?? false
+        };
+        checkBox.Checked += new SetAutoReplaceAsyncCommand(tmpVM).Set;
+        checkBox.Unchecked += new SetAutoReplaceAsyncCommand(tmpVM).UnSet;
+        checkBoxStackPanel.Children.Add(checkBox);
+        leftStPT.Children.Add(checkBoxStackPanel);
+
+        #endregion
 
         Border brdC = new()
         {
@@ -1939,6 +2118,7 @@ public class Form1_Visual
         topPnl1.Children.Add(brdC);
         topPnl1.Children.Add(brdR);
         maingrid.Children.Add(topPnl1);
+
         #endregion
 
         #region Centre
@@ -2057,7 +2237,6 @@ public class Form1_Visual
             [!Layoutable.MarginProperty] = ind
         };
 
-
         #region Left
 
         StackPanel leftStPT = new()
@@ -2098,6 +2277,31 @@ public class Form1_Visual
         content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
 
         leftStPT.Children.Add(content);
+
+        #region AutoReplaceCheckBox
+
+        var checkBoxStackPanel = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            IsVisible = false,
+            IsEnabled = false
+        };
+        checkBoxStackPanel.Children.Add(CreateTextBlock("5,10,0,5", 30, "Автозаполнение:"));
+
+        var checkBox = new CheckBox
+        {
+            IsThreeState = false,
+            Margin = Thickness.Parse("20, 5, 0, 5"),
+            Height = 30,
+            VerticalAlignment = VerticalAlignment.Top,
+            IsChecked = tmpVM?.IsAutoReplaceEnabled ?? false
+        };
+        checkBox.Checked += new SetAutoReplaceAsyncCommand(tmpVM).Set;
+        checkBox.Unchecked += new SetAutoReplaceAsyncCommand(tmpVM).UnSet;
+        checkBoxStackPanel.Children.Add(checkBox);
+        leftStPT.Children.Add(checkBoxStackPanel);
+
+        #endregion
 
         Border brdC = new()
         {

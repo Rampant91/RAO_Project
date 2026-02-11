@@ -194,7 +194,6 @@ public abstract partial class Form : IKey, IDataGridColumn
         NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
 
     #region ExponentialString
-    
     private protected static bool ExponentialString_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
@@ -218,7 +217,7 @@ public abstract partial class Form : IKey, IDataGridColumn
             .Replace('е', 'e');
         if (!double.TryParse(tmp,
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                CultureInfo.CreateSpecificCulture("ru-RU"),
+                new CultureInfo("ru-RU", useUserOverride: false),
                 out var doubleValue)
             || tmp.StartsWith('(') ^ tmp.EndsWith(')'))
         {
@@ -251,7 +250,7 @@ public abstract partial class Form : IKey, IDataGridColumn
         {
             return true;
         }
-        if (!DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var date)
+        if (!DateOnly.TryParse(tmp, new CultureInfo("ru-RU", useUserOverride: false), out var date)
             || date.Year < 1945)
         {
             value.AddError("Недопустимое значение");
@@ -341,7 +340,7 @@ public abstract partial class Form : IKey, IDataGridColumn
         }
         if (double.TryParse(tmp,
                 NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowLeadingSign,
-                CultureInfo.CreateSpecificCulture("ru-RU"),
+                new CultureInfo("ru-RU", useUserOverride: false),
                 out var doubleValue))
         {
             tmp = $"{doubleValue:0.######################################################e+00}";
@@ -354,10 +353,15 @@ public abstract partial class Form : IKey, IDataGridColumn
     private protected static string DateString_ValueChanged(string value)
     {
         var tmp = (value ?? string.Empty).Trim();
-        return DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out var date) 
+
+        if (DateTime.TryParse(tmp, new CultureInfo("ru-RU", useUserOverride: false), out var dateTime))
+        {
+            return dateTime.ToShortDateString();
+        }
+        return DateOnly.TryParse(tmp, new CultureInfo("ru-RU", useUserOverride: false), out var date)
             ? date.ToShortDateString()
-            : tmp is not ("" or "-" or "прим.") 
-                ? "" 
+            : tmp is not ("" or "-" or "прим.")
+                ? ""
                 : tmp;
     }
 
@@ -368,6 +372,13 @@ public abstract partial class Form : IKey, IDataGridColumn
             _ => DashesRegex().Replace(value, "-")
         };
 
+    #endregion
+
+    #region ExponentionalStringConverter
+    public static string ConvertStringToExponentialFormat(string value)
+    {
+        return ExponentialString_ValueChanged(value);
+    }
     #endregion
 
     #region INotifyPropertyChanged
@@ -409,7 +420,7 @@ public abstract partial class Form : IKey, IDataGridColumn
     {
         var strValue = Convert.ToString(value);
         return double.TryParse(strValue, out var doubleValue)
-            ? doubleValue.ToString("0.00######################################################e+00", CultureInfo.InvariantCulture)
+            ? doubleValue.ToString("0.00######################################################e+00", new CultureInfo("ru-RU", useUserOverride: false))
             : strValue;
     }
 
@@ -491,6 +502,15 @@ public abstract partial class Form : IKey, IDataGridColumn
 
     [GeneratedRegex(@"^\d{8}([\d_][Мм\d]\d{4})?$")]
     protected static partial Regex OkpoRegex();
+
+    #endregion
+
+    #region ConvertToTSVstring
+
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public abstract string ConvertToTSVstring();
 
     #endregion
 }

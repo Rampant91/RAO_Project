@@ -13,17 +13,31 @@ namespace Client_App.Commands.AsyncCommands.Calculator;
 
 public class OpenCalculatorAsyncCommand : BaseAsyncCommand
 {
-    private protected static List<CalculatorRadionuclidDTO> R = [];
+    private static List<CalculatorRadionuclidDTO> R = [];
 
     public override Task AsyncExecute(object? parameter)
     {
         R_Populate_From_File(parameter);
 
-        Window dialogWindow = parameter switch
+        Window dialogWindow;
+        switch (parameter)
         {
-            "activity" => new ActivityCalculator { DataContext = new ActivityCalculatorVM(R) },
-            "category" => new CategoryCalculator { DataContext = new CategoryCalculatorVM(R) },
-            _ => throw new ArgumentOutOfRangeException(nameof(parameter), parameter, null)
+            case "activity":
+            {
+                var vm = new ActivityCalculatorVM(R);
+                dialogWindow = new ActivityCalculator(vm) { DataContext = vm };
+                break;
+            }
+            case "category":
+            {
+                var vm = new CategoryCalculatorVM(R);
+                dialogWindow = new CategoryCalculator(vm) { DataContext = vm };
+                break;
+            }
+            default:
+            {
+                throw new ArgumentOutOfRangeException(nameof(parameter), parameter, null);
+            }
         };
         dialogWindow.Show();
 
@@ -63,7 +77,7 @@ public class OpenCalculatorAsyncCommand : BaseAsyncCommand
                 && !string.IsNullOrWhiteSpace(unit)
                 && (parameter is not "category" 
                     || (double.TryParse(mza, out _) 
-                        && (double.TryParse(d, out _) || string.Equals(d, "неограничено", StringComparison.OrdinalIgnoreCase)))))
+                        && (double.TryParse(d, out _) || string.Equals(d, "неограниченно", StringComparison.OrdinalIgnoreCase)))))
             {
                 R.Add(new CalculatorRadionuclidDTO
                 {

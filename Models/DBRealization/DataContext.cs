@@ -7,12 +7,14 @@ using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
+using Models.Forms.Form4;
+using Models.Forms.Form5;
 
 namespace Models.DBRealization;
 
 public class DataContext : DbContext
 {
-    private string Path { get; set; }
+    private string Path { get; set; } 
 
     #region Constructor
     
@@ -66,10 +68,21 @@ public class DataContext : DbContext
     public DbSet<Form211> form_211 { get; set; }
     public DbSet<Form212> form_212 { get; set; }
 
+    public  DbSet<Form40> form_40 { get; set; }
+    public DbSet<Form41> form_41 { get; set; }
+
+    public DbSet<Form50> form_50 { get; set; }
+    public DbSet<Form51> form_51 { get; set; }
+    public DbSet<Form52> form_52 { get; set; }
+    public DbSet<Form53> form_53 { get; set; }
+    public DbSet<Form54> form_54 { get; set; }
+    public DbSet<Form55> form_55 { get; set; }
+    public DbSet<Form56> form_56 { get; set; }
+    public DbSet<Form57> form_57 { get; set; }
     #endregion
 
     #region Load
-    
+
     public void LoadTables()
     {
         notes.Load();
@@ -97,6 +110,18 @@ public class DataContext : DbContext
         form_210.Load();
         form_211.Load();
         form_212.Load();
+
+        form_40.Load();
+        form_41.Load();
+
+        form_50.Load();
+        form_51.Load();
+        form_52.Load();
+        form_53.Load();
+        form_54.Load();
+        form_55.Load();
+        form_56.Load();
+        form_57.Load();
 
         ReportCollectionDbSet.Load();
         ReportsCollectionDbSet.Load();
@@ -140,6 +165,18 @@ public class DataContext : DbContext
             await form_210.LoadAsync();
             await form_211.LoadAsync();
             await form_212.LoadAsync();
+
+            await form_40.LoadAsync();
+            await form_41.LoadAsync();
+
+            await form_50.LoadAsync();
+            await form_51.LoadAsync();
+            await form_52.LoadAsync();
+            await form_53.LoadAsync();
+            await form_54.LoadAsync();
+            await form_55.LoadAsync();
+            await form_56.LoadAsync();
+            await form_57.LoadAsync();
 
             await ReportCollectionDbSet.LoadAsync();
             await ReportsCollectionDbSet.LoadAsync();

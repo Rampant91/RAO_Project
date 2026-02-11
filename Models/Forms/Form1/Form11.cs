@@ -1,12 +1,13 @@
-﻿using System;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using Models.Attributes;
+﻿using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
 using Spravochniki;
+using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
+using System.Linq;
 
 namespace Models.Forms.Form1;
 
@@ -114,6 +115,539 @@ public class Form11 : Form1
 
     public bool AutoRn;
 
+    #region OperationCode (2)
+
+    private protected override void OperationCode_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName != "Value") return;
+
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+
+        if (OperationCode_DB != value1)
+        {
+            OperationCode_DB = value1;
+            if (Report is { AutoReplace: true })
+            {
+                AutoReplaceByOpCode(value1);
+            }
+        }
+    }
+
+    #region AutoReplaceByOpCode
+
+    private void AutoReplaceByOpCode(string opCode)
+    {
+        const string dash = "-";
+        var masterOkpo = Report?.Reports?.Master_DB?.OkpoRep.Value ?? string.Empty;
+        switch (opCode)
+        {
+            #region 10, 97, 98, 99
+            
+            case "10" or "97" or "98" or "99":
+            {
+                #region ProviderOrRecieverOKPO (19)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && ProviderOrRecieverOKPO_DB != masterOkpo)
+                {
+                    ProviderOrRecieverOKPO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (20)
+
+                if (TransporterOKPO_DB != dash)
+                {
+                    TransporterOKPO.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 11
+            
+            case "11":
+            {
+                #region CreatorOKPO (10)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && CreatorOKPO_DB != masterOkpo)
+                {
+                    CreatorOKPO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region CreationDate (11)
+
+                if (DateOnly.TryParse(OperationDate_DB, new CultureInfo("ru-RU", useUserOverride: false), out var operationDate) 
+                    && CreationDate_DB != operationDate.ToShortDateString())
+                {
+                    CreationDate.Value = operationDate.ToShortDateString();
+                }
+
+                #endregion
+
+                #region Owner (15)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && Owner_DB != masterOkpo)
+                {
+                    Owner.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region DocumentVid (16)
+
+                const byte documentVidValue = 9;
+                if (DocumentVid_DB != documentVidValue)
+                {
+                    DocumentVid.Value = documentVidValue;
+                }
+
+                #endregion
+
+                #region DocumentNumber (17)
+
+                if (DocumentNumber_DB != PassportNumber_DB)
+                {
+                    DocumentNumber.Value = PassportNumber_DB;
+                }
+
+                #endregion
+
+                #region DocumentDate (18)
+
+                if (DateOnly.TryParse(OperationDate_DB, new CultureInfo("ru-RU", useUserOverride: false), out _)
+                    && DocumentDate_DB != operationDate.ToShortDateString())
+                {
+                    DocumentDate.Value = operationDate.ToShortDateString();
+                }
+
+                #endregion
+
+                #region ProviderOrRecieverOKPO (19)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && ProviderOrRecieverOKPO_DB != masterOkpo)
+                {
+                    ProviderOrRecieverOKPO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (20)
+
+                if (TransporterOKPO_DB != dash)
+                {
+                    TransporterOKPO.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 12, 42
+            
+            case "12" or "42":
+            {
+                #region Owner (15)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && Owner_DB != masterOkpo)
+                {
+                    Owner.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region ProviderOrRecieverOKPO (19)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && ProviderOrRecieverOKPO_DB != masterOkpo)
+                {
+                    ProviderOrRecieverOKPO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (20)
+
+                if (TransporterOKPO_DB != dash)
+                {
+                    TransporterOKPO.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 15, 17, 18, 43, 46, 47, 48, 53, 58, 65, 67, 68, 71, 72, 74, 75
+            
+            case "15" or "17" or "18" or "43" or "46" or "47" or "48" or "53" or "58" 
+                or "65" or "67" or "68" or "71" or "72" or "74" or "75":
+            {
+                #region DocumentDate (18)
+
+                if (DateOnly.TryParse(OperationDate_DB, new CultureInfo("ru-RU", useUserOverride: false), out var operationDate))
+                {
+                    DocumentDate.Value = operationDate.ToShortDateString();
+                }
+
+                #endregion
+
+                #region ProviderOrRecieverOKPO (19)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && ProviderOrRecieverOKPO_DB != masterOkpo)
+                {
+                    ProviderOrRecieverOKPO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (20)
+
+                if (TransporterOKPO_DB != dash)
+                {
+                    TransporterOKPO.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 21, 25, 27, 29, 31, 35, 37, 39, 82, 83, 86, 87
+
+            case "21" or "25" or "27" or "29" or "31" or "35" or "37" or "39" or "82" or "83" or "86" or "87":
+            {
+                #region ProviderOrRecieverOKPO (19)
+
+                if (ProviderOrRecieverOKPO_DB is not "")
+                {
+                    ProviderOrRecieverOKPO.Value = string.Empty;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (20)
+
+                if (TransporterOKPO_DB is not "")
+                {
+                    TransporterOKPO.Value = string.Empty;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion  
+
+            #region 22, 32
+
+            case "22" or "32":
+            {
+                #region ProviderOrRecieverOKPO (19)
+
+                const string providerOrRecieverOkpoValue = "Минобороны";
+                if (ProviderOrRecieverOKPO_DB != providerOrRecieverOkpoValue)
+                {
+                    ProviderOrRecieverOKPO.Value = providerOrRecieverOkpoValue;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 28, 38, 81, 84, 85, 88
+            
+            case "28" or "38" or "81" or "84" or "85" or "88":
+            {
+                #region Owner (15)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && Owner_DB != masterOkpo)
+                {
+                    Owner.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region ProviderOrRecieverOKPO (19)
+
+                if (ProviderOrRecieverOKPO_DB is not "")
+                {
+                    ProviderOrRecieverOKPO.Value = string.Empty;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (20)
+
+                if (TransporterOKPO_DB is not "")
+                {
+                    TransporterOKPO.Value = string.Empty;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 41
+            
+            case "41":
+            {
+                #region Owner (15)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && Owner_DB != masterOkpo)
+                {
+                    Owner.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region DocumentVid (16)
+
+                const byte documentVidValue = 1;
+                if (DocumentVid_DB != documentVidValue)
+                {
+                    DocumentVid.Value = documentVidValue;
+                }
+
+                #endregion
+
+                #region DocumentDate (18)
+
+                if (DateOnly.TryParse(OperationDate_DB, new CultureInfo("ru-RU", useUserOverride: false), out var operationDate))
+                {
+                    DocumentDate.Value = operationDate.ToShortDateString();
+                }
+
+                #endregion
+
+                #region ProviderOrRecieverOKPO (19)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && ProviderOrRecieverOKPO_DB != masterOkpo)
+                {
+                    ProviderOrRecieverOKPO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (20)
+
+                if (TransporterOKPO_DB != dash)
+                {
+                    TransporterOKPO.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 54, 66
+
+            case "54" or "66":
+            {
+                #region DocumentDate (18)
+
+                if (DateOnly.TryParse(OperationDate_DB, new CultureInfo("ru-RU", useUserOverride: false), out var operationDate)
+                    && DocumentDate_DB != operationDate.ToShortDateString())
+                {
+                    DocumentDate.Value = operationDate.ToShortDateString();
+                }
+
+                #endregion
+
+                #region TransporterOKPO (20)
+
+                if (TransporterOKPO_DB != dash)
+                {
+                    TransporterOKPO.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 61, 62
+            
+            case "61" or "62":
+            {
+                #region ProviderOrRecieverOKPO (19)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && ProviderOrRecieverOKPO_DB != masterOkpo)
+                {
+                    ProviderOrRecieverOKPO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 63, 64
+
+            case "63" or "64":
+            {
+                #region Owner (15)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && Owner_DB != masterOkpo)
+                {
+                    Owner.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (20)
+
+                if (TransporterOKPO_DB != dash)
+                {
+                    TransporterOKPO.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 73
+
+            case "73":
+            {
+                #region Owner (15)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && Owner_DB != masterOkpo)
+                {
+                    Owner.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region DocumentDate (18)
+
+                if (DateOnly.TryParse(OperationDate_DB, new CultureInfo("ru-RU", useUserOverride: false), out var operationDate)
+                    && DocumentDate_DB != operationDate.ToShortDateString())
+                {
+                    DocumentDate.Value = operationDate.ToShortDateString();
+                }
+
+                #endregion
+
+                #region ProviderOrRecieverOKPO (19)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && ProviderOrRecieverOKPO_DB != masterOkpo)
+                {
+                    ProviderOrRecieverOKPO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (20)
+
+                if (TransporterOKPO_DB != dash)
+                {
+                    TransporterOKPO.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            default: return;
+        }
+    }
+
+    #endregion
+
+    #endregion
+
+    #region OperationDate (3)
+
+    private protected override void OperationDate_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName != "Value") return;
+
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
+        if (OperationDate_DB != value1)
+        {
+            OperationDate_DB = DateString_ValueChanged(value1);
+            if (Report is { AutoReplace: true })
+            {
+                AutoReplaceByOpDate();
+            }
+        }
+    }
+
+    #region AutoReplaceByOpDate
+
+    private void AutoReplaceByOpDate()
+    {
+        if (DateOnly.TryParse(OperationDate_DB, new CultureInfo("ru-RU", useUserOverride: false), out var opDate))
+        {
+            switch (OperationCode_DB)
+            {
+                case "11":
+                {
+                    CreationDate.Value = opDate.ToShortDateString();
+                    DocumentDate.Value = opDate.ToShortDateString();
+                    break;
+                }
+                case "15" or "17" or "18" or "41" or "43" or "46" or "47" or "48" or "53" or "58" 
+                    or "65" or "66" or "67" or "68" or "71" or "72" or "73" or "74" or "75":
+                {
+                    DocumentDate.Value = opDate.ToShortDateString();
+                    break;
+                }
+            }
+        }
+    }
+
+    #endregion
+
+    #endregion
+
     #region PassportNumber (4)
 
     public string PassportNumber_DB { get; set; } = "";
@@ -144,8 +678,16 @@ public class Form11 : Form1
     private void PassportNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        PassportNumber_DB = tmp.Trim();
+
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
+        if (PassportNumber_DB != value1)
+        {
+            PassportNumber_DB = value1;
+            if (Report is { AutoReplace: true })
+            {
+                AutoReplaceByPasNum();
+            }
+        }
     }
 
     protected static bool PassportNumber_Validation(RamAccess<string> value)//Ready
@@ -158,6 +700,18 @@ public class Form11 : Form1
         }
         return true;
     }
+
+    #region AutoReplaceByPasNum
+
+    private void AutoReplaceByPasNum()
+    {
+        if (OperationCode_DB is "11" && DocumentNumber_DB != PassportNumber_DB)
+        {
+            DocumentNumber.Value = PassportNumber_DB;
+        }
+    }
+
+    #endregion
 
     #endregion
 
@@ -191,8 +745,12 @@ public class Form11 : Form1
     private void Type_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        Type_DB = tmp.Trim();
+
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
+        if (Type_DB != value1)
+        {
+            Type_DB = value1;
+        }
     }
 
     protected bool Type_Validation(RamAccess<string> value)//Ready
@@ -207,7 +765,7 @@ public class Form11 : Form1
             .Where(item => item.Item1 == value.Value)
             .Select(item => item.Item2)
             .ToList();
-        if (string.IsNullOrEmpty(Radionuclids.Value) && a.Count == 1)
+        if (string.IsNullOrEmpty(Radionuclids_DB) && a.Count == 1)
         {
             AutoRn = true;
             Radionuclids.Value = a.First();
@@ -247,8 +805,12 @@ public class Form11 : Form1
     private void Radionuclids_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        Radionuclids_DB = tmp.Trim();
+
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
+        if (Radionuclids_DB != value1)
+        {
+            Radionuclids_DB = value1;
+        }
     }
 
     private bool Radionuclids_Validation(RamAccess<string> value) => NuclidString_Validation(value);
@@ -285,8 +847,12 @@ public class Form11 : Form1
     private void FactoryNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        FactoryNumber_DB = tmp.Trim();
+
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
+        if (FactoryNumber_DB != value1)
+        {
+            FactoryNumber_DB = value1;
+        }
     }
 
     private bool FactoryNumber_Validation(RamAccess<string> value)
@@ -332,7 +898,12 @@ public class Form11 : Form1
     private void Quantity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        Quantity_DB = ((RamAccess<int?>)value).Value;
+
+        var value1 = ((RamAccess<int?>)value).Value;
+        if (Quantity_DB != value1)
+        {
+            Quantity_DB = value1;
+        }
     }
 
     private bool Quantity_Validation(RamAccess<int?> value)//Ready
@@ -383,7 +954,12 @@ public class Form11 : Form1
     private void Activity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        Activity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
+
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
+        if (Activity_DB != value1)
+        {
+            Activity_DB = ExponentialString_ValueChanged(value1);
+        }
     }
 
     private bool Activity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
@@ -420,12 +996,15 @@ public class Form11 : Form1
     private void CreatorOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
-        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
+        if (Spravochniks.OKSM.Contains(value1.ToUpper()))
         {
-            tmp = tmp.ToUpper();
+            value1 = value1.ToUpper();
         }
-        CreatorOKPO_DB = tmp;
+        if (CreatorOKPO_DB != value1)
+        {
+            CreatorOKPO_DB = value1;
+        }
     }
 
     private bool CreatorOKPO_Validation(RamAccess<string> value)//TODO
@@ -487,7 +1066,12 @@ public class Form11 : Form1
     private void CreationDate_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        CreationDate_DB = DateString_ValueChanged(((RamAccess<string>)value).Value);
+
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
+        if (CreationDate_DB != value1)
+        {
+            CreationDate_DB = DateString_ValueChanged(value1);
+        }
     }
 
     private bool CreationDate_Validation(RamAccess<string> value) => DateString_Validation(value);
@@ -524,7 +1108,12 @@ public class Form11 : Form1
     private void Category_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        Category_DB = ((RamAccess<short?>)value).Value;
+
+        var value1 = ((RamAccess<short?>)value).Value;
+        if (Category_DB != value1)
+        {
+            Category_DB = value1;
+        }
     }
 
     private bool Category_Validation(RamAccess<short?> value)//TODO
@@ -575,7 +1164,12 @@ public class Form11 : Form1
     private void SignedServicePeriod_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        SignedServicePeriod_DB = ((RamAccess<float?>)value).Value;
+
+        var value1 = ((RamAccess<float?>)value).Value;
+        if (!Equals(SignedServicePeriod_DB, value1))
+        {
+            SignedServicePeriod_DB = value1;
+        }
     }
 
     private bool SignedServicePeriod_Validation(RamAccess<float?> value)//Ready
@@ -626,7 +1220,12 @@ public class Form11 : Form1
     private void PropertyCode_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        PropertyCode_DB = ((RamAccess<byte?>)value).Value;
+
+        var value1 = ((RamAccess<byte?>)value).Value;
+        if (PropertyCode_DB != value1)
+        {
+            PropertyCode_DB = value1;
+        }
     }
 
     private bool PropertyCode_Validation(RamAccess<byte?> value)//Ready
@@ -678,13 +1277,16 @@ public class Form11 : Form1
     private void Owner_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        tmp = tmp.Trim();
-        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
+        if (Spravochniks.OKSM.Contains(value1.ToUpper()))
         {
-            tmp = tmp.ToUpper();
+            value1 = value1.ToUpper();
         }
-        Owner_DB = tmp;
+        if (Owner_DB != value1)
+        {
+            Owner_DB = value1;
+        }
     }
 
     private bool Owner_Validation(RamAccess<string> value)//Ready
@@ -748,13 +1350,16 @@ public class Form11 : Form1
     private void ProviderOrRecieverOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        tmp = tmp.Trim();
-        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
+        if (Spravochniks.OKSM.Contains(value1.ToUpper()))
         {
-            tmp = tmp.ToUpper();
+            value1 = value1.ToUpper();
         }
-        ProviderOrRecieverOKPO_DB = tmp;
+        if (ProviderOrRecieverOKPO_DB != value1)
+        {
+            ProviderOrRecieverOKPO_DB = value1;
+        }
     }
 
     private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
@@ -818,12 +1423,16 @@ public class Form11 : Form1
     private void TransporterOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
-        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
+        if (Spravochniks.OKSM.Contains(value1.ToUpper()))
         {
-            tmp = tmp.ToUpper();
+            value1 = value1.ToUpper();
         }
-        TransporterOKPO_DB = tmp;
+        if (TransporterOKPO_DB != value1)
+        {
+            TransporterOKPO_DB = value1;
+        }
     }
 
     private bool TransporterOKPO_Validation(RamAccess<string> value)//TODO
@@ -889,8 +1498,12 @@ public class Form11 : Form1
     private void PackName_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        PackName_DB = tmp.Trim();
+
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
+        if (PackName_DB != value1)
+        {
+            PackName_DB = value1;
+        }
     }
 
     private bool PackName_Validation(RamAccess<string> value)
@@ -942,8 +1555,13 @@ public class Form11 : Form1
 
     private void PackType_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName != "Value" || ((RamAccess<string>)value).Value is null) return;
-        PackType_DB = ((RamAccess<string>)value).Value.Trim();
+        if (args.PropertyName != "Value") return;
+
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
+        if (PackType_DB != value1)
+        {
+            PackType_DB = value1;
+        }
     }
 
     private bool PackType_Validation(RamAccess<string> value)//Ready
@@ -996,8 +1614,12 @@ public class Form11 : Form1
     private void PackNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        PackNumber_DB = tmp.Trim();
+
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
+        if (PackNumber_DB != value1)
+        {
+            PackNumber_DB = value1;
+        }
     }
 
     private bool PackNumber_Validation(RamAccess<string> value)//Ready
@@ -1444,6 +2066,43 @@ public class Form11 : Form1
 
         _DataGridColumns = numberInOrderR;
         return _DataGridColumns;
+    }
+
+    #endregion
+
+    #region ConvertToTSVstring
+
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        var str =
+            $"{NumberInOrder.Value}\t" +
+            $"{OperationCode.Value}\t" +
+            $"{OperationDate.Value}\t" +
+            $"{PassportNumber.Value}\t" +
+            $"{Type.Value}\t" +
+            $"{Radionuclids.Value}\t" +
+            $"{FactoryNumber.Value}\t" +
+            $"{Quantity.Value}\t" +
+            $"{Activity.Value}\t" +
+            $"{CreatorOKPO.Value}\t" +
+            $"{CreationDate.Value}\t" +
+            $"{Category.Value}\t" +
+            $"{SignedServicePeriod.Value}\t" +
+            $"{PropertyCode.Value}\t" +
+            $"{Owner.Value}\t" +
+            $"{DocumentVid.Value}\t" +
+            $"{DocumentNumber.Value}\t" +
+            $"{DocumentDate.Value}\t" +
+            $"{ProviderOrRecieverOKPO.Value}\t" +
+            $"{TransporterOKPO.Value}\t" +
+            $"{PackName.Value}\t" +
+            $"{PackType.Value}\t" +
+            $"{PackNumber.Value}";
+        return str;
     }
 
     #endregion

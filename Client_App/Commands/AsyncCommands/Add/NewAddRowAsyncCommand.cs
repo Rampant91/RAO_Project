@@ -1,0 +1,61 @@
+﻿using Client_App.Commands.AsyncCommands.Save;
+using Client_App.ViewModels.Forms;
+using Models.Collections;
+using Models.Forms;
+using Models.Interfaces;
+using System.Diagnostics;
+using System.Threading.Tasks;
+
+namespace Client_App.Commands.AsyncCommands.Add;
+
+/// <summary>
+/// Добавить строку в форму.
+/// </summary>
+/// <param name="formVM">ViewModel отчёта.</param>
+public class NewAddRowAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
+{
+    private Report Storage => formVM.Report;
+    private string FormType => formVM.FormType;
+
+    public override async Task AsyncExecute(object? parameter)
+    {
+        var currentPageIsLastPage = formVM.CurrentPage == formVM.TotalPages || formVM.TotalPages == 0;
+        var frm = FormCreator.Create(FormType);
+        frm.NumberInOrder_DB = GetNumberInOrder(Storage[Storage.FormNum_DB]);
+        frm.Report = Storage;
+        var formContainRowAtStart = Storage.Rows.Count > 0;
+        Storage[Storage.FormNum_DB].Add(frm);
+        await Storage.SortAsync();
+        if (!formContainRowAtStart)
+        {
+            await new SaveReportAsyncCommand(formVM).AsyncExecute(null);
+        }
+
+        //Обновление DataGrid для отображения новых строк
+        if (currentPageIsLastPage)
+        {
+            formVM.UpdateFormList();
+        }
+        formVM.UpdatePageInfo();
+        Debug.WriteLine(this);
+    }
+
+    /// <summary>
+    /// Получить порядковый номер
+    /// </summary>
+    /// <param name="lst">Список элементов</param>
+    /// <returns>Порядковый номер</returns>
+    private static int GetNumberInOrder(IKeyCollection lst)
+    {
+        var maxNum = 0;
+        foreach (var item in lst)
+        {
+            var frm = (INumberInOrder)item;
+            if (frm.Order >= maxNum)
+            {
+                maxNum++;
+            }
+        }
+        return maxNum + 1;
+    }
+}

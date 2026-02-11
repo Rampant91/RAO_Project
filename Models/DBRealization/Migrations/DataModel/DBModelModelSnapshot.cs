@@ -18,7 +18,7 @@ namespace Models.DBRealization.Migrations.DataModel
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn)
-                .HasAnnotation("ProductVersion", "6.0.20")
+                .HasAnnotation("ProductVersion", "6.0.36")
                 .HasAnnotation("Relational:MaxIdentifierLength", 31);
 
             modelBuilder.Entity("Models.Collections.DBObservable", b =>
@@ -109,6 +109,9 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("PermissionNumber_28_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<DateTime?>("ReportChangedDate")
+                        .HasColumnType("TIMESTAMP");
 
                     b.Property<int?>("ReportsId")
                         .HasColumnType("INTEGER");
@@ -2215,6 +2218,556 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("form_29", (string)null);
                 });
 
+            modelBuilder.Entity("Models.Forms.Form4.Form40", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AddressOrganUprav_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("AddressRiac_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("CodeSubjectRF_DB")
+                        .HasMaxLength(2)
+                        .HasColumnType("varchar(2)");
+
+                    b.Property<string>("EmailOrganUprav_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("EmailRiac_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("FaxOrganUprav_DB")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<string>("FaxRiac_DB")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<string>("FormNum_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("GradeFioDirectorOrganUprav_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("GradeFioDirectorRiac_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("GradeFioExecutorOrganUprav_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("GradeFioExecutorRiac_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("NameOrganUprav_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("NameRiac_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<int>("NumberInOrder_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NumberOfFields_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ReportId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ShortNameOrganUprav_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("ShortNameRiac_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("SubjectRF_DB")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<string>("TelephoneOrganUprav_DB")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<string>("TelephoneRiac_DB")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportId");
+
+                    b.ToTable("form_40", (string)null);
+                });
+
+            modelBuilder.Entity("Models.Forms.Form4.Form41", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("FormNum_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("LicenseOrRegistrationInfo_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("Note_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<int>("NumOfForms212_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NumOfFormsWithInventarizationInfo_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NumOfFormsWithoutInventarizationInfo_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NumberInOrder_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NumberOfFields_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Okpo_DB")
+                        .HasMaxLength(14)
+                        .HasColumnType("varchar(14)");
+
+                    b.Property<string>("OrganizationName_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("RegNo_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<int?>("ReportId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportId");
+
+                    b.ToTable("form_41", (string)null);
+                });
+
+            modelBuilder.Entity("Models.Forms.Form5.Form50", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("Email_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("ExecutiveAuthority_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("Fax_DB")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<string>("FormNum_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("GradeFioDirector_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("GradeFioExecutor_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<bool>("MinObr_DB")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<string>("Name_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<int>("NumberInOrder_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NumberOfFields_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ReportId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Rosatom_DB")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<string>("ShortName_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("Telephone_DB")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportId");
+
+                    b.ToTable("form_50", (string)null);
+                });
+
+            modelBuilder.Entity("Models.Forms.Form5.Form51", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Activity_DB")
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
+
+                    b.Property<short?>("Category_DB")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<string>("FormNum_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<int>("NumberInOrder_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NumberOfFields_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("OperationCode_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("ProviderOrRecieverOKPO_DB")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<int?>("Quantity_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Radionuclids_DB")
+                        .HasMaxLength(1024)
+                        .HasColumnType("varchar(1024)");
+
+                    b.Property<int?>("ReportId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportId");
+
+                    b.ToTable("form_51", (string)null);
+                });
+
+            modelBuilder.Entity("Models.Forms.Form5.Form52", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Activity_DB")
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
+
+                    b.Property<short?>("Category_DB")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<string>("FormNum_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<int>("NumberInOrder_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NumberOfFields_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("Quantity_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Radionuclids_DB")
+                        .HasMaxLength(1024)
+                        .HasColumnType("varchar(1024)");
+
+                    b.Property<int?>("ReportId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportId");
+
+                    b.ToTable("form_52", (string)null);
+                });
+
+            modelBuilder.Entity("Models.Forms.Form5.Form53", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Activity_DB")
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
+
+                    b.Property<short?>("AggregateState_DB")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<string>("FormNum_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("Mass_DB")
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
+
+                    b.Property<int>("NumberInOrder_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NumberOfFields_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("OperationCode_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("ProviderOrRecieverOKPO_DB")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<int?>("Quantity_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Radionuclids_DB")
+                        .HasMaxLength(1024)
+                        .HasColumnType("varchar(1024)");
+
+                    b.Property<int?>("ReportId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("TypeORI_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<short?>("VarietyORI_DB")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<string>("Volume_DB")
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportId");
+
+                    b.ToTable("form_53", (string)null);
+                });
+
+            modelBuilder.Entity("Models.Forms.Form5.Form54", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Activity_DB")
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
+
+                    b.Property<short?>("AggregateState_DB")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<string>("FormNum_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("Mass_DB")
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
+
+                    b.Property<int>("NumberInOrder_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NumberOfFields_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("Quantity_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Radionuclids_DB")
+                        .HasMaxLength(1024)
+                        .HasColumnType("varchar(1024)");
+
+                    b.Property<int?>("ReportId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("TypeORI_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<short?>("VarietyORI_DB")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<string>("Volume_DB")
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportId");
+
+                    b.ToTable("form_54", (string)null);
+                });
+
+            modelBuilder.Entity("Models.Forms.Form5.Form55", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("FormNum_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("Mass_DB")
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
+
+                    b.Property<string>("Name_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<int>("NumberInOrder_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NumberOfFields_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("OperationCode_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("ProviderOrRecieverOKPO_DB")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<int?>("Quantity_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ReportId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportId");
+
+                    b.ToTable("form_55", (string)null);
+                });
+
+            modelBuilder.Entity("Models.Forms.Form5.Form56", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("FormNum_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("Mass_DB")
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
+
+                    b.Property<string>("Name_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<int>("NumberInOrder_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NumberOfFields_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("Quantity_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ReportId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportId");
+
+                    b.ToTable("form_56", (string)null);
+                });
+
+            modelBuilder.Entity("Models.Forms.Form5.Form57", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("FormNum_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("License_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("Name_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("Note_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<int>("NumberInOrder_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NumberOfFields_DB")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("OKPO_DB")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<string>("Practice_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<string>("Recognizance_DB")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("RegNo_DB")
+                        .HasMaxLength(5)
+                        .HasColumnType("varchar(5)");
+
+                    b.Property<int?>("ReportId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportId");
+
+                    b.ToTable("form_57", (string)null);
+                });
+
             modelBuilder.Entity("Models.Forms.Note", b =>
                 {
                     b.Property<int>("Id")
@@ -2503,6 +3056,106 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Navigation("Report");
                 });
 
+            modelBuilder.Entity("Models.Forms.Form4.Form40", b =>
+                {
+                    b.HasOne("Models.Collections.Report", "Report")
+                        .WithMany("Rows40")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
+                });
+
+            modelBuilder.Entity("Models.Forms.Form4.Form41", b =>
+                {
+                    b.HasOne("Models.Collections.Report", "Report")
+                        .WithMany("Rows41")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
+                });
+
+            modelBuilder.Entity("Models.Forms.Form5.Form50", b =>
+                {
+                    b.HasOne("Models.Collections.Report", "Report")
+                        .WithMany("Rows50")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
+                });
+
+            modelBuilder.Entity("Models.Forms.Form5.Form51", b =>
+                {
+                    b.HasOne("Models.Collections.Report", "Report")
+                        .WithMany("Rows51")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
+                });
+
+            modelBuilder.Entity("Models.Forms.Form5.Form52", b =>
+                {
+                    b.HasOne("Models.Collections.Report", "Report")
+                        .WithMany("Rows52")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
+                });
+
+            modelBuilder.Entity("Models.Forms.Form5.Form53", b =>
+                {
+                    b.HasOne("Models.Collections.Report", "Report")
+                        .WithMany("Rows53")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
+                });
+
+            modelBuilder.Entity("Models.Forms.Form5.Form54", b =>
+                {
+                    b.HasOne("Models.Collections.Report", "Report")
+                        .WithMany("Rows54")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
+                });
+
+            modelBuilder.Entity("Models.Forms.Form5.Form55", b =>
+                {
+                    b.HasOne("Models.Collections.Report", "Report")
+                        .WithMany("Rows55")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
+                });
+
+            modelBuilder.Entity("Models.Forms.Form5.Form56", b =>
+                {
+                    b.HasOne("Models.Collections.Report", "Report")
+                        .WithMany("Rows56")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
+                });
+
+            modelBuilder.Entity("Models.Forms.Form5.Form57", b =>
+                {
+                    b.HasOne("Models.Collections.Report", "Report")
+                        .WithMany("Rows57")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Report");
+                });
+
             modelBuilder.Entity("Models.Forms.Note", b =>
                 {
                     b.HasOne("Models.Collections.Report", "Report")
@@ -2568,6 +3221,26 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Navigation("Rows28");
 
                     b.Navigation("Rows29");
+
+                    b.Navigation("Rows40");
+
+                    b.Navigation("Rows41");
+
+                    b.Navigation("Rows50");
+
+                    b.Navigation("Rows51");
+
+                    b.Navigation("Rows52");
+
+                    b.Navigation("Rows53");
+
+                    b.Navigation("Rows54");
+
+                    b.Navigation("Rows55");
+
+                    b.Navigation("Rows56");
+
+                    b.Navigation("Rows57");
                 });
 
             modelBuilder.Entity("Models.Collections.Reports", b =>

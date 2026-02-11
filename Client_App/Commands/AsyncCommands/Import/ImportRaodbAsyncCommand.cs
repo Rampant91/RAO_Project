@@ -15,11 +15,13 @@ using Models.DTO;
 using Avalonia.Threading;
 using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels;
+using Client_App.Views.Messages;
+using static Client_App.ViewModels.Messages.SelectReportsMessageWindowVM;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
 //  Импорт -> Из RAODB
-public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyncCommand
+public class ImportRaodbAsyncCommand() : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -46,8 +48,19 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
             TmpImpFilePath = GetRaoFileName();
             SourceFile = new FileInfo(path);
             SourceFile.CopyTo(TmpImpFilePath, true);
-            var reportsCollection = await GetReportsFromDataBase(TmpImpFilePath);
-            if (reportsCollection.Count == 0)
+
+            var repsList = new List<Reports>();
+            var fileIsCorrupted = false;
+            try
+            {
+                repsList = await GetReportsFromDataBase(TmpImpFilePath);
+            }
+            catch
+            {
+                fileIsCorrupted = true;
+            }
+
+            if (fileIsCorrupted || repsList.Count == 0)
             {
                 #region MessageFailedToReadFile
 
@@ -72,26 +85,60 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
             }
             if (!HasMultipleReport)
             {
-                HasMultipleReport = reportsCollection.Sum(x => x.Report_Collection.Count) > 1 || answer.Length > 1;
+                HasMultipleReport = repsList.Sum(x => x.Report_Collection.Count) > 1 || answer.Length > 1;
             }
 
-            foreach (var impReps in reportsCollection) // Для каждой импортируемой организации
+            foreach (var impReps in repsList) // Для каждой импортируемой организации
             {
+                var dateTime = DateTime.Now;
+
                 impReportsList.Add(impReps);
                 await impReps.SortAsync();
                 await RestoreReportsOrders(impReps);
                 if (impReps.Master.Rows10.Count != 0)
                 {
+                    impReps.Master_DB.ReportChangedDate = dateTime;
                     impReps.Master.Rows10[1].RegNo_DB = impReps.Master.Rows10[0].RegNo_DB;
                 }
 
                 if (impReps.Master.Rows20.Count != 0)
                 {
+                    impReps.Master_DB.ReportChangedDate = dateTime;
                     impReps.Master.Rows20[1].RegNo_DB = impReps.Master.Rows20[0].RegNo_DB;
                 }
 
-                var baseReps11 = GetReports11FromLocalEqual(impReps);
-                var baseReps21 = GetReports21FromLocalEqual(impReps);
+                if (impReps.Master.Rows40.Count != 0
+                    || impReps.Master.Rows50.Count !=0)
+                {
+                    impReps.Master_DB.ReportChangedDate = dateTime;
+                }
+
+                Reports? baseReps11;
+                Reports? baseReps21;
+                Reports? baseReps41;
+                Reports? baseReps51;
+                if (parameter is "Auto")
+                {
+                    baseReps11 = GetReports11FromLocalEqual(impReps);
+                    baseReps21 = GetReports21FromLocalEqual(impReps);
+                    baseReps41 = GetReports41FromLocalEqual(impReps);
+                    baseReps51 = GetReports51FromLocalEqual(impReps);
+                }
+                else //if (parameter is "Selected")
+                {
+                    var localRepsList = await GetReportsListFromDB(impReps.Master_DB.FormNum_DB);
+                    var currentReportIndex = impReportsList.IndexOf(impReps) + 1;
+                    var selectReportsMessageWindow = new SelectReportsMessageWindow(localRepsList, SourceFile!.Name, impReportsList.Count, currentReportIndex, impReps);
+                    var selectedReports = await selectReportsMessageWindow.ShowDialog<OrganizationInfo>(Desktop.MainWindow);
+                    if (selectedReports is null) return;
+
+                    var impRepsFromDb = await GetSelectedReportsFromDB(selectedReports, impReps.Master_DB.FormNum_DB);
+                    baseReps11 = GetReports11FromLocalEqual(impRepsFromDb);
+                    baseReps21 = GetReports21FromLocalEqual(impRepsFromDb);
+                    baseReps41 = GetReports41FromLocalEqual(impRepsFromDb);
+                    baseReps51 = GetReports51FromLocalEqual(impRepsFromDb);
+                }
+
                 FillEmptyRegNo(ref baseReps11);
                 FillEmptyRegNo(ref baseReps21);
                 impReps.CleanIds();
@@ -99,10 +146,18 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
 
                 ImpRepFormCount = impReps.Report_Collection.Count;
                 ImpRepFormNum = impReps.Master.FormNum_DB;
-                BaseRepsOkpo = impReps.Master.OkpoRep.Value;
-                BaseRepsRegNum = impReps.Master.RegNoRep.Value;
-                BaseRepsShortName = impReps.Master.ShortJurLicoRep.Value;
+                if (impReps.Master.OkpoRep!= null)
+                    BaseRepsOkpo = impReps.Master.OkpoRep.Value;
+                if (impReps.Master.RegNoRep != null)
+                    BaseRepsRegNum = impReps.Master.RegNoRep.Value;
+                if (impReps.Master.ShortJurLicoRep != null)
+                    BaseRepsShortName = impReps.Master.ShortJurLicoRep.Value;
 
+                foreach (var key in impReps.Report_Collection)
+                {
+                    var report = (Report)key;
+                    report.ReportChangedDate = dateTime;
+                }
                 var impRepsReportList = impReps.Report_Collection.ToList();
                 if (baseReps11 != null)
                 {
@@ -112,14 +167,22 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                 {
                     await ProcessIfHasReports21(baseReps21, impReps, impRepsReportList);
                 }
-                else if (baseReps11 == null && baseReps21 == null)
+                else if (baseReps41 != null)
+                {
+                    await ProcessIfHasReports41(baseReps41, impReps, impRepsReportList);
+                }
+                else if (baseReps51 != null)
+                {
+                    await ProcessIfHasReports51(baseReps51, impReps, impRepsReportList);
+                }
+                else if (baseReps11 == null && baseReps21 == null && baseReps41 == null && baseReps51 == null)
                 {
                     #region AddNewOrg
 
                     var an = "Добавить";
                     if (!SkipNewOrg)
                     {
-                        if (answer.Length > 1 || reportsCollection.Count > 1)
+                        if (answer.Length > 1 || repsList.Count > 1)
                         {
                             #region MessageNewOrg
 
@@ -196,7 +259,8 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                         foreach (var rep in sortedRepList)
                         {
                             ImpRepCorNum = rep.CorrectionNumber_DB;
-                            ImpRepFormCount = rep.Rows.Count;
+                            if(rep.Rows!=null)
+                                ImpRepFormCount = rep.Rows.Count;
                             ImpRepFormNum = rep.FormNum_DB;
                             ImpRepStartPeriod = rep.StartPeriod_DB;
                             ImpRepEndPeriod = rep.EndPeriod_DB;
@@ -227,6 +291,12 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                     case "2.0":
                         await impReps.Master_DB.Rows20.QuickSortAsync();
                         break;
+                    case "4.0":
+                        await impReps.Master_DB.Rows40.QuickSortAsync();
+                        break;
+                    case "5.0":
+                        await impReps.Master_DB.Rows50.QuickSortAsync();
+                        break;
                 }
             }
 
@@ -242,14 +312,27 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
             }
         }
 
-        var comparator = new CustomReportsComparer();
-        var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+        try
+        {
+            var comparator = new CustomReportsComparer();
+            var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+            if (tmpReportsList.All(x => x.Master_DB.RegNoRep != null && x.Master_DB.OkpoRep != null))
+            {
+                var tmpReportsOrderedEnum = tmpReportsList
+                    .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
+                    .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator);
 
-        ReportsStorage.LocalReports.Reports_Collection.Clear();
-        ReportsStorage.LocalReports.Reports_Collection
-            .AddRange(tmpReportsList
-                .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
-                .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
+                ReportsStorage.LocalReports.Reports_Collection.Clear();
+                ReportsStorage.LocalReports.Reports_Collection.AddRange(tmpReportsOrderedEnum);
+            }
+        }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Warning(msg);
+            return;
+        }
 
         //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
 
@@ -259,10 +342,34 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
         }
         catch (Exception ex)
         {
+            #region MessageImportError
 
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Импорт из .xlsx",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "При сохранении импортированных данных возникла ошибка.\n",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            return;
         }
 
-        await SetDataGridPage(impReportsList);
+        //try
+        //{
+        //    if (impReportsList.All(x => x.Master_DB.FormNum_DB is "1.0" or "2.0"))
+        //    {
+        //        await SetDataGridPage(impReportsList);
+        //    }
+        //}
+        //catch {}
 
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"
@@ -286,6 +393,11 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                 .ShowDialog(Desktop.MainWindow));
 
             #endregion
+
+            var mainWindowVM = Desktop.MainWindow.DataContext as MainWindowVM;
+            mainWindowVM.UpdateReportsCollection();
+            mainWindowVM.UpdateOrgsPageInfo();
+            mainWindowVM.UpdateTotalReportCount();
         }
         else
         {
@@ -306,6 +418,7 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
 
             #endregion
         }
+
     }
 
     #region GetReportsFromDataBase
@@ -316,9 +429,9 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
 
         #region Test Version
 
-        //var t = await db.Database.GetPendingMigrationsAsync();
-        //var a = db.Database.GetMigrations();
-        //var b = await db.Database.GetAppliedMigrationsAsync();
+        var t = await db.Database.GetPendingMigrationsAsync();
+        var a = db.Database.GetMigrations();
+        var b = await db.Database.GetAppliedMigrationsAsync();
 
         #endregion
 

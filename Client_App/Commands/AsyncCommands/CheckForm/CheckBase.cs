@@ -189,6 +189,13 @@ public abstract class CheckBase : BaseAsyncCommand
 
     #region CheckNotePresence
 
+    /// <summary>
+    /// Проверяет наличие примечаний к ячейке из входных параметров. Возвращает true/false.
+    /// </summary>
+    /// <param name="notes">Список примечаний.</param>
+    /// <param name="line">Номер строчки.</param>
+    /// <param name="graphNumber">Номер графы (колонки).</param>
+    /// <returns>Bool, есть ли примечание к данной ячейке.</returns>
     private protected static bool CheckNotePresence(List<Note> notes, int line, byte graphNumber)
     {
         var valid = false;
@@ -297,9 +304,53 @@ public abstract class CheckBase : BaseAsyncCommand
 
     #endregion
 
-    #region CustomComparator
+    #region CustomComparators
 
-    //  Performance realisation for Compare with Trim()
+    #region CustomNullExponentialStringWithTrimComparer
+
+    /// <summary>
+    /// Кроме простого сравнения ещё и преобразует строку в экспоненциальную форму с 3 знаками после запятой.
+    /// </summary>
+    private protected class CustomNullExponentialStringWithTrimComparer : IComparer<string>
+    {
+        public int Compare(string? x, string? y)
+        {
+            if (ReferenceEquals(x, y))
+                return 0;
+            if (x is null)
+                return -1;
+            if (y is null)
+                return 1;
+
+            // Memory allocation free trimming
+            var span1 = x.AsSpan().Trim();
+            var span2 = y.AsSpan().Trim();
+
+            if (span1.CompareTo(span2, StringComparison.OrdinalIgnoreCase) is 0)
+                return 0;
+
+            x = ConvertStringToExponential(x);
+            y = ConvertStringToExponential(y);
+
+            x = double.TryParse(x, out var doubleValueX)
+                ? doubleValueX.ToString("0.00######################################################e+00", new CultureInfo("ru-RU", useUserOverride: false))
+                : x;
+
+            y = double.TryParse(y, out var doubleValueY)
+                ? doubleValueY.ToString("0.00######################################################e+00", new CultureInfo("ru-RU", useUserOverride: false))
+                : y;
+
+            return string.Compare(x, y, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    #endregion
+
+    #region CustomNullStringWithTrimComparer
+
+    /// <summary>
+    /// Performance realisation for Compare with Trim()
+    /// </summary>
     private protected class CustomNullStringWithTrimComparer : IComparer<string>
     {
         public int Compare(string? x, string? y)
@@ -316,13 +367,10 @@ public abstract class CheckBase : BaseAsyncCommand
             var span2 = y.AsSpan().Trim();
 
             return span1.CompareTo(span2, StringComparison.OrdinalIgnoreCase);
-
-            // Old realisation
-            //var strA = ReplaceNullAndTrim(x).ToLower();
-            //var strB = ReplaceNullAndTrim(y).ToLower();
-            //return string.CompareOrdinal(strA, strB);
         }
     }
+
+    #endregion
 
     #endregion
 
@@ -362,7 +410,7 @@ public abstract class CheckBase : BaseAsyncCommand
 #if DEBUG
             Orgs18_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "Orgs_1.8.xlsx"));
 #else
-            Orgs18_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Orgs_1.8.xlsx.xlsx"));
+            Orgs18_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"Orgs_1.8.xlsx"));
 #endif
         }
 
@@ -500,7 +548,7 @@ public abstract class CheckBase : BaseAsyncCommand
             });
             if (string.IsNullOrWhiteSpace(R[^1]["D"]) || !double.TryParse(R[^1]["D"], out var val1) || val1 < 0)
             {
-                R[^1]["D"] = double.MaxValue.ToString(CultureInfo.CreateSpecificCulture("ru-RU"));
+                R[^1]["D"] = double.MaxValue.ToString(new CultureInfo("ru-RU", useUserOverride: false));
             }
             i++;
         }
@@ -578,7 +626,7 @@ public abstract class CheckBase : BaseAsyncCommand
                                                                                                    { "97", 10 },{ "98", 10 },{ "99", 10 }
     };
 
-    protected static readonly Dictionary<string, int> OverduePeriods_RAO = new()
+    protected static readonly Dictionary<string, int> OverduePeriodsRao = new()
     {
         { "01", 90 },
         { "10", 10 },{ "11", 10 },{ "12", 10 },{ "13", 10 },{ "14", 10 },             { "16", 10 },             { "18", 10 },
@@ -683,7 +731,7 @@ public abstract class CheckBase : BaseAsyncCommand
     {
         return float.TryParse(ConvertStringToExponential(str),
             NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-            CultureInfo.CreateSpecificCulture("ru-RU"),
+            new CultureInfo("ru-RU", useUserOverride: false),
             out val);
     }
 
@@ -695,7 +743,7 @@ public abstract class CheckBase : BaseAsyncCommand
     {
         return double.TryParse(ConvertStringToExponential(str),
             NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
-            CultureInfo.CreateSpecificCulture("ru-RU"),
+            new CultureInfo("ru-RU", useUserOverride: false),
             out val);
     }
 

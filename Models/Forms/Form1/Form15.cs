@@ -112,6 +112,199 @@ public partial class Form15 : Form1
     
     public bool AutoRn;
 
+    #region OperationCode (2)
+
+    private protected override void OperationCode_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName != "Value") return;
+
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
+        if (OperationCode_DB != value1)
+        {
+            if (value1 is "41") return;
+            OperationCode_DB = value1;
+            if (Report is { AutoReplace: true })
+            {
+                AutoReplaceByOpCode(value1);
+            }
+        }
+    }
+
+    #region AutoReplaceByOpCode
+
+    private void AutoReplaceByOpCode(string opCode)
+    {
+        const string dash = "-";
+        var masterOkpo = Report?.Reports?.Master_DB?.OkpoRep.Value ?? string.Empty;
+        switch (opCode)
+        {
+            #region 10, 18, 43, 45, 51, 52, 57, 63, 64, 68, 71, 72, 74, 75, 76, 97, 98
+
+            case "10" or "18" or "43" or "45" or "51" or "52" or "57" or "63" or "64"
+                or "68" or "71" or "72" or "74" or "75" or "76" or "97" or "98":
+            {
+                #region ProviderOrRecieverOKPO (15)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && ProviderOrRecieverOKPO_DB != masterOkpo)
+                {
+                    ProviderOrRecieverOKPO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (16)
+
+                if (TransporterOKPO_DB != dash)
+                {
+                    TransporterOKPO.Value = dash;
+                }
+
+                #endregion
+
+                #region RefineOrSortRAOCode (22)
+
+                if (RefineOrSortRAOCode_DB != dash)
+                {
+                    RefineOrSortRAOCode.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 11, 12, 14, 41, 42, 73
+
+            case "11" or "12" or "14" or "41" or "42" or "73":
+            {
+                #region StatusRAO (11)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && StatusRAO_DB != masterOkpo)
+                {
+                    StatusRAO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region ProviderOrRecieverOKPO (15)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && ProviderOrRecieverOKPO_DB != masterOkpo)
+                {
+                    ProviderOrRecieverOKPO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (16)
+
+                if (TransporterOKPO_DB != dash)
+                {
+                    TransporterOKPO.Value = dash;
+                }
+
+                #endregion
+
+                #region RefineOrSortRAOCode (22)
+
+                if (RefineOrSortRAOCode_DB != dash)
+                {
+                    RefineOrSortRAOCode.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 21, 23, 24, 25, 26, 27, 28, 29, 31, 33, 34, 35, 36, 37, 38, 39, 84, 88
+
+            case "21" or "23" or "24" or "25" or "26" or "27" or "28" or "29" or "31" or "33" or "34" or "35" or "36" or "37" or "38" or "39" or "84" or "88":
+            {
+                #region RefineOrSortRAOCode (22)
+
+                if (RefineOrSortRAOCode_DB != dash)
+                {
+                    RefineOrSortRAOCode.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 22, 32
+
+            case "22" or "32":
+            {
+                #region ProviderOrRecieverOKPO (15)
+
+                const string providerOrRecieverOkpoValue = "Минобороны";
+                if (ProviderOrRecieverOKPO_DB != providerOrRecieverOkpoValue)
+                {
+                    ProviderOrRecieverOKPO.Value = providerOrRecieverOkpoValue;
+                }
+
+                #endregion
+
+                #region RefineOrSortRAOCode (22)
+
+                if (RefineOrSortRAOCode_DB != dash)
+                {
+                    RefineOrSortRAOCode.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 44, 49, 55, 56, 59, 99
+
+            case "44" or "49" or "55" or "56" or "59" or "99":
+            {
+                #region ProviderOrRecieverOKPO (15)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && ProviderOrRecieverOKPO_DB != masterOkpo)
+                {
+                    ProviderOrRecieverOKPO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (16)
+
+                if (TransporterOKPO_DB != dash)
+                {
+                    TransporterOKPO.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            default: return;
+        }
+    }
+
+    #endregion
+
+    #endregion
+
     #region PassportNumber (4)
 
     public string PassportNumber_DB { get; set; } = "";
@@ -142,7 +335,7 @@ public partial class Form15 : Form1
     private void PassportNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         PassportNumber_DB = tmp;
     }
 
@@ -195,7 +388,7 @@ public partial class Form15 : Form1
     private void Type_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         Type_DB = tmp;
     }
 
@@ -251,7 +444,7 @@ public partial class Form15 : Form1
     private void Radionuclids_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         Radionuclids_DB = tmp;
     }
 
@@ -288,7 +481,7 @@ public partial class Form15 : Form1
     private void FactoryNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         FactoryNumber_DB = tmp;
     }
 
@@ -386,7 +579,13 @@ public partial class Form15 : Form1
     private void Activity_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        Activity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
+
+        var value1 = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        if (Activity_DB != value1)
+        {
+            Activity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
+        }
+        
     }
 
     private bool Activity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
@@ -461,7 +660,7 @@ public partial class Form15 : Form1
     private void StatusRAO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         StatusRAO_DB = tmp;
     }
 
@@ -527,7 +726,7 @@ public partial class Form15 : Form1
     private void ProviderOrRecieverOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
         {
             tmp = tmp.ToUpper();
@@ -600,7 +799,7 @@ public partial class Form15 : Form1
     private void TransporterOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         TransporterOKPO_DB = tmp;
     }
 
@@ -663,7 +862,7 @@ public partial class Form15 : Form1
     private void PackName_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         PackName_DB = tmp;
     }
 
@@ -710,7 +909,7 @@ public partial class Form15 : Form1
     private void PackType_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         PackType_DB = tmp;
     }
 
@@ -763,7 +962,7 @@ public partial class Form15 : Form1
     private void PackNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         PackNumber_DB = tmp;
     }
 
@@ -810,7 +1009,7 @@ public partial class Form15 : Form1
     private void StoragePlaceName_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         StoragePlaceName_DB = tmp;
     }
 
@@ -864,7 +1063,7 @@ public partial class Form15 : Form1
     private void StoragePlaceCode_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         StoragePlaceCode_DB = tmp;
     }
 
@@ -947,7 +1146,7 @@ public partial class Form15 : Form1
     private void RefineOrSortRAOCode_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         RefineOrSortRAOCode_DB = tmp;
     }
 
@@ -1003,14 +1202,14 @@ public partial class Form15 : Form1
     private void Subsidy_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         Subsidy_DB = tmp;
     }
 
     private bool Subsidy_Validation(RamAccess<string> value)//Ready
     {
         value.ClearErrors();
-        if (value.Value.Equals("-"))
+        if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
         {
             return true;
         }
@@ -1054,7 +1253,7 @@ public partial class Form15 : Form1
     private void FcpNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         FcpNumber_DB = tmp;
     }
 
@@ -1103,7 +1302,7 @@ public partial class Form15 : Form1
     private void ContractNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         ContractNumber_DB = tmp.Length > 100 
             ? tmp[..100]
             : tmp;
@@ -1145,6 +1344,7 @@ public partial class Form15 : Form1
         RefineOrSortRAOCode_DB = Convert.ToString(worksheet.Cells[row, 22].Value);
         Subsidy_DB = Convert.ToString(worksheet.Cells[row, 23].Value);
         FcpNumber_DB = Convert.ToString(worksheet.Cells[row, 24].Value);
+        ContractNumber_DB = Convert.ToString(worksheet.Cells[row, 25].Value);
     }
     
     public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
@@ -1174,10 +1374,7 @@ public partial class Form15 : Form1
         worksheet.Cells[row + (!transpose ? 18 : 0), column + (transpose ? 18 : 0)].Value = ConvertToExcelString(RefineOrSortRAOCode_DB);
         worksheet.Cells[row + (!transpose ? 19 : 0), column + (transpose ? 19 : 0)].Value = ConvertToExcelString(Subsidy_DB);
         worksheet.Cells[row + (!transpose ? 20 : 0), column + (transpose ? 20 : 0)].Value = ConvertToExcelString(FcpNumber_DB);
-        if (worksheet.Name is "Отчеты 1.5")
-        {
-            worksheet.Cells[row + (!transpose ? 21 : 0), column + (transpose ? 21 : 0)].Value = ConvertToExcelString(ContractNumber_DB);
-        }
+        worksheet.Cells[row + (!transpose ? 21 : 0), column + (transpose ? 21 : 0)].Value = ConvertToExcelString(ContractNumber_DB);
 
         return 22;
     }
@@ -1600,7 +1797,46 @@ public partial class Form15 : Form1
     private static partial Regex StoragePlaceCodeRegex6();
 
     [GeneratedRegex("^[1]{1}[1-9]{1}|^[2]{1}[1-69]{1}|^[3]{1}[1]{1}|^[4]{1}[1-49]{1}|^[5]{1}[1-69]{1}|^[6]{1}[1]{1}|^[7]{1}[1349]{1}|^[8]{1}[1-69]{1}|^[9]{1}[9]{1}")]
-    private static partial Regex StoragePlaceCodeRegex7(); 
-    
+    private static partial Regex StoragePlaceCodeRegex7();
+
+    #endregion
+
+    #region ConvertToTSVstring
+
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        var str =
+            $"{NumberInOrder.Value}\t" +
+            $"{OperationCode.Value}\t" +
+            $"{OperationDate.Value}\t" +
+            $"{PassportNumber.Value}\t" +
+            $"{Type.Value}\t" +
+            $"{Radionuclids.Value}\t" +
+            $"{FactoryNumber.Value}\t" +
+            $"{Quantity.Value}\t" +
+            $"{Activity.Value}\t" +
+            $"{CreationDate.Value}\t" +
+            $"{StatusRAO.Value}\t" +
+            $"{DocumentVid.Value}\t" +
+            $"{DocumentNumber.Value}\t" +
+            $"{DocumentDate.Value}\t" +
+            $"{ProviderOrRecieverOKPO.Value}\t" +
+            $"{TransporterOKPO.Value}\t" +
+            $"{PackName.Value}\t" +
+            $"{PackType.Value}\t" +
+            $"{PackNumber.Value}\t" +
+            $"{StoragePlaceName.Value}\t" +
+            $"{StoragePlaceCode.Value}\t" +
+            $"{RefineOrSortRAOCode.Value}\t" +
+            $"{Subsidy.Value}\t" +
+            $"{FcpNumber.Value}\t" +
+            $"{ContractNumber.Value}";
+        return str;
+    }
+
     #endregion
 }

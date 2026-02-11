@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
-using Client_App.ViewModels;
+using Client_App.ViewModels.Forms.Forms1;
 using DynamicData;
 using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +9,13 @@ using Models.CheckForm;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Client_App.ViewModels;
+using Client_App.ViewModels.Forms;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -42,8 +44,14 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
-        if (parameter is not IKeyCollection collection) return;
-        var par = collection.ToList<Report>().First();
+        Report? par;
+        if (parameter is IKeyCollection collection)
+            par = collection.ToList<Report>().First();
+        else if (parameter is Report)
+            par = (Report)parameter;
+        else
+            return;
+
         await using var db = new DBModel(StaticConfiguration.DBPath);
 
         var cts = new CancellationTokenSource();
@@ -100,6 +108,13 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
                 "1.8" => CheckF18.Check_Total(rep.Reports, rep),
                 "2.1" => await new CheckF21().AsyncExecute(rep),
                 "2.2" => await new CheckF22().AsyncExecute(rep),
+                "2.3" => await new CheckF23().AsyncExecute(rep),
+                "2.6" => await new CheckF26().AsyncExecute(rep),
+                "2.7" => await new CheckF27().AsyncExecute(rep),
+                "2.8" => await new CheckF28().AsyncExecute(rep),
+                "2.9" => await new CheckF29().AsyncExecute(rep),
+                "2.10" => await new CheckF210().AsyncExecute(rep),
+                "2.11" => await new CheckF211().AsyncExecute(rep),
                 _ => throw new NotImplementedException()
             });
         }
@@ -174,7 +189,42 @@ public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
             {
                 Desktop.Windows.First(x => x.Name == "FormCheckerWindow").Close();
             }
-            await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(new ChangeOrCreateVM(rep.FormNum_DB, rep), errorList));
+
+            switch (rep.FormNum_DB)
+            {
+                case "1.1" or "1.2" or "1.3" or "1.4" or "1.5" or "1.6" or "1.7" or "1.8":
+                {
+                    var vm = await CreateFormVM(rep.FormNum_DB, rep);
+                    await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList).Show());
+
+                    break;
+                }
+                case "2.1" or "2.2" or "2.3" or "2.4" or "2.5" or "2.6" or "2.7" or "2.8" or "2.9" or "2.10" or "2.11" or "2.12":
+                {
+                    await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(new ChangeOrCreateVM(rep.FormNum_DB, rep), errorList));
+
+                    break;
+                }
+                default: return;
+            }
         }
+    }
+
+    private static Task<BaseFormVM?> CreateFormVM(string formNum, Report rep)
+    {
+        BaseFormVM? vm = formNum switch
+        {
+            "1.1" => new Form_11VM(rep.Reports) { Report = rep },
+            "1.2" => new Form_12VM(rep.Reports) { Report = rep },
+            "1.3" => new Form_12VM(rep.Reports) { Report = rep },
+            "1.4" => new Form_12VM(rep.Reports) { Report = rep },
+            "1.5" => new Form_12VM(rep.Reports) { Report = rep },
+            "1.6" => new Form_12VM(rep.Reports) { Report = rep },
+            "1.7" => new Form_12VM(rep.Reports) { Report = rep },
+            "1.8" => new Form_12VM(rep.Reports) { Report = rep },
+            _ => null
+        };
+
+        return Task.FromResult(vm);
     }
 }

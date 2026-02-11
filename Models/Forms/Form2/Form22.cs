@@ -431,8 +431,8 @@ public partial class Form22 : Form2, IBaseColor
         //var spr = new List<string>();//here binds spr
         //if (!spr.Contains(value.Value))
         //{
-        //    value.AddError("Недопустимое значение");
-        //    return false;
+        //    value.AddError( "Недопустимое значение");
+        //return false;
         //}
         //return true;
         if (value.Value == "-") return true;
@@ -472,6 +472,28 @@ public partial class Form22 : Form2, IBaseColor
             value.AddError($"Недопустимый код типа РАО - {tmp.Substring(6, 2)}");
         }
         return !value.HasErrors;
+    }
+
+    #endregion
+
+    #region HiddenFlagsNormalization
+
+    /// <summary>
+    /// Нормализует флаги скрытия установки/записи для обычных строк
+    /// (не суммарных и не входящих в группу),
+    /// чтобы изменения из UI могли сохраняться в БД.
+    /// </summary>
+    public void NormalizeHiddenFlags()
+    {
+        if (Sum_DB || SumGroup_DB)
+        {
+            return;
+        }
+
+        _StoragePlaceName_Hidden_Set = true;
+        _StoragePlaceCode_Hidden_Set = true;
+        _PackName_Hidden_Set = true;
+        _PackType_Hidden_Set = true;
     }
 
     #endregion
@@ -2097,6 +2119,40 @@ public partial class Form22 : Form2, IBaseColor
     private static partial Regex CodeRaoRegex7();
 
     #endregion 
+
+    #endregion
+
+    #region ConvertToTSVstring
+
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        var str =
+            $"{NumberInOrder.Value}\t" +
+            $"{StoragePlaceName.Value}\t" +
+            $"{StoragePlaceCode.Value}\t" +
+            $"{PackName.Value}\t" +
+            $"{PackType.Value}\t" +
+            $"{PackQuantity.Value}\t" +
+            $"{CodeRAO.Value}\t" +
+            $"{StatusRAO.Value}\t" +
+            $"{VolumeOutOfPack.Value}\t" +
+            $"{VolumeInPack.Value}\t" +
+            $"{MassOutOfPack.Value}\t" +
+            $"{MassInPack.Value}\t" +
+            $"{QuantityOZIII.Value}\t" +
+            $"{TritiumActivity.Value}\t" +
+            $"{BetaGammaActivity.Value}\t" +
+            $"{AlphaActivity.Value}\t" +
+            $"{TransuraniumActivity.Value}\t" +
+            $"{MainRadionuclids.Value}\t" +
+            $"{Subsidy.Value}\t" +
+            $"{FcpNumber.Value}";
+        return str;
+    }
 
     #endregion
 }

@@ -81,29 +81,6 @@ public partial class Form18 : Form1
                  StoragePlaceCode.HasErrors);
     }
 
-    protected override bool OperationCode_Validation(RamAccess<string> value)//OK
-    {
-        value.ClearErrors();
-        if (value.Value == null)
-        {
-            return true;
-        }
-        if (!Spravochniks.SprOpCodes.Contains(value.Value))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (!TwoNumRegex().IsMatch(value.Value)
-            || !byte.TryParse(value.Value, out var byteValue)
-            || byteValue is not (1 or 10 or 18 or >= 21 and <= 29 or >= 31 and <= 39 or 51 or 52 or 55 or 63 or 64 or 68 or 97 or 98 or 99))
-        {
-            value.AddError("Код операции не может быть использован в форме 1.8");
-            return false;
-        }
-
-        return true;
-    }
-
     protected override bool DocumentNumber_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
@@ -128,12 +105,12 @@ public partial class Form18 : Form1
         {
             return true;
         }
-        var tmp = value.Value.Trim();
+        var tmp = value.Value;
         if (tmp == "прим.")
         {
             return true;
         }
-        if (!DateOnly.TryParse(tmp, CultureInfo.CreateSpecificCulture("ru-RU"), out _))
+        if (!DateOnly.TryParse(tmp, new CultureInfo("ru-RU", useUserOverride: false), out _))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -197,6 +174,200 @@ public partial class Form18 : Form1
 
     #endregion
 
+    #region OperationCode (2)
+
+    private protected override void OperationCode_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName != "Value") return;
+
+        var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
+        if (OperationCode_DB != value1)
+        {
+            OperationCode_DB = value1;
+            if (Report is { AutoReplace: true })
+            {
+                AutoReplaceByOpCode(value1);
+            }
+        }
+    }
+
+    protected override bool OperationCode_Validation(RamAccess<string> value)//OK
+    {
+        value.ClearErrors();
+        if (value.Value is null or "-" or "")
+        {
+            return true;
+        }
+        if (!Spravochniks.SprOpCodes.Contains(value.Value))
+        {
+            value.AddError("Недопустимое значение");
+            return false;
+        }
+        if (!TwoNumRegex().IsMatch(value.Value)
+            || !byte.TryParse(value.Value, out var byteValue)
+            || byteValue is not (1 or >= 10 and <= 13 or >= 25 and <= 29 or 31 or 32 or >= 35 and <= 39
+            or 42 or 51 or 52 or 55 or 63 or 64 or 68 or 97 or 98))
+        {
+            value.AddError("Код операции не может быть использован в форме 1.8");
+            return false;
+        }
+
+        return true;
+    }
+
+    #region AutoReplaceByOpCode
+
+    private void AutoReplaceByOpCode(string opCode)
+    {
+        const string dash = "-";
+        var masterOkpo = Report?.Reports?.Master_DB?.OkpoRep.Value ?? string.Empty;
+        switch (opCode)
+        {
+            #region 10, 18, 43, 51, 52, 68, 97, 98
+            
+            case "10" or "18" or "43" or "51" or "52" or "68" or "97" or "98":
+            {
+                #region ProviderOrRecieverOKPO (14)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && ProviderOrRecieverOKPO_DB != masterOkpo)
+                {
+                    ProviderOrRecieverOKPO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (15)
+
+                if (TransporterOKPO_DB != dash)
+                {
+                    TransporterOKPO.Value = dash;
+                }
+
+                #endregion
+
+                #region RefineOrSortRAOCode (26)
+
+                if (RefineOrSortRAOCode_DB != dash)
+                {
+                    RefineOrSortRAOCode.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 11, 13, 16
+            
+            case "11" or "13" or "16":
+            {
+                #region ProviderOrRecieverOKPO (14)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && ProviderOrRecieverOKPO_DB != masterOkpo)
+                {
+                    ProviderOrRecieverOKPO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (15)
+
+                if (TransporterOKPO_DB != dash)
+                {
+                    TransporterOKPO.Value = dash;
+                }
+
+                #endregion
+
+                #region StatusRAO (19)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && StatusRAO_DB != masterOkpo)
+                {
+                    StatusRAO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region RefineOrSortRAOCode (26)
+
+                if (RefineOrSortRAOCode_DB != dash)
+                {
+                    RefineOrSortRAOCode.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 21, 22, 25, 26, 27, 28, 29, 31, 32, 35, 36, 37, 38, 39
+            
+            case "21" or "22" or "25" or "26" or "27" or "28" or "29" or "31" or "32" or "35" or "36" or "37" or "38" or "39":
+            {
+                #region RefineOrSortRAOCode (26)
+
+                if (RefineOrSortRAOCode_DB != dash)
+                {
+                    RefineOrSortRAOCode.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 55
+            
+            case "55":
+            {
+                #region ProviderOrRecieverOKPO (14)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && ProviderOrRecieverOKPO_DB != masterOkpo)
+                {
+                    ProviderOrRecieverOKPO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (15)
+
+                if (TransporterOKPO_DB != dash)
+                {
+                    TransporterOKPO.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            default: return;
+        }
+    }
+
+    #endregion
+
+    #endregion
+
+    #region OperationDate (3)
+
+    protected override bool OperationDate_Validation(RamAccess<string> value)
+        => string.IsNullOrWhiteSpace(value.Value) || DateString_Validation(value);
+
+    #endregion
+
     #region IndividualNumberZHRO (4)
 
     public string IndividualNumberZHRO_DB { get; set; } = "";
@@ -245,7 +416,7 @@ public partial class Form18 : Form1
     private void IndividualNumberZHRO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         IndividualNumberZHRO_DB = tmp;
     }
 
@@ -305,7 +476,7 @@ public partial class Form18 : Form1
     private void PassportNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         PassportNumber_DB = tmp;
     }
 
@@ -384,7 +555,8 @@ public partial class Form18 : Form1
         Volume6_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private static bool Volume6_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
+    private static bool Volume6_Validation(RamAccess<string> value) => 
+        string.IsNullOrWhiteSpace(value.Value) || ExponentialString_Validation(value);
 
     #endregion
 
@@ -439,7 +611,8 @@ public partial class Form18 : Form1
         Mass7_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private static bool Mass7_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
+    private static bool Mass7_Validation(RamAccess<string> value) => 
+        string.IsNullOrWhiteSpace(value.Value) || ExponentialString_Validation(value);
 
     #endregion
 
@@ -494,7 +667,8 @@ public partial class Form18 : Form1
         SaltConcentration_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private static bool SaltConcentration_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
+    private static bool SaltConcentration_Validation(RamAccess<string> value) => 
+        string.IsNullOrWhiteSpace(value.Value) || ExponentialString_Validation(value);
 
     #endregion
 
@@ -528,7 +702,7 @@ public partial class Form18 : Form1
     private void Radionuclids_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         Radionuclids_DB = tmp;
     }
 
@@ -708,7 +882,7 @@ public partial class Form18 : Form1
     private void TransporterOKPO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         TransporterOKPO_DB = tmp;
     }
 
@@ -719,7 +893,7 @@ public partial class Form18 : Form1
         {
             return true;
         }
-        var tmp = value.Value.Trim();
+        var tmp = value.Value;
         if (tmp.Equals("-") || tmp.Equals("Минобороны"))
         {
             return true;
@@ -791,7 +965,7 @@ public partial class Form18 : Form1
     private void StoragePlaceName_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         StoragePlaceName_DB = tmp;
     }
 
@@ -800,8 +974,7 @@ public partial class Form18 : Form1
         value.ClearErrors();
         if (string.IsNullOrEmpty(value.Value))
         {
-            value.AddError("Недопустимое значение");
-            return false;
+            return true;
         }
         //List<string> spr = new List<string>();
         //if (!spr.Contains(value.Value))
@@ -860,7 +1033,7 @@ public partial class Form18 : Form1
     private void StoragePlaceCode_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         StoragePlaceCode_DB = tmp;
     }
 
@@ -873,7 +1046,10 @@ public partial class Form18 : Form1
         //    value.AddError("Недопустимое значение"); return false;
         //}
         //return true;
-        if (value.Value == "-") return true;
+        if (value.Value is null or "" or "-")
+        {
+            return true;
+        }
         if (!StoragePlaceCodeRegex().IsMatch(value.Value))
         {
             value.AddError("Недопустимое значение"); 
@@ -944,7 +1120,7 @@ public partial class Form18 : Form1
     private void CodeRAO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim().ToLower().Replace("х", "x");
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty.ToLower().Replace("х", "x");
         CodeRAO_DB = tmp;
     }
 
@@ -955,7 +1131,7 @@ public partial class Form18 : Form1
         {
             return true;
         }
-        var tmp = value.Value.Trim().ToLower().Replace("х", "x");
+        var tmp = value.Value.ToLower().Replace("х", "x");
         if (!CodeRaoRegex().IsMatch(tmp))
         {
             value.AddError("Недопустимое значение");
@@ -996,7 +1172,7 @@ public partial class Form18 : Form1
     private void StatusRAO_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         StatusRAO_DB = tmp;
     }
 
@@ -1007,7 +1183,7 @@ public partial class Form18 : Form1
         {
             return true;
         }
-        var tmp = value.Value.Trim();
+        var tmp = value.Value;
         if (tmp.Length == 1)
         {
             if (!int.TryParse(tmp, out var intValue) 
@@ -1065,7 +1241,8 @@ public partial class Form18 : Form1
         Volume20_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private static bool Volume20_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
+    private static bool Volume20_Validation(RamAccess<string> value) => 
+        string.IsNullOrWhiteSpace(value.Value) || ExponentialString_Validation(value);
 
     #endregion
 
@@ -1102,7 +1279,8 @@ public partial class Form18 : Form1
         Mass21_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private static bool Mass21_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
+    private static bool Mass21_Validation(RamAccess<string> value) => 
+        string.IsNullOrWhiteSpace(value.Value) || ExponentialString_Validation(value);
 
     #endregion
 
@@ -1139,7 +1317,8 @@ public partial class Form18 : Form1
         TritiumActivity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private static bool TritiumActivity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
+    private static bool TritiumActivity_Validation(RamAccess<string> value) => 
+        string.IsNullOrWhiteSpace(value.Value) || ExponentialString_Validation(value);
 
     #endregion
 
@@ -1176,7 +1355,8 @@ public partial class Form18 : Form1
         BetaGammaActivity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private static bool BetaGammaActivity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
+    private static bool BetaGammaActivity_Validation(RamAccess<string> value) => 
+        string.IsNullOrWhiteSpace(value.Value) || ExponentialString_Validation(value);
 
     #endregion
 
@@ -1213,7 +1393,8 @@ public partial class Form18 : Form1
         AlphaActivity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private static bool AlphaActivity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
+    private static bool AlphaActivity_Validation(RamAccess<string> value) => 
+        string.IsNullOrWhiteSpace(value.Value) || ExponentialString_Validation(value);
 
     #endregion
 
@@ -1250,7 +1431,8 @@ public partial class Form18 : Form1
         TransuraniumActivity_DB = ExponentialString_ValueChanged(((RamAccess<string>)value).Value);
     }
 
-    private static bool TransuraniumActivity_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
+    private static bool TransuraniumActivity_Validation(RamAccess<string> value) => 
+        string.IsNullOrWhiteSpace(value.Value) || ExponentialString_Validation(value);
 
     #endregion
 
@@ -1284,7 +1466,7 @@ public partial class Form18 : Form1
     private void RefineOrSortRAOCode_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         RefineOrSortRAOCode_DB = tmp;
     }
 
@@ -1347,7 +1529,7 @@ public partial class Form18 : Form1
     private void Subsidy_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         Subsidy_DB = tmp;
     }
 
@@ -1398,7 +1580,7 @@ public partial class Form18 : Form1
     private void FcpNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         FcpNumber_DB = tmp;
     }
 
@@ -1442,7 +1624,7 @@ public partial class Form18 : Form1
     private void ContractNumber_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim();
+        var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         ContractNumber_DB = tmp.Length > 100
             ? tmp[..100]
             : tmp;
@@ -1488,6 +1670,7 @@ public partial class Form18 : Form1
         RefineOrSortRAOCode_DB = Convert.ToString(worksheet.Cells[row, 26].Value);
         Subsidy_DB = Convert.ToString(worksheet.Cells[row, 27].Value);
         FcpNumber_DB = Convert.ToString(worksheet.Cells[row, 28].Value);
+        ContractNumber_DB = Convert.ToString(worksheet.Cells[row, 29].Value);
     }
 
     public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
@@ -1521,10 +1704,7 @@ public partial class Form18 : Form1
         worksheet.Cells[row + (!transpose ? 22 : 0), column + (transpose ? 22 : 0)].Value = ConvertToExcelString(RefineOrSortRAOCode_DB);
         worksheet.Cells[row + (!transpose ? 23 : 0), column + (transpose ? 23 : 0)].Value = ConvertToExcelString(Subsidy_DB);
         worksheet.Cells[row + (!transpose ? 24 : 0), column + (transpose ? 24 : 0)].Value = ConvertToExcelString(FcpNumber_DB);
-        if (worksheet.Name is "Отчеты 1.8")
-        {
-            worksheet.Cells[row + (!transpose ? 25 : 0), column + (transpose ? 25 : 0)].Value = ConvertToExcelString(ContractNumber_DB);
-        }
+        worksheet.Cells[row + (!transpose ? 25 : 0), column + (transpose ? 25 : 0)].Value = ConvertToExcelString(ContractNumber_DB);
 
         return 26;
     }
@@ -2010,7 +2190,50 @@ public partial class Form18 : Form1
     private static partial Regex StoragePlaceCodeRegex7();
 
     [GeneratedRegex("^[0-9x+]{11}$")]
-    private static partial Regex CodeRaoRegex(); 
-    
+    private static partial Regex CodeRaoRegex();
+
+    #endregion
+
+    #region ConvertToTSVstring
+
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        var str =
+            $"{NumberInOrder.Value}\t" +
+            $"{OperationCode.Value}\t" +
+            $"{OperationDate.Value}\t" +
+            $"{IndividualNumberZHRO.Value}\t" +
+            $"{PassportNumber.Value}\t" +
+            $"{Volume6.Value}\t" +
+            $"{Mass7.Value}\t" +
+            $"{SaltConcentration.Value}\t" +
+            $"{Radionuclids.Value}\t" +
+            $"{SpecificActivity.Value}\t" +
+            $"{DocumentVid.Value}\t" +
+            $"{DocumentNumber.Value}\t" +
+            $"{DocumentDate.Value}\t" +
+            $"{ProviderOrRecieverOKPO.Value}\t" +
+            $"{TransporterOKPO.Value}\t" +
+            $"{StoragePlaceName.Value}\t" +
+            $"{StoragePlaceCode.Value}\t" +
+            $"{CodeRAO.Value}\t" +
+            $"{StatusRAO.Value}\t" +
+            $"{Volume20.Value}\t" +
+            $"{Mass21.Value}\t" +
+            $"{TritiumActivity.Value}\t" +
+            $"{BetaGammaActivity.Value}\t" +
+            $"{AlphaActivity.Value}\t" +
+            $"{TransuraniumActivity.Value}\t" +
+            $"{RefineOrSortRAOCode.Value}\t" +
+            $"{Subsidy.Value}\t" +
+            $"{FcpNumber.Value}\t" +
+            $"{ContractNumber.Value}";
+        return str;
+    }
+
     #endregion
 }

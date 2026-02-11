@@ -1251,4 +1251,34 @@ public partial class Form24 : Form2
     private static partial Regex FiveNumRegex();
 
     #endregion
+
+    #region ConvertToTSVstring
+
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        var str =
+            $"{NumberInOrder.Value}\t" +
+            $"{CodeOYAT.Value}\t" +
+            $"{FcpNumber.Value}\t" +
+            $"{MassCreated.Value}\t" +
+            $"{QuantityCreated.Value}\t" +
+            $"{MassFromAnothers.Value}\t" +
+            $"{QuantityFromAnothers.Value}\t" +
+            $"{MassFromAnothersImported.Value}\t" +
+            $"{QuantityFromAnothersImported.Value}\t" +
+            $"{MassAnotherReasons.Value}\t" +
+            $"{MassTransferredToAnother.Value}\t" +
+            $"{QuantityTransferredToAnother.Value}\t" +
+            $"{MassRefined.Value}\t" +
+            $"{QuantityRefined.Value}\t" +
+            $"{MassRemovedFromAccount.Value}\t" +
+            $"{QuantityRemovedFromAccount.Value}";
+        return str;
+    }
+
+    #endregion
 }

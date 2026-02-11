@@ -403,4 +403,24 @@ public class Form27 : Form2
     }
 
     #endregion
+
+    #region ConvertToTSVstring
+
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        var str =
+            $"{NumberInOrder.Value}\t" +
+            $"{ObservedSourceNumber.Value}\t" +
+            $"{RadionuclidName.Value}\t" +
+            $"{AllowedWasteValue.Value}\t" +
+            $"{FactedWasteValue.Value}\t" +
+            $"{WasteOutbreakPreviousYear.Value}";
+        return str;
+    }
+
+    #endregion
 }

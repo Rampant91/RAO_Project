@@ -9,15 +9,9 @@ using System.Threading.Tasks;
 namespace Client_App.Commands.AsyncCommands.SumRow;
 
 //  Отменяет группировку по наименованию в формах 2.1 и 2.2
-internal class CancelSumRowAsyncCommand : BaseAsyncCommand
+internal class CancelSumRowAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : BaseAsyncCommand
 {
-    private readonly ChangeOrCreateVM _ChangeOrCreateViewModel;
-    private Report Storage => _ChangeOrCreateViewModel.Storage;
-
-    public CancelSumRowAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel)
-    {
-        _ChangeOrCreateViewModel = changeOrCreateViewModel;
-    }
+    private Report Storage => changeOrCreateViewModel.Storage;
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -40,7 +34,7 @@ internal class CancelSumRowAsyncCommand : BaseAsyncCommand
         await AsyncExecute(null);
     }
 
-    public Task UnSum21()
+    private Task UnSum21()
     {
         var sumRows = Storage.Rows21
             .Where(x => x.Sum_DB)
@@ -53,10 +47,17 @@ internal class CancelSumRowAsyncCommand : BaseAsyncCommand
             .ToList();
         foreach (var row in sumRowsGroup)
         {
+            // Разрешаем запись изменений из UI обратно в БД
+            row._RefineMachineName_Hidden_Set = true;
+            row._MachineCode_Hidden_Set = true;
+            row._MachinePower_Hidden_Set = true;
+            row._NumberOfHoursPerYear_Hidden_Set = true;
+
             row.RefineMachineName_Hidden_Set.Set(true);
             row.MachineCode_Hidden_Set.Set(true);
             row.MachinePower_Hidden_Set.Set(true);
             row.NumberOfHoursPerYear_Hidden_Set.Set(true);
+
             row.RefineMachineName_Hidden_Get.Set(true);
             row.MachineCode_Hidden_Get.Set(true);
             row.MachinePower_Hidden_Get.Set(true);
@@ -79,7 +80,7 @@ internal class CancelSumRowAsyncCommand : BaseAsyncCommand
         return Task.CompletedTask;
     }
 
-    public Task UnSum22()
+    private Task UnSum22()
     {
         var sumRows = Storage.Rows22
             .Where(x => x.Sum_DB)
@@ -92,10 +93,17 @@ internal class CancelSumRowAsyncCommand : BaseAsyncCommand
             .ToList();
         foreach (var row in sumRowsGroup)
         {
+            // Разрешаем запись изменений из UI обратно в БД для ключевых полей группировки
+            row._StoragePlaceName_Hidden_Set = true;
+            row._StoragePlaceCode_Hidden_Set = true;
+            row._PackName_Hidden_Set = true;
+            row._PackType_Hidden_Set = true;
+
             row.StoragePlaceName_Hidden_Set.Set(true);
             row.StoragePlaceCode_Hidden_Set.Set(true);
             row.PackName_Hidden_Set.Set(true);
             row.PackType_Hidden_Set.Set(true);
+
             row.StoragePlaceName_Hidden_Get.Set(true);
             row.StoragePlaceCode_Hidden_Get.Set(true);
             row.PackName_Hidden_Get.Set(true);

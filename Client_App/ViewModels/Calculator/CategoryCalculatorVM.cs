@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace Client_App.ViewModels.Calculator;
 
-public class CategoryCalculatorVM : BaseCalculatorVM
+public partial class CategoryCalculatorVM : BaseCalculatorVM
 {
     #region Properties
 
@@ -56,7 +56,20 @@ public class CategoryCalculatorVM : BaseCalculatorVM
             {
                 _activity = value;
                 OnPropertyChanged();
-                CategoryCalculation.Execute(null);
+            }
+        }
+    }
+
+    private string _activityToNormalizingD;
+    public string ActivityToNormalizingD
+    {
+        get => _activityToNormalizingD;
+        set
+        {
+            if (_activityToNormalizingD != value)
+            {
+                _activityToNormalizingD = value;
+                OnPropertyChanged();
             }
         }
     }
@@ -89,6 +102,28 @@ public class CategoryCalculatorVM : BaseCalculatorVM
         }
     }
 
+    private bool _isHeaderExpanded = true;
+    public bool IsHeaderExpanded
+    {
+        get => _isHeaderExpanded;
+        set
+        {
+            _isHeaderExpanded = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private bool _isSingleActivity = true;
+    public bool IsSingleActivity
+    {
+        get => _isSingleActivity;
+        set
+        {
+            _isSingleActivity = value;
+            OnPropertyChanged();
+        }
+    }
+
     private string _quantity = "1";
     public string Quantity
     {
@@ -99,7 +134,6 @@ public class CategoryCalculatorVM : BaseCalculatorVM
             {
                 _quantity = value;
                 OnPropertyChanged();
-                CategoryCalculation.Execute(null);
             }
         }
     }

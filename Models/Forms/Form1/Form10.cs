@@ -419,6 +419,7 @@ public partial class Form10 : Form
         {
             Telephone_DB = ((RamAccess<string>)value).Value;
         }
+
     }
 
     private bool Telephone_Validation(RamAccess<string> value) //Ready
@@ -544,22 +545,34 @@ public partial class Form10 : Form
 
     private void Okpo_ValueChanged(object value, PropertyChangedEventArgs args)
     {
-        if (args.PropertyName == "Value")
+        if (args.PropertyName != "Value") return;
+
+        var newValue = ((RamAccess<string>)value).Value;
+
+        var validateOthers = (string.IsNullOrEmpty(Okpo_DB) && !string.IsNullOrEmpty(newValue)) 
+                             || (string.IsNullOrEmpty(newValue) && !string.IsNullOrEmpty(Okpo_DB));
+
+        Okpo_DB = newValue;
+
+        if (validateOthers)
         {
-            Okpo_DB = ((RamAccess<string>)value).Value;
+            Okved_Validation(Okved);
+            Okogu_Validation(Okogu);
+            Oktmo_Validation(Oktmo);
+            Inn_Validation(Inn);
+            Kpp_Validation(Kpp);
+            Okopf_Validation(Okopf);
+            Okfs_Validation(Okfs);
         }
     }
 
     private bool Okpo_Validation(RamAccess<string> value) //Ready
     {
         value.ClearErrors();
-        if (string.IsNullOrEmpty(value.Value))
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (value.Value.Length != 8 && value.Value.Length != 14
-            || !OkpoRegex().IsMatch(value.Value))
+        var okpo = value.Value;
+
+        if (string.IsNullOrWhiteSpace(okpo)
+            || !OkpoRegex().IsMatch(okpo))
         {
             value.AddError("Недопустимое значение");
             return false;
@@ -1083,6 +1096,20 @@ public partial class Form10 : Form
 
     [GeneratedRegex(@"^[Мм\d]\d{4}$")]
     private static partial Regex RegNoRegex();
-    
+
+    #endregion
+
+    #region ConvertToTSVstring
+
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Заглушка
+        var str = "Форма 1.0";
+        return str;
+    }
+
     #endregion
 }

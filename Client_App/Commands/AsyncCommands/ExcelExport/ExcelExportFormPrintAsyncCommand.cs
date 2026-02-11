@@ -1,16 +1,26 @@
-﻿using System;
+﻿using Avalonia.Controls;
+using Avalonia.Threading;
+using Client_App.Commands.AsyncCommands.CheckForm;
+using Client_App.Properties;
+using Client_App.ViewModels;
+using Client_App.Views.ProgressBar;
+using DynamicData;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Enums;
+using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
+using Models.CheckForm;
+using Models.Collections;
+using Models.DBRealization;
+using Models.Interfaces;
+using OfficeOpenXml;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Threading;
-using Client_App.Views.ProgressBar;
-using Microsoft.EntityFrameworkCore;
-using Models.Collections;
-using Models.DBRealization;
-using Models.Interfaces;
-using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
@@ -24,9 +34,20 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
-        if (parameter is not ObservableCollectionWithItemPropertyChanged<IKey> forms) return;
-        var repParam = (Report)forms.First();
-        var repId = repParam.Id;
+        Report? repParam;
+        int repId;
+        if (parameter is ObservableCollectionWithItemPropertyChanged<IKey> forms)
+        {
+            repParam = (Report)forms.First();
+            repId = repParam.Id;
+        }
+        else if (parameter is Report report)
+        {
+            repParam = report;
+            repId = repParam.Id;
+        }
+        else
+            return;
 
         var cts = new CancellationTokenSource();
         ExportType = "Для_печати";
@@ -47,6 +68,9 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 
         progressBarVM.SetProgressBar(70, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath, rep);
+
+        progressBarVM.SetProgressBar(75, "Проверка отчёта");
+        await CheckForm(rep, cts, progressBar);
 
         progressBarVM.SetProgressBar(80, "Выгрузка данных");
         await FillExcel(excelPackage, rep);
@@ -69,6 +93,101 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         await progressBar.CloseAsync();
     }
 
+    #region CheckForm
+
+    private static async Task CheckForm(Report exportReport, CancellationTokenSource cts, AnyTaskProgressBar progressBar)
+    {
+        var errorList = new List<CheckError>();
+        try
+        {
+            errorList.Add(exportReport.FormNum_DB switch
+            {
+                "1.1" => CheckF11.Check_Total(exportReport.Reports, exportReport),
+                "1.2" => CheckF12.Check_Total(exportReport.Reports, exportReport),
+                "1.3" => CheckF13.Check_Total(exportReport.Reports, exportReport),
+                "1.4" => CheckF14.Check_Total(exportReport.Reports, exportReport),
+                "1.5" => CheckF15.Check_Total(exportReport.Reports, exportReport),
+                "1.6" => CheckF16.Check_Total(exportReport.Reports, exportReport),
+                "1.7" => CheckF17.Check_Total(exportReport.Reports, exportReport),
+                "1.8" => CheckF18.Check_Total(exportReport.Reports, exportReport),
+                //"2.1" => await new CheckF21().AsyncExecute(exportReport),
+                //"2.2" => await new CheckF22().AsyncExecute(exportReport),
+                //"2.3" => await new CheckF23().AsyncExecute(exportReport),
+                //"2.4" => await new CheckF24().AsyncExecute(exportReport),
+                //"2.5" => await new CheckF25().AsyncExecute(exportReport),
+                //"2.6" => await new CheckF26().AsyncExecute(exportReport),
+                //"2.7" => await new CheckF27().AsyncExecute(exportReport),
+                //"2.8" => await new CheckF28().AsyncExecute(exportReport),
+                //"2.9" => await new CheckF29().AsyncExecute(exportReport),
+                //"2.10" => await new CheckF210().AsyncExecute(exportReport),
+                //"2.11" => await new CheckF211().AsyncExecute(exportReport),
+                _ => []
+            });
+        }
+        catch (Exception ex)
+        {
+            //ignored
+        }
+
+        if (!errorList.Any(x => x.IsCritical)) return;
+
+        if (!Settings.Default.AppLaunchedInNorao)
+        {
+            #region ExportTerminatedDueToCriticalErrors
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+                MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = ButtonEnum.Ok,
+                        ContentTitle = "Выгрузка в .xlsx",
+                        ContentHeader = "Ошибка",
+                        ContentMessage = "Выгрузка отчёта невозможна из-за наличия в нём критических ошибок (выделены красным)." +
+                                         $"{Environment.NewLine}Устраните ошибки и повторите операцию выгрузки.",
+                        MinWidth = 250,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen
+                    }).ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(new ChangeOrCreateVM(exportReport.FormNum_DB, exportReport), errorList));
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+        else
+        {
+            #region ReportHasCriticalErrors
+
+            var answer = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions =
+                    [
+                        new ButtonDefinition { Name = "Да" },
+                        new ButtonDefinition { Name = "Отмена" }
+                    ],
+                    ContentTitle = "Выгрузка в .xlsx",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"В отчёте присутствуют критические ошибки (выделены красным). " +
+                                     $"{Environment.NewLine}Всё равно выгрузить отчёт?",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            if (answer is "Да") return;
+
+            await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(new ChangeOrCreateVM(exportReport.FormNum_DB, exportReport), errorList));
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+    }
+
+    #endregion
+
     #region FillExcel
 
     /// <summary>
@@ -82,10 +201,18 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         var worksheetTitle = excelPackage.Workbook.Worksheets[0];
         var worksheetMain = excelPackage.Workbook.Worksheets[1];
 
+
         ExcelPrintTitleExport(rep.FormNum_DB, worksheetTitle, rep, rep.Reports.Master);
+
+
         ExcelPrintSubMainExport(rep.FormNum_DB, worksheetMain, rep);
-        ExcelPrintNotesExport(rep.FormNum_DB, worksheetMain, rep);
+
+        if (worksheetTitle.Name is "1.0" or "2.0" or "Форма 5.0" && (worksheetMain.Name is not "Форма 5.7"))
+            ExcelPrintNotesExport(rep.FormNum_DB, worksheetMain, rep);
+
+
         ExcelPrintRowsExport(rep.FormNum_DB, worksheetMain, rep);
+
         return Task.CompletedTask;
     }
 
@@ -102,26 +229,57 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
     /// <returns>Имя файла.</returns>
     private async Task<string> GetFileName(Report rep, AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
-        var formNum = RemoveForbiddenChars(rep.FormNum_DB);
-        var regNum = RemoveForbiddenChars(rep.Reports.Master.RegNoRep.Value);
-        var okpo = RemoveForbiddenChars(rep.Reports.Master.OkpoRep.Value);
-        var corNum = Convert.ToString(rep.CorrectionNumber_DB);
+        string formNum;
+        string regNum = "";
+        string okpo = "";
+        string corNum = "";
+
+        formNum = RemoveForbiddenChars(rep.FormNum_DB);
+
+        if (rep.Reports.Master.RegNoRep != null)
+            regNum = RemoveForbiddenChars(rep.Reports.Master.RegNoRep.Value);
+
+        if (rep.Reports.Master.OkpoRep != null)
+            okpo = RemoveForbiddenChars(rep.Reports.Master.OkpoRep.Value);
+
+        if (rep.CorrectionNumber_DB != null)
+            corNum = Convert.ToString(rep.CorrectionNumber_DB);
+
         string fileName;
         switch (formNum[0])
         {
             case '1':
-                var startPeriod = RemoveForbiddenChars(rep.StartPeriod_DB);
-                var endPeriod = RemoveForbiddenChars(rep.EndPeriod_DB);
-                fileName = $"{regNum}_{okpo}_{formNum}_{startPeriod}_{endPeriod}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
-                break;
+                {
+                    var startPeriod = RemoveForbiddenChars(rep.StartPeriod_DB);
+                    var endPeriod = RemoveForbiddenChars(rep.EndPeriod_DB);
+                    fileName = $"{regNum}_{okpo}_{formNum}_{startPeriod}_{endPeriod}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
+                    break;
+                }
             case '2':
-                var year = RemoveForbiddenChars(rep.Year_DB);
-                fileName = $"{regNum}_{okpo}_{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
-                break;
+                {
+                    var year = RemoveForbiddenChars(rep.Year_DB);
+                    fileName = $"{regNum}_{okpo}_{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
+                    break;
+                }
+            case '4':
+                {
+                    var codeSubjectRF = RemoveForbiddenChars(rep.Reports.Master_DB.Rows40[0].CodeSubjectRF.Value);
+                    var year = RemoveForbiddenChars(rep.Year_DB);
+                    fileName = $"{codeSubjectRF}_{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
+                    break;
+                }
+            case '5':
+                {
+                    var year = RemoveForbiddenChars(rep.Year_DB);
+                    fileName = $"{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
+                    break;
+                }
             default:
-                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-                fileName = "";
-                break;
+                {
+                    await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                    fileName = "";
+                    break;
+                }
         }
         return fileName;
     }
@@ -147,6 +305,8 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                 .Include(rep => rep.Reports).ThenInclude(reps => reps.DBObservable)
                 .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
                 .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows20)
+                .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows40)
+                .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows50)
                 .Include(rep => rep.Rows11.OrderBy(form => form.NumberInOrder_DB))
                 .Include(rep => rep.Rows12.OrderBy(form => form.NumberInOrder_DB))
                 .Include(rep => rep.Rows13.OrderBy(form => form.NumberInOrder_DB))
@@ -168,6 +328,14 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                 .Include(rep => rep.Rows210.OrderBy(form => form.NumberInOrder_DB))
                 .Include(rep => rep.Rows211.OrderBy(form => form.NumberInOrder_DB))
                 .Include(rep => rep.Rows212.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows41.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows51.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows52.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows53.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows54.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows55.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows56.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows57.OrderBy(form => form.NumberInOrder_DB))
                 .Include(rep => rep.Notes.OrderBy(note => note.Order))
                 .Where(rep => rep.Reports != null && rep.Reports.DBObservable != null)
                 .FirstAsync(rep => rep.Id == repId, cts.Token);
@@ -193,11 +361,24 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 #else
         var appFolderPath = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Excel", $"{rep.FormNum_DB}.xlsx");
 #endif
+        if (!File.Exists(appFolderPath))
+        {
+            throw new FileNotFoundException($"Шаблон Excel не найден: {appFolderPath}");
+        }
 
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         ExcelPackage excelPackage = new(new FileInfo(fullPath), new FileInfo(appFolderPath));
-        var worksheetTitle = excelPackage.Workbook.Worksheets[$"{rep.FormNum_DB.Split('.')[0]}.0"];
-        var worksheetMain = excelPackage.Workbook.Worksheets[rep.FormNum_DB];
+
+        var strTitle = $"{rep.FormNum_DB.Split('.')[0]}.0";
+        if (strTitle is "4.0" or "5.0")
+            strTitle = "Форма " + $"{strTitle}";
+        var worksheetTitle = excelPackage.Workbook.Worksheets[strTitle];
+
+        var strMain = rep.FormNum_DB;
+        if (strMain is "4.1" or "5.1" or "5.2" or "5.3" or "5.4" or "5.5" or "5.6" or "5.7")
+            strMain = "Форма " + $"{strMain}";
+        var worksheetMain = excelPackage.Workbook.Worksheets[strMain];
+
         worksheetTitle.Cells.Style.ShrinkToFit = true;
         worksheetMain.Cells.Style.ShrinkToFit = true;
         return Task.FromResult(excelPackage);

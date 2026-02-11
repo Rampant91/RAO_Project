@@ -1,0 +1,466 @@
+﻿<Window
+    x:Class="Client_App.Views.Forms.Forms5.Form_57"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Client_App.Views.Controls"
+    xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:forms="clr-namespace:Models.Forms;assembly=Models"
+    xmlns:forms5="clr-namespace:Models.Forms.Form5;assembly=Models"
+    xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+    xmlns:local="using:Client_App.Behaviors"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms5"
+    x:Name="5.7"
+    Title="Форма 5.7"
+    MinWidth="800"
+    MinHeight="600"
+    d:DesignHeight="1080"
+    d:DesignWidth="1920"
+    x:DataType="vm:Form_57VM"
+    KeyUp="DataGrid_KeyUp"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+
+    <Window.Resources>
+        <converter:DataGridLengthToGridLengthConverter x:Key="LengthConverter" />
+        <converter:NullToStringConverter x:Key="NullToStringConverter" />
+        <converter:DateConverter x:Key="DateConverter" />
+        <converter:IsOperation41AndSingleSelectionConverter x:Key="Op41AndOneSelectedConverter" />
+    </Window.Resources>
+
+    <Design.DataContext>
+        <vm:Form_57VM />
+    </Design.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" MinHeight="175" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--#region Верхний блок данных-->
+
+        <Expander
+            Grid.Row="0"
+            Header="Скрыть/Раскрыть верхнюю панель"
+            IsExpanded="True">
+            <WrapPanel Classes="header">
+
+                <!--#region Отчёт-->
+
+                <Border Classes="borderContainer">
+                    <controls:SelectReportPopup
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        DataContext="{Binding SelectReportPopupVM}" />
+                </Border>
+
+                <Border Classes="borderContainer">
+                    <Grid Margin="5" RowDefinitions="*,*,*,*,*">
+
+						<Grid ColumnDefinitions="*,*"  Grid.Row="0">
+							<TextBlock Grid.Column="0" Margin="5" >Отчетный год</TextBlock>
+							<TextBox Grid.Column="1" Text="{Binding Report.Year.Value}"/>
+						</Grid>
+
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                            <TextBlock Margin="5,10" Text="Номер корректировки:" />
+                            <TextBox
+                                Width="75"
+                                Margin="5"
+                                Text="{Binding Path=Report.CorrectionNumber.Value}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                            <Button
+                                Margin="5"
+                                Command="{Binding CheckForm}"
+                                Content="Проверить" />
+                            <Button
+                                Margin="5"
+                                Command="{Binding SaveReport}"
+                                Content="Сохранить" />
+                        </StackPanel>
+
+						<Button Grid.Row="3" Content="Сформировать" Command="{Binding GenerateForm57}" ></Button>
+
+                    </Grid>
+                </Border>
+
+                <!--#endregion Отчёт-->
+
+                <!--#region Исполнитель-->
+
+                <Border Classes="borderContainer">
+                    <controls:ExecutorDataControl DataContext="{Binding ExecutorDataControlVM}" />
+                </Border>
+
+                <!--#endregion Исполнитель-->
+
+                <!--#region Дополнительные функции-->
+
+                <Border Classes="borderContainer">
+                    <Grid Margin="5" RowDefinitions="Auto,Auto,Auto,Auto">
+						<Button
+                            Grid.Row="2"
+                            Margin="5"
+                            Command="{Binding SetDefaultColumnWidth}"
+                            CommandParameter="{Binding ElementName=dataGrid}"
+                            Content="Выставить ширину колонок по умолчанию" />
+
+                    </Grid>
+                </Border>
+
+                <!--#endregion Дополнительные функции-->
+
+            </WrapPanel>
+        </Expander>
+
+		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1">
+
+            <Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="Auto">
+                <Grid.ContextMenu>
+                    <ContextMenu
+                        x:CompileBindings="True"
+                        x:DataType="vm:Form_57VM"
+                        DataContext="{Binding DataContext, ElementName=dataGrid}">
+                        <MenuItem
+                            Command="{Binding SelectAll}"
+                            Header="Выделить всё"
+                            InputGesture="Ctrl+A"
+                            IsHitTestVisible="True" />
+                        <MenuItem
+                            Command="{Binding AddRow}"
+                            Header="Добавить строку"
+                            InputGesture="Ctrl+T" />
+                        <MenuItem
+                            Command="{Binding AddRows}"
+                            Header="Добавить N строк"
+                            InputGesture="Ctrl+N" />
+                        <MenuItem
+                            Command="{Binding AddRowsIn}"
+                            CommandParameter="{Binding SelectedForms}"
+                            Header="Добавить N строк перед"
+                            InputGesture="Ctrl+I"
+                            IsVisible="{Binding AnyRowSelected}" />
+                        <MenuItem
+                            Command="{Binding CopyRows}"
+                            CommandParameter="{Binding SelectedForms}"
+                            Header="Копировать"
+                            InputGesture="Ctrl+C"
+                            IsVisible="{Binding AnyRowSelected}" />
+                        <MenuItem
+                            Command="{Binding PasteRows}"
+                            Header="Вставить"
+                            InputGesture="Ctrl+V"
+                            IsVisible="{Binding AnyRowSelected}" />
+                        <MenuItem
+                            Command="{Binding DeleteRows}"
+                            CommandParameter="{Binding SelectedForms}"
+                            Header="Удалить выбранные строчки"
+                            InputGesture="Ctrl+D"
+                            IsVisible="{Binding AnyRowSelected}" />
+                        <MenuItem
+                            Command="{Binding DeleteDataInRows}"
+                            CommandParameter="{Binding SelectedForms}"
+                            Header="Очистить строчки"
+                            InputGesture="Ctrl+U"
+                            IsVisible="{Binding AnyRowSelected}" />
+                        <MenuItem
+                            Command="{Binding SetNumberOrder}"
+                            Header="Выставить номер"
+                            InputGesture="Ctrl+O" />
+                        <!--<MenuItem Header="Сортировать по номеру п/п	Ctrl+L"
+                                      Command="{Binding SortForms}"
+                                      HotKey="Ctrl+L"/>-->
+                    </ContextMenu>
+                </Grid.ContextMenu>
+
+                <!--#endregion Контекстное меню-->
+
+                <!--#region Заголовки таблицы-->
+
+                <Grid
+                    Grid.Row="0"
+                    Width="{Binding ElementName=dataGrid.Width}"
+                    Classes="tableHeader"
+                    ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
+                    RowDefinitions="Auto,Auto">
+
+                    <interactivity:Interaction.Behaviors>
+                        <local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}" />
+                    </interactivity:Interaction.Behaviors>
+
+					<!--#region Первый уровень заголовков-->
+
+					<Border
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        BorderThickness="1,1,1,0">
+						<TextBlock>№ п/п</TextBlock>
+					</Border>
+					<Border
+                        Grid.Row="0"
+                        Grid.Column="1">
+						<TextBlock>Рег.№ организации в СГУК РВ и РАО</TextBlock>
+					</Border>
+					<Border
+                        Grid.Row="0"
+                        Grid.Column="2">
+						<TextBlock>Код ОКПО организации</TextBlock>
+					</Border>
+					<Border
+                        Grid.Row="0"
+                        Grid.Column="3">
+						<TextBlock>Наименование организации (сокращенное наименование при наличии)</TextBlock>
+					</Border>
+					<Border
+                        Grid.Row="0"
+                        Grid.Column="4">
+						<TextBlock>Наименование и номер документа о признании</TextBlock>
+					</Border>
+					<Border
+                        Grid.Row="0"
+                        Grid.Column="5">
+						<TextBlock>Наименование и номер разрешительного документа</TextBlock>
+					</Border>
+					<Border
+                        Grid.Row="0"
+                        Grid.Column="6">
+						<TextBlock>Разрешенный вид деятельности</TextBlock>
+					</Border>
+					<Border
+                        Grid.Row="0"
+                        Grid.Column="7">
+						<TextBlock>Примечание</TextBlock>
+					</Border>
+                </Grid>
+
+                <!--#endregion Заголовки таблицы-->
+
+                <!--#region DataGrid-->
+
+                <DataGrid
+                    x:Name="dataGrid"
+                    Grid.Row="1"
+					Classes="table"
+					x:CompileBindings="True"
+					CanUserSortColumns="True"
+					CanUserReorderColumns="False"
+					Items="{Binding FormList}"
+					SelectedItem="{Binding SelectedForm}"
+					ColumnWidth="125">
+
+                    <interactivity:Interaction.Behaviors>
+                        <local:DataGridColumnWidthLoadBehavior FormNum="5.7" />
+                        <local:DataGridPointerBehavior />
+                        <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
+                        <local:DeselectDataGridOnClickOutsideBehavior />
+                        <local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
+                        <local:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
+                    </interactivity:Interaction.Behaviors>
+
+					<DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding NumberInOrder.Value}"
+											Width="40"
+											IsReadOnly="True"
+											x:DataType="forms5:Form57">
+							<DataGridTextColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="1"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTextColumn.HeaderTemplate>
+						</DataGridTextColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="2"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms5:Form57">
+									<TextBox Text="{Binding RegNo.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="3" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms5:Form57">
+									<TextBox Text="{Binding OKPO.Value, Mode=TwoWay}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="4" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms5:Form57">
+									<TextBox Text="{Binding Name.Value, Mode=TwoWay}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="5" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms5:Form57">
+									<TextBox Text="{Binding Recognizance.Value, Mode=TwoWay}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="6" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms5:Form57">
+									<TextBox Text="{Binding License.Value, Mode=TwoWay}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="7" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms5:Form57">
+									<TextBox Text="{Binding Practice.Value, Mode=TwoWay}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="8" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms5:Form57">
+									<TextBox Text="{Binding Note.Value, Mode=TwoWay}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <!--#endregion DataGrid-->
+
+            </Grid>
+        </ScrollViewer>
+
+        <!--#endregion Таблица-->
+
+        <!--#region Выбор страницы-->
+
+        <Border Grid.Row="2" Classes="pageControlContainer">
+            <Grid ColumnDefinitions="Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="5"
+                    Text="Текущая страница" />
+                <controls:NumericLeftRight
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="5"
+                    Minimum="1"
+                    Value="{Binding CurrentPage}" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Margin="5"
+                    Text="Кол-во страниц:" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="3"
+                    Margin="5"
+                    Text="{Binding TotalPages}" />
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="5"
+                    Text="Кол-во строчек на странице" />
+                <controls:NumericLeftRight
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="5"
+                    Minimum="1"
+                    Value="{Binding RowCount}" />
+
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Margin="5"
+                    Text="Всего строчек:" />
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="3"
+                    Margin="5"
+                    Text="{Binding TotalRows}" />
+            </Grid>
+        </Border>
+
+        <!--#endregion Выбор страницы-->
+
+
+    </Grid>
+</Window>

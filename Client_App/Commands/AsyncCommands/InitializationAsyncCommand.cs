@@ -1,30 +1,33 @@
-﻿using System;
-using System.Collections;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Threading;
-using Client_App.ViewModels;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
-using Models.Collections;
-using Models.DBRealization;
-using Models.Forms.Form1;
-using Models.Forms.Form2;
-using Models.Forms;
-using Models.Interfaces;
-using Spravochniki;
-using Microsoft.EntityFrameworkCore;
-using static Client_App.ViewModels.BaseVM;
-using System.Reflection;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.Properties;
-using MessageBox.Avalonia.Models;
-using System.Collections.Generic;
 using Client_App.Resources.CustomComparers;
+using Client_App.ViewModels;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Enums;
+using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using Models.Collections;
+using Models.DBRealization;
+using Models.Forms;
+using Models.Forms.Form1;
+using Models.Forms.Form2;
+using Models.Interfaces;
+using Spravochniki;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using static Client_App.ViewModels.BaseVM;
+using Models.Forms.Form4;
+using Models.Forms.Form5;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -68,12 +71,20 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         #region LoadTables
 
         onStartProgressBarVm.LoadStatus = "Загрузка форм 1.0";
-        mainWindowViewModel.OnStartProgressBar = 24;
+        mainWindowViewModel.OnStartProgressBar = 25;
         await dbm.form_10.LoadAsync();
 
         onStartProgressBarVm.LoadStatus = "Загрузка форм 2.0";
-        mainWindowViewModel.OnStartProgressBar = 45;
+        mainWindowViewModel.OnStartProgressBar = 35;
         await dbm.form_20.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 4.0";
+        mainWindowViewModel.OnStartProgressBar = 45;
+        await dbm.form_40.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 5.0";
+        mainWindowViewModel.OnStartProgressBar = 55;
+        await dbm.form_50.LoadAsync();
 
         try
         {
@@ -98,6 +109,13 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         {
             dbm.DBObservableDbSet.Add(new DBObservable());
             dbm.DBObservableDbSet.Local.First().Reports_Collection.AddRange(dbm.ReportsCollectionDbSet);
+        }
+
+        var removedReports = dbm.ReportsCollectionDbSet.Where(reps => reps.DBObservable == null);
+
+        foreach (var reports in removedReports)
+        {
+            dbm.ReportsCollectionDbSet.Remove(reports);
         }
 
         await dbm.DBObservableDbSet.LoadAsync();
@@ -164,9 +182,11 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             LogsDirectory = Path.Combine(RaoDirectory, "logs");
             ReserveDirectory = Path.Combine(RaoDirectory, "reserve");
             TmpDirectory = Path.Combine(RaoDirectory, "temp");
+            ConfigDirectory = Path.Combine(RaoDirectory, "config");
             Directory.CreateDirectory(LogsDirectory);
             Directory.CreateDirectory(ReserveDirectory);
             Directory.CreateDirectory(TmpDirectory);
+            Directory.CreateDirectory(ConfigDirectory);
         }
         catch (Exception ex)
         {
@@ -287,21 +307,20 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             }
             case "Выбрать папку и сохранить":
             {
-                SaveFileDialog dial = new();
-                var filter = new FileDialogFilter
+                OpenFolderDialog dial = new() { Directory = ReserveDirectory };
+                var folderPath = dial.ShowAsync(Desktop.Windows[0]).GetAwaiter().GetResult();
+                if (folderPath is not null)
                 {
-                    Name = "RAODB",
-                    Extensions = { "RAODB" }
-                };
-                dial.Filters?.Add(filter);
-                dial.Directory = ReserveDirectory;
-                dial.InitialFileName = DbFileName + ".RAODB";
-                var fullPath = dial.ShowAsync(Desktop.Windows[0]).GetAwaiter().GetResult();
-                if (fullPath is not null)
-                {
+                    var count = 0;
+                    string reserveDbPath;
+                    do
+                    {
+                        reserveDbPath = Path.Combine(folderPath, DbFileName + $"_{++count}.RAODB");
+                    } while (File.Exists(reserveDbPath));
+
                     try
                     {
-                        File.Copy(Path.Combine(RaoDirectory, DbFileName + ".RAODB"), fullPath);
+                        File.Copy(Path.Combine(RaoDirectory, DbFileName + ".RAODB"), reserveDbPath);
                     }
                     catch (Exception ex)
                     {
@@ -320,7 +339,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
     #endregion
 
     #region CleanUpMasterRep
-    
+
     private static async Task CleanUpMasterRep()
     {
         await using var db = new DBModel(StaticConfiguration.DBPath);
@@ -430,26 +449,28 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         FileInfo dbFileInfo = null;
         foreach (var fileInfo in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly)
                      .Where(x => x.Name.ToLower().EndsWith(".raodb"))
-                     .OrderByDescending((x => x.LastWriteTime)))
+                     .OrderByDescending(x => x.LastWriteTime))
         {
             try
             {
                 dbFileInfo = fileInfo;
                 DbFileName = Path.GetFileNameWithoutExtension(fileInfo.Name);
                 mainWindowViewModel.Current_Db =
-                    $"Интерактивное пособие по вводу данных ver.{Assembly.GetExecutingAssembly().GetName().Version} Текущая база данных - {DbFileName}";
+                    $"МПЗФ ver.{Assembly.GetExecutingAssembly().GetName().Version} Текущая база данных - {DbFileName}";
                 StaticConfiguration.DBPath = fileInfo.FullName;
                 StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                 dbm = StaticConfiguration.DBModel;
 
                 #region Test Version
 
-                var t = await dbm.Database.GetPendingMigrationsAsync();
-                var a = dbm.Database.GetMigrations();
-                var b = await dbm.Database.GetAppliedMigrationsAsync();
+                //var t = await dbm.Database.GetPendingMigrationsAsync();
+                //var a = dbm.Database.GetMigrations();
+                //var b = await dbm.Database.GetAppliedMigrationsAsync();
 
                 #endregion
+
                 await dbm.Database.MigrateAsync();
+
                 return;
             }
             catch (FirebirdSql.Data.FirebirdClient.FbException fbEx)
@@ -470,7 +491,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             }
         }
         DbFileName = $"Local_{i}";
-        mainWindowViewModel.Current_Db = $"Интерактивное пособие по вводу данных ver.{Assembly.GetExecutingAssembly().GetName().Version} " +
+        mainWindowViewModel.Current_Db = $"МПЗФ ver.{Assembly.GetExecutingAssembly().GetName().Version} " +
                                          $"Текущая база данных - {DbFileName}";
         StaticConfiguration.DBPath = Path.Combine(RaoDirectory, $"{DbFileName}.RAODB");
         StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
@@ -479,12 +500,20 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         {
             try
             {
+                var lastModifiedFile = true;
+                var actualReserveFileFullPath = string.Empty;
                 foreach (var fileInfo in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly)
-                             .Where(x => x.Name.ToLower().EndsWith(".raodb")))
+                             .Where(x => x.Name.ToLower().EndsWith(".raodb"))
+                             .OrderByDescending(x => x.LastWriteTime))
                 {
                     if (!File.Exists(fileInfo.FullName)) continue;
-                    File.Copy(fileInfo.FullName, 
-                        Path.Combine(ReserveDirectory, Path.GetFileNameWithoutExtension(fileInfo.Name)) + $"_{DateTime.Now.Ticks}.RAODB");
+                    var reserveFileFullPath = Path.Combine(ReserveDirectory, Path.GetFileNameWithoutExtension(fileInfo.Name) + $"_{DateTime.Now.Ticks}.RAODB");
+                    if (lastModifiedFile)
+                    {
+                        actualReserveFileFullPath = reserveFileFullPath;
+                        lastModifiedFile = false;
+                    }
+                    File.Copy(fileInfo.FullName, reserveFileFullPath);
                     File.Delete(fileInfo.FullName);
                 }
                 
@@ -496,12 +525,17 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Ошибка при чтении файла .raodb",
+                        ContentTitle = "Ошибка при чтении файла .RAODB",
                         ContentHeader = "Ошибка",
-                        ContentMessage = $"Не удалось прочесть файл базы данных " +
-                                         $"{Environment.NewLine}{dbFileInfo.FullName}. Файл поврежден." +
-                                         $"{Environment.NewLine}Программа запущена с новым пустым файлом базы данных" +
-                                         $"{Environment.NewLine}{StaticConfiguration.DBPath}",
+                        ContentMessage = $"Возникла ошибка при чтении файла базы данных (БД)" +
+                                         $"{Environment.NewLine}{dbFileInfo.FullName}." +
+                                         $"{Environment.NewLine}Файл БД был перемещён по пути " +
+                                         $"{Environment.NewLine}{actualReserveFileFullPath}." +
+                                         $"{Environment.NewLine}Программа запущена с новым пустым файлом БД" +
+                                         $"{Environment.NewLine}{StaticConfiguration.DBPath}." +
+                                         $"{Environment.NewLine}Для восстановления данных воспользуйтель функцией \"Импорт -> из RAODB\"," +
+                                         $"{Environment.NewLine}указав путь к резервному файлу.",
+
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
                     })
@@ -659,11 +693,39 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     it.Master_DB.Rows20.Add(ty1);
                     it.Master_DB.Rows20.Add(ty2);
                 }
+                if (it.Master_DB.Rows40.Count == 0)
+                {
+                    var ty = (Form40)FormCreator.Create("4.0");
+                    ty.NumberInOrder_DB = 1;
+                    it.Master_DB.Rows40.Add(ty);
+                }
+                if (it.Master_DB.Rows50.Count == 0)
+                {
+                    var ty = (Form50)FormCreator.Create("5.0");
+                    ty.NumberInOrder_DB = 1;
+                    it.Master_DB.Rows50.Add(ty);
+                }
+
+                //if (it.Master_DB.Rows40.Count == 0)
+                //{
+                //    var ty1 = (Form40)FormCreator.Create("4.0");
+                //    ty1.NumberInOrder_DB = 1;
+                //    var ty2 = (Form40)FormCreator.Create("4.0");
+                //    ty2.NumberInOrder_DB = 2;
+                //    it.Master_DB.Rows40.Add(ty1);
+                //    it.Master_DB.Rows40.Add(ty2);
+                //}
 
                 it.Master_DB.Rows10.Sorted = false;
                 it.Master_DB.Rows20.Sorted = false;
+                it.Master_DB.Rows40.Sorted = false;
+                it.Master_DB.Rows50.Sorted = false;
+                //it.Master_DB.Rows40.Sorted = false;
                 await it.Master_DB.Rows10.QuickSortAsync();
                 await it.Master_DB.Rows20.QuickSortAsync();
+                await it.Master_DB.Rows40.QuickSortAsync();
+                await it.Master_DB.Rows50.QuickSortAsync();
+                //await it.Master_DB.Rows40.QuickSortAsync();
             }
         }
     }
@@ -697,13 +759,14 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             await item.SortAsync();
         }
 
+        
         var comparator = new CustomReportsComparer();
         var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
         ReportsStorage.LocalReports.Reports_Collection.Clear();
         ReportsStorage.LocalReports.Reports_Collection
             .AddRange(tmpReportsList
-                .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
-                .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
+                .OrderBy(x => x.Master_DB?.RegNoRep?.Value, comparator)
+                .ThenBy(x => x.Master_DB?.OkpoRep?.Value, comparator));
 
         //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
     }

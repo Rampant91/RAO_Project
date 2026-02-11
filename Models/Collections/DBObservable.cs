@@ -31,6 +31,8 @@ public class DBObservable : INotifyPropertyChanged
         OnPropertyChanged(nameof(Reports_Collection));
         OnPropertyChanged(nameof(Reports_Collection10));
         OnPropertyChanged(nameof(Reports_Collection20));
+        OnPropertyChanged(nameof(Reports_Collection40));
+        OnPropertyChanged(nameof(Reports_Collection50));
     }
 
     #endregion
@@ -84,8 +86,38 @@ public class DBObservable : INotifyPropertyChanged
 
     #endregion
 
+    #region Reports_Collection40
+
+    [NotMapped]
+    public virtual ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection40
+    {
+        get
+        {
+            var sm = Reports_Collection_DB.Where(t => t.Master.FormNum.Value == "4.0");
+            var obj = new ObservableCollectionWithItemPropertyChanged<Reports>(sm);
+            return obj;
+        }
+    }
+
+    #endregion
+
+    #region Reports_Collection50
+
+    [NotMapped]
+    public virtual ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection50
+    {
+        get
+        {
+            var sm = Reports_Collection_DB.Where(t => t.Master.FormNum.Value == "5.0");
+            var obj = new ObservableCollectionWithItemPropertyChanged<Reports>(sm);
+            return obj;
+        }
+    }
+
+    #endregion
+
     #region Validation
-    
+
     private static bool Reports_Collection_Validation(DbSet<Reports> value)
     {
         return true;

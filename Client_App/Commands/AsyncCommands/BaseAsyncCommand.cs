@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -41,7 +42,10 @@ public abstract class BaseAsyncCommand : BaseCommand
         {
             await AsyncExecute(parameter);
         }
-        catch (OperationCanceledException) { }
+        catch (OperationCanceledException) 
+        {
+            var msg = $"Операция отменена";
+        }
         catch (Exception ex)
         {
             var msg = $"{Environment.NewLine}Message: {ex.Message}" +

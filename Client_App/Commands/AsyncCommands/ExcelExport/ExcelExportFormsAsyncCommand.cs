@@ -26,7 +26,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 /// <summary>
 /// Excel -> Формы 1.x, 2.x и Excel -> Выбранная организация -> Формы 1.x, 2.x.
 /// </summary>
-public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncCommand
+public partial class ExcelExportFormsAsyncCommand(MainWindowVM mainWindowVM) : ExcelExportBaseAllAsyncCommand
 {
     public override bool CanExecute(object? parameter) => true;
 
@@ -36,7 +36,7 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
         var cts = new CancellationTokenSource();
 
         var forSelectedOrg = parameter!.ToString()!.Contains("Org");
-        var selectedReports = (Reports?)mainWindow?.SelectedReports?.FirstOrDefault();
+        var selectedReports = mainWindowVM.SelectedReports;
         var formNum = OnlyDigitsRegex().Replace(parameter.ToString()!, "");
         ExportType = $"Выгрузка форм {formNum}";
 
@@ -44,7 +44,7 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
         progressBarVM.SetProgressBar(5, "Определение имени файла");
-        var fileName = await GetFileName(formNum, forSelectedOrg, selectedReports!);
+        var fileName = await GetFileName(formNum, forSelectedOrg, selectedReports, cts, progressBar);
 
         progressBarVM.SetProgressBar(7, "Запрос пути сохранения");
         var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
@@ -118,7 +118,7 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в Excel",
+                        ContentTitle = "Выгрузка в .xlsx",
                         ContentMessage = "Выгрузка не выполнена, поскольку не выбрана организация",
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -140,11 +140,11 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в Excel",
+                        ContentTitle = "Выгрузка в .xlsx",
                         ContentHeader = "Уведомление",
                         ContentMessage =
                             $"Не удалось совершить выгрузку форм {formNum}," +
-                            $"{Environment.NewLine}поскольку эти формы отсутствуют в текущей базе.",
+                            $"{Environment.NewLine}поскольку эти формы отсутствуют в текущей организации/базе.",
                         MinWidth = 400,
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -207,10 +207,34 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
     /// <param name="formNum">Номер формы отчётности.</param>
     /// <param name="forSelectedOrg">Флаг, выполняется ли команда для выбранной организации или для всех организаций в БД.</param>
     /// <param name="selectedReports">Выбранная организация.</param>
+    /// <param name="cts">Токен.</param>
+    /// <param name="progressBar">Прогрессбар.</param>
     /// <returns>Имя файла.</returns>
-    private Task<string> GetFileName(string formNum, bool forSelectedOrg, Reports selectedReports)
+    private async Task<string> GetFileName(string formNum, bool forSelectedOrg, Reports? selectedReports, CancellationTokenSource cts,
+        AnyTaskProgressBar? progressBar = null)
     {
         string fileName;
+
+        if (forSelectedOrg && selectedReports is null)
+        {
+            #region MessageExcelExportFail
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в .xlsx",
+                    ContentMessage = "Выгрузка не выполнена, поскольку не выбрана организация",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+
         switch (forSelectedOrg)
         {
             case true:
@@ -229,7 +253,7 @@ public partial class ExcelExportFormsAsyncCommand : ExcelExportBaseAllAsyncComma
             }
 
         }
-        return Task.FromResult(fileName);
+        return fileName;
     }
 
     #endregion

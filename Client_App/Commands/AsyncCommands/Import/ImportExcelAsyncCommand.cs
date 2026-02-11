@@ -1,28 +1,34 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Threading;
+using Client_App.Interfaces.Logger;
+using Client_App.Resources.CustomComparers;
+using Client_App.ViewModels;
+using Client_App.Views.Messages;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
+using Models.Forms.Form1;
+using Models.Forms.Form2;
+using Models.Forms.Form4;
 using OfficeOpenXml;
+using Spravochniki;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Models.Forms.Form1;
-using Models.Forms.Form2;
-using Avalonia.Threading;
-using Client_App.Resources;
-using Client_App.Controls.DataGrid.DataGrids;
-using Client_App.Resources.CustomComparers;
+using static Client_App.ViewModels.Messages.SelectReportsMessageWindowVM;
+using Microsoft.EntityFrameworkCore;
+using Models.Forms.Form5;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
 /// <summary>
 /// Импорт -> Из Excel.
 /// </summary>
-internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
+internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -45,21 +51,60 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         var impReportsList = new List<Reports>();
         foreach (var res in answer) // Для каждого импортируемого файла
         {
+            var impDateTime = DateTime.Now;
+
             ExcelImportNewReps = false;
             if (res is "") continue;
             SourceFile = new FileInfo(res);
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            using ExcelPackage excelPackage = new(SourceFile);
+
+            try
+            {
+                using ExcelPackage excelPackageTry = new(SourceFile);
+            }
+            catch(Exception ex)
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Ошибка",
+                    ContentHeader = $"Произошла ошибка при импорте файла {SourceFile.Name}",
+                    ContentMessage = $"Описание:\n" +
+                                     $"{ex.Message}",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+                return;
+            }
+            ExcelPackage excelPackage = new(SourceFile);
             var worksheet0 = excelPackage.Workbook.Worksheets[0];
-            var val = worksheet0.Name == "1.0"
+            var worksheet1 = excelPackage.Workbook.Worksheets[1];
+            // Проверка формата формы, записанного в Excel
+            var patternIsValid = worksheet0.Name == "1.0"
                       && Convert.ToString(worksheet0.Cells["A3"].Value)
                           is "ГОСУДАОСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ"
                           or "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ"
                       || worksheet0.Name == "2.0"
                       && Convert.ToString(worksheet0.Cells["A4"].Value)
                           is "ГОСУДАОСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ"
-                          or "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ";
-            if (!val)
+                          or "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ"
+                      || worksheet0.Name == "Форма 4.0"
+                      && (Convert.ToString(worksheet0.Cells["A7"].Value) //Старый шаблон
+                          is "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ\n" +
+                          "Конфиденциальность гарантируется получателем информации"
+                      || Convert.ToString(worksheet0.Cells["A6"].Value) //Новый шаблон
+                          is "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ\n" +
+                          "Конфиденциальность гарантируется получателем информации")
+                      || worksheet0.Name == "Форма 5.0"
+                      && Convert.ToString(worksheet0.Cells["A7"].Value)
+                          is "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ\n" +
+                          "Конфиденциальность гарантируется получателем информации";
+
+
+            if (!patternIsValid)
             {
                 #region InvalidDataFormatMessage
 
@@ -101,32 +146,159 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 timeCreate[1] = $"0{timeCreate[1]}";
             }
 
-            var baseReps = GetBaseReps(worksheet0);
+            Reports? baseReps = null;
+            string? codeSubjectRF = "";
+
+            //Импортируем данные из титульника
             var impReps = GetImportReps(worksheet0);
+
+            // В первую очередь записываем основные данные титульного листа (1.0, 2.0, 4.0, 5.0)
+            // Для 1.0 и 2.0 основные данные - это рег.Номер и ОКПО
+            // Для 4.0 основные данные - это код субъекта
+            // У Формы 5.0 - полное наименование
+            if (worksheet0.Name is "1.0" or "2.0")
+            {
+                switch (parameter)
+                {
+                    case "Auto":
+                    {
+                        baseReps = GetBaseReps(worksheet0);
+                        break;
+                    }
+                    case "Selected":
+                    {
+                        var selectedReports = mainWindowVM.SelectedReports;
+                        if (selectedReports is null) return;
+                        var selectedReportsInfo = new OrganizationInfo
+                        {
+                            RegNum = selectedReports.Master_DB.RegNoRep.Value,
+                            Okpo = selectedReports.Master_DB.OkpoRep.Value
+                        };
+
+                        var impRepsFromDb = await GetSelectedReportsFromDB(selectedReportsInfo, impReps.Master_DB.FormNum_DB);
+                        baseReps = impReps.Master_DB.FormNum_DB switch
+                        {
+                            "1.0" => GetReports11FromLocalEqual(impRepsFromDb),
+                            "2.0" => GetReports21FromLocalEqual(impRepsFromDb),
+                            _ => baseReps
+                        };
+                        break;
+                    }
+                    case "FromList":
+                    {
+                        var localRepsList = await GetReportsListFromDB(impReps.Master_DB.FormNum_DB);
+                        var currentReportIndex = impReportsList.IndexOf(impReps) + 1;
+                        var selectReportsMessageWindow = new SelectReportsMessageWindow(localRepsList, SourceFile!.Name, impReportsList.Count, currentReportIndex, impReps);
+                        var selectedReports = await selectReportsMessageWindow.ShowDialog<OrganizationInfo>(Desktop.MainWindow);
+                        if (selectedReports is null) return;
+
+                        var impRepsFromDb = await GetSelectedReportsFromDB(selectedReports, impReps.Master_DB.FormNum_DB);
+                        baseReps = impReps.Master_DB.FormNum_DB switch
+                        {
+                            "1.0" => GetReports11FromLocalEqual(impRepsFromDb),
+                            "2.0" => GetReports21FromLocalEqual(impRepsFromDb),
+                            _ => baseReps
+                        };
+                        break;
+                    }
+                    default: return;
+                }
+            }
+                
+            else if (worksheet0.Name is "Форма 4.0")
+            {
+                codeSubjectRF = Convert.ToString(worksheet0.Cells["B8"].Value);
+                var subjectRF = Convert.ToString(worksheet0.Cells["B9"].Value);
+
+                //Автоматическое определение кода субъекта РФ
+                if (Spravochniks.DictionaryOfSubjectRF.ContainsValue(subjectRF))
+                {
+                    codeSubjectRF = Spravochniks.DictionaryOfSubjectRF.FirstOrDefault(x => x.Value == subjectRF).Key.ToString();
+                    if (codeSubjectRF.Length == 1)
+                        codeSubjectRF = "0" + codeSubjectRF;
+                }
+
+                //Продолжение автоматического определения кода субъекта
+                if (codeSubjectRF is "" or null)
+                {
+                    if (worksheet1 is not null
+                        && worksheet1.Cells["B9"].Value is string str
+                        && !string.IsNullOrEmpty(str))
+                    {
+                        codeSubjectRF = str.Substring(0, 2);
+                    }
+                }
+
+                baseReps = ReportsStorage.LocalReports.Reports_Collection40
+                    .FirstOrDefault(reports => reports.Master_DB.Rows40[0].CodeSubjectRF_DB == codeSubjectRF);
+            }
+            else if(worksheet0.Name is "Форма 5.0")
+            {
+                var name = Convert.ToString(worksheet0.Cells["B20"].Value);
+                try
+                {
+                    baseReps = StaticConfiguration.DBModel.ReportsCollectionDbSet
+                        .Include(reps => reps.Report_Collection)
+                        .Include(reps => reps.Master_DB)
+                        .ThenInclude(reps => reps.Rows50)
+                        .AsEnumerable()
+                        .FirstOrDefault(reports => reports.Master_DB.Rows50[0].Name_DB == name);
+                }
+                catch(Exception ex)
+                {
+                    throw ex;
+                }
+            }
+
+            if ((impReps.Master_DB.FormNum_DB == "4.0") && 
+                codeSubjectRF is not ("" or null))
+            {
+                impReps.Master_DB.Rows40[0].CodeSubjectRF_DB = codeSubjectRF;
+            }    
             impReportsList.Add(impReps);
             if (baseReps is null)
             {
                 ExcelImportNewReps = true;
                 baseReps = impReps;
             }
-            
-            BaseRepsOkpo = baseReps.Master.OkpoRep.Value;
-            BaseRepsRegNum = baseReps.Master.RegNoRep.Value;
-            BaseRepsShortName = baseReps.Master.ShortJurLicoRep.Value;
+            baseReps.Master_DB.ReportChangedDate = impDateTime;
 
-            var worksheet1 = excelPackage.Workbook.Worksheets[1];
+            if (worksheet0.Name is "1.0" or "2.0")
+            {
+                BaseRepsOkpo = baseReps.Master.OkpoRep.Value;
+                BaseRepsRegNum = baseReps.Master.RegNoRep.Value;
+                BaseRepsShortName = baseReps.Master.ShortJurLicoRep.Value;
+            }
+
             var repNumber = worksheet0.Name;
+            // В некоторых шаблонах в наименовании листа Excel перед номером формы добавляется слово "Форма". Например "Форма 4.0"
+            // а в других просто пишется номер формы. Например "1.0"
+            if (repNumber.ToLower().StartsWith("форма "))   
+                repNumber = repNumber.Split(' ')[1];  
+
             var formNumber = worksheet1.Name;
+            // В некоторых шаблонах в наименовании листа Excel перед номером формы добавляется слово "Форма". Например "Форма 4.1"
+            // а в других просто пишется номер формы. Например "1.1"
+            if (formNumber.ToLower().StartsWith("форма ")) 
+                formNumber = formNumber.Split(' ')[1];
 
+            //Импортируем отчет
             var impRep = GetReportWithDataFromExcel(worksheet0, worksheet1, formNumber, timeCreate);
+            impRep.ReportChangedDate = impDateTime;
 
-            var start = formNumber is "2.8"
-                ? 14
-                : 11;
+            var start = formNumber switch
+            {
+                "2.8" => 14,
+                "4.1" => 9,
+                "5.1" or "5.2" or "5.3" or "5.4" or "5.5" or "5.6" or "5.7" => 12,
+                _ => 11
+            };
+
             var end = $"A{start}";
             var value = worksheet1.Cells[end].Value;
 
-            while (value != null && Convert.ToString(value)?.ToLower() is not ("примечание:" or "примечания:"))
+            while (value != null 
+                   && Convert.ToString(value)?.ToLower() is not ("примечание:" or "примечания:" or "должность исполнителя"))
             {
                 GetDataFromRow(formNumber, worksheet1, start, impRep);
                 start++;
@@ -134,18 +306,34 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 value = worksheet1.Cells[end].Value;
             }
 
-            if (value is null)
-                start += 3;
-            else if (Convert.ToString(value)?.ToLower() is "примечание:" or "примечания:")
-                start += 2;
-            while (worksheet1.Cells[$"A{start}"].Value != null ||
-                   worksheet1.Cells[$"B{start}"].Value != null ||
-                   worksheet1.Cells[$"C{start}"].Value != null)
+            NumberInOrder = 1;
+
+            while (value is null)
             {
-                Note newNote = new();
-                newNote.ExcelGetRow(worksheet1, start);
-                impRep.Notes.Add(newNote);
-                start++;
+                start += 1; 
+                end = $"A{start}";
+                value = worksheet1.Cells[end].Value;
+            }
+
+            // Импортируем примечания
+            // У форм 4.X нет примечаний
+            if ((repNumber is "1.0" or "2.0" or "5.0") 
+                && (formNumber is not "5.7"))
+            {
+                if (Convert.ToString(value)?.ToLower() is "примечание:" or "примечания:")
+                {
+                    start += 2;
+
+                    while (worksheet1.Cells[$"A{start}"].Value != null ||
+                           worksheet1.Cells[$"B{start}"].Value != null ||
+                           worksheet1.Cells[$"C{start}"].Value != null)
+                    {
+                        Note newNote = new();
+                        newNote.ExcelGetRow(worksheet1, start);
+                        impRep.Notes.Add(newNote);
+                        start++;
+                    }
+                }
             }
 
             ImpRepCorNum = impRep.CorrectionNumber_DB;
@@ -158,10 +346,11 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             //SkipNewOrg = SkipInter = SkipLess = SkipNew = SkipReplace = AtLeastOneImportDone = false;
             HasMultipleReport = answer.Length > 1;
 
+            // Проверяем есть ли в БД, импортируемые отчеты
             var impRepList = new List<Report> { impRep };
             if (baseReps.Report_Collection.Count != 0)
             {
-                switch (worksheet0.Name)
+                switch (worksheet0.Name.ToLower())
                 {
                     case "1.0":
                     {
@@ -173,6 +362,17 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                         await ProcessIfHasReports21(baseReps, impReps, impRepList);
                         break;
                     }
+                    case "форма 4.0":
+                    {
+                        await ProcessIfHasReports41(baseReps, impReps, impRepList);
+                        break;
+                    }
+                    case "форма 5.0":
+                    {
+                        await ProcessIfHasReports51(baseReps, impReps, impRepList);
+                        break;
+                    }
+
                 }
             }
             else
@@ -184,34 +384,65 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 {
                     if (answer.Length > 1)
                     {
-                        #region MessageNewOrg
+                        if (worksheet0.Name is "1.0" or "2.0")
+                        {
+                            #region MessageNewOrg 1.0 or 2.0
+                            an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                {
+                                    ButtonDefinitions =
+                                    [
+                                        new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                                        new ButtonDefinition { Name = "Да для всех" },
+                                        new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
+                                    ],
+                                    ContentTitle = "Импорт из .xlsx",
+                                    ContentHeader = "Уведомление",
+                                    ContentMessage =
+                                        $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {ImpRepFormNum}." +
+                                        $"{Environment.NewLine}" +
+                                        $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
+                                        $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
+                                        $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                        $"{Environment.NewLine}" +
+                                        $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
+                                        $"{Environment.NewLine}импортировать все новые организации.",
+                                    MinWidth = 400,
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                })
+                                .ShowDialog(Desktop.MainWindow));
 
-                        an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                            {
-                                ButtonDefinitions =
-                                [
-                                    new ButtonDefinition { Name = "Добавить", IsDefault = true },
-                                    new ButtonDefinition { Name = "Да для всех" },
-                                    new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
-                                ],
-                                ContentTitle = "Импорт из .xlsx",
-                                ContentHeader = "Уведомление",
-                                ContentMessage =
-                                    $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {ImpRepFormNum}." +
-                                    $"{Environment.NewLine}" +
-                                    $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
-                                    $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
-                                    $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
-                                    $"{Environment.NewLine}" +
-                                    $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
-                                    $"{Environment.NewLine}импортировать все новые организации.",
-                                MinWidth = 400,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(Desktop.MainWindow));
+                            #endregion
+                        }
+                        else if (worksheet0.Name.ToLower() is "форма 4.0" or "форма 5.0")
+                        {
+                            #region MessageNewOrg 4.0 5.0
 
-                        #endregion
+                            an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                {
+                                    ButtonDefinitions =
+                                    [
+                                        new ButtonDefinition { Name = "Добавить", IsDefault = true }, 
+                                        new ButtonDefinition { Name = "Да для всех" },
+                                        new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
+                                    ],
+                                    ContentTitle = "Импорт из .xlsx",
+                                    ContentHeader = "Уведомление",
+                                    ContentMessage =
+                                        $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {ImpRepFormNum}." +
+                                        $"{Environment.NewLine}" +
+                                        $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                        $"{Environment.NewLine}" +
+                                        $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
+                                        $"{Environment.NewLine}импортировать все новые организации.",
+                                    MinWidth = 400,
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                })
+                                .ShowDialog(Desktop.MainWindow));
+
+                            #endregion
+                        }
 
                         if (an is "Да для всех") SkipNewOrg = true;
                     }
@@ -249,19 +480,60 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             }
         }
 
-        var comparator = new CustomReportsComparer();
-        var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
-        ReportsStorage.LocalReports.Reports_Collection.Clear();
-        ReportsStorage.LocalReports.Reports_Collection
-            .AddRange(tmpReportsList
-                .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
-                .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator));
+        try
+        {
+            var comparator = new CustomReportsComparer();
+            var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+            if (tmpReportsList.All(x => x.Master_DB.RegNoRep != null && x.Master_DB.OkpoRep != null))
+            {
+                var tmpReportsOrderedEnum = tmpReportsList
+                    .OrderBy(x => x.Master_DB?.RegNoRep?.Value, comparator)
+                    .ThenBy(x => x.Master_DB?.OkpoRep?.Value, comparator);
+
+                ReportsStorage.LocalReports.Reports_Collection.Clear();
+                ReportsStorage.LocalReports.Reports_Collection.AddRange(tmpReportsOrderedEnum);
+            }
+        }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Warning(msg);
+            return;
+        }
 
         //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
 
-        await StaticConfiguration.DBModel.SaveChangesAsync();
+        try
+        {
+            await StaticConfiguration.DBModel.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            #region MessageImportError
 
-        await SetDataGridPage(impReportsList);
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Импорт из .xlsx",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "При сохранении импортированных данных возникла ошибка.\n",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            return;
+        }
+
+        //if (impReportsList.All(x => x.Master_DB.FormNum_DB is "1.0" or "2.0"))
+        //{
+        //    await SetDataGridPage(impReportsList);
+        //}
 
         var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
                 ? "а"
@@ -284,6 +556,9 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 .ShowDialog(Desktop.MainWindow));
 
             #endregion
+
+            var mainWindowVM = Desktop.MainWindow.DataContext as MainWindowVM;
+            mainWindowVM.UpdateReportsCollection();
         }
         else
         {
@@ -311,16 +586,17 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="worksheet0">Лист Excel.</param>
+    /// <param name="worksheet">Лист Excel.</param>
     /// <returns></returns>
-    private static Reports? GetBaseReps(ExcelWorksheet worksheet0)
+    private static Reports? GetBaseReps(ExcelWorksheet worksheet)
     {
-        var excelOkpo0 = Convert.ToString(worksheet0.Cells["B36"].Value);
-        var excelOkpo1= Convert.ToString(worksheet0.Cells["B37"].Value);
+        // Для форм 1.0, 2.0 (Старое)
 
-        var excelRegNo = Convert.ToString(worksheet0.Cells["F6"].Value);
+        var excelOkpo0 = Convert.ToString(worksheet.Cells["B36"].Value);
+        var excelOkpo1= Convert.ToString(worksheet.Cells["B37"].Value);
+        var excelRegNo = Convert.ToString(worksheet.Cells["F6"].Value);
 
-        return worksheet0.Name switch
+        return worksheet.Name switch
         {
             "1.0" => ReportsStorage.LocalReports.Reports_Collection10
                          .FirstOrDefault(t =>
@@ -413,11 +689,15 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
     #region GetDataFromRow
 
-    private static void GetDataFromRow(string param1, ExcelWorksheet worksheet1, int start, Report repFromEx)
+    private int NumberInOrder { get; set; } = 1;
+
+    private void GetDataFromRow(string param1, ExcelWorksheet worksheet1, int start, Report repFromEx)
     {
-        if (param1 is "2.1" or "2.2" && !int.TryParse(Convert.ToString(worksheet1.Cells[$"A{start}"].Value), out _)) return;
+        if (param1 is "2.1" or "2.2" 
+            && !int.TryParse(Convert.ToString(worksheet1.Cells[$"A{start}"].Value), out _)) return;
         dynamic form = FormCreator.Create(param1);
         form.ExcelGetRow(worksheet1, start);
+        form.NumberInOrder_DB = NumberInOrder++;
         repFromEx.Rows.Add(form);
     }
 
@@ -425,100 +705,231 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
     #region GetDataTitleReps
 
-    private static void GetDataTitleReps(Reports newRepsFromExcel, ExcelWorksheet worksheet0)
+    private static void GetDataTitleReps(Reports newRepsFromExcel, ExcelWorksheet worksheet)
     {
-        switch (worksheet0.Name)
+        switch (worksheet.Name)
         {
             case "1.0":
-                newRepsFromExcel.Master_DB.Rows10[0].RegNo_DB = Convert.ToString(worksheet0.Cells["F6"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].OrganUprav_DB = Convert.ToString(worksheet0.Cells["F15"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].SubjectRF_DB = Convert.ToString(worksheet0.Cells["F16"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].JurLico_DB = Convert.ToString(worksheet0.Cells["F17"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].ShortJurLico_DB = worksheet0.Cells["F18"].Value == null
+            {
+                newRepsFromExcel.Master_DB.Rows10[0].RegNo_DB = Convert.ToString(worksheet.Cells["F6"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].OrganUprav_DB = Convert.ToString(worksheet.Cells["F15"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].SubjectRF_DB = Convert.ToString(worksheet.Cells["F16"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].JurLico_DB = Convert.ToString(worksheet.Cells["F17"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].ShortJurLico_DB = worksheet.Cells["F18"].Value == null
                     ? ""
-                    : Convert.ToString(worksheet0.Cells["F18"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F19"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].JurLicoFactAddress_DB = Convert.ToString(worksheet0.Cells["F20"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F21"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].Telephone_DB = Convert.ToString(worksheet0.Cells["F22"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].Fax_DB = Convert.ToString(worksheet0.Cells["F23"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].Email_DB = Convert.ToString(worksheet0.Cells["F24"].Value);
+                    : Convert.ToString(worksheet.Cells["F18"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].JurLicoAddress_DB = Convert.ToString(worksheet.Cells["F19"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].JurLicoFactAddress_DB = Convert.ToString(worksheet.Cells["F20"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].GradeFIO_DB = Convert.ToString(worksheet.Cells["F21"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].Telephone_DB = Convert.ToString(worksheet.Cells["F22"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].Fax_DB = Convert.ToString(worksheet.Cells["F23"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].Email_DB = Convert.ToString(worksheet.Cells["F24"].Value);
 
-                newRepsFromExcel.Master_DB.Rows10[1].SubjectRF_DB = Convert.ToString(worksheet0.Cells["F25"].Value);
-                newRepsFromExcel.Master_DB.Rows10[1].JurLico_DB = Convert.ToString(worksheet0.Cells["F26"].Value);
-                newRepsFromExcel.Master_DB.Rows10[1].ShortJurLico_DB = worksheet0.Cells["F27"].Value == null
+                newRepsFromExcel.Master_DB.Rows10[1].SubjectRF_DB = Convert.ToString(worksheet.Cells["F25"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].JurLico_DB = Convert.ToString(worksheet.Cells["F26"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].ShortJurLico_DB = worksheet.Cells["F27"].Value == null
                     ? ""
-                    : Convert.ToString(worksheet0.Cells["F27"].Value);
-                newRepsFromExcel.Master_DB.Rows10[1].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F28"].Value);
-                newRepsFromExcel.Master_DB.Rows10[1].JurLicoFactAddress_DB = Convert.ToString(worksheet0.Cells["F28"].Value);
-                newRepsFromExcel.Master_DB.Rows10[1].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F29"].Value);
-                newRepsFromExcel.Master_DB.Rows10[1].Telephone_DB = Convert.ToString(worksheet0.Cells["F30"].Value);
-                newRepsFromExcel.Master_DB.Rows10[1].Fax_DB = Convert.ToString(worksheet0.Cells["F31"].Value);
-                newRepsFromExcel.Master_DB.Rows10[1].Email_DB = Convert.ToString(worksheet0.Cells["F32"].Value);
+                    : Convert.ToString(worksheet.Cells["F27"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].JurLicoAddress_DB = Convert.ToString(worksheet.Cells["F28"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].JurLicoFactAddress_DB = Convert.ToString(worksheet.Cells["F28"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].GradeFIO_DB = Convert.ToString(worksheet.Cells["F29"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].Telephone_DB = Convert.ToString(worksheet.Cells["F30"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].Fax_DB = Convert.ToString(worksheet.Cells["F31"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].Email_DB = Convert.ToString(worksheet.Cells["F32"].Value);
 
-                newRepsFromExcel.Master_DB.Rows10[0].Okpo_DB = worksheet0.Cells["B36"].Value == null
+                newRepsFromExcel.Master_DB.Rows10[0].Okpo_DB = worksheet.Cells["B36"].Value == null
                     ? ""
-                    : Convert.ToString(worksheet0.Cells["B36"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].Okved_DB = Convert.ToString(worksheet0.Cells["C36"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].Okogu_DB = Convert.ToString(worksheet0.Cells["D36"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].Oktmo_DB = Convert.ToString(worksheet0.Cells["E36"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].Inn_DB = Convert.ToString(worksheet0.Cells["F36"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].Kpp_DB = Convert.ToString(worksheet0.Cells["G36"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].Okopf_DB = Convert.ToString(worksheet0.Cells["H36"].Value);
-                newRepsFromExcel.Master_DB.Rows10[0].Okfs_DB = Convert.ToString(worksheet0.Cells["I36"].Value);
+                    : Convert.ToString(worksheet.Cells["B36"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].Okved_DB = Convert.ToString(worksheet.Cells["C36"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].Okogu_DB = Convert.ToString(worksheet.Cells["D36"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].Oktmo_DB = Convert.ToString(worksheet.Cells["E36"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].Inn_DB = Convert.ToString(worksheet.Cells["F36"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].Kpp_DB = Convert.ToString(worksheet.Cells["G36"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].Okopf_DB = Convert.ToString(worksheet.Cells["H36"].Value);
+                newRepsFromExcel.Master_DB.Rows10[0].Okfs_DB = Convert.ToString(worksheet.Cells["I36"].Value);
 
-                newRepsFromExcel.Master_DB.Rows10[1].Okpo_DB = worksheet0.Cells["B37"].Value == null
+                newRepsFromExcel.Master_DB.Rows10[1].Okpo_DB = worksheet.Cells["B37"].Value == null
                     ? ""
-                    : Convert.ToString(worksheet0.Cells["B37"].Value);
-                newRepsFromExcel.Master_DB.Rows10[1].Okved_DB = Convert.ToString(worksheet0.Cells["C37"].Value);
-                newRepsFromExcel.Master_DB.Rows10[1].Okogu_DB = Convert.ToString(worksheet0.Cells["D37"].Value);
-                newRepsFromExcel.Master_DB.Rows10[1].Oktmo_DB = Convert.ToString(worksheet0.Cells["E37"].Value);
-                newRepsFromExcel.Master_DB.Rows10[1].Inn_DB = Convert.ToString(worksheet0.Cells["F37"].Value);
-                newRepsFromExcel.Master_DB.Rows10[1].Kpp_DB = Convert.ToString(worksheet0.Cells["G37"].Value);
-                newRepsFromExcel.Master_DB.Rows10[1].Okopf_DB = Convert.ToString(worksheet0.Cells["H37"].Value);
-                newRepsFromExcel.Master_DB.Rows10[1].Okfs_DB = Convert.ToString(worksheet0.Cells["I37"].Value);
+                    : Convert.ToString(worksheet.Cells["B37"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].Okved_DB = Convert.ToString(worksheet.Cells["C37"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].Okogu_DB = Convert.ToString(worksheet.Cells["D37"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].Oktmo_DB = Convert.ToString(worksheet.Cells["E37"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].Inn_DB = Convert.ToString(worksheet.Cells["F37"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].Kpp_DB = Convert.ToString(worksheet.Cells["G37"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].Okopf_DB = Convert.ToString(worksheet.Cells["H37"].Value);
+                newRepsFromExcel.Master_DB.Rows10[1].Okfs_DB = Convert.ToString(worksheet.Cells["I37"].Value);
                 break;
+            }
             case "2.0":
-                newRepsFromExcel.Master_DB.Rows20[0].RegNo.Value = Convert.ToString(worksheet0.Cells["F6"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].OrganUprav_DB = Convert.ToString(worksheet0.Cells["F15"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].SubjectRF_DB = Convert.ToString(worksheet0.Cells["F16"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].JurLico_DB = Convert.ToString(worksheet0.Cells["F17"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].ShortJurLico_DB = Convert.ToString(worksheet0.Cells["F18"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F19"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].JurLicoFactAddress_DB = Convert.ToString(worksheet0.Cells["F20"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F21"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].Telephone_DB = Convert.ToString(worksheet0.Cells["F22"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].Fax_DB = Convert.ToString(worksheet0.Cells["F23"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].Email_DB = Convert.ToString(worksheet0.Cells["F24"].Value);
+            {
+                newRepsFromExcel.Master_DB.Rows20[0].RegNo.Value = Convert.ToString(worksheet.Cells["F6"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].OrganUprav_DB = Convert.ToString(worksheet.Cells["F15"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].SubjectRF_DB = Convert.ToString(worksheet.Cells["F16"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].JurLico_DB = Convert.ToString(worksheet.Cells["F17"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].ShortJurLico_DB = Convert.ToString(worksheet.Cells["F18"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].JurLicoAddress_DB = Convert.ToString(worksheet.Cells["F19"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].JurLicoFactAddress_DB = Convert.ToString(worksheet.Cells["F20"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].GradeFIO_DB = Convert.ToString(worksheet.Cells["F21"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Telephone_DB = Convert.ToString(worksheet.Cells["F22"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Fax_DB = Convert.ToString(worksheet.Cells["F23"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Email_DB = Convert.ToString(worksheet.Cells["F24"].Value);
 
-                newRepsFromExcel.Master_DB.Rows20[1].SubjectRF_DB = Convert.ToString(worksheet0.Cells["F25"].Value);
-                newRepsFromExcel.Master_DB.Rows20[1].JurLico_DB = Convert.ToString(worksheet0.Cells["F26"].Value);
-                newRepsFromExcel.Master_DB.Rows20[1].ShortJurLico_DB = Convert.ToString(worksheet0.Cells["F27"].Value);
-                newRepsFromExcel.Master_DB.Rows20[1].JurLicoAddress_DB = Convert.ToString(worksheet0.Cells["F28"].Value);
-                newRepsFromExcel.Master_DB.Rows20[1].JurLicoFactAddress_DB = Convert.ToString(worksheet0.Cells["F28"].Value);
-                newRepsFromExcel.Master_DB.Rows20[1].GradeFIO_DB = Convert.ToString(worksheet0.Cells["F29"].Value);
-                newRepsFromExcel.Master_DB.Rows20[1].Telephone_DB = Convert.ToString(worksheet0.Cells["F30"].Value);
-                newRepsFromExcel.Master_DB.Rows20[1].Fax_DB = Convert.ToString(worksheet0.Cells["F31"].Value);
-                newRepsFromExcel.Master_DB.Rows20[1].Email_DB = Convert.ToString(worksheet0.Cells["F32"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].SubjectRF_DB = Convert.ToString(worksheet.Cells["F25"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].JurLico_DB = Convert.ToString(worksheet.Cells["F26"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].ShortJurLico_DB = Convert.ToString(worksheet.Cells["F27"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].JurLicoAddress_DB = Convert.ToString(worksheet.Cells["F28"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].JurLicoFactAddress_DB = Convert.ToString(worksheet.Cells["F28"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].GradeFIO_DB = Convert.ToString(worksheet.Cells["F29"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Telephone_DB = Convert.ToString(worksheet.Cells["F30"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Fax_DB = Convert.ToString(worksheet.Cells["F31"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Email_DB = Convert.ToString(worksheet.Cells["F32"].Value);
 
-                newRepsFromExcel.Master_DB.Rows20[0].Okpo_DB = Convert.ToString(worksheet0.Cells["B36"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].Okved_DB = Convert.ToString(worksheet0.Cells["C36"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].Okogu_DB = Convert.ToString(worksheet0.Cells["D36"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].Oktmo_DB = Convert.ToString(worksheet0.Cells["E36"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].Inn_DB = Convert.ToString(worksheet0.Cells["F36"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].Kpp_DB = Convert.ToString(worksheet0.Cells["G36"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].Okopf_DB = Convert.ToString(worksheet0.Cells["H36"].Value);
-                newRepsFromExcel.Master_DB.Rows20[0].Okfs_DB = Convert.ToString(worksheet0.Cells["I36"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Okpo_DB = Convert.ToString(worksheet.Cells["B36"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Okved_DB = Convert.ToString(worksheet.Cells["C36"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Okogu_DB = Convert.ToString(worksheet.Cells["D36"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Oktmo_DB = Convert.ToString(worksheet.Cells["E36"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Inn_DB = Convert.ToString(worksheet.Cells["F36"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Kpp_DB = Convert.ToString(worksheet.Cells["G36"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Okopf_DB = Convert.ToString(worksheet.Cells["H36"].Value);
+                newRepsFromExcel.Master_DB.Rows20[0].Okfs_DB = Convert.ToString(worksheet.Cells["I36"].Value);
 
-                newRepsFromExcel.Master_DB.Rows20[1].Okpo_DB = Convert.ToString(worksheet0.Cells["B37"].Value);
-                newRepsFromExcel.Master_DB.Rows20[1].Okved_DB = Convert.ToString(worksheet0.Cells["C37"].Value);
-                newRepsFromExcel.Master_DB.Rows20[1].Okogu_DB = Convert.ToString(worksheet0.Cells["D37"].Value);
-                newRepsFromExcel.Master_DB.Rows20[1].Oktmo_DB = Convert.ToString(worksheet0.Cells["E37"].Value);
-                newRepsFromExcel.Master_DB.Rows20[1].Inn_DB = Convert.ToString(worksheet0.Cells["F37"].Value);
-                newRepsFromExcel.Master_DB.Rows20[1].Kpp_DB = Convert.ToString(worksheet0.Cells["G37"].Value);
-                newRepsFromExcel.Master_DB.Rows20[1].Okopf_DB = Convert.ToString(worksheet0.Cells["H37"].Value);
-                newRepsFromExcel.Master_DB.Rows20[1].Okfs_DB = Convert.ToString(worksheet0.Cells["I37"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Okpo_DB = Convert.ToString(worksheet.Cells["B37"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Okved_DB = Convert.ToString(worksheet.Cells["C37"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Okogu_DB = Convert.ToString(worksheet.Cells["D37"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Oktmo_DB = Convert.ToString(worksheet.Cells["E37"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Inn_DB = Convert.ToString(worksheet.Cells["F37"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Kpp_DB = Convert.ToString(worksheet.Cells["G37"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Okopf_DB = Convert.ToString(worksheet.Cells["H37"].Value);
+                newRepsFromExcel.Master_DB.Rows20[1].Okfs_DB = Convert.ToString(worksheet.Cells["I37"].Value);
                 break;
+            }
+            case "Форма 4.0":
+            {
+                var form40 = newRepsFromExcel.Master_DB.Rows40[0];
+
+
+
+                form40.CodeSubjectRF_DB = Convert.ToString(worksheet.Cells["B8"].Value);
+                if (form40.CodeSubjectRF_DB.Count() > 2)
+                    form40.CodeSubjectRF_DB = form40.CodeSubjectRF_DB[..2];
+
+                form40.SubjectRF_DB = Convert.ToString(worksheet.Cells["B9"].Value);
+                if (form40.SubjectRF_DB.Count() > 64)
+                    form40.SubjectRF_DB = form40.SubjectRF_DB[..64];
+
+                form40.NameOrganUprav_DB = Convert.ToString(worksheet.Cells["B19"].Value);
+                if (form40.NameOrganUprav_DB.Count() > 256)
+                    form40.NameOrganUprav_DB = form40.NameOrganUprav_DB[..256];
+
+                form40.ShortNameOrganUprav_DB = Convert.ToString(worksheet.Cells["B20"].Value);
+                if (form40.ShortNameOrganUprav_DB.Count() > 256)
+                    form40.ShortNameOrganUprav_DB = form40.ShortNameOrganUprav_DB[..256];
+
+                form40.AddressOrganUprav_DB = Convert.ToString(worksheet.Cells["B21"].Value);
+                if (form40.AddressOrganUprav_DB.Count() > 256)
+                    form40.AddressOrganUprav_DB = form40.AddressOrganUprav_DB[..256];
+
+                form40.GradeFioDirectorOrganUprav_DB = Convert.ToString(worksheet.Cells["B22"].Value);
+                if (form40.GradeFioDirectorOrganUprav_DB.Count() > 256)
+                    form40.GradeFioDirectorOrganUprav_DB = form40.GradeFioDirectorOrganUprav_DB[..256];
+
+                form40.GradeFioExecutorOrganUprav_DB = Convert.ToString(worksheet.Cells["B23"].Value);
+                if (form40.GradeFioExecutorOrganUprav_DB.Count() > 256)
+                    form40.GradeFioExecutorOrganUprav_DB = form40.GradeFioExecutorOrganUprav_DB[..64];
+
+                form40.TelephoneOrganUprav_DB = Convert.ToString(worksheet.Cells["B24"].Value);
+                if (form40.TelephoneOrganUprav_DB.Count() > 64)
+                    form40.TelephoneOrganUprav_DB = form40.TelephoneOrganUprav_DB[..64];
+
+                form40.FaxOrganUprav_DB = Convert.ToString(worksheet.Cells["B25"].Value);
+                if (form40.FaxOrganUprav_DB.Count() > 64)
+                    form40.FaxOrganUprav_DB = form40.FaxOrganUprav_DB[..64];
+
+                form40.EmailOrganUprav_DB = Convert.ToString(worksheet.Cells["B26"].Value);
+                if (form40.EmailOrganUprav_DB.Count() > 256)
+                    form40.EmailOrganUprav_DB = form40.EmailOrganUprav_DB[..256];
+
+
+                form40.NameRiac_DB = Convert.ToString(worksheet.Cells["B28"].Value);
+                if (form40.NameRiac_DB.Count() > 256)
+                    form40.NameRiac_DB = form40.NameRiac_DB[..256];
+
+                form40.ShortNameRiac_DB = Convert.ToString(worksheet.Cells["B29"].Value);
+                if (form40.ShortNameRiac_DB.Count() > 256)
+                    form40.ShortNameRiac_DB = form40.ShortNameRiac_DB[..256];
+
+                form40.AddressRiac_DB = Convert.ToString(worksheet.Cells["B30"].Value);
+                if (form40.AddressRiac_DB.Count() > 256)
+                    form40.AddressRiac_DB = form40.AddressRiac_DB[..256];
+
+                form40.GradeFioDirectorRiac_DB = Convert.ToString(worksheet.Cells["B31"].Value);
+                if (form40.GradeFioDirectorRiac_DB.Count() > 256)
+                    form40.GradeFioDirectorRiac_DB = form40.GradeFioDirectorRiac_DB[..256];
+
+                form40.GradeFioExecutorRiac_DB = Convert.ToString(worksheet.Cells["B32"].Value);
+                if (form40.GradeFioExecutorRiac_DB.Count() > 256)
+                    form40.GradeFioExecutorRiac_DB = form40.GradeFioExecutorRiac_DB[..256];
+
+                form40.TelephoneRiac_DB = Convert.ToString(worksheet.Cells["B33"].Value);
+                if (form40.TelephoneRiac_DB.Count() > 64)
+                    form40.TelephoneRiac_DB = form40.TelephoneRiac_DB[..64];
+
+                form40.FaxRiac_DB = Convert.ToString(worksheet.Cells["B34"].Value);
+                if (form40.FaxRiac_DB.Count() > 64)
+                    form40.FaxRiac_DB = form40.FaxRiac_DB[..64];
+
+                form40.EmailRiac_DB = Convert.ToString(worksheet.Cells["B35"].Value);
+                if (form40.EmailRiac_DB.Count() > 256)
+                    form40.EmailRiac_DB = form40.EmailRiac_DB[..256];
+                break;
+            }
+            case "Форма 5.0":
+            {
+
+                var form50 = newRepsFromExcel.Master_DB.Rows50[0];
+
+                form50.ExecutiveAuthority_DB = Convert.ToString(worksheet.Cells["A9"].Value);
+                if (form50.ExecutiveAuthority_DB.Count() > 256)
+                    form50.ExecutiveAuthority_DB = form50.ExecutiveAuthority_DB[..256];
+
+                form50.Rosatom_DB = !string.IsNullOrWhiteSpace(Convert.ToString(worksheet.Cells["A10"].Value));
+
+                form50.MinObr_DB = !string.IsNullOrWhiteSpace(Convert.ToString(worksheet.Cells["A11"].Value));
+
+                form50.Name_DB = Convert.ToString(worksheet.Cells["B20"].Value);
+                if (form50.Name_DB.Count() > 256)
+                    form50.Name_DB = form50.Name_DB[..256];
+
+                form50.ShortName_DB = Convert.ToString(worksheet.Cells["B21"].Value);
+                if (form50.ShortName_DB.Count() > 256)
+                    form50.ShortName_DB = form50.ShortName_DB[..256];
+
+                form50.Address_DB = Convert.ToString(worksheet.Cells["B22"].Value);
+                if (form50.Address_DB.Count() > 256)
+                    form50.Address_DB = form50.Address_DB[..256];
+
+                form50.GradeFioDirector_DB = Convert.ToString(worksheet.Cells["B23"].Value);
+                if (form50.GradeFioDirector_DB.Count() > 256)
+                    form50.GradeFioDirector_DB = form50.GradeFioDirector_DB[..256];
+
+                form50.GradeFioExecutor_DB = Convert.ToString(worksheet.Cells["B24"].Value);
+                if (form50.GradeFioExecutor_DB.Count() > 256)
+                    form50.GradeFioExecutor_DB = form50.GradeFioExecutor_DB[..64];
+
+                form50.Telephone_DB = Convert.ToString(worksheet.Cells["B25"].Value);
+                if (form50.Telephone_DB.Count() > 64)
+                    form50.Telephone_DB = form50.Telephone_DB[..64];
+
+                form50.Fax_DB = Convert.ToString(worksheet.Cells["B26"].Value);
+                if (form50.Fax_DB.Count() > 64)
+                    form50.Fax_DB = form50.Fax_DB[..64];
+
+                form50.Email_DB = Convert.ToString(worksheet.Cells["B27"].Value);
+                if (form50.Email_DB.Count() > 256)
+                    form50.Email_DB = form50.Email_DB[..256];
+
+                break;
+            }
         }
     }
 
@@ -526,23 +937,27 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
     #region GetImportReps
 
-    private static Reports GetImportReps(ExcelWorksheet worksheet0)
+    private static Reports GetImportReps(ExcelWorksheet worksheet)
     {
-        var param0 = worksheet0.Name;
+        var name = worksheet.Name;
+        if (name.ToLower().StartsWith("форма "))
+        {
+            name = name.Split(' ')[1];
+        }
         var newRepsFromExcel = new Reports
         {
             Master_DB = new Report
             {
-                FormNum_DB = param0
+                FormNum_DB = name
             }
         };
-        switch (param0)
+        switch (name)
         {
             case "1.0":
             {
-                var ty1 = (Form10)FormCreator.Create(param0);
+                var ty1 = (Form10)FormCreator.Create(name);
                 ty1.NumberInOrder_DB = 1;
-                var ty2 = (Form10)FormCreator.Create(param0);
+                var ty2 = (Form10)FormCreator.Create(name);
                 ty2.NumberInOrder_DB = 2;
                 newRepsFromExcel.Master_DB.Rows10.Add(ty1);
                 newRepsFromExcel.Master_DB.Rows10.Add(ty2);
@@ -550,16 +965,32 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             }
             case "2.0":
             {
-                var ty1 = (Form20)FormCreator.Create(param0);
+                var ty1 = (Form20)FormCreator.Create(name);
                 ty1.NumberInOrder_DB = 1;
-                var ty2 = (Form20)FormCreator.Create(param0);
+                var ty2 = (Form20)FormCreator.Create(name);
                 ty2.NumberInOrder_DB = 2;
                 newRepsFromExcel.Master_DB.Rows20.Add(ty1);
                 newRepsFromExcel.Master_DB.Rows20.Add(ty2);
                 break;
             }
+            case "4.0":
+            {
+                var row40 = (Form40)FormCreator.Create(name);
+                row40.NumberInOrder_DB = 1;
+                
+                newRepsFromExcel.Master_DB.Rows40.Add(row40);
+                break;
+            }
+            case "5.0":
+            {
+                var row50 = (Form50)FormCreator.Create(name);
+                row50.NumberInOrder_DB = 1;
+
+                newRepsFromExcel.Master_DB.Rows50.Add(row50);
+                break;
+            }
         }
-        GetDataTitleReps(newRepsFromExcel, worksheet0);
+        GetDataTitleReps(newRepsFromExcel, worksheet);
         //ReportsStorage.LocalReports.Reports_Collection.Add(newRepsFromExcel);
         return newRepsFromExcel;
     }
@@ -568,7 +999,7 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
     #region GetReportDataFromExcel
 
-    private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, ExcelWorksheet worksheet1, string formNumber, List<string> timeCreate)
+    private static Report  GetReportWithDataFromExcel(ExcelWorksheet worksheet, ExcelWorksheet worksheet1, string formNumber, List<string> timeCreate)
     {
         var impRep = new Report
         {
@@ -578,14 +1009,14 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         if (formNumber.Split('.')[0] == "1")
         {
             #region BindData_1.x
-            
+
             impRep.StartPeriod_DB = Convert.ToString(worksheet1.Cells["G3"].Text).Replace("/", ".");
             impRep.EndPeriod_DB = Convert.ToString(worksheet1.Cells["G4"].Text).Replace("/", ".");
             impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G5"].Value);
 
             #endregion
         }
-        else
+        else if (formNumber.Split('.')[0] == "2")
         {
             switch (formNumber)
             {
@@ -593,11 +1024,11 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 {
                     #region BindData_26
 
-                        impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
-                        impRep.SourcesQuantity26_DB = Convert.ToInt32(worksheet1.Cells["G5"].Value);
-                        impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
+                    impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
+                    impRep.SourcesQuantity26_DB = Convert.ToInt32(worksheet1.Cells["G5"].Value);
+                    impRep.Year_DB = Convert.ToString(worksheet.Cells["G10"].Value);
 
-                        #endregion
+                    #endregion
 
                     break;
                 }
@@ -605,16 +1036,17 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 {
                     #region BindData_27
 
-                        impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G3"].Value);
-                        impRep.PermissionNumber27_DB = Convert.ToString(worksheet1.Cells["G4"].Value);
-                        impRep.ValidBegin27_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
-                        impRep.ValidThru27_DB = Convert.ToString(worksheet1.Cells["J5"].Value);
-                        impRep.PermissionDocumentName27_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
-                        impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
+                    impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G3"].Value);
+                    impRep.PermissionNumber27_DB = Convert.ToString(worksheet1.Cells["G4"].Value);
+                    impRep.PermissionIssueDate27_DB = Convert.ToString(worksheet1.Cells["J4"].Value);
+                    impRep.ValidBegin27_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
+                    impRep.ValidThru27_DB = Convert.ToString(worksheet1.Cells["J5"].Value);
+                    impRep.PermissionDocumentName27_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
+                    impRep.Year_DB = Convert.ToString(worksheet.Cells["G10"].Value);
 
-                        #endregion
+                    #endregion
                 
-                    break;
+                break;
                 }
                 case "2.8":
                 {
@@ -622,47 +1054,94 @@ internal class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
                     impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G3"].Value);
                     impRep.PermissionNumber_28_DB = Convert.ToString(worksheet1.Cells["G4"].Value);
+                    impRep.PermissionIssueDate_28_DB = Convert.ToString(worksheet1.Cells["K5"].Value);
                     impRep.ValidBegin_28_DB = Convert.ToString(worksheet1.Cells["K4"].Value);
                     impRep.ValidThru_28_DB = Convert.ToString(worksheet1.Cells["N4"].Value);
                     impRep.PermissionDocumentName_28_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
+
                     impRep.PermissionNumber1_28_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
+                    impRep.PermissionIssueDate1_28_DB = Convert.ToString(worksheet1.Cells["K7"].Value);
                     impRep.ValidBegin1_28_DB = Convert.ToString(worksheet1.Cells["K6"].Value);
                     impRep.ValidThru1_28_DB = Convert.ToString(worksheet1.Cells["N6"].Value);
                     impRep.PermissionDocumentName1_28_DB = Convert.ToString(worksheet1.Cells["G7"].Value);
+
                     impRep.ContractNumber_28_DB = Convert.ToString(worksheet1.Cells["G8"].Value);
+                    impRep.ContractIssueDate2_28_DB = Convert.ToString(worksheet1.Cells["K9"].Value);
                     impRep.ValidBegin2_28_DB = Convert.ToString(worksheet1.Cells["K8"].Value);
                     impRep.ValidThru2_28_DB = Convert.ToString(worksheet1.Cells["N8"].Value);
                     impRep.OrganisationReciever_28_DB = Convert.ToString(worksheet1.Cells["G9"].Value);
+
                     impRep.GradeExecutor_DB = Convert.ToString(worksheet1.Cells["D21"].Value);
                     impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells["F21"].Value);
                     impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells["I21"].Value);
                     impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells["K21"].Value);
-                    impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
+                    impRep.Year_DB = Convert.ToString(worksheet.Cells["G10"].Value);
 
-                    #endregion
+                        #endregion
 
                     break;
                 }
                 default:
                 {
                     #region BindData_2.x
-                    
-                    impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
-                    impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Text); 
-                    
-                    #endregion
-                    
+
+                        impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
+                        impRep.Year_DB = Convert.ToString(worksheet.Cells["G10"].Text);
+
+                        #endregion
+
                     break;
                 }
             }
         }
+        else if (formNumber.Split('.')[0] == "4")
+        {
+            impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B1"].Value);
+            impRep.Year_DB = Convert.ToString(worksheet.Cells["B15"].Text);
+        }
+        else if (formNumber.Split('.')[0] == "5")
+        {
+            impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B7"].Value);
+            impRep.Year_DB = Convert.ToString(worksheet.Cells["B16"].Text);
+        }
 
         #region BindCommonData
-        
-        impRep.GradeExecutor_DB = Convert.ToString(worksheet1.Cells[$"D{worksheet1.Dimension.Rows - 1}"].Value);
-        impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells[$"F{worksheet1.Dimension.Rows - 1}"].Value);
-        impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells[$"I{worksheet1.Dimension.Rows - 1}"].Value);
-        impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells[$"K{worksheet1.Dimension.Rows - 1}"].Value);
+
+        if (formNumber.Split('.')[0] is "1" or "2")
+        {
+            impRep.GradeExecutor_DB = Convert.ToString(worksheet1.Cells[$"D{worksheet1.Dimension.Rows - 1}"].Value);
+            impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells[$"F{worksheet1.Dimension.Rows - 1}"].Value);
+            impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells[$"I{worksheet1.Dimension.Rows - 1}"].Value);
+            impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells[$"K{worksheet1.Dimension.Rows - 1}"].Value);
+        }
+        else if (formNumber.Split('.')[0] is "4")
+        {
+            var address = worksheet1.Cells.FirstOrDefault(cell => Convert.ToString(cell.Value).ToLower() == "должность исполнителя").LocalAddress;
+            address = address.Remove(0, 1);
+            int.TryParse(address, out var index);
+
+            impRep.GradeExecutor_DB = Convert.ToString(worksheet1.Cells[$"B{index}"].Value);
+            index++;
+            impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells[$"B{index}"].Value);
+            index++;
+            impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells[$"B{index}"].Value);
+            index++;
+            impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells[$"B{index}"].Value);
+        }
+        else if (formNumber.Split('.')[0] is "5")
+        {
+            var address = worksheet1.Cells.FirstOrDefault(cell => Convert.ToString(cell.Value).ToLower() == "должность").LocalAddress;
+            address = address.Remove(0, 1);
+            int.TryParse(address, out var index);
+
+            impRep.GradeExecutor_DB = Convert.ToString(worksheet1.Cells[$"B{index}"].Value);
+            index++;
+            impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells[$"B{index}"].Value);
+            index++;
+            impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells[$"B{index}"].Value);
+            index++;
+            impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells[$"B{index}"].Value);
+        }
 
         #endregion
 

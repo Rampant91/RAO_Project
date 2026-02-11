@@ -19,6 +19,8 @@ public class BaseVM
 
     internal static string TmpDirectory = "";
 
+    internal static string ConfigDirectory = "";
+
     #region RunCommandInBush
 
     /// <summary>

@@ -47,7 +47,7 @@ public class ActivityCalculatorVM : BaseCalculatorVM
         }
     }
 
-    public static string[] TimeUnitArray { get; } = ["мин", "час", "сут", "лет"];
+    public string[] TimeUnitArray { get; } = ["мин", "час", "сут", "лет"];
 
     private string _selectedTimeUnit = "мин";
     public string SelectedTimeUnit
@@ -144,8 +144,8 @@ public class ActivityCalculatorVM : BaseCalculatorVM
     #endregion
 
     #region Commands
-    
-    public ICommand ActivityCalculation { get; set; } 
+
+    private ICommand ActivityCalculation { get; set; } 
     
     #endregion
 }

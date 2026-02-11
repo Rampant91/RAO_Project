@@ -485,8 +485,8 @@ public partial class Form25 : Form2
         column += transpose ? cnt : 0;
         row += !transpose ? cnt : 0;
 
-        worksheet.Cells[row, column].Value = ConvertToExcelString(StoragePlaceCode_DB);
-        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(StoragePlaceName_DB);
+        worksheet.Cells[row, column].Value = ConvertToExcelString(StoragePlaceName_DB);
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(StoragePlaceCode_DB);
         worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelString(CodeOYAT_DB);
         worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = ConvertToExcelString(FcpNumber_DB);
         worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ConvertToExcelDouble(FuelMass_DB);
@@ -693,6 +693,30 @@ public partial class Form25 : Form2
 
     [GeneratedRegex("^[0-9]{5}$")]
     private static partial Regex FiveNumRegex();
+
+    #endregion
+
+    #region ConvertToTSVstring
+
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        var str =
+            $"{NumberInOrder.Value}\t" +
+            $"{StoragePlaceName.Value}\t" +
+            $"{StoragePlaceCode.Value}\t" +
+            $"{CodeOYAT.Value}\t" +
+            $"{FcpNumber.Value}\t" +
+            $"{FuelMass.Value}\t" +
+            $"{CellMass.Value}\t" +
+            $"{Quantity.Value}\t" +
+            $"{AlphaActivity.Value}\t" +
+            $"{BetaGammaActivity.Value}";
+        return str;
+    }
 
     #endregion
 }
