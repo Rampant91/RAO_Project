@@ -17,6 +17,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Models.Attributes;
+using Models.DBRealization;
 
 namespace Client_App.ViewModels.Forms;
 
@@ -378,6 +379,9 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         //_DBO = report.Reports.DBObservable;
         UpdateFormList();
         UpdatePageInfo();
+
+        //Загружаем примечаний
+        Report.Notes = new ObservableCollectionWithItemPropertyChanged<Note>(StaticConfiguration.DBModel.notes.Where(note => note.ReportId == Report.Id));
         NoteList = Report.Notes;
 
         SubscribeSelectedForms(_selectedForms);
