@@ -2,6 +2,7 @@
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
 using Client_App.ViewModels.Forms.Forms4;
+using Client_App.ViewModels.Forms.Forms5;
 using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
 using Client_App.Views.Forms.Forms2;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 namespace Client_App.Commands.AsyncCommands;
 
 /// <summary>
-/// Изменить Формы организации (4.0).
+/// Изменить Формы организации (1.0, 2.0, 4.0, 5.0).
 /// </summary>
 public class NewChangeReportsAsyncCommand : BaseAsyncCommand
 {
@@ -47,6 +48,13 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
                 {
                     var form40VM = new Form_40VM(formNum, report);
                     var window = new Form_40(form40VM) { DataContext = form40VM };
+                    await window.ShowDialog(mainWindow);
+                    break;
+                }
+            case "5.0":
+                {
+                    var form50VM = new Form_50VM(formNum, report);
+                    var window = new Form_50(form50VM) { DataContext = form50VM };
                     await window.ShowDialog(mainWindow);
                     break;
                 }

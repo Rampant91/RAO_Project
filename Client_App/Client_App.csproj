@@ -119,6 +119,30 @@
     <Compile Update="Views\Forms\Forms2\Form_21.axaml.cs">
       <DependentUpon>Form_21.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Forms\Forms5\Form_57.axaml.cs">
+      <DependentUpon>Form_57.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms5\Form_56.axaml.cs">
+      <DependentUpon>Form_56.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms5\Form_55.axaml.cs">
+      <DependentUpon>Form_55.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms5\Form_54.axaml.cs">
+      <DependentUpon>Form_54.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms5\Form_53.axaml.cs">
+      <DependentUpon>Form_53.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms5\Form_52.axaml.cs">
+      <DependentUpon>Form_52.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms5\Form_51.axaml.cs">
+      <DependentUpon>Form_51.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms5\Form_50.axaml.cs">
+      <DependentUpon>Form_50.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Forms\NewCheckForm.axaml.cs">
       <DependentUpon>NewCheckForm.axaml</DependentUpon>
     </Compile>
@@ -214,14 +238,23 @@
     <Compile Update="Views\MainWindowTabs\Forms1TabControl.axaml.cs">
       <DependentUpon>Forms1TabControl.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\MainWindowTabs\Forms5TabControl.axaml.cs">
+      <DependentUpon>Forms5TabControl.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\MainWindowTabs\Forms4TabControl.axaml.cs">
       <DependentUpon>Forms4TabControl.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Messages\AskForm57Message.axaml.cs">
+      <DependentUpon>AskForm57Message.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\Messages\AskSubjectRFMessage.axaml.cs">
       <DependentUpon>AskSubjectRFMessage.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\Messages\AskIntMessageWindow.axaml.cs">
       <DependentUpon>AskIntMessageWindow.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Messages\AskViacMessage.axaml.cs">
+      <DependentUpon>AskViacMessage.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\Messages\GetRegionAndFormNums.axaml.cs">
       <DependentUpon>GetRegionAndFormNums.axaml</DependentUpon>

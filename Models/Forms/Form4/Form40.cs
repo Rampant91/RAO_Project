@@ -994,7 +994,7 @@ public partial class Form40 : Form
                  NameRiac.HasErrors ||
                  ShortNameRiac.HasErrors ||
                  AddressRiac.HasErrors ||
-                 GradeFioDirectorOrganUprav.HasErrors ||
+                 GradeFioDirectorRiac.HasErrors ||
                  GradeFioExecutorRiac.HasErrors ||
                  TelephoneRiac.HasErrors ||
                  FaxRiac.HasErrors ||

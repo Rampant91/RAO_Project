@@ -64,9 +64,12 @@ public partial class Form41 : Form
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string>)value).Value;
-        value1 = value1.Length > 5
-            ? value1[..5]
-            : value1;
+        if (value1 != null)
+        {
+            value1 = value1.Length > 5
+                ? value1[..5]
+                : value1;
+        }
         if (RegNo_DB != value1)
         {
             RegNo_DB = value1;
@@ -114,9 +117,12 @@ public partial class Form41 : Form
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string>)value).Value;
-        value1 = value1.Length > 14
+        if (value1 != null)
+        {
+            value1 = value1.Length > 14
             ? value1[..14]
             : value1;
+        }
         if (Okpo_DB != value1)
         {
             Okpo_DB = value1;
@@ -164,9 +170,12 @@ public partial class Form41 : Form
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string>)value).Value;
-        value1 = value1.Length > 256
+        if (value1 != null)
+        {
+            value1 = value1.Length > 256
             ? value1[..256]
             : value1;
+        }
         if (OrganizationName_DB != value1)
         {
             OrganizationName_DB = value1;

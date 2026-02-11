@@ -13,6 +13,10 @@ namespace Client_App.ViewModels.MainWindowTabs;
 public class Forms2TabControlVM : INotifyPropertyChanged
 {
     #region Constructor
+    public Forms2TabControlVM()
+    {
+        // Конструктор пуст - настройки загружаются лениво при первом доступе
+    }
     public Forms2TabControlVM (MainWindowVM mainWindowVM)
     {
         _mainWindowVM = mainWindowVM;
@@ -220,21 +224,52 @@ public class Forms2TabControlVM : INotifyPropertyChanged
         {
             if (SelectedReports is null) return null;
 
-            return new ObservableCollection<Report>(
-                SelectedReports
+
+            var result = SelectedReports
                     .Report_Collection
-                    .AsEnumerable()
-                    .OrderBy(x => x.Order)
-                    .ThenByDescending(x => x.Year_DB == null ||
-                                           !int.TryParse(x.Year_DB, out _) ?
+                    .AsEnumerable();
+
+            if (!string.IsNullOrEmpty(FormNumWhiteList))
+            {
+                result = result.Where(rep => rep.FormNum_DB == FormNumWhiteList);
+            }
+
+
+            result.OrderBy(x => 
+                    {
+                        if (int.TryParse(x.FormNum_DB.Split('.')[1], out var result))
+                            return result;
+                        return int.MinValue;
+                    })
+                    .ThenByDescending(x => 
+                        x.Year_DB == null ||
+                        !int.TryParse(x.Year_DB, out _) ?
                         int.MaxValue :
                         int.Parse(x.Year_DB))
                     .ThenBy(rep => rep.CorrectionNumber_DB)
                     .Skip((CurrentPageForms - 1) * RowsCountForms)
-                    .Take(RowsCountForms));
+                    .Take(RowsCountForms);
+
+            return new ObservableCollection<Report>(result);
         }
     }
 
+    #endregion 
+
+    #region FormNumWhiteList
+    private string _formNumWhiteList = "";
+    public string FormNumWhiteList
+    {
+        get
+        {
+            return _formNumWhiteList;
+        }
+        set
+        {
+            _formNumWhiteList = value;
+            OnPropertyChanged();
+        }
+    }
     #endregion
 
     #region SelectedReport
@@ -271,9 +306,12 @@ public class Forms2TabControlVM : INotifyPropertyChanged
     {
         get
         {
-            if (SelectedReports != null)
-                return SelectedReports.Report_Collection.Count;
-            return 0;
+            if (SelectedReports is null) return 0;
+
+            if (!string.IsNullOrEmpty(FormNumWhiteList))
+                return SelectedReports.Report_Collection.Where(rep => rep.FormNum_DB == FormNumWhiteList).Count();
+
+            return SelectedReports.Report_Collection.Count;
         }
     }
 
@@ -422,13 +460,13 @@ public class Forms2TabControlVM : INotifyPropertyChanged
     #region GoToFormNum
     public void GoToFormNum(string formNum)
     {
-        if (SelectedReports is null) return;
+        if (FormNumWhiteList != formNum)
+            FormNumWhiteList = formNum;
+        else
+            FormNumWhiteList = "";
 
-        var report = SelectedReports.Report_Collection.FirstOrDefault(rep => rep.FormNum_DB == formNum);
-        if (report == null) return;
-
-        var index = SelectedReports.Report_Collection.IndexOf(report);
-        CurrentPageForms = (index / RowsCountForms) + 1;
+        UpdateReportCollection();
+        UpdateFormsPageInfo();
     }
     #endregion
 

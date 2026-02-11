@@ -1,4 +1,5 @@
-﻿using Client_App.ViewModels.Forms;
+﻿using Client_App.Commands.AsyncCommands.SwitchReport;
+using Client_App.ViewModels.Forms;
 using Models.Collections;
 using ReactiveUI;
 using System;
@@ -31,13 +32,19 @@ public class SelectReportPopupVM : INotifyPropertyChanged
         {
             int index = ReportCollection.IndexOf(SelectedReport);
             if (index - 1 >= 0)
+            {
                 SelectedReport = ReportCollection[index - 1];
+                new SwitchToSelectedReportAsyncCommand(formVM).AsyncExecute(SelectedReport);
+            }
         });
         SwitchPreviousReportCommand = ReactiveCommand.Create(() =>
         {
             int index = ReportCollection.IndexOf(SelectedReport);
             if (index + 1 < ReportCollection.Count)
+            {
                 SelectedReport = ReportCollection[index + 1];
+                new SwitchToSelectedReportAsyncCommand(formVM).AsyncExecute(SelectedReport);
+            }
         });
         SetCurrentFormNum = ReactiveCommand.Create((string newFormNum) =>
         {

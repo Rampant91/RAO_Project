@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Models.Forms;
 using JetBrains.Annotations;
 using Models.Forms.Form4;
+using Models.Forms.Form5;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -829,6 +830,250 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     }
 
 
+                #endregion
+
+                #region 5.1
+
+                case "5.1":
+                    {
+                        var form51 = Storage.Rows.Get<Form51>(i + start);
+                        if (parsedRows[i].Length == 6)
+                        {
+                            form51.OperationCode.Value = parsedRows[i][0];
+                            form51.Category.Value = ConvertStringToShort(parsedRows[i][1]);
+                            form51.Radionuclids.Value = parsedRows[i][2];
+
+                            var value = ConvertStringToInt(parsedRows[i][3]);
+                            if (value == null)
+                                value = 0;
+                            form51.Quantity.Value = (int)value;
+
+                            form51.Activity.Value = parsedRows[i][4]; 
+                            form51.ProviderOrRecieverOKPO.Value = parsedRows[i][5];
+
+                        }
+                        else if (parsedRows[i].Length == 7)
+                        {
+                            form51.OperationCode.Value = parsedRows[i][1];
+                            form51.Category.Value = ConvertStringToShort(parsedRows[i][2]);
+                            form51.Radionuclids.Value = parsedRows[i][3];
+
+                            var value = ConvertStringToInt(parsedRows[i][4]);
+                            if (value == null)
+                                value = 0;
+                            form51.Quantity.Value = (int)value;
+
+                            form51.Activity.Value = parsedRows[i][5];
+                            form51.ProviderOrRecieverOKPO.Value = parsedRows[i][6];
+                        }
+                        break;
+                    }
+                #endregion
+
+                #region 5.2
+                case "5.2":
+                    {
+                        var form52 = Storage.Rows.Get<Form52>(i + start);
+                        if (parsedRows[i].Length == 4)
+                        {
+                            form52.Category.Value = ConvertStringToShort(parsedRows[i][0]);
+                            form52.Radionuclids.Value = parsedRows[i][1];
+
+                            var value = ConvertStringToInt(parsedRows[i][2]);
+                            if (value == null)
+                                value = 0;
+                            form52.Quantity.Value = (int)value;
+
+                            form52.Activity.Value = parsedRows[i][3];
+
+                        }
+                        else if (parsedRows[i].Length == 5)
+                        {
+                            form52.Category.Value = ConvertStringToShort(parsedRows[i][1]);
+                            form52.Radionuclids.Value = parsedRows[i][2];
+
+                            var value = ConvertStringToInt(parsedRows[i][3]);
+                            if (value == null)
+                                value = 0;
+                            form52.Quantity.Value = (int)value;
+
+                            form52.Activity.Value = parsedRows[i][4];
+                        }
+                        break;
+                    }
+                #endregion
+
+                #region 5.3
+                case "5.3":
+                    {
+                        var form53 = Storage.Rows.Get<Form53>(i + start);
+                        if (parsedRows[i].Length == 10)
+                        {
+                            form53.OperationCode.Value = parsedRows[i][0];
+                            form53.TypeORI.Value = parsedRows[i][1];
+                            form53.VarietyORI.Value = ConvertStringToByte(parsedRows[i][2]);
+                            form53.AggregateState.Value = ConvertStringToByte(parsedRows[i][3]);
+                            form53.ProviderOrRecieverOKPO.Value = parsedRows[i][4];
+                            form53.Radionuclids.Value = parsedRows[i][5];
+                            form53.Activity.Value = parsedRows[i][6];
+                            form53.Mass.Value = parsedRows[i][7];
+                            form53.Volume.Value = parsedRows[i][8];
+
+                            var value = ConvertStringToInt(parsedRows[i][9]);
+                            if (value == null)
+                                value = 0;
+                            form53.Quantity.Value = value;
+                        }
+                        else if (parsedRows[i].Length == 11)
+                        {
+                            form53.OperationCode.Value = parsedRows[i][1];
+                            form53.TypeORI.Value = parsedRows[i][2];
+                            form53.VarietyORI.Value = ConvertStringToByte(parsedRows[i][3]);
+                            form53.AggregateState.Value = ConvertStringToByte(parsedRows[i][4]);
+                            form53.ProviderOrRecieverOKPO.Value = parsedRows[i][5];
+                            form53.Radionuclids.Value = parsedRows[i][6];
+                            form53.Activity.Value = parsedRows[i][7];
+                            form53.Mass.Value = parsedRows[i][8];
+                            form53.Volume.Value = parsedRows[i][9];
+
+                            var value = ConvertStringToInt(parsedRows[i][10]);
+                            if (value == null)
+                                value = 0;
+                            form53.Quantity.Value = value;
+                        }
+                        break;
+                    }
+                #endregion
+
+
+                #region 5.4
+                case "5.4":
+                    {
+                        var form54 = Storage.Rows.Get<Form54>(i + start);
+                        if (parsedRows[i].Length == 8)
+                        {
+                            form54.TypeORI.Value = parsedRows[i][0];
+                            form54.VarietyORI.Value = ConvertStringToByte(parsedRows[i][1]);
+                            form54.AggregateState.Value = ConvertStringToByte(parsedRows[i][2]);
+                            form54.Radionuclids.Value = parsedRows[i][3];
+                            form54.Activity.Value = parsedRows[i][4];
+                            form54.Mass.Value = parsedRows[i][5];
+                            form54.Volume.Value = parsedRows[i][6];
+
+                            var value = ConvertStringToInt(parsedRows[i][7]);
+                            if (value == null)
+                                value = 0;
+                            form54.Quantity.Value = value;
+                        }
+                        else if (parsedRows[i].Length == 9)
+                        {
+                            form54.TypeORI.Value = parsedRows[i][1];
+                            form54.VarietyORI.Value = ConvertStringToByte(parsedRows[i][2]);
+                            form54.AggregateState.Value = ConvertStringToByte(parsedRows[i][3]);
+                            form54.Radionuclids.Value = parsedRows[i][4];
+                            form54.Activity.Value = parsedRows[i][5];
+                            form54.Mass.Value = parsedRows[i][6];
+                            form54.Volume.Value = parsedRows[i][7];
+
+                            var value = ConvertStringToInt(parsedRows[i][8]);
+                            if (value == null)
+                                value = 0;
+                            form54.Quantity.Value = value;
+                        }
+                        break;
+                    }
+                #endregion
+
+                #region 5.5
+                case "5.5":
+                    {
+                        var form55 = Storage.Rows.Get<Form55>(i + start);
+                        if (parsedRows[i].Length == 5)
+                        {
+                            form55.Name.Value = parsedRows[i][0];
+                            form55.OperationCode.Value = parsedRows[i][1];
+                            form55.ProviderOrRecieverOKPO.Value = parsedRows[i][2];
+
+                            var value = ConvertStringToInt(parsedRows[i][3]);
+                            if (value == null)
+                                value = 0;
+                            form55.Quantity.Value = value;
+
+                            form55.Mass.Value = parsedRows[i][4];
+                        }
+                        else if (parsedRows[i].Length == 6)
+                        {
+                            form55.Name.Value = parsedRows[i][1];
+                            form55.OperationCode.Value = parsedRows[i][2];
+                            form55.ProviderOrRecieverOKPO.Value = parsedRows[i][3];
+
+                            var value = ConvertStringToInt(parsedRows[i][4]);
+                            if (value == null)
+                                value = 0;
+                            form55.Quantity.Value = value;
+
+                            form55.Mass.Value = parsedRows[i][5];
+                        }
+                        break;
+                    }
+                #endregion
+
+                #region 5.6
+                case "5.6":
+                    {
+                        var form56 = Storage.Rows.Get<Form56>(i + start);
+                        if (parsedRows[i].Length == 3)
+                        {
+                            form56.Name.Value = parsedRows[i][0];
+
+                            var value = ConvertStringToInt(parsedRows[i][1]);
+                            if (value == null)
+                                value = 0;
+                            form56.Quantity.Value = value;
+
+                            form56.Mass.Value = parsedRows[i][2];
+                        }
+                        else if (parsedRows[i].Length == 4)
+                        {
+                            form56.Name.Value = parsedRows[i][1];
+
+                            var value = ConvertStringToInt(parsedRows[i][2]);
+                            if (value == null)
+                                value = 0;
+                            form56.Quantity.Value = value;
+
+                            form56.Mass.Value = parsedRows[i][3];
+                        }
+                        break;
+                    }
+                #endregion
+
+                #region 5.7
+                case "5.7":
+                    {
+                        var form57 = Storage.Rows.Get<Form57>(i + start);
+                        if (parsedRows[i].Length == 7)
+                        {
+                            form57.RegNo.Value = parsedRows[i][0];
+                            form57.OKPO.Value = parsedRows[i][1];
+                            form57.Name.Value = parsedRows[i][2];
+                            form57.Recognizance.Value = parsedRows[i][3];
+                            form57.License.Value = parsedRows[i][4];
+                            form57.Practice.Value = parsedRows[i][5];
+                            form57.Note.Value = parsedRows[i][6];
+                        }
+                        else if (parsedRows[i].Length == 8)
+                        {
+                            form57.RegNo.Value = parsedRows[i][1];
+                            form57.OKPO.Value = parsedRows[i][2];
+                            form57.Name.Value = parsedRows[i][3];
+                            form57.Recognizance.Value = parsedRows[i][4];
+                            form57.License.Value = parsedRows[i][5];
+                            form57.Practice.Value = parsedRows[i][6];
+                            form57.Note.Value = parsedRows[i][7];
+                        }
+                        break;
+                    }
                     #endregion
             }
         }

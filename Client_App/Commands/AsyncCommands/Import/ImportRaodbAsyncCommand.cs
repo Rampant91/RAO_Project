@@ -107,7 +107,8 @@ public class ImportRaodbAsyncCommand() : ImportBaseAsyncCommand
                     impReps.Master.Rows20[1].RegNo_DB = impReps.Master.Rows20[0].RegNo_DB;
                 }
 
-                if (impReps.Master.Rows40.Count != 0)
+                if (impReps.Master.Rows40.Count != 0
+                    || impReps.Master.Rows50.Count !=0)
                 {
                     impReps.Master_DB.ReportChangedDate = dateTime;
                 }
@@ -115,11 +116,13 @@ public class ImportRaodbAsyncCommand() : ImportBaseAsyncCommand
                 Reports? baseReps11;
                 Reports? baseReps21;
                 Reports? baseReps41;
+                Reports? baseReps51;
                 if (parameter is "Auto")
                 {
                     baseReps11 = GetReports11FromLocalEqual(impReps);
                     baseReps21 = GetReports21FromLocalEqual(impReps);
                     baseReps41 = GetReports41FromLocalEqual(impReps);
+                    baseReps51 = GetReports51FromLocalEqual(impReps);
                 }
                 else //if (parameter is "Selected")
                 {
@@ -133,6 +136,7 @@ public class ImportRaodbAsyncCommand() : ImportBaseAsyncCommand
                     baseReps11 = GetReports11FromLocalEqual(impRepsFromDb);
                     baseReps21 = GetReports21FromLocalEqual(impRepsFromDb);
                     baseReps41 = GetReports41FromLocalEqual(impRepsFromDb);
+                    baseReps51 = GetReports51FromLocalEqual(impRepsFromDb);
                 }
 
                 FillEmptyRegNo(ref baseReps11);
@@ -167,7 +171,11 @@ public class ImportRaodbAsyncCommand() : ImportBaseAsyncCommand
                 {
                     await ProcessIfHasReports41(baseReps41, impReps, impRepsReportList);
                 }
-                else if (baseReps11 == null && baseReps21 == null && baseReps41 == null)
+                else if (baseReps51 != null)
+                {
+                    await ProcessIfHasReports51(baseReps51, impReps, impRepsReportList);
+                }
+                else if (baseReps11 == null && baseReps21 == null && baseReps41 == null && baseReps51 == null)
                 {
                     #region AddNewOrg
 
@@ -251,7 +259,8 @@ public class ImportRaodbAsyncCommand() : ImportBaseAsyncCommand
                         foreach (var rep in sortedRepList)
                         {
                             ImpRepCorNum = rep.CorrectionNumber_DB;
-                            ImpRepFormCount = rep.Rows.Count;
+                            if(rep.Rows!=null)
+                                ImpRepFormCount = rep.Rows.Count;
                             ImpRepFormNum = rep.FormNum_DB;
                             ImpRepStartPeriod = rep.StartPeriod_DB;
                             ImpRepEndPeriod = rep.EndPeriod_DB;
@@ -284,6 +293,9 @@ public class ImportRaodbAsyncCommand() : ImportBaseAsyncCommand
                         break;
                     case "4.0":
                         await impReps.Master_DB.Rows40.QuickSortAsync();
+                        break;
+                    case "5.0":
+                        await impReps.Master_DB.Rows50.QuickSortAsync();
                         break;
                 }
             }

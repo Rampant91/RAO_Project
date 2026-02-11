@@ -194,7 +194,6 @@ public abstract partial class Form : IKey, IDataGridColumn
         NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
 
     #region ExponentialString
-    
     private protected static bool ExponentialString_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
@@ -373,6 +372,13 @@ public abstract partial class Form : IKey, IDataGridColumn
             _ => DashesRegex().Replace(value, "-")
         };
 
+    #endregion
+
+    #region ExponentionalStringConverter
+    public static string ConvertStringToExponentialFormat(string value)
+    {
+        return ExponentialString_ValueChanged(value);
+    }
     #endregion
 
     #region INotifyPropertyChanged

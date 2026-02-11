@@ -27,6 +27,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using static Client_App.ViewModels.BaseVM;
 using Models.Forms.Form4;
+using Models.Forms.Form5;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -70,16 +71,20 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         #region LoadTables
 
         onStartProgressBarVm.LoadStatus = "Загрузка форм 1.0";
-        mainWindowViewModel.OnStartProgressBar = 24;
+        mainWindowViewModel.OnStartProgressBar = 25;
         await dbm.form_10.LoadAsync();
 
         onStartProgressBarVm.LoadStatus = "Загрузка форм 2.0";
-        mainWindowViewModel.OnStartProgressBar = 45;
+        mainWindowViewModel.OnStartProgressBar = 35;
         await dbm.form_20.LoadAsync();
 
         onStartProgressBarVm.LoadStatus = "Загрузка форм 4.0";
-        mainWindowViewModel.OnStartProgressBar = 50;
+        mainWindowViewModel.OnStartProgressBar = 45;
         await dbm.form_40.LoadAsync();
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 5.0";
+        mainWindowViewModel.OnStartProgressBar = 55;
+        await dbm.form_50.LoadAsync();
 
         try
         {
@@ -104,6 +109,13 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         {
             dbm.DBObservableDbSet.Add(new DBObservable());
             dbm.DBObservableDbSet.Local.First().Reports_Collection.AddRange(dbm.ReportsCollectionDbSet);
+        }
+
+        var removedReports = dbm.ReportsCollectionDbSet.Where(reps => reps.DBObservable == null);
+
+        foreach (var reports in removedReports)
+        {
+            dbm.ReportsCollectionDbSet.Remove(reports);
         }
 
         await dbm.DBObservableDbSet.LoadAsync();
@@ -687,6 +699,12 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     ty.NumberInOrder_DB = 1;
                     it.Master_DB.Rows40.Add(ty);
                 }
+                if (it.Master_DB.Rows50.Count == 0)
+                {
+                    var ty = (Form50)FormCreator.Create("5.0");
+                    ty.NumberInOrder_DB = 1;
+                    it.Master_DB.Rows50.Add(ty);
+                }
 
                 //if (it.Master_DB.Rows40.Count == 0)
                 //{
@@ -701,10 +719,12 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                 it.Master_DB.Rows10.Sorted = false;
                 it.Master_DB.Rows20.Sorted = false;
                 it.Master_DB.Rows40.Sorted = false;
+                it.Master_DB.Rows50.Sorted = false;
                 //it.Master_DB.Rows40.Sorted = false;
                 await it.Master_DB.Rows10.QuickSortAsync();
                 await it.Master_DB.Rows20.QuickSortAsync();
                 await it.Master_DB.Rows40.QuickSortAsync();
+                await it.Master_DB.Rows50.QuickSortAsync();
                 //await it.Master_DB.Rows40.QuickSortAsync();
             }
         }

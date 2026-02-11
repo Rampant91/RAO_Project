@@ -106,6 +106,7 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
             .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
             .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
             .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows40)
+            .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows50)
             .First(x => x.Id == repId);
 
         #endregion
@@ -164,6 +165,13 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
             .Include(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows41.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows51.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows52.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows53.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows54.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows55.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows56.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows57.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Notes.OrderBy(x => x.Order))
             .FirstAsync(x => x.Id == repId, cancellationToken: cts.Token);
 
@@ -240,8 +248,14 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
                 $"_{Assembly.GetExecutingAssembly().GetName().Version}",
 
             "4.0" when orgWithExpForm.Master.Rows40.Count > 0 =>
-                $"{orgWithExpForm.Master.Rows40[0].CodeSubjectRF_DB}" +
+                $"{orgWithExpForm.Master.Rows40.OrderBy(r =>r.NumberInOrder_DB).ToList()[0].CodeSubjectRF_DB}" +
                 $"_{exportReport.FormNum_DB}" +
+                $"_{StaticStringMethods.RemoveForbiddenChars(exportReport.Year_DB)}" +
+                $"_{exportReport.CorrectionNumber_DB}" +
+                $"_{Assembly.GetExecutingAssembly().GetName().Version}",
+
+            "5.0" when orgWithExpForm.Master.Rows50.Count > 0 =>
+                $"{exportReport.FormNum_DB}" +
                 $"_{StaticStringMethods.RemoveForbiddenChars(exportReport.Year_DB)}" +
                 $"_{exportReport.CorrectionNumber_DB}" +
                 $"_{Assembly.GetExecutingAssembly().GetName().Version}",

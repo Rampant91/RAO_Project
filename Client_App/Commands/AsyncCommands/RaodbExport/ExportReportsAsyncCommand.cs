@@ -109,6 +109,7 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows40)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows50)
             .Include(reports => reports.Report_Collection)
             .FirstAsync(x => x.Id == repsId, cancellationToken: cts.Token); 
         
@@ -190,6 +191,13 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                 .Include(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
                 .Include(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
                 .Include(x => x.Rows41.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows51.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows52.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows53.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows54.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows55.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows56.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows57.OrderBy(x => x.NumberInOrder_DB))
                 .Include(x => x.Notes.OrderBy(x => x.Order))
                 .FirstAsync(x => x.Id == repId, cancellationToken: cts.Token);
 
@@ -215,6 +223,12 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
         else if (exportOrg.Master_DB.FormNum_DB.Split('.')[0] is "4")
         {
             filename = $"{exportOrg.Master.Rows40[0].CodeSubjectRF_DB}" +
+                       $"_{exportOrg.Master.FormNum_DB[0]}.x" +
+                       $"_{Assembly.GetExecutingAssembly().GetName().Version}";
+        }
+        else if (exportOrg.Master_DB.FormNum_DB.Split('.')[0] is "5")
+        {
+            filename = $"{exportOrg.Master.Rows50.OrderBy(x => x.NumberInOrder_DB).ToList()[0].ShortName_DB}" +
                        $"_{exportOrg.Master.FormNum_DB[0]}.x" +
                        $"_{Assembly.GetExecutingAssembly().GetName().Version}";
         }
@@ -289,9 +303,7 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         #endregion
-
         await tempDb.SaveChangesAsync(cts.Token);
-
         var t = tempDb.Database.GetDbConnection() as FbConnection;
         await t.CloseAsync();
         await t.DisposeAsync();
@@ -394,6 +406,32 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                         $"{Environment.NewLine}Код субъекта - {exportOrg.Master.Rows40[0].CodeSubjectRF_DB}" +
                         $"{Environment.NewLine}Субъект - {exportOrg.Master.Rows40[0].SubjectRF_DB}" +
                         $"{Environment.NewLine}Сокращенное наименование - {exportOrg.Master.Rows40[0].ShortNameRiac_DB}",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen
+                }).ShowDialog(Desktop.MainWindow));
+
+                #endregion
+            }
+            else if (exportOrg.Master.FormNum_DB.Split('.')[0] is "5")
+            {
+                #region ExportDoneMessage 4.X
+
+                answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions =
+                    [
+                        new ButtonDefinition { Name = "Ок", IsDefault = true },
+                        new ButtonDefinition { Name = "Открыть расположение файла" }
+                    ],
+                    ContentTitle = "Выгрузка",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        $"Экспорт завершен. Файл экспорта РИАЦ ({exportOrg.Master.FormNum_DB[0]}.x) сохранен по пути:" +
+                        $"{Environment.NewLine}{fullPath}" +
+                        $"{Environment.NewLine}" +
+                        $"{Environment.NewLine}Сокращенное наименование - {exportOrg.Master.Rows50.OrderBy(x => x.NumberInOrder_DB).ToList()[0].ShortName_DB}",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen

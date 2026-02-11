@@ -3,9 +3,12 @@ using Client_App.Commands.AsyncCommands.SumRow;
 using Client_App.Resources;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms4;
+using Client_App.ViewModels.Forms.Forms5;
 using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
 using Client_App.Views.Forms.Forms4;
+using Client_App.Views.Forms.Forms5;
+using Client_App.VisualRealization.Long_Visual;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -197,6 +200,104 @@ public class NewChangeFormAsyncCommand : BaseAsyncCommand
                         report.Rows41 = dbReport.Rows41;
                         var form41VM = new Form_41VM(report);
                         var window = new Form_41(form41VM);
+                        await window.ShowDialog(t);
+                        break;
+                    }
+                case "5.1":
+                    {
+                        var dbReport = dBModel.ReportCollectionDbSet
+                            .AsSplitQuery()
+                            .AsQueryable()
+                            .Include(rep => rep.Rows51)
+                            .Include(rep => rep.Reports)
+                            .FirstOrDefault(x => x.Id == report.Id);
+                        report.Rows51 = dbReport.Rows51;
+                        var form51VM = new Form_51VM(report);
+                        var window = new Form_51(form51VM);
+                        await window.ShowDialog(t);
+                        break;
+                    }
+                case "5.2":
+                    {
+                        var dbReport = dBModel.ReportCollectionDbSet
+                            .AsSplitQuery()
+                            .AsQueryable()
+                            .Include(rep => rep.Rows52)
+                            .Include(rep => rep.Reports)
+                            .FirstOrDefault(x => x.Id == report.Id);
+                        report.Rows52 = dbReport.Rows52;
+                        var form52VM = new Form_52VM(report);
+                        var window = new Form_52(form52VM);
+                        await window.ShowDialog(t);
+                        break;
+                    }
+                case "5.3":
+                    {
+                        var dbReport = dBModel.ReportCollectionDbSet
+                            .AsSplitQuery()
+                            .AsQueryable()
+                            .Include(rep => rep.Rows53)
+                            .Include(rep => rep.Reports)
+                            .FirstOrDefault(x => x.Id == report.Id);
+                        report.Rows53 = dbReport.Rows53;
+                        var form53VM = new Form_53VM(report);
+                        var window = new Form_53(form53VM);
+                        await window.ShowDialog(t);
+                        break;
+                    }
+                case "5.4":
+                    {
+                        var dbReport = dBModel.ReportCollectionDbSet
+                            .AsSplitQuery()
+                            .AsQueryable()
+                            .Include(rep => rep.Rows54)
+                            .Include(rep => rep.Reports)
+                            .FirstOrDefault(x => x.Id == report.Id);
+                        report.Rows54 = dbReport.Rows54;
+                        var form54VM = new Form_54VM(report);
+                        var window = new Form_54(form54VM);
+                        await window.ShowDialog(t);
+                        break;
+                    }
+                case "5.5":
+                    {
+                        var dbReport = dBModel.ReportCollectionDbSet
+                            .AsSplitQuery()
+                            .AsQueryable()
+                            .Include(rep => rep.Rows55)
+                            .Include(rep => rep.Reports)
+                            .FirstOrDefault(x => x.Id == report.Id);
+                        report.Rows55 = dbReport.Rows55;
+                        var form55VM = new Form_55VM(report);
+                        var window = new Form_55(form55VM);
+                        await window.ShowDialog(t);
+                        break;
+                    }
+                case "5.6":
+                    {
+                        var dbReport = dBModel.ReportCollectionDbSet
+                            .AsSplitQuery()
+                            .AsQueryable()
+                            .Include(rep => rep.Rows56)
+                            .Include(rep => rep.Reports)
+                            .FirstOrDefault(x => x.Id == report.Id);
+                        report.Rows56 = dbReport.Rows56;
+                        var form56VM = new Form_56VM(report);
+                        var window = new Form_56(form56VM);
+                        await window.ShowDialog(t);
+                        break;
+                    }
+                case "5.7":
+                    {
+                        var dbReport = dBModel.ReportCollectionDbSet
+                            .AsSplitQuery()
+                            .AsQueryable()
+                            .Include(rep => rep.Rows57)
+                            .Include(rep => rep.Reports)
+                            .FirstOrDefault(x => x.Id == report.Id);
+                        report.Rows57 = dbReport.Rows57;
+                        var form57VM = new Form_57VM(report);
+                        var window = new Form_57(form57VM);
                         await window.ShowDialog(t);
                         break;
                     }

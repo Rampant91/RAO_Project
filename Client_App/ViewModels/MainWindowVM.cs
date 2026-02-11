@@ -116,6 +116,11 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
     #endregion
 
+    #region Forms5TabControlVM
+    public Forms5TabControlVM Forms5TabControlVM{ get; }
+
+    #endregion
+
     #region SelectedReports
     public Reports? SelectedReports
     {
@@ -126,6 +131,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                 1 => Forms1TabControlVM.SelectedReports,
                 2 => Forms2TabControlVM.SelectedReports,
                 4 => Forms4TabControlVM.SelectedReports,
+                5 => Forms5TabControlVM.SelectedReports,
                 _ => null
             };
         }
@@ -143,6 +149,10 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                     break;
                 case 4:
                     Forms4TabControlVM.SelectedReports = value;
+                    OnPropertyChanged();
+                    break;
+                case 5:
+                    Forms5TabControlVM.SelectedReports = value;
                     OnPropertyChanged();
                     break;
             }
@@ -164,6 +174,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             case 4:
                 Forms4TabControlVM.UpdateReportsCollection();
                 break;
+            case 5:
+                Forms5TabControlVM.UpdateReportsCollection();
+                break;
             default:
                 break;
         }
@@ -183,6 +196,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                 break;
             case 4:
                 Forms4TabControlVM.UpdateReportCollection();
+                break;
+            case 5:
+                Forms5TabControlVM.UpdateReportCollection();
                 break;
             default:
                 break;
@@ -204,6 +220,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             case 4:
                 Forms4TabControlVM.UpdateOrgsPageInfo();
                 break;
+            case 5:
+                Forms5TabControlVM.UpdateOrgsPageInfo();
+                break;
             default:
                 break;
         }
@@ -224,6 +243,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             case 4:
                 Forms4TabControlVM.UpdateFormsPageInfo();
                 break;
+            case 5:
+                Forms5TabControlVM.UpdateFormsPageInfo();
+                break;
             default:
                 break;
         }
@@ -243,6 +265,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                 break;
             case 4:
                 Forms4TabControlVM.UpdateTotalReportCount();
+                break;
+            case 5:
+                Forms5TabControlVM.UpdateTotalReportCount();
                 break;
             default:
                 break;
@@ -371,6 +396,11 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand ExportAllReports => new ExportAllReportsAsyncCommand();
 
     /// <summary>
+    /// Экспорт всех организаций организации в отдельные файлы .RAODB
+    /// </summary>
+    public ICommand ExportAllReport => new ExportAllReportAsyncCommand();
+
+    /// <summary>
     /// Экспорт всех организаций организации в один файл .RAODB
     /// </summary>
     public ICommand ExportAllReportsOneFile => new ExportAllReportsOneFileAsyncCommand();
@@ -435,6 +465,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         Forms1TabControlVM = new Forms1TabControlVM(this);
         Forms2TabControlVM = new Forms2TabControlVM(this);
         Forms4TabControlVM = new Forms4TabControlVM(this);
+        Forms5TabControlVM = new Forms5TabControlVM(this);
 
         UpdateReportsCollection();
         

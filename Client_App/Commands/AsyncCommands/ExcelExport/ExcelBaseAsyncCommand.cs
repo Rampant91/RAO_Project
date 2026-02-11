@@ -14,10 +14,12 @@ using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
+using Microsoft.CodeAnalysis.Operations;
 using Models.Collections;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Models.Forms.Form4;
+using Models.Forms.Form5;
 using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
@@ -328,6 +330,28 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             worksheet.Cells["B35"].Value = form40.EmailRiac_DB;
 
         }
+        else if (formNum.Split('.')[0] == "5")
+        {
+            var form50 = master.Rows50[0];
+
+            worksheet.Cells["B16"].Value = rep.Year_DB;
+
+            worksheet.Cells["A9"].Value = form50.ExecutiveAuthority_DB;
+            if(form50.Rosatom_DB)
+                worksheet.Cells["A10"].Value = form50.Rosatom_DB;
+            if(form50.MinObr_DB)
+                worksheet.Cells["A11"].Value = form50.MinObr_DB;
+
+
+            worksheet.Cells["B20"].Value = form50.Name_DB;
+            worksheet.Cells["B21"].Value = form50.ShortName_DB;
+            worksheet.Cells["B22"].Value = form50.Address_DB;
+            worksheet.Cells["B23"].Value = form50.GradeFioDirector_DB;
+            worksheet.Cells["B24"].Value = form50.GradeFioExecutor_DB;
+            worksheet.Cells["B25"].Value = form50.Telephone_DB;
+            worksheet.Cells["B26"].Value = form50.Fax_DB;
+            worksheet.Cells["B27"].Value = form50.Email_DB; ;
+        }
     }
 
     #endregion
@@ -406,15 +430,35 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         {
             worksheet.Cells["B1"].Value = rep.CorrectionNumber_DB;
 
-            
-
-
             worksheet.Cells["B12"].Value = rep.GradeExecutor_DB;
             worksheet.Cells["B13"].Value = rep.FIOexecutor_DB;
             worksheet.Cells["B14"].Value = rep.ExecPhone_DB;
             worksheet.Cells["B15"].Value = rep.ExecEmail_DB;
+        }
+        else if (formNum.Split('.')[0] == "5")
+        {
+            worksheet.Cells["B7"].Value = rep.CorrectionNumber_DB;
 
-           
+            switch(formNum)
+            {
+                case "5.7":
+                    {
+                        worksheet.Cells["B16"].Value = rep.GradeExecutor_DB;
+                        worksheet.Cells["B17"].Value = rep.FIOexecutor_DB;
+                        worksheet.Cells["B18"].Value = rep.ExecPhone_DB;
+                        worksheet.Cells["B19"].Value = rep.ExecEmail_DB;
+                        break;
+                    }
+                default:
+                    {
+                        worksheet.Cells["B21"].Value = rep.GradeExecutor_DB;
+                        worksheet.Cells["B22"].Value = rep.FIOexecutor_DB;
+                        worksheet.Cells["B23"].Value = rep.ExecPhone_DB;
+                        worksheet.Cells["B24"].Value = rep.ExecEmail_DB;
+                        break;
+                    }
+            }
+
         }
         else
         {
@@ -437,9 +481,20 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     /// <param name="rep">Отчёт.</param>
     private protected static void ExcelPrintNotesExport(string formNum, ExcelWorksheet worksheet, Report rep)
     {
-        var start = formNum is "2.8"
-            ? 18
-            : 15;
+        int start;
+
+        switch (formNum)
+        {
+            case "2.8":
+                start = 18;
+                break;
+            case "5.1" or "5.2" or "5.3" or "5.4" or "5.5" or "5.6" or "5.7":
+                start = 17;
+                break;
+            default:
+                start = 15;
+                break;
+        }
 
         for (var i = 0; i < rep.Notes.Count - 1; i++)
         {
@@ -466,7 +521,10 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 top.Color.SetColor(255, 0, 0, 0);
             }
 
-            var cellCL = worksheet.Cells[$"C{start + 1}:L{start + 1}"];
+            string range = formNum.Split('.')[0] is "1" or "2"
+                ? $"C{start + 1}:L{start + 1}"
+                : $"C{start + 1}";
+            var cellCL = worksheet.Cells[range];
             cellCL.Merge = true;
             var btmCL = cellCL.Style.Border.Bottom;
             var lftCL = cellCL.Style.Border.Left;
@@ -502,7 +560,6 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     /// <param name="rep">Отчёт.</param>
     private protected static void ExcelPrintRowsExport(string formNum, ExcelWorksheet worksheet, Report rep)
     {
-
         int start;
         switch (formNum)
         {
@@ -511,6 +568,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 break;
             case "4.1":
                 start = 9;
+                break;
+            case "5.1" or "5.2" or "5.3" or "5.4" or "5.5" or "5.6" or "5.7":
+                start = 12;
                 break;
             default:
                 start = 11;
@@ -664,6 +724,27 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                         break;
                     case Form41 form41:
                         form41.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form51 form51:
+                        form51.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form52 form52:
+                        form52.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form53 form53:
+                        form53.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form54 form54:
+                        form54.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form55 form55:
+                        form55.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form56 form56:
+                        form56.ExcelRow(worksheet, count, 1);
+                        break;
+                    case Form57 form57:
+                        form57.ExcelRow(worksheet, count, 1);
                         break;
                 }
 

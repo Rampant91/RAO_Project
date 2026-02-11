@@ -347,9 +347,14 @@
                          IsVisible="False"/>
 				<TabItem x:Name="Forms4" 
                          Header="Формы 4"
-                         IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
+                         IsVisible="True">
 					<tabs:Forms4TabControl DataContext="{Binding Forms4TabControlVM}"/>
 			    </TabItem>
+				<TabItem x:Name="Forms5" 
+                         Header="Формы 5" 
+                         IsVisible="True">
+					<tabs:Forms5TabControl DataContext="{Binding Forms5TabControlVM}"/>
+				</TabItem>
             </TabControl>
         </Panel>
 

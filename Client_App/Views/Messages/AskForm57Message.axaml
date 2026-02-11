@@ -1,0 +1,94 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:models="clr-namespace:Models.Collections;assembly=Models"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="325"
+        x:Class="Client_App.AskForm57Message"
+		Width="600"
+		Height="400"
+        Title="Выберите отчет"
+		WindowStartupLocation="CenterOwner">
+	<Grid RowDefinitions="Auto,*,Auto">
+		<TextBlock Grid.Row="0" Margin="10,5,10,5" Text="Выберите отчет по форме 5.7, на основе которого хотите сформировать отчет" TextWrapping="Wrap"/>
+		<DataGrid Grid.Row="1" Margin="5"
+				  Items="{Binding ReportList}"
+				  SelectedItem="{Binding SelectedReport}"
+				  RowHeight="25"
+				  GridLinesVisibility="All"
+				  AlternatingRowBackground="White"
+				  RowBackground="White">
+
+			<DataGrid.Columns>
+				<DataGridTextColumn
+						x:DataType="models:Report"
+						Width="*"
+						IsReadOnly="True"
+						Binding="{Binding FormNum.Value}">
+					<DataGridTextColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto" Margin="3">
+									<TextBlock Grid.Column="0" Text="Форма"/>
+									<!--<Button Grid.Column="1"/>-->
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTextColumn.HeaderTemplate>
+				</DataGridTextColumn>
+				<DataGridTextColumn
+						x:DataType="models:Report"
+						Width="*"
+						IsReadOnly="True"
+						Binding="{Binding Year.Value}">
+					<DataGridTextColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto" Margin="3">
+									<TextBlock Grid.Column="0" Text="Год"/>
+									<!--<Button Grid.Column="1"/>-->
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTextColumn.HeaderTemplate>
+				</DataGridTextColumn>
+				<DataGridTextColumn
+						x:DataType="models:Report"
+						Width="2*"
+						IsReadOnly="True"
+						Binding="{Binding ExportDate.Value}">
+					<DataGridTextColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto" Margin="3">
+									<TextBlock Grid.Column="0" Text="Дата выгрузки"/>
+									<!--<Button Grid.Column="1"/>-->
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTextColumn.HeaderTemplate>
+				</DataGridTextColumn>
+				<DataGridTextColumn
+						x:DataType="models:Report"
+						Width="2*"
+						IsReadOnly="True"
+						Binding="{Binding CorrectionNumber.Value}">
+					<DataGridTextColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto" Margin="3">
+									<TextBlock Grid.Column="0" Text="Номер корректировки"/>
+									<!--<Button Grid.Column="1"/>-->
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTextColumn.HeaderTemplate>
+				</DataGridTextColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+		<WrapPanel Grid.Row="2" HorizontalAlignment="Right" Margin="0,15,0,15">
+			<Button IsDefault="True" Click="Accept_Click" MinWidth="60" Margin="0,0,5,0">Подтвердить</Button>
+			<Button Margin="0,0,10,0" Content="Отмена" Click="Cancel_Click"/>
+		</WrapPanel>
+	</Grid>
+</Window>

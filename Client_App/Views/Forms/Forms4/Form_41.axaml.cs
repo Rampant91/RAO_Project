@@ -154,34 +154,6 @@ public partial class Form_41 : BaseWindow<Form_41VM>
 
                         break;
                     }
-                case Key.U: // Copy Pas Name
-                    {
-                        vm.CopyPasName.Execute(selectedForms);
-                        e.Handled = true;
-
-                        break;
-                    }
-                case Key.P: // Open Pas
-                    {
-                        vm.OpenPas.Execute(selectedForms);
-                        e.Handled = true;
-
-                        break;
-                    }
-                case Key.E: // Export Movement History
-                    {
-                        vm.ExcelExportSourceMovementHistory.Execute(selectedForms);
-                        e.Handled = true;
-
-                        break;
-                    }
-                case Key.Y: // Calculate Category
-                    {
-                        vm.CategoryCalculationFromReport.Execute(selectedForms);
-                        e.Handled = true;
-
-                        break;
-                    }
                 case Key.K: // Clear Rows
                     {
                         if (selectedForms is { Count: > 0 })
@@ -192,11 +164,11 @@ public partial class Form_41 : BaseWindow<Form_41VM>
 
                         break;
                     }
-                case Key.J: // Source Transmission to RAO
+                case Key.U: // Clear Rows
                     {
-                        if (vm.SelectedForm is not null)
+                        if (selectedForms is { Count: > 0 })
                         {
-                            vm.SourceTransmission.Execute(vm.SelectedForm);
+                            vm.DeleteDataInRows.Execute(selectedForms);
                             e.Handled = true;
                         }
 

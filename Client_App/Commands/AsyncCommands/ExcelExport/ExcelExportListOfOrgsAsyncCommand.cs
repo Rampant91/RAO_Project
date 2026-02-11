@@ -100,7 +100,9 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         var checkedLst = new List<Reports>();
         var row = 2;
         double progressBarDoubleValue = progressBarVM.ValueBar;
+
         foreach (var reps in repsList
+                     .Where(reps => reps.Master.FormNum_DB[0] is '1' or '2')
                      .OrderBy(x => x.Master_DB.RegNoRep?.Value)
                      .ThenBy(x => x.Master_DB.OkpoRep?.Value))
         {

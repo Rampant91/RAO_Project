@@ -116,9 +116,10 @@ public partial class ExportAllReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                         .AsNoTracking()
                         .AsSplitQuery()
                         .AsQueryable()
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows40)
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows10.OrderBy(x => x.NumberInOrder_DB))
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows20.OrderBy(x => x.NumberInOrder_DB))
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows40.OrderBy(x => x.NumberInOrder_DB))
+                        .Include(x => x.Master_DB).ThenInclude(x => x.Rows50.OrderBy(x => x.NumberInOrder_DB))
                         .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
                         .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows12.OrderBy(x => x.NumberInOrder_DB))
                         .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows13.OrderBy(x => x.NumberInOrder_DB))
@@ -141,6 +142,13 @@ public partial class ExportAllReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                         .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
                         .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
                         .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows41.OrderBy(x => x.NumberInOrder_DB))
+                        .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows51.OrderBy(x => x.NumberInOrder_DB))
+                        .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows52.OrderBy(x => x.NumberInOrder_DB))
+                        .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows53.OrderBy(x => x.NumberInOrder_DB))
+                        .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows54.OrderBy(x => x.NumberInOrder_DB))
+                        .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows55.OrderBy(x => x.NumberInOrder_DB))
+                        .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows56.OrderBy(x => x.NumberInOrder_DB))
+                        .Include(reports => reports.Report_Collection).ThenInclude(x => x.Rows57.OrderBy(x => x.NumberInOrder_DB))
                         .Include(reports => reports.Report_Collection).ThenInclude(x => x.Notes.OrderBy(x => x.Order))
                         .FirstAsync(x => x.Id == repsId, cancellationToken: parallelCts);
 
@@ -162,6 +170,12 @@ public partial class ExportAllReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                         filename = $"{repsFull.Master.Rows40[0].CodeSubjectRF_DB}" +
                                        $"_{repsFull.Master.FormNum_DB[0]}.x" +
                                        $"_{Assembly.GetExecutingAssembly().GetName().Version}";
+                    }
+                    else if (repsFull.Master_DB.FormNum_DB.Split('.')[0] is "5")
+                    {
+                        filename = $"{repsFull.Master.Rows50.OrderBy(x => x.NumberInOrder_DB).ToList()[0].ShortName_DB}" +
+                                   $"_{repsFull.Master.FormNum_DB[0]}.x" +
+                                   $"_{Assembly.GetExecutingAssembly().GetName().Version}";
                     }
                     var fullPath = Path.Combine(folderPath, $"{filename}.RAODB");
 

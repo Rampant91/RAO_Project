@@ -72,6 +72,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 foreach (var reports in reportsQuery)
                 {
                     cts.Token.ThrowIfCancellationRequested();
+                    
 
                     if (formList.Any(form41 =>
                     form41.RegNo_DB == reports.Master_DB.Rows10[0].RegNo_DB
@@ -198,8 +199,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 cts.Token.ThrowIfCancellationRequested();
 
                 var regNo = form41.RegNo_DB == null ? "_____" : form41.RegNo_DB;
-                if (regNo == "77994")
-                    ;
+
                 progressBarVM.SetProgressBar((int)currentProgress, $"Проверка организации №{regNo}");
 
                 var error = await CheckPresenceOfForm19(form41, cts.Token, secondDB);
@@ -559,7 +559,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
 
             if (organization == null) return null;
 
-            double quantityBalance = 0;
+            int quantityBalance = 0;
             bool InventarizationFlag = false;
             var dbModel = StaticConfiguration.DBModel;
 
@@ -609,7 +609,9 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
 
                     if (row.OperationCode_DB == "10")
                     {
-                        quantityBalance += (double)row.Quantity_DB;
+                        quantityBalance += row.Quantity_DB != null
+                            ?(int)row.Quantity_DB
+                            :1;
                     }
 
                     if (cts.IsCancellationRequested)
@@ -640,9 +642,13 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                             && Spravochniks.SignsOperation["1.1"].ContainsKey($"{report.Rows11[j].OperationCode_DB}"))
                         {
                             if (Spravochniks.SignsOperation["1.1"][$"{report.Rows11[j].OperationCode_DB}"] == '+')
-                                quantityBalance += (double)report.Rows11[j].Quantity_DB;
+                                quantityBalance += report.Rows11[j].Quantity_DB != null
+                                    ? (int)report.Rows11[j].Quantity_DB
+                                    : 1;
                             else if (Spravochniks.SignsOperation["1.1"][$"{report.Rows11[j].OperationCode_DB}"] == '-')
-                                quantityBalance -= (double)report.Rows11[j].Quantity_DB;
+                                quantityBalance -= report.Rows11[j].Quantity_DB != null
+                                    ? (int)report.Rows11[j].Quantity_DB
+                                    : 1;
                         }
                         if (cts.IsCancellationRequested)
                         {
@@ -665,9 +671,8 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             if (!InventarizationFlag && quantityBalance > 0)
                 return new CheckError()
                 {
-                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют радионуклиды. " +
-                    $"Необходимо проинвентаризировать по форме 1.1\n" +
-                    $"Инвентаризация: {InventarizationFlag}\n" +
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют ЗРИ. " +
+                    $"Необходимо предоставить сведения об инвентаризации по форме 1.1\n" +
                     $"Баланс: {quantityBalance}"
                 };
             return null;
@@ -687,7 +692,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
 
             if (organization == null) return null;
 
-            double massBalance = 0;
+            int balance = 0;
             bool InventarizationFlag = false;
             var dbModel = StaticConfiguration.DBModel;
 
@@ -718,8 +723,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                     cts.Token.ThrowIfCancellationRequested();
                     if (row.OperationCode_DB == "10")
                     {
-                        double.TryParse(row.Mass_DB, out var mass);
-                        massBalance += mass;
+                        balance += 1;
                     }
 
                     if (cts.IsCancellationRequested)
@@ -747,13 +751,12 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         {
                             InventarizationFlag = true;
                         }
-                        else if (double.TryParse(report.Rows12[j].Mass_DB, out var mass)
-                            && Spravochniks.SignsOperation["1.2"].ContainsKey($"{report.Rows12[j].OperationCode_DB}"))
+                        else if (Spravochniks.SignsOperation["1.2"].ContainsKey($"{report.Rows12[j].OperationCode_DB}"))
                         {
                             if (Spravochniks.SignsOperation["1.2"][$"{report.Rows12[j].OperationCode_DB}"] == '+')
-                                massBalance += mass;
+                                balance += 1;
                             else if (Spravochniks.SignsOperation["1.2"][$"{report.Rows12[j].OperationCode_DB}"] == '-')
-                                massBalance -= mass;
+                                balance -= 1;
                         }
 
                         if (cts.IsCancellationRequested)
@@ -774,13 +777,12 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 throw ex;
             }
 
-            if (!InventarizationFlag && massBalance > 0)
+            if (!InventarizationFlag && balance > 0)
                 return new CheckError()
                 {
-                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют изделия из обедненного урана. " +
-                    $"Необходимо проинвентаризировать по форме 1.2\n" +
-                    $"Инвентаризация: {InventarizationFlag}\n" +
-                    $"Баланс: {massBalance}"
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют ИОУ. " +
+                    $"Необходимо предоставить сведения об инвентаризации по форме 1.2\n" +
+                    $"Баланс: {balance}"
                 };
             return null;
         }
@@ -884,9 +886,8 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             if (!InventarizationFlag && balance > 0)
                 return new CheckError()
                 {
-                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют радионуклиды. " +
-                    $"Необходимо проинвентаризировать по форме 1.3\n" +
-                    $"Инвентаризация: {InventarizationFlag}\n" +
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют ОРИ. " +
+                    $"Необходимо предоставить сведения об инвентаризации по форме 1.3\n" +
                     $"Баланс: {balance}"
                 };
             return null;
@@ -941,18 +942,19 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                     if (row.OperationCode_DB == "10")
                     {
                         double.TryParse(row.Mass_DB, out var mass);
-                        switch(row.AggregateState_DB)
-                        {
-                            case 1:
-                                massBalanceLiquid += mass;
-                                break;
-                            case 2:
-                                massBalanceSolid += mass;
-                                break;
-                            case 3:
-                                massBalanceGas += mass;
-                                break;
-                        }
+                        if (mass!=null)
+                            switch(row.AggregateState_DB)
+                            {
+                                case 1:
+                                    massBalanceLiquid += mass;
+                                    break;
+                                case 2:
+                                    massBalanceSolid += mass;
+                                    break;
+                                case 3:
+                                    massBalanceGas += mass;
+                                    break;
+                            }
                     }
 
                     if (cts.IsCancellationRequested)
@@ -1031,7 +1033,6 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                 {
                     Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют радионуклиды. " +
                     $"Необходимо проинвентаризировать по форме 1.4\n" +
-                    $"Инвентаризация: {InventarizationFlag}\n" +
                     $"Баланс жидких РВ: {massBalanceLiquid}\n" +
                     $"Баланс твердых РВ: {massBalanceSolid}\n" +
                     $"Баланс газооборазных РВ: {massBalanceGas}\n"
@@ -1053,7 +1054,7 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                     ButtonDefinitions =
                     [
                         new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" },
+                        new ButtonDefinition { Name = "Нет" },
                     ],
                     CanResize = true,
                     ContentTitle = "Формирование нового отчета",
