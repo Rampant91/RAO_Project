@@ -381,7 +381,9 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         UpdatePageInfo();
 
         //Загружаем примечаний
-        Report.Notes = new ObservableCollectionWithItemPropertyChanged<Note>(StaticConfiguration.DBModel.notes.Where(note => note.ReportId == Report.Id));
+        Report.Notes = new ObservableCollectionWithItemPropertyChanged<Note>(
+            StaticConfiguration.DBModel.notes
+            .Where(note => note.ReportId == Report.Id));
         NoteList = Report.Notes;
 
         SubscribeSelectedForms(_selectedForms);
