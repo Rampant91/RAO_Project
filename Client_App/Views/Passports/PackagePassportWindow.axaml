@@ -12,17 +12,37 @@
 		<!--Header-->
 
 		<StackPanel>
-			<TextBlock Text="ПАСПОРТ" TextAlignment="Center"/>
-			<TextBlock Text="на упаковку твердых радиоактивных отходов" TextAlignment="Center"/>
-			<StackPanel Orientation="Horizontal" >
-				<TextBlock Text="№"/> 
-				<TextBox Watermark="(паспорта)"/>
-				<TextBlock Text="от"/>
-				<TextBox Watermark="(дата)"/>
+			<TextBlock Margin="5" 
+					   FontWeight="Bold"
+					   FontSize="18"
+					   Text="ПАСПОРТ" 
+					   TextAlignment="Center"/>
+			<TextBlock Margin="5" 
+					   FontWeight="Bold"
+					   FontSize="14"
+					   Text="на упаковку твердых радиоактивных отходов" 
+					   TextAlignment="Center"/>
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+				<TextBlock Margin="5" 
+						   FontWeight="Bold"
+						   Text="№"/>
+				<TextBox Margin="5" 
+						 MinWidth="150"
+						 Watermark="(паспорта)"/>
+				<TextBlock Margin="5" 
+						   FontWeight="Bold"
+						   Text="от"/>
+				<TextBox Margin="5" 
+						 MinWidth="150"
+						 Watermark="(дата)"/>
 			</StackPanel>
-			<StackPanel Orientation="Horizontal">
-				<TextBlock Text="Наименование"/>
-				<TextBox Watermark="(тип упаковки РАО, неупакованных РАО)"/>
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+				<TextBlock Margin="5" 
+						   FontWeight="Bold"
+						   Text="Наименование"/>
+				<TextBox Margin="5" 
+						 MinWidth="300"
+						 Watermark="(тип упаковки РАО, неупакованных РАО)"/>
 			</StackPanel>
 		
 		</StackPanel>
@@ -102,9 +122,12 @@
 		</Grid>
 		
 		<!--Таблица 1-->
-		<TextBlock Text="Общая характеристика упаковки РАО"/>
+		<TextBlock Margin="5"
+				   FontWeight="Bold" 
+				   TextAlignment="Center" 
+				   Text="Общая характеристика упаковки РАО"/>
 
-		<ScrollViewer Grid.Row="1" Classes="tableScrollViewer">
+		<ScrollViewer Margin="5" Grid.Row="1" Classes="tableScrollViewer">
 			<Grid x:Name="Table1"
                   ColumnDefinitions="Auto"
                   RowDefinitions="Auto,*">
@@ -542,9 +565,11 @@
 		</ScrollViewer>
 		
 		<!--Таблица 2-->
-		<TextBlock Text="Характеристика радиоактивного содержимого упаковки РАО"/>
+		<TextBlock FontWeight="Bold" 
+				   TextAlignment="Center" 
+				   Text="Характеристика радиоактивного содержимого упаковки РАО"/>
 
-		<ScrollViewer Grid.Row="1" Classes="tableScrollViewer">
+		<ScrollViewer Margin="5" Grid.Row="1" Classes="tableScrollViewer">
 			<Grid x:Name="Table2"
                   ColumnDefinitions="Auto"
                   RowDefinitions="Auto,*">
