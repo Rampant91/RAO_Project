@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
+using Models.Collections;
 using Models.DBRealization;
 using System;
 using System.Collections.Generic;
@@ -62,6 +63,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             else
                 return str;
         }
+
         #region AskMessages
         protected async Task<bool> ShowConfirmationMessage(Window owner)
         {
@@ -125,11 +127,11 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                         .Where(x => x.Master_DB.FormNum_DB == "1.0")
                         .AsEnumerable()
                         .Where(reports => loadedList.Any(x =>
-                        x.RegNo == reports.Master_DB.Rows10[0].RegNo_DB
-                        && (x.OKPO == reports.Master_DB.Rows10[1].Okpo_DB
-                        ||
-                        (string.IsNullOrEmpty(reports.Master_DB.Rows10[1].Okpo_DB)
-                        && x.OKPO == reports.Master_DB.Rows10[0].Okpo_DB))))
+                            (x.RegNo == reports.Master_DB.Rows10[0].RegNo_DB
+                            || x.RegNo == reports.Master_DB.Rows10[1].RegNo_DB)
+                            && (x.OKPO == reports.Master_DB.Rows10[1].Okpo_DB
+                            || (string.IsNullOrEmpty(reports.Master_DB.Rows10[1].Okpo_DB)
+                            && x.OKPO == reports.Master_DB.Rows10[0].Okpo_DB))))
                         .Select(reports => reports.Id)
                         .ToList();
             }

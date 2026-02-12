@@ -10,82 +10,94 @@
 	<StackPanel HorizontalAlignment="Center">
 
 		<!--Header-->
-		<TextBlock Text="ПАСПОРТ"/>
-		<TextBlock Text="на упаковку твердых радиоактивных отходов"/>
-		<StackPanel Orientation="Horizontal">
-			<TextBlock Text="№"/> 
-			<TextBox Watermark="(паспорта)"/>
-			<TextBlock Text="от"/>
-			<TextBox Watermark="(дата)"/>
-		</StackPanel>
-		<StackPanel Orientation="Horizontal">
-			<TextBlock Text="Наименование"/>
-			<TextBox Watermark="(тип упаковки РАО, неупакованных РАО)"/>
+
+		<StackPanel>
+			<TextBlock Text="ПАСПОРТ" TextAlignment="Center"/>
+			<TextBlock Text="на упаковку твердых радиоактивных отходов" TextAlignment="Center"/>
+			<StackPanel Orientation="Horizontal" >
+				<TextBlock Text="№"/> 
+				<TextBox Watermark="(паспорта)"/>
+				<TextBlock Text="от"/>
+				<TextBox Watermark="(дата)"/>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Наименование"/>
+				<TextBox Watermark="(тип упаковки РАО, неупакованных РАО)"/>
+			</StackPanel>
+		
 		</StackPanel>
 		
-		<StackPanel Orientation="Horizontal">
-		</StackPanel>
-		
-		<Grid  RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto"
+		<Grid  RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto"
 			   ColumnDefinitions="Auto,*,Auto,*">
 
-			<StackPanel Grid.Row="0" Grid.Column="0"
-					    Orientation="Horizontal">
-				<TextBlock Text="Код &quot;Статус РАО&quot; -"/>
-				<TextBox/>
+			<StackPanel Grid.Row="0" Grid.Column="0" 
+					    Orientation="Horizontal" HorizontalAlignment="Right">
+				<TextBlock Margin="5"
+					Text="Код &quot;Статус РАО&quot; -"/>
+				
+				<TextBox Width="50" Margin="5"/>
 			</StackPanel>
 			
-			<TextBox Grid.Row="0" Grid.Column="1"
+			<TextBox Grid.Row="0" Grid.Column="1" Margin="5" 
 					 Watermark="(номер технических условий)"/>
-			<TextBox Grid.Row="0" Grid.Column="2"
+			<TextBox Grid.Row="0" Grid.Column="2" Margin="5"
 					 Grid.ColumnSpan="2"
 					 Watermark="(название и класс РАО)"/>
 			
-			<TextBlock Grid.Row="1" Grid.Column="0" 
+			<TextBlock Grid.Row="1" Grid.Column="0" Margin="5" 
+					   HorizontalAlignment="Right"
 					   Text="Номер договора передачи РАО на захоронение"/>
-			<TextBox Grid.Row="1" Grid.Column="1"/>
+			<TextBox Grid.Row="1" Grid.Column="1" Margin="5"/>
 			
-			<TextBlock Grid.Row="2" Grid.Column="0"
+			<TextBlock Grid.Row="2" Grid.Column="0" Margin="5"
+					   HorizontalAlignment="Right"
 					   Text="Индивидуальный номер упаковки РАО"/>
-			<TextBox Grid.Row="2" Grid.Column="1"
+			<TextBox Grid.Row="2" Grid.Column="1" Margin="5"
 					   Watermark="(Идентификационный код)"/>
-			<TextBox Grid.Row="2" Grid.Column="2"
+			<TextBox Grid.Row="2" Grid.Column="2" Margin="5"
 					 Grid.ColumnSpan="2"
 					 Watermark="(тип и идентификатор(ы) ПУОД)"/>
 			
-			<TextBlock Grid.Row="3" Grid.Column="0"
+			<TextBlock Grid.Row="3" Grid.Column="0" Margin="5"
+					   HorizontalAlignment="Right"
 					   Text="Организация-собственник упаковки РАО"/>
-			<TextBox Grid.Row="3" Grid.Column="1"
+			<TextBox Grid.Row="3" Grid.Column="1" Margin="5"
 					 Grid.ColumnSpan="3"/>
 			
-			<TextBlock Grid.Row="4" Grid.Column="0"
+			<TextBlock Grid.Row="4" Grid.Column="0" Margin="5"
+					   HorizontalAlignment="Right"
 					   Text="Организация-изготовитель упаковки РАО"/>
-			<TextBox Grid.Row="4" Grid.Column="1"
+			<TextBox Grid.Row="4" Grid.Column="1" Margin="5"
 					 Grid.ColumnSpan="3"/>
 			
-			<TextBlock Grid.Row="5" Grid.Column="0"
+			<TextBlock Grid.Row="5" Grid.Column="0" Margin="5"
+					   HorizontalAlignment="Right"
 					   Text="Номер сертификата соответствия на контейнер (упаковочный комплект)"/>
-			<TextBox Grid.Row="5" Grid.Column="1"
+			<TextBox Grid.Row="5" Grid.Column="1" Margin="5"
 					   />
 			
 			
-			<TextBlock Grid.Row="5" Grid.Column="2"
+			<TextBlock Grid.Row="5" Grid.Column="2" Margin="5"
+					   HorizontalAlignment="Right"
 					   Text="Дата изготовления упаковки РАО"/>
-			<TextBox Grid.Row="5" Grid.Column="3"
+			<TextBox Grid.Row="5" Grid.Column="3" Margin="5"
 					   />
 			
-			<TextBlock Grid.Row="6" Grid.Column="0"
+			<TextBlock Grid.Row="6" Grid.Column="0" Margin="5"
+					   HorizontalAlignment="Right"
 					   Text="Срок действия сертификата"/>
-			<TextBox Grid.Row="6" Grid.Column="1"
+			<TextBox Grid.Row="6" Grid.Column="1" Margin="5"
 					   />
 			
-			<TextBlock Grid.Row="7" Grid.Column="0"
+			<TextBlock Grid.Row="7" Grid.Column="0" Margin="5"
+					   HorizontalAlignment="Right"
 					   Text="Срок службы контейнера (упаковочного комплекта)"/>
-			<TextBox Grid.Row="7" Grid.Column="1"
+			<TextBox Grid.Row="7" Grid.Column="1" Margin="5"
 					   />
-			<TextBlock Grid.Row="7" Grid.Column="2"
+			<TextBlock Grid.Row="7" Grid.Column="2" Margin="5"
+					   HorizontalAlignment="Right"
 					   Text="Дата передачи упаковки РАО на захоронение"/>
-			<TextBox Grid.Row="7" Grid.Column="3"
+			<TextBox Grid.Row="7" Grid.Column="3" Margin="5"
 					   />
 		</Grid>
 		
@@ -791,19 +803,28 @@
 		</ScrollViewer>
 		
 		<!--Footer-->
-		
-		<StackPanel Orientation="Horizontal">
-			<TextBlock Text="Ответственный за сдачу РАО"/>
-			<TextBox Watermark="(наименование организации)"/>
-			<TextBox Watermark="(Должность, Фамирия И.О. уполномоченного лица)"/>
-			<TextBox Watermark="(подпись уполномоченного лица)"/>
-		</StackPanel>
-		
-		<StackPanel Orientation="Horizontal">
-			<TextBlock Text="Ответственный за прием РАО"/>
-			<TextBox Watermark="(наименование организации)"/>
-			<TextBox Watermark="(Должность, Фамирия И.О. уполномоченного лица)"/>
-			<TextBox Watermark="(подпись уполномоченного лица)"/>
-		</StackPanel>
+
+		<Grid RowDefinitions="Auto, Auto"
+			  ColumnDefinitions="Auto, *, 2*, *">
+			<TextBlock Grid.Row="0" Grid.Column="0" Margin="5"
+					   HorizontalAlignment="Right"
+					   Text="Ответственный за сдачу РАО"/>
+			<TextBox Grid.Row="0" Grid.Column="1" Margin="5"
+					 Watermark="(наименование организации)"/>
+			<TextBox Grid.Row="0" Grid.Column="2" Margin="5"
+					 Watermark="(Должность, Фамирия И.О. уполномоченного лица)"/>
+			<TextBox Grid.Row="0" Grid.Column="3" Margin="5"
+					 Watermark="(подпись уполномоченного лица)"/>
+
+			<TextBlock Grid.Row="1" Grid.Column="0" Margin="5"
+					   HorizontalAlignment="Right"
+					   Text="Ответственный за прием РАО"/>
+			<TextBox Grid.Row="1" Grid.Column="1" Margin="5"
+					 Watermark="(наименование организации)"/>
+			<TextBox Grid.Row="1" Grid.Column="2" Margin="5"
+					 Watermark="(Должность, Фамирия И.О. уполномоченного лица)"/>
+			<TextBox Grid.Row="1" Grid.Column="3" Margin="5"
+					 Watermark="(подпись уполномоченного лица)"/>
+		</Grid>
 	</StackPanel>
 </Window>
