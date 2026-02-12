@@ -106,45 +106,59 @@ public class GenerateForm57AsyncCommand(BaseFormVM formVM) : BaseGenerateForm5
 
         progressBarVM.SetProgressBar(5, $"Загрузка организаций");
 
-
-        var organizations10 = await GetOrganizations10List(StaticConfiguration.DBModel, loadedList);
-        var organizations20 = await GetOrganizations20List(StaticConfiguration.DBModel, loadedList);
-
-        foreach(var organization10 in organizations10)
+        try
         {
-            if (!Report.Rows57.Any(form57 =>
-            form57.RegNo_DB == organization10.Master.RegNoRep.Value
-            && form57.OKPO_DB == organization10.Master.OkpoRep.Value))
-                Report.Rows57.Add(new Form57()
-                {
-                    RegNo_DB = organization10.Master.RegNoRep.Value,
-                    OKPO_DB = organization10.Master.OkpoRep.Value,
-                    Name_DB = !string.IsNullOrEmpty(organization10.Master_DB.Rows10[0].ShortJurLico_DB)
-                    ? organization10.Master_DB.Rows10[0].ShortJurLico_DB
-                    : organization10.Master_DB.Rows10[0].JurLico_DB
-                });
+
+            cts.Token.ThrowIfCancellationRequested();
+            var organizations10 = await GetOrganizations10List(StaticConfiguration.DBModel, loadedList);
+
+            cts.Token.ThrowIfCancellationRequested();
+            var organizations20 = await GetOrganizations20List(StaticConfiguration.DBModel, loadedList);
+
+            foreach(var organization10 in organizations10)
+            {
+                cts.Token.ThrowIfCancellationRequested();
+                if (!Report.Rows57.Any(form57 =>
+                form57.RegNo_DB == organization10.Master.RegNoRep.Value
+                && form57.OKPO_DB == organization10.Master.OkpoRep.Value))
+                    Report.Rows57.Add(new Form57()
+                    {
+                        RegNo_DB = organization10.Master.RegNoRep.Value,
+                        OKPO_DB = organization10.Master.OkpoRep.Value,
+                        Name_DB = !string.IsNullOrEmpty(organization10.Master_DB.Rows10[0].ShortJurLico_DB)
+                        ? organization10.Master_DB.Rows10[0].ShortJurLico_DB
+                        : organization10.Master_DB.Rows10[0].JurLico_DB
+                    });
+            }
+            foreach (var organization20 in organizations20)
+            {
+                cts.Token.ThrowIfCancellationRequested();
+
+                if (!Report.Rows57.Any(form57 =>
+                form57.RegNo_DB == organization20.Master.RegNoRep.Value
+                && form57.OKPO_DB == organization20.Master.OkpoRep.Value))
+                    Report.Rows57.Add(new Form57()
+                    {
+                        RegNo_DB = organization20.Master.RegNoRep.Value,
+                        OKPO_DB = organization20.Master.OkpoRep.Value,
+                        Name_DB = !string.IsNullOrEmpty(organization20.Master_DB.Rows20[0].ShortJurLico_DB)
+                        ?organization20.Master_DB.Rows20[0].ShortJurLico_DB 
+                        :organization20.Master_DB.Rows20[0].JurLico_DB
+                    });
+            }
+
+            await StaticConfiguration.DBModel.SaveChangesAsync();
+
+            //Выставляем номера строк
+            for (int i = 0; i < Report.Rows57.Count; i++)
+            {
+                Report.Rows57[i].SetOrder(i + 1);
+            }
+
         }
-        foreach (var organization20 in organizations20)
+        catch (OperationCanceledException)
         {
-            if (!Report.Rows57.Any(form57 =>
-            form57.RegNo_DB == organization20.Master.RegNoRep.Value
-            && form57.OKPO_DB == organization20.Master.OkpoRep.Value))
-                Report.Rows57.Add(new Form57()
-                {
-                    RegNo_DB = organization20.Master.RegNoRep.Value,
-                    OKPO_DB = organization20.Master.OkpoRep.Value,
-                    Name_DB = !string.IsNullOrEmpty(organization20.Master_DB.Rows20[0].ShortJurLico_DB)
-                    ?organization20.Master_DB.Rows20[0].ShortJurLico_DB 
-                    :organization20.Master_DB.Rows20[0].JurLico_DB
-                });
-        }
-
-        await StaticConfiguration.DBModel.SaveChangesAsync();
-
-        //Выставляем номера строк
-        for (int i = 0; i < Report.Rows57.Count; i++)
-        {
-            Report.Rows57[i].SetOrder(i + 1);
+            return;
         }
 
         progressBarVM.SetProgressBar(

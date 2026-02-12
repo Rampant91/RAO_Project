@@ -100,14 +100,21 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
             progressBarVM.SetProgressBar(5, $"Загрузка организаций");
 
+            try
+            {
 
-            var organizations10IdList = await GetOrganizations10List(StaticConfiguration.DBModel, cts.Token, loadedList);
+                var organizations10IdList = await GetOrganizations10List(StaticConfiguration.DBModel, cts.Token, loadedList);
 
-            LoadReportDictionary(organizations10IdList, out var rep13Dictionary,out var rep14Dictionary, progressBarVM, cts);
+                LoadReportDictionary(organizations10IdList, out var rep13Dictionary,out var rep14Dictionary, progressBarVM, cts);
 
 
-            GenerateForm54DependOnForm13(rep13Dictionary, progressBarVM, cts);
-            GenerateForm54DependOnForm14(rep14Dictionary, progressBarVM, cts);
+                GenerateForm54DependOnForm13(rep13Dictionary, progressBarVM, cts);
+                GenerateForm54DependOnForm14(rep14Dictionary, progressBarVM, cts);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
 
             progressBarVM.SetProgressBar(
             95,
@@ -148,9 +155,9 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             rep13Dictionary =new Dictionary<int, List<Report>> (); 
             rep14Dictionary = new Dictionary<int, List<Report>>();
 
-            foreach (var id in organizations10IdList)
+            try
             {
-                try
+                foreach (var id in organizations10IdList)
                 {
                     cts.Token.ThrowIfCancellationRequested();
 
@@ -207,25 +214,25 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     iteration++;
                     progressBarVM.SetProgressBar((int)progressBarPercent, $"Загружаем отчеты 1.3, 1.4 для обработки ({iteration}/{organizations10IdList.Count})");
                 }
-                catch (OperationCanceledException)
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                    {
-                        CanResize = true,
-                        ContentTitle = "Ошибка",
-                        ContentMessage = ex.Message,
-                        MinWidth = 300,
-                        MinHeight = 125,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(owner));
-                    throw ex;
-                }
+                    CanResize = true,
+                    ContentTitle = "Ошибка",
+                    ContentMessage = ex.Message,
+                    MinWidth = 300,
+                    MinHeight = 125,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(owner));
+                throw ex;
             }
         }
         private async Task GenerateForm54DependOnForm13(Dictionary<int, List<Report>> reportDictionary, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
