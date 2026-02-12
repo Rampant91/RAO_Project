@@ -96,19 +96,24 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
             progressBarVM.SetProgressBar(5, $"Загрузка организаций");
 
+            try
+            { 
+                var organizations10IdList = await GetOrganizations10List(StaticConfiguration.DBModel, cts.Token, loadedList);
 
-            var organizations10IdList = await GetOrganizations10List(StaticConfiguration.DBModel, cts.Token, loadedList);
+                var repList = await LoadReportList(organizations10IdList, progressBarVM, cts);
+                var repList13 = repList.FindAll(rep => rep.FormNum_DB == "1.3");
+                var repList14 = repList.FindAll(rep => rep.FormNum_DB == "1.4");
 
-            var repList = await LoadReportList(organizations10IdList, progressBarVM, cts);
-            var repList13 = repList.FindAll(rep => rep.FormNum_DB == "1.3");
-            var repList14 = repList.FindAll(rep => rep.FormNum_DB == "1.4");
+                var filteredRows13 = await FilterRows13(repList13, progressBarVM, cts);
+                var filteredRows14 = await FilterRows14(repList14, progressBarVM, cts);
 
-            var filteredRows13 = await FilterRows13(repList13, progressBarVM, cts);
-            var filteredRows14 = await FilterRows14(repList14, progressBarVM, cts);
-
-            GenerateForm53DependOnFilteredRows13(filteredRows13, progressBarVM, cts);
-            GenerateForm53DependOnFilteredRows14(filteredRows14, progressBarVM, cts);
-
+                GenerateForm53DependOnFilteredRows13(filteredRows13, progressBarVM, cts);
+                GenerateForm53DependOnFilteredRows14(filteredRows14, progressBarVM, cts);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
             progressBarVM.SetProgressBar(
             95,
             $"Выставляем номера строк");
@@ -145,9 +150,9 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
             List<Report> repList = new List<Report>();
 
-            foreach (var id in organizations10IdList)
+            try
             {
-                try
+                foreach (var id in organizations10IdList)
                 {
                     cts.Token.ThrowIfCancellationRequested();
 
@@ -166,25 +171,25 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     iteration++;
                     progressBarVM.SetProgressBar((int)progressBarPercent, $"Загружаем отчеты 1.3, 1.4 для обработки ({iteration}/{organizations10IdList.Count})");
                 }
-                catch (OperationCanceledException)
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                    {
-                        CanResize = true,
-                        ContentTitle = "Ошибка",
-                        ContentMessage = ex.Message,
-                        MinWidth = 300,
-                        MinHeight = 125,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(owner));
-                    throw ex;
-                }
+                    CanResize = true,
+                    ContentTitle = "Ошибка",
+                    ContentMessage = ex.Message,
+                    MinWidth = 300,
+                    MinHeight = 125,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(owner));
+                throw ex;
             }
             return repList;
         }

@@ -96,12 +96,18 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
             progressBarVM.SetProgressBar(5, $"Загрузка организаций");
 
-            var organizations10IdList = await GetOrganizations10List(StaticConfiguration.DBModel, cts.Token, loadedList);
+            try
+            {
+                var organizations10IdList = await GetOrganizations10List(StaticConfiguration.DBModel, cts.Token, loadedList);
 
-            var repDictionary = await LoadReportDictionary(organizations10IdList, progressBarVM, cts);
+                var repDictionary = await LoadReportDictionary(organizations10IdList, progressBarVM, cts);
 
-            GenerateForm56(repDictionary, progressBarVM, cts);
-
+                GenerateForm56(repDictionary, progressBarVM, cts);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
             ////Удаляем строчки с количеством и активностью равным нулю
             //Report.Rows56.RemoveMany(
             //    Report.Rows56.Where(rep => 
@@ -146,9 +152,9 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
             var result = new Dictionary<int, List<Report>>();
 
-            foreach (var id in organizations10IdList)
+            try
             {
-                try
+                foreach (var id in organizations10IdList)
                 {
                     cts.Token.ThrowIfCancellationRequested();
 
@@ -187,25 +193,25 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     iteration++;
                     progressBarVM.SetProgressBar((int)progressBarPercent, $"Загружаем отчеты 1.2 для обработки ({iteration}/{organizations10IdList.Count})");
                 }
-                catch (OperationCanceledException)
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                    {
-                        CanResize = true,
-                        ContentTitle = "Ошибка",
-                        ContentMessage = ex.Message,
-                        MinWidth = 300,
-                        MinHeight = 125,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(owner));
-                    throw ex;
-                }
+                    CanResize = true,
+                    ContentTitle = "Ошибка",
+                    ContentMessage = ex.Message,
+                    MinWidth = 300,
+                    MinHeight = 125,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(owner));
+                throw ex;
             }
             return result;
         }
