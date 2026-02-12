@@ -49,19 +49,17 @@
 									<Setter Property="FontSize" Value="14"/>
 								</Style>
 							</ContextMenu.Styles>
-							<MenuItem Header="Добавить форму"
+							<MenuItem Header="Добавить организацию"
 									  Command="{Binding MainWindowVM.AddReports}"/>
-							<MenuItem Header="Редактировать форму"
+							<MenuItem Header="Редактировать отчёт по форме 1.0 организации"
 									  Command="{Binding MainWindowVM.NewChangeReports}"/>
-
                             <MenuItem Header="Импортировать отчёт в организацию">
                                 <MenuItem Header="Из RAODB"
                                           Click="ImportRaodb_Click"/>
                                 <MenuItem Header="Из Excel"
                                           Click="ImportExcel_Click"/>
                             </MenuItem>
-
-							<MenuItem Header="Удалить форму"
+							<MenuItem Header="Удалить организацию"
 									  Command="{Binding MainWindowVM.DeleteReports}"
 									  CommandParameter="{Binding SelectedReports}"/>
 							<MenuItem Header="Выгрузить организацию"
@@ -259,24 +257,29 @@
 						  AlternatingRowBackground="White"
 						  RowBackground="White"
 						  CanUserSortColumns="False">
-					<interactivity:Interaction.Behaviors>
+
+                    <interactivity:Interaction.Behaviors>
 						<local:DataGridDoubleClickOpenFormBehavior />
 					</interactivity:Interaction.Behaviors>
-					<DataGrid.ContextMenu>
+					
+                    <DataGrid.ContextMenu>
 						<ContextMenu>
-							<MenuItem Header="Редактировать форму"
+							<MenuItem Header="Редактировать отчёт"
 									  Command="{Binding MainWindowVM.NewChangeForm}"
 									  CommandParameter="{Binding SelectedReport}"/>
-							<MenuItem Header="Удалить форму"
+							<MenuItem Header="Удалить отчёт"
 									  Command="{Binding MainWindowVM.NewDeleteForm}"
 									  CommandParameter="{Binding SelectedReport}"/>
-							<MenuItem Header="Выгрузить форму в Excel"
-									  Command="{Binding MainWindowVM.ExcelExportFormPrint}"
-									  CommandParameter="{Binding SelectedReport}"/>
-							<MenuItem Header="Выгрузить"
+                            <MenuItem Header="Выгрузить отчёт в Excel">
+                                <MenuItem Header="для печати"
+                                          Click="ExportExcelPrint_Click"/>
+                                <MenuItem Header="для анализа"
+                                          Click="ExportExcelAnalysis_Click"/>
+                            </MenuItem>
+							<MenuItem Header="Выгрузить отчёт в RAODB"
 									  Command="{Binding MainWindowVM.ExportForm}"
 									  CommandParameter="{Binding SelectedReport}"/>
-							<MenuItem Header="Проверить форму"
+							<MenuItem Header="Проверить отчёт"
 									  Command="{Binding MainWindowVM.CheckFormFromMain}"
 									  CommandParameter="{Binding SelectedReport}"/>
 							<MenuItem Header="Сохранить комментарий"

@@ -29,9 +29,20 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
-        if (parameter is not ObservableCollectionWithItemPropertyChanged<IKey> forms) return;
-        var repParam = (Report)forms.First();
-        var repId = repParam.Id;
+        Report? repParam;
+        int repId;
+        if (parameter is ObservableCollectionWithItemPropertyChanged<IKey> forms)
+        {
+            repParam = (Report)forms.First();
+            repId = repParam.Id;
+        }
+        else if (parameter is Report report)
+        {
+            repParam = report;
+            repId = repParam.Id;
+        }
+        else
+            return;
 
         var cts = new CancellationTokenSource();
         ExportType = "Для_анализа";
