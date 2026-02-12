@@ -16,11 +16,18 @@ namespace Client_App.Commands.AsyncCommands.Passports
 
         public override async Task AsyncExecute(object? parameter)
         {
-            var mainWindow = Desktop.MainWindow as MainWindow;
-            var mainWindowVM = mainWindow.DataContext as MainWindowVM;
+            try
+            {
+                var mainWindow = Desktop.MainWindow as MainWindow;
+                var mainWindowVM = mainWindow.DataContext as MainWindowVM;
 
-            var packagePassportWindow = new PackagePassportWindow(new PackagePassportWindowVM());
-            await packagePassportWindow.ShowDialog(mainWindow);
+                var packagePassportWindow = new PackagePassportWindow(new PackagePassportWindowVM());
+                await packagePassportWindow.ShowDialog(mainWindow);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

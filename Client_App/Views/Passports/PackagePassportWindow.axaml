@@ -2,8 +2,808 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+        xmlns:local="using:Client_App.Behaviors"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Client_App.PackagePassportWindow"
         Title="PackagePassportWindow">
-  Окно паспорта на упаковку
+	<StackPanel HorizontalAlignment="Center">
+
+		<!--Header-->
+		<TextBlock Text="ПАСПОРТ"/>
+		<TextBlock Text="на упаковку твердых радиоактивных отходов"/>
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Text="№"/> 
+			<TextBox Watermark="(паспорта)"/>
+			<TextBlock Text="от"/>
+			<TextBox Watermark="(дата)"/>
+		</StackPanel>
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Text="Наименование"/>
+			<TextBox Watermark="(тип упаковки РАО, неупакованных РАО)"/>
+		</StackPanel>
+		
+		<StackPanel Orientation="Horizontal">
+		</StackPanel>
+		
+		<Grid  RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto"
+			   ColumnDefinitions="Auto,*,Auto,*">
+
+			<StackPanel Grid.Row="0" Grid.Column="0"
+					    Orientation="Horizontal">
+				<TextBlock Text="Код &quot;Статус РАО&quot; -"/>
+				<TextBox/>
+			</StackPanel>
+			
+			<TextBox Grid.Row="0" Grid.Column="1"
+					 Watermark="(номер технических условий)"/>
+			<TextBox Grid.Row="0" Grid.Column="2"
+					 Grid.ColumnSpan="2"
+					 Watermark="(название и класс РАО)"/>
+			
+			<TextBlock Grid.Row="1" Grid.Column="0" 
+					   Text="Номер договора передачи РАО на захоронение"/>
+			<TextBox Grid.Row="1" Grid.Column="1"/>
+			
+			<TextBlock Grid.Row="2" Grid.Column="0"
+					   Text="Индивидуальный номер упаковки РАО"/>
+			<TextBox Grid.Row="2" Grid.Column="1"
+					   Watermark="(Идентификационный код)"/>
+			<TextBox Grid.Row="2" Grid.Column="2"
+					 Grid.ColumnSpan="2"
+					 Watermark="(тип и идентификатор(ы) ПУОД)"/>
+			
+			<TextBlock Grid.Row="3" Grid.Column="0"
+					   Text="Организация-собственник упаковки РАО"/>
+			<TextBox Grid.Row="3" Grid.Column="1"
+					 Grid.ColumnSpan="3"/>
+			
+			<TextBlock Grid.Row="4" Grid.Column="0"
+					   Text="Организация-изготовитель упаковки РАО"/>
+			<TextBox Grid.Row="4" Grid.Column="1"
+					 Grid.ColumnSpan="3"/>
+			
+			<TextBlock Grid.Row="5" Grid.Column="0"
+					   Text="Номер сертификата соответствия на контейнер (упаковочный комплект)"/>
+			<TextBox Grid.Row="5" Grid.Column="1"
+					   />
+			
+			
+			<TextBlock Grid.Row="5" Grid.Column="2"
+					   Text="Дата изготовления упаковки РАО"/>
+			<TextBox Grid.Row="5" Grid.Column="3"
+					   />
+			
+			<TextBlock Grid.Row="6" Grid.Column="0"
+					   Text="Срок действия сертификата"/>
+			<TextBox Grid.Row="6" Grid.Column="1"
+					   />
+			
+			<TextBlock Grid.Row="7" Grid.Column="0"
+					   Text="Срок службы контейнера (упаковочного комплекта)"/>
+			<TextBox Grid.Row="7" Grid.Column="1"
+					   />
+			<TextBlock Grid.Row="7" Grid.Column="2"
+					   Text="Дата передачи упаковки РАО на захоронение"/>
+			<TextBox Grid.Row="7" Grid.Column="3"
+					   />
+		</Grid>
+		
+		<!--Таблица 1-->
+		<TextBlock Text="Общая характеристика упаковки РАО"/>
+
+		<ScrollViewer Grid.Row="1" Classes="tableScrollViewer">
+			<Grid x:Name="Table1"
+                  ColumnDefinitions="Auto"
+                  RowDefinitions="Auto,*">
+
+				<!--#region Контекстное меню-->
+
+				<Grid.ContextMenu>
+					<ContextMenu>
+						<MenuItem Header="Контекстное меню"
+                                  IsHitTestVisible="True" />
+					</ContextMenu>
+				</Grid.ContextMenu>
+
+				<!--#endregion Контекстное меню-->
+
+				<!--#region Заголовки таблицы-->
+
+				<Grid Grid.Row="0"
+                      Width="{Binding ElementName=dataGrid.Width}"
+                      Classes="tableHeader"
+                      ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
+                      RowDefinitions="Auto,Auto,Auto">
+
+					<interactivity:Interaction.Behaviors>
+						<local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid1}" />
+					</interactivity:Interaction.Behaviors>
+
+					<!--Первый уровень заголовков-->
+
+					<Border Grid.Row="0"
+                            Grid.Column="0"
+							Grid.ColumnSpan="7"
+                            BorderThickness="1,1,1,0">
+						<TextBlock>Состав упаковки РАО</TextBlock>
+					</Border>
+					<Border Grid.Row="0"
+                            Grid.Column="7"
+                            Grid.ColumnSpan="4">
+						<TextBlock>Габариты упаковки РАО, мм</TextBlock>
+					</Border>
+					<Border Grid.Row="0"
+                            Grid.Column="11"
+                            Grid.ColumnSpan="2">
+						<TextBlock Text="Масса, кг (объем, куб. м)"/>
+					</Border>
+					<Border Grid.Row="0"
+                            Grid.RowSpan="2"
+                            Grid.Column="13"
+                            Grid.ColumnSpan="2">
+						<TextBlock Text="Мощность дозы излучения,мк3в/ч на расстоянии от поверхности, м"/>
+					</Border>
+
+					<!--Второй уровень заголовков-->
+
+					<Border Grid.Row="1"
+                            Grid.Column="1"
+							Grid.ColumnSpan="4"
+                            BorderThickness="1,1,1,0">
+						<TextBlock>Количество и характеристики первичных упаковок</TextBlock>
+					</Border>
+					<!--Третий уровень заголовков-->
+
+					<Border Grid.Row="1" Grid.Column="0"
+							Grid.RowSpan="2">
+						<TextBlock Text="Способ размещения отходов" />
+					</Border>
+					<Border Grid.Row="2" Grid.Column="1">
+						<TextBlock Text="Тип и номер"/>
+					</Border>
+					<Border Grid.Row="2" Grid.Column="2">
+						<TextBlock Text="Количество, шт."/>
+					</Border>
+					<Border Grid.Row="2" Grid.Column="3">
+						<TextBlock Text="Объем, м³"/>
+					</Border>
+					<Border Grid.Row="2" Grid.Column="4">
+						<TextBlock Text="Масса с отходами, кг"/>
+					</Border>
+					<Border Grid.Row="1" Grid.Column="5"
+							Grid.RowSpan="2">
+						<TextBlock Text="Наличие и вид матричного материала"/>
+					</Border>
+					<Border Grid.Row="1" Grid.Column="6"
+							Grid.RowSpan="2">
+						<TextBlock Text="Дата заполнения отходами"/>
+					</Border>
+					<Border Grid.Row="1" Grid.Column="7"
+							Grid.RowSpan="2">
+						<TextBlock Text="Диаметр"/>
+					</Border>
+					<Border Grid.Row="1" Grid.Column="8"
+							Grid.RowSpan="2">
+						<TextBlock Text="Высота"/>
+					</Border>
+					<Border Grid.Row="1" Grid.Column="9"
+							Grid.RowSpan="2">
+						<TextBlock Text="Длина"/>
+					</Border>
+					<Border Grid.Row="1" Grid.Column="10"
+							Grid.RowSpan="2">
+						<TextBlock Text="Ширина"/>
+					</Border>
+					<Border Grid.Row="1" Grid.Column="11"
+							Grid.RowSpan="2">
+						<TextBlock Text="Упаковки РАО"/>
+					</Border>
+					<Border Grid.Row="1" Grid.Column="12"
+							Grid.RowSpan="2">
+						<TextBlock Text="РАО в упаковке"/>
+					</Border>
+					<Border Grid.Row="2" Grid.Column="13">
+						<TextBlock Text="0,1"/>
+					</Border>
+					<Border Grid.Row="2" Grid.Column="14">
+						<TextBlock Text="1"/>
+					</Border>
+					<Border Grid.Row="0" Grid.Column="15"
+							Grid.RowSpan="3">
+						<TextBlock Text="Уровень нефиксированного загрязнения, частиц/(мин*см²)"/>
+					</Border>
+					<Border Grid.Row="0" Grid.Column="16"
+							Grid.RowSpan="3">
+						<TextBlock Text="Тепловыделение, Вт/м³, Вт/упаковку"/>
+					</Border>
+
+				</Grid>
+
+
+				<!--#region DataGrid-->
+
+				<DataGrid x:Name="dataGrid1"
+                          Grid.Row="1"
+                          x:CompileBindings="True"
+                          CanUserReorderColumns="False"
+                          CanUserSortColumns="True"
+                          Classes="table"
+                          ColumnWidth="125">
+
+
+					<DataGrid.Columns>
+						
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="1" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="2" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="3" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="4" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="5" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="6" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="7" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="8" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="9" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="10" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="11" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="12" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="13" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="14" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="15" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="16" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="17" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+					</DataGrid.Columns>
+				</DataGrid>
+
+			</Grid>
+		</ScrollViewer>
+		
+		<!--Таблица 2-->
+		<TextBlock Text="Характеристика радиоактивного содержимого упаковки РАО"/>
+
+		<ScrollViewer Grid.Row="1" Classes="tableScrollViewer">
+			<Grid x:Name="Table2"
+                  ColumnDefinitions="Auto"
+                  RowDefinitions="Auto,*">
+
+				<!--#region Контекстное меню-->
+
+				<Grid.ContextMenu>
+					<ContextMenu>
+						<MenuItem Header="Контекстное меню"
+                                  IsHitTestVisible="True" />
+					</ContextMenu>
+				</Grid.ContextMenu>
+
+				<!--#endregion Контекстное меню-->
+
+				<!--#region Заголовки таблицы-->
+
+				<Grid Grid.Row="0"
+                      Width="{Binding ElementName=dataGrid.Width}"
+                      Classes="tableHeader"
+                      ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
+                      RowDefinitions="Auto">
+
+					<interactivity:Interaction.Behaviors>
+						<local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid2}" />
+					</interactivity:Interaction.Behaviors>
+
+					
+					<!--Первый уровень заголовков-->
+
+					<Border Grid.Row="0" Grid.Column="0">
+						<TextBlock Text="Индивидуальный номер упаковки" />
+					</Border>
+					<Border Grid.Row="0" Grid.Column="1">
+						<TextBlock Text="Класс и код РАО"/>
+					</Border>
+					<Border Grid.Row="0" Grid.Column="2">
+						<TextBlock Text="Физико-химическая форма РАО, тип матричного материала"/>
+					</Border>
+					<Border Grid.Row="0" Grid.Column="3">
+						<TextBlock Text="Морфологический (химический) состав отходов"/>
+					</Border>
+					<Border Grid.Row="0" Grid.Column="4">
+						<TextBlock Text="Горючесть"/>
+					</Border>
+					<Border Grid.Row="0" Grid.Column="5"
+							Grid.RowSpan="2">
+						<TextBlock Text="Радионуклидный состав"/>
+					</Border>
+					<Border Grid.Row="0" Grid.Column="6"
+							Grid.RowSpan="2">
+						<TextBlock Text="Удельная активность, кБк/кг"/>
+					</Border>
+					<Border Grid.Row="0" Grid.Column="7"
+							Grid.RowSpan="2">
+						<TextBlock Text="Суммарные удельные активности, кБк/кг"/>
+					</Border>
+					<Border Grid.Row="0" Grid.Column="8"
+							Grid.RowSpan="2">
+						<TextBlock Text="Общая активность, БК"/>
+					</Border>
+					<Border Grid.Row="0" Grid.Column="9"
+							Grid.RowSpan="2">
+						<TextBlock Text="Содержание ядерно-опасных делящихся нуклидов, кБк/кг, мг/кг"/>
+					</Border>
+
+				</Grid>
+
+
+				<!--#region DataGrid-->
+
+				<DataGrid x:Name="dataGrid2"
+                          Grid.Row="1"
+                          x:CompileBindings="True"
+                          CanUserReorderColumns="False"
+                          CanUserSortColumns="True"
+                          Classes="table"
+                          ColumnWidth="125">
+
+
+					<DataGrid.Columns>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="1" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="2" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="3" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="4" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="5" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="6" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="7" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="8" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="9" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="10" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+
+			</Grid>
+		</ScrollViewer>
+		
+		<!--Footer-->
+		
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Text="Ответственный за сдачу РАО"/>
+			<TextBox Watermark="(наименование организации)"/>
+			<TextBox Watermark="(Должность, Фамирия И.О. уполномоченного лица)"/>
+			<TextBox Watermark="(подпись уполномоченного лица)"/>
+		</StackPanel>
+		
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Text="Ответственный за прием РАО"/>
+			<TextBox Watermark="(наименование организации)"/>
+			<TextBox Watermark="(Должность, Фамирия И.О. уполномоченного лица)"/>
+			<TextBox Watermark="(подпись уполномоченного лица)"/>
+		</StackPanel>
+	</StackPanel>
 </Window>
