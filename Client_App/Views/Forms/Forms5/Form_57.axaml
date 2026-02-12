@@ -265,7 +265,7 @@
                     </interactivity:Interaction.Behaviors>
 
 					<DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding NumberInOrder.Value}"
+                        <DataGridTextColumn Binding="{Binding NumberInOrder_DB}"
 											Width="40"
 											IsReadOnly="True"
 											x:DataType="forms5:Form57">
