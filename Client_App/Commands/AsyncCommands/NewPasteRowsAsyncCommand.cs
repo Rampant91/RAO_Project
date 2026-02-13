@@ -910,7 +910,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                         if (parsedRows[i].Length == 10)
                         {
                             form53.OperationCode.Value = parsedRows[i][0];
-                            form53.TypeORI.Value = parsedRows[i][1];
+                            form53.TypeORI.Value = ConvertStringToByte(parsedRows[i][1]);
                             form53.VarietyORI.Value = ConvertStringToByte(parsedRows[i][2]);
                             form53.AggregateState.Value = ConvertStringToByte(parsedRows[i][3]);
                             form53.ProviderOrRecieverOKPO.Value = parsedRows[i][4];
@@ -927,7 +927,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                         else if (parsedRows[i].Length == 11)
                         {
                             form53.OperationCode.Value = parsedRows[i][1];
-                            form53.TypeORI.Value = parsedRows[i][2];
+                            form53.TypeORI.Value = ConvertStringToByte(parsedRows[i][2]);
                             form53.VarietyORI.Value = ConvertStringToByte(parsedRows[i][3]);
                             form53.AggregateState.Value = ConvertStringToByte(parsedRows[i][4]);
                             form53.ProviderOrRecieverOKPO.Value = parsedRows[i][5];
@@ -952,7 +952,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                         var form54 = Storage.Rows.Get<Form54>(i + start);
                         if (parsedRows[i].Length == 8)
                         {
-                            form54.TypeORI.Value = parsedRows[i][0];
+                            form54.TypeORI.Value = ConvertStringToByte(parsedRows[i][0]);
                             form54.VarietyORI.Value = ConvertStringToByte(parsedRows[i][1]);
                             form54.AggregateState.Value = ConvertStringToByte(parsedRows[i][2]);
                             form54.Radionuclids.Value = parsedRows[i][3];
@@ -967,7 +967,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                         }
                         else if (parsedRows[i].Length == 9)
                         {
-                            form54.TypeORI.Value = parsedRows[i][1];
+                            form54.TypeORI.Value = ConvertStringToByte(parsedRows[i][1]);
                             form54.VarietyORI.Value = ConvertStringToByte(parsedRows[i][2]);
                             form54.AggregateState.Value = ConvertStringToByte(parsedRows[i][3]);
                             form54.Radionuclids.Value = parsedRows[i][4];

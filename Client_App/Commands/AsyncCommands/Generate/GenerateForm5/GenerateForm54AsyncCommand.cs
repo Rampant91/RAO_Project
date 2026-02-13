@@ -423,7 +423,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 {
                     Report.Rows54.Add(new Form54()
                     {
-                        TypeORI_DB = "1",
+                        TypeORI_DB = 1,
                         VarietyORI_DB = null,
                         AggregateState_DB = row13.AggregateState_DB,
                         Radionuclids_DB = row13.Radionuclids_DB,
@@ -470,7 +470,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 {
                     Report.Rows54.Add(new Form54()
                     {
-                        TypeORI_DB = "2",
+                        TypeORI_DB = 2,
                         VarietyORI_DB = row14.Sort_DB,
                         AggregateState_DB = row14.AggregateState_DB,
                         Radionuclids_DB = row14.Radionuclids_DB,
@@ -547,14 +547,14 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 case "1.3":
                     var row13 = form as Form13;
                     return Report.Rows54.FirstOrDefault(row54 =>
-                    row54.TypeORI_DB == "1"
+                    row54.TypeORI_DB == 1
                     && row54.VarietyORI_DB == null
                     && row54.AggregateState_DB == row13.AggregateState_DB
                     && comparer.Equals(row54.Radionuclids_DB, row13.Radionuclids_DB));
                 case "1.4":
                     var row14 = form as Form14;
                     return Report.Rows54.FirstOrDefault(row54 =>
-                    row54.TypeORI_DB == "2"
+                    row54.TypeORI_DB == 2
                     && row54.VarietyORI_DB == row14.Sort_DB
                     && row54.AggregateState_DB == row14.AggregateState_DB);
                     break;

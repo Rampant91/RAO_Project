@@ -427,7 +427,7 @@ public partial class Form_54 : BaseWindow<Form_54VM>
         var lst = vm.Report[vm.FormType].ToList<Form54>();
         foreach (var form in lst)
         {
-            if (string.IsNullOrWhiteSpace(form.TypeORI_DB)
+            if (form.TypeORI_DB is null
                 && form.VarietyORI_DB is null
                 && form.AggregateState_DB is null
                 && string.IsNullOrWhiteSpace(form.Radionuclids_DB)
