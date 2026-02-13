@@ -454,7 +454,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand();
         ImportExcel = new ImportExcelAsyncCommand(this);
         ImportJson = new ImportJsonAsyncCommand();
-        ImportRaodb = new ImportRaodbAsyncCommand();
+        ImportRaodb = new ImportRaodbAsyncCommand(this);
         MaxGraphsLength = new MaxGraphsLengthAsyncCommand();
         SaveReports = new SaveReportsAsyncCommand();
         OpenCalculator = new OpenCalculatorAsyncCommand();

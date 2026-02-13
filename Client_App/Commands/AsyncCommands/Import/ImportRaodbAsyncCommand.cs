@@ -1,27 +1,28 @@
 ﻿using Avalonia.Controls;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
-using Models.DBRealization;
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Models.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Client_App.Interfaces.Logger;
-using MessageBox.Avalonia.Enums;
-using Models.DTO;
 using Avalonia.Threading;
+using Client_App.Interfaces.Logger;
 using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels;
+using Client_App.Views;
 using Client_App.Views.Messages;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Enums;
+using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
+using Models.Collections;
+using Models.DBRealization;
+using Models.DTO;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using static Client_App.ViewModels.Messages.SelectReportsMessageWindowVM;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
 //  Импорт -> Из RAODB
-public class ImportRaodbAsyncCommand() : ImportBaseAsyncCommand
+public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
@@ -117,29 +118,57 @@ public class ImportRaodbAsyncCommand() : ImportBaseAsyncCommand
                 Reports? baseReps21;
                 Reports? baseReps41;
                 Reports? baseReps51;
-                if (parameter is "Auto")
+                switch (parameter)
                 {
-                    baseReps11 = GetReports11FromLocalEqual(impReps);
-                    baseReps21 = GetReports21FromLocalEqual(impReps);
-                    baseReps41 = GetReports41FromLocalEqual(impReps);
-                    baseReps51 = GetReports51FromLocalEqual(impReps);
-                }
-                else //if (parameter is "Selected")
-                {
-                    var localRepsList = await GetReportsListFromDB(impReps.Master_DB.FormNum_DB);
-                    var currentReportIndex = impReportsList.IndexOf(impReps) + 1;
-                    var selectReportsMessageWindow = new SelectReportsMessageWindow(localRepsList, SourceFile!.Name, impReportsList.Count, currentReportIndex, impReps);
-                    var selectedReports = await selectReportsMessageWindow.ShowDialog<OrganizationInfo>(Desktop.MainWindow);
-                    if (selectedReports is null) return;
+                    case "Auto":
+                    {
+                        baseReps11 = GetReports11FromLocalEqual(impReps);
+                        baseReps21 = GetReports21FromLocalEqual(impReps);
+                        baseReps41 = GetReports41FromLocalEqual(impReps);
+                        baseReps51 = GetReports51FromLocalEqual(impReps);
 
-                    var impRepsFromDb = await GetSelectedReportsFromDB(selectedReports, impReps.Master_DB.FormNum_DB);
-                    baseReps11 = GetReports11FromLocalEqual(impRepsFromDb);
-                    baseReps21 = GetReports21FromLocalEqual(impRepsFromDb);
-                    baseReps41 = GetReports41FromLocalEqual(impRepsFromDb);
-                    baseReps51 = GetReports51FromLocalEqual(impRepsFromDb);
+                        break;
+                    }
+                    case "Selected":
+                    {
+                        var selectedReports = mainWindowVM.SelectedReports;
+                        if (selectedReports is null) return;
+                        var selectedReportsInfo = new OrganizationInfo
+                        {
+                            RegNum = selectedReports.Master_DB.RegNoRep.Value,
+                            Okpo = selectedReports.Master_DB.OkpoRep.Value
+                        };
+
+                        var impRepsFromDb = await GetSelectedReportsFromDB(selectedReportsInfo, impReps.Master_DB.FormNum_DB);
+
+                        baseReps11 = GetReports11FromLocalEqual(impRepsFromDb);
+                        baseReps21 = GetReports21FromLocalEqual(impRepsFromDb);
+                        baseReps41 = GetReports41FromLocalEqual(impRepsFromDb);
+                        baseReps51 = GetReports51FromLocalEqual(impRepsFromDb);
+
+                        break;
+                    }
+                    case "FromList":
+                    {
+                        var localRepsList = await GetReportsListFromDB(impReps.Master_DB.FormNum_DB);
+                        var currentReportIndex = impReportsList.IndexOf(impReps) + 1;
+                        var selectReportsMessageWindow = new SelectReportsMessageWindow(localRepsList, SourceFile!.Name, impReportsList.Count, currentReportIndex, impReps);
+                        var selectedReports = await selectReportsMessageWindow.ShowDialog<OrganizationInfo>(Desktop.MainWindow);
+                        if (selectedReports is null) return;
+                        var impRepsFromDb = await GetSelectedReportsFromDB(selectedReports, impReps.Master_DB.FormNum_DB);
+                        
+                        baseReps11 = GetReports11FromLocalEqual(impRepsFromDb);
+                        baseReps21 = GetReports21FromLocalEqual(impRepsFromDb);
+                        baseReps41 = GetReports41FromLocalEqual(impRepsFromDb);
+                        baseReps51 = GetReports51FromLocalEqual(impRepsFromDb);
+
+                        break;
+                    }
+                    default: return;
                 }
 
-                FillEmptyRegNo(ref baseReps11);
+
+                    FillEmptyRegNo(ref baseReps11);
                 FillEmptyRegNo(ref baseReps21);
                 impReps.CleanIds();
                 ProcessIfNoteOrder0(impReps);
