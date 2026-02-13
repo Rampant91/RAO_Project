@@ -352,7 +352,7 @@
 			    </TabItem>
 				<TabItem x:Name="Forms5" 
                          Header="Формы 5" 
-                         IsVisible="True">
+                         IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
 					<tabs:Forms5TabControl DataContext="{Binding Forms5TabControlVM}"/>
 				</TabItem>
             </TabControl>

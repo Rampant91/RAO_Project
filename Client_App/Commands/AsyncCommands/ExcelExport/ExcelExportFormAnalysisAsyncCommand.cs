@@ -209,7 +209,6 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
     /// Выгрузка примечаний в .xlsx.
     /// </summary>
     /// <param name="rep">Отчёт.</param>
-    /// <param name="startRow">Номер начального ряда.</param>
     /// <param name="startColumn">Номер начальной колонки.</param>
     /// <returns>Успешно выполненная Task.</returns>
     private Task ExcelExportNotes(Report rep, int startColumn)
