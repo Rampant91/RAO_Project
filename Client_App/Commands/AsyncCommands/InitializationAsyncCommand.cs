@@ -111,6 +111,13 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             dbm.DBObservableDbSet.Local.First().Reports_Collection.AddRange(dbm.ReportsCollectionDbSet);
         }
 
+        var removedReports = dbm.ReportsCollectionDbSet.Where(reps => reps.DBObservable == null);
+
+        foreach (var reports in removedReports)
+        {
+            dbm.ReportsCollectionDbSet.Remove(reports);
+        }
+
         await dbm.DBObservableDbSet.LoadAsync();
 
         #endregion

@@ -34,8 +34,6 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
         private Report Report => formVM.Report;
 
-        private Window owner;
-
         private string year => formVM.Report.Year_DB;
 
 
@@ -98,19 +96,24 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
             progressBarVM.SetProgressBar(5, $"Загрузка организаций");
 
+            try
+            { 
+                var organizations10IdList = await GetOrganizations10List(StaticConfiguration.DBModel, cts.Token, loadedList);
 
-            var organizations10IdList = await GetOrganizations10List(StaticConfiguration.DBModel, cts.Token, loadedList);
+                var repList = await LoadReportList(organizations10IdList, progressBarVM, cts);
+                var repList13 = repList.FindAll(rep => rep.FormNum_DB == "1.3");
+                var repList14 = repList.FindAll(rep => rep.FormNum_DB == "1.4");
 
-            var repList = await LoadReportList(organizations10IdList, progressBarVM, cts);
-            var repList13 = repList.FindAll(rep => rep.FormNum_DB == "1.3");
-            var repList14 = repList.FindAll(rep => rep.FormNum_DB == "1.4");
+                var filteredRows13 = await FilterRows13(repList13, progressBarVM, cts);
+                var filteredRows14 = await FilterRows14(repList14, progressBarVM, cts);
 
-            var filteredRows13 = await FilterRows13(repList13, progressBarVM, cts);
-            var filteredRows14 = await FilterRows14(repList14, progressBarVM, cts);
-
-            GenerateForm53DependOnFilteredRows13(filteredRows13, progressBarVM, cts);
-            GenerateForm53DependOnFilteredRows14(filteredRows14, progressBarVM, cts);
-
+                GenerateForm53DependOnFilteredRows13(filteredRows13, progressBarVM, cts);
+                GenerateForm53DependOnFilteredRows14(filteredRows14, progressBarVM, cts);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
             progressBarVM.SetProgressBar(
             95,
             $"Выставляем номера строк");
@@ -147,9 +150,9 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
             List<Report> repList = new List<Report>();
 
-            foreach (var id in organizations10IdList)
+            try
             {
-                try
+                foreach (var id in organizations10IdList)
                 {
                     cts.Token.ThrowIfCancellationRequested();
 
@@ -168,25 +171,25 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     iteration++;
                     progressBarVM.SetProgressBar((int)progressBarPercent, $"Загружаем отчеты 1.3, 1.4 для обработки ({iteration}/{organizations10IdList.Count})");
                 }
-                catch (OperationCanceledException)
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                    {
-                        CanResize = true,
-                        ContentTitle = "Ошибка",
-                        ContentMessage = ex.Message,
-                        MinWidth = 300,
-                        MinHeight = 125,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(owner));
-                    throw ex;
-                }
+                    CanResize = true,
+                    ContentTitle = "Ошибка",
+                    ContentMessage = ex.Message,
+                    MinWidth = 300,
+                    MinHeight = 125,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(owner));
+                throw ex;
             }
             return repList;
         }
@@ -320,7 +323,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
                     var row53 = Report.Rows53.FirstOrDefault(r =>
                         r.OperationCode_DB == row13.OperationCode_DB
-                        && r.TypeORI_DB == "1"
+                        && r.TypeORI_DB == 1
                         && r.VarietyORI_DB == null
                         && r.AggregateState_DB == 2
                         && r.ProviderOrRecieverOKPO_DB == row13.ProviderOrRecieverOKPO_DB);
@@ -367,7 +370,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                             Report.Rows53.Add(new Form53()
                             {
                                 OperationCode_DB = row13.OperationCode_DB,
-                                TypeORI_DB = "1",
+                                TypeORI_DB = 1,
                                 VarietyORI_DB = null,
                                 AggregateState_DB = 2,
                                 ProviderOrRecieverOKPO_DB = row13.ProviderOrRecieverOKPO_DB,
@@ -446,7 +449,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
                     var row53 = Report.Rows53.FirstOrDefault(r =>
                         r.OperationCode_DB == row14.OperationCode_DB
-                        && r.TypeORI_DB == "2"
+                        && r.TypeORI_DB == 2
                         && r.VarietyORI_DB == row14.Sort_DB
                         && r.AggregateState_DB == row14.AggregateState_DB
                         && r.ProviderOrRecieverOKPO_DB == row14.ProviderOrRecieverOKPO_DB);
@@ -496,7 +499,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                             Report.Rows53.Add(new Form53()
                             {
                                 OperationCode_DB = row14.OperationCode_DB,
-                                TypeORI_DB = "2",
+                                TypeORI_DB = 2,
                                 VarietyORI_DB = row14.Sort_DB,
                                 AggregateState_DB = row14.AggregateState_DB,
                                 ProviderOrRecieverOKPO_DB = row14.ProviderOrRecieverOKPO_DB,

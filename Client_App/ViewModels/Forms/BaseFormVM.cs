@@ -465,6 +465,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         FormList = new ObservableCollection<Form>(
             Report.Rows
                 .ToList<Form>()
+                .OrderBy(form => form.NumberInOrder.Value)
                 .Skip((CurrentPage - 1) * RowCount)
                 .Take(RowCount)); //Нужна оптимизация
     }

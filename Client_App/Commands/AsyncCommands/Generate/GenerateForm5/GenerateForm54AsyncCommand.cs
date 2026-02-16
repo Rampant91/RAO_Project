@@ -38,8 +38,6 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
         private Report Report => formVM.Report;
 
-        private Window owner;
-
         private string year => formVM.Report.Year_DB;
 
         SnkRadionuclidsEqualityComparer comparer = new SnkRadionuclidsEqualityComparer();
@@ -102,14 +100,21 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
             progressBarVM.SetProgressBar(5, $"Загрузка организаций");
 
+            try
+            {
 
-            var organizations10IdList = await GetOrganizations10List(StaticConfiguration.DBModel, cts.Token, loadedList);
+                var organizations10IdList = await GetOrganizations10List(StaticConfiguration.DBModel, cts.Token, loadedList);
 
-            LoadReportDictionary(organizations10IdList, out var rep13Dictionary,out var rep14Dictionary, progressBarVM, cts);
+                LoadReportDictionary(organizations10IdList, out var rep13Dictionary,out var rep14Dictionary, progressBarVM, cts);
 
 
-            GenerateForm54DependOnForm13(rep13Dictionary, progressBarVM, cts);
-            GenerateForm54DependOnForm14(rep14Dictionary, progressBarVM, cts);
+                GenerateForm54DependOnForm13(rep13Dictionary, progressBarVM, cts);
+                GenerateForm54DependOnForm14(rep14Dictionary, progressBarVM, cts);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
 
             progressBarVM.SetProgressBar(
             95,
@@ -150,9 +155,9 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             rep13Dictionary =new Dictionary<int, List<Report>> (); 
             rep14Dictionary = new Dictionary<int, List<Report>>();
 
-            foreach (var id in organizations10IdList)
+            try
             {
-                try
+                foreach (var id in organizations10IdList)
                 {
                     cts.Token.ThrowIfCancellationRequested();
 
@@ -209,25 +214,25 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     iteration++;
                     progressBarVM.SetProgressBar((int)progressBarPercent, $"Загружаем отчеты 1.3, 1.4 для обработки ({iteration}/{organizations10IdList.Count})");
                 }
-                catch (OperationCanceledException)
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                    {
-                        CanResize = true,
-                        ContentTitle = "Ошибка",
-                        ContentMessage = ex.Message,
-                        MinWidth = 300,
-                        MinHeight = 125,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(owner));
-                    throw ex;
-                }
+                    CanResize = true,
+                    ContentTitle = "Ошибка",
+                    ContentMessage = ex.Message,
+                    MinWidth = 300,
+                    MinHeight = 125,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(owner));
+                throw ex;
             }
         }
         private async Task GenerateForm54DependOnForm13(Dictionary<int, List<Report>> reportDictionary, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
@@ -244,6 +249,9 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     var reportList = item.Value;
 
                     var inventarizationDate = ProcessInventoryReport13(reportList[0]);
+                    if (inventarizationDate == DateOnly.MinValue)
+                        continue;
+
                     int.TryParse(year, out var yearIntValue);
                     var endOfTheYear = new DateOnly(day: 31, month: 12, year: yearIntValue);
 
@@ -271,8 +279,6 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
                                 matchingForm.Activity.Value = SummarizeExponentionalStrings(matchingForm.Activity.Value, row13.Activity.Value);
 
-
-                                AddRadionuclids(matchingForm, row13.Radionuclids_DB);
                             }
                             else if (CodeOperationFilter.MinusOperationsForm54.Any(x => x == row13.OperationCode_DB))
                             {
@@ -280,7 +286,6 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
                                 matchingForm.Activity.Value = SubtractExponentionalStrings(matchingForm.Activity.Value, row13.Activity.Value);
 
-                                RemoveRadionuclids(matchingForm, row13.Radionuclids_DB);
                             }
                         }
                     }
@@ -320,7 +325,9 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 {
                     var reportList = item.Value;
 
-                    var inventarizationDate = ProcessInventoryReport14(reportList[0]);
+                    var inventarizationDate = ProcessInventoryReport14(reportList[0]); 
+                    if (inventarizationDate == DateOnly.MinValue)
+                        continue;
                     int.TryParse(year, out var yearIntValue);
                     var endOfTheYear = new DateOnly(day: 31, month: 12, year: yearIntValue);
 
@@ -416,9 +423,9 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 {
                     Report.Rows54.Add(new Form54()
                     {
-                        TypeORI_DB = "1",
+                        TypeORI_DB = 1,
                         VarietyORI_DB = null,
-                        AggregateState_DB = 2,
+                        AggregateState_DB = row13.AggregateState_DB,
                         Radionuclids_DB = row13.Radionuclids_DB,
                         Quantity_DB = 1,
                         Activity_DB = row13.Activity_DB
@@ -463,7 +470,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 {
                     Report.Rows54.Add(new Form54()
                     {
-                        TypeORI_DB = "2",
+                        TypeORI_DB = 2,
                         VarietyORI_DB = row14.Sort_DB,
                         AggregateState_DB = row14.AggregateState_DB,
                         Radionuclids_DB = row14.Radionuclids_DB,
@@ -538,14 +545,16 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             switch (form.FormNum_DB)
             {
                 case "1.3":
+                    var row13 = form as Form13;
                     return Report.Rows54.FirstOrDefault(row54 =>
-                    row54.TypeORI_DB == "1"
+                    row54.TypeORI_DB == 1
                     && row54.VarietyORI_DB == null
-                    && row54.AggregateState_DB == 2);
+                    && row54.AggregateState_DB == row13.AggregateState_DB
+                    && comparer.Equals(row54.Radionuclids_DB, row13.Radionuclids_DB));
                 case "1.4":
                     var row14 = form as Form14;
                     return Report.Rows54.FirstOrDefault(row54 =>
-                    row54.TypeORI_DB == "2"
+                    row54.TypeORI_DB == 2
                     && row54.VarietyORI_DB == row14.Sort_DB
                     && row54.AggregateState_DB == row14.AggregateState_DB);
                     break;

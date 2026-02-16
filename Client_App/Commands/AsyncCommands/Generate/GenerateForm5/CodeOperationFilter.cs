@@ -28,6 +28,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 return new List<string>()
                 {
                     "22", "23", "24", "25", "26", "27", "28", "29",
+                    "41",
                     "81", "82", "83", "84"
                 };
             }
@@ -90,6 +91,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 return new List<string>()
                 {
                     "22", "23", "24", "25", "26", "27", "28", "29",
+                    "41", "47",
                     "81", "82", "83", "84"
                 };
             }

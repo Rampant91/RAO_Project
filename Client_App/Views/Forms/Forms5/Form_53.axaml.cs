@@ -452,7 +452,7 @@ public partial class Form_53 : BaseWindow<Form_53VM>
         foreach (var form in lst)
         {
             if (string.IsNullOrWhiteSpace(form.OperationCode_DB)
-                && string.IsNullOrWhiteSpace(form.TypeORI_DB)
+                && form.TypeORI_DB is null
                 && form.VarietyORI_DB is null
                 && form.AggregateState_DB is null
                 && string.IsNullOrWhiteSpace(form.ProviderOrRecieverOKPO_DB)
