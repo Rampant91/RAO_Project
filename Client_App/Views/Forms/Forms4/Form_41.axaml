@@ -196,10 +196,10 @@
 							<Setter Property="CornerRadius" Value="5"/>
 							<Setter Property="Foreground" Value="Black"/>
 							<Setter Property="Background">
-								<MultiBinding Converter="{StaticResource ColorBlendConverter}">
+								<MultiBinding x:DataType="forms4:Form41" Converter="{StaticResource ColorBlendConverter}">
 									<Binding Source="LightBlue"/>
 									<!-- Базовый цвет выделения -->
-									<Binding x:DataType="forms4:Form41" Path="RowColor"/>
+                                    <Binding Path="RowColor"/>
 									<!-- Цвет из условия -->
 								</MultiBinding>
 							</Setter>
@@ -208,10 +208,10 @@
 						<Style Selector="DataGrid DataGridRow:pointerover:not(:selected) DataGridCell">
 							<Setter Property="Foreground" Value="Black"/>
 							<Setter Property="Background">
-								<MultiBinding Converter="{StaticResource ColorBlendConverter}">
-									<Binding Source="LightGray"/>
-									<!-- Базовый цвет наведения -->
-									<Binding x:DataType="forms4:Form41" Path="RowColor"/>
+								<MultiBinding x:DataType="forms4:Form41" Converter="{StaticResource ColorBlendConverter}">
+                                    <Binding Source="LightGray"/>
+                                    <!-- Базовый цвет наведения -->
+                                    <Binding  Path="RowColor"/>
 									<!-- Цвет из условия -->
 								</MultiBinding>
 							</Setter>
