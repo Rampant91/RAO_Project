@@ -1867,6 +1867,15 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         public int Quantity { get; set; }
 
         public string PackNumber { get; set; }
+
+        public Status Status { get; set; }
+    }
+
+    public enum Status
+    {
+        None = 0,
+        Lost,
+        Extra
     }
 
     #endregion
