@@ -19,7 +19,6 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
         InitializeComponent();
 
         DataContext = vm;
-        _vm = vm;
     }
     private void InitializeComponent()
     {
