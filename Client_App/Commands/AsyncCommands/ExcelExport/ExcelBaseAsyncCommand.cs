@@ -371,6 +371,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             worksheet.Cells["G3"].Value = rep.StartPeriod_DB;
             worksheet.Cells["G4"].Value = rep.EndPeriod_DB;
             worksheet.Cells["G5"].Value = rep.CorrectionNumber_DB;
+
+            worksheet.Cells["D18"].Value = rep.GradeExecutor_DB;
+            worksheet.Cells["F18"].Value = rep.FIOexecutor_DB;
+            worksheet.Cells["I18"].Value = rep.ExecPhone_DB;
+            worksheet.Cells["K18"].Value = rep.ExecEmail_DB;
         }
         else if (formNum.Split('.')[0] == "2")
         {
@@ -425,6 +430,10 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                     break;
                 }
             }
+            worksheet.Cells["D18"].Value = rep.GradeExecutor_DB;
+            worksheet.Cells["F18"].Value = rep.FIOexecutor_DB;
+            worksheet.Cells["I18"].Value = rep.ExecPhone_DB;
+            worksheet.Cells["K18"].Value = rep.ExecEmail_DB;
         }
         else if (formNum.Split('.')[0] == "4")
         {
