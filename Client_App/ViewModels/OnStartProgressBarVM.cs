@@ -75,6 +75,8 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
             .Trim()
             .Split(',')
             .Any(x => x is "-n");
+        
+        Settings.Default.Save(); // Сохраняем настройки
 
         MainWindowVM = new MainWindowVM();
         MainWindowVM.PropertyChanged += OnMainWindowVMPropertyChanged;

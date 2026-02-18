@@ -1,14 +1,10 @@
-﻿using Avalonia.Controls;
-using Client_App.Commands.AsyncCommands.SumRow;
-using Client_App.Resources;
-using Client_App.ViewModels.Forms.Forms1;
+﻿using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms4;
 using Client_App.ViewModels.Forms.Forms5;
 using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
 using Client_App.Views.Forms.Forms4;
 using Client_App.Views.Forms.Forms5;
-using Client_App.VisualRealization.Long_Visual;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -68,8 +64,9 @@ public class NewChangeFormAsyncCommand : BaseAsyncCommand
                         var dbReport = dBModel.ReportCollectionDbSet
                             .AsSplitQuery()
                             .AsQueryable()
-                            .Include(rep => rep.Rows11)
                             .Include(rep => rep.Reports)
+                            .Include(rep => rep.Rows11)
+                            .Include(rep => rep.Notes)
                             .FirstOrDefault(x => x.Id == report.Id);
                         report.Rows11 = dbReport.Rows11;
                         var form11VM = new Form_11VM(report);
@@ -82,8 +79,9 @@ public class NewChangeFormAsyncCommand : BaseAsyncCommand
                         var dbReport = dBModel.ReportCollectionDbSet
                             .AsSplitQuery()
                             .AsQueryable()
-                            .Include(rep => rep.Rows12)
                             .Include(rep => rep.Reports)
+                            .Include(rep => rep.Rows12)
+                            .Include(rep => rep.Notes)
                             .FirstOrDefault(x => x.Id == report.Id);
                         report.Rows12 = dbReport.Rows12;
                         var form12VM = new Form_12VM(report);
@@ -96,8 +94,9 @@ public class NewChangeFormAsyncCommand : BaseAsyncCommand
                         var dbReport = dBModel.ReportCollectionDbSet
                             .AsSplitQuery()
                             .AsQueryable()
-                            .Include(rep => rep.Rows13)
                             .Include(rep => rep.Reports)
+                            .Include(rep => rep.Rows13)
+                            .Include(rep => rep.Notes)
                             .FirstOrDefault(x => x.Id == report.Id);
                         report.Rows13 = dbReport.Rows13;
                         var form13VM = new Form_13VM(report);
@@ -110,8 +109,9 @@ public class NewChangeFormAsyncCommand : BaseAsyncCommand
                         var dbReport = dBModel.ReportCollectionDbSet
                             .AsSplitQuery()
                             .AsQueryable()
-                            .Include(rep => rep.Rows14)
                             .Include(rep => rep.Reports)
+                            .Include(rep => rep.Rows14)
+                            .Include(rep => rep.Notes)
                             .FirstOrDefault(x => x.Id == report.Id);
                         report.Rows14 = dbReport.Rows14;
                         var form14VM = new Form_14VM(report);
@@ -124,8 +124,9 @@ public class NewChangeFormAsyncCommand : BaseAsyncCommand
                         var dbReport = dBModel.ReportCollectionDbSet
                             .AsSplitQuery()
                             .AsQueryable()
-                            .Include(rep => rep.Rows15)
                             .Include(rep => rep.Reports)
+                            .Include(rep => rep.Rows15)
+                            .Include(rep => rep.Notes)
                             .FirstOrDefault(x => x.Id == report.Id);
                         report.Rows15 = dbReport.Rows15;
                         var form15VM = new Form_15VM(report);
@@ -138,8 +139,9 @@ public class NewChangeFormAsyncCommand : BaseAsyncCommand
                         var dbReport = dBModel.ReportCollectionDbSet
                             .AsSplitQuery()
                             .AsQueryable()
-                            .Include(rep => rep.Rows16)
                             .Include(rep => rep.Reports)
+                            .Include(rep => rep.Rows16)
+                            .Include(rep => rep.Notes)
                             .FirstOrDefault(x => x.Id == report.Id);
                         report.Rows16 = dbReport.Rows16;
                         var form16VM = new Form_16VM(report);
@@ -152,8 +154,9 @@ public class NewChangeFormAsyncCommand : BaseAsyncCommand
                         var dbReport = dBModel.ReportCollectionDbSet
                             .AsSplitQuery()
                             .AsQueryable()
-                            .Include(rep => rep.Rows17)
                             .Include(rep => rep.Reports)
+                            .Include(rep => rep.Rows17)
+                            .Include(rep => rep.Notes)
                             .FirstOrDefault(x => x.Id == report.Id);
                         report.Rows17 = dbReport.Rows17;
                         var form17VM = new Form_17VM(report);
@@ -166,8 +169,9 @@ public class NewChangeFormAsyncCommand : BaseAsyncCommand
                         var dbReport = dBModel.ReportCollectionDbSet
                             .AsSplitQuery()
                             .AsQueryable()
-                            .Include(rep => rep.Rows18)
                             .Include(rep => rep.Reports)
+                            .Include(rep => rep.Rows18)
+                            .Include(rep => rep.Notes)
                             .FirstOrDefault(x => x.Id == report.Id);
                         report.Rows18 = dbReport.Rows18;
                         var form18VM = new Form_18VM(report);
@@ -180,8 +184,9 @@ public class NewChangeFormAsyncCommand : BaseAsyncCommand
                         var dbReport = dBModel.ReportCollectionDbSet
                             .AsSplitQuery()
                             .AsQueryable()
-                            .Include(rep => rep.Rows19)
                             .Include(rep => rep.Reports)
+                            .Include(rep => rep.Rows19)
+                            .Include(rep => rep.Notes)
                             .FirstOrDefault(x => x.Id == report.Id);
                         report.Rows19 = dbReport.Rows19;
                         var form19VM = new Form_19VM(report);
