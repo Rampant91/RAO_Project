@@ -10,7 +10,7 @@
         x:Class="Client_App.PackagePassportWindow"
         x:DataType="vm:PackagePassportWindowVM"
         Title="PackagePassportWindow">
-	<ScrollViewer>
+	<ScrollViewer >
 		<Grid >
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"/>
@@ -173,6 +173,11 @@
 				Margin="5">
 
 				<ScrollViewer Margin="5" Grid.Row="3" Classes="tableScrollViewer">
+
+					<interactivity:Interaction.Behaviors>
+						<local:ScrollViewerParentScrollPassingBehavior WheelScrollLines="3" LineSize="16"/>
+					</interactivity:Interaction.Behaviors>
+					
 					<Grid x:Name="Table1"
 						  ColumnDefinitions="Auto"
 						  RowDefinitions="Auto,Auto,Auto">
