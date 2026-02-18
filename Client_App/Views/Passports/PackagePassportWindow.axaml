@@ -10,7 +10,7 @@
         x:Class="Client_App.PackagePassportWindow"
         x:DataType="vm:PackagePassportWindowVM"
         Title="PackagePassportWindow">
-	<ScrollViewer >
+	<ScrollViewer>
 		<Grid >
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"/>
@@ -172,14 +172,14 @@
 				IsExpanded="True"
 				Margin="5">
 
-				<ScrollViewer Margin="5" Grid.Row="3" Classes="tableScrollViewer">
+				<ScrollViewer Margin="5" Grid.Row="3" HorizontalScrollBarVisibility="Auto">
 
 					<interactivity:Interaction.Behaviors>
-						<local:ScrollViewerParentScrollPassingBehavior WheelScrollLines="3" LineSize="16"/>
+						<local:ChainingScrollViewerBehavior/>
 					</interactivity:Interaction.Behaviors>
 					
 					<Grid x:Name="Table1"
-						  ColumnDefinitions="Auto"
+						  ColumnDefinitions="*"
 						  RowDefinitions="Auto,Auto,Auto">
 
 						<!--#region Контекстное меню-->
@@ -708,7 +708,12 @@
 					 TextAlignment="Center"
 					 Text ="Характеристика радиоактивного содержимого упаковки РАО"/>
 			
-				<ScrollViewer Margin="5" Grid.Row="4" Classes="tableScrollViewer">
+				<ScrollViewer Margin="5" Grid.Row="4" HorizontalScrollBarVisibility="Auto">
+
+					<interactivity:Interaction.Behaviors>
+						<local:ChainingScrollViewerBehavior/>
+					</interactivity:Interaction.Behaviors>
+					
 					<Grid x:Name="Table2"
 						  ColumnDefinitions="Auto"
 						  RowDefinitions="Auto,*">
