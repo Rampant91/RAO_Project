@@ -1066,12 +1066,34 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
         else if (formNumber.Split('.')[0] == "4")
         {
             impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B1"].Value);
-            impRep.Year_DB = Convert.ToString(worksheet.Cells["B15"].Text);
+            impRep.Year_DB = Convert.ToString(worksheet.Cells["B15"].Text).Trim();
+            //Отсекаем мусор из ячейки
+            if(!impRep.Year_DB.All(c => char.IsDigit(c)))
+            {
+                var digits = "";
+                foreach (var c in impRep.Year_DB)
+                {
+                    if (char.IsDigit(c))
+                        digits += c;
+                }
+                impRep.Year_DB = digits;
+            }
         }
         else if (formNumber.Split('.')[0] == "5")
         {
             impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B7"].Value);
-            impRep.Year_DB = Convert.ToString(worksheet.Cells["B16"].Text);
+            impRep.Year_DB = Convert.ToString(worksheet.Cells["B16"].Text).Trim();
+            //Отсекаем мусор из ячейки
+            if (!impRep.Year_DB.All(c => char.IsDigit(c)))
+            {
+                var digits = "";
+                foreach (var c in impRep.Year_DB)
+                {
+                    if (char.IsDigit(c))
+                        digits += c;
+                }
+                impRep.Year_DB = digits;
+            }
         }
 
         #region BindCommonData
