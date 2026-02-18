@@ -10,8 +10,8 @@
         x:Class="Client_App.PackagePassportWindow"
         x:DataType="vm:PackagePassportWindowVM"
         Title="PackagePassportWindow">
-	<ScrollViewer>
-		<Grid >
+	<ScrollViewer >
+		<Grid ColumnDefinitions="*">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="Auto"/>
@@ -172,14 +172,14 @@
 				IsExpanded="True"
 				Margin="5">
 
-				<ScrollViewer Margin="5" Grid.Row="3" HorizontalScrollBarVisibility="Auto">
+				<ScrollViewer Margin="5" Grid.Row="3" >
 
 					<interactivity:Interaction.Behaviors>
 						<local:ChainingScrollViewerBehavior/>
 					</interactivity:Interaction.Behaviors>
 					
 					<Grid x:Name="Table1"
-						  ColumnDefinitions="*"
+						  ColumnDefinitions="Auto"
 						  RowDefinitions="Auto,Auto,Auto">
 
 						<!--#region Контекстное меню-->
@@ -299,7 +299,8 @@
 								  CanUserReorderColumns="False"
 								  CanUserSortColumns="True"
 								  Classes="table"
-								  ColumnWidth="125">
+								  ColumnWidth="150"
+								  MaxColumnWidth="500">
 
 
 							<DataGrid.Columns>
