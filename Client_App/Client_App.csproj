@@ -143,6 +143,9 @@
     <Compile Update="Views\Forms\Forms5\Form_50.axaml.cs">
       <DependentUpon>Form_50.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Forms\NewCheckForm41.axaml.cs">
+      <DependentUpon>NewCheckForm41.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Forms\NewCheckForm.axaml.cs">
       <DependentUpon>NewCheckForm.axaml</DependentUpon>
     </Compile>
