@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
@@ -159,8 +160,11 @@ namespace Models.Passports
         //Как в справочнике
         public string RadionuclidComposition { get; set; }
 
+        [NotMapped]
+        public List<RadionuclidDTO> RadionuclidsComposition { get; set; }
+
         //Экспоненциальный вид
-        public double Activity { get; set; }
+        public string Activity { get; set; }
         //Экспоненциальный вид
         public double LongLivingActivity { get; set; }
         //Экспоненциальный вид
@@ -183,5 +187,11 @@ namespace Models.Passports
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
+    }
+
+    public class RadionuclidDTO : INotifyPropertyChanged
+    {
+        public string Name { get; set; }
+        public double Activity { get; set; }
     }
 }

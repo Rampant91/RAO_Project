@@ -972,7 +972,16 @@
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate x:DataType="passports:CharacteristicOfContentRaoPackage">
-										<TextBox Text="{Binding RadionuclidComposition, Mode=TwoWay}"/>
+										<ListBox>
+											<ListBox.ItemsPanel>
+												<ItemsPanelTemplate>
+													<Grid ColumnDefinitions="*,Auto">
+														<TextBox Text="U-235"></TextBox>
+														<Button Content="X"/>
+													</Grid>
+												</ItemsPanelTemplate>
+											</ListBox.ItemsPanel>
+										</ListBox>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -989,7 +998,16 @@
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate x:DataType="passports:CharacteristicOfContentRaoPackage">
-										<TextBox Text="{Binding Activity, Mode=TwoWay}"/>
+										<ListBox>
+											<ListBox.ItemsPanel>
+												<ItemsPanelTemplate>
+													<Grid ColumnDefinitions="*,Auto">
+														<TextBox Text="U-235"></TextBox>
+														<Button Content="X"/>
+													</Grid>
+												</ItemsPanelTemplate>
+											</ListBox.ItemsPanel>
+										</ListBox>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
