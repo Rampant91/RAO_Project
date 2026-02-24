@@ -1,12 +1,23 @@
-﻿using Models.Passports;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Threading;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Models;
+using Models.Passports;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
+using System.Reactive;
+using System.Reflection.PortableExecutable;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Client_App.ViewModels.Passports
 {
@@ -28,13 +39,40 @@ namespace Client_App.ViewModels.Passports
             }
         }
 
-
+        private CharacteristicOfContentRaoPackage _selectedCharacteristic;
+        public CharacteristicOfContentRaoPackage SelectedCharacteristic
+        {
+            get
+            {
+                return _selectedCharacteristic;
+            }
+            set
+            {
+                _selectedCharacteristic = value;
+                OnPropertyChanged();
+            }
+        }
 
         #endregion
 
         #region Constructor
         public PackagePassportWindowVM()
         {
+
+            var owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
+                .FirstOrDefault(w => w.IsActive);
+
+            AddRadionuclid = ReactiveCommand.Create<CharacteristicOfContentRaoPackage>(async characteristic =>
+            {
+                characteristic.RadionuclidsList.Add(new RadionuclidDTO());
+            });
+
+            DeleteRadionuclid = ReactiveCommand.Create<RadionuclidDTO>(radionuclid =>
+            {
+                SelectedCharacteristic?.RadionuclidsList.Remove(radionuclid);
+            });
+
+
             _passport = new PackagePassport();
 
             Passport.PassportNum = "КРАД-1,36/XXXX";
@@ -100,10 +138,38 @@ namespace Client_App.ViewModels.Passports
                 PrimaryPackageType = Passport.PackageType,
                 PrimaryPackageNum = Passport.UniquePackageNum,
                 ClassRao = Passport.ClassRao,
+
             });
 
-            OnPropertyChanged(nameof(Passport));
+            Passport.ContentCharacteristics[0].RadionuclidsList = new ObservableCollection<RadionuclidDTO>();
+            Passport.ContentCharacteristics[0].RadionuclidsList.CollectionChanged += (s, e) =>
+            {
+                OnPropertyChanged(nameof(Passport));
+            };
+
+
+            var radionuclids = "U-235; U-238; U-234; Cs-137; Am-241".Split("; ");
+            var radionuclidsActivity = "0.10; 0.2; 0,35; 0,45; 1".Replace('.',',').Split("; ");
+
+            for (int i = 0; i < radionuclids.Length; i++)
+                Passport.ContentCharacteristics[0].RadionuclidsList.Add(new RadionuclidDTO()
+                {
+                    Name = radionuclids[i],
+                    Activity = double.TryParse(radionuclidsActivity[i], out var value)? value : 0
+                });
+
+
+
+
         }
+
+        #endregion
+
+        #region Commands
+
+        public ICommand AddRadionuclid { get; }
+
+        public ICommand DeleteRadionuclid { get; }
 
         #endregion
 

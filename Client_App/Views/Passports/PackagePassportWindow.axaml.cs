@@ -8,17 +8,27 @@ namespace Client_App;
 
 public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
 {
-    private readonly PackagePassportWindowVM _vm = null!;
+
+    public PackagePassportWindowVM? VM
+    {
+        get
+        {
+            if (DataContext is PackagePassportWindowVM)
+                return DataContext as PackagePassportWindowVM;
+            else
+                return null;
+        }
+    }
     public PackagePassportWindow()
     {
-        InitializeComponent();
 
+        InitializeComponent();
     }
     public PackagePassportWindow(PackagePassportWindowVM vm)
     {
-        InitializeComponent();
-
         DataContext = vm;
+
+        InitializeComponent();
     }
     private void InitializeComponent()
     {

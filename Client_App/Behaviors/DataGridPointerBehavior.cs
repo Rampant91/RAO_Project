@@ -49,6 +49,7 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
     {
         DragSelection_PointerPressed(sender, e);
         TextBoxFocus_PointerPressed(sender, e);
+        Button_PointerPressed(sender, e);
 
     }
 
@@ -197,6 +198,31 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
         }
     }
     #endregion
+
+    private void Button_PointerPressed(object sender, DataGridCellPointerPressedEventArgs e)
+    {
+        var point = e.PointerPressedEventArgs.GetCurrentPoint(AssociatedObject);
+
+
+        if (point.Properties.IsLeftButtonPressed)
+        {
+            // Захватываем указатель для получения всех событий
+            AssociatedObject.CapturePointer(e.PointerPressedEventArgs.Pointer);
+
+            // Находим визуальный элемент в точке клика
+            var visual = AssociatedObject.GetVisualAt(point.Position);
+
+            // Ищем TextBox в визуальном дереве
+            var button = FindVisualParent<Button>((Visual)visual);
+
+            if (button != null)
+            {
+                button.Command.Execute(button.CommandParameter);
+            }
+
+
+        }
+    }
 
 
     // Поведение отвечающее за фокусировку на текстбоксе

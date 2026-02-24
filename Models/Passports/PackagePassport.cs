@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
@@ -139,6 +140,10 @@ namespace Models.Passports
 
     public class CharacteristicOfContentRaoPackage : INotifyPropertyChanged
     {
+        public CharacteristicOfContentRaoPackage ()
+        {
+            _radionuclidsList = new ObservableCollection<RadionuclidDTO>();
+        }
         [MaxLength(25)]
         public string PrimaryPackageType { get; set; }
         [MaxLength(15)]
@@ -158,13 +163,65 @@ namespace Models.Passports
         public double PrimaryPackageMass { get; set; }
         
         //Как в справочнике
-        public string RadionuclidComposition { get; set; }
 
-        [NotMapped]
-        public List<RadionuclidDTO> RadionuclidsComposition { get; set; }
+
+        public string RadionuclidComposition 
+        {
+            get
+            {
+                string result="";
+
+                if (_radionuclidsList.Count>0)
+                    result = _radionuclidsList[0].Name;
+
+                for (int i = 1; i < _radionuclidsList.Count; i++)
+                {
+                    result += "; ";
+                    result += _radionuclidsList[i].Name;
+                }
+                return result;
+            }
+        } 
 
         //Экспоненциальный вид
-        public string Activity { get; set; }
+        public string Activity
+        {
+            get
+            {
+                string result="";
+
+                if (_radionuclidsList.Count > 0)
+                    result = _radionuclidsList[0].Activity.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
+
+                for (int i = 1; i < _radionuclidsList.Count; i++)
+                {
+                    result += "; ";
+                    result += _radionuclidsList[i].Activity.ToString("e5", CultureInfo.CreateSpecificCulture("ru-RU"));
+                }
+                return result;
+            }
+        }
+
+        [NotMapped]
+        private ObservableCollection<RadionuclidDTO> _radionuclidsList;
+
+        [NotMapped]
+        public ObservableCollection<RadionuclidDTO> RadionuclidsList 
+        { 
+            get
+            {
+                return _radionuclidsList;
+            }
+            set
+            {
+                _radionuclidsList = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(RadionuclidComposition));
+                OnPropertyChanged(nameof(Activity));
+            }
+        }
+
+       
         //Экспоненциальный вид
         public double LongLivingActivity { get; set; }
         //Экспоненциальный вид
@@ -193,5 +250,13 @@ namespace Models.Passports
     {
         public string Name { get; set; }
         public double Activity { get; set; }
+
+        #region OnPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
     }
 }
