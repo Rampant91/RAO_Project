@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -17,11 +18,11 @@ public class GetSnkParamsVM : INotifyPropertyChanged
     #region Region
 
     /// <summary>
-    /// Поле для номера региона. По умолчанию "00".
+    /// Поле для номера региона.
     /// </summary>
-    private string _region = "00";
+    private string? _region;
 
-    public string Region
+    public string? Region
     {
         get => _region;
         set
@@ -48,8 +49,23 @@ public class GetSnkParamsVM : INotifyPropertyChanged
         set
         {
             if (_date == value) return;
-            _date = value;
-            OnPropertyChanged();
+            
+            if (string.IsNullOrEmpty(value))
+            {
+                _date = value;
+                OnPropertyChanged();
+                return;
+            }
+            
+            // Проверяем полный формат даты ДД.ММ.ГГГГ
+            if (DateTime.TryParseExact(value, "dd.MM.yyyy", 
+                                       CultureInfo.InvariantCulture, 
+                                       DateTimeStyles.None, 
+                                       out _))
+            {
+                _date = value;
+                OnPropertyChanged();
+            }
         }
     }
 

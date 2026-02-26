@@ -4,6 +4,7 @@
 			 xmlns:behaviors="using:Client_App.Behaviors"
              xmlns:local="using:Client_App"
              xmlns:resources="clr-namespace:Client_App.Resources"
+             xmlns:converters="clr-namespace:Client_App.Converters"
 			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              x:Class="Client_App.App">
 
@@ -13,6 +14,7 @@
 
     <Application.Resources>
         <resources:RatioConverter x:Key="RatioConverter"/>
+        <converters:StringToDateTimeConverter x:Key="StringToDateTimeConverter"/>
         <!--
         <ResourceDictionary>
             <DataTemplate DataType="{x:Type vm:CheckFormVM}">

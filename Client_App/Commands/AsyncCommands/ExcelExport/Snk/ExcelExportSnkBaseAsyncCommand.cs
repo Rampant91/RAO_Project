@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Resources.CustomComparers.SnkComparers;
 using Client_App.ViewModels.Messages;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.Messages;
@@ -14,7 +15,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Client_App.Resources.CustomComparers.SnkComparers;
 using SnkRadionuclidsEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.SnkRadionuclidsEqualityComparer;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
@@ -46,6 +46,35 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 _numberComparer.GetHashCode(obj.FacNum),
                 _radsComparer.GetHashCode(obj.Radionuclids),
                 _stringComparer.GetHashCode(obj.Type));
+
+            //return 0;
+        }
+    }
+
+    private sealed class SnkGroupKeyComparerWithPackNumber : IEqualityComparer<(string PasNum, string FacNum, string Radionuclids, string Type, string PackNumber)>
+    {
+        private readonly SnkNumberEqualityComparer _numberComparer = new();
+        private readonly SnkRadionuclidsEqualityComparer _radsComparer = new();
+        private readonly SnkEqualityComparer _stringComparer = new();
+
+        public bool Equals((string PasNum, string FacNum, string Radionuclids, string Type, string PackNumber) x,
+            (string PasNum, string FacNum, string Radionuclids, string Type, string PackNumber) y)
+        {
+            return _numberComparer.Equals(x.PasNum, y.PasNum)
+                   && _numberComparer.Equals(x.FacNum, y.FacNum)
+                   && _radsComparer.Equals(x.Radionuclids, y.Radionuclids)
+                   && _stringComparer.Equals(x.Type, y.Type)
+                   && _stringComparer.Equals(x.PackNumber, y.PackNumber);
+        }
+
+        public int GetHashCode((string PasNum, string FacNum, string Radionuclids, string Type, string PackNumber) obj)
+        {
+            return HashCode.Combine(
+                _numberComparer.GetHashCode(obj.PasNum),
+                _numberComparer.GetHashCode(obj.FacNum),
+                _radsComparer.GetHashCode(obj.Radionuclids),
+                _stringComparer.GetHashCode(obj.Type),
+                _stringComparer.GetHashCode(obj.PackNumber));
 
             //return 0;
         }
@@ -1285,57 +1314,115 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         return summedPlusMinusOperationDtoList;
     }
 
-    #region GetSummedInventoryDtoList
+    #region GetSummedPlusMinusDtoList
 
     /// <summary>
-    /// Суммирует операции инвентаризации для первой даты по количеству и возвращает список DTO.
+    /// Суммирует операции приёма-передачи по количеству и возвращает список DTO.
     /// </summary>
     /// <param name="plusMinusDtoList">Список DTO операций приёма передачи.</param>
     /// <param name="formNum">Номер формы.</param>
-    /// <returns>Список DTO операций инвентаризации, просуммированный по количеству для первой даты.</returns>
+    /// <returns>Список DTO операций приёма-передачи, просуммированный по количеству для первой даты.</returns>
     private static Task<List<ShortFormDTO>> GetSummedPlusMinusDtoList(List<ShortFormDTO> plusMinusDtoList, string formNum)
     {
         List<ShortFormDTO> newPlusMinusDtoList = [];
 
         var comparer = new SnkEqualityComparer();
         var radsComparer = new SnkRadionuclidsEqualityComparer();
-        foreach (var form in plusMinusDtoList)
-        {
-            var matchingForm = newPlusMinusDtoList.FirstOrDefault(x =>
-                x.OpDate == form.OpDate
-                && comparer.Equals(x.PasNum, form.PasNum)
-                && comparer.Equals(x.FacNum, form.FacNum)
-                && radsComparer.Equals(x.Radionuclids, form.Radionuclids)
-                && comparer.Equals(x.Type, form.Type)
-                && comparer.Equals(x.PackNumber, form.PackNumber));
+        var snkGroupKeyComparer = new SnkGroupKeyComparerWithPackNumber();
 
-            if (matchingForm != null)
-            {
-                if (formNum is "1.3" || SerialNumbersIsEmpty(form.PasNum, form.FacNum))
+        var groupedOperationListDictionary = plusMinusDtoList
+            .OrderBy(x => x.OpDate)
+            .ThenBy(x => x.RepDto.StartPeriod)
+            .ThenBy(x => x.RepDto.EndPeriod)
+            .ThenBy(x => x.NumberInOrder)
+            .GroupBy(
+                x => (x.PasNum, x.FacNum, x.Radionuclids, x.Type, x.PackNumber),
+                (key, items) => new
                 {
-                    if (GetPlusOperationsArray(formNum).Contains(form.OpCode))
+                    Key = key,
+                    DateGroups = items
+                        .GroupBy(x => x.OpDate)
+                        .ToDictionary(
+                            g => g.Key,
+                            g => g.ToList())
+                },
+                snkGroupKeyComparer
+            )
+            .OrderBy(x => x.Key.PasNum)
+            .ThenBy(x => x.Key.FacNum)
+            .ToDictionary(x => x.Key, x => x.DateGroups);
+
+        foreach (var (unit, dictionary) in groupedOperationListDictionary)
+        {
+            foreach (var (opDate, operations) in dictionary)
+            {
+                var quantity = 0;
+                foreach (var operation in operations)
+                {
+                    if (GetPlusOperationsArray(formNum).Contains(operation.OpCode))
                     {
-                        matchingForm.Quantity += form.Quantity;
+                        quantity += operation.Quantity;
                     }
-                    else if (GetMinusOperationsArray(formNum).Contains(form.OpCode))
+                    else if (GetMinusOperationsArray(formNum).Contains(operation.OpCode))
                     {
-                        matchingForm.Quantity -= form.Quantity;
-                        matchingForm.Quantity = Math.Max(0, matchingForm.Quantity);
+                        quantity -= operation.Quantity;
                     }
                 }
-                else
+                if (quantity < 0)
                 {
-                    newPlusMinusDtoList.Add(form);
+                    quantity = Math.Abs(quantity);
+                    var lastMinusOperation = operations.Last(x => GetMinusOperationsArray(formNum).Contains(x.OpCode));
+                    lastMinusOperation.Quantity = quantity;
+                    newPlusMinusDtoList.Add(lastMinusOperation);
                 }
-            }
-            else
-            {
-                newPlusMinusDtoList.Add(form);
+                else if (quantity > 0)
+                {
+                    var lastPlusOperation = operations.Last(x => GetPlusOperationsArray(formNum).Contains(x.OpCode));
+                    lastPlusOperation.Quantity = quantity;
+                    newPlusMinusDtoList.Add(lastPlusOperation);
+                }
+                else continue;
             }
         }
-        newPlusMinusDtoList = newPlusMinusDtoList
-            .Where(x => x.Quantity > 0)
-            .ToList();
+       
+
+        //foreach (var form in plusMinusDtoList)
+        //{
+        //    var matchingForm = newPlusMinusDtoList.FirstOrDefault(x =>
+        //        x.OpDate == form.OpDate
+        //        && comparer.Equals(x.PasNum, form.PasNum)
+        //        && comparer.Equals(x.FacNum, form.FacNum)
+        //        && radsComparer.Equals(x.Radionuclids, form.Radionuclids)
+        //        && comparer.Equals(x.Type, form.Type)
+        //        && comparer.Equals(x.PackNumber, form.PackNumber));
+
+        //    if (matchingForm != null)
+        //    {
+        //        if (formNum is "1.3" || SerialNumbersIsEmpty(form.PasNum, form.FacNum))
+        //        {
+        //            if (GetPlusOperationsArray(formNum).Contains(form.OpCode))
+        //            {
+        //                matchingForm.Quantity += form.Quantity;
+        //            }
+        //            else if (GetMinusOperationsArray(formNum).Contains(form.OpCode))
+        //            {
+        //                matchingForm.Quantity -= form.Quantity;
+        //                matchingForm.Quantity = Math.Max(0, matchingForm.Quantity);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            newPlusMinusDtoList.Add(form);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        newPlusMinusDtoList.Add(form);
+        //    }
+        //}
+        //newPlusMinusDtoList = newPlusMinusDtoList
+        //    .Where(x => x.Quantity > 0)
+        //    .ToList();
 
         return Task.FromResult(newPlusMinusDtoList);
     }
