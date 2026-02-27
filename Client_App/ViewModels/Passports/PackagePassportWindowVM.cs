@@ -6,6 +6,7 @@ using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Passports;
 using ReactiveUI;
+using Spravochniki;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -39,8 +40,8 @@ namespace Client_App.ViewModels.Passports
             }
         }
 
-        private CharacteristicOfContentRaoPackage _selectedCharacteristic;
-        public CharacteristicOfContentRaoPackage SelectedCharacteristic
+        private CharacteristicPrimaryPackage _selectedCharacteristic;
+        public CharacteristicPrimaryPackage SelectedCharacteristic
         {
             get
             {
@@ -52,7 +53,13 @@ namespace Client_App.ViewModels.Passports
                 OnPropertyChanged();
             }
         }
-
+        public ObservableCollection<string> RaoNamesCollection
+        {
+            get
+            {
+                return new ObservableCollection<string>(Spravochniks.SprRadionuclids.Select(r => r.latinName));
+            }
+        }
         #endregion
 
         #region Constructor
@@ -62,105 +69,36 @@ namespace Client_App.ViewModels.Passports
             var owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
                 .FirstOrDefault(w => w.IsActive);
 
-            AddRadionuclid = ReactiveCommand.Create<CharacteristicOfContentRaoPackage>(async characteristic =>
+            AddRadionuclid = ReactiveCommand.Create<CharacteristicPrimaryPackage>(async characteristic =>
             {
-                characteristic.RadionuclidsList.Add(new RadionuclidDTO());
+                characteristic.RadionuclidsList.Add(new Radionuclid(characteristic));
             });
 
-            DeleteRadionuclid = ReactiveCommand.Create<RadionuclidDTO>(radionuclid =>
+            DeleteRadionuclid = ReactiveCommand.Create<Radionuclid>(radionuclid =>
             {
-                SelectedCharacteristic?.RadionuclidsList.Remove(radionuclid);
+                radionuclid.Characteristic?.RadionuclidsList.Remove(radionuclid);
+            });
+
+            AddPrimaryPackage = ReactiveCommand.Create(() =>
+            {
+                Passport.ContentCharacteristics.Add(new CharacteristicPrimaryPackage(Passport));
+            });
+            DeletePrimaryPackage = ReactiveCommand.Create<CharacteristicPrimaryPackage>(async characteristic =>
+            {
+                int index = Passport.ContentCharacteristics.IndexOf(characteristic);
+                if (index > 0)
+                    Passport.ContentCharacteristics.RemoveAt(index);
             });
 
 
             _passport = new PackagePassport();
 
-            Passport.PassportNum = "КРАД-1,36/XXXX";
-            Passport.PassportDate = new DateOnly(2024, 8, 20);
-            Passport.PackageType = "КРАД-1,36";
-            Passport.StatusRaoCode = "1";
-            Passport.TechSpecificationNum = "ТУ 4100-027-07630224";
-            Passport.NameRao = "твердые, очень низкоактивные";
-            Passport.ClassRao = 4;
-
-            Passport.AgreementNumRaoDisposal = "№319/ХХХ-Д от 14.04.2025";
-            Passport.UniquePackageNum = "34371127/0000";
-            Passport.TypePuod = "ПТН-О №№8722001, 8722002";
-            Passport.Owner = "Филиал \"Звезда России\" АО \"Медведь\"";
-            Passport.OwnerOkpo = "00000000";
-            Passport.Manufacturer = "Акционерное общество \"ЭКОЛОГИЯ\" (АО \"ЭКОЛОГИЯ\") ";
-            Passport.ManufacturerOkpo = "11111111";
-
-            Passport.CertificateConformityNum = "ОИАЭ.RU.095(OC).01123";
-            Passport.ManufactureDate = new DateOnly(2021, 9, 29);
-            Passport.StartPeriodCertificateConformity = new DateOnly(2024, 9, 28);
-            Passport.EndPeriodCertificateConformity = new DateOnly(2024, 8, 20);
-            Passport.ServiceLife = 50;
-
-            Passport.ResponsibleForTransferRao = "АО \"ЭКОЛОГИЯ\"";
-            Passport.GradeAuthorizedPersonTransfer = "Генеральный директор";
-            Passport.FioAuthorizedPersonTransfer = "Цветков А.Э.";
-            Passport.ResponsibleForReceptionRao = "ФГУП \"НО РАО\" филиал \"Уральский\"";
-            Passport.GradeAuthorizedPersonReception = "Главный специалист";
-            Passport.FioAuthorizedPersonReception = "Вася Пупкин";
-
-            Passport.DisposalMethod = "навал";
-            Passport.PhysicochemicalForm = "Твердые\n" +
-                "Заполнение упаковки - 98%\n" +
-                "Свободная жидкость - отсутствует.\n" +
-                "Материалы, реагирующие с водой с выделением самовоспламеняющихся или воспламеняющихся газов - отсутствуют.\n" +
-                "Материалы, реагирующие с водой с выделением тепла - отсутствуют.\n" +
-                "Материалы, способные выделять газы, пары, возгоны при взаимодействии с водой, воздухом или другими веществами - отсутствуют.";
-            Passport.MorphologicalCompositionRao = "Спец. одежда, СИЗ, ветошь, обтир.\n" +
-                "Коррозионно-активные вещества - отсутствуют.\n" +
-                "Комплексообразующие вещества - отсутствуют.\n" +
-                "Химические токсичные вещества отсутствуют.\n" +
-                "Инфицирующие (патогенные) вещества - отсутствуют.\n";
-            Passport.Flammability = "Самовозгорающиеся и легковоспламеняющиеся вещества - отсутствуют.";
-            Passport.MatrixMaterialType = "песчано-цементная смесь";
-            Passport.Diameter = 0;
-            Passport.Height = 1375;
-            Passport.Length = 1650;
-            Passport.Width = 1651;
-            Passport.PackageMass = 6920;
-            Passport.PackageVolume = 3.74;
-            Passport.RaoMass = 2300;
-            Passport.RaoVolume = 1.47;
-            Passport.RadiationDoseRate10cm = 0.15;
-            Passport.RadiationDoseRate1m = 0.14;
-            Passport.LevelNonFixedPollutionAlpha = 0.1;
-            Passport.LevelNonFixedPollutionBetaGamma = 10;
-            Passport.PackageHeatOutput = 1.1;
+            
 
 
-            Passport.ContentCharacteristics.Add(new CharacteristicOfContentRaoPackage()
-            {
-                PrimaryPackageType = Passport.PackageType,
-                PrimaryPackageNum = Passport.UniquePackageNum,
-                ClassRao = Passport.ClassRao,
+            Dispatcher.UIThread.InvokeAsync(() => Passport.ContentCharacteristics.Add(new CharacteristicPrimaryPackage(Passport)));
 
-            });
-
-            Passport.ContentCharacteristics[0].RadionuclidsList = new ObservableCollection<RadionuclidDTO>();
-            Passport.ContentCharacteristics[0].RadionuclidsList.CollectionChanged += (s, e) =>
-            {
-                OnPropertyChanged(nameof(Passport));
-            };
-
-
-            var radionuclids = "U-235; U-238; U-234; Cs-137; Am-241".Split("; ");
-            var radionuclidsActivity = "0.10; 0.2; 0,35; 0,45; 1".Replace('.',',').Split("; ");
-
-            for (int i = 0; i < radionuclids.Length; i++)
-                Passport.ContentCharacteristics[0].RadionuclidsList.Add(new RadionuclidDTO()
-                {
-                    Name = radionuclids[i],
-                    Activity = double.TryParse(radionuclidsActivity[i], out var value)? value : 0
-                });
-
-
-
-
+            
         }
 
         #endregion
@@ -170,6 +108,9 @@ namespace Client_App.ViewModels.Passports
         public ICommand AddRadionuclid { get; }
 
         public ICommand DeleteRadionuclid { get; }
+        public ICommand SelectAllPrimaryPackages { get; }
+        public ICommand AddPrimaryPackage { get; }
+        public ICommand DeletePrimaryPackage { get; }
 
         #endregion
 

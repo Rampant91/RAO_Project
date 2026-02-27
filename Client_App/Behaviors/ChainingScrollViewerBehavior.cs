@@ -47,10 +47,12 @@ namespace Client_App.Behaviors
             var parentScrollViewer = FindVisualParent<ScrollViewer>((Visual)AssociatedObject.GetVisualParent());
             if (parentScrollViewer == null) return;
 
+            AssociatedObject.InvalidateMeasure();
+            AssociatedObject.InvalidateArrange();
+
             var offset = AssociatedObject.Offset;
             var extent = AssociatedObject.Extent;
             var viewport = AssociatedObject.Viewport;
-            var margin = AssociatedObject.Margin;
 
             var maxOffsetX = extent.Width - viewport.Width;
             var maxOffsetY = extent.Height - viewport.Height;

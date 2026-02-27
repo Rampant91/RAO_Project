@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:passports="clr-namespace:Models.Passports;assembly=Models"
         xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+		xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
         xmlns:local="using:Client_App.Behaviors"
 		xmlns:vm="using:Client_App.ViewModels.Passports"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -12,6 +13,10 @@
         x:DataType="vm:PackagePassportWindowVM"
 		x:Name="PackagePassportWindow"
         Title="PackagePassportWindow">
+
+	<Window.Resources>
+		<converter:DoubleToExponentionalFormatConvarter x:Key="ExpontionalFormatConverter"/>
+	</Window.Resources>
 
 	<Design.DataContext>
 		<vm:PackagePassportWindowVM/>
@@ -25,6 +30,7 @@
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="*" MinHeight="175" />
+				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="Auto"/>
 			</Grid.RowDefinitions>
 
@@ -90,7 +96,7 @@
 					</StackPanel>
 
 					<TextBox Grid.Row="0" Grid.Column="1" Margin="5"
-							 Text="{Binding Passport.TechSpecificationNum}"
+							 Text="{Binding Passport.TechSpecification}"
 							 Watermark="(номер технических условий)"/>
 					<TextBox Grid.Row="0" Grid.Column="2" Margin="5"
 							 Text="{Binding Passport.NameRao}"
@@ -104,18 +110,20 @@
 							   TextWrapping="Wrap"
 							   Text="Номер договора передачи РАО на захоронение"/>
 					<TextBox Grid.Row="1" Grid.Column="1" Margin="5"
-							 Text="{Binding Passport.AgreementNumRaoDisposal}"/>
+							 Text="{Binding Passport.RaoDisposalNum}"/>
+					<TextBox Grid.Row="1" Grid.Column="2" Margin="5"
+							 Text="{Binding Passport.RaoDisposalDate}"/>
 
 					<TextBlock Grid.Row="2" Grid.Column="0" Margin="5"
 							   HorizontalAlignment="Right"
 							   TextWrapping="Wrap"
 							   Text="Индивидуальный номер упаковки РАО"/>
 					<TextBox Grid.Row="2" Grid.Column="1" Margin="5"
-							 Text="{Binding Passport.UniquePackageNum}"
+							 Text="{Binding Passport.PackageIdCode}"
 							   Watermark="(Идентификационный код)"/>
 					<TextBox Grid.Row="2" Grid.Column="2" Margin="5"
 							 Grid.ColumnSpan="2"
-							 Text="{Binding Passport.TypePuod}"
+							 Text="{Binding Passport.TypeAndIdPuod}"
 							 Watermark="(тип и идентификаторы ПУОД)"/>
 
 					<TextBlock Grid.Row="3" Grid.Column="0" Margin="5"
@@ -162,9 +170,9 @@
 							   TextWrapping="Wrap"
 							   Text="Срок действия сертификата"/>
 					<TextBox Grid.Row="6" Grid.Column="1" Margin="5"
-							 Text="{Binding Passport.StartPeriodCertificateConformity}"/>
-					<TextBox Grid.Row="6" Grid.Column="1" Margin="5"
-							 Text="{Binding Passport.EndPeriodCertificateConformity}"/>
+							 Text="{Binding Passport.CertificateConformityStartPeriod}"/>
+					<TextBox Grid.Row="6" Grid.Column="2" Margin="5"
+							 Text="{Binding Passport.CertificateConformityEndPeriod}"/>
 
 					<TextBlock Grid.Row="7" Grid.Column="0" Margin="5"
 							   HorizontalAlignment="Right"
@@ -198,17 +206,6 @@
 					<Grid x:Name="Table1"
 						  ColumnDefinitions="Auto"
 						  RowDefinitions="Auto,Auto,Auto">
-
-						<!--#region Контекстное меню-->
-
-						<Grid.ContextMenu>
-							<ContextMenu>
-								<MenuItem Header="Контекстное меню"
-										  IsHitTestVisible="True" />
-							</ContextMenu>
-						</Grid.ContextMenu>
-
-						<!--#endregion Контекстное меню-->
 
 						<!--#region Заголовки таблицы-->
 
@@ -312,6 +309,12 @@
 
 						<DataGrid x:Name="dataGrid1"
 								  Grid.Row="1"
+								  CornerRadius="5"
+								  CanUserResizeColumns="True"
+								  RowBackground="White"
+								  AlternatingRowBackground="White"
+								  SelectionMode ="Single"
+								  Margin="5,-5,5,5"
 								  x:CompileBindings="True"
 								  CanUserReorderColumns="False"
 								  CanUserSortColumns="True"
@@ -638,7 +641,7 @@
 							<Border Grid.Row="0" Grid.Column="2">
 								<TextBox
 									TextWrapping="Wrap"
-									Text="{Binding Passport.MorphologicalCompositionRao}" />
+									Text="{Binding Passport.MorphologicalComposition}" />
 							</Border>
 							<Border Grid.Row="0" Grid.Column="3">
 								<TextBox
@@ -713,7 +716,7 @@
 							<Border Grid.Row="0" Grid.Column="17">
 								<TextBox
 									TextWrapping="Wrap"
-									Text="{Binding Passport.PackageHeatOutput}" />
+									Text="{Binding Passport.HeatOutput}" />
 							</Border>
 						</Grid>
 					</Grid>
@@ -725,14 +728,15 @@
 				<TextBlock Grid.Row="0"
 						 FontWeight="Bold"
 						 TextAlignment="Center"
-						 Text ="{Binding Passport.ContentCharacteristics[0].RadionuclidComposition}"/>
+						 Text ="{Binding Passport.ContentCharacteristics[0].LongLivingActivity}"/>
 				<TextBlock Grid.Row="1"
 						 FontWeight="Bold"
 						 TextAlignment="Center"
-						 Text ="{Binding Passport.ContentCharacteristics[0].Activity}"/>
+						 Text ="{Binding Passport.ContentCharacteristics[0].TransuraniumActivity}"/>
 			</Grid>
 
-			<ScrollViewer Margin="5" Grid.Row="4" HorizontalScrollBarVisibility="Auto">
+			<ScrollViewer Margin="5" Grid.Row="4" HorizontalScrollBarVisibility="Auto" 
+						Height="600">
 
 				<interactivity:Interaction.Behaviors>
 					<local:ChainingScrollViewerBehavior/>
@@ -746,8 +750,11 @@
 
 					<Grid.ContextMenu>
 						<ContextMenu>
-							<MenuItem Header="Контекстное меню"
-									  IsHitTestVisible="True" />
+							<MenuItem Header="Добавить первичную упаковку" 
+									  Command="{Binding AddPrimaryPackage}"/>
+							<MenuItem Header="Удалить первичную упаковку" 
+									  Command="{Binding DeletePrimaryPackage}" 
+									  CommandParameter="{Binding SelectedCharacteristic}"/>
 						</ContextMenu>
 					</Grid.ContextMenu>
 
@@ -766,7 +773,7 @@
 						</interactivity:Interaction.Behaviors>
 
 						<!--Первый уровень заголовков-->
-						<Border Grid.Row="0" Grid.Column="8"
+						<Border Grid.Row="0" Grid.Column="9"
 								Grid.ColumnSpan="5">
 							<TextBlock Text="Суммарные удельные активности, кБк/кг"/>
 						</Border>
@@ -803,24 +810,24 @@
 								Grid.RowSpan="2">
 							<TextBlock Text="Радионуклидный состав"/>
 						</Border>
-						<Border Grid.Row="1" Grid.Column="8">
-							<TextBlock Text="долгоживущие"/>
-						</Border>
-						<Border Grid.Row="1" Grid.Column="9">
-							<TextBlock Text="трансурановые"/>
-						</Border>
-						<Border Grid.Row="1" Grid.Column="10">
-							<TextBlock Text="альфа-изл. (за искл. т/уран.)"/>
-						</Border>
-						<Border Grid.Row="1" Grid.Column="11">
-							<TextBlock Text="бета/гамма- изл."/>
-						</Border>
-						<Border Grid.Row="1" Grid.Column="12">
-							<TextBlock Text="тритий"/>
-						</Border>
-						<Border Grid.Row="0" Grid.Column="13"
+						<Border Grid.Row="0" Grid.Column="8"
 								Grid.RowSpan="2">
 							<TextBlock Text="Удельная активность, кБк/кг"/>
+						</Border>
+						<Border Grid.Row="1" Grid.Column="9">
+							<TextBlock Text="долгоживущие"/>
+						</Border>
+						<Border Grid.Row="1" Grid.Column="10">
+							<TextBlock Text="трансурановые"/>
+						</Border>
+						<Border Grid.Row="1" Grid.Column="11">
+							<TextBlock Text="альфа-изл. (за искл. т/уран.)"/>
+						</Border>
+						<Border Grid.Row="1" Grid.Column="12">
+							<TextBlock Text="бета/гамма- изл."/>
+						</Border>
+						<Border Grid.Row="1" Grid.Column="13">
+							<TextBlock Text="тритий"/>
 						</Border>
 						<Border Grid.Row="0" Grid.Column="14"
 								Grid.RowSpan="2">
@@ -839,14 +846,19 @@
 					<DataGrid
 						x:Name="dataGrid2"
 						Grid.Row="1"
-						Classes="table"
+						CornerRadius="5"
+						CanUserResizeColumns="True"
+						RowBackground="White"
+						AlternatingRowBackground="White"
+						SelectionMode ="Single"
+						Margin="5,-5,5,5"
 						x:CompileBindings="True"
 						CanUserSortColumns="True"
 						CanUserReorderColumns="False"
 						Items="{Binding Passport.ContentCharacteristics}"
 						SelectedItem="{Binding SelectedCharacteristic}"
-						Height="500"
-						ColumnWidth="125">
+						ColumnWidth="125"
+						VerticalScrollBarVisibility="Disabled">
 						
 						<interactivity:Interaction.Behaviors>
 							<local:DataGridPointerBehavior />
@@ -866,7 +878,7 @@
 									</DataTemplate>
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate x:DataType="passports:CharacteristicOfContentRaoPackage">
+									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
 										<TextBox Text="{Binding PrimaryPackageType, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
@@ -883,7 +895,7 @@
 									</DataTemplate>
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate x:DataType="passports:CharacteristicOfContentRaoPackage">
+									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
 										<TextBox Text="{Binding PrimaryPackageNum, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
@@ -900,7 +912,7 @@
 									</DataTemplate>
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate x:DataType="passports:CharacteristicOfContentRaoPackage">
+									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
 										<TextBox Text="{Binding ClassRao, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
@@ -917,7 +929,7 @@
 									</DataTemplate>
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate x:DataType="passports:CharacteristicOfContentRaoPackage">
+									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
 										<TextBox Text="{Binding CodeRao, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
@@ -934,7 +946,7 @@
 									</DataTemplate>
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate x:DataType="passports:CharacteristicOfContentRaoPackage">
+									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
 										<TextBox Text="{Binding PrimaryPackageQuantity, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
@@ -951,7 +963,7 @@
 									</DataTemplate>
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate x:DataType="passports:CharacteristicOfContentRaoPackage">
+									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
 										<TextBox Text="{Binding PrimaryPackageVolume, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
@@ -968,7 +980,7 @@
 									</DataTemplate>
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate x:DataType="passports:CharacteristicOfContentRaoPackage">
+									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
 										<TextBox Text="{Binding PrimaryPackageMass, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
@@ -985,17 +997,25 @@
 									</DataTemplate>
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate x:DataType="passports:CharacteristicOfContentRaoPackage">
+									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
 										<StackPanel>
-											<ListBox Items="{Binding RadionuclidsList}" IsHitTestVisible="False" Background="Transparent">
+											<ListBox MaxHeight="240" Items="{Binding RadionuclidsList}" Background="Transparent">
 												<ListBox.ItemTemplate>
-													<DataTemplate x:DataType="passports:RadionuclidDTO">
+													<DataTemplate x:DataType="passports:Radionuclid">
 														<Grid ColumnDefinitions="*,Auto">
-															<TextBox Grid.Column="0"
-																	 Text="{Binding Name}"/>
+															<AutoCompleteBox 
+																Grid.Column="0"
+																Background="White"
+																Height="26"
+																FilterMode="Contains"
+																Items="{Binding VM.RaoNamesCollection, ElementName=PackagePassportWindow}"
+																Text="{Binding Name}">
+															</AutoCompleteBox>
 															<Button Grid.Column="1"
 																	IsHitTestVisible="True"
 																	Content="X"
+																	Width="26"
+																	Height="26"
 																	Command="{Binding VM.DeleteRadionuclid, ElementName=PackagePassportWindow}"
 																	CommandParameter="{Binding}"/>
 														</Grid>
@@ -1021,17 +1041,21 @@
 									</DataTemplate>
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate x:DataType="passports:CharacteristicOfContentRaoPackage">
+									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
 										<StackPanel>
-											<ListBox Items="{Binding RadionuclidsList}" IsHitTestVisible="False" Background="Transparent">
+											<ListBox MaxHeight="240" Items="{Binding RadionuclidsList}" Background="Transparent">
 												<ListBox.ItemTemplate>
-													<DataTemplate x:DataType="passports:RadionuclidDTO">
+													<DataTemplate x:DataType="passports:Radionuclid">
 														<Grid ColumnDefinitions="*,Auto">
 															<TextBox Grid.Column="0"
-																	 Text="{Binding Activity}"/>
+																	 Height="26"
+																	 Background="White"
+																	 Text="{Binding Activity, Converter={StaticResource ExpontionalFormatConverter}}"/>
 															<Button Grid.Column="1"
 																	IsHitTestVisible="True"
 																	Content="X"
+																	Width="26"
+																	Height="26"
 																	Command="{Binding VM.DeleteRadionuclid, ElementName=PackagePassportWindow}"
 																	CommandParameter="{Binding}"/>
 														</Grid>
@@ -1057,8 +1081,8 @@
 									</DataTemplate>
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate x:DataType="passports:CharacteristicOfContentRaoPackage">
-										<TextBox Text="{Binding LongLivingActivity, Mode=TwoWay}"/>
+									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
+										<TextBox Text="{Binding LongLivingActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -1074,8 +1098,8 @@
 									</DataTemplate>
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate x:DataType="passports:CharacteristicOfContentRaoPackage">
-										<TextBox Text="{Binding TransuraniumActivity, Mode=TwoWay}"/>
+									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
+										<TextBox Text="{Binding TransuraniumActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -1091,8 +1115,8 @@
 									</DataTemplate>
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate x:DataType="passports:CharacteristicOfContentRaoPackage">
-										<TextBox Text="{Binding AlphaActivity, Mode=TwoWay}"/>
+									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
+										<TextBox Text="{Binding AlphaActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -1108,8 +1132,8 @@
 									</DataTemplate>
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate x:DataType="passports:CharacteristicOfContentRaoPackage">
-										<TextBox Text="{Binding BetaGammaActivity, Mode=TwoWay}"/>
+									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
+										<TextBox Text="{Binding BetaGammaActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -1125,8 +1149,8 @@
 									</DataTemplate>
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate x:DataType="passports:CharacteristicOfContentRaoPackage">
-										<TextBox Text="{Binding TritiumActivity, Mode=TwoWay}"/>
+									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
+										<TextBox Text="{Binding TritiumActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -1142,8 +1166,8 @@
 									</DataTemplate>
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate x:DataType="passports:CharacteristicOfContentRaoPackage">
-										<TextBox Text="{Binding TotalActivity, Mode=TwoWay}"/>
+									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
+										<TextBox Text="{Binding TotalActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -1159,7 +1183,7 @@
 									</DataTemplate>
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate x:DataType="passports:CharacteristicOfContentRaoPackage">
+									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
 										<TextBox Text="{Binding NuclearHazardousFissileNuclides, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
@@ -1169,8 +1193,18 @@
 
 				</Grid>
 			</ScrollViewer>
+
+			<TextBox Grid.Row="5"
+					 AcceptsReturn="True"
+					 Margin="5"
+					 MaxWidth="1500"
+					 Text="{Binding Passport.Notes}"
+					 Watermark ="Примечания"
+					 TextWrapping="Wrap"/>
+			
 			<!--Footer-->
-			<Grid Grid.Row="5"
+			<Grid Grid.Row="6"
+			      Margin="5"
 				  MaxWidth="1500"
 				  RowDefinitions="Auto, Auto"
 				  ColumnDefinitions="Auto, *, *, *, *">
@@ -1178,7 +1212,7 @@
 						   HorizontalAlignment="Right"
 						   Text="Ответственный за сдачу РАО"/>
 				<TextBox Grid.Row="0" Grid.Column="1" Margin="5"
-						 Text="{Binding Passport.ResponsibleForTransferRao}"
+						 Text="{Binding Passport.ResponsibleTransfer}"
 						 Watermark="(наименование организации)"/>
 				<TextBox Grid.Row="0" Grid.Column="2" Margin="5"
 						 Text="{Binding Passport.GradeAuthorizedPersonTransfer}"
@@ -1193,7 +1227,7 @@
 						   HorizontalAlignment="Right"
 						   Text="Ответственный за прием РАО"/>
 				<TextBox Grid.Row="1" Grid.Column="1" Margin="5"
-						 Text="{Binding Passport.ResponsibleForReceptionRao}"
+						 Text="{Binding Passport.ResponsibleReception}"
 						 Watermark="(наименование организации)"/>
 				<TextBox Grid.Row="1" Grid.Column="2" Margin="5"
 						 Text="{Binding Passport.GradeAuthorizedPersonReception}"

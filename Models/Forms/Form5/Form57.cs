@@ -413,7 +413,6 @@ namespace Models.Forms.Form5
         #endregion
 
         #region Validation
-
         public override bool Object_Validation()
         {
             return !(RegNo.HasErrors || 
@@ -435,7 +434,6 @@ namespace Models.Forms.Form5
         #endregion
 
         #region IExcel
-
         public override void ExcelGetRow(ExcelWorksheet worksheet, int row)
         {
             NumberInOrder_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 1].Value), out var intValue)
@@ -490,7 +488,6 @@ namespace Models.Forms.Form5
         #endregion
 
         #region IDataGridColumn
-
         // Заглушка
         public override DataGridColumns GetColumnStructure(string param)
         {
@@ -500,7 +497,6 @@ namespace Models.Forms.Form5
         #endregion
 
         #region ConvertToTSVstring
-
         /// <summary>
         /// </summary>
         /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>

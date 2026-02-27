@@ -751,11 +751,11 @@ public static class Spravochniks
         new(null, string.Empty)
     ];
 
-    public static List<(string name, long mzua, long mza)> SprRadionuclids => SprRadionuclidsTask.Result;
+    public static List<(string rusName, string latinName, long mzua, long mza)> SprRadionuclids => SprRadionuclidsTask.Result;
 
     public static List<Tuple<string, string>> SprTypesToRadionuclids => SprTypesToRadionuclidsTask.Result;
 
-    private static Task<List<(string name, long mzua, long mza)>> SprRadionuclidsTask
+    private static Task<List<(string rusName, string latinName, long mzua, long mza)>> SprRadionuclidsTask
     {
         get
         {
@@ -788,7 +788,7 @@ public static class Spravochniks
         }
     }
 
-    private static Task<List<(string name, long mzua, long mza)>> ReadRAsync(string path)
+    private static Task<List<(string rusName, string latinName, long mzua, long mza)>> ReadRAsync(string path)
     {
         return Task.Run(() => ReadR(path));
     }
@@ -798,9 +798,9 @@ public static class Spravochniks
         return Task.Run(() => ReadCsv1(path));
     }
 
-    private static List<(string name, long mzua, long mza)> ReadR(string path)
+    private static List<(string rusName, string latinName, long mzua, long mza)> ReadR(string path)
     {
-        var res = new List<(string, long, long)>();
+        var res = new List<(string, string, long, long)>();
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         FileInfo excelImportFile = new(path);
         var xls = new ExcelPackage(excelImportFile);
@@ -809,9 +809,10 @@ public static class Spravochniks
         while (worksheet.Cells[i, 1].Text != string.Empty)
         {
             var i1 = worksheet.Cells[i, 1].Text;
-            var i2 = long.TryParse(worksheet.Cells[i, 15].Text, out var mzua) ? mzua : 0;
-            var i3 = long.TryParse(worksheet.Cells[i, 16].Text, out var mza) ? mza : 0;
-            res.Add(new ValueTuple<string, long, long>(i1, i2, i3));
+            var i2 = worksheet.Cells[i, 4].Text;
+            var i3 = long.TryParse(worksheet.Cells[i, 15].Text, out var mzua) ? mzua : 0;
+            var i4 = long.TryParse(worksheet.Cells[i, 16].Text, out var mza) ? mza : 0;
+            res.Add(new ValueTuple<string, string, long, long>(i1, i2, i3, i4));
             i++;
         }
         return res;
