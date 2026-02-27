@@ -50,6 +50,9 @@ namespace Models.Passports
 
         #region Properties
 
+        [Key]
+        public int Id { get; set; }
+
         #region PassportNum
         [NotMapped]
         private string _passportNum;

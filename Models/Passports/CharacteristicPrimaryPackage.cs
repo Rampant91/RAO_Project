@@ -18,6 +18,12 @@ namespace Models.Passports
     [Table(name: "characteristic_primary_package")]
     public class CharacteristicPrimaryPackage : INotifyPropertyChanged
     {
+        public CharacteristicPrimaryPackage()
+        {
+            _passport = new PackagePassport();
+            _radionuclidsList = new ObservableCollection<Radionuclid>();
+
+        }
         public CharacteristicPrimaryPackage(PackagePassport passport)
         {
             _passport = passport;
@@ -27,6 +33,12 @@ namespace Models.Passports
 
 
         #region Properties
+
+        [Key]
+        public int Id { get; set; }
+
+        [ForeignKey(nameof(Passport))]
+        public int? PassportId { get; set; }
 
         #region Passport
         [NotMapped]

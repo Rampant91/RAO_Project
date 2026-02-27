@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Models.Collections;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -15,6 +16,10 @@ namespace Models.Passports
     [Table(name: "radionuclid")]
     public class Radionuclid : INotifyPropertyChanged
     {
+        public Radionuclid()
+        {
+            _characteristic = new CharacteristicPrimaryPackage();
+        }
         public Radionuclid(CharacteristicPrimaryPackage characteristic)
         {
             _characteristic = characteristic;
@@ -30,6 +35,11 @@ namespace Models.Passports
             }
         }
 
+        [Key]
+        public int Id { get; set; }
+
+        [ForeignKey(nameof(Characteristic))]
+        public int? CharacteristicId { get; set; }
 
         [NotMapped]
         string _name;
