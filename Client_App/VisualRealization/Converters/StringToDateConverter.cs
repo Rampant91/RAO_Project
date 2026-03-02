@@ -5,28 +5,28 @@ using System.Globalization;
 
 namespace Client_App.VisualRealization.Converters
 {
-    public class DateConverter : IValueConverter
+    public class StringToDateConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is string dateString)
             {
-                if (DateTime.TryParse(
+                if (DateOnly.TryParse(
                     dateString,
-                    out DateTime result))
+                    out DateOnly dateOnly))
                 {
-                    return result;
+                    return dateOnly;
                 }
             }
-            return BindingOperations.DoNothing;
+            return DateOnly.MinValue;
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is DateTime dateTime)
+            if (value is DateOnly dateOnly)
             {
-                return dateTime.ToString("dd.MM.yyyy");
+                return dateOnly.ToString("dd.MM.yyyy");
             }
-            return BindingOperations.DoNothing;
+            return "";
         }
     }
 }

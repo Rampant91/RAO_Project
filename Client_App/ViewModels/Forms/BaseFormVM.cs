@@ -209,17 +209,17 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
-    #region SkipChangeTacking
+    #region SkipChangeTracking
 
-    private bool _skipChangeTacking;
-    public bool SkipChangeTacking
+    private bool _skipChangeTracking;
+    public bool SkipChangeTracking
     {
-        get => _skipChangeTacking;
+        get => _skipChangeTracking;
         set
         {
-            if (_skipChangeTacking != value)
+            if (_skipChangeTracking != value)
             {
-                _skipChangeTacking = value;
+                _skipChangeTracking = value;
                 OnPropertyChanged();
             }
         }

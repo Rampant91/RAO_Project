@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using Avalonia.Xaml.Interactivity;
 using AvaloniaEdit.Utils;
 using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands.Change;
 using Models.Collections;
 using System;
 using System.Collections.Generic;

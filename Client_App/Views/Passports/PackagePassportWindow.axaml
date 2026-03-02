@@ -16,6 +16,7 @@
 
 	<Window.Resources>
 		<converter:DoubleToExponentionalFormatConvarter x:Key="ExpontionalFormatConverter"/>
+		<converter:DateToStringConverter x:Key="DateToStringConverter"/>
 	</Window.Resources>
 
 	<Design.DataContext>
@@ -60,7 +61,7 @@
 							   Text="от"/>
 					<TextBox Margin="5"
 							 MinWidth="150"
-							 Text="{Binding Passport.PassportDate}"
+							 Text="{Binding Passport.PassportDate, Converter={StaticResource DateToStringConverter}}"
 							 Watermark="(дата)"/>
 				</StackPanel>
 				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -112,7 +113,7 @@
 					<TextBox Grid.Row="1" Grid.Column="1" Margin="5"
 							 Text="{Binding Passport.RaoDisposalNum}"/>
 					<TextBox Grid.Row="1" Grid.Column="2" Margin="5"
-							 Text="{Binding Passport.RaoDisposalDate}"/>
+							 Text="{Binding Passport.RaoDisposalDate, Converter={StaticResource DateToStringConverter}}"/>
 
 					<TextBlock Grid.Row="2" Grid.Column="0" Margin="5"
 							   HorizontalAlignment="Right"
@@ -163,16 +164,16 @@
 							   TextWrapping="Wrap"
 							   Text="Дата изготовления упаковки РАО"/>
 					<TextBox Grid.Row="5" Grid.Column="3" Margin="5"
-							 Text="{Binding Passport.ManufactureDate}"/>
+							 Text="{Binding Passport.ManufactureDate, Converter={StaticResource DateToStringConverter}}"/>
 
 					<TextBlock Grid.Row="6" Grid.Column="0" Margin="5"
 							   HorizontalAlignment="Right"
 							   TextWrapping="Wrap"
 							   Text="Срок действия сертификата"/>
 					<TextBox Grid.Row="6" Grid.Column="1" Margin="5"
-							 Text="{Binding Passport.CertificateConformityStartPeriod}"/>
+							 Text="{Binding Passport.CertificateConformityStartPeriod, Converter={StaticResource DateToStringConverter}}"/>
 					<TextBox Grid.Row="6" Grid.Column="2" Margin="5"
-							 Text="{Binding Passport.CertificateConformityEndPeriod}"/>
+							 Text="{Binding Passport.CertificateConformityEndPeriod, Converter={StaticResource DateToStringConverter}}"/>
 
 					<TextBlock Grid.Row="7" Grid.Column="0" Margin="5"
 							   HorizontalAlignment="Right"
@@ -185,7 +186,7 @@
 							   TextWrapping="Wrap"
 							   Text="Дата передачи упаковки РАО на захоронение"/>
 					<TextBox Grid.Row="7" Grid.Column="3" Margin="5"
-							 Text="{Binding Passport.TransferDate}"/>
+							 Text="{Binding Passport.TransferDate, Converter={StaticResource DateToStringConverter}}"/>
 				</Grid>
 			</Expander>
 
@@ -631,91 +632,109 @@
 							<Border Grid.Row="0" Grid.Column="0">
 								<TextBox
 									TextWrapping="Wrap"
+									AcceptsReturn="True"
 									Text="{Binding Passport.DisposalMethod}" />
 							</Border>
 							<Border Grid.Row="0" Grid.Column="1">
 								<TextBox
 									TextWrapping="Wrap"
+									AcceptsReturn="True"
 									Text="{Binding Passport.PhysicochemicalForm}" />
 							</Border>
 							<Border Grid.Row="0" Grid.Column="2">
 								<TextBox
 									TextWrapping="Wrap"
+									AcceptsReturn="True"
 									Text="{Binding Passport.MorphologicalComposition}" />
 							</Border>
 							<Border Grid.Row="0" Grid.Column="3">
 								<TextBox
 									TextWrapping="Wrap"
+									AcceptsReturn="True"
 									Text="{Binding Passport.Flammability}" />
 							</Border>
 							<Border Grid.Row="0" Grid.Column="4">
 								<TextBox
 									TextWrapping="Wrap"
+									AcceptsReturn="True"
 									Text="{Binding Passport.MatrixMaterialType}" />
 							</Border>
 							<Border Grid.Row="0" Grid.Column="5">
 								<TextBox
 									TextWrapping="Wrap"
+									AcceptsReturn="True"
 									Text="{Binding Passport.Diameter}" />
 							</Border>
 							<Border Grid.Row="0" Grid.Column="6">
 								<TextBox
 									TextWrapping="Wrap"
+									AcceptsReturn="True"
 									Text="{Binding Passport.Height}" />
 							</Border>
 							<Border Grid.Row="0" Grid.Column="7">
 								<TextBox
 									TextWrapping="Wrap"
+									AcceptsReturn="True"
 									Text="{Binding Passport.Length}" />
 							</Border>
 							<Border Grid.Row="0" Grid.Column="8">
 								<TextBox
 									TextWrapping="Wrap"
+									AcceptsReturn="True"
 									Text="{Binding Passport.Width}" />
 							</Border>
 							<Border Grid.Row="0" Grid.Column="9">
 								<TextBox
 									TextWrapping="Wrap"
+									AcceptsReturn="True"
 									Text="{Binding Passport.PackageMass}" />
 							</Border>
 							<Border Grid.Row="0" Grid.Column="10">
 								<TextBox
 									TextWrapping="Wrap"
+									AcceptsReturn="True"
 									Text="{Binding Passport.RaoMass}" />
 							</Border>
 							<Border Grid.Row="0" Grid.Column="11">
 								<TextBox
 									TextWrapping="Wrap"
+									AcceptsReturn="True"
 									Text="{Binding Passport.PackageVolume}" />
 							</Border>
 							<Border Grid.Row="0" Grid.Column="12">
 								<TextBox
 									TextWrapping="Wrap"
+									AcceptsReturn="True"
 									Text="{Binding Passport.RaoVolume}" />
 							</Border>
 							<Border Grid.Row="0" Grid.Column="13">
 								<TextBox
 									TextWrapping="Wrap"
+									AcceptsReturn="True"
 									Text="{Binding Passport.RadiationDoseRate1m}" />
 							</Border>
 							<Border Grid.Row="0" Grid.Column="14">
 								<TextBox
 									TextWrapping="Wrap"
+									AcceptsReturn="True"
 									Text="{Binding Passport.RadiationDoseRate10cm}" />
 							</Border>
 							<Border Grid.Row="0" Grid.Column="15">
 								<TextBox
 									TextWrapping="Wrap"
+									AcceptsReturn="True"
 									Text="{Binding Passport.LevelNonFixedPollutionAlpha}" />
 							</Border>
 							<Border Grid.Row="0" Grid.Column="16">
 								<TextBox
 									TextWrapping="Wrap"
+									AcceptsReturn="True"
 									Text="{Binding Passport.LevelNonFixedPollutionBetaGamma}" />
 							</Border>
 							<Border Grid.Row="0" Grid.Column="17">
 								<TextBox
 									TextWrapping="Wrap"
+									AcceptsReturn="True"
 									Text="{Binding Passport.HeatOutput}" />
 							</Border>
 						</Grid>

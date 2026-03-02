@@ -309,10 +309,8 @@
 
 			<MenuItem Name="Passports"
                       Header="Паспорта">
-				<MenuItem Command="{Binding AddPackagePassport}"
-						  Header="Добавить паспорт">
-					
-				</MenuItem>
+				<MenuItem Command="{Binding OpenPassportMenu}"
+						  Header="Открыть меню паспортов"/>
 		    </MenuItem>
 
         </Menu>

@@ -60,12 +60,45 @@ namespace Client_App.ViewModels.Passports
                 return new ObservableCollection<string>(Spravochniks.SprRadionuclids.Select(r => r.latinName));
             }
         }
+
+        #region SkipChangeTracking
+
+        private bool _skipChangeTracking;
+        public bool SkipChangeTracking
+        {
+            get => _skipChangeTracking;
+            set
+            {
+                if (_skipChangeTracking != value)
+                {
+                    _skipChangeTracking = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        #endregion
         #endregion
 
         #region Constructor
         public PackagePassportWindowVM()
         {
+            InitializeCommands();
 
+            _passport = new PackagePassport();
+
+            Dispatcher.UIThread.InvokeAsync(() => Passport.ContentCharacteristics.Add(new CharacteristicPrimaryPackage(Passport)));
+        }
+        public PackagePassportWindowVM(PackagePassport passport)
+        {
+            InitializeCommands();
+
+            _passport = passport;
+
+            Dispatcher.UIThread.InvokeAsync(() => Passport.ContentCharacteristics.Add(new CharacteristicPrimaryPackage(Passport)));
+        }
+        private void InitializeCommands()
+        {
             var owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
                 .FirstOrDefault(w => w.IsActive);
 
@@ -90,27 +123,18 @@ namespace Client_App.ViewModels.Passports
                     Passport.ContentCharacteristics.RemoveAt(index);
             });
 
-
-            _passport = new PackagePassport();
-
-            
-
-
-            Dispatcher.UIThread.InvokeAsync(() => Passport.ContentCharacteristics.Add(new CharacteristicPrimaryPackage(Passport)));
-
-            
         }
 
         #endregion
 
         #region Commands
 
-        public ICommand AddRadionuclid { get; }
+        public ICommand AddRadionuclid { get; set; }
 
-        public ICommand DeleteRadionuclid { get; }
-        public ICommand SelectAllPrimaryPackages { get; }
-        public ICommand AddPrimaryPackage { get; }
-        public ICommand DeletePrimaryPackage { get; }
+        public ICommand DeleteRadionuclid { get; set; }
+        public ICommand SelectAllPrimaryPackages { get; set; }
+        public ICommand AddPrimaryPackage { get; set; }
+        public ICommand DeletePrimaryPackage { get; set; }
 
         #endregion
 

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Avalonia.Data;
 using Avalonia.Data.Converters;
 
 namespace Client_App.VisualRealization.Converters
@@ -20,7 +21,7 @@ namespace Client_App.VisualRealization.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is not string expStr
-                || targetType != typeof(double)) 
+                || targetType != typeof(double))
                 return 0.0;
 
             expStr = expStr.Replace(" ", "");  //удаляем все пробелы
@@ -37,7 +38,7 @@ namespace Client_App.VisualRealization.Converters
             }
             else
                 return 0.0;
-                
+
         }
 
     }
