@@ -16,7 +16,7 @@ namespace Client_App.VisualRealization.Converters
             if (value is not double doubleValue) return "Необходимо использовать double";
 
 
-            return doubleValue.ToString($"e{doubleValue.ToString().Length-1}");
+            return doubleValue.ToString($"e{doubleValue.ToString().Length - 1}");//
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

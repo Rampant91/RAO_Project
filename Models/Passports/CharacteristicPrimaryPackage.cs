@@ -52,28 +52,13 @@ namespace Models.Passports
         }
         #endregion
 
-        #region PrimaryPackageType
-        [NotMapped]
-        private string _primaryPackageType;
-
-        [MaxLength(32)]
-        public string PrimaryPackageType
-        {
-            get => _primaryPackageType;
-            set
-            {
-                _primaryPackageType = value;
-                OnPropertyChanged();
-            }
-        }
-        #endregion
 
         #region PrimaryPackageNum
         [NotMapped]
         private string _primaryPackageNum;
 
-        [MaxLength(16)]
-        public string PrimaryPackageNum
+        [MaxLength(64)]
+        public string PackageIdNum
         {
             get => _primaryPackageNum;
             set

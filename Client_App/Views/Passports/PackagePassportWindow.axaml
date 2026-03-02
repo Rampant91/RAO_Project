@@ -885,7 +885,6 @@
 						</interactivity:Interaction.Behaviors>
 
 						<DataGrid.Columns>
-
 							<DataGridTemplateColumn>
 								<DataGridTemplateColumn.HeaderTemplate>
 									<DataTemplate>
@@ -898,7 +897,7 @@
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-										<TextBox Text="{Binding PrimaryPackageType, Mode=TwoWay}"/>
+										<TextBox Text="{Binding PackageIdNum, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -915,7 +914,7 @@
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-										<TextBox Text="{Binding PrimaryPackageNum, Mode=TwoWay}"/>
+										<TextBox Text="{Binding ClassRao, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -932,7 +931,7 @@
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-										<TextBox Text="{Binding ClassRao, Mode=TwoWay}"/>
+										<TextBox Text="{Binding CodeRao, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -949,7 +948,7 @@
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-										<TextBox Text="{Binding CodeRao, Mode=TwoWay}"/>
+										<TextBox Text="{Binding PrimaryPackageQuantity, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -966,7 +965,7 @@
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-										<TextBox Text="{Binding PrimaryPackageQuantity, Mode=TwoWay}"/>
+										<TextBox Text="{Binding PrimaryPackageVolume, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
@@ -983,23 +982,6 @@
 								</DataGridTemplateColumn.HeaderTemplate>
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-										<TextBox Text="{Binding PrimaryPackageVolume, Mode=TwoWay}"/>
-									</DataTemplate>
-								</DataGridTemplateColumn.CellTemplate>
-							</DataGridTemplateColumn>
-
-							<DataGridTemplateColumn>
-								<DataGridTemplateColumn.HeaderTemplate>
-									<DataTemplate>
-										<Border Classes="headerTemplate">
-											<Grid ColumnDefinitions="*,Auto">
-												<TextBlock Grid.Column="0" Text="7" />
-											</Grid>
-										</Border>
-									</DataTemplate>
-								</DataGridTemplateColumn.HeaderTemplate>
-								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
 										<TextBox Text="{Binding PrimaryPackageMass, Mode=TwoWay}"/>
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
@@ -1010,7 +992,7 @@
 									<DataTemplate>
 										<Border Classes="headerTemplate">
 											<Grid ColumnDefinitions="*,Auto">
-												<TextBlock Grid.Column="0" Text="8" />
+												<TextBlock Grid.Column="0" Text="7" />
 											</Grid>
 										</Border>
 									</DataTemplate>
@@ -1054,7 +1036,7 @@
 									<DataTemplate>
 										<Border Classes="headerTemplate">
 											<Grid ColumnDefinitions="*,Auto">
-												<TextBlock Grid.Column="0" Text="9" />
+												<TextBlock Grid.Column="0" Text="8" />
 											</Grid>
 										</Border>
 									</DataTemplate>
@@ -1094,7 +1076,7 @@
 									<DataTemplate>
 										<Border Classes="headerTemplate">
 											<Grid ColumnDefinitions="*,Auto">
-												<TextBlock Grid.Column="0" Text="10" />
+												<TextBlock Grid.Column="0" Text="9" />
 											</Grid>
 										</Border>
 									</DataTemplate>
@@ -1111,7 +1093,7 @@
 									<DataTemplate>
 										<Border Classes="headerTemplate">
 											<Grid ColumnDefinitions="*,Auto">
-												<TextBlock Grid.Column="0" Text="11" />
+												<TextBlock Grid.Column="0" Text="10" />
 											</Grid>
 										</Border>
 									</DataTemplate>
@@ -1128,7 +1110,7 @@
 									<DataTemplate>
 										<Border Classes="headerTemplate">
 											<Grid ColumnDefinitions="*,Auto">
-												<TextBlock Grid.Column="0" Text="12" />
+												<TextBlock Grid.Column="0" Text="11" />
 											</Grid>
 										</Border>
 									</DataTemplate>
@@ -1145,7 +1127,7 @@
 									<DataTemplate>
 										<Border Classes="headerTemplate">
 											<Grid ColumnDefinitions="*,Auto">
-												<TextBlock Grid.Column="0" Text="13" />
+												<TextBlock Grid.Column="0" Text="12" />
 											</Grid>
 										</Border>
 									</DataTemplate>
@@ -1162,7 +1144,7 @@
 									<DataTemplate>
 										<Border Classes="headerTemplate">
 											<Grid ColumnDefinitions="*,Auto">
-												<TextBlock Grid.Column="0" Text="14" />
+												<TextBlock Grid.Column="0" Text="13" />
 											</Grid>
 										</Border>
 									</DataTemplate>
@@ -1179,7 +1161,7 @@
 									<DataTemplate>
 										<Border Classes="headerTemplate">
 											<Grid ColumnDefinitions="*,Auto">
-												<TextBlock Grid.Column="0" Text="15" />
+												<TextBlock Grid.Column="0" Text="14" />
 											</Grid>
 										</Border>
 									</DataTemplate>
@@ -1196,7 +1178,7 @@
 									<DataTemplate>
 										<Border Classes="headerTemplate">
 											<Grid ColumnDefinitions="*,Auto">
-												<TextBlock Grid.Column="0" Text="16" />
+												<TextBlock Grid.Column="0" Text="15" />
 											</Grid>
 										</Border>
 									</DataTemplate>
