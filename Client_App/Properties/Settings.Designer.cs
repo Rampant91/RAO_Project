@@ -97,18 +97,6 @@ namespace Client_App.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool IsFirstAppRun {
-            get {
-                return ((bool)(this["IsFirstAppRun"]));
-            }
-            set {
-                this["IsFirstAppRun"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool AutoReplaceIsEnable {
             get {
                 return ((bool)(this["AutoReplaceIsEnable"]));
@@ -127,6 +115,18 @@ namespace Client_App.Properties {
             }
             set {
                 this["SkippedVersion"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsFirstAppRun {
+            get {
+                return ((bool)(this["IsFirstAppRun"]));
+            }
+            set {
+                this["IsFirstAppRun"] = value;
             }
         }
         

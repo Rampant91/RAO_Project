@@ -23,15 +23,8 @@ public class UpdateService
     /// <returns>Task</returns>
     public async Task CheckAndNotifyAsync(bool isDeveloperMode = false)
     {
-        return;
         try
         {
-#if DEBUG
-            Settings.Default.LastUpdateCheck = DateTime.MinValue;
-            Settings.Default.SkippedVersion = "";
-            Settings.Default.Save();
-#endif
-
             // Проверяем, нужно ли выполнять проверку
             if (!ShouldCheckForUpdates())
             {
@@ -82,8 +75,15 @@ public class UpdateService
     /// Проверяет, нужно ли выполнять проверку обновлений
     /// </summary>
     /// <returns>True если нужно проверить обновления</returns>
-    private bool ShouldCheckForUpdates()
+    private static bool ShouldCheckForUpdates()
     {
+#if DEBUG
+        //Проверка всегда будет выполняться в дебаге, для тестирования
+        Settings.Default.LastUpdateCheck = DateTime.MinValue;
+        Settings.Default.SkippedVersion = "";
+        Settings.Default.Save();
+#endif
+
         var lastCheck = Settings.Default.LastUpdateCheck;
         var now = DateTime.Now;
         
@@ -96,7 +96,7 @@ public class UpdateService
     /// </summary>
     /// <param name="updateInfo">Информация об обновлении</param>
     /// <returns>Task</returns>
-    private async Task ShowUpdateNotificationDialog(UpdateInfo updateInfo)
+    private static async Task ShowUpdateNotificationDialog(UpdateInfo updateInfo)
     {
         await Dispatcher.UIThread.InvokeAsync(async () =>
         {
@@ -110,7 +110,7 @@ public class UpdateService
             {
                 System.Diagnostics.Debug.WriteLine($"Failed to show update dialog: {ex.Message}");
             }
-        });
+        }).ConfigureAwait(false);
     }
     
     /// <summary>
@@ -118,18 +118,18 @@ public class UpdateService
     /// </summary>
     /// <param name="updateInfo">Информация об обновлении</param>
     /// <returns>Task</returns>
-    private async Task ShowAutoUpdateDialog(UpdateInfo updateInfo)
+    private static async Task ShowAutoUpdateDialog(UpdateInfo updateInfo)
     {
         // Здесь можно реализовать автообновление из сетевой папки
         // Пока просто показываем уведомление
-        await ShowUpdateNotificationDialog(updateInfo);
+        await ShowUpdateNotificationDialog(updateInfo).ConfigureAwait(false);
     }
     
     /// <summary>
     /// Получает пропущенную версию
     /// </summary>
     /// <returns>Пропущенная версия или null</returns>
-    private Version? GetSkippedVersion()
+    private static Version? GetSkippedVersion()
     {
         var skipped = Settings.Default.SkippedVersion;
         return Version.TryParse(skipped, out var version) 
@@ -148,6 +148,6 @@ public class UpdateService
         Settings.Default.LastUpdateCheck = DateTime.MinValue;
         Settings.Default.Save();
         
-        await CheckAndNotifyAsync(isDeveloperMode);
+        await CheckAndNotifyAsync(isDeveloperMode).ConfigureAwait(false);
     }
 }

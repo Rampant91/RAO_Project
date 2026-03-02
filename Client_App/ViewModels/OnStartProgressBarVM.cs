@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using ReactiveUI;
@@ -71,11 +72,7 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
 
     private async Task Start()
     {
-        Settings.Default.AppLaunchedInNorao = Settings.Default.AppStartupParameters
-            .Trim()
-            .Split(',')
-            .Any(x => x is "-n");
-        
+        Settings.Default.AppLaunchedInNorao = AppIsLaunchedInNorao();
         Settings.Default.Save(); // Сохраняем настройки
 
         MainWindowVM = new MainWindowVM();
@@ -93,6 +90,16 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
             Environment.Exit(0);
         }
         
+    }
+
+    private static bool AppIsLaunchedInNorao()
+    {
+        var appIsLaunchedInNorao = Settings.Default.AppStartupParameters
+            .Trim()
+            .Split(',')
+            .Any(x => x is "-n");
+
+        return appIsLaunchedInNorao || File.Exists(@"C:\RAO\test\developer.mode");
     }
 
     #region BackgroundWork

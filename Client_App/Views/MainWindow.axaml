@@ -322,10 +322,11 @@
 
         </Menu>
         
-        <Panel x:Name="MainPanel"
+        <Grid x:Name="MainPanel"
                Margin="5,5,5,5"
                HorizontalAlignment="Stretch"
                VerticalAlignment="Stretch">
+
             <TabControl SelectedIndex ="{Binding SelectedReportType}" 
                         SelectionChanged="TabControl_SelectionChanged">
 
@@ -356,7 +357,27 @@
 					<tabs:Forms5TabControl DataContext="{Binding Forms5TabControlVM}"/>
 				</TabItem>
             </TabControl>
-        </Panel>
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Margin="0,3,5,0"
+                        Background="White"
+                        IsVisible="{Binding DeveloperModeEverEnabled, Mode=OneWay}">
+
+                <TextBlock Text="Режим разработчика:"
+                           VerticalAlignment="Center"
+                           FontSize="11"
+                           Margin="0,0,3,0"/>
+
+                <ToggleSwitch IsChecked="{Binding AppLaunchedAtNorao, Mode=TwoWay}"
+                              OffContent="Выкл"
+                              OnContent="Вкл"
+                              FontSize="10"
+                              Padding="2,0"/>
+            </StackPanel>
+
+        </Grid>
 
     </DockPanel>
 </Window>

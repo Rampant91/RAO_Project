@@ -16,6 +16,7 @@ public abstract class CheckF16 : CheckBase
 
     private static readonly string[] OperationCodeValid =
     [
+        "01",    
         "10","11","12","13","14","16","18",
         "21","22","25","26","27","28","29",
         "31","32","35","36","37","38","39",
@@ -23,7 +24,7 @@ public abstract class CheckF16 : CheckBase
         "51","52","56","57","59",
         "63","64","68",
         "71","72","73","74","75","76",
-        "97", "98","99"
+        "97","98","99"
     ];
 
     private static readonly Dictionary<string, string> GraphsList = new()

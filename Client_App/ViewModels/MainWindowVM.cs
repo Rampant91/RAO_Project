@@ -31,6 +31,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     #region SelectedReportType
 
     private byte _selectedReportType = 1;
+    private object _selectedTabContent;
 
     public byte SelectedReportType
     {
@@ -44,21 +45,57 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                 UpdateReportsCollection();
                 UpdateOrgsPageInfo();
                 UpdateFormsPageInfo();
+                UpdateSelectedTabContent();
             }
         }
     }
     public string SelectedReportTypeToString => $"{_selectedReportType}.0";
 
+    public object SelectedTabContent
+    {
+        get => _selectedTabContent;
+        set => SetProperty(ref _selectedTabContent, value);
+    }
+
+    private void UpdateSelectedTabContent()
+    {
+        SelectedTabContent = SelectedReportType switch
+        {
+            1 => Forms1TabControlVM,
+            2 => Forms2TabControlVM,
+            4 => Forms4TabControlVM,
+            5 => Forms5TabControlVM,
+            _ => null
+        };
+    }
+
     #endregion
 
     #region LaunchedAtNORAO
-    
-#pragma warning disable CA1822
 
-    // ReSharper disable once MemberCanBeMadeStatic.Global
-    public bool AppLaunchedAtNorao => Settings.Default.AppLaunchedInNorao;
+    private bool _appLaunchedAtNorao;
+    public bool AppLaunchedAtNorao
+    {
+        get => _appLaunchedAtNorao;
+        set
+        {
+            if (SetProperty(ref _appLaunchedAtNorao, value))
+            {
+                // Сохраняем в настройки при изменении
+                Settings.Default.AppLaunchedInNorao = value;
+                Settings.Default.Save();
 
-#pragma warning restore CA1822
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    private bool _developerModeEverEnabled;
+    public bool DeveloperModeEverEnabled
+    {
+        get => _developerModeEverEnabled;
+        private set => SetProperty(ref _developerModeEverEnabled, value);
+    }
 
     #endregion
 
@@ -467,10 +504,19 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         Forms4TabControlVM = new Forms4TabControlVM(this);
         Forms5TabControlVM = new Forms5TabControlVM(this);
 
-        UpdateReportsCollection();
-        
-        // Блокируем конструктор до завершения проверки обновлений
-        _updateService.CheckAndNotifyAsync(AppLaunchedAtNorao).Wait();
+        //UpdateReportsCollection();
+
+        _appLaunchedAtNorao = Settings.Default.AppLaunchedInNorao;
+        _developerModeEverEnabled = _appLaunchedAtNorao;
+
+        OnPropertyChanged(nameof(AppLaunchedAtNorao));
+        OnPropertyChanged(nameof(DeveloperModeEverEnabled));
+
+        if (!AppLaunchedAtNorao)
+        {
+            // Блокируем конструктор до завершения проверки обновлений
+            _updateService.CheckAndNotifyAsync(AppLaunchedAtNorao).Wait();
+        }
     }
 
     #endregion
