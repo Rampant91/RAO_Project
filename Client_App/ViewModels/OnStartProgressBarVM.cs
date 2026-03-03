@@ -99,7 +99,7 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
             .Split(',')
             .Any(x => x is "-n");
 
-        return appIsLaunchedInNorao || File.Exists(@"C:\RAO\test\developer.mode");
+        return appIsLaunchedInNorao || File.Exists(@"Y:\АЧ 2021\Программа\developer.mode");
     }
 
     #region BackgroundWork
