@@ -74,22 +74,6 @@ public class NewCheckFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    #region Column
-
-    private string _column;
-    public string Column
-    {
-        get => _column;
-        set
-        {
-            if (_column == value) return;
-            _column = value;
-            OnPropertyChanged();
-        }
-    }
-
-    #endregion
-
     #region FormNum
 
     private string _formNum;
@@ -121,17 +105,67 @@ public class NewCheckFormVM : BaseVM, INotifyPropertyChanged
     }
 
     #endregion
+    
+    #region Column
 
-    #region Message
-
-    private string _message;
-    public string Message
+    private string _column;
+    public string Column
     {
-        get => _message;
+        get => _column;
         set
         {
-            if (_message == value) return;
-            _message = value;
+            if (_column == value) return;
+            _column = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
+
+    #region Row
+
+    private string _row;
+    public string Row
+    {
+        get => _row;
+        set
+        {
+            if (_row == value) return;
+            _row = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
+
+    //Для формы 4.1
+    #region RegNo
+
+    private string _regNo;
+    public string RegNo
+    {
+        get => _regNo;
+        set
+        {
+            if (_regNo == value) return;
+            _regNo = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
+
+    //Для формы 4.1
+    #region Okpo
+
+    private string _okpo;
+    public string Okpo
+    {
+        get => _okpo;
+        set
+        {
+            if (_okpo == value) return;
+            _okpo = value;
             OnPropertyChanged();
         }
     }
@@ -154,21 +188,39 @@ public class NewCheckFormVM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
-    #region Row
+    //Для формы 4.1
+    #region DbValue
 
-    private string _row;
-    public string Row
+    private string _dbValue;
+    public string? DbValue
     {
-        get => _row;
+        get => _dbValue;
         set
         {
-            if (_row == value) return;
-            _row = value;
+            if (_dbValue == value) return;
+            _dbValue = value;
             OnPropertyChanged();
         }
     }
 
     #endregion
+
+    #region Message
+
+    private string _message;
+    public string Message
+    {
+        get => _message;
+        set
+        {
+            if (_message == value) return;
+            _message = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
+
 
     #endregion
 

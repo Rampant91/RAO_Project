@@ -321,7 +321,10 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         FormNum = "form_41",
                         Row = $"{form41.NumberInOrder_DB}",
                         Column = $"7",
+                        RegNo = form41.RegNo_DB,
+                        Okpo = form41.Okpo_DB,
                         Value = $"{form41.NumOfFormsWithoutInventarizationInfo_DB}",
+                        DbValue = $"{count}",
                         Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" не совпадает количество отчётов 1.1 - 1.4 без инвентаризации:\n" +
                         $"Указано: {form41.NumOfFormsWithoutInventarizationInfo_DB},\n" +
                         $"Найдено в базе данных: {count}"
@@ -389,7 +392,10 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         FormNum = "form_41",
                         Row = $"{form41.NumberInOrder_DB}",
                         Column = $"6",
+                        RegNo = form41.RegNo_DB,
+                        Okpo = form41.Okpo_DB,
                         Value = $"{form41.NumOfFormsWithInventarizationInfo_DB}",
+                        DbValue = $"{count}",
                         Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" не совпадает количество инвентаризационных отчётов 1.1-1.4:\n" +
                         $"Указано: {form41.NumOfFormsWithInventarizationInfo_DB},\n" +
                         $"Найдено в базе данных: {count}"
@@ -449,7 +455,10 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                         FormNum = "form_41",
                         Row = $"{form41.NumberInOrder_DB}",
                         Column = $"8",
+                        RegNo = form41.RegNo_DB,
+                        Okpo = form41.Okpo_DB,
                         Value = $"{form41.NumOfForms212_DB}",
+                        DbValue = $"{count}",
                         Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" не совпадает количество отчётов 2.12:\n" +
                         $"Указано: {form41.NumOfForms212_DB},\n" +
                         $"Найдено в базе данных: {count}"
@@ -522,6 +531,8 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                     {
                         FormNum = "form_41",
                         Row = $"{form41.NumberInOrder_DB}",
+                        RegNo = form41.RegNo_DB,
+                        Okpo = form41.Okpo_DB,
                         Column = $"-",
                         Value = $"-",
                         Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" должен быть отчет по форме 2.12, потому что у нее есть отчет по форме 1.9"
@@ -537,6 +548,8 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
                     FormNum = "form_41",
                     Row = $"{form41.NumberInOrder_DB}",
                     Column = $"-",
+                    RegNo = form41.RegNo_DB,
+                    Okpo = form41.Okpo_DB,
                     Value = $"-",
                     Message = $"Проверьте организацию №{regNo} на необходимость представления отчета по форме 2.12"
                 };
@@ -671,6 +684,10 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             if (!InventarizationFlag && quantityBalance > 0)
                 return new CheckError()
                 {
+                    Row = $"{form41.NumberInOrder_DB}",
+                    RegNo = form41.RegNo_DB,
+                    Okpo = form41.Okpo_DB,
+                    DbValue = $"{quantityBalance}",
                     Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют ЗРИ. " +
                     $"Необходимо предоставить сведения об инвентаризации по форме 1.1\n" +
                     $"Баланс: {quantityBalance}"
@@ -780,6 +797,10 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             if (!InventarizationFlag && balance > 0)
                 return new CheckError()
                 {
+                    Row = $"{form41.NumberInOrder_DB}",
+                    RegNo = form41.RegNo_DB,
+                    Okpo = form41.Okpo_DB,
+                    DbValue = $"{balance}",
                     Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют ИОУ. " +
                     $"Необходимо предоставить сведения об инвентаризации по форме 1.2\n" +
                     $"Баланс: {balance}"
@@ -886,6 +907,10 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             if (!InventarizationFlag && balance > 0)
                 return new CheckError()
                 {
+                    Row = $"{form41.NumberInOrder_DB}",
+                    RegNo = form41.RegNo_DB,
+                    Okpo = form41.Okpo_DB,
+                    DbValue = $"{balance}",
                     Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют ОРИ. " +
                     $"Необходимо предоставить сведения об инвентаризации по форме 1.3\n" +
                     $"Баланс: {balance}"
@@ -1031,6 +1056,12 @@ namespace Client_App.Commands.AsyncCommands.CheckForm
             if (!InventarizationFlag && (massBalanceLiquid > 0 || massBalanceSolid > 0 || massBalanceGas > 0))
                 return new CheckError()
                 {
+                    Row = $"{form41.NumberInOrder_DB}",
+                    RegNo = form41.RegNo_DB,
+                    Okpo = form41.Okpo_DB,
+                    DbValue = $"{massBalanceLiquid}\n" +
+                    $"{massBalanceSolid}\n" +
+                    $"{massBalanceGas}",
                     Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют радионуклиды. " +
                     $"Необходимо проинвентаризировать по форме 1.4\n" +
                     $"Баланс жидких РВ: {massBalanceLiquid}\n" +

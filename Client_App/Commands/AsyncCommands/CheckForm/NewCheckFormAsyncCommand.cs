@@ -203,7 +203,15 @@ public class NewCheckFormAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             {
                 Desktop.Windows.First(x => x.Name == "FormCheckerWindow").Close();
             }
-            await Dispatcher.UIThread.InvokeAsync(() => new NewCheckForm(formVM, result));
+            switch (rep.FormNum_DB)
+            {
+                case "4.1":
+                    await Dispatcher.UIThread.InvokeAsync(() => new NewCheckForm41(formVM, result));
+                    break;
+                default:
+                    await Dispatcher.UIThread.InvokeAsync(() => new NewCheckForm(formVM, result));
+                    break;
+            }
         }
     }
 }
