@@ -244,6 +244,9 @@
     <Compile Update="Views\MainWindowTabs\Forms4TabControl.axaml.cs">
       <DependentUpon>Forms4TabControl.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Messages\AskPackagePassportMessage.axaml.cs">
+      <DependentUpon>AskPackagePassportMessage.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Messages\AskForm57Message.axaml.cs">
       <DependentUpon>AskForm57Message.axaml</DependentUpon>
     </Compile>

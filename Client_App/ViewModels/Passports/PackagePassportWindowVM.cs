@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
+using Models.DBRealization;
 using Models.Passports;
 using ReactiveUI;
 using Spravochniki;
@@ -122,6 +123,10 @@ namespace Client_App.ViewModels.Passports
                 if (index > 0)
                     Passport.ContentCharacteristics.RemoveAt(index);
             });
+            SavePassport = ReactiveCommand.Create(async () =>
+            {
+                StaticConfiguration.DBModel.SaveChangesAsync();
+            });
 
         }
 
@@ -135,6 +140,7 @@ namespace Client_App.ViewModels.Passports
         public ICommand SelectAllPrimaryPackages { get; set; }
         public ICommand AddPrimaryPackage { get; set; }
         public ICommand DeletePrimaryPackage { get; set; }
+        public ICommand SavePassport { get; set; }
 
         #endregion
 

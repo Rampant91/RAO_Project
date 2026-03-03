@@ -88,9 +88,16 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
         if (point.Properties.IsLeftButtonPressed)
         {
             _isSelecting = true;
+            try
+            {
 
-            if (e.PointerPressedEventArgs.KeyModifiers != KeyModifiers.Shift)
-                AssociatedObject.SelectedItems.Clear();
+                if (e.PointerPressedEventArgs.KeyModifiers != KeyModifiers.Shift)
+                    AssociatedObject.SelectedItems.Clear();
+            }
+            catch
+            {
+
+            }
             // Захватываем указатель для получения всех событий
             AssociatedObject.CapturePointer(e.PointerPressedEventArgs.Pointer);
 
