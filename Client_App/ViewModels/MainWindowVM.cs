@@ -45,29 +45,10 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                 UpdateReportsCollection();
                 UpdateOrgsPageInfo();
                 UpdateFormsPageInfo();
-                UpdateSelectedTabContent();
             }
         }
     }
     public string SelectedReportTypeToString => $"{_selectedReportType}.0";
-
-    public object SelectedTabContent
-    {
-        get => _selectedTabContent;
-        set => SetProperty(ref _selectedTabContent, value);
-    }
-
-    private void UpdateSelectedTabContent()
-    {
-        SelectedTabContent = SelectedReportType switch
-        {
-            1 => Forms1TabControlVM,
-            2 => Forms2TabControlVM,
-            4 => Forms4TabControlVM,
-            5 => Forms5TabControlVM,
-            _ => null
-        };
-    }
 
     #endregion
 
