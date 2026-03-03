@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using static Client_App.Commands.AsyncCommands.ExcelExport.Snk.ExcelExportSnkBaseAsyncCommand;
 
 namespace Client_App.Resources.CustomComparers.SnkComparers;
@@ -14,7 +13,7 @@ public class SnkParamsComparer : IEqualityComparer<ShortFormDTO>
 
         var numberComparer = new SnkNumberEqualityComparer();
         var radsComparer = new SnkRadionuclidsEqualityComparer();
-        var stringComparer = new SnkEqualityComparer();
+        var stringComparer = new SnkNumberEqualityComparer();
 
         return numberComparer.Equals(x.PasNum, y.PasNum)
                && stringComparer.Equals(x.Type, y.Type)

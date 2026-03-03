@@ -376,7 +376,7 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
 
         List<ShortFormDTO> unitInStockList = [];
         List<ShortFormDTO> transferOfMissingUnitOperationList = [];
-        var comparer = new SnkEqualityComparer();
+        var comparer = new SnkNumberEqualityComparer();
         var radsComparer = new SnkRadionuclidsEqualityComparer();
         foreach (var (unit, operations) in uniqueUnitWithAllOperationDictionary)
         {

@@ -941,7 +941,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
         var minusOperationArray = GetMinusOperationsArray(formNum);
 
         var currentInventoryDateIndex = 0;
-        var comparer = new SnkEqualityComparer();
+        var comparer = new SnkNumberEqualityComparer();
         var radsComparer = new SnkRadionuclidsEqualityComparer();
         foreach (var inventoryDate in inventoryDatesList)
         {
