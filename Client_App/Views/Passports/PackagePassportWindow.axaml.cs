@@ -128,7 +128,28 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
                     _isCloseConfirmed = true;
 
 
-                    await dbm.SaveChangesAsync();
+                    try
+                    {
+                        await dbm.SaveChangesAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        {
+                            ButtonDefinitions =
+                            [
+                                new ButtonDefinition { Name = "Ок" },
+                            ],
+                            ContentTitle = "Сохранение изменений",
+                            ContentHeader = "Ошибка",
+                            ContentMessage = $"Произошла ошибка во время попытки сохранения:\n" +
+                                $"{ex.Message}",
+                            MinWidth = 400,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(this));
+                    }
 
                     if (desktop.Windows.Count == 1)
                     {

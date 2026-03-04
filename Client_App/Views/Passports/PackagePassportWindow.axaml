@@ -19,11 +19,12 @@
 		<converter:DateToStringConverter x:Key="DateToStringConverter"/>
 	</Window.Resources>
 
-	<Design.DataContext>
+	<Design.DataContext>				   
 		<vm:PackagePassportWindowVM/>
 	</Design.DataContext>
         
-	<Grid RowDefinitions="Auto, *">
+	<Grid RowDefinitions="Auto, *"
+		  >
 	<Menu Grid.Row="0" 
 		  x:Name="SubMenuBorder" 
 		  BorderBrush="#FF959595" 
@@ -645,6 +646,7 @@
 										</DataGridTemplateColumn.CellTemplate>
 									</DataGridTemplateColumn>
 
+
 								</DataGrid.Columns>
 							</DataGrid>
 							<Grid Grid.Row="2"
@@ -693,75 +695,81 @@
 									<TextBox
 										TextWrapping="Wrap"
 										AcceptsReturn="True"
-										Text="{Binding Passport.Diameter}" />
+										Text="{Binding Passport.FillingWasteDate, Converter={StaticResource DateToStringConverter}}"/>
 								</Border>
 								<Border Grid.Row="0" Grid.Column="6">
 									<TextBox
 										TextWrapping="Wrap"
 										AcceptsReturn="True"
-										Text="{Binding Passport.Height}" />
+										Text="{Binding Passport.Diameter}" />
 								</Border>
 								<Border Grid.Row="0" Grid.Column="7">
 									<TextBox
 										TextWrapping="Wrap"
 										AcceptsReturn="True"
-										Text="{Binding Passport.Length}" />
+										Text="{Binding Passport.Height}" />
 								</Border>
 								<Border Grid.Row="0" Grid.Column="8">
 									<TextBox
 										TextWrapping="Wrap"
 										AcceptsReturn="True"
-										Text="{Binding Passport.Width}" />
+										Text="{Binding Passport.Length}" />
 								</Border>
 								<Border Grid.Row="0" Grid.Column="9">
 									<TextBox
 										TextWrapping="Wrap"
 										AcceptsReturn="True"
-										Text="{Binding Passport.PackageMass}" />
+										Text="{Binding Passport.Width}" />
 								</Border>
 								<Border Grid.Row="0" Grid.Column="10">
 									<TextBox
 										TextWrapping="Wrap"
 										AcceptsReturn="True"
-										Text="{Binding Passport.RaoMass}" />
+										Text="{Binding Passport.PackageMass}" />
 								</Border>
 								<Border Grid.Row="0" Grid.Column="11">
 									<TextBox
 										TextWrapping="Wrap"
 										AcceptsReturn="True"
-										Text="{Binding Passport.PackageVolume}" />
+										Text="{Binding Passport.RaoMass}" />
 								</Border>
 								<Border Grid.Row="0" Grid.Column="12">
 									<TextBox
 										TextWrapping="Wrap"
 										AcceptsReturn="True"
-										Text="{Binding Passport.RaoVolume}" />
+										Text="{Binding Passport.PackageVolume}" />
 								</Border>
 								<Border Grid.Row="0" Grid.Column="13">
 									<TextBox
 										TextWrapping="Wrap"
 										AcceptsReturn="True"
-										Text="{Binding Passport.RadiationDoseRate1m}" />
+										Text="{Binding Passport.RaoVolume}" />
 								</Border>
 								<Border Grid.Row="0" Grid.Column="14">
 									<TextBox
 										TextWrapping="Wrap"
 										AcceptsReturn="True"
-										Text="{Binding Passport.RadiationDoseRate10cm}" />
+										Text="{Binding Passport.RadiationDoseRate1m}" />
 								</Border>
 								<Border Grid.Row="0" Grid.Column="15">
 									<TextBox
 										TextWrapping="Wrap"
 										AcceptsReturn="True"
-										Text="{Binding Passport.LevelNonFixedPollutionAlpha}" />
+										Text="{Binding Passport.RadiationDoseRate10cm}" />
 								</Border>
 								<Border Grid.Row="0" Grid.Column="16">
 									<TextBox
 										TextWrapping="Wrap"
 										AcceptsReturn="True"
-										Text="{Binding Passport.LevelNonFixedPollutionBetaGamma}" />
+										Text="{Binding Passport.LevelNonFixedPollutionAlpha}" />
 								</Border>
 								<Border Grid.Row="0" Grid.Column="17">
+									<TextBox
+										TextWrapping="Wrap"
+										AcceptsReturn="True"
+										Text="{Binding Passport.LevelNonFixedPollutionBetaGamma}" />
+								</Border>
+								<Border Grid.Row="0" Grid.Column="18">
 									<TextBox
 										TextWrapping="Wrap"
 										AcceptsReturn="True"
@@ -890,6 +898,7 @@
 
 						<DataGrid
 							x:Name="dataGrid2"
+							Classes="table"
 							Grid.Row="1"
 							CornerRadius="5"
 							CanUserResizeColumns="True"
@@ -1026,11 +1035,12 @@
 									<DataGridTemplateColumn.CellTemplate>
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
 											<StackPanel>
-												<ListBox MaxHeight="240" Items="{Binding RadionuclidsList}" Background="Transparent">
+												<ListBox MaxHeight="240" Items="{Binding RadionuclidsList}" Background="Transparent" SelectionMode="Single">
 													<ListBox.ItemTemplate>
 														<DataTemplate x:DataType="passports:Radionuclid">
 															<Grid ColumnDefinitions="*,Auto">
 																<AutoCompleteBox 
+																	Classes="hitable"
 																	Grid.Column="0"
 																	Background="White"
 																	Height="26"
@@ -1070,13 +1080,14 @@
 									<DataGridTemplateColumn.CellTemplate>
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
 											<StackPanel>
-												<ListBox MaxHeight="240" Items="{Binding RadionuclidsList}" Background="Transparent">
+												<ListBox MaxHeight="240" Items="{Binding RadionuclidsList}" Background="Transparent" SelectionMode="Single">
 													<ListBox.ItemTemplate>
 														<DataTemplate x:DataType="passports:Radionuclid">
 															<Grid ColumnDefinitions="*,Auto">
 																<TextBox Grid.Column="0"
 																		 Height="26"
 																		 Background="White"
+																		 IsHitTestVisible="True"
 																		 Text="{Binding Activity, Converter={StaticResource ExpontionalFormatConverter}}"/>
 																<Button Grid.Column="1"
 																		IsHitTestVisible="True"

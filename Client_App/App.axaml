@@ -254,5 +254,13 @@
 			<Setter Property="IsHitTestVisible" Value="False"/>
 		</Style>
         <!--Конец стилей для окон редактирования форм-->
+		<!--Другие стили-->
+
+		<Style Selector="AutoCompleteBox.hitable">
+			<Setter Property="IsHitTestVisible" Value="True"/>
+		</Style>
+		<Style Selector="AutoCompleteBox.hitable TextBox">
+			<Setter Property="IsHitTestVisible" Value="True"/>
+		</Style>
     </Application.Styles>
 </Application>

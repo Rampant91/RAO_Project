@@ -4,6 +4,8 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Models.DBRealization;
 using Models.Passports;
 using ReactiveUI;
@@ -94,7 +96,11 @@ namespace Client_App.ViewModels.Passports
         {
             InitializeCommands();
 
-            _passport = passport;
+            _passport = StaticConfiguration.DBModel.package_passport
+                .Include(pas => pas.ContentCharacteristics)
+                .ThenInclude(c => c.RadionuclidsList)
+                .FirstOrDefault(pas => pas.Id == passport.Id);
+
 
             Dispatcher.UIThread.InvokeAsync(() => Passport.ContentCharacteristics.Add(new CharacteristicPrimaryPackage(Passport)));
         }
@@ -119,13 +125,35 @@ namespace Client_App.ViewModels.Passports
             });
             DeletePrimaryPackage = ReactiveCommand.Create<CharacteristicPrimaryPackage>(async characteristic =>
             {
+                if (Passport.ContentCharacteristics.Count <= 1) return;
+
                 int index = Passport.ContentCharacteristics.IndexOf(characteristic);
-                if (index > 0)
-                    Passport.ContentCharacteristics.RemoveAt(index);
+                Passport.ContentCharacteristics.RemoveAt(index);
             });
             SavePassport = ReactiveCommand.Create(async () =>
             {
-                StaticConfiguration.DBModel.SaveChangesAsync();
+                try
+                {
+                    await StaticConfiguration.DBModel.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    {
+                        ButtonDefinitions =
+                        [
+                            new ButtonDefinition { Name = "Ок" },
+                        ],
+                        ContentTitle = "Сохранение изменений",
+                        ContentHeader = "Ошибка",
+                        ContentMessage = $"Произошла ошибка во время попытки сохранения:\n" +
+                            $"{ex.Message}",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(owner));
+                }
             });
 
         }

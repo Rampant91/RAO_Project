@@ -101,21 +101,6 @@ namespace Models.Passports
         }
         #endregion
 
-        #region FillingWasteDate
-        [NotMapped]
-        private DateOnly _fillingWasteDate;
-
-        
-        public DateOnly FillingWasteDate
-        {
-            get => _fillingWasteDate;
-            set
-            {
-                _fillingWasteDate = value;
-                OnPropertyChanged();
-            }
-        }
-        #endregion
 
         #region PrimaryPackageQuantity
         [NotMapped]

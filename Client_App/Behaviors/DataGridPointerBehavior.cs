@@ -92,7 +92,12 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
             {
 
                 if (e.PointerPressedEventArgs.KeyModifiers != KeyModifiers.Shift)
-                    AssociatedObject.SelectedItems.Clear();
+                {
+                    if (AssociatedObject.SelectionMode is DataGridSelectionMode.Extended)
+                        AssociatedObject.SelectedItems.Clear();
+                    else if (AssociatedObject.SelectionMode is DataGridSelectionMode.Single)
+                        AssociatedObject.SelectedItem = null;
+                }
             }
             catch
             {
@@ -110,7 +115,10 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
                 _lastSelectedItem = item;
 
                 // Обычный клик - очищаем и выделяем один элемент
-                AssociatedObject.SelectedItems.Add(item);
+                if (AssociatedObject.SelectionMode is DataGridSelectionMode.Extended)
+                    AssociatedObject.SelectedItems.Add(item);
+                else if (AssociatedObject.SelectionMode is DataGridSelectionMode.Single)
+                    AssociatedObject.SelectedItem = item;
             }
 
         }
@@ -118,7 +126,7 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
 
     private void DragSelection_PointerMoved(object sender, PointerEventArgs e)
     {
-        if (_isSelecting)
+        if (_isSelecting && AssociatedObject.SelectionMode is DataGridSelectionMode.Extended)
         {
             var point = e.GetCurrentPoint(AssociatedObject);
             var row = GetRowAtPoint(point.Position);

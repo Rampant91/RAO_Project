@@ -2823,9 +2823,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("CodeRao")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<DateOnly>("FillingWasteDate")
-                        .HasColumnType("DATE");
-
                     b.Property<double>("LongLivingActivity")
                         .HasColumnType("DOUBLE PRECISION");
 
@@ -2892,6 +2889,9 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("DisposalMethod")
                         .HasMaxLength(8)
                         .HasColumnType("VARCHAR(8)");
+
+                    b.Property<DateOnly>("FillingWasteDate")
+                        .HasColumnType("DATE");
 
                     b.Property<string>("FioAuthorizedPersonReception")
                         .HasMaxLength(256)

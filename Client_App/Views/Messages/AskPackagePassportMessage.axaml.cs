@@ -32,8 +32,8 @@ public partial class AskPackagePassportMessage : Window, INotifyPropertyChanged
         }
     }
 
-    private ObservableCollection<PackagePassport> _selectedPassportsCollection;
-    public ObservableCollection<PackagePassport> SelectedPassportsCollection
+    private ObservableCollection<PackagePassport>? _selectedPassportsCollection;
+    public ObservableCollection<PackagePassport>? SelectedPassportsCollection
     {
         get
         {
@@ -62,10 +62,15 @@ public partial class AskPackagePassportMessage : Window, INotifyPropertyChanged
 
     public AskPackagePassportMessage()
     {
-        AvaloniaXamlLoader.Load(this);
+        PassportList = new ObservableCollection<PackagePassport>(
+            StaticConfiguration.DBModel.package_passport
+            .Include(p => p.ContentCharacteristics)
+            .ThenInclude(c=> c.RadionuclidsList)
+            .AsEnumerable());
+        SelectedPassportsCollection = new ObservableCollection<PackagePassport>();
         DataContext = this;
 
-        PassportList = new ObservableCollection<PackagePassport>(StaticConfiguration.DBModel.package_passport.AsEnumerable());
+        AvaloniaXamlLoader.Load(this);
     }
     private void Accept_Click(object sender, RoutedEventArgs e)
     {

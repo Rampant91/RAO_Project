@@ -12,8 +12,8 @@ using Models.DBRealization;
 namespace Models.DBRealization.Migrations.DataModel
 {
     [DbContext(typeof(DBModel))]
-    [Migration("20260302114346_DataModel_44")]
-    partial class DataModel_44
+    [Migration("20260303134322_DataModel_43")]
+    partial class DataModel_43
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -2825,9 +2825,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("CodeRao")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<DateOnly>("FillingWasteDate")
-                        .HasColumnType("DATE");
-
                     b.Property<double>("LongLivingActivity")
                         .HasColumnType("DOUBLE PRECISION");
 
@@ -2894,6 +2891,9 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("DisposalMethod")
                         .HasMaxLength(8)
                         .HasColumnType("VARCHAR(8)");
+
+                    b.Property<DateOnly>("FillingWasteDate")
+                        .HasColumnType("DATE");
 
                     b.Property<string>("FioAuthorizedPersonReception")
                         .HasMaxLength(256)
