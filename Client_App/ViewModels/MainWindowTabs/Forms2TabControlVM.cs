@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Client_App.ViewModels.MainWindowTabs;
 
@@ -46,25 +47,46 @@ public class Forms2TabControlVM : INotifyPropertyChanged
     #endregion
 
     #region SearchText
+
     private string _searchText = "";
+    private CancellationTokenSource? _debounceCts;
 
     public string SearchText
     {
-        get
-        {
-            return _searchText;
-        }
+        get => _searchText;
         set
         {
-            if(CurrentPageOrgs != 1)
-                CurrentPageOrgs = 1;
+            if (_searchText == value) return;
+
             _searchText = value;
             OnPropertyChanged();
-            OnPropertyChanged(nameof(ReportsCollection));
-            OnPropertyChanged(nameof(FilteredRowsOrgs));
-            OnPropertyChanged(nameof(TotalPagesOrgs));
+
+            // Отменяем предыдущий таймер
+            _debounceCts?.Cancel();
+
+            // Создаем новый таймер
+            _debounceCts = new CancellationTokenSource();
+
+            // Задержка 300мс перед фильтрацией
+            Task.Delay(300, _debounceCts.Token)
+                .ContinueWith(t =>
+                {
+                    if (!t.IsCanceled)
+                    {
+                        Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+                        {
+                            if (CurrentPageOrgs != 1)
+                                CurrentPageOrgs = 1;
+
+                            OnPropertyChanged(nameof(ReportsCollection));
+                            OnPropertyChanged(nameof(FilteredRowsOrgs));
+                            OnPropertyChanged(nameof(TotalPagesOrgs));
+                        });
+                    }
+                }, TaskScheduler.FromCurrentSynchronizationContext());
         }
     }
+
     #endregion
 
     #region ReportsCollection

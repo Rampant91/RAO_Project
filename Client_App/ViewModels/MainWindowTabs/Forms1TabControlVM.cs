@@ -71,7 +71,6 @@ public class Forms1TabControlVM : INotifyPropertyChanged
                 {
                     if (!t.IsCanceled)
                     {
-                        // В Avalonia используем Dispatcher.UIThread
                         Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
                         {
                             if (CurrentPageOrgs != 1)
