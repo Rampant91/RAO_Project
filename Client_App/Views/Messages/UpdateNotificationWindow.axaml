@@ -22,19 +22,15 @@
     </Design.DataContext>
 
     <Grid RowDefinitions="Auto,*,Auto">
+
         <!-- Заголовок -->
-        <StackPanel Grid.Row="0" Margin="20,20,20,10">
-            <TextBlock Text="Доступно обновление ПО МПЗФ" 
-                       FontSize="20" 
-                       FontWeight="Bold"
-                       HorizontalAlignment="Center"
-                       Foreground="#2E7D32"/>
-            <TextBlock Text="ПО МПЗФ" 
-                       FontSize="16"
-                       HorizontalAlignment="Center"
-                       Opacity="0.8"
-                       Margin="0,5,0,0"/>
-        </StackPanel>
+        <TextBlock Grid.Row="0"
+                   Text="Доступно обновление ПО МПЗФ" 
+                   FontSize="20" 
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   Foreground="#2E7D32"
+                   Margin="20,20,20,15"/>
         
         <!-- Информация об обновлении -->
         <StackPanel Grid.Row="1" Margin="20,0,20,10">
@@ -47,7 +43,7 @@
                     <TextBlock Text="Вышла новая версия:" 
                                FontWeight="Bold" 
                                FontSize="14"/>
-                    <TextBlock Text="{Binding UpdateInfo.Version}" 
+                    <TextBlock Text="{Binding UpdateInfo.Version, Mode=OneTime}" 
                                FontSize="20" 
                                FontWeight="Bold"
                                Foreground="#2E7D32"
@@ -57,7 +53,7 @@
                                FontWeight="Bold" 
                                FontSize="14"
                                Margin="0,15,0,0"/>
-                    <TextBlock Text="{Binding UpdateInfo.ReleaseDate}" 
+                    <TextBlock Text="{Binding UpdateInfo.ReleaseDate, Mode=OneTime}" 
                                FontSize="14"
                                Margin="10,5,0,0"/>
                     
@@ -65,14 +61,14 @@
                                FontWeight="Bold" 
                                FontSize="14"
                                Margin="0,15,0,0"/>
-                    <TextBlock Text="{Binding CurrentVersion}" 
+                    <TextBlock Text="{Binding CurrentVersion, Mode=OneTime}" 
                                FontSize="14"
                                Margin="10,5,0,0"
                                Opacity="0.7"/>
                 </StackPanel>
             </Border>
             
-            <TextBlock Text="{Binding UpdateInfo.Description}" 
+            <TextBlock Text="{Binding UpdateInfo.Description, Mode=OneTime}" 
                        TextWrapping="Wrap"
                        Margin="0,15,0,0"
                        FontSize="13"
@@ -85,7 +81,7 @@
                     HorizontalAlignment="Center"
                     Margin="0,0,0,20">
             <Button Content="📥 Скачать обновление" 
-                    Command="{Binding DownloadCommand}"
+                    Command="{Binding DownloadCommand, Mode=OneTime}"
                     Background="#4CAF50"
                     Foreground="White"
                     Width="160" 
@@ -94,7 +90,7 @@
                     FontSize="13"
                     FontWeight="Medium"/>
             <Button Content="⏰ Напомнить позже" 
-                    Command="{Binding RemindLaterCommand}"
+                    Command="{Binding RemindLaterCommand, Mode=OneTime}"
                     Background="#FF9800"
                     Foreground="White"
                     Width="150" 
@@ -103,7 +99,7 @@
                     FontSize="13"
                     FontWeight="Medium"/>
             <Button Content="❌ Пропустить версию" 
-                    Command="{Binding SkipVersionCommand}"
+                    Command="{Binding SkipVersionCommand, Mode=OneTime}"
                     Background="#757575"
                     Foreground="White"
                     Width="160" 
