@@ -89,7 +89,9 @@ namespace Models.Passports
         [NotMapped]
         private string _codeRao;
 
-        [Length(11, 11)] //Length
+        //В коде РАО могут записываться несколько кодов РАО, длиной 11 символов
+        //Пока ничем не разделены
+        [MaxLength(128)] 
         public string CodeRao
         {
             get => _codeRao;
@@ -167,6 +169,39 @@ namespace Models.Passports
 
                 OnPropertyChanged(nameof(RadionuclidsList));
 
+            }
+        }
+        #endregion
+
+        #region RadionuclidsComposition
+        private string _radionuclidsComposition;
+
+        // Предназначен для альтернативной записи списка наименований радионуклидов, входящих в состав
+        [MaxLength(256)]
+        public string RadionuclidsComposition
+        {
+            get => _radionuclidsComposition;
+            set
+            {
+                _radionuclidsComposition = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region RadionuclidsActivity
+        private string _radionuclidsActivity;
+
+        //Экспоненциальный вид
+        // Предназначен для альтернативной записи списка удельных активностей радионуклидов, входящих в состав
+        [MaxLength(256)]
+        public string RadionuclidsActivity
+        {
+            get => _radionuclidsActivity;
+            set
+            {
+                _radionuclidsActivity = value;
+                OnPropertyChanged();
             }
         }
         #endregion

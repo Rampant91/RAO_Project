@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using DynamicData;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
@@ -53,6 +54,20 @@ namespace Client_App.ViewModels.Passports
             set
             {
                 _selectedCharacteristic = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _radionuclidViewSwitch =true;
+        public bool RadionuclidViewSwitch
+        {
+            get
+            {
+                return _radionuclidViewSwitch;
+            }
+            set
+            {
+                _radionuclidViewSwitch = value;
                 OnPropertyChanged();
             }
         }
@@ -126,9 +141,8 @@ namespace Client_App.ViewModels.Passports
             DeletePrimaryPackage = ReactiveCommand.Create<CharacteristicPrimaryPackage>(async characteristic =>
             {
                 if (Passport.ContentCharacteristics.Count <= 1) return;
-
-                int index = Passport.ContentCharacteristics.IndexOf(characteristic);
-                Passport.ContentCharacteristics.RemoveAt(index);
+                
+                Passport.ContentCharacteristics.Remove(characteristic);
             });
             SavePassport = ReactiveCommand.Create(async () =>
             {

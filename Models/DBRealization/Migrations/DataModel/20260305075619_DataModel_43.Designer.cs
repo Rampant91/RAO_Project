@@ -12,7 +12,7 @@ using Models.DBRealization;
 namespace Models.DBRealization.Migrations.DataModel
 {
     [DbContext(typeof(DBModel))]
-    [Migration("20260303134322_DataModel_43")]
+    [Migration("20260305075619_DataModel_43")]
     partial class DataModel_43
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -2823,7 +2823,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("SMALLINT");
 
                     b.Property<string>("CodeRao")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                        .HasMaxLength(128)
+                        .HasColumnType("VARCHAR(128)");
 
                     b.Property<double>("LongLivingActivity")
                         .HasColumnType("DOUBLE PRECISION");
@@ -2847,6 +2848,14 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<double>("PrimaryPackageVolume")
                         .HasColumnType("DOUBLE PRECISION");
+
+                    b.Property<string>("RadionuclidsActivity")
+                        .HasMaxLength(256)
+                        .HasColumnType("VARCHAR(256)");
+
+                    b.Property<string>("RadionuclidsComposition")
+                        .HasMaxLength(256)
+                        .HasColumnType("VARCHAR(256)");
 
                     b.Property<double>("TotalActivity")
                         .HasColumnType("DOUBLE PRECISION");
