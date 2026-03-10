@@ -14,7 +14,6 @@
              x:Class="Client_App.Views.MainWindowTabs.Forms2TabControl">
 
 	<UserControl.Resources>
-        <customConverters:BoolInverterConverter x:Key="BoolInverterConverter"/>
         <converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
 		<converter:StringEqualsToColorConverter x:Key="StringEqualsToColor" />
 	</UserControl.Resources>
@@ -29,15 +28,15 @@
 			<Grid Grid.Row ="0" 
                   Grid.Column="0" 
                   RowDefinitions="Auto,*,Auto">
-				<TextBox Text="{Binding SearchText}" 
-                         Grid.Row="0" 
+				<TextBox Grid.Row="0" 
                          Margin="5" 
-                         Watermark ="Поиск..." />
+                         Watermark ="Поиск..."
+                         Text="{Binding SearchText, Mode=OneWayToSource}"/>
 				<DataGrid x:Name="ReportsDataGrid"
                           Grid.Row="1" Margin="5"
-                          Items="{Binding ReportsCollection}"
+                          Items="{Binding ReportsCollection, Mode=TwoWay}"
                           SelectionMode="Single"
-                          SelectedItem="{Binding SelectedReports}"
+                          SelectedItem="{Binding SelectedReports, Mode=OneWayToSource}"
                           RowHeight="25"
                           GridLinesVisibility="All"
                           AlternatingRowBackground="White"
@@ -51,9 +50,9 @@
 					<DataGrid.ContextMenu>
 						<ContextMenu>
 							<MenuItem Header="Добавить организацию"
-									  Command="{Binding MainWindowVM.AddReports}"/>
+									  Command="{Binding MainWindowVM.AddReports, Mode=OneWay}"/>
 							<MenuItem Header="Редактировать отчёт по форме 2.0 организации"
-									  Command="{Binding MainWindowVM.NewChangeReports}"/>
+									  Command="{Binding MainWindowVM.NewChangeReports, Mode=OneWay}"/>
                             <MenuItem Header="Импортировать отчёт в организацию">
                                 <MenuItem Header="Из RAODB"
                                           Click="ImportRaodb_Click"/>
@@ -61,22 +60,22 @@
                                           Click="ImportExcel_Click"/>
                             </MenuItem>
 							<MenuItem Header="Удалить организацию"
-									  Command="{Binding MainWindowVM.DeleteReports}"
-									  CommandParameter="{Binding SelectedReports}"/>
+									  Command="{Binding MainWindowVM.DeleteReports, Mode=OneWay}"
+									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 							<MenuItem Header="Выгрузить организацию"
-									  Command="{Binding MainWindowVM.ExportReports}"
-									  CommandParameter="{Binding SelectedReports}"/>
+									  Command="{Binding MainWindowVM.ExportReports, Mode=OneWay}"
+									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 							<MenuItem Header="Выгрузить организацию с указанием диапазона дат"
-									  Command="{Binding MainWindowVM.ExportReportsWithDateRange}"
-									  CommandParameter="{Binding SelectedReports}"/>
+									  Command="{Binding MainWindowVM.ExportReportsWithDateRange, Mode=OneWay}"
+									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 							<MenuItem Header="Выгрузить все организации в один файл"
-									  Command="{Binding MainWindowVM.ExportAllReportsOneFile}"/>
+									  Command="{Binding MainWindowVM.ExportAllReportsOneFile, Mode=OneWay}"/>
 							<MenuItem Header="Выгрузить все организации в отдельные файлы"
-									  Command="{Binding MainWindowVM.ExportAllReports}"
-									  CommandParameter="{Binding SelectedReports}"/>
+									  Command="{Binding MainWindowVM.ExportAllReports, Mode=OneWay}"
+									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 							<MenuItem Header="Проверить все формы организации"
-									  Command="{Binding MainWindowVM.ExcelExportCheckAllForms}"
-									  CommandParameter="{Binding SelectedReports}"/>
+									  Command="{Binding MainWindowVM.ExcelExportCheckAllForms, Mode=OneWay}"
+									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 						</ContextMenu>
 					</DataGrid.ContextMenu>
 

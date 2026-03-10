@@ -79,16 +79,16 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
         MainWindowVM.PropertyChanged += OnMainWindowVMPropertyChanged;
         await new InitializationAsyncCommand(MainWindowVM).AsyncExecute(this);
 
-        if (Settings.Default.AppStartupParameters.Trim().Split(',').Any(x => x is "-p"))
+        if (Settings.Default.AppStartupParameters.Trim().Split(',').Any(x => x is "-p" or "-y"))
         {
             await BackgroundWorkThenAppLaunchedWithOperParameter();
             Environment.Exit(0);
         }
-        else if (Settings.Default.AppStartupParameters.Trim().Split(',').Any(x => x is "-y"))
-        {
-            await BackgroundWorkThenAppLaunchedWithYearParameter();
-            Environment.Exit(0);
-        }
+        //else if (Settings.Default.AppStartupParameters.Trim().Split(',').Any(x => x is "-y"))
+        //{
+        //    await BackgroundWorkThenAppLaunchedWithYearParameter();
+        //    Environment.Exit(0);
+        //}
         
     }
 
@@ -116,6 +116,7 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
         await new ExcelExportExecutorsAsyncCommand().AsyncExecute(null);
         await new ExcelExportIntersectionsAsyncCommand().AsyncExecute(null);
         await new ExcelExportListOfForms1AsyncCommand().AsyncExecute(null);
+        await new ExcelExportListOfForms2AsyncCommand().AsyncExecute(null);
         await new ExcelExportAllAsyncCommand(MainWindowVM).AsyncExecute(null);
     }
 

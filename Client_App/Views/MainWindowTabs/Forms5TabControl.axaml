@@ -7,7 +7,6 @@
 	         xmlns:models="clr-namespace:Models.Collections;assembly=Models"
 			 xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
 			 xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-			 xmlns:behaviors="using:Avalonia.Xaml.Interactions.Core"
 			 xmlns:local="using:Client_App.Behaviors"
 			 xmlns:vm="using:Client_App.ViewModels.MainWindowTabs"
 			 x:DataType="vm:Forms5TabControlVM"
@@ -17,22 +16,28 @@
 		<converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
 		<converter:StringEqualsToColorConverter x:Key="StringEqualsToColor" />
 	</UserControl.Resources>
+
+    <Design.DataContext>
+        <vm:Forms5TabControlVM/>
+    </Design.DataContext>
 	
 	<Border Classes="borderContainer">
 		<Grid RowDefinitions="*,*" ColumnDefinitions="5*,3*" >
 			<Grid Grid.Row ="0" Grid.Column="0" RowDefinitions="Auto,*,Auto">
-				<TextBox Text="{Binding SearchText}" Grid.Row="0" Margin="5" Watermark ="Поиск..." />
+				<TextBox Grid.Row="0" 
+                         Margin="5" 
+                         Watermark ="Поиск..."
+                         Text="{Binding SearchText, Mode=OneWayToSource}"/>
 				<!--Ошибка в этом DataGrid-->
-				<DataGrid
-						  Grid.Row="1" Margin="5"
-						  Items="{Binding ReportsCollection}"
-						  SelectionMode="Single"
-						  SelectedItem="{Binding SelectedReports}"
-						  RowHeight="25"
-						  GridLinesVisibility="All"
-						  AlternatingRowBackground="White"
-						  RowBackground="White"
-						  CanUserSortColumns="False">
+				<DataGrid Grid.Row="1" Margin="5"
+                          Items="{Binding ReportsCollection, Mode=TwoWay}"
+                          SelectionMode="Single"
+                          SelectedItem="{Binding SelectedReports, Mode=OneWayToSource}"
+                          RowHeight="25"
+                          GridLinesVisibility="All"
+                          AlternatingRowBackground="White"
+                          RowBackground="White"
+                          CanUserSortColumns="False">
 
 					<interactivity:Interaction.Behaviors>
 						<local:DataGridDoubleClickOpenFormBehavior />
@@ -41,23 +46,23 @@
 					<DataGrid.ContextMenu>
 						<ContextMenu>
 							<MenuItem Header="Добавить форму"
-									  Command="{Binding MainWindowVM.AddReports}"/>
+									  Command="{Binding MainWindowVM.AddReports, Mode=OneWay}"/>
 							<MenuItem Header="Редактировать форму"
-									  Command="{Binding MainWindowVM.NewChangeReports}"/>
+									  Command="{Binding MainWindowVM.NewChangeReports, Mode=OneWay}"/>
 							<MenuItem Header="Удалить форму"
-									  Command="{Binding MainWindowVM.DeleteReports}"
-									  CommandParameter="{Binding SelectedReports}"/>
+									  Command="{Binding MainWindowVM.DeleteReports, Mode=OneWay}"
+									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 							<MenuItem Header="Выгрузить организацию"
-									  Command="{Binding MainWindowVM.ExportReports}"
-									  CommandParameter="{Binding SelectedReports}"/>
+									  Command="{Binding MainWindowVM.ExportReports, Mode=OneWay}"
+									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 							<MenuItem Header="Выгрузить организацию с указанием диапазона дат"
-									  Command="{Binding MainWindowVM.ExportReportsWithDateRange}"
-									  CommandParameter="{Binding SelectedReports}"/>
+									  Command="{Binding MainWindowVM.ExportReportsWithDateRange, Mode=OneWay}"
+									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 							<MenuItem Header="Выгрузить все организации в один файл"
-									  Command="{Binding MainWindowVM.ExportAllReportsOneFile}"/>
+									  Command="{Binding MainWindowVM.ExportAllReportsOneFile, Mode=OneWay}"/>
 							<MenuItem Header="Выгрузить все организации в отдельные файлы"
-									  Command="{Binding MainWindowVM.ExportAllReports}"
-									  CommandParameter="{Binding SelectedReports}"/>
+									  Command="{Binding MainWindowVM.ExportAllReports, Mode=OneWay}"
+									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 						</ContextMenu>
 					</DataGrid.ContextMenu>
 

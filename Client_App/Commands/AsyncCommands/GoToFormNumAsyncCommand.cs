@@ -16,9 +16,9 @@ internal class GoToFormNumAsyncCommand(MainWindowVM mainWindowVM) : BaseAsyncCom
             case 2:
                 mainWindowVM.Forms2TabControlVM.GoToFormNum(formNum);
                 break;
-            case 4:
-                mainWindowVM.Forms4TabControlVM.GoToFormNum(formNum);
-                break;
+            //case 4:
+            //    mainWindowVM.Forms4TabControlVM.GoToFormNum(formNum);
+            //    break;
             case 5:
                 mainWindowVM.Forms5TabControlVM.GoToFormNum(formNum);
                 break;

@@ -3,53 +3,28 @@ using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Client_App.ViewModels.MainWindowTabs;
 
-public class Forms1TabControlVM : INotifyPropertyChanged
+public class Forms1TabControlVM : FormsTabControlBaseVM
 {
     #region Constructor
-    public Forms1TabControlVM()
-    {
-        // Конструктор пуст - настройки загружаются лениво при первом доступе
-    }
 
-    public Forms1TabControlVM(MainWindowVM mainWindowVM)
-    {
-        _mainWindowVM = mainWindowVM;
-        // Конструктор пуст - настройки загружаются лениво при первом доступе
-    }
-    
-    private void SaveRowCountSettings()
-    {
-        Properties.RowCountSettings.RowCountSettingsManager.SaveSettings(
-            "form1", 
-            _rowsCountOrgs, 
-            _rowsCountForms);
-    }
+    public Forms1TabControlVM() { }
+
+    public Forms1TabControlVM(MainWindowVM mainWindowVM) : base(mainWindowVM) { }
+
     #endregion
 
     #region Properties
 
-    #region MainWindowVM
-    private MainWindowVM _mainWindowVM;
-    public MainWindowVM MainWindowVM => _mainWindowVM;
+    public int InSelectedReportFormsCount => GetReportRowsCount(SelectedReport);
 
-    #endregion
-
-    #region SearchText
-
-    private string _searchText = "";
-    private CancellationTokenSource? _debounceCts;
-
-    public string SearchText
+    private protected override string SearchText
     {
         get => _searchText;
         set
@@ -60,13 +35,13 @@ public class Forms1TabControlVM : INotifyPropertyChanged
             OnPropertyChanged();
 
             // Отменяем предыдущий таймер
-            _debounceCts?.Cancel();
+            DebounceCts?.Cancel();
 
             // Создаем новый таймер
-            _debounceCts = new CancellationTokenSource();
+            DebounceCts = new CancellationTokenSource();
 
             // Задержка 300мс перед фильтрацией
-            Task.Delay(300, _debounceCts.Token)
+            Task.Delay(300, DebounceCts.Token)
                 .ContinueWith(t => 
                 {
                     if (!t.IsCanceled)
@@ -85,10 +60,7 @@ public class Forms1TabControlVM : INotifyPropertyChanged
         }
     }
 
-    #endregion
-
-    #region ReportsCollection
-    public ObservableCollection<Reports> ReportsCollection
+    private protected override ObservableCollection<Reports> ReportsCollection
     {
         get
         {
@@ -121,34 +93,10 @@ public class Forms1TabControlVM : INotifyPropertyChanged
                     .Take(RowsCountOrgs));
         }
     }
-    #endregion
-
-    #region SelectedReports
-
-    private Reports? _selectedReports;
-    public Reports? SelectedReports
-    {
-        get => _selectedReports;
-        set
-        {
-            _selectedReports = value;
-            OnPropertyChanged();
-
-            // UpdateReportCollection выполняется в CurrentPageForms
-            // Чтобы не вызывать метод дважды используется if else
-            if (CurrentPageForms != 1)
-                CurrentPageForms = 1;
-            else
-                UpdateReportCollection();
-
-            UpdateFormsPageInfo();
-        }
-    }
-    #endregion
 
     #region PaginationOrgs
 
-    public int TotalPagesOrgs
+    private protected override int TotalPagesOrgs
     {
         get
         {
@@ -158,7 +106,8 @@ public class Forms1TabControlVM : INotifyPropertyChanged
             return result;
         }
     }
-    public static int TotalRowsOrgs => StaticConfiguration.DBModel.ReportsCollectionDbSet
+
+    private protected override int TotalRowsOrgs => StaticConfiguration.DBModel.ReportsCollectionDbSet
         .Where(x => x.DBObservable != null)
         .Count(reps => reps.Master_DB.FormNum_DB == "1.0");
     
@@ -182,14 +131,13 @@ public class Forms1TabControlVM : INotifyPropertyChanged
         }
     }
 
-    private int _rowsCountOrgs;
-    public int RowsCountOrgs
+    public override int RowsCountOrgs
     {
         get 
         {
             if (_rowsCountOrgs == 0) // If not loaded yet
             {
-                var (orgs, _) = Client_App.Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
+                var (orgs, _) = Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
                     "form1", 6, 8);
                 _rowsCountOrgs = orgs;
             }
@@ -200,36 +148,17 @@ public class Forms1TabControlVM : INotifyPropertyChanged
             if (_rowsCountOrgs != value)
             {
                 _rowsCountOrgs = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(ReportsCollection));
-                OnPropertyChanged(nameof(TotalPagesOrgs));
+                NotifyRowsChanged();
                 SaveRowCountSettings();
             }
         }
     }
 
-
-    private int _currentPageOrgs = 1;
-    public int CurrentPageOrgs
-    {
-        get
-        {
-            if (_currentPageOrgs > TotalPagesOrgs)
-                _currentPageOrgs = TotalPagesOrgs;
-            return _currentPageOrgs;
-        }
-        set
-        {
-            _currentPageOrgs = value;
-            OnPropertyChanged(nameof(ReportsCollection));
-            OnPropertyChanged();
-        }
-    }
     #endregion
 
     #region ReportCollection
 
-    public ObservableCollection<Report> ReportCollection
+    private protected override ObservableCollection<Report> ReportCollection
     {
         get
         {
@@ -304,7 +233,8 @@ public class Forms1TabControlVM : INotifyPropertyChanged
     #endregion
 
     #region PaginationForms
-    public int TotalPagesForms
+
+    private protected override int TotalPagesForms
     {
         get
         {
@@ -314,18 +244,20 @@ public class Forms1TabControlVM : INotifyPropertyChanged
             return result;
         }
     }
-    public int TotalRowsForms
+
+    private protected override int TotalRowsForms
     {
         get
         {
             if (SelectedReports is null) return 0;
 
             if (!string.IsNullOrEmpty(FormNumWhiteList))
-                return SelectedReports.Report_Collection.Where(rep => rep.FormNum_DB == FormNumWhiteList).Count();
+                return SelectedReports.Report_Collection.Count(rep => rep.FormNum_DB == FormNumWhiteList);
 
             return SelectedReports.Report_Collection.Count;
         }
     }
+
     private int _rowsCountForms;
     public int RowsCountForms
     {
@@ -352,49 +284,28 @@ public class Forms1TabControlVM : INotifyPropertyChanged
         }
     }
 
-
-    private int _currentPageForms = 1;
-    public int CurrentPageForms
-    {
-        get
-        {
-            if ((_currentPageForms > TotalPagesForms) && (TotalPagesForms > 0))
-                _currentPageForms = TotalPagesForms;
-
-            return _currentPageForms;
-        }
-        set
-        {
-            _currentPageForms = value;
-            OnPropertyChanged();
-            UpdateReportCollection();
-        }
-    }
     #endregion
 
-    #region TotalReportCount
-    public int TotalReportCount
-    {
-        get
-        {
-            return StaticConfiguration.DBModel.ReportCollectionDbSet
-                .Where(rep => rep.FormNum_DB.StartsWith($"{MainWindowVM.SelectedReportType}")
-                              && !rep.FormNum_DB.EndsWith(".0"))
-                .CountAsync().Result;
-        }
-    }
     #endregion
 
-    #region InSelectedReportFormsCount
+    #region Functions
 
-    public int InSelectedReportFormsCount => GetReportRowsCount(SelectedReport);
+    public void GoToFormNum(string formNum)
+    {
+        FormNumWhiteList = FormNumWhiteList != formNum 
+            ? formNum 
+            : string.Empty;
+
+        UpdateReportCollection();
+        UpdateFormsPageInfo();
+    }
 
     /// <summary>
     /// Возвращает количество строчек форм у отчёта.
     /// </summary>
     /// <param name="rep">Отчёт, у которого нужно посчитать количество строчек форм.</param>
     /// <returns>Количество строчек форм.</returns>
-    public static int GetReportRowsCount(Report? rep)
+    private static int GetReportRowsCount(Report? rep)
     {
         if (rep == null) return 0;
         while (StaticConfiguration.IsFileLocked(null)) Thread.Sleep(50);
@@ -450,74 +361,19 @@ public class Forms1TabControlVM : INotifyPropertyChanged
         return result;
     }
 
-    #endregion
+    private void SaveRowCountSettings()
+    {
+        Properties.RowCountSettings.RowCountSettingsManager.SaveSettings(
+            "form1",
+            _rowsCountOrgs,
+            _rowsCountForms);
+    }
 
-
-
-    #endregion
-
-    #region Functions
-
-    #region UpdateOrgsPageInfo
-    public void UpdateOrgsPageInfo()
+    public override void UpdateOrgsPageInfo()
     {
         OnPropertyChanged(nameof(TotalRowsOrgs));
         OnPropertyChanged(nameof(TotalPagesOrgs));
     }
-    #endregion
-
-    #region UpdateFormsPageInfo
-    public void UpdateFormsPageInfo()
-    {
-        OnPropertyChanged(nameof(TotalRowsForms));
-        OnPropertyChanged(nameof(TotalPagesForms));
-    }
-    #endregion
-
-    #region TotalReportCount
-    public void UpdateTotalReportCount()
-    {
-        OnPropertyChanged(nameof(TotalReportCount));
-    }
-    #endregion
-
-    #region UpdateReportCollection
-    public void UpdateReportCollection()
-    {
-        OnPropertyChanged(nameof(ReportCollection));
-    }
-    #endregion
-
-    #region UpdateReportsCollection
-    public void UpdateReportsCollection()
-    {
-        OnPropertyChanged(nameof(ReportsCollection));
-    }
-    #endregion
-
-    #region GoToFormNum
-    public void GoToFormNum (string formNum)
-    {
-        if (FormNumWhiteList != formNum)
-            FormNumWhiteList = formNum;
-        else
-            FormNumWhiteList = "";
-
-        UpdateReportCollection();
-        UpdateFormsPageInfo();
-    }
-    #endregion
-
-    #endregion
-
-    #region INotifyPropertyChanged
-
-    public void OnPropertyChanged([CallerMemberName] string prop = "")
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
-
-    public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
 }
