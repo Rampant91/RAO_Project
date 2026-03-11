@@ -19,15 +19,11 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
 
     #endregion
 
-    private void SaveRowCountSettings()
-    {
-        Properties.RowCountSettings.RowCountSettingsManager.SaveSettings(
-            "form2", 
-            _rowsCountOrgs, 
-            _rowsCountForms);
-    }
-
     #region Properties
+
+    private protected override char FormNum => '2';
+
+    private protected override int InSelectedReportFormsCount => GetReportRowsCount(SelectedReport);
 
     private protected override string SearchText
     {
@@ -135,8 +131,6 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
         }
     }
 
-
-    private int _rowsCountOrgs;
     public override int RowsCountOrgs
     {
         get 
@@ -180,7 +174,6 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
                 result = result.Where(rep => rep.FormNum_DB == FormNumWhiteList);
             }
 
-
             result = result.OrderBy(x => 
                     {
                         if (int.TryParse(x.FormNum_DB.Split('.')[1], out var result))
@@ -203,35 +196,15 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
     #endregion 
 
     #region FormNumWhiteList
+
     private string _formNumWhiteList = "";
     public string FormNumWhiteList
     {
-        get
-        {
-            return _formNumWhiteList;
-        }
+        get => _formNumWhiteList;
         set
         {
             _formNumWhiteList = value;
             OnPropertyChanged();
-        }
-    }
-    #endregion
-
-    #region SelectedReport
-
-    private Report? _selectedReport;
-    public Report? SelectedReport
-    {
-        get
-        {
-            return _selectedReport;
-        }
-        set
-        {
-            _selectedReport = value;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(InSelectedReportFormsCount));
         }
     }
 
@@ -263,15 +236,13 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
         }
     }
 
-
-    private int _rowsCountForms;
     public int RowsCountForms
     {
         get 
         {
             if (_rowsCountForms == 0) // If not loaded yet
             {
-                var (_, forms) = Client_App.Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
+                var (_, forms) = Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
                     "form2", 6, 8);
                 _rowsCountForms = forms;
             }
@@ -292,16 +263,12 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
 
     #endregion
 
-    #region InSelectedReportFormsCount
-
-    public int InSelectedReportFormsCount => GetReportRowsCount(SelectedReport);
-
     /// <summary>
     /// Возвращает количество строчек форм у отчёта.
     /// </summary>
     /// <param name="rep">Отчёт, у которого нужно посчитать количество строчек форм.</param>
     /// <returns>Количество строчек форм.</returns>
-    public static int GetReportRowsCount(Report? rep)
+    private static int GetReportRowsCount(Report? rep)
     {
         if (rep == null) return 0;
         while (StaticConfiguration.IsFileLocked(null)) Thread.Sleep(50); 
@@ -371,8 +338,6 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
 
     #endregion
 
-    #endregion
-
     #region Functions
 
     public void GoToFormNum(string formNum)
@@ -380,6 +345,8 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
         FormNumWhiteList = FormNumWhiteList != formNum 
             ? formNum 
             : string.Empty;
+
+
 
         UpdateReportCollection();
         UpdateFormsPageInfo();

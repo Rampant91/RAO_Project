@@ -28,6 +28,8 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 
     public MainWindowVM MainWindowVM { get; }
 
+    private protected abstract char FormNum { get; }
+
     private protected abstract ObservableCollection<Report> ReportCollection { get; }
 
     private protected abstract ObservableCollection<Reports> ReportsCollection { get; }
@@ -93,7 +95,38 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 
     #endregion
 
+    private protected abstract int InSelectedReportFormsCount { get; }
+
     #region RowsCountOrgs
+
+    private protected int _rowsCountForms;
+
+    private protected int RowsCountForms
+    {
+        get
+        {
+            if (_rowsCountForms == 0) // If not loaded yet
+            {
+                var (_, forms) = Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
+                    "form2", 6, 8);
+                _rowsCountForms = forms;
+            }
+            return _rowsCountForms;
+        }
+        set
+        {
+            if (_rowsCountForms != value)
+            {
+                _rowsCountForms = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(TotalPagesForms));
+                UpdateReportCollection();
+                SaveRowCountSettings();
+            }
+        }
+    }
+
+
 
     private protected int _rowsCountOrgs;
 
@@ -104,6 +137,22 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
         OnPropertyChanged(nameof(RowsCountOrgs));
         OnPropertyChanged(nameof(ReportsCollection));
         OnPropertyChanged(nameof(TotalPagesOrgs));
+    }
+
+    #endregion
+
+    #region SelectedReport
+
+    private Report? _selectedReport;
+    public Report? SelectedReport
+    {
+        get => _selectedReport;
+        set
+        {
+            _selectedReport = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(InSelectedReportFormsCount));
+        }
     }
 
     #endregion
@@ -140,6 +189,14 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
     #endregion
 
     #region Methods
+
+    private protected void SaveRowCountSettings()
+    {
+        Properties.RowCountSettings.RowCountSettingsManager.SaveSettings(
+            "form" + FormNum,
+            _rowsCountOrgs,
+            _rowsCountForms);
+    }
 
     public void UpdateFormsPageInfo()
     {

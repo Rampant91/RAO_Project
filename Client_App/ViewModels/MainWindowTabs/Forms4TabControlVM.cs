@@ -20,6 +20,117 @@ public class Forms4TabControlVM : FormsTabControlBaseVM
 
     #region Properties
 
+    private protected override char FormNum => '4';
+
+    private protected override int InSelectedReportFormsCount
+    {
+        get
+        {
+            if (SelectedReport is null) return 0;
+            return StaticConfiguration.DBModel.ReportCollectionDbSet
+                .Include(rep => rep.Rows41)
+                .FirstOrDefault(rep => rep.Id == SelectedReport.Id)
+                ?.Rows.Count ?? 0;
+        }
+    }
+
+    private protected override ObservableCollection<Report> ReportCollection
+    {
+        get
+        {
+            if (SelectedReports is null) return null;
+
+            return new ObservableCollection<Report>(
+                SelectedReports
+                    .Report_Collection
+                    .AsEnumerable()
+                    .OrderBy(x => x.FormNum_DB)
+                    .ThenByDescending(x => x.Year_DB == null ||
+                                           !int.TryParse(x.Year_DB, out _) ?
+                        int.MaxValue :
+                        int.Parse(x.Year_DB))
+                    .ThenBy(rep => rep.CorrectionNumber_DB)
+                    .Skip((CurrentPageForms - 1) * RowsCountForms)
+                    .Take(RowsCountForms));
+        }
+    }
+
+    private protected override ObservableCollection<Reports> ReportsCollection
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(SearchText))
+            {
+                var search = SearchText.ToLower().Trim();
+                return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
+                    .AsEnumerable()
+                    .Where(reps => reps.Master_DB.FormNum_DB == "4.0")
+                    .Where(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB.ToString().Contains(search)
+                                   || reps.Master_DB.Rows40[0].SubjectRF_DB.ToLower().Contains(search)
+                                   || (!string.IsNullOrEmpty(reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB)
+                                       && reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB.ToLower().Contains(search)))
+                    .OrderBy(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB)
+                    .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
+                    .Take(RowsCountOrgs));
+            }
+            else
+                return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
+                    .AsEnumerable()
+                    .Where(reps => reps.Master_DB.FormNum_DB == "4.0")
+                    .OrderBy(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB)
+                    .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
+                    .Take(RowsCountOrgs));
+        }
+    }
+
+    public int RowsCountForms
+    {
+        get
+        {
+            if (_rowsCountForms == 0) // If not loaded yet
+            {
+                var (_, forms) = Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
+                    "form4", 7, 8);
+                _rowsCountForms = forms;
+            }
+            return _rowsCountForms;
+        }
+        set
+        {
+            if (_rowsCountForms != value)
+            {
+                _rowsCountForms = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(TotalPagesForms));
+                UpdateReportCollection();
+                SaveRowCountSettings();
+            }
+        }
+    }
+
+    public override int RowsCountOrgs
+    {
+        get
+        {
+            if (_rowsCountOrgs == 0) // If not loaded yet
+            {
+                var (orgs, _) = Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
+                    "form4", 7, 8);
+                _rowsCountOrgs = orgs;
+            }
+            return _rowsCountOrgs;
+        }
+        set
+        {
+            if (_rowsCountOrgs != value)
+            {
+                _rowsCountOrgs = value;
+                NotifyRowsChanged();
+                SaveRowCountSettings();
+            }
+        }
+    }
+
     private protected override string SearchText
     {
         get => _searchText;
@@ -56,36 +167,6 @@ public class Forms4TabControlVM : FormsTabControlBaseVM
         }
     }
 
-    private protected override ObservableCollection<Reports> ReportsCollection
-    {
-        get
-        {
-            if (!string.IsNullOrEmpty(SearchText))
-            {
-                var search = SearchText.ToLower().Trim();
-                return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .AsEnumerable()
-                    .Where(reps => reps.Master_DB.FormNum_DB == "4.0")
-                    .Where(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB.ToString().Contains(search)
-                                   || reps.Master_DB.Rows40[0].SubjectRF_DB.ToLower().Contains(search)
-                                   || (!string.IsNullOrEmpty(reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB)
-                                       && reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB.ToLower().Contains(search)))
-                    .OrderBy(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB)
-                    .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                    .Take(RowsCountOrgs));
-            }
-            else
-                return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .AsEnumerable()
-                    .Where(reps => reps.Master_DB.FormNum_DB == "4.0")
-                    .OrderBy(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB)
-                    .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                    .Take(RowsCountOrgs));
-        }
-    }
-
-    #region PaginationOrgs
-
     private protected override int TotalPagesOrgs
     {
         get
@@ -121,67 +202,6 @@ public class Forms4TabControlVM : FormsTabControlBaseVM
         }
     }
 
-    private new int _rowsCountOrgs = 10;
-    public override int RowsCountOrgs
-    {
-        get => _rowsCountOrgs;
-        set
-        {
-            if (_rowsCountOrgs != value)
-            {
-                _rowsCountOrgs = value;
-                NotifyRowsChanged();
-            }
-        }
-    }
-
-    #endregion
-
-    #region ReportCollection
-
-    private protected override ObservableCollection<Report> ReportCollection
-    {
-        get
-        {
-            if (SelectedReports is null) return null;
-
-            return new ObservableCollection<Report>(
-                SelectedReports
-                    .Report_Collection
-                    .AsEnumerable()
-                    .OrderBy(x => x.FormNum_DB)
-                    .ThenByDescending(x => x.Year_DB == null ||
-                                           !int.TryParse(x.Year_DB, out _) ?
-                        int.MaxValue :
-                        int.Parse(x.Year_DB))
-                    .ThenBy(rep => rep.CorrectionNumber_DB)
-                    .Skip((CurrentPageForms - 1) * RowsCountForms)
-                    .Take(RowsCountForms));
-        }
-    }
-
-    #endregion
-
-    #region SelectedReport
-
-    private Report? _selectedReport;
-    public Report? SelectedReport
-    {
-        get
-        {
-            return _selectedReport;
-        }
-        set
-        {
-            _selectedReport = value;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(InSelectedReportFormsCount));
-        }
-    }
-
-    #endregion
-
-    #region PaginationForms
     private protected override int TotalPagesForms
     {
         get
@@ -201,39 +221,6 @@ public class Forms4TabControlVM : FormsTabControlBaseVM
             return 0;
         }
     }
-
-
-    private int _rowsCountForms = 10;
-    public int RowsCountForms
-    {
-        get
-        {
-            return _rowsCountForms;
-        }
-        set
-        {
-            _rowsCountForms = value;
-            OnPropertyChanged();
-            UpdateReportCollection();
-            OnPropertyChanged(nameof(TotalPagesForms));
-        }
-    }
-
-    #endregion
-
-    #region InSelectedReportFormsCount
-    public int InSelectedReportFormsCount
-    {
-        get
-        {
-            if (SelectedReport is null) return 0;
-            return StaticConfiguration.DBModel.ReportCollectionDbSet
-                .Include(rep => rep.Rows41)
-                .FirstOrDefault(rep => rep.Id == SelectedReport.Id)
-                .Rows.Count;
-        }
-    }
-    #endregion
 
     #endregion
 

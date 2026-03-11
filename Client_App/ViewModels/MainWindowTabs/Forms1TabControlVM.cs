@@ -22,7 +22,9 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
 
     #region Properties
 
-    public int InSelectedReportFormsCount => GetReportRowsCount(SelectedReport);
+    private protected override char FormNum => '1';
+
+    private protected override int InSelectedReportFormsCount => GetReportRowsCount(SelectedReport);
 
     private protected override string SearchText
     {
@@ -201,32 +203,15 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
     #endregion
 
     #region FormNumWhiteList
+
     private string _formNumWhiteList = "";
     public string FormNumWhiteList
     {
-        get
-        {
-            return _formNumWhiteList;
-        }
+        get => _formNumWhiteList;
         set
         {
             _formNumWhiteList = value;
             OnPropertyChanged();
-        }
-    }
-    #endregion
-
-    #region SelectedReport
-
-    private Report? _selectedReport;
-    public Report? SelectedReport
-    {
-        get => _selectedReport;
-        set
-        {
-            _selectedReport = value;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(InSelectedReportFormsCount));
         }
     }
 
@@ -258,14 +243,13 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
         }
     }
 
-    private int _rowsCountForms;
     public int RowsCountForms
     {
         get 
         {
             if (_rowsCountForms == 0) // If not loaded yet
             {
-                var (_, forms) = Client_App.Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
+                var (_, forms) = Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
                     "form1", 6, 8);
                 _rowsCountForms = forms;
             }
@@ -359,14 +343,6 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
             _ => 0
         };
         return result;
-    }
-
-    private void SaveRowCountSettings()
-    {
-        Properties.RowCountSettings.RowCountSettingsManager.SaveSettings(
-            "form1",
-            _rowsCountOrgs,
-            _rowsCountForms);
     }
 
     public override void UpdateOrgsPageInfo()
