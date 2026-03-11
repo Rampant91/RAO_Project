@@ -2,14 +2,15 @@
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels.Forms;
+using JetBrains.Annotations;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
-using Models.Forms.Form1;
-using System.Threading.Tasks;
 using Models.Forms;
-using JetBrains.Annotations;
+using Models.Forms.Form1;
 using Models.Forms.Form4;
 using Models.Forms.Form5;
+using System;
+using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -135,8 +136,26 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         var pastedString = await clipboard.GetTextAsync();
         if (string.IsNullOrEmpty(pastedString)) return;
 
-        var rows = pastedString.Split("\r\n");
-        rows = PrepareRowsForParsing(rows);
+        // Добавим отладку для Linux
+        System.IO.File.AppendAllText("/tmp/clipboard_debug.log",
+            $"[{DateTime.Now}] Pasted string length: {pastedString.Length}{Environment.NewLine}" +
+            $"First 100 chars: '{pastedString.Substring(0, Math.Min(100, pastedString.Length))}'{Environment.NewLine}" +
+            $"Contains \\r\\n: {pastedString.Contains("\r\n")}{Environment.NewLine}" +
+            $"Contains \\n: {pastedString.Contains("\n")}{Environment.NewLine}" +
+            $"Contains \\r: {pastedString.Contains("\r")}{Environment.NewLine}" +
+            $"---{Environment.NewLine}");
+
+        // Универсальное разделение для Windows и Linux
+        string[] rows;
+        if (pastedString.Contains("\r\n"))
+            rows = pastedString.Split("\r\n", StringSplitOptions.None);
+        else if (pastedString.Contains('\n'))
+            rows = pastedString.Split('\n', StringSplitOptions.None);
+        else
+            rows = new[] { pastedString }; // Одна строка без переносов
+
+        //var rows = pastedString.Split("\r\n");
+        //rows = PrepareRowsForParsing(rows);
 
         //Последняя строка пустая, поэтому выделяем память на одну ячейку меньше
         var parsedRows = new string[rows.Length - 1][];
