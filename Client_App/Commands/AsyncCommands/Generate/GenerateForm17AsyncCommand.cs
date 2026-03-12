@@ -53,8 +53,6 @@ namespace Client_App.Commands.AsyncCommands.Generate
                 form17.PassportNumber_DB = passport.PassportNum;
                 form17.Volume_DB = passport.PackageVolume.ToString($"e{passport.PackageVolume.ToString().Length - 1}");
                 form17.Mass_DB = (passport.PackageMass / 1000).ToString($"e{passport.PackageMass.ToString().Length - 1}");
-                //form17.ProviderOrRecieverOKPO_DB =
-                //form17.TransporterOKPO_DB =
                 form17.CodeRAO_DB = passport.StatusRaoCode;
                 form17.StatusRAO_DB = characteristic.CodeRao;
                 form17.VolumeOutOfPack_DB = passport.RaoVolume.ToString($"e{passport.RaoVolume.ToString().Length - 1}");

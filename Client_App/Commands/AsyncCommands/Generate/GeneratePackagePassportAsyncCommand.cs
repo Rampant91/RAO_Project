@@ -11,6 +11,7 @@ using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form1;
 using Models.Passports;
+using Spravochniki;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -34,62 +35,99 @@ namespace Client_App.Commands.AsyncCommands.Generate
         {
             if (parameter is not IEnumerable<Form> forms17Collection) return;
 
-
+            //ссылка на нужный список радионуклидов
+            ObservableCollection<Radionuclid>? radionuclidList = null;
 
             foreach (var form in forms17Collection)
             {
                 if (form is not Form17 form17) continue;
-                var passport = new PackagePassport();
-                var characteristic = passport.ContentCharacteristics[0];
 
-                passport.PackageType = form17.PackType_DB;
+                //В формах 1.7 Одна зпись может состоять из нескольких строк
+                //после одной полностью заполненой строки могут идти несколько других строк,
+                //в которых заполнено только информация о радионуклиде
 
-                characteristic.PackageIdNum = form17.PackNumber_DB;
-                passport.ManufactureDate = DateOnly.TryParse(form17.FormingDate_DB, out var date) ? date : DateOnly.MinValue;
-                passport.PassportNum = form17.PassportNumber_DB;
-                passport.PackageVolume = double.TryParse(form17.Volume_DB, out var value) ? value: 0;
-                passport.PackageMass = double.TryParse(form17.Mass_DB, out value) ? value * 1000 : 0;
-                //form17.Radionuclids_DB =
-                //form17.SpecificActivity_DB =
-                //form17.ProviderOrRecieverOKPO_DB =
-                //form17.TransporterOKPO_DB =
-                passport.StatusRaoCode = form17.CodeRAO_DB;
-                characteristic.CodeRao = form17.StatusRAO_DB;
-                passport.RaoVolume = double.TryParse(form17.VolumeOutOfPack_DB, out value)? value:0;
-                passport.RaoMass = double.TryParse(form17.MassOutOfPack_DB, out value) ? value : 0;
-                characteristic.TritiumActivity = double.TryParse(form17.TritiumActivity_DB, out value) ? value : 0;
-                characteristic.BetaGammaActivity = double.TryParse(form17.BetaGammaActivity_DB, out value) ? value : 0;
-                characteristic.AlphaActivity = double.TryParse(form17.AlphaActivity_DB, out value) ? value : 0;
-                characteristic.TransuraniumActivity = double.TryParse(form17.TransuraniumActivity_DB, out value) ? value : 0;
-
-                try
+                //Проверка строки новая ли это запись или продолжение старой 
+                //Если новая то создаем новый паспорт и добавляем радионуклид
+                //Если продолжение старой то только добавляем радионуклид 
+                if (!string.IsNullOrWhiteSpace(form17.OperationCode_DB)
+                    && !string.IsNullOrWhiteSpace(form17.PassportNumber_DB))
                 {
-                    StaticConfiguration.DBModel.package_passport.Add(passport); 
-                    StaticConfiguration.DBModel.SaveChangesAsync();
+                    var passport = new PackagePassport();
+                    passport.ContentCharacteristics.Add(new CharacteristicPrimaryPackage(passport));
+                    var characteristic = passport.ContentCharacteristics[0];
+
+                    // записываем ссылку на новый список радионуклидов
+                    radionuclidList = passport.ContentCharacteristics[0].RadionuclidsList;
+
+                    passport.PackageType = form17.PackType_DB;
+
+                    characteristic.PackageIdNum = form17.PackNumber_DB;
+                    passport.ManufactureDate = DateOnly.TryParse(form17.FormingDate_DB, out var date) ? date : DateOnly.MinValue;
+                    passport.PassportNum = form17.PassportNumber_DB;
+                    passport.PackageVolume = double.TryParse(form17.Volume_DB, out var value) ? value : 0;
+                    passport.PackageMass = double.TryParse(form17.Mass_DB, out value) ? value * 1000 : 0;
+                    passport.StatusRaoCode = form17.CodeRAO_DB;
+                    characteristic.CodeRao = form17.StatusRAO_DB;
+                    passport.RaoVolume = double.TryParse(form17.VolumeOutOfPack_DB, out value) ? value : 0;
+                    passport.RaoMass = double.TryParse(form17.MassOutOfPack_DB, out value) ? value : 0;
+                    characteristic.TritiumActivity = double.TryParse(form17.TritiumActivity_DB, out value) ? value : 0;
+                    characteristic.BetaGammaActivity = double.TryParse(form17.BetaGammaActivity_DB, out value) ? value : 0;
+                    characteristic.AlphaActivity = double.TryParse(form17.AlphaActivity_DB, out value) ? value : 0;
+                    characteristic.TransuraniumActivity = double.TryParse(form17.TransuraniumActivity_DB, out value) ? value : 0;
+
+                    StaticConfiguration.DBModel.package_passport.Add(passport);
                 }
-                catch (Exception ex)
+
+                //Добавляем радионуклид в текущий список
+                if (radionuclidList is not null
+                    && !string.IsNullOrWhiteSpace(form17.Radionuclids_DB))
                 {
-                    Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    var radName = form17.Radionuclids_DB;
+
+                    //Ищем в справочнике латинское наименование радионуклида
+                    if (Spravochniks.SprRadionuclids.Any(rad => rad.rusName == form17.Radionuclids_DB))
+                        radName = Spravochniks.SprRadionuclids.FirstOrDefault(rad => rad.rusName == form17.Radionuclids_DB).latinName;
+
+
+                    radionuclidList.Add(new Radionuclid()
                     {
-                        ButtonDefinitions =
-                        [
-                            new ButtonDefinition { Name = "Ок" },
-                        ],
-                        CanResize = true,
-                        ContentTitle = "Формирование паспорта на упаковку",
-                        ContentMessage = "Во время формирования произошла ошибка\n" +
-                        "Описание:\n" +
-                        $"{ex.Message}",
-                        MinWidth = 300,
-                        MinHeight = 125,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(owner));
+                        Name = radName,
+                        Activity = double.TryParse(form17.SpecificActivity_DB, out var value) ? value : 0
+                    });
                 }
 
             }
 
+            #region DBModel.SaveChanges
+            try
+            {
+                StaticConfiguration.DBModel.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions =
+                    [
+                        new ButtonDefinition { Name = "Ок" },
+                    ],
+                    CanResize = true,
+                    ContentTitle = "Формирование паспорта на упаковку",
+                    ContentMessage = "Во время формирования произошла ошибка\n" +
+                    "Описание:\n" +
+                    $"{ex.Message}",
+                    MinWidth = 300,
+                    MinHeight = 125,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(owner));
+
+                return;
+            }
+            #endregion
+
+            #region CommandCompletedMessage
             Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
@@ -105,7 +143,7 @@ namespace Client_App.Commands.AsyncCommands.Generate
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
             .ShowDialog(owner));
-
+            #endregion
         }
         private async Task<ObservableCollection<PackagePassport>?> ShowAskPackagePassportMessage(Window owner)
         {
