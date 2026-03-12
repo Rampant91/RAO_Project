@@ -20,7 +20,31 @@ public class Forms4TabControlVM : FormsTabControlBaseVM
 
     #region Properties
 
+    private protected override byte DefaultOrgsPerPage => 7;
+
+    private protected override byte DefaultFormsPerPage => 8;
+
     private protected override char FormNum => '4';
+
+    public int FilteredRowsOrgs
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(SearchText))
+            {
+                var search = SearchText.ToLower().Trim();
+                return StaticConfiguration.DBModel.ReportsCollectionDbSet
+                    .AsEnumerable()
+                    .Where(x => x.DBObservable != null)
+                    .Where(reps => reps.Master_DB.FormNum_DB == "4.0")
+                    .Count(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB.ToString().Contains(search)
+                                   || reps.Master_DB.Rows40[0].SubjectRF_DB.ToLower().Contains(search)
+                                   || (!string.IsNullOrEmpty(reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB)
+                                       && reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB.ToLower().Contains(search)));
+            }
+            return TotalRowsOrgs;
+        }
+    }
 
     private protected override int InSelectedReportFormsCount
     {
@@ -83,54 +107,6 @@ public class Forms4TabControlVM : FormsTabControlBaseVM
         }
     }
 
-    public int RowsCountForms
-    {
-        get
-        {
-            if (_rowsCountForms == 0) // If not loaded yet
-            {
-                var (_, forms) = Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
-                    "form4", 7, 8);
-                _rowsCountForms = forms;
-            }
-            return _rowsCountForms;
-        }
-        set
-        {
-            if (_rowsCountForms != value)
-            {
-                _rowsCountForms = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(TotalPagesForms));
-                UpdateReportCollection();
-                SaveRowCountSettings();
-            }
-        }
-    }
-
-    public override int RowsCountOrgs
-    {
-        get
-        {
-            if (_rowsCountOrgs == 0) // If not loaded yet
-            {
-                var (orgs, _) = Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
-                    "form4", 7, 8);
-                _rowsCountOrgs = orgs;
-            }
-            return _rowsCountOrgs;
-        }
-        set
-        {
-            if (_rowsCountOrgs != value)
-            {
-                _rowsCountOrgs = value;
-                NotifyRowsChanged();
-                SaveRowCountSettings();
-            }
-        }
-    }
-
     private protected override string SearchText
     {
         get => _searchText;
@@ -167,6 +143,17 @@ public class Forms4TabControlVM : FormsTabControlBaseVM
         }
     }
 
+    private protected override int TotalPagesForms
+    {
+        get
+        {
+            var result = TotalRowsForms / RowsCountForms;
+            if (TotalRowsForms % RowsCountForms > 0)
+                result++;
+            return result;
+        }
+    }
+
     private protected override int TotalPagesOrgs
     {
         get
@@ -178,40 +165,6 @@ public class Forms4TabControlVM : FormsTabControlBaseVM
         }
     }
 
-    private protected override int TotalRowsOrgs => StaticConfiguration.DBModel.ReportsCollectionDbSet
-        .Where(x => x.DBObservable != null)
-        .Count(reps => reps.Master_DB.FormNum_DB == "4.0");
-
-    public int FilteredRowsOrgs
-    {
-        get
-        {
-            if (!string.IsNullOrEmpty(SearchText))
-            {
-                var search = SearchText.ToLower().Trim();
-                return StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .AsEnumerable()
-                    .Where(reps => reps.Master_DB.FormNum_DB == "4.0")
-                    .Where(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB.ToString().Contains(search)
-                                   || reps.Master_DB.Rows40[0].SubjectRF_DB.ToLower().Contains(search)
-                                   || (!string.IsNullOrEmpty(reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB)
-                                       && reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB.ToLower().Contains(search)))
-                    .Count();
-            }
-            return TotalRowsOrgs;
-        }
-    }
-
-    private protected override int TotalPagesForms
-    {
-        get
-        {
-            var result = TotalRowsForms / RowsCountForms;
-            if (TotalRowsForms % RowsCountForms > 0)
-                result++;
-            return result;
-        }
-    }
     private protected override int TotalRowsForms
     {
         get

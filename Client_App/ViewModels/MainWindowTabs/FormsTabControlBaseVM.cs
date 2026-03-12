@@ -3,6 +3,7 @@ using Models.Collections;
 using Models.DBRealization;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
@@ -28,29 +29,23 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 
     public MainWindowVM MainWindowVM { get; }
 
+    private protected CancellationTokenSource? DebounceCts;
+
     private protected abstract char FormNum { get; }
 
     private protected abstract ObservableCollection<Report> ReportCollection { get; }
 
     private protected abstract ObservableCollection<Reports> ReportsCollection { get; }
 
-    #region SearchText
-
-    private protected CancellationTokenSource? DebounceCts;
-
     private protected string _searchText = string.Empty;
 
     private protected abstract string SearchText { get; set; }
-
-    #endregion
 
     private protected abstract int TotalPagesForms { get; }
 
     private protected abstract int TotalPagesOrgs { get; }
 
     private protected abstract int TotalRowsForms { get; }
-
-    private protected abstract int TotalRowsOrgs { get; }
 
     #region CurrentPageForms
 
@@ -59,7 +54,7 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
     {
         get
         {
-            if ((_currentPageForms > TotalPagesForms) && (TotalPagesForms > 0))
+            if (_currentPageForms > TotalPagesForms && TotalPagesForms > 0)
                 _currentPageForms = TotalPagesForms;
 
             return _currentPageForms;
@@ -95,12 +90,13 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 
     #endregion
 
+    private protected abstract byte DefaultOrgsPerPage { get; }
+
+    private protected abstract byte DefaultFormsPerPage { get; }
+
     private protected abstract int InSelectedReportFormsCount { get; }
 
-    #region RowsCountOrgs
-
-    private protected int _rowsCountForms;
-
+    private int _rowsCountForms;
     private protected int RowsCountForms
     {
         get
@@ -108,7 +104,7 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
             if (_rowsCountForms == 0) // If not loaded yet
             {
                 var (_, forms) = Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
-                    "form2", 6, 8);
+                    "form" + FormNum, DefaultOrgsPerPage, DefaultFormsPerPage);
                 _rowsCountForms = forms;
             }
             return _rowsCountForms;
@@ -126,20 +122,31 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
         }
     }
 
+    private int _rowsCountOrgs;
 
-
-    private protected int _rowsCountOrgs;
-
-    public abstract int RowsCountOrgs { get; set; }
-
-    private protected void NotifyRowsChanged()
+    private protected int RowsCountOrgs
     {
-        OnPropertyChanged(nameof(RowsCountOrgs));
-        OnPropertyChanged(nameof(ReportsCollection));
-        OnPropertyChanged(nameof(TotalPagesOrgs));
-    }
+        get
+        {
+            if (_rowsCountOrgs == 0) // If not loaded yet
+            {
+                var (orgs, _) = Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
+                    "form" + FormNum, DefaultOrgsPerPage, DefaultFormsPerPage);
+                _rowsCountOrgs = orgs;
+            }
+            return _rowsCountOrgs;
+        }
+        set
+        {
+            if (_rowsCountOrgs != value)
+            {
+                _rowsCountOrgs = value;
+                NotifyRowsChanged();
+                SaveRowCountSettings();
+            }
+        }
 
-    #endregion
+    }
 
     #region SelectedReport
 
@@ -186,11 +193,22 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
                            && !rep.FormNum_DB.EndsWith(".0"))
         .Result;
 
+    private protected int TotalRowsOrgs => StaticConfiguration.DBModel.ReportsCollectionDbSet
+        .Where(x => x.DBObservable != null)
+        .Count(reps => reps.Master_DB.FormNum_DB == FormNum + ".0");
+
     #endregion
 
     #region Methods
 
-    private protected void SaveRowCountSettings()
+    private void NotifyRowsChanged()
+    {
+        OnPropertyChanged(nameof(RowsCountOrgs));
+        OnPropertyChanged(nameof(ReportsCollection));
+        OnPropertyChanged(nameof(TotalPagesOrgs));
+    }
+
+    private void SaveRowCountSettings()
     {
         Properties.RowCountSettings.RowCountSettingsManager.SaveSettings(
             "form" + FormNum,
@@ -225,7 +243,7 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 
     #region INotifyPropertyChanged
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged([CallerMemberName] string prop = "")
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));

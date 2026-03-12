@@ -21,7 +21,46 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
 
     #region Properties
 
+    private protected override byte DefaultOrgsPerPage => 6;
+
+    private protected override byte DefaultFormsPerPage => 8;
+
     private protected override char FormNum => '2';
+
+    public int FilteredRowsOrgs
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(SearchText))
+            {
+                var search = SearchText.ToLower().Trim();
+                return StaticConfiguration.DBModel.ReportsCollectionDbSet
+                    .AsEnumerable()
+                    .Where(x => x.DBObservable != null)
+                    .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
+                    .Count(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
+                                   || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
+                                   || reps.Master_DB.Rows20[0].ShortJurLico_DB.ToLower().Contains(search)
+                                   || reps.Master_DB.Rows20[1].ShortJurLico_DB.ToLower().Contains(search));
+            }
+            return TotalRowsOrgs;
+        }
+    }
+
+    #region FormNumWhiteList
+
+    private string _formNumWhiteList = "";
+    public string FormNumWhiteList
+    {
+        get => _formNumWhiteList;
+        set
+        {
+            _formNumWhiteList = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
 
     private protected override int InSelectedReportFormsCount => GetReportRowsCount(SelectedReport);
 
@@ -94,70 +133,6 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
         }
     }
 
-    #region PaginationOrgs
-
-    private protected override int TotalPagesOrgs
-    {
-        get
-        {
-            var result = FilteredRowsOrgs / RowsCountOrgs;
-            if (FilteredRowsOrgs % RowsCountOrgs > 0)
-                result++;
-            return result;
-        }
-    }
-
-    private protected override int TotalRowsOrgs => StaticConfiguration.DBModel.ReportsCollectionDbSet
-        .Where(x => x.DBObservable != null)
-        .Count(reps => reps.Master_DB.FormNum_DB == "2.0");
-
-    public int FilteredRowsOrgs
-    {
-        get
-        {
-            if (!string.IsNullOrEmpty(SearchText))
-            {
-                var search = SearchText.ToLower().Trim();
-                return StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .AsEnumerable()
-                    .Where(x => x.DBObservable != null)
-                    .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
-                    .Count(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
-                                   || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
-                                   || reps.Master_DB.Rows20[0].ShortJurLico_DB.ToLower().Contains(search)
-                                   || reps.Master_DB.Rows20[1].ShortJurLico_DB.ToLower().Contains(search));
-            }
-            return TotalRowsOrgs;
-        }
-    }
-
-    public override int RowsCountOrgs
-    {
-        get 
-        {
-            if (_rowsCountOrgs == 0) // If not loaded yet
-            {
-                var (orgs, _) = Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
-                    "form2", 6, 8);
-                _rowsCountOrgs = orgs;
-            }
-            return _rowsCountOrgs;
-        }
-        set
-        {
-            if (_rowsCountOrgs != value)
-            {
-                _rowsCountOrgs = value;
-                NotifyRowsChanged();
-                SaveRowCountSettings();
-            }
-        }
-    }
-
-    #endregion
-
-    #region ReportCollection
-
     private protected override ObservableCollection<Report> ReportCollection
     {
         get
@@ -193,31 +168,23 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
         }
     }
 
-    #endregion 
-
-    #region FormNumWhiteList
-
-    private string _formNumWhiteList = "";
-    public string FormNumWhiteList
-    {
-        get => _formNumWhiteList;
-        set
-        {
-            _formNumWhiteList = value;
-            OnPropertyChanged();
-        }
-    }
-
-    #endregion
-
-    #region PaginationForms
-
     private protected override int TotalPagesForms
     {
         get
         {
             var result = TotalRowsForms / RowsCountForms;
             if (TotalRowsForms % RowsCountForms > 0)
+                result++;
+            return result;
+        }
+    }
+
+    private protected override int TotalPagesOrgs
+    {
+        get
+        {
+            var result = FilteredRowsOrgs / RowsCountOrgs;
+            if (FilteredRowsOrgs % RowsCountOrgs > 0)
                 result++;
             return result;
         }
@@ -236,32 +203,9 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
         }
     }
 
-    public int RowsCountForms
-    {
-        get 
-        {
-            if (_rowsCountForms == 0) // If not loaded yet
-            {
-                var (_, forms) = Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
-                    "form2", 6, 8);
-                _rowsCountForms = forms;
-            }
-            return _rowsCountForms;
-        }
-        set
-        {
-            if (_rowsCountForms != value)
-            {
-                _rowsCountForms = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(TotalPagesForms)); 
-                UpdateReportCollection();
-                SaveRowCountSettings();
-            }
-        }
-    }
-
     #endregion
+
+    #region Functions
 
     /// <summary>
     /// Возвращает количество строчек форм у отчёта.
@@ -271,7 +215,7 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
     private static int GetReportRowsCount(Report? rep)
     {
         if (rep == null) return 0;
-        while (StaticConfiguration.IsFileLocked(null)) Thread.Sleep(50); 
+        while (StaticConfiguration.IsFileLocked(null)) Thread.Sleep(50);
         using var db = new DBModel(StaticConfiguration.DBPath);
 
         var query = db.ReportCollectionDbSet
@@ -336,17 +280,11 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
         return result;
     }
 
-    #endregion
-
-    #region Functions
-
     public void GoToFormNum(string formNum)
     {
-        FormNumWhiteList = FormNumWhiteList != formNum 
-            ? formNum 
+        FormNumWhiteList = FormNumWhiteList != formNum
+            ? formNum
             : string.Empty;
-
-
 
         UpdateReportCollection();
         UpdateFormsPageInfo();
