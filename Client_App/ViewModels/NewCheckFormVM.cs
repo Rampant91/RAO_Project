@@ -1,8 +1,11 @@
 ﻿using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.ViewModels.Forms;
 using Models.CheckForm;
+using Models.DBRealization;
+using Models.Forms.Form4;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
@@ -39,15 +42,42 @@ public class NewCheckFormVM : BaseVM, INotifyPropertyChanged
     {
         get
         {
-            string title = "Проверка_формы_";
-            if (FormVM.Reports.Master_DB.RegNoRep != null)
-                title = title + $"{FormVM.Reports.Master_DB.RegNoRep.Value}_";
+            string title = $"Проверка_формы_{FormVM.Report.FormNum_DB}_";
+            switch (FormVM.FormType[0])
+            {
+                case '1' or '2':
+                    {
+                        if (FormVM.Reports.Master_DB.RegNoRep != null)
+                            title = title + $"{FormVM.Reports.Master_DB.RegNoRep.Value}_";
 
-            if (FormVM.Reports.Master_DB.OkpoRep != null)
-                title = title + $"{FormVM.Reports.Master_DB.OkpoRep.Value}_";
-            title = title + $"{FormVM.Report.FormNum_DB}_";
+                        if (FormVM.Reports.Master_DB.OkpoRep != null)
+                            title = title + $"{FormVM.Reports.Master_DB.OkpoRep.Value}_";
+                        break;
+                    }
 
-            if (FormVM.Report.FormNum_DB[..1] == "1")
+                case '4':
+                    {
+                        var form40 = FormVM.Reports.Master_DB.Rows40[0];
+                        title += $"{form40.CodeSubjectRF_DB}_";
+                        title += $"{form40.SubjectRF_DB.Replace(" ", "_")}_";
+                        break;
+                    }
+
+                case '5':
+                    {
+                        var form50 = FormVM.Reports.Master_DB.Rows50[0];
+                        if (form50.Rosatom_DB)
+                            title += $"ВИАЦ_Госкорпорации_Росатом_";
+                        else if (form50.MinObr_DB)
+                            title += $"ВИАЦ_Министерства_обороны_РФ";
+                        else
+                            title += $"{form50.ExecutiveAuthority_DB}";
+                        break;
+                    }
+            }
+
+
+            if (FormVM.FormType[0] == '1')
                 title = title + $"{FormVM.Report.StartPeriod_DB}-{FormVM.Report.EndPeriod_DB}";
             else
                 title = title + $"{FormVM.Report.Year_DB}";
