@@ -9,7 +9,6 @@
 			 xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 			 xmlns:local="using:Client_App.Behaviors"
 			 xmlns:vm="using:Client_App.ViewModels.MainWindowTabs"
-			 xmlns:customConverters="clr-namespace:Client_App.Resources.CustomConverters"
 			 x:DataType="vm:Forms2TabControlVM"
              x:Class="Client_App.Views.MainWindowTabs.Forms2TabControl">
 
@@ -387,7 +386,7 @@
                                                    Grid.Column="1" 
                                                    Margin="5"
                                                    Minimum="1"/>
-						<TextBlock Text ="Кол-во страниц:"
+						<TextBlock Text ="Всего страниц:"
                                    Grid.Row="0" 
                                    Grid.Column="2" 
                                    Margin="5"/>
@@ -395,7 +394,7 @@
                                    Grid.Row="0" 
                                    Grid.Column="3" 
                                    Margin="5"/>
-						<TextBlock Text="Кол-во строчек на странице"
+						<TextBlock Text="Отчётов на странице"
                                    Grid.Row="1" 
                                    Grid.Column="0" 
                                    Margin="5"/>
@@ -404,7 +403,7 @@
                                                    Grid.Column="1" 
                                                    Margin="5"
                                                    Minimum="1"/>
-						<TextBlock Text="Кол-во отчетов:"
+						<TextBlock Text="Всего отчетов:"
                                    Grid.Row="1" 
                                    Grid.Column="2" 
                                    Margin="5"/>
@@ -412,7 +411,7 @@
                                    Grid.Row="1" 
                                    Grid.Column="3" 
                                    Margin="5"/>
-						<TextBlock Text="Кол-во строчек:"
+						<TextBlock Text="Строчек в отчёте:"
                                    Grid.Row="1" 
                                    Grid.Column="4" 
                                    Margin="5"/>

@@ -22,6 +22,10 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
 
     #region Properties
 
+    private protected override byte DefaultOrgsPerPage => 6;
+
+    private protected override byte DefaultFormsPerPage => 8;
+
     private protected override char FormNum => '1';
 
     private protected override int InSelectedReportFormsCount => GetReportRowsCount(SelectedReport);
@@ -95,23 +99,6 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
                     .Take(RowsCountOrgs));
         }
     }
-
-    #region PaginationOrgs
-
-    private protected override int TotalPagesOrgs
-    {
-        get
-        {
-            var result = FilteredRowsOrgs / RowsCountOrgs;
-            if (FilteredRowsOrgs % RowsCountOrgs > 0)
-                result++;
-            return result;
-        }
-    }
-
-    private protected override int TotalRowsOrgs => StaticConfiguration.DBModel.ReportsCollectionDbSet
-        .Where(x => x.DBObservable != null)
-        .Count(reps => reps.Master_DB.FormNum_DB == "1.0");
     
     public int FilteredRowsOrgs
     {
@@ -133,39 +120,11 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
         }
     }
 
-    public override int RowsCountOrgs
-    {
-        get 
-        {
-            if (_rowsCountOrgs == 0) // If not loaded yet
-            {
-                var (orgs, _) = Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
-                    "form1", 6, 8);
-                _rowsCountOrgs = orgs;
-            }
-            return _rowsCountOrgs;
-        }
-        set
-        {
-            if (_rowsCountOrgs != value)
-            {
-                _rowsCountOrgs = value;
-                NotifyRowsChanged();
-                SaveRowCountSettings();
-            }
-        }
-    }
-
-    #endregion
-
-    #region ReportCollection
-
     private protected override ObservableCollection<Report> ReportCollection
     {
         get
         {
             if (SelectedReports is null) return null;
-
 
             var result = SelectedReports
                     .Report_Collection
@@ -176,7 +135,6 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
                 result = result.Where(rep => rep.FormNum_DB == FormNumWhiteList);
             }
 
-
             result = result.OrderBy(x =>
             {
                 if (int.TryParse(x.FormNum_DB.Split('.')[1], out var result))
@@ -185,13 +143,13 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
             })
                 // Сортируем по валидным датам, некорректные уходят в начало/конец
                 .ThenByDescending(x => x.StartPeriod_DB == null ||
-                !DateOnly.TryParse(x.StartPeriod_DB, out _) ?
-                    DateOnly.MaxValue :
-                    DateOnly.Parse(x.StartPeriod_DB))
+                !DateOnly.TryParse(x.StartPeriod_DB, out _) 
+                    ? DateOnly.MaxValue 
+                    : DateOnly.Parse(x.StartPeriod_DB))
                 .ThenByDescending(x => x.EndPeriod_DB == null ||
-                    !DateOnly.TryParse(x.EndPeriod_DB, out _) ?
-                    DateOnly.MaxValue :
-                    DateOnly.Parse(x.EndPeriod_DB))
+                    !DateOnly.TryParse(x.EndPeriod_DB, out _) 
+                    ? DateOnly.MaxValue 
+                    : DateOnly.Parse(x.EndPeriod_DB))
                 .ThenBy(rep => rep.CorrectionNumber_DB)
                 .Skip((CurrentPageForms - 1) * RowsCountForms)
                 .Take(RowsCountForms);
@@ -200,11 +158,9 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
         }
     }
 
-    #endregion
-
     #region FormNumWhiteList
 
-    private string _formNumWhiteList = "";
+    private string _formNumWhiteList = string.Empty;
     public string FormNumWhiteList
     {
         get => _formNumWhiteList;
@@ -217,14 +173,23 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
 
     #endregion
 
-    #region PaginationForms
-
     private protected override int TotalPagesForms
     {
         get
         {
             var result = TotalRowsForms / RowsCountForms;
             if (TotalRowsForms % RowsCountForms > 0)
+                result++;
+            return result;
+        }
+    }
+
+    private protected override int TotalPagesOrgs
+    {
+        get
+        {
+            var result = FilteredRowsOrgs / RowsCountOrgs;
+            if (FilteredRowsOrgs % RowsCountOrgs > 0)
                 result++;
             return result;
         }
@@ -243,46 +208,9 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
         }
     }
 
-    public int RowsCountForms
-    {
-        get 
-        {
-            if (_rowsCountForms == 0) // If not loaded yet
-            {
-                var (_, forms) = Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
-                    "form1", 6, 8);
-                _rowsCountForms = forms;
-            }
-            return _rowsCountForms;
-        }
-        set
-        {
-            if (_rowsCountForms != value)
-            {
-                _rowsCountForms = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(TotalPagesForms));
-                UpdateReportCollection();
-                SaveRowCountSettings();
-            }
-        }
-    }
-
-    #endregion
-
     #endregion
 
     #region Functions
-
-    public void GoToFormNum(string formNum)
-    {
-        FormNumWhiteList = FormNumWhiteList != formNum 
-            ? formNum 
-            : string.Empty;
-
-        UpdateReportCollection();
-        UpdateFormsPageInfo();
-    }
 
     /// <summary>
     /// Возвращает количество строчек форм у отчёта.
@@ -343,6 +271,16 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
             _ => 0
         };
         return result;
+    }
+
+    public void GoToFormNum(string formNum)
+    {
+        FormNumWhiteList = FormNumWhiteList != formNum 
+            ? formNum 
+            : string.Empty;
+
+        UpdateReportCollection();
+        UpdateFormsPageInfo();
     }
 
     public override void UpdateOrgsPageInfo()

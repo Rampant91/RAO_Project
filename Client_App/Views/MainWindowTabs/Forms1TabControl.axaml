@@ -152,7 +152,7 @@
 				<Border Grid.Row="2" Classes="pageControlContainer">
 					<Grid RowDefinitions="Auto,Auto"
 						  ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
-						<TextBlock Text="Текущая страница"
+						<TextBlock Text="Текущая страница:"
                                    Grid.Row="0" 
                                    Grid.Column="0" 
                                    Margin="5"
@@ -172,7 +172,7 @@
                                    Grid.Column="3" 
                                    Margin="5"
                                    VerticalAlignment="Center"/>
-						<TextBlock Text="Кол-во орг. на странице"
+						<TextBlock Text="Кол-во орг. на странице:"
                                    Grid.Row="1" 
                                    Grid.Column="0" 
                                    Margin="5"
@@ -182,7 +182,7 @@
                                                    Grid.Column="1" 
                                                    Margin="5"
                                                    Minimum="1"/>
-						<TextBlock Text="Всего орг.:"
+						<TextBlock Text="Всего организаций:"
                                    Grid.Row="1" 
                                    Grid.Column="2" 
                                    Margin="5"
@@ -392,7 +392,7 @@
 				<Border Grid.Row="1" Classes="pageControlContainer">
 					<Grid RowDefinitions="Auto,Auto"
                           ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
-						<TextBlock Text="Текущая страница"
+						<TextBlock Text="Текущая страница:"
                                    Grid.Row="0" 
                                    Grid.Column="0" 
                                    Margin="5"/>
@@ -401,7 +401,7 @@
                                                    Grid.Column="1" 
                                                    Margin="5"
                                                    Minimum="1"/>
-						<TextBlock Text ="Кол-во страниц:"
+						<TextBlock Text ="Всего страниц:"
                                    Grid.Row="0" 
                                    Grid.Column="2" 
                                    Margin="5"/>
@@ -409,7 +409,7 @@
                                    Grid.Row="0" 
                                    Grid.Column="3" 
                                    Margin="5"/>
-						<TextBlock Text="Кол-во строчек на странице"
+						<TextBlock Text="Отчётов на странице:"
                                    Grid.Row="1" 
                                    Grid.Column="0" 
                                    Margin="5"/>
@@ -418,7 +418,7 @@
                                                    Grid.Column="1" 
                                                    Margin="5"
                                                    Minimum="1"/>
-						<TextBlock Text="Кол-во отчетов:"
+						<TextBlock Text="Всего отчетов:"
                                    Grid.Row="1" 
                                    Grid.Column="2" 
                                    Margin="5"/>
@@ -426,8 +426,7 @@
                                    Grid.Row="1" 
                                    Grid.Column="3" 
                                    Margin="5"/>
-
-						<TextBlock Text="Кол-во строчек:"
+						<TextBlock Text="Строчек в отчёте:"
                                    Grid.Row="1" 
                                    Grid.Column="4" 
                                    Margin="5"/>
@@ -435,13 +434,11 @@
                                    Grid.Row="1" 
                                    Grid.Column="5" 
                                    Margin="5"/>
-
 						<StackPanel Grid.Row="0" 
                                     Grid.RowSpan="2"
 									Grid.Column="6"
 									Margin="5,0,0,0"
 									Orientation="Horizontal">
-
 							<Button Content="1.1" 
                                     Width="35" 
                                     Height="40" 

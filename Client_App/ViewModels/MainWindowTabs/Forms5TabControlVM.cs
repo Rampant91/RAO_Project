@@ -21,7 +21,26 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
 
     #region Properties
 
+    private protected override byte DefaultOrgsPerPage => 10;
+
+    private protected override byte DefaultFormsPerPage => 8;
+
     private protected override char FormNum => '5';
+
+    #region FormNumWhiteList
+
+    private string _formNumWhiteList = "";
+    public string FormNumWhiteList
+    {
+        get => _formNumWhiteList;
+        set
+        {
+            _formNumWhiteList = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
 
     private protected override int InSelectedReportFormsCount
     {
@@ -107,18 +126,6 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
         }
     }
 
-    public int RowsCountForms
-    {
-        get => _rowsCountForms;
-        set
-        {
-            _rowsCountForms = value;
-            OnPropertyChanged();
-            UpdateReportCollection();
-            OnPropertyChanged(nameof(TotalPagesForms));
-        }
-    }
-
     private protected override string SearchText
     {
         get => _searchText;
@@ -154,7 +161,16 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
         }
     }
 
-    #region PaginationOrgs
+    private protected override int TotalPagesForms
+    {
+        get
+        {
+            var result = TotalRowsForms / RowsCountForms;
+            if (TotalRowsForms % RowsCountForms > 0)
+                result++;
+            return result;
+        }
+    }
 
     private protected override int TotalPagesOrgs
     {
@@ -167,52 +183,6 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
         }
     }
 
-    private protected override int TotalRowsOrgs => StaticConfiguration.DBModel.ReportsCollectionDbSet
-        .Where(x => x.DBObservable != null)
-        .Count(reps => reps.Master_DB.FormNum_DB == "5.0");
-
-    private new int _rowsCountOrgs = 10;
-    public override int RowsCountOrgs
-    {
-        get => _rowsCountOrgs;
-        set
-        {
-            if (_rowsCountOrgs != value)
-            {
-                _rowsCountOrgs = value;
-                NotifyRowsChanged();
-            }
-        }
-    }
-
-    #endregion
-
-    #region FormNumWhiteList
-
-    private string _formNumWhiteList = "";
-    public string FormNumWhiteList
-    {
-        get => _formNumWhiteList;
-        set
-        {
-            _formNumWhiteList = value;
-            OnPropertyChanged();
-        }
-    }
-
-    #endregion
-
-    #region PaginationForms
-    private protected override int TotalPagesForms
-    {
-        get
-        {
-            var result = TotalRowsForms / RowsCountForms;
-            if (TotalRowsForms % RowsCountForms > 0)
-                result++;
-            return result;
-        }
-    }
     private protected override int TotalRowsForms
     {
         get
@@ -225,8 +195,6 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
             return SelectedReports.Report_Collection.Count;
         }
     }
-
-    #endregion
 
     #endregion
 
