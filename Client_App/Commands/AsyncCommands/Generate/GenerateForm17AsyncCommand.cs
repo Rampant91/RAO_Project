@@ -19,7 +19,6 @@ namespace Client_App.Commands.AsyncCommands.Generate
     {
         Report Report => formVM.Report;
 
-        //На вход поступает организация
         public override async Task AsyncExecute(object? parameter)
         {
 
@@ -54,8 +53,6 @@ namespace Client_App.Commands.AsyncCommands.Generate
                 form17.PassportNumber_DB = passport.PassportNum;
                 form17.Volume_DB = passport.PackageVolume.ToString($"e{passport.PackageVolume.ToString().Length - 1}");
                 form17.Mass_DB = (passport.PackageMass / 1000).ToString($"e{passport.PackageMass.ToString().Length - 1}");
-                //form17.Radionuclids_DB =
-                //form17.SpecificActivity_DB =
                 //form17.ProviderOrRecieverOKPO_DB =
                 //form17.TransporterOKPO_DB =
                 form17.CodeRAO_DB = passport.StatusRaoCode;
@@ -66,9 +63,22 @@ namespace Client_App.Commands.AsyncCommands.Generate
                 form17.BetaGammaActivity_DB = (characteristic.BetaGammaActivity * passport.RaoMass).ToString($"e{(characteristic.BetaGammaActivity * passport.RaoMass).ToString().Length - 1}");
                 form17.AlphaActivity_DB = (characteristic.AlphaActivity * passport.RaoMass).ToString($"e{(characteristic.AlphaActivity * passport.RaoMass).ToString().Length - 1}");
                 form17.TransuraniumActivity_DB = (characteristic.TransuraniumActivity * passport.RaoMass).ToString($"e{(characteristic.TransuraniumActivity * passport.RaoMass).ToString().Length - 1}");
+
+                if (characteristic.RadionuclidsList.Count > 0)
+                {
+                    form17.Radionuclids_DB = characteristic.RadionuclidsList[0].Name;
+                    form17.SpecificActivity_DB = characteristic.RadionuclidsList[0].Activity.ToString("e5");
+                }
+                for (int i = 1; i< characteristic.RadionuclidsList.Count; i++)
+                {
+                    var radionuclidOnlyForm17 = new Form17();
+                    radionuclidOnlyForm17.Radionuclids_DB = characteristic.RadionuclidsList[i].Name;
+                    radionuclidOnlyForm17.SpecificActivity_DB = characteristic.RadionuclidsList[i].Activity.ToString("e5");
+                    Report.Rows17.Add(radionuclidOnlyForm17);
+                }
             }
 
-            for(int i=0; i<Report.Rows17.Count; i++)
+            for (int i=0; i<Report.Rows17.Count; i++)
             {
                 Report.Rows17[i].NumberInOrder_DB = i + 1;
             }

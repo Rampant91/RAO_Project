@@ -57,22 +57,44 @@
 				<Border Classes="borderContainer">
 					<Grid Margin="5" RowDefinitions="*,*,*,*,*">
 
-						<Grid ColumnDefinitions="*,*"  Grid.Row="0">
-							<TextBlock Grid.Column="0" Margin="5" >Отчетный год</TextBlock>
-							<TextBox Grid.Column="1" Text="{Binding Report.Year.Value}"/>
+						<Grid Grid.Row="0" ColumnDefinitions="*,*,*">
+							<TextBlock Grid.Column="0"
+                                       Margin="5,11"
+                                       Text="Дата окончания предыдущего отчетного периода:" />
+							<TextBox Grid.Column="1"
+                                     MinWidth="83"
+                                     Text="{Binding Report.StartPeriod.Value}"
+                                     Watermark="дд.мм.гггг" />
+							<CalendarDatePicker Grid.Column="2"
+                                                Classes="buttonOnly"
+                                                SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource StringToDateConverter}}" />
 						</Grid>
 
-						<StackPanel Orientation="Horizontal" Grid.Row="1">
+						<Grid Grid.Row="1" ColumnDefinitions="*,*,*">
+							<TextBlock Grid.Column="0"
+                                       Margin="5,13"
+                                       Text="Дата окончания настоящего отчетного периода:" />
+							<TextBox Grid.Column="1"
+                                     MinWidth="83"
+                                     Margin="11,3,0,0"
+                                     Text="{Binding Report.EndPeriod.Value}"
+                                     Watermark="дд.мм.гггг" />
+							<CalendarDatePicker Grid.Column="2"
+                                                Classes="buttonOnly"
+                                                SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource StringToDateConverter}}" />
+						</Grid>
+
+						<StackPanel Orientation="Horizontal" Grid.Row="2">
 							<Button Margin="5" Command="{Binding CheckForm}">Проверить</Button>
 							<Button Margin="5" Command="{Binding SaveReport}">Сохранить</Button>
 						</StackPanel>
 
-						<StackPanel  Orientation="Horizontal" Grid.Row="2">
+						<StackPanel  Orientation="Horizontal" Grid.Row="3">
 							<TextBlock Margin="5">Номер корректировки:</TextBlock>
 							<TextBox Margin="5" Width="75" Text="{Binding Path=Report.CorrectionNumber.Value}"/>
 						</StackPanel>
 
-						<Button Grid.Row="3" Content="Сформировать" Command="{Binding GenerateForm17}" ></Button>
+						<Button Grid.Row="4" Content="Сформировать" Command="{Binding GenerateForm17}" ></Button>
 					</Grid>
 				</Border>
 
@@ -162,6 +184,10 @@
                                   CommandParameter="{Binding SelectedForms}"
                                   Header="Очистить строчки"
                                   InputGesture="Ctrl+U"
+                                  IsVisible="{Binding AnyRowSelected}" />
+						<MenuItem Command="{Binding GeneratePackagePassport}"
+                                  CommandParameter="{Binding SelectedForms}"
+                                  Header="Сформировать паспорт из выбранных строк"
                                   IsVisible="{Binding AnyRowSelected}" />
                     </ContextMenu>
                 </Grid.ContextMenu>

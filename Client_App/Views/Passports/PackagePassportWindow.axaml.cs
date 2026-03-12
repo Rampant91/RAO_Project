@@ -38,10 +38,12 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
     }
     public PackagePassportWindow(PackagePassportWindowVM vm)
     {
+        InitializeComponent();
         DataContext = vm;
 
-        InitializeComponent();
         Closing += OnStandardClosing;
+
+
     }
     private void InitializeComponent()
     {
@@ -50,6 +52,16 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
             this.AttachDevTools();
         #endif
         WindowState = WindowState.Maximized;
+
+
+        //Костыль
+        //Без этого содержимое таблицы не отображается 
+        Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            var dataGrid2 = this.FindControl<DataGrid>("dataGrid2");
+            dataGrid2.InvalidateMeasure();
+        });
+
     }
 
     #region OnStandartClosing

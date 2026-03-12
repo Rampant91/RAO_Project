@@ -24,8 +24,8 @@
 		<vm:PackagePassportWindowVM/>
 	</Design.DataContext>
         
-	<Grid RowDefinitions="Auto, *"
-		  >
+	<Grid ColumnDefinitions="*"
+		  RowDefinitions="Auto, *">
 	<Menu Grid.Row="0" 
 		  x:Name="SubMenuBorder" 
 		  BorderBrush="#FF959595" 
@@ -51,7 +51,8 @@
 			</MenuItem>
 		</Menu>
 		<ScrollViewer Grid.Row ="1"
-					  VerticalScrollBarVisibility="Auto">
+					  VerticalScrollBarVisibility="Auto"
+					  HorizontalScrollBarVisibility="Disabled">
 
 			<Grid ColumnDefinitions="*">
 				<Grid.RowDefinitions>
@@ -899,24 +900,18 @@
 						<!--#region DataGrid-->
 
 						<DataGrid
-							x:Name="dataGrid2"
-							Classes="table"
 							Grid.Row="1"
-							CornerRadius="5"
-							CanUserResizeColumns="True"
-							RowBackground="White"
-							AlternatingRowBackground="White"
-							SelectionMode ="Single"
-							Margin="5,-5,5,5"
-							x:CompileBindings="True"
-							CanUserSortColumns="True"
-							CanUserReorderColumns="False"
 							Items="{Binding Passport.ContentCharacteristics}"
 							SelectedItem="{Binding SelectedCharacteristic}"
-							ColumnWidth="125"
+							Classes="table"
+                            ColumnWidth="125"
+							SelectionMode ="Single"
+							x:Name="dataGrid2"
+							x:CompileBindings="True"
 							VerticalScrollBarVisibility="Disabled">
 						
 							<interactivity:Interaction.Behaviors>
+								<local:DataGridColumnWidthLoadBehavior FormNum="package_passport" />
 								<local:DataGridPointerBehavior />
 								<local:DeselectDataGridOnClickOutsideBehavior />
 							</interactivity:Interaction.Behaviors>
@@ -932,7 +927,7 @@
 											</Border>
 										</DataTemplate>
 									</DataGridTemplateColumn.HeaderTemplate>
-									<DataGridTemplateColumn.CellTemplate>
+									<DataGridTemplateColumn.CellTemplate >
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
 											<TextBox Text="{Binding PackageIdNum, Mode=TwoWay}"/>
 										</DataTemplate>
@@ -1030,61 +1025,47 @@
 											<Border Classes="headerTemplate">
 												<Grid ColumnDefinitions="*,Auto">
 													<TextBlock Grid.Column="0" Text="7" />
-													<CheckBox Grid.Column="1"
-															  IsChecked ="{Binding VM.RadionuclidViewSwitch, ElementName=PackagePassportWindow}"
-															  Content="Альт. запись"/>
 												</Grid>
 											</Border>
 										</DataTemplate>
 									</DataGridTemplateColumn.HeaderTemplate>
 									<DataGridTemplateColumn.CellTemplate>
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<Grid RowDefinitions="Auto, *">
-												<StackPanel 
-													Grid.Row="0"
-														IsEnabled="{Binding VM.RadionuclidViewSwitch, ElementName=PackagePassportWindow, Converter={StaticResource LogicalNotConverter}}"
-														IsVisible="{Binding VM.RadionuclidViewSwitch, ElementName=PackagePassportWindow, Converter={StaticResource LogicalNotConverter}}">
-													<ListBox 
-														MaxHeight="240" 
-														Items="{Binding RadionuclidsList}" 
-														Background="Transparent" 
-														SelectionMode="Single">
-														<ListBox.ItemTemplate>
-															<DataTemplate x:DataType="passports:Radionuclid">
-																<Grid ColumnDefinitions="*,Auto">
-																	<AutoCompleteBox 
-																		Classes="hitable"
-																		Grid.Column="0"
-																		Background="White"
-																		Height="26"
-																		FilterMode="Contains"
-																		Items="{Binding VM.RaoNamesCollection, ElementName=PackagePassportWindow}"
-																		Text="{Binding Name}">
-																	</AutoCompleteBox>
-																	<Button Grid.Column="1"
-																			IsHitTestVisible="True"
-																			Content="X"
-																			Width="26"
-																			Height="26"
-																			Command="{Binding VM.DeleteRadionuclid, ElementName=PackagePassportWindow}"
-																			CommandParameter="{Binding}"/>
-																</Grid>
-															</DataTemplate>
-														</ListBox.ItemTemplate>
-													</ListBox>
-													<Button	
-														Content="Добавить"
-														Command="{Binding VM.AddRadionuclid, ElementName=PackagePassportWindow}"
-														CommandParameter="{Binding}"/>
-												</StackPanel>
 
-												<TextBox 
-													Grid.Row="1"
-													IsEnabled="{Binding VM.RadionuclidViewSwitch, ElementName=PackagePassportWindow}"
-													IsVisible="{Binding VM.RadionuclidViewSwitch, ElementName=PackagePassportWindow}"
-													Text="{Binding RadionuclidsComposition, Mode=TwoWay}"/>
-												
-											</Grid>
+											<StackPanel >
+												<ListBox
+													MaxHeight="240"
+													Items="{Binding RadionuclidsList}"
+													Background="Transparent"
+													SelectionMode="Single">
+													<ListBox.ItemTemplate>
+														<DataTemplate x:DataType="passports:Radionuclid">
+															<Grid ColumnDefinitions="*,Auto">
+																<AutoCompleteBox
+																	Classes="hitable"
+																	Grid.Column="0"
+																	Background="White"
+																	Height="26"
+																	FilterMode="Contains"
+																	Items="{Binding VM.RaoNamesCollection, ElementName=PackagePassportWindow}"
+																	Text="{Binding Name}">
+																</AutoCompleteBox>
+																<Button Grid.Column="1"
+																		IsHitTestVisible="True"
+																		Content="X"
+																		Width="26"
+																		Height="26"
+																		Command="{Binding VM.DeleteRadionuclid, ElementName=PackagePassportWindow}"
+																		CommandParameter="{Binding}"/>
+															</Grid>
+														</DataTemplate>
+													</ListBox.ItemTemplate>
+												</ListBox>
+												<Button
+													Content="Добавить"
+													Command="{Binding VM.AddRadionuclid, ElementName=PackagePassportWindow}"
+													CommandParameter="{Binding}"/>
+											</StackPanel>
 										</DataTemplate>
 									</DataGridTemplateColumn.CellTemplate>
 								</DataGridTemplateColumn>
@@ -1095,56 +1076,42 @@
 											<Border Classes="headerTemplate">
 												<Grid ColumnDefinitions="*,Auto">
 													<TextBlock Grid.Column="0" Text="8" />
-													<CheckBox Grid.Column="1"
-															  IsChecked ="{Binding VM.RadionuclidViewSwitch, ElementName=PackagePassportWindow}"
-															  Content="Альт. запись"/>
 												</Grid>
 											</Border>
 										</DataTemplate>
 									</DataGridTemplateColumn.HeaderTemplate>
 									<DataGridTemplateColumn.CellTemplate>
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<Grid RowDefinitions="Auto,*">
-												<StackPanel 
-														IsEnabled="{Binding VM.RadionuclidViewSwitch, ElementName=PackagePassportWindow, Converter={StaticResource LogicalNotConverter}}"
-														IsVisible="{Binding VM.RadionuclidViewSwitch, ElementName=PackagePassportWindow, Converter={StaticResource LogicalNotConverter}}">
-													<ListBox
-														MaxHeight="240"
-														Items="{Binding RadionuclidsList}"
-														Background="Transparent"
-														SelectionMode="Single">
-														<ListBox.ItemTemplate>
-															<DataTemplate x:DataType="passports:Radionuclid">
-																<Grid ColumnDefinitions="*,Auto">
-																	<TextBox Grid.Column="0"
-																			 Height="26"
-																			 Background="White"
-																			 IsHitTestVisible="True"
-																			 Text="{Binding Activity, Converter={StaticResource ExpontionalFormatConverter}}"/>
-																	<Button Grid.Column="1"
-																			IsHitTestVisible="True"
-																			Content="X"
-																			Width="26"
-																			Height="26"
-																			Command="{Binding VM.DeleteRadionuclid, ElementName=PackagePassportWindow}"
-																			CommandParameter="{Binding}"/>
-																</Grid>
-															</DataTemplate>
-														</ListBox.ItemTemplate>
-													</ListBox>
-													<Button 
-														Content="Добавить"
-															Command="{Binding VM.AddRadionuclid, ElementName=PackagePassportWindow}"
-															CommandParameter="{Binding}"/>
-												</StackPanel>
-
-												<TextBox
-													Grid.Row="1" 
-													IsEnabled="{Binding VM.RadionuclidViewSwitch, ElementName=PackagePassportWindow}"
-													IsVisible="{Binding VM.RadionuclidViewSwitch, ElementName=PackagePassportWindow}"
-													Text="{Binding RadionuclidsActivity, Mode=TwoWay}"/>
-												
-											</Grid>
+											<StackPanel>
+												<ListBox
+													MaxHeight="240"
+													Items="{Binding RadionuclidsList}"
+													Background="Transparent"
+													SelectionMode="Single">
+													<ListBox.ItemTemplate>
+														<DataTemplate x:DataType="passports:Radionuclid">
+															<Grid ColumnDefinitions="*,Auto">
+																<TextBox Grid.Column="0"
+																		 Height="26"
+																		 Background="White"
+																		 IsHitTestVisible="True"
+																		 Text="{Binding Activity, Converter={StaticResource ExpontionalFormatConverter}}"/>
+																<Button Grid.Column="1"
+																		IsHitTestVisible="True"
+																		Content="X"
+																		Width="26"
+																		Height="26"
+																		Command="{Binding VM.DeleteRadionuclid, ElementName=PackagePassportWindow}"
+																		CommandParameter="{Binding}"/>
+															</Grid>
+														</DataTemplate>
+													</ListBox.ItemTemplate>
+												</ListBox>
+												<Button
+													Content="Добавить"
+														Command="{Binding VM.AddRadionuclid, ElementName=PackagePassportWindow}"
+														CommandParameter="{Binding}"/>
+											</StackPanel>
 										</DataTemplate>
 									</DataGridTemplateColumn.CellTemplate>
 								</DataGridTemplateColumn>

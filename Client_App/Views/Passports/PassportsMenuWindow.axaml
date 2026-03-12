@@ -41,7 +41,7 @@
 					<MenuItem Command="{Binding AddPackagePassport}"
 							  Header="Добавить паспорт"/>
 					<MenuItem Command="{Binding ChangePackagePassport}"
-							  CommandParameter="{Binding SelectedPassport}"
+							  CommandParameter="{Binding SelectedPassport.Id}"
 							  Header="Редактировать паспорт"/>
 					<MenuItem Command="{Binding DeletePackagePassport}"
 							  CommandParameter="{Binding SelectedPassport}"

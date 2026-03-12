@@ -709,6 +709,10 @@ namespace Models.Passports
             }
         }
 
+        public void UpdateContentCharacteristic ()
+        {
+            OnPropertyChanged(nameof(ContentCharacteristics));
+        }
         #endregion
 
         #region Notes

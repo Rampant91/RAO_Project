@@ -17,14 +17,14 @@ namespace Client_App.Commands.AsyncCommands.Change
     {
         public override async Task AsyncExecute(object? parameter)
         {
-            if (parameter is not PackagePassport passport) return;
+            if (parameter is not int passportId) return;
             try
             {
+                
                 var owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
                         .FirstOrDefault(w => w.Name == "PassportMenu");
 
-                var passportVM = new PackagePassportWindowVM(passport);
-
+                var passportVM = new PackagePassportWindowVM(passportId);
 
                 var packagePassportWindow = new PackagePassportWindow(passportVM);
                 await packagePassportWindow.ShowDialog(owner);

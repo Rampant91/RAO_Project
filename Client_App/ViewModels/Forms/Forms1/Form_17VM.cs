@@ -13,7 +13,6 @@ public class Form_17VM : BaseFormVM
     public override string FormType => "1.7";
 
     #region Constructors
-
     public Form_17VM() { }
 
     public Form_17VM(Report report) : base(report) { }
@@ -40,10 +39,11 @@ public class Form_17VM : BaseFormVM
 
         SelectReportPopupVM = new SelectReportPopupVM(this);
     }
-
     #endregion
+
     #region Commands
     public ICommand GenerateForm17 => new GenerateForm17AsyncCommand(this);
+    public ICommand GeneratePackagePassport => new GeneratePackagePassportAsyncCommand(this);
     #endregion
 
 }

@@ -142,10 +142,10 @@
             <Setter Property="CanUserResizeColumns" Value="True"/>
             <Setter Property="RowBackground" Value="White"/>
             <Setter Property="AlternatingRowBackground" Value="White"/>
-            <Setter Property="Margin" Value="5,-5,5,5"/>
-            <Setter Property="SelectionMode" Value="Extended"/>
-            <Setter Property="GridLinesVisibility" Value="All"/>
-            <Setter Property="CanUserSortColumns" Value="False"/>
+			<Setter Property="GridLinesVisibility" Value="All"/>
+			<Setter Property="CanUserSortColumns" Value="False"/>
+			<Setter Property="SelectionMode" Value="Extended"/>
+			<Setter Property="Margin" Value="5,-5,5,5"/>
             <Setter Property="ColumnWidth" Value="125" />
             <Setter Property="MinColumnWidth" Value="50" />
             <Setter Property="MaxColumnWidth" Value="250" />

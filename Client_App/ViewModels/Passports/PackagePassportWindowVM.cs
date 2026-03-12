@@ -58,19 +58,6 @@ namespace Client_App.ViewModels.Passports
             }
         }
 
-        private bool _radionuclidViewSwitch =true;
-        public bool RadionuclidViewSwitch
-        {
-            get
-            {
-                return _radionuclidViewSwitch;
-            }
-            set
-            {
-                _radionuclidViewSwitch = value;
-                OnPropertyChanged();
-            }
-        }
         public ObservableCollection<string> RaoNamesCollection
         {
             get
@@ -104,20 +91,18 @@ namespace Client_App.ViewModels.Passports
             InitializeCommands();
 
             _passport = new PackagePassport();
+            
 
-            Dispatcher.UIThread.InvokeAsync(() => Passport.ContentCharacteristics.Add(new CharacteristicPrimaryPackage(Passport)));
         }
-        public PackagePassportWindowVM(PackagePassport passport)
+        public PackagePassportWindowVM(int passportId)
         {
             InitializeCommands();
 
             _passport = StaticConfiguration.DBModel.package_passport
                 .Include(pas => pas.ContentCharacteristics)
                 .ThenInclude(c => c.RadionuclidsList)
-                .FirstOrDefault(pas => pas.Id == passport.Id);
+                .FirstOrDefault(pas => pas.Id == passportId);
 
-
-            Dispatcher.UIThread.InvokeAsync(() => Passport.ContentCharacteristics.Add(new CharacteristicPrimaryPackage(Passport)));
         }
         private void InitializeCommands()
         {

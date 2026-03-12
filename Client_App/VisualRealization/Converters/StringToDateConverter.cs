@@ -11,22 +11,22 @@ namespace Client_App.VisualRealization.Converters
         {
             if (value is string dateString)
             {
-                if (DateOnly.TryParse(
+                if (DateTime.TryParse(
                     dateString,
-                    out DateOnly dateOnly))
+                    out DateTime date))
                 {
-                    return dateOnly;
+                    return date;
                 }
             }
-            return DateOnly.MinValue;
+            return null;
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is DateOnly dateOnly)
+            if (value is DateTime dateTime)
             {
-                return dateOnly.ToString("dd.MM.yyyy");
+                return dateTime.ToString("dd.MM.yyyy");
             }
-            return "";
+                return "";
         }
     }
 }

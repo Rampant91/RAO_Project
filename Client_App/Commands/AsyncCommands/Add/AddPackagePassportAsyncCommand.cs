@@ -6,6 +6,7 @@ using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Passports;
 using Client_App.Views;
 using Models.DBRealization;
+using Models.Passports;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,7 @@ namespace Client_App.Commands.AsyncCommands.Add
                         .FirstOrDefault(w => w.Name == "PassportMenu");
 
                 var passportVM = new PackagePassportWindowVM();
+                passportVM.Passport.ContentCharacteristics.Add(new CharacteristicPrimaryPackage(passportVM.Passport));
 
                 var dbm = StaticConfiguration.DBModel;
 
