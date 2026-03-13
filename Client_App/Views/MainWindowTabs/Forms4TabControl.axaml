@@ -1,19 +1,18 @@
-<UserControl
-    x:Class="Client_App.Views.MainWindowTabs.Forms4TabControl"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="clr-namespace:Client_App.Views.Controls"
-    xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-    xmlns:local="using:Client_App.Behaviors"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="clr-namespace:Models.Collections;assembly=Models"
-    xmlns:vm="using:Client_App.ViewModels.MainWindowTabs"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    x:DataType="vm:Forms4TabControlVM"
-    mc:Ignorable="d">
+<UserControl x:Class="Client_App.Views.MainWindowTabs.Forms4TabControl"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Client_App.Views.Controls"
+             xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:local="using:Client_App.Behaviors"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="clr-namespace:Models.Collections;assembly=Models"
+             xmlns:vm="using:Client_App.ViewModels.MainWindowTabs"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             x:DataType="vm:Forms4TabControlVM"
+             mc:Ignorable="d">
 
     <UserControl.Resources>
         <converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue" />
@@ -138,7 +137,7 @@
                                    Grid.Column="0"
                                    Margin="5"
                                    VerticalAlignment="Center"
-                                   Text="Текущая страница" />
+                                   Text="Текущая страница:" />
                         <controls:NumericLeftRight Grid.Row="0"
                                                    Grid.Column="1"
                                                    Margin="5"
@@ -158,7 +157,7 @@
                                    Grid.Column="0"
                                    Margin="5"
                                    VerticalAlignment="Center"
-                                   Text="Кол-во строчек на странице" />
+                                   Text="Кол-во РИАЦ на странице:" />
                         <controls:NumericLeftRight Grid.Row="1"
                                                    Grid.Column="1"
                                                    Margin="5"
@@ -168,7 +167,7 @@
                                    Grid.Column="2"
                                    Margin="5"
                                    VerticalAlignment="Center"
-                                   Text="Всего орг.:" />
+                                   Text="Всего РИАЦ:" />
                         <TextBlock Grid.Row="1"
                                    Grid.Column="3"
                                    Margin="5"
@@ -178,7 +177,7 @@
                                    Grid.Column="4"
                                    Margin="5"
                                    VerticalAlignment="Center"
-                                   Text="Кол-во отчетов:" />
+                                   Text="Всего отчетов:" />
                         <TextBlock Grid.Row="1"
                                    Grid.Column="5"
                                    Margin="5"
@@ -312,7 +311,7 @@
                         <TextBlock Grid.Row="0"
                                    Grid.Column="0"
                                    Margin="5"
-                                   Text="Текущая страница" />
+                                   Text="Текущая страница:" />
                         <controls:NumericLeftRight Grid.Row="0"
                                                    Grid.Column="1"
                                                    Margin="5"
@@ -329,7 +328,7 @@
                         <TextBlock Grid.Row="1"
                                    Grid.Column="0"
                                    Margin="5"
-                                   Text="Кол-во строчек на странице" />
+                                   Text="Отчётов на странице:" />
                         <controls:NumericLeftRight Grid.Row="1"
                                                    Grid.Column="1"
                                                    Margin="5"
@@ -346,7 +345,7 @@
                         <TextBlock Grid.Row="1"
                                    Grid.Column="4"
                                    Margin="5"
-                                   Text="Кол-во строчек:" />
+                                   Text="Строчек в отчёте:" />
                         <TextBlock Grid.Row="1"
                                    Grid.Column="5"
                                    Margin="5"

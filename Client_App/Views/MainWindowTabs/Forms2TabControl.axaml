@@ -2,7 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" 
+             d:DesignWidth="800" 
+             d:DesignHeight="450"
 			 xmlns:controls="clr-namespace:Client_App.Views.Controls"
 	         xmlns:models="clr-namespace:Models.Collections;assembly=Models"
 			 xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
@@ -145,7 +147,7 @@
 				<Border Grid.Row="2" Classes="pageControlContainer">
 					<Grid RowDefinitions="Auto,Auto"
                           ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
-						<TextBlock Text="Текущая страница"
+						<TextBlock Text="Текущая страница:"
                                    Grid.Row="0" 
                                    Grid.Column="0" 
                                    Margin="5"
@@ -155,7 +157,7 @@
                                                    Grid.Column="1" 
                                                    Margin="5"
                                                    Minimum="1"/>
-						<TextBlock Text ="Кол-во страниц:"
+						<TextBlock Text="Кол-во страниц:"
                                    Grid.Row="0" 
                                    Grid.Column="2" 
                                    Margin="5"
@@ -165,7 +167,7 @@
                                    Grid.Column="3" 
                                    Margin="5"
                                    VerticalAlignment="Center"/>
-						<TextBlock Text="Кол-во строчек на странице" 
+						<TextBlock Text="Кол-во орг. на странице" 
                                    Grid.Row="1" 
                                    Grid.Column="0" 
                                    Margin="5"
@@ -175,7 +177,7 @@
                                                    Grid.Column="1" 
                                                    Margin="5"
                                                    Minimum="1"/>
-						<TextBlock Text="Всего орг.:" 
+						<TextBlock Text="Всего организаций:" 
                                    Grid.Row="1" 
                                    Grid.Column="2" 
                                    Margin="5"
@@ -185,7 +187,7 @@
                                    Grid.Column="3" 
                                    Margin="5"
                                    VerticalAlignment="Center"/>
-						<TextBlock Text="Кол-во отчетов:"
+						<TextBlock Text="Всего отчетов:"
                                    Grid.Row="1" 
                                    Grid.Column="4" 
                                    Margin="5"
@@ -394,7 +396,7 @@
                                    Grid.Row="0" 
                                    Grid.Column="3" 
                                    Margin="5"/>
-						<TextBlock Text="Отчётов на странице"
+						<TextBlock Text="Отчётов на странице:"
                                    Grid.Row="1" 
                                    Grid.Column="0" 
                                    Margin="5"/>
@@ -532,7 +534,6 @@
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
 										ConverterParameter=2.12}" />
-
 						</StackPanel>
 					</Grid>
 				</Border>

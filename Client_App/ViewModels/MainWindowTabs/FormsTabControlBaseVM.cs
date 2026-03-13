@@ -1,11 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Client_App.ViewModels.MainWindowTabs;
 
@@ -27,19 +30,21 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 
     #region Properties
 
+    private CancellationTokenSource? _debounceCts;
+
     public MainWindowVM MainWindowVM { get; }
 
-    private protected CancellationTokenSource? DebounceCts;
+    private protected abstract byte DefaultOrgsPerPage { get; }
+
+    private protected abstract byte DefaultFormsPerPage { get; }
 
     private protected abstract char FormNum { get; }
 
-    private protected abstract ObservableCollection<Report> ReportCollection { get; }
+    private protected abstract ObservableCollection<Report>? ReportCollection { get; }
 
-    private protected abstract ObservableCollection<Reports> ReportsCollection { get; }
+    private protected abstract ObservableCollection<Reports>? ReportsCollection { get; }
 
-    private protected string _searchText = string.Empty;
-
-    private protected abstract string SearchText { get; set; }
+    private protected abstract Dictionary<string, Func<IQueryable<Report>, IQueryable<object>>> RowSelectors { get; }
 
     private protected abstract int TotalPagesForms { get; }
 
@@ -90,11 +95,25 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 
     #endregion
 
-    private protected abstract byte DefaultOrgsPerPage { get; }
+    #region InSelectedReportFormsCount
+    
+    private int _inSelectedReportFormsCount;
+    public int InSelectedReportFormsCount
+    {
+        get => _inSelectedReportFormsCount;
+        private set
+        {
+            if (_inSelectedReportFormsCount != value)
+            {
+                _inSelectedReportFormsCount = value;
+                OnPropertyChanged();
+            }
+        }
+    }
 
-    private protected abstract byte DefaultFormsPerPage { get; }
+    #endregion
 
-    private protected abstract int InSelectedReportFormsCount { get; }
+    #region RowsCountForms
 
     private int _rowsCountForms;
     private protected int RowsCountForms
@@ -120,10 +139,13 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
                 SaveRowCountSettings();
             }
         }
-    }
+    } 
+    
+    #endregion
+
+    #region RowsCountOrgs
 
     private int _rowsCountOrgs;
-
     private protected int RowsCountOrgs
     {
         get
@@ -148,6 +170,47 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 
     }
 
+    #endregion
+
+    #region SearchText
+
+    private string _searchText;
+    private protected string SearchText
+    {
+        get => _searchText;
+        set
+        {
+            if (_searchText == value) return;
+
+            _searchText = value;
+            OnPropertyChanged();
+
+            // Отменяем предыдущий таймер
+            _debounceCts?.Cancel();
+
+            // Создаем новый таймер
+            _debounceCts = new CancellationTokenSource();
+
+            // Задержка 300мс перед фильтрацией
+            Task.Delay(300, _debounceCts.Token)
+                .ContinueWith(t =>
+                {
+                    if (!t.IsCanceled)
+                    {
+                        Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+                        {
+                            if (CurrentPageOrgs != 1)
+                                CurrentPageOrgs = 1;
+
+                            NotifySearchTextChanged();
+                        });
+                    }
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+    }
+
+    #endregion
+
     #region SelectedReport
 
     private Report? _selectedReport;
@@ -156,9 +219,12 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
         get => _selectedReport;
         set
         {
+            if (_selectedReport == value) return;
+
             _selectedReport = value;
             OnPropertyChanged();
-            OnPropertyChanged(nameof(InSelectedReportFormsCount));
+
+            _ = UpdateInSelectedReportFormsCountAsync();
         }
     }
 
@@ -173,6 +239,9 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
         set
         {
             _selectedReports = value;
+
+            _ = UpdateInSelectedReportFormsCountAsync();
+
             OnPropertyChanged();
 
             // UpdateReportCollection выполняется в CurrentPageForms
@@ -188,10 +257,11 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 
     #endregion
 
-    public int TotalReportCount => StaticConfiguration.DBModel.ReportCollectionDbSet
-        .CountAsync(rep => rep.FormNum_DB.StartsWith($"{MainWindowVM.SelectedReportType}")
-                           && !rep.FormNum_DB.EndsWith(".0"))
-        .Result;
+    public int TotalReportCount => ReportsCollection?
+        .AsEnumerable()
+        .Sum(org => org.Report_Collection
+            .Count(rep => rep.FormNum_DB.StartsWith($"{MainWindowVM.SelectedReportType}")
+                          && !rep.FormNum_DB.EndsWith(".0"))) ?? 0;
 
     private protected int TotalRowsOrgs => StaticConfiguration.DBModel.ReportsCollectionDbSet
         .Where(x => x.DBObservable != null)
@@ -200,6 +270,36 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
     #endregion
 
     #region Methods
+
+    /// <summary>
+    /// Возвращает количество строчек форм у отчёта.
+    /// </summary>
+    /// <param name="rep">Отчёт, у которого нужно посчитать количество строчек форм.</param>
+    /// <returns>Количество строчек форм.</returns>
+    private async Task<int> GetReportRowsCount(Report? rep)
+    {
+        if (rep == null || rep.FormNum == null) return 0;
+
+        while (StaticConfiguration.IsFileLocked(null))
+            await Task.Delay(50);
+
+        await using var db = new DBModel(StaticConfiguration.DBPath);
+
+        var baseQuery = db.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
+            .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id);
+
+        if (RowSelectors.TryGetValue(rep.FormNum_DB, out var selector))
+        {
+            return await selector(baseQuery).CountAsync();
+        }
+
+        return 0;
+    }
+
+    private protected abstract void NotifySearchTextChanged();
 
     private void NotifyRowsChanged()
     {
@@ -222,7 +322,20 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
         OnPropertyChanged(nameof(TotalPagesForms));
     }
 
-    public abstract void UpdateOrgsPageInfo();
+    private async Task UpdateInSelectedReportFormsCountAsync()
+    {
+        if (SelectedReport == null)
+        {
+            InSelectedReportFormsCount = 0;
+            return;
+        }
+
+        // Асинхронно получаем данные
+        var count = await GetReportRowsCount(SelectedReport);
+
+        // Записываем в свойство - UI автоматически обновится через OnPropertyChanged
+        InSelectedReportFormsCount = count;
+    }
 
     public void UpdateReportCollection()
     {

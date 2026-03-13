@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -11,6 +13,16 @@ namespace Client_App.ViewModels.MainWindowTabs;
 
 public class Forms2TabControlVM : FormsTabControlBaseVM
 {
+    #region Fields
+
+    private protected override byte DefaultFormsPerPage => 10;
+
+    private protected override byte DefaultOrgsPerPage => 8;
+
+    private protected override char FormNum => '2';
+
+    #endregion
+
     #region Constructor
 
     public Forms2TabControlVM() { }
@@ -20,12 +32,6 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
     #endregion
 
     #region Properties
-
-    private protected override byte DefaultOrgsPerPage => 6;
-
-    private protected override byte DefaultFormsPerPage => 8;
-
-    private protected override char FormNum => '2';
 
     public int FilteredRowsOrgs
     {
@@ -62,41 +68,38 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
 
     #endregion
 
-    private protected override int InSelectedReportFormsCount => GetReportRowsCount(SelectedReport);
-
-    private protected override string SearchText
+    private protected override ObservableCollection<Report> ReportCollection
     {
-        get => _searchText;
-        set
+        get
         {
-            if (_searchText == value) return;
+            if (SelectedReports is null) return null;
 
-            _searchText = value;
-            OnPropertyChanged();
 
-            // Отменяем предыдущий таймер
-            DebounceCts?.Cancel();
+            var result = SelectedReports
+                .Report_Collection
+                .AsEnumerable();
 
-            // Создаем новый таймер
-            DebounceCts = new CancellationTokenSource();
+            if (!string.IsNullOrEmpty(FormNumWhiteList))
+            {
+                result = result.Where(rep => rep.FormNum_DB == FormNumWhiteList);
+            }
 
-            // Задержка 300мс перед фильтрацией
-            Task.Delay(300, DebounceCts.Token)
-                .ContinueWith(t =>
+            result = result.OrderBy(x =>
                 {
-                    if (!t.IsCanceled)
-                    {
-                        Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
-                        {
-                            if (CurrentPageOrgs != 1)
-                                CurrentPageOrgs = 1;
+                    if (int.TryParse(x.FormNum_DB.Split('.')[1], out var result))
+                        return result;
+                    return int.MinValue;
+                })
+                .ThenByDescending(x =>
+                    x.Year_DB == null ||
+                    !int.TryParse(x.Year_DB, out _) ?
+                        int.MaxValue :
+                        int.Parse(x.Year_DB))
+                .ThenBy(rep => rep.CorrectionNumber_DB)
+                .Skip((CurrentPageForms - 1) * RowsCountForms)
+                .Take(RowsCountForms);
 
-                            OnPropertyChanged(nameof(ReportsCollection));
-                            OnPropertyChanged(nameof(FilteredRowsOrgs));
-                            OnPropertyChanged(nameof(TotalPagesOrgs));
-                        });
-                    }
-                }, TaskScheduler.FromCurrentSynchronizationContext());
+            return new ObservableCollection<Report>(result);
         }
     }
 
@@ -133,38 +136,25 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
         }
     }
 
-    private protected override ObservableCollection<Report> ReportCollection
+    private protected override Dictionary<string, Func<IQueryable<Report>, IQueryable<object>>> RowSelectors
     {
         get
         {
-            if (SelectedReports is null) return null;
-
-
-            var result = SelectedReports
-                    .Report_Collection
-                    .AsEnumerable();
-
-            if (!string.IsNullOrEmpty(FormNumWhiteList))
+            return new Dictionary<string, Func<IQueryable<Report>, IQueryable<object>>>
             {
-                result = result.Where(rep => rep.FormNum_DB == FormNumWhiteList);
-            }
-
-            result = result.OrderBy(x => 
-                    {
-                        if (int.TryParse(x.FormNum_DB.Split('.')[1], out var result))
-                            return result;
-                        return int.MinValue;
-                    })
-                    .ThenByDescending(x => 
-                        x.Year_DB == null ||
-                        !int.TryParse(x.Year_DB, out _) ?
-                        int.MaxValue :
-                        int.Parse(x.Year_DB))
-                    .ThenBy(rep => rep.CorrectionNumber_DB)
-                    .Skip((CurrentPageForms - 1) * RowsCountForms)
-                    .Take(RowsCountForms);
-
-            return new ObservableCollection<Report>(result);
+                ["2.1"] = q => q.Include(x => x.Rows21).SelectMany(x => x.Rows21),
+                ["2.2"] = q => q.Include(x => x.Rows22).SelectMany(x => x.Rows22),
+                ["2.3"] = q => q.Include(x => x.Rows23).SelectMany(x => x.Rows23),
+                ["2.4"] = q => q.Include(x => x.Rows24).SelectMany(x => x.Rows24),
+                ["2.5"] = q => q.Include(x => x.Rows25).SelectMany(x => x.Rows25),
+                ["2.6"] = q => q.Include(x => x.Rows26).SelectMany(x => x.Rows26),
+                ["2.7"] = q => q.Include(x => x.Rows27).SelectMany(x => x.Rows27),
+                ["2.8"] = q => q.Include(x => x.Rows28).SelectMany(x => x.Rows28),
+                ["2.9"] = q => q.Include(x => x.Rows29).SelectMany(x => x.Rows29),
+                ["2.10"] = q => q.Include(x => x.Rows210).SelectMany(x => x.Rows210),
+                ["2.11"] = q => q.Include(x => x.Rows211).SelectMany(x => x.Rows211),
+                ["2.12"] = q => q.Include(x => x.Rows212).SelectMany(x => x.Rows212),
+            };
         }
     }
 
@@ -215,7 +205,8 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
     private static int GetReportRowsCount(Report? rep)
     {
         if (rep == null) return 0;
-        while (StaticConfiguration.IsFileLocked(null)) Thread.Sleep(50);
+        while (StaticConfiguration.IsFileLocked(null)) Thread.Sleep(50); 
+        
         using var db = new DBModel(StaticConfiguration.DBPath);
 
         var query = db.ReportCollectionDbSet
@@ -290,7 +281,14 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
         UpdateFormsPageInfo();
     }
 
-    public override void UpdateOrgsPageInfo()
+    private protected override void NotifySearchTextChanged()
+    {
+        OnPropertyChanged(nameof(ReportsCollection));
+        OnPropertyChanged(nameof(FilteredRowsOrgs));
+        OnPropertyChanged(nameof(TotalPagesOrgs));
+    }
+
+    public void UpdateOrgsPageInfo()
     {
         OnPropertyChanged(nameof(TotalRowsOrgs));
         OnPropertyChanged(nameof(TotalPagesOrgs));

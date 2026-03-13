@@ -2,15 +2,24 @@
 using Models.Collections;
 using Models.DBRealization;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Client_App.ViewModels.MainWindowTabs;
 
 public class Forms5TabControlVM : FormsTabControlBaseVM
 {
+    #region Fields
+
+    private protected override byte DefaultFormsPerPage => 10;
+
+    private protected override byte DefaultOrgsPerPage => 8;
+
+    private protected override char FormNum => '5';
+
+    #endregion
+
     #region Constructor
 
     public Forms5TabControlVM() { }
@@ -20,12 +29,6 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
     #endregion
 
     #region Properties
-
-    private protected override byte DefaultOrgsPerPage => 10;
-
-    private protected override byte DefaultFormsPerPage => 8;
-
-    private protected override char FormNum => '5';
 
     #region FormNumWhiteList
 
@@ -41,24 +44,6 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
     }
 
     #endregion
-
-    private protected override int InSelectedReportFormsCount
-    {
-        get
-        {
-            if (SelectedReport is null) return 0;
-            return StaticConfiguration.DBModel.ReportCollectionDbSet
-                .Include(rep => rep.Rows51)
-                .Include(rep => rep.Rows52)
-                .Include(rep => rep.Rows53)
-                .Include(rep => rep.Rows54)
-                .Include(rep => rep.Rows55)
-                .Include(rep => rep.Rows56)
-                .Include(rep => rep.Rows57)
-                .FirstOrDefault(rep => rep.Id == SelectedReport.Id)
-                ?.Rows.Count ?? 0;
-        }
-    }
 
     private protected override ObservableCollection<Report> ReportCollection
     {
@@ -83,13 +68,13 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
                 })
                 // Сортируем по валидным датам, некорректные уходят в начало/конец
                 .ThenByDescending(x => x.StartPeriod_DB == null ||
-                                       !DateOnly.TryParse(x.StartPeriod_DB, out _) ?
-                    DateOnly.MaxValue :
-                    DateOnly.Parse(x.StartPeriod_DB))
+                                       !DateOnly.TryParse(x.StartPeriod_DB, out _) 
+                    ? DateOnly.MaxValue 
+                    : DateOnly.Parse(x.StartPeriod_DB))
                 .ThenByDescending(x => x.EndPeriod_DB == null ||
-                                       !DateOnly.TryParse(x.EndPeriod_DB, out _) ?
-                    DateOnly.MaxValue :
-                    DateOnly.Parse(x.EndPeriod_DB))
+                                       !DateOnly.TryParse(x.EndPeriod_DB, out _) 
+                    ? DateOnly.MaxValue 
+                    : DateOnly.Parse(x.EndPeriod_DB))
                 .ThenBy(rep => rep.CorrectionNumber_DB)
                 .Skip((CurrentPageForms - 1) * RowsCountForms)
                 .Take(RowsCountForms);
@@ -126,38 +111,20 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
         }
     }
 
-    private protected override string SearchText
+    private protected override Dictionary<string, Func<IQueryable<Report>, IQueryable<object>>> RowSelectors
     {
-        get => _searchText;
-        set
+        get
         {
-            if (_searchText == value) return;
-
-            _searchText = value;
-            OnPropertyChanged();
-
-            // Отменяем предыдущий таймер
-            DebounceCts?.Cancel();
-
-            // Создаем новый таймер
-            DebounceCts = new CancellationTokenSource();
-
-            // Задержка 300мс перед фильтрацией
-            Task.Delay(300, DebounceCts.Token)
-                .ContinueWith(t =>
-                {
-                    if (!t.IsCanceled)
-                    {
-                        Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
-                        {
-                            if (CurrentPageOrgs != 1)
-                                CurrentPageOrgs = 1;
-
-                            OnPropertyChanged(nameof(ReportsCollection));
-                            OnPropertyChanged(nameof(TotalPagesOrgs));
-                        });
-                    }
-                }, TaskScheduler.FromCurrentSynchronizationContext());
+            return new Dictionary<string, Func<IQueryable<Report>, IQueryable<object>>>
+            {
+                ["5.1"] = q => q.Include(x => x.Rows51).SelectMany(x => x.Rows51),
+                ["5.2"] = q => q.Include(x => x.Rows52).SelectMany(x => x.Rows52),
+                ["5.3"] = q => q.Include(x => x.Rows53).SelectMany(x => x.Rows53),
+                ["5.4"] = q => q.Include(x => x.Rows54).SelectMany(x => x.Rows54),
+                ["5.5"] = q => q.Include(x => x.Rows55).SelectMany(x => x.Rows55),
+                ["5.6"] = q => q.Include(x => x.Rows56).SelectMany(x => x.Rows56),
+                ["5.7"] = q => q.Include(x => x.Rows57).SelectMany(x => x.Rows57),
+            };
         }
     }
 
@@ -211,7 +178,13 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
         UpdateFormsPageInfo();
     }
 
-    public override void UpdateOrgsPageInfo()
+    private protected override void NotifySearchTextChanged()
+    {
+        OnPropertyChanged(nameof(ReportsCollection));
+        OnPropertyChanged(nameof(TotalPagesOrgs));
+    }
+
+    public void UpdateOrgsPageInfo()
     {
         OnPropertyChanged(nameof(TotalRowsForms));
         OnPropertyChanged(nameof(TotalPagesForms));

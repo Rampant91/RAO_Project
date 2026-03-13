@@ -96,64 +96,82 @@
 					</DataGrid.Columns>
 				</DataGrid>
 				<Border Grid.Row="2" Classes="pageControlContainer">
-					<Grid
-						  RowDefinitions="Auto,Auto"
+					<Grid RowDefinitions="Auto,Auto"
 						  ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
-						<TextBlock Text="Текущая страница"
-							Grid.Row="0" Grid.Column="0" Margin="5"/>
-
-						<controls:NumericLeftRight
-							Value="{Binding CurrentPageOrgs}"
-							Grid.Row="0" Grid.Column="1" Margin="5"
-							Minimum="1"/>
-						<TextBlock Text ="Кол-во страниц:"
-							Grid.Row="0" Grid.Column="2" Margin="5"/>
-						<TextBlock
-							Text="{Binding TotalPagesOrgs}"
-							Grid.Row="0" Grid.Column="3" Margin="5"/>
-						<TextBlock Text="Кол-во строчек на странице"
-							Grid.Row="1" Grid.Column="0" Margin="5"/>
-						<controls:NumericLeftRight
-							Value="{Binding RowsCountOrgs}"
-							Grid.Row="1" Grid.Column="1" Margin="5"
-							Minimum="1"/>
-						<TextBlock Text="Кол-во строчек:"
-							Grid.Row="1" Grid.Column="2" Margin="5"/>
-						<TextBlock
-							Text="{Binding TotalRowsOrgs}"
-							Grid.Row="1" Grid.Column="3" Margin="5"/>
-
-						<TextBlock Text="Кол-во отчетов:"
-							Grid.Row="1" Grid.Column="4" Margin="5"/>
+						<TextBlock Text="Текущая страница:" 
+                                   Grid.Row="0" 
+                                   Grid.Column="0" 
+                                   Margin="5"/>
+						<controls:NumericLeftRight Value="{Binding CurrentPageOrgs}" 
+                                                   Grid.Row="0" 
+                                                   Grid.Column="1" 
+                                                   Margin="5"
+                                                   Minimum="1"/>
+						<TextBlock Text ="Кол-во страниц:" 
+                                   Grid.Row="0" 
+                                   Grid.Column="2" 
+                                   Margin="5"/>
+						<TextBlock Text="{Binding TotalPagesOrgs}"
+                                   Grid.Row="0" 
+                                   Grid.Column="3" 
+                                   Margin="5"/>
+						<TextBlock Text="Кол-во РИАЦ на странице:" 
+                                   Grid.Row="1" 
+                                   Grid.Column="0" 
+                                   Margin="5"/>
+						<controls:NumericLeftRight Value="{Binding RowsCountOrgs}"
+                                                   Grid.Row="1" 
+                                                   Grid.Column="1" 
+                                                   Margin="5"
+                                                   Minimum="1"/>
+						<TextBlock Text="Всего РИАЦ:" 
+                                   Grid.Row="1" 
+                                   Grid.Column="2" 
+                                   Margin="5"/>
+						<TextBlock Text="{Binding TotalRowsOrgs}"
+                                   Grid.Row="1" 
+                                   Grid.Column="3" 
+                                   Margin="5"/>
+						<TextBlock Text="Всего отчетов:"
+                                   Grid.Row="1" 
+                                   Grid.Column="4" 
+                                   Margin="5"/>
 						<TextBlock Text="{Binding TotalReportCount}"
-							Grid.Row="1" Grid.Column="5" Margin="5"/>
+                                   Grid.Row="1" 
+                                   Grid.Column="5" 
+                                   Margin="5"/>
 					</Grid>
 				</Border>
 			</Grid>
-			<StackPanel Grid.Row ="0" Grid.Column="1" Margin="5">
+			<StackPanel Grid.Row="0" 
+                        Grid.Column="1" 
+                        Margin="5">
 				<Button Command="{Binding MainWindowVM.NewAddForm}"
 						CommandParameter="5.1"
-						Content="Форма 5.1"></Button>
+						Content="Форма 5.1"/>
 				<Button Command="{Binding MainWindowVM.NewAddForm}"
 						CommandParameter="5.2"
-						Content="Форма 5.2"></Button>
+						Content="Форма 5.2"/>
 				<Button Command="{Binding MainWindowVM.NewAddForm}"
 						CommandParameter="5.3"
-						Content="Форма 5.3"></Button>
+						Content="Форма 5.3"/>
 				<Button Command="{Binding MainWindowVM.NewAddForm}"
 						CommandParameter="5.4"
-						Content="Форма 5.4"></Button>
+						Content="Форма 5.4"/>
 				<Button Command="{Binding MainWindowVM.NewAddForm}"
 						CommandParameter="5.5"
-						Content="Форма 5.5"></Button>
+						Content="Форма 5.5"/>
 				<Button Command="{Binding MainWindowVM.NewAddForm}"
 						CommandParameter="5.6"
-						Content="Форма 5.6"></Button>
+						Content="Форма 5.6"/>
 				<Button Command="{Binding MainWindowVM.NewAddForm}"
 						CommandParameter="5.7"
-						Content="Форма 5.7"></Button>
+						Content="Форма 5.7"/>
 			</StackPanel>
-			<Grid Grid.Row ="1" Grid.Column="0" Grid.ColumnSpan="2" RowDefinitions="*,Auto" >
+			<Grid Grid.Row ="1" 
+                  Grid.Column="0" 
+                  Grid.ColumnSpan="2" 
+                  RowDefinitions="*,Auto" >
 				<DataGrid Grid.Row="0" Margin="5"
 						  Items="{Binding ReportCollection}"
 						  SelectedItem="{Binding SelectedReport}"
@@ -185,11 +203,10 @@
 					</DataGrid.ContextMenu>
 
 					<DataGrid.Columns>
-						<DataGridTextColumn
-								x:DataType="models:Report"
-								Width="*"
-								IsReadOnly="True"
-								Binding="{Binding FormNum.Value}">
+						<DataGridTextColumn x:DataType="models:Report"
+                                            Width="*"
+                                            IsReadOnly="True"
+                                            Binding="{Binding FormNum.Value}">
 							<DataGridTextColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
@@ -201,11 +218,10 @@
 								</DataTemplate>
 							</DataGridTextColumn.HeaderTemplate>
 						</DataGridTextColumn>
-						<DataGridTextColumn
-								x:DataType="models:Report"
-								Width="*"
-								IsReadOnly="True"
-								Binding="{Binding Year.Value}">
+						<DataGridTextColumn x:DataType="models:Report"
+                                            Width="*"
+                                            IsReadOnly="True"
+                                            Binding="{Binding Year.Value}">
 							<DataGridTextColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
@@ -217,11 +233,10 @@
 								</DataTemplate>
 							</DataGridTextColumn.HeaderTemplate>
 						</DataGridTextColumn>
-						<DataGridTextColumn
-								x:DataType="models:Report"
-								Width="2*"
-								IsReadOnly="True"
-								Binding="{Binding ExportDate.Value}">
+						<DataGridTextColumn	x:DataType="models:Report"
+                                            Width="2*"
+                                            IsReadOnly="True"
+                                            Binding="{Binding ExportDate.Value}">
 							<DataGridTextColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
@@ -233,11 +248,10 @@
 								</DataTemplate>
 							</DataGridTextColumn.HeaderTemplate>
 						</DataGridTextColumn>
-						<DataGridTextColumn
-								x:DataType="models:Report"
-								Width="2*"
-								IsReadOnly="True"
-								Binding="{Binding CorrectionNumber.Value}">
+						<DataGridTextColumn x:DataType="models:Report"
+                                            Width="2*"
+                                            IsReadOnly="True"
+                                            Binding="{Binding CorrectionNumber.Value}">
 							<DataGridTextColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
@@ -249,11 +263,10 @@
 								</DataTemplate>
 							</DataGridTextColumn.HeaderTemplate>
 						</DataGridTextColumn>
-						<DataGridTextColumn
-								x:DataType="models:Report"
-								Width="4*"
-								IsReadOnly="False"
-								Binding="{Binding Comments.Value}">
+						<DataGridTextColumn x:DataType="models:Report"
+                                            Width="4*"
+                                            IsReadOnly="False"
+                                            Binding="{Binding Comments.Value}">
 							<DataGridTextColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
@@ -268,76 +281,118 @@
 					</DataGrid.Columns>
 				</DataGrid>
 				<Border Grid.Row="1" Classes="pageControlContainer">
-					<Grid
-						  RowDefinitions="Auto,Auto"
-						  ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
-						<TextBlock Text="Текущая страница"
-							Grid.Row="0" Grid.Column="0" Margin="5"/>
+					<Grid RowDefinitions="Auto,Auto"
+                          ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+						<TextBlock Text="Текущая страница:"
+                                   Grid.Row="0" 
+                                   Grid.Column="0" 
+                                   Margin="5"/>
 
-						<controls:NumericLeftRight
-							Value="{Binding CurrentPageForms}"
-							Grid.Row="0" Grid.Column="1" Margin="5"
-							Minimum="1"/>
+						<controls:NumericLeftRight Value="{Binding CurrentPageForms}"
+                                                   Grid.Row="0" 
+                                                   Grid.Column="1" 
+                                                   Margin="5"
+                                                   Minimum="1"/>
 						<TextBlock Text ="Кол-во страниц:"
-							Grid.Row="0" Grid.Column="2" Margin="5"/>
+                                   Grid.Row="0" 
+                                   Grid.Column="2" 
+                                   Margin="5"/>
 						<TextBlock Text="{Binding TotalPagesForms}"
-							Grid.Row="0" Grid.Column="3" Margin="5"/>
-						<TextBlock Text="Кол-во строчек на странице"
-							Grid.Row="1" Grid.Column="0" Margin="5"/>
-						<controls:NumericLeftRight
-							Value="{Binding RowsCountForms}"
-							Grid.Row="1" Grid.Column="1" Margin="5"
-							Minimum="1"/>
+                                   Grid.Row="0" 
+                                   Grid.Column="3" 
+                                   Margin="5"/>
+						<TextBlock Text="Отчётов на странице:"
+                                   Grid.Row="1" 
+                                   Grid.Column="0" 
+                                   Margin="5"/>
+						<controls:NumericLeftRight Value="{Binding RowsCountForms}"
+                                                   Grid.Row="1" 
+                                                   Grid.Column="1" 
+                                                   Margin="5"
+                                                   Minimum="1"/>
 						<TextBlock Text="Кол-во отчетов:"
-							Grid.Row="1" Grid.Column="2" Margin="5"/>
+                                   Grid.Row="1" 
+                                   Grid.Column="2" 
+                                   Margin="5"/>
 						<TextBlock Text="{Binding TotalRowsForms}"
-							Grid.Row="1" Grid.Column="3" Margin="5"/>
-
-						<TextBlock Text="Кол-во строчек:"
-							Grid.Row="1" Grid.Column="4" Margin="5"/>
+                                   Grid.Row="1" 
+                                   Grid.Column="3" 
+                                   Margin="5"/>
+						<TextBlock Text="Строчек в отчёте:"
+                                   Grid.Row="1" 
+                                   Grid.Column="4" 
+                                   Margin="5"/>
 						<TextBlock Text="{Binding InSelectedReportFormsCount}"
-							Grid.Row="1" Grid.Column="5" Margin="5"/>
-						
+                                   Grid.Row="1" 
+                                   Grid.Column="5" 
+                                   Margin="5"/>
 						<StackPanel Grid.Row="0" Grid.RowSpan="2"
 									Grid.Column="6"
 									Margin="5,0,0,0"
 									Orientation="Horizontal">
-							
-							<Button Content="5.1" Width="35" Height="40" Margin="0,0,2,0"
-								Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="5.1"
-								Background="{Binding FormNumWhiteList, 
-									Converter={StaticResource StringEqualsToColor}, 
-									ConverterParameter=5.1}" />
-							<Button Content="5.2" Width="35" Height="40" Margin="0,0,2,0"
-								Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="5.2"
-								Background="{Binding FormNumWhiteList, 
-									Converter={StaticResource StringEqualsToColor}, 
-									ConverterParameter=5.2}" />
-							<Button Content="5.3" Width="35" Height="40" Margin="0,0,2,0"
-								Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="5.3"
-								Background="{Binding FormNumWhiteList, 
-									Converter={StaticResource StringEqualsToColor}, 
-									ConverterParameter=5.3}" />
-							<Button Content="5.4" Width="35" Height="40" Margin="0,0,2,0"
-								Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="5.4"
-								Background="{Binding FormNumWhiteList, 
-									Converter={StaticResource StringEqualsToColor}, 
-									ConverterParameter=5.4}" />
-							<Button Content="5.5" Width="35" Height="40" Margin="0,0,2,0"
-								Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="5.5"
-								Background="{Binding FormNumWhiteList, 
-									Converter={StaticResource StringEqualsToColor}, 
-									ConverterParameter=5.5}" />
-							<Button Content="5.6" Width="35" Height="40" Margin="0,0,2,0"
-								Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="5.6"
-								Background="{Binding FormNumWhiteList, 
-									Converter={StaticResource StringEqualsToColor}, 
-									ConverterParameter=5.6}" />
-							<Button Content="5.7" Width="35" Height="40" Margin="0,0,2,0"
-								Command="{Binding MainWindowVM.GoToFormNum}" CommandParameter="5.7"
-								Background="{Binding FormNumWhiteList, 
-									Converter={StaticResource StringEqualsToColor}, 
-									ConverterParameter=5.7}" />
+							<Button Content="5.1" 
+                                    Width="35" 
+                                    Height="40" 
+                                    Margin="0,0,2,0"
+                                    Command="{Binding MainWindowVM.GoToFormNum}" 
+                                    CommandParameter="5.1"
+                                    Background="{Binding FormNumWhiteList, 
+										Converter={StaticResource StringEqualsToColor}, 
+                                        ConverterParameter=5.1}" />
+							<Button Content="5.2" 
+                                    Width="35" 
+                                    Height="40" 
+                                    Margin="0,0,2,0"
+									Command="{Binding MainWindowVM.GoToFormNum}" 
+                                    CommandParameter="5.2"
+									Background="{Binding FormNumWhiteList, 
+										Converter={StaticResource StringEqualsToColor}, 
+										ConverterParameter=5.2}" />
+							<Button Content="5.3" 
+                                    Width="35" 
+                                    Height="40" 
+                                    Margin="0,0,2,0"
+                                    Command="{Binding MainWindowVM.GoToFormNum}" 
+                                    CommandParameter="5.3"
+									Background="{Binding FormNumWhiteList, 
+										Converter={StaticResource StringEqualsToColor}, 
+										ConverterParameter=5.3}" />
+							<Button Content="5.4" 
+                                    Width="35" 
+                                    Height="40" 
+                                    Margin="0,0,2,0"
+									Command="{Binding MainWindowVM.GoToFormNum}" 
+                                    CommandParameter="5.4"
+									Background="{Binding FormNumWhiteList, 
+										Converter={StaticResource StringEqualsToColor}, 
+										ConverterParameter=5.4}" />
+							<Button Content="5.5" 
+                                    Width="35" 
+                                    Height="40" 
+                                    Margin="0,0,2,0"
+									Command="{Binding MainWindowVM.GoToFormNum}" 
+                                    CommandParameter="5.5"
+									Background="{Binding FormNumWhiteList, 
+										Converter={StaticResource StringEqualsToColor}, 
+										ConverterParameter=5.5}" />
+							<Button Content="5.6" 
+                                    Width="35" 
+                                    Height="40" 
+                                    Margin="0,0,2,0"
+									Command="{Binding MainWindowVM.GoToFormNum}" 
+                                    CommandParameter="5.6"
+									Background="{Binding FormNumWhiteList, 
+										Converter={StaticResource StringEqualsToColor}, 
+										ConverterParameter=5.6}" />
+							<Button Content="5.7" 
+                                    Width="35" 
+                                    Height="40" 
+                                    Margin="0,0,2,0"
+									Command="{Binding MainWindowVM.GoToFormNum}" 
+                                    CommandParameter="5.7"
+									Background="{Binding FormNumWhiteList, 
+										Converter={StaticResource StringEqualsToColor}, 
+										ConverterParameter=5.7}" />
 						</StackPanel>
 					</Grid>
 				</Border>

@@ -1,15 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Client_App.ViewModels.MainWindowTabs;
 
 public class Forms4TabControlVM : FormsTabControlBaseVM
 {
+    #region Fields
+
+    private protected override byte DefaultFormsPerPage => 10;
+
+    private protected override byte DefaultOrgsPerPage => 8;
+
+    private protected override char FormNum => '4';
+
+    #endregion
+
     #region Constructor
 
     public Forms4TabControlVM() { }
@@ -19,12 +29,6 @@ public class Forms4TabControlVM : FormsTabControlBaseVM
     #endregion
 
     #region Properties
-
-    private protected override byte DefaultOrgsPerPage => 7;
-
-    private protected override byte DefaultFormsPerPage => 8;
-
-    private protected override char FormNum => '4';
 
     public int FilteredRowsOrgs
     {
@@ -43,18 +47,6 @@ public class Forms4TabControlVM : FormsTabControlBaseVM
                                        && reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB.ToLower().Contains(search)));
             }
             return TotalRowsOrgs;
-        }
-    }
-
-    private protected override int InSelectedReportFormsCount
-    {
-        get
-        {
-            if (SelectedReport is null) return 0;
-            return StaticConfiguration.DBModel.ReportCollectionDbSet
-                .Include(rep => rep.Rows41)
-                .FirstOrDefault(rep => rep.Id == SelectedReport.Id)
-                ?.Rows.Count ?? 0;
         }
     }
 
@@ -107,39 +99,14 @@ public class Forms4TabControlVM : FormsTabControlBaseVM
         }
     }
 
-    private protected override string SearchText
+    private protected override Dictionary<string, Func<IQueryable<Report>, IQueryable<object>>> RowSelectors
     {
-        get => _searchText;
-        set
+        get
         {
-            if (_searchText == value) return;
-
-            _searchText = value;
-            OnPropertyChanged();
-
-            // Отменяем предыдущий таймер
-            DebounceCts?.Cancel();
-
-            // Создаем новый таймер
-            DebounceCts = new CancellationTokenSource();
-
-            // Задержка 300мс перед фильтрацией
-            Task.Delay(300, DebounceCts.Token)
-                .ContinueWith(t =>
-                {
-                    if (!t.IsCanceled)
-                    {
-                        Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
-                        {
-                            if (CurrentPageOrgs != 1)
-                                CurrentPageOrgs = 1;
-
-                            OnPropertyChanged(nameof(ReportsCollection));
-                            OnPropertyChanged(nameof(FilteredRowsOrgs));
-                            OnPropertyChanged(nameof(TotalPagesOrgs));
-                        });
-                    }
-                }, TaskScheduler.FromCurrentSynchronizationContext());
+            return new Dictionary<string, Func<IQueryable<Report>, IQueryable<object>>>
+            {
+                ["4.1"] = q => q.Include(x => x.Rows41).SelectMany(x => x.Rows41)
+            };
         }
     }
 
@@ -179,7 +146,14 @@ public class Forms4TabControlVM : FormsTabControlBaseVM
 
     #region Functions
 
-    public override void UpdateOrgsPageInfo()
+    private protected override void NotifySearchTextChanged()
+    {
+        OnPropertyChanged(nameof(ReportsCollection));
+        OnPropertyChanged(nameof(FilteredRowsOrgs));
+        OnPropertyChanged(nameof(TotalPagesOrgs));
+    }
+
+    public void UpdateOrgsPageInfo()
     {
         OnPropertyChanged(nameof(TotalRowsForms));
         OnPropertyChanged(nameof(TotalPagesForms));
