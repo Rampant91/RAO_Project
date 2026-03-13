@@ -20,10 +20,10 @@
 
 	<Grid>
 		<DataGrid
-			Grid.Row="1" Margin="5"
+			Grid.Row="1" 
 			Items="{Binding Passports}"
 			SelectionMode="Single"
-			MaxWidth="1200"
+			MaxWidth="900"
 			SelectedItem="{Binding SelectedPassport}"
 			RowHeight="25"
 			GridLinesVisibility="All"
@@ -37,7 +37,6 @@
 
 			<DataGrid.ContextMenu>
 				<ContextMenu>
-					<MenuItem Header="Контекстное меню"/>
 					<MenuItem Command="{Binding AddPackagePassport}"
 							  Header="Добавить паспорт"/>
 					<MenuItem Command="{Binding ChangePackagePassport}"
@@ -66,9 +65,7 @@
 						</DataTemplate>
 					</DataGridTextColumn.HeaderTemplate>
 				</DataGridTextColumn>
-
-			</DataGrid.Columns>
-			<DataGrid.Columns>
+				
 				<DataGridTextColumn
 					x:DataType="models:PackagePassport"
 					Width="*"
@@ -85,7 +82,40 @@
 						</DataTemplate>
 					</DataGridTextColumn.HeaderTemplate>
 				</DataGridTextColumn>
-
+				
+				<DataGridTextColumn
+					x:DataType="models:PackagePassport"
+					Width="*"
+					IsReadOnly="True"
+					Binding="{Binding PackageType}">
+					<DataGridTextColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto" Margin="3">
+									<TextBlock Grid.Column="0" Text="Наименование"/>
+									<!--<Button Grid.Column="1"/>-->
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTextColumn.HeaderTemplate>
+				</DataGridTextColumn>
+				
+				<DataGridTextColumn
+					x:DataType="models:PackagePassport"
+					Width="*"
+					IsReadOnly="True"
+					Binding="{Binding CorrectionNumber}">
+					<DataGridTextColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto" Margin="3">
+									<TextBlock Grid.Column="0" Text="Номер корректировки"/>
+									<!--<Button Grid.Column="1"/>-->
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTextColumn.HeaderTemplate>
+				</DataGridTextColumn>
 			</DataGrid.Columns>
 		</DataGrid>
 	</Grid>

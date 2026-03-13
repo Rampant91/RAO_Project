@@ -94,7 +94,7 @@
 							<TextBox Margin="5" Width="75" Text="{Binding Path=Report.CorrectionNumber.Value}"/>
 						</StackPanel>
 
-						<Button Grid.Row="4" Content="Сформировать" Command="{Binding GenerateForm17}" ></Button>
+						<Button Grid.Row="4" Content="Добавить в форму сведения из паспорта на упаковку" Command="{Binding GenerateForm17}" ></Button>
 					</Grid>
 				</Border>
 

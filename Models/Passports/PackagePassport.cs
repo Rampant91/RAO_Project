@@ -53,6 +53,21 @@ namespace Models.Passports
         [Key]
         public int Id { get; set; }
 
+        #region CorrectionNumber
+        [NotMapped]
+        private byte _correctionNumber;
+
+        public byte CorrectionNumber
+        {
+            get => _correctionNumber;
+            set
+            {
+                _correctionNumber = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
         #region PassportNum
         [NotMapped]
         private string _passportNum;

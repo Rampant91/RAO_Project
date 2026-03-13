@@ -49,12 +49,40 @@ namespace Client_App.Commands.AsyncCommands.Generate
                 //Проверка строки новая ли это запись или продолжение старой 
                 //Если новая то создаем новый паспорт и добавляем радионуклид
                 //Если продолжение старой то только добавляем радионуклид 
-                if (!string.IsNullOrWhiteSpace(form17.OperationCode_DB)
-                    && !string.IsNullOrWhiteSpace(form17.PassportNumber_DB))
+                if (!string.IsNullOrWhiteSpace(form17.PackType_DB)
+                    && !string.IsNullOrWhiteSpace(form17.PassportNumber_DB)) 
                 {
+                    var passportMatch = FindPassportMatch(form17);
+
+                    if (form17.OperationCode_DB != "01"
+                        && form17.OperationCode_DB != "11"
+                        && form17.OperationCode_DB != "12"
+                        && form17.OperationCode_DB != "14"
+                        && form17.OperationCode_DB != "16"
+                        && form17.OperationCode_DB != "18"
+                        && form17.OperationCode_DB != "55")
+                    {
+                        radionuclidList = null;
+                        continue;
+                    }
+
+
                     var passport = new PackagePassport();
                     passport.ContentCharacteristics.Add(new CharacteristicPrimaryPackage(passport));
                     var characteristic = passport.ContentCharacteristics[0];
+
+
+                    if (passportMatch == null && form17.OperationCode_DB == "18")
+                        passport.CorrectionNumber = 1;
+                    else if (passportMatch != null && form17.OperationCode_DB == "18")
+                        passport.CorrectionNumber = (byte)(passportMatch.CorrectionNumber + 1);
+                    else if (passportMatch == null && form17.OperationCode_DB != "18")
+                        passport.CorrectionNumber = 0;
+                    else if (passportMatch != null && form17.OperationCode_DB != "18")
+                    {
+                        radionuclidList = null;
+                        continue;
+                    }
 
                     // записываем ссылку на новый список радионуклидов
                     radionuclidList = passport.ContentCharacteristics[0].RadionuclidsList;
@@ -145,12 +173,13 @@ namespace Client_App.Commands.AsyncCommands.Generate
             .ShowDialog(owner));
             #endregion
         }
-        private async Task<ObservableCollection<PackagePassport>?> ShowAskPackagePassportMessage(Window owner)
+        private PackagePassport? FindPassportMatch(Form17 form17)
         {
-            var dialog = new AskPackagePassportMessage();
-
-            var report = await dialog.ShowDialog<ObservableCollection<PackagePassport>?>(owner);
-            return report;
+            return StaticConfiguration.DBModel.package_passport.Where(passport =>
+            passport.PassportNum == form17.PassportNumber_DB
+            && passport.PackageType == form17.PackType_DB)
+                .AsEnumerable()
+                .MaxBy(passport => passport.CorrectionNumber);
         }
     }
 }

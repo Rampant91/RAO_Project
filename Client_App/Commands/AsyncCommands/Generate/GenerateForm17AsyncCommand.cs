@@ -28,26 +28,26 @@ namespace Client_App.Commands.AsyncCommands.Generate
             if (passportCollection == null ||
                 passportCollection.Count <= 0) return;
 
-            Report.Rows17.Clear();
+            var index = Report.Rows17.Max(form => form.NumberInOrder_DB);
 
             foreach (var passport in passportCollection)
             {
                 var characteristic = passport.ContentCharacteristics[0];
                 var form17 = new Form17();
+
+                index++;
+                form17.NumberInOrder_DB = index;
+
                 Report.Rows17.Add(form17);
 
                 form17.PackName_DB = "контейнер";
 
                 form17.PackType_DB = passport.PackageType;
 
-                //TODO
-                //Заменить try catch на проверку через Regex
-                try
-                {
+                if (characteristic.PackageIdNum.Split('/').Length == 3)
                     form17.PackFactoryNumber_DB = characteristic.PackageIdNum.Split('/')[1];
-                }
-                catch
-                { }
+
+
                 form17.PackNumber_DB = characteristic.PackageIdNum;
                 form17.FormingDate_DB = passport.ManufactureDate.ToString(new CultureInfo("ru-RU"));
                 form17.PassportNumber_DB = passport.PassportNum;
@@ -73,13 +73,16 @@ namespace Client_App.Commands.AsyncCommands.Generate
                     radionuclidOnlyForm17.Radionuclids_DB = characteristic.RadionuclidsList[i].Name;
                     radionuclidOnlyForm17.SpecificActivity_DB = characteristic.RadionuclidsList[i].Activity.ToString("e5");
                     Report.Rows17.Add(radionuclidOnlyForm17);
+
+                    index++;
+                    radionuclidOnlyForm17.NumberInOrder_DB = index;
                 }
             }
 
-            for (int i=0; i<Report.Rows17.Count; i++)
-            {
-                Report.Rows17[i].NumberInOrder_DB = i + 1;
-            }
+            //for (int i=0; i<Report.Rows17.Count; i++)
+            //{
+            //    Report.Rows17[i].NumberInOrder_DB = i + 1;
+            //}
             formVM.UpdateFormList();
             formVM.UpdatePageInfo();
         }
