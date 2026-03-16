@@ -144,7 +144,7 @@
 							</DataGridTemplateColumn.HeaderTemplate>
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate x:DataType="models:Reports">
-									<TextBlock Margin="5" Text="{Binding Master.OkpoRep.Value}"/>
+									<TextBlock Margin="5" Text="{Binding Master.OkpoRep.Value, Mode=OneWay}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
