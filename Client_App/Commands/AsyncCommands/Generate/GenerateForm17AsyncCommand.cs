@@ -4,6 +4,7 @@ using Client_App.Views;
 using Models.Collections;
 using Models.Forms.Form1;
 using Models.Passports;
+using Spravochniki;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -64,13 +65,22 @@ namespace Client_App.Commands.AsyncCommands.Generate
 
                 if (characteristic.RadionuclidsList.Count > 0)
                 {
-                    form17.Radionuclids_DB = characteristic.RadionuclidsList[0].Name;
+                    var radionuclidName = characteristic.RadionuclidsList[0].Name;
+                    if (Spravochniks.SprRadionuclids.Any(rad => rad.latinName == characteristic.RadionuclidsList[0].Name))
+                        radionuclidName = Spravochniks.SprRadionuclids.FirstOrDefault(rad => rad.latinName == characteristic.RadionuclidsList[0].Name).rusName;
+
+                    form17.Radionuclids_DB = radionuclidName;
                     form17.SpecificActivity_DB = characteristic.RadionuclidsList[0].Activity.ToString("e5");
                 }
                 for (int i = 1; i< characteristic.RadionuclidsList.Count; i++)
                 {
                     var radionuclidOnlyForm17 = new Form17();
-                    radionuclidOnlyForm17.Radionuclids_DB = characteristic.RadionuclidsList[i].Name;
+
+                    var radionuclidName = characteristic.RadionuclidsList[i].Name;
+                    if (Spravochniks.SprRadionuclids.Any(rad => rad.latinName == characteristic.RadionuclidsList[i].Name))
+                        radionuclidName = Spravochniks.SprRadionuclids.FirstOrDefault(rad => rad.latinName == characteristic.RadionuclidsList[i].Name).rusName;
+
+                    radionuclidOnlyForm17.Radionuclids_DB = radionuclidName;
                     radionuclidOnlyForm17.SpecificActivity_DB = characteristic.RadionuclidsList[i].Activity.ToString("e5");
                     Report.Rows17.Add(radionuclidOnlyForm17);
 

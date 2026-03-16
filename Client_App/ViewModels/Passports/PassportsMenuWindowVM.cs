@@ -1,5 +1,6 @@
 ﻿using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.Change;
+using Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 using Models.DBRealization;
 using Models.Passports;
 using System;
@@ -45,6 +46,7 @@ namespace Client_App.ViewModels.Passports
 
         public ICommand AddPackagePassport { get; set; }
         public ICommand ChangePackagePassport { get; set; }
+        public ICommand ExcelExportPackagePassport { get; set; }
         public ICommand DeletePackagePassport { get; set; }
         #endregion
 
@@ -53,6 +55,7 @@ namespace Client_App.ViewModels.Passports
         {
             AddPackagePassport = new AddPackagePassportAsyncCommand(this);
             ChangePackagePassport = new ChangePackagePassportAsyncCommand();
+            ExcelExportPackagePassport = new ExcelExportPackagePassport();
             DeletePackagePassport = new DeletePackagePassportAsyncCommand(this);
         }
         #endregion

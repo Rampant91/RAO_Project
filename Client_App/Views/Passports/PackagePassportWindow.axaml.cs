@@ -87,8 +87,8 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
             var modifiedEntities = db.ChangeTracker.Entries()
                 .Where(x => x.State != EntityState.Unchanged);
 
-            if (modifiedEntities.All(x => x.Entity is PackagePassport passport)
-                || !db.ChangeTracker.HasChanges() || vm.SkipChangeTracking)
+            if (modifiedEntities.Count() <= 0 
+                || vm.SkipChangeTracking)
             {
                 if (vm.SkipChangeTracking) vm.SkipChangeTracking = false;
                 desktop.MainWindow.WindowState = OwnerPrevState;

@@ -119,6 +119,9 @@
     <Compile Update="Views\Forms\Forms2\Form_21.axaml.cs">
       <DependentUpon>Form_21.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Forms\Forms3\Form_30.axaml.cs">
+      <DependentUpon>Form_30.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Forms\Forms5\Form_57.axaml.cs">
       <DependentUpon>Form_57.axaml</DependentUpon>
     </Compile>

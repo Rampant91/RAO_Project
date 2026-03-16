@@ -42,6 +42,9 @@
 					<MenuItem Command="{Binding ChangePackagePassport}"
 							  CommandParameter="{Binding SelectedPassport.Id}"
 							  Header="Редактировать паспорт"/>
+					<MenuItem Command="{Binding ExcelExportPackagePassport}"
+							  CommandParameter="{Binding SelectedPassport.Id}"
+							  Header="Выгрузить в Excel паспорт"/>
 					<MenuItem Command="{Binding DeletePackagePassport}"
 							  CommandParameter="{Binding SelectedPassport}"
 							  Header="Удалить паспорт"/>

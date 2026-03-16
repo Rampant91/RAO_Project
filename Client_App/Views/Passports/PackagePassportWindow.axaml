@@ -46,8 +46,10 @@
 				</Style>
 			</Menu.Styles>
 			<MenuItem Header="Файл">
-					<MenuItem Header="Сохранить"
-							  Command="{Binding SavePassport}"/>
+				<MenuItem Header="Сохранить"
+						  Command="{Binding SavePassport}"/>
+				<MenuItem Header="Выгрузить в Excel"
+						  Command="{Binding SavePassport}"/>
 			</MenuItem>
 		</Menu>
 		<ScrollViewer Grid.Row ="1"
