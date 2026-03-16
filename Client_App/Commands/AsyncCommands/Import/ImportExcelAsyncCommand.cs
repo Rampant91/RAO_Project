@@ -453,29 +453,58 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                     }
                     else
                     {
-                        #region MessageNewOrg
+                        if (worksheet0.Name is "1.0" or "2.0")
+                        {
+                            #region MessageNewOrg
 
-                        an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                            {
-                                ButtonDefinitions =
-                                [
-                                    new ButtonDefinition { Name = "Добавить", IsDefault = true },
-                                    new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
-                                ],
-                                ContentTitle = "Импорт из .xlsx",
-                                ContentHeader = "Уведомление",
-                                ContentMessage = $"Будет добавлена новая организация ({repNumber})." +
-                                                 $"{Environment.NewLine}" +
-                                                 $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
-                                                 $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
-                                                 $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
-                                MinWidth = 400,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(Desktop.MainWindow));
+                            an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                {
+                                    ButtonDefinitions =
+                                    [
+                                        new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                                        new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
+                                    ],
+                                    ContentTitle = "Импорт из .xlsx",
+                                    ContentHeader = "Уведомление",
+                                    ContentMessage = $"Будет добавлена новая организация ({repNumber})." +
+                                                     $"{Environment.NewLine}" +
+                                                     $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
+                                                     $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
+                                                     $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
+                                    MinWidth = 400,
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                })
+                                .ShowDialog(Desktop.MainWindow));
 
-                        #endregion
+                            #endregion
+                        }
+                        else if (worksheet0.Name.ToLower() is "форма 4.0" or "форма 5.0")
+                        {
+                            #region MessageNewOrg 4.0 5.0
+
+                            an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                {
+                                    ButtonDefinitions =
+                                    [
+                                        new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                                        new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
+                                    ],
+                                    ContentTitle = "Импорт из .xlsx",
+                                    ContentHeader = "Уведомление",
+                                    ContentMessage =
+                                        $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {ImpRepFormNum}." +
+                                        $"{Environment.NewLine}" +
+                                        $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                        $"{Environment.NewLine}",
+                                    MinWidth = 400,
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                })
+                                .ShowDialog(Desktop.MainWindow));
+
+                            #endregion
+                        }
                     }
                 }
 
