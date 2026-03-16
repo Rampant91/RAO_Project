@@ -442,7 +442,8 @@ public partial class Form41 : Form
             if ((NumOfFormsWithInventarizationInfo.Value > 0
                 || NumOfFormsWithoutInventarizationInfo.Value > 0
                 || NumOfForms212.Value > 0)
-                && LicenseOrRegistrationInfo.Value is "" or null)
+                && LicenseOrRegistrationInfo.Value is "" or null
+                && Note.Value is "" or null)
             {
                 ToolTipText = "Если у организации есть, хотя бы 1 отчет, то необходимо заполнить \"Сведения о лицензии\"";
                 return Color.FromArgb(50, 139, 0, 255);
