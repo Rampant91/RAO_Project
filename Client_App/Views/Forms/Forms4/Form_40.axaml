@@ -41,6 +41,8 @@
 				<TextBlock Grid.Row="0"
                            Grid.Column="0"
                            Margin="5"
+                           VerticalAlignment="Center"
+                           TextAlignment="Right"
                            Text="Код и субъект Российской Федерации"/>
 				<Grid Grid.Row="0"
 					  Grid.Column="1"
@@ -112,9 +114,9 @@
                         <!-- Строка 1 - Наименование -->
                         <TextBlock Grid.Row="1"
                                    Grid.Column="0"
-                                   Height="42"
                                    Margin="5,8"
                                    VerticalAlignment="Center"
+                                   TextAlignment="Right"
                                    TextWrapping="Wrap"
                                    Text="Наименование органа исполнительной власти субъекта Российской Федерации"/>
                         <TextBox Grid.Row="1"
@@ -130,9 +132,9 @@
                         <!-- Строка 2 - Сокращённое наименование -->
                         <TextBlock Grid.Row="2"
                                    Grid.Column="0"
-                                   Height="26"
                                    Margin="5,0"
                                    VerticalAlignment="Center"
+                                   TextAlignment="Right"
                                    TextWrapping="Wrap"
                                    Text="Сокращенное наименование органа исполнительной власти субъекта Российской Федерации (при наличии)"/>
                         <TextBox Grid.Row="2"
@@ -145,9 +147,9 @@
                         <!-- Строка 3 - Адрес органа управления -->
                         <TextBlock Grid.Row="3"
                                    Grid.Column="0"
-                                   Height="42"
                                    Margin="5,8"
                                    VerticalAlignment="Center"
+                                   TextAlignment="Right"
                                    TextWrapping="Wrap"
                                    Text="Место нахождения органа управления"/>
                         <TextBox Grid.Row="3"
@@ -163,9 +165,9 @@
                         <!-- Строка 4 - Должность и ФИО руководителя -->
                         <TextBlock Grid.Row="4"
                                    Grid.Column="0"
-                                   Height="42"
                                    Margin="5,8"
                                    VerticalAlignment="Center"
+                                   TextAlignment="Right"
                                    TextWrapping="Wrap"
                                    Text="Должность, фамилия, имя, отчество (при наличии) руководителя"/>
                         <TextBox Grid.Row="4"
@@ -181,9 +183,9 @@
                         <!-- Строка 5 - Должность и ФИО исполнителя -->
                         <TextBlock Grid.Row="5"
                                    Grid.Column="0"
-                                   Height="42"
                                    Margin="5,8"
                                    VerticalAlignment="Center"
+                                   TextAlignment="Right"
                                    TextWrapping="Wrap"
                                    Text="Должность, фамилия, имя, отчество (при наличии) ответственного исполнителя"/>
                         <TextBox Grid.Row="5"
@@ -199,9 +201,9 @@
                         <!-- Строка 6 - Телефон -->
                         <TextBlock Grid.Row="6"
                                    Grid.Column="0"
-                                   Height="26"
                                    Margin="5,0"
                                    VerticalAlignment="Center"
+                                   TextAlignment="Right"
                                    Text="Телефон"/>
                         <TextBox Grid.Row="6"
                                  Grid.Column="1"
@@ -216,6 +218,7 @@
                                    Height="26"
                                    Margin="5,0"
                                    VerticalAlignment="Center"
+                                   TextAlignment="Right"
                                    Text="Факс"/>
                         <TextBox Grid.Row="7"
                                  Grid.Column="1"
@@ -230,6 +233,7 @@
                                    Height="26"
                                    Margin="5,0"
                                    VerticalAlignment="Center"
+                                   TextAlignment="Right"
                                    TextWrapping="Wrap"
                                    Text="Адрес электронной почты (при наличии)"/>
                         <TextBox Grid.Row="8"
@@ -270,9 +274,9 @@
                         <!-- Строка 1 - Наименование -->
                         <TextBlock Grid.Row="1"
                                    Grid.Column="0"
-                                   Height="26"
                                    Margin="5,8"
                                    VerticalAlignment="Center"
+                                   TextAlignment="Right"
                                    TextWrapping="Wrap"
                                    Text="Наименование организации"/>
                         <TextBox Grid.Row="1"
@@ -285,9 +289,9 @@
                         <!-- Строка 2 - Сокращенное наименование -->
                         <TextBlock Grid.Row="2"
                                    Grid.Column="0"
-                                   Height="42"
                                    Margin="5,0"
                                    VerticalAlignment="Center"
+                                   TextAlignment="Right"
                                    TextWrapping="Wrap"
                                    Text="Сокращенное наименование организации (при наличии)"/>
                         <TextBox Grid.Row="2"
@@ -303,9 +307,9 @@
                         <!-- Строка 3 - Адрес -->
                         <TextBlock Grid.Row="3"
                                    Grid.Column="0"
-                                   Height="26"
                                    Margin="5,8"
                                    VerticalAlignment="Center"
+                                   TextAlignment="Right"
                                    TextWrapping="Wrap"
                                    Text="Адрес РИАЦ"/>
                         <TextBox Grid.Row="3"
@@ -318,9 +322,9 @@
                         <!-- Строка 4 - Должность и ФИО руководителя -->
                         <TextBlock Grid.Row="4"
                                    Grid.Column="0"
-                                   Height="42"
                                    Margin="5,8"
                                    VerticalAlignment="Center"
+                                   TextAlignment="Right"
                                    TextWrapping="Wrap"
                                    Text="Должность, фамилия, имя, отчество (при наличии) руководителя"/>
                         <TextBox Grid.Row="4"
@@ -336,9 +340,9 @@
                         <!-- Строка 5 - Должность и ФИО исполнителя -->
                         <TextBlock Grid.Row="5"
                                    Grid.Column="0"
-                                   Height="42"
                                    Margin="5,8"
                                    VerticalAlignment="Center"
+                                   TextAlignment="Right"
                                    TextWrapping="Wrap"
                                    Text="Должность, фамилия, имя, отчество (при наличии) ответственного исполнителя"/>
                         <TextBox Grid.Row="5"
@@ -354,9 +358,9 @@
                         <!-- Строка 6 - Телефон -->
                         <TextBlock Grid.Row="6"
                                    Grid.Column="0"
-                                   Height="42"
                                    Margin="5,0"
                                    VerticalAlignment="Center"
+                                   TextAlignment="Right"
                                    TextWrapping="Wrap"
                                    Text="Телефон"/>
                         <TextBox Grid.Row="6"
@@ -372,9 +376,9 @@
                         <!-- Строка 7 - Факс -->
                         <TextBlock Grid.Row="7"
                                    Grid.Column="0"
-                                   Height="26"
                                    Margin="5,0"
                                    VerticalAlignment="Center"
+                                   TextAlignment="Right"
                                    Text="Факс"/>
                         <TextBox Grid.Row="7"
                                  Grid.Column="1"
@@ -386,9 +390,9 @@
                         <!-- Строка 8 - Адрес электронной почты -->
                         <TextBlock Grid.Row="8"
                                    Grid.Column="0"
-                                   Height="26"
                                    Margin="5,0"
                                    VerticalAlignment="Center"
+                                   TextAlignment="Right"
                                    TextWrapping="Wrap"
                                    Text="Адрес электронной почты (при наличии)"/>
                         <TextBox Grid.Row="8"
