@@ -1,33 +1,26 @@
-<Window
-    x:Class="Client_App.Views.Forms.Forms4.Form_41"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms4"
-    xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
-	xmlns:local="using:Client_App.Behaviors"
-	xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-    xmlns:forms4="clr-namespace:Models.Forms.Form4;assembly=Models"
-    xmlns:forms="clr-namespace:Models.Forms;assembly=Models"
-	xmlns:behaviors="using:Avalonia.Xaml.Interactions.Core"
-	xmlns:controls="clr-namespace:Client_App.Views.Controls"
-    Title="Форма 4.1"
-    d:DesignHeight="450"
-    d:DesignWidth="900"
-    x:DataType="vm:Form_41VM"
-    mc:Ignorable="d"
-    KeyUp="DataGrid_KeyUp"
-	x:Name="4.1"
-	WindowStartupLocation="CenterScreen"
-	MinWidth="800" MinHeight="600">
+<Window x:Class="Client_App.Views.Forms.Forms4.Form_41"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms4"
+        xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
+        xmlns:local="using:Client_App.Behaviors"
+        xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+        xmlns:forms4="clr-namespace:Models.Forms.Form4;assembly=Models"
+        xmlns:controls="clr-namespace:Client_App.Views.Controls"
+        Title="Форма 4.1"
+        d:DesignHeight="450"
+        d:DesignWidth="900"
+        x:DataType="vm:Form_41VM"
+        mc:Ignorable="d"
+        KeyUp="DataGrid_KeyUp"
+        x:Name="4.1"
+        WindowStartupLocation="CenterScreen"
+        MinWidth="800" MinHeight="600">
 
 	<Window.Resources>
-		<converter:DataGridLengthToGridLengthConverter x:Key="LengthConverter"/>
-		<converter:NullToStringConverter x:Key="NullToStringConverter"/>
-		<converter:DateConverter x:Key="DateConverter"/>
 		<converter:IntToEmptyStringConverter x:Key="IntToEmptyStringConverter"/>
-		<converter:RowColorConverter x:Key="RowColorConverter"/>
 		<converter:ColorBlendConverter x:Key="ColorBlendConverter"/>
 		<converter:SystemDrawingColorToSolidColorBrush x:Key="SystemDrawingColorToSolidColorBrush"/>
 	</Window.Resources>
@@ -50,31 +43,38 @@
                   Header="Скрыть/Раскрыть верхнюю панель">
 			<WrapPanel Classes="header">
 				<Border Classes="borderContainer">
-					<controls:SelectReportPopup
-                        Grid.Row="1"
-                        DataContext="{Binding SelectReportPopupVM}"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"/>
+					<controls:SelectReportPopup DataContext="{Binding SelectReportPopupVM}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"/>
 				</Border>
 				<Border Classes="borderContainer">
 					<Grid Margin="5" RowDefinitions="*,*,*,*,*">
 
 						<Grid ColumnDefinitions="*,*"  Grid.Row="0">
-							<TextBlock Grid.Column="0" Margin="5" >Отчетный год</TextBlock>
+							<TextBlock Grid.Column="0" Margin="5" Text="Отчетный год"/>
 							<TextBox Grid.Column="1" Text="{Binding Report.Year.Value}"/>
 						</Grid>
 
 						<StackPanel Orientation="Horizontal" Grid.Row="1">
-							<Button Margin="5" Command="{Binding CheckForm}">Проверить</Button>
-							<Button Margin="5" Command="{Binding SaveReport}">Сохранить</Button>
+							<Button Margin="5" 
+                                    Content="Проверить"
+                                    Command="{Binding CheckForm}" />
+							<Button Margin="5" 
+                                    Content="Сохранить"
+                                    Command="{Binding SaveReport}" />
 						</StackPanel>
 
 						<StackPanel  Orientation="Horizontal" Grid.Row="2">
-							<TextBlock Margin="5">Номер корректировки:</TextBlock>
-							<TextBox Margin="5" Width="75" Text="{Binding Path=Report.CorrectionNumber.Value}"/>
+							<TextBlock Margin="5" 
+                                       Text="Номер корректировки:"/>
+							<TextBox Margin="5" 
+                                     Width="75" 
+                                     Text="{Binding Path=Report.CorrectionNumber.Value}"/>
 						</StackPanel>
 
-						<Button Grid.Row="3" Content="Сформировать" Command="{Binding GenerateForm41}" ></Button>
+						<Button Grid.Row="3" 
+                                Content="Сформировать" 
+                                Command="{Binding GenerateForm41}" />
 					</Grid>
 				</Border>
 				
@@ -83,11 +83,10 @@
 				</Border>
 
 				<Border Classes="borderContainer">
-					<Button
-						Margin="5"
-						Command="{Binding SetDefaultColumnWidth}"
-						CommandParameter="{Binding ElementName=dataGrid}"
-						Content="Выставить ширину колонок по умолчанию" />
+					<Button Margin="5"
+                            Command="{Binding SetDefaultColumnWidth}"
+                            CommandParameter="{Binding ElementName=dataGrid}"
+                            Content="Выставить ширину колонок по умолчанию" />
 				</Border>
 
 			</WrapPanel>
@@ -147,41 +146,40 @@
 					<!--Первый уровень заголовков-->
 
 					<Border Grid.Column="0" Grid.Row="1">
-						<TextBlock>№ п/п</TextBlock>
+						<TextBlock Text="№ п/п"/>
 					</Border>
 					<Border Grid.Column="1" Grid.Row="1">
-						<TextBlock>Регистрационный номер организации в СГУК РВ в РАО</TextBlock>
+						<TextBlock Text="Регистрационный номер организации в СГУК РВ в РАО"/>
 					</Border>
 					<Border Grid.Column="2" Grid.Row="1">
-						<TextBlock>Код ОКПО организации</TextBlock>
+						<TextBlock Text="Код ОКПО организации"/>
 					</Border>
 					<Border Grid.Column="3" Grid.Row="1">
-						<TextBlock>Наименование организации (сокращенное наименование при наличии)</TextBlock>
+						<TextBlock Text="Наименование организации (сокращенное наименование при наличии)"/>
 					</Border>
 					<Border Grid.Column="4" Grid.Row="1">
-						<TextBlock>Сведения о лицензии (лицензиях) и/или решении о регистрации</TextBlock>
+						<TextBlock Text="Сведения о лицензии (лицензиях) и/или решении о регистрации"/>
 					</Border>
 					<Border Grid.Column="5" Grid.Row="1">
-						<TextBlock>Количество отчетных форм 1.1-1.4, содержащих сведения об инвентаризации </TextBlock>
+						<TextBlock Text="Количество отчетных форм 1.1-1.4, содержащих сведения об инвентаризации"/>
 					</Border>
 					<Border Grid.Column="6" Grid.Row="1">
-						<TextBlock>Количество отчетов по формам 1.1-1.4, за исключением форм со сведениями по инвентаризации</TextBlock>
+						<TextBlock Text="Количество отчетов по формам 1.1-1.4, за исключением форм со сведениями по инвентаризации"/>
 					</Border>
 					<Border Grid.Column="7" Grid.Row="1">
-						<TextBlock>Количество отчетов по форме 2.12</TextBlock>
+						<TextBlock Text="Количество отчетов по форме 2.12"/>
 					</Border>
 					<Border Grid.Column="8" Grid.Row="1">
-						<TextBlock>Примечание</TextBlock>
+						<TextBlock Text="Примечание"/>
 					</Border>
 				</Grid>
 
-				<DataGrid
-                    Grid.Row="1"
-					Classes="table"
-					x:CompileBindings="True"
-					x:Name="dataGrid"
-					Items="{Binding FormList}"
-					SelectedItem="{Binding SelectedForm}">
+				<DataGrid Grid.Row="1"
+                          Classes="table"
+                          x:CompileBindings="True"
+                          x:Name="dataGrid"
+                          Items="{Binding FormList}"
+                          SelectedItem="{Binding SelectedForm}">
 
 					<DataGrid.Styles>
 						<Style Selector="DataGridCell">

@@ -524,15 +524,15 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Ошибка при чтении файла .RAODB",
-                        ContentHeader = "Ошибка",
+                        ContentTitle = "Ошибка",
+                        ContentHeader = "Ошибка при чтении файла .RAODB",
                         ContentMessage = $"Возникла ошибка при чтении файла базы данных (БД)" +
                                          $"{Environment.NewLine}{dbFileInfo.FullName}." +
                                          $"{Environment.NewLine}Файл БД был перемещён по пути " +
                                          $"{Environment.NewLine}{actualReserveFileFullPath}." +
                                          $"{Environment.NewLine}Программа запущена с новым пустым файлом БД" +
                                          $"{Environment.NewLine}{StaticConfiguration.DBPath}." +
-                                         $"{Environment.NewLine}Для восстановления данных воспользуйтель функцией \"Импорт -> из RAODB\"," +
+                                         $"{Environment.NewLine}Для восстановления данных воспользуйтесь функцией \"Импорт -> из RAODB\"," +
                                          $"{Environment.NewLine}указав путь к резервному файлу.",
 
                         MinWidth = 400,
@@ -550,8 +550,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Импорт из .raodb",
-                        ContentHeader = "Ошибка",
+                        ContentTitle = "Ошибка",
+                        ContentHeader = "Ошибка при создании файла .RAODB",
                         ContentMessage = $"Не удалось создать файл базы данных." +
                                          $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
                         MinWidth = 400,
@@ -577,8 +577,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Импорт из .raodb",
-                        ContentHeader = "Ошибка",
+                        ContentTitle = "Ошибка",
+                        ContentHeader = "Ошибка при создании файла .RAODB",
                         ContentMessage = $"Не удалось создать файл базы данных." +
                                          $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
                         MinWidth = 400,
@@ -608,8 +608,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
-                    ContentTitle = "Импорт из .raodb",
-                    ContentHeader = "Ошибка",
+                    ContentTitle = "Ошибка",
+                    ContentHeader = "Ошибка при создании файла .RAODB",
                     ContentMessage = $"Не удалось создать файл базы данных." +
                                      $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
                     MinWidth = 400,
@@ -636,8 +636,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
-                    ContentTitle = "Импорт из .raodb",
-                    ContentHeader = "Ошибка",
+                    ContentTitle = "Ошибка",
+                    ContentHeader = "Ошибка при создании файла .RAODB",
                     ContentMessage = $"Не удалось создать файл базы данных." +
                                      $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
                     MinWidth = 400,

@@ -1,3 +1,6 @@
+using System;
+using System.ComponentModel;
+using System.Threading;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -5,18 +8,13 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.Logger;
-using Client_App.ViewModels.Forms.Forms4;
 using Client_App.ViewModels.Forms.Forms5;
-using Client_App.Views;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.Forms;
-using System;
-using System.ComponentModel;
-using System.Threading;
 
-namespace Client_App;
+namespace Client_App.Views.Forms.Forms5;
 
 public partial class Form_50 : BaseWindow<Form_50VM>
 {
