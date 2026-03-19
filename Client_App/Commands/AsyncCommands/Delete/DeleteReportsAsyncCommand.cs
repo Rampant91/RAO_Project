@@ -4,7 +4,6 @@ using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.ViewModels;
 using Client_App.Views;
-using Client_App.Logging;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;

@@ -327,7 +327,7 @@
                HorizontalAlignment="Stretch"
                VerticalAlignment="Stretch">
 
-            <TabControl SelectedIndex ="{Binding SelectedReportType, Mode=OneWay}" 
+            <TabControl SelectedIndex ="{Binding SelectedReportType, Mode=TwoWay}" 
                         SelectionChanged="TabControl_SelectionChanged">
 
                 <!--Пустой элемент для начала отсчета индекса с 1 -->
