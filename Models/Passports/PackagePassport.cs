@@ -31,7 +31,7 @@ namespace Models.Passports
             {
                 AddError(propertyName, "Поле обязательно для заполнения.");
             }
-            else if (okpo.Length != 8 && _ownerOkpo.Length != 14)
+            else if (okpo.Length != 8 && okpo.Length != 14)
             {
                 AddError(propertyName, "Длина должна быть 8 или 14 символов.");
             }
