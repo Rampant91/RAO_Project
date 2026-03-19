@@ -194,6 +194,8 @@ public partial class ExcelExportFormsAsyncCommand(MainWindowVM mainWindowVM) : E
             Worksheet.Cells.AutoFitColumns();
             WorksheetPrim.Cells.AutoFitColumns();
         }
+        Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
+
         return Task.CompletedTask;
     }
 

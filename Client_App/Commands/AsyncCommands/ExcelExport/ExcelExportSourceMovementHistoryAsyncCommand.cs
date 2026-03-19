@@ -525,6 +525,8 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         Worksheet.Cells[1, 30].Value = "тип";
         Worksheet.Cells[1, 31].Value = "номер";
 
+        Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
+
         #endregion
 
         #region 1.5
@@ -566,6 +568,8 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         Worksheet.Cells[1, 33].Value = "Номер договора";
 
         #endregion
+
+        Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
 
         return Task.CompletedTask;
     }

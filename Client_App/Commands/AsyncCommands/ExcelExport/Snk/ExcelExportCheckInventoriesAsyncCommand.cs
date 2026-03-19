@@ -201,6 +201,8 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
         {
             worksheet.View.FreezePanes(row, 1);
         }
+        worksheet.Cells[worksheet.Dimension.Address].AutoFilter = true;
+
         return Task.CompletedTask;
     }
 

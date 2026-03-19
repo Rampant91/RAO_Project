@@ -232,6 +232,7 @@ public class ExcelExportExecutorsAsyncCommand : ExcelExportListOfFormsBaseAsyncC
                 Worksheet.Cells[_currentRow, 8].Value = rep.ExecEmail_DB;
                 break;
         }
+        Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
         return Task.CompletedTask;
     }
 

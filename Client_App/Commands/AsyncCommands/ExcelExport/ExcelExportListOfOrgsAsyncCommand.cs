@@ -514,6 +514,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Column(col).AutoFit();
             }
         }
+        Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
         Worksheet.View.FreezePanes(2, 1);
 
         return Task.CompletedTask;
@@ -639,6 +640,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
             Worksheet.Column(5).AutoFit();
             Worksheet.Column(6).AutoFit();
         }
+        Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
 
         return Task.CompletedTask;
     }

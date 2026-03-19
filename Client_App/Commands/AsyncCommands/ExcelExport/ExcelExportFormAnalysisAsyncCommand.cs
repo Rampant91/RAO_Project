@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -196,6 +195,7 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
             WorksheetPrim.Cells.AutoFitColumns();
         }
         Worksheet.View.FreezePanes(2, 1);
+        Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
         WorksheetPrim.View.FreezePanes(2, 1);
 
         return Task.FromResult(masterHeaderLength);
