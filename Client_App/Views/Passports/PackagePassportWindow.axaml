@@ -48,8 +48,6 @@
 			<MenuItem Header="Файл">
 				<MenuItem Header="Сохранить"
 						  Command="{Binding SavePassport}"/>
-				<MenuItem Header="Выгрузить в Excel"
-						  Command="{Binding SavePassport}"/>
 			</MenuItem>
 		</Menu>
 		<ScrollViewer Grid.Row ="1"
@@ -279,15 +277,20 @@
 								<Border Grid.Row="0"
 										Grid.Column="10"
 										Grid.ColumnSpan="2">
-									<TextBlock Text="Масса, кг (объем, куб. м)"/>
+									<TextBlock Text="Масса, кг"/>
 								</Border>
 								<Border Grid.Row="0"
 										Grid.Column="12"
 										Grid.ColumnSpan="2">
-									<TextBlock Text="Мощность дозы излучения,мк3в/ч на расстоянии от поверхности, м"/>
+									<TextBlock Text="Объем, м³"/>
 								</Border>
 								<Border Grid.Row="0"
 										Grid.Column="14"
+										Grid.ColumnSpan="2">
+									<TextBlock Text="Мощность дозы излучения,мк3в/ч на расстоянии от поверхности, м"/>
+								</Border>
+								<Border Grid.Row="0"
+										Grid.Column="16"
 										Grid.ColumnSpan="2">
 									<TextBlock Text="Уровень нефиксированного загрязнения, частиц/(мин*см²)"/>
 								</Border>
@@ -330,18 +333,24 @@
 									<TextBlock Text="РАО в упаковке"/>
 								</Border>
 								<Border Grid.Row="1" Grid.Column="12">
-									<TextBlock Text="0,1"/>
+									<TextBlock Text="Упаковки РАО"/>
 								</Border>
 								<Border Grid.Row="1" Grid.Column="13">
-									<TextBlock Text="1"/>
+									<TextBlock Text="РАО в упаковке"/>
 								</Border>
 								<Border Grid.Row="1" Grid.Column="14">
-									<TextBlock Text="альфа"/>
+									<TextBlock Text="0,1"/>
 								</Border>
 								<Border Grid.Row="1" Grid.Column="15">
+									<TextBlock Text="1"/>
+								</Border>
+								<Border Grid.Row="1" Grid.Column="16">
+									<TextBlock Text="альфа"/>
+								</Border>
+								<Border Grid.Row="1" Grid.Column="17">
 									<TextBlock Text="бета/гамма"/>
 								</Border>
-								<Border Grid.Row="0" Grid.Column="16"
+								<Border Grid.Row="0" Grid.Column="18"
 										Grid.RowSpan="2">
 									<TextBlock Text="Тепловыделение, Вт/м³, Вт/упаковку"/>
 								</Border>
@@ -658,6 +667,40 @@
 										</DataGridTemplateColumn.CellTemplate>
 									</DataGridTemplateColumn>
 
+									<DataGridTemplateColumn>
+										<DataGridTemplateColumn.HeaderTemplate>
+											<DataTemplate>
+												<Border Classes="headerTemplate">
+													<Grid ColumnDefinitions="*,Auto">
+														<TextBlock Grid.Column="0" Text="18" />
+													</Grid>
+												</Border>
+											</DataTemplate>
+										</DataGridTemplateColumn.HeaderTemplate>
+										<DataGridTemplateColumn.CellTemplate>
+											<DataTemplate>
+												<TextBox/>
+											</DataTemplate>
+										</DataGridTemplateColumn.CellTemplate>
+									</DataGridTemplateColumn>
+
+									<DataGridTemplateColumn>
+										<DataGridTemplateColumn.HeaderTemplate>
+											<DataTemplate>
+												<Border Classes="headerTemplate">
+													<Grid ColumnDefinitions="*,Auto">
+														<TextBlock Grid.Column="0" Text="19" />
+													</Grid>
+												</Border>
+											</DataTemplate>
+										</DataGridTemplateColumn.HeaderTemplate>
+										<DataGridTemplateColumn.CellTemplate>
+											<DataTemplate>
+												<TextBox/>
+											</DataTemplate>
+										</DataGridTemplateColumn.CellTemplate>
+									</DataGridTemplateColumn>
+
 
 								</DataGrid.Columns>
 							</DataGrid>
@@ -761,13 +804,13 @@
 									<TextBox
 										TextWrapping="Wrap"
 										AcceptsReturn="True"
-										Text="{Binding Passport.RadiationDoseRate1m}" />
+										Text="{Binding Passport.RadiationDoseRate10cm}" />
 								</Border>
 								<Border Grid.Row="0" Grid.Column="15">
 									<TextBox
 										TextWrapping="Wrap"
 										AcceptsReturn="True"
-										Text="{Binding Passport.RadiationDoseRate10cm}" />
+										Text="{Binding Passport.RadiationDoseRate1m}" />
 								</Border>
 								<Border Grid.Row="0" Grid.Column="16">
 									<TextBox

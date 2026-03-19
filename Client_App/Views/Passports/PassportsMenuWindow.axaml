@@ -18,7 +18,32 @@
 		<vm:PassportsMenuWindowVM/>
 	</Design.DataContext>
 
-	<Grid>
+	<Grid ColumnDefinitions="*"
+		RowDefinitions="Auto, *">
+		<Menu Grid.Row="0"
+			x:Name="SubMenuBorder"
+			BorderBrush="#FF959595"
+			BorderThickness="1"
+			Background="WhiteSmoke"
+			Height="25"
+			DockPanel.Dock="Top">
+
+			<Menu.Styles>
+				<Style Selector="Separator">
+					<Setter Property="Background" Value="LightGray"/>
+					<Setter Property="Margin" Value="0,5"/>
+					<Setter Property="Height" Value="3"/>
+				</Style>
+				<Style Selector="MenuItem">
+					<Setter Property="Background" Value="WhiteSmoke"/>
+					<Setter Property="FontSize" Value="14"/>
+				</Style>
+			</Menu.Styles>
+			<MenuItem Header="Импорт пасспорта">
+				<MenuItem Header="Импорт из Excel"
+					Command="{Binding ImportExcelPackagePassport}"/>
+			</MenuItem>
+		</Menu>
 		<DataGrid
 			Grid.Row="1" 
 			Items="{Binding Passports}"
@@ -44,7 +69,7 @@
 							  Header="Редактировать паспорт"/>
 					<MenuItem Command="{Binding ExcelExportPackagePassport}"
 							  CommandParameter="{Binding SelectedPassport.Id}"
-							  Header="Выгрузить в Excel паспорт"/>
+							  Header="Выгрузить паспорт в Excel"/>
 					<MenuItem Command="{Binding DeletePackagePassport}"
 							  CommandParameter="{Binding SelectedPassport}"
 							  Header="Удалить паспорт"/>
