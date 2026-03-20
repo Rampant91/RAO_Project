@@ -57,15 +57,15 @@
                                       Header="Удалить форму" />
                             <MenuItem Command="{Binding MainWindowVM.ExportReports, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReports, Mode=OneWay}"
-                                      Header="Выгрузить организацию" />
+                                      Header="Выгрузить отчет РИАЦ" />
                             <MenuItem Command="{Binding MainWindowVM.ExportReportsWithDateRange, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReports, Mode=OneWay}"
-                                      Header="Выгрузить организацию с указанием диапазона дат" />
+                                      Header="Выгрузить отчет РИАЦ с указанием диапазона дат" />
                             <MenuItem Command="{Binding MainWindowVM.ExportAllReportsOneFile, Mode=OneWay}" 
-                                      Header="Выгрузить все организации в один файл" />
+                                      Header="Выгрузить все отчеты РИАЦ в один файл" />
                             <MenuItem Command="{Binding MainWindowVM.ExportAllReports, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReports, Mode=OneWay}"
-                                      Header="Выгрузить все организации в отдельные файлы" />
+                                      Header="Выгрузить все отчеты в отдельные файлы" />
                         </ContextMenu>
                     </DataGrid.ContextMenu>
 
