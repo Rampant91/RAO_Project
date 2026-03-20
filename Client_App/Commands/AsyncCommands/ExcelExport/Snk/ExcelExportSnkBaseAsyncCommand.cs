@@ -1420,7 +1420,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     /// <param name="plusMinusDtoList">Список DTO операций приёма передачи.</param>
     /// <param name="formNum">Номер формы.</param>
     /// <returns>Список DTO операций приёма-передачи, просуммированный по количеству для первой даты.</returns>
-    private static Task<List<ShortFormDTO>> GetSummedPlusMinusDtoList(List<ShortFormDTO> plusMinusDtoList, string formNum)
+    private static Task<List<ShortFormDTO>> GetSummedPlusMinusDtoList(List<ShortFormDTO> plusMinusDtoList,
+        string formNum)
     {
         List<ShortFormDTO> newPlusMinusDtoList = [];
 
@@ -1448,80 +1449,95 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             .ThenBy(x => x.Key.FacNum)
             .ToDictionary(x => x.Key, x => x.DateGroups);
 
-        foreach (var (_, dictionary) in groupedOperationListDictionary)
+        foreach (var (unit, dictionary) in groupedOperationListDictionary) //по учётной единице
         {
-            foreach (var (_, operations) in dictionary)
+            foreach (var (_, operations) in dictionary) //операции за каждую дату 
             {
                 var quantity = 0;
-                foreach (var operation in operations)
+
+                switch (formNum)
                 {
-                    if (GetPlusOperationsArray(formNum).Contains(operation.OpCode))
+                    case "1.1" when SerialNumbersIsEmpty(unit.PasNum, unit.FacNum):
+                    case "1.3":
                     {
-                        quantity += operation.Quantity;
+                        foreach (var operation in operations)
+                        {
+                            if (GetPlusOperationsArray(formNum).Contains(operation.OpCode))
+                            {
+                                quantity += operation.Quantity;
+                            }
+                            else if (GetMinusOperationsArray(formNum).Contains(operation.OpCode))
+                            {
+                                quantity -= operation.Quantity;
+                            }
+                        }
+
+                        switch (quantity)
+                        {
+                            case < 0:
+                            {
+                                quantity = Math.Abs(quantity);
+                                var lastMinusOperation = operations.Last(x => 
+                                    GetMinusOperationsArray(formNum).Contains(x.OpCode));
+                                lastMinusOperation.Quantity = quantity;
+                                newPlusMinusDtoList.Add(lastMinusOperation);
+                                break;
+                            }
+                            case > 0:
+                            {
+                                var lastPlusOperation = operations.Last(x => 
+                                    GetPlusOperationsArray(formNum).Contains(x.OpCode));
+                                lastPlusOperation.Quantity = quantity;
+                                newPlusMinusDtoList.Add(lastPlusOperation);
+                                break;
+                            }
+                            default: continue;
+                        }
+
+                        break;
                     }
-                    else if (GetMinusOperationsArray(formNum).Contains(operation.OpCode))
+                    case "1.1" when !SerialNumbersIsEmpty(unit.PasNum, unit.FacNum):
                     {
-                        quantity -= operation.Quantity;
+                        foreach (var operation in operations)
+                        {
+                            if (GetPlusOperationsArray(formNum).Contains(operation.OpCode))
+                            {
+                                quantity += 1;
+                            }
+                            else if (GetMinusOperationsArray(formNum).Contains(operation.OpCode))
+                            {
+                                quantity -= 1;
+                            }
+
+                            switch (quantity)
+                            {
+                                case < 0:
+                                {
+                                    var lastMinusOperation = operations.Last(x =>
+                                        GetMinusOperationsArray(formNum).Contains(x.OpCode));
+                                    newPlusMinusDtoList.Add(lastMinusOperation);
+                                    break;
+                                }
+                                case > 0:
+                                {
+                                    var lastPlusOperation = operations.Last(x => 
+                                        GetPlusOperationsArray(formNum).Contains(x.OpCode));
+                                    newPlusMinusDtoList.Add(lastPlusOperation);
+                                    break;
+                                }
+                                default: continue;
+                            }
+                        }
+
+                        break;
                     }
                 }
-                if (quantity < 0)
-                {
-                    quantity = Math.Abs(quantity);
-                    var lastMinusOperation = operations.Last(x => GetMinusOperationsArray(formNum).Contains(x.OpCode));
-                    lastMinusOperation.Quantity = quantity;
-                    newPlusMinusDtoList.Add(lastMinusOperation);
-                }
-                else if (quantity > 0)
-                {
-                    var lastPlusOperation = operations.Last(x => GetPlusOperationsArray(formNum).Contains(x.OpCode));
-                    lastPlusOperation.Quantity = quantity;
-                    newPlusMinusDtoList.Add(lastPlusOperation);
-                }
-                else continue;
             }
         }
-       
-
-        //foreach (var form in plusMinusDtoList)
-        //{
-        //    var matchingForm = newPlusMinusDtoList.FirstOrDefault(x =>
-        //        x.OpDate == form.OpDate
-        //        && comparer.Equals(x.PasNum, form.PasNum)
-        //        && comparer.Equals(x.FacNum, form.FacNum)
-        //        && radsComparer.Equals(x.Radionuclids, form.Radionuclids)
-        //        && comparer.Equals(x.Type, form.Type)
-        //        && comparer.Equals(x.PackNumber, form.PackNumber));
-
-        //    if (matchingForm != null)
-        //    {
-        //        if (formNum is "1.3" || SerialNumbersIsEmpty(form.PasNum, form.FacNum))
-        //        {
-        //            if (GetPlusOperationsArray(formNum).Contains(form.OpCode))
-        //            {
-        //                matchingForm.Quantity += form.Quantity;
-        //            }
-        //            else if (GetMinusOperationsArray(formNum).Contains(form.OpCode))
-        //            {
-        //                matchingForm.Quantity -= form.Quantity;
-        //                matchingForm.Quantity = Math.Max(0, matchingForm.Quantity);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            newPlusMinusDtoList.Add(form);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        newPlusMinusDtoList.Add(form);
-        //    }
-        //}
-        //newPlusMinusDtoList = newPlusMinusDtoList
-        //    .Where(x => x.Quantity > 0)
-        //    .ToList();
 
         return Task.FromResult(newPlusMinusDtoList);
     }
+
 
     #endregion
 
