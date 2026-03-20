@@ -17,6 +17,7 @@
 	<UserControl.Resources>
 		<converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
 		<converter:StringEqualsToColorConverter x:Key="StringEqualsToColor" />
+		<converter:CheckReportsAnyMatchingFormNumConverter x:Key ="CheckReportsAnyMatchingFormNum"/>
 	</UserControl.Resources>
 
     <Design.DataContext>
@@ -431,12 +432,16 @@
                                    Grid.Row="1" 
                                    Grid.Column="5" 
                                    Margin="5"/>
+						
 						<StackPanel Grid.Row="0" 
                                     Grid.RowSpan="2"
 									Grid.Column="6"
 									Margin="5,0,0,0"
 									Orientation="Horizontal">
 							<Button Content="1.1" 
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=1.1}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
@@ -445,7 +450,11 @@
 									Background="{Binding FormNumWhiteList, 
                                         Converter={StaticResource StringEqualsToColor}, 
                                         ConverterParameter=1.1}" />
+							
 							<Button Content="1.2" 
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=1.2}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
@@ -454,7 +463,11 @@
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
 										ConverterParameter=1.2}" />
+							
 							<Button Content="1.3" 
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=1.3}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
@@ -463,7 +476,11 @@
 								    Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
 										ConverterParameter=1.3}" />
+							
 							<Button Content="1.4" 
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=1.4}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
@@ -472,7 +489,11 @@
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
 										ConverterParameter=1.4}" />
+							
 							<Button Content="1.5" 
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=1.5}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
@@ -481,7 +502,11 @@
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
 										ConverterParameter=1.5}" />
+							
 							<Button Content="1.6" 
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=1.6}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
@@ -490,7 +515,11 @@
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
 										ConverterParameter=1.6}" />
+							
 							<Button Content="1.7" 
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=1.7}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
@@ -499,7 +528,11 @@
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
 										ConverterParameter=1.7}" />
+							
 							<Button Content="1.8" 
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=1.8}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
@@ -508,7 +541,11 @@
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
 										ConverterParameter=1.8}" />
+							
 							<Button Content="1.9" 
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=1.9}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"

@@ -14,17 +14,6 @@ internal class SetWhiteListNumAsyncCommand : BaseAsyncCommand
     }
 
 
-    public override bool CanExecute(object? parameter)
-    {
-        if (parameter is not string formNum
-            || _mainWindowVM.SelectedReports is null) 
-            return false;
-        ;
-        return _mainWindowVM.SelectedReports
-            .Report_Collection
-            .Any(report => report.FormNum_DB == formNum);
-
-    }
     public override async Task AsyncExecute(object? parameter)
     {
         if (parameter is not string formNum) return;
