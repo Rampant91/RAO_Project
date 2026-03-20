@@ -37,6 +37,28 @@ public class Form_21VM : BaseFormVM
 
     #endregion
 
+    #region Properties
+
+    #region SumMode
+    private bool _sumMode;
+    public bool SumMode
+    {
+        get
+        {
+            return _sumMode;
+        }
+        set
+        {
+            _sumMode = value;
+            OnPropertyChanged();
+        }
+    }
+    #endregion
+
+    #endregion
+    
+    
+
     #region Commands
 
     public ICommand CategoryCalculationFromReport => new CategoryCalculationFromReportAsyncCommand();

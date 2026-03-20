@@ -466,7 +466,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     /// <summary>
     /// Обновляет отображение ячеек DataGrid'а.
     /// </summary>
-    public void UpdateFormList()
+    public virtual void UpdateFormList()
     {
         FormList = new ObservableCollection<Form>(
             Report.Rows
