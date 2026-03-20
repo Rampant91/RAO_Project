@@ -13,8 +13,11 @@ namespace Client_App.Commands.AsyncCommands;
 /// </summary>
 public abstract class BaseAsyncCommand : BaseCommand
 {
+
     private protected static readonly IClassicDesktopStyleApplicationLifetime Desktop =
         (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
+
+    
 
     private bool _isExecute;
 

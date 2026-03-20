@@ -447,7 +447,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                                                                             //public ICommand UnaccountedRad { get; set; }                    
                                                                             //  Радионуклиды, отсутствующие в справочнике
 
-    public ICommand GoToFormNum { get; set; }
+    public ICommand SetWhiteList { get; set; }
     
     #endregion
 
@@ -478,7 +478,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         OpenCalculator = new OpenCalculatorAsyncCommand();
         OpenFile = new OpenFileAsyncCommand();
         OpenFolder = new OpenFolderAsyncCommand();
-        GoToFormNum = new GoToFormNumAsyncCommand(this);
+        SetWhiteList = new SetWhiteListNumAsyncCommand(this);
 
         Forms1TabControlVM = new Forms1TabControlVM(this);
         Forms2TabControlVM = new Forms2TabControlVM(this);

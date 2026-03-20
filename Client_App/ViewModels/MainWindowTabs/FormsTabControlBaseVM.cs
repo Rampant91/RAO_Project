@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Client_App.Commands.AsyncCommands;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using System;
@@ -252,6 +253,8 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
                 UpdateReportCollection();
 
             UpdateFormsPageInfo();
+
+
         }
     }
 

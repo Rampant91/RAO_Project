@@ -196,7 +196,7 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
 
     #region Functions
 
-    public void GoToFormNum(string formNum)
+    public void SetWhiteList(string formNum)
     {
         FormNumWhiteList = FormNumWhiteList != formNum 
             ? formNum 

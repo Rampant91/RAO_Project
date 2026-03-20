@@ -440,7 +440,7 @@
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="1.1" 
 									Background="{Binding FormNumWhiteList, 
                                         Converter={StaticResource StringEqualsToColor}, 
@@ -449,7 +449,7 @@
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="1.2"
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
@@ -458,7 +458,7 @@
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="1.3"
 								    Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
@@ -467,7 +467,7 @@
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="1.4"
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
@@ -476,7 +476,7 @@
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="1.5"
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
@@ -485,7 +485,7 @@
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="1.6"
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
@@ -494,7 +494,7 @@
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="1.7"
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
@@ -503,7 +503,7 @@
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="1.8"
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
@@ -512,7 +512,7 @@
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="1.9"
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
