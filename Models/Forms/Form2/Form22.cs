@@ -1,13 +1,14 @@
-﻿using System;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Models.Attributes;
+﻿using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using Models.Interfaces;
 using OfficeOpenXml;
+using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Drawing;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Models.Forms.Form2;
 
@@ -1617,6 +1618,25 @@ public partial class Form22 : Form2, IBaseColor
     }
 
     #endregion
+
+    #region RowColor
+
+
+    private Color _rowColor ;
+    [NotMapped]
+    public Color RowColor
+    {
+        get
+        {
+            return _rowColor;
+        }
+        set
+        {
+            _rowColor = value;
+            OnPropertyChanged();
+        }
+    }
+    #endregion 
 
     #endregion
 
