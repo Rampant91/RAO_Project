@@ -77,7 +77,7 @@ public class CheckF22 : CheckBase
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
-
+        
         var db = new DBModel(StaticConfiguration.DBPath);
         var db2 = new DBModel(StaticConfiguration.DBPath);
 
@@ -106,6 +106,7 @@ public class CheckF22 : CheckBase
             .AnyAsync(reps => reps.Master_DB.Rows10
                 .Any(form10 => form10.RegNo_DB == form20RegNo), cts.Token);
 
+        progressBarVM.SetProgressBar(6, "Прогресс - 6");
         if (!repsWithForm1Exist)
         {
             var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
@@ -170,6 +171,7 @@ public class CheckF22 : CheckBase
             db = new DBModel(dbWithForm1FullPath);
         }
 
+        progressBarVM.SetProgressBar(7, "Прогресс - 7");
 
         var repsWithForm1Base = db.ReportsCollectionDbSet
             .AsNoTracking()
@@ -191,6 +193,9 @@ public class CheckF22 : CheckBase
             .Where(reps => reps.DBObservable != null);
 
         var forms1 = repsWithForm1Base.Where(reps => reps.Master_DB.Rows10.Any(form10 => form10.RegNo_DB == form20RegNo)).ToList();
+
+
+        progressBarVM.SetProgressBar(8, "Прогресс - 6");
 
         Reports? repsWithForm1;
 
@@ -263,6 +268,8 @@ public class CheckF22 : CheckBase
                     .Any(form10 => form10.RegNo_DB == form20RegNo), cts.Token);
         }
 
+        progressBarVM.SetProgressBar(9, "Прогресс - 9");
+
         int yearRealCurrent;
         int.TryParse(repYear, out yearRealCurrent);
         string yearPrevious = (yearRealCurrent - 1).ToString();
@@ -285,6 +292,7 @@ public class CheckF22 : CheckBase
         await db.DisposeAsync();
         await db2.DisposeAsync();
 
+        progressBarVM.SetProgressBar(10, "Прогресс - 10");
         if (repsWithForm1 is null)
         {
             #region MessageCheckFailed
@@ -306,6 +314,8 @@ public class CheckF22 : CheckBase
 
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
+
+        progressBarVM.SetProgressBar(11, "Прогресс - 11");
 
         List<Form22> forms22ExpectedBase = [];
         List<(string, string, string)> forms22MetadataBase = [];
@@ -382,6 +392,8 @@ public class CheckF22 : CheckBase
                     }
             }
         }
+
+        progressBarVM.SetProgressBar(21, "Прогресс - 21");
         if (repsWithForm2 != null && repsWithForm2.Report_Collection != null)
         {
             foreach (var key in repsWithForm2.Report_Collection)
@@ -402,6 +414,9 @@ public class CheckF22 : CheckBase
                 break;
             }
         }
+
+        progressBarVM.SetProgressBar(10, "Прогресс - 26");
+
         Dictionary<(string, string, string, string, string, string), Form22> forms22ExpectedDict = new();
         Dictionary<(string, string, string, string, string, string), Form22> forms22RealDict = new();
         Dictionary<(string, string, string, string, string, string), Form22> forms22ExpectedSubDict = new();
@@ -473,6 +488,9 @@ public class CheckF22 : CheckBase
             }
             forms22MetadataDict[key][forms22MetadataBase[i].Item1][forms22MetadataBase[i].Item2].Add(forms22MetadataBase[i].Item3);
         }
+
+        progressBarVM.SetProgressBar(36, "Прогресс - 36");
+        //ОСТАНОВИЛСЯ ТУТ
         List<Form22> forms22Real = [];
         for (int i = 0; i < repRows22.Count; i++)
         {
@@ -1178,35 +1196,64 @@ public class CheckF22 : CheckBase
 
     #region Form22_Copy
 
-    private static Form22 Form22_Copy(Form22 form, string? inOrOutParam = null)
+    private static Form22? Form22_Copy(Form22 form, string? inOrOutParam = null)
     {
-        Form22 res = new()
+        try
         {
-            NumberInOrder_DB = form.NumberInOrder_DB,
-            NumberOfFields_DB = form.NumberOfFields_DB,
-            FormNum_DB = form.FormNum_DB.Trim(),
-            CodeRAO_DB = form.CodeRAO_DB.Trim(),
-            StatusRAO_DB = form.StatusRAO_DB.Trim(),
-            StoragePlaceCode_DB = form.StoragePlaceCode_DB.Trim(),
-            FcpNumber_DB = form.FcpNumber_DB.Replace('.', ',').Trim(),
-            StoragePlaceName_DB = form.StoragePlaceName_DB.Trim(),
-            PackName_DB = form.PackName_DB.Trim(),
-            PackType_DB = form.PackType_DB.Trim(),
-            PackQuantity_DB = form.PackQuantity_DB.Trim(),
-            VolumeOutOfPack_DB = form.VolumeOutOfPack_DB.Trim(),
-            VolumeInPack_DB = form.VolumeInPack_DB.Trim(),
-            MassOutOfPack_DB = form.MassOutOfPack_DB.Trim(),
-            MassInPack_DB = form.MassInPack_DB.Trim(),
-            QuantityOZIII_DB = form.QuantityOZIII_DB.Trim(),
-            TritiumActivity_DB = form.TritiumActivity_DB.Trim(),
-            BetaGammaActivity_DB = form.BetaGammaActivity_DB.Trim(),
-            AlphaActivity_DB = form.AlphaActivity_DB.Trim(),
-            TransuraniumActivity_DB = form.TransuraniumActivity_DB.Trim(),
-            MainRadionuclids_DB = form.MainRadionuclids_DB.Trim(),
-            Subsidy_DB = form.Subsidy_DB.Trim(),
-        };
-        if (string.IsNullOrWhiteSpace(res.FcpNumber_DB)) res.FcpNumber_DB = "-";
-        return res;
+            Form22 res = new()
+            {
+                NumberInOrder_DB = form.NumberInOrder_DB,
+                NumberOfFields_DB = form.NumberOfFields_DB,
+                FormNum_DB = form.FormNum_DB.Trim(),
+                CodeRAO_DB = form.CodeRAO_DB.Trim(),
+                StatusRAO_DB = form.StatusRAO_DB.Trim(),
+                StoragePlaceCode_DB = form.StoragePlaceCode_DB.Trim(),
+                FcpNumber_DB = form.FcpNumber_DB.Replace('.', ',').Trim(),
+                StoragePlaceName_DB = form.StoragePlaceName_DB.Trim(),
+                PackName_DB = form.PackName_DB.Trim(),
+                PackType_DB = form.PackType_DB.Trim(),
+                PackQuantity_DB = form.PackQuantity_DB.Trim(),
+                VolumeOutOfPack_DB = form.VolumeOutOfPack_DB.Trim(),
+                VolumeInPack_DB = form.VolumeInPack_DB.Trim(),
+                MassOutOfPack_DB = form.MassOutOfPack_DB.Trim(),
+                MassInPack_DB = form.MassInPack_DB.Trim(),
+                QuantityOZIII_DB = form.QuantityOZIII_DB.Trim(),
+                TritiumActivity_DB = form.TritiumActivity_DB.Trim(),
+                BetaGammaActivity_DB = form.BetaGammaActivity_DB.Trim(),
+                AlphaActivity_DB = form.AlphaActivity_DB.Trim(),
+                TransuraniumActivity_DB = form.TransuraniumActivity_DB.Trim(),
+                MainRadionuclids_DB = form.MainRadionuclids_DB.Trim(),
+                Subsidy_DB = form.Subsidy_DB.Trim(),
+            };
+            if (string.IsNullOrWhiteSpace(res.FcpNumber_DB)) res.FcpNumber_DB = "-";
+
+            throw new Exception("ТЕСТ");// test
+            return res;
+        }
+        catch (Exception ex)
+        {
+
+            #region MessageCopyFailed
+
+            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = $"Проверка формы 2.2",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = $"Ошибка во время копирования строки формы {form.FormNum_DB.Trim()}\n" +
+                    $"№ строки - {form.NumberInOrder_DB}\n" +
+                    $"Дополнительная информация об ошибке:\n" +
+                    $"{ex.Message}\n",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            return null;
+            #endregion
+        }
     }
 
     #endregion
