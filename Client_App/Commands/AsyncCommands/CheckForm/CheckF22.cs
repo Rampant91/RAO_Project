@@ -607,7 +607,7 @@ public class CheckF22 : CheckBase
                 }
             }
         }
-
+        
         progressBarVM.SetProgressBar(45, "Обработка фактических строк формы 2.2 текущего отчёта");
         forms22Real = forms22RealDict.Keys.Select(key => forms22RealDict[key]).ToList();
         forms22Real = [];
@@ -1288,39 +1288,66 @@ public class CheckF22 : CheckBase
     {
         try
         {
+
+            if (form == null)
+            {
+                #region MessageCopyFailed
+
+                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = $"Проверка формы 2.2",
+                        ContentHeader = "Ошибка",
+                        ContentMessage = $"Ошибка при копировании строки формы 2.2\n" +
+                        $"Не удалось получить строку",
+                        MinWidth = 400,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(Desktop.MainWindow));
+
+                #endregion
+                throw new ArgumentNullException(nameof(form)); 
+            }
+
+
             Form22 res = new()
             {
                 NumberInOrder_DB = form.NumberInOrder_DB,
                 NumberOfFields_DB = form.NumberOfFields_DB,
-                FormNum_DB = form.FormNum_DB.Trim(),
-                CodeRAO_DB = form.CodeRAO_DB.Trim(),
-                StatusRAO_DB = form.StatusRAO_DB.Trim(),
-                StoragePlaceCode_DB = form.StoragePlaceCode_DB.Trim(),
-                FcpNumber_DB = form.FcpNumber_DB.Replace('.', ',').Trim(),
-                StoragePlaceName_DB = form.StoragePlaceName_DB.Trim(),
-                PackName_DB = form.PackName_DB.Trim(),
-                PackType_DB = form.PackType_DB.Trim(),
-                PackQuantity_DB = form.PackQuantity_DB.Trim(),
-                VolumeOutOfPack_DB = form.VolumeOutOfPack_DB.Trim(),
-                VolumeInPack_DB = form.VolumeInPack_DB.Trim(),
-                MassOutOfPack_DB = form.MassOutOfPack_DB.Trim(),
-                MassInPack_DB = form.MassInPack_DB.Trim(),
-                QuantityOZIII_DB = form.QuantityOZIII_DB.Trim(),
-                TritiumActivity_DB = form.TritiumActivity_DB.Trim(),
-                BetaGammaActivity_DB = form.BetaGammaActivity_DB.Trim(),
-                AlphaActivity_DB = form.AlphaActivity_DB.Trim(),
-                TransuraniumActivity_DB = form.TransuraniumActivity_DB.Trim(),
-                MainRadionuclids_DB = form.MainRadionuclids_DB.Trim(),
-                Subsidy_DB = form.Subsidy_DB.Trim(),
+                FormNum_DB = form.FormNum_DB?.Trim() ?? "",
+                CodeRAO_DB = form.CodeRAO_DB?.Trim() ?? "",
+                StatusRAO_DB = form.StatusRAO_DB?.Trim() ?? "",
+                StoragePlaceCode_DB = form.StoragePlaceCode_DB?.Trim() ?? "",
+                FcpNumber_DB = form.FcpNumber_DB.Replace('.', ',').Trim() ?? "",
+                StoragePlaceName_DB = form.StoragePlaceName_DB?.Trim() ?? "",
+                PackName_DB = form.PackName_DB?.Trim() ?? "",
+                PackType_DB = form.PackType_DB?.Trim() ?? "",
+                PackQuantity_DB = form.PackQuantity_DB?.Trim() ?? "",
+                VolumeOutOfPack_DB = form.VolumeOutOfPack_DB?.Trim() ?? "",
+                VolumeInPack_DB = form.VolumeInPack_DB?.Trim() ?? "",
+                MassOutOfPack_DB = form.MassOutOfPack_DB?.Trim() ?? "",
+                MassInPack_DB = form.MassInPack_DB?.Trim() ?? "",
+                QuantityOZIII_DB = form.QuantityOZIII_DB?.Trim() ?? "",
+                TritiumActivity_DB = form.TritiumActivity_DB?.Trim() ?? "",
+                BetaGammaActivity_DB = form.BetaGammaActivity_DB?.Trim() ?? "",
+                AlphaActivity_DB = form.AlphaActivity_DB?.Trim() ?? "",
+                TransuraniumActivity_DB = form.TransuraniumActivity_DB?.Trim() ?? "",
+                MainRadionuclids_DB = form.MainRadionuclids_DB?.Trim() ?? "",
+                Subsidy_DB = form.Subsidy_DB?.Trim() ?? "",
             };
             if (string.IsNullOrWhiteSpace(res.FcpNumber_DB)) res.FcpNumber_DB = "-";
 
 
             return res;
         }
+        catch (ArgumentNullException argumentNullException)
+        {
+            throw argumentNullException;
+        }
         catch (Exception ex)
         {
-
             #region MessageCopyFailed
 
             Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
@@ -1328,9 +1355,9 @@ public class CheckF22 : CheckBase
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     ContentTitle = $"Проверка формы 2.2",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = $"Ошибка во время копирования строки формы {form.FormNum_DB.Trim()}\n" +
-                    $"№ строки - {form.NumberInOrder_DB}\n" +
+                    ContentHeader = "Ошибка",
+                    ContentMessage = $"Ошибка во время копирования строки №{form?.NumberInOrder_DB} отчета по форме {form?.FormNum_DB}\n" +
+                    $"Проверьте строку №{form?.NumberInOrder_DB} на правильность заполнения\n" +
                     $"Дополнительная информация об ошибке:\n" +
                     $"{ex.Message}\n",
                     MinWidth = 400,
@@ -1340,13 +1367,7 @@ public class CheckF22 : CheckBase
                 .ShowDialog(Desktop.MainWindow));
 
             #endregion
-
-            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
-                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-            ServiceExtension.LoggerManager.Warning(msg);
-
             throw ex;
-
         }
     }
 
