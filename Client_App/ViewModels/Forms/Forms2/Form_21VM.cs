@@ -10,7 +10,9 @@ using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form2;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Input;
@@ -121,6 +123,9 @@ public class Form_21VM : BaseFormVM
             .ThenBy(row21 => row21.StatusRAOout_DB)
             .ToList();
 
+        var resultRows21 = new List<Form21>();
+
+
         var refineMachineGroups = rows21.GroupBy(row21 =>
             (row21.RefineMachineName_DB,
             row21.MachineCode_DB,
@@ -135,8 +140,8 @@ public class Form_21VM : BaseFormVM
             )).ToList(); 
 
             var rightRaoGroups = refineMachineGroup.GroupBy(row21 =>
-            (row21.CodeRAOIn_DB,
-            row21.StatusRAOIn_DB
+            (row21.CodeRAOout_DB,
+            row21.StatusRAOout_DB
             )).ToList();
 
             if (leftRaoGroups.Count > 1 || rightRaoGroups.Count > 1)
@@ -149,7 +154,7 @@ public class Form_21VM : BaseFormVM
                     MachineCode_DB = firstElement.MachineCode_DB, //3
                     MachinePower_DB = firstElement.MachinePower_DB, //4
                     NumberOfHoursPerYear_DB = firstElement.NumberOfHoursPerYear_DB, //5
-                    //SumUp
+                    //SumUp LeftGroup
                     VolumeIn_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.VolumeIn_DB, out var value) ? value : 0).ToString("e3"),
                     MassIn_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.MassIn_DB, out var value) ? value : 0).ToString("e3"),
                     QuantityIn_DB = refineMachineGroup.Sum(row21 => int.TryParse(row21.QuantityIn_DB, out var value) ? value : 0).ToString(),
@@ -157,58 +162,141 @@ public class Form_21VM : BaseFormVM
                     BetaGammaActivityIn_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.BetaGammaActivityIn_DB, out var value) ? value : 0).ToString("e3"),
                     AlphaActivityIn_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.AlphaActivityIn_DB, out var value) ? value : 0).ToString("e3"),
                     TransuraniumActivityIn_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.TransuraniumActivityIn_DB, out var value) ? value : 0).ToString("e3"),
+                    //SumUp RightGroup
+                    VolumeOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.VolumeOut_DB, out var value) ? value : 0).ToString("e3"),
+                    MassOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.MassOut_DB, out var value) ? value : 0).ToString("e3"),
+                    QuantityOZIIIout_DB = refineMachineGroup.Sum(row21 => int.TryParse(row21.QuantityOZIIIout_DB, out var value) ? value : 0).ToString(),
+                    TritiumActivityOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.TritiumActivityOut_DB, out var value) ? value : 0).ToString("e3"),
+                    BetaGammaActivityOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.BetaGammaActivityOut_DB, out var value) ? value : 0).ToString("e3"),
+                    AlphaActivityOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.AlphaActivityOut_DB, out var value) ? value : 0).ToString("e3"),
+                    TransuraniumActivityOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.TransuraniumActivityOut_DB, out var value) ? value : 0).ToString("e3"),
                     RowColor = Color.FromArgb(75, 204, 102, 0),
                 };
 
 
 
-                rows21.Insert(titleIndex, titleRow);
+                resultRows21.Add(titleRow);
 
-                for(int i= 0; i< leftRaoGroups.Count && i< rightRaoGroups.Count; i++) 
+                for(int i= 0; i< leftRaoGroups.Count || i< rightRaoGroups.Count; i++) 
                 {
-                    var leftRaoGroup = leftRaoGroups[i];
-                    var rightRaoGroup = rightRaoGroups[i];
+                    List<Form21>? leftRaoGroup = null;
+                    if (i < leftRaoGroups.Count)
+                        leftRaoGroup = leftRaoGroups[i].ToList();
 
-                    var firstLeftRaoGroupElement = leftRaoGroup.ToList()[0];
-                    var raoInfoIndex = rows21.IndexOf(firstLeftRaoGroupElement);
+                    List<Form21>? rightRaoGroup = null;
+                    if (i < rightRaoGroups.Count)
+                        rightRaoGroup = rightRaoGroups[i].ToList();
 
 
+
+                    
                     var raoInfoRow = new Form21()
                     {
-                        CodeRAOIn_DB = firstLeftRaoGroupElement.CodeRAOIn_DB, //6
-                        StatusRAOIn_DB = firstLeftRaoGroupElement.StatusRAOIn_DB, //7
-
-                        //SumUp
-                        VolumeIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.VolumeIn_DB, out var value) ? value : 0).ToString("e3"),
-                        MassIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.MassIn_DB, out var value) ? value : 0).ToString("e3"),
-                        QuantityIn_DB = leftRaoGroup.Sum(row21 => int.TryParse(row21.QuantityIn_DB, out var value) ? value : 0).ToString(),
-                        TritiumActivityIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.TritiumActivityIn_DB, out var value) ? value : 0).ToString("e3"),
-                        BetaGammaActivityIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.BetaGammaActivityIn_DB, out var value) ? value : 0).ToString("e3"),
-                        AlphaActivityIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.AlphaActivityIn_DB, out var value) ? value : 0).ToString("e3"),
-                        TransuraniumActivityIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.TransuraniumActivityIn_DB, out var value) ? value : 0).ToString("e3"),
-                        
                         RowColor = Color.FromArgb(50, 204, 204, 0),
                     };
 
+                    if (leftRaoGroup != null)
+                    {
+                        var firstLeftRaoGroupElement = leftRaoGroup[0];
 
-                    rows21.Insert(raoInfoIndex, raoInfoRow);
+                        raoInfoRow.CodeRAOIn_DB = firstLeftRaoGroupElement.CodeRAOIn_DB; //6
+                        raoInfoRow.StatusRAOIn_DB = firstLeftRaoGroupElement.StatusRAOIn_DB; //7
+                        //SumUp LeftGroup
+                        raoInfoRow.VolumeIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.VolumeIn_DB, out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.MassIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.MassIn_DB, out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.QuantityIn_DB = leftRaoGroup.Sum(row21 => int.TryParse(row21.QuantityIn_DB, out var value) ? value : 0).ToString();
+                        raoInfoRow.TritiumActivityIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.TritiumActivityIn_DB, out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.BetaGammaActivityIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.BetaGammaActivityIn_DB, out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.AlphaActivityIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.AlphaActivityIn_DB, out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.TransuraniumActivityIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.TransuraniumActivityIn_DB, out var value) ? value : 0).ToString("e3");
+                    }
+
+                    if(rightRaoGroup != null)
+                    {
+                        var firstRightRaoGroupElement = rightRaoGroup[0];
+
+                        raoInfoRow.CodeRAOout_DB = firstRightRaoGroupElement.CodeRAOout_DB; //15
+                        raoInfoRow.StatusRAOout_DB = firstRightRaoGroupElement.StatusRAOout_DB; //16
+                        //SumUp RightGroup
+                        raoInfoRow.VolumeOut_DB = rightRaoGroup.Sum(row21 => double.TryParse(row21.VolumeOut_DB, out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.MassOut_DB = rightRaoGroup.Sum(row21 => double.TryParse(row21.MassOut_DB, out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.QuantityOZIIIout_DB = rightRaoGroup.Sum(row21 => int.TryParse(row21.QuantityOZIIIout_DB, out var value) ? value : 0).ToString();
+                        raoInfoRow.TritiumActivityOut_DB = rightRaoGroup.Sum(row21 => double.TryParse(row21.TritiumActivityOut_DB, out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.BetaGammaActivityOut_DB = rightRaoGroup.Sum(row21 => double.TryParse(row21.BetaGammaActivityOut_DB, out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.AlphaActivityOut_DB = rightRaoGroup.Sum(row21 => double.TryParse(row21.AlphaActivityOut_DB, out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.TransuraniumActivityOut_DB = rightRaoGroup.Sum(row21 => double.TryParse(row21.TransuraniumActivityOut_DB, out var value) ? value : 0).ToString("e3");
+
+                    }
+                    resultRows21.Add(raoInfoRow);
+
+                    var totalLength = int.Max(
+                        leftRaoGroup?.Count ?? 0, rightRaoGroup?.Count ?? 0);
+
+                    for (int j =0; j< totalLength; j++)
+                    {
+                        Form21? leftRao = null;
+                        if (leftRaoGroup!= null &&j < leftRaoGroup.Count)
+                            leftRao = leftRaoGroup[j];
+
+                        Form21? rightRao = null;
+                        if (rightRaoGroup != null && j < rightRaoGroup.Count)
+                            rightRao = rightRaoGroup[j];
+
+                        var mergedRow = new Form21()
+                        {
+                            RefineMachineName_DB = titleRow.RefineMachineName_DB, //2
+                            MachineCode_DB = titleRow.MachineCode_DB, //3
+                            MachinePower_DB = titleRow.MachinePower_DB, //4
+                            NumberOfHoursPerYear_DB = titleRow.NumberOfHoursPerYear_DB, //5
+                        };
+
+                        if (leftRao != null)
+                        {
+                            mergedRow.CodeRAOIn_DB = leftRao.CodeRAOIn_DB;
+                            mergedRow.StatusRAOIn_DB = leftRao.StatusRAOIn_DB; //7
+
+                            mergedRow.VolumeIn_DB = leftRao.VolumeIn_DB;
+                            mergedRow.MassIn_DB = leftRao.MassIn_DB;
+                            mergedRow.QuantityIn_DB = leftRao.QuantityIn_DB;
+                            mergedRow.TritiumActivityIn_DB = leftRao.TritiumActivityIn_DB;
+                            mergedRow.BetaGammaActivityIn_DB = leftRao.BetaGammaActivityIn_DB;
+                            mergedRow.AlphaActivityIn_DB = leftRao.AlphaActivityIn_DB;
+                            mergedRow.TransuraniumActivityIn_DB = leftRao.TransuraniumActivityIn_DB;
+                        }
+                        if(rightRao != null)
+                        {
+
+                            mergedRow.CodeRAOout_DB = rightRao.CodeRAOout_DB;
+                            mergedRow.StatusRAOout_DB = rightRao.StatusRAOout_DB;
+
+                            mergedRow.VolumeOut_DB = rightRao.VolumeOut_DB;
+                            mergedRow.MassOut_DB = rightRao.MassOut_DB;
+                            mergedRow.QuantityOZIIIout_DB = rightRao.QuantityOZIIIout_DB;
+                            mergedRow.TritiumActivityOut_DB = rightRao.TritiumActivityOut_DB;
+                            mergedRow.BetaGammaActivityOut_DB = rightRao.BetaGammaActivityOut_DB;
+                            mergedRow.AlphaActivityOut_DB = rightRao.AlphaActivityOut_DB;
+                            mergedRow.TransuraniumActivityOut_DB = rightRao.TransuraniumActivityOut_DB;
+                        }
+
+                        resultRows21.Add(mergedRow);
+                    }
                 }
             }
         }
 
-        for (int i = 0; i < rows21.Count; i++)
+        for (int i = 0; i < resultRows21.Count; i++)
         {
-            rows21[i].NumberInOrder_DB = i + 1;
+            resultRows21[i].NumberInOrder_DB = i + 1;
         }
 
         FormList = new ObservableCollection<Form>(
-           rows21.Skip((CurrentPage - 1) * RowCount)
+           resultRows21.Skip((CurrentPage - 1) * RowCount)
                .Take(RowCount)); //Нужна оптимизация
 
-        _sumRowsTotalRows = rows21.Count;
+        _sumRowsTotalRows = resultRows21.Count;
 
-        _sumRowsTotalPages = rows21.Count / RowCount;
-        if (rows21.Count % RowCount != 0)
+        _sumRowsTotalPages = resultRows21.Count / RowCount;
+        if (resultRows21.Count % RowCount != 0)
             _sumRowsTotalPages++;
 
     }
@@ -236,6 +324,27 @@ public class Form_21VM : BaseFormVM
 
         if (row21.TransuraniumActivityIn_DB == 0.ToString("e3"))
             row21.TransuraniumActivityIn_DB = "-";
+
+        if (row21.VolumeOut_DB == 0.ToString("e3"))
+            row21.VolumeOut_DB = "-";
+
+        if (row21.MassOut_DB == 0.ToString("e3"))
+            row21.MassOut_DB = "-";
+
+        if (row21.QuantityOZIIIout_DB == 0.ToString())
+            row21.QuantityOZIIIout_DB = "-";
+
+        if (row21.TritiumActivityOut_DB == 0.ToString("e3"))
+            row21.TritiumActivityOut_DB = "-";
+
+        if (row21.BetaGammaActivityOut_DB == 0.ToString("e3"))
+            row21.BetaGammaActivityOut_DB = "-";
+
+        if (row21.AlphaActivityOut_DB == 0.ToString())
+            row21.AlphaActivityOut_DB = "-";
+
+        if (row21.TransuraniumActivityOut_DB == 0.ToString("e3"))
+            row21.TransuraniumActivityOut_DB = "-";
     }
 
     #endregion
