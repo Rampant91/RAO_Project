@@ -1,22 +1,24 @@
-﻿using System;
+﻿using Avalonia.Controls;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Avalonia.Data;
-using Avalonia.Data.Converters;
 
 namespace Client_App.VisualRealization.Converters
 {
-    public class DoubleToExponentionalFormatConvarter : IValueConverter
+    public class DoubleToExponentionalFormatConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is not double doubleValue) return "Необходимо использовать double";
+            if (value is not double doubleValue || doubleValue == 0)
+                return 0.ToString();
+            var length = int.Min(6, doubleValue.ToString().Length - 1); // Максимум 6 знаков после запятой
 
-
-            return doubleValue.ToString($"e{doubleValue.ToString().Length - 1}");//
+            return doubleValue.ToString($"e{length}");//
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

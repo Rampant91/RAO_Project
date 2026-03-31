@@ -120,7 +120,7 @@ namespace Client_App.Commands.AsyncCommands.Import
                 impPassport.ManufactureDate = GetDateOnlyFromCell(worksheet.Cells["N16"]) ?? DateOnly.MinValue;
                 impPassport.CertificateConformityStartPeriod = GetDateOnlyFromCell(worksheet.Cells["G17"]) ?? DateOnly.MinValue;
                 impPassport.CertificateConformityEndPeriod = GetDateOnlyFromCell(worksheet.Cells["I17"]) ?? DateOnly.MinValue;
-                impPassport.ServiceLife = int.TryParse(worksheet.Cells["N9"].Text, out var intValue) ? intValue : 0;
+                impPassport.ServiceLife = uint.TryParse(worksheet.Cells["N9"].Text, out var intValue) ? intValue : 0;
                 impPassport.TransferDate = GetDateOnlyFromCell(worksheet.Cells["N18"]) ?? DateOnly.MinValue;
 
                 //Table1
@@ -130,10 +130,10 @@ namespace Client_App.Commands.AsyncCommands.Import
                 impPassport.Flammability = worksheet.Cells["D24"].Text;
                 impPassport.MatrixMaterialType = worksheet.Cells["E24"].Text;
                 impPassport.FillingWasteDate = GetDateOnlyFromCell(worksheet.Cells["F24"]) ?? DateOnly.MinValue;
-                impPassport.Diameter = int.TryParse(worksheet.Cells["G24"].Text, out intValue) ? intValue : 0;
-                impPassport.Height = int.TryParse(worksheet.Cells["H24"].Text, out intValue) ? intValue : 0;
-                impPassport.Length = int.TryParse(worksheet.Cells["I24"].Text, out intValue) ? intValue : 0;
-                impPassport.Width = int.TryParse(worksheet.Cells["J24"].Text, out intValue) ? intValue : 0;
+                impPassport.Diameter = uint.TryParse(worksheet.Cells["G24"].Text, out intValue) ? intValue : 0;
+                impPassport.Height = uint.TryParse(worksheet.Cells["H24"].Text, out intValue) ? intValue : 0;
+                impPassport.Length = uint.TryParse(worksheet.Cells["I24"].Text, out intValue) ? intValue : 0;
+                impPassport.Width = uint.TryParse(worksheet.Cells["J24"].Text, out intValue) ? intValue : 0;
                 impPassport.PackageMass = double.TryParse(worksheet.Cells["K24"].Text, out var doubleValue) ? doubleValue : 0;
                 impPassport.RaoMass = double.TryParse(worksheet.Cells["L24"].Text, out  doubleValue) ? doubleValue : 0;
                 impPassport.PackageVolume = double.TryParse(worksheet.Cells["M24"].Text, out  doubleValue) ? doubleValue : 0;
@@ -160,7 +160,7 @@ namespace Client_App.Commands.AsyncCommands.Import
                     characteristic.PackageIdNum = worksheet.Cells[$"A{currentRow}"].Text;
                     characteristic.ClassRao = byte.TryParse(worksheet.Cells[$"B{currentRow}"].Text, out byteValue) ? byteValue : (byte)0;
                     characteristic.CodeRao = worksheet.Cells[$"C{currentRow}"].Text;
-                    characteristic.PrimaryPackageQuantity = int.TryParse(worksheet.Cells[$"D{currentRow}"].Text, out intValue) ? intValue : 0;
+                    characteristic.PrimaryPackageQuantity = uint.TryParse(worksheet.Cells[$"D{currentRow}"].Text, out intValue) ? intValue : 0;
                     characteristic.PrimaryPackageVolume = double.TryParse(worksheet.Cells[$"E{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
                     characteristic.PrimaryPackageMass = double.TryParse(worksheet.Cells[$"F{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
                     characteristic.LongLivingActivity = double.TryParse(worksheet.Cells[$"I{currentRow}"].Text, out doubleValue) ? doubleValue : 0;

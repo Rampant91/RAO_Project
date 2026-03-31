@@ -38,7 +38,7 @@
 						  CanUserSortColumns="False">
 					
 					<interactivity:Interaction.Behaviors>
-						<local:DataGridDoubleClickOpenFormBehavior />
+						<local:DataGridDoubleClickOpenBehavior />
 					</interactivity:Interaction.Behaviors>
 
 					<DataGrid.ContextMenu>
@@ -227,7 +227,7 @@
 						  RowBackground="White"
 						  CanUserSortColumns="False">
 					<interactivity:Interaction.Behaviors>
-						<local:DataGridDoubleClickOpenFormBehavior />
+						<local:DataGridDoubleClickOpenBehavior />
 					</interactivity:Interaction.Behaviors>
 					<DataGrid.ContextMenu>
 						<ContextMenu>

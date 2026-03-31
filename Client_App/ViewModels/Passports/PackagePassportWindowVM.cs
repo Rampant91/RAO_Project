@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 using DynamicData;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
@@ -155,6 +156,7 @@ namespace Client_App.ViewModels.Passports
                 }
             });
 
+            ExcelExportPackagePassport = new ExcelExportPackagePassport();
         }
 
         #endregion
@@ -168,6 +170,7 @@ namespace Client_App.ViewModels.Passports
         public ICommand AddPrimaryPackage { get; set; }
         public ICommand DeletePrimaryPackage { get; set; }
         public ICommand SavePassport { get; set; }
+        public ICommand ExcelExportPackagePassport { get; set; }
 
         #endregion
 

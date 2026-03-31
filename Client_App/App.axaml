@@ -80,15 +80,24 @@
 			<!--Из-за особенностей предметной области допускается, что пользователи могут ввести вместо даты строку
 			    Поэтому buttonOnly предназначен для использвания в связки с другим текстбоксом -->
         <Style Selector="CalendarDatePicker.buttonOnly TextBox">
+			<Setter Property="IsTabStop" Value="False"/>
             <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="IsVisible" Value="False"/>
         </Style>
 		<Style Selector="CalendarDatePicker.buttonOnly">
+			<Setter Property="IsTabStop" Value="False"/>
 			<Setter Property="behaviors:ScrollBlock.BlockPointerWheel" Value="True"/>
 		</Style>
 		<Style Selector="Border#Background">
 			<Setter Property="Background" Value="#f0f8ff"/>
         </Style>
+		<Style Selector="TextBox">
+			<Setter Property="behaviors:TextBoxAutoTrim.IsEnabled" Value="True"/>
+		</Style>
+		<Style Selector="Button">
+			<Setter Property="IsTabStop" Value="False"/>
+		</Style>
+		
 		<Style Selector="TextBox">
 			<Setter Property="behaviors:TextBoxAutoTrim.IsEnabled" Value="True"/>
 		</Style>

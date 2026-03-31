@@ -9,7 +9,7 @@ namespace Client_App.VisualRealization.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is DateOnly dateTime)
+            if (value is DateOnly dateTime && dateTime != DateOnly.MinValue)
             {
                 return dateTime.ToString("dd.MM.yyyy");
             }

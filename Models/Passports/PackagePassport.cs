@@ -41,6 +41,17 @@ namespace Models.Passports
             }
         }
 
+        private void ValidatePostiveDouble(string propertyName, double? value)
+        {
+            ClearErrors(propertyName);
+
+            if (value == null) return;
+
+            if (value<0)
+                AddError(propertyName, "Число должно быть положительным");
+        }
+
+
         #region Constructor
         public PackagePassport()
         {
@@ -374,10 +385,10 @@ namespace Models.Passports
 
         #region ServiceLife
         [NotMapped]
-        private int _serviceLife;
+        private uint _serviceLife;
 
 
-        public int ServiceLife
+        public uint ServiceLife
         {
             get => _serviceLife;
             set
@@ -504,10 +515,10 @@ namespace Models.Passports
 
         #region Diameter
         [NotMapped]
-        private int? _diameter;
+        private uint? _diameter;
 
 
-        public int? Diameter
+        public uint? Diameter
         {
             get => _diameter;
             set
@@ -520,10 +531,10 @@ namespace Models.Passports
 
         #region Height
         [NotMapped]
-        private int? _height;
+        private uint? _height;
 
 
-        public int? Height
+        public uint? Height
         {
             get => _height;
             set
@@ -536,10 +547,10 @@ namespace Models.Passports
 
         #region Length
         [NotMapped]
-        private int? _length;
+        private uint? _length;
 
 
-        public int? Length
+        public uint? Length
         {
             get => _length;
             set
@@ -552,10 +563,10 @@ namespace Models.Passports
 
         #region Width
         [NotMapped]
-        private int? _width;
+        private uint? _width;
 
 
-        public int? Width
+        public uint? Width
         {
             get => _width;
             set
@@ -577,6 +588,7 @@ namespace Models.Passports
             set
             {
                 _packageMass = value;
+                ValidatePostiveDouble(nameof(PackageMass), _packageMass);
                 OnPropertyChanged();
             }
         }
@@ -593,6 +605,7 @@ namespace Models.Passports
             set
             {
                 _raoMass = value;
+                ValidatePostiveDouble(nameof(RaoMass), _raoMass);
                 OnPropertyChanged();
             }
         }
@@ -609,6 +622,7 @@ namespace Models.Passports
             set
             {
                 _packageVolume = value;
+                ValidatePostiveDouble(nameof(PackageVolume), _packageVolume);
                 OnPropertyChanged();
             }
         }
@@ -625,6 +639,7 @@ namespace Models.Passports
             set
             {
                 _raoVolume = value;
+                ValidatePostiveDouble(nameof(RaoVolume), _raoVolume);
                 OnPropertyChanged();
             }
         }
@@ -641,6 +656,7 @@ namespace Models.Passports
             set
             {
                 _radiationDoseRate10cm = value;
+                ValidatePostiveDouble(nameof(RadiationDoseRate10cm), _radiationDoseRate10cm);
                 OnPropertyChanged();
             }
         }
@@ -657,6 +673,7 @@ namespace Models.Passports
             set
             {
                 _radiationDoseRate1m = value;
+                ValidatePostiveDouble(nameof(RadiationDoseRate1m), _radiationDoseRate1m);
                 OnPropertyChanged();
             }
         }
@@ -673,6 +690,7 @@ namespace Models.Passports
             set
             {
                 _levelNonFixedPollutionAlpha = value;
+                ValidatePostiveDouble(nameof(LevelNonFixedPollutionAlpha), _levelNonFixedPollutionAlpha);
                 OnPropertyChanged();
             }
         }
@@ -689,6 +707,7 @@ namespace Models.Passports
             set
             {
                 _levelNonFixedPollutionBetaGamma = value;
+                ValidatePostiveDouble(nameof(LevelNonFixedPollutionBetaGamma), _levelNonFixedPollutionBetaGamma);
                 OnPropertyChanged();
             }
         }
@@ -705,6 +724,7 @@ namespace Models.Passports
             set
             {
                 _heatOutput = value;
+                ValidatePostiveDouble(nameof(HeatOutput), _heatOutput);
                 OnPropertyChanged();
             }
         }

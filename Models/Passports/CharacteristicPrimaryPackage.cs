@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -15,8 +16,20 @@ namespace Models.Passports
 {
     [Serializable]
     [Table(name: "characteristic_primary_package")]
-    public class CharacteristicPrimaryPackage : INotifyPropertyChanged
+    public class CharacteristicPrimaryPackage : INotifyPropertyChanged, INotifyDataErrorInfo
     {
+
+        private void ValidatePostiveDouble(string propertyName, double? value)
+        {
+
+            ClearErrors(propertyName);
+            if (value == null) return;
+
+            if (value < 0)
+                AddError(propertyName, "Число должно быть положительным");
+        }
+
+        
         public CharacteristicPrimaryPackage()
         {
             _passport = new PackagePassport();
@@ -105,10 +118,10 @@ namespace Models.Passports
 
         #region PrimaryPackageQuantity
         [NotMapped]
-        private int _primaryPackageQuantity;
+        private uint _primaryPackageQuantity;
 
 
-        public int PrimaryPackageQuantity
+        public uint PrimaryPackageQuantity
         {
             get => _primaryPackageQuantity;
             set
@@ -129,7 +142,8 @@ namespace Models.Passports
             get => _primaryPackageVolume;
             set
             {
-                _primaryPackageVolume = value;
+                _primaryPackageVolume = value; 
+                ValidatePostiveDouble(nameof(PrimaryPackageVolume), _primaryPackageVolume);
                 OnPropertyChanged();
             }
         }
@@ -146,6 +160,7 @@ namespace Models.Passports
             set
             {
                 _primaryPackageMass = value;
+                ValidatePostiveDouble(nameof(PrimaryPackageMass), _primaryPackageMass);
                 OnPropertyChanged();
             }
         }
@@ -214,6 +229,7 @@ namespace Models.Passports
             set
             {
                 _longLivingActivity = value;
+                ValidatePostiveDouble(nameof(LongLivingActivity), _longLivingActivity);
                 OnPropertyChanged();
             }
         }
@@ -228,6 +244,7 @@ namespace Models.Passports
             set
             {
                 _transuraniumActivity = value;
+                ValidatePostiveDouble(nameof(TransuraniumActivity), _transuraniumActivity);
                 OnPropertyChanged();
             }
         }
@@ -242,6 +259,7 @@ namespace Models.Passports
             set
             {
                 _alphaActivity = value;
+                ValidatePostiveDouble(nameof(AlphaActivity), _alphaActivity);
                 OnPropertyChanged();
             }
         }
@@ -256,6 +274,7 @@ namespace Models.Passports
             set
             {
                 _betaGammaActivity = value;
+                ValidatePostiveDouble(nameof(BetaGammaActivity), _betaGammaActivity);
                 OnPropertyChanged();
             }
         }
@@ -270,6 +289,7 @@ namespace Models.Passports
             set
             {
                 _tritiumActivity = value;
+                ValidatePostiveDouble(nameof(TritiumActivity), _tritiumActivity);
                 OnPropertyChanged();
             }
         }
@@ -284,6 +304,7 @@ namespace Models.Passports
             set
             {
                 _totalActivity = value;
+                ValidatePostiveDouble(nameof(TotalActivity), _totalActivity);
                 OnPropertyChanged();
             }
         }
@@ -307,6 +328,50 @@ namespace Models.Passports
 
         #endregion
 
+        #region NotifyDataError
+
+
+        private readonly Dictionary<string, List<string>> _errors = new();
+
+        // Добавление ошибки
+        private void AddError(string propertyName, string error)
+        {
+            if (!_errors.ContainsKey(propertyName))
+                _errors[propertyName] = new List<string>();
+
+            if (!_errors[propertyName].Contains(error))
+            {
+                _errors[propertyName].Add(error);
+                OnErrorsChanged(propertyName);
+            }
+        }
+
+        // Очистка ошибок свойства
+        private void ClearErrors(string propertyName)
+        {
+            if (_errors.Remove(propertyName))
+                OnErrorsChanged(propertyName);
+        }
+
+        // INotifyDataErrorInfo
+        public bool HasErrors => _errors.Any();
+
+        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
+
+        protected virtual void OnErrorsChanged(string propertyName)
+        {
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        }
+
+        public IEnumerable GetErrors(string? propertyName)
+        {
+            if (string.IsNullOrEmpty(propertyName))
+                return _errors.SelectMany(x => x.Value);
+
+            return _errors.TryGetValue(propertyName, out var errors) ? errors : Enumerable.Empty<string>();
+        }
+        #endregion
+ 
         #region OnPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string propertyName = "")
