@@ -52,9 +52,6 @@
                                       Header="Добавить форму" />
                             <MenuItem Command="{Binding MainWindowVM.NewChangeReports, Mode=OneWay}" 
                                       Header="Редактировать форму" />
-                            <MenuItem Command="{Binding MainWindowVM.DeleteReports, Mode=OneWay}"
-                                      CommandParameter="{Binding SelectedReports, Mode=OneWay}"
-                                      Header="Удалить форму" />
                             <MenuItem Command="{Binding MainWindowVM.ExportReports, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReports, Mode=OneWay}"
                                       Header="Выгрузить отчет РИАЦ" />
@@ -66,6 +63,9 @@
                             <MenuItem Command="{Binding MainWindowVM.ExportAllReports, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReports, Mode=OneWay}"
                                       Header="Выгрузить все отчеты в отдельные файлы" />
+							<MenuItem Command="{Binding MainWindowVM.DeleteReports, Mode=OneWay}"
+                                      CommandParameter="{Binding SelectedReports, Mode=OneWay}"
+                                      Header="Удалить форму" />
                         </ContextMenu>
                     </DataGrid.ContextMenu>
 
@@ -216,15 +216,15 @@
                             <MenuItem Command="{Binding MainWindowVM.NewChangeForm}"
                                       CommandParameter="{Binding SelectedReport}"
                                       Header="Редактировать форму" />
-                            <MenuItem Command="{Binding MainWindowVM.NewDeleteForm}"
-                                      CommandParameter="{Binding SelectedReport}"
-                                      Header="Удалить форму" />
                             <MenuItem Command="{Binding MainWindowVM.ExcelExportFormPrint}"
                                       CommandParameter="{Binding SelectedReport}"
                                       Header="Выгрузить форму в Excel" />
                             <MenuItem Command="{Binding MainWindowVM.ExportForm}"
                                       CommandParameter="{Binding SelectedReport}"
                                       Header="Выгрузить" />
+							<MenuItem Command="{Binding MainWindowVM.NewDeleteForm}"
+                                      CommandParameter="{Binding SelectedReport}"
+                                      Header="Удалить форму" />
                         </ContextMenu>
                     </DataGrid.ContextMenu>
 

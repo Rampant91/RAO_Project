@@ -49,9 +49,6 @@
 									  Command="{Binding MainWindowVM.AddReports, Mode=OneWay}"/>
 							<MenuItem Header="Редактировать форму"
 									  Command="{Binding MainWindowVM.NewChangeReports, Mode=OneWay}"/>
-							<MenuItem Header="Удалить форму"
-									  Command="{Binding MainWindowVM.DeleteReports, Mode=OneWay}"
-									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 							<MenuItem Header="Выгрузить организацию"
 									  Command="{Binding MainWindowVM.ExportReports, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
@@ -62,6 +59,9 @@
 									  Command="{Binding MainWindowVM.ExportAllReportsOneFile, Mode=OneWay}"/>
 							<MenuItem Header="Выгрузить все организации в отдельные файлы"
 									  Command="{Binding MainWindowVM.ExportAllReports, Mode=OneWay}"
+									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+							<MenuItem Header="Удалить форму"
+									  Command="{Binding MainWindowVM.DeleteReports, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 						</ContextMenu>
 					</DataGrid.ContextMenu>
@@ -190,14 +190,14 @@
 							<MenuItem Header="Редактировать форму"
 									  Command="{Binding MainWindowVM.NewChangeForm}"
 									  CommandParameter="{Binding SelectedReport}"/>
-							<MenuItem Header="Удалить форму"
-									  Command="{Binding MainWindowVM.NewDeleteForm}"
-									  CommandParameter="{Binding SelectedReport}"/>
 							<MenuItem Header="Выгрузить форму в Excel"
 									  Command="{Binding MainWindowVM.ExcelExportFormPrint}"
 									  CommandParameter="{Binding SelectedReport}"/>
 							<MenuItem Header="Выгрузить"
 									  Command="{Binding MainWindowVM.ExportForm}"
+									  CommandParameter="{Binding SelectedReport}"/>
+							<MenuItem Header="Удалить форму"
+									  Command="{Binding MainWindowVM.NewDeleteForm}"
 									  CommandParameter="{Binding SelectedReport}"/>
 						</ContextMenu>
 					</DataGrid.ContextMenu>

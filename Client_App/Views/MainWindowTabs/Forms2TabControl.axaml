@@ -61,9 +61,6 @@
                                 <MenuItem Header="Из Excel"
                                           Click="ImportExcel_Click"/>
                             </MenuItem>
-							<MenuItem Header="Удалить организацию"
-									  Command="{Binding MainWindowVM.DeleteReports, Mode=OneWay}"
-									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 							<MenuItem Header="Выгрузить организацию"
 									  Command="{Binding MainWindowVM.ExportReports, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
@@ -79,6 +76,9 @@
 									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 							<MenuItem Header="Проверить все формы организации"
 									  Command="{Binding MainWindowVM.ExcelExportCheckAllForms, Mode=OneWay}"
+									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+							<MenuItem Header="Удалить организацию"
+									  Command="{Binding MainWindowVM.DeleteReports, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 						</ContextMenu>
 					</DataGrid.ContextMenu>
@@ -280,9 +280,6 @@
 							<MenuItem Header="Редактировать отчёт"
 									  Command="{Binding MainWindowVM.ChangeForm}"
 									  CommandParameter="{Binding SelectedReport}"/>
-							<MenuItem Header="Удалить отчёт"
-									  Command="{Binding MainWindowVM.NewDeleteForm}"
-									  CommandParameter="{Binding SelectedReport}"/>
                             <MenuItem Header="Выгрузить отчёт в Excel">
                                 <MenuItem Header="для печати"
                                           Click="ExportExcelPrint_Click"/>
@@ -297,6 +294,9 @@
 									  CommandParameter="{Binding SelectedReport}"/>
 							<MenuItem Header="Сохранить комментарий"
 									  Command="{Binding MainWindowVM.SaveReports}"
+									  CommandParameter="{Binding SelectedReport}"/>
+							<MenuItem Header="Удалить отчёт"
+									  Command="{Binding MainWindowVM.NewDeleteForm}"
 									  CommandParameter="{Binding SelectedReport}"/>
 						</ContextMenu>
 					</DataGrid.ContextMenu>
