@@ -297,7 +297,8 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
         {
             if ((_firstSelectedTextBox != null)
                 && (_lastSelectedTextBox != null)
-                && (_firstSelectedTextBox == _lastSelectedTextBox))
+                && (_firstSelectedTextBox == _lastSelectedTextBox)
+                && (_firstSelectedTextBox.IsEnabled))
             {
                 _firstSelectedTextBox.LostFocus += OnTextBoxLostFocus;
                 _firstSelectedTextBox.Focus();
@@ -317,7 +318,8 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
     {
         if ((_firstSelectedTextBox != null)
                 && (_lastSelectedTextBox != null)
-                && (_firstSelectedTextBox == _lastSelectedTextBox))
+                && (_firstSelectedTextBox == _lastSelectedTextBox)
+                && (_firstSelectedTextBox.IsEnabled))
         {
             _firstSelectedTextBox.LostFocus += OnTextBoxLostFocus;
             _firstSelectedTextBox.Focus();

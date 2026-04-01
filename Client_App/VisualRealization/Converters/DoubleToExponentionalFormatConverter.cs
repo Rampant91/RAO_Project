@@ -23,7 +23,8 @@ namespace Client_App.VisualRealization.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is not string expStr
-                || targetType != typeof(double))
+                || (targetType != typeof(double)
+                && targetType != (typeof(double?))))
                 return 0.0;
 
             expStr = expStr.Replace(" ", "");  //удаляем все пробелы

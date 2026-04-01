@@ -1019,13 +1019,13 @@
 							</interactivity:Interaction.Behaviors>
 
 							<!--Первый уровень заголовков-->
-							<Border Grid.Row="0" Grid.Column="8"
-									Grid.ColumnSpan="5">
-								<TextBlock Text="Суммарные удельные активности, кБк/кг"/>
-							</Border>
-							<Border Grid.Row="0" Grid.Column="3"
+							<Border Grid.Row="0" Grid.Column="7"
 									Grid.ColumnSpan="3">
 								<TextBlock Text="Количество и характеристики первичных упаковок"/>
+							</Border>
+							<Border Grid.Row="0" Grid.Column="12"
+									Grid.ColumnSpan="5">
+								<TextBlock Text="Суммарные удельные активности, кБк/кг"/>
 							</Border>
 							<!--Второй уровень заголовков-->
 							<Border Grid.Row="0" Grid.Column="0"
@@ -1042,7 +1042,7 @@
 							</Border>
 							<Border Grid.Row="0" Grid.Column="3"
 						   Grid.RowSpan="2">
-								<TextBlock Text="Тип первичной упаковки"/>
+								<TextBlock Text="Код РАО"/>
 							</Border>
 							<Border Grid.Row="0" Grid.Column="4"
 									Grid.RowSpan="2">
@@ -1153,64 +1153,12 @@
 										</DataTemplate>
 									</DataGridTemplateColumn.CellTemplate>
 								</DataGridTemplateColumn>
-
 								<DataGridTemplateColumn>
 									<DataGridTemplateColumn.HeaderTemplate>
 										<DataTemplate>
 											<Border Classes="headerTemplate">
 												<Grid ColumnDefinitions="*,Auto">
 													<TextBlock Grid.Column="0" Text="3" />
-												</Grid>
-											</Border>
-										</DataTemplate>
-									</DataGridTemplateColumn.HeaderTemplate>
-									<DataGridTemplateColumn.CellTemplate >
-										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<TextBox Text="{Binding PhysicochemicalForm, Mode=TwoWay}"/>
-										</DataTemplate>
-									</DataGridTemplateColumn.CellTemplate>
-								</DataGridTemplateColumn>
-
-								<DataGridTemplateColumn>
-									<DataGridTemplateColumn.HeaderTemplate>
-										<DataTemplate>
-											<Border Classes="headerTemplate">
-												<Grid ColumnDefinitions="*,Auto">
-													<TextBlock Grid.Column="0" Text="1" />
-												</Grid>
-											</Border>
-										</DataTemplate>
-									</DataGridTemplateColumn.HeaderTemplate>
-									<DataGridTemplateColumn.CellTemplate >
-										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<TextBox Text="{Binding MorphologicalComposition, Mode=TwoWay}"/>
-										</DataTemplate>
-									</DataGridTemplateColumn.CellTemplate>
-								</DataGridTemplateColumn>
-
-								<DataGridTemplateColumn>
-									<DataGridTemplateColumn.HeaderTemplate>
-										<DataTemplate>
-											<Border Classes="headerTemplate">
-												<Grid ColumnDefinitions="*,Auto">
-													<TextBlock Grid.Column="0" Text="1" />
-												</Grid>
-											</Border>
-										</DataTemplate>
-									</DataGridTemplateColumn.HeaderTemplate>
-									<DataGridTemplateColumn.CellTemplate >
-										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<TextBox Text="{Binding Flammability, Mode=TwoWay}"/>
-										</DataTemplate>
-									</DataGridTemplateColumn.CellTemplate>
-								</DataGridTemplateColumn>
-
-								<DataGridTemplateColumn>
-									<DataGridTemplateColumn.HeaderTemplate>
-										<DataTemplate>
-											<Border Classes="headerTemplate">
-												<Grid ColumnDefinitions="*,Auto">
-													<TextBlock Grid.Column="0" Text="2" />
 												</Grid>
 											</Border>
 										</DataTemplate>
@@ -1231,7 +1179,7 @@
 										<DataTemplate>
 											<Border Classes="headerTemplate">
 												<Grid ColumnDefinitions="*,Auto">
-													<TextBlock Grid.Column="0" Text="3" />
+													<TextBlock Grid.Column="0" Text="4" />
 												</Grid>
 											</Border>
 										</DataTemplate>
@@ -1246,13 +1194,66 @@
 										</DataTemplate>
 									</DataGridTemplateColumn.CellTemplate>
 								</DataGridTemplateColumn>
+								
+								<DataGridTemplateColumn>
+									<DataGridTemplateColumn.HeaderTemplate>
+										<DataTemplate>
+											<Border Classes="headerTemplate">
+												<Grid ColumnDefinitions="*,Auto">
+													<TextBlock Grid.Column="0" Text="5" />
+												</Grid>
+											</Border>
+										</DataTemplate>
+									</DataGridTemplateColumn.HeaderTemplate>
+									<DataGridTemplateColumn.CellTemplate >
+										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
+											<TextBox Text="{Binding PhysicochemicalForm, Mode=TwoWay}"/>
+										</DataTemplate>
+									</DataGridTemplateColumn.CellTemplate>
+								</DataGridTemplateColumn>
 
 								<DataGridTemplateColumn>
 									<DataGridTemplateColumn.HeaderTemplate>
 										<DataTemplate>
 											<Border Classes="headerTemplate">
 												<Grid ColumnDefinitions="*,Auto">
-													<TextBlock Grid.Column="0" Text="4" />
+													<TextBlock Grid.Column="0" Text="6" />
+												</Grid>
+											</Border>
+										</DataTemplate>
+									</DataGridTemplateColumn.HeaderTemplate>
+									<DataGridTemplateColumn.CellTemplate >
+										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
+											<TextBox Text="{Binding MorphologicalComposition, Mode=TwoWay}"/>
+										</DataTemplate>
+									</DataGridTemplateColumn.CellTemplate>
+								</DataGridTemplateColumn>
+
+								<DataGridTemplateColumn>
+									<DataGridTemplateColumn.HeaderTemplate>
+										<DataTemplate>
+											<Border Classes="headerTemplate">
+												<Grid ColumnDefinitions="*,Auto">
+													<TextBlock Grid.Column="0" Text="7" />
+												</Grid>
+											</Border>
+										</DataTemplate>
+									</DataGridTemplateColumn.HeaderTemplate>
+									<DataGridTemplateColumn.CellTemplate >
+										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
+											<TextBox Text="{Binding Flammability, Mode=TwoWay}"/>
+										</DataTemplate>
+									</DataGridTemplateColumn.CellTemplate>
+								</DataGridTemplateColumn>
+
+								
+
+								<DataGridTemplateColumn>
+									<DataGridTemplateColumn.HeaderTemplate>
+										<DataTemplate>
+											<Border Classes="headerTemplate">
+												<Grid ColumnDefinitions="*,Auto">
+													<TextBlock Grid.Column="0" Text="8" />
 												</Grid>
 											</Border>
 										</DataTemplate>
@@ -1273,7 +1274,7 @@
 										<DataTemplate>
 											<Border Classes="headerTemplate">
 												<Grid ColumnDefinitions="*,Auto">
-													<TextBlock Grid.Column="0" Text="5" />
+													<TextBlock Grid.Column="0" Text="9" />
 												</Grid>
 											</Border>
 										</DataTemplate>
@@ -1294,7 +1295,7 @@
 										<DataTemplate>
 											<Border Classes="headerTemplate">
 												<Grid ColumnDefinitions="*,Auto">
-													<TextBlock Grid.Column="0" Text="6" />
+													<TextBlock Grid.Column="0" Text="10" />
 												</Grid>
 											</Border>
 										</DataTemplate>
@@ -1315,7 +1316,7 @@
 										<DataTemplate>
 											<Border Classes="headerTemplate">
 												<Grid ColumnDefinitions="*,Auto">
-													<TextBlock Grid.Column="0" Text="7" />
+													<TextBlock Grid.Column="0" Text="11" />
 												</Grid>
 											</Border>
 										</DataTemplate>
@@ -1366,7 +1367,7 @@
 										<DataTemplate>
 											<Border Classes="headerTemplate">
 												<Grid ColumnDefinitions="*,Auto">
-													<TextBlock Grid.Column="0" Text="8" />
+													<TextBlock Grid.Column="0" Text="12" />
 												</Grid>
 											</Border>
 										</DataTemplate>
@@ -1416,90 +1417,6 @@
 										<DataTemplate>
 											<Border Classes="headerTemplate">
 												<Grid ColumnDefinitions="*,Auto">
-													<TextBlock Grid.Column="0" Text="9" />
-												</Grid>
-											</Border>
-										</DataTemplate>
-									</DataGridTemplateColumn.HeaderTemplate>
-									<DataGridTemplateColumn.CellTemplate>
-										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<TextBox Text="{Binding LongLivingActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}">
-												<interactivity:Interaction.Behaviors>
-													<local:TextBoxExponentionalFormatLostFocusBehavior/>
-												</interactivity:Interaction.Behaviors>
-											</TextBox>
-										</DataTemplate>
-									</DataGridTemplateColumn.CellTemplate>
-								</DataGridTemplateColumn>
-
-								<DataGridTemplateColumn>
-									<DataGridTemplateColumn.HeaderTemplate>
-										<DataTemplate>
-											<Border Classes="headerTemplate">
-												<Grid ColumnDefinitions="*,Auto">
-													<TextBlock Grid.Column="0" Text="10" />
-												</Grid>
-											</Border>
-										</DataTemplate>
-									</DataGridTemplateColumn.HeaderTemplate>
-									<DataGridTemplateColumn.CellTemplate>
-										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<TextBox Text="{Binding TransuraniumActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}">
-												<interactivity:Interaction.Behaviors>
-													<local:TextBoxExponentionalFormatLostFocusBehavior/>
-												</interactivity:Interaction.Behaviors>
-											</TextBox>
-										</DataTemplate>
-									</DataGridTemplateColumn.CellTemplate>
-								</DataGridTemplateColumn>
-
-								<DataGridTemplateColumn>
-									<DataGridTemplateColumn.HeaderTemplate>
-										<DataTemplate>
-											<Border Classes="headerTemplate">
-												<Grid ColumnDefinitions="*,Auto">
-													<TextBlock Grid.Column="0" Text="11" />
-												</Grid>
-											</Border>
-										</DataTemplate>
-									</DataGridTemplateColumn.HeaderTemplate>
-									<DataGridTemplateColumn.CellTemplate>
-										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<TextBox Text="{Binding AlphaActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}">
-												<interactivity:Interaction.Behaviors>
-													<local:TextBoxExponentionalFormatLostFocusBehavior/>
-												</interactivity:Interaction.Behaviors>
-											</TextBox>
-										</DataTemplate>
-									</DataGridTemplateColumn.CellTemplate>
-								</DataGridTemplateColumn>
-
-								<DataGridTemplateColumn>
-									<DataGridTemplateColumn.HeaderTemplate>
-										<DataTemplate>
-											<Border Classes="headerTemplate">
-												<Grid ColumnDefinitions="*,Auto">
-													<TextBlock Grid.Column="0" Text="12" />
-												</Grid>
-											</Border>
-										</DataTemplate>
-									</DataGridTemplateColumn.HeaderTemplate>
-									<DataGridTemplateColumn.CellTemplate>
-										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<TextBox Text="{Binding BetaGammaActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}">
-												<interactivity:Interaction.Behaviors>
-													<local:TextBoxExponentionalFormatLostFocusBehavior/>
-												</interactivity:Interaction.Behaviors>
-											</TextBox>
-										</DataTemplate>
-									</DataGridTemplateColumn.CellTemplate>
-								</DataGridTemplateColumn>
-
-								<DataGridTemplateColumn>
-									<DataGridTemplateColumn.HeaderTemplate>
-										<DataTemplate>
-											<Border Classes="headerTemplate">
-												<Grid ColumnDefinitions="*,Auto">
 													<TextBlock Grid.Column="0" Text="13" />
 												</Grid>
 											</Border>
@@ -1507,11 +1424,9 @@
 									</DataGridTemplateColumn.HeaderTemplate>
 									<DataGridTemplateColumn.CellTemplate>
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<TextBox Text="{Binding TritiumActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}">
-												<interactivity:Interaction.Behaviors>
-													<local:TextBoxExponentionalFormatLostFocusBehavior/>
-												</interactivity:Interaction.Behaviors>
-											</TextBox>
+											<Border Classes="textBlockCell">
+												<TextBlock Text="{Binding LongLivingActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
+											</Border>
 										</DataTemplate>
 									</DataGridTemplateColumn.CellTemplate>
 								</DataGridTemplateColumn>
@@ -1528,11 +1443,9 @@
 									</DataGridTemplateColumn.HeaderTemplate>
 									<DataGridTemplateColumn.CellTemplate>
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<TextBox Text="{Binding TotalActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}">
-												<interactivity:Interaction.Behaviors>
-													<local:TextBoxExponentionalFormatLostFocusBehavior/>
-												</interactivity:Interaction.Behaviors>
-											</TextBox>
+											<Border Classes="textBlockCell">
+												<TextBlock Text="{Binding TransuraniumActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
+											</Border>
 										</DataTemplate>
 									</DataGridTemplateColumn.CellTemplate>
 								</DataGridTemplateColumn>
@@ -1543,6 +1456,82 @@
 											<Border Classes="headerTemplate">
 												<Grid ColumnDefinitions="*,Auto">
 													<TextBlock Grid.Column="0" Text="15" />
+												</Grid>
+											</Border>
+										</DataTemplate>
+									</DataGridTemplateColumn.HeaderTemplate>
+									<DataGridTemplateColumn.CellTemplate>
+										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
+											<Border Classes="textBlockCell">
+												<TextBlock Text="{Binding AlphaActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
+											</Border>
+										</DataTemplate>
+									</DataGridTemplateColumn.CellTemplate>
+								</DataGridTemplateColumn>
+
+								<DataGridTemplateColumn>
+									<DataGridTemplateColumn.HeaderTemplate>
+										<DataTemplate>
+											<Border Classes="headerTemplate">
+												<Grid ColumnDefinitions="*,Auto">
+													<TextBlock Grid.Column="0" Text="16" />
+												</Grid>
+											</Border>
+										</DataTemplate>
+									</DataGridTemplateColumn.HeaderTemplate>
+									<DataGridTemplateColumn.CellTemplate>
+										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
+											<Border Classes="textBlockCell">
+												<TextBlock Text="{Binding BetaGammaActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
+											</Border>
+										</DataTemplate>
+									</DataGridTemplateColumn.CellTemplate>
+								</DataGridTemplateColumn>
+
+								<DataGridTemplateColumn>
+									<DataGridTemplateColumn.HeaderTemplate>
+										<DataTemplate>
+											<Border Classes="headerTemplate">
+												<Grid ColumnDefinitions="*,Auto">
+													<TextBlock Grid.Column="0" Text="17" />
+												</Grid>
+											</Border>
+										</DataTemplate>
+									</DataGridTemplateColumn.HeaderTemplate>
+									<DataGridTemplateColumn.CellTemplate>
+										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
+											<Border Classes="textBlockCell">
+												<TextBlock Text="{Binding TritiumActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
+											</Border>
+										</DataTemplate>
+									</DataGridTemplateColumn.CellTemplate>
+								</DataGridTemplateColumn>
+
+								<DataGridTemplateColumn>
+									<DataGridTemplateColumn.HeaderTemplate>
+										<DataTemplate>
+											<Border Classes="headerTemplate">
+												<Grid ColumnDefinitions="*,Auto">
+													<TextBlock Grid.Column="0" Text="18" />
+												</Grid>
+											</Border>
+										</DataTemplate>
+									</DataGridTemplateColumn.HeaderTemplate>
+									<DataGridTemplateColumn.CellTemplate>
+										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
+											<Border Classes="textBlockCell">
+												<TextBlock Text="{Binding TotalActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
+											</Border>
+										</DataTemplate>
+									</DataGridTemplateColumn.CellTemplate>
+								</DataGridTemplateColumn>
+
+								<DataGridTemplateColumn>
+									<DataGridTemplateColumn.HeaderTemplate>
+										<DataTemplate>
+											<Border Classes="headerTemplate">
+												<Grid ColumnDefinitions="*,Auto">
+													<TextBlock Grid.Column="0" Text="19" />
 												</Grid>
 											</Border>
 										</DataTemplate>
