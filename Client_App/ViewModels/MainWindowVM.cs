@@ -418,10 +418,18 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     /// </summary>
     public ICommand ExportAllReport => new ExportAllReportAsyncCommand();
 
+    
+
     /// <summary>
     /// Экспорт всех организаций организации в один файл .RAODB
     /// </summary>
     public ICommand ExportAllReportsOneFile => new ExportAllReportsOneFileAsyncCommand();
+
+    /// <summary>
+    /// Экспорт всех организаций организации в один файл .RAODB
+    /// </summary>
+    public ICommand ExportAllReportsFromSubjectRFOneFile => new ExportAllReportsFromSubjectRFOneFileAsyncCommand();
+
 
     /// <summary>
     /// Экспорт организации в файл .RAODB

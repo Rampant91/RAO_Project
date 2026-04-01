@@ -72,6 +72,8 @@
 									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 							<MenuItem Header="Выгрузить все организации в один файл"
 									  Command="{Binding MainWindowVM.ExportAllReportsOneFile, Mode=OneWay}"/>
+							<MenuItem Header="Выгрузить все отчеты из конкретного субъекта РФ в один файл"
+									  Command="{Binding MainWindowVM.ExportAllReportsFromSubjectRFOneFile, Mode=OneWay}"/>
 							<MenuItem Header="Выгрузить все организации в отдельные файлы"
 									  Command="{Binding MainWindowVM.ExportAllReports, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
