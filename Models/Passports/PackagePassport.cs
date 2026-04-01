@@ -433,54 +433,6 @@ namespace Models.Passports
         }
         #endregion
 
-        #region PhysicochemicalForm
-        [NotMapped]
-        private string _physicochemicalForm;
-
-        [MaxLength(1024)]
-        public string PhysicochemicalForm
-        {
-            get => _physicochemicalForm;
-            set
-            {
-                _physicochemicalForm = value;
-                OnPropertyChanged();
-            }
-        }
-        #endregion
-
-        #region MorphologicalComposition
-        [NotMapped]
-        private string _morphologicalComposition;
-
-        [MaxLength(1024)]
-        public string MorphologicalComposition
-        {
-            get => _morphologicalComposition;
-            set
-            {
-                _morphologicalComposition = value;
-                OnPropertyChanged();
-            }
-        }
-        #endregion
-
-        #region Flammability
-        [NotMapped]
-        private string _flammability;
-
-        [MaxLength(256)]
-        public string Flammability
-        {
-            get => _flammability;
-            set
-            {
-                _flammability = value;
-                OnPropertyChanged();
-            }
-        }
-        #endregion
-
         #region MatrixMaterialType
         [NotMapped]
         private string _matrixMaterialType;

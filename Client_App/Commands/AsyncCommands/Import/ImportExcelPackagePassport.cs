@@ -125,9 +125,9 @@ namespace Client_App.Commands.AsyncCommands.Import
 
                 //Table1
                 impPassport.DisposalMethod = worksheet.Cells["A24"].Text;
-                impPassport.PhysicochemicalForm = worksheet.Cells["B24"].Text;
-                impPassport.MorphologicalComposition = worksheet.Cells["C24"].Text;
-                impPassport.Flammability = worksheet.Cells["D24"].Text;
+                //impPassport.PhysicochemicalForm = worksheet.Cells["B24"].Text;
+                //impPassport.MorphologicalComposition = worksheet.Cells["C24"].Text;
+                //impPassport.Flammability = worksheet.Cells["D24"].Text;
                 impPassport.MatrixMaterialType = worksheet.Cells["E24"].Text;
                 impPassport.FillingWasteDate = GetDateOnlyFromCell(worksheet.Cells["F24"]) ?? DateOnly.MinValue;
                 impPassport.Diameter = uint.TryParse(worksheet.Cells["G24"].Text, out intValue) ? intValue : 0;
@@ -157,7 +157,7 @@ namespace Client_App.Commands.AsyncCommands.Import
                     impPassport.ContentCharacteristics.Add(characteristic);
 
                     //Переносим все данные кроме списка радионуклидов
-                    characteristic.PackageIdNum = worksheet.Cells[$"A{currentRow}"].Text;
+                    //characteristic.PackageIdNum = worksheet.Cells[$"A{currentRow}"].Text;
                     characteristic.ClassRao = byte.TryParse(worksheet.Cells[$"B{currentRow}"].Text, out byteValue) ? byteValue : (byte)0;
                     characteristic.CodeRao = worksheet.Cells[$"C{currentRow}"].Text;
                     characteristic.PrimaryPackageQuantity = uint.TryParse(worksheet.Cells[$"D{currentRow}"].Text, out intValue) ? intValue : 0;

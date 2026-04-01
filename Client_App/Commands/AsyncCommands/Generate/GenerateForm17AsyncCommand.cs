@@ -45,11 +45,11 @@ namespace Client_App.Commands.AsyncCommands.Generate
 
                 form17.PackType_DB = passport.PackageType;
 
-                if (characteristic.PackageIdNum.Split('/').Length == 3)
-                    form17.PackFactoryNumber_DB = characteristic.PackageIdNum.Split('/')[1];
+                //if (characteristic.PackageIdNum.Split('/').Length == 3)
+                //    form17.PackFactoryNumber_DB = characteristic.PackageIdNum.Split('/')[1];
 
 
-                form17.PackNumber_DB = characteristic.PackageIdNum;
+                //form17.PackNumber_DB = characteristic.PackageIdNum;
                 form17.FormingDate_DB = passport.ManufactureDate.ToString(new CultureInfo("ru-RU"));
                 form17.PassportNumber_DB = passport.PassportNum;
                 form17.Volume_DB = passport.PackageVolume.ToString($"e{passport.PackageVolume.ToString().Length - 1}");

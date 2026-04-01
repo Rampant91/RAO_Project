@@ -89,7 +89,7 @@ namespace Client_App.Commands.AsyncCommands.Generate
 
                     passport.PackageType = form17.PackType_DB;
 
-                    characteristic.PackageIdNum = form17.PackNumber_DB;
+                    //characteristic.PackageIdNum = form17.PackNumber_DB;
                     passport.ManufactureDate = DateOnly.TryParse(form17.FormingDate_DB, out var date) ? date : DateOnly.MinValue;
                     passport.PassportNum = form17.PassportNumber_DB;
                     passport.PackageVolume = double.TryParse(form17.Volume_DB, out var value) ? value : 0;

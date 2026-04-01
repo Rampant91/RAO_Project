@@ -223,14 +223,14 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
 
             worksheet.Cells["A24"].Value = passport.DisposalMethod;
 
-            worksheet.Cells["B24"].Value = passport.PhysicochemicalForm;
-            worksheet.Cells["B24"].Style.WrapText = true;
+            //worksheet.Cells["B24"].Value = passport.PhysicochemicalForm;
+            //worksheet.Cells["B24"].Style.WrapText = true;
 
-            worksheet.Cells["C24"].Value = passport.MorphologicalComposition;
-            worksheet.Cells["C24"].Style.WrapText = true;
+            //worksheet.Cells["C24"].Value = passport.MorphologicalComposition;
+            //worksheet.Cells["C24"].Style.WrapText = true;
 
-            worksheet.Cells["D24"].Value = passport.Flammability;
-            worksheet.Cells["D24"].Style.WrapText = true;
+            //worksheet.Cells["D24"].Value = passport.Flammability;
+            //worksheet.Cells["D24"].Style.WrapText = true;
 
             worksheet.Cells["E24"].Value = passport.MatrixMaterialType;
             worksheet.Cells["E24"].Style.WrapText = true;
@@ -343,8 +343,8 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
                 }
 
 
-                worksheet.Cells[$"A{start}:A{offset}"].Merge = true;
-                worksheet.Cells[$"A{start}:A{offset}"].Value = characteristics[i].PackageIdNum;
+                //worksheet.Cells[$"A{start}:A{offset}"].Merge = true;
+                //worksheet.Cells[$"A{start}:A{offset}"].Value = characteristics[i].PackageIdNum;
 
                 worksheet.Cells[$"B{start}:B{offset}"].Merge = true;
                 worksheet.Cells[$"B{start}:B{offset}"].Value = characteristics[i].ClassRao;

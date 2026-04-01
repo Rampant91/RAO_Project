@@ -419,32 +419,32 @@
 
 								<Border Grid.Row="0"
 										Grid.Column="0"
-										Grid.ColumnSpan="6"
+										Grid.ColumnSpan="3"
 										BorderThickness="1,1,1,0">
 									<TextBlock>Состав упаковки РАО</TextBlock>
 								</Border>
 								<Border Grid.Row="0"
-										Grid.Column="6"
+										Grid.Column="3"
 										Grid.ColumnSpan="4">
 									<TextBlock>Габариты упаковки РАО, мм</TextBlock>
 								</Border>
 								<Border Grid.Row="0"
-										Grid.Column="10"
+										Grid.Column="7"
 										Grid.ColumnSpan="2">
 									<TextBlock Text="Масса, кг"/>
 								</Border>
 								<Border Grid.Row="0"
-										Grid.Column="12"
+										Grid.Column="9"
 										Grid.ColumnSpan="2">
 									<TextBlock Text="Объем, м³"/>
 								</Border>
 								<Border Grid.Row="0"
-										Grid.Column="14"
+										Grid.Column="11"
 										Grid.ColumnSpan="2">
 									<TextBlock Text="Мощность дозы излучения,мк3в/ч на расстоянии от поверхности, м"/>
 								</Border>
 								<Border Grid.Row="0"
-										Grid.Column="16"
+										Grid.Column="13"
 										Grid.ColumnSpan="2">
 									<TextBlock Text="Уровень нефиксированного загрязнения, частиц/(мин*см²)"/>
 								</Border>
@@ -454,57 +454,48 @@
 									<TextBlock Text="Способ размещения отходов" />
 								</Border>
 								<Border Grid.Row="1" Grid.Column="1">
-									<TextBlock Text="Физико-химическая форма РАО, тип матричного материала"/>
-								</Border>
-								<Border Grid.Row="1" Grid.Column="2">
-									<TextBlock Text="Морфологический (химический состав)"/>
-								</Border>
-								<Border Grid.Row="1" Grid.Column="3">
-									<TextBlock Text="Горючесть"/>
-								</Border>
-								<Border Grid.Row="1" Grid.Column="4">
 									<TextBlock Text="Наличие и вид матричного материала"/>
 								</Border>
-								<Border Grid.Row="1" Grid.Column="5">
+								<Border Grid.Row="1" Grid.Column="2">
 									<TextBlock Text="Дата заполнения отходами"/>
 								</Border>
-								<Border Grid.Row="1" Grid.Column="6">
+								<Border Grid.Row="1" Grid.Column="3">
 									<TextBlock Text="Диаметр"/>
 								</Border>
-								<Border Grid.Row="1" Grid.Column="7">
+								<Border Grid.Row="1" Grid.Column="4">
 									<TextBlock Text="Высота"/>
 								</Border>
-								<Border Grid.Row="1" Grid.Column="8">
+								<Border Grid.Row="1" Grid.Column="5">
 									<TextBlock Text="Длина"/>
 								</Border>
-								<Border Grid.Row="1" Grid.Column="9">
+								<Border Grid.Row="1" Grid.Column="6">
 									<TextBlock Text="Ширина"/>
 								</Border>
+								<Border Grid.Row="1" Grid.Column="7">
+									<TextBlock Text="упаковки РАО"/>
+								</Border>
+								<Border Grid.Row="1" Grid.Column="8">
+									<TextBlock Text="РАО в упаковке"/>
+								</Border>
+								<Border Grid.Row="1" Grid.Column="9">
+									<TextBlock Text="упаковки РАО"/>
+								</Border>
 								<Border Grid.Row="1" Grid.Column="10">
-									<TextBlock Text="Упаковки РАО"/>
+									<TextBlock Text="РАО в упаковке"/>
 								</Border>
 								<Border Grid.Row="1" Grid.Column="11">
-									<TextBlock Text="РАО в упаковке"/>
-								</Border>
-								<Border Grid.Row="1" Grid.Column="12">
-									<TextBlock Text="Упаковки РАО"/>
-								</Border>
-								<Border Grid.Row="1" Grid.Column="13">
-									<TextBlock Text="РАО в упаковке"/>
-								</Border>
-								<Border Grid.Row="1" Grid.Column="14">
 									<TextBlock Text="0,1"/>
 								</Border>
-								<Border Grid.Row="1" Grid.Column="15">
+								<Border Grid.Row="1" Grid.Column="12">
 									<TextBlock Text="1"/>
 								</Border>
-								<Border Grid.Row="1" Grid.Column="16">
+								<Border Grid.Row="1" Grid.Column="13">
 									<TextBlock Text="альфа"/>
 								</Border>
-								<Border Grid.Row="1" Grid.Column="17">
+								<Border Grid.Row="1" Grid.Column="14">
 									<TextBlock Text="бета/гамма"/>
 								</Border>
-								<Border Grid.Row="0" Grid.Column="18"
+								<Border Grid.Row="0" Grid.Column="15"
 										Grid.RowSpan="2">
 									<TextBlock Text="Тепловыделение, Вт/м³, Вт/упаковку"/>
 								</Border>
@@ -803,59 +794,6 @@
 											</DataTemplate>
 										</DataGridTemplateColumn.CellTemplate>
 									</DataGridTemplateColumn>
-
-									<DataGridTemplateColumn>
-										<DataGridTemplateColumn.HeaderTemplate>
-											<DataTemplate>
-												<Border Classes="headerTemplate">
-													<Grid ColumnDefinitions="*,Auto">
-														<TextBlock Grid.Column="0" Text="17" />
-													</Grid>
-												</Border>
-											</DataTemplate>
-										</DataGridTemplateColumn.HeaderTemplate>
-										<DataGridTemplateColumn.CellTemplate>
-											<DataTemplate>
-												<TextBox/>
-											</DataTemplate>
-										</DataGridTemplateColumn.CellTemplate>
-									</DataGridTemplateColumn>
-
-									<DataGridTemplateColumn>
-										<DataGridTemplateColumn.HeaderTemplate>
-											<DataTemplate>
-												<Border Classes="headerTemplate">
-													<Grid ColumnDefinitions="*,Auto">
-														<TextBlock Grid.Column="0" Text="18" />
-													</Grid>
-												</Border>
-											</DataTemplate>
-										</DataGridTemplateColumn.HeaderTemplate>
-										<DataGridTemplateColumn.CellTemplate>
-											<DataTemplate>
-												<TextBox/>
-											</DataTemplate>
-										</DataGridTemplateColumn.CellTemplate>
-									</DataGridTemplateColumn>
-
-									<DataGridTemplateColumn>
-										<DataGridTemplateColumn.HeaderTemplate>
-											<DataTemplate>
-												<Border Classes="headerTemplate">
-													<Grid ColumnDefinitions="*,Auto">
-														<TextBlock Grid.Column="0" Text="19" />
-													</Grid>
-												</Border>
-											</DataTemplate>
-										</DataGridTemplateColumn.HeaderTemplate>
-										<DataGridTemplateColumn.CellTemplate>
-											<DataTemplate>
-												<TextBox/>
-											</DataTemplate>
-										</DataGridTemplateColumn.CellTemplate>
-									</DataGridTemplateColumn>
-
-
 								</DataGrid.Columns>
 							</DataGrid>
 							<Grid Grid.Row="2"
@@ -872,12 +810,10 @@
 
 								<Border Grid.Row="0" Grid.Column="0">
 									<TextBox
-									
 										TextWrapping="Wrap"
-										AcceptsReturn="True"
 										Text="{Binding Passport.DisposalMethod}">
 										<interactivity:Interaction.Behaviors>
-											
+											<local:SelectAllOnFocusBehavior/>
 										</interactivity:Interaction.Behaviors>
 									</TextBox>
 								</Border>
@@ -885,58 +821,58 @@
 									<TextBox
 										TextWrapping="Wrap"
 										AcceptsReturn="True"
-										Text="{Binding Passport.PhysicochemicalForm}" >
+										Text="{Binding Passport.MatrixMaterialType}" >
 										<interactivity:Interaction.Behaviors>
-											
+											<local:SelectAllOnFocusBehavior/>
 										</interactivity:Interaction.Behaviors>
 									</TextBox>
 								</Border>
 								<Border Grid.Row="0" Grid.Column="2">
 									<TextBox
 										TextWrapping="Wrap"
-										AcceptsReturn="True"
-										Text="{Binding Passport.MorphologicalComposition}" >
+										Text="{Binding Passport.FillingWasteDate, Converter={StaticResource DateToStringConverter}}">
 										<interactivity:Interaction.Behaviors>
-											
+											<local:SelectAllOnFocusBehavior/>
+											<local:TextBoxDateOnlyLostFocusBehavior/>
 										</interactivity:Interaction.Behaviors>
 									</TextBox>
 								</Border>
 								<Border Grid.Row="0" Grid.Column="3">
 									<TextBox
 										TextWrapping="Wrap"
-										AcceptsReturn="True"
-										Text="{Binding Passport.Flammability}" >
+										Text="{Binding Passport.Diameter}">
 										<interactivity:Interaction.Behaviors>
-											
+											<local:SelectAllOnFocusBehavior/>
+											<local:TextBoxDigitValidationBehavior/>
 										</interactivity:Interaction.Behaviors>
 									</TextBox>
 								</Border>
 								<Border Grid.Row="0" Grid.Column="4">
 									<TextBox
 										TextWrapping="Wrap"
-										AcceptsReturn="True"
-										Text="{Binding Passport.MatrixMaterialType}" >
+										Text="{Binding Passport.Height}">
 										<interactivity:Interaction.Behaviors>
-											
+											<local:SelectAllOnFocusBehavior/>
+											<local:TextBoxDigitValidationBehavior/>
 										</interactivity:Interaction.Behaviors>
 									</TextBox>
 								</Border>
 								<Border Grid.Row="0" Grid.Column="5">
 									<TextBox
 										TextWrapping="Wrap"
-										AcceptsReturn="True"
-										Text="{Binding Passport.FillingWasteDate, Converter={StaticResource DateToStringConverter}}">
+										Text="{Binding Passport.Length}" >
 										<interactivity:Interaction.Behaviors>
-											<local:TextBoxDateOnlyLostFocusBehavior/>
+											<local:SelectAllOnFocusBehavior/>
+											<local:TextBoxDigitValidationBehavior/>
 										</interactivity:Interaction.Behaviors>
 									</TextBox>
 								</Border>
 								<Border Grid.Row="0" Grid.Column="6">
 									<TextBox
 										TextWrapping="Wrap"
-										AcceptsReturn="True"
-										Text="{Binding Passport.Diameter}">
+										Text="{Binding Passport.Width}" >
 										<interactivity:Interaction.Behaviors>
+											<local:SelectAllOnFocusBehavior/>
 											<local:TextBoxDigitValidationBehavior/>
 										</interactivity:Interaction.Behaviors>
 									</TextBox>
@@ -944,39 +880,39 @@
 								<Border Grid.Row="0" Grid.Column="7">
 									<TextBox
 										TextWrapping="Wrap"
-										AcceptsReturn="True"
-										Text="{Binding Passport.Height}">
+										Text="{Binding Passport.PackageMass, Converter={StaticResource ExpontionalFormatConverter}}">
 										<interactivity:Interaction.Behaviors>
-											<local:TextBoxDigitValidationBehavior/>
+											<local:SelectAllOnFocusBehavior/>
+											<local:TextBoxExponentionalFormatLostFocusBehavior/>
 										</interactivity:Interaction.Behaviors>
 									</TextBox>
 								</Border>
 								<Border Grid.Row="0" Grid.Column="8">
 									<TextBox
 										TextWrapping="Wrap"
-										AcceptsReturn="True"
-										Text="{Binding Passport.Length}" >
+										Text="{Binding Passport.RaoMass, Converter={StaticResource ExpontionalFormatConverter}}">
 										<interactivity:Interaction.Behaviors>
-											<local:TextBoxDigitValidationBehavior/>
+											<local:SelectAllOnFocusBehavior/>
+											<local:TextBoxExponentionalFormatLostFocusBehavior/>
 										</interactivity:Interaction.Behaviors>
 									</TextBox>
 								</Border>
 								<Border Grid.Row="0" Grid.Column="9">
 									<TextBox
 										TextWrapping="Wrap"
-										AcceptsReturn="True"
-										Text="{Binding Passport.Width}" >
+										Text="{Binding Passport.PackageVolume, Converter={StaticResource ExpontionalFormatConverter}}">
 										<interactivity:Interaction.Behaviors>
-											<local:TextBoxDigitValidationBehavior/>
+											<local:SelectAllOnFocusBehavior/>
+											<local:TextBoxExponentionalFormatLostFocusBehavior/>
 										</interactivity:Interaction.Behaviors>
 									</TextBox>
 								</Border>
 								<Border Grid.Row="0" Grid.Column="10">
 									<TextBox
 										TextWrapping="Wrap"
-										AcceptsReturn="True"
-										Text="{Binding Passport.PackageMass, Converter={StaticResource ExpontionalFormatConverter}}">
+										Text="{Binding Passport.RaoVolume, Converter={StaticResource ExpontionalFormatConverter}}">
 										<interactivity:Interaction.Behaviors>
+											<local:SelectAllOnFocusBehavior/>
 											<local:TextBoxExponentionalFormatLostFocusBehavior/>
 										</interactivity:Interaction.Behaviors>
 									</TextBox>
@@ -984,9 +920,9 @@
 								<Border Grid.Row="0" Grid.Column="11">
 									<TextBox
 										TextWrapping="Wrap"
-										AcceptsReturn="True"
-										Text="{Binding Passport.RaoMass, Converter={StaticResource ExpontionalFormatConverter}}">
+										Text="{Binding Passport.RadiationDoseRate10cm, Converter={StaticResource ExpontionalFormatConverter}}">
 										<interactivity:Interaction.Behaviors>
+											<local:SelectAllOnFocusBehavior/>
 											<local:TextBoxExponentionalFormatLostFocusBehavior/>
 										</interactivity:Interaction.Behaviors>
 									</TextBox>
@@ -994,9 +930,9 @@
 								<Border Grid.Row="0" Grid.Column="12">
 									<TextBox
 										TextWrapping="Wrap"
-										AcceptsReturn="True"
-										Text="{Binding Passport.PackageVolume, Converter={StaticResource ExpontionalFormatConverter}}">
+										Text="{Binding Passport.RadiationDoseRate1m, Converter={StaticResource ExpontionalFormatConverter}}">
 										<interactivity:Interaction.Behaviors>
+											<local:SelectAllOnFocusBehavior/>
 											<local:TextBoxExponentionalFormatLostFocusBehavior/>
 										</interactivity:Interaction.Behaviors>
 									</TextBox>
@@ -1004,9 +940,9 @@
 								<Border Grid.Row="0" Grid.Column="13">
 									<TextBox
 										TextWrapping="Wrap"
-										AcceptsReturn="True"
-										Text="{Binding Passport.RaoVolume, Converter={StaticResource ExpontionalFormatConverter}}">
+										Text="{Binding Passport.LevelNonFixedPollutionAlpha, Converter={StaticResource ExpontionalFormatConverter}}">
 										<interactivity:Interaction.Behaviors>
+											<local:SelectAllOnFocusBehavior/>
 											<local:TextBoxExponentionalFormatLostFocusBehavior/>
 										</interactivity:Interaction.Behaviors>
 									</TextBox>
@@ -1014,9 +950,9 @@
 								<Border Grid.Row="0" Grid.Column="14">
 									<TextBox
 										TextWrapping="Wrap"
-										AcceptsReturn="True"
-										Text="{Binding Passport.RadiationDoseRate10cm, Converter={StaticResource ExpontionalFormatConverter}}">
+										Text="{Binding Passport.LevelNonFixedPollutionBetaGamma, Converter={StaticResource ExpontionalFormatConverter}}">
 										<interactivity:Interaction.Behaviors>
+											<local:SelectAllOnFocusBehavior/>
 											<local:TextBoxExponentionalFormatLostFocusBehavior/>
 										</interactivity:Interaction.Behaviors>
 									</TextBox>
@@ -1024,39 +960,9 @@
 								<Border Grid.Row="0" Grid.Column="15">
 									<TextBox
 										TextWrapping="Wrap"
-										AcceptsReturn="True"
-										Text="{Binding Passport.RadiationDoseRate1m, Converter={StaticResource ExpontionalFormatConverter}}">
+										Text="{Binding Passport.HeatOutput, Converter={StaticResource ExpontionalFormatConverter}}">
 										<interactivity:Interaction.Behaviors>
-											<local:TextBoxExponentionalFormatLostFocusBehavior/>
-										</interactivity:Interaction.Behaviors>
-									</TextBox>
-								</Border>
-								<Border Grid.Row="0" Grid.Column="16">
-									<TextBox
-										TextWrapping="Wrap"
-										AcceptsReturn="True"
-										Text="{Binding Passport.LevelNonFixedPollutionAlpha, Converter={StaticResource ExpontionalFormatConverter}}">
-										<interactivity:Interaction.Behaviors>
-											<local:TextBoxExponentionalFormatLostFocusBehavior/>
-										</interactivity:Interaction.Behaviors>
-									</TextBox>
-								</Border>
-								<Border Grid.Row="0" Grid.Column="17">
-									<TextBox
-										TextWrapping="Wrap"
-										AcceptsReturn="True"
-										Text="{Binding Passport.LevelNonFixedPollutionBetaGamma, Converter={StaticResource ExpontionalFormatConverter}}">
-										<interactivity:Interaction.Behaviors>
-											<local:TextBoxExponentionalFormatLostFocusBehavior/>
-										</interactivity:Interaction.Behaviors>
-									</TextBox>
-								</Border>
-								<Border Grid.Row="0" Grid.Column="18">
-									<TextBox
-										TextWrapping="Wrap"
-										AcceptsReturn="True"
-										Text="{Binding Passport.HeatOutput}" >
-										<interactivity:Interaction.Behaviors>
+											<local:SelectAllOnFocusBehavior/>
 											<local:TextBoxExponentionalFormatLostFocusBehavior/>
 										</interactivity:Interaction.Behaviors>
 									</TextBox>
@@ -1124,53 +1030,69 @@
 							<!--Второй уровень заголовков-->
 							<Border Grid.Row="0" Grid.Column="0"
 									Grid.RowSpan="2">
-								<TextBlock Text="Индивидуальный номер упаковки"/>
+								<TextBlock Text="Тип первичной упаковки"/>
 							</Border>
 							<Border Grid.Row="0" Grid.Column="1"
 									Grid.RowSpan="2">
-								<TextBlock Text="Класс РАО"/>
+								<TextBlock Text="Номер первичной упаковки"/>
 							</Border>
 							<Border Grid.Row="0" Grid.Column="2"
 									Grid.RowSpan="2">
-								<TextBlock Text="Код РАО"/>
+								<TextBlock Text="Класс РАО"/>
 							</Border>
-							<Border Grid.Row="1" Grid.Column="3">
-								<TextBlock Text="Количество, шт."/>
+							<Border Grid.Row="0" Grid.Column="3"
+						   Grid.RowSpan="2">
+								<TextBlock Text="Тип первичной упаковки"/>
 							</Border>
-							<Border Grid.Row="1" Grid.Column="4">
-								<TextBlock Text="Объем, м³"/>
+							<Border Grid.Row="0" Grid.Column="4"
+									Grid.RowSpan="2">
+								<TextBlock Text="Физико-химическая форма РАО, тип матричного материала"/>
 							</Border>
-							<Border Grid.Row="1" Grid.Column="5">
-								<TextBlock Text="Масса с отходами, кг"/>
+							<Border Grid.Row="0" Grid.Column="5"
+									Grid.RowSpan="2">
+								<TextBlock Text="Морфологический (химический) состав отходов"/>
 							</Border>
 							<Border Grid.Row="0" Grid.Column="6"
 									Grid.RowSpan="2">
+								<TextBlock Text="Горючесть"/>
+							</Border>
+							<Border Grid.Row="1" Grid.Column="7">
+								<TextBlock Text="Количество, шт."/>
+							</Border>
+							<Border Grid.Row="1" Grid.Column="8">
+								<TextBlock Text="Объем, м³"/>
+							</Border>
+							<Border Grid.Row="1" Grid.Column="9">
+								<TextBlock Text="Масса с отходами, кг"/>
+							</Border>
+							<Border Grid.Row="0" Grid.Column="10"
+									Grid.RowSpan="2">
 								<TextBlock Text="Радионуклидный состав"/>
 							</Border>
-							<Border Grid.Row="0" Grid.Column="7"
+							<Border Grid.Row="0" Grid.Column="11"
 									Grid.RowSpan="2">
 								<TextBlock Text="Удельная активность, кБк/кг"/>
 							</Border>
-							<Border Grid.Row="1" Grid.Column="8">
+							<Border Grid.Row="1" Grid.Column="12">
 								<TextBlock Text="долгоживущие"/>
 							</Border>
-							<Border Grid.Row="1" Grid.Column="9">
+							<Border Grid.Row="1" Grid.Column="13">
 								<TextBlock Text="трансурановые"/>
 							</Border>
-							<Border Grid.Row="1" Grid.Column="10">
+							<Border Grid.Row="1" Grid.Column="14">
 								<TextBlock Text="альфа-изл. (за искл. т/уран.)"/>
 							</Border>
-							<Border Grid.Row="1" Grid.Column="11">
+							<Border Grid.Row="1" Grid.Column="15">
 								<TextBlock Text="бета/гамма- изл."/>
 							</Border>
-							<Border Grid.Row="1" Grid.Column="12">
+							<Border Grid.Row="1" Grid.Column="16">
 								<TextBlock Text="тритий"/>
 							</Border>
-							<Border Grid.Row="0" Grid.Column="13"
+							<Border Grid.Row="0" Grid.Column="17"
 									Grid.RowSpan="2">
 								<TextBlock Text="Общая активность, Бк"/>
 							</Border>
-							<Border Grid.Row="0" Grid.Column="14"
+							<Border Grid.Row="0" Grid.Column="18"
 									Grid.RowSpan="2">
 								<TextBlock Text="Содержание ядерно-опасных делящихся нуклидов, г"/>
 							</Border>
@@ -1210,7 +1132,75 @@
 									</DataGridTemplateColumn.HeaderTemplate>
 									<DataGridTemplateColumn.CellTemplate >
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<TextBox Text="{Binding PackageIdNum, Mode=TwoWay}"/>
+											<TextBox Text="{Binding PackageType, Mode=TwoWay}"/>
+										</DataTemplate>
+									</DataGridTemplateColumn.CellTemplate>
+								</DataGridTemplateColumn>
+
+								<DataGridTemplateColumn>
+									<DataGridTemplateColumn.HeaderTemplate>
+										<DataTemplate>
+											<Border Classes="headerTemplate">
+												<Grid ColumnDefinitions="*,Auto">
+													<TextBlock Grid.Column="0" Text="2" />
+												</Grid>
+											</Border>
+										</DataTemplate>
+									</DataGridTemplateColumn.HeaderTemplate>
+									<DataGridTemplateColumn.CellTemplate >
+										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
+											<TextBox Text="{Binding PackageNum, Mode=TwoWay}"/>
+										</DataTemplate>
+									</DataGridTemplateColumn.CellTemplate>
+								</DataGridTemplateColumn>
+
+								<DataGridTemplateColumn>
+									<DataGridTemplateColumn.HeaderTemplate>
+										<DataTemplate>
+											<Border Classes="headerTemplate">
+												<Grid ColumnDefinitions="*,Auto">
+													<TextBlock Grid.Column="0" Text="3" />
+												</Grid>
+											</Border>
+										</DataTemplate>
+									</DataGridTemplateColumn.HeaderTemplate>
+									<DataGridTemplateColumn.CellTemplate >
+										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
+											<TextBox Text="{Binding PhysicochemicalForm, Mode=TwoWay}"/>
+										</DataTemplate>
+									</DataGridTemplateColumn.CellTemplate>
+								</DataGridTemplateColumn>
+
+								<DataGridTemplateColumn>
+									<DataGridTemplateColumn.HeaderTemplate>
+										<DataTemplate>
+											<Border Classes="headerTemplate">
+												<Grid ColumnDefinitions="*,Auto">
+													<TextBlock Grid.Column="0" Text="1" />
+												</Grid>
+											</Border>
+										</DataTemplate>
+									</DataGridTemplateColumn.HeaderTemplate>
+									<DataGridTemplateColumn.CellTemplate >
+										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
+											<TextBox Text="{Binding MorphologicalComposition, Mode=TwoWay}"/>
+										</DataTemplate>
+									</DataGridTemplateColumn.CellTemplate>
+								</DataGridTemplateColumn>
+
+								<DataGridTemplateColumn>
+									<DataGridTemplateColumn.HeaderTemplate>
+										<DataTemplate>
+											<Border Classes="headerTemplate">
+												<Grid ColumnDefinitions="*,Auto">
+													<TextBlock Grid.Column="0" Text="1" />
+												</Grid>
+											</Border>
+										</DataTemplate>
+									</DataGridTemplateColumn.HeaderTemplate>
+									<DataGridTemplateColumn.CellTemplate >
+										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
+											<TextBox Text="{Binding Flammability, Mode=TwoWay}"/>
 										</DataTemplate>
 									</DataGridTemplateColumn.CellTemplate>
 								</DataGridTemplateColumn>

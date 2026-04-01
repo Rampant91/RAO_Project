@@ -65,17 +65,81 @@ namespace Models.Passports
         #endregion
 
 
-        #region PrimaryPackageNum
+        #region PackageType
         [NotMapped]
-        private string _primaryPackageNum;
+        private string _packageType;
 
-        [MaxLength(64)]
-        public string PackageIdNum
+        [MaxLength(16)]
+        public string PackageType
         {
-            get => _primaryPackageNum;
+            get => _packageType;
             set
             {
-                _primaryPackageNum = value;
+                _packageType = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region PackageNum
+        [NotMapped]
+        private string _packageNum;
+
+        [MaxLength(16)]
+        public string PackageNum
+        {
+            get => _packageNum;
+            set
+            {
+                _packageNum = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region PhysicochemicalForm
+        [NotMapped]
+        private string _physicochemicalForm;
+
+        [MaxLength(1024)]
+        public string PhysicochemicalForm
+        {
+            get => _physicochemicalForm;
+            set
+            {
+                _physicochemicalForm = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region MorphologicalComposition
+        [NotMapped]
+        private string _morphologicalComposition;
+
+        [MaxLength(1024)]
+        public string MorphologicalComposition
+        {
+            get => _morphologicalComposition;
+            set
+            {
+                _morphologicalComposition = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region Flammability
+        [NotMapped]
+        private string _flammability;
+
+        [MaxLength(256)]
+        public string Flammability
+        {
+            get => _flammability;
+            set
+            {
+                _flammability = value;
                 OnPropertyChanged();
             }
         }
