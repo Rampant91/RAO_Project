@@ -198,7 +198,11 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
         }
     }
 
-   
+    private void Binding(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+    }
+
+
 
     #endregion
 }

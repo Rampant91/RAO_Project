@@ -1,6 +1,8 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Xaml.Interactivity;
+using Models.Passports;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,7 @@ namespace Client_App.Behaviors
 {
     public class TextBoxDateOnlyLostFocusBehavior : Behavior<TextBox>
     {
+
         protected override void OnAttached()
         {
             base.OnAttached();

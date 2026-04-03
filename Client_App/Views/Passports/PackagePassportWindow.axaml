@@ -1341,6 +1341,9 @@
 																	FilterMode="Contains"
 																	Items="{Binding VM.RaoNamesCollection, ElementName=PackagePassportWindow}"
 																	Text="{Binding Name}">
+																	<interactivity:Interaction.Behaviors>
+																		<local:TextBoxCalculateActivitiesOnLostFocus Radionuclid="{Binding}"/>
+																	</interactivity:Interaction.Behaviors>
 																</AutoCompleteBox>
 																<Button Grid.Column="1"
 																		IsHitTestVisible="True"
@@ -1389,6 +1392,7 @@
 																		 IsHitTestVisible="True"
 																		 Text="{Binding Activity, Converter={StaticResource ExpontionalFormatConverter}}">
 																	<interactivity:Interaction.Behaviors>
+																		<local:TextBoxCalculateActivitiesOnLostFocus Radionuclid="{Binding}"/>
 																		<local:TextBoxExponentionalFormatLostFocusBehavior/>
 																	</interactivity:Interaction.Behaviors>
 																</TextBox>
@@ -1424,9 +1428,7 @@
 									</DataGridTemplateColumn.HeaderTemplate>
 									<DataGridTemplateColumn.CellTemplate>
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<Border Classes="textBlockCell">
-												<TextBlock Text="{Binding LongLivingActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
-											</Border>
+											<TextBlock Classes ="readOnly" Text="{Binding LongLivingActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
 										</DataTemplate>
 									</DataGridTemplateColumn.CellTemplate>
 								</DataGridTemplateColumn>
@@ -1443,9 +1445,7 @@
 									</DataGridTemplateColumn.HeaderTemplate>
 									<DataGridTemplateColumn.CellTemplate>
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<Border Classes="textBlockCell">
-												<TextBlock Text="{Binding TransuraniumActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
-											</Border>
+											<TextBlock Classes ="readOnly"  Text="{Binding TransuraniumActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
 										</DataTemplate>
 									</DataGridTemplateColumn.CellTemplate>
 								</DataGridTemplateColumn>
@@ -1462,9 +1462,7 @@
 									</DataGridTemplateColumn.HeaderTemplate>
 									<DataGridTemplateColumn.CellTemplate>
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<Border Classes="textBlockCell">
-												<TextBlock Text="{Binding AlphaActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
-											</Border>
+											<TextBlock Classes ="readOnly" Text="{Binding AlphaActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
 										</DataTemplate>
 									</DataGridTemplateColumn.CellTemplate>
 								</DataGridTemplateColumn>
@@ -1481,9 +1479,7 @@
 									</DataGridTemplateColumn.HeaderTemplate>
 									<DataGridTemplateColumn.CellTemplate>
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<Border Classes="textBlockCell">
-												<TextBlock Text="{Binding BetaGammaActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
-											</Border>
+											<TextBlock Classes ="readOnly" Text="{Binding BetaGammaActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
 										</DataTemplate>
 									</DataGridTemplateColumn.CellTemplate>
 								</DataGridTemplateColumn>
@@ -1500,9 +1496,7 @@
 									</DataGridTemplateColumn.HeaderTemplate>
 									<DataGridTemplateColumn.CellTemplate>
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<Border Classes="textBlockCell">
-												<TextBlock Text="{Binding TritiumActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
-											</Border>
+											<TextBlock Classes ="readOnly" Text="{Binding TritiumActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
 										</DataTemplate>
 									</DataGridTemplateColumn.CellTemplate>
 								</DataGridTemplateColumn>
@@ -1519,9 +1513,7 @@
 									</DataGridTemplateColumn.HeaderTemplate>
 									<DataGridTemplateColumn.CellTemplate>
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<Border Classes="textBlockCell">
-												<TextBlock Text="{Binding TotalActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
-											</Border>
+											<TextBlock Classes ="readOnly" Text="{Binding TotalActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}"/>
 										</DataTemplate>
 									</DataGridTemplateColumn.CellTemplate>
 								</DataGridTemplateColumn>

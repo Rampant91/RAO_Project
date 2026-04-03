@@ -1,4 +1,5 @@
 ﻿using Models.Collections;
+using Spravochniki;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -68,7 +69,6 @@ namespace Models.Passports
             }
 
         }
-
         [NotMapped]
         double _activity;
 
@@ -86,6 +86,61 @@ namespace Models.Passports
                 OnPropertyChanged();
             }
         }
+
+        GroupCode _activityType;
+
+        [NotMapped]
+        //Экспоненциальный вид
+        public GroupCode ActivityType
+        {
+            get
+            {
+                return _activityType;
+            }
+            set
+            {
+                _activityType = value;
+                OnPropertyChanged();
+            }
+        }
+
+        bool _isLongLivingActivity;
+
+        [NotMapped]
+        //Экспоненциальный вид
+        public bool IsLongLivingActivity
+        {
+            get
+            {
+                return _isLongLivingActivity;
+            }
+            set
+            {
+                _isLongLivingActivity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        // Используется для определения типа удельной активности
+        public void GetGroupCode()
+        {
+            if (Spravochniks.SprRadionuclids.Any(rad => rad.latinName == this.Name))
+                ActivityType = Spravochniks.SprRadionuclids
+                    .First(r => r.latinName == this.Name)
+                    .groupCode;
+            else
+                ActivityType = GroupCode.NotDefined;
+        }
+        public void GetIsLongLivingActivity()
+        {
+            if (Spravochniks.SprRadionuclids.Any(rad => rad.latinName == this.Name))
+                IsLongLivingActivity = Spravochniks.SprRadionuclids
+                    .First(r => r.latinName == this.Name)
+                    .isLongLiving;
+            else
+                IsLongLivingActivity = false;
+        }
+        
 
         #region NotifyDataError
 

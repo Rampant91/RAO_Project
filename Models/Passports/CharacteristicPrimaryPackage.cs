@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Spravochniki;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -285,93 +286,125 @@ namespace Models.Passports
         #endregion
 
         #region LongLivingActivity
-        private double _longLivingActivity;
         //Экспоненциальный вид
         public double LongLivingActivity 
         {
-            get => _longLivingActivity;
-            set
+            get
             {
-                _longLivingActivity = value;
-                ValidatePostiveDouble(nameof(LongLivingActivity), _longLivingActivity);
-                OnPropertyChanged();
+                double result = 0;
+                foreach (var radionuclid in RadionuclidsList.Where(rad => rad.IsLongLivingActivity))
+                {
+                    result += radionuclid.Activity;
+                }
+                return result;
             }
+        }
+        public void UpdateLongLivingActivity()
+        {
+            OnPropertyChanged(nameof(LongLivingActivity));
         }
         #endregion
 
         #region TransuraniumActivity
-        private double _transuraniumActivity;
-        //Экспоненциальный вид
         public double TransuraniumActivity
         {
-            get => _transuraniumActivity;
-            set
+
+            get
             {
-                _transuraniumActivity = value;
-                ValidatePostiveDouble(nameof(TransuraniumActivity), _transuraniumActivity);
-                OnPropertyChanged();
+                double result = 0;
+                foreach (var radionuclid in RadionuclidsList.Where(rad => rad.ActivityType == GroupCode.Transuranic))
+                {
+                    result += radionuclid.Activity;
+                }
+                return result;
             }
+        }
+
+        public void UpdateTransuraniumActivity()
+        {
+            OnPropertyChanged(nameof(TransuraniumActivity));
+            OnPropertyChanged(nameof(TotalActivity));
         }
         #endregion
 
         #region AlphaActivity
-        private double _alphaActivity;
-        //Экспоненциальный вид
         public double AlphaActivity
         {
-            get => _alphaActivity;
-            set
+            get 
             {
-                _alphaActivity = value;
-                ValidatePostiveDouble(nameof(AlphaActivity), _alphaActivity);
-                OnPropertyChanged();
+                double result = 0;
+                foreach (var radionuclid in RadionuclidsList.Where(rad => rad.ActivityType == GroupCode.Alpha))
+                {
+                    result += radionuclid.Activity;
+                }
+                return result;
             }
+        }
+
+        public void UpdateAlphaActivity()
+        {
+            OnPropertyChanged(nameof(AlphaActivity));
+            OnPropertyChanged(nameof(TotalActivity));
         }
         #endregion
 
         #region BetaGammaActivity
-        private double _betaGammaActivity;
-        //Экспоненциальный вид
         public double BetaGammaActivity
         {
-            get => _betaGammaActivity;
-            set
+            get
             {
-                _betaGammaActivity = value;
-                ValidatePostiveDouble(nameof(BetaGammaActivity), _betaGammaActivity);
-                OnPropertyChanged();
+                double result = 0;
+                foreach (var radionuclid in RadionuclidsList.Where(rad => rad.ActivityType == GroupCode.BetaGamma))
+                {
+                    result += radionuclid.Activity;
+                }
+                return result;
             }
+        }
+
+        public void UpdateBetaGammaActivity()
+        {
+            OnPropertyChanged(nameof(BetaGammaActivity));
+            OnPropertyChanged(nameof(TotalActivity));
         }
         #endregion
 
         #region TritiumActivity
-        private double _tritiumActivity;
-        //Экспоненциальный вид
         public double TritiumActivity
         {
-            get => _tritiumActivity;
-            set
+            get
             {
-                _tritiumActivity = value;
-                ValidatePostiveDouble(nameof(TritiumActivity), _tritiumActivity);
-                OnPropertyChanged();
+                double result = 0;
+                foreach (var radionuclid in RadionuclidsList.Where(rad => rad.ActivityType == GroupCode.Tritium))
+                {
+                    result += radionuclid.Activity;
+                }
+                return result;
             }
+        }
+
+        public void UpdateTritiumActivity()
+        {
+            OnPropertyChanged(nameof(TritiumActivity));
+            OnPropertyChanged(nameof(TotalActivity));
         }
         #endregion
 
         #region TotalActivity
-        private double _totalActivity;
         //Экспоненциальный вид
         public double TotalActivity
         {
-            get => _totalActivity;
-            set
+            get
             {
-                _totalActivity = value;
-                ValidatePostiveDouble(nameof(TotalActivity), _totalActivity);
-                OnPropertyChanged();
+                double result = 0;
+                result += TransuraniumActivity;
+                result += AlphaActivity;
+                result += BetaGammaActivity;
+                result += TritiumActivity;
+                return result;
             }
         }
+
         #endregion
 
         #region NuclearHazardousFissileNuclides
@@ -389,8 +422,9 @@ namespace Models.Passports
         }
         #endregion
 
-
         #endregion
+
+        
 
         #region NotifyDataError
 

@@ -163,12 +163,12 @@ namespace Client_App.Commands.AsyncCommands.Import
                     characteristic.PrimaryPackageQuantity = uint.TryParse(worksheet.Cells[$"D{currentRow}"].Text, out intValue) ? intValue : 0;
                     characteristic.PrimaryPackageVolume = double.TryParse(worksheet.Cells[$"E{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
                     characteristic.PrimaryPackageMass = double.TryParse(worksheet.Cells[$"F{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
-                    characteristic.LongLivingActivity = double.TryParse(worksheet.Cells[$"I{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
-                    characteristic.TransuraniumActivity = double.TryParse(worksheet.Cells[$"J{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
-                    characteristic.AlphaActivity = double.TryParse(worksheet.Cells[$"K{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
-                    characteristic.BetaGammaActivity = double.TryParse(worksheet.Cells[$"L{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
-                    characteristic.TritiumActivity = double.TryParse(worksheet.Cells[$"M{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
-                    characteristic.TotalActivity = double.TryParse(worksheet.Cells[$"N{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
+                    //characteristic.LongLivingActivity = double.TryParse(worksheet.Cells[$"I{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
+                    //characteristic.TransuraniumActivity = double.TryParse(worksheet.Cells[$"J{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
+                    //characteristic.AlphaActivity = double.TryParse(worksheet.Cells[$"K{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
+                    //characteristic.BetaGammaActivity = double.TryParse(worksheet.Cells[$"L{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
+                    //characteristic.TritiumActivity = double.TryParse(worksheet.Cells[$"M{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
+                    ////characteristic.TotalActivity = double.TryParse(worksheet.Cells[$"N{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
                     characteristic.NuclearHazardousFissileNuclides = worksheet.Cells[$"O{currentRow}"].Text;
 
 

@@ -98,10 +98,10 @@ namespace Client_App.Commands.AsyncCommands.Generate
                     characteristic.CodeRao = form17.StatusRAO_DB;
                     passport.RaoVolume = double.TryParse(form17.VolumeOutOfPack_DB, out value) ? value : 0;
                     passport.RaoMass = double.TryParse(form17.MassOutOfPack_DB, out value) ? value : 0;
-                    characteristic.TritiumActivity = double.TryParse(form17.TritiumActivity_DB, out value) ? value : 0;
-                    characteristic.BetaGammaActivity = double.TryParse(form17.BetaGammaActivity_DB, out value) ? value : 0;
-                    characteristic.AlphaActivity = double.TryParse(form17.AlphaActivity_DB, out value) ? value : 0;
-                    characteristic.TransuraniumActivity = double.TryParse(form17.TransuraniumActivity_DB, out value) ? value : 0;
+                    //characteristic.TritiumActivity = double.TryParse(form17.TritiumActivity_DB, out value) ? value : 0;
+                    //characteristic.BetaGammaActivity = double.TryParse(form17.BetaGammaActivity_DB, out value) ? value : 0;
+                    //characteristic.AlphaActivity = double.TryParse(form17.AlphaActivity_DB, out value) ? value : 0;
+                    //characteristic.TransuraniumActivity = double.TryParse(form17.TransuraniumActivity_DB, out value) ? value : 0;
 
                     StaticConfiguration.DBModel.package_passport.Add(passport);
                 }
