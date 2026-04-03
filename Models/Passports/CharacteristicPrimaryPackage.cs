@@ -36,14 +36,30 @@ namespace Models.Passports
             _passport = new PackagePassport();
             _radionuclidsList = new ObservableCollection<Radionuclid>();
 
+            _radionuclidsList.CollectionChanged += RadionuclidsList_CollectionChanged;
+
         }
+
         public CharacteristicPrimaryPackage(PackagePassport passport)
         {
             _passport = passport;
             _radionuclidsList = new ObservableCollection<Radionuclid>();
 
+            _radionuclidsList.CollectionChanged += RadionuclidsList_CollectionChanged;
         }
-
+        ~CharacteristicPrimaryPackage()
+        {
+            _radionuclidsList.CollectionChanged -= RadionuclidsList_CollectionChanged;
+        }
+        private void RadionuclidsList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(LongLivingActivity));
+            OnPropertyChanged(nameof(AlphaActivity));
+            OnPropertyChanged(nameof(BetaGammaActivity));
+            OnPropertyChanged(nameof(TransuraniumActivity));
+            OnPropertyChanged(nameof(TritiumActivity));
+            OnPropertyChanged(nameof(TotalActivity));
+        }
 
         #region Properties
 
@@ -401,6 +417,8 @@ namespace Models.Passports
                 result += AlphaActivity;
                 result += BetaGammaActivity;
                 result += TritiumActivity;
+
+                result *= PrimaryPackageMass * 1000;
                 return result;
             }
         }

@@ -16,7 +16,16 @@ namespace Client_App.VisualRealization.Converters
         {
             if (value is not double doubleValue || doubleValue == 0)
                 return 0.ToString();
-            var length = int.Min(6, doubleValue.ToString().Length - 1); // Максимум 6 знаков после запятой
+
+            var signsCount = doubleValue.ToString().Length;
+            var multipleOf10 = 10;
+            while(doubleValue % multipleOf10 == 0)
+            {
+                signsCount--;
+                multipleOf10 *= 10;
+            }
+
+            var length = int.Min(6, signsCount-1); // Максимум 6 знаков после запятой
 
             return doubleValue.ToString($"e{length}");//
         }

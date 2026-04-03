@@ -105,6 +105,20 @@ namespace Client_App.ViewModels.Passports
                 .ThenInclude(c => c.RadionuclidsList)
                 .FirstOrDefault(pas => pas.Id == passportId);
 
+            foreach (var charcteristic in _passport.ContentCharacteristics)
+            {
+                foreach (var radionuclid in charcteristic.RadionuclidsList)
+                {
+                    radionuclid.GetGroupCode();
+                    radionuclid.GetIsLongLivingActivity();
+                }
+                charcteristic.UpdateLongLivingActivity();
+                charcteristic.UpdateAlphaActivity();
+                charcteristic.UpdateBetaGammaActivity();
+                charcteristic.UpdateTransuraniumActivity();
+                charcteristic.UpdateTritiumActivity();
+            }
+
         }
         private void InitializeCommands()
         {
