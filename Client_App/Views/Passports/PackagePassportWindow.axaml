@@ -1207,7 +1207,7 @@
 									</DataGridTemplateColumn.HeaderTemplate>
 									<DataGridTemplateColumn.CellTemplate >
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<TextBox Text="{Binding PhysicochemicalForm, Mode=TwoWay}"/>
+											<TextBox Text="{Binding PhysicochemicalForm, Mode=TwoWay}" AcceptsReturn="True" TextWrapping="Wrap"/>
 										</DataTemplate>
 									</DataGridTemplateColumn.CellTemplate>
 								</DataGridTemplateColumn>
@@ -1224,7 +1224,7 @@
 									</DataGridTemplateColumn.HeaderTemplate>
 									<DataGridTemplateColumn.CellTemplate >
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<TextBox Text="{Binding MorphologicalComposition, Mode=TwoWay}"/>
+											<TextBox Text="{Binding MorphologicalComposition, Mode=TwoWay}" AcceptsReturn="True" TextWrapping="Wrap"/>
 										</DataTemplate>
 									</DataGridTemplateColumn.CellTemplate>
 								</DataGridTemplateColumn>
@@ -1241,7 +1241,7 @@
 									</DataGridTemplateColumn.HeaderTemplate>
 									<DataGridTemplateColumn.CellTemplate >
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<TextBox Text="{Binding Flammability, Mode=TwoWay}"/>
+											<TextBox Text="{Binding Flammability, Mode=TwoWay}" AcceptsReturn="True" TextWrapping="Wrap"/>
 										</DataTemplate>
 									</DataGridTemplateColumn.CellTemplate>
 								</DataGridTemplateColumn>

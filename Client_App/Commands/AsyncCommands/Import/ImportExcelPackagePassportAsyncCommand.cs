@@ -7,18 +7,20 @@ using Client_App.ViewModels.Passports;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.DBRealization;
+using Models.JSON;
 using Models.Passports;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.Import
 {
-    public class ImportExcelPackagePassport(PassportsMenuWindowVM passportMenuVM) : ImportBaseAsyncCommand
+    public class ImportExcelPackagePassportAsyncCommand(PassportsMenuWindowVM passportMenuVM) : ImportBaseAsyncCommand
     {
         PassportsMenuWindowVM _passportMenuVM => passportMenuVM;
         private Window owner;
@@ -128,48 +130,52 @@ namespace Client_App.Commands.AsyncCommands.Import
                 //impPassport.PhysicochemicalForm = worksheet.Cells["B24"].Text;
                 //impPassport.MorphologicalComposition = worksheet.Cells["C24"].Text;
                 //impPassport.Flammability = worksheet.Cells["D24"].Text;
-                impPassport.MatrixMaterialType = worksheet.Cells["E24"].Text;
-                impPassport.FillingWasteDate = GetDateOnlyFromCell(worksheet.Cells["F24"]) ?? DateOnly.MinValue;
-                impPassport.Diameter = uint.TryParse(worksheet.Cells["G24"].Text, out intValue) ? intValue : 0;
-                impPassport.Height = uint.TryParse(worksheet.Cells["H24"].Text, out intValue) ? intValue : 0;
-                impPassport.Length = uint.TryParse(worksheet.Cells["I24"].Text, out intValue) ? intValue : 0;
-                impPassport.Width = uint.TryParse(worksheet.Cells["J24"].Text, out intValue) ? intValue : 0;
-                impPassport.PackageMass = double.TryParse(worksheet.Cells["K24"].Text, out var doubleValue) ? doubleValue : 0;
-                impPassport.RaoMass = double.TryParse(worksheet.Cells["L24"].Text, out  doubleValue) ? doubleValue : 0;
-                impPassport.PackageVolume = double.TryParse(worksheet.Cells["M24"].Text, out  doubleValue) ? doubleValue : 0;
-                impPassport.RaoVolume = double.TryParse(worksheet.Cells["N24"].Text, out  doubleValue) ? doubleValue : 0;
-                impPassport.RadiationDoseRate10cm = double.TryParse(worksheet.Cells["O24"].Text, out  doubleValue) ? doubleValue : 0;
-                impPassport.RadiationDoseRate1m = double.TryParse(worksheet.Cells["P24"].Text, out  doubleValue) ? doubleValue : 0;
-                impPassport.LevelNonFixedPollutionAlpha = double.TryParse(worksheet.Cells["Q24"].Text, out  doubleValue) ? doubleValue : 0;
-                impPassport.LevelNonFixedPollutionBetaGamma = double.TryParse(worksheet.Cells["R24"].Text, out  doubleValue) ? doubleValue : 0;
-                impPassport.HeatOutput = double.TryParse(worksheet.Cells["W24"].Text, out  doubleValue) ? doubleValue : 0;
+                impPassport.MatrixMaterialType = worksheet.Cells["B24"].Text;
+                impPassport.FillingWasteDate = GetDateOnlyFromCell(worksheet.Cells["C24"]) ?? DateOnly.MinValue;
+                impPassport.Diameter = uint.TryParse(worksheet.Cells["D24"].Text, out intValue) ? intValue : 0;
+                impPassport.Height = uint.TryParse(worksheet.Cells["E24"].Text, out intValue) ? intValue : 0;
+                impPassport.Length = uint.TryParse(worksheet.Cells["F24"].Text, out intValue) ? intValue : 0;
+                impPassport.Width = uint.TryParse(worksheet.Cells["G24"].Text, out intValue) ? intValue : 0;
+                impPassport.PackageMass = double.TryParse(worksheet.Cells["H24"].Text, out var doubleValue) ? doubleValue : 0;
+                impPassport.RaoMass = double.TryParse(worksheet.Cells["I24"].Text, out  doubleValue) ? doubleValue : 0;
+                impPassport.PackageVolume = double.TryParse(worksheet.Cells["J24"].Text, out  doubleValue) ? doubleValue : 0;
+                impPassport.RaoVolume = double.TryParse(worksheet.Cells["K24"].Text, out  doubleValue) ? doubleValue : 0;
+                impPassport.RadiationDoseRate10cm = double.TryParse(worksheet.Cells["L24"].Text, out  doubleValue) ? doubleValue : 0;
+                impPassport.RadiationDoseRate1m = double.TryParse(worksheet.Cells["M24"].Text, out  doubleValue) ? doubleValue : 0;
+                impPassport.LevelNonFixedPollutionAlpha = double.TryParse(worksheet.Cells["N24"].Text, out  doubleValue) ? doubleValue : 0;
+                impPassport.LevelNonFixedPollutionBetaGamma = double.TryParse(worksheet.Cells["O24"].Text, out  doubleValue) ? doubleValue : 0;
+                impPassport.HeatOutput = double.TryParse(worksheet.Cells["P24"].Text, out  doubleValue) ? doubleValue : 0;
 
 
                 //Table2
                 var startTable2 = 30;
                 var currentRow = startTable2;
 
-                while (worksheet.Cells[$"A{currentRow}"].Value
-                    is not null
-                    and not "Примечания и пояснения:")
+                while (worksheet.Cells[$"A{currentRow}"].Value is not  "Примечания и пояснения:"
+                    && !CheckTable2RowIsEmpty(worksheet, currentRow))
                 {
                     var characteristic = new CharacteristicPrimaryPackage(impPassport);
                     impPassport.ContentCharacteristics.Add(characteristic);
 
                     //Переносим все данные кроме списка радионуклидов
                     //characteristic.PackageIdNum = worksheet.Cells[$"A{currentRow}"].Text;
-                    characteristic.ClassRao = byte.TryParse(worksheet.Cells[$"B{currentRow}"].Text, out byteValue) ? byteValue : (byte)0;
-                    characteristic.CodeRao = worksheet.Cells[$"C{currentRow}"].Text;
-                    characteristic.PrimaryPackageQuantity = uint.TryParse(worksheet.Cells[$"D{currentRow}"].Text, out intValue) ? intValue : 0;
-                    characteristic.PrimaryPackageVolume = double.TryParse(worksheet.Cells[$"E{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
-                    characteristic.PrimaryPackageMass = double.TryParse(worksheet.Cells[$"F{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
+                    characteristic.PackageType = worksheet.Cells[$"A{currentRow}"].Text;
+                    characteristic.PackageNum = worksheet.Cells[$"B{currentRow}"].Text;
+                    characteristic.ClassRao = byte.TryParse(worksheet.Cells[$"C{currentRow}"].Text, out byteValue) ? byteValue : (byte)0;
+                    characteristic.CodeRao = worksheet.Cells[$"D{currentRow}"].Text;
+                    characteristic.PhysicochemicalForm = worksheet.Cells[$"E{currentRow}"].Text;
+                    characteristic.MorphologicalComposition = worksheet.Cells[$"F{currentRow}"].Text;
+                    characteristic.Flammability = worksheet.Cells[$"G{currentRow}"].Text;
+                    characteristic.PrimaryPackageQuantity = uint.TryParse(worksheet.Cells[$"H{currentRow}"].Text, out intValue) ? intValue : 0;
+                    characteristic.PrimaryPackageVolume = double.TryParse(worksheet.Cells[$"I{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
+                    characteristic.PrimaryPackageMass = double.TryParse(worksheet.Cells[$"J{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
                     //characteristic.LongLivingActivity = double.TryParse(worksheet.Cells[$"I{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
                     //characteristic.TransuraniumActivity = double.TryParse(worksheet.Cells[$"J{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
                     //characteristic.AlphaActivity = double.TryParse(worksheet.Cells[$"K{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
                     //characteristic.BetaGammaActivity = double.TryParse(worksheet.Cells[$"L{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
                     //characteristic.TritiumActivity = double.TryParse(worksheet.Cells[$"M{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
                     ////characteristic.TotalActivity = double.TryParse(worksheet.Cells[$"N{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
-                    characteristic.NuclearHazardousFissileNuclides = worksheet.Cells[$"O{currentRow}"].Text;
+                    characteristic.NuclearHazardousFissileNuclides = worksheet.Cells[$"W{currentRow}"].Text;
 
 
                     //Считаем кол-во объединенных строк, что будет равно кол-ву радионуклидов
@@ -189,8 +195,8 @@ namespace Client_App.Commands.AsyncCommands.Import
                         var radionuclid = new Radionuclid(characteristic);
                         characteristic.RadionuclidsList.Add(radionuclid);
 
-                        radionuclid.Name = worksheet.Cells[$"G{currentRow + i}"].Text;
-                        radionuclid.Activity = double.TryParse(worksheet.Cells[$"H{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
+                        radionuclid.Name = worksheet.Cells[$"K{currentRow + i}"].Text;
+                        radionuclid.Activity = double.TryParse(worksheet.Cells[$"L{currentRow + i}"].Text, out doubleValue) ? doubleValue : 0;
                     }
 
                     currentRow += mergedRowsCount;
@@ -207,12 +213,36 @@ namespace Client_App.Commands.AsyncCommands.Import
                 impPassport.FioAuthorizedPersonReception = worksheet.Cells[$"M{36 + offset}"].Text;
 
                 StaticConfiguration.DBModel.package_passport.Add(impPassport);
-                StaticConfiguration.DBModel.SaveChangesAsync();
+                await StaticConfiguration.DBModel.SaveChangesAsync();
                 passportMenuVM.UpdatePassports();
             }
 
             
         }
+        private bool CheckTable2RowIsEmpty(ExcelWorksheet worksheet, int rowIndex)
+        {
+            return
+                worksheet.Cells[$"A{rowIndex}"].Text == ""
+                && worksheet.Cells[$"B{rowIndex}"].Text == ""
+                && worksheet.Cells[$"C{rowIndex}"].Text == ""
+                && worksheet.Cells[$"D{rowIndex}"].Text == ""
+                && worksheet.Cells[$"E{rowIndex}"].Text == ""
+                && worksheet.Cells[$"F{rowIndex}"].Text == ""
+                && worksheet.Cells[$"G{rowIndex}"].Text == ""
+                && worksheet.Cells[$"H{rowIndex}"].Text == ""
+                && worksheet.Cells[$"I{rowIndex}"].Text == ""
+                && worksheet.Cells[$"J{rowIndex}"].Text == ""
+                && worksheet.Cells[$"K{rowIndex}"].Text == ""
+                && worksheet.Cells[$"L{rowIndex}"].Text == ""
+                && worksheet.Cells[$"M{rowIndex}"].Text == ""
+                && worksheet.Cells[$"N{rowIndex}"].Text == ""
+                && worksheet.Cells[$"O{rowIndex}"].Text == ""
+                && worksheet.Cells[$"P{rowIndex}"].Text == ""
+                && worksheet.Cells[$"Q{rowIndex}"].Text == ""
+                && worksheet.Cells[$"R{rowIndex}"].Text == ""
+                && worksheet.Cells[$"W{rowIndex}"].Text == "";
+        }
+
         private DateOnly? GetDateOnlyFromCell(ExcelRange cell)
         {
             if (cell.Value is DateOnly dateOnly)

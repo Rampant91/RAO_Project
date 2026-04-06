@@ -60,7 +60,7 @@ namespace Client_App.ViewModels.Passports
             ChangePackagePassport = new ChangePackagePassportAsyncCommand();
             ExcelExportPackagePassport = new ExcelExportPackagePassport();
             DeletePackagePassport = new DeletePackagePassportAsyncCommand(this);
-            ImportExcelPackagePassport = new ImportExcelPackagePassport(this);
+            ImportExcelPackagePassport = new ImportExcelPackagePassportAsyncCommand(this);
         }
         #endregion
 

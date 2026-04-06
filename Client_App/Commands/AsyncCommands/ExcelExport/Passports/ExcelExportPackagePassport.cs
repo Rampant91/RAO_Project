@@ -12,6 +12,7 @@ using Models.DBRealization;
 using Models.Passports;
 using OfficeOpenXml;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -232,26 +233,42 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
             //worksheet.Cells["D24"].Value = passport.Flammability;
             //worksheet.Cells["D24"].Style.WrapText = true;
 
-            worksheet.Cells["E24"].Value = passport.MatrixMaterialType;
-            worksheet.Cells["E24"].Style.WrapText = true;
+            worksheet.Cells["B24"].Value = passport.MatrixMaterialType;
+            worksheet.Cells["B24"].Style.WrapText = true;
 
+            worksheet.Cells["C24"].Value = passport.FillingWasteDate;
+            worksheet.Cells["C24"].Style.Numberformat.Format = "dd.mm.yyyy";
 
-            worksheet.Cells["F24"].Value = passport.FillingWasteDate;
-            worksheet.Cells["F24"].Style.Numberformat.Format = "dd.mm.yyyy";
+            worksheet.Cells["D24"].Value = passport.Diameter;
+            worksheet.Cells["E24"].Value = passport.Height;
+            worksheet.Cells["F24"].Value = passport.Length;
+            worksheet.Cells["G24"].Value = passport.Width;
+            worksheet.Cells["H24"].Value = passport.PackageMass;
+            worksheet.Cells["I24"].Value = passport.RaoMass;
+            worksheet.Cells["J24"].Value = passport.PackageVolume;
+            worksheet.Cells["K24"].Value = passport.RaoVolume;
+            worksheet.Cells["L24"].Value = passport.RadiationDoseRate10cm;
+            worksheet.Cells["M24"].Value = passport.RadiationDoseRate1m;
+            worksheet.Cells["N24"].Value = passport.LevelNonFixedPollutionAlpha;
+            worksheet.Cells["O24"].Value = passport.LevelNonFixedPollutionBetaGamma;
+            worksheet.Cells["P24"].Value = passport.HeatOutput;
 
-            worksheet.Cells["G24"].Value = passport.Diameter;
-            worksheet.Cells["H24"].Value = passport.Height;
-            worksheet.Cells["I24"].Value = passport.Length;
-            worksheet.Cells["J24"].Value = passport.Width;
-            worksheet.Cells["K24"].Value = passport.PackageMass;
-            worksheet.Cells["L24"].Value = passport.RaoMass;
-            worksheet.Cells["M24"].Value = passport.PackageVolume;
-            worksheet.Cells["N24"].Value = passport.RaoVolume;
-            worksheet.Cells["O24"].Value = passport.RadiationDoseRate10cm;
-            worksheet.Cells["P24"].Value = passport.RadiationDoseRate1m;
-            worksheet.Cells["Q24"].Value = passport.LevelNonFixedPollutionAlpha;
-            worksheet.Cells["R24"].Value = passport.LevelNonFixedPollutionBetaGamma;
-            worksheet.Cells["W24"].Value = passport.HeatOutput;
+            var cells = worksheet.Cells[$"A20:P24"];
+            foreach (var cell in cells)
+            {
+                var btm = cell.Style.Border.Bottom;
+                var lft = cell.Style.Border.Left;
+                var rgt = cell.Style.Border.Right;
+                var top = cell.Style.Border.Top;
+                btm.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                btm.Color.SetColor(255, 0, 0, 0);
+                lft.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                lft.Color.SetColor(255, 0, 0, 0);
+                rgt.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                rgt.Color.SetColor(255, 0, 0, 0);
+                top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                top.Color.SetColor(255, 0, 0, 0);
+            }
 
             //ExcelPrintTitleExport(rep.FormNum_DB, worksheetTitle, rep, rep.Reports.Master);
 
@@ -300,7 +317,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
 
         #endregion
 
-        #region FillTable1
+        #region FillTable2
 
         /// <summary>
         /// Заполняет .xlsx строчками данных.
@@ -324,8 +341,8 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
                 var radCounts = radionuclids.Count;
                 for (int j = 0; j < radCounts; j++)
                 {
-                    worksheet.Cells[$"G{offset}"].Value = radionuclids[j].Name;
-                    worksheet.Cells[$"H{offset}"].Value = radionuclids[j].Activity;
+                    worksheet.Cells[$"K{offset}"].Value = radionuclids[j].Name;
+                    worksheet.Cells[$"L{offset}"].Value = radionuclids[j].Activity;
 
                     if (j != radCounts - 1)
                     {
@@ -338,51 +355,66 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
                 //иначе границы ячеек не отрисуются
                 if (radCounts == 0)
                 {
-                    worksheet.Cells[$"G{offset}"].Value = "";
-                    worksheet.Cells[$"H{offset}"].Value = "";
+                    worksheet.Cells[$"K{offset}"].Value = "";
+                    worksheet.Cells[$"L{offset}"].Value = "";
                 }
 
 
                 //worksheet.Cells[$"A{start}:A{offset}"].Merge = true;
                 //worksheet.Cells[$"A{start}:A{offset}"].Value = characteristics[i].PackageIdNum;
 
+                worksheet.Cells[$"A{start}:A{offset}"].Merge = true;
+                worksheet.Cells[$"A{start}:A{offset}"].Value = characteristics[i].PackageType;
+
                 worksheet.Cells[$"B{start}:B{offset}"].Merge = true;
-                worksheet.Cells[$"B{start}:B{offset}"].Value = characteristics[i].ClassRao;
+                worksheet.Cells[$"B{start}:B{offset}"].Value = characteristics[i].PackageNum;
 
                 worksheet.Cells[$"C{start}:C{offset}"].Merge = true;
-                worksheet.Cells[$"C{start}:C{offset}"].Value = characteristics[i].CodeRao;
+                worksheet.Cells[$"C{start}:C{offset}"].Value = characteristics[i].ClassRao;
 
                 worksheet.Cells[$"D{start}:D{offset}"].Merge = true;
-                worksheet.Cells[$"D{start}:D{offset}"].Value = characteristics[i].PrimaryPackageQuantity;
+                worksheet.Cells[$"D{start}:D{offset}"].Value = characteristics[i].CodeRao;
 
                 worksheet.Cells[$"E{start}:E{offset}"].Merge = true;
-                worksheet.Cells[$"E{start}:E{offset}"].Value = characteristics[i].PrimaryPackageVolume;
+                worksheet.Cells[$"E{start}:E{offset}"].Value = characteristics[i].PhysicochemicalForm;
 
                 worksheet.Cells[$"F{start}:F{offset}"].Merge = true;
-                worksheet.Cells[$"F{start}:F{offset}"].Value = characteristics[i].PrimaryPackageMass;
+                worksheet.Cells[$"F{start}:F{offset}"].Value = characteristics[i].MorphologicalComposition;
+
+                worksheet.Cells[$"G{start}:G{offset}"].Merge = true;
+                worksheet.Cells[$"G{start}:G{offset}"].Value = characteristics[i].Flammability;
+
+                worksheet.Cells[$"H{start}:H{offset}"].Merge = true;
+                worksheet.Cells[$"H{start}:H{offset}"].Value = characteristics[i].PrimaryPackageQuantity;
 
                 worksheet.Cells[$"I{start}:I{offset}"].Merge = true;
-                worksheet.Cells[$"I{start}:I{offset}"].Value = characteristics[i].LongLivingActivity;
+                worksheet.Cells[$"I{start}:I{offset}"].Value = characteristics[i].PrimaryPackageVolume;
 
                 worksheet.Cells[$"J{start}:J{offset}"].Merge = true;
-                worksheet.Cells[$"J{start}:J{offset}"].Value = characteristics[i].TransuraniumActivity;
-
-                worksheet.Cells[$"K{start}:K{offset}"].Merge = true;
-                worksheet.Cells[$"K{start}:K{offset}"].Value = characteristics[i].AlphaActivity;
-
-                worksheet.Cells[$"L{start}:L{offset}"].Merge = true;
-                worksheet.Cells[$"L{start}:L{offset}"].Value = characteristics[i].BetaGammaActivity;
+                worksheet.Cells[$"J{start}:J{offset}"].Value = characteristics[i].PrimaryPackageMass;
 
                 worksheet.Cells[$"M{start}:M{offset}"].Merge = true;
-                worksheet.Cells[$"M{start}:M{offset}"].Value = characteristics[i].TritiumActivity;
+                worksheet.Cells[$"M{start}:M{offset}"].Value = characteristics[i].LongLivingActivity;
 
                 worksheet.Cells[$"N{start}:N{offset}"].Merge = true;
-                worksheet.Cells[$"N{start}:N{offset}"].Value = characteristics[i].TotalActivity;
+                worksheet.Cells[$"N{start}:N{offset}"].Value = characteristics[i].TransuraniumActivity;
 
                 worksheet.Cells[$"O{start}:O{offset}"].Merge = true;
-                worksheet.Cells[$"O{start}:O{offset}"].Value = characteristics[i].NuclearHazardousFissileNuclides;
+                worksheet.Cells[$"O{start}:O{offset}"].Value = characteristics[i].AlphaActivity;
 
-                var cells = worksheet.Cells[$"A{start}:O{offset}"];
+                worksheet.Cells[$"P{start}:P{offset}"].Merge = true;
+                worksheet.Cells[$"P{start}:P{offset}"].Value = characteristics[i].BetaGammaActivity;
+
+                worksheet.Cells[$"Q{start}:Q{offset}"].Merge = true;
+                worksheet.Cells[$"Q{start}:Q{offset}"].Value = characteristics[i].TritiumActivity;
+
+                worksheet.Cells[$"R{start}:R{offset}"].Merge = true;
+                worksheet.Cells[$"R{start}:R{offset}"].Value = characteristics[i].TotalActivity;
+
+                worksheet.Cells[$"W{start}:W{offset}"].Merge = true;
+                worksheet.Cells[$"W{start}:W{offset}"].Value = characteristics[i].NuclearHazardousFissileNuclides;
+
+                var cells = worksheet.Cells[$"A{start-4}:W{offset}"];
                 foreach (var cell in cells)
                 {
                     var btm = cell.Style.Border.Bottom;
