@@ -97,6 +97,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 }
                 if (addToDB)
                 {
+                    newReport.Id = 0;
                     baseReps.Report_Collection.Add(newReport);
                     AtLeastOneImportDone = true;
                 }

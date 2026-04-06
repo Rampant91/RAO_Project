@@ -1063,8 +1063,16 @@ public abstract class CheckF14 : CheckBase
             || massDoubleValue <= 0
             ) return result;
 
+        var aggregateState = forms[line].AggregateState_DB;
+        var mzuaColumn = aggregateState switch
+        {
+            1 => "MZUA_Liquid",
+            2 => "MZUA_Solid",
+            _ => ""
+        };
+
         var mza = R.First(x => x["name"] == rad)["MZA"];
-        var mzua = R.First(x => x["name"] == rad)["MZUA"];
+        var mzua = R.First(x => x["name"] == rad)[mzuaColumn];
         if (!TryParseDoubleExtended(mza, out var mzaDoubleValue)
             || !TryParseDoubleExtended(mzua, out var mzuaDoubleValue)) return result;
 
@@ -1145,10 +1153,18 @@ public abstract class CheckF14 : CheckBase
         var minimumMza = double.MaxValue;
         var minimumMzua = double.MaxValue;
         var anyMza = false;
+        var aggregateState = forms[line].AggregateState_DB;
+        var mzuaColumn = aggregateState switch
+        {
+            1 => "MZUA_Liquid",
+            2 => "MZUA_Solid",
+            _ => ""
+        };
+
         foreach (var rad in radsSet)
         {
             var mza = R.First(x => x["name"] == rad)["MZA"];
-            var mzua = R.First(x => x["name"] == rad)["MZUA"];
+            var mzua = R.First(x => x["name"] == rad)[mzuaColumn];
             if (!TryParseDoubleExtended(mza, out var mzaDoubleValue) 
                 || !TryParseDoubleExtended(mzua, out var mzuaDoubleValue)) continue;
             if (mzaDoubleValue < minimumMza)
@@ -1264,8 +1280,16 @@ public abstract class CheckF14 : CheckBase
             .Replace(" ", string.Empty)
             .Split(',')[0];
 
+        var aggregateState = forms[line].AggregateState_DB;
+        var mzuaColumn = aggregateState switch
+        {
+            1 => "MZUA_Liquid",
+            2 => "MZUA_Solid",
+            _ => ""
+        };
+
         var mza = R.First(x => x["name"] == baseRad)["MZA"];
-        var mzua = R.First(x => x["name"] == baseRad)["MZUA"];
+        var mzua = R.First(x => x["name"] == baseRad)[mzuaColumn];
         if (!TryParseDoubleExtended(mza, out var mzaDoubleValue)
             || !TryParseDoubleExtended(mzua, out var mzuaDoubleValue)) return result;
 

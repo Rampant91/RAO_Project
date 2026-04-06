@@ -17,6 +17,7 @@
 	<UserControl.Resources>
         <converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
 		<converter:StringEqualsToColorConverter x:Key="StringEqualsToColor" />
+		<converter:CheckReportsAnyMatchingFormNumConverter x:Key ="CheckReportsAnyMatchingFormNum"/>
 	</UserControl.Resources>
 
     <Design.DataContext>
@@ -60,9 +61,6 @@
                                 <MenuItem Header="Из Excel"
                                           Click="ImportExcel_Click"/>
                             </MenuItem>
-							<MenuItem Header="Удалить организацию"
-									  Command="{Binding MainWindowVM.DeleteReports, Mode=OneWay}"
-									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 							<MenuItem Header="Выгрузить организацию"
 									  Command="{Binding MainWindowVM.ExportReports, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
@@ -71,11 +69,16 @@
 									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 							<MenuItem Header="Выгрузить все организации в один файл"
 									  Command="{Binding MainWindowVM.ExportAllReportsOneFile, Mode=OneWay}"/>
+							<MenuItem Header="Выгрузить все отчеты из конкретного субъекта РФ в один файл"
+									  Command="{Binding MainWindowVM.ExportAllReportsFromSubjectRFOneFile, Mode=OneWay}"/>
 							<MenuItem Header="Выгрузить все организации в отдельные файлы"
 									  Command="{Binding MainWindowVM.ExportAllReports, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 							<MenuItem Header="Проверить все формы организации"
 									  Command="{Binding MainWindowVM.ExcelExportCheckAllForms, Mode=OneWay}"
+									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+							<MenuItem Header="Удалить организацию"
+									  Command="{Binding MainWindowVM.DeleteReports, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 						</ContextMenu>
 					</DataGrid.ContextMenu>
@@ -277,9 +280,6 @@
 							<MenuItem Header="Редактировать отчёт"
 									  Command="{Binding MainWindowVM.ChangeForm}"
 									  CommandParameter="{Binding SelectedReport}"/>
-							<MenuItem Header="Удалить отчёт"
-									  Command="{Binding MainWindowVM.NewDeleteForm}"
-									  CommandParameter="{Binding SelectedReport}"/>
                             <MenuItem Header="Выгрузить отчёт в Excel">
                                 <MenuItem Header="для печати"
                                           Click="ExportExcelPrint_Click"/>
@@ -294,6 +294,9 @@
 									  CommandParameter="{Binding SelectedReport}"/>
 							<MenuItem Header="Сохранить комментарий"
 									  Command="{Binding MainWindowVM.SaveReports}"
+									  CommandParameter="{Binding SelectedReport}"/>
+							<MenuItem Header="Удалить отчёт"
+									  Command="{Binding MainWindowVM.NewDeleteForm}"
 									  CommandParameter="{Binding SelectedReport}"/>
 						</ContextMenu>
 					</DataGrid.ContextMenu>
@@ -426,110 +429,158 @@
 									Grid.Column="6"
 									Margin="5,0,0,0"
 									Orientation="Horizontal">
+							
 							<Button Content="2.1" 
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=2.1}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="2.1"
 									Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
 										ConverterParameter=2.1}" />
+							
 							<Button Content="2.2" 
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=2.2}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="2.2"
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
 										ConverterParameter=2.2}" />
+							
 							<Button Content="2.3" 
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=2.3}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="2.3"
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
 										ConverterParameter=2.3}" />
+							
 							<Button Content="2.4" 
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=2.4}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="2.4"
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
 										ConverterParameter=2.4}" />
+							
 							<Button Content="2.5" 
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=2.5}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="2.5"
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
 										ConverterParameter=2.5}" />
+							
 							<Button Content="2.6"
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=2.6}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="2.6"
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
 										ConverterParameter=2.6}" />
+							
 							<Button Content="2.7" 
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=2.7}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="2.7"
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
 										ConverterParameter=2.7}" />
+							
 							<Button Content="2.8" 
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=2.8}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="2.8"
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
 										ConverterParameter=2.8}" />
+							
 							<Button Content="2.9" 
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=2.9}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="2.9"
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
 										ConverterParameter=2.9}" />
+							
 							<Button Content="2.10"
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=2.10}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="2.10"
 									Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
 										ConverterParameter=2.10}" />
+							
 							<Button Content="2.11" 
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=2.11}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="2.11"
 									Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 
 										ConverterParameter=2.11}" />
+							
 							<Button Content="2.12" 
+									IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=2.12}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="2.12"
                                     Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 

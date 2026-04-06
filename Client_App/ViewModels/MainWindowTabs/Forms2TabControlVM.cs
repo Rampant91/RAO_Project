@@ -276,7 +276,7 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
         return result;
     }
 
-    public void GoToFormNum(string formNum)
+    public void SetWhiteList(string formNum)
     {
         FormNumWhiteList = FormNumWhiteList != formNum
             ? formNum

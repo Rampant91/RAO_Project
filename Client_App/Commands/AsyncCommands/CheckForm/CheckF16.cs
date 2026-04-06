@@ -485,8 +485,8 @@ public abstract class CheckF16 : CheckBase
         var comparator = new CustomNullStringWithTrimComparer();
         rColumn = codeRao1MatterState switch
         {
-            "1" => "A_Liquid",
-            "2" => "A_Solid",
+            "1" => "MZUA_Liquid",
+            "2" => "MZUA_Solid",
             _ => rColumn
         };
         var valid = true;

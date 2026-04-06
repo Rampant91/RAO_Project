@@ -437,10 +437,18 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     /// </summary>
     public ICommand ExportAllReport => new ExportAllReportAsyncCommand();
 
+    
+
     /// <summary>
     /// Экспорт всех организаций организации в один файл .RAODB
     /// </summary>
     public ICommand ExportAllReportsOneFile => new ExportAllReportsOneFileAsyncCommand();
+
+    /// <summary>
+    /// Экспорт всех организаций организации в один файл .RAODB
+    /// </summary>
+    public ICommand ExportAllReportsFromSubjectRFOneFile => new ExportAllReportsFromSubjectRFOneFileAsyncCommand();
+
 
     /// <summary>
     /// Экспорт организации в файл .RAODB
@@ -466,7 +474,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                                                                             //public ICommand UnaccountedRad { get; set; }                    
                                                                             //  Радионуклиды, отсутствующие в справочнике
 
-    public ICommand GoToFormNum { get; set; }
+    public ICommand SetWhiteList { get; set; }
     
     #endregion
 
@@ -497,7 +505,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         OpenCalculator = new OpenCalculatorAsyncCommand();
         OpenFile = new OpenFileAsyncCommand();
         OpenFolder = new OpenFolderAsyncCommand();
-        GoToFormNum = new GoToFormNumAsyncCommand(this);
+        SetWhiteList = new SetWhiteListNumAsyncCommand(this);
 
         Forms1TabControlVM = new Forms1TabControlVM(this);
         Forms2TabControlVM = new Forms2TabControlVM(this);
