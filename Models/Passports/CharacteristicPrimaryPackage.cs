@@ -243,6 +243,7 @@ namespace Models.Passports
                 _primaryPackageMass = value;
                 ValidatePostiveDouble(nameof(PrimaryPackageMass), _primaryPackageMass);
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(TotalActivity));
             }
         }
         #endregion
