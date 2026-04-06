@@ -69,6 +69,7 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
             _currentPageForms = value;
             OnPropertyChanged();
             UpdateReportCollection();
+            OnPropertyChanged(nameof(TotalReportCount));
         }
     }
 
@@ -90,6 +91,7 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
             _currentPageOrgs = value;
             OnPropertyChanged(nameof(ReportsCollection));
             OnPropertyChanged();
+            OnPropertyChanged(nameof(TotalReportCount));
         }
     }
 
@@ -257,13 +259,45 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 
     #endregion
 
-    public int TotalReportCount => ReportsCollection?
-        .AsEnumerable()
-        .Sum(org => org.Report_Collection
-            .Count(rep => rep.FormNum_DB.StartsWith($"{MainWindowVM.SelectedReportType}")
-                          && !rep.FormNum_DB.EndsWith(".0"))) ?? 0;
+    public int TotalReportCount
+    {
+        get
+        {
+            var allOrgs = StaticConfiguration.DBModel.ReportsCollectionDbSet
+                .AsEnumerable()
+                .Where(x => x.DBObservable != null)
+                .Where(reps => reps.Master_DB.FormNum_DB == FormNum + ".0");
 
-    private protected int TotalRowsOrgs => StaticConfiguration.DBModel.ReportsCollectionDbSet
+            if (!string.IsNullOrEmpty(SearchText))
+            {
+                var search = SearchText.ToLower().Trim();
+                allOrgs = allOrgs.Where(reps => 
+                    reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
+                    || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
+                    || GetAdditionalSearchConditions(reps, search));
+            }
+
+            return allOrgs
+                .Sum(org => org.Report_Collection
+                    .Count(rep => rep.FormNum_DB.StartsWith($"{MainWindowVM.SelectedReportType}")
+                                  && !rep.FormNum_DB.EndsWith(".0")));
+        }
+    }
+
+    /// <summary>
+    /// Всего организаций с учётом фильтра.
+    /// </summary>
+    private protected abstract int FilteredRowsOrgs { get; }
+
+    /// <summary>
+    /// Дополнительные условия поиска для переопределения в дочерних классах.
+    /// </summary>
+    protected virtual bool GetAdditionalSearchConditions(Reports reps, string search) => false;
+
+    /// <summary>
+    /// Всего организаций.
+    /// </summary>
+    public int TotalRowsOrgs => StaticConfiguration.DBModel.ReportsCollectionDbSet
         .Where(x => x.DBObservable != null)
         .Count(reps => reps.Master_DB.FormNum_DB == FormNum + ".0");
 
@@ -350,6 +384,11 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
     public void UpdateTotalReportCount()
     {
         OnPropertyChanged(nameof(TotalReportCount));
+    }
+
+    public void UpdateTotalReportsCount()
+    {
+        OnPropertyChanged(nameof(FilteredRowsOrgs));
     }
 
     #endregion

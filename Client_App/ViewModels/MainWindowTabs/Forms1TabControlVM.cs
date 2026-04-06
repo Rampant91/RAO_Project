@@ -31,7 +31,10 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
 
     #region Properties
 
-    private int FilteredRowsOrgs
+    /// <summary>
+    /// Всего организаций с учётом фильтра.
+    /// </summary>
+    private protected override int FilteredRowsOrgs
     {
         get
         {
@@ -44,11 +47,16 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
                     .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
                     .Count(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
                                    || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
-                                   || reps.Master_DB.Rows10[0].ShortJurLico_DB.ToLower().Contains(search)
-                                   || reps.Master_DB.Rows10[1].ShortJurLico_DB.ToLower().Contains(search));
+                                   || GetAdditionalSearchConditions(reps, search));
             }
             return TotalRowsOrgs;
         }
+    }
+
+    protected override bool GetAdditionalSearchConditions(Reports reps, string search)
+    {
+        return reps.Master_DB.Rows10[0].ShortJurLico_DB.Contains(search, StringComparison.CurrentCultureIgnoreCase)
+               || reps.Master_DB.Rows10[1].ShortJurLico_DB.Contains(search, StringComparison.CurrentCultureIgnoreCase);
     }
 
     #region FormNumWhiteList
@@ -218,6 +226,8 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
     {
         OnPropertyChanged(nameof(TotalRowsOrgs));
         OnPropertyChanged(nameof(TotalPagesOrgs));
+        UpdateTotalReportCount();
+        UpdateTotalReportsCount();
     }
 
     #endregion

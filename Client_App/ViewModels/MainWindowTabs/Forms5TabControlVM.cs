@@ -30,6 +30,24 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
 
     #region Properties
 
+    private protected override int FilteredRowsOrgs
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(SearchText))
+            {
+                var search = SearchText.ToLower().Trim();
+                return StaticConfiguration.DBModel.ReportsCollectionDbSet
+                    .AsEnumerable()
+                    .Where(x => x.DBObservable != null)
+                    .Where(reps => reps.Master_DB.FormNum_DB == "5.0")
+                    .Count(reps => !string.IsNullOrEmpty(reps.Master_DB.Rows50[0].ShortName_DB)
+                                   && reps.Master_DB.Rows50[0].ShortName_DB.ToLower().Contains(search));
+            }
+            return TotalRowsOrgs;
+        }
+    }
+
     #region FormNumWhiteList
 
     private string _formNumWhiteList = "";

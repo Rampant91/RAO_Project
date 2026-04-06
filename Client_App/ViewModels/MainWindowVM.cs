@@ -270,7 +270,6 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     }
     #endregion
 
-    #region TotalReportCount
     public void UpdateTotalReportCount()
     {
         switch (SelectedReportType)
@@ -291,7 +290,27 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                 break;
         }
     }
-    #endregion
+
+    public void UpdateTotalReportsCount()
+    {
+        switch (SelectedReportType)
+        {
+            case 1:
+                Forms1TabControlVM.UpdateTotalReportsCount();
+                break;
+            case 2:
+                Forms2TabControlVM.UpdateTotalReportsCount();
+                break;
+            case 4:
+                Forms4TabControlVM.UpdateTotalReportsCount();
+                break;
+            case 5:
+                Forms5TabControlVM.UpdateTotalReportsCount();
+                break;
+            default:
+                break;
+        }
+    }
 
     #region OnStartProgressBar
 
