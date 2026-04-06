@@ -1275,24 +1275,21 @@ public class CheckF22 : CheckBase
     {
         if (receiver == formGenericPlug || giver == formGenericPlug) return formGenericPlug;
         if (receiver == form15Plug || giver == form15Plug) return form15Plug;
-        var res = receiver;
-        var receiverReal = receiver == "-" || string.IsNullOrWhiteSpace(receiver) || receiver == form15Plug
-            ? "0"
-            : receiver;
-        var giverReal = giver == "-" || string.IsNullOrWhiteSpace(giver) || giver == form15Plug
-            ? "0"
-            : giver;
-        if (decimal.TryParse(receiverReal, out var receiverDecimal)
-            && decimal.TryParse(giverReal, out var giverDecimal))
-        {
-            res = decimal.Add(receiverDecimal, giverDecimal).ToString();
-        }
-        else if (TryParseDoubleExtended(receiverReal, out var receiverTrue)
-            && TryParseDoubleExtended(giverReal, out var giverTrue))
-        {
-            res = (receiverTrue + giverTrue).ToString();
-        }
-        return res;
+        var receiverRealRaw = receiver == "-" || string.IsNullOrWhiteSpace(receiver)
+            ? "0" : receiver;
+        var giverRealRaw = giver == "-" || string.IsNullOrWhiteSpace(giver)
+            ? "0" : giver;
+        double receiverReal = decimal.TryParse(receiverRealRaw, out var receiverDecimal)
+            ? (double)receiverDecimal
+            : TryParseDoubleExtended(receiverRealRaw, out var receiverTrue)
+            ? receiverTrue
+            : 0;
+        double giverReal = decimal.TryParse(giverRealRaw, out var giverDecimal)
+            ? (double)giverDecimal
+            : TryParseDoubleExtended(giverRealRaw, out var giverTrue)
+            ? giverTrue
+            : 0;
+        return (receiverReal + giverReal).ToString();
     }
 
     /// <summary>
@@ -1306,24 +1303,21 @@ public class CheckF22 : CheckBase
     {
         if (giver == formGenericPlug || taker == formGenericPlug) return formGenericPlug;
         if (giver == form15Plug || taker == form15Plug) return form15Plug;
-        var res = giver;
-        var giverReal = giver == "-" || string.IsNullOrWhiteSpace(giver) || giver == form15Plug
-            ? "0"
-            : giver;
-        var takerReal = giver == "-" || string.IsNullOrWhiteSpace(taker) || taker == form15Plug
-            ? "0"
-            : taker;
-        if (decimal.TryParse(giverReal, out var giverDecimal)
-            && decimal.TryParse(takerReal, out var takerDecimal))
-        {
-            res = decimal.Subtract(giverDecimal, takerDecimal).ToString();
-        }
-        else if (TryParseDoubleExtended(giverReal, out var giverTrue)
-            && TryParseDoubleExtended(takerReal, out var takerTrue))
-        {
-            res = (giverTrue - takerTrue).ToString();
-        }
-        return res;
+        var giverRealRaw = giver == "-" || string.IsNullOrWhiteSpace(giver)
+            ? "0" : giver;
+        var takerRealRaw = taker == "-" || string.IsNullOrWhiteSpace(taker)
+            ? "0" : taker;
+        double takerReal = decimal.TryParse(takerRealRaw, out var takerDecimal)
+            ? (double)takerDecimal
+            : TryParseDoubleExtended(takerRealRaw, out var takerTrue)
+            ? takerTrue
+            : 0;
+        double giverReal = decimal.TryParse(giverRealRaw, out var giverDecimal)
+            ? (double)giverDecimal
+            : TryParseDoubleExtended(giverRealRaw, out var giverTrue)
+            ? giverTrue
+            : 0;
+        return (giverReal - takerReal).ToString();
     }
     private static string Form22_SubToExp(string input)
     {
