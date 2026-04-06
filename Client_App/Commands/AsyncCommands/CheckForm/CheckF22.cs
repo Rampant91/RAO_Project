@@ -1180,6 +1180,8 @@ public class CheckF22 : CheckBase
 
     private static Form22 Form22_Copy(Form22 form, string? inOrOutParam = null)
     {
+        if (string.IsNullOrWhiteSpace(form.FcpNumber_DB)) form.FcpNumber_DB = "-";
+
         Form22 res = new()
         {
             NumberInOrder_DB = form.NumberInOrder_DB,
@@ -1205,7 +1207,7 @@ public class CheckF22 : CheckBase
             MainRadionuclids_DB = form.MainRadionuclids_DB.Trim(),
             Subsidy_DB = form.Subsidy_DB.Trim(),
         };
-        if (string.IsNullOrWhiteSpace(res.FcpNumber_DB)) res.FcpNumber_DB = "-";
+        
         return res;
     }
 
