@@ -183,11 +183,8 @@
 								VerticalAlignment="Center"
 								Text="Код &quot;Статус РАО&quot; -"/>
 
-							<TextBox MinWidth="100" Margin="5"
-								 Text="{Binding Passport.StatusRaoCode}">
-								<interactivity:Interaction.Behaviors>
-									<local:TextBoxDigitValidationBehavior/>
-								</interactivity:Interaction.Behaviors>
+							<TextBox MinWidth="105" Margin="5"
+								 Text="{Binding Passport.StatusRaoCode}" MaxLength="14">
 							</TextBox>
 						</StackPanel>
 
@@ -207,7 +204,7 @@
 								   Text="(название РАО)" />
 						
 						<TextBox Grid.Row="0" Grid.Column="3" Margin="5"
-								 Text="{Binding Passport.ClassRao}">
+								 Text="{Binding Passport.ClassRao}" MaxLength="1">
 							<interactivity:Interaction.Behaviors>
 								<local:TextBoxDigitValidationBehavior/>
 							</interactivity:Interaction.Behaviors>

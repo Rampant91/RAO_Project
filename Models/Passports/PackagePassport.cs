@@ -130,7 +130,7 @@ namespace Models.Passports
 
         [NotMapped]
         private string _statusRaoCode;
-        [MaxLength(16)]
+        [MaxLength(14)]
         public string StatusRaoCode
         {
             get => _statusRaoCode;
@@ -176,15 +176,35 @@ namespace Models.Passports
 
         #region ClassRao
         [NotMapped]
-        private byte _classRao;
+        private byte _classRao = 1;
 
         public byte ClassRao
         {
-            get => _classRao;
+            get
+            {
+               return _classRao;
+            }
             set
             {
                 _classRao = value;
+                ValidateClassRao(nameof(ClassRao), _classRao);
+
+                if (_classRao < 1)
+                    _classRao = 1;
+                else if (_classRao > 6)
+                    _classRao = 6;
+
+
                 OnPropertyChanged();
+            }
+        }
+        private void ValidateClassRao(string propertyName, byte classRao)
+        {
+            ClearErrors(propertyName);
+
+            if (classRao < 1 || classRao > 6) 
+            {
+                AddError(propertyName, "Класс РАО должен быть в диапазоне от 1 до 6");
             }
         }
         #endregion
