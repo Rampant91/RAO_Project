@@ -223,7 +223,7 @@
 			<Setter Property="TextAlignment" Value="Center"/>
 		</Style>
 		<Style Selector="DataGrid DataGridRow:selected DataGridCell TextBlock.readOnly">
-			<Setter Property="Background" Value="#5d9fc5"/>
+			<Setter Property="Background" Value="#86c4d9"/>
 			<Setter Property="Foreground" Value="#93140e"/>
 			<Setter Property="HorizontalAlignment" Value="Stretch"/>
 			<Setter Property="VerticalAlignment" Value="Stretch"/>
