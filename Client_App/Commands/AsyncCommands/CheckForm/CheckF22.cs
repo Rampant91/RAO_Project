@@ -23,6 +23,7 @@ using Models.DBRealization;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using OfficeOpenXml;
+using OfficeOpenXml.Export.ToCollection;
 using OfficeOpenXml.Style;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
@@ -77,7 +78,7 @@ public class CheckF22 : CheckBase
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
-
+        
         var db = new DBModel(StaticConfiguration.DBPath);
         var db2 = new DBModel(StaticConfiguration.DBPath);
 
@@ -93,7 +94,7 @@ public class CheckF22 : CheckBase
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
 
-        progressBarVM.SetProgressBar(5, "Поиск соответствующей формы 1.0",
+        progressBarVM.SetProgressBar(5, "Поиск организации с формой 1.X для проверяемого регистрационного номера",
             $"Проверка {rep.Reports.Master_DB.RegNoRep.Value}_{rep.Reports.Master_DB.OkpoRep.Value}", "Проверка отчёта");
 
         var repsWithForm1Exist = await db.ReportsCollectionDbSet
@@ -170,6 +171,7 @@ public class CheckF22 : CheckBase
             db = new DBModel(dbWithForm1FullPath);
         }
 
+        progressBarVM.SetProgressBar(7, "Загрузка данных о формах 1.5–1.8 из выбранной базы данных");
 
         var repsWithForm1Base = db.ReportsCollectionDbSet
             .AsNoTracking()
@@ -191,6 +193,9 @@ public class CheckF22 : CheckBase
             .Where(reps => reps.DBObservable != null);
 
         var forms1 = repsWithForm1Base.Where(reps => reps.Master_DB.Rows10.Any(form10 => form10.RegNo_DB == form20RegNo)).ToList();
+
+
+        progressBarVM.SetProgressBar(8, "Формирование списка операций из форм 1.5–1.8 за текущий год");
 
         Reports? repsWithForm1;
 
@@ -263,6 +268,8 @@ public class CheckF22 : CheckBase
                     .Any(form10 => form10.RegNo_DB == form20RegNo), cts.Token);
         }
 
+        progressBarVM.SetProgressBar(9, "Получение данных формы 2.2 за предыдущий год");
+
         int yearRealCurrent;
         int.TryParse(repYear, out yearRealCurrent);
         string yearPrevious = (yearRealCurrent - 1).ToString();
@@ -285,6 +292,7 @@ public class CheckF22 : CheckBase
         await db.DisposeAsync();
         await db2.DisposeAsync();
 
+        progressBarVM.SetProgressBar(10, "Проверка наличия организации в базе данных");
         if (repsWithForm1 is null)
         {
             #region MessageCheckFailed
@@ -307,12 +315,23 @@ public class CheckF22 : CheckBase
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
 
+        progressBarVM.SetProgressBar(10, "Преобразование данных форм 1.5–1.8 в единый формат ожидаемых строк");
+
         List<Form22> forms22ExpectedBase = [];
         List<(string, string, string)> forms22MetadataBase = [];
         Form17? formHeader17 = null;
         Form18? formHeader18 = null;
+
+        double progress = 10;
+        double incProgress = (20.0 - progress) / repsWithForm1!.Report_Collection.Count;
+        int iterationCount = 0;
+
         foreach (var key in repsWithForm1!.Report_Collection)
         {
+            progress += incProgress;
+            iterationCount++;
+            progressBarVM.SetProgressBar((int)progress, $"Преобразование данных форм 1.5–1.8 в единый формат ожидаемых строк ({iterationCount}/{repsWithForm1!.Report_Collection.Count})");
+
             var report = (Report)key;
             Form22? form22New;
             switch (report.FormNum_DB)
@@ -382,10 +401,20 @@ public class CheckF22 : CheckBase
                     }
             }
         }
+
+        progressBarVM.SetProgressBar(20, "Сборка и группировка ожидаемых строк формы 2.2 из форм 1.5–1.8");
         if (repsWithForm2 != null && repsWithForm2.Report_Collection != null)
         {
+            progress = 20;
+            incProgress = (25.0 - progress) / repsWithForm2.Report_Collection.Count;
+            iterationCount = 0;
+
             foreach (var key in repsWithForm2.Report_Collection)
             {
+                progress += incProgress;
+                iterationCount++;
+                progressBarVM.SetProgressBar((int)progress, $"Сборка и группировка ожидаемых строк формы 2.2 из форм 1.5–1.8 ({iterationCount}/{repsWithForm2.Report_Collection.Count})");
+
                 var report = (Report)key;
                 Form22? form22New;
                 report.Rows22 = new(report.Rows22.OrderBy(x => x.NumberInOrder_DB));
@@ -402,13 +431,25 @@ public class CheckF22 : CheckBase
                 break;
             }
         }
+
+        progressBarVM.SetProgressBar(25, "Добавление остатков предыдущего года из формы 2.2");
+
         Dictionary<(string, string, string, string, string, string), Form22> forms22ExpectedDict = new();
         Dictionary<(string, string, string, string, string, string), Form22> forms22RealDict = new();
         Dictionary<(string, string, string, string, string, string), Form22> forms22ExpectedSubDict = new();
         Dictionary<(string, string, string, string, string, string), Form22> forms22RealSubDict = new();
         Dictionary<(string, string, string, string, string, string), Dictionary<string, Dictionary<string, List<string>>>> forms22MetadataDict = new();
+
+        progress = 25;
+        incProgress = (35.0 - progress) / forms22ExpectedBase.Count;
+        iterationCount = 0;
+
         for (var i = 0; i < forms22ExpectedBase.Count; i++)
         {
+            progress += incProgress;
+            iterationCount++;
+            progressBarVM.SetProgressBar((int)progress, $"Добавление остатков предыдущего года из формы 2.2 ({iterationCount}/{forms22ExpectedBase.Count})");
+
             double subsidy = -1.0;
             TryParseDoubleExtended(forms22ExpectedBase[i].Subsidy_DB.Replace("%", ""), out subsidy);
             (string, string, string, string, string, string) key = (
@@ -473,14 +514,25 @@ public class CheckF22 : CheckBase
             }
             forms22MetadataDict[key][forms22MetadataBase[i].Item1][forms22MetadataBase[i].Item2].Add(forms22MetadataBase[i].Item3);
         }
+
+        progressBarVM.SetProgressBar(35, "Построение словарей ожидаемых строк с учётом ключевых полей");
+
+        progress = 35;
+        incProgress = (45.0 - progress) / repRows22.Count;
+        iterationCount = 0;
+
+        
         List<Form22> forms22Real = [];
-        for (int i = 0; i < repRows22.Count; i++)
-        {
-            if (string.IsNullOrWhiteSpace(repRows22[i].FcpNumber_DB.Trim())) repRows22[i].FcpNumber_DB = "-";
-        }
         foreach (var key1 in repRows22)
         {
+            progress += incProgress;
+            iterationCount++;
+            progressBarVM.SetProgressBar((int)progress, $"Построение словарей ожидаемых строк с учётом ключевых полей ({iterationCount}/{repRows22.Count})");
+
             var form = (Form22)key1;
+
+            if (string.IsNullOrWhiteSpace(form.FcpNumber_DB.Trim())) form.FcpNumber_DB = "-";
+
             double subsidy = -1.0;
             TryParseDoubleExtended(form.Subsidy_DB.Replace("%", ""), out subsidy);
             if (form.CodeRAO_DB != "-" && !string.IsNullOrWhiteSpace(form.CodeRAO_DB)
@@ -555,17 +607,40 @@ public class CheckF22 : CheckBase
                 }
             }
         }
+        
+        progressBarVM.SetProgressBar(45, "Обработка фактических строк формы 2.2 текущего отчёта");
         forms22Real = forms22RealDict.Keys.Select(key => forms22RealDict[key]).ToList();
         forms22Real = [];
+
+        progress = 45;
+        incProgress = (50.0 - progress) / forms22RealDict.Count;
+        iterationCount = 0;
+
+        
         foreach (var key in forms22RealDict.Keys)
         {
+            progress += incProgress;
+            iterationCount++;
+            progressBarVM.SetProgressBar((int)progress, $"Обработка фактических строк формы 2.2 текущего отчёта ({iterationCount}/{forms22RealDict.Count})");
+
             forms22Real.Add(forms22RealDict[key]);
         }
+
+        progressBarVM.SetProgressBar(50, "Обработка фактических строк формы 2.2 текущего отчёта");
         //the converted values should be compared to the rows in reps.
         List<(Form22, string, string)> forms22Expected = [];
         List<(Form22, string)> form15PlugDoubles = new();
+
+        progress = 50;
+        incProgress = (80.0 - progress) / forms22ExpectedDict.Count;
+        iterationCount = 0;
+
         foreach (var key in forms22ExpectedDict.Keys)
         {
+            progress += incProgress;
+            iterationCount++;
+            progressBarVM.SetProgressBar((int)progress, $"Обработка фактических строк формы 2.2 текущего отчёта ({iterationCount}/{forms22ExpectedDict.Count})");
+
             List<string> addressSubstrings = [];
             List<string> formsSubstrings = [];
             foreach (var keyForm in forms22MetadataDict[key].Keys)
@@ -629,8 +704,19 @@ public class CheckF22 : CheckBase
             var formsString = string.Join(", ", formsSubstrings);
             forms22Expected.Add((forms22ExpectedDict[key], addressString, formsString));
         }
+        progressBarVM.SetProgressBar(80, "Сравнение ожидаемых и фактических данных, выявление расхождений");
+
+        progress = 80;
+        incProgress = (90.0 - progress) / forms22Real.Count;
+        iterationCount = 0;
+
+
         foreach (var formReal in forms22Real)
         {
+            progress += incProgress;
+            iterationCount++;
+            progressBarVM.SetProgressBar((int)progress, $"Сравнение ожидаемых и фактических данных, выявление расхождений ({iterationCount}/{forms22Real.Count})");
+
             string form15PlugItemName = ItemName(formReal, false);
             Form22 form22RealPure = Form22_Copy(formReal);
             Form22_ToDecExp(form22RealPure);
@@ -727,8 +813,18 @@ public class CheckF22 : CheckBase
                 });
             }
         }
+        progressBarVM.SetProgressBar(90, "Обработка не найденных в отчёте ожидаемых строк");
+
+        progress = 90;
+        incProgress = (95.0 - progress) / forms22Expected.Count;
+        iterationCount = 0;
+
         foreach (var formExpected in forms22Expected)
         {
+            progress += incProgress;
+            iterationCount++;
+            progressBarVM.SetProgressBar((int)progress, $"Обработка не найденных в отчёте ожидаемых строк ({iterationCount}/{forms22Expected.Count})");
+
             //if (int.TryParse(formExpected.Item1.PackQuantity_DB, out int packQuantity) && packQuantity == 0) continue;
             double zeroCheck;
             List<string> negatives = new();
@@ -807,14 +903,24 @@ public class CheckF22 : CheckBase
                 });
             }
         }
+        progressBarVM.SetProgressBar(95, "Формирование списка ошибок, сортировка и нумерация");
         errorList.Sort((i, j) =>
             int.TryParse(i.Row.Split(',')[0], out var iRowReal)
             && int.TryParse(j.Row.Split(',')[0], out var jRowReal)
                 ? iRowReal - jRowReal
                 : string.Compare(i.Row, j.Row));
         var index = 0;
+        progressBarVM.SetProgressBar(95, "Уточнение наименований столбцов для отображения ошибок");
+
+        progress = 95;
+        incProgress = (100.0 - progress) / errorList.Count;
+        iterationCount = 0;
+
         foreach (var error in errorList)
         {
+            progress += incProgress;
+            iterationCount++;
+            progressBarVM.SetProgressBar((int)progress, $"Уточнение наименований столбцов для отображения ошибок ({iterationCount}/{errorList.Count})");
             if (GraphsList.TryGetValue(error.Column, out var columnFrontName))
             {
                 error.Column = columnFrontName;
@@ -823,7 +929,7 @@ public class CheckF22 : CheckBase
             error.Index = index;
         }
 
-        progressBarVM.SetProgressBar(100, "Завершение проверки");
+        progressBarVM.SetProgressBar(100, "Завершение проверки формы 2.2");
         await progressBar.CloseAsync();
 
         #region Check22ExportSummary
@@ -1180,35 +1286,88 @@ public class CheckF22 : CheckBase
 
     private static Form22 Form22_Copy(Form22 form, string? inOrOutParam = null)
     {
-        if (string.IsNullOrWhiteSpace(form.FcpNumber_DB)) form.FcpNumber_DB = "-";
-
-        Form22 res = new()
+        try
         {
-            NumberInOrder_DB = form.NumberInOrder_DB,
-            NumberOfFields_DB = form.NumberOfFields_DB,
-            FormNum_DB = form.FormNum_DB.Trim(),
-            CodeRAO_DB = form.CodeRAO_DB.Trim(),
-            StatusRAO_DB = form.StatusRAO_DB.Trim(),
-            StoragePlaceCode_DB = form.StoragePlaceCode_DB.Trim(),
-            FcpNumber_DB = form.FcpNumber_DB.Replace('.', ',').Trim(),
-            StoragePlaceName_DB = form.StoragePlaceName_DB.Trim(),
-            PackName_DB = form.PackName_DB.Trim(),
-            PackType_DB = form.PackType_DB.Trim(),
-            PackQuantity_DB = form.PackQuantity_DB.Trim(),
-            VolumeOutOfPack_DB = form.VolumeOutOfPack_DB.Trim(),
-            VolumeInPack_DB = form.VolumeInPack_DB.Trim(),
-            MassOutOfPack_DB = form.MassOutOfPack_DB.Trim(),
-            MassInPack_DB = form.MassInPack_DB.Trim(),
-            QuantityOZIII_DB = form.QuantityOZIII_DB.Trim(),
-            TritiumActivity_DB = form.TritiumActivity_DB.Trim(),
-            BetaGammaActivity_DB = form.BetaGammaActivity_DB.Trim(),
-            AlphaActivity_DB = form.AlphaActivity_DB.Trim(),
-            TransuraniumActivity_DB = form.TransuraniumActivity_DB.Trim(),
-            MainRadionuclids_DB = form.MainRadionuclids_DB.Trim(),
-            Subsidy_DB = form.Subsidy_DB.Trim(),
-        };
-        
-        return res;
+
+            if (form == null)
+            {
+                #region MessageCopyFailed
+
+                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ContentTitle = $"Проверка формы 2.2",
+                        ContentHeader = "Ошибка",
+                        ContentMessage = $"Ошибка при копировании строки формы 2.2\n" +
+                        $"Не удалось получить строку",
+                        MinWidth = 400,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(Desktop.MainWindow));
+
+                #endregion
+                throw new ArgumentNullException(nameof(form)); 
+            }
+
+            if (string.IsNullOrWhiteSpace(form.FcpNumber_DB)) form.FcpNumber_DB = "-";
+
+            Form22 res = new()
+            {
+                NumberInOrder_DB = form.NumberInOrder_DB,
+                NumberOfFields_DB = form.NumberOfFields_DB,
+                FormNum_DB = form.FormNum_DB?.Trim() ?? "",
+                CodeRAO_DB = form.CodeRAO_DB?.Trim() ?? "",
+                StatusRAO_DB = form.StatusRAO_DB?.Trim() ?? "",
+                StoragePlaceCode_DB = form.StoragePlaceCode_DB?.Trim() ?? "",
+                FcpNumber_DB = form.FcpNumber_DB.Replace('.', ',').Trim() ?? "",
+                StoragePlaceName_DB = form.StoragePlaceName_DB?.Trim() ?? "",
+                PackName_DB = form.PackName_DB?.Trim() ?? "",
+                PackType_DB = form.PackType_DB?.Trim() ?? "",
+                PackQuantity_DB = form.PackQuantity_DB?.Trim() ?? "",
+                VolumeOutOfPack_DB = form.VolumeOutOfPack_DB?.Trim() ?? "",
+                VolumeInPack_DB = form.VolumeInPack_DB?.Trim() ?? "",
+                MassOutOfPack_DB = form.MassOutOfPack_DB?.Trim() ?? "",
+                MassInPack_DB = form.MassInPack_DB?.Trim() ?? "",
+                QuantityOZIII_DB = form.QuantityOZIII_DB?.Trim() ?? "",
+                TritiumActivity_DB = form.TritiumActivity_DB?.Trim() ?? "",
+                BetaGammaActivity_DB = form.BetaGammaActivity_DB?.Trim() ?? "",
+                AlphaActivity_DB = form.AlphaActivity_DB?.Trim() ?? "",
+                TransuraniumActivity_DB = form.TransuraniumActivity_DB?.Trim() ?? "",
+                MainRadionuclids_DB = form.MainRadionuclids_DB?.Trim() ?? "",
+                Subsidy_DB = form.Subsidy_DB?.Trim() ?? "",
+            };
+
+            return res;
+        }
+        catch (ArgumentNullException argumentNullException)
+        {
+            throw argumentNullException;
+        }
+        catch (Exception ex)
+        {
+            #region MessageCopyFailed
+
+            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = $"Проверка формы 2.2",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = $"Ошибка во время копирования строки №{form?.NumberInOrder_DB} отчета по форме {form?.FormNum_DB}\n" +
+                    $"Проверьте строку №{form?.NumberInOrder_DB} на правильность заполнения\n" +
+                    $"Дополнительная информация об ошибке:\n" +
+                    $"{ex.Message}\n",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+            throw ex;
+        }
     }
 
     #endregion

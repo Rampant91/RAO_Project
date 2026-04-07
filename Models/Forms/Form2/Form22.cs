@@ -725,7 +725,7 @@ public partial class Form22 : Form2, IBaseColor
 
     #region PackQuantity (6)
 
-    public string PackQuantity_DB { get; set; }
+    public string PackQuantity_DB { get; set; } = "";
 
     [NotMapped]
     [FormProperty(true, "УКТ, упаковка ли иная учетная единица", "количество, шт", "6")]
@@ -1202,7 +1202,7 @@ public partial class Form22 : Form2, IBaseColor
 
     #region QuantityOZIII (13)
 
-    public string QuantityOZIII_DB { get; set; }
+    public string QuantityOZIII_DB { get; set; } = "";
 
     [NotMapped]
     [FormProperty(true, "null-13", "Количество ОЗИИИ, шт", "13")]
