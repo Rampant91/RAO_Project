@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using Avalonia.Xaml.Interactivity;
 using Models.Passports;
 using Spravochniki;
@@ -70,40 +71,18 @@ namespace Client_App.Behaviors
             if (PreviousName != Radionuclid.Name
                 && PreviousActivity == Radionuclid.Activity
                 && Radionuclid.Activity == 0) return;
-            //Ищем в справочнике информацию о радионуклиде
-            var sprRad = Spravochniks.SprRadionuclids.FirstOrDefault(rad => rad.latinName == Radionuclid.Name);
 
 
-            if (PreviousActivity != Radionuclid.Activity
-                || Radionuclid.IsLongLivingActivity != sprRad.isLongLiving)
+            Dispatcher.UIThread.InvokeAsync(() =>
             {
-                Radionuclid.IsLongLivingActivity = sprRad.isLongLiving;
+                Radionuclid.GetGroupCode();
+                Radionuclid.GetIsLongLivingActivity();
+                Radionuclid.Characteristic.UpdateAlphaActivity();
+                Radionuclid.Characteristic.UpdateBetaGammaActivity();
                 Radionuclid.Characteristic.UpdateLongLivingActivity();
-            }
-
-            if (PreviousActivity != Radionuclid.Activity
-                || Radionuclid.ActivityType != sprRad.groupCode)
-            {
-                Radionuclid.ActivityType = sprRad.groupCode;
-                //И обновляем информацию о суммарных активностях
-                switch (sprRad.groupCode)
-                {
-                    case GroupCode.Alpha:
-                        Radionuclid.Characteristic.UpdateAlphaActivity();
-                        break;
-                    case GroupCode.BetaGamma:
-                        Radionuclid.Characteristic.UpdateBetaGammaActivity();
-                        break;
-                    case GroupCode.Transuranic:
-                        Radionuclid.Characteristic.UpdateTransuraniumActivity();
-                        break;
-                    case GroupCode.Tritium:
-                        Radionuclid.Characteristic.UpdateTritiumActivity();
-                        break;
-
-
-                }
-            }
+                Radionuclid.Characteristic.UpdateTransuraniumActivity();
+                Radionuclid.Characteristic.UpdateTritiumActivity();
+            });
 
         }
 

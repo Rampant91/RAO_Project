@@ -1335,7 +1335,8 @@
 																	Grid.Column="0"
 																	Background="White"
 																	Height="26"
-																	FilterMode="Contains"
+																	FilterMode="Custom"
+																	ItemFilter="{Binding VM.RadionuclidFilter, ElementName=PackagePassportWindow}"
 																	Items="{Binding VM.RaoNamesCollection, ElementName=PackagePassportWindow}"
 																	Text="{Binding Name}">
 																	<interactivity:Interaction.Behaviors>

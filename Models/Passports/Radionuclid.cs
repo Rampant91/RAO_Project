@@ -87,7 +87,7 @@ namespace Models.Passports
             }
         }
 
-        GroupCode _activityType;
+        GroupCode _activityType = GroupCode.NotDefined;
 
         [NotMapped]
         //Экспоненциальный вид
@@ -124,7 +124,8 @@ namespace Models.Passports
         // Используется для определения типа удельной активности
         public void GetGroupCode()
         {
-            if (Spravochniks.SprRadionuclids.Any(rad => rad.latinName == this.Name))
+            if (!string.IsNullOrWhiteSpace(this.Name) 
+                && Spravochniks.SprRadionuclids.Any(rad => rad.latinName == this.Name))
                 ActivityType = Spravochniks.SprRadionuclids
                     .First(r => r.latinName == this.Name)
                     .groupCode;
@@ -133,7 +134,8 @@ namespace Models.Passports
         }
         public void GetIsLongLivingActivity()
         {
-            if (Spravochniks.SprRadionuclids.Any(rad => rad.latinName == this.Name))
+            if (!string.IsNullOrWhiteSpace(this.Name) 
+                && Spravochniks.SprRadionuclids.Any(rad => rad.latinName == this.Name))
                 IsLongLivingActivity = Spravochniks.SprRadionuclids
                     .First(r => r.latinName == this.Name)
                     .isLongLiving;

@@ -28,6 +28,7 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
                 return DataContext as PackagePassportWindowVM;
             else
                 return null;
+
         }
     }
     public PackagePassportWindow()
@@ -61,6 +62,7 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
             var dataGrid2 = this.FindControl<DataGrid>("dataGrid2");
             dataGrid2.InvalidateMeasure();
         });
+
 
     }
 

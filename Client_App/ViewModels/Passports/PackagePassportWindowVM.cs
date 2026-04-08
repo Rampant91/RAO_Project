@@ -63,8 +63,42 @@ namespace Client_App.ViewModels.Passports
         {
             get
             {
-                return new ObservableCollection<string>(Spravochniks.SprRadionuclids.Select(r => r.latinName));
+                var result = new ObservableCollection<string>(LatinRusNamePairs.Select(r => r.Item1));
+
+                return result;
             }
+        }
+        private List<Tuple<string, string>> _latinRusNames = new List<Tuple<string, string>>();
+        // Синонимы для RaoNamesCollection
+        private List<Tuple<string, string>> LatinRusNamePairs
+        {
+            get
+            {
+                return _latinRusNames;
+            }
+        }
+
+        // Свойство-фильтр нужного типа
+        public AutoCompleteFilterPredicate<object> RadionuclidFilter { 
+            get
+            {
+                return RadionuclidFilterPredicate;
+            }
+        }
+        public bool RadionuclidFilterPredicate(string searchText, object item)
+        {
+            if (string.IsNullOrWhiteSpace(searchText))
+                return true;
+
+            if ( item is not string radionuclidLatinName) return false;
+
+            var pair = LatinRusNamePairs.FirstOrDefault(p => p.Item1 == radionuclidLatinName);
+
+            if (string.IsNullOrWhiteSpace(pair.Item1)
+                && string.IsNullOrWhiteSpace(pair.Item2)) return false;
+
+            return pair.Item1.ToLower().Contains(searchText.ToLower())
+                || pair.Item2.ToLower().Contains(searchText.ToLower());
         }
 
         #region SkipChangeTracking
@@ -99,6 +133,7 @@ namespace Client_App.ViewModels.Passports
         public PackagePassportWindowVM(int passportId)
         {
             InitializeCommands();
+            
 
             _passport = StaticConfiguration.DBModel.package_passport
                 .Include(pas => pas.ContentCharacteristics)
@@ -122,6 +157,18 @@ namespace Client_App.ViewModels.Passports
         }
         private void InitializeCommands()
         {
+
+            { // Справочник радионуклидов
+                List<Tuple<string, string>> result = new List<Tuple<string, string>>();
+                var latinRusNamePairs = Spravochniks.SprRadionuclids.Select(r => (r.latinName, r.rusName));
+                foreach (var pair in latinRusNamePairs)
+                {
+                    result.Add(new Tuple<string, string>(pair.latinName, pair.rusName));
+                }
+
+                _latinRusNames = result;
+            }
+
             var owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
                 .FirstOrDefault(w => w.IsActive);
 
