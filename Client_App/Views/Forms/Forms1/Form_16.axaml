@@ -1,4 +1,4 @@
-<Window x:Class="Client_App.Views.Forms.Forms1.Form_16"
+﻿<Window x:Class="Client_App.Views.Forms.Forms1.Form_16"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:Client_App.Views.Controls"
@@ -455,10 +455,31 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form16">
-                                    <TextBox
-                                        GotFocus="OperationCodeTextBox_OnGotFocus"
-                                        LostFocus="OperationCodeTextBox_OnLostFocus"
-                                        Text="{Binding OperationCode.Value, Mode=TwoWay}" />
+                                    <AutoCompleteBox
+                                        Height="26"
+                                        Items="{Binding VM.OperationCodes, ElementName=1.6}"
+                                        Text="{Binding OperationCode.Value, Mode=TwoWay}"
+                                        HorizontalAlignment="Stretch"
+                                        MinimumPrefixLength="0"
+                                        IsTextCompletionEnabled="True">
+                                        <interactivity:Interaction.Behaviors>
+                                            <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.6}" />
+                                            <local:AutoCompleteBoxSelectionChangedBehavior />
+                                        </interactivity:Interaction.Behaviors>
+                                        <AutoCompleteBox.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:OperationCodeItem">
+                                                <Grid ColumnDefinitions="Auto,*">
+                                                    <TextBlock Grid.Column="0" 
+                                                               Text="{Binding Code}" 
+                                                               Margin="0,0,10,0" 
+                                                               FontWeight="Bold"/>
+                                                    <TextBlock Grid.Column="1" 
+                                                               Text="{Binding Description}" 
+                                                               Foreground="Gray"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </AutoCompleteBox.ItemTemplate>
+                                    </AutoCompleteBox>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -1051,3 +1072,6 @@
 
     </Grid>
 </Window>
+
+
+

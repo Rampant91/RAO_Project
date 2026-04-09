@@ -1,6 +1,8 @@
 using Client_App.ViewModels.Controls;
 using Models.Collections;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Client_App.ViewModels.Forms.Forms1;
@@ -8,6 +10,9 @@ namespace Client_App.ViewModels.Forms.Forms1;
 public class Form_19VM : BaseFormVM
 {
     public override string FormType => "1.9";
+
+    public ObservableCollection<OperationCodeItem> OperationCodes => OperationCodesProvider.AllOperationCodes;
+    public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm19();
 
     #region Constructors
 

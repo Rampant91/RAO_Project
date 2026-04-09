@@ -3,6 +3,8 @@ using Client_App.Commands.SyncCommands;
 using Client_App.ViewModels.Controls;
 using Models.Collections;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 
@@ -11,6 +13,9 @@ namespace Client_App.ViewModels.Forms.Forms1;
 public class Form_13VM : BaseFormVM
 {
     public override string FormType => "1.3";
+
+    public ObservableCollection<OperationCodeItem> OperationCodes => OperationCodesProvider.AllOperationCodes;
+    public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm13();
 
     #region Constructors
 
