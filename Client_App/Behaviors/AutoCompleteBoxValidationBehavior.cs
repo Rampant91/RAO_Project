@@ -8,6 +8,7 @@ namespace Client_App.Behaviors;
 public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
 {
     private string? _originalValue;
+    private bool _valueSelectedFromDropDown;
 
     public static readonly StyledProperty<ICollection<string>?> ValidCodesProperty =
         Avalonia.AvaloniaProperty.Register<AutoCompleteBoxValidationBehavior, ICollection<string>?>(
@@ -45,14 +46,23 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
     private void OnGotFocus(object? sender, System.EventArgs e)
     {
         _originalValue = AssociatedObject?.Text;
+        _valueSelectedFromDropDown = false;
     }
 
     private void OnLostFocus(object? sender, System.EventArgs e)
     {
-        if (AssociatedObject == null || _originalValue == null)
+        if (AssociatedObject == null)
             return;
 
         string currentValue = AssociatedObject.Text ?? string.Empty;
+
+        // Если dropdown открыт, не проверяем (пользователь кликнул на список)
+        if (AssociatedObject.IsDropDownOpen)
+            return;
+
+        // Если значение было выбрано из списка, не проверяем
+        if (_valueSelectedFromDropDown)
+            return;
 
         // Если значение не изменилось, не проверяем
         if (currentValue == _originalValue)
@@ -72,5 +82,11 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
             return false;
 
         return ValidCodes.Contains(code);
+    }
+
+    // Метод для пометки, что значение было выбрано из списка
+    public void MarkValueSelectedFromDropDown()
+    {
+        _valueSelectedFromDropDown = true;
     }
 }

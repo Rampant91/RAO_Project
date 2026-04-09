@@ -427,6 +427,7 @@
                                         IsTextCompletionEnabled="True">
                                         <interactivity:Interaction.Behaviors>
                                             <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.1}" />
+                                            <local:AutoCompleteBoxSelectionChangedBehavior />
                                         </interactivity:Interaction.Behaviors>
                                         <AutoCompleteBox.ItemTemplate>
                                             <DataTemplate x:DataType="vm:OperationCodeItem">
