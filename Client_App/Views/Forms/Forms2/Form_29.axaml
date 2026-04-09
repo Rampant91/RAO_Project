@@ -26,7 +26,7 @@
     <Window.Resources>
         <converter:DataGridLengthToGridLengthConverter x:Key="LengthConverter" />
         <converter:NullToStringConverter x:Key="NullToStringConverter" />
-        <converter:DateConverter x:Key="DateConverter" />
+        <converter:DateToStringConverter x:Key="DateToStringConverter" />
         <converter:IsOperation41AndSingleSelectionConverter x:Key="Op41AndOneSelectedConverter" />
     </Window.Resources>
 

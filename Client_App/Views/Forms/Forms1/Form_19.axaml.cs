@@ -51,6 +51,9 @@ public partial class Form_19 : BaseWindow<Form_19VM>
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
+#if DEBUG
+        this.AttachDevTools();
+#endif
         WindowState = WindowState.Maximized;
     }
 
@@ -208,9 +211,9 @@ public partial class Form_19 : BaseWindow<Form_19VM>
                 .Where(x => x.State != EntityState.Unchanged);
 
             if (modifiedEntities.All(x => x.Entity is Report rep && rep.FormNum_DB != vm.FormType)
-                || !db.ChangeTracker.HasChanges() || vm.SkipChangeTacking)
+                || !db.ChangeTracker.HasChanges() || vm.SkipChangeTracking)
             {
-                if (vm.SkipChangeTacking) vm.SkipChangeTacking = false;
+                if (vm.SkipChangeTracking) vm.SkipChangeTracking = false;
                 desktop.MainWindow.WindowState = OwnerPrevState;
 
                 if (_isCloseConfirmed) //выход из обработчика события

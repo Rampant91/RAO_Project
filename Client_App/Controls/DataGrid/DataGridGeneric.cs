@@ -1755,7 +1755,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     Source = item,
                     Path = "GridLength",
                     Mode = BindingMode.TwoWay,
-                    Converter = new stringToGridLength_Converter()
+                    Converter = new StringToGridLength_Converter()
                 };
                 var column = new ColumnDefinition()
                 {

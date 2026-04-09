@@ -5,7 +5,9 @@ using Avalonia.Interactivity;
 using Avalonia.Xaml.Interactivity;
 using AvaloniaEdit.Utils;
 using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands.Change;
 using Models.Collections;
+using Models.Passports;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Client_App.Behaviors
 {
-    public class DataGridDoubleClickOpenFormBehavior : Behavior<DataGrid>
+    public class DataGridDoubleClickOpenBehavior : Behavior<DataGrid>
     {
         protected override void OnAttached()
         {
@@ -57,6 +59,11 @@ namespace Client_App.Behaviors
                         command = new NewChangeFormAsyncCommand();
 
                     command.Execute(report);
+                }
+                else if (AssociatedObject?.SelectedItem is PackagePassport passport)
+                {
+                    var command = new ChangePackagePassportAsyncCommand();
+                    command.AsyncExecute(passport.Id);
                 }
             }
 

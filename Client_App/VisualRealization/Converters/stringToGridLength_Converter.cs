@@ -5,7 +5,7 @@ using Avalonia.Data.Converters;
 
 namespace Client_App.VisualRealization.Converters;
 
-public class stringToGridLength_Converter : IValueConverter
+public class StringToGridLength_Converter : IValueConverter
 {
     public object Convert(object Value, Type tp, object Param, CultureInfo info)
     {

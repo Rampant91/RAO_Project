@@ -137,11 +137,10 @@ namespace Models.Forms.Form5
 
         #region Name (4)
 
-        public string Name_DB { get; set; } = "";
-
-
         [MaxLength(64)]
         [Column(TypeName = "varchar(64)")]
+        public string Name_DB { get; set; } = "";
+
         [NotMapped]
         public RamAccess<string> Name
         {
@@ -414,7 +413,6 @@ namespace Models.Forms.Form5
         #endregion
 
         #region Validation
-
         public override bool Object_Validation()
         {
             return !(RegNo.HasErrors || 
@@ -436,7 +434,6 @@ namespace Models.Forms.Form5
         #endregion
 
         #region IExcel
-
         public override void ExcelGetRow(ExcelWorksheet worksheet, int row)
         {
             NumberInOrder_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 1].Value), out var intValue)
@@ -447,25 +444,25 @@ namespace Models.Forms.Form5
             if (RegNo_DB.Count() > 5)
                 RegNo_DB = RegNo_DB[..5];
 
-            OKPO_DB = Convert.ToString(worksheet.Cells[row, 2].Value).Trim();
+            OKPO_DB = Convert.ToString(worksheet.Cells[row, 3].Value).Trim();
             if (OKPO_DB.Count() > 14)
                 OKPO_DB = OKPO_DB[..14];
 
-            Name_DB = Convert.ToString(worksheet.Cells[row, 2].Value).Trim();
+            Name_DB = Convert.ToString(worksheet.Cells[row, 4].Value).Trim();
             if (Name_DB.Count() > 64)
                 Name_DB = Name_DB[..64];
 
-            Recognizance_DB = Convert.ToString(worksheet.Cells[row, 2].Value).Trim();
+            Recognizance_DB = Convert.ToString(worksheet.Cells[row, 5].Value).Trim();
             if (Recognizance_DB.Count() > 256)
                 Recognizance_DB = Recognizance_DB[..256];
 
-            License_DB = Convert.ToString(worksheet.Cells[row, 2].Value).Trim();
+            License_DB = Convert.ToString(worksheet.Cells[row, 6].Value).Trim();
             if (License_DB.Count() > 256)
                 License_DB = License_DB[..256];
 
-            Practice_DB = Convert.ToString(worksheet.Cells[row, 2].Value).Trim();
+            Practice_DB = Convert.ToString(worksheet.Cells[row, 7].Value).Trim();
 
-            Note_DB = Convert.ToString(worksheet.Cells[row, 2].Value).Trim();
+            Note_DB = Convert.ToString(worksheet.Cells[row, 8].Value).Trim();
 
         }
 
@@ -491,7 +488,6 @@ namespace Models.Forms.Form5
         #endregion
 
         #region IDataGridColumn
-
         // Заглушка
         public override DataGridColumns GetColumnStructure(string param)
         {
@@ -501,7 +497,6 @@ namespace Models.Forms.Form5
         #endregion
 
         #region ConvertToTSVstring
-
         /// <summary>
         /// </summary>
         /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
