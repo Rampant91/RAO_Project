@@ -268,7 +268,7 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
     {
         var window = Desktop.Windows.First(x => x.Name is "1.1" or "1.2" or "1.3" or "1.4");
         var vm = (BaseFormVM)window.DataContext;
-        vm.SkipChangeTacking = true;
+        vm.SkipChangeTracking = true;
         var windowParam = new FormParameter
         {
             Parameter = new ObservableCollectionWithItemPropertyChanged<IKey>(new List<Report> { rep } ),

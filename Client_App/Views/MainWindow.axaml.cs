@@ -100,9 +100,9 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
     private void Init()
     {
         InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
+    #if DEBUG
+            this.AttachDevTools();
+    #endif
         this.WhenActivated(d => d(MainWindowVM.ShowDialog.RegisterHandler(DoShowDialogAsync)));
         this.WhenActivated(d => d(MainWindowVM.ShowMessage.RegisterHandler(DoShowDialogAsyncT)));
     }

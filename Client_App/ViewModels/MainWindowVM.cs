@@ -1,6 +1,7 @@
 ﻿using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.Calculator;
+using Client_App.Commands.AsyncCommands.Change;
 using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.Delete;
 using Client_App.Commands.AsyncCommands.ExcelExport;
@@ -475,7 +476,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                                                                             //  Радионуклиды, отсутствующие в справочнике
 
     public ICommand SetWhiteList { get; set; }
-    
+    public ICommand OpenPassportMenu { get; set; }
+
     #endregion
 
     #region Constructor
@@ -506,6 +508,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         OpenFile = new OpenFileAsyncCommand();
         OpenFolder = new OpenFolderAsyncCommand();
         SetWhiteList = new SetWhiteListNumAsyncCommand(this);
+        OpenPassportMenu = new OpenPassportMenuWindowAsyncCommand();
 
         Forms1TabControlVM = new Forms1TabControlVM(this);
         Forms2TabControlVM = new Forms2TabControlVM(this);

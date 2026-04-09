@@ -1,7 +1,10 @@
+using Client_App.Commands.AsyncCommands.Generate;
+using Client_App.Commands.AsyncCommands.Generate.GenerateForm4;
 using Client_App.ViewModels.Controls;
 using Models.Collections;
 using System;
 using System.Linq;
+using System.Windows.Input;
 
 namespace Client_App.ViewModels.Forms.Forms1;
 
@@ -10,7 +13,6 @@ public class Form_17VM : BaseFormVM
     public override string FormType => "1.7";
 
     #region Constructors
-
     public Form_17VM() { }
 
     public Form_17VM(Report report) : base(report) { }
@@ -37,34 +39,11 @@ public class Form_17VM : BaseFormVM
 
         SelectReportPopupVM = new SelectReportPopupVM(this);
     }
-
     #endregion
 
-    //public ObservableCollection<Form17> Form17List => new(FormList.Cast<Form17>());
-
-    //public ObservableCollection<Form17> SelectedForms17 => new(SelectedForms.Cast<Form17>());
-
-    //public Form17 SelectedForm17
-    //{
-    //    get => SelectedForm as Form17;
-    //    set
-    //    {
-    //        SelectedForm = value;
-    //        UpdateFormList();
-    //    }
-    //}
-
-    /*
-    #region UpdateFormList
-    public new async void UpdateFormList()
-    {
-        base.UpdateFormList();
-        
-        //OnPropertyChanged(nameof(Form17List));
-        //OnPropertyChanged(nameof(SelectedForms17));
-        //OnPropertyChanged(nameof(SelectedForm17));
-    }
-
+    #region Commands
+    public ICommand GenerateForm17 => new GenerateForm17AsyncCommand(this);
+    public ICommand GeneratePackagePassport => new GeneratePackagePassportAsyncCommand(this);
     #endregion
-    */
+
 }

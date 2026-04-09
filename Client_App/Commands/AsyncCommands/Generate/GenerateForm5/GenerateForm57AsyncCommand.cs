@@ -125,9 +125,9 @@ public class GenerateForm57AsyncCommand(BaseFormVM formVM) : BaseGenerateForm5
                     {
                         RegNo_DB = organization10.Master.RegNoRep.Value,
                         OKPO_DB = organization10.Master.OkpoRep.Value,
-                        Name_DB = !string.IsNullOrEmpty(organization10.Master_DB.Rows10[0].ShortJurLico_DB)
-                        ? organization10.Master_DB.Rows10[0].ShortJurLico_DB
-                        : organization10.Master_DB.Rows10[0].JurLico_DB
+                        Name_DB = !string.IsNullOrEmpty(organization10.Master_DB.Rows10[1].ShortJurLico_DB)
+                        ? organization10.Master_DB.Rows10[1].ShortJurLico_DB
+                        : organization10.Master_DB.Rows10[0].ShortJurLico_DB
                     });
             }
             foreach (var organization20 in organizations20)
@@ -141,9 +141,9 @@ public class GenerateForm57AsyncCommand(BaseFormVM formVM) : BaseGenerateForm5
                     {
                         RegNo_DB = organization20.Master.RegNoRep.Value,
                         OKPO_DB = organization20.Master.OkpoRep.Value,
-                        Name_DB = !string.IsNullOrEmpty(organization20.Master_DB.Rows20[0].ShortJurLico_DB)
-                        ?organization20.Master_DB.Rows20[0].ShortJurLico_DB 
-                        :organization20.Master_DB.Rows20[0].JurLico_DB
+                        Name_DB = !string.IsNullOrEmpty(organization20.Master_DB.Rows20[1].ShortJurLico_DB)
+                        ?organization20.Master_DB.Rows20[1].ShortJurLico_DB 
+                        :organization20.Master_DB.Rows20[0].ShortJurLico_DB
                     });
             }
 

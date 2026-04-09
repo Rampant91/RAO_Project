@@ -221,9 +221,9 @@ public partial class Form_54 : BaseWindow<Form_54VM>
                 .Where(x => x.State != EntityState.Unchanged);
 
             if (modifiedEntities.All(x => x.Entity is Report rep && rep.FormNum_DB != vm.FormType)
-                || !db.ChangeTracker.HasChanges() || vm.SkipChangeTacking)
+                || !db.ChangeTracker.HasChanges() || vm.SkipChangeTracking)
             {
-                if (vm.SkipChangeTacking) vm.SkipChangeTacking = false;
+                if (vm.SkipChangeTracking) vm.SkipChangeTracking = false;
                 desktop.MainWindow.WindowState = OwnerPrevState;
 
                 if (_isCloseConfirmed) //выход из обработчика события
@@ -425,7 +425,7 @@ public partial class Form_54 : BaseWindow<Form_54VM>
         var lst = vm.Report[vm.FormType].ToList<Form54>();
         foreach (var form in lst)
         {
-            if (string.IsNullOrWhiteSpace(form.TypeORI_DB)
+            if (form.TypeORI_DB is null
                 && form.VarietyORI_DB is null
                 && form.AggregateState_DB is null
                 && string.IsNullOrWhiteSpace(form.Radionuclids_DB)

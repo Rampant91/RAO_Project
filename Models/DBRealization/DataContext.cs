@@ -9,6 +9,7 @@ using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Models.Forms.Form4;
 using Models.Forms.Form5;
+using Models.Passports;
 
 namespace Models.DBRealization;
 
@@ -43,6 +44,7 @@ public class DataContext : DbContext
     public DbSet<Report> ReportCollectionDbSet { get; set; }
     public DbSet<Note> notes { get; set; }
 
+    #region Form 1.X
     public DbSet<Form10> form_10 { get; set; }
     public DbSet<Form11> form_11 { get; set; }
     public DbSet<Form12> form_12 { get; set; }
@@ -53,7 +55,9 @@ public class DataContext : DbContext
     public DbSet<Form17> form_17 { get; set; }
     public DbSet<Form18> form_18 { get; set; }
     public DbSet<Form19> form_19 { get; set; }
+    #endregion
 
+    #region Form 2.X
     public DbSet<Form20> form_20 { get; set; }
     public DbSet<Form21> form_21 { get; set; }
     public DbSet<Form22> form_22 { get; set; }
@@ -67,10 +71,14 @@ public class DataContext : DbContext
     public DbSet<Form210> form_210 { get; set; }
     public DbSet<Form211> form_211 { get; set; }
     public DbSet<Form212> form_212 { get; set; }
+    #endregion
 
-    public  DbSet<Form40> form_40 { get; set; }
+    #region Form 4.X
+    public DbSet<Form40> form_40 { get; set; }
     public DbSet<Form41> form_41 { get; set; }
+    #endregion
 
+    #region Form 5.X
     public DbSet<Form50> form_50 { get; set; }
     public DbSet<Form51> form_51 { get; set; }
     public DbSet<Form52> form_52 { get; set; }
@@ -81,11 +89,20 @@ public class DataContext : DbContext
     public DbSet<Form57> form_57 { get; set; }
     #endregion
 
+    #region PackagePassport
+    public DbSet<PackagePassport> package_passport { get; set; }
+    public DbSet<CharacteristicPrimaryPackage> characteristic_package { get; set; }
+    public DbSet<Radionuclid> radionuclid { get; set; }
+    #endregion
+    #endregion
+
     #region Load
 
     public void LoadTables()
     {
         notes.Load();
+
+        #region form_1.X
         form_10.Load();
         form_11.Load();
         form_12.Load();
@@ -96,7 +113,9 @@ public class DataContext : DbContext
         form_17.Load();
         form_18.Load();
         form_19.Load();
+        #endregion
 
+        #region form_2.X
         form_20.Load();
         form_21.Load();
         form_22.Load();
@@ -110,10 +129,14 @@ public class DataContext : DbContext
         form_210.Load();
         form_211.Load();
         form_212.Load();
+        #endregion
 
+        #region form_4.X
         form_40.Load();
         form_41.Load();
+        #endregion
 
+        #region form_5.X
         form_50.Load();
         form_51.Load();
         form_52.Load();
@@ -122,6 +145,13 @@ public class DataContext : DbContext
         form_55.Load();
         form_56.Load();
         form_57.Load();
+        #endregion
+
+        #region package_passport
+        package_passport.Load();
+        characteristic_package.Load();
+        radionuclid.Load();
+        #endregion
 
         ReportCollectionDbSet.Load();
         ReportsCollectionDbSet.Load();
@@ -133,6 +163,7 @@ public class DataContext : DbContext
         {
             await notes.LoadAsync();
 
+            #region form_1.X
             await form_10.LoadAsync();
             await form_11.LoadAsync();
             await form_12.LoadAsync();
@@ -143,7 +174,9 @@ public class DataContext : DbContext
             await form_17.LoadAsync();
             await form_18.LoadAsync();
             await form_19.LoadAsync();
+            #endregion
 
+            #region form_2.X
             await form_20.LoadAsync();
             try
             {
@@ -165,10 +198,14 @@ public class DataContext : DbContext
             await form_210.LoadAsync();
             await form_211.LoadAsync();
             await form_212.LoadAsync();
+            #endregion
 
+            #region form_4.X
             await form_40.LoadAsync();
             await form_41.LoadAsync();
+            #endregion
 
+            #region form_5.X
             await form_50.LoadAsync();
             await form_51.LoadAsync();
             await form_52.LoadAsync();
@@ -177,6 +214,13 @@ public class DataContext : DbContext
             await form_55.LoadAsync();
             await form_56.LoadAsync();
             await form_57.LoadAsync();
+            #endregion
+
+            #region package_passport
+            await package_passport.LoadAsync();
+            await characteristic_package.LoadAsync();
+            await radionuclid.LoadAsync();
+            #endregion
 
             await ReportCollectionDbSet.LoadAsync();
             await ReportsCollectionDbSet.LoadAsync();

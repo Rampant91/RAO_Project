@@ -323,7 +323,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
                     var row53 = Report.Rows53.FirstOrDefault(r =>
                         r.OperationCode_DB == row13.OperationCode_DB
-                        && r.TypeORI_DB == "1"
+                        && r.TypeORI_DB == 1
                         && r.VarietyORI_DB == null
                         && r.AggregateState_DB == 2
                         && r.ProviderOrRecieverOKPO_DB == row13.ProviderOrRecieverOKPO_DB);
@@ -370,7 +370,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                             Report.Rows53.Add(new Form53()
                             {
                                 OperationCode_DB = row13.OperationCode_DB,
-                                TypeORI_DB = "1",
+                                TypeORI_DB = 1,
                                 VarietyORI_DB = null,
                                 AggregateState_DB = 2,
                                 ProviderOrRecieverOKPO_DB = row13.ProviderOrRecieverOKPO_DB,
@@ -449,7 +449,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
                     var row53 = Report.Rows53.FirstOrDefault(r =>
                         r.OperationCode_DB == row14.OperationCode_DB
-                        && r.TypeORI_DB == "2"
+                        && r.TypeORI_DB == 2
                         && r.VarietyORI_DB == row14.Sort_DB
                         && r.AggregateState_DB == row14.AggregateState_DB
                         && r.ProviderOrRecieverOKPO_DB == row14.ProviderOrRecieverOKPO_DB);
@@ -499,7 +499,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                             Report.Rows53.Add(new Form53()
                             {
                                 OperationCode_DB = row14.OperationCode_DB,
-                                TypeORI_DB = "2",
+                                TypeORI_DB = 2,
                                 VarietyORI_DB = row14.Sort_DB,
                                 AggregateState_DB = row14.AggregateState_DB,
                                 ProviderOrRecieverOKPO_DB = row14.ProviderOrRecieverOKPO_DB,
