@@ -424,7 +424,24 @@
                                         Text="{Binding OperationCode.Value, Mode=TwoWay}"
                                         HorizontalAlignment="Stretch"
                                         MinimumPrefixLength="0"
-                                        IsTextCompletionEnabled="True" />
+                                        IsTextCompletionEnabled="True">
+                                        <interactivity:Interaction.Behaviors>
+                                            <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.1}" />
+                                        </interactivity:Interaction.Behaviors>
+                                        <AutoCompleteBox.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:OperationCodeItem">
+                                                <Grid ColumnDefinitions="Auto,*">
+                                                    <TextBlock Grid.Column="0" 
+                                                               Text="{Binding Code}" 
+                                                               Margin="0,0,10,0" 
+                                                               FontWeight="Bold"/>
+                                                    <TextBlock Grid.Column="1" 
+                                                               Text="{Binding Description}" 
+                                                               Foreground="Gray"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </AutoCompleteBox.ItemTemplate>
+                                    </AutoCompleteBox>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
