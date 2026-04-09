@@ -152,6 +152,7 @@ namespace Client_App.ViewModels.Passports
                 charcteristic.UpdateBetaGammaActivity();
                 charcteristic.UpdateTransuraniumActivity();
                 charcteristic.UpdateTritiumActivity();
+                charcteristic.UpdateTotalActivity();
             }
 
         }
@@ -218,7 +219,7 @@ namespace Client_App.ViewModels.Passports
                 }
             });
 
-            ExcelExportPackagePassport = new ExcelExportPackagePassport();
+            ExcelExportPackagePassport = new ExcelExportPackagePassportPrikaz();
         }
 
         #endregion

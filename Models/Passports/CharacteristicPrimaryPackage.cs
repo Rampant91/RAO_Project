@@ -340,7 +340,6 @@ namespace Models.Passports
         public void UpdateTransuraniumActivity()
         {
             OnPropertyChanged(nameof(TransuraniumActivity));
-            OnPropertyChanged(nameof(TotalActivity));
         }
         #endregion
 
@@ -361,7 +360,6 @@ namespace Models.Passports
         public void UpdateAlphaActivity()
         {
             OnPropertyChanged(nameof(AlphaActivity));
-            OnPropertyChanged(nameof(TotalActivity));
         }
         #endregion
 
@@ -382,7 +380,6 @@ namespace Models.Passports
         public void UpdateBetaGammaActivity()
         {
             OnPropertyChanged(nameof(BetaGammaActivity));
-            OnPropertyChanged(nameof(TotalActivity));
         }
         #endregion
 
@@ -403,7 +400,6 @@ namespace Models.Passports
         public void UpdateTritiumActivity()
         {
             OnPropertyChanged(nameof(TritiumActivity));
-            OnPropertyChanged(nameof(TotalActivity));
         }
         #endregion
 
@@ -419,9 +415,13 @@ namespace Models.Passports
                 result += BetaGammaActivity;
                 result += TritiumActivity;
 
-                result *= PrimaryPackageMass * 1000;
+                result *= Passport.RaoMass * 1000;
                 return result;
             }
+        }
+        public void UpdateTotalActivity()
+        {
+            OnPropertyChanged(nameof(TotalActivity));
         }
 
         #endregion

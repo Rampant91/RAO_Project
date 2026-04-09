@@ -578,6 +578,10 @@ namespace Models.Passports
             {
                 _raoMass = value;
                 ValidatePostiveDouble(nameof(RaoMass), _raoMass);
+                foreach (var characteristic in ContentCharacteristics)
+                {
+                    characteristic.UpdateTotalActivity();
+                }
                 OnPropertyChanged();
             }
         }

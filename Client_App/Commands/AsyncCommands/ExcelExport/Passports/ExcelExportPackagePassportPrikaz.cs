@@ -1,0 +1,509 @@
+﻿using Avalonia.Controls;
+using Avalonia.Threading;
+using Client_App.Controls.DataGrid;
+using Client_App.Views.ProgressBar;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
+using Models.DBRealization;
+using Models.Passports;
+using OfficeOpenXml;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
+{
+    public class ExcelExportPackagePassportPrikaz : ExcelBaseAsyncCommand
+    {
+        int offset;
+        public override bool CanExecute(object? parameter) => true;
+
+        /// <summary>
+        /// Выгрузка паспорта на упаковку в Excel
+        /// </summary>
+        /// <param name="parameter">В качестве параметра допускается или сам паспорт на упаковку(PackagePassport), или его Id</param>
+        /// <returns></returns>
+        public override async Task AsyncExecute(object? parameter)
+        {
+            offset = 0;
+            var dbm = StaticConfiguration.DBModel;
+            PackagePassport passport;
+
+            if (parameter is PackagePassport)
+            {
+                passport = (PackagePassport)parameter;
+            }
+            else if (parameter is int passportId
+                && dbm.package_passport.Any(pas => pas.Id == passportId))
+            {
+                passport = dbm.package_passport
+                    .Include(passport => passport.ContentCharacteristics)
+                    .FirstOrDefault(pas => pas.Id == passportId);
+            }
+            else return;
+
+            var cts = new CancellationTokenSource();
+            ExportType = "Для_печати";
+            var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
+            var progressBarVM = progressBar.AnyTaskProgressBarVM;
+
+            progressBarVM.SetProgressBar(5, "Определение имени файла");
+            var fileName = await GetFileName(passport, cts);
+
+            progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
+            var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+
+            progressBarVM.SetProgressBar(15, "Создание временной БД", "Выгрузка отчёта для печати", ExportType);
+            var tmpDbPath = await CreateTempDataBase(progressBar, cts);
+
+            progressBarVM.SetProgressBar(70, "Инициализация Excel пакета");
+            using var excelPackage = await InitializePassportExcelPackage(fullPath);
+
+            progressBarVM.SetProgressBar(80, "Выгрузка данных");
+            await FillHeader(excelPackage, passport);
+
+            progressBarVM.SetProgressBar(82, "Выгрузка данных");
+            await FillFooter(excelPackage, passport);
+
+            progressBarVM.SetProgressBar(85, "Выгрузка данных");
+            await FillTable1(excelPackage, passport);
+
+            progressBarVM.SetProgressBar(88, "Выгрузка данных");
+            await FillTable2(excelPackage, passport);
+
+
+
+            progressBarVM.SetProgressBar(90, "Сохранение");
+            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+
+            progressBarVM.SetProgressBar(95, "Очистка временных данных");
+            try
+            {
+                File.Delete(tmpDbPath);
+            }
+            catch
+            {
+                // ignored
+            }
+
+            progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+            GC.Collect();
+            await progressBar.CloseAsync();
+        }
+
+
+        #region FillHeader
+        /// <summary>
+        /// Заполняет .xlsx строчками данных.
+        /// </summary>
+        /// <param name="excelPackage">Пакет Excel.</param>
+        /// <param name="rep">Отчёт.</param>
+        /// <returns>Успешно выполненная Task.</returns>
+        private Task FillHeader(ExcelPackage excelPackage, PackagePassport passport)
+        {
+            var worksheet = excelPackage.Workbook.Worksheets[0];
+
+            worksheet.Cells["H3"].Value = passport.PassportNum;
+
+            worksheet.Cells["L3"].Value = passport.PassportDate;
+            worksheet.Cells["L3"].Style.Numberformat.Format = "dd.mm.yyyy";
+
+            worksheet.Cells["I5"].Value = passport.PackageType;
+            worksheet.Cells["I7"].Value = passport.CorrectionNumber;
+            worksheet.Cells["C9"].Value = passport.StatusRaoCode;
+            worksheet.Cells["G9"].Value = passport.TechSpecification;
+            worksheet.Cells["M9"].Value = passport.NameRao;
+            worksheet.Cells["O9"].Value = passport.ClassRao;
+
+            worksheet.Cells["H11"].Value = passport.RaoDisposalNum;
+
+            worksheet.Cells["J11"].Value = passport.RaoDisposalDate;
+            worksheet.Cells["J11"].Style.Numberformat.Format = "dd.mm.yyyy";
+
+            worksheet.Cells["H12"].Value = passport.PackageIdCode;
+            worksheet.Cells["M12"].Value = passport.TypeAndIdPuod;
+            worksheet.Cells["H14"].Value = passport.Owner;
+            worksheet.Cells["N14"].Value = passport.OwnerOkpo;
+            worksheet.Cells["H15"].Value = passport.Manufacturer;
+            worksheet.Cells["N15"].Value = passport.ManufacturerOkpo;
+
+            worksheet.Cells["H16"].Value = passport.CertificateConformityNum;
+
+            worksheet.Cells["O16"].Value = passport.ManufactureDate;
+            worksheet.Cells["O16"].Style.Numberformat.Format = "dd.mm.yyyy";
+
+            worksheet.Cells["H17"].Value = passport.CertificateConformityStartPeriod; 
+            worksheet.Cells["H17"].Style.Numberformat.Format = "dd.mm.yyyy";
+
+            worksheet.Cells["J17"].Value = passport.CertificateConformityEndPeriod;
+            worksheet.Cells["J17"].Style.Numberformat.Format = "dd.mm.yyyy";
+
+            worksheet.Cells["H18"].Value = passport.ServiceLife;
+
+            worksheet.Cells["O18"].Value = passport.TransferDate;
+            worksheet.Cells["O18"].Style.Numberformat.Format = "dd.mm.yyyy";
+
+            //ExcelPrintTitleExport(rep.FormNum_DB, worksheetTitle, rep, rep.Reports.Master);
+
+
+            //ExcelPrintSubMainExport(rep.FormNum_DB, worksheetMain, rep);
+
+            //if (worksheetTitle.Name is "1.0" or "2.0" or "Форма 5.0" && (worksheetMain.Name is not "Форма 5.7"))
+            //    ExcelPrintNotesExport(rep.FormNum_DB, worksheetMain, rep);
+
+
+            //ExcelPrintRowsExport(rep.FormNum_DB, worksheetMain, rep);
+
+            return Task.CompletedTask;
+        }
+        #endregion
+
+        #region FillTable1
+
+        /// <summary>
+        /// Заполняет .xlsx строчками данных.
+        /// </summary>
+        /// <param name="excelPackage">Пакет Excel.</param>
+        /// <param name="rep">Отчёт.</param>
+        /// <returns>Успешно выполненная Task.</returns>
+        private Task FillTable1(ExcelPackage excelPackage, PackagePassport passport)
+        {
+            var worksheet = excelPackage.Workbook.Worksheets[0];
+
+            var rowHeight = 2;
+            //Заполняем подтаблицу количество и характеристик первичных упаковок
+
+            // Начинаем с 1 индекса, так как 0 индекс во второй таблице выделен под общую упаковку
+            // И только после идет описание первичных упаковок
+            for (int i= 1; i< passport.ContentCharacteristics.Count; i++)
+            {
+                var primaryPackage = passport.ContentCharacteristics[i];
+
+                if( i > 2)
+                {
+                    worksheet.InsertRow(25 + i - 1, 1);
+                    rowHeight++;
+                    offset++;
+                }
+
+                worksheet.Cells[$"B{25 + i - 1}"].Value = primaryPackage.PackageType;
+                worksheet.Cells[$"C{25 + i - 1}"].Value = primaryPackage.PackageNum;
+                worksheet.Cells[$"D{25 + i - 1}"].Value = primaryPackage.PrimaryPackageQuantity;
+                worksheet.Cells[$"E{25 + i - 1}"].Value = primaryPackage.PrimaryPackageVolume;
+                worksheet.Cells[$"F{25 + i - 1}"].Value = primaryPackage.PrimaryPackageMass;
+            }
+            worksheet.Cells[$"D{25 + rowHeight}"].Value = passport.ContentCharacteristics.Sum(c => c.PrimaryPackageQuantity);
+            worksheet.Cells[$"E{25 + rowHeight}"].Value = passport.ContentCharacteristics.Sum(c => c.PrimaryPackageVolume);
+            worksheet.Cells[$"F{25 + rowHeight}"].Value = passport.ContentCharacteristics.Sum(c => c.PrimaryPackageMass);
+
+            worksheet.Cells["A25"].Value = passport.DisposalMethod;
+
+            worksheet.Cells["G25"].Value = passport.MatrixMaterialType;
+            worksheet.Cells["G25"].Style.WrapText = true;
+
+            worksheet.Cells["H25"].Value = passport.FillingWasteDate;
+            worksheet.Cells["H25"].Style.Numberformat.Format = "dd.mm.yyyy";
+
+            worksheet.Cells["I25"].Value = passport.Diameter;
+            worksheet.Cells["J25"].Value = passport.Height;
+            worksheet.Cells["K25"].Value = passport.Length;
+            worksheet.Cells["L25"].Value = passport.Width;
+
+            worksheet.Cells["M25"].Value = passport.PackageMass;
+            worksheet.Cells["N25"].Value = passport.RaoMass;
+            worksheet.Cells["M26"].Value = passport.PackageVolume;
+            worksheet.Cells["N26"].Value = passport.RaoVolume;
+
+            worksheet.Cells["O25"].Value = passport.RadiationDoseRate10cm;
+            worksheet.Cells["P25"].Value = passport.RadiationDoseRate1m;
+            worksheet.Cells["Q25"].Value = passport.LevelNonFixedPollutionAlpha;
+            worksheet.Cells["R25"].Value = passport.LevelNonFixedPollutionBetaGamma;
+            worksheet.Cells["S25"].Value = passport.HeatOutput;
+
+
+            worksheet.Cells[$"A25:A{25 + rowHeight - 1}"].Merge = true;
+            worksheet.Cells[$"G25:G{25 + rowHeight - 1}"].Merge = true;
+            worksheet.Cells[$"H25:H{25 + rowHeight - 1}"].Merge = true;
+            worksheet.Cells[$"I25:I{25 + rowHeight - 1}"].Merge = true;
+            worksheet.Cells[$"J25:J{25 + rowHeight - 1}"].Merge = true;
+            worksheet.Cells[$"K25:K{25 + rowHeight - 1}"].Merge = true;
+            worksheet.Cells[$"L25:L{25 + rowHeight - 1}"].Merge = true;
+            worksheet.Cells[$"M26:M{25 + rowHeight - 1}"].Merge = true;
+            worksheet.Cells[$"N26:N{25 + rowHeight - 1}"].Merge = true;
+            worksheet.Cells[$"O25:O{25 + rowHeight - 1}"].Merge = true;
+            worksheet.Cells[$"P25:P{25 + rowHeight - 1}"].Merge = true;
+            worksheet.Cells[$"Q25:Q{25 + rowHeight - 1}"].Merge = true;
+            worksheet.Cells[$"R25:R{25 + rowHeight - 1}"].Merge = true;
+            worksheet.Cells[$"S25:S{25 + rowHeight - 1}"].Merge = true;
+
+
+            var cells = worksheet.Cells[$"A20:S{25+rowHeight}"];
+            foreach (var cell in cells)
+            {
+                var btm = cell.Style.Border.Bottom;
+                var lft = cell.Style.Border.Left;
+                var rgt = cell.Style.Border.Right;
+                var top = cell.Style.Border.Top;
+
+                btm.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                btm.Color.SetColor(255, 0, 0, 0);
+                lft.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                lft.Color.SetColor(255, 0, 0, 0);
+                rgt.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                rgt.Color.SetColor(255, 0, 0, 0);
+                top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                top.Color.SetColor(255, 0, 0, 0);
+            }
+
+            //ExcelPrintTitleExport(rep.FormNum_DB, worksheetTitle, rep, rep.Reports.Master);
+
+
+            //ExcelPrintSubMainExport(rep.FormNum_DB, worksheetMain, rep);
+
+            //if (worksheetTitle.Name is "1.0" or "2.0" or "Форма 5.0" && (worksheetMain.Name is not "Форма 5.7"))
+            //    ExcelPrintNotesExport(rep.FormNum_DB, worksheetMain, rep);
+
+
+            //ExcelPrintRowsExport(rep.FormNum_DB, worksheetMain, rep);
+
+            return Task.CompletedTask;
+        }
+
+        #endregion
+
+        #region FillTable2
+
+        /// <summary>
+        /// Заполняет .xlsx строчками данных.
+        /// </summary>
+        /// <param name="excelPackage">Пакет Excel.</param>
+        /// <param name="rep">Отчёт.</param>
+        /// <returns>Успешно выполненная Task.</returns>
+        private Task FillTable2(ExcelPackage excelPackage, PackagePassport passport)
+        {
+            var index = 30 + offset;
+            var characteristics = passport.ContentCharacteristics;
+            var worksheet = excelPackage.Workbook.Worksheets[0];
+
+            for (int i = 0; i < characteristics.Count; i++)
+            {
+                ////Если нет радионуклидов, то все равно нужно вписать какое то значения,
+                ////иначе границы ячеек не отрисуются
+                //if (radCounts == 0)
+                //{
+                //    worksheet.Cells[$"M{index}"].Value = "";
+                //    worksheet.Cells[$"N{index}"].Value = "";
+                //}
+                var start = index + 1;
+                worksheet.InsertRow(start, 5);
+                index +=5;
+                worksheet.Cells[$"O{start}:P{start}"].Merge = true;
+                worksheet.Cells[$"O{start}:P{start}"].Value = "долгоживущие";
+
+                worksheet.Cells[$"O{start + 1}:P{start + 1}"].Merge = true;
+                worksheet.Cells[$"O{start + 1}:P{start + 1}"].Value = "трансурановые";
+
+                worksheet.Cells[$"O{start + 2}:P{start + 2}"].Merge = true;
+                worksheet.Cells[$"O{start + 2}:P{start + 2}"].Value = "альфа-изл. (за искл. т/уран.)";
+
+                worksheet.Cells[$"O{start + 3}:P{start + 3}"].Merge = true;
+                worksheet.Cells[$"O{start + 3}:P{start + 3}"].Value = "бета/гамма- изл.";
+
+                worksheet.Cells[$"O{start + 4}:P{start + 4}"].Merge = true;
+                worksheet.Cells[$"O{start + 4}:P{start + 4}"].Value = "тритий";
+
+
+                if (i == 0)
+                {
+                    worksheet.Cells[$"A{start + 1}:C{start + 1}"].Merge = true;
+                    worksheet.Cells[$"A{start + 1}:C{start + 1}"].Value = $"{passport.PackageIdCode}";
+
+                    worksheet.Cells[$"A{start + 2}:C{start + 2}"].Merge = true;
+                    worksheet.Cells[$"A{start + 2}:C{start + 2}"].Value = $"{passport.PackageType}";
+
+                    worksheet.Cells[$"A{start + 3}"].Value = "№";
+                    worksheet.Cells[$"B{start + 3}:C{start + 3}"].Merge = true;
+                    if (passport.PackageIdCode.Split('/').Count() >=2)
+                        worksheet.Cells[$"B{start + 3}:C{start + 3}"].Value = $"{passport.PackageIdCode.Split('/')[1]}";
+                }
+                else if (i > 0)
+                {
+                    worksheet.Cells[$"A{start + 1}:C{start + 1}"].Merge = true;
+                    worksheet.Cells[$"A{start + 1}:C{start + 1}"].Value = $"{characteristics[i].PackageType}";
+
+                    worksheet.Cells[$"A{start + 2}"].Value = "№";
+                    worksheet.Cells[$"B{start + 2}:C{start + 2}"].Merge = true;
+                    
+                    worksheet.Cells[$"B{start + 2}:C{start + 2}"].Value = $"{characteristics[i].PackageNum}";
+                }
+
+                var radionuclids = characteristics[i].RadionuclidsList;
+                var radCounts = radionuclids.Count;
+                for (int j = 0; j < radCounts; j++)
+                {
+
+                    if (j >= 5)
+                    {
+                        worksheet.InsertRow(index + 1, 1);
+                        index++;
+                    }
+
+                    worksheet.Cells[$"M{start + j}"].Value = radionuclids[j].Name;
+                    worksheet.Cells[$"N{start + j}"].Value = radionuclids[j].Activity;
+                }
+
+                worksheet.Cells[$"D{start}"].Value = characteristics[i].ClassRao;
+                worksheet.Cells[$"E{start}"].Value = "класс";
+
+                worksheet.Cells[$"D{start + 1}:E{index}"].Merge = true;
+                worksheet.Cells[$"D{start + 1}:E{index}"].Value = characteristics[i].CodeRao;
+
+                worksheet.Cells[$"F{start}:G{index}"].Merge = true;
+                worksheet.Cells[$"F{start}:G{index}"].Value = characteristics[i].PhysicochemicalForm;
+
+                worksheet.Cells[$"H{start}:J{index}"].Merge = true;
+                worksheet.Cells[$"H{start}:J{index}"].Value = characteristics[i].MorphologicalComposition;
+
+                worksheet.Cells[$"K{start}:L{index}"].Merge = true;
+                worksheet.Cells[$"K{start}:L{index}"].Value = characteristics[i].Flammability;
+
+                worksheet.Cells[$"Q{start}"].Value = characteristics[i].LongLivingActivity;
+                worksheet.Cells[$"Q{start + 1}"].Value = characteristics[i].TransuraniumActivity;
+                worksheet.Cells[$"Q{start + 2}"].Value = characteristics[i].AlphaActivity;
+                worksheet.Cells[$"Q{start + 3}"].Value = characteristics[i].BetaGammaActivity;
+                worksheet.Cells[$"Q{start + 4}"].Value = characteristics[i].TritiumActivity;
+
+                worksheet.Cells[$"R{start}:R{index}"].Merge = true;
+                worksheet.Cells[$"R{start}:R{index}"].Value = characteristics[i].TotalActivity;
+
+                worksheet.Cells[$"S{start}:S{index}"].Merge = true;
+                worksheet.Cells[$"S{start}:S{index}"].Value = characteristics[i].NuclearHazardousFissileNuclides;
+
+                var cells = worksheet.Cells[$"D{start}:S{index}"];
+                foreach (var cell in cells)
+                {
+                    var btm = cell.Style.Border.Bottom;
+                    var lft = cell.Style.Border.Left;
+                    var rgt = cell.Style.Border.Right;
+                    var tp = cell.Style.Border.Top;
+                    btm.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    btm.Color.SetColor(255, 0, 0, 0);
+                    lft.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    lft.Color.SetColor(255, 0, 0, 0);
+                    rgt.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    rgt.Color.SetColor(255, 0, 0, 0);
+                    tp.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    tp.Color.SetColor(255, 0, 0, 0);
+                }
+
+                worksheet.Cells[$"A{start}:C{start}"].Merge = true;
+                if( i ==0)
+                    worksheet.Cells[$"A{start + 4}:C{index}"].Merge = true;
+                else
+                    worksheet.Cells[$"A{start+3}:C{index}"].Merge = true;
+
+                cells = worksheet.Cells[$"A{start}:C{index}"];
+                var bottom = cells.Style.Border.Bottom;
+                var left = cells.Style.Border.Left;
+                var right = cells.Style.Border.Right;
+                var top = cells.Style.Border.Top;
+                bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                bottom.Color.SetColor(255, 0, 0, 0);
+                left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                left.Color.SetColor(255, 0, 0, 0);
+                right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                right.Color.SetColor(255, 0, 0, 0);
+                top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                top.Color.SetColor(255, 0, 0, 0);
+            }
+
+
+            return Task.CompletedTask;
+        }
+
+        #endregion
+
+        #region FillFooter
+
+        /// <summary>
+        /// Заполняет .xlsx строчками данных.
+        /// </summary>
+        /// <param name="excelPackage">Пакет Excel.</param>
+        /// <param name="rep">Отчёт.</param>
+        /// <returns>Успешно выполненная Task.</returns>
+        private Task FillFooter(ExcelPackage excelPackage, PackagePassport passport)
+        {
+            var worksheet = excelPackage.Workbook.Worksheets[0];
+
+            worksheet.Cells["A34"].Value = passport.Notes;
+            worksheet.Cells["A34"].Style.WrapText = true;
+
+
+            worksheet.Cells["F37"].Value = passport.ResponsibleTransfer;
+            worksheet.Cells["K37"].Value = passport.GradeAuthorizedPersonTransfer;
+            worksheet.Cells["N37"].Value = passport.FioAuthorizedPersonTransfer;
+
+            worksheet.Cells["F40"].Value = passport.ResponsibleReception;
+            worksheet.Cells["K40"].Value = passport.GradeAuthorizedPersonReception;
+            worksheet.Cells["N40"].Value = passport.FioAuthorizedPersonReception;
+
+
+            return Task.CompletedTask;
+        }
+
+        #endregion
+
+        #region GetFileName
+        private async Task<string> GetFileName(PackagePassport passport, CancellationTokenSource cts,
+            AnyTaskProgressBar? progressBar = null)
+        {
+            var fileName = $"PRIKAZ" +
+                $"_{ExportType}" +
+                $"_{passport.PassportNum}" +
+                $"_{passport.PassportDate}" +
+                $"_{passport.PackageType}" +
+                $"_{passport.CorrectionNumber}" +
+                $"_{Assembly.GetExecutingAssembly().GetName().Version}";
+
+            return fileName;
+        }
+
+        #endregion
+
+        #region InitializePassportExcelPackage
+
+        /// <summary>
+        /// Инициализация Excel пакета.
+        /// </summary>
+        /// <param name="fullPath">Полный путь до .xlsx файла.</param>
+        /// <returns>Пакет Excel.</returns>
+        private protected Task<ExcelPackage> InitializePassportExcelPackage(string fullPath)
+        {
+#if DEBUG
+            var appFolderPath = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Excel", $"prikaz_package_passport.xlsx");
+#else
+            var appFolderPath = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Excel", $"prikaz_package_passport.xlsx");
+#endif
+            if (!File.Exists(appFolderPath))
+            {
+                throw new FileNotFoundException($"Шаблон Excel не найден: {appFolderPath}");
+            }
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            ExcelPackage excelPackage = new(new FileInfo(fullPath), new FileInfo(appFolderPath));
+
+            var worksheet = excelPackage.Workbook.Worksheets[0];
+
+            worksheet.Cells.Style.ShrinkToFit = true;
+            return Task.FromResult(excelPackage);
+        }
+
+        #endregion
+    }
+}

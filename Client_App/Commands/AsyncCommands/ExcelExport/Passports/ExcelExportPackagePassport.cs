@@ -145,7 +145,6 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
         #endregion
 
         #region FillHeader
-
         /// <summary>
         /// Заполняет .xlsx строчками данных.
         /// </summary>
@@ -207,7 +206,6 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
 
             return Task.CompletedTask;
         }
-
         #endregion
 
         #region FillTable1
@@ -344,7 +342,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
                     worksheet.Cells[$"K{offset}"].Value = radionuclids[j].Name;
                     worksheet.Cells[$"L{offset}"].Value = radionuclids[j].Activity;
 
-                    if (j != radCounts - 1)
+                    if (j < radCounts - 1)
                     {
                         worksheet.InsertRow(offset + 1, 1);
                         offset++;

@@ -82,6 +82,7 @@ namespace Client_App.Behaviors
                 Radionuclid.Characteristic.UpdateLongLivingActivity();
                 Radionuclid.Characteristic.UpdateTransuraniumActivity();
                 Radionuclid.Characteristic.UpdateTritiumActivity();
+                Radionuclid.Characteristic.UpdateTotalActivity();
             });
 
         }

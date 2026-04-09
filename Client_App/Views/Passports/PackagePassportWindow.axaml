@@ -152,9 +152,10 @@
 								 Grid.Row="0"
 								 Grid.Column="1"
 								 MinWidth="300"
+								 MaxLength="3"
 								 Text="{Binding Passport.CorrectionNumber}">
 							<interactivity:Interaction.Behaviors>
-								<local:TextBoxDigitValidationBehavior/>
+								<local:TextBoxWhiteListValidationBehavior WhiteListRegex="^[0-9]+$"/>
 							</interactivity:Interaction.Behaviors>
 						</TextBox>
 						
@@ -167,6 +168,7 @@
 				</StackPanel>
 
 				<Expander
+					IsTabStop="False"
 					Margin="5"
 					Grid.Row="1"
 					Header="Основная информация"
@@ -185,6 +187,10 @@
 
 							<TextBox MinWidth="105" Margin="5"
 								 Text="{Binding Passport.StatusRaoCode}" MaxLength="14">
+								
+								<interactivity:Interaction.Behaviors>
+									<local:TextBoxWhiteListValidationBehavior WhiteListRegex="^[0-9_]+$"/>
+								</interactivity:Interaction.Behaviors>
 							</TextBox>
 						</StackPanel>
 
@@ -206,7 +212,7 @@
 						<TextBox Grid.Row="0" Grid.Column="3" Margin="5"
 								 Text="{Binding Passport.ClassRao}" MaxLength="1">
 							<interactivity:Interaction.Behaviors>
-								<local:TextBoxDigitValidationBehavior/>
+								<local:TextBoxWhiteListValidationBehavior WhiteListRegex="^[1-6]+$"/>
 							</interactivity:Interaction.Behaviors>
 						</TextBox>
 						
@@ -272,9 +278,10 @@
 								   HorizontalAlignment="Center"/>
 						
 						<TextBox Grid.Row="5" Grid.Column="3" Margin="5"
-								 Text="{Binding Passport.OwnerOkpo}">
+								 Text="{Binding Passport.OwnerOkpo}" 
+								 MaxLength="14">
 							<interactivity:Interaction.Behaviors>
-								<local:TextBoxDigitValidationBehavior/>
+								<local:TextBoxWhiteListValidationBehavior WhiteListRegex="^[0-9_]+$"/>
 							</interactivity:Interaction.Behaviors>
 						</TextBox>
 						<TextBlock Margin="5,-5,5,0" Grid.Row="6" Grid.Column="3"
@@ -296,9 +303,10 @@
 								   HorizontalAlignment="Center"/>
 						
 						<TextBox Grid.Row="7" Grid.Column="3" Margin="5"
-								 Text="{Binding Passport.ManufacturerOkpo}">
+								 Text="{Binding Passport.ManufacturerOkpo}" 
+								 MaxLength="14">
 							<interactivity:Interaction.Behaviors>
-								<local:TextBoxDigitValidationBehavior/>
+								<local:TextBoxWhiteListValidationBehavior WhiteListRegex="^[0-9_]+$"/>
 							</interactivity:Interaction.Behaviors>
 						</TextBox>
 						<TextBlock Margin="5,-5,5,0" Grid.Row="8" Grid.Column="3"
@@ -365,7 +373,7 @@
 						<TextBox Grid.Row="11" Grid.Column="1" Margin="5"
 								 Text="{Binding Passport.ServiceLife}">
 							<interactivity:Interaction.Behaviors>
-								<local:TextBoxDigitValidationBehavior/>
+								<local:TextBoxWhiteListValidationBehavior WhiteListRegex="^[0-9]+$"/>
 							</interactivity:Interaction.Behaviors>
 						</TextBox>
 						<TextBlock Grid.Row="11" Grid.Column="2" Margin="5"
@@ -385,6 +393,7 @@
 
 				<!--Таблица 1-->
 				<Expander
+					IsTabStop="False"
 					Grid.Row="2"
 					Header="Общая характеристика упаковки РАО"
 					IsExpanded="True"
@@ -840,7 +849,7 @@
 										Text="{Binding Passport.Diameter}">
 										<interactivity:Interaction.Behaviors>
 											<local:SelectAllOnFocusBehavior/>
-											<local:TextBoxDigitValidationBehavior/>
+											<local:TextBoxWhiteListValidationBehavior WhiteListRegex="^[0-9]+$"/>
 										</interactivity:Interaction.Behaviors>
 									</TextBox>
 								</Border>
@@ -850,7 +859,7 @@
 										Text="{Binding Passport.Height}">
 										<interactivity:Interaction.Behaviors>
 											<local:SelectAllOnFocusBehavior/>
-											<local:TextBoxDigitValidationBehavior/>
+											<local:TextBoxWhiteListValidationBehavior WhiteListRegex="^[0-9]+$"/>
 										</interactivity:Interaction.Behaviors>
 									</TextBox>
 								</Border>
@@ -860,7 +869,7 @@
 										Text="{Binding Passport.Length}" >
 										<interactivity:Interaction.Behaviors>
 											<local:SelectAllOnFocusBehavior/>
-											<local:TextBoxDigitValidationBehavior/>
+											<local:TextBoxWhiteListValidationBehavior WhiteListRegex="^[0-9]+$"/>
 										</interactivity:Interaction.Behaviors>
 									</TextBox>
 								</Border>
@@ -870,7 +879,7 @@
 										Text="{Binding Passport.Width}" >
 										<interactivity:Interaction.Behaviors>
 											<local:SelectAllOnFocusBehavior/>
-											<local:TextBoxDigitValidationBehavior/>
+											<local:TextBoxWhiteListValidationBehavior WhiteListRegex="^[0-9]+$"/>
 										</interactivity:Interaction.Behaviors>
 									</TextBox>
 								</Border>
@@ -1164,7 +1173,7 @@
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
 											<TextBox Text="{Binding ClassRao, Mode=TwoWay}">
 												<interactivity:Interaction.Behaviors>
-													<local:TextBoxDigitValidationBehavior/>
+													<local:TextBoxWhiteListValidationBehavior WhiteListRegex="^[0-9]+$"/>
 												</interactivity:Interaction.Behaviors>
 											</TextBox>
 										</DataTemplate>
@@ -1185,7 +1194,7 @@
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
 											<TextBox Text="{Binding CodeRao, Mode=TwoWay}">
 												<interactivity:Interaction.Behaviors>
-													<local:TextBoxDigitValidationBehavior/>
+													<local:TextBoxWhiteListValidationBehavior WhiteListRegex="^[0-9]+$"/>
 												</interactivity:Interaction.Behaviors>
 											</TextBox>
 										</DataTemplate>
@@ -1259,7 +1268,7 @@
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
 											<TextBox Text="{Binding PrimaryPackageQuantity, Mode=TwoWay}">
 												<interactivity:Interaction.Behaviors>
-													<local:TextBoxDigitValidationBehavior/>
+													<local:TextBoxWhiteListValidationBehavior WhiteListRegex="^[0-9]+$"/>
 												</interactivity:Interaction.Behaviors>
 											</TextBox>
 										</DataTemplate>
