@@ -1,4 +1,4 @@
-using Client_App.Commands.AsyncCommands.SourceTransmission;
+﻿using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.Commands.SyncCommands;
 using Client_App.ViewModels.Controls;
 using Models.Collections;
@@ -17,7 +17,8 @@ public class Form_12VM : BaseFormVM
     /// <summary>
     /// Справочник кодов операции для AutoCompleteBox с описаниями
     /// </summary>
-    public ObservableCollection<OperationCodeItem> OperationCodes => OperationCodesProvider.AllOperationCodes;
+    public ObservableCollection<OperationCodeItem> OperationCodes => 
+        new(OperationCodesProvider.AllOperationCodes.Where(x => OperationCodesProvider.GetValidCodesForForm12().Contains(x.Code)));
 
     /// <summary>
     /// Список допустимых кодов операции для валидации (только коды без описаний)

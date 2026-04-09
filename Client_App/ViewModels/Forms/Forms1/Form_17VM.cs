@@ -1,4 +1,4 @@
-using Client_App.ViewModels.Controls;
+﻿using Client_App.ViewModels.Controls;
 using Models.Collections;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,8 @@ public class Form_17VM : BaseFormVM
 {
     public override string FormType => "1.7";
 
-    public ObservableCollection<OperationCodeItem> OperationCodes => OperationCodesProvider.AllOperationCodes;
+    public ObservableCollection<OperationCodeItem> OperationCodes => 
+        new(OperationCodesProvider.AllOperationCodes.Where(x => OperationCodesProvider.GetValidCodesForForm17().Contains(x.Code)));
     public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm17();
 
     #region Constructors

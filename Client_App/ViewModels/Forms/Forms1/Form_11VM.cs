@@ -19,9 +19,10 @@ public class Form_11VM : BaseFormVM
     public override string FormType => "1.1";
 
     /// <summary>
-    /// Справочник кодов операции для AutoCompleteBox с описаниями
+    /// Справочник кодов операции для AutoCompleteBox с описаниями (только допустимые для формы)
     /// </summary>
-    public ObservableCollection<OperationCodeItem> OperationCodes => OperationCodesProvider.AllOperationCodes;
+    public ObservableCollection<OperationCodeItem> OperationCodes => 
+        new(OperationCodesProvider.AllOperationCodes.Where(x => OperationCodesProvider.GetValidCodesForForm11().Contains(x.Code)));
 
     /// <summary>
     /// Список допустимых кодов операции для валидации (только коды без описаний)

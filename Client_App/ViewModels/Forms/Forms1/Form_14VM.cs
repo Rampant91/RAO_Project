@@ -1,4 +1,4 @@
-using Client_App.Commands.AsyncCommands.SourceTransmission;
+﻿using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.Commands.SyncCommands;
 using Client_App.ViewModels.Controls;
 using Models.Collections;
@@ -14,7 +14,8 @@ public class Form_14VM : BaseFormVM
 {
     public override string FormType => "1.4";
 
-    public ObservableCollection<OperationCodeItem> OperationCodes => OperationCodesProvider.AllOperationCodes;
+    public ObservableCollection<OperationCodeItem> OperationCodes => 
+        new(OperationCodesProvider.AllOperationCodes.Where(x => OperationCodesProvider.GetValidCodesForForm14().Contains(x.Code)));
     public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm14();
 
     #region Constructors
