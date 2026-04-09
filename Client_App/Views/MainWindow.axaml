@@ -321,8 +321,7 @@
             </MenuItem>
 
 			<MenuItem Name="Passports"
-                      Header="Паспорта"
-                      IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
+                      Header="Паспорта">
 				<MenuItem Command="{Binding OpenPassportMenu}"
 						  Header="Открыть меню паспортов"/>
 		    </MenuItem>
