@@ -135,6 +135,7 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
                     .Take(RowsCountOrgs));
             }
             else
+            {
                 return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
                     .AsEnumerable()
                     .Where(x => x.DBObservable != null)
@@ -143,6 +144,7 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
                     .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
                     .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
                     .Take(RowsCountOrgs));
+            }
         }
     }
 

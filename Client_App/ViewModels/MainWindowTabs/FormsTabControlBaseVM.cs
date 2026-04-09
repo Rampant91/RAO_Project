@@ -1,4 +1,5 @@
 ﻿using Client_App.Commands.AsyncCommands;
+using Client_App.Resources.CustomComparers;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -382,6 +383,70 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
     public void UpdateReportsCollection()
     {
         OnPropertyChanged(nameof(ReportsCollection));
+    }
+
+    /// <summary>
+    /// Обновляет содержимое коллекции организаций без пересоздания объекта.
+    /// Сохраняет выбранную организацию.
+    /// </summary>
+    public void UpdateReportsCollectionWithoutReCreation()
+    {
+        // Получаем текущую коллекцию (не создаем новую)
+        var currentCollection = ReportsCollection;
+        if (currentCollection == null) return;
+
+        // Сохраняем ID выбранной организации
+        var selectedId = SelectedReports?.Master_DB?.Id;
+
+        // Получаем новые данные
+        var comparator = new CustomReportsComparer();
+        IEnumerable<Reports> newItems;
+
+        if (!string.IsNullOrEmpty(SearchText))
+        {
+            var search = SearchText.ToLower().Trim();
+            newItems = StaticConfiguration.DBModel.ReportsCollectionDbSet
+                .AsEnumerable()
+                .Where(x => x.DBObservable != null)
+                .Where(reps => reps.Master_DB.FormNum_DB == FormNum + ".0")
+                .Where(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
+                               || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
+                               || GetAdditionalSearchConditions(reps, search))
+                .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
+                .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
+                .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
+                .Take(RowsCountOrgs);
+        }
+        else
+        {
+            newItems = StaticConfiguration.DBModel.ReportsCollectionDbSet
+                .AsEnumerable()
+                .Where(x => x.DBObservable != null)
+                .Where(reps => reps.Master_DB.FormNum_DB == FormNum + ".0")
+                .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
+                .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
+                .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
+                .Take(RowsCountOrgs);
+        }
+
+        // Обновляем содержимое существующей коллекции
+        currentCollection.Clear();
+        foreach (var item in newItems)
+        {
+            currentCollection.Add(item);
+        }
+
+        // Восстанавливаем выбор по ID
+        if (selectedId.HasValue)
+        {
+            var restored = currentCollection.FirstOrDefault(r => r.Master_DB?.Id == selectedId.Value);
+            if (restored != null)
+            {
+                // Используем поле напрямую, чтобы не вызвать сеттер
+                _selectedReports = restored;
+                OnPropertyChanged(nameof(SelectedReports));
+            }
+        }
     }
 
     public void UpdateTotalReportCount()
