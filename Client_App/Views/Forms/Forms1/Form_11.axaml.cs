@@ -29,6 +29,7 @@ namespace Client_App.Views.Forms.Forms1;
 public partial class Form_11 : BaseWindow<Form_11VM>
 {
     private readonly Form_11VM _vm = null!;
+    public Form_11VM? VM => DataContext as Form_11VM;
 
     private bool _isCloseConfirmed;
     protected override bool IsFullScreenWindow => true;

@@ -418,7 +418,15 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding OperationCode.Value, Mode=TwoWay}" />
+                                    <AutoCompleteBox
+                                        Background="White"
+                                        Height="26"
+                                        Items="{Binding VM.OperationCodes, ElementName=1.1}"
+                                        Text="{Binding OperationCode.Value, Mode=TwoWay}"
+                                        HorizontalAlignment="Stretch"
+                                        MinimumPrefixLength="0"
+                                        IsTextCompletionEnabled="True" />
+
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

@@ -3,8 +3,6 @@ using Client_App.Commands.AsyncCommands.Calculator;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
-using Client_App.Commands.SyncCommands;
-using Client_App.ViewModels.Controls;
 using Models.Collections;
 using System;
 using System.Linq;
@@ -15,6 +13,22 @@ namespace Client_App.ViewModels.Forms.Forms1;
 public class Form_11VM : BaseFormVM
 {
     public override string FormType => "1.1";
+
+    /// <summary>
+    /// Справочник кодов операции для AutoCompleteBox
+    /// </summary>
+    public string[] OperationCodes { get; } =
+    [
+        "01", "02", "03", "04", "05",  // Захоронение
+        "11", "12", "13", "14", "15",  // Переработка
+        "21", "22", "23", "24", "25",  // Обработка
+        "31", "32", "33", "34", "35",  // Хранение
+        "41", "42", "43", "44", "45",  // Транспортировка
+        "51", "52", "53", "54", "55",  // Утилизация
+        "61", "62", "63", "64", "65",  // Дезактивация
+        "71", "72", "73", "74", "75",  // Кондиционирование
+        "81", "82", "83", "84", "85"   // Сбор
+    ];
 
     #region Constructors
 
