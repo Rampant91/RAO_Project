@@ -195,6 +195,9 @@
 		<Style Selector="DataGrid TextBox">
 			<Setter Property="Background" Value="Transparent"/>
 		</Style>
+		<Style Selector="DataGrid AutoCompleteBox">
+			<Setter Property="Background" Value="Transparent"/>
+		</Style>
 		
         <Style Selector="DataGrid.table TextBox">
             <Setter Property="Margin" Value="-1,-1,-1,-1"/>
