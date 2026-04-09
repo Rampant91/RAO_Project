@@ -1,19 +1,18 @@
-<UserControl
-    x:Class="Client_App.Views.MainWindowTabs.Forms4TabControl"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="clr-namespace:Client_App.Views.Controls"
-    xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-    xmlns:local="using:Client_App.Behaviors"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="clr-namespace:Models.Collections;assembly=Models"
-    xmlns:vm="using:Client_App.ViewModels.MainWindowTabs"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    x:DataType="vm:Forms4TabControlVM"
-    mc:Ignorable="d">
+<UserControl x:Class="Client_App.Views.MainWindowTabs.Forms4TabControl"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Client_App.Views.Controls"
+             xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:local="using:Client_App.Behaviors"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="clr-namespace:Models.Collections;assembly=Models"
+             xmlns:vm="using:Client_App.ViewModels.MainWindowTabs"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             x:DataType="vm:Forms4TabControlVM"
+             mc:Ignorable="d">
 
     <UserControl.Resources>
         <converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue" />
@@ -25,66 +24,63 @@
 
     <Border Classes="borderContainer">
         <Grid ColumnDefinitions="5*,3*" RowDefinitions="*,*">
-            <Grid
-                Grid.Row="0"
-                Grid.Column="0"
-                RowDefinitions="Auto,*,Auto">
-                <TextBox
-                    Grid.Row="0"
-                    Margin="5"
-                    Text="{Binding SearchText, Mode=OneWayToSource}"
-                    Watermark="Поиск..." />
-                <DataGrid
-                    Grid.Row="1"
-                    Margin="5"
-                    AlternatingRowBackground="White"
-                    CanUserSortColumns="False"
-                    GridLinesVisibility="All"
-                    Items="{Binding ReportsCollection, Mode=TwoWay}"
-                    RowBackground="White"
-                    RowHeight="25"
-                    SelectedItem="{Binding SelectedReports, Mode=OneWayToSource}"
-                    SelectionMode="Single">
+            <Grid Grid.Row="0"
+                  Grid.Column="0"
+                  RowDefinitions="Auto,*,Auto">
+                <TextBox Grid.Row="0"
+                         Margin="5"
+                         Text="{Binding SearchText, Mode=OneWayToSource}"
+                         Watermark="Поиск..." />
+                <DataGrid Grid.Row="1"
+                          Margin="5"
+                          AlternatingRowBackground="White"
+                          CanUserSortColumns="False"
+                          GridLinesVisibility="All"
+                          Items="{Binding ReportsCollection, Mode=TwoWay}"
+                          RowBackground="White"
+                          RowHeight="25"
+                          SelectedItem="{Binding SelectedReports, Mode=OneWayToSource}"
+                          SelectionMode="Single">
 
                     <interactivity:Interaction.Behaviors>
-                        <local:DataGridDoubleClickOpenBehavior />
+                        <local:DataGridDoubleClickOpenFormBehavior />
                     </interactivity:Interaction.Behaviors>
 
                     <DataGrid.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Command="{Binding MainWindowVM.AddReports, Mode=OneWay}" Header="Добавить форму" />
-                            <MenuItem Command="{Binding MainWindowVM.NewChangeReports, Mode=OneWay}" Header="Редактировать форму" />
-                            <MenuItem
-                                Command="{Binding MainWindowVM.DeleteReports, Mode=OneWay}"
-                                CommandParameter="{Binding SelectedReports, Mode=OneWay}"
-                                Header="Удалить форму" />
-                            <MenuItem
-                                Command="{Binding MainWindowVM.ExportReports, Mode=OneWay}"
-                                CommandParameter="{Binding SelectedReports, Mode=OneWay}"
-                                Header="Выгрузить отчет РИАЦ" />
-                            <MenuItem
-                                Command="{Binding MainWindowVM.ExportReportsWithDateRange, Mode=OneWay}"
-                                CommandParameter="{Binding SelectedReports, Mode=OneWay}"
-                                Header="Выгрузить отчет РИАЦ с указанием диапазона дат" />
-                            <MenuItem Command="{Binding MainWindowVM.ExportAllReportsOneFile, Mode=OneWay}" Header="Выгрузить все отчеты РИАЦ в один файл" />
-                            <MenuItem
-                                Command="{Binding MainWindowVM.ExportAllReports, Mode=OneWay}"
-                                CommandParameter="{Binding SelectedReports, Mode=OneWay}"
-                                Header="Выгрузить все отчеты в отдельные файлы" />
+                            <MenuItem Command="{Binding MainWindowVM.AddReports, Mode=OneWay}" 
+                                      Header="Добавить форму" />
+                            <MenuItem Command="{Binding MainWindowVM.NewChangeReports, Mode=OneWay}" 
+                                      Header="Редактировать форму" />
+                            <MenuItem Command="{Binding MainWindowVM.DeleteReports, Mode=OneWay}"
+                                      CommandParameter="{Binding SelectedReports, Mode=OneWay}"
+                                      Header="Удалить форму" />
+                            <MenuItem Command="{Binding MainWindowVM.ExportReports, Mode=OneWay}"
+                                      CommandParameter="{Binding SelectedReports, Mode=OneWay}"
+                                      Header="Выгрузить отчет РИАЦ" />
+                            <MenuItem Command="{Binding MainWindowVM.ExportReportsWithDateRange, Mode=OneWay}"
+                                      CommandParameter="{Binding SelectedReports, Mode=OneWay}"
+                                      Header="Выгрузить отчет РИАЦ с указанием диапазона дат" />
+                            <MenuItem Command="{Binding MainWindowVM.ExportAllReportsOneFile, Mode=OneWay}" 
+                                      Header="Выгрузить все отчеты РИАЦ в один файл" />
+                            <MenuItem Command="{Binding MainWindowVM.ExportAllReports, Mode=OneWay}"
+                                      CommandParameter="{Binding SelectedReports, Mode=OneWay}"
+                                      Header="Выгрузить все отчеты в отдельные файлы" />
                         </ContextMenu>
                     </DataGrid.ContextMenu>
 
                     <DataGrid.Columns>
-                        <DataGridTextColumn
-                            Width="60"
-                            x:DataType="models:Reports"
-                            Binding="{Binding Master.Rows40[0].CodeSubjectRF.Value}"
-                            IsReadOnly="True">
+                        <DataGridTextColumn Width="60"
+                                            x:DataType="models:Reports"
+                                            Binding="{Binding Master.Rows40[0].CodeSubjectRF.Value}"
+                                            IsReadOnly="True">
                             <DataGridTextColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
-                                        <Grid Margin="3" ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="Код субъекта РФ" />
+                                        <Grid Margin="3" 
+                                              ColumnDefinitions="*,Auto">
+                                            <TextBlock Grid.Column="0" 
+                                                       Text="Код субъекта РФ" />
                                             <!--<Button Grid.Column="1"/>-->
                                         </Grid>
                                     </Border>
@@ -92,11 +88,10 @@
                             </DataGridTextColumn.HeaderTemplate>
                         </DataGridTextColumn>
 
-                        <DataGridTextColumn
-                            Width="Auto"
-                            x:DataType="models:Reports"
-                            Binding="{Binding Master.Rows40[0].SubjectRF.Value}"
-                            IsReadOnly="True">
+                        <DataGridTextColumn Width="Auto"
+                                            x:DataType="models:Reports"
+                                            Binding="{Binding Master.Rows40[0].SubjectRF.Value}"
+                                            IsReadOnly="True">
                             <DataGridTextColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -138,125 +133,106 @@
                 </DataGrid>
                 <Border Grid.Row="2" Classes="pageControlContainer">
                     <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
-                        <TextBlock
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            Margin="5"
-                            VerticalAlignment="Center"
-                            Text="Текущая страница:" />
-                        <controls:NumericLeftRight
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            Margin="5"
-                            Minimum="1"
-                            Value="{Binding CurrentPageOrgs}" />
-                        <TextBlock
-                            Grid.Row="0"
-                            Grid.Column="2"
-                            Margin="5"
-                            VerticalAlignment="Center"
-                            Text="Кол-во страниц:" />
-                        <TextBlock
-                            Grid.Row="0"
-                            Grid.Column="3"
-                            Margin="5"
-                            VerticalAlignment="Center"
-                            Text="{Binding TotalPagesOrgs}" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            Margin="5"
-                            VerticalAlignment="Center"
-                            Text="Кол-во РИАЦ на странице:" />
-                        <controls:NumericLeftRight
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Margin="5"
-                            Minimum="1"
-                            Value="{Binding RowsCountOrgs}" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="2"
-                            Margin="5"
-                            VerticalAlignment="Center"
-                            Text="Всего РИАЦ:" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="3"
-                            Margin="5"
-                            VerticalAlignment="Center"
-                            Text="{Binding FilteredRowsOrgs}" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="4"
-                            Margin="5"
-                            VerticalAlignment="Center"
-                            Text="Всего отчетов:" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="5"
-                            Margin="5"
-                            VerticalAlignment="Center"
-                            Text="{Binding TotalReportCount}" />
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="5"
+                                   VerticalAlignment="Center"
+                                   Text="Текущая страница:" />
+                        <controls:NumericLeftRight Grid.Row="0"
+                                                   Grid.Column="1"
+                                                   Margin="5"
+                                                   Minimum="1"
+                                                   Value="{Binding CurrentPageOrgs}" />
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="2"
+                                   Margin="5"
+                                   VerticalAlignment="Center"
+                                   Text="Кол-во страниц:" />
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="3"
+                                   Margin="5"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding TotalPagesOrgs}" />
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="0"
+                                   Margin="5"
+                                   VerticalAlignment="Center"
+                                   Text="Кол-во РИАЦ на странице:" />
+                        <controls:NumericLeftRight Grid.Row="1"
+                                                   Grid.Column="1"
+                                                   Margin="5"
+                                                   Minimum="1"
+                                                   Value="{Binding RowsCountOrgs}" />
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="2"
+                                   Margin="5"
+                                   VerticalAlignment="Center"
+                                   Text="Всего РИАЦ:" />
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="3"
+                                   Margin="5"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding FilteredRowsOrgs}" />
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="4"
+                                   Margin="5"
+                                   VerticalAlignment="Center"
+                                   Text="Всего отчетов:" />
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="5"
+                                   Margin="5"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding TotalReportCount}" />
                     </Grid>
                 </Border>
             </Grid>
-            <StackPanel
-                Grid.Row="0"
-                Grid.Column="1"
-                Margin="5">
-                <Button
-                    Command="{Binding MainWindowVM.NewAddForm}"
-                    CommandParameter="4.1"
-                    Content="Форма 4.1" />
+            <StackPanel Grid.Row="0"
+                        Grid.Column="1"
+                        Margin="5">
+                <Button Command="{Binding MainWindowVM.NewAddForm}"
+                        CommandParameter="4.1"
+                        Content="Форма 4.1" />
             </StackPanel>
-            <Grid
-                Grid.Row="1"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                RowDefinitions="*,Auto">
-                <DataGrid
-                    Grid.Row="0"
-                    Margin="5"
-                    AlternatingRowBackground="White"
-                    CanUserSortColumns="False"
-                    GridLinesVisibility="All"
-                    Items="{Binding ReportCollection}"
-                    RowBackground="White"
-                    RowHeight="25"
-                    SelectedItem="{Binding SelectedReport}">
+            <Grid Grid.Row="1"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="2"
+                  RowDefinitions="*,Auto">
+                <DataGrid Grid.Row="0"
+                          Margin="5"
+                          AlternatingRowBackground="White"
+                          CanUserSortColumns="False"
+                          GridLinesVisibility="All"
+                          Items="{Binding ReportCollection}"
+                          RowBackground="White"
+                          RowHeight="25"
+                          SelectedItem="{Binding SelectedReport}">
 
                     <interactivity:Interaction.Behaviors>
-                        <local:DataGridDoubleClickOpenBehavior />
+                        <local:DataGridDoubleClickOpenFormBehavior />
                     </interactivity:Interaction.Behaviors>
 
                     <DataGrid.ContextMenu>
                         <ContextMenu>
-                            <MenuItem
-                                Command="{Binding MainWindowVM.NewChangeForm}"
-                                CommandParameter="{Binding SelectedReport}"
-                                Header="Редактировать форму" />
-                            <MenuItem
-                                Command="{Binding MainWindowVM.NewDeleteForm}"
-                                CommandParameter="{Binding SelectedReport}"
-                                Header="Удалить форму" />
-                            <MenuItem
-                                Command="{Binding MainWindowVM.ExcelExportFormPrint}"
-                                CommandParameter="{Binding SelectedReport}"
-                                Header="Выгрузить форму в Excel" />
-                            <MenuItem
-                                Command="{Binding MainWindowVM.ExportForm}"
-                                CommandParameter="{Binding SelectedReport}"
-                                Header="Выгрузить" />
+                            <MenuItem Command="{Binding MainWindowVM.NewChangeForm}"
+                                      CommandParameter="{Binding SelectedReport}"
+                                      Header="Редактировать форму" />
+                            <MenuItem Command="{Binding MainWindowVM.NewDeleteForm}"
+                                      CommandParameter="{Binding SelectedReport}"
+                                      Header="Удалить форму" />
+                            <MenuItem Command="{Binding MainWindowVM.ExcelExportFormPrint}"
+                                      CommandParameter="{Binding SelectedReport}"
+                                      Header="Выгрузить форму в Excel" />
+                            <MenuItem Command="{Binding MainWindowVM.ExportForm}"
+                                      CommandParameter="{Binding SelectedReport}"
+                                      Header="Выгрузить" />
                         </ContextMenu>
                     </DataGrid.ContextMenu>
 
                     <DataGrid.Columns>
-                        <DataGridTextColumn
-                            Width="*"
-                            x:DataType="models:Report"
-                            Binding="{Binding FormNum.Value}"
-                            IsReadOnly="True">
+                        <DataGridTextColumn Width="*"
+                                            x:DataType="models:Report"
+                                            Binding="{Binding FormNum.Value}"
+                                            IsReadOnly="True">
                             <DataGridTextColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -268,11 +244,10 @@
                                 </DataTemplate>
                             </DataGridTextColumn.HeaderTemplate>
                         </DataGridTextColumn>
-                        <DataGridTextColumn
-                            Width="*"
-                            x:DataType="models:Report"
-                            Binding="{Binding Year.Value}"
-                            IsReadOnly="True">
+                        <DataGridTextColumn Width="*"
+                                            x:DataType="models:Report"
+                                            Binding="{Binding Year.Value}"
+                                            IsReadOnly="True">
                             <DataGridTextColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -284,11 +259,10 @@
                                 </DataTemplate>
                             </DataGridTextColumn.HeaderTemplate>
                         </DataGridTextColumn>
-                        <DataGridTextColumn
-                            Width="2*"
-                            x:DataType="models:Report"
-                            Binding="{Binding ExportDate.Value}"
-                            IsReadOnly="True">
+                        <DataGridTextColumn Width="2*"
+                                            x:DataType="models:Report"
+                                            Binding="{Binding ExportDate.Value}"
+                                            IsReadOnly="True">
                             <DataGridTextColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -300,11 +274,10 @@
                                 </DataTemplate>
                             </DataGridTextColumn.HeaderTemplate>
                         </DataGridTextColumn>
-                        <DataGridTextColumn
-                            Width="2*"
-                            x:DataType="models:Report"
-                            Binding="{Binding CorrectionNumber.Value}"
-                            IsReadOnly="True">
+                        <DataGridTextColumn Width="2*"
+                                            x:DataType="models:Report"
+                                            Binding="{Binding CorrectionNumber.Value}"
+                                            IsReadOnly="True">
                             <DataGridTextColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -316,11 +289,10 @@
                                 </DataTemplate>
                             </DataGridTextColumn.HeaderTemplate>
                         </DataGridTextColumn>
-                        <DataGridTextColumn
-                            Width="4*"
-                            x:DataType="models:Report"
-                            Binding="{Binding Comments.Value}"
-                            IsReadOnly="False">
+                        <DataGridTextColumn Width="4*"
+                                            x:DataType="models:Report"
+                                            Binding="{Binding Comments.Value}"
+                                            IsReadOnly="False">
                             <DataGridTextColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -336,58 +308,48 @@
                 </DataGrid>
                 <Border Grid.Row="1" Classes="pageControlContainer">
                     <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
-                        <TextBlock
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            Margin="5"
-                            Text="Текущая страница:" />
-                        <controls:NumericLeftRight
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            Margin="5"
-                            Minimum="1"
-                            Value="{Binding CurrentPageForms}" />
-                        <TextBlock
-                            Grid.Row="0"
-                            Grid.Column="2"
-                            Margin="5"
-                            Text="Кол-во страниц:" />
-                        <TextBlock
-                            Grid.Row="0"
-                            Grid.Column="3"
-                            Margin="5"
-                            Text="{Binding TotalPagesForms}" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            Margin="5"
-                            Text="Отчётов на странице:" />
-                        <controls:NumericLeftRight
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Margin="5"
-                            Minimum="1"
-                            Value="{Binding RowsCountForms}" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="2"
-                            Margin="5"
-                            Text="Кол-во отчетов:" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="3"
-                            Margin="5"
-                            Text="{Binding TotalRowsForms}" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="4"
-                            Margin="5"
-                            Text="Строчек в отчёте:" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="5"
-                            Margin="5"
-                            Text="{Binding InSelectedReportFormsCount}" />
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="5"
+                                   Text="Текущая страница:" />
+                        <controls:NumericLeftRight Grid.Row="0"
+                                                   Grid.Column="1"
+                                                   Margin="5"
+                                                   Minimum="1"
+                                                   Value="{Binding CurrentPageForms}" />
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="2"
+                                   Margin="5"
+                                   Text="Кол-во страниц:" />
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="3"
+                                   Margin="5"
+                                   Text="{Binding TotalPagesForms}" />
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="0"
+                                   Margin="5"
+                                   Text="Отчётов на странице:" />
+                        <controls:NumericLeftRight Grid.Row="1"
+                                                   Grid.Column="1"
+                                                   Margin="5"
+                                                   Minimum="1"
+                                                   Value="{Binding RowsCountForms}" />
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="2"
+                                   Margin="5"
+                                   Text="Кол-во отчетов:" />
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="3"
+                                   Margin="5"
+                                   Text="{Binding TotalRowsForms}" />
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="4"
+                                   Margin="5"
+                                   Text="Строчек в отчёте:" />
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="5"
+                                   Margin="5"
+                                   Text="{Binding InSelectedReportFormsCount}" />
                     </Grid>
                 </Border>
             </Grid>

@@ -24,7 +24,7 @@
     <Window.Resources>
         <converter:DataGridLengthToGridLengthConverter x:Key="LengthConverter" />
         <converter:NullToStringConverter x:Key="NullToStringConverter" />
-        <converter:StringToDateConverter x:Key="StringToDateConverter" />
+        <converter:DateConverter x:Key="DateConverter" />
     </Window.Resources>
 
     <Design.DataContext>
@@ -54,49 +54,54 @@
                                                 VerticalAlignment="Center"
                                                 DataContext="{Binding SelectReportPopupVM}" />
                 </Border>
-				<Border Classes="borderContainer">
-					<Grid Margin="5" RowDefinitions="*,*,*,*,*">
+                <Border Classes="borderContainer">
+                    <Grid Margin="5" RowDefinitions="*,*,*,*,*">
 
-						<Grid Grid.Row="0" ColumnDefinitions="*,*,*">
-							<TextBlock Grid.Column="0"
-                                       Margin="5,11"
+                        <Grid Grid.Row="0" ColumnDefinitions="*,*,*">
+                            <TextBlock Grid.Column="0"
+                                       Margin="5"
                                        Text="Дата окончания предыдущего отчетного периода:" />
-							<TextBox Grid.Column="1"
+                            <TextBox Grid.Column="1"
                                      MinWidth="83"
                                      Text="{Binding Report.StartPeriod.Value}"
                                      Watermark="дд.мм.гггг" />
-							<CalendarDatePicker Grid.Column="2"
+                            <CalendarDatePicker Grid.Column="2"
                                                 Classes="buttonOnly"
-                                                SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource StringToDateConverter}}" />
-						</Grid>
+                                                SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource DateConverter}}" />
+                        </Grid>
 
-						<Grid Grid.Row="1" ColumnDefinitions="*,*,*">
-							<TextBlock Grid.Column="0"
-                                       Margin="5,13"
+                        <Grid Grid.Row="1" ColumnDefinitions="*,*,*">
+                            <TextBlock Grid.Column="0"
+                                       Margin="5"
                                        Text="Дата окончания настоящего отчетного периода:" />
-							<TextBox Grid.Column="1"
+                            <TextBox Grid.Column="1"
                                      MinWidth="83"
                                      Margin="11,3,0,0"
                                      Text="{Binding Report.EndPeriod.Value}"
                                      Watermark="дд.мм.гггг" />
-							<CalendarDatePicker Grid.Column="2"
+                            <CalendarDatePicker Grid.Column="2"
                                                 Classes="buttonOnly"
-                                                SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource StringToDateConverter}}" />
-						</Grid>
+                                                SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource DateConverter}}" />
+                        </Grid>
 
-						<StackPanel Orientation="Horizontal" Grid.Row="2">
-							<Button Margin="5" Command="{Binding CheckForm}">Проверить</Button>
-							<Button Margin="5" Command="{Binding SaveReport}">Сохранить</Button>
-						</StackPanel>
+                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                            <TextBlock Margin="5" Text="Номер корректировки:" />
+                            <TextBox Width="75"
+                                     Margin="5"
+                                     Text="{Binding Path=Report.CorrectionNumber.Value}" />
+                        </StackPanel>
 
-						<StackPanel  Orientation="Horizontal" Grid.Row="3">
-							<TextBlock Margin="5">Номер корректировки:</TextBlock>
-							<TextBox Margin="5" Width="75" Text="{Binding Path=Report.CorrectionNumber.Value}"/>
-						</StackPanel>
+                        <StackPanel Grid.Row="3" Orientation="Horizontal">
+                            <Button Margin="5"
+                                    Command="{Binding CheckForm}"
+                                    Content="Проверить" />
+                            <Button Margin="5"
+                                    Command="{Binding SaveReport}"
+                                    Content="Сохранить" />
+                        </StackPanel>
 
-						<Button Grid.Row="4" Content="Добавить в форму сведения из паспорта на упаковку" Command="{Binding GenerateForm17}" ></Button>
-					</Grid>
-				</Border>
+                    </Grid>
+                </Border>
 
                 <!--#endregion Отчёт-->
 
@@ -184,10 +189,6 @@
                                   CommandParameter="{Binding SelectedForms}"
                                   Header="Очистить строчки"
                                   InputGesture="Ctrl+U"
-                                  IsVisible="{Binding AnyRowSelected}" />
-						<MenuItem Command="{Binding GeneratePackagePassport}"
-                                  CommandParameter="{Binding SelectedForms}"
-                                  Header="Сформировать паспорт из выбранных строк"
                                   IsVisible="{Binding AnyRowSelected}" />
                     </ContextMenu>
                 </Grid.ContextMenu>
@@ -479,7 +480,7 @@
                                         <TextBox Grid.Column="0" Text="{Binding OperationDate.Value, Mode=TwoWay}" />
                                         <CalendarDatePicker Grid.Column="1"
                                                             Classes="buttonOnly"
-                                                            SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, Converter={StaticResource StringToDateConverter}}" />
+                                                            SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -569,7 +570,7 @@
                                         <TextBox Grid.Column="0" Text="{Binding FormingDate.Value, Mode=TwoWay}" />
                                         <CalendarDatePicker Grid.Column="1"
                                                             Classes="buttonOnly"
-                                                            SelectedDate="{Binding FormingDate.Value, Mode=TwoWay, Converter={StaticResource StringToDateConverter}}" />
+                                                            SelectedDate="{Binding FormingDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -710,7 +711,7 @@
                                         <TextBox Grid.Column="0" Text="{Binding DocumentDate.Value, Mode=TwoWay}" />
                                         <CalendarDatePicker Grid.Column="1"
                                                             Classes="buttonOnly"
-                                                            SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay, Converter={StaticResource StringToDateConverter}}" />
+                                                            SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>

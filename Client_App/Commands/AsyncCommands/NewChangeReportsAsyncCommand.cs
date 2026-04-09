@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Client_App.Views.Forms.Forms4;
 using Client_App.Views.Forms.Forms5;
 
-namespace Client_App.Commands.AsyncCommands.Change;
+namespace Client_App.Commands.AsyncCommands;
 
 /// <summary>
 /// Изменить Формы организации (1.0, 2.0, 4.0, 5.0).
@@ -20,7 +20,6 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         var mainWindow = (Desktop.MainWindow as MainWindow)!;
-
         var mainWindowVM = (mainWindow.DataContext as MainWindowVM)!;
 
         if (mainWindowVM.SelectedReports is null) return;

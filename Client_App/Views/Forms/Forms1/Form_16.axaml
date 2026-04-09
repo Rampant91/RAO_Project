@@ -24,7 +24,7 @@
     <Window.Resources>
         <converter:DataGridLengthToGridLengthConverter x:Key="LengthConverter" />
         <converter:NullToStringConverter x:Key="NullToStringConverter" />
-        <converter:StringToDateConverter x:Key="StringToDateConverter" />
+        <converter:DateConverter x:Key="DateConverter" />
     </Window.Resources>
 
     <Design.DataContext>
@@ -67,7 +67,7 @@
                                      Watermark="дд.мм.гггг" />
                             <CalendarDatePicker Grid.Column="2"
                                                 Classes="buttonOnly"
-                                                SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource StringToDateConverter}}" />
+                                                SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource DateConverter}}" />
                         </Grid>
 
                         <Grid Grid.Row="1" ColumnDefinitions="*,*,*">
@@ -81,7 +81,7 @@
                                      Watermark="дд.мм.гггг" />
                             <CalendarDatePicker Grid.Column="2"
                                                 Classes="buttonOnly"
-                                                SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource StringToDateConverter}}" />
+                                                SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource DateConverter}}" />
                         </Grid>
 
                         <StackPanel Grid.Row="2" Orientation="Horizontal">
@@ -480,7 +480,7 @@
                                         <CalendarDatePicker
                                             Grid.Column="1"
                                             Classes="buttonOnly"
-                                            SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, Converter={StaticResource StringToDateConverter}}" />
+                                            SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -672,7 +672,7 @@
                                         <TextBox Grid.Column="0" Text="{Binding ActivityMeasurementDate.Value, Mode=TwoWay}" />
                                         <CalendarDatePicker Grid.Column="1"
                                                             Classes="buttonOnly"
-                                                            SelectedDate="{Binding ActivityMeasurementDate.Value, Mode=TwoWay, Converter={StaticResource StringToDateConverter}}" />
+                                                            SelectedDate="{Binding ActivityMeasurementDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -728,7 +728,7 @@
                                         <TextBox Grid.Column="0" Text="{Binding DocumentDate.Value, Mode=TwoWay}" />
                                         <CalendarDatePicker Grid.Column="1"
                                                             Classes="buttonOnly"
-                                                            SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay, Converter={StaticResource StringToDateConverter}}" />
+                                                            SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
