@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace Client_App.VisualRealization.Converters
 {
-    public class StringToDateConverter : IValueConverter
+    public class DateConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -13,12 +13,12 @@ namespace Client_App.VisualRealization.Converters
             {
                 if (DateTime.TryParse(
                     dateString,
-                    out DateTime date))
+                    out DateTime result))
                 {
-                    return date;
+                    return result;
                 }
             }
-            return null;
+            return BindingOperations.DoNothing;
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -26,7 +26,7 @@ namespace Client_App.VisualRealization.Converters
             {
                 return dateTime.ToString("dd.MM.yyyy");
             }
-                return "";
+            return BindingOperations.DoNothing;
         }
     }
 }

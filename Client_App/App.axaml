@@ -82,24 +82,15 @@
 			<!--Из-за особенностей предметной области допускается, что пользователи могут ввести вместо даты строку
 			    Поэтому buttonOnly предназначен для использвания в связки с другим текстбоксом -->
         <Style Selector="CalendarDatePicker.buttonOnly TextBox">
-			<Setter Property="IsTabStop" Value="False"/>
             <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="IsVisible" Value="False"/>
         </Style>
 		<Style Selector="CalendarDatePicker.buttonOnly">
-			<Setter Property="IsTabStop" Value="False"/>
 			<Setter Property="behaviors:ScrollBlock.BlockPointerWheel" Value="True"/>
 		</Style>
 		<Style Selector="Border#Background">
 			<Setter Property="Background" Value="#f0f8ff"/>
         </Style>
-		<Style Selector="TextBox">
-			<Setter Property="behaviors:TextBoxAutoTrim.IsEnabled" Value="True"/>
-		</Style>
-		<Style Selector="Button">
-			<Setter Property="IsTabStop" Value="False"/>
-		</Style>
-		
 		<Style Selector="TextBox">
 			<Setter Property="behaviors:TextBoxAutoTrim.IsEnabled" Value="True"/>
 		</Style>
@@ -153,10 +144,10 @@
             <Setter Property="CanUserResizeColumns" Value="True"/>
             <Setter Property="RowBackground" Value="White"/>
             <Setter Property="AlternatingRowBackground" Value="White"/>
-			<Setter Property="GridLinesVisibility" Value="All"/>
-			<Setter Property="CanUserSortColumns" Value="False"/>
-			<Setter Property="SelectionMode" Value="Extended"/>
-			<Setter Property="Margin" Value="5,-5,5,5"/>
+            <Setter Property="Margin" Value="5,-5,5,5"/>
+            <Setter Property="SelectionMode" Value="Extended"/>
+            <Setter Property="GridLinesVisibility" Value="All"/>
+            <Setter Property="CanUserSortColumns" Value="False"/>
             <Setter Property="ColumnWidth" Value="125" />
             <Setter Property="MinColumnWidth" Value="50" />
             <Setter Property="MaxColumnWidth" Value="250" />
@@ -203,34 +194,6 @@
         </Style>
 		<Style Selector="DataGrid TextBox">
 			<Setter Property="Background" Value="Transparent"/>
-		</Style>
-
-
-
-
-		<Style Selector="DataGrid DataGridRow DataGridCell TextBlock.readOnly">
-			<Setter Property="Background" Value="#ededed"/>
-			<Setter Property="Foreground" Value="#93140e"/>
-			<Setter Property="HorizontalAlignment" Value="Stretch"/>
-			<Setter Property="VerticalAlignment" Value="Stretch"/>
-			<Setter Property="Padding" Value="0,5,0,0"/>
-			<Setter Property="TextAlignment" Value="Center"/>
-		</Style>
-		<Style Selector="DataGrid DataGridRow:pointerover:not(:selected) DataGridCell TextBlock.readOnly">
-			<Setter Property="Background" Value="#b5b5b5"/>
-			<Setter Property="Foreground" Value="#93140e"/>
-			<Setter Property="HorizontalAlignment" Value="Stretch"/>
-			<Setter Property="VerticalAlignment" Value="Stretch"/>
-			<Setter Property="Padding" Value="0,5,0,0"/>
-			<Setter Property="TextAlignment" Value="Center"/>
-		</Style>
-		<Style Selector="DataGrid DataGridRow:selected DataGridCell TextBlock.readOnly">
-			<Setter Property="Background" Value="#86c4d9"/>
-			<Setter Property="Foreground" Value="#93140e"/>
-			<Setter Property="HorizontalAlignment" Value="Stretch"/>
-			<Setter Property="VerticalAlignment" Value="Stretch"/>
-			<Setter Property="Padding" Value="0,5,0,0"/>
-			<Setter Property="TextAlignment" Value="Center"/>
 		</Style>
 		
         <Style Selector="DataGrid.table TextBox">
@@ -293,13 +256,5 @@
 			<Setter Property="IsHitTestVisible" Value="False"/>
 		</Style>
         <!--Конец стилей для окон редактирования форм-->
-		<!--Другие стили-->
-
-		<Style Selector="AutoCompleteBox.hitable">
-			<Setter Property="IsHitTestVisible" Value="True"/>
-		</Style>
-		<Style Selector="AutoCompleteBox.hitable TextBox">
-			<Setter Property="IsHitTestVisible" Value="True"/>
-		</Style>
     </Application.Styles>
 </Application>

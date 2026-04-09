@@ -1,482 +1,438 @@
-<Window
-    x:Class="Client_App.Views.Forms.Forms4.Form_41"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="clr-namespace:Client_App.Views.Controls"
-    xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:forms4="clr-namespace:Models.Forms.Form4;assembly=Models"
-    xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-    xmlns:local="using:Client_App.Behaviors"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms4"
-    x:Name="4.1"
-    Title="Форма 4.1"
-    MinWidth="800"
-    MinHeight="600"
-    d:DesignHeight="450"
-    d:DesignWidth="900"
-    x:DataType="vm:Form_41VM"
-    KeyUp="DataGrid_KeyUp"
-    WindowStartupLocation="CenterScreen"
-    mc:Ignorable="d">
+<Window x:Class="Client_App.Views.Forms.Forms4.Form_41"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms4"
+        xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
+        xmlns:local="using:Client_App.Behaviors"
+        xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+        xmlns:forms4="clr-namespace:Models.Forms.Form4;assembly=Models"
+        xmlns:controls="clr-namespace:Client_App.Views.Controls"
+        Title="Форма 4.1"
+        d:DesignHeight="450"
+        d:DesignWidth="900"
+        x:DataType="vm:Form_41VM"
+        mc:Ignorable="d"
+        KeyUp="DataGrid_KeyUp"
+        x:Name="4.1"
+        WindowStartupLocation="CenterScreen"
+        MinWidth="800" MinHeight="600">
 
-    <Window.Resources>
-        <converter:IntToEmptyStringConverter x:Key="IntToEmptyStringConverter" />
-        <converter:ColorBlendConverter x:Key="ColorBlendConverter" />
-        <converter:SystemDrawingColorToSolidColorBrush x:Key="SystemDrawingColorToSolidColorBrush" />
-    </Window.Resources>
+	<Window.Resources>
+		<converter:IntToEmptyStringConverter x:Key="IntToEmptyStringConverter"/>
+		<converter:ColorBlendConverter x:Key="ColorBlendConverter"/>
+		<converter:SystemDrawingColorToSolidColorBrush x:Key="SystemDrawingColorToSolidColorBrush"/>
+	</Window.Resources>
 
-    <Design.DataContext>
-        <vm:Form_41VM />
-    </Design.DataContext>
+	<Design.DataContext>
+		<vm:Form_41VM/>
+	</Design.DataContext>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" MinHeight="175" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*" MinHeight="175"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
 
-        <Expander
-            Grid.Row="0"
-            Header="Скрыть/Раскрыть верхнюю панель"
-            IsExpanded="True">
-            <WrapPanel Classes="header">
-                <Border Classes="borderContainer">
-                    <controls:SelectReportPopup
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        DataContext="{Binding SelectReportPopupVM}" />
-                </Border>
-                <Border Classes="borderContainer">
-                    <Grid Margin="5" RowDefinitions="*,*,*,*,*">
+		<Expander Grid.Row ="0"
+				  IsExpanded="True"
+                  Header="Скрыть/Раскрыть верхнюю панель">
+			<WrapPanel Classes="header">
+				<Border Classes="borderContainer">
+					<controls:SelectReportPopup DataContext="{Binding SelectReportPopupVM}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"/>
+				</Border>
+				<Border Classes="borderContainer">
+					<Grid Margin="5" RowDefinitions="*,*,*,*,*">
 
-                        <Grid Grid.Row="0" ColumnDefinitions="*,*">
-                            <TextBlock
-                                Grid.Column="0"
-                                Margin="5"
-                                Text="Отчетный год" />
-                            <TextBox Grid.Column="1" Text="{Binding Report.Year.Value}" />
-                        </Grid>
+						<Grid ColumnDefinitions="*,*"  Grid.Row="0">
+							<TextBlock Grid.Column="0" Margin="5" Text="Отчетный год"/>
+							<TextBox Grid.Column="1" Text="{Binding Report.Year.Value}"/>
+						</Grid>
 
-                        <StackPanel Grid.Row="1" Orientation="Horizontal">
-                            <Button
-                                Margin="5"
-                                Command="{Binding CheckForm}"
-                                Content="Проверить" />
-                            <Button
-                                Margin="5"
-                                Command="{Binding SaveReport}"
-                                Content="Сохранить" />
-                        </StackPanel>
+						<StackPanel Orientation="Horizontal" Grid.Row="1">
+							<Button Margin="5" 
+                                    Content="Проверить"
+                                    Command="{Binding CheckForm}" />
+							<Button Margin="5" 
+                                    Content="Сохранить"
+                                    Command="{Binding SaveReport}" />
+						</StackPanel>
 
-                        <StackPanel Grid.Row="2" Orientation="Horizontal">
-                            <TextBlock Margin="5" Text="Номер корректировки:" />
-                            <TextBox
-                                Width="75"
-                                Margin="5"
-                                Text="{Binding Path=Report.CorrectionNumber.Value}" />
-                        </StackPanel>
+						<StackPanel  Orientation="Horizontal" Grid.Row="2">
+							<TextBlock Margin="5" 
+                                       Text="Номер корректировки:"/>
+							<TextBox Margin="5" 
+                                     Width="75" 
+                                     Text="{Binding Path=Report.CorrectionNumber.Value}"/>
+						</StackPanel>
 
-                        <Button
-                            Grid.Row="3"
-                            Command="{Binding GenerateForm41}"
-                            Content="Сформировать" />
-                    </Grid>
-                </Border>
+						<Button Grid.Row="3" 
+                                Content="Сформировать" 
+                                Command="{Binding GenerateForm41}" />
+					</Grid>
+				</Border>
+				
+				<Border Classes="borderContainer">
+					<controls:ExecutorDataControl DataContext="{Binding ExecutorDataControlVM}"/>
+				</Border>
 
-                <Border Classes="borderContainer">
-                    <controls:ExecutorDataControl DataContext="{Binding ExecutorDataControlVM}" />
-                </Border>
+				<Border Classes="borderContainer">
+					<Button Margin="5"
+                            Command="{Binding SetDefaultColumnWidth}"
+                            CommandParameter="{Binding ElementName=dataGrid}"
+                            Content="Выставить ширину колонок по умолчанию" />
+				</Border>
 
-                <Border Classes="borderContainer">
-                    <Button
-                        Margin="5"
-                        Command="{Binding SetDefaultColumnWidth}"
-                        CommandParameter="{Binding ElementName=dataGrid}"
-                        Content="Выставить ширину колонок по умолчанию" />
-                </Border>
+			</WrapPanel>
+		</Expander>
 
-            </WrapPanel>
-        </Expander>
-
-        <ScrollViewer Grid.Row="1" Classes="tableScrollViewer">
-            <Grid
-                x:Name="Table"
-                ColumnDefinitions="Auto"
-                RowDefinitions="Auto,*">
-                <Grid.ContextMenu>
-                    <ContextMenu
-                        x:CompileBindings="True"
-                        x:DataType="vm:Form_41VM"
-                        DataContext="{Binding DataContext, ElementName=dataGrid}">
-                        <MenuItem
-                            Command="{Binding SelectAll}"
-                            Header="Выделить всё"
-                            InputGesture="Ctrl+A"
-                            IsHitTestVisible="True" />
-                        <MenuItem
-                            Command="{Binding AddRow}"
-                            Header="Добавить строку"
-                            InputGesture="Ctrl+T" />
-                        <MenuItem
-                            Command="{Binding AddRows}"
-                            Header="Добавить N строк"
-                            InputGesture="Ctrl+N" />
-                        <MenuItem
-                            Command="{Binding AddRowsIn}"
-                            CommandParameter="{Binding SelectedForms}"
-                            Header="Добавить N строк перед"
-                            InputGesture="Ctrl+I" />
-                        <MenuItem
-                            Command="{Binding CopyRows}"
-                            CommandParameter="{Binding SelectedForms}"
-                            Header="Копировать"
-                            InputGesture="Ctrl+C" />
-                        <MenuItem
-                            Command="{Binding PasteRows}"
-                            Header="Вставить"
-                            InputGesture="Ctrl+V" />
-                        <MenuItem
-                            Command="{Binding DeleteRows}"
-                            CommandParameter="{Binding SelectedForms}"
-                            Header="Удалить выбранные строчки"
-                            InputGesture="Ctrl+D" />
-                        <MenuItem
-                            Command="{Binding DeleteDataInRows}"
-                            CommandParameter="{Binding SelectedForms}"
-                            Header="Очистить строчки"
-                            InputGesture="Ctrl+K" />
-                        <MenuItem
-                            Command="{Binding SetNumberOrder}"
-                            Header="Выставить номер"
-                            InputGesture="Ctrl+O" />
-                        <!--<MenuItem Header="Сортировать по номеру п/п	Ctrl+L"
+		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1">
+			<Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="Auto">
+				<Grid.ContextMenu>
+					<ContextMenu x:CompileBindings="True"
+                                 x:DataType="vm:Form_41VM"
+                                 DataContext="{Binding DataContext, ElementName=dataGrid}">
+						<MenuItem Header="Выделить всё"
+                                  Command="{Binding SelectAll}"
+                                  IsHitTestVisible="True"
+                                  InputGesture="Ctrl+A"/>
+						<MenuItem Header="Добавить строку"
+                                  Command="{Binding AddRow}"
+                                  InputGesture="Ctrl+T"/>
+						<MenuItem Header="Добавить N строк"
+                                  Command="{Binding AddRows}"
+                                  InputGesture="Ctrl+N"/>
+						<MenuItem Header="Добавить N строк перед"
+                                  Command="{Binding AddRowsIn}"
+                                  CommandParameter="{Binding SelectedForms}"
+                                  InputGesture="Ctrl+I"/>
+						<MenuItem Header="Копировать"
+                                  Command="{Binding CopyRows}"
+                                  CommandParameter="{Binding SelectedForms}"
+                                  InputGesture="Ctrl+C"/>
+						<MenuItem Header="Вставить"
+                                  Command="{Binding PasteRows}"
+                                  InputGesture="Ctrl+V"/>
+						<MenuItem Header="Удалить выбранные строчки"
+                                  Command="{Binding DeleteRows}"
+                                  CommandParameter="{Binding SelectedForms}"
+                                  InputGesture="Ctrl+D"/>
+						<MenuItem Header="Очистить строчки"
+                                  Command="{Binding DeleteDataInRows}"
+                                  CommandParameter="{Binding SelectedForms}"
+                                  InputGesture="Ctrl+K"/>
+						<MenuItem Header="Выставить номер"
+                                  Command="{Binding SetNumberOrder}"
+                                  InputGesture="Ctrl+O"/>
+						<!--<MenuItem Header="Сортировать по номеру п/п	Ctrl+L"
                                       Command="{Binding SortForms}"
-                                      HotKey="Ctrl+L"/>-->
-                    </ContextMenu>
-                </Grid.ContextMenu>
-                <Grid
-                    Grid.Row="0"
-                    Width="{Binding ElementName=dataGrid.Width}"
-                    Classes="tableHeader"
-                    RowDefinitions="Auto,Auto">
+                                      HotKey="Ctrl+L"/> -->
+					</ContextMenu>
+				</Grid.ContextMenu>
+				<Grid Classes="tableHeader" Grid.Row="0"
+					  Width="{Binding ElementName=dataGrid.Width}"
+					  RowDefinitions="Auto,Auto">
 
-                    <interactivity:Interaction.Behaviors>
-                        <local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}" />
-                    </interactivity:Interaction.Behaviors>
+					<interactivity:Interaction.Behaviors>
+						<local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"/>
+					</interactivity:Interaction.Behaviors>
 
-                    <!--  Первый уровень заголовков  -->
+					<!--Первый уровень заголовков-->
 
-                    <Border Grid.Row="1" Grid.Column="0">
-                        <TextBlock Text="№ п/п" />
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="1">
-                        <TextBlock Text="Регистрационный номер организации в СГУК РВ в РАО" />
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="2">
-                        <TextBlock Text="Код ОКПО организации" />
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="3">
-                        <TextBlock Text="Наименование организации (сокращенное наименование при наличии)" />
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="4">
-                        <TextBlock Text="Сведения о лицензии (лицензиях) и/или решении о регистрации" />
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="5">
-                        <TextBlock Text="Количество отчетных форм 1.1-1.4, содержащих сведения об инвентаризации" />
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="6">
-                        <TextBlock Text="Количество отчетов по формам 1.1-1.4, за исключением форм со сведениями по инвентаризации" />
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="7">
-                        <TextBlock Text="Количество отчетов по форме 2.12" />
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="8">
-                        <TextBlock Text="Примечание" />
-                    </Border>
-                </Grid>
+					<Border Grid.Column="0" Grid.Row="1">
+						<TextBlock Text="№ п/п"/>
+					</Border>
+					<Border Grid.Column="1" Grid.Row="1">
+						<TextBlock Text="Регистрационный номер организации в СГУК РВ в РАО"/>
+					</Border>
+					<Border Grid.Column="2" Grid.Row="1">
+						<TextBlock Text="Код ОКПО организации"/>
+					</Border>
+					<Border Grid.Column="3" Grid.Row="1">
+						<TextBlock Text="Наименование организации (сокращенное наименование при наличии)"/>
+					</Border>
+					<Border Grid.Column="4" Grid.Row="1">
+						<TextBlock Text="Сведения о лицензии (лицензиях) и/или решении о регистрации"/>
+					</Border>
+					<Border Grid.Column="5" Grid.Row="1">
+						<TextBlock Text="Количество отчетных форм 1.1-1.4, содержащих сведения об инвентаризации"/>
+					</Border>
+					<Border Grid.Column="6" Grid.Row="1">
+						<TextBlock Text="Количество отчетов по формам 1.1-1.4, за исключением форм со сведениями по инвентаризации"/>
+					</Border>
+					<Border Grid.Column="7" Grid.Row="1">
+						<TextBlock Text="Количество отчетов по форме 2.12"/>
+					</Border>
+					<Border Grid.Column="8" Grid.Row="1">
+						<TextBlock Text="Примечание"/>
+					</Border>
+				</Grid>
 
-                <DataGrid
-                    x:Name="dataGrid"
-                    Grid.Row="1"
-                    x:CompileBindings="True"
-                    Classes="table"
-                    Items="{Binding FormList}"
-                    SelectedItem="{Binding SelectedForm}">
+				<DataGrid Grid.Row="1"
+                          Classes="table"
+                          x:CompileBindings="True"
+                          x:Name="dataGrid"
+                          Items="{Binding FormList}"
+                          SelectedItem="{Binding SelectedForm}">
 
-                    <DataGrid.Styles>
-                        <Style Selector="DataGridCell">
-                            <Setter x:DataType="forms4:Form41" Property="Background" Value="{Binding RowColor, Converter={StaticResource SystemDrawingColorToSolidColorBrush}}" />
-                            <Setter x:DataType="forms4:Form41" Property="ToolTip.Tip" Value="{Binding ToolTipText}" />
-                        </Style>
-                        <Style Selector="DataGrid DataGridRow:selected DataGridCell">
-                            <Setter Property="CornerRadius" Value="5" />
-                            <Setter Property="Foreground" Value="Black" />
-                            <Setter Property="Background">
-                                <MultiBinding x:DataType="forms4:Form41" Converter="{StaticResource ColorBlendConverter}">
-                                    <Binding Source="LightBlue" />
-                                    <!--  Базовый цвет выделения  -->
-                                    <Binding Path="RowColor" />
-                                    <!--  Цвет из условия  -->
-                                </MultiBinding>
-                            </Setter>
-                        </Style>
+					<DataGrid.Styles>
+						<Style Selector="DataGridCell">
+							<Setter Property="Background"
+									x:DataType="forms4:Form41" 
+									Value="{Binding RowColor, Converter={ StaticResource SystemDrawingColorToSolidColorBrush}}"/>
+							<Setter Property="ToolTip.Tip" 
+									x:DataType="forms4:Form41"
+									Value="{Binding ToolTipText}"/> 
+						</Style>
+						<Style Selector="DataGrid DataGridRow:selected DataGridCell">
+							<Setter Property="CornerRadius" Value="5"/>
+							<Setter Property="Foreground" Value="Black"/>
+							<Setter Property="Background">
+								<MultiBinding x:DataType="forms4:Form41" Converter="{StaticResource ColorBlendConverter}">
+									<Binding Source="LightBlue"/>
+									<!-- Базовый цвет выделения -->
+                                    <Binding Path="RowColor"/>
+									<!-- Цвет из условия -->
+								</MultiBinding>
+							</Setter>
+						</Style>
 
-                        <Style Selector="DataGrid DataGridRow:pointerover:not(:selected) DataGridCell">
-                            <Setter Property="Foreground" Value="Black" />
-                            <Setter Property="Background">
-                                <MultiBinding x:DataType="forms4:Form41" Converter="{StaticResource ColorBlendConverter}">
-                                    <Binding Source="LightGray" />
-                                    <!--  Базовый цвет наведения  -->
-                                    <Binding Path="RowColor" />
-                                    <!--  Цвет из условия  -->
-                                </MultiBinding>
-                            </Setter>
-                        </Style>
+						<Style Selector="DataGrid DataGridRow:pointerover:not(:selected) DataGridCell">
+							<Setter Property="Foreground" Value="Black"/>
+							<Setter Property="Background">
+								<MultiBinding x:DataType="forms4:Form41" Converter="{StaticResource ColorBlendConverter}">
+                                    <Binding Source="LightGray"/>
+                                    <!-- Базовый цвет наведения -->
+                                    <Binding  Path="RowColor"/>
+									<!-- Цвет из условия -->
+								</MultiBinding>
+							</Setter>
+						</Style>
 
-                    </DataGrid.Styles>
+					</DataGrid.Styles>
+					
+					<interactivity:Interaction.Behaviors>
+						<local:DataGridColumnWidthLoadBehavior FormNum="4.1"/>
+						<local:DataGridPointerBehavior/>
+						<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
+						<local:DeselectDataGridOnClickOutsideBehavior/>
+						<local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}"/>
+						<local:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}"/>
+					</interactivity:Interaction.Behaviors>
 
-                    <interactivity:Interaction.Behaviors>
-                        <local:DataGridColumnWidthLoadBehavior FormNum="4.1" />
-                        <local:DataGridPointerBehavior />
-                        <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
-                        <local:DeselectDataGridOnClickOutsideBehavior />
-                        <local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
-                        <local:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
-                    </interactivity:Interaction.Behaviors>
+					<DataGrid.Columns>
 
-                    <DataGrid.Columns>
+						<DataGridTextColumn Binding="{Binding NumberInOrder.Value}"
+											Width="40"
+											IsReadOnly="True"
+											x:DataType="forms4:Form41">
+							<DataGridTextColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="1"/>
+											<!--<Button Grid.Column="1"/>-->
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTextColumn.HeaderTemplate>
+						</DataGridTextColumn>
 
-                        <DataGridTextColumn
-                            Width="40"
-                            x:DataType="forms4:Form41"
-                            Binding="{Binding NumberInOrder.Value}"
-                            IsReadOnly="True">
-                            <DataGridTextColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="1" />
-                                            <!--<Button Grid.Column="1"/>-->
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTextColumn.HeaderTemplate>
-                        </DataGridTextColumn>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="2"/>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="2" />
-
-                                            <!--<controls:FilterPopup
+											<!--<controls:FilterPopup
 												Grid.Column="1"
 												HorizontalAlignment="Center"
-												VerticalAlignment="Center"/>-->
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
+												VerticalAlignment="Center"/> -->
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
 
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms4:Form41">
-                                    <TextBox Text="{Binding RegNo.Value, Mode=TwoWay}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms4:Form41">
+									<TextBox Text="{Binding RegNo.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="3" />
-                                            <!--<Button Grid.Column="1"/>-->
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms4:Form41">
-                                    <TextBox Text="{Binding Okpo.Value, Mode=TwoWay}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+						<DataGridTemplateColumn >
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="3"/>
+											<!--<Button Grid.Column="1"/>-->
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms4:Form41">
+									<TextBox Text="{Binding Okpo.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="4" />
-                                            <!--<Button Grid.Column="1"/>-->
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="4"/>
+											<!--<Button Grid.Column="1"/>-->
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
 
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms4:Form41">
-                                    <TextBox Text="{Binding OrganizationName.Value, Mode=TwoWay}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms4:Form41">
+									<TextBox Text="{Binding OrganizationName.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="5" />
-                                            <!--<Button Grid.Column="1"/>-->
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="5"/>
+											<!--<Button Grid.Column="1"/>-->
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
 
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms4:Form41">
-                                    <TextBox Text="{Binding LicenseOrRegistrationInfo.Value, Mode=TwoWay}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms4:Form41">
+									<TextBox Text="{Binding LicenseOrRegistrationInfo.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="6" />
-                                            <!--<Button Grid.Column="1"/>-->
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
+						<DataGridTemplateColumn >
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="6"/>
+											<!--<Button Grid.Column="1"/>-->
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
 
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms4:Form41">
-                                    <TextBox Text="{Binding NumOfFormsWithInventarizationInfo.Value, Mode=TwoWay, Converter={StaticResource IntToEmptyStringConverter}}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms4:Form41">
+									<TextBox Text="{Binding NumOfFormsWithInventarizationInfo.Value, Mode=TwoWay, Converter={StaticResource IntToEmptyStringConverter}}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="7" />
-                                            <!--<Button Grid.Column="1"/>-->
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
+						<DataGridTemplateColumn >
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="7"/>
+											<!--<Button Grid.Column="1"/>-->
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
 
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms4:Form41">
-                                    <TextBox Text="{Binding NumOfFormsWithoutInventarizationInfo.Value, Mode=TwoWay, Converter={StaticResource IntToEmptyStringConverter}}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms4:Form41">
+									<TextBox Text="{Binding NumOfFormsWithoutInventarizationInfo.Value, Mode=TwoWay, Converter={StaticResource IntToEmptyStringConverter}}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="8" />
-                                            <!--<Button Grid.Column="1"/>-->
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
+						<DataGridTemplateColumn >
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="8"/>
+											<!--<Button Grid.Column="1"/>-->
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
 
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms4:Form41">
-                                    <TextBox Text="{Binding NumOfForms212.Value, Mode=TwoWay, Converter={StaticResource IntToEmptyStringConverter}}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms4:Form41">
+									<TextBox Text="{Binding NumOfForms212.Value, Mode=TwoWay,  Converter={StaticResource IntToEmptyStringConverter}}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="9" />
-                                            <!--<Button Grid.Column="1"/>-->
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
+						<DataGridTemplateColumn>
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="9"/>
+											<!--<Button Grid.Column="1"/>-->
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
 
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms4:Form41">
-                                    <TextBox Text="{Binding Note.Value, Mode=TwoWay}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms4:Form41">
+									<TextBox Text="{Binding Note.Value, Mode=TwoWay}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Grid>
-        </ScrollViewer>
+					</DataGrid.Columns>
+				</DataGrid>
+			</Grid>
+		</ScrollViewer>
 
-        <Border Grid.Row="2" Classes="pageControlContainer">
-            <Grid ColumnDefinitions="Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
-                <TextBlock
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    Margin="5"
-                    Text="Текущая страница" />
+		<Border Grid.Row="2" Classes="pageControlContainer">
+			<Grid
+				  RowDefinitions="Auto,Auto"
+				  ColumnDefinitions="Auto,Auto,Auto,Auto">
+				<TextBlock Text="Текущая страница"
+					Grid.Row="0" Grid.Column="0" Margin="5"/>
 
-                <controls:NumericLeftRight
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    Margin="5"
-                    Minimum="1"
-                    Value="{Binding CurrentPage}" />
+				<controls:NumericLeftRight
+					Grid.Row="0" Grid.Column="1" Margin="5"
+					Value="{Binding CurrentPage}"
+					Minimum="1"/>
+				
+				<TextBlock Text ="Кол-во страниц:"
+					Grid.Row="0" Grid.Column="2" Margin="5"/>
+				<TextBlock Text="{Binding TotalPages}"
+					Grid.Row="0" Grid.Column="3" Margin="5"/>
+				<TextBlock Text="Кол-во строчек на странице"
+					Grid.Row="1" Grid.Column="0" Margin="5"/>
 
-                <TextBlock
-                    Grid.Row="0"
-                    Grid.Column="2"
-                    Margin="5"
-                    Text="Кол-во страниц:" />
-                <TextBlock
-                    Grid.Row="0"
-                    Grid.Column="3"
-                    Margin="5"
-                    Text="{Binding TotalPages}" />
-                <TextBlock
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Margin="5"
-                    Text="Кол-во строчек на странице" />
+				<controls:NumericLeftRight
+					Grid.Row="1" Grid.Column="1" Margin="5"
+					Value="{Binding RowCount}"
+					Minimum="1"/>
 
-                <controls:NumericLeftRight
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Margin="5"
-                    Minimum="1"
-                    Value="{Binding RowCount}" />
-
-                <TextBlock
-                    Grid.Row="1"
-                    Grid.Column="2"
-                    Margin="5"
-                    Text="Всего строчек:" />
-                <TextBlock
-                    Grid.Row="1"
-                    Grid.Column="3"
-                    Margin="5"
-                    Text="{Binding TotalRows}" />
-            </Grid>
-        </Border>
-    </Grid>
+				<TextBlock Text="Всего строчек:"
+					Grid.Row="1" Grid.Column="2" Margin="5"/>
+				<TextBlock Text="{Binding TotalRows}"
+					Grid.Row="1" Grid.Column="3" Margin="5"/>
+			</Grid>
+		</Border>
+	</Grid>
 </Window>

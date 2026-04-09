@@ -11,7 +11,7 @@ using Models.DBRealization;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Client_App.Commands.AsyncCommands.Change;
+namespace Client_App.Commands.AsyncCommands;
 
 /// <summary>
 /// Открыть окно редактирования выбранной формы.

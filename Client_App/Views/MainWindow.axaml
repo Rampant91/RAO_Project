@@ -318,13 +318,7 @@
                           CommandParameter="changelog"
                           Header="Список изменений"/>
                     
-            </MenuItem>
-
-			<MenuItem Name="Passports"
-                      Header="Паспорта">
-				<MenuItem Command="{Binding OpenPassportMenu}"
-						  Header="Открыть меню паспортов"/>
-		    </MenuItem>
+            </MenuItem> 
 
         </Menu>
         

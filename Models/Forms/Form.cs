@@ -289,7 +289,7 @@ public abstract partial class Form : IKey, IDataGridColumn
             .ToHashSet();
         var allNuclidsInSpr = nuclids
             .All(nuclid => Spravochniks.SprRadionuclids
-                .Any(nameInSpr => nameInSpr.rusName == nuclid));
+                .Any(nameInSpr => nameInSpr.name == nuclid));
         if (!allNuclidsInSpr)
         {
             value.AddError("Недопустимое значение");
@@ -501,7 +501,7 @@ public abstract partial class Form : IKey, IDataGridColumn
     protected static partial Regex DashesRegex();
 
     [GeneratedRegex(@"^\d{8}([\d_][Мм\d]\d{4})?$")]
-    public static partial Regex OkpoRegex();
+    protected static partial Regex OkpoRegex();
 
     #endregion
 

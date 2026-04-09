@@ -49,7 +49,6 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
     {
         DragSelection_PointerPressed(sender, e);
         TextBoxFocus_PointerPressed(sender, e);
-        Button_PointerPressed(sender, e);
 
     }
 
@@ -88,21 +87,9 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
         if (point.Properties.IsLeftButtonPressed)
         {
             _isSelecting = true;
-            try
-            {
 
-                if (e.PointerPressedEventArgs.KeyModifiers != KeyModifiers.Shift)
-                {
-                    if (AssociatedObject.SelectionMode is DataGridSelectionMode.Extended)
-                        AssociatedObject.SelectedItems.Clear();
-                    else if (AssociatedObject.SelectionMode is DataGridSelectionMode.Single)
-                        AssociatedObject.SelectedItem = null;
-                }
-            }
-            catch
-            {
-
-            }
+            if (e.PointerPressedEventArgs.KeyModifiers != KeyModifiers.Shift)
+                AssociatedObject.SelectedItems.Clear();
             // Захватываем указатель для получения всех событий
             AssociatedObject.CapturePointer(e.PointerPressedEventArgs.Pointer);
 
@@ -115,10 +102,7 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
                 _lastSelectedItem = item;
 
                 // Обычный клик - очищаем и выделяем один элемент
-                if (AssociatedObject.SelectionMode is DataGridSelectionMode.Extended)
-                    AssociatedObject.SelectedItems.Add(item);
-                else if (AssociatedObject.SelectionMode is DataGridSelectionMode.Single)
-                    AssociatedObject.SelectedItem = item;
+                AssociatedObject.SelectedItems.Add(item);
             }
 
         }
@@ -126,7 +110,7 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
 
     private void DragSelection_PointerMoved(object sender, PointerEventArgs e)
     {
-        if (_isSelecting && AssociatedObject.SelectionMode is DataGridSelectionMode.Extended)
+        if (_isSelecting)
         {
             var point = e.GetCurrentPoint(AssociatedObject);
             var row = GetRowAtPoint(point.Position);
@@ -214,31 +198,6 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
     }
     #endregion
 
-    private void Button_PointerPressed(object sender, DataGridCellPointerPressedEventArgs e)
-    {
-        var point = e.PointerPressedEventArgs.GetCurrentPoint(AssociatedObject);
-
-
-        if (point.Properties.IsLeftButtonPressed)
-        {
-            // Захватываем указатель для получения всех событий
-            AssociatedObject.CapturePointer(e.PointerPressedEventArgs.Pointer);
-
-            // Находим визуальный элемент в точке клика
-            var visual = AssociatedObject.GetVisualAt(point.Position);
-
-            // Ищем TextBox в визуальном дереве
-            var button = FindVisualParent<Button>((Visual)visual);
-
-            if (button != null)
-            {
-                button.Command.Execute(button.CommandParameter);
-            }
-
-
-        }
-    }
-
 
     // Поведение отвечающее за фокусировку на текстбоксе
     // Если пользователь кликнул на текстбокс и отпустил в том же месте, то программа сфокусируется на нем
@@ -297,8 +256,7 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
         {
             if ((_firstSelectedTextBox != null)
                 && (_lastSelectedTextBox != null)
-                && (_firstSelectedTextBox == _lastSelectedTextBox)
-                && (_firstSelectedTextBox.IsEnabled))
+                && (_firstSelectedTextBox == _lastSelectedTextBox))
             {
                 _firstSelectedTextBox.LostFocus += OnTextBoxLostFocus;
                 _firstSelectedTextBox.Focus();
@@ -318,8 +276,7 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
     {
         if ((_firstSelectedTextBox != null)
                 && (_lastSelectedTextBox != null)
-                && (_firstSelectedTextBox == _lastSelectedTextBox)
-                && (_firstSelectedTextBox.IsEnabled))
+                && (_firstSelectedTextBox == _lastSelectedTextBox))
         {
             _firstSelectedTextBox.LostFocus += OnTextBoxLostFocus;
             _firstSelectedTextBox.Focus();
