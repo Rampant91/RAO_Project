@@ -1045,7 +1045,7 @@ public abstract class CheckF41 : CheckBase
         if (!inventoryFlag && (massBalanceLiquid > 0 || massBalanceSolid > 0 || massBalanceGas > 0))
             return new CheckError
             {
-                Row = "{form41.NumberInOrder_DB}",
+                Row = $"{form41.NumberInOrder_DB}",
                 RegNo = form41.RegNo_DB,
                 Okpo = form41.Okpo_DB,
                 DbValue = $"{massBalanceLiquid}" +
