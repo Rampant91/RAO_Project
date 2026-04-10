@@ -1171,9 +1171,10 @@
 									</DataGridTemplateColumn.HeaderTemplate>
 									<DataGridTemplateColumn.CellTemplate>
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<TextBox Text="{Binding ClassRao, Mode=TwoWay}">
+											<TextBox Text="{Binding ClassRao, Mode=TwoWay}"
+													 MaxLength="1">
 												<interactivity:Interaction.Behaviors>
-													<local:TextBoxWhiteListValidationBehavior WhiteListRegex="^[0-9]+$"/>
+													<local:TextBoxWhiteListValidationBehavior WhiteListRegex="^[1-6]+$"/>
 												</interactivity:Interaction.Behaviors>
 											</TextBox>
 										</DataTemplate>
@@ -1192,7 +1193,8 @@
 									</DataGridTemplateColumn.HeaderTemplate>
 									<DataGridTemplateColumn.CellTemplate>
 										<DataTemplate x:DataType="passports:CharacteristicPrimaryPackage">
-											<TextBox Text="{Binding CodeRao, Mode=TwoWay}">
+											<TextBox Text="{Binding CodeRao, Mode=TwoWay}"
+													 MaxLength="11">
 												<interactivity:Interaction.Behaviors>
 													<local:TextBoxWhiteListValidationBehavior WhiteListRegex="^[0-9]+$"/>
 												</interactivity:Interaction.Behaviors>
