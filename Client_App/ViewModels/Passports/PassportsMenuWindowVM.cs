@@ -58,9 +58,9 @@ namespace Client_App.ViewModels.Passports
         {
             AddPackagePassport = new AddPackagePassportAsyncCommand(this);
             ChangePackagePassport = new ChangePackagePassportAsyncCommand();
-            ExcelExportPackagePassport = new ExcelExportPackagePassport();
+            ExcelExportPackagePassport = new ExcelExportPackagePassportPrikaz();
             DeletePackagePassport = new DeletePackagePassportAsyncCommand(this);
-            ImportExcelPackagePassport = new ImportExcelPackagePassportAsyncCommand(this);
+            ImportExcelPackagePassport = new ImportExcelPackagePassportPrikazAsyncCommand(this);
         }
         #endregion
 

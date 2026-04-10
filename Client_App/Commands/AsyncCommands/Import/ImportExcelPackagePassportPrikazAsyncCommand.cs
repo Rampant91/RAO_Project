@@ -12,6 +12,7 @@ using Models.Passports;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection.PortableExecutable;
@@ -69,9 +70,9 @@ namespace Client_App.Commands.AsyncCommands.Import
                 var worksheet = excelPackage.Workbook.Worksheets[0];
 
                 var val = worksheet.Name == "Паспорт на упаковку"
-                      && Convert.ToString(worksheet.Cells["J1"].Value)
+                      && Convert.ToString(worksheet.Cells["K1"].Value)
                           is "П  А  С  П  О  Р  Т"
-                      && Convert.ToString(worksheet.Cells["J2"].Value)
+                      && Convert.ToString(worksheet.Cells["K2"].Value)
                           is "на упаковку твердых радиоактивных отходов";
 
                 if (!val)
@@ -150,57 +151,84 @@ namespace Client_App.Commands.AsyncCommands.Import
                 //Table2
                 var currentRow = 25;
                 var offset = 0;
-                List<CharacteristicPrimaryPackage> primaryPackages = new();
-                while (worksheet.Cells[$"C{currentRow}"].Value is not "ВСЕГО:")
+
+
+                //Первая запись выделяется под общую характеристику упаковки
+                impPassport.ContentCharacteristics.Add(new CharacteristicPrimaryPackage(impPassport));
+
+                //Инициализируем характеристику первичных упаковок
+                var count = 0;
+                while (worksheet.Cells[$"A{currentRow + count}"].Text != "ВСЕГО:")
                 {
-                    var characteristic = new CharacteristicPrimaryPackage(impPassport);
+                    CharacteristicPrimaryPackage characteristic = new CharacteristicPrimaryPackage(impPassport);
+                    
 
-                    characteristic.PackageType = worksheet.Cells[$"B{currentRow}"].Text;
-                    characteristic.PackageNum = worksheet.Cells[$"C{currentRow}"].Text;
-                    characteristic.PrimaryPackageQuantity = uint.TryParse(worksheet.Cells[$"D{currentRow}"].Text, out intValue) ? intValue : 0;
-                    characteristic.PrimaryPackageVolume = double.TryParse(worksheet.Cells[$"E{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
-                    characteristic.PrimaryPackageMass = double.TryParse(worksheet.Cells[$"F{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
+                    characteristic.PackageType = worksheet.Cells[$"B{currentRow + count}"].Text;
+                    characteristic.PackageNum = worksheet.Cells[$"C{currentRow + count}"].Text;
+                    characteristic.PrimaryPackageQuantity = uint.TryParse(worksheet.Cells[$"D{currentRow + count}"].Text, out intValue) ? intValue : 0;
+                    characteristic.PrimaryPackageVolume = double.TryParse(worksheet.Cells[$"E{currentRow + count}"].Text, out doubleValue) ? doubleValue : 0;
+                    characteristic.PrimaryPackageMass = double.TryParse(worksheet.Cells[$"F{currentRow + count}"].Text, out doubleValue) ? doubleValue : 0;
 
-                    primaryPackages.Add(characteristic);
-                    if (primaryPackages.Count > 2)
+                    impPassport.ContentCharacteristics.Add(characteristic);
+                    count++;
+                    if (count > 2)
                         offset++;
                 }
 
-                var startTable2 = 31 + offset;
 
-                currentRow = startTable2;
+                currentRow = 31 + offset;
+                var tableRowCount = 0;
 
-
-                while (worksheet.Cells[$"M{currentRow}:P{currentRow}"].Value is not "активность приведена на")
+                while (worksheet.Cells[$"M{currentRow}:P{currentRow}"].Value is not "активность приведена на"
+                    && impPassport.ContentCharacteristics.Count > tableRowCount)
                 {
-                    var characteristic = new CharacteristicPrimaryPackage(impPassport);
-                    impPassport.ContentCharacteristics.Add(characteristic);
+                    CharacteristicPrimaryPackage characteristic;
+                    characteristic = impPassport.ContentCharacteristics[tableRowCount];
+
+
+                    //Считаем кол-во строк в текущем кортеже
+                    var rowHeight = 0;
+                    if (worksheet.Cells[$"O{currentRow}:P{currentRow}"].Text is "долгоживущие")
+                    {
+                        rowHeight++;
+                        while (worksheet.Cells[$"O{currentRow + rowHeight}:P{currentRow + rowHeight}"].Text is not "долгоживущие"
+                            && worksheet.Cells[$"M{currentRow + rowHeight}"].Text is not "активность приведена на")
+                        {
+                            rowHeight++;
+                        }
+                    }
 
                     //Переносим все данные кроме списка радионуклидов
-                    //characteristic.PackageIdNum = worksheet.Cells[$"A{currentRow}"].Text;
-                    characteristic.ClassRao = byte.TryParse(worksheet.Cells[$"C{currentRow}"].Text, out byteValue) ? byteValue : (byte)0;
-                    characteristic.CodeRao = worksheet.Cells[$"D{currentRow}"].Text;
-                    characteristic.PhysicochemicalForm = worksheet.Cells[$"E{currentRow}"].Text;
-                    characteristic.MorphologicalComposition = worksheet.Cells[$"F{currentRow}"].Text;
-                    characteristic.Flammability = worksheet.Cells[$"G{currentRow}"].Text;
-                    //characteristic.LongLivingActivity = double.TryParse(worksheet.Cells[$"I{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
-                    //characteristic.TransuraniumActivity = double.TryParse(worksheet.Cells[$"J{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
-                    //characteristic.AlphaActivity = double.TryParse(worksheet.Cells[$"K{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
-                    //characteristic.BetaGammaActivity = double.TryParse(worksheet.Cells[$"L{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
-                    //characteristic.TritiumActivity = double.TryParse(worksheet.Cells[$"M{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
-                    ////characteristic.TotalActivity = double.TryParse(worksheet.Cells[$"N{currentRow}"].Text, out doubleValue) ? doubleValue : 0;
-                    characteristic.NuclearHazardousFissileNuclides = worksheet.Cells[$"W{currentRow}"].Text;
-                }
-                offset = currentRow - startTable2;
-                //Footer 
-                impPassport.Notes = worksheet.Cells[$"A{33 + offset}"].Text;
-                impPassport.ResponsibleTransfer = worksheet.Cells[$"F{35 + offset}"].Text;
-                impPassport.GradeAuthorizedPersonTransfer = worksheet.Cells[$"J{35 + offset}"].Text;
-                impPassport.FioAuthorizedPersonTransfer = worksheet.Cells[$"M{35 + offset}"].Text;
+                    characteristic.ClassRao = byte.TryParse(worksheet.Cells[$"D{currentRow}"].Text, out byteValue) ? byteValue : (byte)0;
+                    characteristic.CodeRao = worksheet.Cells[$"D{currentRow + 1}"].Text;
+                    characteristic.PhysicochemicalForm = worksheet.Cells[$"F{currentRow}"].Text;
+                    characteristic.MorphologicalComposition = worksheet.Cells[$"H{currentRow}"].Text;
+                    characteristic.Flammability = worksheet.Cells[$"K{currentRow}"].Text;
+                    characteristic.NuclearHazardousFissileNuclides = worksheet.Cells[$"S{currentRow}"].Text;
 
-                impPassport.ResponsibleReception = worksheet.Cells[$"F{36 + offset}"].Text;
-                impPassport.GradeAuthorizedPersonReception = worksheet.Cells[$"J{36 + offset}"].Text;
-                impPassport.FioAuthorizedPersonReception = worksheet.Cells[$"M{36 + offset}"].Text;
+                    //Переносим список радионуклидов
+                    for(int i = 0; i < rowHeight; i++)
+                    {
+                        var radionuclid = new Radionuclid();
+                        radionuclid.Name = worksheet.Cells[$"M{currentRow + i}"].Text;
+                        radionuclid.Activity = double.TryParse(worksheet.Cells[$"N{currentRow + i}"].Text, out doubleValue) ? doubleValue : 0;
+                    }
+
+                    currentRow += rowHeight;
+                    offset += rowHeight;
+                    tableRowCount++;
+                }
+
+                
+                //Footer 
+                impPassport.Notes = worksheet.Cells[$"A{34 + offset}"].Text;
+                impPassport.ResponsibleTransfer = worksheet.Cells[$"F{37 + offset}"].Text;
+                impPassport.GradeAuthorizedPersonTransfer = worksheet.Cells[$"K{37 + offset}"].Text;
+                impPassport.FioAuthorizedPersonTransfer = worksheet.Cells[$"N{37 + offset}"].Text;
+
+                impPassport.ResponsibleReception = worksheet.Cells[$"F{40 + offset}"].Text;
+                impPassport.GradeAuthorizedPersonReception = worksheet.Cells[$"K{40 + offset}"].Text;
+                impPassport.FioAuthorizedPersonReception = worksheet.Cells[$"N{40 + offset}"].Text;
 
                 StaticConfiguration.DBModel.package_passport.Add(impPassport);
                 await StaticConfiguration.DBModel.SaveChangesAsync();

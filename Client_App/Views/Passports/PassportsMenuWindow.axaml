@@ -39,7 +39,7 @@
 					<Setter Property="FontSize" Value="14"/>
 				</Style>
 			</Menu.Styles>
-			<MenuItem Header="Импорт пасспорта">
+			<MenuItem Header="Импорт паспорта">
 				<MenuItem Header="Импорт из Excel"
 					Command="{Binding ImportExcelPackagePassport}"/>
 			</MenuItem>
