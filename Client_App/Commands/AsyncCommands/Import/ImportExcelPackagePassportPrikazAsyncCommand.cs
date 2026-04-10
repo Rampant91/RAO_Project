@@ -161,15 +161,19 @@ namespace Client_App.Commands.AsyncCommands.Import
                 while (worksheet.Cells[$"A{currentRow + count}"].Text != "ВСЕГО:")
                 {
                     CharacteristicPrimaryPackage characteristic = new CharacteristicPrimaryPackage(impPassport);
-                    
 
-                    characteristic.PackageType = worksheet.Cells[$"B{currentRow + count}"].Text;
-                    characteristic.PackageNum = worksheet.Cells[$"C{currentRow + count}"].Text;
-                    characteristic.PrimaryPackageQuantity = uint.TryParse(worksheet.Cells[$"D{currentRow + count}"].Text, out intValue) ? intValue : 0;
-                    characteristic.PrimaryPackageVolume = double.TryParse(worksheet.Cells[$"E{currentRow + count}"].Text, out doubleValue) ? doubleValue : 0;
-                    characteristic.PrimaryPackageMass = double.TryParse(worksheet.Cells[$"F{currentRow + count}"].Text, out doubleValue) ? doubleValue : 0;
+                    if (!string.IsNullOrWhiteSpace(worksheet.Cells[$"B{currentRow + count}"].Text)
+                        || !string.IsNullOrWhiteSpace(worksheet.Cells[$"C{currentRow + count}"].Text))
+                    {
+                        characteristic.PackageType = worksheet.Cells[$"B{currentRow + count}"].Text;
+                        characteristic.PackageNum = worksheet.Cells[$"C{currentRow + count}"].Text;
+                        characteristic.PrimaryPackageQuantity = uint.TryParse(worksheet.Cells[$"D{currentRow + count}"].Text, out intValue) ? intValue : 0;
+                        characteristic.PrimaryPackageVolume = double.TryParse(worksheet.Cells[$"E{currentRow + count}"].Text, out doubleValue) ? doubleValue : 0;
+                        characteristic.PrimaryPackageMass = double.TryParse(worksheet.Cells[$"F{currentRow + count}"].Text, out doubleValue) ? doubleValue : 0;
 
-                    impPassport.ContentCharacteristics.Add(characteristic);
+                        impPassport.ContentCharacteristics.Add(characteristic);
+                    }
+
                     count++;
                     if (count > 2)
                         offset++;
@@ -209,9 +213,15 @@ namespace Client_App.Commands.AsyncCommands.Import
                     //Переносим список радионуклидов
                     for(int i = 0; i < rowHeight; i++)
                     {
-                        var radionuclid = new Radionuclid();
-                        radionuclid.Name = worksheet.Cells[$"M{currentRow + i}"].Text;
-                        radionuclid.Activity = double.TryParse(worksheet.Cells[$"N{currentRow + i}"].Text, out doubleValue) ? doubleValue : 0;
+                        if (!string.IsNullOrWhiteSpace(worksheet.Cells[$"M{currentRow + i}"].Text)
+                            || !string.IsNullOrWhiteSpace(worksheet.Cells[$"N{currentRow + i}"].Text))
+                        {
+                            var radionuclid = new Radionuclid();
+                            radionuclid.Name = worksheet.Cells[$"M{currentRow + i}"].Text;
+                            radionuclid.Activity = double.TryParse(worksheet.Cells[$"N{currentRow + i}"].Text, out doubleValue) ? doubleValue : 0;
+
+                            characteristic.RadionuclidsList.Add(radionuclid);
+                        }
                     }
 
                     currentRow += rowHeight;

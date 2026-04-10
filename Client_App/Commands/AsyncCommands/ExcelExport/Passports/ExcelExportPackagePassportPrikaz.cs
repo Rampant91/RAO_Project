@@ -329,7 +329,9 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
 
                     worksheet.Cells[$"A{start + 3}"].Value = "№";
                     worksheet.Cells[$"B{start + 3}:C{start + 3}"].Merge = true;
-                    if (passport.PackageIdCode.Split('/').Count() >=2)
+                    
+                    if (passport.PackageIdCode !=null &&
+                        passport.PackageIdCode.Split('/').Count() >=2)
                         worksheet.Cells[$"B{start + 3}:C{start + 3}"].Value = $"{passport.PackageIdCode.Split('/')[1]}";
                 }
                 else if (i > 0)
