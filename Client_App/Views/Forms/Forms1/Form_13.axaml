@@ -403,8 +403,7 @@
                                                                Margin="0,0,10,0" 
                                                                FontWeight="Bold"/>
                                                     <TextBlock Grid.Column="1" 
-                                                               Text="{Binding Description}" 
-                                                               Foreground="Gray"/>
+                                                               Text="{Binding Description}" Foreground="Gray" TextWrapping="Wrap" MaxWidth="250"/>
                                                 </Grid>
                                             </DataTemplate>
                                         </AutoCompleteBox.ItemTemplate>
@@ -880,5 +879,8 @@
 
     </Grid>
 </Window>
+
+
+
 
 
