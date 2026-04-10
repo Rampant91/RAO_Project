@@ -29,7 +29,9 @@ namespace Client_App.Commands.AsyncCommands.Generate
             if (passportCollection == null ||
                 passportCollection.Count <= 0) return;
 
-            var index = Report.Rows17.Max(form => form.NumberInOrder_DB);
+            int index = 0;
+            if (Report.Rows17.Count > 0)
+                index = Report.Rows17.Max(form => form.NumberInOrder_DB);
 
             foreach (var passport in passportCollection)
             {
