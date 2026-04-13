@@ -1,4 +1,4 @@
-namespace Client_App.ViewModels.Forms.Forms1;
+namespace Client_App.ViewModels.Forms.Forms1.Items;
 
 /// <summary>
 /// Код операции с описанием

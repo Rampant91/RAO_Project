@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security.Cryptography.Pkcs;
+using Client_App.ViewModels.Forms.Forms1.Items;
 
-namespace Client_App.ViewModels.Forms.Forms1;
+namespace Client_App.ViewModels.Forms.Forms1.Providers;
 
 /// <summary>
 /// Провайдер кодов операций для форм 1.x

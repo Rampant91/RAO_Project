@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Client_App.ViewModels.Forms.Forms1.Items;
+using Client_App.ViewModels.Forms.Forms1.Providers;
 
 namespace Client_App.ViewModels.Forms.Forms1;
 
@@ -12,7 +14,8 @@ public class Form_17VM : BaseFormVM
     public override string FormType => "1.7";
 
     public ObservableCollection<OperationCodeItem> OperationCodes => 
-        new(OperationCodesProvider.AllOperationCodes.Where(x => OperationCodesProvider.GetValidCodesForForm17().Contains(x.Code)));
+        new(OperationCodesProvider.AllOperationCodes
+            .Where(x => OperationCodesProvider.GetValidCodesForForm17().Contains(x.Code)));
     public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm17();
 
     #region Constructors

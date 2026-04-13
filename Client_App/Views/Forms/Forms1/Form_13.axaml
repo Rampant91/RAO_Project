@@ -10,6 +10,7 @@
         xmlns:local="using:Client_App.Behaviors"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
+        xmlns:items="clr-namespace:Client_App.ViewModels.Forms.Forms1.Items"
         x:Name="1.3"
         Title="{Binding WindowTitle}"
         MinWidth="800"
@@ -396,7 +397,7 @@
                                             <local:AutoCompleteBoxSelectionChangedBehavior />
                                         </interactivity:Interaction.Behaviors>
                                         <AutoCompleteBox.ItemTemplate>
-                                            <DataTemplate x:DataType="vm:OperationCodeItem">
+                                            <DataTemplate x:DataType="items:OperationCodeItem">
                                                 <Grid ColumnDefinitions="Auto,*">
                                                     <TextBlock Grid.Column="0" 
                                                                Text="{Binding Code}" 

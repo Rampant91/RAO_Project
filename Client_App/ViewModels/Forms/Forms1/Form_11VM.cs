@@ -5,6 +5,8 @@ using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.Commands.SyncCommands;
 using Client_App.ViewModels.Controls;
+using Client_App.ViewModels.Forms.Forms1.Items;
+using Client_App.ViewModels.Forms.Forms1.Providers;
 using Models.Collections;
 using System;
 using System.Collections.Generic;
@@ -28,6 +30,17 @@ public class Form_11VM : BaseFormVM
     /// Список допустимых кодов операции для валидации (только коды без описаний)
     /// </summary>
     public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm11();
+
+    /// <summary>
+    /// Справочник категорий опасности для AutoCompleteBox с описаниями (только допустимые для формы)
+    /// </summary>
+    public ObservableCollection<CategoryItem> CategoryCodes =>
+        new(CategoryProvider.AllCategories.Where(x => CategoryProvider.GetValidCategoriesForForm11().Contains(x.Code)));
+
+    /// <summary>
+    /// Список допустимых категорий для валидации (только коды без описаний)
+    /// </summary>
+    public ICollection<short?> ValidCategories => CategoryProvider.GetValidCategoriesForForm11();
 
     #region Constructors
 

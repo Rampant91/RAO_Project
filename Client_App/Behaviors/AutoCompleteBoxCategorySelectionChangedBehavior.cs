@@ -5,7 +5,7 @@ using Client_App.ViewModels.Forms.Forms1.Items;
 
 namespace Client_App.Behaviors;
 
-public class AutoCompleteBoxSelectionChangedBehavior : Behavior<AutoCompleteBox>
+public class AutoCompleteBoxCategorySelectionChangedBehavior : Behavior<AutoCompleteBox>
 {
     protected override void OnAttached()
     {
@@ -29,12 +29,12 @@ public class AutoCompleteBoxSelectionChangedBehavior : Behavior<AutoCompleteBox>
 
     private void OnDropDownClosed(object? sender, System.EventArgs e)
     {
-        if (AssociatedObject is not { SelectedItem: OperationCodeItem selectedItem }) return;
-        AssociatedObject.Text = selectedItem.Code;
+        if (AssociatedObject is not { SelectedItem: CategoryItem selectedItem }) return;
+        AssociatedObject.Text = selectedItem.Code?.ToString() ?? string.Empty;
             
         // Помечаем, что значение было выбрано из списка
         var behaviors = Interaction.GetBehaviors(AssociatedObject);
-        var validationBehavior = behaviors.OfType<AutoCompleteBoxValidationBehavior>().FirstOrDefault();
+        var validationBehavior = behaviors.OfType<AutoCompleteBoxCategoryValidationBehavior>().FirstOrDefault();
         validationBehavior?.MarkValueSelectedFromDropDown();
     }
 }

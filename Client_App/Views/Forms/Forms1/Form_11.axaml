@@ -10,6 +10,7 @@
         xmlns:local="using:Client_App.Behaviors"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
+        xmlns:items="clr-namespace:Client_App.ViewModels.Forms.Forms1.Items"
         x:Name="1.1"
         Title="{Binding WindowTitle}"
         MinWidth="800"
@@ -430,7 +431,7 @@
                                             <local:AutoCompleteBoxSelectionChangedBehavior />
                                         </interactivity:Interaction.Behaviors>
                                         <AutoCompleteBox.ItemTemplate>
-                                            <DataTemplate x:DataType="vm:OperationCodeItem">
+                                            <DataTemplate x:DataType="items:OperationCodeItem">
                                                 <Grid ColumnDefinitions="Auto,*">
                                                     <TextBlock Grid.Column="0" 
                                                                Text="{Binding Code}" 
@@ -622,7 +623,30 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding Category.Value, Mode=TwoWay}" />
+                                    <AutoCompleteBox
+                                        Height="26"
+                                        Items="{Binding VM.CategoryCodes, ElementName=1.1}"
+                                        Text="{Binding Category.Value, Mode=TwoWay, Converter={StaticResource ShortNullableToStringConverter}}"
+                                        HorizontalAlignment="Stretch"
+                                        MinimumPrefixLength="0"
+                                        IsTextCompletionEnabled="True">
+                                        <interactivity:Interaction.Behaviors>
+                                            <local:AutoCompleteBoxCategoryValidationBehavior ValidCategories="{Binding VM.ValidCategories, ElementName=1.1}" />
+                                            <local:AutoCompleteBoxCategorySelectionChangedBehavior />
+                                        </interactivity:Interaction.Behaviors>
+                                        <AutoCompleteBox.ItemTemplate>
+                                            <DataTemplate x:DataType="items:CategoryItem">
+                                                <Grid ColumnDefinitions="Auto,*">
+                                                    <TextBlock Grid.Column="0" 
+                                                               Text="{Binding Code}" 
+                                                               Margin="0,0,10,0" 
+                                                               FontWeight="Bold"/>
+                                                    <TextBlock Grid.Column="1" 
+                                                               Text="{Binding Description}" Foreground="Gray" TextWrapping="Wrap" MaxWidth="250"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </AutoCompleteBox.ItemTemplate>
+                                    </AutoCompleteBox>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

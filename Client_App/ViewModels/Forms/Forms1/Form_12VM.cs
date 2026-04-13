@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using Client_App.ViewModels.Forms.Forms1.Items;
+using Client_App.ViewModels.Forms.Forms1.Providers;
 
 namespace Client_App.ViewModels.Forms.Forms1;
 
@@ -18,7 +20,8 @@ public class Form_12VM : BaseFormVM
     /// Справочник кодов операции для AutoCompleteBox с описаниями
     /// </summary>
     public ObservableCollection<OperationCodeItem> OperationCodes => 
-        new(OperationCodesProvider.AllOperationCodes.Where(x => OperationCodesProvider.GetValidCodesForForm12().Contains(x.Code)));
+        new(OperationCodesProvider.AllOperationCodes
+            .Where(x => OperationCodesProvider.GetValidCodesForForm12().Contains(x.Code)));
 
     /// <summary>
     /// Список допустимых кодов операции для валидации (только коды без описаний)

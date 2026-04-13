@@ -1101,7 +1101,7 @@ public class Form11 : Form1
         set
         {
             Category_DB = value.Value;
-            OnPropertyChanged(nameof(Category));
+            OnPropertyChanged();
         }
     }
 
