@@ -1170,8 +1170,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = $"{codeRao3NuclidTypes} (3-ий символ кода РАО)",
-                Message = 
-                          "Недопустимое значение 3-го символа кода РАО.",
+                Message = "Недопустимое значение 3-го символа кода РАО.",
                 IsCritical = true
             });
         }
@@ -1187,8 +1186,7 @@ public abstract class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
                         Value = $"{codeRao3NuclidTypes} (3-ий символ кода РАО)",
-                        Message = 
-                                  "При отсутствии радионуклидов в графе 9 3-й символ кода РАО должен быть равен 0.",
+                        Message = "При отсутствии радионуклидов в графе 9 3-й символ кода РАО должен быть равен 0.",
                         IsCritical = true
                     });
                 }
@@ -1207,14 +1205,27 @@ public abstract class CheckF16 : CheckBase
                 var containsT = nuclidsExistT && radsSet
                     .Any(x => R
                         .Any(y => comparator.Compare(y["name"], x) == 0 && comparator.Compare(y["code"], "т") == 0));
+
+
                 var expectedValue = "0";
-                if (!containsT && !containsB && !containsA && containsU) expectedValue = "1";
-                else if (!containsT && !containsB && containsA && !containsU) expectedValue = "2";
-                else if (!containsT && !containsB && containsA && containsU) expectedValue = "3";
-                else if ((containsT || containsB) && !containsA && !containsU) expectedValue = "4";
-                else if (!containsT && containsB && containsA && !containsU) expectedValue = "5";
-                else if (containsT && containsB && containsA && !containsU) expectedValue = "5";
-                else if (containsU) expectedValue = "6";
+
+                if (radsSet.Any(x => comparator.Compare(x, "уран естественный") == 0 
+                                     || comparator.Compare(x, "уран обедненный") == 0))
+                {
+                    if (!containsT && !nuclidsExistB && nuclidsExistA && !containsU) expectedValue = "2";
+                    else if (!containsT && !nuclidsExistB && nuclidsExistA && containsU) expectedValue = "3";
+                    else if (nuclidsExistB && nuclidsExistA && !containsU) expectedValue = "5";
+                }
+                else
+                {
+                    if (!containsT && !containsB && !containsA && containsU) expectedValue = "1";
+                    else if (!containsT && !containsB && containsA && !containsU) expectedValue = "2";
+                    else if (!containsT && !containsB && containsA && containsU) expectedValue = "3";
+                    else if ((containsT || containsB) && !containsA && !containsU) expectedValue = "4";
+                    else if (containsB && containsA && !containsU) expectedValue = "5";
+                    else if (containsU) expectedValue = "6";
+                }
+                
                 if (expectedValue != codeRao3NuclidTypes)
                 {
                     result.Add(new CheckError
@@ -1223,8 +1234,7 @@ public abstract class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
                         Value = $"{codeRao3NuclidTypes} (3-ий символ кода РАО)",
-                        Message = 
-                                  "Третий символ кода РАО не соответствует сведениям о суммарной активности (графы 10-13) и/или радионуклидам, " +
+                        Message = "Третий символ кода РАО не соответствует сведениям о суммарной активности (графы 10-13) и/или радионуклидам, " +
                                   "указанным в графе 9.",
                         IsCritical = true
                     });
@@ -1342,8 +1352,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = $"{codeRao5HalfLife} (5-ый символ кода РАО)",
-                Message = 
-                          "Недопустимое значение 5-го символа кода РАО."
+                Message = "Недопустимое значение 5-го символа кода РАО."
             });
         }
         else
@@ -1356,8 +1365,7 @@ public abstract class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
                     Value = $"{codeRao5HalfLife} (5-ый символ кода РАО)",
-                    Message = 
-                              $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, 5-ый символ кода РАО " +
+                    Message = $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, 5-ый символ кода РАО " +
                               $"(период полураспада) должен быть равен 2."
                 });
             }
@@ -1369,8 +1377,7 @@ public abstract class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
                     Value = $"{codeRao5HalfLife} (5-ый символ кода РАО)",
-                    Message = 
-                              $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, 5-ый символ кода РАО " +
+                    Message = $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, 5-ый символ кода РАО " +
                               $"(период полураспада) должен быть равен 1."
                 });
             }
@@ -2327,7 +2334,7 @@ public abstract class CheckF16 : CheckBase
 
     private static List<CheckError> Check_011(List<Form16> forms, int line)
     {
-        List<CheckError> result = new();
+        List<CheckError> result = [];
         var betaActivity = ConvertStringToExponential(forms[line].BetaGammaActivity_DB);
         var rads = ReplaceNullAndTrim(forms[line].MainRadionuclids_DB);
         var radsSet = rads
@@ -2354,7 +2361,7 @@ public abstract class CheckF16 : CheckBase
                                   "то в графу 11 необходимо заносить прочерк вместо нуля."
                     });
                 }
-                else
+                else if (!radsSet.Any(rad => rad is "уран естественный" or "уран обедненный"))
                 {
                     result.Add(new CheckError
                     {
