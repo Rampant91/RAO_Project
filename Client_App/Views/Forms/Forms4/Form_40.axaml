@@ -399,7 +399,7 @@
                                  Grid.Column="1"
                                  Height="26"
                                  Margin="0,3"
-                                 Text="{Binding Storage.Rows40[0].EmailOrganUprav.Value, Mode=TwoWay}"/>
+                                 Text="{Binding Storage.Rows40[0].EmailRiac.Value, Mode=TwoWay}"/>
                     </Grid>
                 </Border>
             </StackPanel>
