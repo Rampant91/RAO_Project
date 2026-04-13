@@ -144,15 +144,15 @@ public class Form_22VM : BaseFormVM
                     PackType_DB = firstElement.PackType_DB, //5
                     //SumUp
                     PackQuantity_DB = storageAndPackageTypeGroup.Sum(row22 => int.TryParse(row22.PackQuantity_DB, out var value) ? value : 0).ToString(),
-                    VolumeOutOfPack_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.VolumeOutOfPack_DB, out var value) ? value : 0).ToString("e3"),
-                    VolumeInPack_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.VolumeInPack_DB, out var value) ? value : 0).ToString("e3"),
-                    MassOutOfPack_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.MassOutOfPack_DB, out var value) ? value : 0).ToString("e3"),
-                    MassInPack_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.MassInPack_DB, out var value) ? value : 0).ToString("e3"),
-                    QuantityOZIII_DB = storageAndPackageTypeGroup.Sum(row22 => int.TryParse(row22.QuantityOZIII_DB, out var value) ? value : 0).ToString(),
-                    TritiumActivity_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.TritiumActivity_DB, out var value) ? value : 0).ToString("e3"),
-                    BetaGammaActivity_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.BetaGammaActivity_DB, out var value) ? value : 0).ToString("e3"),
-                    AlphaActivity_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.AlphaActivity_DB, out var value) ? value : 0).ToString("e3"),
-                    TransuraniumActivity_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.TransuraniumActivity_DB, out var value) ? value : 0).ToString("e3"),
+                    VolumeOutOfPack_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.VolumeOutOfPack_DB.Replace('.',','), out var value) ? value : 0).ToString("e3"),
+                    VolumeInPack_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.VolumeInPack_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    MassOutOfPack_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.MassOutOfPack_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    MassInPack_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.MassInPack_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    QuantityOZIII_DB = storageAndPackageTypeGroup.Sum(row22 => int.TryParse(row22.QuantityOZIII_DB.Replace('.', ','), out var value) ? value : 0).ToString(),
+                    TritiumActivity_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.TritiumActivity_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    BetaGammaActivity_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.BetaGammaActivity_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    AlphaActivity_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.AlphaActivity_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    TransuraniumActivity_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.TransuraniumActivity_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
                     MainRadionuclids_DB = "-",//18
                     RowColor = Color.FromArgb(75, 204, 102, 0),
                 };
@@ -163,61 +163,62 @@ public class Form_22VM : BaseFormVM
 
                 foreach (var raoGroup in raoGroups)
                 {
-                    var firstRaoGroupElement = raoGroup.ToList()[0];
-                    var raoInfoIndex = rows22.IndexOf(firstRaoGroupElement);
 
-
-                    var raoInfoRow = new Form22()
+                    if (raoGroup.Count() > 1)
                     {
-                        CodeRAO_DB = firstRaoGroupElement.CodeRAO_DB, //7
-                        StatusRAO_DB = firstRaoGroupElement.StatusRAO_DB, //8
+                        var firstRaoGroupElement = raoGroup.ToList()[0];
+                        var raoInfoIndex = rows22.IndexOf(firstRaoGroupElement);
 
-                        //SumUp
-                        PackQuantity_DB = raoGroup.Sum(row22 => int.TryParse(row22.PackQuantity_DB, out var value) ? value : 0).ToString(),//6
-                        VolumeOutOfPack_DB = raoGroup.Sum(row22 => double.TryParse(row22.VolumeOutOfPack_DB, out var value) ? value : 0).ToString("e3"),//9
-                        VolumeInPack_DB = "-",//10
-                        MassOutOfPack_DB = raoGroup.Sum(row22 => double.TryParse(row22.MassOutOfPack_DB, out var value) ? value : 0).ToString("e3"),//11
-                        MassInPack_DB = "-",//12
-                        QuantityOZIII_DB = raoGroup.Sum(row22 => int.TryParse(row22.QuantityOZIII_DB, out var value) ? value : 0).ToString(),//13
-                        TritiumActivity_DB = raoGroup.Sum(row22 => double.TryParse(row22.TritiumActivity_DB, out var value) ? value : 0).ToString("e3"),//14
-                        BetaGammaActivity_DB = raoGroup.Sum(row22 => double.TryParse(row22.BetaGammaActivity_DB, out var value) ? value : 0).ToString("e3"),//15
-                        AlphaActivity_DB = raoGroup.Sum(row22 => double.TryParse(row22.AlphaActivity_DB, out var value) ? value : 0).ToString("e3"),//16
-                        TransuraniumActivity_DB = raoGroup.Sum(row22 => double.TryParse(row22.TransuraniumActivity_DB, out var value) ? value : 0).ToString("e3"),//17
-                        
-                        RowColor = Color.FromArgb(50, 204, 204, 0),
-                    };
-                    foreach(var row22 in raoGroup)
-                    {
-                        //Суммируем 18 столбец
-                        var radionuclidList = row22.MainRadionuclids_DB.Split(";").ToList();
-                        for (int i =0; i< radionuclidList.Count; i++)
+                        var raoInfoRow = new Form22()
                         {
-                            radionuclidList[i] = radionuclidList[i].Trim();
-                            if (string.IsNullOrWhiteSpace(radionuclidList[i])) 
-                                continue; 
+                            StoragePlaceName_DB = firstElement.StoragePlaceName_DB, //2
+                            StoragePlaceCode_DB = firstElement.StoragePlaceCode_DB, //3
+                            PackName_DB = firstElement.PackName_DB, //4
+                            PackType_DB = firstElement.PackType_DB, //5
 
-                            if (!raoInfoRow.MainRadionuclids_DB.Split("; ")
-                                .Any(radionuclid => radionuclid == radionuclidList[i]))
+                            CodeRAO_DB = firstRaoGroupElement.CodeRAO_DB, //7
+                            StatusRAO_DB = firstRaoGroupElement.StatusRAO_DB, //8
+
+                            //SumUp
+                            PackQuantity_DB = "-",//6
+                            VolumeOutOfPack_DB = raoGroup.Sum(row22 => double.TryParse(row22.VolumeOutOfPack_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),//9
+                            VolumeInPack_DB = "-",//10
+                            MassOutOfPack_DB = raoGroup.Sum(row22 => double.TryParse(row22.MassOutOfPack_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),//11
+                            MassInPack_DB = "-",//12
+                            QuantityOZIII_DB = raoGroup.Sum(row22 => int.TryParse(row22.QuantityOZIII_DB.Replace('.', ','), out var value) ? value : 0).ToString(),//13
+                            TritiumActivity_DB = raoGroup.Sum(row22 => double.TryParse(row22.TritiumActivity_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),//14
+                            BetaGammaActivity_DB = raoGroup.Sum(row22 => double.TryParse(row22.BetaGammaActivity_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),//15
+                            AlphaActivity_DB = raoGroup.Sum(row22 => double.TryParse(row22.AlphaActivity_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),//16
+                            TransuraniumActivity_DB = raoGroup.Sum(row22 => double.TryParse(row22.TransuraniumActivity_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),//17
+
+                            //RowColor = Color.FromArgb(50, 204, 204, 0),
+                        };
+                        foreach (var row22 in raoGroup)
+                        {
+                            //Суммируем 18 столбец
+                            var radionuclidList = row22.MainRadionuclids_DB.Split(";").ToList();
+                            for (int i = 0; i < radionuclidList.Count; i++)
                             {
-                                if (!string.IsNullOrWhiteSpace(raoInfoRow.MainRadionuclids_DB))
-                                    raoInfoRow.MainRadionuclids_DB += "; ";
+                                radionuclidList[i] = radionuclidList[i].Trim();
+                                if (string.IsNullOrWhiteSpace(radionuclidList[i]))
+                                    continue;
 
-                                raoInfoRow.MainRadionuclids_DB += radionuclidList[i];
+                                if (!raoInfoRow.MainRadionuclids_DB.Split("; ")
+                                    .Any(radionuclid => radionuclid == radionuclidList[i]))
+                                {
+                                    if (!string.IsNullOrWhiteSpace(raoInfoRow.MainRadionuclids_DB))
+                                        raoInfoRow.MainRadionuclids_DB += "; ";
+
+                                    raoInfoRow.MainRadionuclids_DB += radionuclidList[i];
+                                }
                             }
+                            rows22.Remove(row22);
                         }
 
-                        //из строки очищаем графы 2-5, т.к. эта информация записана в titleRow (строке объединения)
-                        row22.StoragePlaceName_DB = ""; //2
-                        row22.StoragePlaceCode_DB = ""; //3
-                        row22.PackName_DB = ""; //4
-                        row22.PackType_DB = ""; //5
-                        row22.CodeRAO_DB = ""; //7
-                        row22.StatusRAO_DB = ""; //8
+                        ReplaceZeroValueOnDashSignInRow22(raoInfoRow);
+
+                        rows22.Insert(raoInfoIndex, raoInfoRow);
                     }
-
-                    ReplaceZeroValueOnDashSignInRow22(raoInfoRow);
-
-                    rows22.Insert(raoInfoIndex, raoInfoRow);
                 }
             }
         }
