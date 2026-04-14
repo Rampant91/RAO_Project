@@ -152,6 +152,26 @@ public class NewCheckFormAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                 }
             }
         }
+        catch (OperationCanceledException)
+        {
+            #region MessageCheckCanceled
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = $"Проверка формы {rep.FormNum_DB}",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "Операция отменена",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(window ?? Desktop.MainWindow));
+            #endregion
+
+            return;
+        }
         catch (Exception ex)
         {
             var msg = $"{Environment.NewLine}Message: {ex.Message}" +
