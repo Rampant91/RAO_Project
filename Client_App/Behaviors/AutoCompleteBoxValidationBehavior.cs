@@ -21,6 +21,8 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
         set => SetValue(ValidCodesProperty, value);
     }
 
+    private bool _settingTextFromValidation;
+
     protected override void OnAttached()
     {
         base.OnAttached();
@@ -29,6 +31,8 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
         {
             AssociatedObject.GotFocus += OnGotFocus;
             AssociatedObject.LostFocus += OnLostFocus;
+            AssociatedObject.DropDownClosed += OnDropDownClosed;
+            AssociatedObject.TextChanged += OnTextChanged;
         }
     }
 
@@ -38,6 +42,8 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
         {
             AssociatedObject.GotFocus -= OnGotFocus;
             AssociatedObject.LostFocus -= OnLostFocus;
+            AssociatedObject.DropDownClosed -= OnDropDownClosed;
+            AssociatedObject.TextChanged -= OnTextChanged;
         }
 
         base.OnDetaching();
@@ -49,16 +55,40 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
         _valueSelectedFromDropDown = false;
     }
 
+    private void OnTextChanged(object? sender, System.EventArgs e)
+    {
+        // Если текст изменился не из-за валидации —
+        // сбрасываем флаг выбора, чтобы валидация снова работала при потере фокуса
+        if (!_settingTextFromValidation)
+        {
+            _valueSelectedFromDropDown = false;
+        }
+    }
+
     private void OnLostFocus(object? sender, System.EventArgs e)
+    {
+        ValidateCurrentValue();
+    }
+
+    private void OnDropDownClosed(object? sender, System.EventArgs e)
+    {
+        if (AssociatedObject == null)
+            return;
+
+        // Если значение выбрано из списка — валидация не нужна
+        if (_valueSelectedFromDropDown)
+            return;
+
+        // Dropdown закрылся без выбора — проверяем текущее значение
+        ValidateCurrentValue();
+    }
+
+    private void ValidateCurrentValue()
     {
         if (AssociatedObject == null)
             return;
 
         string currentValue = AssociatedObject.Text ?? string.Empty;
-
-        // Если dropdown открыт, не проверяем (пользователь кликнул на список)
-        if (AssociatedObject.IsDropDownOpen)
-            return;
 
         // Если значение было выбрано из списка, не проверяем
         if (_valueSelectedFromDropDown)
@@ -72,7 +102,9 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
         if (!IsValidCode(currentValue))
         {
             // Возвращаем старое значение
+            _settingTextFromValidation = true;
             AssociatedObject.Text = _originalValue;
+            _settingTextFromValidation = false;
         }
     }
 

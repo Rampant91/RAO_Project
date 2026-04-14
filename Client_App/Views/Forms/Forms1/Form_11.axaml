@@ -427,7 +427,7 @@
                                             Text="{Binding OperationCode.Value, Mode=TwoWay}"
                                             HorizontalAlignment="Stretch"
                                             MinimumPrefixLength="0"
-                                            IsTextCompletionEnabled="True">
+                                            IsTextCompletionEnabled="False">
                                             <interactivity:Interaction.Behaviors>
                                                 <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.1}" />
                                                 <local:AutoCompleteBoxSelectionChangedBehavior />
