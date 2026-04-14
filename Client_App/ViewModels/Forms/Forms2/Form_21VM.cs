@@ -155,21 +155,21 @@ public class Form_21VM : BaseFormVM
                     MachinePower_DB = firstElement.MachinePower_DB, //4
                     NumberOfHoursPerYear_DB = firstElement.NumberOfHoursPerYear_DB, //5
                     //SumUp LeftGroup
-                    VolumeIn_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.VolumeIn_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
-                    MassIn_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.MassIn_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    VolumeIn_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.VolumeIn_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    MassIn_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.MassIn_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
                     QuantityIn_DB = refineMachineGroup.Sum(row21 => int.TryParse(row21.QuantityIn_DB, out var value) ? value : 0).ToString(),
-                    TritiumActivityIn_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.TritiumActivityIn_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
-                    BetaGammaActivityIn_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.BetaGammaActivityIn_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
-                    AlphaActivityIn_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.AlphaActivityIn_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
-                    TransuraniumActivityIn_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.TransuraniumActivityIn_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    TritiumActivityIn_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.TritiumActivityIn_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    BetaGammaActivityIn_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.BetaGammaActivityIn_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    AlphaActivityIn_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.AlphaActivityIn_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    TransuraniumActivityIn_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.TransuraniumActivityIn_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
                     //SumUp RightGroup
-                    VolumeOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.VolumeOut_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
-                    MassOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.MassOut_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
-                    QuantityOZIIIout_DB = refineMachineGroup.Sum(row21 => int.TryParse(row21.QuantityOZIIIout_DB.Replace('.', ','), out var value) ? value : 0).ToString(),
-                    TritiumActivityOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.TritiumActivityOut_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
-                    BetaGammaActivityOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.BetaGammaActivityOut_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
-                    AlphaActivityOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.AlphaActivityOut_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
-                    TransuraniumActivityOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.TransuraniumActivityOut_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    VolumeOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.VolumeOut_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    MassOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.MassOut_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    QuantityOZIIIout_DB = refineMachineGroup.Sum(row21 => int.TryParse(row21.QuantityOZIIIout_DB?.Replace('.', ','), out var value) ? value : 0).ToString(),
+                    TritiumActivityOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.TritiumActivityOut_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    BetaGammaActivityOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.BetaGammaActivityOut_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    AlphaActivityOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.AlphaActivityOut_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    TransuraniumActivityOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.TransuraniumActivityOut_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
                     RowColor = Color.FromArgb(75, 204, 102, 0),
                 };
 
@@ -207,13 +207,13 @@ public class Form_21VM : BaseFormVM
                         raoInfoRow.CodeRAOIn_DB = firstLeftRaoGroupElement.CodeRAOIn_DB; //6
                         raoInfoRow.StatusRAOIn_DB = firstLeftRaoGroupElement.StatusRAOIn_DB; //7
                         //SumUp LeftGroup
-                        raoInfoRow.VolumeIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.VolumeIn_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3");
-                        raoInfoRow.MassIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.MassIn_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3");
-                        raoInfoRow.QuantityIn_DB = leftRaoGroup.Sum(row21 => int.TryParse(row21.QuantityIn_DB.Replace('.', ','), out var value) ? value : 0).ToString();
-                        raoInfoRow.TritiumActivityIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.TritiumActivityIn_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3");
-                        raoInfoRow.BetaGammaActivityIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.BetaGammaActivityIn_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3");
-                        raoInfoRow.AlphaActivityIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.AlphaActivityIn_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3");
-                        raoInfoRow.TransuraniumActivityIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.TransuraniumActivityIn_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.VolumeIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.VolumeIn_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.MassIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.MassIn_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.QuantityIn_DB = leftRaoGroup.Sum(row21 => int.TryParse(row21.QuantityIn_DB?.Replace('.', ','), out var value) ? value : 0).ToString();
+                        raoInfoRow.TritiumActivityIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.TritiumActivityIn_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.BetaGammaActivityIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.BetaGammaActivityIn_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.AlphaActivityIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.AlphaActivityIn_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.TransuraniumActivityIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.TransuraniumActivityIn_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3");
                     }
 
                     if(rightRaoGroup != null)
@@ -223,13 +223,13 @@ public class Form_21VM : BaseFormVM
                         raoInfoRow.CodeRAOout_DB = firstRightRaoGroupElement.CodeRAOout_DB; //15
                         raoInfoRow.StatusRAOout_DB = firstRightRaoGroupElement.StatusRAOout_DB; //16
                         //SumUp RightGroup
-                        raoInfoRow.VolumeOut_DB = rightRaoGroup.Sum(row21 => double.TryParse(row21.VolumeOut_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3");
-                        raoInfoRow.MassOut_DB = rightRaoGroup.Sum(row21 => double.TryParse(row21.MassOut_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3");
-                        raoInfoRow.QuantityOZIIIout_DB = rightRaoGroup.Sum(row21 => int.TryParse(row21.QuantityOZIIIout_DB.Replace('.', ','), out var value) ? value : 0).ToString();
-                        raoInfoRow.TritiumActivityOut_DB = rightRaoGroup.Sum(row21 => double.TryParse(row21.TritiumActivityOut_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3");
-                        raoInfoRow.BetaGammaActivityOut_DB = rightRaoGroup.Sum(row21 => double.TryParse(row21.BetaGammaActivityOut_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3");
-                        raoInfoRow.AlphaActivityOut_DB = rightRaoGroup.Sum(row21 => double.TryParse(row21.AlphaActivityOut_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3");
-                        raoInfoRow.TransuraniumActivityOut_DB = rightRaoGroup.Sum(row21 => double.TryParse(row21.TransuraniumActivityOut_DB.Replace('.', ','), out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.VolumeOut_DB = rightRaoGroup.Sum(row21 => double.TryParse(row21.VolumeOut_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.MassOut_DB = rightRaoGroup.Sum(row21 => double.TryParse(row21.MassOut_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.QuantityOZIIIout_DB = rightRaoGroup.Sum(row21 => int.TryParse(row21.QuantityOZIIIout_DB?.Replace('.', ','), out var value) ? value : 0).ToString();
+                        raoInfoRow.TritiumActivityOut_DB = rightRaoGroup.Sum(row21 => double.TryParse(row21.TritiumActivityOut_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.BetaGammaActivityOut_DB = rightRaoGroup.Sum(row21 => double.TryParse(row21.BetaGammaActivityOut_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.AlphaActivityOut_DB = rightRaoGroup.Sum(row21 => double.TryParse(row21.AlphaActivityOut_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3");
+                        raoInfoRow.TransuraniumActivityOut_DB = rightRaoGroup.Sum(row21 => double.TryParse(row21.TransuraniumActivityOut_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3");
 
                     }
                     resultRows21.Add(raoInfoRow);
