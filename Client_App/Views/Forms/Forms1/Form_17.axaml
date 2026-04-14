@@ -64,7 +64,11 @@
 							<TextBox Grid.Column="1"
                                      MinWidth="83"
                                      Text="{Binding Report.StartPeriod.Value}"
-                                     Watermark="дд.мм.гггг" />
+                                     Watermark="дд.мм.гггг" >
+							    <interactivity:Interaction.Behaviors>
+								    <local:TextBoxDateOnlyLostFocusBehavior/>
+							    </interactivity:Interaction.Behaviors>
+						    </TextBox>
 							<CalendarDatePicker Grid.Column="2"
                                                 Classes="buttonOnly"
                                                 SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource StringToDateConverter}}" />
@@ -78,7 +82,11 @@
                                      MinWidth="83"
                                      Margin="11,3,0,0"
                                      Text="{Binding Report.EndPeriod.Value}"
-                                     Watermark="дд.мм.гггг" />
+                                     Watermark="дд.мм.гггг" >
+							    <interactivity:Interaction.Behaviors>
+								    <local:TextBoxDateOnlyLostFocusBehavior/>
+							    </interactivity:Interaction.Behaviors>
+						    </TextBox>
 							<CalendarDatePicker Grid.Column="2"
                                                 Classes="buttonOnly"
                                                 SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource StringToDateConverter}}" />
@@ -476,7 +484,11 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form17">
                                     <Grid ColumnDefinitions="*,Auto">
-                                        <TextBox Grid.Column="0" Text="{Binding OperationDate.Value, Mode=TwoWay}" />
+                                        <TextBox Grid.Column="0" Text="{Binding OperationDate.Value, Mode=TwoWay}" >
+							                <interactivity:Interaction.Behaviors>
+								                <local:TextBoxDateOnlyLostFocusBehavior/>
+							                </interactivity:Interaction.Behaviors>
+						                </TextBox>
                                         <CalendarDatePicker Grid.Column="1"
                                                             Classes="buttonOnly"
                                                             SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, Converter={StaticResource StringToDateConverter}}" />
@@ -566,7 +578,11 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form17">
                                     <Grid ColumnDefinitions="*,Auto">
-                                        <TextBox Grid.Column="0" Text="{Binding FormingDate.Value, Mode=TwoWay}" />
+                                        <TextBox Grid.Column="0" Text="{Binding FormingDate.Value, Mode=TwoWay}">
+											<interactivity:Interaction.Behaviors>
+												<local:TextBoxDateOnlyLostFocusBehavior/>
+											</interactivity:Interaction.Behaviors>
+										</TextBox>
                                         <CalendarDatePicker Grid.Column="1"
                                                             Classes="buttonOnly"
                                                             SelectedDate="{Binding FormingDate.Value, Mode=TwoWay, Converter={StaticResource StringToDateConverter}}" />
@@ -707,7 +723,11 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form17">
                                     <Grid ColumnDefinitions="*,Auto">
-                                        <TextBox Grid.Column="0" Text="{Binding DocumentDate.Value, Mode=TwoWay}" />
+                                        <TextBox Grid.Column="0" Text="{Binding DocumentDate.Value, Mode=TwoWay}">
+											<interactivity:Interaction.Behaviors>
+												<local:TextBoxDateOnlyLostFocusBehavior/>
+											</interactivity:Interaction.Behaviors>
+										</TextBox>
                                         <CalendarDatePicker Grid.Column="1"
                                                             Classes="buttonOnly"
                                                             SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay, Converter={StaticResource StringToDateConverter}}" />

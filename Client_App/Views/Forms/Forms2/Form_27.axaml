@@ -95,7 +95,14 @@
 							<TextBlock Margin="5,10" Text="Разрешение на допустимые выбросы радионуклидов в атмосферу №" />
 							<TextBox Text="{Binding Report.PermissionNumber27.Value}" />
 							<TextBlock Margin="5,10" Text="от" />
-							<TextBox Text="{Binding Report.PermissionIssueDate27.Value}" />
+							<TextBox Text="{Binding Report.PermissionIssueDate27.Value, Mode=TwoWay}" >
+								<interactivity:Interaction.Behaviors>
+									<local:TextBoxDateOnlyLostFocusBehavior/>
+								</interactivity:Interaction.Behaviors>
+							</TextBox>
+							<CalendarDatePicker Grid.Column="2"
+												Classes="buttonOnly"
+												SelectedDate="{Binding Report.PermissionIssueDate27.Value, Converter={StaticResource DateToStringConverter}}" />
 							<TextBlock Margin="5,10" Text="Срок действия с" />
 							<TextBox Text="{Binding Report.ValidBegin27.Value}" />
 							<TextBlock Margin="5,10" Text="до" />

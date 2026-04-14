@@ -515,8 +515,17 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms2:Form23">
-                                    <TextBox Text="{Binding DocumentDate.Value, Mode=TwoWay}" />
-                                </DataTemplate>
+									<Grid ColumnDefinitions="*,Auto">
+										<TextBox Grid.Column="0" Text="{Binding DocumentDate.Value, Mode=TwoWay}" >
+											<interactivity:Interaction.Behaviors>
+												<local:TextBoxDateOnlyLostFocusBehavior/>
+											</interactivity:Interaction.Behaviors>
+										</TextBox>
+										<CalendarDatePicker Grid.Column="1"
+                                                            Classes="buttonOnly"
+                                                            SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay, Converter={StaticResource StringToDateConverter}}" />
+									</Grid>
+								</DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
