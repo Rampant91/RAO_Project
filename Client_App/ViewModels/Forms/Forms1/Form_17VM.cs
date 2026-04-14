@@ -29,6 +29,17 @@ public class Form_17VM : BaseFormVM
     /// </summary>
     public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodes().ToList();
 
+    /// <summary>
+    /// 
+    /// </summary>
+    public ObservableCollection<RefineOrSortRAOCodeItem> RefineOrSortRAOCodes =>
+        new(RefineOrSortRAOCodeProvider.AllRefineOrSortRAOCodes);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ICollection<string> ValidRefineOrSortRAOCodes => RefineOrSortRAOCodeProvider.GetValidCodes().ToList();
+
     #region Constructors
 
     public Form_17VM() { }

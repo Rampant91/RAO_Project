@@ -32,8 +32,8 @@ public static class RefineOrSortRAOCodeProvider
             
             new RefineOrSortRAOCodeItem { Code = "17", Description = "установка коагуляционная" },
             
-            new RefineOrSortRAOCodeItem { Code = "19", Description = "установки разделения прочие (укажите в примечании" +
-                                                                     $"{Environment.NewLine}к ячейке наименование установки и используемую технологию)" },
+            new RefineOrSortRAOCodeItem { Code = "19", Description = "установки разделения прочие (укажите в примечании " +
+                                                                     "наименование установки и используемую технологию)" },
             
             new RefineOrSortRAOCodeItem { Code = "21", Description = "установка упаривания" },
             
@@ -43,15 +43,15 @@ public static class RefineOrSortRAOCodeProvider
             
             new RefineOrSortRAOCodeItem { Code = "24", Description = "установка кальцинации" },
             
-            new RefineOrSortRAOCodeItem { Code = "29", Description = "установки термообработки прочие (укажите в примечании" +
-                                                                     $"{Environment.NewLine}к ячейке наименование установки и используемую технологию)" },
+            new RefineOrSortRAOCodeItem { Code = "29", Description = "установки термообработки прочие (укажите в примечании " +
+                                                                     "наименование установки и используемую технологию)" },
             
             new RefineOrSortRAOCodeItem { Code = "31", Description = "установка прессования" },
             
             new RefineOrSortRAOCodeItem { Code = "32", Description = "установка суперкомпактирования" },
             
-            new RefineOrSortRAOCodeItem { Code = "39", Description = "установки компактирования прочие (укажите в примечании" +
-                                                                     $"{Environment.NewLine}к ячейке наименование установки и используемую технологию)" },
+            new RefineOrSortRAOCodeItem { Code = "39", Description = "установки компактирования прочие (укажите в примечании " +
+                                                                     "наименование установки и используемую технологию)" },
             
             new RefineOrSortRAOCodeItem { Code = "41", Description = "установка битумирования" },
             
@@ -59,8 +59,8 @@ public static class RefineOrSortRAOCodeProvider
             
             new RefineOrSortRAOCodeItem { Code = "43", Description = "установка остекловывания" },
             
-            new RefineOrSortRAOCodeItem { Code = "49", Description = "установки отверждения прочие (укажите в примечании" +
-                                                                     $"{Environment.NewLine}к ячейке наименование установки и используемую технологию)" },
+            new RefineOrSortRAOCodeItem { Code = "49", Description = "установки отверждения прочие (укажите в примечании " +
+                                                                     "наименование установки и используемую технологию)" },
             
             new RefineOrSortRAOCodeItem { Code = "51", Description = "установка дезактивации" },
             
@@ -74,11 +74,11 @@ public static class RefineOrSortRAOCodeProvider
             
             new RefineOrSortRAOCodeItem { Code = "61", Description = "комплекс спецводоочистки" },
             
-            new RefineOrSortRAOCodeItem { Code = "62", Description = "комплексы переработки жидких РАО прочие (укажите в примечании" +
-                                                                     $"{Environment.NewLine}к ячейке наименование установки и используемую технологию)" },
+            new RefineOrSortRAOCodeItem { Code = "62", Description = "комплексы переработки жидких РАО прочие (укажите в примечании " +
+                                                                     "наименование установки и используемую технологию)" },
             
-            new RefineOrSortRAOCodeItem { Code = "63", Description = "комплексы переработки твердых РАО прочие (укажите в примечании" +
-                                                                     $"{Environment.NewLine}к ячейке наименование установки и используемую технологию)" },
+            new RefineOrSortRAOCodeItem { Code = "63", Description = "комплексы переработки твердых РАО прочие (укажите в примечании " +
+                                                                     "наименование установки и используемую технологию)" },
             
             new RefineOrSortRAOCodeItem { Code = "71", Description = "цементирование" },
 
@@ -88,10 +88,10 @@ public static class RefineOrSortRAOCodeProvider
 
             new RefineOrSortRAOCodeItem { Code = "74", Description = "горячая камера" },
 
-            new RefineOrSortRAOCodeItem { Code = "79", Description = "прочие (укажите в примечании к ячейке способ переработки)" },
+            new RefineOrSortRAOCodeItem { Code = "79", Description = "прочие (укажите в примечании способ переработки)" },
             
-            new RefineOrSortRAOCodeItem { Code = "99", Description = "прочие типы установок переработки (укажите в примечании" +
-                                                                     $"{Environment.NewLine}к ячейке наименование установки и используемую технологию)" }
+            new RefineOrSortRAOCodeItem { Code = "99", Description = "прочие типы установок переработки (укажите в примечании " +
+                                                                     "наименование установки и используемую технологию)" }
         ]);
     }
 
