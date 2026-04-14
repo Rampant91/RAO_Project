@@ -1,5 +1,4 @@
 ﻿using Client_App.Commands.AsyncCommands.SourceTransmission;
-using Client_App.Commands.SyncCommands;
 using Client_App.ViewModels.Controls;
 using Models.Collections;
 using System;
@@ -42,6 +41,17 @@ public class Form_13VM : BaseFormVM
     /// 
     /// </summary>
     public ICollection<string> ValidOwnershipForms => OwnershipProvider.GetValidCodes().ToList();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ObservableCollection<AggregateStateItem> AggregateStates =>
+        new(AggregateStateProvider.AllAggregateStates);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ICollection<string> ValidAggregateStates => AggregateStateProvider.GetValidCodes().ToList();
 
     #region Constructors
 

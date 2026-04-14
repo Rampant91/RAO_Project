@@ -43,6 +43,17 @@ public class Form_14VM : BaseFormVM
     /// </summary>
     public ICollection<string> ValidOwnershipForms => OwnershipProvider.GetValidCodes().ToList();
 
+    /// <summary>
+    /// 
+    /// </summary>
+    public ObservableCollection<AggregateStateItem> AggregateStates =>
+        new(AggregateStateProvider.AllAggregateStates);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ICollection<string> ValidAggregateStates => AggregateStateProvider.GetValidCodes().ToList();
+
     #region Constructors
 
     public Form_14VM() { }
