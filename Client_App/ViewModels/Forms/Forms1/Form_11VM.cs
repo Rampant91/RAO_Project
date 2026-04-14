@@ -42,6 +42,17 @@ public class Form_11VM : BaseFormVM
     /// </summary>
     public ICollection<short?> ValidCategories => CategoryProvider.GetValidCategoriesForForm11();
 
+    /// <summary>
+    /// 
+    /// </summary>
+    public ObservableCollection<OwnershipItem> OwnershipForms =>
+        new(OwnershipProvider.AllOwnershipForms);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ICollection<string> ValidOwnershipForms => OwnershipProvider.GetValidCodesForForm11().ToList();
+
     #region Constructors
 
     public Form_11VM() { }
