@@ -459,7 +459,32 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form19">
-                                    <TextBox Text="{Binding CodeTypeAccObject.Value, Mode=TwoWay}" />
+                                    <AutoCompleteBox Height="26"
+                                                     Items="{Binding VM.CodeTypeAccObjects, ElementName=1.9}"
+                                                     Text="{Binding CodeTypeAccObject.Value, Converter={StaticResource ShortNullableToStringConverter}, Mode=TwoWay}"
+                                                     HorizontalAlignment="Stretch"
+                                                     MinimumPrefixLength="0"
+                                                     IsTextCompletionEnabled="True">
+                                        <interactivity:Interaction.Behaviors>
+                                            <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidCodeTypeAccObjects, ElementName=1.9}" />
+                                            <local:AutoCompleteBoxCodeSelectionBehavior />
+                                        </interactivity:Interaction.Behaviors>
+                                        <AutoCompleteBox.ItemTemplate>
+                                            <DataTemplate x:DataType="items:CodeTypeAccObjectItem">
+                                                <Grid ColumnDefinitions="Auto,*">
+                                                    <TextBlock Grid.Column="0" 
+                                                               Text="{Binding Code}" 
+                                                               Margin="0,0,10,0" 
+                                                               FontWeight="Bold"/>
+                                                    <TextBlock Grid.Column="1" 
+                                                               Text="{Binding Description}" 
+                                                               Foreground="Gray" 
+                                                               TextWrapping="Wrap" 
+                                                               MaxWidth="350"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </AutoCompleteBox.ItemTemplate>
+                                    </AutoCompleteBox>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

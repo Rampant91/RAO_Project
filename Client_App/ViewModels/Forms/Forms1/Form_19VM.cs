@@ -29,6 +29,17 @@ public class Form_19VM : BaseFormVM
     /// </summary>
     public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodes().ToList();
 
+    /// <summary>
+    /// 
+    /// </summary>
+    public ObservableCollection<CodeTypeAccObjectItem> CodeTypeAccObjects =>
+        new(CodeTypeAccObjectProvider.AllCodeTypeAccObjects);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ICollection<string> ValidCodeTypeAccObjects => CodeTypeAccObjectProvider.GetValidCodes().ToList();
+
     #region Constructors
 
     public Form_19VM() { }
