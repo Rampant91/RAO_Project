@@ -28,6 +28,17 @@ public class Form_12VM : BaseFormVM
     /// </summary>
     public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm12();
 
+    /// <summary>
+    /// 
+    /// </summary>
+    public ObservableCollection<DocumentVidItem> DocumentVids =>
+        new(DocumentVidProvider.AllDocumentVids);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForm11().ToList();
+
     #region Constructors
 
     public Form_12VM() { }

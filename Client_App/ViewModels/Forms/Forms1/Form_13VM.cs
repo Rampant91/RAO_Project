@@ -21,6 +21,17 @@ public class Form_13VM : BaseFormVM
             .Where(x => OperationCodesProvider.GetValidCodesForForm13().Contains(x.Code)));
     public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm13();
 
+    /// <summary>
+    /// 
+    /// </summary>
+    public ObservableCollection<DocumentVidItem> DocumentVids =>
+        new(DocumentVidProvider.AllDocumentVids);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForm11().ToList();
+
     #region Constructors
 
     public Form_13VM() { }

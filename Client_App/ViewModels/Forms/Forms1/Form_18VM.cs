@@ -18,6 +18,17 @@ public class Form_18VM : BaseFormVM
             .Where(x => OperationCodesProvider.GetValidCodesForForm18().Contains(x.Code)));
     public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm18();
 
+    /// <summary>
+    /// 
+    /// </summary>
+    public ObservableCollection<DocumentVidItem> DocumentVids =>
+        new(DocumentVidProvider.AllDocumentVids);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForm11().ToList();
+
     #region Constructors
 
     public Form_18VM() { }
