@@ -39,7 +39,7 @@ public static class DocumentVidProvider
     /// <summary>
     /// Допустимые коды вида документа
     /// </summary>
-    public static IEnumerable<string> GetValidCodesForForm11()
+    public static IEnumerable<string> GetValidCodes()
     {
         return ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "19"];
     }

@@ -588,7 +588,30 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form13">
-                                    <TextBox Text="{Binding PropertyCode.Value, Mode=TwoWay}" />
+                                    <AutoCompleteBox 
+                                        Height="26"
+                                        Items="{Binding VM.OwnershipForms, ElementName=1.3}"
+                                        Text="{Binding PropertyCode.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}"
+                                        HorizontalAlignment="Stretch"
+                                        MinimumPrefixLength="0"
+                                        IsTextCompletionEnabled="True">
+                                        <interactivity:Interaction.Behaviors>
+                                            <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidOwnershipForms, ElementName=1.3}" />
+                                            <local:AutoCompleteBoxCodeSelectionBehavior />
+                                        </interactivity:Interaction.Behaviors>
+                                        <AutoCompleteBox.ItemTemplate>
+                                            <DataTemplate x:DataType="items:OwnershipItem">
+                                                <Grid ColumnDefinitions="Auto,*">
+                                                    <TextBlock Grid.Column="0" 
+                                                               Text="{Binding Code}" 
+                                                               Margin="0,0,10,0" 
+                                                               FontWeight="Bold"/>
+                                                    <TextBlock Grid.Column="1" 
+                                                               Text="{Binding Description}" Foreground="Gray" TextWrapping="Wrap" MaxWidth="250"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </AutoCompleteBox.ItemTemplate>
+                                    </AutoCompleteBox>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

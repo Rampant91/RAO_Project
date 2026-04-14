@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using Client_App.ViewModels.Forms.Forms1.Items;
 
 namespace Client_App.ViewModels.Forms.Forms1.Providers;
@@ -30,7 +28,7 @@ public static class OwnershipProvider
     /// <summary>
     /// 
     /// </summary>
-    public static IEnumerable<string> GetValidCodesForForm11()
+    public static IEnumerable<string> GetValidCodes()
     {
         return ["1", "2", "3", "4", "5", "6", "9"];
     }

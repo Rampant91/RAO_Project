@@ -27,7 +27,7 @@ public class Form_17VM : BaseFormVM
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForm11().ToList();
+    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodes().ToList();
 
     #region Constructors
 

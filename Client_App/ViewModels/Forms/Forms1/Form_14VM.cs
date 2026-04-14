@@ -30,7 +30,18 @@ public class Form_14VM : BaseFormVM
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForm11().ToList();
+    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodes().ToList();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ObservableCollection<OwnershipItem> OwnershipForms =>
+        new(OwnershipProvider.AllOwnershipForms);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ICollection<string> ValidOwnershipForms => OwnershipProvider.GetValidCodes().ToList();
 
     #region Constructors
 

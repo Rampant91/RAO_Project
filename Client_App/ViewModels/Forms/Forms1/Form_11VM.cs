@@ -51,7 +51,7 @@ public class Form_11VM : BaseFormVM
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidOwnershipForms => OwnershipProvider.GetValidCodesForForm11().ToList();
+    public ICollection<string> ValidOwnershipForms => OwnershipProvider.GetValidCodes().ToList();
 
     /// <summary>
     /// 
@@ -62,7 +62,7 @@ public class Form_11VM : BaseFormVM
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForm11().ToList();
+    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodes().ToList();
 
     #region Constructors
 

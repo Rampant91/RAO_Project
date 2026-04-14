@@ -1,5 +1,4 @@
 ﻿using Client_App.Commands.AsyncCommands.SourceTransmission;
-using Client_App.Commands.SyncCommands;
 using Client_App.ViewModels.Controls;
 using Models.Collections;
 using System;
@@ -37,7 +36,18 @@ public class Form_12VM : BaseFormVM
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForm11().ToList();
+    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodes().ToList();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ObservableCollection<OwnershipItem> OwnershipForms =>
+        new(OwnershipProvider.AllOwnershipForms);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ICollection<string> ValidOwnershipForms => OwnershipProvider.GetValidCodes().ToList();
 
     #region Constructors
 

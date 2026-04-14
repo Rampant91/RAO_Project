@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Security.Cryptography.Pkcs;
 using Client_App.ViewModels.Forms.Forms1.Items;
 
 namespace Client_App.ViewModels.Forms.Forms1.Providers;
