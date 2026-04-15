@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Client_App.ViewModels.Forms.Forms1.Items;
@@ -8,7 +7,7 @@ namespace Client_App.ViewModels.Forms.Forms1.Providers;
 public static class AggregateStateProvider
 {
     /// <summary>
-    /// 
+    /// Список всех агрегатных состояний.
     /// </summary>
     public static ReadOnlyCollection<AggregateStateItem> AllAggregateStates { get; }
 
@@ -23,9 +22,9 @@ public static class AggregateStateProvider
     }
 
     /// <summary>
-    /// 
+    /// Валидные агрегатные состояния.
     /// </summary>
-    public static IEnumerable<string> GetValidCodes()
+    public static ICollection<string> GetValidCodes()
     {
         return ["1", "2", "3"];
     }

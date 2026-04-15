@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Client_App.ViewModels.Forms.Forms1.Items;
@@ -32,9 +31,9 @@ public static class CodeTypeAccObjectProvider
     }
 
     /// <summary>
-    /// 
+    /// Валидные коды
     /// </summary>
-    public static IEnumerable<string> GetValidCodes()
+    public static ICollection<string> GetValidCodes()
     {
         return ["11", "12", "13", "21", "22", "23", "31", "32", "33", "99"];
     }

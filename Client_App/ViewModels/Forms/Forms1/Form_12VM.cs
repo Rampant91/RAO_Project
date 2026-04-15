@@ -13,41 +13,59 @@ namespace Client_App.ViewModels.Forms.Forms1;
 
 public class Form_12VM : BaseFormVM
 {
+    #region Properties
+    
     public override string FormType => "1.2";
+
+    #region OpCodes
 
     /// <summary>
     /// Справочник кодов операции для AutoCompleteBox с описаниями
     /// </summary>
-    public ObservableCollection<OperationCodeItem> OperationCodes => 
+    public ObservableCollection<OperationCodeItem> OperationCodes =>
         new(OperationCodesProvider.AllOperationCodes
-            .Where(x => OperationCodesProvider.GetValidCodesForForm12().Contains(x.Code)));
+            .Where(x => ValidOperationCodes.Contains(x.Code)));
 
     /// <summary>
     /// Список допустимых кодов операции для валидации (только коды без описаний)
     /// </summary>
     public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm12();
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public ObservableCollection<DocumentVidItem> DocumentVids =>
-        new(DocumentVidProvider.AllDocumentVids);
+    #endregion
+
+    #region DocVids
 
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodes().ToList();
+    public ObservableCollection<DocumentVidItem> DocumentVids =>
+        new(DocumentVidProvider.AllDocumentVids
+            .Where(x => ValidDocumentVids.Contains(x.Code.ToString())));
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms11To18();
+
+    #endregion
+
+    #region OwnershipForms
 
     /// <summary>
     /// 
     /// </summary>
     public ObservableCollection<OwnershipItem> OwnershipForms =>
-        new(OwnershipProvider.AllOwnershipForms);
+        new(OwnershipProvider.AllOwnershipForms
+            .Where(x => ValidOwnershipForms.Contains(x.Code.ToString())));
 
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidOwnershipForms => OwnershipProvider.GetValidCodes().ToList();
+    public ICollection<string> ValidOwnershipForms => OwnershipProvider.GetValidCodes();
+
+    #endregion 
+
+    #endregion
 
     #region Constructors
 
@@ -73,7 +91,7 @@ public class Form_12VM : BaseFormVM
 
         };
 
-        base.InitializeUserControls();
+        InitializeUserControls();
         Reports = reps;
 
         SelectReportPopupVM = new SelectReportPopupVM(this);
@@ -86,32 +104,4 @@ public class Form_12VM : BaseFormVM
     public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);
 
     #endregion
-
-    //public ObservableCollection<Form12> Form12List => new(FormList.Cast<Form12>());
-
-    //public ObservableCollection<Form12> SelectedForms12 => new(SelectedForms.Cast<Form12>());
-
-    //public Form12 SelectedForm12
-    //{
-    //    get => SelectedForm as Form12;
-    //    set
-    //    {
-    //        SelectedForm = value;
-    //        UpdateFormList();
-    //    }
-    //}
-
-    /*
-    #region UpdateFormList
-    public new async void UpdateFormList()
-    {
-        base.UpdateFormList();
-        
-        //OnPropertyChanged(nameof(Form12List));
-        //OnPropertyChanged(nameof(SelectedForms12));
-        //OnPropertyChanged(nameof(SelectedForm12));
-    }
-
-    #endregion
-    */
 }

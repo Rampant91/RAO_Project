@@ -1,5 +1,4 @@
 ﻿using Client_App.Commands.AsyncCommands.SourceTransmission;
-using Client_App.Commands.SyncCommands;
 using Client_App.ViewModels.Controls;
 using Models.Collections;
 using System;
@@ -14,45 +13,69 @@ namespace Client_App.ViewModels.Forms.Forms1;
 
 public class Form_14VM : BaseFormVM
 {
+    #region Properties
+    
     public override string FormType => "1.4";
 
-    public ObservableCollection<OperationCodeItem> OperationCodes => 
+    #region OpCodes
+
+    public ObservableCollection<OperationCodeItem> OperationCodes =>
         new(OperationCodesProvider.AllOperationCodes
-            .Where(x => OperationCodesProvider.GetValidCodesForForm14().Contains(x.Code)));
+            .Where(x => ValidOperationCodes.Contains(x.Code)));
+
     public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm14();
+
+    #endregion
+
+    #region DocVids
 
     /// <summary>
     /// 
     /// </summary>
     public ObservableCollection<DocumentVidItem> DocumentVids =>
-        new(DocumentVidProvider.AllDocumentVids);
+        new(DocumentVidProvider.AllDocumentVids
+            .Where(x => ValidDocumentVids.Contains(x.Code.ToString())));
 
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodes().ToList();
+    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms11To18();
+
+    #endregion
+
+    #region OwnershipForms
 
     /// <summary>
     /// 
     /// </summary>
     public ObservableCollection<OwnershipItem> OwnershipForms =>
-        new(OwnershipProvider.AllOwnershipForms);
+        new(OwnershipProvider.AllOwnershipForms
+            .Where(x => ValidOwnershipForms.Contains(x.Code.ToString())));
 
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidOwnershipForms => OwnershipProvider.GetValidCodes().ToList();
+    public ICollection<string> ValidOwnershipForms => OwnershipProvider.GetValidCodes();
+
+    #endregion
+
+    #region AggregateStates
 
     /// <summary>
     /// 
     /// </summary>
     public ObservableCollection<AggregateStateItem> AggregateStates =>
-        new(AggregateStateProvider.AllAggregateStates);
+        new(AggregateStateProvider.AllAggregateStates
+            .Where(x => ValidAggregateStates.Contains(x.Code.ToString())));
 
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidAggregateStates => AggregateStateProvider.GetValidCodes().ToList();
+    public ICollection<string> ValidAggregateStates => AggregateStateProvider.GetValidCodes();
+
+    #endregion 
+
+    #endregion
 
     #region Constructors
 
@@ -77,7 +100,7 @@ public class Form_14VM : BaseFormVM
             Reports = reps
         };
 
-        base.InitializeUserControls();
+        InitializeUserControls();
         Reports = reps;
 
         SelectReportPopupVM = new SelectReportPopupVM(this);
@@ -90,32 +113,4 @@ public class Form_14VM : BaseFormVM
     public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);
 
     #endregion
-
-    //public ObservableCollection<Form14> Form14List => new(FormList.Cast<Form14>());
-
-    //public ObservableCollection<Form14> SelectedForms14 => new(SelectedForms.Cast<Form14>());
-
-    //public Form14 SelectedForm14
-    //{
-    //    get => SelectedForm as Form14;
-    //    set
-    //    {
-    //        SelectedForm = value;
-    //        UpdateFormList();
-    //    }
-    //}
-
-    /*
-    #region UpdateFormList
-    public new async void UpdateFormList()
-    {
-        base.UpdateFormList();
-        
-        //OnPropertyChanged(nameof(Form14List));
-        //OnPropertyChanged(nameof(SelectedForms14));
-        //OnPropertyChanged(nameof(SelectedForm14));
-    }
-
-    #endregion
-    */
 }

@@ -11,34 +11,40 @@ namespace Client_App.ViewModels.Forms.Forms1;
 
 public class Form_16VM : BaseFormVM
 {
+    #region Properties
+    
     public override string FormType => "1.6";
 
-    public ObservableCollection<OperationCodeItem> OperationCodes => 
+    public ObservableCollection<OperationCodeItem> OperationCodes =>
         new(OperationCodesProvider.AllOperationCodes
-            .Where(x => OperationCodesProvider.GetValidCodesForForm16().Contains(x.Code)));
+            .Where(x => ValidOperationCodes.Contains(x.Code)));
     public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm16();
 
     /// <summary>
     /// 
     /// </summary>
     public ObservableCollection<DocumentVidItem> DocumentVids =>
-        new(DocumentVidProvider.AllDocumentVids);
+        new(DocumentVidProvider.AllDocumentVids
+            .Where(x => ValidDocumentVids.Contains(x.Code.ToString())));
 
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodes().ToList();
+    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms11To18();
 
     /// <summary>
     /// 
     /// </summary>
     public ObservableCollection<RefineOrSortRAOCodeItem> RefineOrSortRAOCodes =>
-        new(RefineOrSortRAOCodeProvider.AllRefineOrSortRAOCodes);
+        new(RefineOrSortRAOCodeProvider.AllRefineOrSortRAOCodes
+            .Where(x => ValidRefineOrSortRAOCodes.Contains(x.Code)));
 
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidRefineOrSortRAOCodes => RefineOrSortRAOCodeProvider.GetValidCodes().ToList();
+    public ICollection<string> ValidRefineOrSortRAOCodes => RefineOrSortRAOCodeProvider.GetValidCodes(); 
+    
+    #endregion
 
     #region Constructors
 
@@ -70,32 +76,4 @@ public class Form_16VM : BaseFormVM
     }
 
     #endregion
-
-    //public ObservableCollection<Form16> Form16List => new(FormList.Cast<Form16>());
-
-    //public ObservableCollection<Form16> SelectedForms16 => new(SelectedForms.Cast<Form16>());
-
-    //public Form16 SelectedForm16
-    //{
-    //    get => SelectedForm as Form16;
-    //    set
-    //    {
-    //        SelectedForm = value;
-    //        UpdateFormList();
-    //    }
-    //}
-
-    /*
-    #region UpdateFormList
-    public new async void UpdateFormList()
-    {
-        base.UpdateFormList();
-        
-        //OnPropertyChanged(nameof(Form16List));
-        //OnPropertyChanged(nameof(SelectedForms16));
-        //OnPropertyChanged(nameof(SelectedForm16));
-    }
-
-    #endregion
-    */
 }

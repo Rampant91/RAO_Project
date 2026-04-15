@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Client_App.ViewModels.Forms.Forms1.Items;
@@ -98,19 +97,16 @@ public static class RefineOrSortRAOCodeProvider
     /// <summary>
     /// 
     /// </summary>
-    public static IEnumerable<string> GetValidCodes()
-    {
-        return 
-        [
-            "11", "12", "13", "14", "15", "16", "17", "19", 
-            "21", "22", "23", "24", "29", 
-            "31", "32", "39", 
-            "41", "42", "43", "49", 
-            "51", "52", "53", "54", "55", 
-            "61", "62", "63", 
-            "71", "72", "73", "74", "79", 
-            "99", 
-            "-"
-        ];
-    }
+    public static ICollection<string> GetValidCodes() =>
+    [
+        "11", "12", "13", "14", "15", "16", "17", "19", 
+        "21", "22", "23", "24", "29", 
+        "31", "32", "39", 
+        "41", "42", "43", "49", 
+        "51", "52", "53", "54", "55", 
+        "61", "62", "63", 
+        "71", "72", "73", "74", "79", 
+        "99", 
+        "-"
+    ];
 }

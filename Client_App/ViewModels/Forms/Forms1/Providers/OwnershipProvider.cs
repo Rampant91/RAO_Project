@@ -28,7 +28,7 @@ public static class OwnershipProvider
     /// <summary>
     /// 
     /// </summary>
-    public static IEnumerable<string> GetValidCodes()
+    public static ICollection<string> GetValidCodes()
     {
         return ["1", "2", "3", "4", "5", "6", "9"];
     }

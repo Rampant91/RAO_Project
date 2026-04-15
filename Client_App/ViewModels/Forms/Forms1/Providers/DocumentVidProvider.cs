@@ -37,10 +37,18 @@ public static class DocumentVidProvider
     }
 
     /// <summary>
-    /// Допустимые коды вида документа
+    /// Допустимые коды вида документа для форм 1.1-1.8
     /// </summary>
-    public static IEnumerable<string> GetValidCodes()
+    public static ICollection<string> GetValidCodesForForms11To18()
     {
         return ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "19"];
+    }
+
+    /// <summary>
+    /// Допустимые коды вида документа для форм 1.1-1.8
+    /// </summary>
+    public static ICollection<string> GetValidCodesForForms19()
+    {
+        return ["1"];
     }
 }

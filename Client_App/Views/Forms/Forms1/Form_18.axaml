@@ -456,30 +456,62 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form18">
-                                    <AutoCompleteBox
-                                        Height="26"
-                                        Items="{Binding VM.OperationCodes, ElementName=1.8}"
-                                        Text="{Binding OperationCode.Value, Mode=TwoWay}"
-                                        HorizontalAlignment="Stretch"
-                                        MinimumPrefixLength="0"
-                                        IsTextCompletionEnabled="True">
-                                        <interactivity:Interaction.Behaviors>
-                                            <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.8}" />
-                                            <local:AutoCompleteBoxSelectionChangedBehavior />
-                                        </interactivity:Interaction.Behaviors>
-                                        <AutoCompleteBox.ItemTemplate>
-                                            <DataTemplate x:DataType="items:OperationCodeItem">
-                                                <Grid ColumnDefinitions="Auto,*">
-                                                    <TextBlock Grid.Column="0" 
-                                                               Text="{Binding Code}" 
-                                                               Margin="0,0,10,0" 
-                                                               FontWeight="Bold"/>
-                                                    <TextBlock Grid.Column="1" 
-                                                               Text="{Binding Description}" Foreground="Gray" TextWrapping="Wrap" MaxWidth="250"/>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </AutoCompleteBox.ItemTemplate>
-                                    </AutoCompleteBox>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <AutoCompleteBox x:Name="OperationCodeAutoComplete"
+                                                         Grid.Column="0"
+                                                         Height="26"
+                                                         Items="{Binding VM.OperationCodes, ElementName=1.8}"
+                                                         Text="{Binding OperationCode.Value, Mode=TwoWay}"
+                                                         HorizontalAlignment="Stretch"
+                                                         MinimumPrefixLength="0"
+                                                         IsTextCompletionEnabled="False">
+
+                                            <interactivity:Interaction.Behaviors>
+                                                <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.8}" />
+                                                <local:AutoCompleteBoxSelectionChangedBehavior />
+                                            </interactivity:Interaction.Behaviors>
+
+                                            <AutoCompleteBox.ItemTemplate>
+                                                <DataTemplate x:DataType="items:OperationCodeItem">
+                                                    <Grid ColumnDefinitions="Auto,*">
+                                                        <TextBlock Grid.Column="0"
+                                                                   Text="{Binding Code}"
+                                                                   Margin="0,0,10,0"
+                                                                   FontWeight="Bold"/>
+                                                        <TextBlock Grid.Column="1"
+                                                                   Text="{Binding Description}"
+                                                                   Foreground="Gray"
+                                                                   TextWrapping="Wrap"
+                                                                   MaxWidth="250"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </AutoCompleteBox.ItemTemplate>
+                                        </AutoCompleteBox>
+                                        <Button Grid.Column="1"
+                                                Width="16"
+                                                Height="16"
+                                                Background="LightGray"
+                                                BorderThickness="1"
+                                                BorderBrush="Gray"
+                                                Padding="0"
+                                                Margin="2,0,0,0"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                ToolTip.Tip="Открыть список">
+
+                                            <interactivity:Interaction.Behaviors>
+                                                <local:DropDownButtonBehavior />
+                                            </interactivity:Interaction.Behaviors>
+
+                                            <!-- Стрелка вниз -->
+                                            <Path Data="M 0 0 L 4 4 L 8 0"
+                                                  Stroke="Black"
+                                                  StrokeThickness="1"
+                                                  Fill="Black"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                                        </Button>
+                                    </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

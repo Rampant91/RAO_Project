@@ -11,34 +11,53 @@ namespace Client_App.ViewModels.Forms.Forms1;
 
 public class Form_17VM : BaseFormVM
 {
+    #region Properties
+    
     public override string FormType => "1.7";
 
-    public ObservableCollection<OperationCodeItem> OperationCodes => 
+    #region OpCodes
+
+    public ObservableCollection<OperationCodeItem> OperationCodes =>
         new(OperationCodesProvider.AllOperationCodes
-            .Where(x => OperationCodesProvider.GetValidCodesForForm17().Contains(x.Code)));
+            .Where(x => ValidOperationCodes.Contains(x.Code)));
+
     public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm17();
+
+    #endregion
+
+    #region DocVids
 
     /// <summary>
     /// 
     /// </summary>
     public ObservableCollection<DocumentVidItem> DocumentVids =>
-        new(DocumentVidProvider.AllDocumentVids);
+        new(DocumentVidProvider.AllDocumentVids
+            .Where(x => ValidDocumentVids.Contains(x.Code.ToString())));
 
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodes().ToList();
+    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms11To18();
+
+    #endregion
+
+    #region RefineOrSortRAOCodes
 
     /// <summary>
     /// 
     /// </summary>
     public ObservableCollection<RefineOrSortRAOCodeItem> RefineOrSortRAOCodes =>
-        new(RefineOrSortRAOCodeProvider.AllRefineOrSortRAOCodes);
+        new(RefineOrSortRAOCodeProvider.AllRefineOrSortRAOCodes
+            .Where(x => ValidRefineOrSortRAOCodes.Contains(x.Code)));
 
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidRefineOrSortRAOCodes => RefineOrSortRAOCodeProvider.GetValidCodes().ToList();
+    public ICollection<string> ValidRefineOrSortRAOCodes => RefineOrSortRAOCodeProvider.GetValidCodes();  
+    
+    #endregion
+
+    #endregion
 
     #region Constructors
 
@@ -63,39 +82,11 @@ public class Form_17VM : BaseFormVM
             Reports = reps
         };
 
-        base.InitializeUserControls();
+        InitializeUserControls();
         Reports = reps;
 
         SelectReportPopupVM = new SelectReportPopupVM(this);
     }
 
     #endregion
-
-    //public ObservableCollection<Form17> Form17List => new(FormList.Cast<Form17>());
-
-    //public ObservableCollection<Form17> SelectedForms17 => new(SelectedForms.Cast<Form17>());
-
-    //public Form17 SelectedForm17
-    //{
-    //    get => SelectedForm as Form17;
-    //    set
-    //    {
-    //        SelectedForm = value;
-    //        UpdateFormList();
-    //    }
-    //}
-
-    /*
-    #region UpdateFormList
-    public new async void UpdateFormList()
-    {
-        base.UpdateFormList();
-        
-        //OnPropertyChanged(nameof(Form17List));
-        //OnPropertyChanged(nameof(SelectedForms17));
-        //OnPropertyChanged(nameof(SelectedForm17));
-    }
-
-    #endregion
-    */
 }

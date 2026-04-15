@@ -421,17 +421,19 @@
                                 <DataTemplate x:DataType="forms1:Form11">
                                     <Grid ColumnDefinitions="*,Auto">
                                         <AutoCompleteBox x:Name="OperationCodeAutoComplete"
-                                            Grid.Column="0"
-                                            Height="26"
-                                            Items="{Binding VM.OperationCodes, ElementName=1.1}"
-                                            Text="{Binding OperationCode.Value, Mode=TwoWay}"
-                                            HorizontalAlignment="Stretch"
-                                            MinimumPrefixLength="0"
-                                            IsTextCompletionEnabled="False">
+                                                         Grid.Column="0"
+                                                         Height="26"
+                                                         Items="{Binding VM.OperationCodes, ElementName=1.1}"
+                                                         Text="{Binding OperationCode.Value, Mode=TwoWay}"
+                                                         HorizontalAlignment="Stretch"
+                                                         MinimumPrefixLength="0"
+                                                         IsTextCompletionEnabled="False">
+
                                             <interactivity:Interaction.Behaviors>
                                                 <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.1}" />
                                                 <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
+
                                             <AutoCompleteBox.ItemTemplate>
                                                 <DataTemplate x:DataType="items:OperationCodeItem">
                                                     <Grid ColumnDefinitions="Auto,*">
@@ -440,7 +442,10 @@
                                                                    Margin="0,0,10,0" 
                                                                    FontWeight="Bold"/>
                                                         <TextBlock Grid.Column="1" 
-                                                                   Text="{Binding Description}" Foreground="Gray" TextWrapping="Wrap" MaxWidth="250"/>
+                                                                   Text="{Binding Description}" 
+                                                                   Foreground="Gray" 
+                                                                   TextWrapping="Wrap" 
+                                                                   MaxWidth="500"/>
                                                     </Grid>
                                                 </DataTemplate>
                                             </AutoCompleteBox.ItemTemplate>
@@ -455,10 +460,13 @@
                                                 Margin="2,0,0,0"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
-                                                ToolTip.Tip="Open/close list">
+                                                ToolTip.Tip="Открыть список">
+
                                             <interactivity:Interaction.Behaviors>
                                                 <local:DropDownButtonBehavior />
                                             </interactivity:Interaction.Behaviors>
+
+                                            <!-- Стрелка вниз -->
                                             <Path Data="M 0 0 L 4 4 L 8 0"
                                                   Stroke="Black"
                                                   StrokeThickness="1"
@@ -647,30 +655,60 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <AutoCompleteBox
-                                        Height="26"
-                                        Items="{Binding VM.CategoryCodes, ElementName=1.1}"
-                                        Text="{Binding Category.Value, Mode=TwoWay, Converter={StaticResource ShortNullableToStringConverter}}"
-                                        HorizontalAlignment="Stretch"
-                                        MinimumPrefixLength="0"
-                                        IsTextCompletionEnabled="True">
-                                        <interactivity:Interaction.Behaviors>
-                                            <local:AutoCompleteBoxCategoryValidationBehavior ValidCategories="{Binding VM.ValidCategories, ElementName=1.1}" />
-                                            <local:AutoCompleteBoxCategorySelectionChangedBehavior />
-                                        </interactivity:Interaction.Behaviors>
-                                        <AutoCompleteBox.ItemTemplate>
-                                            <DataTemplate x:DataType="items:CategoryItem">
-                                                <Grid ColumnDefinitions="Auto,*">
-                                                    <TextBlock Grid.Column="0" 
-                                                               Text="{Binding Code}" 
-                                                               Margin="0,0,10,0" 
-                                                               FontWeight="Bold"/>
-                                                    <TextBlock Grid.Column="1" 
-                                                               Text="{Binding Description}" Foreground="Gray" TextWrapping="Wrap" MaxWidth="250"/>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </AutoCompleteBox.ItemTemplate>
-                                    </AutoCompleteBox>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <AutoCompleteBox Height="26"
+                                                         Items="{Binding VM.CategoryCodes, ElementName=1.1}"
+                                                         Text="{Binding Category.Value, Mode=TwoWay, Converter={StaticResource ShortNullableToStringConverter}}"
+                                                         HorizontalAlignment="Stretch"
+                                                         MinimumPrefixLength="0"
+                                                         IsTextCompletionEnabled="False">
+
+                                            <interactivity:Interaction.Behaviors>
+                                                <local:AutoCompleteBoxCategoryValidationBehavior ValidCategories="{Binding VM.ValidCategories, ElementName=1.1}" />
+                                                <local:AutoCompleteBoxCategorySelectionChangedBehavior />
+                                            </interactivity:Interaction.Behaviors>
+                                            
+                                            <AutoCompleteBox.ItemTemplate>
+                                                <DataTemplate x:DataType="items:CategoryItem">
+                                                    <Grid ColumnDefinitions="Auto,*">
+                                                        <TextBlock Grid.Column="0" 
+                                                                   Text="{Binding Code}" 
+                                                                   Margin="0,0,10,0" 
+                                                                   FontWeight="Bold"/>
+                                                        <TextBlock Grid.Column="1" 
+                                                                   Text="{Binding Description}" 
+                                                                   Foreground="Gray" 
+                                                                   TextWrapping="Wrap" 
+                                                                   MaxWidth="400"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </AutoCompleteBox.ItemTemplate>
+                                        </AutoCompleteBox>
+                                        <Button Grid.Column="1"
+                                                Width="16"
+                                                Height="16"
+                                                Background="LightGray"
+                                                BorderThickness="1"
+                                                BorderBrush="Gray"
+                                                Padding="0"
+                                                Margin="2,0,0,0"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                ToolTip.Tip="Открыть список">
+
+                                            <interactivity:Interaction.Behaviors>
+                                                <local:DropDownButtonBehavior />
+                                            </interactivity:Interaction.Behaviors>
+
+                                            <!-- Стрелка вниз -->
+                                            <Path Data="M 0 0 L 4 4 L 8 0"
+                                                  Stroke="Black"
+                                                  StrokeThickness="1"
+                                                  Fill="Black"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                                        </Button>
+                                    </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -704,30 +742,60 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <AutoCompleteBox 
-                                        Height="26"
-                                        Items="{Binding VM.OwnershipForms, ElementName=1.1}"
-                                        Text="{Binding PropertyCode.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}"
-                                        HorizontalAlignment="Stretch"
-                                        MinimumPrefixLength="0"
-                                        IsTextCompletionEnabled="True">
-                                        <interactivity:Interaction.Behaviors>
-                                            <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidOwnershipForms, ElementName=1.1}" />
-                                            <local:AutoCompleteBoxCodeSelectionBehavior />
-                                        </interactivity:Interaction.Behaviors>
-                                        <AutoCompleteBox.ItemTemplate>
-                                            <DataTemplate x:DataType="items:OwnershipItem">
-                                                <Grid ColumnDefinitions="Auto,*">
-                                                    <TextBlock Grid.Column="0" 
-                                                               Text="{Binding Code}" 
-                                                               Margin="0,0,10,0" 
-                                                               FontWeight="Bold"/>
-                                                    <TextBlock Grid.Column="1" 
-                                                               Text="{Binding Description}" Foreground="Gray" TextWrapping="Wrap" MaxWidth="250"/>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </AutoCompleteBox.ItemTemplate>
-                                    </AutoCompleteBox>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <AutoCompleteBox Height="26"
+                                                         Items="{Binding VM.OwnershipForms, ElementName=1.1}"
+                                                         Text="{Binding PropertyCode.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}"
+                                                         HorizontalAlignment="Stretch"
+                                                         MinimumPrefixLength="0"
+                                                         IsTextCompletionEnabled="False">
+
+                                            <interactivity:Interaction.Behaviors>
+                                                <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidOwnershipForms, ElementName=1.1}" />
+                                                <local:AutoCompleteBoxCodeSelectionBehavior />
+                                            </interactivity:Interaction.Behaviors>
+
+                                            <AutoCompleteBox.ItemTemplate>
+                                                <DataTemplate x:DataType="items:OwnershipItem">
+                                                    <Grid ColumnDefinitions="Auto,*">
+                                                        <TextBlock Grid.Column="0" 
+                                                                   Text="{Binding Code}" 
+                                                                   Margin="0,0,10,0" 
+                                                                   FontWeight="Bold"/>
+                                                        <TextBlock Grid.Column="1" 
+                                                                   Text="{Binding Description}" 
+                                                                   Foreground="Gray" 
+                                                                   TextWrapping="Wrap" 
+                                                                   MaxWidth="400"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </AutoCompleteBox.ItemTemplate>
+                                        </AutoCompleteBox>
+                                        <Button Grid.Column="1"
+                                                Width="16"
+                                                Height="16"
+                                                Background="LightGray"
+                                                BorderThickness="1"
+                                                BorderBrush="Gray"
+                                                Padding="0"
+                                                Margin="2,0,0,0"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                ToolTip.Tip="Открыть список">
+
+                                            <interactivity:Interaction.Behaviors>
+                                                <local:DropDownButtonBehavior />
+                                            </interactivity:Interaction.Behaviors>
+
+                                            <!-- Стрелка вниз -->
+                                            <Path Data="M 0 0 L 4 4 L 8 0"
+                                                  Stroke="Black"
+                                                  StrokeThickness="1"
+                                                  Fill="Black"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                                        </Button>
+                                    </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -761,30 +829,60 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <AutoCompleteBox 
-                                        Height="26"
-                                        Items="{Binding VM.DocumentVids, ElementName=1.1}"
-                                        Text="{Binding DocumentVid.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}"
-                                        HorizontalAlignment="Stretch"
-                                        MinimumPrefixLength="0"
-                                        IsTextCompletionEnabled="True">
-                                        <interactivity:Interaction.Behaviors>
-                                            <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidDocumentVids, ElementName=1.1}" />
-                                            <local:AutoCompleteBoxCodeSelectionBehavior />
-                                        </interactivity:Interaction.Behaviors>
-                                        <AutoCompleteBox.ItemTemplate>
-                                            <DataTemplate x:DataType="items:DocumentVidItem">
-                                                <Grid ColumnDefinitions="Auto,*">
-                                                    <TextBlock Grid.Column="0" 
-                                                               Text="{Binding Code}" 
-                                                               Margin="0,0,10,0" 
-                                                               FontWeight="Bold"/>
-                                                    <TextBlock Grid.Column="1" 
-                                                               Text="{Binding Description}" Foreground="Gray" TextWrapping="Wrap" MaxWidth="250"/>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </AutoCompleteBox.ItemTemplate>
-                                    </AutoCompleteBox>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <AutoCompleteBox Height="26"
+                                                         Items="{Binding VM.DocumentVids, ElementName=1.1}"
+                                                         Text="{Binding DocumentVid.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}"
+                                                         HorizontalAlignment="Stretch"
+                                                         MinimumPrefixLength="0"
+                                                         IsTextCompletionEnabled="True">
+
+                                            <interactivity:Interaction.Behaviors>
+                                                <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidDocumentVids, ElementName=1.1}" />
+                                                <local:AutoCompleteBoxCodeSelectionBehavior />
+                                            </interactivity:Interaction.Behaviors>
+
+                                            <AutoCompleteBox.ItemTemplate>
+                                                <DataTemplate x:DataType="items:DocumentVidItem">
+                                                    <Grid ColumnDefinitions="Auto,*">
+                                                        <TextBlock Grid.Column="0" 
+                                                                   Text="{Binding Code}" 
+                                                                   Margin="0,0,10,0" 
+                                                                   FontWeight="Bold"/>
+                                                        <TextBlock Grid.Column="1" 
+                                                                   Text="{Binding Description}" 
+                                                                   Foreground="Gray" 
+                                                                   TextWrapping="Wrap" 
+                                                                   MaxWidth="350"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </AutoCompleteBox.ItemTemplate>
+                                        </AutoCompleteBox>
+                                        <Button Grid.Column="1"
+                                                Width="16"
+                                                Height="16"
+                                                Background="LightGray"
+                                                BorderThickness="1"
+                                                BorderBrush="Gray"
+                                                Padding="0"
+                                                Margin="2,0,0,0"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                ToolTip.Tip="Открыть список">
+
+                                            <interactivity:Interaction.Behaviors>
+                                                <local:DropDownButtonBehavior />
+                                            </interactivity:Interaction.Behaviors>
+
+                                            <!-- Стрелка вниз -->
+                                            <Path Data="M 0 0 L 4 4 L 8 0"
+                                                  Stroke="Black"
+                                                  StrokeThickness="1"
+                                                  Fill="Black"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                                        </Button>
+                                    </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -953,7 +1051,6 @@
                                            Margin="5"
                                            Minimum="1"
                                            Value="{Binding RowCount}" />
-
                 <TextBlock Grid.Row="1"
                            Grid.Column="2"
                            Margin="5"
@@ -1043,8 +1140,3 @@
 
     </Grid>
 </Window>
-
-
-
-
-

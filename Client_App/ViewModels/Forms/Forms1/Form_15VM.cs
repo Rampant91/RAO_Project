@@ -1,5 +1,4 @@
 ﻿using Client_App.Commands.AsyncCommands.ExcelExport;
-using Client_App.Commands.SyncCommands;
 using Client_App.ViewModels.Controls;
 using Models.Collections;
 using System;
@@ -14,39 +13,53 @@ namespace Client_App.ViewModels.Forms.Forms1;
 
 public class Form_15VM : BaseFormVM
 {
+    #region Properties
+    
     public override string FormType => "1.5";
 
-    public ObservableCollection<OperationCodeItem> OperationCodes => 
+    #region OpCodes
+
+    public ObservableCollection<OperationCodeItem> OperationCodes =>
         new(OperationCodesProvider.AllOperationCodes
-            .Where(x => OperationCodesProvider.GetValidCodesForForm15().Contains(x.Code)));
+            .Where(x => ValidOperationCodes.Contains(x.Code)));
+
     public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm15();
+
+    #endregion
+
+    #region DocVids
 
     /// <summary>
     /// 
     /// </summary>
     public ObservableCollection<DocumentVidItem> DocumentVids =>
-        new(DocumentVidProvider.AllDocumentVids);
+        new(DocumentVidProvider.AllDocumentVids
+            .Where(x => ValidDocumentVids.Contains(x.Code.ToString())));
 
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodes().ToList();
+    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms11To18();
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public ICollection<string> ValidOwnershipForms => OwnershipProvider.GetValidCodes().ToList();
+    #endregion
+
+    #region RefineOrSortRAOCodes
 
     /// <summary>
     /// 
     /// </summary>
     public ObservableCollection<RefineOrSortRAOCodeItem> RefineOrSortRAOCodes =>
-        new(RefineOrSortRAOCodeProvider.AllRefineOrSortRAOCodes);
+        new(RefineOrSortRAOCodeProvider.AllRefineOrSortRAOCodes
+            .Where(x => ValidRefineOrSortRAOCodes.Contains(x.Code)));
 
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidRefineOrSortRAOCodes => RefineOrSortRAOCodeProvider.GetValidCodes().ToList();
+    public ICollection<string> ValidRefineOrSortRAOCodes => RefineOrSortRAOCodeProvider.GetValidCodes();
+
+    #endregion 
+
+    #endregion
 
     #region Constructors
 
@@ -71,7 +84,7 @@ public class Form_15VM : BaseFormVM
             Reports = reps
         };
 
-        base.InitializeUserControls();
+        InitializeUserControls();
         Reports = reps;
 
         SelectReportPopupVM = new SelectReportPopupVM(this);
@@ -84,32 +97,4 @@ public class Form_15VM : BaseFormVM
     public ICommand ExcelExportSourceMovementHistory => new ExcelExportSourceMovementHistoryAsyncCommand();
     
     #endregion
-
-    //public ObservableCollection<Form15> Form15List => new(FormList.Cast<Form15>());
-
-    //public ObservableCollection<Form15> SelectedForms15 => new(SelectedForms.Cast<Form15>());
-
-    //public Form15 SelectedForm15
-    //{
-    //    get => SelectedForm as Form15;
-    //    set
-    //    {
-    //        SelectedForm = value;
-    //        UpdateFormList();
-    //    }
-    //}
-
-    /*
-    #region UpdateFormList
-    public new async void UpdateFormList()
-    {
-        base.UpdateFormList();
-        
-        //OnPropertyChanged(nameof(Form15List));
-        //OnPropertyChanged(nameof(SelectedForms15));
-        //OnPropertyChanged(nameof(SelectedForm15));
-    }
-
-    #endregion
-    */
 }
