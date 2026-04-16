@@ -1,6 +1,7 @@
 ﻿<Window x:Class="Client_App.Views.Forms.Forms1.Form_11"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:appControls="clr-namespace:Client_App.Controls"
         xmlns:controls="clr-namespace:Client_App.Views.Controls"
         xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,7 +9,7 @@
         xmlns:forms1="clr-namespace:Models.Forms.Form1;assembly=Models"
         xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
         xmlns:local="using:Client_App.Behaviors"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
         xmlns:items="clr-namespace:Client_App.ViewModels.Forms.Forms1.Items"
         x:Name="1.1"
@@ -375,8 +376,6 @@
                 <DataGrid x:Name="dataGrid"
                           Grid.Row="1"
                           x:CompileBindings="True"
-                          CanUserReorderColumns="False"
-                          CanUserSortColumns="True"
                           Classes="table"
                           ColumnWidth="125"
                           Items="{Binding FormList}"
@@ -420,8 +419,7 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
                                     <Grid ColumnDefinitions="*,Auto">
-                                        <AutoCompleteBox x:Name="OperationCodeAutoComplete"
-                                                         Grid.Column="0"
+                                        <AutoCompleteBox Grid.Column="0"
                                                          Height="26"
                                                          Items="{Binding VM.OperationCodes, ElementName=1.1}"
                                                          Text="{Binding OperationCode.Value, Mode=TwoWay}"
@@ -450,30 +448,7 @@
                                                 </DataTemplate>
                                             </AutoCompleteBox.ItemTemplate>
                                         </AutoCompleteBox>
-                                        <Button Grid.Column="1"
-                                                Width="16"
-                                                Height="16"
-                                                Background="LightGray"
-                                                BorderThickness="1"
-                                                BorderBrush="Gray"
-                                                Padding="0"
-                                                Margin="2,0,0,0"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                ToolTip.Tip="Открыть список">
-
-                                            <interactivity:Interaction.Behaviors>
-                                                <local:DropDownButtonBehavior />
-                                            </interactivity:Interaction.Behaviors>
-
-                                            <!-- Стрелка вниз -->
-                                            <Path Data="M 0 0 L 4 4 L 8 0"
-                                                  Stroke="Black"
-                                                  StrokeThickness="1"
-                                                  Fill="Black"
-                                                  HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center"/>
-                                        </Button>
+                                        <appControls:DropDownButton Grid.Column="1" />
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -658,7 +633,7 @@
                                     <Grid ColumnDefinitions="*,Auto">
                                         <AutoCompleteBox Height="26"
                                                          Items="{Binding VM.CategoryCodes, ElementName=1.1}"
-                                                         Text="{Binding Category.Value, Mode=TwoWay, Converter={StaticResource ShortNullableToStringConverter}}"
+                                                         Text="{Binding Category.Value, Converter={StaticResource ShortNullableToStringConverter}, Mode=TwoWay}"
                                                          HorizontalAlignment="Stretch"
                                                          MinimumPrefixLength="0"
                                                          IsTextCompletionEnabled="False">
@@ -684,30 +659,7 @@
                                                 </DataTemplate>
                                             </AutoCompleteBox.ItemTemplate>
                                         </AutoCompleteBox>
-                                        <Button Grid.Column="1"
-                                                Width="16"
-                                                Height="16"
-                                                Background="LightGray"
-                                                BorderThickness="1"
-                                                BorderBrush="Gray"
-                                                Padding="0"
-                                                Margin="2,0,0,0"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                ToolTip.Tip="Открыть список">
-
-                                            <interactivity:Interaction.Behaviors>
-                                                <local:DropDownButtonBehavior />
-                                            </interactivity:Interaction.Behaviors>
-
-                                            <!-- Стрелка вниз -->
-                                            <Path Data="M 0 0 L 4 4 L 8 0"
-                                                  Stroke="Black"
-                                                  StrokeThickness="1"
-                                                  Fill="Black"
-                                                  HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center"/>
-                                        </Button>
+                                        <appControls:DropDownButton Grid.Column="1" />
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -771,30 +723,7 @@
                                                 </DataTemplate>
                                             </AutoCompleteBox.ItemTemplate>
                                         </AutoCompleteBox>
-                                        <Button Grid.Column="1"
-                                                Width="16"
-                                                Height="16"
-                                                Background="LightGray"
-                                                BorderThickness="1"
-                                                BorderBrush="Gray"
-                                                Padding="0"
-                                                Margin="2,0,0,0"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                ToolTip.Tip="Открыть список">
-
-                                            <interactivity:Interaction.Behaviors>
-                                                <local:DropDownButtonBehavior />
-                                            </interactivity:Interaction.Behaviors>
-
-                                            <!-- Стрелка вниз -->
-                                            <Path Data="M 0 0 L 4 4 L 8 0"
-                                                  Stroke="Black"
-                                                  StrokeThickness="1"
-                                                  Fill="Black"
-                                                  HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center"/>
-                                        </Button>
+                                        <appControls:DropDownButton Grid.Column="1" />
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -830,12 +759,13 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
                                     <Grid ColumnDefinitions="*,Auto">
-                                        <AutoCompleteBox Height="26"
+                                        <AutoCompleteBox Grid.Column="0"
+                                                         Height="26"
                                                          Items="{Binding VM.DocumentVids, ElementName=1.1}"
                                                          Text="{Binding DocumentVid.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}"
                                                          HorizontalAlignment="Stretch"
                                                          MinimumPrefixLength="0"
-                                                         IsTextCompletionEnabled="True">
+                                                         IsTextCompletionEnabled="False">
 
                                             <interactivity:Interaction.Behaviors>
                                                 <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidDocumentVids, ElementName=1.1}" />
@@ -858,30 +788,7 @@
                                                 </DataTemplate>
                                             </AutoCompleteBox.ItemTemplate>
                                         </AutoCompleteBox>
-                                        <Button Grid.Column="1"
-                                                Width="16"
-                                                Height="16"
-                                                Background="LightGray"
-                                                BorderThickness="1"
-                                                BorderBrush="Gray"
-                                                Padding="0"
-                                                Margin="2,0,0,0"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                ToolTip.Tip="Открыть список">
-
-                                            <interactivity:Interaction.Behaviors>
-                                                <local:DropDownButtonBehavior />
-                                            </interactivity:Interaction.Behaviors>
-
-                                            <!-- Стрелка вниз -->
-                                            <Path Data="M 0 0 L 4 4 L 8 0"
-                                                  Stroke="Black"
-                                                  StrokeThickness="1"
-                                                  Fill="Black"
-                                                  HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center"/>
-                                        </Button>
+                                        <appControls:DropDownButton Grid.Column="1" />
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>

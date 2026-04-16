@@ -1,16 +1,17 @@
 ﻿<Window x:Class="Client_App.Views.Forms.Forms1.Form_14"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:appControls="clr-namespace:Client_App.Controls"
         xmlns:controls="clr-namespace:Client_App.Views.Controls"
         xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:forms="clr-namespace:Models.Forms;assembly=Models"
         xmlns:forms1="clr-namespace:Models.Forms.Form1;assembly=Models"
         xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+        xmlns:items="clr-namespace:Client_App.ViewModels.Forms.Forms1.Items"
         xmlns:local="using:Client_App.Behaviors"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
-        xmlns:items="clr-namespace:Client_App.ViewModels.Forms.Forms1.Items"
         x:Name="1.4"
         Title="{Binding WindowTitle}"
         MinWidth="800"
@@ -23,8 +24,6 @@
         mc:Ignorable="d">
 
     <Window.Resources>
-        <converter:DataGridLengthToGridLengthConverter x:Key="LengthConverter" />
-        <converter:NullToStringConverter x:Key="NullToStringConverter" />
         <converter:DateConverter x:Key="DateConverter" />
         <converter:IsOperation41AndSingleSelectionConverter x:Key="Op41AndOneSelectedConverter" />
     </Window.Resources>
@@ -94,12 +93,12 @@
                         </StackPanel>
 
                         <StackPanel Grid.Row="3" Orientation="Horizontal">
-                            <Button Margin="5" 
-                                    Command="{Binding CheckForm}" 
-                                    Content="Проверить"/>
-                            <Button Margin="5" 
-                                    Command="{Binding SaveReport}" 
-                                    Content="Сохранить"/>
+                            <Button Margin="5"
+                                    Command="{Binding CheckForm}"
+                                    Content="Проверить" />
+                            <Button Margin="5"
+                                    Command="{Binding SaveReport}"
+                                    Content="Сохранить" />
                         </StackPanel>
 
                     </Grid>
@@ -120,14 +119,15 @@
                 <Border Classes="borderContainer">
                     <Grid Margin="5" RowDefinitions="Auto,Auto,Auto">
 
-                        <Button Grid.Row="0" 
-                                Command="{Binding SourceTransmissionAll}" 
-                                Content="Перевести все РВ в РАО"/>
+                        <Button Grid.Row="0"
+                                Command="{Binding SourceTransmissionAll}"
+                                Content="Перевести все РВ в РАО" />
 
                         <StackPanel Grid.Row="1" Orientation="Horizontal">
-                            <TextBlock Margin="5" Text="Автозаполнение"/>
+                            <TextBlock Margin="5" Text="Автозаполнение" />
                             <CheckBox Margin="5" IsChecked="{Binding IsAutoReplaceEnabled}" />
                         </StackPanel>
+
                         <Button Grid.Row="2"
                                 Margin="5"
                                 Command="{Binding SetDefaultColumnWidth}"
@@ -188,9 +188,9 @@
                         <MenuItem Command="{Binding SetNumberOrder}"
                                   Header="Выставить номер"
                                   InputGesture="Ctrl+O" />
-                        <MenuItem Header="Сортировать по номеру п/п	Ctrl+L"
-		                          Command="{Binding SortForms}"
-		                          HotKey="Ctrl+L"/>
+                        <MenuItem Command="{Binding SortForms}"
+                                  Header="Сортировать по номеру п/п Ctrl+L"
+                                  HotKey="Ctrl+L" />
                         <MenuItem Command="{Binding DeleteDataInRows}"
                                   CommandParameter="{Binding SelectedForms}"
                                   Header="Очистить строчки"
@@ -226,36 +226,37 @@
 
                     <!--#region Первый уровень заголовков-->
 
-                    <Border Grid.Row="0" Grid.Column="0"/>
+                    <Border Grid.Row="0" Grid.Column="0" />
                     <Border Grid.Row="0"
                             Grid.Column="1"
                             Grid.ColumnSpan="2">
-                        <TextBlock Text="Сведения об операции"/>
+                        <TextBlock Text="Сведения об операции" />
                     </Border>
                     <Border Grid.Row="0"
                             Grid.Column="3"
                             Grid.ColumnSpan="9">
-                        <TextBlock Text="Сведения из паспорта на открытый радионуклидный источник"/>
+                        <TextBlock Text="Сведения из паспорта на открытый радионуклидный источник" />
                     </Border>
                     <Border Grid.Row="0"
                             Grid.Column="12"
                             Grid.ColumnSpan="2">
-                        <TextBlock Text="Право собственности на ОРИ"/>
+                        <TextBlock Text="Право собственности на ОРИ" />
                     </Border>
                     <Border Grid.Row="0"
                             Grid.Column="14"
                             Grid.ColumnSpan="3">
-                        <TextBlock Text="Документ"/>
+                        <TextBlock Text="Документ" />
                     </Border>
-                    <Border Grid.Row="0"
-                            Grid.Column="17"
-                            Grid.ColumnSpan="2">
-                        <TextBlock Text="Код ОКПО"/>
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="17"
+                        Grid.ColumnSpan="2">
+                        <TextBlock Text="Код ОКПО" />
                     </Border>
                     <Border Grid.Row="0"
                             Grid.Column="19"
                             Grid.ColumnSpan="3">
-                        <TextBlock Text="Прибор (установка), УКТ или иная упаковка"/>
+                        <TextBlock Text="Прибор (установка), УКТ или иная упаковка" />
                     </Border>
 
                     <!--#endregion Первый уровень заголовков-->
@@ -263,70 +264,70 @@
                     <!--#region Второй уровень заголовков-->
 
                     <Border Grid.Row="1" Grid.Column="0">
-                        <TextBlock Text="№ п/п"/>
+                        <TextBlock Text="№ п/п" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="1">
-                        <TextBlock Text="код"/>
+                        <TextBlock Text="код" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="2">
-                        <TextBlock Text="дата"/>
+                        <TextBlock Text="дата" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="3">
-                        <TextBlock Text="номер паспорта"/>
+                        <TextBlock Text="номер паспорта" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="4">
-                        <TextBlock Text="наименование"/>
+                        <TextBlock Text="наименование" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="5">
-                        <TextBlock Text="вид"/>
+                        <TextBlock Text="вид" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="6">
-                        <TextBlock Text="радионуклиды"/>
+                        <TextBlock Text="радионуклиды" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="7">
-                        <TextBlock Text="активность, Бк"/>
+                        <TextBlock Text="активность, Бк" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="8">
-                        <TextBlock Text="дата измерения активности"/>
+                        <TextBlock Text="дата измерения активности" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="9">
-                        <TextBlock Text="объем, куб. м"/>
+                        <TextBlock Text="объем, куб. м" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="10">
-                        <TextBlock Text="масса, кг"/>
+                        <TextBlock Text="масса, кг" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="11">
-                        <TextBlock Text="агрегатное состояние"/>
+                        <TextBlock Text="агрегатное состояние" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="12">
-                        <TextBlock Text="код формы собственности"/>
+                        <TextBlock Text="код формы собственности" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="13">
-                        <TextBlock Text="код ОКПО правообладателя"/>
+                        <TextBlock Text="код ОКПО правообладателя" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="14">
-                        <TextBlock Text="вид"/>
+                        <TextBlock Text="вид" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="15">
-                        <TextBlock Text="номер"/>
+                        <TextBlock Text="номер" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="16">
-                        <TextBlock Text="дата"/>
+                        <TextBlock Text="дата" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="17">
-                        <TextBlock Text="поставщика или получателя"/>
+                        <TextBlock Text="поставщика или получателя" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="18">
-                        <TextBlock Text="перевозчика"/>
+                        <TextBlock Text="перевозчика" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="19">
-                        <TextBlock Text="наименование"/>
+                        <TextBlock Text="наименование" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="20">
-                        <TextBlock Text="тип"/>
+                        <TextBlock Text="тип" />
                     </Border>
                     <Border Grid.Row="1" Grid.Column="21">
-                        <TextBlock Text="номер"/>
+                        <TextBlock Text="номер" />
                     </Border>
 
                     <!--#endregion Второй уровень заголовков-->
@@ -387,14 +388,15 @@
                                         <AutoCompleteBox x:Name="OperationCodeAutoComplete"
                                                          Grid.Column="0"
                                                          Height="26"
-                                                         Items="{Binding VM.OperationCodes, ElementName=1.4}"
-                                                         Text="{Binding OperationCode.Value, Mode=TwoWay}"
                                                          HorizontalAlignment="Stretch"
+                                                         IsTextCompletionEnabled="False"
+                                                         Items="{Binding VM.OperationCodes, ElementName=1.4}"
                                                          MinimumPrefixLength="0"
-                                                         IsTextCompletionEnabled="False">
+                                                         Text="{Binding OperationCode.Value, Mode=TwoWay}">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.4}" />
+                                                <local:AutoCompleteBoxValidationBehavior
+                                                    ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.4}" />
                                                 <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
@@ -402,42 +404,19 @@
                                                 <DataTemplate x:DataType="items:OperationCodeItem">
                                                     <Grid ColumnDefinitions="Auto,*">
                                                         <TextBlock Grid.Column="0"
-                                                                   Text="{Binding Code}"
                                                                    Margin="0,0,10,0"
-                                                                   FontWeight="Bold"/>
+                                                                   FontWeight="Bold"
+                                                                   Text="{Binding Code}" />
                                                         <TextBlock Grid.Column="1"
-                                                                   Text="{Binding Description}"
+                                                                   MaxWidth="250"
                                                                    Foreground="Gray"
-                                                                   TextWrapping="Wrap"
-                                                                   MaxWidth="250"/>
+                                                                   Text="{Binding Description}"
+                                                                   TextWrapping="Wrap" />
                                                     </Grid>
                                                 </DataTemplate>
                                             </AutoCompleteBox.ItemTemplate>
                                         </AutoCompleteBox>
-                                        <Button Grid.Column="1"
-                                                Width="16"
-                                                Height="16"
-                                                Background="LightGray"
-                                                BorderThickness="1"
-                                                BorderBrush="Gray"
-                                                Padding="0"
-                                                Margin="2,0,0,0"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                ToolTip.Tip="Открыть список">
-
-                                            <interactivity:Interaction.Behaviors>
-                                                <local:DropDownButtonBehavior />
-                                            </interactivity:Interaction.Behaviors>
-
-                                            <!-- Стрелка вниз -->
-                                            <Path Data="M 0 0 L 4 4 L 8 0"
-                                                  Stroke="Black"
-                                                  StrokeThickness="1"
-                                                  Fill="Black"
-                                                  HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center"/>
-                                        </Button>
+                                        <appControls:DropDownButton Grid.Column="1" />
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -456,7 +435,8 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form14">
                                     <Grid ColumnDefinitions="*,Auto">
-                                        <TextBox Grid.Column="0" Text="{Binding OperationDate.Value, Mode=TwoWay}" />
+                                        <TextBox Grid.Column="0" 
+                                                 Text="{Binding OperationDate.Value, Mode=TwoWay}" />
                                         <CalendarDatePicker Grid.Column="1"
                                                             Classes="buttonOnly"
                                                             SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
@@ -563,10 +543,12 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form14">
                                     <Grid ColumnDefinitions="*,Auto">
-                                        <TextBox Grid.Column="0" Text="{Binding ActivityMeasurementDate.Value, Mode=TwoWay}" />
-                                        <CalendarDatePicker Grid.Column="1"
-                                                            Classes="buttonOnly"
-                                                            SelectedDate="{Binding ActivityMeasurementDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
+                                        <TextBox Grid.Column="0"
+                                                 Text="{Binding ActivityMeasurementDate.Value, Mode=TwoWay}" />
+                                        <CalendarDatePicker
+                                            Grid.Column="1"
+                                            Classes="buttonOnly"
+                                            SelectedDate="{Binding ActivityMeasurementDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -618,30 +600,39 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form14">
-                                    <AutoCompleteBox 
-                                        Height="26"
-                                        Items="{Binding VM.AggregateStates, ElementName=1.4}"
-                                        Text="{Binding AggregateState.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}"
-                                        HorizontalAlignment="Stretch"
-                                        MinimumPrefixLength="0"
-                                        IsTextCompletionEnabled="True">
-                                        <interactivity:Interaction.Behaviors>
-                                            <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidAggregateStates, ElementName=1.4}" />
-                                            <local:AutoCompleteBoxCodeSelectionBehavior />
-                                        </interactivity:Interaction.Behaviors>
-                                        <AutoCompleteBox.ItemTemplate>
-                                            <DataTemplate x:DataType="items:AggregateStateItem">
-                                                <Grid ColumnDefinitions="Auto,*">
-                                                    <TextBlock Grid.Column="0" 
-                                                               Text="{Binding Code}" 
-                                                               Margin="0,0,10,0" 
-                                                               FontWeight="Bold"/>
-                                                    <TextBlock Grid.Column="1" 
-                                                               Text="{Binding Description}" Foreground="Gray" TextWrapping="Wrap" MaxWidth="250"/>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </AutoCompleteBox.ItemTemplate>
-                                    </AutoCompleteBox>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <AutoCompleteBox Grid.Column="0"
+                                                         Height="26"
+                                                         HorizontalAlignment="Stretch"
+                                                         IsTextCompletionEnabled="False"
+                                                         Items="{Binding VM.AggregateStates, ElementName=1.4}"
+                                                         MinimumPrefixLength="0"
+                                                         Text="{Binding AggregateState.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}">
+
+                                            <interactivity:Interaction.Behaviors>
+                                                <local:AutoCompleteBoxValidationBehavior
+                                                    ValidCodes="{Binding VM.ValidAggregateStates, ElementName=1.4}" />
+                                                <local:AutoCompleteBoxCodeSelectionBehavior />
+                                            </interactivity:Interaction.Behaviors>
+
+                                            <AutoCompleteBox.ItemTemplate>
+                                                <DataTemplate x:DataType="items:AggregateStateItem">
+                                                    <Grid ColumnDefinitions="Auto,*">
+                                                        <TextBlock Grid.Column="0"
+                                                                   Margin="0,0,10,0"
+                                                                   FontWeight="Bold"
+                                                                   Text="{Binding Code}" />
+                                                        <TextBlock Grid.Column="1"
+                                                                   MaxWidth="250"
+                                                                   Foreground="Gray"
+                                                                   Text="{Binding Description}"
+                                                                   TextWrapping="Wrap" />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </AutoCompleteBox.ItemTemplate>
+                                        </AutoCompleteBox>
+                                        <appControls:DropDownButton Grid.Column="1" />
+                                    </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -658,30 +649,39 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form14">
-                                    <AutoCompleteBox 
-                                        Height="26"
-                                        Items="{Binding VM.OwnershipForms, ElementName=1.4}"
-                                        Text="{Binding PropertyCode.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}"
-                                        HorizontalAlignment="Stretch"
-                                        MinimumPrefixLength="0"
-                                        IsTextCompletionEnabled="True">
-                                        <interactivity:Interaction.Behaviors>
-                                            <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidOwnershipForms, ElementName=1.4}" />
-                                            <local:AutoCompleteBoxCodeSelectionBehavior />
-                                        </interactivity:Interaction.Behaviors>
-                                        <AutoCompleteBox.ItemTemplate>
-                                            <DataTemplate x:DataType="items:OwnershipItem">
-                                                <Grid ColumnDefinitions="Auto,*">
-                                                    <TextBlock Grid.Column="0" 
-                                                               Text="{Binding Code}" 
-                                                               Margin="0,0,10,0" 
-                                                               FontWeight="Bold"/>
-                                                    <TextBlock Grid.Column="1" 
-                                                               Text="{Binding Description}" Foreground="Gray" TextWrapping="Wrap" MaxWidth="250"/>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </AutoCompleteBox.ItemTemplate>
-                                    </AutoCompleteBox>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <AutoCompleteBox Grid.Column="0"
+                                                         Height="26"
+                                                         HorizontalAlignment="Stretch"
+                                                         IsTextCompletionEnabled="False"
+                                                         Items="{Binding VM.OwnershipForms, ElementName=1.4}"
+                                                         MinimumPrefixLength="0"
+                                                         Text="{Binding PropertyCode.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}">
+
+                                            <interactivity:Interaction.Behaviors>
+                                                <local:AutoCompleteBoxValidationBehavior
+                                                    ValidCodes="{Binding VM.ValidOwnershipForms, ElementName=1.4}" />
+                                                <local:AutoCompleteBoxCodeSelectionBehavior />
+                                            </interactivity:Interaction.Behaviors>
+
+                                            <AutoCompleteBox.ItemTemplate>
+                                                <DataTemplate x:DataType="items:OwnershipItem">
+                                                    <Grid ColumnDefinitions="Auto,*">
+                                                        <TextBlock Grid.Column="0"
+                                                                   Margin="0,0,10,0"
+                                                                   FontWeight="Bold"
+                                                                   Text="{Binding Code}" />
+                                                        <TextBlock Grid.Column="1"
+                                                                   MaxWidth="400"
+                                                                   Foreground="Gray"
+                                                                   Text="{Binding Description}"
+                                                                   TextWrapping="Wrap" />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </AutoCompleteBox.ItemTemplate>
+                                        </AutoCompleteBox>
+                                        <appControls:DropDownButton Grid.Column="1" />
+                                    </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -715,30 +715,39 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form14">
-                                    <AutoCompleteBox 
-                                        Height="26"
-                                        Items="{Binding VM.DocumentVids, ElementName=1.4}"
-                                        Text="{Binding DocumentVid.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}"
-                                        HorizontalAlignment="Stretch"
-                                        MinimumPrefixLength="0"
-                                        IsTextCompletionEnabled="True">
-                                        <interactivity:Interaction.Behaviors>
-                                            <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidDocumentVids, ElementName=1.4}" />
-                                            <local:AutoCompleteBoxCodeSelectionBehavior />
-                                        </interactivity:Interaction.Behaviors>
-                                        <AutoCompleteBox.ItemTemplate>
-                                            <DataTemplate x:DataType="items:DocumentVidItem">
-                                                <Grid ColumnDefinitions="Auto,*">
-                                                    <TextBlock Grid.Column="0" 
-                                                               Text="{Binding Code}" 
-                                                               Margin="0,0,10,0" 
-                                                               FontWeight="Bold"/>
-                                                    <TextBlock Grid.Column="1" 
-                                                               Text="{Binding Description}" Foreground="Gray" TextWrapping="Wrap" MaxWidth="250"/>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </AutoCompleteBox.ItemTemplate>
-                                    </AutoCompleteBox>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <AutoCompleteBox Grid.Column="0"
+                                                         Height="26"
+                                                         HorizontalAlignment="Stretch"
+                                                         IsTextCompletionEnabled="False"
+                                                         Items="{Binding VM.DocumentVids, ElementName=1.4}"
+                                                         MinimumPrefixLength="0"
+                                                         Text="{Binding DocumentVid.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}">
+
+                                            <interactivity:Interaction.Behaviors>
+                                                <local:AutoCompleteBoxValidationBehavior
+                                                    ValidCodes="{Binding VM.ValidDocumentVids, ElementName=1.4}" />
+                                                <local:AutoCompleteBoxCodeSelectionBehavior />
+                                            </interactivity:Interaction.Behaviors>
+
+                                            <AutoCompleteBox.ItemTemplate>
+                                                <DataTemplate x:DataType="items:DocumentVidItem">
+                                                    <Grid ColumnDefinitions="Auto,*">
+                                                        <TextBlock Grid.Column="0"
+                                                                   Margin="0,0,10,0"
+                                                                   FontWeight="Bold"
+                                                                   Text="{Binding Code}" />
+                                                        <TextBlock Grid.Column="1"
+                                                                   MaxWidth="350"
+                                                                   Foreground="Gray"
+                                                                   Text="{Binding Description}"
+                                                                   TextWrapping="Wrap" />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </AutoCompleteBox.ItemTemplate>
+                                        </AutoCompleteBox>
+                                        <appControls:DropDownButton Grid.Column="1" />
+                                    </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -856,7 +865,6 @@
                                     <Border Classes="headerTemplate">
                                         <Grid ColumnDefinitions="*,Auto">
                                             <TextBlock Grid.Column="0" Text="22" />
-                                            <!--<Button Grid.Column="1"/>-->
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
@@ -944,9 +952,9 @@
                                       Header="Удалить выбранные строчки" />
                         </ContextMenu>
                     </Grid.ContextMenu>
-                    <TextBlock Grid.Row="0" 
-                               Margin="5" 
-                               Text="Примечания"/>
+                    <TextBlock Grid.Row="0"
+                               Margin="5"
+                               Text="Примечания" />
                     <DataGrid Grid.Row="1"
                               x:CompileBindings="True"
                               Classes="notesTable"
@@ -957,11 +965,11 @@
                             <local:DataGridColumnWidthLoadBehavior FormNum="notes" />
                             <local:DataGridPointerBehavior />
                             <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
-							<local:DataGridSwitchToNotesBehavior SourceDataGrid="{Binding #dataGrid}"/>
+                            <local:DataGridSwitchToNotesBehavior SourceDataGrid="{Binding #dataGrid}" />
                         </interactivity:Interaction.Behaviors>
 
                         <DataGrid.Columns>
-							
+
                             <DataGridTemplateColumn Width="80" Header="№ строки">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:DataType="forms:Note">
@@ -993,11 +1001,6 @@
         </Expander>
 
         <!--#endregion Примечания-->
-		
+
     </Grid>
 </Window>
-
-
-
-
-

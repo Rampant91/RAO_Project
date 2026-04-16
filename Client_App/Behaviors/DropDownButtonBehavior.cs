@@ -27,10 +27,19 @@ public class DropDownButtonBehavior : Behavior<Button>
 
     private void OnButtonClick(object? sender, RoutedEventArgs e)
     {
-        if (AssociatedObject.Parent is Grid grid && grid.Children[0] is AutoCompleteBox autoCompleteBox)
+        // Try to find AutoCompleteBox in the parent hierarchy
+        // When button is inside UserControl: Button -> UserControl -> Grid -> AutoCompleteBox
+        var parent = AssociatedObject.Parent;
+        if (parent?.Parent is Grid grid && grid.Children[0] is AutoCompleteBox autoCompleteBox)
         {
             autoCompleteBox.Focus();
             ShowDropdown(autoCompleteBox);
+        }
+        // Fallback: direct parent is Grid (original behavior for non-UserControl usage)
+        else if (AssociatedObject.Parent is Grid directGrid && directGrid.Children[0] is AutoCompleteBox directAutoCompleteBox)
+        {
+            directAutoCompleteBox.Focus();
+            ShowDropdown(directAutoCompleteBox);
         }
     }
 
