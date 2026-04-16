@@ -35,7 +35,7 @@ public class Form_19VM : BaseFormVM
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms19();
+    public ICollection<string?> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms19();
 
     #endregion
 

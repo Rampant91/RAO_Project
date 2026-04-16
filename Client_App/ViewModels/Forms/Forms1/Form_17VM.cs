@@ -37,7 +37,7 @@ public class Form_17VM : BaseFormVM
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms11To18();
+    public ICollection<string?> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms17To18();
 
     #endregion
 
@@ -53,7 +53,7 @@ public class Form_17VM : BaseFormVM
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidRefineOrSortRAOCodes => RefineOrSortRAOCodeProvider.GetValidCodes();  
+    public ICollection<string?> ValidRefineOrSortRAOCodes => RefineOrSortRAOCodeProvider.GetValidCodes();  
     
     #endregion
 

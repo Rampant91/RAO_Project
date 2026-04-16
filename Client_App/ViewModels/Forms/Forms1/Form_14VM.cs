@@ -39,7 +39,7 @@ public class Form_14VM : BaseFormVM
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms11To18();
+    public ICollection<string?> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms11To16();
 
     #endregion
 

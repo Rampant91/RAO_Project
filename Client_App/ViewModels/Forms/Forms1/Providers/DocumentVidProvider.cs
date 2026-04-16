@@ -16,6 +16,7 @@ public static class DocumentVidProvider
     {
         AllDocumentVids = new ReadOnlyCollection<DocumentVidItem>(
         [
+            new DocumentVidItem { Code = null, Description = "Значение головной строчки (для форм 1.7 и 1.8)" },
             new DocumentVidItem { Code = 1, Description = "Акт" },
             new DocumentVidItem { Code = 2, Description = "Ведомость" },
             new DocumentVidItem { Code = 3, Description = "Грузовая таможенная декларация" },
@@ -37,17 +38,25 @@ public static class DocumentVidProvider
     }
 
     /// <summary>
-    /// Допустимые коды вида документа для форм 1.1-1.8
+    /// Допустимые коды вида документа для форм 1.1-1.6
     /// </summary>
-    public static ICollection<string> GetValidCodesForForms11To18()
+    public static ICollection<string?> GetValidCodesForForms11To16()
     {
         return ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "19"];
     }
 
     /// <summary>
+    /// Допустимые коды вида документа для форм 1.7-1.8
+    /// </summary>
+    public static ICollection<string?> GetValidCodesForForms17To18()
+    {
+        return ["-", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "19"];
+    }
+
+    /// <summary>
     /// Допустимые коды вида документа для форм 1.1-1.8
     /// </summary>
-    public static ICollection<string> GetValidCodesForForms19()
+    public static ICollection<string?> GetValidCodesForForms19()
     {
         return ["1"];
     }

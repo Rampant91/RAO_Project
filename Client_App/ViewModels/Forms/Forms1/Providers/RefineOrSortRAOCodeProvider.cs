@@ -15,7 +15,8 @@ public static class RefineOrSortRAOCodeProvider
     {
         AllRefineOrSortRAOCodes = new ReadOnlyCollection<RefineOrSortRAOCodeItem>(
         [
-            new RefineOrSortRAOCodeItem { Code = "-", Description = "пустое значение" },
+            new RefineOrSortRAOCodeItem { Code = "-", Description = "пустое значение / " +
+                                                                    "значение головной формы (для форм 1.7 и 1.8)" },
 
             new RefineOrSortRAOCodeItem { Code = "11", Description = "установка сорбционная (ионообменная)" },
             
@@ -99,6 +100,7 @@ public static class RefineOrSortRAOCodeProvider
     /// </summary>
     public static ICollection<string> GetValidCodes() =>
     [
+        "-",
         "11", "12", "13", "14", "15", "16", "17", "19", 
         "21", "22", "23", "24", "29", 
         "31", "32", "39", 
@@ -106,7 +108,6 @@ public static class RefineOrSortRAOCodeProvider
         "51", "52", "53", "54", "55", 
         "61", "62", "63", 
         "71", "72", "73", "74", "79", 
-        "99", 
-        "-"
+        "99"
     ];
 }

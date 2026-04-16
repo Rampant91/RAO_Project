@@ -10,18 +10,16 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
     private string? _originalValue;
     private bool _valueSelectedFromDropDown;
 
-    public static readonly StyledProperty<ICollection<string>?> ValidCodesProperty =
-        Avalonia.AvaloniaProperty.Register<AutoCompleteBoxValidationBehavior, ICollection<string>?>(
-            nameof(ValidCodes),
+    public static readonly StyledProperty<ICollection<short?>?> ValidValuesProperty =
+        Avalonia.AvaloniaProperty.Register<AutoCompleteBoxValidationBehavior, ICollection<short?>?>(
+            nameof(ValidValues),
             defaultValue: null);
 
-    public ICollection<string>? ValidCodes
+    public ICollection<short?>? ValidValues
     {
-        get => GetValue(ValidCodesProperty);
-        set => SetValue(ValidCodesProperty, value);
+        get => GetValue(ValidValuesProperty);
+        set => SetValue(ValidValuesProperty, value);
     }
-
-    private bool _settingTextFromValidation;
 
     protected override void OnAttached()
     {
@@ -31,8 +29,6 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
         {
             AssociatedObject.GotFocus += OnGotFocus;
             AssociatedObject.LostFocus += OnLostFocus;
-            AssociatedObject.DropDownClosed += OnDropDownClosed;
-            AssociatedObject.TextChanged += OnTextChanged;
         }
     }
 
@@ -42,8 +38,6 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
         {
             AssociatedObject.GotFocus -= OnGotFocus;
             AssociatedObject.LostFocus -= OnLostFocus;
-            AssociatedObject.DropDownClosed -= OnDropDownClosed;
-            AssociatedObject.TextChanged -= OnTextChanged;
         }
 
         base.OnDetaching();
@@ -55,40 +49,16 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
         _valueSelectedFromDropDown = false;
     }
 
-    private void OnTextChanged(object? sender, System.EventArgs e)
-    {
-        // Если текст изменился не из-за валидации —
-        // сбрасываем флаг выбора, чтобы валидация снова работала при потере фокуса
-        if (!_settingTextFromValidation)
-        {
-            _valueSelectedFromDropDown = false;
-        }
-    }
-
     private void OnLostFocus(object? sender, System.EventArgs e)
-    {
-        ValidateCurrentValue();
-    }
-
-    private void OnDropDownClosed(object? sender, System.EventArgs e)
-    {
-        if (AssociatedObject == null)
-            return;
-
-        // Если значение выбрано из списка — валидация не нужна
-        if (_valueSelectedFromDropDown)
-            return;
-
-        // Dropdown закрылся без выбора — проверяем текущее значение
-        ValidateCurrentValue();
-    }
-
-    private void ValidateCurrentValue()
     {
         if (AssociatedObject == null)
             return;
 
         string currentValue = AssociatedObject.Text ?? string.Empty;
+
+        // Если dropdown открыт, не проверяем (пользователь кликнул на список)
+        if (AssociatedObject.IsDropDownOpen)
+            return;
 
         // Если значение было выбрано из списка, не проверяем
         if (_valueSelectedFromDropDown)
@@ -98,22 +68,25 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
         if (currentValue == _originalValue)
             return;
 
-        // Проверяем, есть ли значение в списке допустимых кодов
-        if (!IsValidCode(currentValue))
+        // Проверяем, есть ли значение в списке допустимых категорий
+        if (!IsValidCategory(currentValue))
         {
             // Возвращаем старое значение
-            _settingTextFromValidation = true;
             AssociatedObject.Text = _originalValue;
-            _settingTextFromValidation = false;
         }
     }
 
-    private bool IsValidCode(string code)
+    private bool IsValidCategory(string categoryStr)
     {
-        if (string.IsNullOrWhiteSpace(code) || ValidCodes == null)
+        if (string.IsNullOrWhiteSpace(categoryStr) || ValidValues == null)
             return false;
 
-        return ValidCodes.Contains(code);
+        if (short.TryParse(categoryStr, out var categoryValue))
+        {
+            return ValidValues.Contains(categoryValue);
+        }
+
+        return false;
     }
 
     // Метод для пометки, что значение было выбрано из списка

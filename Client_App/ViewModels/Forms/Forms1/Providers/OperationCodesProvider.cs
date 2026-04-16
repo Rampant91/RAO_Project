@@ -14,6 +14,8 @@ public static class OperationCodesProvider
     /// </summary>
     public static ObservableCollection<OperationCodeItem> AllOperationCodes { get; } =
     [
+        new() { Code = "-", Description = "Значение головной строчки (для форм 1.7 и 1.8)" },
+
         new() { Code = "01", Description = "Наличие на дату 31.12.2021" },
 
         new() { Code = "10", Description = "Инвентаризация" },
@@ -261,11 +263,15 @@ public static class OperationCodesProvider
     /// </summary>
     public static ICollection<string> GetValidCodesForForm17() =>
     [
+        "-", 
         "10", "11", "12", "13", "14", "16", "18",
         "21", "22", "25", "26", "27", "28", "29",
         "31", "32", "35", "36", "37", "38", "39",
-        "43", "44", "45", "51", "52", "55", "63",
-        "64", "68", "71", "97", "98"
+        "43", "44", "45", 
+        "51", "52", "55", 
+        "63", "64", "68", 
+        "71", 
+        "97", "98"
     ];
 
     /// <summary>
@@ -273,6 +279,7 @@ public static class OperationCodesProvider
     /// </summary>
     public static ICollection<string> GetValidCodesForForm18() =>
     [
+        "-",
         "01",
         "10", "11", "12", "13", "18",
         "21", "25", "26", "27", "28", "29",

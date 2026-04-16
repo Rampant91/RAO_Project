@@ -425,7 +425,7 @@
                                                          Text="{Binding OperationCode.Value, Mode=TwoWay}">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.5}" />
+                                                <local:AutoCompleteBoxValidationBehavior ValidValues="{Binding VM.ValidOperationCodes, ElementName=1.5}" />
                                                 <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
@@ -638,8 +638,8 @@
                                                          Text="{Binding DocumentVid.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidDocumentVids, ElementName=1.5}" />
-                                                <local:AutoCompleteBoxCodeSelectionBehavior />
+                                                <local:AutoCompleteBoxValidationBehavior ValidValues="{Binding VM.ValidDocumentVids, ElementName=1.5}" />
+                                                <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
                                             <AutoCompleteBox.ItemTemplate>
@@ -845,8 +845,8 @@
                                                          Text="{Binding RefineOrSortRAOCode.Value, Mode=TwoWay}">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidRefineOrSortRAOCodes, ElementName=1.5}" />
-                                                <local:AutoCompleteBoxCodeSelectionBehavior />
+                                                <local:AutoCompleteBoxValidationBehavior ValidValues="{Binding VM.ValidRefineOrSortRAOCodes, ElementName=1.5}" />
+                                                <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
                                             <AutoCompleteBox.ItemTemplate>

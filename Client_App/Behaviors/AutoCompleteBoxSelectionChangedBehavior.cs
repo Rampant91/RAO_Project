@@ -7,8 +7,6 @@ namespace Client_App.Behaviors;
 
 public class AutoCompleteBoxSelectionChangedBehavior : Behavior<AutoCompleteBox>
 {
-    private bool _selectionChangedDuringDropDown;
-
     protected override void OnAttached()
     {
         base.OnAttached();
@@ -16,7 +14,6 @@ public class AutoCompleteBoxSelectionChangedBehavior : Behavior<AutoCompleteBox>
         if (AssociatedObject != null)
         {
             AssociatedObject.SelectionChanged += OnSelectionChanged;
-            AssociatedObject.DropDownClosed += OnDropDownClosed;
         }
     }
 
@@ -25,7 +22,6 @@ public class AutoCompleteBoxSelectionChangedBehavior : Behavior<AutoCompleteBox>
         if (AssociatedObject != null)
         {
             AssociatedObject.SelectionChanged -= OnSelectionChanged;
-            AssociatedObject.DropDownClosed -= OnDropDownClosed;
         }
 
         base.OnDetaching();
@@ -33,23 +29,12 @@ public class AutoCompleteBoxSelectionChangedBehavior : Behavior<AutoCompleteBox>
 
     private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        if (e.AddedItems?.Count > 0)
-            _selectionChangedDuringDropDown = true;
-    }
+        // Устанавливаем текст и помечаем выбор СРАЗУ при выборе из списка
+        // Используем e.AddedItems, так как SelectedItem может быть ещё не установлен
+        if (e.AddedItems.Count == 0 || e.AddedItems[0] is not CategoryItem selectedItem) return;
 
-    private void OnDropDownClosed(object? sender, System.EventArgs e)
-    {
-        if (!_selectionChangedDuringDropDown)
-        {
-            _selectionChangedDuringDropDown = false;
-            return;
-        }
-
-        _selectionChangedDuringDropDown = false;
-
-        if (AssociatedObject is not { SelectedItem: OperationCodeItem selectedItem }) return;
-        AssociatedObject.Text = selectedItem.Code;
-
+        AssociatedObject.Text = selectedItem.Code?.ToString() ?? string.Empty;
+            
         // Помечаем, что значение было выбрано из списка
         var behaviors = Interaction.GetBehaviors(AssociatedObject);
         var validationBehavior = behaviors.OfType<AutoCompleteBoxValidationBehavior>().FirstOrDefault();
