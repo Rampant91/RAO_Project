@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Xaml.Interactivity;
@@ -42,6 +43,7 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
         {
             AssociatedObject.GotFocus += OnGotFocus;
             AssociatedObject.LostFocus += OnLostFocus;
+            AssociatedObject.TextChanged += OnTextChanged;
         }
     }
 
@@ -51,9 +53,17 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
         {
             AssociatedObject.GotFocus -= OnGotFocus;
             AssociatedObject.LostFocus -= OnLostFocus;
+            AssociatedObject.TextChanged -= OnTextChanged;
         }
 
         base.OnDetaching();
+    }
+
+    private void OnTextChanged(object? sender, EventArgs e)
+    {
+        // При ручном вводе текста сбрасываем флаг выбора из dropdown
+        // Это гарантирует, что валидация будет выполнена при потере фокуса
+        _valueSelectedFromDropDown = false;
     }
 
     private void OnGotFocus(object? sender, System.EventArgs e)
@@ -95,12 +105,11 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
             return false;
 
         // Сначала проверяем строковые коды (если заданы)
-        // Используем Any с проверкой на null для поддержки ICollection<string?>
         if (ValidCodes != null && ValidCodes.Any(c => c != null && c == value))
             return true;
 
-        // Затем проверяем числовые значения (если заданы)
-        if (ValidValues != null && short.TryParse(value, out var numericValue))
+        // Затем проверяем числовые значения (только если ValidCodes не задан - защита от проваливания)
+        if (ValidCodes == null && ValidValues != null && short.TryParse(value, out var numericValue))
         {
             return ValidValues.Contains(numericValue);
         }
