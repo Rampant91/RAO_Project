@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.Passports;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -110,55 +111,67 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
             var worksheet = excelPackage.Workbook.Worksheets[0];
 
             worksheet.Cells["H3"].Value = passport.PassportNum;
+            worksheet.Cells["H3:J3"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["L3"].Value = passport.PassportDate;
             worksheet.Cells["L3"].Style.Numberformat.Format = "dd.mm.yyyy";
+            worksheet.Cells["L3:M3"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["I5"].Value = passport.PackageType;
+            worksheet.Cells["I5:M5"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+
             worksheet.Cells["I7"].Value = passport.CorrectionNumber;
+            worksheet.Cells["I7:M7"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+
             worksheet.Cells["C9"].Value = passport.StatusRaoCode;
+            worksheet.Cells["C9:D9"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+
             worksheet.Cells["G9"].Value = passport.TechSpecification;
+            worksheet.Cells["G9:I9"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+
             worksheet.Cells["M9"].Value = passport.NameRao;
             worksheet.Cells["O9"].Value = passport.ClassRao;
+            worksheet.Cells["M9:P9"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["H11"].Value = passport.RaoDisposalNum;
-
             worksheet.Cells["J11"].Value = passport.RaoDisposalDate;
             worksheet.Cells["J11"].Style.Numberformat.Format = "dd.mm.yyyy";
+            worksheet.Cells["H11:J11"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["H12"].Value = passport.PackageIdCode;
+            worksheet.Cells["H12:J12"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+
             worksheet.Cells["M12"].Value = passport.TypeAndIdPuod;
+            worksheet.Cells["M12:P12"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+
             worksheet.Cells["H14"].Value = passport.Owner;
             worksheet.Cells["N14"].Value = passport.OwnerOkpo;
+            worksheet.Cells["H14:P14"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+
             worksheet.Cells["H15"].Value = passport.Manufacturer;
             worksheet.Cells["N15"].Value = passport.ManufacturerOkpo;
+            worksheet.Cells["H15:P15"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["H16"].Value = passport.CertificateConformityNum;
+            worksheet.Cells["H16:J16"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["O16"].Value = passport.ManufactureDate;
             worksheet.Cells["O16"].Style.Numberformat.Format = "dd.mm.yyyy";
+            worksheet.Cells["O16:P16"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["H17"].Value = passport.CertificateConformityStartPeriod; 
             worksheet.Cells["H17"].Style.Numberformat.Format = "dd.mm.yyyy";
-
             worksheet.Cells["J17"].Value = passport.CertificateConformityEndPeriod;
             worksheet.Cells["J17"].Style.Numberformat.Format = "dd.mm.yyyy";
+            worksheet.Cells["H17:J17"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["H18"].Value = passport.ServiceLife;
+            worksheet.Cells["H18:J18"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["O18"].Value = passport.TransferDate;
             worksheet.Cells["O18"].Style.Numberformat.Format = "dd.mm.yyyy";
+            worksheet.Cells["O18:P18"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
-            //ExcelPrintTitleExport(rep.FormNum_DB, worksheetTitle, rep, rep.Reports.Master);
-
-
-            //ExcelPrintSubMainExport(rep.FormNum_DB, worksheetMain, rep);
-
-            //if (worksheetTitle.Name is "1.0" or "2.0" or "Форма 5.0" && (worksheetMain.Name is not "Форма 5.7"))
-            //    ExcelPrintNotesExport(rep.FormNum_DB, worksheetMain, rep);
-
-
-            //ExcelPrintRowsExport(rep.FormNum_DB, worksheetMain, rep);
 
             return Task.CompletedTask;
         }
@@ -177,6 +190,9 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
             var worksheet = excelPackage.Workbook.Worksheets[0];
 
             var rowHeight = 2;
+
+            
+
             //Заполняем подтаблицу количество и характеристик первичных упаковок
 
             // Начинаем с 1 индекса, так как 0 индекс во второй таблице выделен под общую упаковку
@@ -227,52 +243,42 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
             worksheet.Cells["S25"].Value = passport.HeatOutput;
 
 
-            worksheet.Cells[$"A25:A{25 + rowHeight - 1}"].Merge = true;
-            worksheet.Cells[$"G25:G{25 + rowHeight - 1}"].Merge = true;
-            worksheet.Cells[$"H25:H{25 + rowHeight - 1}"].Merge = true;
-            worksheet.Cells[$"I25:I{25 + rowHeight - 1}"].Merge = true;
-            worksheet.Cells[$"J25:J{25 + rowHeight - 1}"].Merge = true;
-            worksheet.Cells[$"K25:K{25 + rowHeight - 1}"].Merge = true;
-            worksheet.Cells[$"L25:L{25 + rowHeight - 1}"].Merge = true;
-            worksheet.Cells[$"M26:M{25 + rowHeight - 1}"].Merge = true;
-            worksheet.Cells[$"N26:N{25 + rowHeight - 1}"].Merge = true;
-            worksheet.Cells[$"O25:O{25 + rowHeight - 1}"].Merge = true;
-            worksheet.Cells[$"P25:P{25 + rowHeight - 1}"].Merge = true;
-            worksheet.Cells[$"Q25:Q{25 + rowHeight - 1}"].Merge = true;
-            worksheet.Cells[$"R25:R{25 + rowHeight - 1}"].Merge = true;
-            worksheet.Cells[$"S25:S{25 + rowHeight - 1}"].Merge = true;
 
+            //Задаем стиль для ячеек с данными в таблице
+            SetCellBorderStyle(worksheet.Cells[$"A25:A{25 + rowHeight - 1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"G25:G{25 + rowHeight - 1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"H25:H{25 + rowHeight - 1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"I25:I{25 + rowHeight - 1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"J25:J{25 + rowHeight - 1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"K25:K{25 + rowHeight - 1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"L25:L{25 + rowHeight - 1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"M26:M{25 + rowHeight - 1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"N26:N{25 + rowHeight - 1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"O25:O{25 + rowHeight - 1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"P25:P{25 + rowHeight - 1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"Q25:Q{25 + rowHeight - 1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"R25:R{25 + rowHeight - 1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"S25:S{25 + rowHeight - 1}"]);
 
-            var cells = worksheet.Cells[$"A20:S{25+rowHeight}"];
+            var cells = worksheet.Cells[$"A20:S{25 + rowHeight}"];
             foreach (var cell in cells)
             {
-                var btm = cell.Style.Border.Bottom;
-                var lft = cell.Style.Border.Left;
-                var rgt = cell.Style.Border.Right;
-                var top = cell.Style.Border.Top;
-
-                btm.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-                btm.Color.SetColor(255, 0, 0, 0);
-                lft.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-                lft.Color.SetColor(255, 0, 0, 0);
-                rgt.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-                rgt.Color.SetColor(255, 0, 0, 0);
-                top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-                top.Color.SetColor(255, 0, 0, 0);
+                cell.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                cell.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                cell.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                cell.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
             }
 
-            //ExcelPrintTitleExport(rep.FormNum_DB, worksheetTitle, rep, rep.Reports.Master);
-
-
-            //ExcelPrintSubMainExport(rep.FormNum_DB, worksheetMain, rep);
-
-            //if (worksheetTitle.Name is "1.0" or "2.0" or "Форма 5.0" && (worksheetMain.Name is not "Форма 5.7"))
-            //    ExcelPrintNotesExport(rep.FormNum_DB, worksheetMain, rep);
-
-
-            //ExcelPrintRowsExport(rep.FormNum_DB, worksheetMain, rep);
 
             return Task.CompletedTask;
+        }
+        private void SetCellBorderStyle(ExcelRange cell)
+        {
+            cell.Merge = true;
+            cell.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+            cell.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+            cell.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+            cell.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
         }
 
         #endregion
@@ -291,15 +297,36 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
             var characteristics = passport.ContentCharacteristics;
             var worksheet = excelPackage.Workbook.Worksheets[0];
 
+            SetCellBorderStyle(worksheet.Cells[$"A{index-2}:S{index - 2}"]);
+
+            SetCellBorderStyle(worksheet.Cells[$"A{index-1}:C{index-1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"D{index-1}:E{index-1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"F{index-1}:G{index-1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"H{index-1}:J{index-1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"K{index-1}:L{index-1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"M{index-1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"N{index-1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"O{index-1}:Q{index-1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"R{index-1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"S{index-1}"]);
+
+            SetCellBorderStyle(worksheet.Cells[$"A{index}:C{index}"]);
+            SetCellBorderStyle(worksheet.Cells[$"D{index}:E{index}"]);
+            SetCellBorderStyle(worksheet.Cells[$"F{index}:G{index}"]);
+            SetCellBorderStyle(worksheet.Cells[$"H{index}:J{index}"]);
+            SetCellBorderStyle(worksheet.Cells[$"K{index}:L{index}"]);
+            SetCellBorderStyle(worksheet.Cells[$"M{index}"]);
+            SetCellBorderStyle(worksheet.Cells[$"N{index}"]);
+            SetCellBorderStyle(worksheet.Cells[$"O{index}:Q{index}"]);
+            SetCellBorderStyle(worksheet.Cells[$"R{index}"]);
+            SetCellBorderStyle(worksheet.Cells[$"S{index}"]);
+
+            SetCellBorderStyle(worksheet.Cells[$"M{index+1}:P{index + 1}"]);
+            SetCellBorderStyle(worksheet.Cells[$"Q{index + 1}:S{index + 1}"]);
+
             for (int i = 0; i < characteristics.Count; i++)
             {
-                ////Если нет радионуклидов, то все равно нужно вписать какое то значения,
-                ////иначе границы ячеек не отрисуются
-                //if (radCounts == 0)
-                //{
-                //    worksheet.Cells[$"M{index}"].Value = "";
-                //    worksheet.Cells[$"N{index}"].Value = "";
-                //}
+                
                 var start = index + 1;
                 worksheet.InsertRow(start, 5);
                 index +=5;
@@ -410,19 +437,40 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
                 else
                     worksheet.Cells[$"A{start+3}:C{index}"].Merge = true;
 
-                cells = worksheet.Cells[$"A{start}:C{index}"];
-                var bottom = cells.Style.Border.Bottom;
-                var left = cells.Style.Border.Left;
-                var right = cells.Style.Border.Right;
-                var top = cells.Style.Border.Top;
-                bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-                bottom.Color.SetColor(255, 0, 0, 0);
-                left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-                left.Color.SetColor(255, 0, 0, 0);
-                right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-                right.Color.SetColor(255, 0, 0, 0);
-                top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-                top.Color.SetColor(255, 0, 0, 0);
+                {
+                    cells = worksheet.Cells[$"A{start}:C{index}"];
+                    var bottom = cells.Style.Border.Bottom;
+                    var left = cells.Style.Border.Left;
+                    var right = cells.Style.Border.Right;
+                    var top = cells.Style.Border.Top;
+                    bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                }
+
+                {
+                    cells = worksheet.Cells[$"M{start}:M{index}"];
+                    var bottom = cells.Style.Border.Bottom;
+                    var left = cells.Style.Border.Left;
+                    var right = cells.Style.Border.Right;
+                    var top = cells.Style.Border.Top;
+                    bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                }
+                {
+                    cells = worksheet.Cells[$"N{start}:N{index}"];
+                    var bottom = cells.Style.Border.Bottom;
+                    var left = cells.Style.Border.Left;
+                    var right = cells.Style.Border.Right;
+                    var top = cells.Style.Border.Top;
+                    bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                }
             }
 
 
@@ -448,12 +496,23 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
 
 
             worksheet.Cells["F37"].Value = passport.ResponsibleTransfer;
+            worksheet.Cells["F37:I37"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+
             worksheet.Cells["K37"].Value = passport.GradeAuthorizedPersonTransfer;
             worksheet.Cells["N37"].Value = passport.FioAuthorizedPersonTransfer;
+            worksheet.Cells["K37:P37"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+            //подпись
+            worksheet.Cells["R37:S37"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+
 
             worksheet.Cells["F40"].Value = passport.ResponsibleReception;
+            worksheet.Cells["F40:I40"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+
             worksheet.Cells["K40"].Value = passport.GradeAuthorizedPersonReception;
             worksheet.Cells["N40"].Value = passport.FioAuthorizedPersonReception;
+            worksheet.Cells["K40:P40"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+            //подпись
+            worksheet.Cells["R40:S40"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
 
             return Task.CompletedTask;
