@@ -428,7 +428,7 @@
                                                          IsTextCompletionEnabled="False">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior ValidValues="{Binding VM.ValidOperationCodes, ElementName=1.1}" />
+                                                <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.1}" />
                                                 <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
@@ -703,7 +703,7 @@
                                                          IsTextCompletionEnabled="False">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior ValidValues="{Binding VM.ValidOwnershipForms, ElementName=1.1}" />
+                                                <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidOwnershipForms, ElementName=1.1}" />
                                                 <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
@@ -768,7 +768,7 @@
                                                          IsTextCompletionEnabled="False">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior ValidValues="{Binding VM.ValidDocumentVids, ElementName=1.1}" />
+                                                <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidDocumentVids, ElementName=1.1}" />
                                                 <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 

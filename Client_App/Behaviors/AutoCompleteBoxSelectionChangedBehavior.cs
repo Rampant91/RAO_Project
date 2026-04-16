@@ -31,10 +31,28 @@ public class AutoCompleteBoxSelectionChangedBehavior : Behavior<AutoCompleteBox>
     {
         // Устанавливаем текст и помечаем выбор СРАЗУ при выборе из списка
         // Используем e.AddedItems, так как SelectedItem может быть ещё не установлен
-        if (e.AddedItems.Count == 0 || e.AddedItems[0] is not CategoryItem selectedItem) return;
+        if (e.AddedItems.Count == 0) return;
 
-        AssociatedObject.Text = selectedItem.Code?.ToString() ?? string.Empty;
-            
+        var selectedItem = e.AddedItems[0];
+        string? codeValue = null;
+
+        // Пробуем получить Code свойство через reflection (работает для CategoryItem и OperationCodeItem)
+        var codeProperty = selectedItem.GetType().GetProperty("Code");
+        if (codeProperty != null)
+        {
+            var value = codeProperty.GetValue(selectedItem);
+            codeValue = value?.ToString();
+        }
+        // Fallback для CategoryItem напрямую
+        else if (selectedItem is CategoryItem categoryItem)
+        {
+            codeValue = categoryItem.Code?.ToString();
+        }
+
+        if (string.IsNullOrEmpty(codeValue)) return;
+
+        AssociatedObject.Text = codeValue;
+
         // Помечаем, что значение было выбрано из списка
         var behaviors = Interaction.GetBehaviors(AssociatedObject);
         var validationBehavior = behaviors.OfType<AutoCompleteBoxValidationBehavior>().FirstOrDefault();

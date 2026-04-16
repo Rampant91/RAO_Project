@@ -1,7 +1,8 @@
-using Avalonia.Controls;
-using System.Collections.Generic;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Xaml.Interactivity;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Client_App.Behaviors;
 
@@ -19,6 +20,18 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
     {
         get => GetValue(ValidValuesProperty);
         set => SetValue(ValidValuesProperty, value);
+    }
+
+    // Для строковых значений (коды операции и др.)
+    public static readonly StyledProperty<ICollection<string>?> ValidCodesProperty =
+        Avalonia.AvaloniaProperty.Register<AutoCompleteBoxValidationBehavior, ICollection<string>?>(
+            nameof(ValidCodes),
+            defaultValue: null);
+
+    public ICollection<string>? ValidCodes
+    {
+        get => GetValue(ValidCodesProperty);
+        set => SetValue(ValidCodesProperty, value);
     }
 
     protected override void OnAttached()
@@ -68,22 +81,28 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
         if (currentValue == _originalValue)
             return;
 
-        // Проверяем, есть ли значение в списке допустимых категорий
-        if (!IsValidCategory(currentValue))
+        // Проверяем, есть ли значение в списке допустимых
+        if (!IsValidValue(currentValue))
         {
             // Возвращаем старое значение
             AssociatedObject.Text = _originalValue;
         }
     }
 
-    private bool IsValidCategory(string categoryStr)
+    private bool IsValidValue(string value)
     {
-        if (string.IsNullOrWhiteSpace(categoryStr) || ValidValues == null)
+        if (string.IsNullOrWhiteSpace(value))
             return false;
 
-        if (short.TryParse(categoryStr, out var categoryValue))
+        // Сначала проверяем строковые коды (если заданы)
+        // Используем Any с проверкой на null для поддержки ICollection<string?>
+        if (ValidCodes != null && ValidCodes.Any(c => c != null && c == value))
+            return true;
+
+        // Затем проверяем числовые значения (если заданы)
+        if (ValidValues != null && short.TryParse(value, out var numericValue))
         {
-            return ValidValues.Contains(categoryValue);
+            return ValidValues.Contains(numericValue);
         }
 
         return false;
