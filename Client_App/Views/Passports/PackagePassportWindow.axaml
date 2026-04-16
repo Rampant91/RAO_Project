@@ -50,7 +50,7 @@
 						  Command="{Binding SavePassport}"/>
 				
 					<MenuItem Command="{Binding ExcelExportPackagePassport}"
-							  CommandParameter="{Binding Passport.Id}"
+							  CommandParameter="{Binding Passport}"
 							  Header="Выгрузить паспорт в Excel"/>
 			</MenuItem>
 		</Menu>

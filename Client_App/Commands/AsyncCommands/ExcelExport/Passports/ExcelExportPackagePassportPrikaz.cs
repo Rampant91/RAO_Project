@@ -526,9 +526,9 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
         {
             var fileName = $"PRIKAZ" +
                 $"_{ExportType}" +
-                $"_{passport.PassportNum.Replace('/','-')}" +
+                $"_{passport.PassportNum?.Replace('/','-')}" +
                 $"_{passport.PassportDate}" +
-                $"_{passport.PackageType.Replace('/', '-')}" +
+                $"_{passport.PackageType?.Replace('/', '-')}" +
                 $"_{passport.CorrectionNumber}" +
                 $"_{Assembly.GetExecutingAssembly().GetName().Version}";
 
