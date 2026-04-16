@@ -9,21 +9,17 @@ public static class OwnershipProvider
     /// <summary>
     /// 
     /// </summary>
-    public static ReadOnlyCollection<OwnershipItem> AllOwnershipForms { get; }
-
-    static OwnershipProvider()
-    {
-        AllOwnershipForms = new ReadOnlyCollection<OwnershipItem>(
-        [
-            new OwnershipItem { Code = 1, Description = "Государственная. Федеральная собственность." },
-            new OwnershipItem { Code = 2, Description = "Государственная. Собственность субъектов Российской Федерации" },
-            new OwnershipItem { Code = 3, Description = "Муниципальная" },
-            new OwnershipItem { Code = 4, Description = "Частная (собственность юридических лиц)" },
-            new OwnershipItem { Code = 5, Description = "Собственность иностранного государства" },
-            new OwnershipItem { Code = 6, Description = "Собственность иностранного юридического лица" },
-            new OwnershipItem { Code = 9, Description = "Иная форма собственности (вещное право)" }
-        ]);
-    }
+    public static ObservableCollection<OwnershipItem> AllOwnershipForms { get; } = 
+    [
+            new() { Code = 1, Description = "Государственная. Федеральная собственность." },
+            new() { Code = 2, Description = "Государственная. Собственность субъектов Российской Федерации" },
+            new() { Code = 3, Description = "Муниципальная" },
+            new() { Code = 4, Description = "Частная (собственность юридических лиц)" },
+            new() { Code = 5, Description = "Собственность иностранного государства" },
+            new() { Code = 6, Description = "Собственность иностранного юридического лица" },
+            new() { Code = 9, Description = "Иная форма собственности (вещное право)" }
+    ];
+    
 
     /// <summary>
     /// 

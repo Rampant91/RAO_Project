@@ -10,32 +10,28 @@ public static class DocumentVidProvider
     /// <summary>
     /// 
     /// </summary>
-    public static ReadOnlyCollection<DocumentVidItem> AllDocumentVids { get; }
-
-    static DocumentVidProvider()
-    {
-        AllDocumentVids = new ReadOnlyCollection<DocumentVidItem>(
-        [
-            new DocumentVidItem { Code = null, Description = "Значение головной строчки (для форм 1.7 и 1.8)" },
-            new DocumentVidItem { Code = 1, Description = "Акт" },
-            new DocumentVidItem { Code = 2, Description = "Ведомость" },
-            new DocumentVidItem { Code = 3, Description = "Грузовая таможенная декларация" },
-            new DocumentVidItem { Code = 4, Description = "Журнал" },
-            new DocumentVidItem { Code = 5, Description = "Карта" },
-            new DocumentVidItem { Code = 6, Description = "Накладная" },
-            new DocumentVidItem { Code = 7, Description = "Наряд" },
-            new DocumentVidItem { Code = 8, Description = "Ордер" },
-            new DocumentVidItem { Code = 9, Description = "Паспорт" },
-            new DocumentVidItem { Code = 10, Description = "Приказ" },
-            new DocumentVidItem { Code = 11, Description = "Протокол" },
-            new DocumentVidItem { Code = 12, Description = "Распоряжение" },
-            new DocumentVidItem { Code = 13, Description = "Решение о продлении НСС" },
-            new DocumentVidItem { Code = 14, Description = "Требование" },
-            new DocumentVidItem { Code = 15, Description = "Сертификат" },
-            new DocumentVidItem { Code = 19, Description = "Другой документ (заполните примечание" +
+    public static ObservableCollection<DocumentVidItem> AllDocumentVids { get; } =
+    [
+            new() { Code = null, Description = "Значение головной строчки (для форм 1.7 и 1.8)" },
+            new() { Code = 1, Description = "Акт" },
+            new() { Code = 2, Description = "Ведомость" },
+            new() { Code = 3, Description = "Грузовая таможенная декларация" },
+            new() { Code = 4, Description = "Журнал" },
+            new() { Code = 5, Description = "Карта" },
+            new() { Code = 6, Description = "Накладная" },
+            new() { Code = 7, Description = "Наряд" },
+            new() { Code = 8, Description = "Ордер" },
+            new() { Code = 9, Description = "Паспорт" },
+            new() { Code = 10, Description = "Приказ" },
+            new() { Code = 11, Description = "Протокол" },
+            new() { Code = 12, Description = "Распоряжение" },
+            new() { Code = 13, Description = "Решение о продлении НСС" },
+            new() { Code = 14, Description = "Требование" },
+            new() { Code = 15, Description = "Сертификат" },
+            new() { Code = 19, Description = "Другой документ (заполните примечание" +
                                                            $"{Environment.NewLine}к ячейке наименованием документа)" }
-        ]);
-    }
+    ];
+    
 
     /// <summary>
     /// Допустимые коды вида документа для форм 1.1-1.6
