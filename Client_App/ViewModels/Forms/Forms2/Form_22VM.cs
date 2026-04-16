@@ -143,11 +143,11 @@ public class Form_22VM : BaseFormVM
                     PackName_DB = firstElement.PackName_DB, //4
                     PackType_DB = firstElement.PackType_DB, //5
                     //SumUp
-                    PackQuantity_DB = storageAndPackageTypeGroup.Sum(row22 => int.TryParse(row22.PackQuantity_DB, out var value) ? value : 0).ToString(),
-                    VolumeOutOfPack_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.VolumeOutOfPack_DB?.Replace('.',','), out var value) ? value : 0).ToString("e3"),
-                    VolumeInPack_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.VolumeInPack_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    PackQuantity_DB = "-", 
+                    VolumeOutOfPack_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.VolumeOutOfPack_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    VolumeInPack_DB = "-", 
                     MassOutOfPack_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.MassOutOfPack_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
-                    MassInPack_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.MassInPack_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    MassInPack_DB = "-", 
                     QuantityOZIII_DB = storageAndPackageTypeGroup.Sum(row22 => int.TryParse(row22.QuantityOZIII_DB?.Replace('.', ','), out var value) ? value : 0).ToString(),
                     TritiumActivity_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.TritiumActivity_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
                     BetaGammaActivity_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.BetaGammaActivity_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
