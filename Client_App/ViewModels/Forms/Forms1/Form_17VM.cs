@@ -34,7 +34,7 @@ public class Form_17VM : BaseFormVM
     /// </summary>
     public ObservableCollection<DocumentVidItem> DocumentVids =>
         new(DocumentVidProvider.AllDocumentVids
-            .Where(x => ValidDocumentVids.Contains(x.Code.ToString())));
+            .Where(x => ValidDocumentVids.Contains(x.DisplayCode)));
 
     /// <summary>
     /// 

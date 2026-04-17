@@ -28,8 +28,7 @@ public static class DocumentVidProvider
             new() { Code = 13, Description = "Решение о продлении НСС" },
             new() { Code = 14, Description = "Требование" },
             new() { Code = 15, Description = "Сертификат" },
-            new() { Code = 19, Description = "Другой документ (заполните примечание" +
-                                                           $"{Environment.NewLine}к ячейке наименованием документа)" }
+            new() { Code = 19, Description = "Другой документ (заполните примечание к ячейке наименованием документа)" }
     ];
     
 

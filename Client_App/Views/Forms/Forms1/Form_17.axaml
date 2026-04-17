@@ -733,7 +733,7 @@
                                         <AutoCompleteBox Grid.Column="0" 
                                                          Height="26"
                                                          Items="{Binding VM.DocumentVids, ElementName=1.7}"
-                                                         Text="{Binding DocumentVid.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}"
+                                                         Text="{Binding DocumentVid.Value, Converter={StaticResource ByteNullableOrDashToStringConverter}, Mode=TwoWay}"
                                                          HorizontalAlignment="Stretch"
                                                          MinimumPrefixLength="0"
                                                          IsTextCompletionEnabled="False">
@@ -750,7 +750,7 @@
                                                 <DataTemplate x:DataType="items:DocumentVidItem">
                                                     <Grid ColumnDefinitions="Auto,*">
                                                         <TextBlock Grid.Column="0" 
-                                                                   Text="{Binding Code}" 
+                                                                   Text="{Binding DisplayCode}" 
                                                                    Margin="0,0,10,0" 
                                                                    FontWeight="Bold"/>
                                                         <TextBlock Grid.Column="1" 
