@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Xaml.Interactivity;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Client_App.Behaviors;
 
@@ -35,6 +36,31 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
         set => SetValue(ValidCodesProperty, value);
     }
 
+    // Маска ввода: максимальная длина (0 = без ограничения)
+    public static readonly StyledProperty<int> MaxInputLengthProperty =
+        Avalonia.AvaloniaProperty.Register<AutoCompleteBoxValidationBehavior, int>(
+            nameof(MaxInputLength),
+            defaultValue: 0);
+
+    public int MaxInputLength
+    {
+        get => GetValue(MaxInputLengthProperty);
+        set => SetValue(MaxInputLengthProperty, value);
+    }
+
+    // Маска ввода: regex pattern для валидации ввода (null = без ограничений)
+    // Примеры: "^\\d{0,2}$" - только цифры, макс 2 символа; "^[А-Яа-я\\s]*$" - только русские буквы
+    public static readonly StyledProperty<string?> InputPatternProperty =
+        Avalonia.AvaloniaProperty.Register<AutoCompleteBoxValidationBehavior, string?>(
+            nameof(InputPattern),
+            defaultValue: null);
+
+    public string? InputPattern
+    {
+        get => GetValue(InputPatternProperty);
+        set => SetValue(InputPatternProperty, value);
+    }
+
     protected override void OnAttached()
     {
         base.OnAttached();
@@ -64,15 +90,62 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
         // При ручном вводе текста сбрасываем флаг выбора из dropdown
         // Это гарантирует, что валидация будет выполнена при потере фокуса
         _valueSelectedFromDropDown = false;
+
+        // Применяем маску ввода (максимальная длина и разрешённые символы)
+        ApplyInputMask();
     }
 
-    private void OnGotFocus(object? sender, System.EventArgs e)
+    private void ApplyInputMask()
+    {
+        if (AssociatedObject == null) return;
+
+        var text = AssociatedObject.Text ?? string.Empty;
+        var originalText = text;
+
+        // Применяем regex pattern если задан
+        if (!string.IsNullOrEmpty(InputPattern))
+        {
+            // Если текст не соответствует pattern, откатываем к последнему валидному
+            if (!Regex.IsMatch(text, InputPattern))
+            {
+                // Пытаемся найти максимальный валидный префикс
+                var validPrefix = "";
+                for (var i = 1; i <= text.Length; i++)
+                {
+                    var prefix = text[..i];
+                    if (Regex.IsMatch(prefix, InputPattern))
+                    {
+                        validPrefix = prefix;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                text = validPrefix;
+            }
+        }
+
+        // Обрезаем по максимальной длине (если задана отдельно или не ограничена regex)
+        if (MaxInputLength > 0 && text.Length > MaxInputLength)
+        {
+            text = text[..MaxInputLength];
+        }
+
+        // Если текст изменился, обновляем
+        if (text != originalText)
+        {
+            AssociatedObject.Text = text;
+        }
+    }
+
+    private void OnGotFocus(object? sender, EventArgs e)
     {
         _originalValue = AssociatedObject?.Text;
         _valueSelectedFromDropDown = false;
     }
 
-    private void OnLostFocus(object? sender, System.EventArgs e)
+    private void OnLostFocus(object? sender, EventArgs e)
     {
         if (AssociatedObject == null)
             return;

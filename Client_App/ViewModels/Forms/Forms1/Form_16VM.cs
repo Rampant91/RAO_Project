@@ -20,6 +20,8 @@ public class Form_16VM : BaseFormVM
             .Where(x => ValidOperationCodes.Contains(x.Code)));
     public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm16();
 
+    public string OperationCodePattern => @"^\d{0,2}$";
+
     /// <summary>
     /// 
     /// </summary>
@@ -32,6 +34,8 @@ public class Form_16VM : BaseFormVM
     /// </summary>
     public ICollection<string?> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms11To16();
 
+    public string DocumentVidPattern => "^([1-9]|1[0-5]|19)$";
+
     /// <summary>
     /// 
     /// </summary>
@@ -42,8 +46,10 @@ public class Form_16VM : BaseFormVM
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidRefineOrSortRAOCodes => RefineOrSortRAOCodeProvider.GetValidCodes(); 
-    
+    public ICollection<string> ValidRefineOrSortRAOCodes => RefineOrSortRAOCodeProvider.GetValidCodes();
+
+    public string RefineOrSortRAOCodePattern => @"^(?:\d{0,2}|-)$";
+
     #endregion
 
     #region Constructors

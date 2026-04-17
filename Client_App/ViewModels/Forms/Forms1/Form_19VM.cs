@@ -21,10 +21,12 @@ public class Form_19VM : BaseFormVM
     
     public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm19();
 
+    public string OperationCodePattern => "^1?$|^10$";
+
     #endregion
 
     #region DocVids
-    
+
     /// <summary>
     /// 
     /// </summary>
@@ -37,10 +39,12 @@ public class Form_19VM : BaseFormVM
     /// </summary>
     public ICollection<string?> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms19();
 
+    public string DocumentVidPattern => "^1?$";
+
     #endregion
 
     #region CodeTypeAccObjects
-    
+
     /// <summary>
     /// 
     /// </summary>
@@ -51,8 +55,10 @@ public class Form_19VM : BaseFormVM
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string> ValidCodeTypeAccObjects => CodeTypeAccObjectProvider.GetValidCodes(); 
-    
+    public ICollection<string> ValidCodeTypeAccObjects => CodeTypeAccObjectProvider.GetValidCodes();
+
+    public string CodeTypeAccObjectsPattern => @"^\d{0,2}$";
+
     #endregion
 
     #region Constructors

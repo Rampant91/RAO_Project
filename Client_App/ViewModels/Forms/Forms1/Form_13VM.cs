@@ -24,6 +24,8 @@ public class Form_13VM : BaseFormVM
         .Where(x => ValidOperationCodes.Contains(x.Code)));
     public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm13();
 
+    public string OperationCodePattern => @"^\d{0,2}$";
+
     #endregion
 
     #region DocVids
@@ -39,6 +41,8 @@ public class Form_13VM : BaseFormVM
     /// 
     /// </summary>
     public ICollection<string?> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms11To16();
+
+    public string DocumentVidPattern => "^([1-9]|1[0-5]|19)$";
 
     #endregion
 
@@ -56,6 +60,8 @@ public class Form_13VM : BaseFormVM
     /// </summary>
     public ICollection<string> ValidOwnershipForms => OwnershipProvider.GetValidCodes();
 
+    public string OwnershipCodePattern => "^[1-6,9]$";
+
     #endregion
 
     #region AggregateStates
@@ -72,8 +78,10 @@ public class Form_13VM : BaseFormVM
     /// </summary>
     public ICollection<string> ValidAggregateStates => AggregateStateProvider.GetValidCodes();
 
-    #endregion 
-    
+    public string AggregateStatePattern => "^[1-3]$";
+
+    #endregion
+
     #endregion
 
     #region Constructors

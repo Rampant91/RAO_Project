@@ -34,6 +34,8 @@ public class Form_11VM : BaseFormVM
     /// </summary>
     public ICollection<short?> ValidCategories => CategoryProvider.GetValidCategoriesForForm11();
 
+    public string CategoryCodePattern => "^[1-5]$";
+
     #endregion
 
     #region DocumentVids
@@ -49,6 +51,8 @@ public class Form_11VM : BaseFormVM
     /// 
     /// </summary>
     public ICollection<string?> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms11To16();
+
+    public string DocumentVidPattern => "^([1-9]|1[0-5]|19)$";
 
     #endregion 
 
@@ -66,6 +70,8 @@ public class Form_11VM : BaseFormVM
     /// </summary>
     public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm11();
 
+    public string OperationCodePattern => @"^\d{0,2}$";
+
     #endregion
 
     #region OwnershipForms
@@ -82,8 +88,10 @@ public class Form_11VM : BaseFormVM
     /// </summary>
     public ICollection<string> ValidOwnershipForms => OwnershipProvider.GetValidCodes();
 
+    public string OwnershipCodePattern => "^[1-6,9]$";
+
     #endregion
-    
+
     #endregion
 
     #region Constructors

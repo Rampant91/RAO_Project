@@ -31,6 +31,8 @@ public class Form_12VM : BaseFormVM
     /// </summary>
     public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm12();
 
+    public string OperationCodePattern => @"^\d{0,2}$";
+
     #endregion
 
     #region DocVids
@@ -47,6 +49,8 @@ public class Form_12VM : BaseFormVM
     /// </summary>
     public ICollection<string?> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms11To16();
 
+    public string DocumentVidPattern => "^([1-9]|1[0-5]|19)$";
+
     #endregion
 
     #region OwnershipForms
@@ -62,6 +66,8 @@ public class Form_12VM : BaseFormVM
     /// 
     /// </summary>
     public ICollection<string> ValidOwnershipForms => OwnershipProvider.GetValidCodes();
+
+    public string OwnershipCodePattern => "^[1-6,9]$";
 
     #endregion 
 

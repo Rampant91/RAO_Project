@@ -23,6 +23,8 @@ public class Form_17VM : BaseFormVM
 
     public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm17();
 
+    public string OperationCodePattern => @"^(?:\d{0,2}|-)$";
+
     #endregion
 
     #region DocVids
@@ -39,6 +41,8 @@ public class Form_17VM : BaseFormVM
     /// </summary>
     public ICollection<string?> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms17To18();
 
+    public string DocumentVidPattern => "^(-|[1-9]|1[0-5]|19)?$";
+
     #endregion
 
     #region RefineOrSortRAOCodes
@@ -53,8 +57,10 @@ public class Form_17VM : BaseFormVM
     /// <summary>
     /// 
     /// </summary>
-    public ICollection<string?> ValidRefineOrSortRAOCodes => RefineOrSortRAOCodeProvider.GetValidCodes();  
-    
+    public ICollection<string?> ValidRefineOrSortRAOCodes => RefineOrSortRAOCodeProvider.GetValidCodes();
+
+    public string RefineOrSortRAOCodePattern => @"^(?:\d{0,2}|-)$";
+
     #endregion
 
     #endregion

@@ -395,7 +395,10 @@
                                                          Text="{Binding OperationCode.Value, Mode=TwoWay}">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior ValidValues="{Binding VM.ValidOperationCodes, ElementName=1.4}" />
+                                                <local:AutoCompleteBoxValidationBehavior
+                                                    InputPattern="{Binding VM.OperationCodePattern, ElementName=1.4}"
+                                                    MaxInputLength="2"
+                                                    ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.4}" />
                                                 <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
@@ -544,10 +547,9 @@
                                     <Grid ColumnDefinitions="*,Auto">
                                         <TextBox Grid.Column="0"
                                                  Text="{Binding ActivityMeasurementDate.Value, Mode=TwoWay}" />
-                                        <CalendarDatePicker
-                                            Grid.Column="1"
-                                            Classes="buttonOnly"
-                                            SelectedDate="{Binding ActivityMeasurementDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
+                                        <CalendarDatePicker Grid.Column="1"
+                                                            Classes="buttonOnly"
+                                                            SelectedDate="{Binding ActivityMeasurementDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -609,7 +611,10 @@
                                                          Text="{Binding AggregateState.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior ValidValues="{Binding VM.ValidAggregateStates, ElementName=1.4}" />
+                                                <local:AutoCompleteBoxValidationBehavior
+                                                    InputPattern="{Binding VM.AggregateStatePattern, ElementName=1.4}"
+                                                    MaxInputLength="1"
+                                                    ValidCodes="{Binding VM.ValidAggregateStates, ElementName=1.4}" />
                                                 <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
@@ -657,7 +662,10 @@
                                                          Text="{Binding PropertyCode.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior ValidValues="{Binding VM.ValidOwnershipForms, ElementName=1.4}" />
+                                                <local:AutoCompleteBoxValidationBehavior
+                                                    InputPattern="{Binding VM.OwnershipCodePattern, ElementName=1.4}"
+                                                    MaxInputLength="1"
+                                                    ValidCodes="{Binding VM.ValidOwnershipForms, ElementName=1.4}"/>
                                                 <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
@@ -722,7 +730,10 @@
                                                          Text="{Binding DocumentVid.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior ValidValues="{Binding VM.ValidDocumentVids, ElementName=1.4}" />
+                                                <local:AutoCompleteBoxValidationBehavior
+                                                    InputPattern="{Binding VM.DocumentVidPattern, ElementName=1.4}"
+                                                    MaxInputLength="2"
+                                                    ValidCodes="{Binding VM.ValidDocumentVids, ElementName=1.4}" />
                                                 <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 

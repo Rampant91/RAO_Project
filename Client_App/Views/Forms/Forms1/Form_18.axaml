@@ -468,7 +468,10 @@
                                                          IsTextCompletionEnabled="False">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior ValidValues="{Binding VM.ValidOperationCodes, ElementName=1.8}" />
+                                                <local:AutoCompleteBoxValidationBehavior
+                                                    InputPattern="{Binding VM.OperationCodePattern, ElementName=1.8}"
+                                                    MaxInputLength="2"
+                                                    ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.8}" />
                                                 <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
@@ -658,7 +661,10 @@
                                                          IsTextCompletionEnabled="False">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior ValidValues="{Binding VM.ValidDocumentVids, ElementName=1.8}" />
+                                                <local:AutoCompleteBoxValidationBehavior
+                                                    InputPattern="{Binding VM.DocumentVidPattern, ElementName=1.8}"
+                                                    MaxInputLength="2"
+                                                    ValidCodes="{Binding VM.ValidDocumentVids, ElementName=1.8}" />
                                                 <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
@@ -949,7 +955,10 @@
                                                          IsTextCompletionEnabled="False">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior ValidValues="{Binding VM.ValidRefineOrSortRAOCodes, ElementName=1.8}" />
+                                                <local:AutoCompleteBoxValidationBehavior
+                                                    InputPattern="{Binding VM.RefineOrSortRAOCodePattern, ElementName=1.8}"
+                                                    MaxInputLength="2"
+                                                    ValidCodes="{Binding VM.ValidRefineOrSortRAOCodes, ElementName=1.8}" />
                                                 <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 

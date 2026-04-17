@@ -54,10 +54,9 @@
                 <!--#region Отчёт-->
 
                 <Border Classes="borderContainer">
-                    <controls:SelectReportPopup
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        DataContext="{Binding SelectReportPopupVM}"/>
+                    <controls:SelectReportPopup HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                DataContext="{Binding SelectReportPopupVM}"/>
                 </Border>
 
                 <Border Classes="borderContainer">
@@ -421,14 +420,17 @@
                                     <Grid ColumnDefinitions="*,Auto">
                                         <AutoCompleteBox Grid.Column="0"
                                                          Height="26"
-                                                         Items="{Binding VM.OperationCodes, ElementName=1.1}"
+                                                         Items="{Binding  VM.OperationCodes, ElementName=1.1}"
                                                          Text="{Binding OperationCode.Value, Mode=TwoWay}"
                                                          HorizontalAlignment="Stretch"
                                                          MinimumPrefixLength="0"
                                                          IsTextCompletionEnabled="False">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.1}" />
+                                                <local:AutoCompleteBoxValidationBehavior 
+                                                    InputPattern="{Binding VM.OperationCodePattern, ElementName=1.1}"
+                                                    MaxInputLength="2"
+                                                    ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.1}" />
                                                 <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
@@ -609,7 +611,8 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
                                     <Grid ColumnDefinitions="*,Auto">
-                                        <TextBox Grid.Column="0" Text="{Binding CreationDate.Value, Mode=TwoWay}" />
+                                        <TextBox Grid.Column="0" 
+                                                 Text="{Binding CreationDate.Value, Mode=TwoWay}" />
                                         <CalendarDatePicker Grid.Column="1"
                                                             Classes="buttonOnly"
                                                             SelectedDate="{Binding CreationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
@@ -639,7 +642,10 @@
                                                          IsTextCompletionEnabled="False">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior ValidValues="{Binding VM.ValidCategories, ElementName=1.1}" />
+                                                <local:AutoCompleteBoxValidationBehavior 
+                                                    InputPattern="{Binding VM.CategoryCodePattern, ElementName=1.1}"
+                                                    MaxInputLength="1"
+                                                    ValidValues="{Binding VM.ValidCategories, ElementName=1.1}"/>
                                                 <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
                                             
@@ -703,7 +709,10 @@
                                                          IsTextCompletionEnabled="False">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidOwnershipForms, ElementName=1.1}" />
+                                                <local:AutoCompleteBoxValidationBehavior 
+                                                    InputPattern="{Binding VM.OwnershipCodePattern, ElementName=1.1}"
+                                                    MaxInputLength="1"
+                                                    ValidCodes="{Binding VM.ValidOwnershipForms, ElementName=1.1}"/>
                                                 <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
@@ -768,7 +777,10 @@
                                                          IsTextCompletionEnabled="False">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior ValidCodes="{Binding VM.ValidDocumentVids, ElementName=1.1}" />
+                                                <local:AutoCompleteBoxValidationBehavior
+                                                    InputPattern="{Binding VM.DocumentVidPattern, ElementName=1.1}"
+                                                    MaxInputLength="2"
+                                                    ValidCodes="{Binding VM.ValidDocumentVids, ElementName=1.1}" />
                                                 <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
