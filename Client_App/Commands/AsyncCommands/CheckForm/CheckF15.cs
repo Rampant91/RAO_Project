@@ -563,7 +563,7 @@ public abstract class CheckF15 : CheckBase
     private static List<CheckError> Check_006(List<Form15> forms, Report rep, int line)
     {
         List<CheckError> result = new();
-        string[] nonApplicableOperationCodes = { "01" };
+        string[] nonApplicableOperationCodes = { "01", "10" };
         var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var opDateStr = ReplaceNullAndTrim(forms[line].OperationDate_DB);
         var stPerStr = ReplaceNullAndTrim(rep.StartPeriod_DB);

@@ -229,9 +229,36 @@ public partial class Form16 : Form1
 
             #endregion
 
-            #region 21, 23, 24, 25, 26, 27, 28, 29, 31, 33, 34, 35, 36, 37, 38, 39, 84, 88
+            #region 21, 25, 26, 27, 28, 29, 31, 35, 36, 37, 38, 39
 
-            case "21" or "23" or "24" or "25" or "26" or "27" or "28" or "29" or "31" or "33" or "34" or "35" or "36" or "37" or "38" or "39" or "84" or "88":
+            case "21" or "25" or "26" or "27" or "28" or "29" or "31" or "35" or "36" or "37" or "38" or "39":
+            {
+                #region ProviderOrRecieverOKPO (15)
+
+                if (ProviderOrRecieverOKPO_DB is not "")
+                {
+                    ProviderOrRecieverOKPO.Value = string.Empty;
+                }
+
+                #endregion
+
+                #region RefineOrSortRAOCode (22)
+
+                if (RefineOrSortRAOCode_DB != dash)
+                {
+                    RefineOrSortRAOCode.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 84, 88
+
+            case "84" or "88":
             {
                 #region RefineOrSortRAOCode (22)
 

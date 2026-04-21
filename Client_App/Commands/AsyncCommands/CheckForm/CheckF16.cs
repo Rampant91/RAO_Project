@@ -976,6 +976,7 @@ public abstract class CheckF16 : CheckBase
 
         #region symbol 2
 
+        var expiredZriCodes = new[] { "81", "82", "85", "86", "87", "88", "89" };
         if (!codeRao2Valid)
         {
             result.Add(new CheckError
@@ -984,8 +985,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
-                Message = 
-                          "Недопустимое значение 2-го символа кода РАО."
+                Message = "Недопустимое значение 2-го символа кода РАО."
             });
         }
         else
@@ -993,8 +993,8 @@ public abstract class CheckF16 : CheckBase
             switch (codeRao2RaoCategory)
             {
                 case "4":
-                    var validTypeCode = new [] { "81", "82", "85", "86", "87", "88", "89" };
-                    if (!validTypeCode.Contains(codeRao910TypeCode))
+                {
+                    if (!expiredZriCodes.Contains(codeRao910TypeCode))
                     {
                         result.Add(new CheckError
                         {
@@ -1002,12 +1002,25 @@ public abstract class CheckF16 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
-                            Message = 
-                                      "Значение 2-го символа кода РАО 4 используется только для отработавших ЗРИ."
+                            Message = "Значение 2-го символа кода РАО 4 используется только для отработавших ЗРИ."
                         });
                     }
                     break;
+                }
                 case "9":
+                {
+                    if (expiredZriCodes.Contains(codeRao910TypeCode))
+                    {
+                        result.Add(new CheckError
+                        {
+                            FormNum = "form_16",
+                            Row = forms[line].NumberInOrder_DB.ToString(),
+                            Column = "CodeRAO_DB",
+                            Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
+                            Message = "Для отработавших ЗРИ (коды типа РАО 81,82,84-89), категория РАО должны быть равна 4."
+                        });
+                        break;
+                    }
                     if (!noteExists)
                     {
                         result.Add(new CheckError
@@ -1016,14 +1029,14 @@ public abstract class CheckF16 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
-                            Message = 
-                                      "Необходимо дать пояснение для 2-го символа кода РАО."
+                            Message = "Необходимо дать пояснение для 2-го символа кода РАО."
                         });
                     }
                     break;
+                }
                 default:
-                    // 0, 1, 2, 3, 9
-                    if (codeRao2RaoCategory == "0" && codeRao1MatterState == "1")
+                {
+                    if (expiredZriCodes.Contains(codeRao910TypeCode))
                     {
                         result.Add(new CheckError
                         {
@@ -1031,8 +1044,19 @@ public abstract class CheckF16 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
-                            Message = 
-                                      "Неправильно указана категория РАО."
+                            Message = "Для отработавших ЗРИ (коды типа РАО 81,82,84-89), категория РАО должны быть равна 4."
+                        });
+                    }
+                    // 0, 1, 2, 3, 9
+                    else if (codeRao2RaoCategory == "0" && codeRao1MatterState == "1")
+                    {
+                        result.Add(new CheckError
+                        {
+                            FormNum = "form_16",
+                            Row = forms[line].NumberInOrder_DB.ToString(),
+                            Column = "CodeRAO_DB",
+                            Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
+                            Message = "Неправильно указана категория РАО."
                         });
                     }
                     else
@@ -1137,8 +1161,7 @@ public abstract class CheckF16 : CheckBase
                                 Row = forms[line].NumberInOrder_DB.ToString(),
                                 Column = "CodeRAO_DB",
                                 Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
-                                Message = 
-                                          "Проверьте категорию РАО и суммарную активность."
+                                Message = "Проверьте категорию РАО и суммарную активность."
                             });
                         }
                         else if (codeMax != -1 && (codeRao2RaoCategory == "9" || codeRao2RaoCategory != codeMax.ToString("D1")))
@@ -1149,12 +1172,12 @@ public abstract class CheckF16 : CheckBase
                                 Row = forms[line].NumberInOrder_DB.ToString(),
                                 Column = "CodeRAO_DB",
                                 Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
-                                Message = 
-                                          $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, категория РАО {codeMax}."
+                                Message = $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, категория РАО {codeMax}."
                             });
                         }
                     }
                     break;
+                }
             }
         }
 
