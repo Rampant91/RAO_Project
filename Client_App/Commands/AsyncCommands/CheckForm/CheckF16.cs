@@ -1017,7 +1017,8 @@ public abstract class CheckF16 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
-                            Message = "Для отработавших ЗРИ (коды типа РАО 81,82,84-89), категория РАО должны быть равна 4."
+                            Message = "Для отработавших ЗРИ (коды типа РАО 81,82,85-89), " +
+                                      "категория РАО (2-ой символ кода РАО) должна быть равна 4."
                         });
                         break;
                     }
@@ -1044,7 +1045,8 @@ public abstract class CheckF16 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
-                            Message = "Для отработавших ЗРИ (коды типа РАО 81,82,84-89), категория РАО должны быть равна 4."
+                            Message = "Для отработавших ЗРИ (коды типа РАО 81,82,85-89), " +
+                                      "категория РАО (2-ой символ кода РАО) должна быть равна 4."
                         });
                     }
                     // 0, 1, 2, 3, 9
