@@ -274,9 +274,46 @@ public partial class Form15 : Form1
 
             #endregion
 
-            #region 44, 49, 55, 56, 59, 99
+            #region 44
 
-            case "44" or "49" or "55" or "56" or "59" or "99":
+            case "44" :
+            {
+                #region ProviderOrRecieverOKPO (15)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && ProviderOrRecieverOKPO_DB != masterOkpo)
+                {
+                    ProviderOrRecieverOKPO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (16)
+
+                if (TransporterOKPO_DB != dash)
+                {
+                    TransporterOKPO.Value = dash;
+                }
+
+                #endregion
+
+                #region RefineOrSortRAOCode (22)
+
+                if (RefineOrSortRAOCode_DB is not "")
+                {
+                    RefineOrSortRAOCode.Value = string.Empty;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 49, 55, 56, 59, 99
+
+            case "49" or "55" or "56" or "59" or "99":
             {
                 #region ProviderOrRecieverOKPO (15)
 
