@@ -47,6 +47,10 @@ public class DropDownButtonBehavior : Behavior<Button>
     {
         if (autoCompleteBox.IsDropDownOpen) return;
 
+        // Сохраняем исходный текст и временно очищаем для показа всех значений
+        var originalText = autoCompleteBox.Text;
+        autoCompleteBox.Text = string.Empty;
+
         typeof(Avalonia.Controls.AutoCompleteBox).GetMethod(
                 "PopulateDropDown",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
@@ -68,5 +72,18 @@ public class DropDownButtonBehavior : Behavior<Button>
         if ((bool)ipc?.GetValue(autoCompleteBox)! == false) ipc?.SetValue(autoCompleteBox, true);
 
         autoCompleteBox.SetValue(Avalonia.Controls.AutoCompleteBox.IsDropDownOpenProperty, true);
+
+        // Подписываемся на закрытие дропдауна для восстановления текста если ничего не выбрано
+        EventHandler? closedHandler = null;
+        closedHandler = (s, e) =>
+        {
+            autoCompleteBox.DropDownClosed -= closedHandler;
+            // Если текст пустой (ничего не выбрано), восстанавливаем исходный
+            if (string.IsNullOrEmpty(autoCompleteBox.Text) && !string.IsNullOrEmpty(originalText))
+            {
+                autoCompleteBox.Text = originalText;
+            }
+        };
+        autoCompleteBox.DropDownClosed += closedHandler;
     }
 }
