@@ -214,6 +214,15 @@ public partial class Form15 : Form1
 
                 #endregion
 
+                #region TransporterOKPO (16)
+
+                if (TransporterOKPO_DB is not "")
+                {
+                    TransporterOKPO.Value = string.Empty;
+                }
+
+                #endregion
+
                 #region RefineOrSortRAOCode (22)
 
                 if (RefineOrSortRAOCode_DB != dash)

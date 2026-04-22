@@ -233,11 +233,20 @@ public partial class Form16 : Form1
 
             case "21" or "25" or "26" or "27" or "28" or "29" or "31" or "35" or "36" or "37" or "38" or "39":
             {
-                #region ProviderOrRecieverOKPO (15)
+                #region ProviderOrRecieverOKPO (18)
 
                 if (ProviderOrRecieverOKPO_DB is not "")
                 {
                     ProviderOrRecieverOKPO.Value = string.Empty;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (19)
+
+                if (TransporterOKPO_DB is not "")
+                {
+                    TransporterOKPO.Value = string.Empty;
                 }
 
                 #endregion
