@@ -54,7 +54,7 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
             var fileIsCorrupted = false;
             try
             {
-                repsList = await GetReportsFromDataBase(TmpImpFilePath);
+                repsList = await GetReportsAsNoTrackingFromDataBase(TmpImpFilePath);
             }
             catch
             {
@@ -93,7 +93,8 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
             {
                 var dateTime = DateTime.Now;
 
-                impReportsList.Add(impReps);
+                impReportsList.Add(impReps); 
+                
                 await impReps.SortAsync();
                 await RestoreReportsOrders(impReps);
                 if (impReps.Master.Rows10.Count != 0)
@@ -168,9 +169,9 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                 }
 
 
-                    FillEmptyRegNo(ref baseReps11);
+                FillEmptyRegNo(ref baseReps11);
                 FillEmptyRegNo(ref baseReps21);
-                impReps.CleanIds();
+                //impReps.CleanIds();
                 ProcessIfNoteOrder0(impReps);
 
                 ImpRepFormCount = impReps.Report_Collection.Count;
@@ -275,7 +276,15 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
 
                     if (an is "Добавить" or "Да для всех")
                     {
-                        ReportsStorage.LocalReports.Reports_Collection.Add(impReps);
+                        //ReportsStorage.LocalReports.Reports_Collection.Add(impReps);
+                        try
+                        {
+                            StaticConfiguration.DBModel.ReportsCollectionDbSet.Add(impReps);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw ex;
+                        }
                         AtLeastOneImportDone = true;
 
                         #region LoggerImport
@@ -333,7 +342,7 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
             // но с разными номерами, в организации появлялись дубли, вместо перезаписи имеющегося отчёта.
             try
             {
-                await StaticConfiguration.DBModel.SaveChangesAsync();
+                StaticConfiguration.DBModel.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -341,27 +350,29 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
             }
         }
 
-        try
-        {
-            var comparator = new CustomReportsComparer();
-            var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
-            if (tmpReportsList.All(x => x.Master_DB.RegNoRep != null && x.Master_DB.OkpoRep != null))
-            {
-                var tmpReportsOrderedEnum = tmpReportsList
-                    .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
-                    .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator);
 
-                ReportsStorage.LocalReports.Reports_Collection.Clear();
-                ReportsStorage.LocalReports.Reports_Collection.AddRange(tmpReportsOrderedEnum);
-            }
-        }
-        catch (Exception ex)
-        {
-            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
-                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-            ServiceExtension.LoggerManager.Warning(msg);
-            return;
-        }
+        ////Сортировка отчетов в оперативной памяти
+        //try
+        //{
+        //    var comparator = new CustomReportsComparer();
+        //    var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+        //    if (tmpReportsList.All(x => x.Master_DB.RegNoRep != null && x.Master_DB.OkpoRep != null))
+        //    {
+        //        var tmpReportsOrderedEnum = tmpReportsList
+        //            .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
+        //            .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator);
+
+        //        ReportsStorage.LocalReports.Reports_Collection.Clear();
+        //        ReportsStorage.LocalReports.Reports_Collection.AddRange(tmpReportsOrderedEnum);
+        //    }
+        //}
+        //catch (Exception ex)
+        //{
+        //    var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+        //              $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+        //    ServiceExtension.LoggerManager.Warning(msg);
+        //    return;
+        //}
 
         //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
 
@@ -475,7 +486,91 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
 
     #endregion
 
-    #region RestoreReportsOrders
+    #region GetReportsAsNoTrackingFromDataBase
+
+    private static async Task<List<Reports>> GetReportsAsNoTrackingFromDataBase(string file)
+    {
+        await using DBModel db = new(file);
+
+        #region Test Version
+
+        //var t = await db.Database.GetPendingMigrationsAsync();
+        //var a = db.Database.GetMigrations();
+        //var b = await db.Database.GetAppliedMigrationsAsync();
+
+        #endregion
+
+        await db.Database.MigrateAsync();
+        await db.LoadTablesAsync();
+        await InitializationAsyncCommand.ProcessDataBaseFillEmpty(db);
+
+        var reportsList = db.ReportsCollectionDbSet
+            .Include(reps => reps.Master_DB)
+            .Include(reps => reps.Report_Collection)
+            .AsNoTracking()
+            .ToList();
+
+        var masterPackage = db.ReportCollectionDbSet
+            .Include(rep => rep.Rows10)
+            .Include(rep => rep.Rows20)
+            .Include(rep => rep.Rows40)
+            .Include(rep => rep.Rows50)
+            .AsNoTracking()
+            .AsEnumerable()
+            .Where(rep => rep.FormNum_DB[2] == '0') //"1.0"; "2.0"; "4.0"; "5.0" - ожидается что у титульников у '0' всегда будет стоять во второй индекс;
+            .ToList(); 
+
+        var reportCollectionPackage = db.ReportCollectionDbSet
+            .Include(rep => rep.Rows11)
+            .Include(rep => rep.Rows12)
+            .Include(rep => rep.Rows13)
+            .Include(rep => rep.Rows14)
+            .Include(rep => rep.Rows15)
+            .Include(rep => rep.Rows16)
+            .Include(rep => rep.Rows17)
+            .Include(rep => rep.Rows18)
+            .Include(rep => rep.Rows19)
+            .Include(rep => rep.Rows21)
+            .Include(rep => rep.Rows22)
+            .Include(rep => rep.Rows23)
+            .Include(rep => rep.Rows24)
+            .Include(rep => rep.Rows25)
+            .Include(rep => rep.Rows26)
+            .Include(rep => rep.Rows27)
+            .Include(rep => rep.Rows28)
+            .Include(rep => rep.Rows29)
+            .Include(rep => rep.Rows210)
+            .Include(rep => rep.Rows211)
+            .Include(rep => rep.Rows212)
+            .Include(rep => rep.Rows41)
+            .Include(rep => rep.Rows51)
+            .Include(rep => rep.Rows52)
+            .Include(rep => rep.Rows53)
+            .Include(rep => rep.Rows54)
+            .Include(rep => rep.Rows55)
+            .Include(rep => rep.Rows56)
+            .Include(rep => rep.Rows57)
+            .AsNoTracking()
+            .AsEnumerable()
+            .Where(rep => rep.FormNum_DB[2] != '0') //"1.1"; "2.10"; "2.12"; "5.7" - ожидается что у отчетов '0' никогда не будет стоять во второ индексе;
+            .ToList(); 
+
+        foreach (var reports in reportsList)
+        {
+            reports.Master_DB = masterPackage.FirstOrDefault(rep => rep.Id == reports.Master_DB.Id);
+
+            reports.Report_Collection = new(
+                reportCollectionPackage.Where(report => 
+                reports.Report_Collection.Any(rep => 
+                rep.Id == report.Id)));
+        }
+
+        return reportsList;
+    }
+
+    #endregion
+
+        #region RestoreReportsOrders
 
     private static async Task RestoreReportsOrders(Reports item)
     {
