@@ -1,16 +1,20 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Controls.DataGrid;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Models.DBRealization;
 using Models.Passports;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -78,7 +82,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
             progressBarVM.SetProgressBar(88, "Выгрузка данных");
             await FillTable2(excelPackage, passport);
 
-
+            SetRowsHeightInWorksheet(excelPackage.Workbook.Worksheets[0]);
 
             progressBarVM.SetProgressBar(90, "Сохранение");
             await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
@@ -99,6 +103,102 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
         }
 
 
+        static double CalculateRowHeight(string text, ExcelFont excelFont, double columnWidthPixels)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return 0;
+
+            using (var bmp = new Bitmap(1, 1))
+            using (var g = Graphics.FromImage(bmp))
+            {
+                var font = new Font(excelFont.Name, excelFont.Size,
+                GetFontStyle(excelFont.Bold, excelFont.Italic));
+
+                var format = StringFormat.GenericTypographic;
+                float totalHeight = 0;
+                float lineHeight = g.MeasureString("A", font, 1000, format).Height; // высота одной строки
+
+                // Разбиваем на слова
+                string[] words = text.Split(' ');
+                List<string> lines = new List<string>();
+                string currentLine = "";
+
+                foreach (var word in words)
+                {
+                    string testLine = string.IsNullOrEmpty(currentLine) ? word : currentLine + " " + word;
+                    float width = g.MeasureString(testLine, font, 1000, format).Width;
+
+                    if (width <= columnWidthPixels)
+                    {
+                        currentLine = testLine;
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(currentLine))
+                            lines.Add(currentLine);
+                        currentLine = word;
+                    }
+                }
+                if (!string.IsNullOrEmpty(currentLine))
+                    lines.Add(currentLine);
+
+                totalHeight = lines.Count * lineHeight;
+                return totalHeight;
+            }
+        }
+        private static FontStyle GetFontStyle(bool isBold, bool isItalic)
+        {
+            var style = FontStyle.Regular;
+            if (isBold) style |= FontStyle.Bold;
+            if (isItalic) style |= FontStyle.Italic;
+            return style;
+        }
+
+        static void SetRowsHeightInWorksheet(ExcelWorksheet worksheet)
+        {
+            var rows = worksheet.Rows;
+            var columns = worksheet.Columns;
+            for (int i = rows.StartRow; i <= rows.EndRow || i<100; i++)
+            {
+                double maxRowHeight = 20;
+                for (int j = columns.StartColumn; j <= columns.EndColumn; j++)
+                {
+                    var cell = worksheet.Cells[i, j];
+                    var mergedRows = 1;
+                    var mergedColumns = 1;
+                    var mergedAddress = worksheet.MergedCells[i, j];
+
+                    if (mergedAddress != null)
+                    {
+                        cell = worksheet.Cells[mergedAddress];
+                        mergedRows = cell.End.Row - cell.Start.Row + 1;
+                        mergedColumns = cell.End.Column - cell.Start.Column + 1;
+                    }
+                    else
+                        ;
+                    double width = 0;
+                    for( int count = 0; count < mergedColumns; count++)
+                    {
+                        if (count > 0)
+                            j++;
+                        width += worksheet.Column(j).Width;
+                    }
+
+                    var pixels = width * 7 ;
+
+                    double rowHeight = CalculateRowHeight(cell.Text, cell.Style.Font, pixels);
+
+                    rowHeight = rowHeight / mergedRows;
+
+                    if (maxRowHeight < rowHeight)
+                    {
+                        maxRowHeight = rowHeight;
+                    }
+                }
+                worksheet.Row(i).CustomHeight = true;
+                worksheet.Row(i).Height = maxRowHeight;
+            }
+        }
+
         #region FillHeader
         /// <summary>
         /// Заполняет .xlsx строчками данных.
@@ -111,65 +211,87 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
             var worksheet = excelPackage.Workbook.Worksheets[0];
 
             worksheet.Cells["H3"].Value = passport.PassportNum;
+            worksheet.Cells["H3"].Style.WrapText = true;
             worksheet.Cells["H3:J3"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["L3"].Value = passport.PassportDate;
             worksheet.Cells["L3"].Style.Numberformat.Format = "dd.mm.yyyy";
+            worksheet.Cells["L3"].Style.WrapText = true;
             worksheet.Cells["L3:M3"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["I5"].Value = passport.PackageType;
+            worksheet.Cells["I5"].Style.WrapText = true;
             worksheet.Cells["I5:M5"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["I7"].Value = passport.CorrectionNumber;
+            worksheet.Cells["I7"].Style.WrapText = true;
             worksheet.Cells["I7:M7"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["C9"].Value = passport.StatusRaoCode;
+            worksheet.Cells["C9"].Style.WrapText = true;
             worksheet.Cells["C9:D9"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["G9"].Value = passport.TechSpecification;
+            worksheet.Cells["G9"].Style.WrapText = true;
             worksheet.Cells["G9:I9"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["M9"].Value = passport.NameRao;
+            worksheet.Cells["M9"].Style.WrapText = true;
             worksheet.Cells["O9"].Value = passport.ClassRao;
+            worksheet.Cells["O9"].Style.WrapText = true;
             worksheet.Cells["M9:P9"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["H11"].Value = passport.RaoDisposalNum;
+            worksheet.Cells["H11"].Style.WrapText = true;
             worksheet.Cells["J11"].Value = passport.RaoDisposalDate;
+            worksheet.Cells["J11"].Style.WrapText = true;
             worksheet.Cells["J11"].Style.Numberformat.Format = "dd.mm.yyyy";
             worksheet.Cells["H11:J11"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["H12"].Value = passport.PackageIdCode;
+            worksheet.Cells["H12"].Style.WrapText = true;
             worksheet.Cells["H12:J12"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["M12"].Value = passport.TypeAndIdPuod;
+            worksheet.Cells["M12"].Style.WrapText = true;
             worksheet.Cells["M12:P12"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["H14"].Value = passport.Owner;
+            worksheet.Cells["H14"].Style.WrapText = true;
             worksheet.Cells["N14"].Value = passport.OwnerOkpo;
+            worksheet.Cells["N14"].Style.WrapText = true;
             worksheet.Cells["H14:P14"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["H15"].Value = passport.Manufacturer;
+            worksheet.Cells["H15"].Style.WrapText = true;
             worksheet.Cells["N15"].Value = passport.ManufacturerOkpo;
+            worksheet.Cells["N15"].Style.WrapText = true;
             worksheet.Cells["H15:P15"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["H16"].Value = passport.CertificateConformityNum;
+            worksheet.Cells["H16"].Style.WrapText = true;
             worksheet.Cells["H16:J16"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["O16"].Value = passport.ManufactureDate;
             worksheet.Cells["O16"].Style.Numberformat.Format = "dd.mm.yyyy";
+            worksheet.Cells["O16"].Style.WrapText = true;
             worksheet.Cells["O16:P16"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["H17"].Value = passport.CertificateConformityStartPeriod; 
             worksheet.Cells["H17"].Style.Numberformat.Format = "dd.mm.yyyy";
+            worksheet.Cells["H17"].Style.WrapText = true;
             worksheet.Cells["J17"].Value = passport.CertificateConformityEndPeriod;
             worksheet.Cells["J17"].Style.Numberformat.Format = "dd.mm.yyyy";
+            worksheet.Cells["J17"].Style.WrapText = true;
             worksheet.Cells["H17:J17"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["H18"].Value = passport.ServiceLife;
+            worksheet.Cells["H18"].Style.WrapText = true;
             worksheet.Cells["H18:J18"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["O18"].Value = passport.TransferDate;
             worksheet.Cells["O18"].Style.Numberformat.Format = "dd.mm.yyyy";
+            worksheet.Cells["O18"].Style.WrapText = true;
             worksheet.Cells["O18:P18"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
 
@@ -209,38 +331,80 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
                 }
 
                 worksheet.Cells[$"B{25 + i - 1}"].Value = primaryPackage.PackageType;
+                worksheet.Cells[$"B{25 + i - 1}"].Style.WrapText = true;
+
                 worksheet.Cells[$"C{25 + i - 1}"].Value = primaryPackage.PackageNum;
+                worksheet.Cells[$"C{25 + i - 1}"].Style.WrapText = true;
+
                 worksheet.Cells[$"D{25 + i - 1}"].Value = primaryPackage.PrimaryPackageQuantity;
+                worksheet.Cells[$"D{25 + i - 1}"].Style.WrapText = true;
+
                 worksheet.Cells[$"E{25 + i - 1}"].Value = primaryPackage.PrimaryPackageVolume;
+                worksheet.Cells[$"E{25 + i - 1}"].Style.WrapText = true;
+
                 worksheet.Cells[$"F{25 + i - 1}"].Value = primaryPackage.PrimaryPackageMass;
+                worksheet.Cells[$"F{25 + i - 1}"].Style.WrapText = true;
+
             }
             worksheet.Cells[$"D{25 + rowHeight}"].Value = passport.ContentCharacteristics.Sum(c => c.PrimaryPackageQuantity);
+            worksheet.Cells[$"D{25 + rowHeight}"].Style.WrapText = true;
+
             worksheet.Cells[$"E{25 + rowHeight}"].Value = passport.ContentCharacteristics.Sum(c => c.PrimaryPackageVolume);
+            worksheet.Cells[$"E{25 + rowHeight}"].Style.WrapText = true;
+
             worksheet.Cells[$"F{25 + rowHeight}"].Value = passport.ContentCharacteristics.Sum(c => c.PrimaryPackageMass);
+            worksheet.Cells[$"F{25 + rowHeight}"].Style.WrapText = true;
 
             worksheet.Cells["A25"].Value = passport.DisposalMethod;
+            worksheet.Cells[$"A25"].Style.WrapText = true;
 
             worksheet.Cells["G25"].Value = passport.MatrixMaterialType;
             worksheet.Cells["G25"].Style.WrapText = true;
 
             worksheet.Cells["H25"].Value = passport.FillingWasteDate;
             worksheet.Cells["H25"].Style.Numberformat.Format = "dd.mm.yyyy";
+            worksheet.Cells[$"H25"].Style.WrapText = true;
 
             worksheet.Cells["I25"].Value = passport.Diameter;
+            worksheet.Cells[$"I25"].Style.WrapText = true;
+
             worksheet.Cells["J25"].Value = passport.Height;
+            worksheet.Cells[$"J25"].Style.WrapText = true;
+
             worksheet.Cells["K25"].Value = passport.Length;
+            worksheet.Cells[$"K25"].Style.WrapText = true;
+
             worksheet.Cells["L25"].Value = passport.Width;
+            worksheet.Cells[$"L25"].Style.WrapText = true;
 
             worksheet.Cells["M25"].Value = passport.PackageMass;
+            worksheet.Cells[$"M25"].Style.WrapText = true;
+
             worksheet.Cells["N25"].Value = passport.RaoMass;
+            worksheet.Cells[$"N25"].Style.WrapText = true;
+
             worksheet.Cells["M26"].Value = passport.PackageVolume;
+            worksheet.Cells[$"M26"].Style.WrapText = true;
+
             worksheet.Cells["N26"].Value = passport.RaoVolume;
+            worksheet.Cells[$"N26"].Style.WrapText = true;
+
 
             worksheet.Cells["O25"].Value = passport.RadiationDoseRate10cm;
+            worksheet.Cells[$"O25"].Style.WrapText = true;
+
             worksheet.Cells["P25"].Value = passport.RadiationDoseRate1m;
+            worksheet.Cells[$"P25"].Style.WrapText = true;
+
             worksheet.Cells["Q25"].Value = passport.LevelNonFixedPollutionAlpha;
+            worksheet.Cells[$"Q25"].Style.WrapText = true;
+
             worksheet.Cells["R25"].Value = passport.LevelNonFixedPollutionBetaGamma;
+            worksheet.Cells[$"R25"].Style.WrapText = true;
+
             worksheet.Cells["S25"].Value = passport.HeatOutput;
+            worksheet.Cells[$"S25"].Style.WrapText = true;
+
 
 
 
@@ -272,6 +436,9 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
 
             return Task.CompletedTask;
         }
+
+        #endregion
+
         private void SetCellBorderStyle(ExcelRange cell)
         {
             cell.Merge = true;
@@ -280,8 +447,6 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
             cell.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
             cell.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
         }
-
-        #endregion
 
         #region FillTable2
 
@@ -350,26 +515,31 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
                 {
                     worksheet.Cells[$"A{start + 1}:C{start + 1}"].Merge = true;
                     worksheet.Cells[$"A{start + 1}:C{start + 1}"].Value = $"{passport.PackageIdCode}";
+                    worksheet.Cells[$"A{start + 1}:C{start + 1}"].Style.WrapText = true;
 
                     worksheet.Cells[$"A{start + 2}:C{start + 2}"].Merge = true;
                     worksheet.Cells[$"A{start + 2}:C{start + 2}"].Value = $"{passport.PackageType}";
+                    worksheet.Cells[$"A{start + 2}:C{start + 2}"].Style.WrapText = true;
 
                     worksheet.Cells[$"A{start + 3}"].Value = "№";
                     worksheet.Cells[$"B{start + 3}:C{start + 3}"].Merge = true;
-                    
-                    if (passport.PackageIdCode !=null &&
-                        passport.PackageIdCode.Split('/').Count() >=2)
-                        worksheet.Cells[$"B{start + 3}:C{start + 3}"].Value = $"{passport.PackageIdCode.Split('/')[1]}";
+                    worksheet.Cells[$"A{start + 3}:C{start + 3}"].Style.WrapText = true;
+
+                    if (passport.ContainerFactoryNum != null)
+                        worksheet.Cells[$"B{start + 3}:C{start + 3}"].Value = $"{passport.ContainerFactoryNum}";
                 }
                 else if (i > 0)
                 {
                     worksheet.Cells[$"A{start + 1}:C{start + 1}"].Merge = true;
                     worksheet.Cells[$"A{start + 1}:C{start + 1}"].Value = $"{characteristics[i].PackageType}";
+                    worksheet.Cells[$"A{start + 1}:C{start + 1}"].Style.WrapText = true;
 
                     worksheet.Cells[$"A{start + 2}"].Value = "№";
                     worksheet.Cells[$"B{start + 2}:C{start + 2}"].Merge = true;
-                    
+                    worksheet.Cells[$"A{start + 2}"].Style.WrapText = true;
+
                     worksheet.Cells[$"B{start + 2}:C{start + 2}"].Value = $"{characteristics[i].PackageNum}";
+                    worksheet.Cells[$"B{start + 2}:C{start + 2}"].Style.WrapText = true;
                 }
 
                 var radionuclids = characteristics[i].RadionuclidsList;
@@ -384,35 +554,56 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
                     }
 
                     worksheet.Cells[$"M{start + j}"].Value = radionuclids[j].Name;
+                    worksheet.Cells[$"M{start + j}"].Style.WrapText = true;
+
                     worksheet.Cells[$"N{start + j}"].Value = radionuclids[j].Activity;
+                    worksheet.Cells[$"N{start + j}"].Style.WrapText = true;
                 }
 
                 worksheet.Cells[$"D{start}"].Value = characteristics[i].ClassRao;
+                worksheet.Cells[$"D{start}"].Style.WrapText = true;
                 worksheet.Cells[$"E{start}"].Value = "класс";
 
                 worksheet.Cells[$"D{start + 1}:E{index}"].Merge = true;
                 worksheet.Cells[$"D{start + 1}:E{index}"].Value = characteristics[i].CodeRao;
+                worksheet.Cells[$"D{start + 1}:E{index}"].Style.WrapText = true;
 
                 worksheet.Cells[$"F{start}:G{index}"].Merge = true;
                 worksheet.Cells[$"F{start}:G{index}"].Value = characteristics[i].PhysicochemicalForm;
+                worksheet.Cells[$"F{start}:G{index}"].Style.WrapText = true;
 
                 worksheet.Cells[$"H{start}:J{index}"].Merge = true;
                 worksheet.Cells[$"H{start}:J{index}"].Value = characteristics[i].MorphologicalComposition;
+                worksheet.Cells[$"H{start}:J{index}"].Style.WrapText = true;
 
                 worksheet.Cells[$"K{start}:L{index}"].Merge = true;
                 worksheet.Cells[$"K{start}:L{index}"].Value = characteristics[i].Flammability;
+                worksheet.Cells[$"K{start}:L{index}"].Style.WrapText = true;
 
                 worksheet.Cells[$"Q{start}"].Value = characteristics[i].LongLivingActivity;
+                worksheet.Cells[$"Q{start}"].Style.WrapText = true;
+
                 worksheet.Cells[$"Q{start + 1}"].Value = characteristics[i].TransuraniumActivity;
+                worksheet.Cells[$"Q{start + 1}"].Style.WrapText = true;
+
                 worksheet.Cells[$"Q{start + 2}"].Value = characteristics[i].AlphaActivity;
+                worksheet.Cells[$"Q{start + 2}"].Style.WrapText = true;
+
                 worksheet.Cells[$"Q{start + 3}"].Value = characteristics[i].BetaGammaActivity;
+                worksheet.Cells[$"Q{start + 3}"].Style.WrapText = true;
+
                 worksheet.Cells[$"Q{start + 4}"].Value = characteristics[i].TritiumActivity;
+                worksheet.Cells[$"Q{start + 4}"].Style.WrapText = true;
+
 
                 worksheet.Cells[$"R{start}:R{index}"].Merge = true;
                 worksheet.Cells[$"R{start}:R{index}"].Value = characteristics[i].TotalActivity;
+                worksheet.Cells[$"R{start}:R{index}"].Style.WrapText = true;
+
 
                 worksheet.Cells[$"S{start}:S{index}"].Merge = true;
                 worksheet.Cells[$"S{start}:S{index}"].Value = characteristics[i].NuclearHazardousFissileNuclides;
+                worksheet.Cells[$"S{start}:S{index}"].Style.WrapText = true;
 
                 var cells = worksheet.Cells[$"D{start}:S{index}"];
                 foreach (var cell in cells)
@@ -496,20 +687,30 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
 
 
             worksheet.Cells["F37"].Value = passport.ResponsibleTransfer;
+            worksheet.Cells["F37"].Style.WrapText = true;
             worksheet.Cells["F37:I37"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["K37"].Value = passport.GradeAuthorizedPersonTransfer;
+            worksheet.Cells["K37"].Style.WrapText = true;
+
             worksheet.Cells["N37"].Value = passport.FioAuthorizedPersonTransfer;
+            worksheet.Cells["N37"].Style.WrapText = true;
+
             worksheet.Cells["K37:P37"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
             //подпись
             worksheet.Cells["R37:S37"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
 
             worksheet.Cells["F40"].Value = passport.ResponsibleReception;
+            worksheet.Cells["F40"].Style.WrapText = true;
             worksheet.Cells["F40:I40"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             worksheet.Cells["K40"].Value = passport.GradeAuthorizedPersonReception;
+            worksheet.Cells["K40"].Style.WrapText = true;
+
             worksheet.Cells["N40"].Value = passport.FioAuthorizedPersonReception;
+            worksheet.Cells["N40"].Style.WrapText = true;
+
             worksheet.Cells["K40:P40"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
             //подпись
             worksheet.Cells["R40:S40"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;

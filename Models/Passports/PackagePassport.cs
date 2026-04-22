@@ -130,7 +130,7 @@ namespace Models.Passports
 
         [NotMapped]
         private string _statusRaoCode;
-        [MaxLength(14)]
+        [MaxLength(16)]
         public string StatusRaoCode
         {
             get => _statusRaoCode;
@@ -252,6 +252,22 @@ namespace Models.Passports
             set
             {
                 _packageIdCode = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region ContainerFactoryNum
+        [NotMapped]
+        private string _ContainerFactoryNum;
+
+        [MaxLength(16)]
+        public string ContainerFactoryNum
+        {
+            get => _ContainerFactoryNum;
+            set
+            {
+                _ContainerFactoryNum = value;
                 OnPropertyChanged();
             }
         }

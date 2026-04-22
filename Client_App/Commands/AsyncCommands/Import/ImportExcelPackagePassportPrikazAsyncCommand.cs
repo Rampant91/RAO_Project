@@ -202,6 +202,11 @@ namespace Client_App.Commands.AsyncCommands.Import
                         }
                     }
 
+                    if(tableRowCount == 0)
+                    {
+                        impPassport.ContainerFactoryNum = worksheet.Cells[$"B{currentRow + 3}"].Text;
+                    }
+
                     //Переносим все данные кроме списка радионуклидов
                     characteristic.ClassRao = byte.TryParse(worksheet.Cells[$"D{currentRow}"].Text, out byteValue) ? byteValue : (byte)0;
                     characteristic.CodeRao = worksheet.Cells[$"D{currentRow + 1}"].Text;
@@ -239,6 +244,8 @@ namespace Client_App.Commands.AsyncCommands.Import
                 impPassport.ResponsibleReception = worksheet.Cells[$"F{40 + offset}"].Text;
                 impPassport.GradeAuthorizedPersonReception = worksheet.Cells[$"K{40 + offset}"].Text;
                 impPassport.FioAuthorizedPersonReception = worksheet.Cells[$"N{40 + offset}"].Text;
+
+
 
                 StaticConfiguration.DBModel.package_passport.Add(impPassport);
                 await StaticConfiguration.DBModel.SaveChangesAsync();
