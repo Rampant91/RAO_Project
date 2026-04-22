@@ -15,7 +15,7 @@ namespace Client_App.Views.Calculator;
 
 public partial class CategoryCalculator : BaseWindow<CategoryCalculatorVM>
 {
-    private readonly CategoryCalculatorVM _vm = null!;
+    public readonly CategoryCalculatorVM VM = null!;
 
     #region Constructor
 
@@ -28,7 +28,7 @@ public partial class CategoryCalculator : BaseWindow<CategoryCalculatorVM>
     {
         AvaloniaXamlLoader.Load(this);
         this.AttachDevTools();
-        _vm = vm;
+        VM = vm;
     }
 
     #endregion
@@ -51,7 +51,7 @@ public partial class CategoryCalculator : BaseWindow<CategoryCalculatorVM>
 
     private void OnCalculateButtonClicked(object? sender, RoutedEventArgs e)
     {
-        _vm.CategoryCalculation.Execute(null);
+        VM.CategoryCalculation.Execute(null);
     }
 
     private void OnClearButtonClicked(object? sender, RoutedEventArgs e)
