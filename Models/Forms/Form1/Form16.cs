@@ -311,7 +311,7 @@ public partial class Form16 : Form1
 
             #endregion
 
-            #region 44, 49, 55, 59, 99
+            #region 44, 49, 55, 56, 59, 99
 
             case "44" or "49" or "55" or "56" or "59" or "99":
             {
