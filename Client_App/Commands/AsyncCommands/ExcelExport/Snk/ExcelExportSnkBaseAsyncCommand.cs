@@ -473,7 +473,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 currentQuantity = inventoryForm.Quantity;
             }
 
-            foreach (var (_, formsList) in formsByDateDictionary)
+            foreach (var (date, formsList) in formsByDateDictionary)
             {
                 List<ShortFormDTO> newOperationOrderList = [];
 
@@ -544,7 +544,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                             var countInventoryAndPlusOperation = subsequentElementsList.Count(x => 
                                 x.OpCode is "10" || GetPlusOperationsArray(formNum).Contains(x.OpCode));
 
-                            if (!TryMoveOperation(form, i, editedFormsList, newOperationOrderList, 
+                            if (TryMoveOperation(form, i, editedFormsList, newOperationOrderList, 
                                     moveTracker, i + countInventoryAndPlusOperation))
                             {
                                 i--; // Уменьшаем счетчик, только если операция была перемещена
@@ -568,7 +568,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                                     || (!inStock && GetPlusOperationsArray(formNum).Contains(x.OpCode) 
                                                  && !numberComparer.Equals(x.PackNumber, currentPackNumber)));
 
-                            if (!TryMoveOperation(form, i, editedFormsList, newOperationOrderList, 
+                            if (TryMoveOperation(form, i, editedFormsList, newOperationOrderList, 
                                     moveTracker, i + countOperationWithSamePackNumber))
                             {
                                 i--;
@@ -1525,7 +1525,14 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                                     newPlusMinusDtoList.Add(lastPlusOperation);
                                     break;
                                 }
-                                default: continue;
+                                case 0:
+                                {
+                                    if (newPlusMinusDtoList.Count > 0)
+                                    {
+                                        newPlusMinusDtoList.RemoveAt(newPlusMinusDtoList.Count - 1);
+                                    }
+                                    break;
+                                }
                             }
                         }
 
