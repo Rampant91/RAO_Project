@@ -131,19 +131,24 @@ namespace Client_App.Commands.AsyncCommands.Generate
 
                     passport.PackageType = form17.PackType_DB;
 
-                    //characteristic.PackageIdNum = form17.PackNumber_DB;
+                    passport.PackageIdCode = form17.PackNumber_DB;
+                    passport.ContainerFactoryNum = form17.PackFactoryNumber_DB;
                     passport.ManufactureDate = DateOnly.TryParse(form17.FormingDate_DB, out var date) ? date : DateOnly.MinValue;
                     passport.PassportNum = form17.PassportNumber_DB;
                     passport.PackageVolume = double.TryParse(form17.Volume_DB, out var value) ? value : 0;
                     passport.PackageMass = double.TryParse(form17.Mass_DB, out value) ? value * 1000 : 0;
-                    passport.StatusRaoCode = form17.CodeRAO_DB;
-                    characteristic.CodeRao = form17.StatusRAO_DB;
+                    passport.StatusRaoCode = form17.StatusRAO_DB; 
+                    characteristic.CodeRao = form17.CodeRAO_DB;
                     passport.RaoVolume = double.TryParse(form17.VolumeOutOfPack_DB, out value) ? value : 0;
-                    passport.RaoMass = double.TryParse(form17.MassOutOfPack_DB, out value) ? value : 0;
-                    //characteristic.TritiumActivity = double.TryParse(form17.TritiumActivity_DB, out value) ? value : 0;
-                    //characteristic.BetaGammaActivity = double.TryParse(form17.BetaGammaActivity_DB, out value) ? value : 0;
-                    //characteristic.AlphaActivity = double.TryParse(form17.AlphaActivity_DB, out value) ? value : 0;
-                    //characteristic.TransuraniumActivity = double.TryParse(form17.TransuraniumActivity_DB, out value) ? value : 0;
+                    passport.RaoMass = double.TryParse(form17.MassOutOfPack_DB, out value) ? value * 1000 : 0;
+
+                    if((form17.CodeRAO_DB.Length >7) 
+                        && (form17.CodeRAO_DB[6] is'2' or'3' or '4' or '9'))
+                    {
+                        passport.DisposalMethod = "налив";
+                    }
+                    else
+                        passport.DisposalMethod = "навал";
 
                     StaticConfiguration.DBModel.package_passport.Add(passport);
                 }

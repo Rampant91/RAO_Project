@@ -60,6 +60,11 @@ namespace Models.Passports
             OnPropertyChanged(nameof(TritiumActivity));
             OnPropertyChanged(nameof(TotalActivity));
         }
+        public void UpdateRadionuclidsActivityType()
+        {
+            for (int i =0; i< RadionuclidsList.Count; i++)
+                RadionuclidsList[i].GetGroupCode();
+        }
 
         #region Properties
 

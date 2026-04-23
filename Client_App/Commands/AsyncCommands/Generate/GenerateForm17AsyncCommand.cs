@@ -36,6 +36,8 @@ namespace Client_App.Commands.AsyncCommands.Generate
             foreach (var passport in passportCollection)
             {
                 var characteristic = passport.ContentCharacteristics[0];
+                characteristic.UpdateRadionuclidsActivityType();
+
                 var form17 = new Form17();
 
                 index++;
@@ -47,23 +49,26 @@ namespace Client_App.Commands.AsyncCommands.Generate
 
                 form17.PackType_DB = passport.PackageType;
 
+
                 //if (characteristic.PackageIdNum.Split('/').Length == 3)
                 //    form17.PackFactoryNumber_DB = characteristic.PackageIdNum.Split('/')[1];
 
 
-                //form17.PackNumber_DB = characteristic.PackageIdNum;
+                form17.PackFactoryNumber_DB = passport.ContainerFactoryNum;
+                form17.PackNumber_DB = passport.PackageIdCode;
                 form17.FormingDate_DB = passport.ManufactureDate.ToString(new CultureInfo("ru-RU"));
                 form17.PassportNumber_DB = passport.PassportNum;
                 form17.Volume_DB = passport.PackageVolume.ToString($"e{passport.PackageVolume.ToString().Length - 1}");
                 form17.Mass_DB = (passport.PackageMass / 1000).ToString($"e{passport.PackageMass.ToString().Length - 1}");
-                form17.CodeRAO_DB = passport.StatusRaoCode;
-                form17.StatusRAO_DB = characteristic.CodeRao;
+                form17.CodeRAO_DB = characteristic.CodeRao;
+                form17.StatusRAO_DB = passport.StatusRaoCode;
                 form17.VolumeOutOfPack_DB = passport.RaoVolume.ToString($"e{passport.RaoVolume.ToString().Length - 1}");
-                form17.MassOutOfPack_DB = passport.RaoMass.ToString($"e{passport.RaoMass.ToString().Length - 1}");
-                form17.TritiumActivity_DB = (characteristic.TritiumActivity * passport.RaoMass).ToString($"e{(characteristic.TritiumActivity * passport.RaoMass).ToString().Length - 1}");
-                form17.BetaGammaActivity_DB = (characteristic.BetaGammaActivity * passport.RaoMass).ToString($"e{(characteristic.BetaGammaActivity * passport.RaoMass).ToString().Length - 1}");
-                form17.AlphaActivity_DB = (characteristic.AlphaActivity * passport.RaoMass).ToString($"e{(characteristic.AlphaActivity * passport.RaoMass).ToString().Length - 1}");
-                form17.TransuraniumActivity_DB = (characteristic.TransuraniumActivity * passport.RaoMass).ToString($"e{(characteristic.TransuraniumActivity * passport.RaoMass).ToString().Length - 1}");
+                form17.MassOutOfPack_DB = (passport.RaoMass / 1000).ToString($"e{passport.RaoMass.ToString().Length - 1}");
+
+                form17.TritiumActivity_DB = characteristic.TritiumActivity.ToString($"e{characteristic.TritiumActivity.ToString().Length - 1}");
+                form17.BetaGammaActivity_DB = characteristic.BetaGammaActivity.ToString($"e{characteristic.BetaGammaActivity.ToString().Length - 1}");
+                form17.AlphaActivity_DB = characteristic.AlphaActivity.ToString($"e{characteristic.AlphaActivity.ToString().Length - 1}");
+                form17.TransuraniumActivity_DB = characteristic.TransuraniumActivity.ToString($"e{characteristic.TransuraniumActivity.ToString().Length - 1}");
 
                 if (characteristic.RadionuclidsList.Count > 0)
                 {
