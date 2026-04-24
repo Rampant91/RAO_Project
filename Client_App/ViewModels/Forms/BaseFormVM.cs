@@ -297,7 +297,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    public virtual int TotalPages
+    public int TotalPages
     {
         get
         {
@@ -309,7 +309,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
     }
 
-    public virtual int TotalRows => Report.Rows.Count;
+    public int TotalRows => Report.Rows.Count;
 
 
     private bool _isAutoReplaceEnabled = true;
@@ -466,7 +466,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     /// <summary>
     /// Обновляет отображение ячеек DataGrid'а.
     /// </summary>
-    public virtual void UpdateFormList()
+    public void UpdateFormList()
     {
         FormList = new ObservableCollection<Form>(
             Report.Rows
