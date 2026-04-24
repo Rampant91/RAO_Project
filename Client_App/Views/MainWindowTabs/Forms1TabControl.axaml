@@ -11,11 +11,13 @@
 			 xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 			 xmlns:local="using:Client_App.Behaviors"
 			 xmlns:vm="using:Client_App.ViewModels.MainWindowTabs"
+			 xmlns:customConverters="clr-namespace:Client_App.Resources.CustomConverters"
 			 x:DataType="vm:Forms1TabControlVM"
              x:Class="Client_App.Views.MainWindowTabs.Forms1TabControl">
 
 	<UserControl.Resources>
-		<converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
+        <customConverters:BoolInverterConverter x:Key="BoolInverterConverter"/>
+        <converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
 		<converter:StringEqualsToColorConverter x:Key="StringEqualsToColor" />
 		<converter:CheckReportsAnyMatchingFormNumConverter x:Key ="CheckReportsAnyMatchingFormNum"/>
 	</UserControl.Resources>
@@ -81,6 +83,36 @@
 							<MenuItem Header="Выгрузить все отчеты в отдельные файлы"
 									  Command="{Binding MainWindowVM.ExportAllReport, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+                            <MenuItem Header="Выгрузить отчеты организации в отдельные .xlsx файлы"
+                                      IsVisible="{Binding MainWindowVM.AppLaunchedAtNorao, Mode=OneWay}">
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+                                          CommandParameter="1.1"
+                                          Header="Форма 1.1"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+                                          CommandParameter="1.2"
+                                          Header="Форма 1.2"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+                                          CommandParameter="1.3"
+                                          Header="Форма 1.3"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+                                          CommandParameter="1.4"
+                                          Header="Форма 1.4"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+                                          CommandParameter="1.5"
+                                          Header="Форма 1.5"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+                                          CommandParameter="1.6"
+                                          Header="Форма 1.6"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+                                          CommandParameter="1.7"
+                                          Header="Форма 1.7"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+                                          CommandParameter="1.8"
+                                          Header="Форма 1.8"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+                                          CommandParameter="1.9"
+                                          Header="Форма 1.9"/>
+                            </MenuItem>
 							<MenuItem Header="Проверить все формы организации"
 									  Command="{Binding MainWindowVM.ExcelExportCheckAllForms, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>

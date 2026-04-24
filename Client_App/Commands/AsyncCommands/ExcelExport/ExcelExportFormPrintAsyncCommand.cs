@@ -21,6 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Client_App.ViewModels.ProgressBar;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
@@ -91,6 +92,114 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         progressBarVM.SetProgressBar(100, "Завершение выгрузки");
         GC.Collect();
         await progressBar.CloseAsync();
+    }
+
+    /// <summary>
+    /// Выгрузка отчёта в Excel для печати (перегрузка для пакетной обработки без диалогов).
+    /// </summary>
+    /// <param name="report">Отчёт для выгрузки.</param>
+    /// <param name="destinationFolder">Папка назначения.</param>
+    /// <param name="suppressDialogs">Подавлять ли диалоги (true для пакетной обработки).</param>
+    public async Task AsyncExecute(Report report, string destinationFolder, bool suppressDialogs = false)
+    {
+        var cts = new CancellationTokenSource();
+        ExportType = "Для_печати";
+
+        AnyTaskProgressBar? progressBar = null;
+        AnyTaskProgressBarVM? progressBarVM = null;
+
+        if (!suppressDialogs)
+        {
+            progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
+            progressBarVM = progressBar.AnyTaskProgressBarVM;
+            progressBarVM.SetProgressBar(5, "Определение имени файла");
+        }
+
+        try
+        {
+            var fileName = await GetFileName(report, progressBar, cts);
+            var fullPath = Path.Combine(destinationFolder, fileName + ".xlsx");
+
+            // Проверяем существование файла и генерируем уникальное имя при необходимости
+            var originalFullPath = fullPath;
+            var counter = 1;
+            while (File.Exists(fullPath))
+            {
+                var fileNameWithoutExt = fileName + $"_{counter}";
+                fullPath = Path.Combine(destinationFolder, fileNameWithoutExt + ".xlsx");
+                counter++;
+            }
+
+            if (!suppressDialogs && progressBarVM != null)
+            {
+                progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
+            }
+
+            if (!suppressDialogs && progressBarVM != null)
+            {
+                progressBarVM.SetProgressBar(15, "Создание временной БД", "Выгрузка отчёта для печати", ExportType);
+            }
+            var tmpDbPath = await CreateTempDataBase(progressBar, cts);
+
+            if (!suppressDialogs && progressBarVM != null)
+            {
+                progressBarVM.SetProgressBar(30, "Загрузка отчёта");
+            }
+            var rep = await GetReportWithRows(report.Id, tmpDbPath, cts);
+
+            if (!suppressDialogs && progressBarVM != null)
+            {
+                progressBarVM.SetProgressBar(70, "Инициализация Excel пакета");
+            }
+            using var excelPackage = await InitializeExcelPackage(fullPath, rep);
+
+            if (!suppressDialogs && progressBarVM != null)
+            {
+                progressBarVM.SetProgressBar(75, "Проверка отчёта");
+            }
+            // Проверка на ошибки только при одиночной выгрузке
+            if (!suppressDialogs)
+            {
+                await CheckForm(rep, cts, progressBar);
+            }
+
+            if (!suppressDialogs && progressBarVM != null)
+            {
+                progressBarVM.SetProgressBar(80, "Выгрузка данных");
+            }
+            await FillExcel(excelPackage, rep);
+
+            if (!suppressDialogs && progressBarVM != null)
+            {
+                progressBarVM.SetProgressBar(90, "Сохранение");
+            }
+            
+            // Для пакетной обработки не показываем финальный диалог
+            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp: false, cts, progressBar, isBackground: suppressDialogs);
+
+            // Очистка временных данных
+            try
+            {
+                File.Delete(tmpDbPath);
+            }
+            catch
+            {
+                // ignored
+            }
+
+            if (!suppressDialogs && progressBarVM != null)
+            {
+                progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+            }
+        }
+        finally
+        {
+            if (!suppressDialogs && progressBar != null)
+            {
+                await progressBar.CloseAsync();
+            }
+            GC.Collect();
+        }
     }
 
     #region CheckForm
