@@ -437,7 +437,10 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     /// </summary>
     public ICommand ExportAllReport => new ExportAllReportAsyncCommand();
 
-    
+    /// <summary>
+    /// Выгрузка всех отчётов указанной формы (1.1-1.9, 2.1-2.12) организации в отдельные .xlsx файлы
+    /// </summary>
+    public ICommand ExcelExportAllFormsByFormNumber => new ExcelExportAllFormsByFormNumberAsyncCommand(this);
 
     /// <summary>
     /// Экспорт всех организаций организации в один файл .RAODB

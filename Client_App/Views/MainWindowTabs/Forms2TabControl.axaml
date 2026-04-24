@@ -11,10 +11,12 @@
 			 xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 			 xmlns:local="using:Client_App.Behaviors"
 			 xmlns:vm="using:Client_App.ViewModels.MainWindowTabs"
+			 xmlns:customConverters="clr-namespace:Client_App.Resources.CustomConverters"
 			 x:DataType="vm:Forms2TabControlVM"
              x:Class="Client_App.Views.MainWindowTabs.Forms2TabControl">
 
 	<UserControl.Resources>
+        <customConverters:BoolInverterConverter x:Key="BoolInverterConverter"/>
         <converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
 		<converter:StringEqualsToColorConverter x:Key="StringEqualsToColor" />
 		<converter:CheckReportsAnyMatchingFormNumConverter x:Key ="CheckReportsAnyMatchingFormNum"/>
@@ -72,12 +74,51 @@
 							<MenuItem Header="Выгрузить все отчеты из конкретного субъекта РФ в один файл"
 									  Command="{Binding MainWindowVM.ExportAllReportsFromSubjectRFOneFile, Mode=OneWay}"/>
 							<MenuItem Header="Выгрузить все организации в отдельные файлы"
-									  Command="{Binding MainWindowVM.ExportAllReports, Mode=OneWay}"
-									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
-							<MenuItem Header="Проверить все формы организации"
-									  Command="{Binding MainWindowVM.ExcelExportCheckAllForms, Mode=OneWay}"
-									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
-							<MenuItem Header="Удалить организацию"
+								  Command="{Binding MainWindowVM.ExportAllReports, Mode=OneWay}"
+								  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+						<MenuItem Header="Выгрузить отчеты организации в отдельные .xlsx файлы"
+                                  IsVisible="{Binding MainWindowVM.AppLaunchedAtNorao, Mode=OneWay}">
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  CommandParameter="2.1"
+									  Header="Форма 2.1"/>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  CommandParameter="2.2"
+									  Header="Форма 2.2"/>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  CommandParameter="2.3"
+									  Header="Форма 2.3"/>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  CommandParameter="2.4"
+									  Header="Форма 2.4"/>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  CommandParameter="2.5"
+									  Header="Форма 2.5"/>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  CommandParameter="2.6"
+									  Header="Форма 2.6"/>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  CommandParameter="2.7"
+									  Header="Форма 2.7"/>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  CommandParameter="2.8"
+									  Header="Форма 2.8"/>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  CommandParameter="2.9"
+									  Header="Форма 2.9"/>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  CommandParameter="2.10"
+									  Header="Форма 2.10"/>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  CommandParameter="2.11"
+									  Header="Форма 2.11"/>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  CommandParameter="2.12"
+									  Header="Форма 2.12"/>
+						</MenuItem>
+						<MenuItem Header="Проверить все формы организации"
+								  Command="{Binding MainWindowVM.ExcelExportCheckAllForms, Mode=OneWay}"
+								  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+						<MenuItem Header="Удалить организацию"
 									  Command="{Binding MainWindowVM.DeleteReports, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 						</ContextMenu>
