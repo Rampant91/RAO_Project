@@ -95,13 +95,20 @@ public class ColumnWidthSyncBehavior : Behavior<Grid>
 
         var column = SourceDataGrid.Columns[columnIndex];
 
+        var scale = (double)SourceDataGrid?.GetVisualAncestors()
+            .OfType<Window>()
+            .First()
+            .Screens
+            .Primary
+            .PixelDensity!;
+
         // Используем рефлексию для получения ActualWidth
         var actualWidth = column.Width.DisplayValue;
 
         if (actualWidth > 0)
         {
-            //вычитаем 1 пиксель, иначе шапка таблицы съезжает
-            AssociatedObject.ColumnDefinitions[columnIndex].Width = new GridLength(actualWidth - 1);
+            //вычитаем 1 пиксель делённый на масштаб, иначе шапка таблицы съезжает
+            AssociatedObject.ColumnDefinitions[columnIndex].Width = new GridLength(actualWidth - 1 / scale);
         }
     }
 
