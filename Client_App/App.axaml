@@ -153,8 +153,8 @@
             <Setter Property="GridLinesVisibility" Value="All"/>
             <Setter Property="CanUserSortColumns" Value="False"/>
             <Setter Property="ColumnWidth" Value="125" />
-            <Setter Property="MinColumnWidth" Value="50" />
-            <Setter Property="MaxColumnWidth" Value="250" />
+            <Setter Property="MinColumnWidth" Value="30" />
+            <Setter Property="MaxColumnWidth" Value="500" />
         </Style>
 		
 		<Style Selector="DataGridColumnHeader">

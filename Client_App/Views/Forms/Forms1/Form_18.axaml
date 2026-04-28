@@ -430,7 +430,7 @@
 
                     <DataGrid.Columns>
 
-                        <DataGridTextColumn Width="40"
+                        <DataGridTextColumn Width="30"
                                             x:DataType="forms1:Form18"
                                             Binding="{Binding NumberInOrder.Value}"
                                             IsReadOnly="True">
@@ -1129,7 +1129,7 @@
 
                         <DataGrid.Columns>
 
-                            <DataGridTemplateColumn Width="80" Header="№ строки">
+                            <DataGridTemplateColumn Width="100" Header="№ строки">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:DataType="forms:Note">
                                         <TextBox Text="{Binding RowNumber.Value, Mode=TwoWay}" />
@@ -1137,7 +1137,7 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Width="80" Header="№ графы">
+                            <DataGridTemplateColumn Width="100" Header="№ графы">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:DataType="forms:Note">
                                         <TextBox Text="{Binding GraphNumber.Value, Mode=TwoWay}" />
@@ -1145,7 +1145,7 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Width="*" Header="Пояснения">
+                            <DataGridTemplateColumn Width="1000" Header="Пояснения">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:DataType="forms:Note">
                                         <TextBox Text="{Binding Comment.Value, Mode=TwoWay}" />
