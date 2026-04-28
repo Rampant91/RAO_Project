@@ -540,6 +540,7 @@ public abstract class CheckBase : BaseAsyncCommand
                 {"D", worksheet.Cells[i, 15].Text},
                 {"MZUA_Solid", worksheet.Cells[i, 16].Text},
                 {"MZUA_Liquid", worksheet.Cells[i, 17].Text},
+                {"MZOA_Gas", worksheet.Cells[i, 18].Text},
                 {"MZA", worksheet.Cells[i, 19].Text},
                 {"A_Liquid", worksheet.Cells[i, 21].Text},
                 {"A_Solid", worksheet.Cells[i, 22].Text},
