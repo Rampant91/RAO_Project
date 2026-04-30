@@ -69,7 +69,7 @@ public class OpenCalculatorAsyncCommand : BaseAsyncCommand
             var halfLifeString = worksheet.Cells[i, 5].Text;
             var unit = worksheet.Cells[i, 6].Text;
             var d = worksheet.Cells[i, 15].Text;
-            var mza = worksheet.Cells[i, 17].Text;
+            var mza = worksheet.Cells[i, 19].Text;
 
             if (double.TryParse(halfLifeString, out var halfLife)
                 && !string.IsNullOrWhiteSpace(name)
