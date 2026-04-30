@@ -62,7 +62,9 @@
                 <MenuItem Header="Из RAODB"
                           Command="{Binding ImportRaodb, Mode=OneWay}"
                           CommandParameter="Auto"
-                          IsVisible="{Binding AppLaunchedAtNorao, Converter={StaticResource BoolInverterConverter}, Mode=OneWay}"/>
+                          IsVisible="{Binding AppLaunchedAtNorao, 
+                            Converter={StaticResource BoolInverterConverter}, 
+                            Mode=OneWay}"/>
 
                 <MenuItem Header="Из Excel"
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
@@ -76,7 +78,9 @@
                 <MenuItem Header="Из Excel"
                           Command="{Binding ImportExcel, Mode=OneWay}"
                           CommandParameter="Auto"
-                          IsVisible="{Binding AppLaunchedAtNorao, Converter={StaticResource BoolInverterConverter}, Mode=OneWay}"/>
+                          IsVisible="{Binding AppLaunchedAtNorao, 
+                            Converter={StaticResource BoolInverterConverter}, 
+                            Mode=OneWay}"/>
 
                 <MenuItem Header="Из Json"
                           Command="{Binding ImportJson, Mode=OneWay}"/>
@@ -319,6 +323,12 @@
                           Header="Список изменений"/>
                     
             </MenuItem> 
+
+            <MenuItem Header="Дополнительно"
+                      IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
+                <MenuItem Header="Конвертер из Excel в .RAODB"
+                          Command="{Binding ConvertExcelToRaodb, Mode=OneWay}"/>
+            </MenuItem>
 
         </Menu>
         

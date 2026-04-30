@@ -341,10 +341,11 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand ChangePasFolder { get; set; }                   //  Excel -> Паспорта -> Изменить расположение паспортов по умолчанию
     public ICommand ChangeReports { get; set; }                     //  Изменить Формы организации (1.0 и 2.0)
     public ICommand NewChangeReports { get; set; }                  //  Изменить Формы организации (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
+    public ICommand ConvertExcelToRaodb { get; set; }               //  Дополнительно -> Конвертер из Excel в .RAODB
     public ICommand ExcelExportCheckAllForms { get; set; }          //  Проверить все формы у организации
     public ICommand CheckFormFromMain { get; set; }                 //  Проверить форму
     public ICommand DeleteForm { get; set; }                        //  Удалить выбранную форму у выбранной организации (1.0, 2.0)
-    public ICommand NewDeleteForm { get; set; }                     //  Удалить выбранную форму у выбранной организации  (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
+    public ICommand NewDeleteForm { get; set; }                     //  Удалить выбранную форму у выбранной организации (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
     public ICommand DeleteReports { get; set; }                     //  Удалить выбранную организацию (1.0, 2.0, 4.0)
 
     /// <summary>
@@ -496,6 +497,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         ChangeReports = new ChangeReportsAsyncCommand();
         NewChangeReports = new NewChangeReportsAsyncCommand();
         CheckFormFromMain = new CheckFormFromMainAsyncCommand();
+        ConvertExcelToRaodb = new ConvertExcelToRaodbAsyncCommand();
         NewDeleteForm = new NewDeleteFormAsyncCommand();
         DeleteForm = new DeleteReportAsyncCommand();
         DeleteReports = new DeleteReportsAsyncCommand();
