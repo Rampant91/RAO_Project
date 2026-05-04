@@ -9,7 +9,6 @@ using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
@@ -525,15 +524,15 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Ошибка при чтении файла .RAODB",
-                        ContentHeader = "Ошибка",
+                        ContentTitle = "Ошибка",
+                        ContentHeader = "Ошибка при чтении файла .RAODB",
                         ContentMessage = $"Возникла ошибка при чтении файла базы данных (БД)" +
                                          $"{Environment.NewLine}{dbFileInfo.FullName}." +
                                          $"{Environment.NewLine}Файл БД был перемещён по пути " +
                                          $"{Environment.NewLine}{actualReserveFileFullPath}." +
                                          $"{Environment.NewLine}Программа запущена с новым пустым файлом БД" +
                                          $"{Environment.NewLine}{StaticConfiguration.DBPath}." +
-                                         $"{Environment.NewLine}Для восстановления данных воспользуйтель функцией \"Импорт -> из RAODB\"," +
+                                         $"{Environment.NewLine}Для восстановления данных воспользуйтесь функцией \"Импорт -> из RAODB\"," +
                                          $"{Environment.NewLine}указав путь к резервному файлу.",
 
                         MinWidth = 400,
@@ -551,8 +550,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Импорт из .raodb",
-                        ContentHeader = "Ошибка",
+                        ContentTitle = "Ошибка",
+                        ContentHeader = "Ошибка при создании файла .RAODB",
                         ContentMessage = $"Не удалось создать файл базы данных." +
                                          $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
                         MinWidth = 400,
@@ -578,8 +577,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Импорт из .raodb",
-                        ContentHeader = "Ошибка",
+                        ContentTitle = "Ошибка",
+                        ContentHeader = "Ошибка при создании файла .RAODB",
                         ContentMessage = $"Не удалось создать файл базы данных." +
                                          $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
                         MinWidth = 400,
@@ -609,8 +608,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
-                    ContentTitle = "Импорт из .raodb",
-                    ContentHeader = "Ошибка",
+                    ContentTitle = "Ошибка",
+                    ContentHeader = "Ошибка при создании файла .RAODB",
                     ContentMessage = $"Не удалось создать файл базы данных." +
                                      $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
                     MinWidth = 400,
@@ -637,8 +636,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
-                    ContentTitle = "Импорт из .raodb",
-                    ContentHeader = "Ошибка",
+                    ContentTitle = "Ошибка",
+                    ContentHeader = "Ошибка при создании файла .RAODB",
                     ContentMessage = $"Не удалось создать файл базы данных." +
                                      $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
                     MinWidth = 400,
@@ -674,7 +673,9 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             {
                 var it = (Reports)key;
                 if (it.Master_DB.FormNum_DB == "") continue;
-                if (it.Master_DB.Rows10.Count == 0)
+
+                if (it.Master_DB.FormNum_DB == "1.0"
+                    && it.Master_DB.Rows10.Count == 0)
                 {
                     var ty1 = (Form10)FormCreator.Create("1.0");
                     ty1.NumberInOrder_DB = 1;
@@ -684,7 +685,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     it.Master_DB.Rows10.Add(ty2);
                 }
 
-                if (it.Master_DB.Rows20.Count == 0)
+                if (it.Master_DB.FormNum_DB == "2.0"
+                    && it.Master_DB.Rows20.Count == 0)
                 {
                     var ty1 = (Form20)FormCreator.Create("2.0");
                     ty1.NumberInOrder_DB = 1;
@@ -693,13 +695,15 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     it.Master_DB.Rows20.Add(ty1);
                     it.Master_DB.Rows20.Add(ty2);
                 }
-                if (it.Master_DB.Rows40.Count == 0)
+                if (it.Master_DB.FormNum_DB == "4.0"
+                    && it.Master_DB.Rows40.Count == 0)
                 {
                     var ty = (Form40)FormCreator.Create("4.0");
                     ty.NumberInOrder_DB = 1;
                     it.Master_DB.Rows40.Add(ty);
                 }
-                if (it.Master_DB.Rows50.Count == 0)
+                if (it.Master_DB.FormNum_DB == "5.0"
+                    && it.Master_DB.Rows50.Count == 0)
                 {
                     var ty = (Form50)FormCreator.Create("5.0");
                     ty.NumberInOrder_DB = 1;

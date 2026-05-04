@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -29,9 +28,20 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
-        if (parameter is not ObservableCollectionWithItemPropertyChanged<IKey> forms) return;
-        var repParam = (Report)forms.First();
-        var repId = repParam.Id;
+        Report? repParam;
+        int repId;
+        if (parameter is ObservableCollectionWithItemPropertyChanged<IKey> forms)
+        {
+            repParam = (Report)forms.First();
+            repId = repParam.Id;
+        }
+        else if (parameter is Report report)
+        {
+            repParam = report;
+            repId = repParam.Id;
+        }
+        else
+            return;
 
         var cts = new CancellationTokenSource();
         ExportType = "Для_анализа";
@@ -185,6 +195,7 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
             WorksheetPrim.Cells.AutoFitColumns();
         }
         Worksheet.View.FreezePanes(2, 1);
+        Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
         WorksheetPrim.View.FreezePanes(2, 1);
 
         return Task.FromResult(masterHeaderLength);
@@ -198,7 +209,6 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
     /// Выгрузка примечаний в .xlsx.
     /// </summary>
     /// <param name="rep">Отчёт.</param>
-    /// <param name="startRow">Номер начального ряда.</param>
     /// <param name="startColumn">Номер начальной колонки.</param>
     /// <returns>Успешно выполненная Task.</returns>
     private Task ExcelExportNotes(Report rep, int startColumn)

@@ -6,11 +6,9 @@ using Client_App.Properties;
 using Client_App.Views;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
-using Client_App.Properties;
 using Client_App.Services;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Client_App;
 
@@ -32,7 +30,6 @@ public class App : Application
     }
 
     #endregion
-
 
     #region OnFrameworkInitializationCompleted
     

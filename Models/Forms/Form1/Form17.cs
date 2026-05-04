@@ -299,9 +299,45 @@ public partial class Form17 : Form1
 
             #endregion
 
-            #region 21, 22, 25, 26, 27, 28, 29, 31, 32, 35, 36, 37, 38, 39
-            
-            case "21" or "22" or "25" or "26" or "27" or "28" or "29" or "31" or "32" or "35" or "36" or "37" or "38" or "39":
+            #region 21, 26, 27
+
+            case "21" or "26" or "27":
+            {
+                #region ProviderOrRecieverOKPO (17)
+
+                if (ProviderOrRecieverOKPO_DB is not "")
+                {
+                    ProviderOrRecieverOKPO.Value = string.Empty;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (18)
+
+                if (TransporterOKPO_DB is not "")
+                {
+                    TransporterOKPO.Value = string.Empty;
+                }
+
+                #endregion
+
+                #region RefineOrSortRAOCode (30)
+
+                if (RefineOrSortRAOCode_DB != dash)
+                {
+                    RefineOrSortRAOCode.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 22, 25, 28, 29, 31, 32, 35, 36, 37, 38, 39
+
+            case "22" or "25" or "28" or "29" or "31" or "32" or "35" or "36" or "37" or "38" or "39":
             {
                 #region RefineOrSortRAOCode (30)
 

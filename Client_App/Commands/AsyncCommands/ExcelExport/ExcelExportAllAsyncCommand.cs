@@ -64,8 +64,6 @@ public class ExcelExportAllAsyncCommand(MainWindowVM mainWindowVM) : ExcelExport
             fullPath = Path.Combine(folderPath, fileName + $"_{++count}.xlsx");
         }
 
-        var operationStart = DateTime.Now;
-
         progressBarVM.SetProgressBar(12, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath);
 
@@ -92,30 +90,6 @@ public class ExcelExportAllAsyncCommand(MainWindowVM mainWindowVM) : ExcelExport
         }
 
         progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-
-        if (folderPath == string.Empty)
-        {
-            #region MessageExcelExportExecutionTime
-
-            var operationEnd = DateTime.Now;
-            var diffInSeconds = (int)(operationEnd - operationStart).TotalSeconds;
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    CanResize = true,
-                    ContentTitle = "Выгрузка в .xlsx",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = $"Время выгрузки составило {diffInSeconds} секунд.",
-                    MinHeight = 150,
-                    MinWidth = 250,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .Show(progressBar ?? Desktop.MainWindow));
-
-            #endregion
-        }
-
         await progressBar.CloseAsync();
     }
 
@@ -322,15 +296,17 @@ public class ExcelExportAllAsyncCommand(MainWindowVM mainWindowVM) : ExcelExport
         AnyTaskProgressBarVM progressBarVM, ExcelPackage excelPackage, CancellationTokenSource cts)
     {
         double progressBarDoubleValue = progressBarVM.ValueBar;
-        foreach (var reps in repsList.OrderBy(x => x.Master_DB.RegNoRep.Value)
-            //.Where(x => x.Master_DB.RegNoRep.Value is "12006")
-            )
+        foreach (var reps in repsList.OrderBy(x => x.Master_DB.RegNoRep.Value))
         {
             var repsWithRows = new Reports { Master = reps.Master };
             foreach (var rep in reps.Report_Collection
                          .OrderBy(x => x.FormNum_DB)
-                         .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
-                         .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue))
+                         .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) 
+                             ? stDate 
+                             : DateOnly.MaxValue)
+                         .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) 
+                             ? endDate 
+                             : DateOnly.MaxValue))
             {
                 var repWithRows = await GetReportWithRows(rep.Id, dbReadOnly, cts);
                 repsWithRows.Report_Collection.Add(repWithRows);
@@ -416,7 +392,10 @@ public class ExcelExportAllAsyncCommand(MainWindowVM mainWindowVM) : ExcelExport
                     .Where(x => x.DBObservable != null)
                     .ToListAsync(cts.Token));
         }
-        return repsList;
+        return repsList
+            .Where(x => x.Master_DB.FormNum_DB.StartsWith('1') 
+                        || x.Master_DB.FormNum_DB.StartsWith('2'))
+            .ToList();
     }
 
     #endregion

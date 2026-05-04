@@ -2,74 +2,113 @@
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Client_App.ViewModels.MainWindowTabs;
 
-public class Forms2TabControlVM : INotifyPropertyChanged
+public class Forms2TabControlVM : FormsTabControlBaseVM
 {
+    #region Fields
+
+    private protected override byte DefaultFormsPerPage => 10;
+
+    private protected override byte DefaultOrgsPerPage => 8;
+
+    private protected override char FormNum => '2';
+
+    #endregion
+
     #region Constructor
-    public Forms2TabControlVM()
-    {
-        // Конструктор пуст - настройки загружаются лениво при первом доступе
-    }
-    public Forms2TabControlVM (MainWindowVM mainWindowVM)
-    {
-        _mainWindowVM = mainWindowVM;
-        // Конструктор пуст - настройки загружаются лениво при первом доступе
-    }
-    
-    private void SaveRowCountSettings()
-    {
-        Client_App.Properties.RowCountSettings.RowCountSettingsManager.SaveSettings(
-            "form2", 
-            _rowsCountOrgs, 
-            _rowsCountForms);
-    }
+
+    public Forms2TabControlVM() { }
+
+    public Forms2TabControlVM(MainWindowVM mainWindowVM) : base(mainWindowVM) { }
+
     #endregion
 
     #region Properties
 
-    #region MainWindowVM
-    private MainWindowVM _mainWindowVM;
-    public MainWindowVM MainWindowVM
+    private protected override int FilteredRowsOrgs
     {
         get
         {
-            return _mainWindowVM;
+            if (!string.IsNullOrEmpty(SearchText))
+            {
+                var search = SearchText.ToLower().Trim();
+                return StaticConfiguration.DBModel.ReportsCollectionDbSet
+                    .AsEnumerable()
+                    .Where(x => x.DBObservable != null)
+                    .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
+                    .Count(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
+                                   || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
+                                   || GetAdditionalSearchConditions(reps, search));
+            }
+            return TotalRowsOrgs;
         }
     }
-    #endregion
 
-    #region SearchText
-    private string _searchText = "";
-
-    public string SearchText
+    protected override bool GetAdditionalSearchConditions(Reports reps, string search)
     {
-        get
-        {
-            return _searchText;
-        }
+        return reps.Master_DB.Rows20[0].ShortJurLico_DB.ToLower().Contains(search, StringComparison.CurrentCultureIgnoreCase)
+               || reps.Master_DB.Rows20[1].ShortJurLico_DB.ToLower().Contains(search, StringComparison.CurrentCultureIgnoreCase);
+    }
+
+    #region FormNumWhiteList
+
+    private string _formNumWhiteList = "";
+    public string FormNumWhiteList
+    {
+        get => _formNumWhiteList;
         set
         {
-            if(CurrentPageOrgs != 1)
-                CurrentPageOrgs = 1;
-            _searchText = value;
+            _formNumWhiteList = value;
             OnPropertyChanged();
-            OnPropertyChanged(nameof(ReportsCollection));
-            OnPropertyChanged(nameof(FilteredRowsOrgs));
-            OnPropertyChanged(nameof(TotalPagesOrgs));
         }
     }
+
     #endregion
 
-    #region ReportsCollection
-    public ObservableCollection<Reports> ReportsCollection
+    private protected override ObservableCollection<Report> ReportCollection
+    {
+        get
+        {
+            if (SelectedReports is null) return null;
+
+
+            var result = SelectedReports
+                .Report_Collection
+                .AsEnumerable();
+
+            if (!string.IsNullOrEmpty(FormNumWhiteList))
+            {
+                result = result.Where(rep => rep.FormNum_DB == FormNumWhiteList);
+            }
+
+            result = result.OrderBy(x =>
+                {
+                    if (int.TryParse(x.FormNum_DB.Split('.')[1], out var result))
+                        return result;
+                    return int.MinValue;
+                })
+                .ThenByDescending(x =>
+                    x.Year_DB == null ||
+                    !int.TryParse(x.Year_DB, out _) ?
+                        int.MaxValue :
+                        int.Parse(x.Year_DB))
+                .ThenBy(rep => rep.CorrectionNumber_DB)
+                .Skip((CurrentPageForms - 1) * RowsCountForms)
+                .Take(RowsCountForms);
+
+            return new ObservableCollection<Report>(result);
+        }
+    }
+
+    private protected override ObservableCollection<Reports> ReportsCollection
     {
         get
         {
@@ -79,6 +118,7 @@ public class Forms2TabControlVM : INotifyPropertyChanged
                 var search = SearchText.ToLower().Trim();
                 return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
                     .AsEnumerable()
+                    .Where(x => x.DBObservable != null)
                     .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
                     .Where(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
                                    || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
@@ -92,6 +132,7 @@ public class Forms2TabControlVM : INotifyPropertyChanged
             else
                 return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
                     .AsEnumerable()
+                    .Where(x => x.DBObservable != null)
                     .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
                     .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
                     .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
@@ -99,198 +140,30 @@ public class Forms2TabControlVM : INotifyPropertyChanged
                     .Take(RowsCountOrgs));
         }
     }
-    #endregion
 
-    #region SelectedReports
-
-    private Reports? _selectedReports;
-    public Reports? SelectedReports
+    private protected override Dictionary<string, Func<IQueryable<Report>, IQueryable<object>>> RowSelectors
     {
         get
         {
-            return _selectedReports;
-        }
-        set
-        {
-            _selectedReports = value;
-            OnPropertyChanged();
-
-            // UpdateReportCollection выполняется в CurrentPageForms
-            // Чтобы не вызывать метод дважды используется if else
-            if (CurrentPageForms != 1)
-                CurrentPageForms = 1;       
-            else
-                UpdateReportCollection();   
-
-            UpdateFormsPageInfo();
-        }
-    }
-    #endregion
-
-    #region PaginationOrgs
-
-    public int TotalPagesOrgs
-    {
-        get
-        {
-            var result = FilteredRowsOrgs / RowsCountOrgs;
-            if (FilteredRowsOrgs % RowsCountOrgs > 0)
-                result++;
-            return result;
-        }
-    }
-    public int TotalRowsOrgs
-    {
-        get
-        {
-            return StaticConfiguration.DBModel.ReportsCollectionDbSet.CountAsync(reps => reps.Master_DB.FormNum_DB == "2.0").Result;
-        }
-    }
-    
-    public int FilteredRowsOrgs
-    {
-        get
-        {
-            if (!string.IsNullOrEmpty(SearchText))
+            return new Dictionary<string, Func<IQueryable<Report>, IQueryable<object>>>
             {
-                var search = SearchText.ToLower().Trim();
-                return StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .AsEnumerable()
-                    .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
-                    .Where(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
-                                   || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
-                                   || reps.Master_DB.Rows20[0].ShortJurLico_DB.ToLower().Contains(search)
-                                   || reps.Master_DB.Rows20[1].ShortJurLico_DB.ToLower().Contains(search))
-                    .Count();
-            }
-            return TotalRowsOrgs;
+                ["2.1"] = q => q.Include(x => x.Rows21).SelectMany(x => x.Rows21),
+                ["2.2"] = q => q.Include(x => x.Rows22).SelectMany(x => x.Rows22),
+                ["2.3"] = q => q.Include(x => x.Rows23).SelectMany(x => x.Rows23),
+                ["2.4"] = q => q.Include(x => x.Rows24).SelectMany(x => x.Rows24),
+                ["2.5"] = q => q.Include(x => x.Rows25).SelectMany(x => x.Rows25),
+                ["2.6"] = q => q.Include(x => x.Rows26).SelectMany(x => x.Rows26),
+                ["2.7"] = q => q.Include(x => x.Rows27).SelectMany(x => x.Rows27),
+                ["2.8"] = q => q.Include(x => x.Rows28).SelectMany(x => x.Rows28),
+                ["2.9"] = q => q.Include(x => x.Rows29).SelectMany(x => x.Rows29),
+                ["2.10"] = q => q.Include(x => x.Rows210).SelectMany(x => x.Rows210),
+                ["2.11"] = q => q.Include(x => x.Rows211).SelectMany(x => x.Rows211),
+                ["2.12"] = q => q.Include(x => x.Rows212).SelectMany(x => x.Rows212),
+            };
         }
     }
 
-
-    private int _rowsCountOrgs;
-    public int RowsCountOrgs
-    {
-        get 
-        {
-            if (_rowsCountOrgs == 0) // If not loaded yet
-            {
-                var (orgs, _) = Client_App.Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
-                    "form2", 6, 8);
-                _rowsCountOrgs = orgs;
-            }
-            return _rowsCountOrgs;
-        }
-        set
-        {
-            if (_rowsCountOrgs != value)
-            {
-                _rowsCountOrgs = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(ReportsCollection));
-                OnPropertyChanged(nameof(TotalPagesOrgs));
-                SaveRowCountSettings();
-            }
-        }
-    }
-
-
-    private int _currentPageOrgs = 1;
-    public int CurrentPageOrgs
-    {
-        get
-        {
-            if (_currentPageOrgs > TotalPagesOrgs)
-                _currentPageOrgs = TotalPagesOrgs;
-            return _currentPageOrgs;
-        }
-        set
-        {
-            _currentPageOrgs = value;
-            OnPropertyChanged(nameof(ReportsCollection));
-            OnPropertyChanged();
-        }
-    }
-    #endregion
-
-
-    #region ReportCollection
-
-    public ObservableCollection<Report> ReportCollection
-    {
-        get
-        {
-            if (SelectedReports is null) return null;
-
-
-            var result = SelectedReports
-                    .Report_Collection
-                    .AsEnumerable();
-
-            if (!string.IsNullOrEmpty(FormNumWhiteList))
-            {
-                result = result.Where(rep => rep.FormNum_DB == FormNumWhiteList);
-            }
-
-
-            result.OrderBy(x => 
-                    {
-                        if (int.TryParse(x.FormNum_DB.Split('.')[1], out var result))
-                            return result;
-                        return int.MinValue;
-                    })
-                    .ThenByDescending(x => 
-                        x.Year_DB == null ||
-                        !int.TryParse(x.Year_DB, out _) ?
-                        int.MaxValue :
-                        int.Parse(x.Year_DB))
-                    .ThenBy(rep => rep.CorrectionNumber_DB)
-                    .Skip((CurrentPageForms - 1) * RowsCountForms)
-                    .Take(RowsCountForms);
-
-            return new ObservableCollection<Report>(result);
-        }
-    }
-
-    #endregion 
-
-    #region FormNumWhiteList
-    private string _formNumWhiteList = "";
-    public string FormNumWhiteList
-    {
-        get
-        {
-            return _formNumWhiteList;
-        }
-        set
-        {
-            _formNumWhiteList = value;
-            OnPropertyChanged();
-        }
-    }
-    #endregion
-
-    #region SelectedReport
-
-    private Report? _selectedReport;
-    public Report? SelectedReport
-    {
-        get
-        {
-            return _selectedReport;
-        }
-        set
-        {
-            _selectedReport = value;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(InSelectedReportFormsCount));
-        }
-    }
-
-    #endregion
-
-    #region PaginationForms
-    public int TotalPagesForms
+    private protected override int TotalPagesForms
     {
         get
         {
@@ -300,92 +173,45 @@ public class Forms2TabControlVM : INotifyPropertyChanged
             return result;
         }
     }
-    public int TotalRowsForms
+
+    private protected override int TotalPagesOrgs
+    {
+        get
+        {
+            var result = FilteredRowsOrgs / RowsCountOrgs;
+            if (FilteredRowsOrgs % RowsCountOrgs > 0)
+                result++;
+            return result;
+        }
+    }
+
+    private protected override int TotalRowsForms
     {
         get
         {
             if (SelectedReports is null) return 0;
 
             if (!string.IsNullOrEmpty(FormNumWhiteList))
-                return SelectedReports.Report_Collection.Where(rep => rep.FormNum_DB == FormNumWhiteList).Count();
+                return SelectedReports.Report_Collection.Count(rep => rep.FormNum_DB == FormNumWhiteList);
 
             return SelectedReports.Report_Collection.Count;
         }
     }
 
-
-    private int _rowsCountForms;
-    public int RowsCountForms
-    {
-        get 
-        {
-            if (_rowsCountForms == 0) // If not loaded yet
-            {
-                var (_, forms) = Client_App.Properties.RowCountSettings.RowCountSettingsManager.LoadSettings(
-                    "form2", 6, 8);
-                _rowsCountForms = forms;
-            }
-            return _rowsCountForms;
-        }
-        set
-        {
-            if (_rowsCountForms != value)
-            {
-                _rowsCountForms = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(TotalPagesForms)); 
-                UpdateReportCollection();
-                SaveRowCountSettings();
-            }
-        }
-    }
-
-
-    private int _currentPageForms = 1;
-    public int CurrentPageForms
-    {
-        get
-        {
-            if ((_currentPageForms > TotalPagesForms) && (TotalPagesForms > 0))
-                _currentPageForms = TotalPagesForms;
-
-            return _currentPageForms;
-        }
-        set
-        {
-            _currentPageForms = value;
-            OnPropertyChanged();
-            UpdateReportCollection();
-        }
-    }
     #endregion
 
-
-    #region TotalReportCount
-    public int TotalReportCount
-    {
-        get
-        {
-            return StaticConfiguration.DBModel.ReportCollectionDbSet
-                .CountAsync(rep => rep.FormNum_DB.StartsWith($"{MainWindowVM.SelectedReportType}")
-                                   && !rep.FormNum_DB.EndsWith(".0")).Result;
-        }
-    }
-    #endregion
-
-    #region InSelectedReportFormsCount
-
-    public int InSelectedReportFormsCount => GetReportRowsCount(SelectedReport);
+    #region Functions
 
     /// <summary>
     /// Возвращает количество строчек форм у отчёта.
     /// </summary>
     /// <param name="rep">Отчёт, у которого нужно посчитать количество строчек форм.</param>
     /// <returns>Количество строчек форм.</returns>
-    public static int GetReportRowsCount(Report? rep)
+    private static int GetReportRowsCount(Report? rep)
     {
         if (rep == null) return 0;
         while (StaticConfiguration.IsFileLocked(null)) Thread.Sleep(50); 
+        
         using var db = new DBModel(StaticConfiguration.DBPath);
 
         var query = db.ReportCollectionDbSet
@@ -450,73 +276,30 @@ public class Forms2TabControlVM : INotifyPropertyChanged
         return result;
     }
 
-    #endregion
-
-    #endregion
-
-    #region Functions
-
-    #region GoToFormNum
-    public void GoToFormNum(string formNum)
+    public void SetWhiteList(string formNum)
     {
-        if (FormNumWhiteList != formNum)
-            FormNumWhiteList = formNum;
-        else
-            FormNumWhiteList = "";
+        FormNumWhiteList = FormNumWhiteList != formNum
+            ? formNum
+            : string.Empty;
 
         UpdateReportCollection();
         UpdateFormsPageInfo();
     }
-    #endregion
 
-    #region UpdateOrgsPageInfo
+    private protected override void NotifySearchTextChanged()
+    {
+        OnPropertyChanged(nameof(ReportsCollection));
+        OnPropertyChanged(nameof(FilteredRowsOrgs));
+        OnPropertyChanged(nameof(TotalPagesOrgs));
+    }
+
     public void UpdateOrgsPageInfo()
     {
         OnPropertyChanged(nameof(TotalRowsOrgs));
         OnPropertyChanged(nameof(TotalPagesOrgs));
+        UpdateTotalReportCount();
+        UpdateTotalReportsCount();
     }
-    #endregion
-
-    #region UpdateFormsPageInfo
-    public void UpdateFormsPageInfo()
-    {
-        OnPropertyChanged(nameof(TotalRowsForms));
-        OnPropertyChanged(nameof(TotalPagesForms));
-    }
-    #endregion
-
-    #region TotalReportCount
-    public void UpdateTotalReportCount()
-    {
-        OnPropertyChanged(nameof(TotalReportCount));
-    }
-    #endregion
-
-    #region UpdateReportCollection
-    public void UpdateReportCollection()
-    {
-        OnPropertyChanged(nameof(ReportCollection));
-    }
-    #endregion
-
-    #region UpdateReportsCollection
-    public void UpdateReportsCollection()
-    {
-        OnPropertyChanged(nameof(ReportsCollection));
-    }
-
-    #endregion
-
-    #endregion
-
-    #region INotifyPropertyChanged
-
-    public void OnPropertyChanged([CallerMemberName] string prop = "")
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
-
-    public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
 }

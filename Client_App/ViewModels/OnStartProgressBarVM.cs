@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using ReactiveUI;
@@ -71,26 +72,34 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
 
     private async Task Start()
     {
-        Settings.Default.AppLaunchedInNorao = Settings.Default.AppStartupParameters
-            .Trim()
-            .Split(',')
-            .Any(x => x is "-n");
+        Settings.Default.AppLaunchedInNorao = AppIsLaunchedInNorao();
+        Settings.Default.Save(); // Сохраняем настройки
 
         MainWindowVM = new MainWindowVM();
         MainWindowVM.PropertyChanged += OnMainWindowVMPropertyChanged;
         await new InitializationAsyncCommand(MainWindowVM).AsyncExecute(this);
 
-        if (Settings.Default.AppStartupParameters.Trim().Split(',').Any(x => x is "-p"))
+        if (Settings.Default.AppStartupParameters.Trim().Split(',').Any(x => x is "-p" or "-y"))
         {
             await BackgroundWorkThenAppLaunchedWithOperParameter();
             Environment.Exit(0);
         }
-        else if (Settings.Default.AppStartupParameters.Trim().Split(',').Any(x => x is "-y"))
-        {
-            await BackgroundWorkThenAppLaunchedWithYearParameter();
-            Environment.Exit(0);
-        }
+        //else if (Settings.Default.AppStartupParameters.Trim().Split(',').Any(x => x is "-y"))
+        //{
+        //    await BackgroundWorkThenAppLaunchedWithYearParameter();
+        //    Environment.Exit(0);
+        //}
         
+    }
+
+    private static bool AppIsLaunchedInNorao()
+    {
+        var appIsLaunchedInNorao = Settings.Default.AppStartupParameters
+            .Trim()
+            .Split(',')
+            .Any(x => x is "-n");
+
+        return appIsLaunchedInNorao || File.Exists(@"Y:\АЧ 2021\Программа\developer.mode");
     }
 
     #region BackgroundWork
@@ -107,6 +116,7 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
         await new ExcelExportExecutorsAsyncCommand().AsyncExecute(null);
         await new ExcelExportIntersectionsAsyncCommand().AsyncExecute(null);
         await new ExcelExportListOfForms1AsyncCommand().AsyncExecute(null);
+        await new ExcelExportListOfForms2AsyncCommand().AsyncExecute(null);
         await new ExcelExportAllAsyncCommand(MainWindowVM).AsyncExecute(null);
     }
 

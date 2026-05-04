@@ -29,14 +29,15 @@ namespace Client_App.Views.Forms.Forms1;
 public partial class Form_11 : BaseWindow<Form_11VM>
 {
     private readonly Form_11VM _vm = null!;
+    public Form_11VM? VM => DataContext as Form_11VM;
 
     private bool _isCloseConfirmed;
     protected override bool IsFullScreenWindow => true;
 
-    private bool _isCtrlPressed = false;
-    private bool _cKeyPressed = false;
-    private bool _vKeyPressed = false;
-    private bool _aKeyPressed = false;
+    private bool _isCtrlPressed;
+    private bool _cKeyPressed;
+    private bool _vKeyPressed;
+    private bool _aKeyPressed;
 
     public Form_11()
     {
@@ -56,12 +57,11 @@ public partial class Form_11 : BaseWindow<Form_11VM>
 
     private void InitializeComponent()
     {
-
         AvaloniaXamlLoader.Load(this);
+
 #if DEBUG
         this.AttachDevTools();
 #endif
-        WindowState = WindowState.Maximized;
     }
 
     //Временное узкоспециализированное решение
@@ -283,9 +283,9 @@ public partial class Form_11 : BaseWindow<Form_11VM>
                 .Where(x => x.State != EntityState.Unchanged);
 
             if (modifiedEntities.All(x => x.Entity is Report rep && rep.FormNum_DB != vm.FormType)
-                || !db.ChangeTracker.HasChanges() || vm.SkipChangeTracking)
+                || !db.ChangeTracker.HasChanges() || vm.SkipChangeTacking)
             {
-                if (vm.SkipChangeTracking) vm.SkipChangeTracking = false;
+                if (vm.SkipChangeTacking) vm.SkipChangeTacking = false;
                 desktop.MainWindow.WindowState = OwnerPrevState;
 
                 if (_isCloseConfirmed) //выход из обработчика события

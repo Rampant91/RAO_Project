@@ -1,18 +1,72 @@
-using Client_App.Commands.AsyncCommands.Generate;
-using Client_App.Commands.AsyncCommands.Generate.GenerateForm4;
-using Client_App.ViewModels.Controls;
+﻿using Client_App.ViewModels.Controls;
 using Models.Collections;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Input;
+using Client_App.ViewModels.Forms.Forms1.Items;
+using Client_App.ViewModels.Forms.Forms1.Providers;
 
 namespace Client_App.ViewModels.Forms.Forms1;
 
 public class Form_17VM : BaseFormVM
 {
+    #region Properties
+    
     public override string FormType => "1.7";
 
+    #region OpCodes
+
+    public ObservableCollection<OperationCodeItem> OperationCodes =>
+        new(OperationCodesProvider.AllOperationCodes
+            .Where(x => ValidOperationCodes.Contains(x.Code)));
+
+    public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm17();
+
+    public string OperationCodePattern => @"^(?:\d{0,2}|-)$";
+
+    #endregion
+
+    #region DocVids
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ObservableCollection<DocumentVidItem> DocumentVids =>
+        new(DocumentVidProvider.AllDocumentVids
+            .Where(x => ValidDocumentVids.Contains(x.DisplayCode)));
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ICollection<string?> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms17To18();
+
+    public string DocumentVidPattern => "^(-|[1-9]|1[0-5]|19)?$";
+
+    #endregion
+
+    #region RefineOrSortRAOCodes
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ObservableCollection<RefineOrSortRAOCodeItem> RefineOrSortRAOCodes =>
+        new(RefineOrSortRAOCodeProvider.AllRefineOrSortRAOCodes
+            .Where(x => ValidRefineOrSortRAOCodes.Contains(x.Code)));
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ICollection<string?> ValidRefineOrSortRAOCodes => RefineOrSortRAOCodeProvider.GetValidCodes();
+
+    public string RefineOrSortRAOCodePattern => @"^(?:\d{0,2}|-)$";
+
+    #endregion
+
+    #endregion
+
     #region Constructors
+
     public Form_17VM() { }
 
     public Form_17VM(Report report) : base(report) { }
@@ -34,16 +88,11 @@ public class Form_17VM : BaseFormVM
             Reports = reps
         };
 
-        base.InitializeUserControls();
+        InitializeUserControls();
         Reports = reps;
 
         SelectReportPopupVM = new SelectReportPopupVM(this);
     }
-    #endregion
 
-    #region Commands
-    public ICommand GenerateForm17 => new GenerateForm17AsyncCommand(this);
-    public ICommand GeneratePackagePassport => new GeneratePackagePassportAsyncCommand(this);
     #endregion
-
 }

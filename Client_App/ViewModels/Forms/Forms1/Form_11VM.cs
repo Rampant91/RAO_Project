@@ -3,10 +3,12 @@ using Client_App.Commands.AsyncCommands.Calculator;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
-using Client_App.Commands.SyncCommands;
-using Client_App.ViewModels.Controls;
+using Client_App.ViewModels.Forms.Forms1.Items;
+using Client_App.ViewModels.Forms.Forms1.Providers;
 using Models.Collections;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 
@@ -14,7 +16,83 @@ namespace Client_App.ViewModels.Forms.Forms1;
 
 public class Form_11VM : BaseFormVM
 {
+    #region Properties
+
     public override string FormType => "1.1";
+
+    #region CategoryCodes
+
+    /// <summary>
+    /// Справочник категорий опасности для AutoCompleteBox с описаниями (только допустимые для формы)
+    /// </summary>
+    public ObservableCollection<CategoryItem> CategoryCodes =>
+        new(CategoryProvider.AllCategories
+            .Where(x => ValidCategories.Contains(x.Code)));
+
+    /// <summary>
+    /// Список допустимых категорий для валидации (только коды без описаний)
+    /// </summary>
+    public ICollection<short?> ValidCategories => CategoryProvider.GetValidCategoriesForForm11();
+
+    public string CategoryCodePattern => "^[1-5]$";
+
+    #endregion
+
+    #region DocumentVids
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ObservableCollection<DocumentVidItem> DocumentVids =>
+        new(DocumentVidProvider.AllDocumentVids
+            .Where(x => ValidDocumentVids.Contains(x.Code.ToString())));
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ICollection<string?> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms11To16();
+
+    public string DocumentVidPattern => "^([1-9]|1[0-5]|19)$";
+
+    #endregion 
+
+    #region OpCodes
+
+    /// <summary>
+    /// Справочник кодов операции для AutoCompleteBox с описаниями (только допустимые для формы)
+    /// </summary>
+    public ObservableCollection<OperationCodeItem> OperationCodes =>
+        new(OperationCodesProvider.AllOperationCodes
+            .Where(x => ValidOperationCodes.Contains(x.Code)));
+
+    /// <summary>
+    /// Список допустимых кодов операции для валидации (только коды без описаний)
+    /// </summary>
+    public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm11();
+
+    public string OperationCodePattern => @"^\d{0,2}$";
+
+    #endregion
+
+    #region OwnershipForms
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ObservableCollection<OwnershipItem> OwnershipForms =>
+        new(OwnershipProvider.AllOwnershipForms
+            .Where(x => ValidOwnershipForms.Contains(x.Code.ToString())));
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ICollection<string> ValidOwnershipForms => OwnershipProvider.GetValidCodes();
+
+    public string OwnershipCodePattern => "^[1-6,9]$";
+
+    #endregion
+
+    #endregion
 
     #region Constructors
 
@@ -39,7 +117,7 @@ public class Form_11VM : BaseFormVM
             Reports = reps
         };
 
-        base.InitializeUserControls();
+        InitializeUserControls();
         Reports = reps;
 
     }
@@ -55,38 +133,4 @@ public class Form_11VM : BaseFormVM
     public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);
 
     #endregion
-
-    //public ObservableCollection<Form12> Form12List => new(FormList.Cast<Form12>());
-
-    //public ObservableCollection<Form12> SelectedForms12 => new(SelectedForms.Cast<Form12>());
-
-    //public Form12 SelectedForm12
-    //{
-    //    get => SelectedForm as Form12;
-    //    set
-    //    {
-    //        SelectedForm = value;
-    //        UpdateFormList();
-    //    }
-    //}
-
-    //#region FilterProperty
-
-
-
-    //#endregion
-
-    /*
-    #region UpdateFormList
-    public new async void UpdateFormList()
-    {
-        base.UpdateFormList();
-        
-        //OnPropertyChanged(nameof(Form12List));
-        //OnPropertyChanged(nameof(SelectedForms12));
-        //OnPropertyChanged(nameof(SelectedForm12));
-    }
-
-    #endregion
-    */
 }

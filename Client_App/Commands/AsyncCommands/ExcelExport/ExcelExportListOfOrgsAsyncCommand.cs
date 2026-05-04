@@ -100,9 +100,11 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         var checkedLst = new List<Reports>();
         var row = 2;
         double progressBarDoubleValue = progressBarVM.ValueBar;
-        foreach (var reps in repsList.Where(reps => reps.Master.FormNum_DB[0] is '1' or '2')
-                     .OrderBy(x => x.Master_DB.RegNoRep.Value)
-                     .ThenBy(x => x.Master_DB.OkpoRep.Value))
+
+        foreach (var reps in repsList
+                     .Where(reps => reps.Master.FormNum_DB[0] is '1' or '2')
+                     .OrderBy(x => x.Master_DB.RegNoRep?.Value)
+                     .ThenBy(x => x.Master_DB.OkpoRep?.Value))
         {
             if (checkedLst.Any(x => x.Master_DB.RegNoRep == reps.Master_DB.RegNoRep
                                     && x.Master_DB.OkpoRep == reps.Master_DB.OkpoRep))
@@ -512,6 +514,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
                 Worksheet.Column(col).AutoFit();
             }
         }
+        Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
         Worksheet.View.FreezePanes(2, 1);
 
         return Task.CompletedTask;
@@ -637,6 +640,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
             Worksheet.Column(5).AutoFit();
             Worksheet.Column(6).AutoFit();
         }
+        Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
 
         return Task.CompletedTask;
     }

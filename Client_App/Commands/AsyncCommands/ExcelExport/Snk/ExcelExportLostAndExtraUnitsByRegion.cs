@@ -75,18 +75,19 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
 
     #region GetSnkAndErrorsList
 
-    private async Task GetSnkAndErrorsList(DBModel db, List<ShortReportsDto> repsDtoList, string formNum,
+    private static async Task GetSnkAndErrorsList(DBModel db, List<ShortReportsDto> repsDtoList, string formNum,
         SnkParamsDto snkParams, DateOnly endSnkDate, string region, ExcelPackage excelPackage, 
         AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
         var comparer = new SnkParamsComparer();
-        var lostUnitsCurrentRow = 2;
-        var extraUnitsCurrentRow = 2;
+        var lostAndExtraUnitsCurrentRow = 2;
         var transferOfMissingUnitCurrentRow = 2;
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentRepsNum = 0;
 
-        foreach (var repsDto in repsDtoList)
+        foreach (var repsDto in repsDtoList
+                     .OrderBy(x => x.RegNum)
+                     .ThenBy(x => x.Okpo))
         {
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
                 $"Проверено {currentRepsNum} из {repsDtoList.Count} СНК организаций",
@@ -118,17 +119,32 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
             var (unitInStockDtoList, transferOfMissingUnitOperationList) = 
                 await GetUnitInStockDtoList(uniqueUnitWithAllOperationDictionary, formNum, firstSnkDate);
 
-            var lostUnits = unitInStockDtoList
+            var lostAndExtraUnitsList = unitInStockDtoList
                 .Except(lastInventoryFormsDtoList, comparer)
+                .Select(x =>
+                {
+                    x.Status = Status.Lost; 
+                    return x;
+                })
+                .Concat(lastInventoryFormsDtoList
+                    .Except(unitInStockDtoList, comparer)
+                    .Select(x => 
+                    { 
+                        x.Status = Status.Extra; 
+                        return x;
+                    })
+                )
+                .OrderBy(x => x.PasNum)
+                .ThenBy(x => x.FacNum)
+                .ThenBy(x => x.Type)
+                .ThenBy(x => x.Radionuclids)
+                .ThenBy(x => x.PackNumber)
+                .ThenBy(x => x.Status)
                 .ToList();
 
-            var extraUnits = lastInventoryFormsDtoList
-                .Except(unitInStockDtoList, comparer)
-                .ToList();
-
-            (lostUnitsCurrentRow, extraUnitsCurrentRow, transferOfMissingUnitCurrentRow) = 
-                await FillExcel(excelPackage, repsDto, lostUnits, extraUnits, transferOfMissingUnitOperationList, 
-                    formNum, lastInventoryDate, lostUnitsCurrentRow, extraUnitsCurrentRow, transferOfMissingUnitCurrentRow);
+            (lostAndExtraUnitsCurrentRow, transferOfMissingUnitCurrentRow) = 
+                await FillExcel(excelPackage, repsDto, lostAndExtraUnitsList, transferOfMissingUnitOperationList, 
+                    formNum, lastInventoryDate, lostAndExtraUnitsCurrentRow, transferOfMissingUnitCurrentRow);
 
             progressBarDoubleValue += (double)70 / repsDtoList.Count;
             currentRepsNum++;
@@ -146,27 +162,17 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
     /// <param name="excelPackage">Excel пакет.</param>
     private static async Task FillExcelHeaders(string formNum, ExcelPackage excelPackage)
     {
-        var lostUnitsWorksheet = excelPackage.Workbook.Worksheets.Add("Источники, не отражённые в инв.");
-        var extraUnitsWorksheet = excelPackage.Workbook.Worksheets.Add("Лишние источники в инв.");
+        var lostAndExtraUnitsWorksheet = excelPackage.Workbook.Worksheets.Add("Источники, не отражённые в инв.");
         var transferOfMissingUnitsWorksheet = excelPackage.Workbook.Worksheets.Add("Передача отсутств. источников");
 
-        lostUnitsWorksheet.Cells[1, 1].Value = "№ п/п";
-        lostUnitsWorksheet.Cells[1, 2].Value = "Рег.№";
-        lostUnitsWorksheet.Cells[1, 3].Value = "Наименование";
-        lostUnitsWorksheet.Cells[1, 4].Value = "ОКПО";
-        lostUnitsWorksheet.Cells[1, 5].Value = "Номер паспорта (сертификата)";
-        lostUnitsWorksheet.Cells[1, 6].Value = "Тип";
-        lostUnitsWorksheet.Cells[1, 7].Value = "Радионуклиды";
-        lostUnitsWorksheet.Cells[1, 8].Value = "Заводской номер";
-
-        extraUnitsWorksheet.Cells[1, 1].Value = "№ п/п";
-        extraUnitsWorksheet.Cells[1, 2].Value = "Рег.№";
-        extraUnitsWorksheet.Cells[1, 3].Value = "Наименование";
-        extraUnitsWorksheet.Cells[1, 4].Value = "ОКПО";
-        extraUnitsWorksheet.Cells[1, 5].Value = "Номер паспорта (сертификата)";
-        extraUnitsWorksheet.Cells[1, 6].Value = "Тип";
-        extraUnitsWorksheet.Cells[1, 7].Value = "Радионуклиды";
-        extraUnitsWorksheet.Cells[1, 8].Value = "Заводской номер";
+        lostAndExtraUnitsWorksheet.Cells[1, 1].Value = "№ п/п";
+        lostAndExtraUnitsWorksheet.Cells[1, 2].Value = "Рег.№";
+        lostAndExtraUnitsWorksheet.Cells[1, 3].Value = "Наименование";
+        lostAndExtraUnitsWorksheet.Cells[1, 4].Value = "ОКПО";
+        lostAndExtraUnitsWorksheet.Cells[1, 5].Value = "Номер паспорта (сертификата)";
+        lostAndExtraUnitsWorksheet.Cells[1, 6].Value = "Тип";
+        lostAndExtraUnitsWorksheet.Cells[1, 7].Value = "Радионуклиды";
+        lostAndExtraUnitsWorksheet.Cells[1, 8].Value = "Заводской номер";
 
         transferOfMissingUnitsWorksheet.Cells[1, 1].Value = "№ п/п";
         transferOfMissingUnitsWorksheet.Cells[1, 2].Value = "Рег.№";
@@ -185,13 +191,10 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
             {
                 #region Headers
 
-                lostUnitsWorksheet.Cells[1, 9].Value = "количество, шт.";
-                lostUnitsWorksheet.Cells[1, 10].Value = "Номер УКТ";
-                lostUnitsWorksheet.Cells[1, 11].Value = "Дата последней инвентаризации";
-
-                extraUnitsWorksheet.Cells[1, 9].Value = "количество, шт.";
-                extraUnitsWorksheet.Cells[1, 10].Value = "Номер УКТ";
-                extraUnitsWorksheet.Cells[1, 11].Value = "Дата последней инвентаризации";
+                lostAndExtraUnitsWorksheet.Cells[1, 9].Value = "количество, шт.";
+                lostAndExtraUnitsWorksheet.Cells[1, 10].Value = "Номер УКТ";
+                lostAndExtraUnitsWorksheet.Cells[1, 11].Value = "Дата последней инвентаризации";
+                lostAndExtraUnitsWorksheet.Cells[1, 12].Value = "Статус";
 
                 transferOfMissingUnitsWorksheet.Cells[1, 11].Value = "количество, шт.";
                 transferOfMissingUnitsWorksheet.Cells[1, 12].Value = "Номер УКТ";
@@ -204,11 +207,9 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
             {
                 #region Headers
 
-                lostUnitsWorksheet.Cells[1, 9].Value = "Номер УКТ";
-                lostUnitsWorksheet.Cells[1, 10].Value = "Дата последней инвентаризации";
-
-                extraUnitsWorksheet.Cells[1, 9].Value = "Номер УКТ";
-                extraUnitsWorksheet.Cells[1, 10].Value = "Дата последней инвентаризации";
+                lostAndExtraUnitsWorksheet.Cells[1, 9].Value = "Номер УКТ";
+                lostAndExtraUnitsWorksheet.Cells[1, 10].Value = "Дата последней инвентаризации";
+                lostAndExtraUnitsWorksheet.Cells[1, 11].Value = "Статус";
 
                 transferOfMissingUnitsWorksheet.Cells[1, 11].Value = "Номер УКТ";
 
@@ -218,8 +219,7 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
             }
         }
 
-        await AutoFitColumns(lostUnitsWorksheet);
-        await AutoFitColumns(extraUnitsWorksheet);
+        await AutoFitColumns(lostAndExtraUnitsWorksheet);
         await AutoFitColumns(transferOfMissingUnitsWorksheet);
     }
 
@@ -234,6 +234,7 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
         {
             if (OperatingSystem.IsWindows()) worksheet.Column(col).AutoFit();
         }
+        worksheet.Cells[worksheet.Dimension.Address].AutoFilter = true;
         worksheet.View.FreezePanes(2, 1);
         return Task.CompletedTask;
     }
@@ -248,23 +249,23 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
     /// Заполняет строчки Excel пакета.
     /// </summary>
     /// <returns>Кортеж из номеров текущих строк для каждого из 3 листов excelPackage.</returns>
-    private static Task<(int, int, int)> FillExcel(ExcelPackage excelPackage, ShortReportsDto reps, List<ShortFormDTO> lostUnits,
-        List<ShortFormDTO> extraUnits, List<ShortFormDTO>  transferOfMissingUnitOperationList, string formNum, 
-        DateOnly lastInventoryDate, int lostUnitsCurrentRow, int extraUnitsCurrentRow, int transferOfMissingUnitCurrentRow)
+    private static Task<(int, int)> FillExcel(ExcelPackage excelPackage, ShortReportsDto reps, 
+        List<ShortFormDTO> lostAndExtraUnitsList, List<ShortFormDTO>  transferOfMissingUnitOperationList, string formNum, 
+        DateOnly lastInventoryDate, int lostAndExtraUnitsCurrentRow, int transferOfMissingUnitCurrentRow)
     {
-        #region LostUnits
+        #region LostAndExtraUnits
         
-        var lostUnitsWorksheet = excelPackage.Workbook.Worksheets[0];
-        foreach (var dto in lostUnits)
+        var lostAndExtraUnitsWorksheet = excelPackage.Workbook.Worksheets[0];
+        foreach (var dto in lostAndExtraUnitsList)
         {
-            lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 1].Value = lostUnitsCurrentRow - 1;
-            lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 2].Value = ConvertToExcelString(reps.RegNum);
-            lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 3].Value = ConvertToExcelString(reps.ShortName);
-            lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 4].Value = ConvertToExcelString(reps.Okpo);
-            lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 5].Value = ConvertToExcelString(dto.PasNum);
-            lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 6].Value = ConvertToExcelString(dto.Type);
-            lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 7].Value = ConvertToExcelString(dto.Radionuclids);
-            lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 8].Value = ConvertToExcelString(dto.FacNum);
+            lostAndExtraUnitsWorksheet.Cells[lostAndExtraUnitsCurrentRow, 1].Value = lostAndExtraUnitsCurrentRow - 1;
+            lostAndExtraUnitsWorksheet.Cells[lostAndExtraUnitsCurrentRow, 2].Value = ConvertToExcelString(reps.RegNum);
+            lostAndExtraUnitsWorksheet.Cells[lostAndExtraUnitsCurrentRow, 3].Value = ConvertToExcelString(reps.ShortName);
+            lostAndExtraUnitsWorksheet.Cells[lostAndExtraUnitsCurrentRow, 4].Value = ConvertToExcelString(reps.Okpo);
+            lostAndExtraUnitsWorksheet.Cells[lostAndExtraUnitsCurrentRow, 5].Value = ConvertToExcelString(dto.PasNum);
+            lostAndExtraUnitsWorksheet.Cells[lostAndExtraUnitsCurrentRow, 6].Value = ConvertToExcelString(dto.Type);
+            lostAndExtraUnitsWorksheet.Cells[lostAndExtraUnitsCurrentRow, 7].Value = ConvertToExcelString(dto.Radionuclids);
+            lostAndExtraUnitsWorksheet.Cells[lostAndExtraUnitsCurrentRow, 8].Value = ConvertToExcelString(dto.FacNum);
 
             switch (formNum)
             {
@@ -272,9 +273,10 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
                 {
                     #region Headers
 
-                    lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 9].Value = dto.Quantity;
-                    lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 10].Value = dto.PackNumber;
-                    lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 11].Value = ConvertToExcelDate(lastInventoryDate.ToShortDateString(), lostUnitsWorksheet, lostUnitsCurrentRow, 11);
+                    lostAndExtraUnitsWorksheet.Cells[lostAndExtraUnitsCurrentRow, 9].Value = dto.Quantity;
+                    lostAndExtraUnitsWorksheet.Cells[lostAndExtraUnitsCurrentRow, 10].Value = dto.PackNumber;
+                    lostAndExtraUnitsWorksheet.Cells[lostAndExtraUnitsCurrentRow, 11].Value = ConvertToExcelDate(lastInventoryDate.ToShortDateString(), lostAndExtraUnitsWorksheet, lostAndExtraUnitsCurrentRow, 11);
+                    lostAndExtraUnitsWorksheet.Cells[lostAndExtraUnitsCurrentRow, 12].Value = GetStatus(dto.Status);
 
                     #endregion
 
@@ -284,8 +286,9 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
                 {
                     #region Headers
 
-                    lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 9].Value = dto.PackNumber;
-                    lostUnitsWorksheet.Cells[lostUnitsCurrentRow, 10].Value = ConvertToExcelDate(lastInventoryDate.ToShortDateString(), lostUnitsWorksheet, lostUnitsCurrentRow, 10);
+                    lostAndExtraUnitsWorksheet.Cells[lostAndExtraUnitsCurrentRow, 9].Value = dto.PackNumber;
+                    lostAndExtraUnitsWorksheet.Cells[lostAndExtraUnitsCurrentRow, 10].Value = ConvertToExcelDate(lastInventoryDate.ToShortDateString(), lostAndExtraUnitsWorksheet, lostAndExtraUnitsCurrentRow, 10);
+                    lostAndExtraUnitsWorksheet.Cells[lostAndExtraUnitsCurrentRow, 11].Value = GetStatus(dto.Status);
 
                     #endregion
 
@@ -293,60 +296,14 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
                 }
             }
 
-            lostUnitsCurrentRow++;
-        }
-
-        #endregion
-
-        #region ExtraUnits
-
-        var extraUnitsWorksheet = excelPackage.Workbook.Worksheets[1];
-        foreach (var dto in extraUnits)
-        {
-            extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 1].Value = extraUnitsCurrentRow - 1;
-            extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 2].Value = ConvertToExcelString(reps.RegNum);
-            extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 3].Value = ConvertToExcelString(reps.ShortName);
-            extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 4].Value = ConvertToExcelString(reps.Okpo);
-            extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 5].Value = ConvertToExcelString(dto.PasNum);
-            extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 6].Value = ConvertToExcelString(dto.Type);
-            extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 7].Value = ConvertToExcelString(dto.Radionuclids);
-            extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 8].Value = ConvertToExcelString(dto.FacNum);
-
-            switch (formNum)
-            {
-                case "1.1":
-                {
-                    #region Headers
-
-                    extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 9].Value = dto.Quantity;
-                    extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 10].Value = dto.PackNumber;
-                    extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 11].Value = ConvertToExcelDate(lastInventoryDate.ToShortDateString(), extraUnitsWorksheet, extraUnitsCurrentRow, 11);
-
-                    #endregion
-
-                    break;
-                }
-                case "1.3":
-                {
-                    #region Headers
-
-                    extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 9].Value = dto.PackNumber;
-                    extraUnitsWorksheet.Cells[extraUnitsCurrentRow, 10].Value = ConvertToExcelDate(lastInventoryDate.ToShortDateString(), extraUnitsWorksheet, extraUnitsCurrentRow, 10);
-
-                    #endregion
-
-                    break;
-                }
-            }
-
-            extraUnitsCurrentRow++;
+            lostAndExtraUnitsCurrentRow++;
         }
 
         #endregion
 
         #region TransferMissingUnits
         
-        var transferOfMissingUnitWorksheet = excelPackage.Workbook.Worksheets[2];
+        var transferOfMissingUnitWorksheet = excelPackage.Workbook.Worksheets[1];
         foreach (var dto in transferOfMissingUnitOperationList)
         {
             transferOfMissingUnitWorksheet.Cells[transferOfMissingUnitCurrentRow, 1].Value = transferOfMissingUnitCurrentRow - 1;
@@ -390,8 +347,16 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
 
         #endregion
 
-        return Task.FromResult((lostUnitsCurrentRow, extraUnitsCurrentRow, transferOfMissingUnitCurrentRow));
+        return Task.FromResult((lostAndExtraUnitsCurrentRow, transferOfMissingUnitCurrentRow));
     }
+
+    private static string GetStatus(Status status) =>
+        status switch
+        {
+            Status.Lost => "потерян",
+            Status.Extra => "лишний",
+            _ => ""
+        };
 
     #endregion
 
@@ -412,7 +377,7 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
 
         List<ShortFormDTO> unitInStockList = [];
         List<ShortFormDTO> transferOfMissingUnitOperationList = [];
-        var comparer = new SnkEqualityComparer();
+        var comparer = new SnkNumberEqualityComparer();
         var radsComparer = new SnkRadionuclidsEqualityComparer();
         foreach (var (unit, operations) in uniqueUnitWithAllOperationDictionary)
         {

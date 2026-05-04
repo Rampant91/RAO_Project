@@ -941,7 +941,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
         var minusOperationArray = GetMinusOperationsArray(formNum);
 
         var currentInventoryDateIndex = 0;
-        var comparer = new SnkEqualityComparer();
+        var comparer = new SnkNumberEqualityComparer();
         var radsComparer = new SnkRadionuclidsEqualityComparer();
         foreach (var inventoryDate in inventoryDatesList)
         {
@@ -1186,7 +1186,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
                         errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.InventoriedUnitReceived, firstPlusMinusOperation));
                     }
 
-                    foreach (var form in allOperationsWithoutMutuallyExclusive.Where(x => x.OpDate <= inventoryDate))
+                    foreach (var form in allOperations.Where(x => x.OpDate <= inventoryDate))
                     {
                         if (IsZeroOperation(form, formNum)
                             && !inStock

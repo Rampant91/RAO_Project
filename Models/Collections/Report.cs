@@ -2304,7 +2304,7 @@ public class Report : IKey, IDataGridColumn
     {
         get
         {
-            if (Dictionary.TryGetValue(nameof(Year), out RamAccess value))
+            if (Dictionary.TryGetValue(nameof(Year), out var value))
             {
                 ((RamAccess<string>)value).Value = Year_DB;
                 return (RamAccess<string>)value;
@@ -2325,13 +2325,13 @@ public class Report : IKey, IDataGridColumn
     {
         if (args.PropertyName != "Value") return;
         var k = ((RamAccess<string>)value).Value;
-        Year_DB = new string(k.Where(c => char.IsDigit(c)).ToArray());
+        Year_DB = string.IsNullOrEmpty(k) ? null : string.Concat(k.Where(char.IsDigit));
     }
 
     private static bool Year_Validation(RamAccess<string> value)
     {
         value.ClearErrors();
-        if (value.Value == null)
+        if (string.IsNullOrEmpty(value.Value))
         {
             value.AddError("Поле не заполнено");
             return false;

@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Resources.CustomComparers.SnkComparers;
 using Client_App.ViewModels.Messages;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.Messages;
@@ -14,7 +15,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Client_App.Resources.CustomComparers.SnkComparers;
 using SnkRadionuclidsEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.SnkRadionuclidsEqualityComparer;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
@@ -28,7 +28,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     {
         private readonly SnkNumberEqualityComparer _numberComparer = new();
         private readonly SnkRadionuclidsEqualityComparer _radsComparer = new();
-        private readonly SnkEqualityComparer _stringComparer = new();
+        private readonly SnkNumberEqualityComparer _stringComparer = new();
 
         public bool Equals((string PasNum, string FacNum, string Radionuclids, string Type) x,
             (string PasNum, string FacNum, string Radionuclids, string Type) y)
@@ -46,6 +46,35 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 _numberComparer.GetHashCode(obj.FacNum),
                 _radsComparer.GetHashCode(obj.Radionuclids),
                 _stringComparer.GetHashCode(obj.Type));
+
+            //return 0;
+        }
+    }
+
+    private sealed class SnkGroupKeyComparerWithPackNumber : IEqualityComparer<(string PasNum, string FacNum, string Radionuclids, string Type, string PackNumber)>
+    {
+        private readonly SnkNumberEqualityComparer _numberComparer = new();
+        private readonly SnkRadionuclidsEqualityComparer _radsComparer = new();
+        private readonly SnkNumberEqualityComparer _stringComparer = new();
+
+        public bool Equals((string PasNum, string FacNum, string Radionuclids, string Type, string PackNumber) x,
+            (string PasNum, string FacNum, string Radionuclids, string Type, string PackNumber) y)
+        {
+            return _numberComparer.Equals(x.PasNum, y.PasNum)
+                   && _numberComparer.Equals(x.FacNum, y.FacNum)
+                   && _radsComparer.Equals(x.Radionuclids, y.Radionuclids)
+                   && _stringComparer.Equals(x.Type, y.Type)
+                   && _stringComparer.Equals(x.PackNumber, y.PackNumber);
+        }
+
+        public int GetHashCode((string PasNum, string FacNum, string Radionuclids, string Type, string PackNumber) obj)
+        {
+            return HashCode.Combine(
+                _numberComparer.GetHashCode(obj.PasNum),
+                _numberComparer.GetHashCode(obj.FacNum),
+                _radsComparer.GetHashCode(obj.Radionuclids),
+                _stringComparer.GetHashCode(obj.Type),
+                _stringComparer.GetHashCode(obj.PackNumber));
 
             //return 0;
         }
@@ -100,6 +129,89 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
             _ => []
         };
+    }
+
+    #endregion
+
+    #region MoveTracker
+
+    // Вспомогательный класс для отслеживания перемещений
+    private class MoveTracker
+    {
+        private readonly Dictionary<int, int> _moveCounts = [];
+        private const int MaxMovesPerOperation = 10;
+
+        public bool CanMove(ShortFormDTO form, int moveDistance)
+        {
+            if (moveDistance <= 0) return false;
+
+            if (!_moveCounts.TryGetValue(form.Id, out var value))
+            {
+                value = 1;
+                _moveCounts[form.Id] = value;
+                return true;
+            }
+
+            _moveCounts[form.Id] = ++value;
+            return value <= MaxMovesPerOperation;
+        }
+    }
+
+    // Метод для безопасного перемещения операции
+    private static bool TryMoveOperation(
+        ShortFormDTO form,
+        int currentIndex,
+        List<ShortFormDTO> sourceList,
+        List<ShortFormDTO> targetList,
+        MoveTracker moveTracker,
+        int newPosition,
+        Action onMoveSuccess = null,
+        Action onMoveFailure = null)
+    {
+        if (moveTracker.CanMove(form, Math.Abs(newPosition - currentIndex)))
+        {
+            sourceList.RemoveAt(currentIndex);
+
+            if (newPosition >= sourceList.Count)
+            {
+                sourceList.Add(form);
+            }
+            else
+            {
+                sourceList.Insert(newPosition, form);
+            }
+
+            onMoveSuccess?.Invoke();
+            return true;
+        }
+        else
+        {
+            // Достигнут лимит перемещений - добавляем в целевой список
+            targetList.Add(form);
+            onMoveFailure?.Invoke();
+            return false;
+        }
+    }
+
+    // Метод для безопасного перемещения в конец списка
+    private static bool TryMoveToEnd(
+        ShortFormDTO form,
+        int currentIndex,
+        List<ShortFormDTO> sourceList,
+        List<ShortFormDTO> targetList,
+        MoveTracker moveTracker,
+        Action<ShortFormDTO> onStateUpdate)
+    {
+        return TryMoveOperation(
+            form,
+            currentIndex,
+            sourceList,
+            targetList,
+            moveTracker,
+            sourceList.Count,
+            onMoveSuccess: () => { },
+            onMoveFailure: () => onStateUpdate(form)
+        );
     }
 
     #endregion
@@ -336,7 +448,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             .ThenBy(x => x.Key.FacNum)
             .ToDictionary(x => x.Key, x => x.DateGroups);
 
-        var comparer = new SnkEqualityComparer();
+        var comparer = new SnkNumberEqualityComparer();
         var numberComparer = new SnkNumberEqualityComparer();
         var radsComparer = new SnkRadionuclidsEqualityComparer();
         Dictionary<UniqueUnitDto, List<ShortFormDTO>> uniqueUnitWithAllOrderedOperationDictionary = [];
@@ -361,7 +473,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 currentQuantity = inventoryForm.Quantity;
             }
 
-            foreach (var (_, formsList) in formsByDateDictionary)
+            foreach (var (date, formsList) in formsByDateDictionary)
             {
                 List<ShortFormDTO> newOperationOrderList = [];
 
@@ -387,7 +499,9 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 }
 
                 var isPaired = true;
-                    //IsPairedList(editedFormsList, inStock, currentPackNumber, formNum);
+                //IsPairedList(editedFormsList, inStock, currentPackNumber, formNum);
+
+                var moveTracker = new MoveTracker();
 
                 for (var i = 0; i < editedFormsList.Count; i++)
                 {
@@ -402,10 +516,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                     //Если в этот день только одна операция, то добавляем без изменений и переходим к следующему дню.
                     if (editedFormsList.Count is 1)
                     {
-                        newOperationOrderList.Add(form);
-                        currentPackNumber = form.PackNumber;
-                        if (GetPlusOperationsArray(formNum).Contains(form.OpCode)) inStock = true;
-                        if (GetMinusOperationsArray(formNum).Contains(form.OpCode)) inStock = false;
+                        AddOperation(form, newOperationOrderList, formNum, ref inStock, ref currentPackNumber);
                         continue;
                     }
 
@@ -424,50 +535,48 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                                                .SelectMany(x => x)
                                                .Any(x => x.OpCode is "10" && x.OpDate == firstInventoryDate);
 
-                        if (newOperationOrderList.Count == 0
-                            && hasInventory 
+                        if (newOperationOrderList.Count == 0 && hasInventory 
                                 ? form.OpDate == firstInventoryDate
                                 : !inStock 
-                                  && subsequentElementsList
-                                      .Any(x => x.OpCode is "10" 
-                                                || GetPlusOperationsArray(formNum).Contains(x.OpCode)))
+                                  && subsequentElementsList.Any(x => 
+                                      x.OpCode is "10" || GetPlusOperationsArray(formNum).Contains(x.OpCode)))
                         {
-                            var countInventoryAndPlusOperation =
-                                subsequentElementsList.Count(x =>
-                                    x.OpCode is "10" || GetPlusOperationsArray(formNum).Contains(x.OpCode));
+                            var countInventoryAndPlusOperation = subsequentElementsList.Count(x => 
+                                x.OpCode is "10" || GetPlusOperationsArray(formNum).Contains(x.OpCode));
 
-                            editedFormsList.RemoveAt(i);
-                            editedFormsList.Insert(i + countInventoryAndPlusOperation, form);
-                            i--;
+                            if (TryMoveOperation(form, i, editedFormsList, newOperationOrderList, 
+                                    moveTracker, i + countInventoryAndPlusOperation))
+                            {
+                                i--; // Уменьшаем счетчик, только если операция была перемещена
+                            }
                         }
 
                         //Если в этот день есть необработанные операции не перезарядки с текущим номером упаковки,
                         //то помещаем операцию перезарядки после этих операций
                         else if (subsequentElementsList
-                                 .Any(x => 
-                                     (GetMinusOperationsArray(formNum).Contains(x.OpCode) 
-                                      && numberComparer.Equals(x.PackNumber, currentPackNumber)) 
-                                     || (!inStock 
-                                         && GetPlusOperationsArray(formNum).Contains(x.OpCode)
-                                         && !numberComparer.Equals(x.PackNumber, currentPackNumber)))
+                                     .Any(x => 
+                                         (GetMinusOperationsArray(formNum).Contains(x.OpCode) 
+                                          && numberComparer.Equals(x.PackNumber, currentPackNumber)) 
+                                         || (!inStock && GetPlusOperationsArray(formNum).Contains(x.OpCode) 
+                                                      && !numberComparer.Equals(x.PackNumber, currentPackNumber))) 
                                  && !isPaired)
                         {
                             var countOperationWithSamePackNumber = subsequentElementsList
                                 .Count(x => 
                                     (GetMinusOperationsArray(formNum).Contains(x.OpCode) 
                                      && numberComparer.Equals(x.PackNumber, currentPackNumber)) 
-                                    || (!inStock 
-                                        && GetPlusOperationsArray(formNum).Contains(x.OpCode)
-                                        && !numberComparer.Equals(x.PackNumber, currentPackNumber)));
+                                    || (!inStock && GetPlusOperationsArray(formNum).Contains(x.OpCode) 
+                                                 && !numberComparer.Equals(x.PackNumber, currentPackNumber)));
 
-                            editedFormsList.RemoveAt(i);
-                            editedFormsList.Insert(i + countOperationWithSamePackNumber, form);
-                            i--;
+                            if (TryMoveOperation(form, i, editedFormsList, newOperationOrderList, 
+                                    moveTracker, i + countOperationWithSamePackNumber))
+                            {
+                                i--;
+                            }
                         }
                         else
                         {
-                            newOperationOrderList.Add(form);
-                            currentPackNumber = form.PackNumber;
+                            AddOperation(form, newOperationOrderList, formNum, ref inStock, ref currentPackNumber);
                         }
                     }
 
@@ -479,20 +588,22 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                     else if (GetPlusOperationsArray(formNum).Contains(form.OpCode))
                     {
                         //Если нет в наличии или (нет других операций с тем же номером упаковки или операций перезарядки)
-                        if (!inStock
-                            || subsequentElementsList.All(x => 
+                        if (!inStock || subsequentElementsList.All(x => 
                                 GetPlusOperationsArray(formNum).Contains(x.OpCode)))
                         {
-                            newOperationOrderList.Add(form);
-                            inStock = true;
-                            currentPackNumber = form.PackNumber;
+                            AddOperation(form, newOperationOrderList, formNum, ref inStock, ref currentPackNumber);
                         }
                         //Перемещаем эту операцию получения в конец списка
                         else
                         {
-                            editedFormsList.RemoveAt(i);
-                            editedFormsList.Add(form);
-                            i--;
+                            if (!TryMoveToEnd(form, i, editedFormsList, newOperationOrderList, moveTracker,
+                                    (f) =>
+                                    {
+                                        AddOperation(f, newOperationOrderList, formNum, ref inStock, ref currentPackNumber);
+                                    }))
+                            {
+                                i--;
+                            }
                         }
                     }
 
@@ -506,19 +617,22 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                         //(Если в наличии и номер упаковки совпадает)
                         //или (нет других операций с тем же номером упаковки или операций перезарядки)
                         if ((inStock && numberComparer.Equals(currentPackNumber, form.PackNumber))
-                            || subsequentElementsList.All(x =>
-                                GetMinusOperationsArray(formNum).Contains(x.OpCode))
-                            )
+                            || subsequentElementsList.All(x => 
+                                GetMinusOperationsArray(formNum).Contains(x.OpCode)))
                         {
-                            newOperationOrderList.Add(form);
-                            inStock = false;
+                            AddOperation(form, newOperationOrderList, formNum, ref inStock, ref currentPackNumber);
                         }
                         //Перемещаем эту операцию передачи в конец списка
                         else
                         {
-                            editedFormsList.RemoveAt(i);
-                            editedFormsList.Add(form);
-                            i--;
+                            if (!TryMoveToEnd(form, i, editedFormsList, newOperationOrderList, moveTracker,
+                                    (f) =>
+                                    {
+                                        AddOperation(f, newOperationOrderList, formNum, ref inStock, ref currentPackNumber);
+                                    }))
+                            {
+                                i--;
+                            }
                         }
                     }
 
@@ -529,7 +643,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                     //Если нулевая операция
                     else
                     {
-                        newOperationOrderList.Add(form);
+                        AddOperation(form, newOperationOrderList, formNum, ref inStock, ref currentPackNumber);
                     }
 
                     #endregion
@@ -694,6 +808,19 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
 
         return await Task.FromResult(uniqueUnitWithAllOperationDictionary);
+    }
+
+    // Вспомогательный метод для добавления операции
+    private static void AddOperation(ShortFormDTO form, List<ShortFormDTO> newOperationOrderList, string formNum,
+        ref bool inStock, ref string currentPackNumber)
+    {
+        newOperationOrderList.Add(form);
+        currentPackNumber = form.PackNumber;
+
+        if (GetPlusOperationsArray(formNum).Contains(form.OpCode))
+            inStock = true;
+        if (GetMinusOperationsArray(formNum).Contains(form.OpCode))
+            inStock = false;
     }
 
     private static bool IsPairedList(List<ShortFormDTO> editedFormsList, bool inStock, string currentPackNumber, string formNum)
@@ -1047,7 +1174,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         List<ShortFormDTO> newInventoryFormsDtoList = [];
         List<ShortFormDTO> inventoryDuplicateErrors = [];
 
-        var comparer = new SnkEqualityComparer();
+        var comparer = new SnkNumberEqualityComparer();
         var radsComparer = new SnkRadionuclidsEqualityComparer();
         foreach (var form in inventoryFormsDtoList)
         {
@@ -1285,60 +1412,139 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         return summedPlusMinusOperationDtoList;
     }
 
-    #region GetSummedInventoryDtoList
+    #region GetSummedPlusMinusDtoList
 
     /// <summary>
-    /// Суммирует операции инвентаризации для первой даты по количеству и возвращает список DTO.
+    /// Суммирует операции приёма-передачи по количеству и возвращает список DTO.
     /// </summary>
     /// <param name="plusMinusDtoList">Список DTO операций приёма передачи.</param>
     /// <param name="formNum">Номер формы.</param>
-    /// <returns>Список DTO операций инвентаризации, просуммированный по количеству для первой даты.</returns>
-    private static Task<List<ShortFormDTO>> GetSummedPlusMinusDtoList(List<ShortFormDTO> plusMinusDtoList, string formNum)
+    /// <returns>Список DTO операций приёма-передачи, просуммированный по количеству для первой даты.</returns>
+    private static Task<List<ShortFormDTO>> GetSummedPlusMinusDtoList(List<ShortFormDTO> plusMinusDtoList,
+        string formNum)
     {
         List<ShortFormDTO> newPlusMinusDtoList = [];
 
-        var comparer = new SnkEqualityComparer();
-        var radsComparer = new SnkRadionuclidsEqualityComparer();
-        foreach (var form in plusMinusDtoList)
-        {
-            var matchingForm = newPlusMinusDtoList.FirstOrDefault(x =>
-                x.OpDate == form.OpDate
-                && comparer.Equals(x.PasNum, form.PasNum)
-                && comparer.Equals(x.FacNum, form.FacNum)
-                && radsComparer.Equals(x.Radionuclids, form.Radionuclids)
-                && comparer.Equals(x.Type, form.Type)
-                && comparer.Equals(x.PackNumber, form.PackNumber));
+        var snkGroupKeyComparer = new SnkGroupKeyComparerWithPackNumber();
 
-            if (matchingForm != null)
-            {
-                if (formNum is "1.3" || SerialNumbersIsEmpty(form.PasNum, form.FacNum))
+        var groupedOperationListDictionary = plusMinusDtoList
+            .OrderBy(x => x.OpDate)
+            .ThenBy(x => x.RepDto.StartPeriod)
+            .ThenBy(x => x.RepDto.EndPeriod)
+            .ThenBy(x => x.NumberInOrder)
+            .GroupBy(
+                x => (x.PasNum, x.FacNum, x.Radionuclids, x.Type, x.PackNumber),
+                (key, items) => new
                 {
-                    if (GetPlusOperationsArray(formNum).Contains(form.OpCode))
+                    Key = key,
+                    DateGroups = items
+                        .GroupBy(x => x.OpDate)
+                        .ToDictionary(
+                            g => g.Key,
+                            g => g.ToList())
+                },
+                snkGroupKeyComparer
+            )
+            .OrderBy(x => x.Key.PasNum)
+            .ThenBy(x => x.Key.FacNum)
+            .ToDictionary(x => x.Key, x => x.DateGroups);
+
+        foreach (var (unit, dictionary) in groupedOperationListDictionary) //по учётной единице
+        {
+            foreach (var (_, operations) in dictionary) //операции за каждую дату 
+            {
+                var quantity = 0;
+
+                switch (formNum)
+                {
+                    case "1.1" when SerialNumbersIsEmpty(unit.PasNum, unit.FacNum):
+                    case "1.3":
                     {
-                        matchingForm.Quantity += form.Quantity;
+                        foreach (var operation in operations)
+                        {
+                            if (GetPlusOperationsArray(formNum).Contains(operation.OpCode))
+                            {
+                                quantity += operation.Quantity;
+                            }
+                            else if (GetMinusOperationsArray(formNum).Contains(operation.OpCode))
+                            {
+                                quantity -= operation.Quantity;
+                            }
+                        }
+
+                        switch (quantity)
+                        {
+                            case < 0:
+                            {
+                                quantity = Math.Abs(quantity);
+                                var lastMinusOperation = operations.Last(x => 
+                                    GetMinusOperationsArray(formNum).Contains(x.OpCode));
+                                lastMinusOperation.Quantity = quantity;
+                                newPlusMinusDtoList.Add(lastMinusOperation);
+                                break;
+                            }
+                            case > 0:
+                            {
+                                var lastPlusOperation = operations.Last(x => 
+                                    GetPlusOperationsArray(formNum).Contains(x.OpCode));
+                                lastPlusOperation.Quantity = quantity;
+                                newPlusMinusDtoList.Add(lastPlusOperation);
+                                break;
+                            }
+                            default: continue;
+                        }
+
+                        break;
                     }
-                    else if (GetMinusOperationsArray(formNum).Contains(form.OpCode))
+                    case "1.1" when !SerialNumbersIsEmpty(unit.PasNum, unit.FacNum):
                     {
-                        matchingForm.Quantity -= form.Quantity;
-                        matchingForm.Quantity = Math.Max(0, matchingForm.Quantity);
+                        foreach (var operation in operations)
+                        {
+                            if (GetPlusOperationsArray(formNum).Contains(operation.OpCode))
+                            {
+                                quantity += 1;
+                            }
+                            else if (GetMinusOperationsArray(formNum).Contains(operation.OpCode))
+                            {
+                                quantity -= 1;
+                            }
+
+                            switch (quantity)
+                            {
+                                case < 0:
+                                {
+                                    var lastMinusOperation = operations.Last(x =>
+                                        GetMinusOperationsArray(formNum).Contains(x.OpCode));
+                                    newPlusMinusDtoList.Add(lastMinusOperation);
+                                    break;
+                                }
+                                case > 0:
+                                {
+                                    var lastPlusOperation = operations.Last(x => 
+                                        GetPlusOperationsArray(formNum).Contains(x.OpCode));
+                                    newPlusMinusDtoList.Add(lastPlusOperation);
+                                    break;
+                                }
+                                case 0:
+                                {
+                                    if (newPlusMinusDtoList.Count > 0)
+                                    {
+                                        newPlusMinusDtoList.RemoveAt(newPlusMinusDtoList.Count - 1);
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+
+                        break;
                     }
                 }
-                else
-                {
-                    newPlusMinusDtoList.Add(form);
-                }
-            }
-            else
-            {
-                newPlusMinusDtoList.Add(form);
             }
         }
-        newPlusMinusDtoList = newPlusMinusDtoList
-            .Where(x => x.Quantity > 0)
-            .ToList();
 
         return Task.FromResult(newPlusMinusDtoList);
     }
+
 
     #endregion
 
@@ -1534,7 +1740,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         List<ShortFormDTO> unitInStockList = [];
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentUnitNum = 1;
-        var comparer = new SnkEqualityComparer();
+        var comparer = new SnkNumberEqualityComparer();
         var radsComparer = new SnkRadionuclidsEqualityComparer();
         foreach (var (unit, operations) in uniqueUnitWithAllOperationDictionary)
         {
@@ -1867,6 +2073,15 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         public int Quantity { get; set; }
 
         public string PackNumber { get; set; }
+
+        public Status Status { get; set; }
+    }
+
+    public enum Status
+    {
+        None = 0,
+        Lost,
+        Extra
     }
 
     #endregion

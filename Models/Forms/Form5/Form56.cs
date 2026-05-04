@@ -33,10 +33,11 @@ namespace Models.Forms.Form5
 
         #region Name (2)
 
-        [MaxLength(64)]
-        [Column(TypeName = "varchar(64)")]
         public string Name_DB { get; set; } = "";
 
+
+        [MaxLength(64)]
+        [Column(TypeName = "varchar(64)")]
         [NotMapped]
         public RamAccess<string> Name
         {

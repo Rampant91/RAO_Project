@@ -9,7 +9,7 @@ using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Interfaces;
 using Avalonia.Threading;
-using Client_App.Logging;
+using Client_App.ViewModels;
 
 namespace Client_App.Commands.AsyncCommands.Delete;
 
@@ -57,6 +57,8 @@ public class DeleteReportAsyncCommand : BaseAsyncCommand
         //await ReportDeletionLogger.LogDeletionAsync(report);
 
         mainWindow.SelectedReports = selectedReports;
+        var mainWindowVM = (mainWindow.DataContext as MainWindowVM)!;
+        mainWindowVM.UpdateTotalReportCount();
 
         await StaticConfiguration.DBModel.SaveChangesAsync();
     }

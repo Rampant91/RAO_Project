@@ -1,13 +1,65 @@
-using Client_App.ViewModels.Controls;
+﻿using Client_App.ViewModels.Controls;
 using Models.Collections;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using Client_App.ViewModels.Forms.Forms1.Items;
+using Client_App.ViewModels.Forms.Forms1.Providers;
 
 namespace Client_App.ViewModels.Forms.Forms1;
 
 public class Form_19VM : BaseFormVM
 {
     public override string FormType => "1.9";
+
+    #region OpCodes
+    
+    public ObservableCollection<OperationCodeItem> OperationCodes => 
+        new(OperationCodesProvider.AllOperationCodes
+            .Where(x => ValidOperationCodes.Contains(x.Code)));
+    
+    public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm19();
+
+    public string OperationCodePattern => "^1?$|^10$";
+
+    #endregion
+
+    #region DocVids
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ObservableCollection<DocumentVidItem> DocumentVids =>
+        new(DocumentVidProvider.AllDocumentVids
+            .Where(x => ValidDocumentVids.Contains(x.Code.ToString())));
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ICollection<string?> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms19();
+
+    public string DocumentVidPattern => "^1?$";
+
+    #endregion
+
+    #region CodeTypeAccObjects
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ObservableCollection<CodeTypeAccObjectItem> CodeTypeAccObjects =>
+        new(CodeTypeAccObjectProvider.AllCodeTypeAccObjects
+            .Where(x => ValidCodeTypeAccObjects.Contains(x.Code.ToString())));
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ICollection<string> ValidCodeTypeAccObjects => CodeTypeAccObjectProvider.GetValidCodes();
+
+    public string CodeTypeAccObjectsPattern => @"^\d{0,2}$";
+
+    #endregion
 
     #region Constructors
 
@@ -32,39 +84,11 @@ public class Form_19VM : BaseFormVM
             Reports = reps
         };
 
-        base.InitializeUserControls();
+        InitializeUserControls();
         Reports = reps;
 
         SelectReportPopupVM = new SelectReportPopupVM(this);
     }
 
     #endregion
-
-    //public ObservableCollection<Form19> Form19List => new(FormList.Cast<Form19>());
-
-    //public ObservableCollection<Form19> SelectedForms19 => new(SelectedForms.Cast<Form19>());
-
-    //public Form19 SelectedForm19
-    //{
-    //    get => SelectedForm as Form19;
-    //    set
-    //    {
-    //        SelectedForm = value;
-    //        UpdateFormList();
-    //    }
-    //}
-
-    /*
-    #region UpdateFormList
-    public new async void UpdateFormList()
-    {
-        base.UpdateFormList();
-        
-        //OnPropertyChanged(nameof(Form19List));
-        //OnPropertyChanged(nameof(SelectedForms19));
-        //OnPropertyChanged(nameof(SelectedForm19));
-    }
-
-    #endregion
-    */
 }

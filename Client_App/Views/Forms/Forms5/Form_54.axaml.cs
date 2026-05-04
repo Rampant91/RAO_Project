@@ -10,8 +10,6 @@ using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
 using Client_App.Interfaces.Logger;
-using Client_App.ViewModels.Forms.Forms1;
-using Client_App.ViewModels.Forms.Forms4;
 using Client_App.ViewModels.Forms.Forms5;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
@@ -223,9 +221,9 @@ public partial class Form_54 : BaseWindow<Form_54VM>
                 .Where(x => x.State != EntityState.Unchanged);
 
             if (modifiedEntities.All(x => x.Entity is Report rep && rep.FormNum_DB != vm.FormType)
-                || !db.ChangeTracker.HasChanges() || vm.SkipChangeTracking)
+                || !db.ChangeTracker.HasChanges() || vm.SkipChangeTacking)
             {
-                if (vm.SkipChangeTracking) vm.SkipChangeTracking = false;
+                if (vm.SkipChangeTacking) vm.SkipChangeTacking = false;
                 desktop.MainWindow.WindowState = OwnerPrevState;
 
                 if (_isCloseConfirmed) //выход из обработчика события
@@ -427,7 +425,7 @@ public partial class Form_54 : BaseWindow<Form_54VM>
         var lst = vm.Report[vm.FormType].ToList<Form54>();
         foreach (var form in lst)
         {
-            if (form.TypeORI_DB is null
+            if (string.IsNullOrWhiteSpace(form.TypeORI_DB)
                 && form.VarietyORI_DB is null
                 && form.AggregateState_DB is null
                 && string.IsNullOrWhiteSpace(form.Radionuclids_DB)

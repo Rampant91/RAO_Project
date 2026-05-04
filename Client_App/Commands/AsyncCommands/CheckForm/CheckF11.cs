@@ -1593,7 +1593,7 @@ public abstract partial class CheckF11 : CheckBase
                 Value = creationDate,
                 Message = "Формат ввода данных не соответствует приказу. Некорректно заполнена дата выпуска. " +
                           "Если известен только год, то указывается 1 января этого года.",
-                IsCritical = isNote!
+                IsCritical = !isNote
             });
         }
         return result;

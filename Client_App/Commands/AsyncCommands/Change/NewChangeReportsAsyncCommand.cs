@@ -6,6 +6,8 @@ using Client_App.ViewModels.Forms.Forms5;
 using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
 using Client_App.Views.Forms.Forms2;
+using Client_App.Views.Forms.Forms4;
+using Client_App.Views.Forms.Forms5;
 using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.Change;

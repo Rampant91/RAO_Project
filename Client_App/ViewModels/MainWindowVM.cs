@@ -23,7 +23,6 @@ using ReactiveUI;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Client_App.ViewModels;
@@ -33,6 +32,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     #region SelectedReportType
 
     private byte _selectedReportType = 1;
+    private object _selectedTabContent;
 
     public byte SelectedReportType
     {
@@ -54,13 +54,30 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     #endregion
 
     #region LaunchedAtNORAO
-    
-#pragma warning disable CA1822
 
-    // ReSharper disable once MemberCanBeMadeStatic.Global
-    public bool AppLaunchedAtNorao => Settings.Default.AppLaunchedInNorao;
+    private bool _appLaunchedAtNorao;
+    public bool AppLaunchedAtNorao
+    {
+        get => _appLaunchedAtNorao;
+        set
+        {
+            if (SetProperty(ref _appLaunchedAtNorao, value))
+            {
+                // Сохраняем в настройки при изменении
+                Settings.Default.AppLaunchedInNorao = value;
+                Settings.Default.Save();
 
-#pragma warning restore CA1822
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    private bool _developerModeEverEnabled;
+    public bool DeveloperModeEverEnabled
+    {
+        get => _developerModeEverEnabled;
+        private set => SetProperty(ref _developerModeEverEnabled, value);
+    }
 
     #endregion
 
@@ -162,7 +179,6 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     }
     #endregion
 
-
     #region UpdateReportsCollection
     public void UpdateReportsCollection()
     {
@@ -255,7 +271,6 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     }
     #endregion
 
-    #region TotalReportCount
     public void UpdateTotalReportCount()
     {
         switch (SelectedReportType)
@@ -276,7 +291,27 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                 break;
         }
     }
-    #endregion
+
+    public void UpdateTotalReportsCount()
+    {
+        switch (SelectedReportType)
+        {
+            case 1:
+                Forms1TabControlVM.UpdateTotalReportsCount();
+                break;
+            case 2:
+                Forms2TabControlVM.UpdateTotalReportsCount();
+                break;
+            case 4:
+                Forms4TabControlVM.UpdateTotalReportsCount();
+                break;
+            case 5:
+                Forms5TabControlVM.UpdateTotalReportsCount();
+                break;
+            default:
+                break;
+        }
+    }
 
     #region OnStartProgressBar
 
@@ -307,10 +342,11 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand ChangePasFolder { get; set; }                   //  Excel -> Паспорта -> Изменить расположение паспортов по умолчанию
     public ICommand ChangeReports { get; set; }                     //  Изменить Формы организации (1.0 и 2.0)
     public ICommand NewChangeReports { get; set; }                  //  Изменить Формы организации (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
+    public ICommand ConvertExcelToRaodb { get; set; }               //  Дополнительно -> Конвертер из Excel в .RAODB
     public ICommand ExcelExportCheckAllForms { get; set; }          //  Проверить все формы у организации
     public ICommand CheckFormFromMain { get; set; }                 //  Проверить форму
     public ICommand DeleteForm { get; set; }                        //  Удалить выбранную форму у выбранной организации (1.0, 2.0)
-    public ICommand NewDeleteForm { get; set; }                     //  Удалить выбранную форму у выбранной организации  (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
+    public ICommand NewDeleteForm { get; set; }                     //  Удалить выбранную форму у выбранной организации (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
     public ICommand DeleteReports { get; set; }                     //  Удалить выбранную организацию (1.0, 2.0, 4.0)
 
     /// <summary>
@@ -404,9 +440,20 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand ExportAllReport => new ExportAllReportAsyncCommand();
 
     /// <summary>
+    /// Выгрузка всех отчётов указанной формы (1.1-1.9, 2.1-2.12) организации в отдельные .xlsx файлы
+    /// </summary>
+    public ICommand ExcelExportAllFormsByFormNumber => new ExcelExportAllFormsByFormNumberAsyncCommand(this);
+
+    /// <summary>
     /// Экспорт всех организаций организации в один файл .RAODB
     /// </summary>
     public ICommand ExportAllReportsOneFile => new ExportAllReportsOneFileAsyncCommand();
+
+    /// <summary>
+    /// Экспорт всех организаций организации в один файл .RAODB
+    /// </summary>
+    public ICommand ExportAllReportsFromSubjectRFOneFile => new ExportAllReportsFromSubjectRFOneFileAsyncCommand();
+
 
     /// <summary>
     /// Экспорт организации в файл .RAODB
@@ -432,8 +479,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                                                                             //public ICommand UnaccountedRad { get; set; }                    
                                                                             //  Радионуклиды, отсутствующие в справочнике
 
-    public ICommand GoToFormNum { get; set; }
-    public ICommand OpenPassportMenu { get; set; }
+    public ICommand SetWhiteList { get; set; }
+    
     #endregion
 
     #region Constructor
@@ -451,30 +498,39 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         ChangeReports = new ChangeReportsAsyncCommand();
         NewChangeReports = new NewChangeReportsAsyncCommand();
         CheckFormFromMain = new CheckFormFromMainAsyncCommand();
+        ConvertExcelToRaodb = new ConvertExcelToRaodbAsyncCommand();
         NewDeleteForm = new NewDeleteFormAsyncCommand();
         DeleteForm = new DeleteReportAsyncCommand();
         DeleteReports = new DeleteReportsAsyncCommand();
         ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand();
         ImportExcel = new ImportExcelAsyncCommand(this);
         ImportJson = new ImportJsonAsyncCommand();
-        ImportRaodb = new ImportRaodbAsyncCommand();
+        ImportRaodb = new ImportRaodbAsyncCommand(this);
         MaxGraphsLength = new MaxGraphsLengthAsyncCommand();
         SaveReports = new SaveReportsAsyncCommand();
         OpenCalculator = new OpenCalculatorAsyncCommand();
         OpenFile = new OpenFileAsyncCommand();
         OpenFolder = new OpenFolderAsyncCommand();
-        GoToFormNum = new GoToFormNumAsyncCommand(this);
-        OpenPassportMenu = new OpenPassportMenuWindowAsyncCommand();
+        SetWhiteList = new SetWhiteListNumAsyncCommand(this);
 
         Forms1TabControlVM = new Forms1TabControlVM(this);
         Forms2TabControlVM = new Forms2TabControlVM(this);
         Forms4TabControlVM = new Forms4TabControlVM(this);
         Forms5TabControlVM = new Forms5TabControlVM(this);
 
-        UpdateReportsCollection();
-        
-        // Блокируем конструктор до завершения проверки обновлений
-        _updateService.CheckAndNotifyAsync(AppLaunchedAtNorao).Wait();
+        //UpdateReportsCollection();
+
+        _appLaunchedAtNorao = Settings.Default.AppLaunchedInNorao;
+        _developerModeEverEnabled = _appLaunchedAtNorao;
+
+        OnPropertyChanged(nameof(AppLaunchedAtNorao));
+        OnPropertyChanged(nameof(DeveloperModeEverEnabled));
+
+        if (!AppLaunchedAtNorao)
+        {
+            // Блокируем конструктор до завершения проверки обновлений
+            _updateService.CheckAndNotifyAsync(AppLaunchedAtNorao).Wait();
+        }
     }
 
     #endregion

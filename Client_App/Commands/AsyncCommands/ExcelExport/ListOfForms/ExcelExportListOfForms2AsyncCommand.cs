@@ -208,7 +208,9 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelExportListOfFormsBaseAsy
 
         #endregion
 
+        worksheet.Cells[worksheet.Dimension.Address].AutoFilter = true;
         worksheet.Column(3).AutoFit();
+
 
         return Task.FromResult(worksheet);
     }

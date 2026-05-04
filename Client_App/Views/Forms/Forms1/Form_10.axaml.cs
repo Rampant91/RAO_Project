@@ -91,30 +91,30 @@ public partial class Form_10 : BaseWindow<Form_10VM>
                           && x.Master_DB.Id != _vm.Storage.Id);
         }
 
-        if (reportsAlreadyExist)
-        {
-            args.Cancel = true;
+        //if (reportsAlreadyExist)
+        //{
+        //    args.Cancel = true;
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Ошибка при сохранении титульного листа организации",
-                    ContentHeader = "Ошибка",
-                    ContentMessage =
-                        $"Не удалось сохранить изменения в титульном листе организации, " +
-                        $"поскольку организация с данными ОКПО и рег.№ уже существует в базе данных. " +
-                        $"Убедитесь в правильности заполнения ОКПО и рег.№.",
-                    MinWidth = 400,
-                    MaxWidth = 600,
-                    MinHeight = 150,
-                    MaxHeight = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(window ?? Desktop.MainWindow));
+        //    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+        //        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+        //        {
+        //            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+        //            ContentTitle = "Ошибка при сохранении титульного листа организации",
+        //            ContentHeader = "Ошибка",
+        //            ContentMessage =
+        //                $"Не удалось сохранить изменения в титульном листе организации, " +
+        //                $"поскольку организация с данными ОКПО и рег.№ уже существует в базе данных. " +
+        //                $"Убедитесь в правильности заполнения ОКПО и рег.№.",
+        //            MinWidth = 400,
+        //            MaxWidth = 600,
+        //            MinHeight = 150,
+        //            MaxHeight = 400,
+        //            WindowStartupLocation = WindowStartupLocation.CenterOwner
+        //        })
+        //        .ShowDialog(window ?? Desktop.MainWindow));
 
-            return;
-        }
+        //    return;
+        //}
 
         var jurForm10 = vm.Storage.Rows10[0];
         var obForm10 = vm.Storage.Rows10[1];

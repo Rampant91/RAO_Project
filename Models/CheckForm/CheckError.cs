@@ -10,7 +10,16 @@ public class CheckError
 
     public string Column { get; set; } = "";
 
+    //Для форм 4.1
+    public string RegNo { get; set; } = "";
+
+    //Для форм 4.1
+    public string Okpo { get; set; } = "";
+
     public string? Value { get; set; } = "";
+
+    //Для форм 4.1
+    public string? DbValue { get; set; } = "";
 
     public string Message { get; set; } = "";
 

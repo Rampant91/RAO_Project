@@ -11,7 +11,10 @@ public partial class SnkNumberEqualityComparer : IEqualityComparer<string>
 
         if (x is null || y is null) return false;
 
-        x = SnkRegex()
+        var stringsIsEmpty = CheckForEmptyStrings(x, y);
+        if (stringsIsEmpty) return true;
+
+        x = SpecialSymbolsRegex()
             .Replace(x.TrimStart(' ', '0'), "")
             .ToLower()
             .Replace('а', 'a')
@@ -32,7 +35,7 @@ public partial class SnkNumberEqualityComparer : IEqualityComparer<string>
             .Replace('у', 'y')
             .Replace('х', 'x');
 
-        y = SnkRegex()
+        y = SpecialSymbolsRegex()
             .Replace(y.TrimStart(' ', '0'), "")
             .ToLower()
             .Replace('а', 'a')
@@ -56,8 +59,35 @@ public partial class SnkNumberEqualityComparer : IEqualityComparer<string>
         return x.Equals(y);
     }
 
+    private static bool CheckForEmptyStrings(string? str1, string? str2)
+    {
+        str1 = (str1 ?? string.Empty).ToLower();
+        str1 = DashesRegex().Replace(str1, "");
+        str1 = SpecialSymbolsRegex().Replace(str1, "");
+
+        str2 = (str2 ?? string.Empty).ToLower();
+        str2 = DashesRegex().Replace(str2, "");
+        str2 = SpecialSymbolsRegex().Replace(str2, "");
+
+        List<string> validStrings =
+        [
+            "",
+            "-",
+            "бн",
+            "безномера",
+            "нет",
+            "отсутствует",
+            "прим",
+            "примечание"
+        ];
+        return validStrings.Contains(str1) && validStrings.Contains(str2);
+    }
+
     public int GetHashCode(string obj) => obj.GetHashCode();
 
+    [GeneratedRegex("[-᠆‐‑‒–—―⸺⸻－﹘﹣－]")]
+    private static partial Regex DashesRegex();
+
     [GeneratedRegex(@"[\\/:*?""<>|.,_\-;:\s+]")]
-    public static partial Regex SnkRegex();
+    private static partial Regex SpecialSymbolsRegex();
 }

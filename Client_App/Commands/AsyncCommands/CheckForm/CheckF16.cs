@@ -16,6 +16,7 @@ public abstract class CheckF16 : CheckBase
 
     private static readonly string[] OperationCodeValid =
     [
+        "01",    
         "10","11","12","13","14","16","18",
         "21","22","25","26","27","28","29",
         "31","32","35","36","37","38","39",
@@ -23,7 +24,7 @@ public abstract class CheckF16 : CheckBase
         "51","52","56","57","59",
         "63","64","68",
         "71","72","73","74","75","76",
-        "97", "98","99"
+        "97","98","99"
     ];
 
     private static readonly Dictionary<string, string> GraphsList = new()
@@ -484,8 +485,8 @@ public abstract class CheckF16 : CheckBase
         var comparator = new CustomNullStringWithTrimComparer();
         rColumn = codeRao1MatterState switch
         {
-            "1" => "A_Liquid",
-            "2" => "A_Solid",
+            "1" => "MZUA_Liquid",
+            "2" => "MZUA_Solid",
             _ => rColumn
         };
         var valid = true;
@@ -975,6 +976,7 @@ public abstract class CheckF16 : CheckBase
 
         #region symbol 2
 
+        var expiredZriCodes = new[] { "81", "82", "85", "86", "87", "88", "89" };
         if (!codeRao2Valid)
         {
             result.Add(new CheckError
@@ -983,8 +985,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
-                Message = 
-                          "Недопустимое значение 2-го символа кода РАО."
+                Message = "Недопустимое значение 2-го символа кода РАО."
             });
         }
         else
@@ -992,8 +993,8 @@ public abstract class CheckF16 : CheckBase
             switch (codeRao2RaoCategory)
             {
                 case "4":
-                    var validTypeCode = new [] { "81", "82", "85", "86", "87", "88", "89" };
-                    if (!validTypeCode.Contains(codeRao910TypeCode))
+                {
+                    if (!expiredZriCodes.Contains(codeRao910TypeCode))
                     {
                         result.Add(new CheckError
                         {
@@ -1001,12 +1002,26 @@ public abstract class CheckF16 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
-                            Message = 
-                                      "Значение 2-го символа кода РАО 4 используется только для отработавших ЗРИ."
+                            Message = "Значение 2-го символа кода РАО 4 используется только для отработавших ЗРИ."
                         });
                     }
                     break;
+                }
                 case "9":
+                {
+                    if (expiredZriCodes.Contains(codeRao910TypeCode))
+                    {
+                        result.Add(new CheckError
+                        {
+                            FormNum = "form_16",
+                            Row = forms[line].NumberInOrder_DB.ToString(),
+                            Column = "CodeRAO_DB",
+                            Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
+                            Message = "Для отработавших ЗРИ (коды типа РАО 81,82,85-89), " +
+                                      "категория РАО (2-ой символ кода РАО) должна быть равна 4."
+                        });
+                        break;
+                    }
                     if (!noteExists)
                     {
                         result.Add(new CheckError
@@ -1015,14 +1030,14 @@ public abstract class CheckF16 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
-                            Message = 
-                                      "Необходимо дать пояснение для 2-го символа кода РАО."
+                            Message = "Необходимо дать пояснение для 2-го символа кода РАО."
                         });
                     }
                     break;
+                }
                 default:
-                    // 0, 1, 2, 3, 9
-                    if (codeRao2RaoCategory == "0" && codeRao1MatterState == "1")
+                {
+                    if (expiredZriCodes.Contains(codeRao910TypeCode))
                     {
                         result.Add(new CheckError
                         {
@@ -1030,8 +1045,20 @@ public abstract class CheckF16 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
-                            Message = 
-                                      "Неправильно указана категория РАО."
+                            Message = "Для отработавших ЗРИ (коды типа РАО 81,82,85-89), " +
+                                      "категория РАО (2-ой символ кода РАО) должна быть равна 4."
+                        });
+                    }
+                    // 0, 1, 2, 3, 9
+                    else if (codeRao2RaoCategory == "0" && codeRao1MatterState == "1")
+                    {
+                        result.Add(new CheckError
+                        {
+                            FormNum = "form_16",
+                            Row = forms[line].NumberInOrder_DB.ToString(),
+                            Column = "CodeRAO_DB",
+                            Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
+                            Message = "Неправильно указана категория РАО."
                         });
                     }
                     else
@@ -1136,8 +1163,7 @@ public abstract class CheckF16 : CheckBase
                                 Row = forms[line].NumberInOrder_DB.ToString(),
                                 Column = "CodeRAO_DB",
                                 Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
-                                Message = 
-                                          "Проверьте категорию РАО и суммарную активность."
+                                Message = "Проверьте категорию РАО и суммарную активность."
                             });
                         }
                         else if (codeMax != -1 && (codeRao2RaoCategory == "9" || codeRao2RaoCategory != codeMax.ToString("D1")))
@@ -1148,12 +1174,12 @@ public abstract class CheckF16 : CheckBase
                                 Row = forms[line].NumberInOrder_DB.ToString(),
                                 Column = "CodeRAO_DB",
                                 Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
-                                Message = 
-                                          $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, категория РАО {codeMax}."
+                                Message = $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, категория РАО {codeMax}."
                             });
                         }
                     }
                     break;
+                }
             }
         }
 
@@ -1169,8 +1195,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = $"{codeRao3NuclidTypes} (3-ий символ кода РАО)",
-                Message = 
-                          "Недопустимое значение 3-го символа кода РАО.",
+                Message = "Недопустимое значение 3-го символа кода РАО.",
                 IsCritical = true
             });
         }
@@ -1186,8 +1211,7 @@ public abstract class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
                         Value = $"{codeRao3NuclidTypes} (3-ий символ кода РАО)",
-                        Message = 
-                                  "При отсутствии радионуклидов в графе 9 3-й символ кода РАО должен быть равен 0.",
+                        Message = "При отсутствии радионуклидов в графе 9 3-й символ кода РАО должен быть равен 0.",
                         IsCritical = true
                     });
                 }
@@ -1206,14 +1230,27 @@ public abstract class CheckF16 : CheckBase
                 var containsT = nuclidsExistT && radsSet
                     .Any(x => R
                         .Any(y => comparator.Compare(y["name"], x) == 0 && comparator.Compare(y["code"], "т") == 0));
+
+
                 var expectedValue = "0";
-                if (!containsT && !containsB && !containsA && containsU) expectedValue = "1";
-                else if (!containsT && !containsB && containsA && !containsU) expectedValue = "2";
-                else if (!containsT && !containsB && containsA && containsU) expectedValue = "3";
-                else if ((containsT || containsB) && !containsA && !containsU) expectedValue = "4";
-                else if (!containsT && containsB && containsA && !containsU) expectedValue = "5";
-                else if (containsT && containsB && containsA && !containsU) expectedValue = "5";
-                else if (containsU) expectedValue = "6";
+
+                if (radsSet.Any(x => comparator.Compare(x, "уран естественный") == 0 
+                                     || comparator.Compare(x, "уран обедненный") == 0))
+                {
+                    if (!containsT && !nuclidsExistB && nuclidsExistA && !containsU) expectedValue = "2";
+                    else if (!containsT && !nuclidsExistB && nuclidsExistA && containsU) expectedValue = "3";
+                    else if (nuclidsExistB && nuclidsExistA && !containsU) expectedValue = "5";
+                }
+                else
+                {
+                    if (!containsT && !containsB && !containsA && containsU) expectedValue = "1";
+                    else if (!containsT && !containsB && containsA && !containsU) expectedValue = "2";
+                    else if (!containsT && !containsB && containsA && containsU) expectedValue = "3";
+                    else if ((containsT || containsB) && !containsA && !containsU) expectedValue = "4";
+                    else if (containsB && containsA && !containsU) expectedValue = "5";
+                    else if (containsU) expectedValue = "6";
+                }
+                
                 if (expectedValue != codeRao3NuclidTypes)
                 {
                     result.Add(new CheckError
@@ -1222,8 +1259,7 @@ public abstract class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
                         Value = $"{codeRao3NuclidTypes} (3-ий символ кода РАО)",
-                        Message = 
-                                  "Третий символ кода РАО не соответствует сведениям о суммарной активности (графы 10-13) и/или радионуклидам, " +
+                        Message = "Третий символ кода РАО не соответствует сведениям о суммарной активности (графы 10-13) и/или радионуклидам, " +
                                   "указанным в графе 9.",
                         IsCritical = true
                     });
@@ -1341,8 +1377,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = $"{codeRao5HalfLife} (5-ый символ кода РАО)",
-                Message = 
-                          "Недопустимое значение 5-го символа кода РАО."
+                Message = "Недопустимое значение 5-го символа кода РАО."
             });
         }
         else
@@ -1355,8 +1390,7 @@ public abstract class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
                     Value = $"{codeRao5HalfLife} (5-ый символ кода РАО)",
-                    Message = 
-                              $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, 5-ый символ кода РАО " +
+                    Message = $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, 5-ый символ кода РАО " +
                               $"(период полураспада) должен быть равен 2."
                 });
             }
@@ -1368,8 +1402,7 @@ public abstract class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
                     Value = $"{codeRao5HalfLife} (5-ый символ кода РАО)",
-                    Message = 
-                              $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, 5-ый символ кода РАО " +
+                    Message = $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, 5-ый символ кода РАО " +
                               $"(период полураспада) должен быть равен 1."
                 });
             }
@@ -2326,7 +2359,7 @@ public abstract class CheckF16 : CheckBase
 
     private static List<CheckError> Check_011(List<Form16> forms, int line)
     {
-        List<CheckError> result = new();
+        List<CheckError> result = [];
         var betaActivity = ConvertStringToExponential(forms[line].BetaGammaActivity_DB);
         var rads = ReplaceNullAndTrim(forms[line].MainRadionuclids_DB);
         var radsSet = rads
@@ -2353,7 +2386,7 @@ public abstract class CheckF16 : CheckBase
                                   "то в графу 11 необходимо заносить прочерк вместо нуля."
                     });
                 }
-                else
+                else if (!radsSet.Any(rad => rad is "уран естественный" or "уран обедненный"))
                 {
                     result.Add(new CheckError
                     {

@@ -13,10 +13,12 @@ namespace Client_App.Services;
 /// </summary>
 public class UpdateChecker
 {
-    private const string UpdateUrl = "https://www.norao.ru/sguk/software/mpzf/";
+    private const string MpzfUrl = "https://www.norao.ru/sguk/software/mpzf/";
+    private const string WindowsUrl = "https://www.norao.ru/sguk/software/mpzf/windows/";
+    private const string LinuxUrl = "https://www.norao.ru/sguk/software/mpzf/linux/";
     private readonly HttpClient _httpClient = new()
     {
-        Timeout = TimeSpan.FromSeconds(10)
+        Timeout = TimeSpan.FromSeconds(5)
     };
 
     /// <summary>
@@ -27,10 +29,7 @@ public class UpdateChecker
     {
         try
         {
-            // Увеличиваем таймаут для медленных соединений
-            _httpClient.Timeout = TimeSpan.FromSeconds(15);
-            
-            var response = await _httpClient.GetStringAsync(UpdateUrl);
+            var response = await _httpClient.GetStringAsync(MpzfUrl);
             return ParseVersionFromHtml(response);
         }
         catch (HttpRequestException ex)
@@ -58,7 +57,7 @@ public class UpdateChecker
     /// </summary>
     /// <param name="html">HTML код страницы</param>
     /// <returns>Информация об обновлении или null</returns>
-    private UpdateInfo? ParseVersionFromHtml(string html)
+    private static UpdateInfo? ParseVersionFromHtml(string html)
     {
         // Ищем текст: "Актуальная версия МПЗФ, рекомендуемая для загрузки и установки - 1.3.0.3 от 29.12.2025"
         // Учитываем HTML теги и атрибуты стилей
@@ -100,30 +99,17 @@ public class UpdateChecker
     /// Возвращает URL для скачивания в зависимости от текущей платформы
     /// </summary>
     /// <returns>URL страницы загрузки</returns>
-    private string GetDownloadUrlForCurrentPlatform()
+    private static string GetDownloadUrlForCurrentPlatform()
     {
-        try
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                return "https://www.norao.ru/sguk/software/mpzf/windows/";
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                return "https://www.norao.ru/sguk/software/mpzf/linux/";
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                return "https://www.norao.ru/sguk/software/mpzf/"; // Основная страница для macOS
-            }
+            return WindowsUrl;
         }
-        catch (Exception ex)
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
-            System.Diagnostics.Debug.WriteLine($"Platform detection failed: {ex.Message}");
+            return LinuxUrl;
         }
-        
-        // Запасной вариант - основная страница
-        return "https://www.norao.ru/sguk/software/mpzf/";
+        else return MpzfUrl;
     }
     
     /// <summary>

@@ -260,8 +260,11 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
             ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
         }
 
-            var mainWindow = Desktop.MainWindow as MainWindow;
-            var mainWindowVM = await Dispatcher.UIThread.InvokeAsync(() => mainWindow.DataContext as MainWindowVM);
-            mainWindowVM.UpdateReportsCollection();
+        var mainWindow = Desktop.MainWindow as MainWindow;
+        var mainWindowVM = await Dispatcher.UIThread.InvokeAsync(() => mainWindow.DataContext as MainWindowVM);
+
+        //mainWindowVM.UpdateReportsCollection();
+
+        mainWindowVM.Forms1TabControlVM.UpdateReportsCollectionWithoutReCreation();
     }
 }

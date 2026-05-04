@@ -1691,34 +1691,42 @@ public abstract class CheckF18 : CheckBase
                 }
                 else
                 {
-                    var containsB = nuclidsExistB
-                                     && radArray
-                                         .Any(x => R
-                                             .Any(y => comparator.Compare(y["name"], x.Item1) == 0
-                                                       && comparator.Compare(y["code"], "б") == 0));
-                    var containsA = nuclidsExistA
-                                    && radArray
-                                        .Any(x => R
-                                            .Any(y => comparator.Compare(y["name"], x.Item1) == 0
-                                                      && comparator.Compare(y["code"], "а") == 0));
-                    var containsU = nuclidsExistU
-                                    && radArray
-                                        .Any(x => R
-                                            .Any(y => comparator.Compare(y["name"], x.Item1) == 0
-                                                      && comparator.Compare(y["code"], "у") == 0));
-                    var containsT = nuclidsExistT
-                                    && radArray
-                                        .Any(x => R
-                                            .Any(y => comparator.Compare(y["name"], x.Item1) == 0
-                                                      && comparator.Compare(y["code"], "т") == 0));
+                    var containsB = nuclidsExistB && radArray
+                        .Any(x => R
+                            .Any(y => comparator.Compare(y["name"], x.Item1) == 0
+                                      && comparator.Compare(y["code"], "б") == 0));
+                    var containsA = nuclidsExistA && radArray
+                        .Any(x => R
+                            .Any(y => comparator.Compare(y["name"], x.Item1) == 0
+                                      && comparator.Compare(y["code"], "а") == 0));
+                    var containsU = nuclidsExistU && radArray
+                        .Any(x => R
+                            .Any(y => comparator.Compare(y["name"], x.Item1) == 0
+                                      && comparator.Compare(y["code"], "у") == 0));
+                    var containsT = nuclidsExistT && radArray
+                        .Any(x => R
+                            .Any(y => comparator.Compare(y["name"], x.Item1) == 0
+                                      && comparator.Compare(y["code"], "т") == 0));
+
                     var expectedValue = "0";
-                    if (!containsT && !containsB && !containsA && containsU) expectedValue = "1";
-                    else if (!containsT && !containsB && containsA && !containsU) expectedValue = "2";
-                    else if (!containsT && !containsB && containsA && containsU) expectedValue = "3";
-                    else if ((containsT || containsB) && !containsA && !containsU) expectedValue = "4";
-                    else if (!containsT && containsB && containsA && !containsU) expectedValue = "5";
-                    else if (containsT && containsB && containsA && !containsU) expectedValue = "5";
-                    else if (containsU) expectedValue = "6";
+
+                    if (radArray.Any(x => comparator.Compare(x.Item1, "уран естественный") == 0
+                                          || comparator.Compare(x.Item1, "уран обедненный") == 0))
+                    {
+                        if (!containsT && !nuclidsExistB && nuclidsExistA && !containsU) expectedValue = "2";
+                        else if (!containsT && !nuclidsExistB && nuclidsExistA && containsU) expectedValue = "3";
+                        else if (nuclidsExistB && nuclidsExistA && !containsU) expectedValue = "5";
+                    }
+                    else
+                    {
+                        if (!containsT && !containsB && !containsA && containsU) expectedValue = "1";
+                        else if (!containsT && !containsB && containsA && !containsU) expectedValue = "2";
+                        else if (!containsT && !containsB && containsA && containsU) expectedValue = "3";
+                        else if ((containsT || containsB) && !containsA && !containsU) expectedValue = "4";
+                        else if (containsB && containsA && !containsU) expectedValue = "5";
+                        else if (containsU) expectedValue = "6";
+                    }
+
                     if (expectedValue != codeRao3NuclidTypes)
                     {
                         result.Add(new CheckError

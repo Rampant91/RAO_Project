@@ -4,7 +4,6 @@ using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.ViewModels;
 using Client_App.Views;
-using Client_App.Logging;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;
@@ -48,8 +47,6 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
         if (answer is not "Да") return;
 
-        
-
         try
         {
             Reports reps;
@@ -74,7 +71,6 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
             db.ReportCollectionDbSet.Remove(masterRep);
             
-
             db.ReportsCollectionDbSet.Remove(reps);
             await db.SaveChangesAsync();
 
@@ -84,6 +80,8 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
             var mainWindowVM = (mainWindow.DataContext as MainWindowVM)!;
             mainWindowVM.UpdateReportsCollection();
             mainWindowVM.UpdateOrgsPageInfo();
+            mainWindowVM.UpdateTotalReportCount();
+            mainWindowVM.UpdateTotalReportsCount();
         }
         catch (Exception ex)
         {
@@ -96,7 +94,7 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
     
     }
 
-    public static async Task ProcessDataBaseFillEmpty(DataContext dbm)
+    private static async Task ProcessDataBaseFillEmpty(DataContext dbm)
     {
         if (!dbm.DBObservableDbSet.Any()) dbm.DBObservableDbSet.Add(new DBObservable());
         foreach (var item in dbm.DBObservableDbSet)

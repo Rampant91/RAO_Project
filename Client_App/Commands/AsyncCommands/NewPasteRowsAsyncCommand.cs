@@ -4,12 +4,12 @@ using Avalonia.Threading;
 using Client_App.ViewModels.Forms;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
-using Models.Forms.Form1;
-using System.Threading.Tasks;
 using Models.Forms;
-using JetBrains.Annotations;
+using Models.Forms.Form1;
 using Models.Forms.Form4;
 using Models.Forms.Form5;
+using System;
+using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -135,8 +135,26 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         var pastedString = await clipboard.GetTextAsync();
         if (string.IsNullOrEmpty(pastedString)) return;
 
-        var rows = pastedString.Split("\r\n");
-        rows = PrepareRowsForParsing(rows);
+        //// Добавим отладку для Linux
+        //System.IO.File.AppendAllText("/tmp/clipboard_debug.log",
+        //    $"[{DateTime.Now}] Pasted string length: {pastedString.Length}{Environment.NewLine}" +
+        //    $"First 100 chars: '{pastedString.Substring(0, Math.Min(100, pastedString.Length))}'{Environment.NewLine}" +
+        //    $"Contains \\r\\n: {pastedString.Contains("\r\n")}{Environment.NewLine}" +
+        //    $"Contains \\n: {pastedString.Contains("\n")}{Environment.NewLine}" +
+        //    $"Contains \\r: {pastedString.Contains("\r")}{Environment.NewLine}" +
+        //    $"---{Environment.NewLine}");
+
+        // Универсальное разделение для Windows и Linux
+        string[] rows;
+        if (pastedString.Contains("\r\n"))
+            rows = pastedString.Split("\r\n", StringSplitOptions.None);
+        else if (pastedString.Contains('\n'))
+            rows = pastedString.Split('\n', StringSplitOptions.None);
+        else
+            rows = [pastedString]; // Одна строка без переносов
+
+        //var rows = pastedString.Split("\r\n");
+        //rows = PrepareRowsForParsing(rows);
 
         //Последняя строка пустая, поэтому выделяем память на одну ячейку меньше
         var parsedRows = new string[rows.Length - 1][];
@@ -910,7 +928,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                         if (parsedRows[i].Length == 10)
                         {
                             form53.OperationCode.Value = parsedRows[i][0];
-                            form53.TypeORI.Value = ConvertStringToByte(parsedRows[i][1]);
+                            form53.TypeORI.Value = parsedRows[i][1];
                             form53.VarietyORI.Value = ConvertStringToByte(parsedRows[i][2]);
                             form53.AggregateState.Value = ConvertStringToByte(parsedRows[i][3]);
                             form53.ProviderOrRecieverOKPO.Value = parsedRows[i][4];
@@ -927,7 +945,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                         else if (parsedRows[i].Length == 11)
                         {
                             form53.OperationCode.Value = parsedRows[i][1];
-                            form53.TypeORI.Value = ConvertStringToByte(parsedRows[i][2]);
+                            form53.TypeORI.Value = parsedRows[i][2];
                             form53.VarietyORI.Value = ConvertStringToByte(parsedRows[i][3]);
                             form53.AggregateState.Value = ConvertStringToByte(parsedRows[i][4]);
                             form53.ProviderOrRecieverOKPO.Value = parsedRows[i][5];
@@ -945,14 +963,13 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     }
                 #endregion
 
-
                 #region 5.4
                 case "5.4":
                     {
                         var form54 = Storage.Rows.Get<Form54>(i + start);
                         if (parsedRows[i].Length == 8)
                         {
-                            form54.TypeORI.Value = ConvertStringToByte(parsedRows[i][0]);
+                            form54.TypeORI.Value = parsedRows[i][0];
                             form54.VarietyORI.Value = ConvertStringToByte(parsedRows[i][1]);
                             form54.AggregateState.Value = ConvertStringToByte(parsedRows[i][2]);
                             form54.Radionuclids.Value = parsedRows[i][3];
@@ -967,7 +984,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                         }
                         else if (parsedRows[i].Length == 9)
                         {
-                            form54.TypeORI.Value = ConvertStringToByte(parsedRows[i][1]);
+                            form54.TypeORI.Value = parsedRows[i][1];
                             form54.VarietyORI.Value = ConvertStringToByte(parsedRows[i][2]);
                             form54.AggregateState.Value = ConvertStringToByte(parsedRows[i][3]);
                             form54.Radionuclids.Value = parsedRows[i][4];

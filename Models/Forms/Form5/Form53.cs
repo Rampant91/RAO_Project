@@ -33,11 +33,11 @@ namespace Models.Forms.Form5
 
         #region OperationCode (2)
 
-        [MaxLength(2)]
-        [Column(TypeName = "varchar(2)")]
         public string OperationCode_DB { get; set; } = "";
 
 
+        [MaxLength(2)]
+        [Column(TypeName = "varchar(2)")]
         [NotMapped]
         public RamAccess<string> OperationCode
         {
@@ -86,26 +86,27 @@ namespace Models.Forms.Form5
 
         #region TypeORI (3)
 
-        public byte? TypeORI_DB { get; set; }
+        public string TypeORI_DB { get; set; } = "";
+
 
         [NotMapped]
-        public RamAccess<byte?> TypeORI
+        public RamAccess<string> TypeORI
         {
             get
             {
                 if (Dictionary.TryGetValue(nameof(TypeORI), out var value))
                 {
-                    ((RamAccess<byte?>)value).Value = TypeORI_DB;
-                    return (RamAccess<byte?>)value;
+                    ((RamAccess<string>)value).Value = TypeORI_DB;
+                    return (RamAccess<string>)value;
                 }
-                var rm = new RamAccess<byte?>(TypeORI_Validation, TypeORI_DB);
+                var rm = new RamAccess<string>(TypeORI_Validation, TypeORI_DB);
                 rm.PropertyChanged += TypeORI_ValueChanged;
                 Dictionary.Add(nameof(TypeORI), rm);
-                return (RamAccess<byte?>)Dictionary[nameof(TypeORI)];
+                return (RamAccess<string>)Dictionary[nameof(TypeORI)];
             }
             set
             {
-                TypeORI_DB = value.Value;
+                TypeORI_DB = ParseInnerText(value.Value);
                 OnPropertyChanged();
             }
         }
@@ -113,7 +114,7 @@ namespace Models.Forms.Form5
         private void TypeORI_ValueChanged(object value, PropertyChangedEventArgs args)
         {
             if (args.PropertyName != "Value") return;
-            var value1 = ((RamAccess<byte?>)value).Value;
+            var value1 = ((RamAccess<string>)value).Value;
 
             if (TypeORI_DB != value1)
             {
@@ -121,7 +122,7 @@ namespace Models.Forms.Form5
             }
         }
 
-        private bool TypeORI_Validation(RamAccess<byte?> value)
+        private bool TypeORI_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             return true;
@@ -590,10 +591,10 @@ namespace Models.Forms.Form5
             if (OperationCode_DB.Count() > 2)
                 OperationCode_DB = OperationCode_DB[..2];
 
-            TypeORI_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 3].Value), out var byteValue) ? byteValue : (byte)0;
+            TypeORI_DB = Convert.ToString(worksheet.Cells[row, 3].Value).Trim();
 
 
-            VarietyORI_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 4].Value), out byteValue) ? byteValue : (byte)0;
+            VarietyORI_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 4].Value), out var byteValue) ? byteValue : (byte)0;
 
             AggregateState_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 5].Value), out byteValue) ? byteValue : (byte)0;
 
@@ -624,7 +625,7 @@ namespace Models.Forms.Form5
         {
             worksheet.Cells[row + 0, column + 0].Value = NumberInOrder_DB;
             worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ConvertToExcelString(OperationCode_DB);
-            worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = TypeORI_DB == 0 ? "" : VarietyORI_DB;
+            worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelString(TypeORI_DB);
             worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = VarietyORI_DB == 0 ? "" : VarietyORI_DB;
             worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = AggregateState_DB == 0 ? "" : AggregateState_DB;
             worksheet.Cells[row + (!transpose ? 5 : 0), column + (transpose ? 5 : 0)].Value = ConvertToExcelString(ProviderOrRecieverOKPO_DB);
