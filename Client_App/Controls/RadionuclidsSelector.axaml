@@ -3,11 +3,34 @@
              x:Class="Client_App.Controls.RadionuclidsSelector"
              x:Name="Root">
 
-    <Grid ColumnDefinitions="*,Auto,Auto">
+    <Grid ColumnDefinitions="*,Auto,Auto,Auto">
         <TextBox Grid.Column="0"
+                 x:Name="RadionuclidsTextBox"
                  Text="{Binding Text, ElementName=Root, Mode=TwoWay}" />
 
-        <Button Grid.Column="1"
+        <!-- Индикатор ошибки валидации -->
+        <Border Grid.Column="1"
+                x:Name="ErrorIndicator"
+                Width="16" Height="16"
+                Background="Transparent"
+                BorderBrush="Red"
+                BorderThickness="2.0"
+                CornerRadius="8.5"
+                IsVisible="False"
+                Margin="2,0, 1,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                ToolTip.Tip="Недопустимое значение">
+            <TextBlock Text="!"
+                       FontSize="13"
+                       FontWeight="Bold"
+                       Foreground="Red"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Margin="0,0,0,0" />
+        </Border>
+
+        <Button Grid.Column="2"
                 x:Name="AddBtn"
                 Width="16" Height="16"
                 Background="LightGray"
@@ -28,21 +51,29 @@
                        Margin="0,-2,0,0" />
         </Button>
 
-        <Popup Grid.Column="1"
+        <Popup Grid.Column="2"
                x:Name="AddPopup"
                PlacementTarget="{Binding ElementName=AddBtn}"
                PlacementMode="Bottom"
                IsLightDismissEnabled="True"
                StaysOpen="False">
-            <Border Background="White" BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="4">
+            <Border Background="White" 
+                    BorderBrush="Gray" 
+                    BorderThickness="1" 
+                    CornerRadius="4" 
+                    Padding="4">
                 <StackPanel Width="280" MaxHeight="300">
-                    <TextBox x:Name="AddFilter" Watermark="Фильтр..." Margin="2" />
-                    <ListBox x:Name="AddList" MaxHeight="250" Margin="2" />
+                    <TextBox x:Name="AddFilter" 
+                             Watermark="Фильтр..." 
+                             Margin="2" />
+                    <ListBox x:Name="AddList" 
+                             MaxHeight="250" 
+                             Margin="2" />
                 </StackPanel>
             </Border>
         </Popup>
 
-        <Button Grid.Column="2"
+        <Button Grid.Column="3"
                 x:Name="RemoveBtn"
                 Width="16" Height="16"
                 Background="LightGray"
@@ -63,15 +94,22 @@
                        Margin="0,-2,0,0" />
         </Button>
 
-        <Popup Grid.Column="2"
+        <Popup Grid.Column="3"
                x:Name="RemovePopup"
                PlacementTarget="{Binding ElementName=RemoveBtn}"
                PlacementMode="Bottom"
                IsLightDismissEnabled="True"
                StaysOpen="False">
-            <Border Background="White" BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="4">
-                <StackPanel Width="280" MaxHeight="250">
-                    <ListBox x:Name="RemoveList" MaxHeight="200" Margin="2" />
+            <Border Background="White" 
+                    BorderBrush="Gray" 
+                    BorderThickness="1" 
+                    CornerRadius="4" 
+                    Padding="4">
+                <StackPanel Width="280" 
+                            MaxHeight="250">
+                    <ListBox x:Name="RemoveList" 
+                             MaxHeight="200" 
+                             Margin="2" />
                 </StackPanel>
             </Border>
         </Popup>
