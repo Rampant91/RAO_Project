@@ -510,7 +510,7 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form14">
-                                    <TextBox Text="{Binding Radionuclids.Value, Mode=TwoWay}" />
+                                    <appControls:RadionuclidsSelector Text="{Binding Radionuclids.Value, Mode=TwoWay}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

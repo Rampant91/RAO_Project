@@ -611,7 +611,7 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form16">
-                                    <TextBox Text="{Binding MainRadionuclids.Value, Mode=TwoWay}" />
+                                    <appControls:RadionuclidsSelector Text="{Binding MainRadionuclids.Value, Mode=TwoWay}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

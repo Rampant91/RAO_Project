@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using Client_App.ViewModels.Forms.Forms1.Items;
 using Client_App.ViewModels.Forms.Forms1.Providers;
 using System.Collections.ObjectModel;
@@ -10,6 +11,8 @@ using System.Linq;
 using Avalonia.Controls.Primitives;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Client_App.Controls;
 
@@ -22,7 +25,27 @@ public partial class RadionuclidsSelector : UserControl
             (o, v) => o.Text = v,
             defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
 
+    public static readonly StyledProperty<bool> AllowEmptyProperty =
+        AvaloniaProperty.Register<RadionuclidsSelector, bool>(nameof(AllowEmpty), false);
+
+    public static readonly StyledProperty<bool> SingleRadionuclideModeProperty =
+        AvaloniaProperty.Register<RadionuclidsSelector, bool>(nameof(SingleRadionuclideMode), false);
+
     private string _text = "";
+    private CancellationTokenSource? _debounceCts;
+
+    public bool AllowEmpty
+    {
+        get => GetValue(AllowEmptyProperty);
+        set => SetValue(AllowEmptyProperty, value);
+    }
+
+    public bool SingleRadionuclideMode
+    {
+        get => GetValue(SingleRadionuclideModeProperty);
+        set => SetValue(SingleRadionuclideModeProperty, value);
+    }
+
     public string Text
     {
         get => _text;
@@ -30,10 +53,34 @@ public partial class RadionuclidsSelector : UserControl
         {
             if (SetAndRaise(TextProperty, ref _text, value))
             {
-                // Проверяем валидацию при изменении текста
-                ValidateAndShowError();
+                // Скрываем индикатор до завершения валидации
+                if (ErrorIndicator != null)
+                    ErrorIndicator.IsVisible = false;
+
+                // Обновляем состояние кнопки Add
+                UpdateAddButtonState();
+
+                // Проверяем валидацию с задержкой при изменении текста
+                ValidateAndShowErrorDebounced();
             }
         }
+    }
+
+    private void ValidateAndShowErrorDebounced()
+    {
+        // Отменяем предыдущий таймер
+        _debounceCts?.Cancel();
+        _debounceCts = new CancellationTokenSource();
+
+        // Задержка 300мс перед валидацией
+        Task.Delay(300, _debounceCts.Token)
+            .ContinueWith(t =>
+            {
+                if (!t.IsCanceled)
+                {
+                    Dispatcher.UIThread.InvokeAsync(ValidateAndShowError);
+                }
+            }, TaskScheduler.FromCurrentSynchronizationContext());
     }
 
     private void ValidateAndShowError()
@@ -46,16 +93,27 @@ public partial class RadionuclidsSelector : UserControl
 
     private bool HasValidationErrors(string? text)
     {
-        if (string.IsNullOrEmpty(text)) return false;
+        // Пустая ячейка - проверяем настройку AllowEmpty
+        if (string.IsNullOrEmpty(text) || string.IsNullOrWhiteSpace(text))
+            return !AllowEmpty;
 
         var parts = text.Split(';')
             .Select(p => p.Trim())
             .Where(p => !string.IsNullOrEmpty(p))
             .ToList();
 
+        // В режиме SingleRadionuclideMode допустим только 1 нуклид
+        if (SingleRadionuclideMode && parts.Count > 1)
+            return true;
+
+        // Если есть несколько частей и одна из них "-", это ошибка
+        // "-" может быть только единственным элементом
+        if (parts.Count > 1 && parts.Contains("-"))
+            return true;
+
         foreach (var part in parts)
         {
-            // "-" допустим
+            // "-" допустим только если это единственный элемент
             if (part == "-") continue;
 
             // Проверяем, есть ли в справочнике
@@ -67,6 +125,25 @@ public partial class RadionuclidsSelector : UserControl
         }
 
         return false;
+    }
+
+    private void UpdateAddButtonState()
+    {
+        if (AddBtn == null) return;
+
+        // В режиме SingleRadionuclideMode кнопка Add неактивна если уже есть нуклид
+        if (SingleRadionuclideMode)
+        {
+            var parts = Text?.Split(';')
+                .Select(p => p.Trim())
+                .Where(p => !string.IsNullOrEmpty(p))
+                .ToList() ?? [];
+            AddBtn.IsEnabled = parts.Count == 0;
+        }
+        else
+        {
+            AddBtn.IsEnabled = true;
+        }
     }
 
     public RadionuclidsSelector()
@@ -83,13 +160,14 @@ public partial class RadionuclidsSelector : UserControl
         RemoveList = this.FindControl<ListBox>("RemoveList");
         RemovePopup = this.FindControl<Popup>("RemovePopup");
         ErrorIndicator = this.FindControl<Border>("ErrorIndicator");
+        AddBtn = this.FindControl<Button>("AddBtn");
 
-        // Подписываемся на изменения текста в основном TextBox для валидации
+        // Подписываемся на изменения текста в основном TextBox для валидации с задержкой
         var textBox = this.FindControl<TextBox>("RadionuclidsTextBox");
         if (textBox != null)
         {
             textBox.GetObservable(TextBox.TextProperty)
-                .Subscribe(_ => ValidateAndShowError());
+                .Subscribe(_ => ValidateAndShowErrorDebounced());
         }
 
         // Подписываемся на изменения текста фильтра (Avalonia 0.10 не имеет события TextChanged)
@@ -104,6 +182,17 @@ public partial class RadionuclidsSelector : UserControl
 
         // Проверяем валидацию при инициализации
         ValidateAndShowError();
+
+        // Обновляем состояние кнопки Add
+        UpdateAddButtonState();
+
+        // Подписываемся на изменение свойств режима
+        this.GetObservable(AllowEmptyProperty).Subscribe(_ => ValidateAndShowErrorDebounced());
+        this.GetObservable(SingleRadionuclideModeProperty).Subscribe(_ =>
+        {
+            UpdateAddButtonState();
+            ValidateAndShowErrorDebounced();
+        });
     }
 
     private TextBox? AddFilter;
@@ -112,6 +201,7 @@ public partial class RadionuclidsSelector : UserControl
     private ListBox? RemoveList;
     private Popup? RemovePopup;
     private Border? ErrorIndicator;
+    private Button? AddBtn;
 
     private void AddBtn_Click(object? sender, RoutedEventArgs e)
     {
