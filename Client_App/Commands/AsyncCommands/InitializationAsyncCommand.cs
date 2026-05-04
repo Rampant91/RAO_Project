@@ -137,6 +137,9 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         ReportsStorage.LocalReports.PropertyChanged += Local_ReportsChanged;
 
         mainWindowViewModel.OnStartProgressBar = 100;
+
+        //new CountRowsInAllReportByRegionAndYearCommand().AsyncExecute(null);
+
     }
 
     #region Initialization
