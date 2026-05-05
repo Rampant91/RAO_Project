@@ -1,11 +1,13 @@
-﻿using Client_App.ViewModels.Controls;
+﻿using Client_App.Commands.AsyncCommands.Generate;
+using Client_App.ViewModels.Controls;
+using Client_App.ViewModels.Forms.Forms1.Items;
+using Client_App.ViewModels.Forms.Forms1.Providers;
 using Models.Collections;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Client_App.ViewModels.Forms.Forms1.Items;
-using Client_App.ViewModels.Forms.Forms1.Providers;
+using System.Windows.Input;
 
 namespace Client_App.ViewModels.Forms.Forms1;
 
@@ -63,7 +65,12 @@ public class Form_17VM : BaseFormVM
 
     #endregion
 
+    #region Commands
+    public ICommand GenerateForm17 => new GenerateForm17AsyncCommand(this);
+    public ICommand GeneratePackagePassport => new GeneratePackagePassportAsyncCommand(this);
     #endregion
+
+#endregion
 
     #region Constructors
 

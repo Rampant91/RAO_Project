@@ -1122,7 +1122,7 @@
 							SelectedItem="{Binding SelectedCharacteristic}"
 							Classes="table"
                             ColumnWidth="125"
-							SelectionMode ="Single"
+							
 							x:Name="dataGrid2"
 							x:CompileBindings="True"
 							VerticalScrollBarVisibility="Disabled">

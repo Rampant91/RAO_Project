@@ -26,6 +26,9 @@
     <Window.Resources>
         <converter:DateConverter x:Key="DateConverter" />
         <converter:IsOperation41AndSingleSelectionConverter x:Key="Op41AndOneSelectedConverter" />
+		<converter:ShortNullableToStringConverter x:Key="ShortNullableToStringConverter" />
+		<converter:ByteNullableToStringConverter x:Key="ByteNullableToStringConverter" />
+		<converter:ByteNullableOrDashToStringConverter x:Key="ByteNullableOrDashToStringConverter" />
     </Window.Resources>
 
     <Design.DataContext>

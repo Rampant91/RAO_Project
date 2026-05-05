@@ -49,6 +49,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
             {
                 passport = dbm.package_passport
                     .Include(passport => passport.ContentCharacteristics)
+                    .ThenInclude(characteristic => characteristic.RadionuclidsList)
                     .FirstOrDefault(pas => pas.Id == passportId);
             }
             else return;

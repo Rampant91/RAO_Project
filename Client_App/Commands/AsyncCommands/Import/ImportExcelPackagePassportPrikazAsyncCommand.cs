@@ -70,9 +70,9 @@ namespace Client_App.Commands.AsyncCommands.Import
                 var worksheet = excelPackage.Workbook.Worksheets[0];
 
                 var val = worksheet.Name == "Паспорт на упаковку"
-                      && Convert.ToString(worksheet.Cells["K1"].Value)
+                      && Convert.ToString(worksheet.Cells["G1"].Value)
                           is "П  А  С  П  О  Р  Т"
-                      && Convert.ToString(worksheet.Cells["K2"].Value)
+                      && Convert.ToString(worksheet.Cells["G2"].Value)
                           is "на упаковку твердых радиоактивных отходов";
 
                 if (!val)

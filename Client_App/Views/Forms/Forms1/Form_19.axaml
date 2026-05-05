@@ -27,6 +27,9 @@
         <converter:DataGridLengthToGridLengthConverter x:Key="LengthConverter" />
         <converter:NullToStringConverter x:Key="NullToStringConverter" />
         <converter:DateConverter x:Key="DateConverter" />
+		<converter:ShortNullableToStringConverter x:Key="ShortNullableToStringConverter" />
+		<converter:ByteNullableToStringConverter x:Key="ByteNullableToStringConverter" />
+		<converter:ByteNullableOrDashToStringConverter x:Key="ByteNullableOrDashToStringConverter" />
     </Window.Resources>
 
     <Design.DataContext>

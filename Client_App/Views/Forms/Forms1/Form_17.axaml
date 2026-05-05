@@ -25,8 +25,11 @@
 
     <Window.Resources>
         <converter:DataGridLengthToGridLengthConverter x:Key="LengthConverter" />
+		<converter:ShortNullableToStringConverter x:Key="ShortNullableToStringConverter" />
+		<converter:ByteNullableToStringConverter x:Key="ByteNullableToStringConverter" />
+		<converter:ByteNullableOrDashToStringConverter x:Key="ByteNullableOrDashToStringConverter" />
         <converter:NullToStringConverter x:Key="NullToStringConverter" />
-        <converter:DateConverter x:Key="DateConverter" />
+		<converter:DateConverter x:Key="DateConverter" />
     </Window.Resources>
 
     <Design.DataContext>
@@ -101,6 +104,8 @@
                                     Command="{Binding SaveReport}"
                                     Content="Сохранить" />
                         </StackPanel>
+						
+						<Button Grid.Row="4" Content="Добавить в форму сведения из паспорта на упаковку" Command="{Binding GenerateForm17}" ></Button>
 
                     </Grid>
                 </Border>
@@ -191,6 +196,11 @@
                                   CommandParameter="{Binding SelectedForms}"
                                   Header="Очистить строчки"
                                   InputGesture="Ctrl+U"
+                                  IsVisible="{Binding AnyRowSelected}" />
+						
+						<MenuItem Command="{Binding GeneratePackagePassport}"
+                                  CommandParameter="{Binding SelectedForms}"
+                                  Header="Сформировать паспорт из выбранных строк"
                                   IsVisible="{Binding AnyRowSelected}" />
                     </ContextMenu>
                 </Grid.ContextMenu>
