@@ -121,10 +121,9 @@
 
                 <Border Classes="borderContainer">
                     <Grid Margin="5" RowDefinitions="Auto,Auto,Auto">
-                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" IsVisible="False"> <!--Отключено, поскольку автозаполнение в формах 1.9 отсутствует-->
                             <TextBlock Margin="5" 
-                                       Text="Автозаполнение:" 
-                                       IsVisible="False"/>  <!--Отключено, поскольку автозаполнение в формах 1.9 отсутствует-->
+                                       Text="Автозаполнение:" />  
                             <CheckBox Margin="5" 
                                       IsChecked="{Binding IsAutoReplaceEnabled}" />
                         </StackPanel>
