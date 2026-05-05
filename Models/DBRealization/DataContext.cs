@@ -10,6 +10,7 @@ using Models.Forms.Form2;
 using Models.Forms.Form4;
 using Models.Forms.Form5;
 using Models.Passports;
+using Models.StoragePoint;
 
 namespace Models.DBRealization;
 
@@ -93,6 +94,10 @@ public class DataContext : DbContext
     public DbSet<PackagePassport> package_passport { get; set; }
     public DbSet<CharacteristicPrimaryPackage> characteristic_package { get; set; }
     public DbSet<Radionuclid> radionuclid { get; set; }
+    #endregion
+
+    #region StoragePoint
+    public DbSet<StoragePoint.StoragePoint> storage_point { get; set; }
     #endregion
     #endregion
 
