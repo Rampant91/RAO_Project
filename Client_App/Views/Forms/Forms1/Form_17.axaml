@@ -218,10 +218,9 @@
                         <TextBlock Text="№ п/п"/>
                     </Border>
                     <Border Grid.Row="0"
-                            Grid.RowSpan="2"
                             Grid.Column="1"
                             Grid.ColumnSpan="2"
-                            BorderThickness="1,1,1,0">
+                            BorderThickness="1">
                         <TextBlock Text="Сведения об операции"/>
                     </Border>
                     <Border Grid.Row="0"
@@ -231,21 +230,38 @@
                     </Border>
                     <Border Grid.Row="0"
                             Grid.Column="13"
-                            Grid.ColumnSpan="3"/>
+                            Grid.ColumnSpan="3">
+                        <TextBlock Text="Документ"/>
+                    </Border>
                     <Border Grid.Row="0"
                             Grid.Column="16"
-                            Grid.ColumnSpan="2"/>
+                            Grid.ColumnSpan="2">
+                        <TextBlock Text="ОКПО"/>
+                    </Border>
                     <Border Grid.Row="0"
                             Grid.Column="18"
-                            Grid.ColumnSpan="2"/>
+                            Grid.ColumnSpan="2">
+                        <TextBlock Text="Пункт хранения"/>
+                    </Border>
                     <Border Grid.Row="0"
                             Grid.Column="20"
                             Grid.ColumnSpan="10">
                         <TextBlock Text="Сведения о РАО"/>
                     </Border>
-                    <Border Grid.Row="0" Grid.Column="30"/>
-                    <Border Grid.Row="0" Grid.Column="31"/>
-                    <Border Grid.Row="0" Grid.Column="32"/>
+                    <Border Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Grid.Column="30">
+                        <TextBlock Text="Субсидия, %"/>
+                    </Border>
+                    <Border Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Grid.Column="31">
+                        <TextBlock Text="Номер мероприятия ФЦП"/>
+                    </Border>
+                    <Border Grid.Row="0"
+                            Grid.Column="32">
+                        <TextBlock Text="Договор"/>
+                    </Border>
 
                     <!--#endregion Первый уровень заголовков-->
 
@@ -254,70 +270,137 @@
                     <Border Grid.Row="1"
                             Grid.Column="0"
                             BorderThickness="1,0,1,0"/>
-                    <Border Grid.Row="1"
+                    <Border Grid.Row="1" 
                             Grid.Column="1"
-                            Grid.ColumnSpan="2"
-                            BorderThickness="1,0,1,1"/>
+                            Grid.RowSpan="2"
+                            BorderThickness="1,0,1,1">
+                        <TextBlock Text="код"/>
+                    </Border>
+                    <Border Grid.Row="1"
+                            Grid.Column="2"
+                            Grid.RowSpan="2"
+                            BorderThickness="1,0,1,1">
+                        <TextBlock Text="дата"/>
+                    </Border>
                     <Border Grid.Row="1" 
-                            Grid.Column="3"/>
+                            Grid.Column="3"
+                            Grid.RowSpan="2">
+                        <TextBlock Text="наименование"/>
+                    </Border>
                     <Border Grid.Row="1" 
-                            Grid.Column="4"/>
+                            Grid.Column="4"
+                            Grid.RowSpan="2">
+                        <TextBlock Text="тип"/>
+                    </Border>
                     <Border Grid.Row="1" 
-                            Grid.Column="5"/>
+                            Grid.Column="5"
+                            Grid.RowSpan="2">
+                        <TextBlock Text="заводской номер"/>
+                    </Border>
                     <Border Grid.Row="1" 
-                            Grid.Column="6"/>
+                            Grid.Column="6"
+                            Grid.RowSpan="2">
+                        <TextBlock Text="номер упаковки (идентификационный код)"/>
+                    </Border>
                     <Border Grid.Row="1" 
-                            Grid.Column="7"/>
+                            Grid.Column="7"
+                            Grid.RowSpan="2">
+                        <TextBlock Text="дата формирования"/>
+                    </Border>
                     <Border Grid.Row="1" 
-                            Grid.Column="8"/>
+                            Grid.Column="8"
+                            Grid.RowSpan="2">
+                        <TextBlock Text="номер паспорта"/>
+                    </Border>
                     <Border Grid.Row="1" 
-                            Grid.Column="9"/>
+                            Grid.Column="9"
+                            Grid.RowSpan="2">
+                        <TextBlock Text="объем, куб. м"/>
+                    </Border>
                     <Border Grid.Row="1" 
-                            Grid.Column="10"/>
+                            Grid.Column="10"
+                            Grid.RowSpan="2">
+                        <TextBlock Text="масса брутто, т"/>
+                    </Border>
                     <Border Grid.Row="1"
                             Grid.Column="11"
                             Grid.ColumnSpan="2">
                         <TextBlock Text="Радионуклидный состав"/>
                     </Border>
-                    <Border Grid.Row="1"
-                            Grid.Column="13"
-                            Grid.ColumnSpan="3">
-                        <TextBlock Text="Документ"/>
-                    </Border>
-                    <Border Grid.Row="1"
-                            Grid.Column="16"
-                            Grid.ColumnSpan="2">
-                        <TextBlock Text="ОКПО"/>
-                    </Border>
-                    <Border Grid.Row="1"
-                            Grid.Column="18"
-                            Grid.ColumnSpan="2">
-                        <TextBlock Text="Пункт хранения"/>
+                    <Border Grid.Row="1" 
+                            Grid.RowSpan="2"
+                            Grid.Column="13">
+                        <TextBlock Text="вид"/>
                     </Border>
                     <Border Grid.Row="1" 
-                            Grid.Column="20"/>
+                            Grid.RowSpan="2"
+                            Grid.Column="14">
+                        <TextBlock Text="номер"/>
+                    </Border>
                     <Border Grid.Row="1" 
-                            Grid.Column="21"/>
+                            Grid.RowSpan="2"
+                            Grid.Column="15">
+                        <TextBlock Text="дата"/>
+                    </Border>
                     <Border Grid.Row="1" 
-                            Grid.Column="22"/>
+                            Grid.RowSpan="2"
+                            Grid.Column="16">
+                        <TextBlock Text="поставщика или получателя"/>
+                    </Border>
                     <Border Grid.Row="1" 
-                            Grid.Column="23"/>
+                            Grid.RowSpan="2"
+                            Grid.Column="17">
+                        <TextBlock Text="перевозчика"/>
+                    </Border>
                     <Border Grid.Row="1" 
-                            Grid.Column="24"/>
+                            Grid.RowSpan="2"
+                            Grid.Column="18">
+                        <TextBlock Text="наименование"/>
+                    </Border>
+                    <Border Grid.Row="1" 
+                            Grid.RowSpan="2"
+                            Grid.Column="19">
+                        <TextBlock Text="код"/>
+                    </Border>
+                    <Border Grid.Row="1"
+                            Grid.RowSpan="2"
+                            Grid.Column="20">
+                        <TextBlock Text="код"/>
+                    </Border>
+                    <Border Grid.Row="1"
+                            Grid.RowSpan="2"
+                            Grid.Column="21">
+                        <TextBlock Text="статус"/>
+                    </Border>
+                    <Border Grid.Row="1"
+                            Grid.RowSpan="2"
+                            Grid.Column="22">
+                        <TextBlock Text="объем без упаковки, куб.м"/>
+                    </Border>
+                    <Border Grid.Row="1"
+                            Grid.RowSpan="2"
+                            Grid.Column="23">
+                        <TextBlock Text="масса без упаковки (нетто), т"/>
+                    </Border>
+                    <Border Grid.Row="1"
+                            Grid.RowSpan="2"
+                            Grid.Column="24">
+                        <TextBlock Text="количество ОЗИИИ, шт"/>
+                    </Border>
                     <Border Grid.Row="1"
                             Grid.Column="25"
                             Grid.ColumnSpan="4">
                         <TextBlock Text="Суммарная активность, Бк"/>
                     </Border>
+                    <Border Grid.Row="1"
+                            Grid.RowSpan="2"
+                            Grid.Column="29">
+                        <TextBlock Text="Код переработки/сортировки РАО"/>
+                    </Border>
                     <Border Grid.Row="1" 
-                            Grid.Column="29"/>
-                    <Border Grid.Row="1" 
-                            Grid.Column="30"/>
-                    <Border Grid.Row="1" 
-                            Grid.Column="31"/>
-                    <Border Grid.Row="1" 
+                            Grid.RowSpan="2"
                             Grid.Column="32">
-                        <TextBlock Text="Договор"/>
+                        <TextBlock Text="номер"/>
                     </Border>
 
                     <!--#endregion Второй уровень заголовков-->
@@ -327,77 +410,11 @@
                     <Border Grid.Row="2"
                             Grid.Column="0"
                             BorderThickness="1,0,1,1"/>
-                    <Border Grid.Row="2" Grid.Column="1">
-                        <TextBlock Text="код"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="2">
-                        <TextBlock Text="дата"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="3">
-                        <TextBlock Text="наименование"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="4">
-                        <TextBlock Text="тип"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="5">
-                        <TextBlock Text="заводской номер"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="6">
-                        <TextBlock Text="номер упаковки (идентификационный код)"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="7">
-                        <TextBlock Text="дата формирования"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="8">
-                        <TextBlock Text="номер паспорта"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="9">
-                        <TextBlock Text="объем, куб. м"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="10">
-                        <TextBlock Text="масса брутто, т"/>
-                    </Border>
                     <Border Grid.Row="2" Grid.Column="11">
                         <TextBlock Text="наименование радионуклида"/>
                     </Border>
                     <Border Grid.Row="2" Grid.Column="12">
                         <TextBlock Text="удельная активность, БК/г"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="13">
-                        <TextBlock Text="вид"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="14">
-                        <TextBlock Text="номер"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="15">
-                        <TextBlock Text="дата"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="16">
-                        <TextBlock Text="поставщика или получателя"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="17">
-                        <TextBlock Text="перевозчика"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="18">
-                        <TextBlock Text="наименование"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="19">
-                        <TextBlock Text="код"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="20">
-                        <TextBlock Text="код"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="21">
-                        <TextBlock Text="статус"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="22">
-                        <TextBlock Text="объем без упаковки, куб.м"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="23">
-                        <TextBlock Text="масса без упаковки (нетто), т"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="24">
-                        <TextBlock Text="количество ОЗИИИ, шт"/>
                     </Border>
                     <Border Grid.Row="2" Grid.Column="25">
                         <TextBlock Text="тритий"/>
@@ -410,18 +427,6 @@
                     </Border>
                     <Border Grid.Row="2" Grid.Column="28">
                         <TextBlock Text="трансурановые радионуклиды"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="29">
-                        <TextBlock Text="Код переработки/сортировки РАО"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="30">
-                        <TextBlock Text="Субсидия, %"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="31">
-                        <TextBlock Text="Номер мероприятия ФЦП"/>
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="32">
-                        <TextBlock Text="номер"/>
                     </Border>
 
                     <!--#endregion Третий уровень заголовков-->
@@ -466,7 +471,7 @@
                             </DataGridTextColumn.HeaderTemplate>
                         </DataGridTextColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="52">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -518,7 +523,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="92">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -541,7 +546,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="89">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -558,7 +563,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="72">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -575,7 +580,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="67">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -592,7 +597,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="121">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -609,7 +614,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="92">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -632,7 +637,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="60">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -649,7 +654,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="75">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -666,7 +671,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="75">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -683,7 +688,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="130">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -702,7 +707,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="97">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -719,7 +724,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="46">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -770,7 +775,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="84">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -787,7 +792,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="92">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -810,7 +815,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="71">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -827,7 +832,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="76">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -844,7 +849,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="86">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -861,7 +866,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="70">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -878,7 +883,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="80">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -895,7 +900,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="50">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -912,7 +917,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="92">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -929,7 +934,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="74">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -946,7 +951,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="72">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -963,7 +968,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="89">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -980,7 +985,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="142">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -997,7 +1002,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="126">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -1014,7 +1019,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="120">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -1031,7 +1036,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="106">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -1082,7 +1087,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="64">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -1099,7 +1104,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="80">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -1116,7 +1121,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="62">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">

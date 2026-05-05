@@ -215,54 +215,55 @@
 
                     <!--#region Первый уровень заголовков-->
 
-                    <Border Grid.Row="0" Grid.Column="0"/>
+                    <Border Grid.Row="0"
+                            Grid.RowSpan="2"
+                            Grid.Column="0">
+                        <TextBlock Text="№ п/п"/>
+                    </Border>
                     <Border Grid.Row="0"
                             Grid.Column="1"
                             Grid.ColumnSpan="2">
-                        <TextBlock Text="Сведения об операции"></TextBlock>
+                        <TextBlock Text="Сведения об операции"/>
                     </Border>
                     <Border Grid.Row="0"
                             Grid.Column="3"
                             Grid.ColumnSpan="3">
-                        <TextBlock Text="Документ"></TextBlock>
+                        <TextBlock Text="Документ"/>
                     </Border>
                     <Border Grid.Row="0" Grid.Column="6"/>
                     <Border Grid.Row="0"
                             Grid.Column="7"
                             Grid.ColumnSpan="2">
-                        <TextBlock Text="Сведения о радиоактивных веществах"></TextBlock>
+                        <TextBlock Text="Сведения о радиоактивных веществах"/>
                     </Border>
 
                     <!--#endregion Первый уровень заголовков-->
 
                     <!--#region Второй уровень заголовков-->
 
-                    <Border Grid.Row="1" Grid.Column="0">
-                        <TextBlock Text="№ п/п"></TextBlock>
-                    </Border>
                     <Border Grid.Row="1" Grid.Column="1">
-                        <TextBlock Text="код"></TextBlock>
+                        <TextBlock Text="код"/>
                     </Border>
                     <Border Grid.Row="1" Grid.Column="2">
-                        <TextBlock Text="дата"></TextBlock>
+                        <TextBlock Text="дата"/>
                     </Border>
                     <Border Grid.Row="1" Grid.Column="3">
-                        <TextBlock Text="вид"></TextBlock>
+                        <TextBlock Text="вид"/>
                     </Border>
                     <Border Grid.Row="1" Grid.Column="4">
-                        <TextBlock Text="номер"></TextBlock>
+                        <TextBlock Text="номер"/>
                     </Border>
                     <Border Grid.Row="1" Grid.Column="5">
-                        <TextBlock Text="дата"></TextBlock>
+                        <TextBlock Text="дата"/>
                     </Border>
                     <Border Grid.Row="1" Grid.Column="6">
-                        <TextBlock Text="Код типа объектов учета"></TextBlock>
+                        <TextBlock Text="Код типа объектов учета"/>
                     </Border>
                     <Border Grid.Row="1" Grid.Column="7">
-                        <TextBlock Text="радионуклиды"></TextBlock>
+                        <TextBlock Text="радионуклиды"/>
                     </Border>
                     <Border Grid.Row="1" Grid.Column="8">
-                        <TextBlock Text="активность, Бк"></TextBlock>
+                        <TextBlock Text="активность, Бк"/>
                     </Border>
 
                     <!--#endregion Второй уровень заголовков-->
@@ -292,8 +293,8 @@
 
                     <DataGrid.Columns>
 
-                        <DataGridTextColumn Binding="{Binding NumberInOrder.Value}"
-                                            Width="30"
+                        <DataGridTextColumn Width="30"
+                                            Binding="{Binding NumberInOrder.Value}"
                                             IsReadOnly="True"
                                             x:DataType="forms1:Form19">
                             <DataGridTextColumn.HeaderTemplate>
@@ -307,7 +308,7 @@
                             </DataGridTextColumn.HeaderTemplate>
                         </DataGridTextColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="71">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -359,7 +360,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="98">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -382,7 +383,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="158">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -433,7 +434,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="172">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -450,7 +451,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="95">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -473,7 +474,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="125">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -524,7 +525,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="217">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -541,7 +542,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="171">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
