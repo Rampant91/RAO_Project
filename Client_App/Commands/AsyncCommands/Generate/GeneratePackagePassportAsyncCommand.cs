@@ -131,13 +131,47 @@ namespace Client_App.Commands.AsyncCommands.Generate
 
                     passport.PackageType = form17.PackType_DB;
 
+                    char classRaoChar = ' ';
+                    if (form17.CodeRAO.Value.Length > 8)
+                        classRaoChar = form17.CodeRAO.Value[7];
+
+                    if (classRaoChar is '1' or '2' or '3' or '4' or '6')
+                    {
+                        passport.ClassRao = byte.Parse(classRaoChar.ToString()); 
+                    }
+                    else
+                    {
+                        #region WrongClassRaoErrorMessage
+                        Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        {
+                            ButtonDefinitions =
+                            [
+                                new ButtonDefinition { Name = "Ок" },
+                            ],
+                            CanResize = true,
+                            ContentTitle = "Формирование паспорта на упаковку",
+                            ContentMessage = "Предупреждение:\n" +
+                            $"Определился неправильный класс РАО (8 символ кода РАО) - {classRaoChar}\n" +
+                            $"Допустимые значения - 1, 2, 3, 4, 6",
+                            MinWidth = 300,
+                            MinHeight = 150,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        })
+                        .ShowDialog(owner));
+                        #endregion
+
+                        return;
+                    }
+
                     passport.PackageIdCode = form17.PackNumber_DB;
                     passport.ContainerFactoryNum = form17.PackFactoryNumber_DB;
                     passport.ManufactureDate = DateOnly.TryParse(form17.FormingDate_DB, out var date) ? date : DateOnly.MinValue;
                     passport.PassportNum = form17.PassportNumber_DB;
                     passport.PackageVolume = double.TryParse(form17.Volume_DB, out var value) ? value : 0;
                     passport.PackageMass = double.TryParse(form17.Mass_DB, out value) ? value * 1000 : 0;
-                    passport.StatusRaoCode = form17.StatusRAO_DB; 
+                    passport.StatusRaoCode = form17.StatusRAO_DB;
+                    characteristic.ClassRao = passport.ClassRao;
                     characteristic.CodeRao = form17.CodeRAO_DB;
                     passport.RaoVolume = double.TryParse(form17.VolumeOutOfPack_DB, out value) ? value : 0;
                     passport.RaoMass = double.TryParse(form17.MassOutOfPack_DB, out value) ? value * 1000 : 0;
