@@ -1,7 +1,5 @@
 ﻿using Avalonia.Controls;
 using Client_App.ViewModels.Forms;
-using Client_App.ViewModels.Forms.Forms1;
-using Models.DBRealization;
 using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands;
@@ -277,7 +275,7 @@ public class SetDefaultColumnWidthAsyncCommand : BaseAsyncCommand
                 columns[0].Width = new DataGridLength(40);
                 for (var i = 1; i < columns.Count; i++)
                 {
-                    columns[i].Width = dataGrid.ColumnWidth;
+                    columns[i].Width = dataGrid.ColumnWidth; //default is 125
                 }
 
                 break;
