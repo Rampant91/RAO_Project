@@ -54,7 +54,7 @@ namespace Client_App.ViewModels.Passports
 
 
         #region Constructor
-        public PassportsMenuWindowVM ()
+        public PassportsMenuWindowVM()
         {
             AddPackagePassport = new AddPackagePassportAsyncCommand(this);
             ChangePackagePassport = new ChangePackagePassportAsyncCommand();

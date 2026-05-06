@@ -480,6 +480,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                                                                             //  Радионуклиды, отсутствующие в справочнике
 
     public ICommand OpenPassportMenu { get; set; }
+    public ICommand OpenStoragePointMenu { get; set; }
     public ICommand SetWhiteList { get; set; }
     
     #endregion
@@ -513,6 +514,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         OpenFile = new OpenFileAsyncCommand();
         OpenFolder = new OpenFolderAsyncCommand();
         OpenPassportMenu = new OpenPassportMenuWindowAsyncCommand();
+        OpenStoragePointMenu = new OpenStoragePointMenuWindowAsyncCommand();
         SetWhiteList = new SetWhiteListNumAsyncCommand(this);
 
         Forms1TabControlVM = new Forms1TabControlVM(this);

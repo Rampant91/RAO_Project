@@ -329,6 +329,12 @@
 				<MenuItem Command="{Binding OpenPassportMenu}"
 						  Header="Открыть меню паспортов"/>
 			</MenuItem>
+
+			<MenuItem Name="StoragePoints"
+								  Header="Пункты хранения">
+				<MenuItem Command="{Binding OpenStoragePointMenu}"
+						  Header="Открыть меню пунктов хранения"/>
+			</MenuItem>
 			
             <MenuItem Header="Дополнительно"
                       IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">

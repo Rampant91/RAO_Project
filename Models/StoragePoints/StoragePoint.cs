@@ -13,7 +13,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Models.StoragePoint
+namespace Models.StoragePoints
 {
     [Serializable]
     [Table(name: "storage_point")]
@@ -261,7 +261,20 @@ namespace Models.StoragePoint
             }
         }
         #endregion
+        
+        #region LastUpdateDate
+        private DateOnly _lastUpdateDate;
 
+        public DateOnly LastUpdateDate
+        {
+            get => _lastUpdateDate;
+            set
+            {
+                _lastUpdateDate = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
         #endregion
 
         #region NotifyDataError

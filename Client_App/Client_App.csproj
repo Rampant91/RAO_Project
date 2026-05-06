@@ -280,6 +280,9 @@
     <Compile Update="Views\Contacts.axaml.cs">
       <DependentUpon>Contacts.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\StoragePoints\StoragePointsMenuWindow.axaml.cs">
+      <DependentUpon>StoragePointsMenuWindow.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Update="Properties\Settings.settings">

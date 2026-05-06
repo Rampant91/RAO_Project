@@ -8,6 +8,7 @@ using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Change;
 using Models.Collections;
 using Models.Passports;
+using Models.StoragePoints;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,6 +65,11 @@ namespace Client_App.Behaviors
                 {
                     var command = new ChangePackagePassportAsyncCommand();
                     command.AsyncExecute(passport.Id);
+                }
+                else if (AssociatedObject?.SelectedItem is StoragePoint storagePoint)
+                {
+                    var command = new ChangeStoragePointAsyncCommand();
+                    command.AsyncExecute(storagePoint.Id);
                 }
             }
 

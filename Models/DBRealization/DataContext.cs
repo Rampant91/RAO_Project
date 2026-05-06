@@ -10,7 +10,7 @@ using Models.Forms.Form2;
 using Models.Forms.Form4;
 using Models.Forms.Form5;
 using Models.Passports;
-using Models.StoragePoint;
+using Models.StoragePoints;
 
 namespace Models.DBRealization;
 
@@ -97,7 +97,7 @@ public class DataContext : DbContext
     #endregion
 
     #region StoragePoint
-    public DbSet<StoragePoint.StoragePoint> storage_point { get; set; }
+    public DbSet<StoragePoint> storage_point { get; set; }
     #endregion
     #endregion
 

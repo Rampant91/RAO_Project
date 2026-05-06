@@ -187,12 +187,14 @@ namespace Client_App.ViewModels.Passports
             {
                 Passport.ContentCharacteristics.Add(new CharacteristicPrimaryPackage(Passport));
             });
+
             DeletePrimaryPackage = ReactiveCommand.Create<CharacteristicPrimaryPackage>(async characteristic =>
             {
                 if (Passport.ContentCharacteristics.Count <= 1) return;
                 
                 Passport.ContentCharacteristics.Remove(characteristic);
             });
+
             SavePassport = ReactiveCommand.Create(async () =>
             {
                 try
