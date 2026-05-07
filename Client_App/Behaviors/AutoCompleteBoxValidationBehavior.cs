@@ -4,7 +4,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Enums;
 
 namespace Client_App.Behaviors;
 
@@ -12,6 +16,7 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
 {
     private string? _originalValue;
     private bool _valueSelectedFromDropDown;
+    private bool _skipOriginalValueUpdate;
 
     public static readonly StyledProperty<ICollection<short?>?> ValidValuesProperty =
         Avalonia.AvaloniaProperty.Register<AutoCompleteBoxValidationBehavior, ICollection<short?>?>(
@@ -59,6 +64,30 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
     {
         get => GetValue(InputPatternProperty);
         set => SetValue(InputPatternProperty, value);
+    }
+
+    // Запрещённое значение (например, "41" для кодов операции)
+    // Код является валидным и присутствует в списке, но при ручном вводе или выборе из списка
+    // возвращается предыдущее значение и показывается модальное сообщение
+    public static readonly StyledProperty<string?> ProhibitedValueProperty =
+        AvaloniaProperty.Register<AutoCompleteBoxValidationBehavior, string?>(
+            nameof(ProhibitedValue));
+
+    public string? ProhibitedValue
+    {
+        get => GetValue(ProhibitedValueProperty);
+        set => SetValue(ProhibitedValueProperty, value);
+    }
+
+    // Сообщение при попытке ввести запрещённое значение
+    public static readonly StyledProperty<string?> ProhibitedMessageProperty =
+        AvaloniaProperty.Register<AutoCompleteBoxValidationBehavior, string?>(
+            nameof(ProhibitedMessage));
+
+    public string? ProhibitedMessage
+    {
+        get => GetValue(ProhibitedMessageProperty);
+        set => SetValue(ProhibitedMessageProperty, value);
     }
 
     protected override void OnAttached()
@@ -141,7 +170,16 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
 
     private void OnGotFocus(object? sender, EventArgs e)
     {
-        _originalValue = AssociatedObject?.Text;
+        // Если фокус возвращается после выбора из dropdown, не обновляем _originalValue,
+        // иначе запрещённое значение станет «оригинальным» и проверка не сработает
+        if (_skipOriginalValueUpdate)
+        {
+            _skipOriginalValueUpdate = false;
+        }
+        else
+        {
+            _originalValue = AssociatedObject?.Text;
+        }
         _valueSelectedFromDropDown = false;
     }
 
@@ -156,20 +194,55 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
         if (AssociatedObject.IsDropDownOpen)
             return;
 
-        // Если значение было выбрано из списка, не проверяем
-        if (_valueSelectedFromDropDown)
-            return;
-
         // Если значение не изменилось, не проверяем
         if (currentValue == _originalValue)
             return;
 
-        // Проверяем, есть ли значение в списке допустимых
+        // Проверяем запрещённое значение (например, код 41) - ВСЕГДА,
+        // даже если выбрано из выпадающего списка
+        if (!string.IsNullOrEmpty(ProhibitedValue) && currentValue == ProhibitedValue)
+        {
+            // Возвращаем предыдущее валидное значение
+            AssociatedObject.Text = _originalValue;
+
+            // Показываем модальное сообщение
+            if (!string.IsNullOrEmpty(ProhibitedMessage))
+            {
+                ShowProhibitedMessage();
+            }
+            return;
+        }
+
+        // Если значение было выбрано из списка и не является запрещённым, не проверяем дальше
+        if (_valueSelectedFromDropDown)
+            return;
+
+        // Проверяем, есть ли значение в списке допустимых (для ручного ввода)
         if (!IsValidValue(currentValue))
         {
             // Возвращаем старое значение
             AssociatedObject.Text = _originalValue;
         }
+    }
+
+    private void ShowProhibitedMessage()
+    {
+        Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            await MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams()
+                {
+                    ButtonDefinitions = ButtonEnum.Ok,
+                    ContentTitle = "Ошибка ввода",
+                    ContentHeader = "Недопустимое значение",
+                    ContentMessage = ProhibitedMessage,
+                    MinWidth = 450,
+                    MinHeight = 170,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(AssociatedObject?.GetVisualRoot() as Window)
+                .ConfigureAwait(false);
+        });
     }
 
     private bool IsValidValue(string value)
@@ -194,5 +267,6 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
     public void MarkValueSelectedFromDropDown()
     {
         _valueSelectedFromDropDown = true;
+        _skipOriginalValueUpdate = true;
     }
 }

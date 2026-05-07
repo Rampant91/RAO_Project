@@ -428,7 +428,9 @@
                                                 <local:AutoCompleteBoxValidationBehavior
                                                     InputPattern="{Binding VM.OperationCodePattern, ElementName=1.5}"
                                                     MaxInputLength="2"
-                                                    ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.5}" />
+                                                    ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.5}"
+                                                    ProhibitedValue="41"
+                                                    ProhibitedMessage="Ввод кода операции &quot;41&quot; запрещен.&#x0a;&quot;Код операции&quot; (графа 8 формы 1.1)." />
                                                 <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
