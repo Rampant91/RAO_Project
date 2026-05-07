@@ -467,7 +467,7 @@
                                                     MaxInputLength="2"
                                                     ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.6}"
                                                     ProhibitedValue="41"
-                                                    ProhibitedMessage="Ввод кода операции &quot;41&quot; запрещен&#x0a;(графа 8 формы 1.2/1.3/1.4)." />
+                                                    ProhibitedMessage="Ввод кода операции &quot;41&quot; вручную в формах 1.5 и 1.6 запрещен.&#x0a;Операцию перевода РВ в РАО необходимо осуществлять посредством кнопки&#x0a;&quot;Перевести РВ в РАО&quot; (правый щелчок мыши по нужной строчке в форме 1.2/1.3/1.4)." />
                                                 <local:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 

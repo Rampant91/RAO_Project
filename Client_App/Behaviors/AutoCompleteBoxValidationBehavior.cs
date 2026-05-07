@@ -244,7 +244,7 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
                     ContentTitle = "Ошибка ввода",
                     ContentHeader = "Недопустимое значение",
                     ContentMessage = ProhibitedMessage,
-                    MinWidth = 450,
+                    MinWidth = 500,
                     MinHeight = 170,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
