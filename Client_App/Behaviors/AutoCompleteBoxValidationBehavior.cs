@@ -185,6 +185,12 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
         if (AssociatedObject == null)
             return;
 
+        // Если мы не в режиме редактирования (GotFocus не срабатывал),
+        // значит ячейка не была активна напрямую — пропускаем валидацию.
+        // Это бывает при клике на кнопку dropdown соседней ячейки.
+        if (!_isEditing)
+            return;
+
         string currentValue = AssociatedObject.Text ?? string.Empty;
 
         // Если dropdown открыт, не проверяем (пользователь кликнул на список)
