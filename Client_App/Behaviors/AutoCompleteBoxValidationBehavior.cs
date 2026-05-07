@@ -16,7 +16,7 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
 {
     private string? _originalValue;
     private bool _valueSelectedFromDropDown;
-    private bool _skipOriginalValueUpdate;
+    private bool _isEditing;
 
     public static readonly StyledProperty<ICollection<short?>?> ValidValuesProperty =
         Avalonia.AvaloniaProperty.Register<AutoCompleteBoxValidationBehavior, ICollection<short?>?>(
@@ -170,15 +170,12 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
 
     private void OnGotFocus(object? sender, EventArgs e)
     {
-        // Если фокус возвращается после выбора из dropdown, не обновляем _originalValue,
-        // иначе запрещённое значение станет «оригинальным» и проверка не сработает
-        if (_skipOriginalValueUpdate)
-        {
-            _skipOriginalValueUpdate = false;
-        }
-        else
+        // Захватываем _originalValue только один раз — при начале редактирования.
+        // При возвращении фокуса из dropdown _isEditing уже true, поэтому не перезаписываем.
+        if (!_isEditing)
         {
             _originalValue = AssociatedObject?.Text;
+            _isEditing = true;
         }
         _valueSelectedFromDropDown = false;
     }
@@ -199,8 +196,11 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
             return;
 
         // Проверяем запрещённое значение (например, код 41) - ВСЕГДА,
-        // даже если выбрано из выпадающего списка
-        if (!string.IsNullOrEmpty(ProhibitedValue) && currentValue == ProhibitedValue)
+        // даже если выбрано из выпадающего списка.
+        // Но если _originalValue уже было запрещённым — значит оно попало туда
+        // допустимым путём (не вручную и не из списка), поэтому не трогаем.
+        if (!string.IsNullOrEmpty(ProhibitedValue) && currentValue == ProhibitedValue
+            && _originalValue != ProhibitedValue)
         {
             // Возвращаем предыдущее валидное значение
             AssociatedObject.Text = _originalValue;
@@ -223,6 +223,8 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
             // Возвращаем старое значение
             AssociatedObject.Text = _originalValue;
         }
+
+        _isEditing = false;
     }
 
     private void ShowProhibitedMessage()
@@ -267,6 +269,5 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
     public void MarkValueSelectedFromDropDown()
     {
         _valueSelectedFromDropDown = true;
-        _skipOriginalValueUpdate = true;
     }
 }
