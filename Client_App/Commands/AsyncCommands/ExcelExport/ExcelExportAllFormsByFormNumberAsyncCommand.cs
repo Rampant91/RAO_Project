@@ -12,8 +12,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.OpenGL.Surfaces;
 using Client_App.Interfaces.Logger;
+using Client_App.ViewModels.MainWindowTabs;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 
@@ -22,19 +22,32 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 /// <summary>
 /// Выгрузка всех отчётов указанной формы (1.1-1.9, 2.1-2.12) выбранной организации в отдельные .xlsx файлы.
 /// </summary>
-public class ExcelExportAllFormsByFormNumberAsyncCommand(MainWindowVM mainWindowVM) : BaseAsyncCommand
+public class ExcelExportAllFormsByFormNumberAsyncCommand : BaseAsyncCommand
 {
-    public override bool CanExecute(object? parameter) => 
-        parameter is string formNum && 
-        formNum is "1.1" or "1.2" or "1.3" or "1.4" or "1.5" or "1.6" or "1.7" or "1.8" or "1.9" or
-                   "2.1" or "2.2" or "2.3" or "2.4" or "2.5" or "2.6" or "2.7" or "2.8" or "2.9" or "2.10" or "2.11" or "2.12";
+    private readonly MainWindowVM _mainWindowVM;
+    
+    public ExcelExportAllFormsByFormNumberAsyncCommand(MainWindowVM mainWindowVM)
+    {
+        _mainWindowVM = mainWindowVM;
+        
+        // Подписываемся на изменение SelectedReports для обновления CanExecute
+        mainWindowVM.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName == nameof(MainWindowVM.SelectedReports))
+            {
+                OnCanExecuteChanged();
+            }
+        };
+    }
+    
+    public override bool CanExecute(object? parameter) => _mainWindowVM.SelectedReports is not null;
 
     public override async Task AsyncExecute(object? parameter)
     {
         if (parameter is not string formNum) return;
 
         // Получаем выбранную организацию
-        var selectedReports = mainWindowVM.SelectedReports;
+        var selectedReports = _mainWindowVM.SelectedReports;
         if (selectedReports == null)
         {
             await ShowNoSelectedOrgMessage();
@@ -70,7 +83,21 @@ public class ExcelExportAllFormsByFormNumberAsyncCommand(MainWindowVM mainWindow
 
             var totalReports = reports.Count;
             var exportedCount = 0;
-            var printCommand = new ExcelExportFormPrintAsyncCommand();
+
+            FormsTabControlBaseVM formsVM;
+            switch (formNum[0])
+            {
+                case '1':
+                    formsVM = _mainWindowVM.Forms1TabControlVM;
+                    break;
+                case '2':
+                    formsVM = _mainWindowVM.Forms2TabControlVM;
+                    break;
+                default:
+                    return;
+            }
+
+            var printCommand = new ExcelExportFormPrintAsyncCommand(formsVM);
 
             for (var i = 0; i < reports.Count; i++)
             {

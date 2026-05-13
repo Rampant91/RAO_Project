@@ -3,7 +3,8 @@ using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels;
-using Client_App.Views;
+using Client_App.ViewModels.Calculator;
+using Client_App.ViewModels.MainWindowTabs;
 using Client_App.Views.Messages;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
@@ -22,8 +23,29 @@ using static Client_App.ViewModels.Messages.SelectReportsMessageWindowVM;
 namespace Client_App.Commands.AsyncCommands.Import;
 
 //  Импорт -> Из RAODB
-public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyncCommand
+public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 {
+    private readonly FormsTabControlBaseVM _formsTabControlBaseVM;
+
+    public ImportRaodbAsyncCommand() { }
+
+    public ImportRaodbAsyncCommand(FormsTabControlBaseVM formsTabControlBaseVM)
+    {
+        _formsTabControlBaseVM = formsTabControlBaseVM;
+
+        formsTabControlBaseVM.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName is nameof(FormsTabControlBaseVM.SelectedReports))
+            {
+                OnCanExecuteChanged();
+            }
+        };
+    }
+
+    public override bool CanExecute(object? parameter) => 
+        (parameter is "Selected" && _formsTabControlBaseVM.SelectedReports is not null)
+        || parameter is "Auto" or "FromList";
+
     public override async Task AsyncExecute(object? parameter)
     {
         RepsWhereTitleFormCheckIsCancel.Clear();
@@ -131,7 +153,7 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                     }
                     case "Selected":
                     {
-                        var selectedReports = mainWindowVM.SelectedReports;
+                        var selectedReports = _formsTabControlBaseVM.SelectedReports;
                         if (selectedReports is null) return;
                         var selectedReportsInfo = new OrganizationInfo
                         {

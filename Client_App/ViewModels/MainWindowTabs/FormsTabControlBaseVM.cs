@@ -1,4 +1,7 @@
 ﻿using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands.Delete;
+using Client_App.Commands.AsyncCommands.ExcelExport;
+using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Resources.CustomComparers;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
@@ -11,11 +14,41 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Client_App.ViewModels.MainWindowTabs;
 
 public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 {
+    #region Commands
+    
+    /// <summary>
+    /// Редактировать выбранный отчёт
+    /// </summary>
+    public ICommand NewChangeReport => new NewChangeReportAsyncCommand(this);
+
+    /// <summary>
+    /// Редактировать выбранный отчёт
+    /// </summary>
+    public ICommand NewChangeReports => new NewChangeReportsAsyncCommand(this);
+
+    /// <summary>
+    /// Удалить выбранный отчёт
+    /// </summary>
+    public ICommand DeleteReport => new NewDeleteFormAsyncCommand(this);
+
+    /// <summary>
+    /// Выбранная форма -> Выгрузка Excel -> Для печати
+    /// </summary>
+    public ICommand ExcelExportFormPrint => new ExcelExportFormPrintAsyncCommand(this);
+
+    /// <summary>
+    /// Экспорт отчёта в файл .RAODB
+    /// </summary>
+    public ICommand ExportReport => new ExportReportAsyncCommand(this); 
+    
+    #endregion
+
     #region Constructor
 
     protected FormsTabControlBaseVM()
@@ -80,7 +113,7 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
     #region CurrentPageOrgs
 
     private int _currentPageOrgs = 1;
-    private protected int CurrentPageOrgs
+    public int CurrentPageOrgs
     {
         get
         {

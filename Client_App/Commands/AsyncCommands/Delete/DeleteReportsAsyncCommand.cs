@@ -23,6 +23,23 @@ namespace Client_App.Commands.AsyncCommands.Delete;
 /// </summary>
 public class DeleteReportsAsyncCommand : BaseAsyncCommand
 {
+    private readonly MainWindowVM _mainWindowVM;
+
+    public DeleteReportsAsyncCommand(MainWindowVM mainWindowVM)
+    {
+        _mainWindowVM = mainWindowVM;
+
+        mainWindowVM.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName == nameof(MainWindowVM.SelectedReports))
+            {
+                OnCanExecuteChanged();
+            }
+        };
+    }
+
+    public override bool CanExecute(object? parameter) => _mainWindowVM.SelectedReports is not null;
+
     public override async Task AsyncExecute(object? parameter)
     {
         #region MessageDeleteReports

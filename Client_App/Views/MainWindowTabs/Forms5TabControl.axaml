@@ -15,6 +15,7 @@
 	<UserControl.Resources>
 		<converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
 		<converter:StringEqualsToColorConverter x:Key="StringEqualsToColor" />
+        <converter:CheckReportsAnyMatchingFormNumConverter x:Key ="CheckReportsAnyMatchingFormNum"/>
 	</UserControl.Resources>
 
     <Design.DataContext>
@@ -48,7 +49,7 @@
 							<MenuItem Header="Добавить форму"
 									  Command="{Binding MainWindowVM.AddReports, Mode=OneWay}"/>
 							<MenuItem Header="Редактировать форму"
-									  Command="{Binding MainWindowVM.NewChangeReports, Mode=OneWay}"/>
+									  Command="{Binding NewChangeReports, Mode=OneWay}"/>
 							<MenuItem Header="Выгрузить организацию"
 									  Command="{Binding MainWindowVM.ExportReports, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
@@ -188,16 +189,16 @@
 					<DataGrid.ContextMenu>
 						<ContextMenu>
 							<MenuItem Header="Редактировать форму"
-									  Command="{Binding MainWindowVM.NewChangeForm}"
+									  Command="{Binding NewChangeReport, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReport}"/>
 							<MenuItem Header="Выгрузить форму в Excel"
-									  Command="{Binding MainWindowVM.ExcelExportFormPrint}"
+									  Command="{Binding ExcelExportFormPrint, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReport}"/>
 							<MenuItem Header="Выгрузить"
-									  Command="{Binding MainWindowVM.ExportForm}"
+									  Command="{Binding ExportReport, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReport}"/>
 							<MenuItem Header="Удалить форму"
-									  Command="{Binding MainWindowVM.NewDeleteForm}"
+									  Command="{Binding DeleteReport, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReport}"/>
 						</ContextMenu>
 					</DataGrid.ContextMenu>
@@ -358,10 +359,13 @@
 										Converter={StaticResource StringEqualsToColor}, 
 										ConverterParameter=5.3}" />
 							<Button Content="5.4" 
+                                    IsEnabled="{Binding SelectedReports, 
+                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
+                                        ConverterParameter=5.4}"
                                     Width="35" 
                                     Height="40" 
                                     Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
+									Command="{Binding MainWindowVM.SetWhiteList}" 
                                     CommandParameter="5.4"
 									Background="{Binding FormNumWhiteList, 
 										Converter={StaticResource StringEqualsToColor}, 

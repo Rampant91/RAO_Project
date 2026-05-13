@@ -50,7 +50,7 @@
                         <ContextMenu>
                             <MenuItem Command="{Binding MainWindowVM.AddReports, Mode=OneWay}" 
                                       Header="Добавить форму" />
-                            <MenuItem Command="{Binding MainWindowVM.NewChangeReports, Mode=OneWay}" 
+                            <MenuItem Command="{Binding NewChangeReports, Mode=OneWay}" 
                                       Header="Редактировать форму" />
                             <MenuItem Command="{Binding MainWindowVM.DeleteReports, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReports, Mode=OneWay}"
@@ -213,16 +213,16 @@
 
                     <DataGrid.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Command="{Binding MainWindowVM.NewChangeForm}"
+                            <MenuItem Command="{Binding NewChangeReport, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReport}"
                                       Header="Редактировать форму" />
-                            <MenuItem Command="{Binding MainWindowVM.NewDeleteForm}"
+                            <MenuItem Command="{Binding DeleteReport, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReport}"
                                       Header="Удалить форму" />
-                            <MenuItem Command="{Binding MainWindowVM.ExcelExportFormPrint}"
+                            <MenuItem Command="{Binding ExcelExportFormPrint, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReport}"
                                       Header="Выгрузить форму в Excel" />
-                            <MenuItem Command="{Binding MainWindowVM.ExportForm}"
+                            <MenuItem Command="{Binding ExportReport, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReport}"
                                       Header="Выгрузить" />
                         </ContextMenu>

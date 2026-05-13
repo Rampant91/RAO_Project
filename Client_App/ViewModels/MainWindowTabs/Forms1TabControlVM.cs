@@ -1,4 +1,8 @@
-﻿using Client_App.Resources.CustomComparers;
+﻿using Client_App.Commands.AsyncCommands.CheckForm;
+using Client_App.Commands.AsyncCommands.ExcelExport;
+using Client_App.Commands.AsyncCommands.Import;
+using Client_App.Commands.SyncCommands;
+using Client_App.Resources.CustomComparers;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -6,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 
 namespace Client_App.ViewModels.MainWindowTabs;
 
@@ -19,6 +24,30 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
 
     private protected override char FormNum => '1';
 
+    #endregion
+
+    #region Commands
+
+    /// <summary>
+    /// Проверить выбранный отчёт из главного окна
+    /// </summary>
+    public ICommand CheckReportFromMain => new CheckReportFromMainAsyncCommand(this);
+
+    /// <summary>
+    /// Выбранная форма -> Выгрузка Excel -> Для анализа
+    /// </summary>
+    public ICommand ExcelExportFormAnalysis => new ExcelExportFormAnalysisAsyncCommand(this);
+
+    /// <summary>
+    /// Выбранная организация -> Импортировать отчёт в организацию -> Из Excel
+    /// </summary>
+    public ICommand ImportExcel => new ImportExcelAsyncCommand(this);
+
+    /// <summary>
+    /// Выбранная организация -> Импортировать отчёт в организацию -> Из Raodb
+    /// </summary>
+    public ICommand ImportRaodb => new ImportRaodbAsyncCommand(this); 
+    
     #endregion
 
     #region Constructor

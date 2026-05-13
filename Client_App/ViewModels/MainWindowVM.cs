@@ -334,18 +334,12 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     private readonly UpdateService _updateService;
 
     public ICommand AddForm { get; set; }                           //  Создать и открыть новое окно формы для выбранной организации (1.0, 2.0)
+    public ICommand ChangeForm { get; set; }                        //  Редактировать выбранный отчёт (для старых форм 2.х)
     public ICommand NewAddForm { get; set; }                        //  Создать и открыть новое окно формы для выбранной организации (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
     public ICommand AddReports { get; set; }                        //  Создать и открыть новое окно формы организации (1.0, 2.0, 4.0)
-    public ICommand ChangeForm { get; set; }                        //  Открыть окно редактирования выбранной формы (1.0, 2.0)
-    public ICommand NewChangeForm { get; set; }                     //  Открыть окно редактирования выбранной формы (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
     public ICommand ChangePasFolder { get; set; }                   //  Excel -> Паспорта -> Изменить расположение паспортов по умолчанию
-    public ICommand ChangeReports { get; set; }                     //  Изменить Формы организации (1.0 и 2.0)
-    public ICommand NewChangeReports { get; set; }                  //  Изменить Формы организации (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
     public ICommand ConvertExcelToRaodb { get; set; }               //  Дополнительно -> Конвертер из Excel в .RAODB
     public ICommand ExcelExportCheckAllForms { get; set; }          //  Проверить все формы у организации
-    public ICommand CheckFormFromMain { get; set; }                 //  Проверить форму
-    public ICommand DeleteForm { get; set; }                        //  Удалить выбранную форму у выбранной организации (1.0, 2.0)
-    public ICommand NewDeleteForm { get; set; }                     //  Удалить выбранную форму у выбранной организации (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
     public ICommand DeleteReports { get; set; }                     //  Удалить выбранную организацию (1.0, 2.0, 4.0)
 
     /// <summary>
@@ -359,24 +353,10 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand ExcelExportExecutors => new ExcelExportExecutorsAsyncCommand();
 
     /// <summary>
-    /// Экспорт формы в файл .RAODB
-    /// </summary>
-    public ICommand ExportForm => new ExportFormAsyncCommand();
-
-    /// <summary>
     /// Excel -> Проверка последней инвентаризации.
     /// </summary>
     public ICommand ExcelExportCheckLastInventoryDate => new ExcelExportCheckLastInventoryDateAsyncCommand();
 
-    /// <summary>
-    /// Выбранная форма -> Выгрузка Excel -> Для анализа
-    /// </summary>
-    public ICommand ExcelExportFormAnalysis => new ExcelExportFormAnalysisAsyncCommand();
-
-    /// <summary>
-    /// Выбранная форма -> Выгрузка Excel -> Для печати
-    /// </summary>
-    public ICommand ExcelExportFormPrint => new ExcelExportFormPrintAsyncCommand();
 
     /// <summary>
     /// Excel -> Формы 1.x, 2.x и Excel -> Выбранная организация -> Формы 1.x, 2.x
@@ -457,17 +437,17 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     /// <summary>
     /// Экспорт организации в файл .RAODB
     /// </summary>
-    public ICommand ExportReports => new ExportReportsAsyncCommand();
+    public ICommand ExportReports => new ExportReportsAsyncCommand(this);
 
     /// <summary>
     /// Экспорт организации в файл .RAODB с указанием диапазона дат выгружаемых форм
     /// </summary>
-    public ICommand ExportReportsWithDateRange => new ExportReportsWithDateRangeAsyncCommand();
+    public ICommand ExportReportsWithDateRange => new ExportReportsWithDateRangeAsyncCommand(this);
 
     /// <summary>
     /// Импорт отчёта из Excel.
     /// </summary>
-    public ICommand ImportExcel { get; set; }
+    public ICommand ImportExcel { get; set; }                               //  Импорт -> Из Excel
     public ICommand ImportJson { get; set; }                                //  Импорт -> Из Json
     public ICommand ImportRaodb { get; set; }                               //  Импорт -> Из RAODB
     public ICommand MaxGraphsLength { get; set; }                           //  Excel -> Максимальное число символов в каждой колонке
@@ -492,19 +472,13 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         NewAddForm = new NewAddFormAsyncCommand();
         AddReports = new AddReportsAsyncCommand();
         ChangeForm = new ChangeFormAsyncCommand();
-        NewChangeForm = new NewChangeFormAsyncCommand();
         ChangePasFolder = new ChangePasFolderAsyncCommand();
-        ChangeReports = new ChangeReportsAsyncCommand();
-        NewChangeReports = new NewChangeReportsAsyncCommand();
-        CheckFormFromMain = new CheckFormFromMainAsyncCommand();
         ConvertExcelToRaodb = new ConvertExcelToRaodbAsyncCommand();
-        NewDeleteForm = new NewDeleteFormAsyncCommand();
-        DeleteForm = new DeleteReportAsyncCommand();
-        DeleteReports = new DeleteReportsAsyncCommand();
-        ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand();
-        ImportExcel = new ImportExcelAsyncCommand(this);
+        DeleteReports = new DeleteReportsAsyncCommand(this);
+        ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand(this);
+        ImportExcel = new ImportExcelAsyncCommand();
         ImportJson = new ImportJsonAsyncCommand();
-        ImportRaodb = new ImportRaodbAsyncCommand(this);
+        ImportRaodb = new ImportRaodbAsyncCommand();
         MaxGraphsLength = new MaxGraphsLengthAsyncCommand();
         SaveReports = new SaveReportsAsyncCommand();
         OpenCalculator = new OpenCalculatorAsyncCommand();

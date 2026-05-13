@@ -55,6 +55,8 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
 
     private Task Execute(Window? window = null)
     {
+        if (window is null) return Task.CompletedTask;
+
         window.Closed += WindowClosed;
         window.Close();
 
@@ -82,11 +84,6 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
 
         switch (numForm)
         {
-            case "1.1":
-                {
-                    Form1_Visual.tmpVM = changeOrCreateVM;
-                    break;
-                }
             case "2.1":
                 {
                     Form2_Visual.tmpVM = changeOrCreateVM;

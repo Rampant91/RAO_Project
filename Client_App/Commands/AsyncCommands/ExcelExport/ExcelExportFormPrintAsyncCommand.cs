@@ -3,6 +3,8 @@ using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Properties;
 using Client_App.ViewModels;
+using Client_App.ViewModels.MainWindowTabs;
+using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.ProgressBar;
 using DynamicData;
 using MessageBox.Avalonia.DTO;
@@ -21,7 +23,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Client_App.ViewModels.ProgressBar;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
@@ -31,7 +32,22 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 /// </summary>
 public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 {
-    public override bool CanExecute(object? parameter) => true;
+    private readonly FormsTabControlBaseVM _formsTabControlVM;
+
+    public ExcelExportFormPrintAsyncCommand(FormsTabControlBaseVM formsTabControlVM)
+    {
+        _formsTabControlVM = formsTabControlVM;
+
+        formsTabControlVM.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName == nameof(FormsTabControlBaseVM.SelectedReport))
+            {
+                OnCanExecuteChanged();
+            }
+        };
+    }
+
+    public override bool CanExecute(object? parameter) => _formsTabControlVM.SelectedReport is not null;
 
     public override async Task AsyncExecute(object? parameter)
     {

@@ -1,23 +1,38 @@
-﻿using System.Collections;
-using Client_App.Views;
-using Models.Collections;
-using Models.DBRealization;
-using System.Linq;
-using System.Threading.Tasks;
-using Avalonia.Controls;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
-using Models.Interfaces;
+﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
+using Client_App.ViewModels.MainWindowTabs;
+using Client_App.Views;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Models;
+using Models.Collections;
+using Models.DBRealization;
+using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.Delete;
 
 /// <summary>
-/// Удалить выбранную форму у выбранной организации.
+/// Удалить выбранный отчёт у выбранной организации.
 /// </summary>
 public class NewDeleteFormAsyncCommand : BaseAsyncCommand
 {
+    private readonly FormsTabControlBaseVM _formsTabControlVM;
+
+    public NewDeleteFormAsyncCommand(FormsTabControlBaseVM formsTabControlVM)
+    {
+        _formsTabControlVM = formsTabControlVM;
+
+        formsTabControlVM.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName == nameof(FormsTabControlBaseVM.SelectedReport))
+            {
+                OnCanExecuteChanged();
+            }
+        };
+    }
+
+    public override bool CanExecute(object? parameter) => _formsTabControlVM.SelectedReport is not null;
+
     public override async Task AsyncExecute(object? parameter)
     {
         #region MessageDeleteReport

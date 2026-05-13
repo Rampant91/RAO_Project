@@ -60,12 +60,14 @@
 							<MenuItem Header="Добавить организацию"
 									  Command="{Binding MainWindowVM.AddReports, Mode=OneWay}"/>
 							<MenuItem Header="Редактировать отчёт по форме 1.0 организации"
-									  Command="{Binding MainWindowVM.NewChangeReports, Mode=OneWay}"/>
+									  Command="{Binding NewChangeReports, Mode=OneWay}"/>
                             <MenuItem Header="Импортировать отчёт в организацию">
                                 <MenuItem Header="Из RAODB"
-                                          Click="ImportRaodb_Click"/>
+                                          Command="{Binding ImportRaodb, Mode=OneWay}"
+                                          CommandParameter="Selected"/>
                                 <MenuItem Header="Из Excel"
-                                          Click="ImportExcel_Click"/>
+                                          Command="{Binding ImportExcel, Mode=OneWay}"
+                                          CommandParameter="Selected"/>
                             </MenuItem>
 							<MenuItem Header="Выгрузить организацию"
 									  Command="{Binding MainWindowVM.ExportReports, Mode=OneWay}"
@@ -305,25 +307,27 @@
                     <DataGrid.ContextMenu>
 						<ContextMenu>
 							<MenuItem Header="Редактировать отчёт"
-									  Command="{Binding MainWindowVM.NewChangeForm}"
+									  Command="{Binding NewChangeReport, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReport}"/>
                             <MenuItem Header="Выгрузить отчёт в Excel">
                                 <MenuItem Header="для печати"
-                                          Click="ExportExcelPrint_Click"/>
+                                          Command="{Binding ExcelExportFormPrint, Mode=OneWay}"
+                                          CommandParameter="{Binding SelectedReport}"/>
                                 <MenuItem Header="для анализа"
-                                          Click="ExportExcelAnalysis_Click"/>
+                                          Command="{Binding ExcelExportFormAnalysis, Mode=OneWay}"
+                                          CommandParameter="{Binding SelectedReport}"/>
                             </MenuItem>
 							<MenuItem Header="Выгрузить отчёт в RAODB"
-									  Command="{Binding MainWindowVM.ExportForm}"
+									  Command="{Binding ExportReport, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReport}"/>
 							<MenuItem Header="Проверить отчёт"
-									  Command="{Binding MainWindowVM.CheckFormFromMain}"
+									  Command="{Binding CheckReportFromMain, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReport}"/>
 							<MenuItem Header="Сохранить комментарий"
 									  Command="{Binding MainWindowVM.SaveReports}"
 									  CommandParameter="{Binding SelectedReport}"/>
 							<MenuItem Header="Удалить отчёт"
-									  Command="{Binding MainWindowVM.NewDeleteForm}"
+									  Command="{Binding DeleteReport}"
 									  CommandParameter="{Binding SelectedReport}"/>
 						</ContextMenu>
 					</DataGrid.ContextMenu>

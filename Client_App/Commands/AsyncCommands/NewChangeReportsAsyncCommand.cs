@@ -3,12 +3,13 @@ using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
 using Client_App.ViewModels.Forms.Forms4;
 using Client_App.ViewModels.Forms.Forms5;
+using Client_App.ViewModels.MainWindowTabs;
 using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
 using Client_App.Views.Forms.Forms2;
-using System.Threading.Tasks;
 using Client_App.Views.Forms.Forms4;
 using Client_App.Views.Forms.Forms5;
+using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -17,6 +18,23 @@ namespace Client_App.Commands.AsyncCommands;
 /// </summary>
 public class NewChangeReportsAsyncCommand : BaseAsyncCommand
 {
+    private readonly FormsTabControlBaseVM _formsTabControlVM;
+
+    public NewChangeReportsAsyncCommand(FormsTabControlBaseVM formsTabControlVM)
+    {
+        _formsTabControlVM = formsTabControlVM;
+
+        formsTabControlVM.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName == nameof(FormsTabControlBaseVM.SelectedReports))
+            {
+                OnCanExecuteChanged();
+            }
+        };
+    }
+
+    public override bool CanExecute(object? parameter) => _formsTabControlVM.SelectedReports is not null;
+
     public override async Task AsyncExecute(object? parameter)
     {
         var mainWindow = (Desktop.MainWindow as MainWindow)!;

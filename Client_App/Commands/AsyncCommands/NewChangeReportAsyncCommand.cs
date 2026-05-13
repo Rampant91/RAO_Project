@@ -1,8 +1,11 @@
 ﻿using Client_App.ViewModels.Forms.Forms1;
+using Client_App.ViewModels.Forms.Forms2;
 using Client_App.ViewModels.Forms.Forms4;
 using Client_App.ViewModels.Forms.Forms5;
+using Client_App.ViewModels.MainWindowTabs;
 using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
+using Client_App.Views.Forms.Forms2;
 using Client_App.Views.Forms.Forms4;
 using Client_App.Views.Forms.Forms5;
 using Microsoft.EntityFrameworkCore;
@@ -10,16 +13,31 @@ using Models.Collections;
 using Models.DBRealization;
 using System.Linq;
 using System.Threading.Tasks;
-using Client_App.ViewModels.Forms.Forms2;
-using Client_App.Views.Forms.Forms2;
 
 namespace Client_App.Commands.AsyncCommands;
 
 /// <summary>
-/// Открыть окно редактирования выбранной формы.
+/// Открыть окно редактирования выбранного отчета.
 /// </summary>
-public class NewChangeFormAsyncCommand : BaseAsyncCommand
+public class NewChangeReportAsyncCommand : BaseAsyncCommand
 {
+    private readonly FormsTabControlBaseVM _formsTabControlVM;
+
+    public NewChangeReportAsyncCommand(FormsTabControlBaseVM formsTabControlVM)
+    {
+        _formsTabControlVM = formsTabControlVM;
+
+        formsTabControlVM.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName == nameof(FormsTabControlBaseVM.SelectedReport))
+            {
+                OnCanExecuteChanged();
+            }
+        };
+    }
+
+    public override bool CanExecute(object? parameter) => _formsTabControlVM.SelectedReport is not null;
+
     #region AsyncExecute
 
     /// <summary>

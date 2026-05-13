@@ -207,14 +207,14 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
             Command = dataContext.AddReports
         });
 
-        grd1.CommandsList.Add(new KeyCommand
-        {
-            IsDoubleTappedCommand = true,
-            IsContextMenuCommand = true,
-            ParamName = "SelectedItems",
-            ContextMenuText = ["Редактировать форму"],
-            Command = dataContext.ChangeReports
-        });
+        //grd1.CommandsList.Add(new KeyCommand
+        //{
+        //    IsDoubleTappedCommand = true,
+        //    IsContextMenuCommand = true,
+        //    ParamName = "SelectedItems",
+        //    ContextMenuText = ["Редактировать форму"],
+        //    Command = dataContext.ChangeReports
+        //});
 
         grd1.CommandsList.Add(new KeyCommand
         {
@@ -276,57 +276,57 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
 
         #region Grd2_Список форм_Контекстное меню
 
-        grd2.CommandsList.Add(new KeyCommand
-        {
-            IsDoubleTappedCommand = false,
-            IsContextMenuCommand = true,
-            ParamName = "SelectedItems",
-            ContextMenuText = ["Выгрузка Excel", "Для печати"],
-            Command = dataContext.ExcelExportFormPrint
-        });
-        grd2.CommandsList.Add(new KeyCommand
-        {
-            IsDoubleTappedCommand = false,
-            IsContextMenuCommand = true,
-            ParamName = "SelectedItems",
-            ContextMenuText = ["Выгрузка Excel", "Для анализа"],
-            Command = dataContext.ExcelExportFormAnalysis
-        });
-        grd2.CommandsList.Add(new KeyCommand
-        {
-            IsDoubleTappedCommand = false,
-            IsContextMenuCommand = true,
-            ParamName = "SelectedItems",
-            ContextMenuText = ["Выгрузка"],
-            Command = dataContext.ExportForm
-        });
-        grd2.CommandsList.Add(new KeyCommand
-        {
-            IsDoubleTappedCommand = true,
-            IsContextMenuCommand = true,
-            ParamName = "SelectedItems",
-            ContextMenuText = ["Изменить форму"],
-            Command = dataContext.ChangeForm
-        });
-        grd2.CommandsList.Add(new KeyCommand
-        {
-            IsContextMenuCommand = true,
-            IsDoubleTappedCommand = false,
-            ParamName = "SelectedItems",
-            ContextMenuText = ["Проверить форму"],
-            Command = dataContext.CheckFormFromMain
-        });
-        grd2.CommandsList.Add(new KeyCommand
-        {
-            Key = Avalonia.Input.Key.D,
-            KeyModifiers = Avalonia.Input.KeyModifiers.Control,
-            IsDoubleTappedCommand = false,
-            IsContextMenuCommand = true,
-            ParamName = "SelectedItems",
-            IsUpdateCells = true,
-            ContextMenuText = ["Удалить форму           Ctrl+D"],
-            Command = dataContext.DeleteForm
-        });
+        //grd2.CommandsList.Add(new KeyCommand
+        //{
+        //    IsDoubleTappedCommand = false,
+        //    IsContextMenuCommand = true,
+        //    ParamName = "SelectedItems",
+        //    ContextMenuText = ["Выгрузка Excel", "Для печати"],
+        //    Command = dataContext.ExcelExportFormPrint
+        //});
+        //grd2.CommandsList.Add(new KeyCommand
+        //{
+        //    IsDoubleTappedCommand = false,
+        //    IsContextMenuCommand = true,
+        //    ParamName = "SelectedItems",
+        //    ContextMenuText = ["Выгрузка Excel", "Для анализа"],
+        //    Command = dataContext.ExcelExportFormAnalysis
+        //});
+        //grd2.CommandsList.Add(new KeyCommand
+        //{
+        //    IsDoubleTappedCommand = false,
+        //    IsContextMenuCommand = true,
+        //    ParamName = "SelectedItems",
+        //    ContextMenuText = ["Выгрузка"],
+        //    Command = dataContext.ExportReport
+        //});
+        //grd2.CommandsList.Add(new KeyCommand
+        //{
+        //    IsDoubleTappedCommand = true,
+        //    IsContextMenuCommand = true,
+        //    ParamName = "SelectedItems",
+        //    ContextMenuText = ["Изменить форму"],
+        //    Command = dataContext.ChangeForm
+        //});
+        //grd2.CommandsList.Add(new KeyCommand
+        //{
+        //    IsContextMenuCommand = true,
+        //    IsDoubleTappedCommand = false,
+        //    ParamName = "SelectedItems",
+        //    ContextMenuText = ["Проверить форму"],
+        //    Command = dataContext.CheckFormFromMain
+        //});
+        //grd2.CommandsList.Add(new KeyCommand
+        //{
+        //    Key = Avalonia.Input.Key.D,
+        //    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+        //    IsDoubleTappedCommand = false,
+        //    IsContextMenuCommand = true,
+        //    ParamName = "SelectedItems",
+        //    IsUpdateCells = true,
+        //    ContextMenuText = ["Удалить форму           Ctrl+D"],
+        //    Command = dataContext.DeleteForm
+        //});
         grd2.CommandsList.Add(new KeyCommand
         {
             Key = Avalonia.Input.Key.J,
