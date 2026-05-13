@@ -12,43 +12,31 @@ namespace Client_App.Behaviors;
 /// </summary>
 public class DataGridDeselectOnEmptyAreaClickBehavior : Behavior<DataGrid>
 {
-    private bool _isAttached;
-
     protected override void OnAttached()
     {
         base.OnAttached();
 
         if (AssociatedObject is null) return;
 
-        // Ждем полной загрузки контрола
-        AssociatedObject.AttachedToVisualTree += OnAttachedToVisualTree;
+        // Сразу подключаем обработчики
+        AttachEventHandlers();
     }
 
     protected override void OnDetaching()
     {
         base.OnDetaching();
 
-        if (AssociatedObject is not null)
-        {
-            AssociatedObject.AttachedToVisualTree -= OnAttachedToVisualTree;
-        }
-
+        // Отключаем обработчики
         DetachEventHandlers();
-    }
-
-    private void OnAttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)
-    {
-        if (!_isAttached)
-        {
-            AttachEventHandlers();
-            _isAttached = true;
-        }
     }
 
     private void AttachEventHandlers()
     {
         if (AssociatedObject is not null)
         {
+            // Сначала отключаем, чтобы избежать дублирования
+            AssociatedObject.PointerPressed -= OnDataGridPointerPressed;
+            // Затем подключаем
             AssociatedObject.PointerPressed += OnDataGridPointerPressed;
         }
     }
@@ -58,7 +46,6 @@ public class DataGridDeselectOnEmptyAreaClickBehavior : Behavior<DataGrid>
         if (AssociatedObject is not null)
         {
             AssociatedObject.PointerPressed -= OnDataGridPointerPressed;
-            _isAttached = false;
         }
     }
 
