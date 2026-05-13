@@ -49,8 +49,13 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
     }
 
     public override bool CanExecute(object? parameter) =>
-        (parameter is "Selected" && _formsTabControlBaseVM.SelectedReports is not null)
-        || parameter is "Auto" or "FromList";
+        parameter switch
+        {
+            Reports => true,
+            "Selected" => _formsTabControlBaseVM.SelectedReports is not null,
+            "Auto" or "FromList" => true,
+            _ => false
+        };
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -182,7 +187,14 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             {
                 case "1.0" or "2.0":
                 {
-                    switch (parameter)
+                    var executeMode = parameter switch
+                    {
+                        Reports => "Selected",
+                        string mode => mode,
+                        _ => null
+                    };
+
+                    switch (executeMode)
                     {
                         case "Auto":
                         {
@@ -191,7 +203,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                         }
                         case "Selected":
                         {
-                            var selectedReports = _formsTabControlBaseVM.SelectedReports;
+                            var selectedReports = parameter as Reports ?? _formsTabControlBaseVM.SelectedReports;
                             if (selectedReports is null) return;
                             var selectedReportsInfo = new OrganizationInfo
                             {

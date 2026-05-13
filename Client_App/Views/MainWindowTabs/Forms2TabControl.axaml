@@ -17,6 +17,9 @@
 
 	<UserControl.Resources>
         <customConverters:BoolInverterConverter x:Key="BoolInverterConverter"/>
+        <customConverters:NotNullToBoolConverter x:Key="NotNullToBoolConverter"/>
+        <customConverters:AppLaunchedAndSelectedReportsVisibleConverter x:Key="AppLaunchedAndSelectedReportsVisibleConverter"/>
+        <customConverters:ExcelExportByFormCommandParameterConverter x:Key="ExcelExportByFormCommandParameterConverter"/>
         <converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
 		<converter:StringEqualsToColorConverter x:Key="StringEqualsToColor" />
 		<converter:CheckReportsAnyMatchingFormNumConverter x:Key ="CheckReportsAnyMatchingFormNum"/>
@@ -57,19 +60,22 @@
 									  Command="{Binding MainWindowVM.AddReports, Mode=OneWay}"/>
 							<MenuItem Header="Редактировать отчёт по форме 2.0 организации"
 									  Command="{Binding NewChangeReports, Mode=OneWay}"/>
-                            <MenuItem Header="Импортировать отчёт в организацию">
+                            <MenuItem Header="Импортировать отчёт в организацию"
+                                      IsVisible="{Binding SelectedReports, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}">
                                 <MenuItem Header="Из RAODB"
                                           Command="{Binding ImportRaodb, Mode=OneWay}"
-                                          CommandParameter="Selected"/>
+                                          CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
                                 <MenuItem Header="Из Excel"
                                           Command="{Binding ImportExcel, Mode=OneWay}"
-                                          CommandParameter="Selected"/>
+                                          CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
                             </MenuItem>
 							<MenuItem Header="Выгрузить организацию"
 									  Command="{Binding MainWindowVM.ExportReports, Mode=OneWay}"
+                                      IsVisible="{Binding SelectedReports, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 							<MenuItem Header="Выгрузить организацию с указанием диапазона дат"
 									  Command="{Binding MainWindowVM.ExportReportsWithDateRange, Mode=OneWay}"
+                                      IsVisible="{Binding SelectedReports, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 							<MenuItem Header="Выгрузить все организации в один файл"
 									  Command="{Binding MainWindowVM.ExportAllReportsOneFile, Mode=OneWay}"/>
@@ -78,50 +84,129 @@
 							<MenuItem Header="Выгрузить все организации в отдельные файлы"
 								  Command="{Binding MainWindowVM.ExportAllReports, Mode=OneWay}"
 								  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
-						<MenuItem Header="Выгрузить отчеты организации в отдельные .xlsx файлы"
-                                  IsVisible="{Binding MainWindowVM.AppLaunchedAtNorao, Mode=OneWay}">
+						<MenuItem Header="Выгрузить отчеты организации в отдельные .xlsx файлы">
+                            <MenuItem.IsVisible>
+                                <MultiBinding Converter="{StaticResource AppLaunchedAndSelectedReportsVisibleConverter}">
+                                    <Binding Path="MainWindowVM.AppLaunchedAtNorao" Mode="OneWay"/>
+                                    <Binding Path="SelectedReports" Mode="OneWay"/>
+                                </MultiBinding>
+                            </MenuItem.IsVisible>
 							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
-									  CommandParameter="2.1"
-									  Header="Форма 2.1"/>
+									  Header="Форма 2.1">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.1"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
 							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
-									  CommandParameter="2.2"
-									  Header="Форма 2.2"/>
+									  Header="Форма 2.2">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.2"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
 							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
-									  CommandParameter="2.3"
-									  Header="Форма 2.3"/>
+									  Header="Форма 2.3">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.3"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
 							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
-									  CommandParameter="2.4"
-									  Header="Форма 2.4"/>
+									  Header="Форма 2.4">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.4"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
 							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
-									  CommandParameter="2.5"
-									  Header="Форма 2.5"/>
+									  Header="Форма 2.5">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.5"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
 							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
-									  CommandParameter="2.6"
-									  Header="Форма 2.6"/>
+									  Header="Форма 2.6">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.6"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
 							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
-									  CommandParameter="2.7"
-									  Header="Форма 2.7"/>
+									  Header="Форма 2.7">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.7"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
 							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
-									  CommandParameter="2.8"
-									  Header="Форма 2.8"/>
+									  Header="Форма 2.8">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.8"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
 							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
-									  CommandParameter="2.9"
-									  Header="Форма 2.9"/>
+									  Header="Форма 2.9">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.9"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
 							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
-									  CommandParameter="2.10"
-									  Header="Форма 2.10"/>
+									  Header="Форма 2.10">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.10"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
 							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
-									  CommandParameter="2.11"
-									  Header="Форма 2.11"/>
+									  Header="Форма 2.11">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.11"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
 							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
-									  CommandParameter="2.12"
-									  Header="Форма 2.12"/>
+									  Header="Форма 2.12">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.12"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
 						</MenuItem>
 						<MenuItem Header="Проверить все формы организации"
 								  Command="{Binding MainWindowVM.ExcelExportCheckAllForms, Mode=OneWay}"
+                                  IsVisible="{Binding SelectedReports, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}"
 								  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 						<MenuItem Header="Удалить организацию"
 									  Command="{Binding MainWindowVM.DeleteReports, Mode=OneWay}"
+                                      IsVisible="{Binding SelectedReports, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 						</ContextMenu>
 					</DataGrid.ContextMenu>

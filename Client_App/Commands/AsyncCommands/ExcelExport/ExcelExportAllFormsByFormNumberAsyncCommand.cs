@@ -24,6 +24,18 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 /// </summary>
 public class ExcelExportAllFormsByFormNumberAsyncCommand : BaseAsyncCommand
 {
+    public sealed class ExportByFormCommandParameter
+    {
+        public ExportByFormCommandParameter(string formNum, Reports selectedReports)
+        {
+            FormNum = formNum;
+            SelectedReports = selectedReports;
+        }
+
+        public string FormNum { get; }
+        public Reports SelectedReports { get; }
+    }
+
     private readonly MainWindowVM _mainWindowVM;
     
     public ExcelExportAllFormsByFormNumberAsyncCommand(MainWindowVM mainWindowVM)
@@ -40,14 +52,33 @@ public class ExcelExportAllFormsByFormNumberAsyncCommand : BaseAsyncCommand
         };
     }
     
-    public override bool CanExecute(object? parameter) => _mainWindowVM.SelectedReports is not null;
+    public override bool CanExecute(object? parameter) =>
+        parameter switch
+        {
+            ExportByFormCommandParameter p => p.SelectedReports is not null,
+            string => _mainWindowVM.SelectedReports is not null,
+            _ => false
+        };
 
     public override async Task AsyncExecute(object? parameter)
     {
-        if (parameter is not string formNum) return;
+        string formNum;
+        Reports? selectedReports;
 
-        // Получаем выбранную организацию
-        var selectedReports = _mainWindowVM.SelectedReports;
+        switch (parameter)
+        {
+            case ExportByFormCommandParameter p:
+                formNum = p.FormNum;
+                selectedReports = p.SelectedReports;
+                break;
+            case string s:
+                formNum = s;
+                selectedReports = _mainWindowVM.SelectedReports;
+                break;
+            default:
+                return;
+        }
+
         if (selectedReports == null)
         {
             await ShowNoSelectedOrgMessage();

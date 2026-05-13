@@ -31,30 +31,44 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
     /// <summary>
     /// Проверить выбранный отчёт из главного окна
     /// </summary>
-    public ICommand CheckReportFromMain => new CheckReportFromMainAsyncCommand(this);
+    public ICommand CheckReportFromMain { get; private set; }
 
     /// <summary>
     /// Выбранная форма -> Выгрузка Excel -> Для анализа
     /// </summary>
-    public ICommand ExcelExportFormAnalysis => new ExcelExportFormAnalysisAsyncCommand(this);
+    public ICommand ExcelExportFormAnalysis { get; private set; }
 
     /// <summary>
     /// Выбранная организация -> Импортировать отчёт в организацию -> Из Excel
     /// </summary>
-    public ICommand ImportExcel => new ImportExcelAsyncCommand(this);
+    public ICommand ImportExcel { get; private set; }
 
     /// <summary>
     /// Выбранная организация -> Импортировать отчёт в организацию -> Из Raodb
     /// </summary>
-    public ICommand ImportRaodb => new ImportRaodbAsyncCommand(this); 
+    public ICommand ImportRaodb { get; private set; } 
     
     #endregion
 
     #region Constructor
 
-    public Forms2TabControlVM() { }
+    public Forms2TabControlVM()
+    {
+        InitializeCommands();
+    }
 
-    public Forms2TabControlVM(MainWindowVM mainWindowVM) : base(mainWindowVM) { }
+    public Forms2TabControlVM(MainWindowVM mainWindowVM) : base(mainWindowVM)
+    {
+        InitializeCommands();
+    }
+
+    private void InitializeCommands()
+    {
+        CheckReportFromMain = new CheckReportFromMainAsyncCommand(this);
+        ExcelExportFormAnalysis = new ExcelExportFormAnalysisAsyncCommand(this);
+        ImportExcel = new ImportExcelAsyncCommand(this);
+        ImportRaodb = new ImportRaodbAsyncCommand(this);
+    }
 
     #endregion
 
