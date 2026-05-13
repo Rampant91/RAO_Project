@@ -1,0 +1,115 @@
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.VisualTree;
+using Avalonia.Xaml.Interactivity;
+using Client_App.ViewModels.MainWindowTabs;
+
+namespace Client_App.Behaviors;
+
+/// <summary>
+/// Behavior для DataGrid, который сбрасывает выбор при клике мимо строки (но внутри DataGrid)
+/// </summary>
+public class DataGridDeselectOnEmptyAreaClickBehavior : Behavior<DataGrid>
+{
+    private bool _isAttached;
+
+    protected override void OnAttached()
+    {
+        base.OnAttached();
+
+        if (AssociatedObject is null) return;
+
+        // Ждем полной загрузки контрола
+        AssociatedObject.AttachedToVisualTree += OnAttachedToVisualTree;
+    }
+
+    protected override void OnDetaching()
+    {
+        base.OnDetaching();
+
+        if (AssociatedObject is not null)
+        {
+            AssociatedObject.AttachedToVisualTree -= OnAttachedToVisualTree;
+        }
+
+        DetachEventHandlers();
+    }
+
+    private void OnAttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)
+    {
+        if (!_isAttached)
+        {
+            AttachEventHandlers();
+            _isAttached = true;
+        }
+    }
+
+    private void AttachEventHandlers()
+    {
+        if (AssociatedObject is not null)
+        {
+            AssociatedObject.PointerPressed += OnDataGridPointerPressed;
+        }
+    }
+
+    private void DetachEventHandlers()
+    {
+        if (AssociatedObject is not null)
+        {
+            AssociatedObject.PointerPressed -= OnDataGridPointerPressed;
+            _isAttached = false;
+        }
+    }
+
+    private void OnDataGridPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (AssociatedObject is null) return;
+
+        // Проверяем, был ли клик по строке DataGrid
+        var source = e.Source as Visual;
+        var isClickOnRow = IsClickOnDataGridRow(source);
+
+        // Если клик был мимо строки, сбрасываем выделение
+        if (!isClickOnRow)
+        {
+            // Сбрасываем SelectedItem в DataGrid
+            AssociatedObject.SelectedItem = null;
+
+            // Также сбрасываем соответствующее свойство в ViewModel
+            DeselectInViewModel();
+        }
+    }
+
+    private bool IsClickOnDataGridRow(Visual? source)
+    {
+        // Проверяем, находится ли источник клика внутри DataGridRow
+        while (source != null)
+        {
+            if (source is DataGridRow)
+            {
+                return true;
+            }
+            source = source.GetVisualParent() as Visual;
+        }
+        return false;
+    }
+
+    private void DeselectInViewModel()
+    {
+        if (AssociatedObject?.DataContext is FormsTabControlBaseVM vm)
+        {
+            // Определяем, какой DataGrid используется по имени
+            if (AssociatedObject.Name == "ReportsDataGrid")
+            {
+                // Верхний DataGrid - сбрасываем SelectedReports
+                vm.SelectedReports = null;
+            }
+            else if (AssociatedObject.Name == "ReportDataGrid")
+            {
+                // Нижний DataGrid - сбрасываем SelectedReport
+                vm.SelectedReport = null;
+            }
+        }
+    }
+}

@@ -49,6 +49,7 @@
 					
 					<interactivity:Interaction.Behaviors>
 						<local:DataGridDoubleClickOpenFormBehavior />
+						<local:DataGridDeselectOnEmptyAreaClickBehavior />
 					</interactivity:Interaction.Behaviors>
 
 					<DataGrid.ContextMenu>
@@ -359,7 +360,8 @@
                   Grid.Column="0" 
                   Grid.ColumnSpan="2" 
                   RowDefinitions="*,Auto" >
-				<DataGrid Grid.Row="0" 
+				<DataGrid x:Name="ReportDataGrid"
+                          Grid.Row="0" 
                           Margin="5"
 						  Items="{Binding ReportCollection}"
 						  SelectedItem="{Binding SelectedReport}"
@@ -371,6 +373,7 @@
 
                     <interactivity:Interaction.Behaviors>
 						<local:DataGridDoubleClickOpenFormBehavior />
+						<local:DataGridDeselectOnEmptyAreaClickBehavior />
 					</interactivity:Interaction.Behaviors>
 					
                     <DataGrid.ContextMenu>
