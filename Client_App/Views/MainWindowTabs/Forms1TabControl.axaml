@@ -16,7 +16,6 @@
              x:Class="Client_App.Views.MainWindowTabs.Forms1TabControl">
 
 	<UserControl.Resources>
-        <customConverters:BoolInverterConverter x:Key="BoolInverterConverter"/>
         <customConverters:NotNullToBoolConverter x:Key="NotNullToBoolConverter"/>
         <customConverters:AppLaunchedAndSelectedReportsVisibleConverter x:Key="AppLaunchedAndSelectedReportsVisibleConverter"/>
         <customConverters:ExcelExportByFormCommandParameterConverter x:Key="ExcelExportByFormCommandParameterConverter"/>
@@ -54,6 +53,7 @@
 
 					<DataGrid.ContextMenu>
                         <ContextMenu>
+
                             <ContextMenu.Styles>
                                 <Style Selector="MenuItem">
                                     <Setter Property="Background" Value="WhiteSmoke"/>
@@ -61,6 +61,7 @@
                                     <Setter Property="FontSize" Value="14"/>
                                 </Style>
                             </ContextMenu.Styles>
+
                             <MenuItem Header="Добавить организацию"
 									  Command="{Binding MainWindowVM.AddReports, Mode=OneWay}"/>
                             <MenuItem Header="Редактировать отчёт по форме 1.0 организации"
@@ -87,7 +88,7 @@
                             <MenuItem Header="Выгрузить все организации">
                                 <MenuItem Header="В один .RAODB файл"
                                           Command="{Binding MainWindowVM.ExportAllReportsOneFile, Mode=OneWay}"/>
-                                <MenuItem Header="Из конкретного субъекта РФ в один .RAODB файл"
+                                <MenuItem Header="Из субъекта РФ в один .RAODB файл"
                                           Command="{Binding MainWindowVM.ExportAllReportsFromSubjectRFOneFile, Mode=OneWay}"/>
                                 <MenuItem Header="В отдельные .RAODB файлы"
                                           Command="{Binding MainWindowVM.ExportAllReports, Mode=OneWay}"/>
@@ -183,7 +184,7 @@
                                     </MenuItem.CommandParameter>
                                 </MenuItem>
                             </MenuItem>
-                            <MenuItem Header="Проверить все формы организации"
+                            <MenuItem Header="Проверить все отчёты организации"
 									  Command="{Binding MainWindowVM.ExcelExportCheckAllForms, Mode=OneWay}"
                                       IsVisible="{Binding SelectedReports, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
@@ -380,8 +381,10 @@
 						<ContextMenu>
 							<MenuItem Header="Редактировать отчёт"
 									  Command="{Binding NewChangeReport, Mode=OneWay}"
-									  CommandParameter="{Binding SelectedReport}"/>
-                            <MenuItem Header="Выгрузить отчёт в Excel">
+									  CommandParameter="{Binding SelectedReport}"
+                                      IsVisible="{Binding SelectedReport, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}"/>
+                            <MenuItem Header="Выгрузить отчёт в Excel"
+                                      IsVisible="{Binding SelectedReport, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}">
                                 <MenuItem Header="для печати"
                                           Command="{Binding ExcelExportFormPrint, Mode=OneWay}"
                                           CommandParameter="{Binding SelectedReport}"/>
@@ -389,18 +392,21 @@
                                           Command="{Binding ExcelExportFormAnalysis, Mode=OneWay}"
                                           CommandParameter="{Binding SelectedReport}"/>
                             </MenuItem>
-							<MenuItem Header="Выгрузить отчёт в RAODB"
+							<MenuItem Header="Выгрузить отчёт в .RAODB"
 									  Command="{Binding ExportReport, Mode=OneWay}"
-									  CommandParameter="{Binding SelectedReport}"/>
-							<MenuItem Header="Проверить отчёт"
-									  Command="{Binding CheckReportFromMain, Mode=OneWay}"
-									  CommandParameter="{Binding SelectedReport}"/>
+									  CommandParameter="{Binding SelectedReport}"
+                                      IsVisible="{Binding SelectedReport, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}"/>
+                            <MenuItem Header="Проверить отчёт"
+                                      Command="{Binding CheckReportFromMain, Mode=OneWay}"
+                                      CommandParameter="{Binding SelectedReport}"
+                                      IsVisible="{Binding SelectedReport, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}"/>
 							<MenuItem Header="Сохранить комментарий"
 									  Command="{Binding MainWindowVM.SaveReports}"
 									  CommandParameter="{Binding SelectedReport}"/>
 							<MenuItem Header="Удалить отчёт"
 									  Command="{Binding DeleteReport}"
-									  CommandParameter="{Binding SelectedReport}"/>
+									  CommandParameter="{Binding SelectedReport}"
+                                      IsVisible="{Binding SelectedReport, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}"/>
 						</ContextMenu>
 					</DataGrid.ContextMenu>
 
