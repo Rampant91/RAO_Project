@@ -1,8 +1,11 @@
+using System;
+using System.Collections;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
+using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.MainWindowTabs;
 
 namespace Client_App.Behaviors;
@@ -60,10 +63,20 @@ public class DataGridDeselectOnEmptyAreaClickBehavior : Behavior<DataGrid>
         // Если клик был мимо строки, сбрасываем выделение
         if (!isClickOnRow)
         {
-            // Сбрасываем SelectedItem в DataGrid
+            if (AssociatedObject.SelectedItems is { IsFixedSize: false } list)
+            {
+                try
+                {
+                    list.Clear();
+                }
+                catch (NotSupportedException)
+                {
+                    // некоторые реализации SelectedItems не поддерживают очистку
+                }
+            }
+
             AssociatedObject.SelectedItem = null;
 
-            // Также сбрасываем соответствующее свойство в ViewModel
             DeselectInViewModel();
         }
     }
@@ -96,6 +109,19 @@ public class DataGridDeselectOnEmptyAreaClickBehavior : Behavior<DataGrid>
             {
                 // Нижний DataGrid - сбрасываем SelectedReport
                 vm.SelectedReport = null;
+            }
+        }
+        else if (AssociatedObject?.DataContext is BaseFormVM formVm)
+        {
+            if (AssociatedObject.Name == "dataGrid")
+            {
+                formVm.SelectedForm = null;
+                formVm.SelectedForms.Clear();
+            }
+            else if (AssociatedObject.Name == "notesDataGrid")
+            {
+                formVm.SelectedNote = null;
+                formVm.SelectedNotes.Clear();
             }
         }
     }

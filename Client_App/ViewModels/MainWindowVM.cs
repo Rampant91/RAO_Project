@@ -42,6 +42,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             {
                 _selectedReportType = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(SelectedReports));
+                OnPropertyChanged(nameof(IsExcelSelectedOrganizationMenuEnabled));
                 UpdateReportsCollection();
                 UpdateOrgsPageInfo();
                 UpdateFormsPageInfo();
@@ -160,10 +162,12 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                 case 1:
                     Forms1TabControlVM.SelectedReports = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsExcelSelectedOrganizationMenuEnabled));
                     break;
                 case 2:
                     Forms2TabControlVM.SelectedReports = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsExcelSelectedOrganizationMenuEnabled));
                     break;
                 case 4:
                     Forms4TabControlVM.SelectedReports = value;
@@ -176,6 +180,14 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             }
         }
     }
+
+    /// <summary>
+    /// Пункт меню «Аналитика → Выбранная организация»: доступен на вкладках «Формы 1» / «Формы 2»
+    /// при выбранной строке в списке организаций.
+    /// </summary>
+    public bool IsExcelSelectedOrganizationMenuEnabled =>
+        (SelectedReportType == 1 || SelectedReportType == 2) && SelectedReports is not null;
+
     #endregion
 
     #region UpdateReportsCollection
@@ -488,6 +500,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         Forms4TabControlVM = new Forms4TabControlVM(this);
         Forms5TabControlVM = new Forms5TabControlVM(this);
 
+        Forms1TabControlVM.PropertyChanged += OnForms1Or2TabSelectedReportsChanged;
+        Forms2TabControlVM.PropertyChanged += OnForms1Or2TabSelectedReportsChanged;
+
         //UpdateReportsCollection();
 
         _appLaunchedAtNorao = Settings.Default.AppLaunchedInNorao;
@@ -504,6 +519,15 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     }
 
     #endregion
+
+    private void OnForms1Or2TabSelectedReportsChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(FormsTabControlBaseVM.SelectedReports))
+            return;
+
+        OnPropertyChanged(nameof(SelectedReports));
+        OnPropertyChanged(nameof(IsExcelSelectedOrganizationMenuEnabled));
+    }
 
     #region Interactions
 
