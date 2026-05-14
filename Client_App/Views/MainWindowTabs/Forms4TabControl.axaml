@@ -17,6 +17,8 @@
 
     <UserControl.Resources>
         <converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue" />
+        <customConverters:NullToBoolConverter x:Key="NullToBoolConverter" />
+        <customConverters:NullToTooltipConverter x:Key="NullToTooltipConverter"/>
         <customConverters:NotNullToBoolConverter x:Key="NotNullToBoolConverter"/>
     </UserControl.Resources>
 
@@ -195,33 +197,42 @@
                     </Grid>
                 </Border>
             </Grid>
-            <StackPanel Grid.Row="0"
-                        Grid.Column="1"
-                        Margin="5">
-                <TextBlock Margin="0,0,0,8"
-                           FontWeight="SemiBold"
-                           Text="Создать отчёт по форме:"
-                           TextWrapping="Wrap" />
-                <Button Command="{Binding AddReport, Mode=OneWay}"
-                        CommandParameter="4.1"
+            <Grid Grid.Row="0"
+                  Grid.Column="1"
+                  Margin="5">
+                <StackPanel>
+                    <TextBlock Margin="0,0,0,8"
+                               FontWeight="SemiBold"
+                               Text="Создать отчёт по форме:"
+                               TextWrapping="Wrap" />
+                    <Button Command="{Binding AddReport, Mode=OneWay}"
+                            CommandParameter="4.1"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+                            IsEnabled="{Binding SelectedReports, 
+                                    Converter={StaticResource NotNullToBoolConverter}, 
+                                    Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="4.1: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Перечень организаций, зарегистрированных в СГУК РВ и РАО на региональном уровне" />
+                        </Grid>
+                    </Button>
+                </StackPanel>
+                <!-- Прозрачный слой поверх: наведение на отключённую кнопку не доходит до StackPanel -->
+                <Border ZIndex="1"
+                        Background="Transparent"
                         HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Stretch"
-                        IsEnabled="{Binding SelectedReports, 
-                                Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}">
-                    <Grid ColumnDefinitions="Auto,*">
-                        <TextBlock Grid.Column="0"
-                                   FontWeight="Bold"
-                                   VerticalAlignment="Top"
-                                   Text="4.1: " />
-                        <TextBlock Grid.Column="1"
-                                   VerticalAlignment="Top"
-                                   TextAlignment="Left"
-                                   TextWrapping="Wrap"
-                                   Text="Перечень организаций, зарегистрированных в СГУК РВ и РАО на региональном уровне" />
-                    </Grid>
-                </Button>
-            </StackPanel>
+                        VerticalAlignment="Stretch"
+                        IsVisible="{Binding SelectedReports, Converter={StaticResource NullToBoolConverter}}"
+                        ToolTip.Tip="{Binding SelectedReports, Converter={StaticResource NullToTooltipConverter}, ConverterParameter='Для создания отчёта выберите свой центр из списка РИАЦ. Если РИАЦ в списке отсутствуют, сначала добавьте свой центр в список.'}" />
+            </Grid>
             <Grid Grid.Row="1"
                   Grid.Column="0"
                   Grid.ColumnSpan="2"

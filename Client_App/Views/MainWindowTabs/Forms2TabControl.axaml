@@ -16,6 +16,7 @@
              x:Class="Client_App.Views.MainWindowTabs.Forms2TabControl">
 
 	<UserControl.Resources>
+        <customConverters:NullToTooltipConverter x:Key="NullToTooltipConverter"/>
         <customConverters:NotNullToBoolConverter x:Key="NotNullToBoolConverter"/>
         <customConverters:AppLaunchedAndSelectedReportsVisibleConverter x:Key="AppLaunchedAndSelectedReportsVisibleConverter"/>
         <customConverters:ExcelExportByFormCommandParameterConverter x:Key="ExcelExportByFormCommandParameterConverter"/>
@@ -353,7 +354,8 @@
                           Grid.Column="1" 
                           Margin="5"
                           HorizontalScrollBarVisibility="Disabled"
-                          VerticalScrollBarVisibility="Auto">
+                          VerticalScrollBarVisibility="Auto"
+                          ToolTip.Tip="{Binding SelectedReports, Converter={StaticResource NullToTooltipConverter}, ConverterParameter='Для создания отчёта выберите организацию из списка организаций. Если организации в списке отсутствуют, сначала добавьте свою организацию в список.'}">
 				<StackPanel>
 					<StackPanel.Styles>
 						<Style Selector="Button">

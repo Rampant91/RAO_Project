@@ -15,6 +15,7 @@
 
 	<UserControl.Resources>
 		<converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
+        <customConverters:NullToTooltipConverter x:Key="NullToTooltipConverter"/>
         <customConverters:NotNullToBoolConverter x:Key="NotNullToBoolConverter"/>
 	</UserControl.Resources>
 
@@ -155,7 +156,8 @@
                           Grid.Column="1"
                           Margin="5"
                           HorizontalScrollBarVisibility="Disabled"
-                          VerticalScrollBarVisibility="Auto">
+                          VerticalScrollBarVisibility="Auto"
+                          ToolTip.Tip="{Binding SelectedReports, Converter={StaticResource NullToTooltipConverter}, ConverterParameter='Для создания отчёта выберите свой центр из списка ВИАЦ. Если ВИАЦ в списке отсутствуют, сначала добавьте свой центр в список.'}">
 			    <StackPanel>
                     <StackPanel.Styles>
                         <Style Selector="Button">
