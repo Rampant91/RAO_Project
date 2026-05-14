@@ -48,6 +48,23 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
         }
     }
 
+    protected override void CheckAndResetFilterIfNeeded()
+    {
+        // Если фильтр установлен и выбрана новая организация
+        if (!string.IsNullOrEmpty(FormNumWhiteList) && SelectedReports != null)
+        {
+            // Проверяем, есть ли отчёты для текущего фильтра в новой организации
+            var hasMatchingReports = SelectedReports.Report_Collection
+                .Any(rep => rep.FormNum_DB == FormNumWhiteList);
+
+            // Если нет отчётов для текущего фильтра, сбрасываем фильтр
+            if (!hasMatchingReports)
+            {
+                FormNumWhiteList = string.Empty;
+            }
+        }
+    }
+
     #region FormNumWhiteList
 
     private string _formNumWhiteList = "";

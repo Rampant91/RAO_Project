@@ -281,6 +281,9 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 
             OnPropertyChanged();
 
+            // Проверяем и сбрасываем фильтр если нет отчётов для текущего фильтра
+            CheckAndResetFilterIfNeeded();
+
             // UpdateReportCollection выполняется в CurrentPageForms
             // Чтобы не вызывать метод дважды используется if else
             if (CurrentPageForms != 1)
@@ -330,6 +333,12 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
     /// Дополнительные условия поиска для переопределения в дочерних классах.
     /// </summary>
     protected virtual bool GetAdditionalSearchConditions(Reports reps, string search) => false;
+
+    /// <summary>
+    /// Проверяет и сбрасывает фильтр если при переключении организации нет отчётов для текущего фильтра.
+    /// Переопределяется в дочерних классах.
+    /// </summary>
+    protected virtual void CheckAndResetFilterIfNeeded() { }
 
     /// <summary>
     /// Всего организаций.
