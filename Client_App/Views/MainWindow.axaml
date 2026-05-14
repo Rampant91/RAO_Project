@@ -27,6 +27,7 @@
 
 	<Window.Resources>
 		<converter:BoolInverterConverter x:Key="BoolInverterConverter"/>
+        <converter:NotNullToBoolConverter x:Key="NotNullToBoolConverter"/>
 	</Window.Resources>
     
     <DockPanel>
@@ -173,7 +174,10 @@
                               CommandParameter="2.12"
                               Header="Форма 2.12"/>
                 </MenuItem>
-                <MenuItem Header="Выбранная организация">
+                <MenuItem Header="Выбранная организация"
+                          IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}">
                     <MenuItem Command="{Binding ExcelExportAll, Mode=OneWay}"
                               CommandParameter="SelectedOrg"
                               Header="Все формы"/>

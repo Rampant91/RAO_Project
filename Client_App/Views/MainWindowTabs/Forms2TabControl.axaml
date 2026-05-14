@@ -20,8 +20,6 @@
         <customConverters:AppLaunchedAndSelectedReportsVisibleConverter x:Key="AppLaunchedAndSelectedReportsVisibleConverter"/>
         <customConverters:ExcelExportByFormCommandParameterConverter x:Key="ExcelExportByFormCommandParameterConverter"/>
         <converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
-		<converter:StringEqualsToColorConverter x:Key="StringEqualsToColor" />
-		<converter:CheckReportsAnyMatchingFormNumConverter x:Key ="CheckReportsAnyMatchingFormNum"/>
 	</UserControl.Resources>
 
     <Design.DataContext>
@@ -351,53 +349,89 @@
                           Margin="5">
 				<StackPanel>
 					<Button Margin="0,0,0,5" 
-							Command="{Binding MainWindowVM.AddForm}"
+							Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.1"
-							Content="Форма 2.1: Сортировка, переработка и кондиционирование РАО на установках"/>
+							Content="Форма 2.1: Сортировка, переработка и кондиционирование РАО на установках"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}"/>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.2"
-							Content="Форма 2.2: Наличие РАО в пунктах хранения, местах сбора и/или временного хранения"/>
+							Content="Форма 2.2: Наличие РАО в пунктах хранения, местах сбора и/или временного хранения"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}"/>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.3"
-							Content="Форма 2.3: Разрешение на размещение РАО в пунктах хранения, местах сбора и/или временного хранения"/>
+							Content="Форма 2.3: Разрешение на размещение РАО в пунктах хранения, местах сбора и/или временного хранения"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}"/>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.4"
-							Content="Форма 2.4: Постановка на учет и снятие с учета РВ, содержащихся в отработавшем ядерном топливе"/>
+							Content="Форма 2.4: Постановка на учет и снятие с учета РВ, содержащихся в отработавшем ядерном топливе"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}"/>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.5"
-							Content="Форма 2.5: Наличие РВ, содержащихся в ядерном топливе, в пунктах хранения"/>
+							Content="Форма 2.5: Наличие РВ, содержащихся в ядерном топливе, в пунктах хранения"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}"/>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.6"
-							Content="Форма 2.6: Контроль загрязнения подземных вод РВ"/>
+							Content="Форма 2.6: Контроль загрязнения подземных вод РВ"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}"/>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.7"
-							Content="Форма 2.7: Поступление радионуклидов в атмосферный воздух"/>
+							Content="Форма 2.7: Поступление радионуклидов в атмосферный воздух"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}"/>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.8"
-							Content="Форма 2.8: Отведение сточных вод, содержащих радионуклиды"/>
+							Content="Форма 2.8: Отведение сточных вод, содержащих радионуклиды"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}"/>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.9"
-							Content="Форма 2.9: Активность радионуклидов, отведенных со сточными водами"/>
+							Content="Форма 2.9: Активность радионуклидов, отведенных со сточными водами"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}"/>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.10"
-							Content="Форма 2.10: Территории, загрязненные радионуклидами"/>
+							Content="Форма 2.10: Территории, загрязненные радионуклидами"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}"/>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.11"
-							Content="Форма 2.11: Радионуклидный состав загрязненных участков территорий"/>
+							Content="Форма 2.11: Радионуклидный состав загрязненных участков территорий"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}"/>
 					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.12"
-							Content="Форма 2.12: Суммарные сведения о РВ не в составе ЗРИ"/>
+							Content="Форма 2.12: Суммарные сведения о РВ не в составе ЗРИ"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}"/>
 				</StackPanel>
 			</ScrollViewer>
 			<Grid Grid.Row ="1" 

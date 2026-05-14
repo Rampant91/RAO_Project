@@ -333,9 +333,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
     private readonly UpdateService _updateService;
 
-    public ICommand AddForm { get; set; }                           //  Создать и открыть новое окно формы для выбранной организации (1.0, 2.0)
     public ICommand ChangeForm { get; set; }                        //  Редактировать выбранный отчёт (для старых форм 2.х)
-    public ICommand NewAddForm { get; set; }                        //  Создать и открыть новое окно формы для выбранной организации (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
     public ICommand AddReports { get; set; }                        //  Создать и открыть новое окно формы организации (1.0, 2.0, 4.0)
     public ICommand ChangePasFolder { get; set; }                   //  Excel -> Паспорта -> Изменить расположение паспортов по умолчанию
     public ICommand ConvertExcelToRaodb { get; set; }               //  Дополнительно -> Конвертер из Excel в .RAODB
@@ -468,8 +466,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     {
         _updateService = new UpdateService();
         
-        AddForm = new AddFormAsyncCommand();
-        NewAddForm = new NewAddFormAsyncCommand();
+        
         AddReports = new AddReportsAsyncCommand();
         ChangeForm = new ChangeFormAsyncCommand();
         ChangePasFolder = new ChangePasFolderAsyncCommand();

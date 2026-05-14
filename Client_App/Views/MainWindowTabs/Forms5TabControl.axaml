@@ -9,13 +9,13 @@
 			 xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 			 xmlns:local="using:Client_App.Behaviors"
 			 xmlns:vm="using:Client_App.ViewModels.MainWindowTabs"
+			 xmlns:customConverters="clr-namespace:Client_App.Resources.CustomConverters"
 			 x:DataType="vm:Forms5TabControlVM"
              x:Class="Client_App.Views.MainWindowTabs.Forms5TabControl">
 
 	<UserControl.Resources>
 		<converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
-		<converter:StringEqualsToColorConverter x:Key="StringEqualsToColor" />
-        <converter:CheckReportsAnyMatchingFormNumConverter x:Key ="CheckReportsAnyMatchingFormNum"/>
+        <customConverters:NotNullToBoolConverter x:Key="NotNullToBoolConverter"/>
 	</UserControl.Resources>
 
     <Design.DataContext>
@@ -147,27 +147,48 @@
 			<StackPanel Grid.Row="0" 
                         Grid.Column="1" 
                         Margin="5">
-				<Button Command="{Binding MainWindowVM.NewAddForm}"
-						CommandParameter="5.1"
-						Content="Форма 5.1"/>
-				<Button Command="{Binding MainWindowVM.NewAddForm}"
-						CommandParameter="5.2"
-						Content="Форма 5.2"/>
-				<Button Command="{Binding MainWindowVM.NewAddForm}"
-						CommandParameter="5.3"
-						Content="Форма 5.3"/>
-				<Button Command="{Binding MainWindowVM.NewAddForm}"
-						CommandParameter="5.4"
-						Content="Форма 5.4"/>
-				<Button Command="{Binding MainWindowVM.NewAddForm}"
-						CommandParameter="5.5"
-						Content="Форма 5.5"/>
-				<Button Command="{Binding MainWindowVM.NewAddForm}"
-						CommandParameter="5.6"
-						Content="Форма 5.6"/>
-				<Button Command="{Binding MainWindowVM.NewAddForm}"
-						CommandParameter="5.7"
-						Content="Форма 5.7"/>
+				<Button Command="{Binding AddReport, Mode=OneWay}"
+                        CommandParameter="5.1"
+                        Content="Форма 5.1"
+                        IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}"/>
+				<Button Command="{Binding AddReport, Mode=OneWay}"
+                        CommandParameter="5.2"
+                        Content="Форма 5.2"
+                        IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}"/>
+				<Button Command="{Binding AddReport, Mode=OneWay}"
+                        CommandParameter="5.3"
+                        Content="Форма 5.3"
+                        IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}"/>
+				<Button Command="{Binding AddReport, Mode=OneWay}"
+                        CommandParameter="5.4"
+                        Content="Форма 5.4"
+                        IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}"/>
+				<Button Command="{Binding AddReport, Mode=OneWay}"
+                        CommandParameter="5.5"
+                        Content="Форма 5.5"
+                        IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}"/>
+				<Button Command="{Binding AddReport, Mode=OneWay}"
+                        CommandParameter="5.6"
+                        Content="Форма 5.6"
+                        IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}"/>
+				<Button Command="{Binding AddReport, Mode=OneWay}"
+                        CommandParameter="5.7"
+                        Content="Форма 5.7"
+                        IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}"/>
 			</StackPanel>
 			<Grid Grid.Row ="1" 
                   Grid.Column="0" 

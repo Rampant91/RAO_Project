@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Windows.Input;
+using Client_App.Commands.AsyncCommands.Add;
 
 namespace Client_App.ViewModels.MainWindowTabs;
 
@@ -27,7 +28,12 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
     #endregion
 
     #region Commands
-    
+
+    /// <summary>
+    /// Создать и открыть новое окно с отчётом по форме x.x для выбранной организации (использует старую команду).
+    /// </summary>
+    public ICommand OldAddReport { get; private set; }
+
     /// <summary>
     /// Проверить выбранный отчёт из главного окна
     /// </summary>
@@ -64,6 +70,8 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
 
     private void InitializeCommands()
     {
+        OldAddReport = new OldAddReportAsyncCommand();
+
         CheckReportFromMain = new CheckReportFromMainAsyncCommand(this);
         ExcelExportFormAnalysis = new ExcelExportFormAnalysisAsyncCommand(this);
         ImportExcel = new ImportExcelAsyncCommand(this);

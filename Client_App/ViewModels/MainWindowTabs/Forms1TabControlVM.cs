@@ -1,7 +1,6 @@
 ﻿using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.Import;
-using Client_App.Commands.SyncCommands;
 using Client_App.Resources.CustomComparers;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;

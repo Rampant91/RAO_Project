@@ -1,4 +1,5 @@
 ﻿using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.Delete;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.RaodbExport;
@@ -21,7 +22,13 @@ namespace Client_App.ViewModels.MainWindowTabs;
 public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 {
     #region Commands
-    
+
+    /// <summary>
+    /// Создать и открыть новое окно с отчётом по форме 1.x, 4.1 и 5.x для выбранной организации.
+    /// Для 2.x используется старая команда, пока не обновим там интерфейс.
+    /// </summary>
+    public ICommand AddReport { get; private set; }
+
     /// <summary>
     /// Редактировать выбранный отчёт
     /// </summary>
@@ -58,6 +65,8 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 
     protected FormsTabControlBaseVM(MainWindowVM mainWindowVM)
     {
+        AddReport = new AddReportAsyncCommand();
+
         MainWindowVM = mainWindowVM;
     }
 
