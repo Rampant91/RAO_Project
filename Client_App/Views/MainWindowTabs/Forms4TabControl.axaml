@@ -33,7 +33,8 @@
                          Margin="5"
                          Text="{Binding SearchText, Mode=OneWayToSource}"
                          Watermark="Поиск..." />
-                <DataGrid Grid.Row="1"
+                <DataGrid x:Name="ReportsDataGrid"
+                          Grid.Row="1"
                           Margin="5"
                           AlternatingRowBackground="White"
                           CanUserSortColumns="False"
@@ -46,6 +47,7 @@
 
                     <interactivity:Interaction.Behaviors>
                         <local:DataGridDoubleClickOpenFormBehavior />
+                        <local:DataGridDeselectOnEmptyAreaClickBehavior />
                     </interactivity:Interaction.Behaviors>
 
                     <DataGrid.ContextMenu>
@@ -191,18 +193,36 @@
             <StackPanel Grid.Row="0"
                         Grid.Column="1"
                         Margin="5">
+                <TextBlock Margin="0,0,0,8"
+                           FontWeight="SemiBold"
+                           Text="Создать отчёт по форме:"
+                           TextWrapping="Wrap" />
                 <Button Command="{Binding AddReport, Mode=OneWay}"
                         CommandParameter="4.1"
-                        Content="Форма 4.1"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
                         IsEnabled="{Binding SelectedReports, 
                                 Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}"/>
+                                Mode=OneWay}">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <TextBlock Grid.Column="0"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Top"
+                                   Text="4.1: " />
+                        <TextBlock Grid.Column="1"
+                                   VerticalAlignment="Top"
+                                   TextAlignment="Left"
+                                   TextWrapping="Wrap"
+                                   Text="Перечень организаций, зарегистрированных в СГУК РВ и РАО на региональном уровне" />
+                    </Grid>
+                </Button>
             </StackPanel>
             <Grid Grid.Row="1"
                   Grid.Column="0"
                   Grid.ColumnSpan="2"
                   RowDefinitions="*,Auto">
-                <DataGrid Grid.Row="0"
+                <DataGrid x:Name="ReportDataGrid"
+                          Grid.Row="0"
                           Margin="5"
                           AlternatingRowBackground="White"
                           CanUserSortColumns="False"
@@ -214,6 +234,7 @@
 
                     <interactivity:Interaction.Behaviors>
                         <local:DataGridDoubleClickOpenFormBehavior />
+                        <local:DataGridDeselectOnEmptyAreaClickBehavior />
                     </interactivity:Interaction.Behaviors>
 
                     <DataGrid.ContextMenu>

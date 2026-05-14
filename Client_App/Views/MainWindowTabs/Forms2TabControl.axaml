@@ -346,94 +346,230 @@
 			</Grid>
 			<ScrollViewer Grid.Row ="0" 
                           Grid.Column="1" 
-                          Margin="5">
+                          Margin="5"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto">
 				<StackPanel>
-					<Button Margin="0,0,0,5" 
-							Command="{Binding OldAddReport, Mode=OneWay}"
+					<StackPanel.Styles>
+						<Style Selector="Button">
+							<Setter Property="HorizontalAlignment" Value="Stretch"/>
+							<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+							<Setter Property="Padding" Value="6,3"/>
+							<Setter Property="Margin" Value="0,0,0,2.5"/>
+						</Style>
+					</StackPanel.Styles>
+					<TextBlock Margin="0,0,0,4"
+							   FontWeight="SemiBold"
+                               FontSize="12"
+							   Text="Создать отчёт по форме:"
+							   TextWrapping="Wrap"/>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.1"
-							Content="Форма 2.1: Сортировка, переработка и кондиционирование РАО на установках"
                             IsEnabled="{Binding SelectedReports, 
                                 Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}"/>
-					<Button Margin="0,0,0,5"
-                            Command="{Binding OldAddReport, Mode=OneWay}"
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.1: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Сортировка, переработка и кондиционирование РАО на установках" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.2"
-							Content="Форма 2.2: Наличие РАО в пунктах хранения, местах сбора и/или временного хранения"
                             IsEnabled="{Binding SelectedReports, 
                                 Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}"/>
-					<Button Margin="0,0,0,5"
-                            Command="{Binding OldAddReport, Mode=OneWay}"
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.2: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Наличие РАО в пунктах хранения, местах сбора и/или временного хранения" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.3"
-							Content="Форма 2.3: Разрешение на размещение РАО в пунктах хранения, местах сбора и/или временного хранения"
                             IsEnabled="{Binding SelectedReports, 
                                 Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}"/>
-					<Button Margin="0,0,0,5"
-                            Command="{Binding OldAddReport, Mode=OneWay}"
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.3: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Разрешение на размещение РАО в пунктах хранения, местах сбора и/или временного хранения" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.4"
-							Content="Форма 2.4: Постановка на учет и снятие с учета РВ, содержащихся в отработавшем ядерном топливе"
                             IsEnabled="{Binding SelectedReports, 
                                 Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}"/>
-					<Button Margin="0,0,0,5"
-                            Command="{Binding OldAddReport, Mode=OneWay}"
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.4: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Постановка на учет и снятие с учета РВ, содержащихся в отработавшем ядерном топливе" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.5"
-							Content="Форма 2.5: Наличие РВ, содержащихся в ядерном топливе, в пунктах хранения"
                             IsEnabled="{Binding SelectedReports, 
                                 Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}"/>
-					<Button Margin="0,0,0,5"
-                            Command="{Binding OldAddReport, Mode=OneWay}"
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.5: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Наличие РВ, содержащихся в ядерном топливе, в пунктах хранения" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.6"
-							Content="Форма 2.6: Контроль загрязнения подземных вод РВ"
                             IsEnabled="{Binding SelectedReports, 
                                 Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}"/>
-					<Button Margin="0,0,0,5"
-                            Command="{Binding OldAddReport, Mode=OneWay}"
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.6: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Контроль загрязнения подземных вод РВ" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.7"
-							Content="Форма 2.7: Поступление радионуклидов в атмосферный воздух"
                             IsEnabled="{Binding SelectedReports, 
                                 Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}"/>
-					<Button Margin="0,0,0,5"
-                            Command="{Binding OldAddReport, Mode=OneWay}"
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.7: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Поступление радионуклидов в атмосферный воздух" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.8"
-							Content="Форма 2.8: Отведение сточных вод, содержащих радионуклиды"
                             IsEnabled="{Binding SelectedReports, 
                                 Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}"/>
-					<Button Margin="0,0,0,5"
-                            Command="{Binding OldAddReport, Mode=OneWay}"
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.8: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Отведение сточных вод, содержащих радионуклиды" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.9"
-							Content="Форма 2.9: Активность радионуклидов, отведенных со сточными водами"
                             IsEnabled="{Binding SelectedReports, 
                                 Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}"/>
-					<Button Margin="0,0,0,5"
-                            Command="{Binding OldAddReport, Mode=OneWay}"
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.9: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Активность радионуклидов, отведенных со сточными водами" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.10"
-							Content="Форма 2.10: Территории, загрязненные радионуклидами"
                             IsEnabled="{Binding SelectedReports, 
                                 Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}"/>
-					<Button Margin="0,0,0,5"
-                            Command="{Binding OldAddReport, Mode=OneWay}"
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.10: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Территории, загрязненные радионуклидами" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.11"
-							Content="Форма 2.11: Радионуклидный состав загрязненных участков территорий"
                             IsEnabled="{Binding SelectedReports, 
                                 Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}"/>
-					<Button Margin="0,0,0,5"
-                            Command="{Binding OldAddReport, Mode=OneWay}"
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.11: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Радионуклидный состав загрязненных участков территорий" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.12"
-							Content="Форма 2.12: Суммарные сведения о РВ не в составе ЗРИ"
                             IsEnabled="{Binding SelectedReports, 
                                 Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}"/>
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.12: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Суммарные сведения о РВ не в составе ЗРИ" />
+                        </Grid>
+					</Button>
 				</StackPanel>
 			</ScrollViewer>
+
 			<Grid Grid.Row ="1" 
                   Grid.Column="0" 
                   Grid.ColumnSpan="2" 

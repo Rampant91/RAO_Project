@@ -30,7 +30,8 @@
                          Watermark ="Поиск..."
                          Text="{Binding SearchText, Mode=OneWayToSource}"/>
 				<!--Ошибка в этом DataGrid-->
-				<DataGrid Grid.Row="1" Margin="5"
+				<DataGrid x:Name="ReportsDataGrid"
+                          Grid.Row="1" Margin="5"
                           Items="{Binding ReportsCollection, Mode=TwoWay}"
                           SelectionMode="Single"
                           SelectedItem="{Binding SelectedReports, Mode=TwoWay}"
@@ -42,6 +43,7 @@
 
 					<interactivity:Interaction.Behaviors>
 						<local:DataGridDoubleClickOpenFormBehavior />
+						<local:DataGridDeselectOnEmptyAreaClickBehavior />
 					</interactivity:Interaction.Behaviors>
 
 					<DataGrid.ContextMenu>
@@ -144,57 +146,151 @@
 					</Grid>
 				</Border>
 			</Grid>
-			<StackPanel Grid.Row="0" 
-                        Grid.Column="1" 
-                        Margin="5">
-				<Button Command="{Binding AddReport, Mode=OneWay}"
-                        CommandParameter="5.1"
-                        Content="Форма 5.1"
-                        IsEnabled="{Binding SelectedReports, 
-                                Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}"/>
-				<Button Command="{Binding AddReport, Mode=OneWay}"
-                        CommandParameter="5.2"
-                        Content="Форма 5.2"
-                        IsEnabled="{Binding SelectedReports, 
-                                Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}"/>
-				<Button Command="{Binding AddReport, Mode=OneWay}"
-                        CommandParameter="5.3"
-                        Content="Форма 5.3"
-                        IsEnabled="{Binding SelectedReports, 
-                                Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}"/>
-				<Button Command="{Binding AddReport, Mode=OneWay}"
-                        CommandParameter="5.4"
-                        Content="Форма 5.4"
-                        IsEnabled="{Binding SelectedReports, 
-                                Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}"/>
-				<Button Command="{Binding AddReport, Mode=OneWay}"
-                        CommandParameter="5.5"
-                        Content="Форма 5.5"
-                        IsEnabled="{Binding SelectedReports, 
-                                Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}"/>
-				<Button Command="{Binding AddReport, Mode=OneWay}"
-                        CommandParameter="5.6"
-                        Content="Форма 5.6"
-                        IsEnabled="{Binding SelectedReports, 
-                                Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}"/>
-				<Button Command="{Binding AddReport, Mode=OneWay}"
-                        CommandParameter="5.7"
-                        Content="Форма 5.7"
-                        IsEnabled="{Binding SelectedReports, 
-                                Converter={StaticResource NotNullToBoolConverter}, 
-                                Mode=OneWay}"/>
-			</StackPanel>
+            <ScrollViewer Grid.Row ="0"
+                          Grid.Column="1"
+                          Margin="5"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto">
+			    <StackPanel>
+                    <StackPanel.Styles>
+                        <Style Selector="Button">
+                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="6,2"/>
+                            <Setter Property="Margin" Value="0,0,0,3"/>
+                        </Style>
+                    </StackPanel.Styles>
+                    <TextBlock Margin="0,0,0,8"
+                               FontWeight="SemiBold"
+                               Text="Создать отчёт по форме:"
+                               TextWrapping="Wrap"/>
+					<Button Command="{Binding AddReport, Mode=OneWay}"
+					        CommandParameter="5.1"
+					        IsEnabled="{Binding SelectedReports, 
+					                Converter={StaticResource NotNullToBoolConverter}, 
+					                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="5.1: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Сведения о закрытых радионуклидных источниках, полученных/переданных подведомственными организациями сторонним организациям и переведенных в радиоактивные отходы" />
+                        </Grid>
+                    </Button>
+					<Button Command="{Binding AddReport, Mode=OneWay}"
+					        CommandParameter="5.2"
+					        IsEnabled="{Binding SelectedReports, 
+					                Converter={StaticResource NotNullToBoolConverter}, 
+					                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="5.2: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Сведения о наличии закрытых радионуклидных источников в подведомственных организациях на конец года" />
+                        </Grid>
+                    </Button>
+					<Button Command="{Binding AddReport, Mode=OneWay}"
+					        CommandParameter="5.3"
+					        IsEnabled="{Binding SelectedReports, 
+					                Converter={StaticResource NotNullToBoolConverter}, 
+					                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="5.3: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Сведения о поступлении/передаче в подведомственные подразделения от сторонних организаций, расходовании и переводе в радиоактивные отходы открытых радионуклидных источников" />
+                        </Grid>
+                    </Button>
+					<Button Command="{Binding AddReport, Mode=OneWay}"
+					        CommandParameter="5.4"
+					        IsEnabled="{Binding SelectedReports, 
+					                Converter={StaticResource NotNullToBoolConverter}, 
+					                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="5.4: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Сведения о наличии в подведомственных организациях открытых радионуклидных источников на конец года" />
+                        </Grid>
+                    </Button>
+					<Button Command="{Binding AddReport, Mode=OneWay}"
+					        CommandParameter="5.5"
+					        IsEnabled="{Binding SelectedReports, 
+					                Converter={StaticResource NotNullToBoolConverter}, 
+					                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="5.5: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Сведения о поступлении/передаче в подведомственные организации от сторонних организаций и переводе в радиоактивные отходы изделий из обедненного урана" />
+                        </Grid>
+                    </Button>
+					<Button Command="{Binding AddReport, Mode=OneWay}"
+					        CommandParameter="5.6"
+					        IsEnabled="{Binding SelectedReports, 
+					                Converter={StaticResource NotNullToBoolConverter}, 
+					                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="5.6: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Сведения о наличии в подведомственных организациях изделий из обедненного урана на конец года" />
+                        </Grid>
+                    </Button>
+					<Button Command="{Binding AddReport, Mode=OneWay}"
+					        CommandParameter="5.7"
+					        IsEnabled="{Binding SelectedReports, 
+					                Converter={StaticResource NotNullToBoolConverter}, 
+					                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="5.7: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Перечень подведомственных организаций ведомственного информационно-аналитического центра федерального органа исполнительной власти" />
+                        </Grid>
+                    </Button>
+			    </StackPanel>
+            </ScrollViewer>
 			<Grid Grid.Row ="1" 
                   Grid.Column="0" 
                   Grid.ColumnSpan="2" 
                   RowDefinitions="*,Auto" >
-				<DataGrid Grid.Row="0" Margin="5"
+				<DataGrid x:Name="ReportDataGrid"
+						  Grid.Row="0" Margin="5"
 						  Items="{Binding ReportCollection}"
 						  SelectedItem="{Binding SelectedReport}"
 						  RowHeight="25"
@@ -205,6 +301,7 @@
 
 					<interactivity:Interaction.Behaviors>
 						<local:DataGridDoubleClickOpenFormBehavior />
+						<local:DataGridDeselectOnEmptyAreaClickBehavior />
 					</interactivity:Interaction.Behaviors>
 					
 					<DataGrid.ContextMenu>
