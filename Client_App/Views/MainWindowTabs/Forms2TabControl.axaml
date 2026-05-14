@@ -31,13 +31,18 @@
               ColumnDefinitions="5*,3*" >
 			<Grid Grid.Row ="0" 
                   Grid.Column="0" 
-                  RowDefinitions="Auto,*,Auto">
-				<TextBox Grid.Row="0" 
+                  RowDefinitions="Auto,Auto,*,Auto">
+				<TextBlock Grid.Row="0"
+						   Margin="5,5,5,0"
+						   FontWeight="SemiBold"
+						   Text="Список организаций:"
+						   TextWrapping="Wrap" />
+				<TextBox Grid.Row="1" 
                          Margin="5" 
                          Watermark ="Поиск..."
                          Text="{Binding SearchText, Mode=OneWayToSource}"/>
 				<DataGrid x:Name="ReportsDataGrid"
-                          Grid.Row="1" Margin="5"
+                          Grid.Row="2" Margin="5"
                           Items="{Binding ReportsCollection, Mode=TwoWay}"
                           SelectionMode="Single"
                           SelectedItem="{Binding SelectedReports, Mode=OneWayToSource}"
@@ -288,7 +293,7 @@
 
 					</DataGrid.Columns>
 				</DataGrid>
-				<Border Grid.Row="2" Classes="pageControlContainer">
+				<Border Grid.Row="3" Classes="pageControlContainer">
 					<Grid RowDefinitions="Auto,Auto"
                           ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
 						<TextBlock Text="Текущая страница:"
@@ -573,9 +578,14 @@
 			<Grid Grid.Row ="1" 
                   Grid.Column="0" 
                   Grid.ColumnSpan="2" 
-                  RowDefinitions="*,Auto" >
+                  RowDefinitions="Auto,*,Auto" >
+				<TextBlock Grid.Row="0"
+						   Margin="5,5,5,0"
+						   FontWeight="SemiBold"
+						   Text="Список отчётов:"
+						   TextWrapping="Wrap" />
 				<DataGrid x:Name="ReportDataGrid"
-                          Grid.Row="0" 
+                          Grid.Row="1" 
                           Margin="5"
                           Items="{Binding ReportCollection}"
                           SelectedItem="{Binding SelectedReport}"
@@ -701,7 +711,7 @@
 						</DataGridTextColumn>
 					</DataGrid.Columns>
 				</DataGrid>
-				<Border Grid.Row="1" Classes="pageControlContainer">
+				<Border Grid.Row="2" Classes="pageControlContainer">
 					<Grid RowDefinitions="Auto,Auto"
                           ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
 						<TextBlock Text="Текущая страница"
@@ -749,8 +759,11 @@
 						<StackPanel Grid.Row="0" 
                                     Grid.RowSpan="2"
 									Grid.Column="6"
-									Margin="5,0,0,0"
-									Orientation="Horizontal">
+									Margin="5,0,0,0">
+							<TextBlock Margin="0,0,0,4"
+									   Text="Фильтр по номеру формы:"
+									   TextWrapping="Wrap" />
+							<StackPanel Orientation="Horizontal">
 
                             <controls:FormNumButton FormNum="2.1"/>
                             <controls:FormNumButton FormNum="2.2"/>
@@ -765,6 +778,7 @@
                             <controls:FormNumButton FormNum="2.11"/>
                             <controls:FormNumButton FormNum="2.12"/>
 
+							</StackPanel>
 						</StackPanel>
 					</Grid>
 				</Border>

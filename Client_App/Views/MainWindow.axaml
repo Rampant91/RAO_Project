@@ -10,7 +10,7 @@
         Title="{Binding Current_Db, Mode=OneWay}"
         d:DesignHeight="600"
         d:DesignWidth="800"
-        behaviors:WindowScreenSizeBehavior.WidthRatio="0.75" behaviors:WindowScreenSizeBehavior.HeightRatio="0.83"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.75" behaviors:WindowScreenSizeBehavior.HeightRatio="0.87"
         MinWidth="200"
         MinHeight="200"
         x:CompileBindings="True"
