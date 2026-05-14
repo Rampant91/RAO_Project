@@ -411,7 +411,8 @@
 					</DataGrid.ContextMenu>
 
 					<DataGrid.Columns>
-						<DataGridTextColumn x:DataType="models:Report"
+
+                        <DataGridTextColumn x:DataType="models:Report"
                                             Width="Auto"
                                             IsReadOnly="True"
                                             Binding="{Binding FormNum.Value}">
@@ -426,6 +427,7 @@
 								</DataTemplate>
 							</DataGridTextColumn.HeaderTemplate>
 						</DataGridTextColumn>
+
 						<DataGridTextColumn x:DataType="models:Report"
 											Width="*"
 											IsReadOnly="True"
@@ -441,6 +443,7 @@
 								</DataTemplate>
 							</DataGridTextColumn.HeaderTemplate>
 						</DataGridTextColumn>
+
 						<DataGridTextColumn x:DataType="models:Report"
 											Width="*"
 											IsReadOnly="True"
@@ -456,6 +459,7 @@
 								</DataTemplate>
 							</DataGridTextColumn.HeaderTemplate>
 						</DataGridTextColumn>
+
 						<DataGridTextColumn x:DataType="models:Report"
 											Width="*"
 											IsReadOnly="True"
@@ -471,6 +475,7 @@
 								</DataTemplate>
 							</DataGridTextColumn.HeaderTemplate>
 						</DataGridTextColumn>
+
 						<DataGridTextColumn x:DataType="models:Report"
 											Width="*"
 											IsReadOnly="True"
@@ -486,6 +491,7 @@
 								</DataTemplate>
 							</DataGridTextColumn.HeaderTemplate>
 						</DataGridTextColumn>
+
 						<DataGridTextColumn x:DataType="models:Report"
                                             Width="2*"
                                             IsReadOnly="False"
@@ -501,7 +507,9 @@
 								</DataTemplate>
 							</DataGridTextColumn.HeaderTemplate>
 						</DataGridTextColumn>
+
 					</DataGrid.Columns>
+					
 				</DataGrid>
 				<Border Grid.Row="1" Classes="pageControlContainer">
 					<Grid RowDefinitions="Auto,Auto"
@@ -554,122 +562,17 @@
 									Grid.Column="6"
 									Margin="5,0,0,0"
 									Orientation="Horizontal">
-							<Button Content="1.1" 
-									IsEnabled="{Binding SelectedReports, 
-                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
-                                        ConverterParameter=1.1}"
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.SetWhiteList}" 
-                                    CommandParameter="1.1" 
-									Background="{Binding FormNumWhiteList, 
-                                        Converter={StaticResource StringEqualsToColor}, 
-                                        ConverterParameter=1.1}" />
-							
-							<Button Content="1.2" 
-									IsEnabled="{Binding SelectedReports, 
-                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
-                                        ConverterParameter=1.2}"
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.SetWhiteList}" 
-                                    CommandParameter="1.2"
-                                    Background="{Binding FormNumWhiteList, 
-										Converter={StaticResource StringEqualsToColor}, 
-										ConverterParameter=1.2}" />
-							
-							<Button Content="1.3" 
-									IsEnabled="{Binding SelectedReports, 
-                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
-                                        ConverterParameter=1.3}"
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.SetWhiteList}" 
-                                    CommandParameter="1.3"
-								    Background="{Binding FormNumWhiteList, 
-										Converter={StaticResource StringEqualsToColor}, 
-										ConverterParameter=1.3}" />
-							
-							<Button Content="1.4" 
-									IsEnabled="{Binding SelectedReports, 
-                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
-                                        ConverterParameter=1.4}"
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.SetWhiteList}" 
-                                    CommandParameter="1.4"
-                                    Background="{Binding FormNumWhiteList, 
-										Converter={StaticResource StringEqualsToColor}, 
-										ConverterParameter=1.4}" />
-							
-							<Button Content="1.5" 
-									IsEnabled="{Binding SelectedReports, 
-                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
-                                        ConverterParameter=1.5}"
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.SetWhiteList}" 
-                                    CommandParameter="1.5"
-                                    Background="{Binding FormNumWhiteList, 
-										Converter={StaticResource StringEqualsToColor}, 
-										ConverterParameter=1.5}" />
-							
-							<Button Content="1.6" 
-									IsEnabled="{Binding SelectedReports, 
-                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
-                                        ConverterParameter=1.6}"
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.SetWhiteList}" 
-                                    CommandParameter="1.6"
-                                    Background="{Binding FormNumWhiteList, 
-										Converter={StaticResource StringEqualsToColor}, 
-										ConverterParameter=1.6}" />
-							
-							<Button Content="1.7" 
-									IsEnabled="{Binding SelectedReports, 
-                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
-                                        ConverterParameter=1.7}"
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.SetWhiteList}" 
-                                    CommandParameter="1.7"
-                                    Background="{Binding FormNumWhiteList, 
-										Converter={StaticResource StringEqualsToColor}, 
-										ConverterParameter=1.7}" />
-							
-							<Button Content="1.8" 
-									IsEnabled="{Binding SelectedReports, 
-                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
-                                        ConverterParameter=1.8}"
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.SetWhiteList}" 
-                                    CommandParameter="1.8"
-                                    Background="{Binding FormNumWhiteList, 
-										Converter={StaticResource StringEqualsToColor}, 
-										ConverterParameter=1.8}" />
-							
-							<Button Content="1.9" 
-									IsEnabled="{Binding SelectedReports, 
-                                        Converter={StaticResource CheckReportsAnyMatchingFormNum}, 
-                                        ConverterParameter=1.9}"
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.SetWhiteList}" 
-                                    CommandParameter="1.9"
-                                    Background="{Binding FormNumWhiteList, 
-										Converter={StaticResource StringEqualsToColor}, 
-										ConverterParameter=1.9}" />
+                            
+                            <controls:FormNumButton FormNum="1.1"/>
+                            <controls:FormNumButton FormNum="1.2"/>
+                            <controls:FormNumButton FormNum="1.3"/>
+                            <controls:FormNumButton FormNum="1.4"/>
+                            <controls:FormNumButton FormNum="1.5"/>
+                            <controls:FormNumButton FormNum="1.6"/>
+                            <controls:FormNumButton FormNum="1.7"/>
+                            <controls:FormNumButton FormNum="1.8"/>
+                            <controls:FormNumButton FormNum="1.9"/>
+
 						</StackPanel>
 					</Grid>
 				</Border>
