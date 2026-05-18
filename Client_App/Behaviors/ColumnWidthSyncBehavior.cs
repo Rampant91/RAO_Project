@@ -1,5 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Primitives;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
 using System;
@@ -10,12 +12,80 @@ using System.Reactive.Linq;
 
 namespace Client_App.Behaviors;
 
+/// <summary>
+/// Ширины кастомной шапки относительно DataGrid.
+/// </summary>
+internal static class TableHeaderColumnWidth
+{
+    internal const string HScrollBarName = "PART_HorizontalScrollbar";
+
+    public static double GetPixelDensityScale(Visual? visual)
+    {
+        if (visual is null) return 1.0;
+
+        var window = visual.GetVisualAncestors().OfType<Window>().FirstOrDefault();
+        if (window?.Screens is null &&
+            Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            window = desktop.MainWindow;
+
+        if (window?.Screens is null) return 1.0;
+
+        try
+        {
+            var screen = window.Screens.ScreenFromWindow(window.PlatformImpl) ?? window.Screens.Primary;
+            var scale = screen?.PixelDensity ?? 1.0;
+            return scale > 0 ? scale : 1.0;
+        }
+        catch
+        {
+            return 1.0;
+        }
+    }
+
+    public static double BorderCompensationPerColumn(Visual? visual)
+        => 1.0 / GetPixelDensityScale(visual);
+
+    public static bool HasHorizontalScroll(DataGrid? dataGrid)
+    {
+        if (dataGrid is null) return false;
+
+        var scrollBar = dataGrid.GetVisualDescendants()
+            .OfType<ScrollBar>()
+            .FirstOrDefault(s => s.Name == HScrollBarName);
+
+        return scrollBar is { IsVisible: true };
+    }
+
+    /// <summary>
+    /// −1px/scale только у колонки № п/п (index 0).
+    /// При FrozenCount ≥ 2 для col ≥ 1 иначе накапливается сдвиг: extraOffset в координатах
+    /// DataGrid, а ширины скроллируемой шапки (col 2+) ещё уменьшены на 1/scale.
+    /// </summary>
+    private static bool ShouldApplyBorderCompensation(DataGrid? dataGrid, int columnIndex)
+    {
+        if (dataGrid is null || HasHorizontalScroll(dataGrid)) return false;
+        if (columnIndex == 0) return true;
+        if (dataGrid.FrozenColumnCount >= 2) return false;
+        return true;
+    }
+
+    public static double FromDataGridDisplayWidth(double displayValue, DataGrid? dataGrid, int columnIndex)
+    {
+        if (displayValue <= 0) return displayValue;
+        if (HasHorizontalScroll(dataGrid)) return displayValue;
+        if (!ShouldApplyBorderCompensation(dataGrid, columnIndex)) return displayValue;
+        return displayValue - BorderCompensationPerColumn(dataGrid);
+    }
+}
+
 public class ColumnWidthSyncBehavior : Behavior<Grid>
 {
     private readonly Dictionary<int, IDisposable> _subscriptions = new();
     private IDisposable? _layoutSubscription;
+    private IDisposable? _scrollStateSubscription;
     private IDisposable? _startIndexSub;
     private IDisposable? _columnCountSub;
+    private bool? _lastHasHorizontalScroll;
 
     public static readonly AttachedProperty<DataGrid?> SourceDataGridProperty =
         AvaloniaProperty.RegisterAttached<ColumnWidthSyncBehavior, Grid, DataGrid?>("SourceDataGrid");
@@ -88,9 +158,37 @@ public class ColumnWidthSyncBehavior : Behavior<Grid>
         // Инициализация существующих колонок
         SyncColumns();
 
-        // Подписываемся на изменение размера DataGrid
         _layoutSubscription = SourceDataGrid.GetObservable(Visual.BoundsProperty)
-            .Subscribe(_ => UpdateWidths());
+            .Subscribe(_ => OnDataGridLayoutMetricsChanged());
+
+        SubscribeToScrollStateChanges(SourceDataGrid);
+    }
+
+    private void SubscribeToScrollStateChanges(DataGrid dataGrid)
+    {
+        _scrollStateSubscription?.Dispose();
+
+        var scrollBar = dataGrid.GetVisualDescendants()
+            .OfType<ScrollBar>()
+            .FirstOrDefault(s => s.Name == TableHeaderColumnWidth.HScrollBarName);
+
+        if (scrollBar is null) return;
+
+        _scrollStateSubscription = Observable.Merge(
+                scrollBar.GetObservable(RangeBase.MaximumProperty).Select(_ => (object?)null),
+                scrollBar.GetObservable(Visual.IsVisibleProperty).Select(_ => (object?)null))
+            .Subscribe(_ => OnDataGridLayoutMetricsChanged());
+    }
+
+    private void OnDataGridLayoutMetricsChanged()
+    {
+        if (SourceDataGrid is null) return;
+
+        var hasScroll = TableHeaderColumnWidth.HasHorizontalScroll(SourceDataGrid);
+        if (_lastHasHorizontalScroll != hasScroll)
+            _lastHasHorizontalScroll = hasScroll;
+
+        UpdateWidths();
     }
 
     private void OnColumnsChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -143,10 +241,14 @@ public class ColumnWidthSyncBehavior : Behavior<Grid>
             gridColumnIndex >= (AssociatedObject?.ColumnDefinitions.Count ?? 0))
             return;
 
-        var actualWidth = SourceDataGrid.Columns[dataGridColumnIndex].Width.DisplayValue;
+        var displayWidth = SourceDataGrid.Columns[dataGridColumnIndex].Width.DisplayValue;
 
-        if (actualWidth > 0)
-            AssociatedObject!.ColumnDefinitions[gridColumnIndex].Width = new GridLength(actualWidth);
+        if (displayWidth > 0)
+        {
+            var headerWidth = TableHeaderColumnWidth.FromDataGridDisplayWidth(
+                displayWidth, SourceDataGrid, dataGridColumnIndex);
+            AssociatedObject!.ColumnDefinitions[gridColumnIndex].Width = new GridLength(headerWidth);
+        }
     }
 
     private void UpdateWidths()
@@ -180,6 +282,7 @@ public class ColumnWidthSyncBehavior : Behavior<Grid>
 
         ClearSubscriptions();
         _layoutSubscription?.Dispose();
+        _scrollStateSubscription?.Dispose();
         _startIndexSub?.Dispose();
         _columnCountSub?.Dispose();
         AssociatedObject.AttachedToVisualTree -= OnAttachedToVisualTree;

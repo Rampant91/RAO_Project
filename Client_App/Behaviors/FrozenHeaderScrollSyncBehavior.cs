@@ -71,6 +71,7 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
     private TranslateTransform? _transform;
     private TranslateTransform? _nppTransform;
     private double _lastAppliedTotal = double.NaN;
+    private bool? _lastHadHorizontalScroll;
 
     // ─────────────────────────────────────────────────────────────────
     //  Lifecycle
@@ -163,6 +164,15 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
 
     private void UpdateTransform()
     {
+        var hasScroll = SourceDataGrid is not null &&
+                        TableHeaderColumnWidth.HasHorizontalScroll(SourceDataGrid);
+
+        if (_lastHadHorizontalScroll != hasScroll)
+        {
+            _lastHadHorizontalScroll = hasScroll;
+            _lastAppliedTotal = double.NaN;
+        }
+
         var scrollOffset = _hScrollBar?.Value ?? 0;
         var extraOffset = ComputeExtraFrozenOffset();
         var total = scrollOffset + extraOffset;
@@ -207,7 +217,8 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
             {
                 var w = SourceDataGrid.Columns[0].Width.DisplayValue;
                 if (w > 0)
-                    NppScrollableHeaderGrid.Width = w;
+                    NppScrollableHeaderGrid.Width =
+                        TableHeaderColumnWidth.FromDataGridDisplayWidth(w, SourceDataGrid, 0);
             }
         }
     }
@@ -297,7 +308,9 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
             var nppWidth = SourceDataGrid.Columns.Count > 0
                 ? SourceDataGrid.Columns[0].Width.DisplayValue
                 : 0;
-            return nppWidth > 0 ? -nppWidth : 0;
+            return nppWidth > 0
+                ? -TableHeaderColumnWidth.FromDataGridDisplayWidth(nppWidth, SourceDataGrid, 0)
+                : 0;
         }
 
         if (frozenCount <= 1) return 0;
@@ -307,8 +320,9 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
         {
             var w = SourceDataGrid.Columns[i].Width.DisplayValue;
             if (w > 0)
-                total += w;
+                total += TableHeaderColumnWidth.FromDataGridDisplayWidth(w, SourceDataGrid, i);
         }
+
         return total;
     }
 }
