@@ -69,9 +69,9 @@ public class DataGridDeselectOnEmptyAreaClickBehavior : Behavior<DataGrid>
                 {
                     list.Clear();
                 }
-                catch (NotSupportedException)
+                catch
                 {
-                    // некоторые реализации SelectedItems не поддерживают очистку
+                    // ignored
                 }
             }
 

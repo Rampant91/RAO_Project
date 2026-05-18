@@ -1,5 +1,6 @@
 ﻿using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.ViewModels.Controls;
+using CommunityToolkit.Mvvm.Input;
 using Models.Collections;
 using System;
 using System.Collections.Generic;
@@ -82,6 +83,49 @@ public class Form_14VM : BaseFormVM
     public string AggregateStatePattern => "^[1-3]$";
 
     #endregion 
+
+    #endregion
+
+    #region FrozenColumnCount
+
+    private int _frozenColumnCount = 0;
+
+    public int FrozenColumnCount
+    {
+        get => _frozenColumnCount;
+        set
+        {
+            var clamped = Math.Clamp(value, 0, 3);
+            if (_frozenColumnCount == clamped) return;
+            _frozenColumnCount = clamped;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(IsFrozenHeaderVisible));
+            OnPropertyChanged(nameof(IsZeroFrozenMode));
+            OnPropertyChanged(nameof(IsFrozenCol1Visible));
+            OnPropertyChanged(nameof(IsFrozenCol1OnlyVisible));
+            OnPropertyChanged(nameof(IsFrozenCol2Visible));
+            OnPropertyChanged(nameof(CanDecreaseFrozen));
+            OnPropertyChanged(nameof(CanIncreaseFrozen));
+            OnPropertyChanged(nameof(IsScrollableGroupHeaderFull));
+        }
+    }
+
+    public bool IsZeroFrozenMode => FrozenColumnCount == 0;
+    public bool IsFrozenHeaderVisible => FrozenColumnCount > 0;
+    public bool IsFrozenCol1Visible => FrozenColumnCount >= 2;
+    public bool IsFrozenCol1OnlyVisible => FrozenColumnCount == 2;
+    public bool IsFrozenCol2Visible => FrozenColumnCount >= 3;
+    public bool IsScrollableGroupHeaderFull => FrozenColumnCount < 2;
+    public bool CanDecreaseFrozen => FrozenColumnCount > 0;
+    public bool CanIncreaseFrozen => FrozenColumnCount < 3;
+
+    private ICommand? _decreaseFrozenCommand;
+    public ICommand DecreaseFrozenColumnCountCommand =>
+        _decreaseFrozenCommand ??= new RelayCommand(() => FrozenColumnCount--);
+
+    private ICommand? _increaseFrozenCommand;
+    public ICommand IncreaseFrozenColumnCountCommand =>
+        _increaseFrozenCommand ??= new RelayCommand(() => FrozenColumnCount++);
 
     #endregion
 
