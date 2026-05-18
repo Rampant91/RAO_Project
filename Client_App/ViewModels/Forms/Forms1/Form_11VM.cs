@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
 
 namespace Client_App.ViewModels.Forms.Forms1;
@@ -91,6 +92,54 @@ public class Form_11VM : BaseFormVM
     public string OwnershipCodePattern => "^[1-6,9]$";
 
     #endregion
+
+    #endregion
+
+    #region FrozenColumnCount
+
+    private int _frozenColumnCount = 1;
+
+    public int FrozenColumnCount
+    {
+        get => _frozenColumnCount;
+        set
+        {
+            var clamped = Math.Clamp(value, 1, 3);
+            if (_frozenColumnCount == clamped) return;
+            _frozenColumnCount = clamped;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(IsFrozenHeaderVisible));
+            OnPropertyChanged(nameof(IsFrozenCol1Visible));
+            OnPropertyChanged(nameof(IsFrozenCol1OnlyVisible));
+            OnPropertyChanged(nameof(IsFrozenCol2Visible));
+            OnPropertyChanged(nameof(CanDecreaseFrozen));
+            OnPropertyChanged(nameof(CanIncreaseFrozen));
+        }
+    }
+
+    /// <summary>Показывать ли фиксированную секцию шапки (первая колонка заморожена).</summary>
+    public bool IsFrozenHeaderVisible => FrozenColumnCount > 0;
+
+    /// <summary>Колонка 1 ("код") попала в фиксированную область (FrozenColumnCount >= 2).</summary>
+    public bool IsFrozenCol1Visible => FrozenColumnCount >= 2;
+
+    /// <summary>Только колонка 1 заморожена, колонка 2 — нет (FrozenColumnCount == 2).
+    /// Используется для группового заголовка с ColumnSpan=1.</summary>
+    public bool IsFrozenCol1OnlyVisible => FrozenColumnCount == 2;
+
+    /// <summary>Колонка 2 ("дата") попала в фиксированную область (FrozenColumnCount >= 3).</summary>
+    public bool IsFrozenCol2Visible => FrozenColumnCount >= 3;
+
+    public bool CanDecreaseFrozen => FrozenColumnCount > 1;
+    public bool CanIncreaseFrozen => FrozenColumnCount < 3;
+
+    private ICommand? _decreaseFrozenCommand;
+    public ICommand DecreaseFrozenColumnCountCommand =>
+        _decreaseFrozenCommand ??= new RelayCommand(() => FrozenColumnCount--);
+
+    private ICommand? _increaseFrozenCommand;
+    public ICommand IncreaseFrozenColumnCountCommand =>
+        _increaseFrozenCommand ??= new RelayCommand(() => FrozenColumnCount++);
 
     #endregion
 
