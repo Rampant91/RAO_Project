@@ -278,7 +278,8 @@
 
                         <interactivity:Interaction.Behaviors>
                             <local:FrozenHeaderScrollSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
-                                                                  FixedGroupHeaderBorder="{Binding ElementName=fixedOperationDetailsBorder}"/>
+                                                                  FixedGroupHeaderBorder="{Binding ElementName=fixedOperationDetailsBorder}"
+                                                                  NppScrollableHeaderGrid="{Binding ElementName=nppScrollableHeader}"/>
                         </interactivity:Interaction.Behaviors>
 
                         <Grid>
@@ -407,9 +408,30 @@
                             <!--#endregion-->
 
                         </Grid>
+
                     </Panel>
 
                     <!--#endregion Скроллируемые колонки-->
+
+                    <!--
+                        FrozenCount=0: "№ п/п" скроллируется вместе с остальной шапкой.
+                        Размещён ВНЕ Panel (в том же Grid.Column="1" внешней шапки), чтобы
+                        его левая граница не обрезалась ClipToBounds Panel.
+                        Ширина и TranslateTransform.X = -scrollOffset задаются поведением.
+                        RowDefinitions с теми же SharedSizeGroup сохраняют высоту строк.
+                    -->
+                    <Grid x:Name="nppScrollableHeader"
+                          Grid.Column="1"
+                          IsVisible="{Binding IsZeroFrozenMode}"
+                          HorizontalAlignment="Left">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" SharedSizeGroup="HdrRow0"/>
+                            <RowDefinition Height="Auto" SharedSizeGroup="HdrRow1"/>
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="0" Grid.RowSpan="2" BorderThickness="1">
+                            <TextBlock>№ п/п</TextBlock>
+                        </Border>
+                    </Grid>
 
                     <!--#region Фиксированные колонки (0..FrozenColumnCount-1) — поверх скроллируемых-->
 

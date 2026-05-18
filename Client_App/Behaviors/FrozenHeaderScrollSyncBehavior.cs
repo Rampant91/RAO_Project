@@ -53,8 +53,23 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
         set => SetValue(FixedGroupHeaderBorderProperty, value);
     }
 
+    /// <summary>
+    /// Grid для "№ п/п" внутри скроллируемой Panel — виден только при FrozenColumnCount=0.
+    /// Ширина задаётся поведением по DataGrid col 0; трансформ X = -scrollOffset,
+    /// чтобы элемент скроллировался вместе с данными (без дополнительного смещения).
+    /// </summary>
+    public static readonly StyledProperty<Grid?> NppScrollableHeaderGridProperty =
+        AvaloniaProperty.Register<FrozenHeaderScrollSyncBehavior, Grid?>(nameof(NppScrollableHeaderGrid));
+
+    public Grid? NppScrollableHeaderGrid
+    {
+        get => GetValue(NppScrollableHeaderGridProperty);
+        set => SetValue(NppScrollableHeaderGridProperty, value);
+    }
+
     private ScrollBar? _hScrollBar;
     private TranslateTransform? _transform;
+    private TranslateTransform? _nppTransform;
     private double _lastAppliedTotal = double.NaN;
 
     // ─────────────────────────────────────────────────────────────────
@@ -158,14 +173,15 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
             return;
 
         _lastAppliedTotal = total;
-        ApplyTransform(total);
+        ApplyTransform(total, scrollOffset);
         UpdateFixedGroupHeaderBorder(scrollOffset);
 
         Debug.WriteLine($"[FrozenHeaderScrollSync] transform={-total:F1} (scroll={scrollOffset:F1} extra={extraOffset:F1})");
     }
 
-    private void ApplyTransform(double totalOffset)
+    private void ApplyTransform(double totalOffset, double scrollOffset)
     {
+        // Основной скроллируемый Grid (StartColumnIndex=1, col 0 = "код")
         var innerGrid = AssociatedObject?.Children.OfType<Grid>().FirstOrDefault();
         if (innerGrid is null) return;
 
@@ -174,8 +190,26 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
             _transform = new TranslateTransform(0, 0);
             innerGrid.RenderTransform = _transform;
         }
-
         _transform.X = -totalOffset;
+
+        // Grid "№ п/п" виден только при FrozenCount=0; скроллируется без extraOffset
+        if (NppScrollableHeaderGrid is not null)
+        {
+            if (_nppTransform is null)
+            {
+                _nppTransform = new TranslateTransform(0, 0);
+                NppScrollableHeaderGrid.RenderTransform = _nppTransform;
+            }
+            _nppTransform.X = -scrollOffset;
+
+            // Ширина синхронизируется с DataGrid col 0 ("№пп")
+            if (SourceDataGrid?.Columns.Count > 0)
+            {
+                var w = SourceDataGrid.Columns[0].Width.DisplayValue;
+                if (w > 0)
+                    NppScrollableHeaderGrid.Width = w;
+            }
+        }
     }
 
     /// <summary>
@@ -237,15 +271,35 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
     }
 
     /// <summary>
-    /// Суммарная ширина DataGrid-колонок 1..(FrozenColumnCount-1) —
-    /// на столько скроллируемая шапка сдвигается дополнительно, чтобы спрятать
-    /// колонки, попавшие в фиксированную область.
+    /// Вычисляет дополнительное смещение скроллируемой шапки (сверх scrollOffset):
+    ///
+    /// • FrozenCount = 0: фиксированный оверлей скрыт → Panel занимает всю ширину с x=0.
+    ///   Скроллируемая шапка (StartColumnIndex=1) покрывает DataGrid col 1+.
+    ///   Чтобы col 0 ("код") выровнялся по DataGrid col 1 даже без оверлея,
+    ///   шапку нужно сдвинуть ВПРАВО на ширину DataGrid col 0 ("№пп").
+    ///   Возвращаем отрицательное значение → transform = -(scroll + extra) > 0 → сдвиг вправо.
+    ///   Над "№пп" в многоуровневой шапке останется пустое место (фон) — приемлемый компромисс.
+    ///
+    /// • FrozenCount = 1: только "№пп" заморожен → никакого дополнительного сдвига не нужно.
+    ///
+    /// • FrozenCount >= 2: прячем col 1..FrozenCount-1, сдвигая шапку влево на их суммарную ширину.
     /// </summary>
     private double ComputeExtraFrozenOffset()
     {
         if (SourceDataGrid is null) return 0;
 
         var frozenCount = SourceDataGrid.FrozenColumnCount;
+
+        if (frozenCount == 0)
+        {
+            // Сдвигаем вправо на ширину DataGrid col 0 ("№пп"), чтобы col 0 скроллируемой
+            // шапки ("код") оказался точно над DataGrid col 1.
+            var nppWidth = SourceDataGrid.Columns.Count > 0
+                ? SourceDataGrid.Columns[0].Width.DisplayValue
+                : 0;
+            return nppWidth > 0 ? -nppWidth : 0;
+        }
+
         if (frozenCount <= 1) return 0;
 
         var total = 0.0;

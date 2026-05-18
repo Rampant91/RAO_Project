@@ -97,18 +97,19 @@ public class Form_11VM : BaseFormVM
 
     #region FrozenColumnCount
 
-    private int _frozenColumnCount = 1;
+    private int _frozenColumnCount = 0;
 
     public int FrozenColumnCount
     {
         get => _frozenColumnCount;
         set
         {
-            var clamped = Math.Clamp(value, 1, 3);
+            var clamped = Math.Clamp(value, 0, 3);
             if (_frozenColumnCount == clamped) return;
             _frozenColumnCount = clamped;
             OnPropertyChanged();
             OnPropertyChanged(nameof(IsFrozenHeaderVisible));
+            OnPropertyChanged(nameof(IsZeroFrozenMode));
             OnPropertyChanged(nameof(IsFrozenCol1Visible));
             OnPropertyChanged(nameof(IsFrozenCol1OnlyVisible));
             OnPropertyChanged(nameof(IsFrozenCol2Visible));
@@ -118,7 +119,14 @@ public class Form_11VM : BaseFormVM
         }
     }
 
-    /// <summary>Показывать ли фиксированную секцию шапки (первая колонка заморожена).</summary>
+    /// <summary>Режим без замороженных колонок: вся шапка скроллируется, включая "№ п/п".</summary>
+    public bool IsZeroFrozenMode => FrozenColumnCount == 0;
+
+    /// <summary>
+    /// Показывать ли фиксированную секцию шапки.
+    /// При FrozenColumnCount=0 секция скрыта; скроллируемая шапка выравнивается по
+    /// DataGrid col 1 через отрицательный сдвиг в FrozenHeaderScrollSyncBehavior.
+    /// </summary>
     public bool IsFrozenHeaderVisible => FrozenColumnCount > 0;
 
     /// <summary>Колонка 1 ("код") попала в фиксированную область (FrozenColumnCount >= 2).</summary>
@@ -138,7 +146,7 @@ public class Form_11VM : BaseFormVM
     /// </summary>
     public bool IsScrollableGroupHeaderFull => FrozenColumnCount < 2;
 
-    public bool CanDecreaseFrozen => FrozenColumnCount > 1;
+    public bool CanDecreaseFrozen => FrozenColumnCount > 0;
     public bool CanIncreaseFrozen => FrozenColumnCount < 3;
 
     private ICommand? _decreaseFrozenCommand;
