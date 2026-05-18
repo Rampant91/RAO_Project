@@ -143,22 +143,10 @@ public class ColumnWidthSyncBehavior : Behavior<Grid>
             gridColumnIndex >= (AssociatedObject?.ColumnDefinitions.Count ?? 0))
             return;
 
-        var column = SourceDataGrid.Columns[dataGridColumnIndex];
-
-        var scale = (double)SourceDataGrid.GetVisualAncestors()
-            .OfType<Window>()
-            .First()
-            .Screens
-            .Primary
-            .PixelDensity!;
-
-        var actualWidth = column.Width.DisplayValue;
+        var actualWidth = SourceDataGrid.Columns[dataGridColumnIndex].Width.DisplayValue;
 
         if (actualWidth > 0)
-        {
-            //вычитаем 1 пиксель делённый на масштаб, иначе шапка таблицы съезжает
-            AssociatedObject!.ColumnDefinitions[gridColumnIndex].Width = new GridLength(actualWidth - 1 / scale);
-        }
+            AssociatedObject!.ColumnDefinitions[gridColumnIndex].Width = new GridLength(actualWidth);
     }
 
     private void UpdateWidths()

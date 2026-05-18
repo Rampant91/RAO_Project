@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -178,10 +179,15 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
     }
 
     /// <summary>
-    /// Управляет правой границей фиксированного заголовка "Сведения об операции".
-    /// Граница скрыта (merged-вид) пока колонка "дата" (DataGrid col 2) хотя бы частично
-    /// видна в скроллируемой области. Как только "дата" уходит за левый край — граница
-    /// появляется, чтобы визуально отделить фиксированную область от следующей группы.
+    /// Управляет шириной и выравниванием фиксированного заголовка "Сведения об операции".
+    ///
+    /// Пока колонка "дата" (DataGrid col 2) хотя бы частично видна в скроллируемой области:
+    ///   • Border расширяется на её видимую часть → текст центрируется над суммой ("код" + видимая "дата");
+    ///   • граница "right" включена — правый край бордера совпадает с правым краем видимой "дата".
+    ///
+    /// Как только "дата" уходит за левый край скролла:
+    ///   • Border возвращается к естественной ширине колонки "код";
+    ///   • граница "right" тоже включена, отделяя "Сведения об операции" от следующей группы.
     /// </summary>
     private void UpdateFixedGroupHeaderBorder(double scrollOffset)
     {
@@ -189,19 +195,45 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
 
         var frozenCount = SourceDataGrid.FrozenColumnCount;
 
-        // Ширина колонки "дата" (DataGrid column index 2).
-        // Пока scrollOffset < datWidth, "дата" хотя бы частично видна → merged-вид.
-        var datWidth = frozenCount == 2 && SourceDataGrid.Columns.Count > 2
-            ? SourceDataGrid.Columns[2].Width.DisplayValue
-            : 0;
+        if (frozenCount != 2 || SourceDataGrid.Columns.Count <= 2)
+        {
+            ResetFixedGroupHeaderBorder();
+            return;
+        }
 
-        // merged: нет правой границы (сливается со скроллируемой пустой ячейкой)
-        // separated: полная граница (отделяет от следующей группы)
-        var merged = frozenCount != 2 || datWidth <= 0 || scrollOffset < datWidth;
+        var datWidth = SourceDataGrid.Columns[2].Width.DisplayValue;
+        var kodWidth = SourceDataGrid.Columns[1].Width.DisplayValue;
 
-        FixedGroupHeaderBorder.BorderThickness = merged
-            ? new Thickness(1, 1, 0, 1)
-            : new Thickness(1);
+        if (datWidth <= 0 || kodWidth <= 0)
+        {
+            ResetFixedGroupHeaderBorder();
+            return;
+        }
+
+        var visibleDat = Math.Max(0.0, datWidth - scrollOffset);
+
+        if (visibleDat > 0.5)
+        {
+            // Merged-вид: расширяем Border вправо на видимую часть "дата".
+            // +1 компенсирует Margin="-1,0,0,0" у Border: его левый край на 1px левее колонки,
+            // поэтому для достижения нужного правого края нужна +1 к ширине.
+            FixedGroupHeaderBorder.Width = kodWidth + 1.0 + visibleDat;
+            FixedGroupHeaderBorder.HorizontalAlignment = HorizontalAlignment.Left;
+        }
+        else
+        {
+            ResetFixedGroupHeaderBorder();
+        }
+
+        FixedGroupHeaderBorder.BorderThickness = new Thickness(1);
+    }
+
+    private void ResetFixedGroupHeaderBorder()
+    {
+        if (FixedGroupHeaderBorder is null) return;
+        FixedGroupHeaderBorder.Width = double.NaN;
+        FixedGroupHeaderBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
+        FixedGroupHeaderBorder.BorderThickness = new Thickness(1);
     }
 
     /// <summary>
@@ -216,18 +248,12 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
         var frozenCount = SourceDataGrid.FrozenColumnCount;
         if (frozenCount <= 1) return 0;
 
-        var scale = SourceDataGrid
-            .GetVisualAncestors()
-            .OfType<Window>()
-            .FirstOrDefault()
-            ?.Screens?.Primary?.PixelDensity ?? 1.0;
-
         var total = 0.0;
         for (var i = 1; i < frozenCount && i < SourceDataGrid.Columns.Count; i++)
         {
             var w = SourceDataGrid.Columns[i].Width.DisplayValue;
             if (w > 0)
-                total += w - 1.0 / scale;
+                total += w;
         }
         return total;
     }

@@ -455,10 +455,10 @@
 
                         <!--
                             FrozenCount=2: только col 1 заморожена.
-                            Правой границей управляет FrozenHeaderScrollSyncBehavior динамически:
-                            • нет правой границы — пока "дата" (3-я колонка) хотя бы частично видна
-                              (merged-вид: фикс. ячейка сливается с пустой скроллируемой);
-                            • полная граница — "дата" полностью ушла, нужен разделитель с паспортными сведениями.
+                            FrozenHeaderScrollSyncBehavior динамически управляет шириной и выравниванием:
+                            • пока "дата" частично или полностью видна — Border расширяется, покрывая
+                              оба столбца ("код" + видимую часть "дата"); текст центрируется по этой ширине;
+                            • когда "дата" ушла — Border возвращается к ширине "код", граница отделяет группу.
                         -->
                         <Border x:Name="fixedOperationDetailsBorder"
                                 Grid.Row="0" Grid.Column="1"
@@ -508,6 +508,7 @@
                           ColumnWidth="125"
                           FrozenColumnCount="{Binding FrozenColumnCount, Mode=OneWay}"
                           Items="{Binding FormList}"
+                          Margin="8,-5,0,0"
                           SelectedItem="{Binding SelectedForm}">
 
                     <interactivity:Interaction.Behaviors>
@@ -528,7 +529,8 @@
 							<DataGridTextColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
-										<Grid ColumnDefinitions="*,Auto">
+										<Grid ColumnDefinitions="*,Auto"
+                                              HorizontalAlignment="Center">
 											<TextBlock Grid.Column="0" Text="1"/>
 										</Grid>
 									</Border>
