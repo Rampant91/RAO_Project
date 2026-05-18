@@ -12,16 +12,17 @@ using System.Linq;
 namespace Client_App.Behaviors;
 
 /// <summary>
-/// Синхронизирует горизонтальный скролл кастомной шапки с DataGrid.
+/// Синхронизирует горизонтальный скролл кастомной шапки с DataGrid без задержки.
 ///
 /// AssociatedObject — Panel с ClipToBounds="True", содержащий Grid шапки.
-/// Смещение: TranslateTransform.X = -offset на этом Grid (render-уровень, без re-layout).
-/// Обнаружение: DispatcherTimer 16 мс — надёжнее любых событий в Avalonia 0.10.x.
-/// Запуск: Dispatcher.Post в OnAttached — не зависит от порядка visual-tree и биндингов.
+/// Смещение: TranslateTransform.X = -(scroll + extraFrozen) на внутреннем Grid.
+///
+/// Подписки вместо таймера:
+///   • _hScrollBar.Scroll        — мгновенный отклик при прокрутке
+///   • SourceDataGrid.LayoutUpdated — обновление при изменении ширин колонок
 /// </summary>
 public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
 {
-    // Имя горизонтального scrollbar в шаблоне DataGrid (из исходного кода DataGrid.cs)
     private const string HScrollBarName = "PART_HorizontalScrollbar";
 
     public static readonly AttachedProperty<DataGrid?> SourceDataGridProperty =
@@ -36,8 +37,7 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
 
     private ScrollBar? _hScrollBar;
     private TranslateTransform? _transform;
-    private DispatcherTimer? _pollTimer;
-    private double _lastAppliedOffset = double.NaN;
+    private double _lastAppliedTotal = double.NaN;
 
     // ─────────────────────────────────────────────────────────────────
     //  Lifecycle
@@ -46,38 +46,36 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
     protected override void OnAttached()
     {
         base.OnAttached();
-
-        // Запускаем через Post — к этому моменту XAML уже распарсен,
-        // биндинги разрешены, но мы не в visual tree.
-        // Post с ApplicationIdle гарантирует запуск ПОСЛЕ полного layout.
-        Dispatcher.UIThread.Post(EnsureTimerStarted, DispatcherPriority.ApplicationIdle);
-
         if (AssociatedObject is not null)
             AssociatedObject.AttachedToVisualTree += OnAttachedToVisualTree;
+
+        // Post на ApplicationIdle — биндинг SourceDataGrid уже разрешён к этому моменту
+        Dispatcher.UIThread.Post(TrySubscribe, DispatcherPriority.ApplicationIdle);
     }
 
     private void OnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
-    {
-        EnsureTimerStarted();
-    }
+        => TrySubscribe();
 
     protected override void OnDetaching()
     {
-        StopTimer();
         if (AssociatedObject is not null)
             AssociatedObject.AttachedToVisualTree -= OnAttachedToVisualTree;
+
+        if (SourceDataGrid is not null)
+            SourceDataGrid.LayoutUpdated -= OnDataGridLayoutUpdated;
+
+        if (_hScrollBar is not null)
+            _hScrollBar.Scroll -= OnScrollBarScroll;
+
         base.OnDetaching();
     }
 
     // ─────────────────────────────────────────────────────────────────
-    //  Timer
+    //  Подписка
     // ─────────────────────────────────────────────────────────────────
 
-    private void EnsureTimerStarted()
+    private void TrySubscribe()
     {
-        if (_pollTimer is not null) return;   // уже запущен
-
-        // Найти DataGrid через биндинг или через visual tree
         if (SourceDataGrid is null && AssociatedObject is not null)
         {
             SourceDataGrid = AssociatedObject
@@ -89,78 +87,68 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
 
         if (SourceDataGrid is null) return;
 
-        _pollTimer = new DispatcherTimer(DispatcherPriority.Normal)
-        {
-            Interval = TimeSpan.FromMilliseconds(16)
-        };
-        _pollTimer.Tick += OnPollTick;
-        _pollTimer.Start();
+        // LayoutUpdated покрывает: ресайз колонок, изменение FrozenColumnCount,
+        // первоначальный layout и любые другие перестройки макета
+        SourceDataGrid.LayoutUpdated -= OnDataGridLayoutUpdated;
+        SourceDataGrid.LayoutUpdated += OnDataGridLayoutUpdated;
 
-        Debug.WriteLine("[FrozenHeaderScrollSync] Timer started.");
-    }
-
-    private void StopTimer()
-    {
-        if (_pollTimer is null) return;
-        _pollTimer.Stop();
-        _pollTimer.Tick -= OnPollTick;
-        _pollTimer = null;
+        // Применяем сразу
+        UpdateTransform();
     }
 
     // ─────────────────────────────────────────────────────────────────
-    //  Poll tick
+    //  Обработчики событий
     // ─────────────────────────────────────────────────────────────────
 
-    private void OnPollTick(object? sender, EventArgs e)
+    private void OnDataGridLayoutUpdated(object? sender, EventArgs e)
     {
-        if (SourceDataGrid is null || AssociatedObject is null) return;
-
-        // Находим скроллбар по точному имени из шаблона DataGrid
+        // При первом срабатывании пробуем найти горизонтальный скроллбар
         if (_hScrollBar is null)
         {
-            _hScrollBar = SourceDataGrid
+            var sb = SourceDataGrid?
                 .GetVisualDescendants()
                 .OfType<ScrollBar>()
-                .FirstOrDefault(sb => sb.Name == HScrollBarName);
+                .FirstOrDefault(s => s.Name == HScrollBarName);
 
-            if (_hScrollBar is null) return;
-
-            Debug.WriteLine($"[FrozenHeaderScrollSync] ScrollBar found: {_hScrollBar.Name}");
+            if (sb is not null)
+            {
+                _hScrollBar = sb;
+                _hScrollBar.Scroll += OnScrollBarScroll;
+                Debug.WriteLine("[FrozenHeaderScrollSync] ScrollBar subscribed.");
+            }
         }
 
-        var scrollOffset = _hScrollBar.Value;
-        var extraOffset = ComputeExtraFrozenOffset();
-        var totalOffset = scrollOffset + extraOffset;
-
-        // Сравниваем СУММАРНОЕ смещение, а не только scrollbar.Value.
-        // Без этого изменение ширины замороженных колонок или FrozenColumnCount
-        // не приводило к пересчёту трансформа, пока скроллбар не двигался.
-        if (!double.IsNaN(_lastAppliedOffset) &&
-            Math.Abs(totalOffset - _lastAppliedOffset) < 0.1)
-            return;
-
-        _lastAppliedOffset = totalOffset;
-        ApplyTransform(totalOffset);
-
-        Debug.WriteLine($"[FrozenHeaderScrollSync] ApplyTransform(scroll={scrollOffset:F1} extra={extraOffset:F1} total={totalOffset:F1})");
+        UpdateTransform();
     }
 
+    private void OnScrollBarScroll(object? sender, ScrollEventArgs e)
+        => UpdateTransform();
+
     // ─────────────────────────────────────────────────────────────────
-    //  Apply
+    //  Расчёт и применение
     // ─────────────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// Применяет TranslateTransform.X = -totalOffset к внутреннему Grid.
-    /// totalOffset уже включает scroll + extra (ширины замороженных колонок 1..N-1).
-    /// </summary>
+    private void UpdateTransform()
+    {
+        var scrollOffset = _hScrollBar?.Value ?? 0;
+        var extraOffset = ComputeExtraFrozenOffset();
+        var total = scrollOffset + extraOffset;
+
+        // Пропускаем если значение не изменилось (LayoutUpdated очень частый)
+        if (!double.IsNaN(_lastAppliedTotal) &&
+            Math.Abs(total - _lastAppliedTotal) < 0.1)
+            return;
+
+        _lastAppliedTotal = total;
+        ApplyTransform(total);
+
+        Debug.WriteLine($"[FrozenHeaderScrollSync] transform={-total:F1} (scroll={scrollOffset:F1} extra={extraOffset:F1})");
+    }
+
     private void ApplyTransform(double totalOffset)
     {
         var innerGrid = AssociatedObject?.Children.OfType<Grid>().FirstOrDefault();
-        if (innerGrid is null)
-        {
-            Debug.WriteLine("[FrozenHeaderScrollSync] innerGrid not found!");
-            return;
-        }
+        if (innerGrid is null) return;
 
         if (_transform is null)
         {
@@ -172,8 +160,9 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
     }
 
     /// <summary>
-    /// Вычисляет суммарную ширину DataGrid-колонок 1..(FrozenColumnCount-1).
-    /// Используется тот же вычет 1/PixelDensity что и в ColumnWidthSyncBehavior.
+    /// Суммарная ширина DataGrid-колонок 1..(FrozenColumnCount-1) —
+    /// на столько скроллируемая шапка сдвигается дополнительно, чтобы спрятать
+    /// колонки, попавшие в фиксированную область.
     /// </summary>
     private double ComputeExtraFrozenOffset()
     {
