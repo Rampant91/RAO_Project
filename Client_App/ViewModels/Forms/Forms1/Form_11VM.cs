@@ -114,6 +114,7 @@ public class Form_11VM : BaseFormVM
             OnPropertyChanged(nameof(IsFrozenCol2Visible));
             OnPropertyChanged(nameof(CanDecreaseFrozen));
             OnPropertyChanged(nameof(CanIncreaseFrozen));
+            OnPropertyChanged(nameof(IsScrollableGroupHeaderFull));
         }
     }
 
@@ -129,6 +130,13 @@ public class Form_11VM : BaseFormVM
 
     /// <summary>Колонка 2 ("дата") попала в фиксированную область (FrozenColumnCount >= 3).</summary>
     public bool IsFrozenCol2Visible => FrozenColumnCount >= 3;
+
+    /// <summary>
+    /// Группа "Сведения об операции" полностью в скроллируемой области (FrozenCount == 1).
+    /// При FrozenCount>=2 col 0 ("код") уходит в фиксированную область,
+    /// и spanning-border заменяется на одиночный border для col 1 без левой границы.
+    /// </summary>
+    public bool IsScrollableGroupHeaderFull => FrozenColumnCount < 2;
 
     public bool CanDecreaseFrozen => FrozenColumnCount > 1;
     public bool CanIncreaseFrozen => FrozenColumnCount < 3;

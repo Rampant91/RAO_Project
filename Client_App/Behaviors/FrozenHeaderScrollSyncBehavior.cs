@@ -35,6 +35,23 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
         set => SetValue(SourceDataGridProperty, value);
     }
 
+    /// <summary>
+    /// Border фиксированного заголовка "Сведения об операции" (видим только при FrozenColumnCount=2).
+    /// Поведение динамически управляет правой границей:
+    ///   • нет правой границы — пока колонка "дата" хотя бы частично видна в скроллируемой области
+    ///     (merged-вид: фикс. ячейка и пустая скроллируемая выглядят как одна);
+    ///   • полная граница — когда "дата" полностью ушла за левый край (граница отделяет
+    ///     "Сведения об операции" от следующей группы заголовков).
+    /// </summary>
+    public static readonly StyledProperty<Border?> FixedGroupHeaderBorderProperty =
+        AvaloniaProperty.Register<FrozenHeaderScrollSyncBehavior, Border?>(nameof(FixedGroupHeaderBorder));
+
+    public Border? FixedGroupHeaderBorder
+    {
+        get => GetValue(FixedGroupHeaderBorderProperty);
+        set => SetValue(FixedGroupHeaderBorderProperty, value);
+    }
+
     private ScrollBar? _hScrollBar;
     private TranslateTransform? _transform;
     private double _lastAppliedTotal = double.NaN;
@@ -141,6 +158,7 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
 
         _lastAppliedTotal = total;
         ApplyTransform(total);
+        UpdateFixedGroupHeaderBorder(scrollOffset);
 
         Debug.WriteLine($"[FrozenHeaderScrollSync] transform={-total:F1} (scroll={scrollOffset:F1} extra={extraOffset:F1})");
     }
@@ -157,6 +175,33 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
         }
 
         _transform.X = -totalOffset;
+    }
+
+    /// <summary>
+    /// Управляет правой границей фиксированного заголовка "Сведения об операции".
+    /// Граница скрыта (merged-вид) пока колонка "дата" (DataGrid col 2) хотя бы частично
+    /// видна в скроллируемой области. Как только "дата" уходит за левый край — граница
+    /// появляется, чтобы визуально отделить фиксированную область от следующей группы.
+    /// </summary>
+    private void UpdateFixedGroupHeaderBorder(double scrollOffset)
+    {
+        if (FixedGroupHeaderBorder is null || SourceDataGrid is null) return;
+
+        var frozenCount = SourceDataGrid.FrozenColumnCount;
+
+        // Ширина колонки "дата" (DataGrid column index 2).
+        // Пока scrollOffset < datWidth, "дата" хотя бы частично видна → merged-вид.
+        var datWidth = frozenCount == 2 && SourceDataGrid.Columns.Count > 2
+            ? SourceDataGrid.Columns[2].Width.DisplayValue
+            : 0;
+
+        // merged: нет правой границы (сливается со скроллируемой пустой ячейкой)
+        // separated: полная граница (отделяет от следующей группы)
+        var merged = frozenCount != 2 || datWidth <= 0 || scrollOffset < datWidth;
+
+        FixedGroupHeaderBorder.BorderThickness = merged
+            ? new Thickness(1, 1, 0, 1)
+            : new Thickness(1);
     }
 
     /// <summary>

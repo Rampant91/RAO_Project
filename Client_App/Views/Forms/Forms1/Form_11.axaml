@@ -277,7 +277,8 @@
                            ClipToBounds="True">
 
                         <interactivity:Interaction.Behaviors>
-                            <local:FrozenHeaderScrollSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"/>
+                            <local:FrozenHeaderScrollSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                                                  FixedGroupHeaderBorder="{Binding ElementName=fixedOperationDetailsBorder}"/>
                         </interactivity:Interaction.Behaviors>
 
                         <Grid>
@@ -294,9 +295,28 @@
 
                             <!--#region Первый уровень заголовков (индексы сдвинуты на -1)-->
 
-                            <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+                            <!--
+                                FrozenCount=1: spanning-border виден полностью.
+                                FrozenCount>=2: col 0 ("код") уходит в фикс. область — spanning-border
+                                заменяется одиночным border для col 1 без левой границы и с полным текстом,
+                                чтобы не было обрезанного "ции" и лишней вертикальной линии слева.
+                                FrozenCount=3: col 1 ("дата") тоже в фикс. области — одиночный border
+                                сдвигается вместе с ним за левый край Panel и не виден.
+                            -->
+                            <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                                    IsVisible="{Binding IsScrollableGroupHeaderFull}">
                                 <TextBlock>Сведения об операции</TextBlock>
                             </Border>
+                            <!--
+                                FrozenCount=2: "дата" — первая видимая скролл. колонка.
+                                Ячейка Row 0 пустая (без текста), нет левой границы —
+                                визуально продолжает "Сведения об операции" из фиксированной части.
+                                FrozenCount=3: ячейка скрыта за фиксированной областью (не видна пользователю).
+                            -->
+                            <Border Grid.Row="0" Grid.Column="1"
+                                    BorderThickness="0,1,1,1"
+                                    Margin="0"
+                                    IsVisible="{Binding IsFrozenCol1Visible}"/>
                             <Border Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="10">
                                 <TextBlock Text="Сведения из паспорта (сертификата) на закрытый радионуклидный источник"/>
                             </Border>
@@ -433,28 +453,29 @@
 
                         <!--#region Колонка 1: "код" (FrozenColumnCount >= 2)-->
 
-                        <!--  Групповой заголовок "Сведения об операции", только col 1 заморожена -->
-                        <Border Grid.Row="0" Grid.Column="1"
+                        <!--
+                            FrozenCount=2: только col 1 заморожена.
+                            Правой границей управляет FrozenHeaderScrollSyncBehavior динамически:
+                            • нет правой границы — пока "дата" (3-я колонка) хотя бы частично видна
+                              (merged-вид: фикс. ячейка сливается с пустой скроллируемой);
+                            • полная граница — "дата" полностью ушла, нужен разделитель с паспортными сведениями.
+                        -->
+                        <Border x:Name="fixedOperationDetailsBorder"
+                                Grid.Row="0" Grid.Column="1"
+                                BorderThickness="1,1,0,1"
                                 IsVisible="{Binding IsFrozenCol1OnlyVisible}">
                             <TextBlock Text="Сведения об операции"/>
                         </Border>
 
                         <!--
-                            Групповой заголовок когда col 1 и col 2 заморожены.
-                            Два отдельных Border (без ColumnSpan) — чтобы при уменьшении FrozenCount
-                            не возникало краша (Grid.Column=2 при ColumnDefinitions.Count=2).
-                            Правая граница у Col1-части скрыта, левая — у Col2-части, чтобы выглядело как одна ячейка.
+                            FrozenCount=3: col 1 и col 2 заморожены.
+                            ColumnSpan=2 безопасен: ColumnWidthSyncBehavior не удаляет ColumnDefinitions,
+                            а только обнуляет Width у лишних — Col 2 всегда существует.
+                            Текст центрируется по ширине обеих колонок.
                         -->
-                        <Border Grid.Row="0" Grid.Column="1"
-                                BorderThickness="1,1,0,1"
+                        <Border Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
                                 IsVisible="{Binding IsFrozenCol2Visible}">
                             <TextBlock Text="Сведения об операции"/>
-                        </Border>
-                        <Border Grid.Row="0" Grid.Column="2"
-                                BorderThickness="0,1,1,1"
-                                Margin="0"
-                                IsVisible="{Binding IsFrozenCol2Visible}">
-                            <TextBlock Text=""/>
                         </Border>
 
                         <Border Grid.Row="1" Grid.Column="1"
