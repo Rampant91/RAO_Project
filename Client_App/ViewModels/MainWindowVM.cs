@@ -475,7 +475,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                                                                             //  Радионуклиды, отсутствующие в справочнике
 
     public ICommand SetWhiteList { get; set; }
-    
+
+    public ICommand CalculateVolumesRaoProcessingByPeriod { get; set; }
+
     #endregion
 
     #region Constructor
@@ -506,6 +508,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         OpenFile = new OpenFileAsyncCommand();
         OpenFolder = new OpenFolderAsyncCommand();
         SetWhiteList = new SetWhiteListNumAsyncCommand(this);
+        CalculateVolumesRaoProcessingByPeriod = new CalculateVolumesRaoProcessingByPeriodAsyncCommand();
 
         Forms1TabControlVM = new Forms1TabControlVM(this);
         Forms2TabControlVM = new Forms2TabControlVM(this);
