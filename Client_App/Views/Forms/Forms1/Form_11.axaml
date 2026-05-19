@@ -540,6 +540,7 @@
                         <local:DataGridDeselectOnEmptyAreaClickBehavior />
                         <local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
                         <local:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
+                        <local:DataGridScrollPerfBehavior IsEnabled="{Binding ShowScrollPerfOverlay}" />
                     </interactivity:Interaction.Behaviors>
 
 					<DataGrid.Columns>
@@ -577,41 +578,47 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <AutoCompleteBox Grid.Column="0"
-                                                         Height="26"
-                                                         Items="{Binding  VM.OperationCodes, ElementName=1.1}"
-                                                         Text="{Binding OperationCode.Value, Mode=TwoWay}"
-                                                         HorizontalAlignment="Stretch"
-                                                         MinimumPrefixLength="0"
-                                                         IsTextCompletionEnabled="False">
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding OperationCode.Value}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <AutoCompleteBox Grid.Column="0"
+                                                                     Height="26"
+                                                                     Items="{Binding  VM.OperationCodes, ElementName=1.1}"
+                                                                     Text="{Binding OperationCode.Value, Mode=TwoWay}"
+                                                                     HorizontalAlignment="Stretch"
+                                                                     MinimumPrefixLength="0"
+                                                                     IsTextCompletionEnabled="False">
 
-                                            <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior 
-                                                    InputPattern="{Binding VM.OperationCodePattern, ElementName=1.1}"
-                                                    MaxInputLength="2"
-                                                    ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.1}" />
-                                                <local:AutoCompleteBoxSelectionChangedBehavior />
-                                            </interactivity:Interaction.Behaviors>
+                                                        <interactivity:Interaction.Behaviors>
+                                                            <local:AutoCompleteBoxValidationBehavior 
+                                                                InputPattern="{Binding VM.OperationCodePattern, ElementName=1.1}"
+                                                                MaxInputLength="2"
+                                                                ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.1}" />
+                                                            <local:AutoCompleteBoxSelectionChangedBehavior />
+                                                        </interactivity:Interaction.Behaviors>
 
-                                            <AutoCompleteBox.ItemTemplate>
-                                                <DataTemplate x:DataType="items:OperationCodeItem">
-                                                    <Grid ColumnDefinitions="Auto,*">
-                                                        <TextBlock Grid.Column="0" 
-                                                                   Text="{Binding Code}" 
-                                                                   Margin="0,0,10,0" 
-                                                                   FontWeight="Bold"/>
-                                                        <TextBlock Grid.Column="1" 
-                                                                   Text="{Binding Description}" 
-                                                                   Foreground="Gray" 
-                                                                   TextWrapping="Wrap" 
-                                                                   MaxWidth="500"/>
-                                                    </Grid>
-                                                </DataTemplate>
-                                            </AutoCompleteBox.ItemTemplate>
-                                        </AutoCompleteBox>
-                                        <appControls:DropDownButton Grid.Column="1" />
-                                    </Grid>
+                                                        <AutoCompleteBox.ItemTemplate>
+                                                            <DataTemplate x:DataType="items:OperationCodeItem">
+                                                                <Grid ColumnDefinitions="Auto,*">
+                                                                    <TextBlock Grid.Column="0" 
+                                                                               Text="{Binding Code}" 
+                                                                               Margin="0,0,10,0" 
+                                                                               FontWeight="Bold"/>
+                                                                    <TextBlock Grid.Column="1" 
+                                                                               Text="{Binding Description}" 
+                                                                               Foreground="Gray" 
+                                                                               TextWrapping="Wrap" 
+                                                                               MaxWidth="500"/>
+                                                                </Grid>
+                                                            </DataTemplate>
+                                                        </AutoCompleteBox.ItemTemplate>
+                                                    </AutoCompleteBox>
+                                                    <appControls:DropDownButton Grid.Column="1" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -628,12 +635,18 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <TextBox Grid.Column="0" Text="{Binding OperationDate.Value, Mode=TwoWay}" />
-                                        <CalendarDatePicker Grid.Column="1"
-                                                            Classes="buttonOnly"
-                                                            SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
-                                    </Grid>
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding OperationDate.Value}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <TextBox Grid.Column="0" Text="{Binding OperationDate.Value, Mode=TwoWay}" />
+                                                    <CalendarDatePicker Grid.Column="1"
+                                                                        Classes="buttonOnly"
+                                                                        SelectedDate="{Binding OperationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -650,7 +663,13 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding PassportNumber.Value, Mode=TwoWay}" />
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding PassportNumber.Value}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <TextBox Text="{Binding PassportNumber.Value, Mode=TwoWay}" />
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -667,7 +686,14 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding Type.Value, Mode=TwoWay}" />
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding Type.Value}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <TextBox Text="{Binding Type.Value, Mode=TwoWay}"
+                                                         IsHitTestVisible="True" />
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -684,7 +710,13 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <appControls:RadionuclidsSelector Text="{Binding Radionuclids.Value, Mode=TwoWay}" />
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding Radionuclids.Value}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <appControls:RadionuclidsSelector Text="{Binding Radionuclids.Value, Mode=TwoWay}" />
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -702,7 +734,13 @@
 
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding FactoryNumber.Value, Mode=TwoWay}" />
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding FactoryNumber.Value}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <TextBox Text="{Binding FactoryNumber.Value, Mode=TwoWay}" />
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -719,7 +757,13 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding Quantity.Value, Mode=TwoWay}" />
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding Quantity.Value}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <TextBox Text="{Binding Quantity.Value, Mode=TwoWay}" />
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -736,7 +780,13 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding Activity.Value, Mode=TwoWay}" />
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding Activity.Value}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <TextBox Text="{Binding Activity.Value, Mode=TwoWay}" />
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -753,7 +803,13 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding CreatorOKPO.Value, Mode=TwoWay}" />
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding CreatorOKPO.Value}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <TextBox Text="{Binding CreatorOKPO.Value, Mode=TwoWay}" />
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -770,13 +826,19 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <TextBox Grid.Column="0" 
-                                                 Text="{Binding CreationDate.Value, Mode=TwoWay}" />
-                                        <CalendarDatePicker Grid.Column="1"
-                                                            Classes="buttonOnly"
-                                                            SelectedDate="{Binding CreationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
-                                    </Grid>
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding CreationDate.Value}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <TextBox Grid.Column="0" 
+                                                             Text="{Binding CreationDate.Value, Mode=TwoWay}" />
+                                                    <CalendarDatePicker Grid.Column="1"
+                                                                        Classes="buttonOnly"
+                                                                        SelectedDate="{Binding CreationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -793,40 +855,46 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <AutoCompleteBox Height="26"
-                                                         Items="{Binding VM.CategoryCodes, ElementName=1.1}"
-                                                         Text="{Binding Category.Value, Converter={StaticResource ShortNullableToStringConverter}, Mode=TwoWay}"
-                                                         HorizontalAlignment="Stretch"
-                                                         MinimumPrefixLength="0"
-                                                         IsTextCompletionEnabled="False">
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding Category.Value, Converter={StaticResource ShortNullableToStringConverter}}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <AutoCompleteBox Height="26"
+                                                                     Items="{Binding VM.CategoryCodes, ElementName=1.1}"
+                                                                     Text="{Binding Category.Value, Converter={StaticResource ShortNullableToStringConverter}, Mode=TwoWay}"
+                                                                     HorizontalAlignment="Stretch"
+                                                                     MinimumPrefixLength="0"
+                                                                     IsTextCompletionEnabled="False">
 
-                                            <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior 
-                                                    InputPattern="{Binding VM.CategoryCodePattern, ElementName=1.1}"
-                                                    MaxInputLength="1"
-                                                    ValidValues="{Binding VM.ValidCategories, ElementName=1.1}"/>
-                                                <local:AutoCompleteBoxSelectionChangedBehavior />
-                                            </interactivity:Interaction.Behaviors>
-                                            
-                                            <AutoCompleteBox.ItemTemplate>
-                                                <DataTemplate x:DataType="items:CategoryItem">
-                                                    <Grid ColumnDefinitions="Auto,*">
-                                                        <TextBlock Grid.Column="0" 
-                                                                   Text="{Binding Code}" 
-                                                                   Margin="0,0,10,0" 
-                                                                   FontWeight="Bold"/>
-                                                        <TextBlock Grid.Column="1" 
-                                                                   Text="{Binding Description}" 
-                                                                   Foreground="Gray" 
-                                                                   TextWrapping="Wrap" 
-                                                                   MaxWidth="400"/>
-                                                    </Grid>
-                                                </DataTemplate>
-                                            </AutoCompleteBox.ItemTemplate>
-                                        </AutoCompleteBox>
-                                        <appControls:DropDownButton Grid.Column="1" />
-                                    </Grid>
+                                                        <interactivity:Interaction.Behaviors>
+                                                            <local:AutoCompleteBoxValidationBehavior 
+                                                                InputPattern="{Binding VM.CategoryCodePattern, ElementName=1.1}"
+                                                                MaxInputLength="1"
+                                                                ValidValues="{Binding VM.ValidCategories, ElementName=1.1}"/>
+                                                            <local:AutoCompleteBoxSelectionChangedBehavior />
+                                                        </interactivity:Interaction.Behaviors>
+                                                        
+                                                        <AutoCompleteBox.ItemTemplate>
+                                                            <DataTemplate x:DataType="items:CategoryItem">
+                                                                <Grid ColumnDefinitions="Auto,*">
+                                                                    <TextBlock Grid.Column="0" 
+                                                                               Text="{Binding Code}" 
+                                                                               Margin="0,0,10,0" 
+                                                                               FontWeight="Bold"/>
+                                                                    <TextBlock Grid.Column="1" 
+                                                                               Text="{Binding Description}" 
+                                                                               Foreground="Gray" 
+                                                                               TextWrapping="Wrap" 
+                                                                               MaxWidth="400"/>
+                                                                </Grid>
+                                                            </DataTemplate>
+                                                        </AutoCompleteBox.ItemTemplate>
+                                                    </AutoCompleteBox>
+                                                    <appControls:DropDownButton Grid.Column="1" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -843,7 +911,13 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding SignedServicePeriod.Value, Mode=TwoWay}" />
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding SignedServicePeriod.Value}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <TextBox Text="{Binding SignedServicePeriod.Value, Mode=TwoWay}" />
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -860,40 +934,46 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <AutoCompleteBox Height="26"
-                                                         Items="{Binding VM.OwnershipForms, ElementName=1.1}"
-                                                         Text="{Binding PropertyCode.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}"
-                                                         HorizontalAlignment="Stretch"
-                                                         MinimumPrefixLength="0"
-                                                         IsTextCompletionEnabled="False">
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding PropertyCode.Value, Converter={StaticResource ByteNullableToStringConverter}}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <AutoCompleteBox Height="26"
+                                                                     Items="{Binding VM.OwnershipForms, ElementName=1.1}"
+                                                                     Text="{Binding PropertyCode.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}"
+                                                                     HorizontalAlignment="Stretch"
+                                                                     MinimumPrefixLength="0"
+                                                                     IsTextCompletionEnabled="False">
 
-                                            <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior 
-                                                    InputPattern="{Binding VM.OwnershipCodePattern, ElementName=1.1}"
-                                                    MaxInputLength="1"
-                                                    ValidCodes="{Binding VM.ValidOwnershipForms, ElementName=1.1}"/>
-                                                <local:AutoCompleteBoxSelectionChangedBehavior />
-                                            </interactivity:Interaction.Behaviors>
+                                                        <interactivity:Interaction.Behaviors>
+                                                            <local:AutoCompleteBoxValidationBehavior 
+                                                                InputPattern="{Binding VM.OwnershipCodePattern, ElementName=1.1}"
+                                                                MaxInputLength="1"
+                                                                ValidCodes="{Binding VM.ValidOwnershipForms, ElementName=1.1}"/>
+                                                            <local:AutoCompleteBoxSelectionChangedBehavior />
+                                                        </interactivity:Interaction.Behaviors>
 
-                                            <AutoCompleteBox.ItemTemplate>
-                                                <DataTemplate x:DataType="items:OwnershipItem">
-                                                    <Grid ColumnDefinitions="Auto,*">
-                                                        <TextBlock Grid.Column="0" 
-                                                                   Text="{Binding Code}" 
-                                                                   Margin="0,0,10,0" 
-                                                                   FontWeight="Bold"/>
-                                                        <TextBlock Grid.Column="1" 
-                                                                   Text="{Binding Description}" 
-                                                                   Foreground="Gray" 
-                                                                   TextWrapping="Wrap" 
-                                                                   MaxWidth="400"/>
-                                                    </Grid>
-                                                </DataTemplate>
-                                            </AutoCompleteBox.ItemTemplate>
-                                        </AutoCompleteBox>
-                                        <appControls:DropDownButton Grid.Column="1" />
-                                    </Grid>
+                                                        <AutoCompleteBox.ItemTemplate>
+                                                            <DataTemplate x:DataType="items:OwnershipItem">
+                                                                <Grid ColumnDefinitions="Auto,*">
+                                                                    <TextBlock Grid.Column="0" 
+                                                                               Text="{Binding Code}" 
+                                                                               Margin="0,0,10,0" 
+                                                                               FontWeight="Bold"/>
+                                                                    <TextBlock Grid.Column="1" 
+                                                                               Text="{Binding Description}" 
+                                                                               Foreground="Gray" 
+                                                                               TextWrapping="Wrap" 
+                                                                               MaxWidth="400"/>
+                                                                </Grid>
+                                                            </DataTemplate>
+                                                        </AutoCompleteBox.ItemTemplate>
+                                                    </AutoCompleteBox>
+                                                    <appControls:DropDownButton Grid.Column="1" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -910,7 +990,13 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding Owner.Value, Mode=TwoWay}" />
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding Owner.Value}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <TextBox Text="{Binding Owner.Value, Mode=TwoWay}" />
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -927,41 +1013,47 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <AutoCompleteBox Grid.Column="0"
-                                                         Height="26"
-                                                         Items="{Binding VM.DocumentVids, ElementName=1.1}"
-                                                         Text="{Binding DocumentVid.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}"
-                                                         HorizontalAlignment="Stretch"
-                                                         MinimumPrefixLength="0"
-                                                         IsTextCompletionEnabled="False">
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding DocumentVid.Value, Converter={StaticResource ByteNullableToStringConverter}}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <AutoCompleteBox Grid.Column="0"
+                                                                     Height="26"
+                                                                     Items="{Binding VM.DocumentVids, ElementName=1.1}"
+                                                                     Text="{Binding DocumentVid.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}"
+                                                                     HorizontalAlignment="Stretch"
+                                                                     MinimumPrefixLength="0"
+                                                                     IsTextCompletionEnabled="False">
 
-                                            <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior
-                                                    InputPattern="{Binding VM.DocumentVidPattern, ElementName=1.1}"
-                                                    MaxInputLength="2"
-                                                    ValidCodes="{Binding VM.ValidDocumentVids, ElementName=1.1}" />
-                                                <local:AutoCompleteBoxSelectionChangedBehavior />
-                                            </interactivity:Interaction.Behaviors>
+                                                        <interactivity:Interaction.Behaviors>
+                                                            <local:AutoCompleteBoxValidationBehavior
+                                                                InputPattern="{Binding VM.DocumentVidPattern, ElementName=1.1}"
+                                                                MaxInputLength="2"
+                                                                ValidCodes="{Binding VM.ValidDocumentVids, ElementName=1.1}" />
+                                                            <local:AutoCompleteBoxSelectionChangedBehavior />
+                                                        </interactivity:Interaction.Behaviors>
 
-                                            <AutoCompleteBox.ItemTemplate>
-                                                <DataTemplate x:DataType="items:DocumentVidItem">
-                                                    <Grid ColumnDefinitions="Auto,*">
-                                                        <TextBlock Grid.Column="0" 
-                                                                   Text="{Binding Code}" 
-                                                                   Margin="0,0,10,0" 
-                                                                   FontWeight="Bold"/>
-                                                        <TextBlock Grid.Column="1" 
-                                                                   Text="{Binding Description}" 
-                                                                   Foreground="Gray" 
-                                                                   TextWrapping="Wrap" 
-                                                                   MaxWidth="350"/>
-                                                    </Grid>
-                                                </DataTemplate>
-                                            </AutoCompleteBox.ItemTemplate>
-                                        </AutoCompleteBox>
-                                        <appControls:DropDownButton Grid.Column="1" />
-                                    </Grid>
+                                                        <AutoCompleteBox.ItemTemplate>
+                                                            <DataTemplate x:DataType="items:DocumentVidItem">
+                                                                <Grid ColumnDefinitions="Auto,*">
+                                                                    <TextBlock Grid.Column="0" 
+                                                                               Text="{Binding Code}" 
+                                                                               Margin="0,0,10,0" 
+                                                                               FontWeight="Bold"/>
+                                                                    <TextBlock Grid.Column="1" 
+                                                                               Text="{Binding Description}" 
+                                                                               Foreground="Gray" 
+                                                                               TextWrapping="Wrap" 
+                                                                               MaxWidth="350"/>
+                                                                </Grid>
+                                                            </DataTemplate>
+                                                        </AutoCompleteBox.ItemTemplate>
+                                                    </AutoCompleteBox>
+                                                    <appControls:DropDownButton Grid.Column="1" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -978,7 +1070,13 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding DocumentNumber.Value, Mode=TwoWay}" />
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding DocumentNumber.Value}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <TextBox Text="{Binding DocumentNumber.Value, Mode=TwoWay}" />
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -995,12 +1093,18 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <TextBox Grid.Column="0" Text="{Binding DocumentDate.Value, Mode=TwoWay}" />
-                                        <CalendarDatePicker Grid.Column="1"
-                                                            Classes="buttonOnly"
-                                                            SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
-                                    </Grid>
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding DocumentDate.Value}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <TextBox Grid.Column="0" Text="{Binding DocumentDate.Value, Mode=TwoWay}" />
+                                                    <CalendarDatePicker Grid.Column="1"
+                                                                        Classes="buttonOnly"
+                                                                        SelectedDate="{Binding DocumentDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -1017,7 +1121,13 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay}" />
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding ProviderOrRecieverOKPO.Value}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <TextBox Text="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay}" />
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -1034,7 +1144,13 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding TransporterOKPO.Value, Mode=TwoWay}" />
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding TransporterOKPO.Value}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <TextBox Text="{Binding TransporterOKPO.Value, Mode=TwoWay}" />
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -1051,7 +1167,13 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding PackName.Value, Mode=TwoWay}" />
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding PackName.Value}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <TextBox Text="{Binding PackName.Value, Mode=TwoWay}" />
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -1068,7 +1190,13 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding PackType.Value, Mode=TwoWay}" />
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding PackType.Value}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <TextBox Text="{Binding PackType.Value, Mode=TwoWay}" />
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -1085,7 +1213,13 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding PackNumber.Value, Mode=TwoWay}" />
+                                    <appControls:DataGridLazyEditHost DisplayText="{Binding PackNumber.Value}">
+                                        <appControls:DataGridLazyEditHost.EditTemplate>
+                                            <DataTemplate x:DataType="forms1:Form11">
+                                                <TextBox Text="{Binding PackNumber.Value, Mode=TwoWay}" />
+                                            </DataTemplate>
+                                        </appControls:DataGridLazyEditHost.EditTemplate>
+                                    </appControls:DataGridLazyEditHost>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -1099,6 +1233,33 @@
         </ScrollViewer>
 
         <!--#endregion Таблица-->
+
+        <!-- Временная панель метрик скролла (F9). Удалить после завершения тестов производительности. -->
+        <Border Grid.Row="1"
+                Margin="0,8,16,0"
+                Padding="8,6"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Background="#E6000000"
+                BorderBrush="#88FFFFFF"
+                BorderThickness="1"
+                CornerRadius="4"
+                IsVisible="{Binding ShowScrollPerfOverlay}"
+                IsHitTestVisible="False"
+                ZIndex="200">
+            <StackPanel Spacing="4">
+                <TextBlock Text="Метрики скролла (F9 — скрыть)"
+                           FontWeight="Bold"
+                           FontSize="11"
+                           Foreground="White" />
+                <TextBlock Text="{Binding ScrollPerfStats}"
+                           FontFamily="Consolas,Courier New"
+                           FontSize="11"
+                           Foreground="White"
+                           TextWrapping="Wrap"
+                           MaxWidth="440" />
+            </StackPanel>
+        </Border>
 
         <!--#region Выбор страницы-->
 

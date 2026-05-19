@@ -159,6 +159,34 @@ public class Form_11VM : BaseFormVM
 
     #endregion
 
+    #region ScrollPerf (временно — объективные метрики скролла, форма 1.1)
+
+    private string _scrollPerfStats = "F9 — включить метрики скролла";
+    public string ScrollPerfStats
+    {
+        get => _scrollPerfStats;
+        set
+        {
+            if (_scrollPerfStats == value) return;
+            _scrollPerfStats = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private bool _showScrollPerfOverlay;
+    public bool ShowScrollPerfOverlay
+    {
+        get => _showScrollPerfOverlay;
+        set
+        {
+            if (_showScrollPerfOverlay == value) return;
+            _showScrollPerfOverlay = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
+
     #region Constructors
 
     public Form_11VM() { }

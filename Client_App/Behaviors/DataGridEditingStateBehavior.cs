@@ -69,8 +69,10 @@ public class DataGridEditingStateBehavior : Behavior<DataGrid>
 
         if (e.Source is IVisual v)
         {
-            var tb = v.GetSelfAndVisualAncestors().OfType<TextBox>().FirstOrDefault();
-            if (tb != null)
+            var ancestors = v.GetSelfAndVisualAncestors();
+            if (ancestors.OfType<TextBox>().Any()
+                || ancestors.OfType<global::Avalonia.Controls.AutoCompleteBox>().Any()
+                || ancestors.OfType<Controls.DataGridLazyEditHost>().Any(h => h.IsInEditMode))
             {
                 IsEditing = true;
             }
@@ -98,8 +100,11 @@ public class DataGridEditingStateBehavior : Behavior<DataGrid>
             if (focused is IVisual focusedVisual && AssociatedObject is IVisual gridVisual)
             {
                 // Keep editing true only if focus is still inside the grid and on a TextBox
-                var isTextBox = focusedVisual.GetSelfAndVisualAncestors().OfType<TextBox>().Any();
-                IsEditing = gridVisual.IsVisualAncestorOf(focusedVisual) && isTextBox;
+                var ancestors = focusedVisual.GetSelfAndVisualAncestors();
+                var isEditor = ancestors.OfType<TextBox>().Any()
+                               || ancestors.OfType<global::Avalonia.Controls.AutoCompleteBox>().Any()
+                               || ancestors.OfType<Controls.DataGridLazyEditHost>().Any(h => h.IsInEditMode);
+                IsEditing = gridVisual.IsVisualAncestorOf(focusedVisual) && isEditor;
             }
             else
             {

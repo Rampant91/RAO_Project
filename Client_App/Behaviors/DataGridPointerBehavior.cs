@@ -1,10 +1,12 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
 using AvaloniaEdit.Utils;
+using Client_App.Controls;
 using Models.Forms.Form1;
 using System;
 using System.Collections.Generic;
@@ -47,9 +49,110 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
 
     private void DataGrid_PointerPressed(object sender, DataGridCellPointerPressedEventArgs e)
     {
+        // Редактор уже открыт — DataGrid не перехватывает указатель (каретка, выделение текста).
+        if (IsPointerOverActiveLazyEditor(e))
+            return;
+
+        // Клик по отображению lazy-ячейки — вход обрабатывает DataGridLazyEditHost, без CapturePointer.
+        if (IsPointerOnLazyEditHostDisplay(e))
+        {
+            if (!ShouldDeferPointerHandling(e))
+                CloseEditingHostsInOtherCells(e);
+            return;
+        }
+
+        if (!ShouldDeferPointerHandling(e))
+            CloseEditingHostsInOtherCells(e);
+
         DragSelection_PointerPressed(sender, e);
         TextBoxFocus_PointerPressed(sender, e);
+    }
 
+    private bool IsPointerOverActiveLazyEditor(DataGridCellPointerPressedEventArgs e)
+    {
+        var hit = GetHitVisual(e);
+        if (hit == null)
+            return IsCellInLazyEditMode(e.Cell) || IsCellInLazyEditMode(GetCellAtPointer(e));
+
+        if (hit.GetVisualAncestors().OfType<DataGridLazyEditHost>().Any(h => h.IsInEditMode))
+            return true;
+
+        var cell = hit.GetVisualAncestors().OfType<DataGridCell>().FirstOrDefault() ?? GetCellAtPointer(e);
+        return IsCellInLazyEditMode(cell);
+    }
+
+    private bool IsPointerOnLazyEditHostDisplay(DataGridCellPointerPressedEventArgs e)
+    {
+        var hit = GetHitVisual(e);
+        var host = hit?.GetVisualAncestors().OfType<DataGridLazyEditHost>().FirstOrDefault();
+        return host is { IsInEditMode: false };
+    }
+
+    private Visual? GetHitVisual(DataGridCellPointerPressedEventArgs e)
+    {
+        var point = e.PointerPressedEventArgs.GetCurrentPoint(AssociatedObject);
+        return AssociatedObject.GetVisualAt(point.Position) as Visual;
+    }
+
+    private void CloseEditingHostsInOtherCells(DataGridCellPointerPressedEventArgs e)
+    {
+        var clickedCell = GetCellAtPointer(e) ?? e.Cell;
+        if (clickedCell == null)
+            return;
+
+        // Клик по ячейке, которая уже редактируется — редактор не закрываем.
+        if (clickedCell.GetVisualDescendants().OfType<DataGridLazyEditHost>().Any(h => h.IsInEditMode))
+            return;
+
+        var grid = clickedCell.GetVisualAncestors().OfType<DataGrid>().FirstOrDefault()
+                   ?? AssociatedObject;
+        if (grid == null)
+            return;
+
+        foreach (var host in grid.GetVisualDescendants().OfType<DataGridLazyEditHost>().Where(h => h.IsInEditMode))
+        {
+            var hostCell = host.GetVisualAncestors().OfType<DataGridCell>().FirstOrDefault();
+            if (hostCell != null && AreSameLogicalCell(hostCell, clickedCell))
+                continue;
+
+            host.ExitEditMode();
+        }
+    }
+
+    private DataGridCell? GetCellAtPointer(DataGridCellPointerPressedEventArgs e)
+    {
+        var point = e.PointerPressedEventArgs.GetCurrentPoint(AssociatedObject);
+        return (AssociatedObject.GetVisualAt(point.Position) as Visual)?
+            .GetVisualAncestors()
+            .OfType<DataGridCell>()
+            .FirstOrDefault();
+    }
+
+    private static bool AreSameLogicalCell(DataGridCell a, DataGridCell b)
+    {
+        if (ReferenceEquals(a, b))
+            return true;
+
+        var rowA = a.GetVisualAncestors().OfType<DataGridRow>().FirstOrDefault();
+        var rowB = b.GetVisualAncestors().OfType<DataGridRow>().FirstOrDefault();
+        if (rowA == null || rowB == null || !ReferenceEquals(rowA, rowB))
+            return false;
+
+        return GetCellColumnIndex(a) == GetCellColumnIndex(b);
+    }
+
+    private static int GetCellColumnIndex(DataGridCell cell)
+    {
+        if (cell.Parent is not Panel panel)
+            return -1;
+
+        for (var i = 0; i < panel.Children.Count; i++)
+        {
+            if (ReferenceEquals(panel.Children[i], cell))
+                return i;
+        }
+
+        return -1;
     }
 
     private void DataGrid_PointerMoved(object sender, PointerEventArgs e)
@@ -81,17 +184,14 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
 
     private void DragSelection_PointerPressed(object sender, DataGridCellPointerPressedEventArgs e)
     {
-        var point = e.PointerPressedEventArgs.GetCurrentPoint(AssociatedObject);
+        if (ShouldDeferPointerHandling(e))
+            return;
 
+        var point = e.PointerPressedEventArgs.GetCurrentPoint(AssociatedObject);
 
         if (point.Properties.IsLeftButtonPressed)
         {
             _isSelecting = true;
-
-            if (e.PointerPressedEventArgs.KeyModifiers != KeyModifiers.Shift)
-                AssociatedObject.SelectedItems.Clear();
-            // Захватываем указатель для получения всех событий
-            AssociatedObject.CapturePointer(e.PointerPressedEventArgs.Pointer);
 
             var row = GetRowAtPoint(point.Position);
             if (row != null)
@@ -101,9 +201,19 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
                     _firstSelectedItem = item;
                 _lastSelectedItem = item;
 
-                // Обычный клик - очищаем и выделяем один элемент
-                AssociatedObject.SelectedItems.Add(item);
+                if (e.PointerPressedEventArgs.KeyModifiers != KeyModifiers.Shift)
+                {
+                    var keepSelection = AssociatedObject.SelectedItems.Count == 1
+                                        && ReferenceEquals(AssociatedObject.SelectedItems[0], item);
+                    if (!keepSelection)
+                        AssociatedObject.SelectedItems.Clear();
+                }
+
+                if (!AssociatedObject.SelectedItems.Contains(item))
+                    AssociatedObject.SelectedItems.Add(item);
             }
+
+            AssociatedObject.CapturePointer(e.PointerPressedEventArgs.Pointer);
 
         }
     }
@@ -206,47 +316,115 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
     private bool _isFocusing = false;
     private TextBox? _firstSelectedTextBox;
     private TextBox? _lastSelectedTextBox;
+    private DataGridLazyEditHost? _firstLazyHost;
+    private DataGridLazyEditHost? _lastLazyHost;
 
     private void TextBoxFocus_PointerPressed(object sender, DataGridCellPointerPressedEventArgs e)
     {
         var point = e.PointerPressedEventArgs.GetCurrentPoint(AssociatedObject);
 
+        if (!point.Properties.IsLeftButtonPressed)
+            return;
 
-        if (point.Properties.IsLeftButtonPressed)
+        if (ShouldDeferPointerHandling(e))
+            return;
+
+        var cell = GetCellAtPointer(e) ?? e.Cell;
+        if (cell?.GetVisualDescendants().OfType<DataGridLazyEditHost>().Any() == true)
+            return;
+
+        var textBox = FindTextBoxInCell(e.Cell);
+        DataGridLazyEditHost? lazyHost = null;
+
+        if (textBox == null && lazyHost == null)
         {
-            // Захватываем указатель для получения всех событий
-            AssociatedObject.CapturePointer(e.PointerPressedEventArgs.Pointer);
-
-            // Находим визуальный элемент в точке клика
             var visual = AssociatedObject.GetVisualAt(point.Position);
-
-            // Ищем TextBox в визуальном дереве
-            var textBox = FindVisualParent<TextBox>((Visual)visual);
-
-            if (textBox != null)
+            if (visual is Visual hitVisual)
             {
-                _isFocusing = true;
-                _firstSelectedTextBox = textBox;
-                _lastSelectedTextBox = textBox;
+                textBox = FindVisualParent<TextBox>(hitVisual);
+                lazyHost = FindVisualParent<DataGridLazyEditHost>(hitVisual);
             }
+        }
 
+        AssociatedObject.CapturePointer(e.PointerPressedEventArgs.Pointer);
 
+        if (textBox != null)
+        {
+            _isFocusing = true;
+            _firstSelectedTextBox = textBox;
+            _lastSelectedTextBox = textBox;
+            _firstLazyHost = null;
+            _lastLazyHost = null;
+        }
+        else if (lazyHost != null)
+        {
+            _isFocusing = true;
+            _firstLazyHost = lazyHost;
+            _lastLazyHost = lazyHost;
+            _firstSelectedTextBox = null;
+            _lastSelectedTextBox = null;
         }
     }
+
+    private static bool IsCellInLazyEditMode(DataGridCell? cell) =>
+        cell?.GetVisualDescendants().OfType<DataGridLazyEditHost>().Any(h => h.IsInEditMode) == true;
+
+    /// <summary>
+    /// Не перехватывать указатель DataGrid: ячейка уже в режиме редактирования или клик по кнопке/календарю/списку.
+    /// </summary>
+    private bool ShouldDeferPointerHandling(DataGridCellPointerPressedEventArgs e) =>
+        IsPointerOverActiveLazyEditor(e) || IsInteractiveHit(GetHitVisual(e));
+
+    private static bool IsInteractiveHit(Visual? hit)
+    {
+        if (hit == null)
+            return false;
+        return IsInteractiveEditorElement(hit);
+    }
+
+    private static bool IsInteractiveEditorElement(Visual visual)
+    {
+        for (var current = visual; current != null; current = current.GetVisualParent() as Visual)
+        {
+            switch (current)
+            {
+                case Button:
+                case DropDownButton:
+                case RadionuclidsSelector:
+                case CalendarDatePicker:
+                case Popup:
+                    return true;
+                case global::Avalonia.Controls.AutoCompleteBox autoComplete when autoComplete.IsDropDownOpen:
+                    return true;
+                case DataGridLazyEditHost host when host.IsInEditMode:
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static TextBox? FindTextBoxInCell(DataGridCell? cell) =>
+        cell?.GetVisualDescendants().OfType<TextBox>().FirstOrDefault(tb => tb.IsVisible);
+
+    private static DataGridLazyEditHost? FindLazyHostInCell(DataGridCell? cell) =>
+        cell?.GetVisualDescendants().OfType<DataGridLazyEditHost>()
+            .FirstOrDefault(h => !h.IsInEditMode);
 
     private void TextBoxFocus_PointerMoved(object sender, PointerEventArgs e)
     {
         if (_isFocusing)
         {
             var point = e.GetCurrentPoint(AssociatedObject);
-            // Находим визуальный элемент в точке клика
             var visual = AssociatedObject.GetVisualAt(point.Position);
+            if (visual is not Visual hitVisual)
+                return;
 
-            // Ищем TextBox в визуальном дереве
-            var textBox = FindVisualParent<TextBox>((Visual)visual);
-
-            _lastSelectedTextBox = textBox;
-
+            _lastSelectedTextBox = FindVisualParent<TextBox>(hitVisual);
+            var lazyHost = FindVisualParent<DataGridLazyEditHost>(hitVisual);
+            if (lazyHost?.IsInEditMode == true)
+                lazyHost = null;
+            _lastLazyHost = lazyHost;
         }
     }
 
@@ -254,44 +432,72 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
     {
         if (_isFocusing)
         {
-            if ((_firstSelectedTextBox != null)
-                && (_lastSelectedTextBox != null)
-                && (_firstSelectedTextBox == _lastSelectedTextBox))
+            if (_firstSelectedTextBox != null
+                && _lastSelectedTextBox != null
+                && _firstSelectedTextBox == _lastSelectedTextBox)
             {
-                _firstSelectedTextBox.LostFocus += OnTextBoxLostFocus;
-                _firstSelectedTextBox.Focus();
-                _firstSelectedTextBox.IsHitTestVisible = true;
+                ActivateTextBox(_firstSelectedTextBox, e);
             }
-            _isSelecting = false;
+            else if (_firstLazyHost != null
+                     && _lastLazyHost != null
+                     && _firstLazyHost == _lastLazyHost)
+            {
+                var clickInHost = e.GetCurrentPoint(_firstLazyHost).Position;
+                _firstLazyHost.EnterEditMode(clickInHost);
+            }
+
+            _isFocusing = false;
             _firstSelectedTextBox = null;
             _lastSelectedTextBox = null;
+            _firstLazyHost = null;
+            _lastLazyHost = null;
 
-            // Освобождаем захват указателя
             AssociatedObject.ReleasePointerCapture(e.Pointer);
-
         }
     }
 
     private void TextBoxFocus_PointerCaptureLost(object sender, PointerCaptureLostEventArgs e)
     {
-        if ((_firstSelectedTextBox != null)
-                && (_lastSelectedTextBox != null)
-                && (_firstSelectedTextBox == _lastSelectedTextBox))
+        if (_firstSelectedTextBox != null
+            && _lastSelectedTextBox != null
+            && _firstSelectedTextBox == _lastSelectedTextBox)
         {
-            _firstSelectedTextBox.LostFocus += OnTextBoxLostFocus;
-            _firstSelectedTextBox.Focus();
             _firstSelectedTextBox.IsHitTestVisible = true;
+            if (!_firstSelectedTextBox.IsFocused)
+            {
+                _firstSelectedTextBox.LostFocus += OnTextBoxLostFocus;
+                _firstSelectedTextBox.Focus();
+            }
+        }
+        else if (_firstLazyHost != null
+                 && _lastLazyHost != null
+                 && _firstLazyHost == _lastLazyHost)
+        {
+            _firstLazyHost.EnterEditMode();
         }
 
-        _isSelecting = false;
+        _isFocusing = false;
         _firstSelectedTextBox = null;
         _lastSelectedTextBox = null;
+        _firstLazyHost = null;
+        _lastLazyHost = null;
     }
+    private void ActivateTextBox(TextBox textBox, PointerReleasedEventArgs e)
+    {
+        textBox.IsHitTestVisible = true;
+        textBox.LostFocus += OnTextBoxLostFocus;
+        textBox.Focus();
+        var pointInTextBox = e.GetCurrentPoint(textBox).Position;
+        Controls.DataGridLazyEditHost.TrySetCaretFromPoint(textBox, pointInTextBox);
+    }
+
     private void OnTextBoxLostFocus(object sender, RoutedEventArgs e)
     {
         if (sender is TextBox textBox)
         {
-            // Деактивируем TextBox при потере фокуса
+            if (FindVisualParent<Controls.DataGridLazyEditHost>(textBox)?.IsInEditMode == true)
+                return;
+
             textBox.IsHitTestVisible = false;
             textBox.LostFocus -= OnTextBoxLostFocus;
         }

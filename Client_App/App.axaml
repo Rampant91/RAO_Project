@@ -7,6 +7,7 @@
              xmlns:converters="clr-namespace:Client_App.Converters"
              xmlns:visualConverters="clr-namespace:Client_App.VisualRealization.Converters"
 			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:controls="using:Client_App.Controls"
              x:Class="Client_App.App">
 
     <Application.DataTemplates>
@@ -34,6 +35,9 @@
 
     <Application.Styles>
         <!--FluentTheme Mode="Light"/-->
+        <Style Selector="Window">
+            <Setter Property="FontFamily" Value="Segoe UI,Arial,sans-serif"/>
+        </Style>
         <Style Selector="DataGridCell.cell_tooltip">
             <Setter Property="ToolTip.Tip" Value="{Binding Content.Text, Mode=OneWay, RelativeSource={RelativeSource Self}}"/>
         </Style>
@@ -208,6 +212,13 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
 			<Setter Property="IsHitTestVisible" Value="False"/>
 		</Style>
+        <!-- Редактор lazy-ячейки должен принимать клики (перекрывает правило выше). -->
+        <Style Selector="DataGrid.table controls|DataGridLazyEditHost TextBox">
+            <Setter Property="IsHitTestVisible" Value="True"/>
+        </Style>
+        <Style Selector="DataGrid.table controls|DataGridLazyEditHost AutoCompleteBox">
+            <Setter Property="IsHitTestVisible" Value="True"/>
+        </Style>
         <Style Selector="DataGrid.table CalendarDatePicker">
             <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="Margin" Value="2,-1,-1,-2"/>
