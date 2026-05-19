@@ -121,7 +121,8 @@ public partial class ExcelExportFormsAsyncCommand(MainWindowVM mainWindowVM) : E
                         ContentTitle = "Выгрузка в .xlsx",
                         ContentMessage = "Выгрузка не выполнена, поскольку не выбрана организация",
                         MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow));
 
@@ -147,7 +148,8 @@ public partial class ExcelExportFormsAsyncCommand(MainWindowVM mainWindowVM) : E
                             $"{Environment.NewLine}поскольку эти формы отсутствуют в текущей организации/базе.",
                         MinWidth = 400,
                         MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow));
 
@@ -228,7 +230,8 @@ public partial class ExcelExportFormsAsyncCommand(MainWindowVM mainWindowVM) : E
                     ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = "Выгрузка не выполнена, поскольку не выбрана организация",
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 

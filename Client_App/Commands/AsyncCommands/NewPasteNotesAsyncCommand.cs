@@ -48,7 +48,8 @@ public class NewPasteNotesAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                             $"В таблице не хватает места для некоторых строк, которые вы хотите вставить",
                         MinWidth = 400,
                         MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow));
         }

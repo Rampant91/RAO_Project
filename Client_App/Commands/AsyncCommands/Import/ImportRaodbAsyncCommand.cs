@@ -75,7 +75,8 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                             $"Не удалось прочесть файл {path}," +
                             $"{Environment.NewLine}файл поврежден или не содержит данных.",
                         MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow)); 
 
@@ -236,7 +237,8 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                                         $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
                                         $"{Environment.NewLine}импортировать все новые организации.",
                                     MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                    Topmost = true,
                                 })
                                 .ShowDialog(Desktop.MainWindow));
 
@@ -265,7 +267,8 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                                         $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
                                         $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
                                     MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                    Topmost = true,
                                 })
                                 .ShowDialog(Desktop.MainWindow));
 
@@ -382,7 +385,8 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                     ContentMessage = "При сохранении импортированных данных возникла ошибка.\n",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -417,7 +421,8 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                     ContentMessage = $"Импорт {countReadFiles} из {answer.Length} файл{suffix} .raodb успешно завершен.",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -441,7 +446,8 @@ public class ImportRaodbAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyn
                     ContentMessage = $"Импорт из {answer.Length} файл{suffix} .raodb был отменен.",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 

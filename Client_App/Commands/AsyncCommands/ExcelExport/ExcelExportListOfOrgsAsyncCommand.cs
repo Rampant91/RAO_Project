@@ -705,7 +705,8 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
                         $"{Environment.NewLine}поскольку в текущей базе отсутствуют формы организаций./",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(progressBar ?? Desktop.MainWindow));
 

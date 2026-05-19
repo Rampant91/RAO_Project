@@ -86,7 +86,8 @@ namespace Client_App.Commands.AsyncCommands
                                      $"{ex.Message}",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
                 #endregion
@@ -114,7 +115,8 @@ namespace Client_App.Commands.AsyncCommands
                         ContentMessage = $"Не удалось импортировать данные из {SourceFile.FullName}." +
                                          $"{Environment.NewLine}Не соответствует формат данных!",
                         MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow));
 

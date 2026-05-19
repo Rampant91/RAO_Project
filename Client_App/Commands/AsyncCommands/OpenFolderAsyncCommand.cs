@@ -65,7 +65,8 @@ public class OpenFolderAsyncCommand : BaseAsyncCommand
                     ContentMessage = "При попытке открыть папку возникла ошибка.",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 

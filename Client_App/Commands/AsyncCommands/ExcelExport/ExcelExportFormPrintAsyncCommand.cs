@@ -172,7 +172,8 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                     ContentMessage = $"В отчёте присутствуют критические ошибки (выделены красным). " +
                                      $"{Environment.NewLine}Всё равно выгрузить отчёт?",
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 

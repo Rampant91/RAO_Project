@@ -94,7 +94,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                         ContentMessage = $"Не удалось импортировать данные из {SourceFile.FullName}." +
                                          $"{Environment.NewLine}Не соответствует формат данных!",
                         MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow));
                 #endregion

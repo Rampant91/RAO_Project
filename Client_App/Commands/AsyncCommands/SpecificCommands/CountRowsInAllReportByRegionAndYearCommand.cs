@@ -109,7 +109,8 @@ namespace Client_App.Commands.AsyncCommands.SpecificCommands
                         $"Декабрь - {result[11]}",
                         MinWidth = 300,
                         MinHeight = 125,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow);
                 });

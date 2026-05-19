@@ -189,7 +189,8 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
                         ContentMessage = "Не удалось выгрузить отчёт, поскольку в нём отсутствуют заполненные строчки.",
                         MinWidth = 400,
                         MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     }).ShowDialog(Desktop.MainWindow));
 
             #endregion
@@ -293,7 +294,8 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
                                 $"{Environment.NewLine}и используется другим процессом.",
                             MinWidth = 400,
                             MinHeight = 150,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         }).ShowDialog(Desktop.MainWindow));
 
                 #endregion
@@ -560,7 +562,8 @@ public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
                     ContentMessage = $"В отчёте присутствуют критические ошибки (выделены красным). " +
                                      $"{Environment.NewLine}Всё равно выгрузить отчёт?",
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 

@@ -36,7 +36,8 @@ public class DeleteReportAsyncCommand : BaseAsyncCommand
                 ContentHeader = "Уведомление",
                 ContentMessage = "Вы действительно хотите удалить отчет?",
                 MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(Desktop.MainWindow));
 

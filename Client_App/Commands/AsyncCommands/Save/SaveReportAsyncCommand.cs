@@ -197,7 +197,8 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
                             MaxWidth = 600,
                             MinHeight = 150,
                             MaxHeight = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(window ?? Desktop.MainWindow));
 

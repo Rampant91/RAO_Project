@@ -54,7 +54,8 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
                     ContentMessage = $"Некорректно введена дата операции в стро{suffix1} {string.Join(", ", linesWithCorruptOpDate)}.",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(activeWindow));
 
@@ -75,7 +76,8 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
                     ContentMessage = "В данной форме отсутствуют записи с кодом операции 41.",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(activeWindow));
 
@@ -103,7 +105,8 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
                         ContentMessage = $"Обнаружены изменения." +
                                          $"{Environment.NewLine}Сохранить форму {FormVM.FormType} перед переводом РВ в РАО?",
                         MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(activeWindow));
 
@@ -171,7 +174,8 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
                             $"{Environment.NewLine}Устраните данное несоответствие перед операцией перевода источника в РАО.",
                         MinWidth = 400,
                         MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(activeWindow));
 
@@ -261,7 +265,8 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
                     CanResize = true,
                     MinWidth = 450,
                     MinHeight = 175,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(activeWindow));
 

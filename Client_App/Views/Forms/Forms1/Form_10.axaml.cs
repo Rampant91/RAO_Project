@@ -109,7 +109,8 @@ public partial class Form_10 : BaseWindow<Form_10VM>
         //            MaxWidth = 600,
         //            MinHeight = 150,
         //            MaxHeight = 400,
-        //            WindowStartupLocation = WindowStartupLocation.CenterOwner
+        //            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+        //            Topmost = true,
         //        })
         //        .ShowDialog(window ?? Desktop.MainWindow));
 
@@ -163,7 +164,8 @@ public partial class Form_10 : BaseWindow<Form_10VM>
                                      $"{Environment.NewLine}Вы уверены, что хотите закрыть форму, " +
                                      $"оставив данные юридического лица незаполненными?",
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(desktop.MainWindow));
 
@@ -190,7 +192,8 @@ public partial class Form_10 : BaseWindow<Form_10VM>
                 ContentHeader = "Уведомление",
                 ContentMessage = $"Сохранить форму {vm.FormType}?",
                 MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(desktop.MainWindow));
 

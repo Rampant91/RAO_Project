@@ -260,7 +260,8 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                                 $"{Environment.NewLine}и используется другим процессом.",
                             MinWidth = 400,
                             MinHeight = 150,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         }).ShowDialog(Desktop.MainWindow));
 
                 #endregion

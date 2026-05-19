@@ -101,7 +101,8 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
                     ContentMessage = ErrOpsNotFound,
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
             return;
@@ -128,7 +129,8 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
                 ContentHeader = "Уведомление",
                 ContentMessage = MsgQuestionOverride ?? $"Сформировать паспорт{suffix1} для текущ{suffix2} упаков{suffix3} РАО?     ",
                 MinWidth = 550,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(Desktop.MainWindow));
         if (answer is not "Да") return;
@@ -182,7 +184,8 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
                                     $"{Environment.NewLine}и используется другим процессом.",
                                 MinWidth = 400,
                                 MinHeight = 150,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                Topmost = true,
                             })
                             .ShowDialog(Desktop.MainWindow));
                         continue;
@@ -467,7 +470,8 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
                     $"{Environment.NewLine}{folderPath}.",
                 MinWidth = 400,
                 MinHeight = 150,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(Desktop.MainWindow));
         await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
@@ -480,7 +484,8 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
                                  $"{Environment.NewLine}{folderPath}.",
                 MinWidth = 400,
                 MinHeight = 150,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(Desktop.MainWindow));
     }

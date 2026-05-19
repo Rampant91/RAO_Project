@@ -290,7 +290,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                                 $"Не удалось прочесть файл {path}," +
                                 $"{Environment.NewLine}файл поврежден или не содержит данных.",
                             MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(Desktop.MainWindow));
 
@@ -393,7 +394,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                                             $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
                                             $"{Environment.NewLine}импортировать все новые организации.",
                                         MinWidth = 400,
-                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                        Topmost = true,
                                     })
                                     .ShowDialog(Desktop.MainWindow));
 
@@ -422,7 +424,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                                             $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
                                             $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
                                         MinWidth = 400,
-                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                        Topmost = true,
                                     })
                                     .ShowDialog(Desktop.MainWindow));
 
@@ -527,7 +530,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     ContentMessage = $"При сохранении импортированных данных возникла ошибка.\n",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -572,7 +576,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     $"{Environment.NewLine}Импортировано {countNewReps} нов{suffix2} организаци{suffix3}",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -591,7 +596,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     ContentMessage = $"Импорт из {answer.Length} файл{suffix1} .json был отменен.",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 

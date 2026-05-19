@@ -74,7 +74,8 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                                      $"{ex.Message}",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
                 return;
@@ -120,7 +121,8 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                         ContentMessage = $"Не удалось импортировать данные из {SourceFile.FullName}." +
                                          $"{Environment.NewLine}Не соответствует формат данных!",
                         MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow));
 
@@ -413,7 +415,8 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                                         $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
                                         $"{Environment.NewLine}импортировать все новые организации.",
                                     MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                    Topmost = true,
                                 })
                                 .ShowDialog(Desktop.MainWindow));
 
@@ -442,7 +445,8 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                                         $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
                                         $"{Environment.NewLine}импортировать все новые организации.",
                                     MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                    Topmost = true,
                                 })
                                 .ShowDialog(Desktop.MainWindow));
 
@@ -473,7 +477,8 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                                                      $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
                                                      $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
                                     MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                    Topmost = true,
                                 })
                                 .ShowDialog(Desktop.MainWindow));
 
@@ -499,7 +504,8 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                                         $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
                                         $"{Environment.NewLine}",
                                     MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                    Topmost = true,
                                 })
                                 .ShowDialog(Desktop.MainWindow));
 
@@ -555,7 +561,8 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                     ContentMessage = "При сохранении импортированных данных возникла ошибка.\n",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -585,7 +592,8 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                     ContentMessage = $"Импорт из файл{suffix} .xlsx успешно завершен.",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -606,7 +614,8 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                     ContentMessage = $"Импорт из файл{suffix} .xlsx был отменен.",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 

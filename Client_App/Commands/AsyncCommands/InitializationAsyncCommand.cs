@@ -276,7 +276,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                 MinWidth = 450,
                 MinHeight = 150,
                 SizeToContent = SizeToContent.Width,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(Desktop.Windows[0])).GetAwaiter().GetResult();
 
@@ -539,7 +540,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                                          $"{Environment.NewLine}указав путь к резервному файлу.",
 
                         MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult(); 
 
@@ -558,7 +560,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                         ContentMessage = $"Не удалось создать файл базы данных." +
                                          $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
                         MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
 
@@ -585,7 +588,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                         ContentMessage = $"Не удалось создать файл базы данных." +
                                          $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
                         MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
 
@@ -616,7 +620,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     ContentMessage = $"Не удалось создать файл базы данных." +
                                      $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
 
@@ -644,7 +649,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     ContentMessage = $"Не удалось создать файл базы данных." +
                                      $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
 

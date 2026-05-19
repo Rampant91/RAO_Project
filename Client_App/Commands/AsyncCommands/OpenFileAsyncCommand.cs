@@ -52,7 +52,8 @@ public class OpenFileAsyncCommand : BaseAsyncCommand
                     ContentMessage = "При попытке открыть файл возникла ошибка.",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 

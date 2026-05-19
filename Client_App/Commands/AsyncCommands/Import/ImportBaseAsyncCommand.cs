@@ -826,7 +826,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                     $"{Environment.NewLine}Кнопка \"Пропустить для всех\" позволяет не показывать данное уведомление для всех случаев," +
                                     $"{Environment.NewLine}когда номер корректировки импортируемого отчета меньше, чем у имеющегося в базе.",
                                 MinWidth = 400,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                Topmost = true,
                             })
                             .ShowDialog(Desktop.MainWindow));
 
@@ -882,7 +883,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                     $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}{InventoryCheck(baseRep)}" +
                                     $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}{InventoryCheck(impRep)}",
                                 MinWidth = 400,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                Topmost = true,
                             })
                             .ShowDialog(Desktop.MainWindow));
 
@@ -935,7 +937,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                         $"{Environment.NewLine}Кнопка \"Заменять все формы\" заменит без уведомлений" +
                                         $"{Environment.NewLine}все формы с меньшим номером корректировки.",
                                     MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                    Topmost = true,
                                 })
                                 .ShowDialog(Desktop.MainWindow));
 
@@ -975,7 +978,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                         $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}{InventoryCheck(baseRep)}" +
                                         $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}{InventoryCheck(impRep)}",
                                     MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                    Topmost = true,
                                 })
                                 .ShowDialog(Desktop.MainWindow));
 
@@ -1031,7 +1035,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}{InventoryCheck(baseRep)}" +
                                 $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}{InventoryCheck(impRep)}",
                             MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(Desktop.MainWindow));
 
@@ -1068,7 +1073,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
                             $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
                         MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow));
 
@@ -1116,7 +1122,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений импортировать" +
                                 $"{Environment.NewLine}все новые формы для уже имеющихся в базе организаций.",
                             MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(Desktop.MainWindow));
 
@@ -1152,7 +1159,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
                                 $"{Environment.NewLine}Количество строк - {ImpRepFormCount}{InventoryCheck(impRep)}",
                             MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(Desktop.MainWindow));
 
@@ -1248,7 +1256,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Кнопка \"Пропустить для всех\" позволяет не показывать данное уведомление для всех случаев," +
                                 $"{Environment.NewLine}когда номер корректировки импортируемого отчета меньше, чем у имеющегося в базе.",
                             MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(Desktop.MainWindow));
 
@@ -1303,7 +1312,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
                                 $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}",
                             MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(Desktop.MainWindow));
 
@@ -1359,7 +1369,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                     $"{Environment.NewLine}Кнопка \"Заменять все формы\" заменит без уведомлений" +
                                     $"{Environment.NewLine}все формы с меньшим номером корректировки.",
                                 MinWidth = 400,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                Topmost = true,
                             })
                             .ShowDialog(Desktop.MainWindow));
 
@@ -1398,7 +1409,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                     $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
                                     $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}",
                                 MinWidth = 400,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                Topmost = true,
                             })
                             .ShowDialog(Desktop.MainWindow));
 
@@ -1439,7 +1451,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
                             $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
                         MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow));
 
@@ -1497,7 +1510,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений импортировать" +
                                 $"{Environment.NewLine}все новые формы для уже имеющихся в базе организаций.",
                             MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(Desktop.MainWindow));
 
@@ -1532,7 +1546,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
                                 $"{Environment.NewLine}Количество строк - {ImpRepFormCount}",
                             MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(Desktop.MainWindow));
 
@@ -1629,7 +1644,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Кнопка \"Пропустить для всех\" позволяет не показывать данное уведомление для всех случаев," +
                                 $"{Environment.NewLine}когда номер корректировки импортируемого отчета меньше, чем у имеющегося в базе.",
                             MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(Desktop.MainWindow));
 
@@ -1691,7 +1707,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
                                 $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}",
                             MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(Desktop.MainWindow));
 
@@ -1745,7 +1762,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                     $"{Environment.NewLine}Кнопка \"Заменять все формы\" заменит без уведомлений" +
                                     $"{Environment.NewLine}все формы с меньшим номером корректировки.",
                                 MinWidth = 400,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                Topmost = true,
                             })
                             .ShowDialog(Desktop.MainWindow));
 
@@ -1782,7 +1800,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                     $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
                                     $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}",
                                 MinWidth = 400,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                Topmost = true,
                             })
                             .ShowDialog(Desktop.MainWindow));
 
@@ -1821,7 +1840,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             $"{Environment.NewLine}" +
                             $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
                         MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow));
 
@@ -1886,7 +1906,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений импортировать" +
                                 $"{Environment.NewLine}все новые формы для уже имеющихся в базе организаций.",
                             MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(Desktop.MainWindow));
 
@@ -1919,7 +1940,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
                                 $"{Environment.NewLine}Количество строк - {ImpRepFormCount}",
                             MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(Desktop.MainWindow));
 
@@ -2016,7 +2038,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Кнопка \"Пропустить для всех\" позволяет не показывать данное уведомление для всех случаев," +
                                 $"{Environment.NewLine}когда номер корректировки импортируемого отчета меньше, чем у имеющегося в базе.",
                             MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(Desktop.MainWindow));
 
@@ -2078,7 +2101,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
                                 $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}",
                             MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(Desktop.MainWindow));
 
@@ -2132,7 +2156,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                     $"{Environment.NewLine}Кнопка \"Заменять все формы\" заменит без уведомлений" +
                                     $"{Environment.NewLine}все формы с меньшим номером корректировки.",
                                 MinWidth = 400,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                Topmost = true,
                             })
                             .ShowDialog(Desktop.MainWindow));
 
@@ -2169,7 +2194,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                     $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}" +
                                     $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}",
                                 MinWidth = 400,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                Topmost = true,
                             })
                             .ShowDialog(Desktop.MainWindow));
 
@@ -2208,7 +2234,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             $"{Environment.NewLine}" +
                             $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
                         MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow));
 
@@ -2273,7 +2300,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений импортировать" +
                                 $"{Environment.NewLine}все новые формы для уже имеющихся в базе организаций.",
                             MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(Desktop.MainWindow));
 
@@ -2306,7 +2334,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
                                 $"{Environment.NewLine}Количество строк - {ImpRepFormCount}",
                             MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(Desktop.MainWindow));
 
