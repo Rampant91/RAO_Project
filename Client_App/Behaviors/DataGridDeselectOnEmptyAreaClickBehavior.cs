@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -63,22 +61,26 @@ public class DataGridDeselectOnEmptyAreaClickBehavior : Behavior<DataGrid>
         // Если клик был мимо строки, сбрасываем выделение
         if (!isClickOnRow)
         {
-            if (AssociatedObject.SelectedItems is { IsFixedSize: false } list)
-            {
-                try
-                {
-                    list.Clear();
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            AssociatedObject.SelectedItem = null;
-
-            DeselectInViewModel();
+            DeselectDataGrid();
         }
+    }
+
+    private void DeselectDataGrid()
+    {
+        if (AssociatedObject is null) return;
+
+        // В режиме Single Avalonia запрещает менять SelectedItems (Clear/Add/Remove).
+        if (AssociatedObject.SelectionMode == DataGridSelectionMode.Extended
+            && AssociatedObject.SelectedItems is { IsReadOnly: false, Count: > 0 } list)
+        {
+            list.Clear();
+        }
+        else
+        {
+            AssociatedObject.SelectedItem = null;
+        }
+
+        DeselectInViewModel();
     }
 
     private bool IsClickOnDataGridRow(Visual? source)

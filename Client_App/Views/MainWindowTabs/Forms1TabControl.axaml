@@ -514,6 +514,7 @@
                           Grid.Row="1" 
                           Margin="5"
 						  Items="{Binding ReportCollection}"
+						  SelectionMode="Single"
 						  SelectedItem="{Binding SelectedReport}"
 						  RowHeight="25"
 						  GridLinesVisibility="All"

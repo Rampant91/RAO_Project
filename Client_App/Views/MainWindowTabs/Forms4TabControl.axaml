@@ -251,7 +251,8 @@
                           Items="{Binding ReportCollection}"
                           RowBackground="White"
                           RowHeight="25"
-                          SelectedItem="{Binding SelectedReport}">
+                          SelectedItem="{Binding SelectedReport}"
+                          SelectionMode="Single">
 
                     <interactivity:Interaction.Behaviors>
                         <local:DataGridDoubleClickOpenFormBehavior />
