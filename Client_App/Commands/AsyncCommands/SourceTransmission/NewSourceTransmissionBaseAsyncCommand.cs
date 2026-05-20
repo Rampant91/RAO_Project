@@ -281,7 +281,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
                 var massTmp = (form14.Mass_DB ?? "")
                     .ToLower()
-                    .Replace(".", ",")
+                    .Replace('.', ',')
                     .Replace("(", "")
                     .Replace(")", "")
                     .Replace('е', 'e')
@@ -431,7 +431,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .SelectMany(x => x.Rows16)
                     .CountAsync() + 1;
                 var massTmp = (form12.Mass_DB ?? "")
-                    .Replace(".", ",")
+                    .Replace('.', ',')
                     .Replace("(", "")
                     .Replace(")", "");
                 var massTon = double.TryParse(massTmp,
@@ -590,7 +590,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .Select(x => x["code"])
                     .ToArray();
                 var massTmp = (form14.Mass_DB ?? "")
-                    .Replace(".", ",")
+                    .Replace('.', ',')
                     .Replace("(", "")
                     .Replace(")", "");
                 var massTon = double.TryParse(massTmp,

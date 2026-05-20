@@ -146,7 +146,6 @@ public class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBaseAllAsy
         {
             "1.1" => await db.ReportsCollectionDbSet
                 .AsNoTracking()
-                .AsSplitQuery()
                 .Where(reps => reps.Id == repsId)
                 .SelectMany(reps => reps.Report_Collection
                     .Where(rep => rep.FormNum_DB == "1.1")
@@ -167,7 +166,6 @@ public class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBaseAllAsy
 
             "1.5" => await db.ReportsCollectionDbSet
                 .AsNoTracking()
-                .AsSplitQuery()
                 .Where(reps => reps.Id == repsId)
                 .SelectMany(reps => reps.Report_Collection
                     .Where(rep => rep.FormNum_DB == "1.5")
@@ -213,6 +211,7 @@ public class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBaseAllAsy
 
     /// <summary>
     /// Загрузка отчётов с непарными строчками для выгрузки в Excel.
+    /// Два запроса: заголовки отчётов и полные строки формы по Id (без N+1).
     /// </summary>
     private static async Task<Reports> BuildReportsForExportAsync(
         DBModel db,
@@ -228,42 +227,100 @@ public class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBaseAllAsy
             return result;
         }
 
-        var formIds = unpairedOperations.Select(operation => operation.Id).ToList();
+        var formIds = unpairedOperations.Select(operation => operation.Id).Distinct().ToList();
         var reportIds = unpairedOperations
             .Where(operation => operation.ReportId != 0)
             .Select(operation => operation.ReportId)
             .Distinct()
-            .OrderBy(id => id)
             .ToList();
 
-        foreach (var reportId in reportIds)
+        if (reportIds.Count == 0)
         {
-            var report = formNum switch
+            return result;
+        }
+
+        var reports = await db.ReportCollectionDbSet
+            .AsNoTracking()
+            .Where(rep => reportIds.Contains(rep.Id))
+            .ToListAsync(cancellationToken);
+
+        switch (formNum)
+        {
+            case "1.1":
             {
-                "1.1" => await db.ReportCollectionDbSet
+                var forms = await db.form_11
                     .AsNoTracking()
-                    .AsSplitQuery()
-                    .Include(rep => rep.Rows11
-                        .Where(form => formIds.Contains(form.Id))
-                        .OrderBy(form => form.NumberInOrder_DB))
-                    .FirstAsync(rep => rep.Id == reportId, cancellationToken),
+                    .Where(form => formIds.Contains(form.Id))
+                    .ToListAsync(cancellationToken);
 
-                "1.5" => await db.ReportCollectionDbSet
+                var formsByReportId = forms
+                    .GroupBy(form => form.ReportId ?? 0)
+                    .ToDictionary(
+                        group => group.Key,
+                        group => group.OrderBy(form => form.NumberInOrder_DB).ToList());
+
+                foreach (var report in OrderReportsForExport(reports))
+                {
+                    if (!formsByReportId.TryGetValue(report.Id, out var rowList) || rowList.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    report.Rows11.Clear();
+                    foreach (var form in rowList)
+                    {
+                        report.Rows11.Add(form);
+                    }
+
+                    result.Report_Collection.Add(report);
+                }
+
+                break;
+            }
+
+            case "1.5":
+            {
+                var forms = await db.form_15
                     .AsNoTracking()
-                    .AsSplitQuery()
-                    .Include(rep => rep.Rows15
-                        .Where(form => formIds.Contains(form.Id))
-                        .OrderBy(form => form.NumberInOrder_DB))
-                    .FirstAsync(rep => rep.Id == reportId, cancellationToken),
+                    .Where(form => formIds.Contains(form.Id))
+                    .ToListAsync(cancellationToken);
 
-                _ => throw new ArgumentOutOfRangeException(nameof(formNum), formNum, null)
-            };
+                var formsByReportId = forms
+                    .GroupBy(form => form.ReportId ?? 0)
+                    .ToDictionary(
+                        group => group.Key,
+                        group => group.OrderBy(form => form.NumberInOrder_DB).ToList());
 
-            result.Report_Collection.Add(report);
+                foreach (var report in OrderReportsForExport(reports))
+                {
+                    if (!formsByReportId.TryGetValue(report.Id, out var rowList) || rowList.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    report.Rows15.Clear();
+                    foreach (var form in rowList)
+                    {
+                        report.Rows15.Add(form);
+                    }
+
+                    result.Report_Collection.Add(report);
+                }
+
+                break;
+            }
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(formNum), formNum, null);
         }
 
         return result;
     }
+
+    private static IEnumerable<Report> OrderReportsForExport(List<Report> reports) =>
+        reports
+            .OrderBy(rep => DateOnly.TryParse(rep.StartPeriod_DB, out var startDate) ? startDate : DateOnly.MaxValue)
+            .ThenBy(rep => DateOnly.TryParse(rep.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue);
 
     #endregion
 
