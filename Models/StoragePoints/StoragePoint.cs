@@ -1,6 +1,7 @@
 ﻿using Models.Attributes;
 using Models.Forms;
 using Models.Forms.DataAccess;
+using Models.Passports;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,8 +20,13 @@ namespace Models.StoragePoints
     [Table(name: "storage_point")]
     public class StoragePoint : INotifyPropertyChanged, INotifyDataErrorInfo
     {
-
         #region Constructor
+
+        public StoragePoint()
+        {
+            _licenseInfoList = new ObservableCollection<LicenseInfo>();
+        }
+
         #endregion
 
         #region Properties
@@ -37,10 +43,28 @@ namespace Models.StoragePoints
             get => _sgukName;
             set
             {
-                _sgukName = value;
+                if (value != _sgukName)
+                {
+                    _sgukName = value;
+                    SgukNameLastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        #region SgukNameLastUpdate
+        private DateTime _sgukNameLastUpdateDate;
+
+        public DateTime SgukNameLastUpdate
+        {
+            get => _sgukNameLastUpdateDate;
+            private set
+            {
+                _sgukNameLastUpdateDate = value;
                 OnPropertyChanged();
             }
         }
+        #endregion
         #endregion
 
         #region Code
@@ -59,21 +83,6 @@ namespace Models.StoragePoints
         }
         #endregion
 
-        #region LicenseName
-        private string _licenseName;
-
-        [MaxLength(64)]
-        public string LicenseName
-        {
-            get => _licenseName;
-            set
-            {
-                _licenseName = value;
-                OnPropertyChanged();
-            }
-        }
-        #endregion
-
         #region EgrnName
         [NotMapped]
         private string _egrnName;
@@ -84,10 +93,27 @@ namespace Models.StoragePoints
             get => _egrnName;
             set
             {
-                _egrnName = value;
+                if (value != _egrnName)
+               { 
+                    _egrnName = value;
+                    EgrnNameLastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        #region EgrnNameLastUpdate
+        private DateTime _egrnNameLastUpdateDate;
+
+        public DateTime EgrnNameLastUpdate
+        {
+            get => _egrnNameLastUpdateDate;
+            private set
+            {
+                _egrnNameLastUpdateDate = value;
                 OnPropertyChanged();
             }
         }
+        #endregion
         #endregion
 
         #region CadastreNum
@@ -100,10 +126,29 @@ namespace Models.StoragePoints
             get => _cadastreNum;
             set
             {
-                _cadastreNum = value;
+                if (value != _cadastreNum)
+                {
+                    _cadastreNum = value;
+                    CadastreNumLastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
+
+            }
+        }
+
+        #region CadastreNumLastUpdate
+        private DateTime _cadastreNumLastUpdate;
+
+        public DateTime CadastreNumLastUpdate
+        {
+            get => _cadastreNumLastUpdate;
+            private set
+            {
+                _cadastreNumLastUpdate = value;
                 OnPropertyChanged();
             }
         }
+        #endregion
         #endregion
 
         #region ProjectVolume (4)
@@ -114,135 +159,7 @@ namespace Models.StoragePoints
             get => _projectVolume;
             set
             {
-                //Exponentional
                 _projectVolume = value;
-                OnPropertyChanged();
-            }
-        }
-        #endregion
-
-        #region CodeRAO (5)
-        private string _codeRAO;
-
-        public string CodeRAO
-        {
-            get => _codeRAO;
-            set
-            {
-                _codeRAO = value;
-                OnPropertyChanged();
-            }
-        }
-        #endregion
-
-        #region Volume (6)
-        private double _volume;
-
-        public double Volume
-        {
-            get => _volume;
-            set
-            {
-                _volume = value;
-                OnPropertyChanged();
-            }
-        }
-        #endregion
-
-        #region Mass (7)
-        private double _mass;
-
-        public double Mass
-        {
-            get => _mass;
-            set
-            {
-                _mass = value;
-                OnPropertyChanged();
-            }
-        }
-        #endregion
-
-        #region QuantityOZIII (8)
-        private int _quantityOZIII;
-
-        public int QuantityOZIII
-        {
-            get => _quantityOZIII;
-            set
-            {
-                _quantityOZIII = value;
-                OnPropertyChanged();
-            }
-        }
-        #endregion
-
-        #region SummaryActivity (9)
-        private double _summaryActivity;
-
-        public double SummaryActivity
-        {
-            get => _summaryActivity;
-            set
-            {
-                _summaryActivity = value;
-                OnPropertyChanged();
-            }
-        }
-        #endregion
-
-        #region DocumentNumber (10)
-        private string _documentNumber;
-
-        public string DocumentNumber
-        {
-            get => _documentNumber;
-            set
-            {
-                _documentNumber = value;
-                OnPropertyChanged();
-            }
-        }
-        #endregion
-
-        #region DocumentDate (11)
-        private DateOnly _documentDate;
-
-        public DateOnly DocumentDate
-        {
-            get => _documentDate;
-            set
-            {
-                _documentDate = value;
-                OnPropertyChanged();
-            }
-        }
-        #endregion
-
-        #region ExpirationDate (12)
-        private DateOnly _expirationDate;
-
-        public DateOnly ExpirationDate
-        {
-            get => _expirationDate;
-            set
-            {
-                _expirationDate = value;
-                OnPropertyChanged();
-            }
-        }
-        #endregion
-
-        #region DocumentName (13)
-        private string _documentName;
-
-        [MaxLength(64)]
-        public string DocumentName
-        {
-            get => _documentName;
-            set
-            {
-                _documentName = value;
                 OnPropertyChanged();
             }
         }
@@ -261,20 +178,25 @@ namespace Models.StoragePoints
             }
         }
         #endregion
-        
-        #region LastUpdateDate
-        private DateOnly _lastUpdateDate;
 
-        public DateOnly LastUpdateDate
+        #region LicenseInfoList
+        private ObservableCollection<LicenseInfo> _licenseInfoList;
+        public ObservableCollection<LicenseInfo> LicenseInfoList
         {
-            get => _lastUpdateDate;
+            get
+            {
+                return _licenseInfoList;
+            }
             set
             {
-                _lastUpdateDate = value;
-                OnPropertyChanged();
+                _licenseInfoList = value;
+
+                OnPropertyChanged(nameof(LicenseInfoList));
+
             }
         }
         #endregion
+
         #endregion
 
         #region NotifyDataError

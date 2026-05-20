@@ -45,8 +45,20 @@ namespace Client_App.ViewModels.StoragePoints
             var owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
                 .FirstOrDefault(w => w.IsActive);
 
+            AddLicense = ReactiveCommand.Create(() =>
+            {
+                StoragePoint.LicenseInfoList.Add(new LicenseInfo(StoragePoint));
+            });
 
-            SavePassport = ReactiveCommand.Create(async () =>
+            DeleteLicense = ReactiveCommand.Create<LicenseInfo>(async license =>
+            {
+                if (StoragePoint.LicenseInfoList.Count <= 1) return;
+
+                StoragePoint.LicenseInfoList.Remove(license);
+            });
+
+
+            SaveChanges = ReactiveCommand.Create(async () =>
             {
                 try
                 {
@@ -89,6 +101,21 @@ namespace Client_App.ViewModels.StoragePoints
             }
         }
 
+
+        private LicenseInfo _selectedLicense;
+        public LicenseInfo SelectedLicense
+        {
+            get
+            {
+                return _selectedLicense;
+            }
+            set
+            {
+                _selectedLicense = value;
+                OnPropertyChanged();
+            }
+        }
+
         #region SkipChangeTracking
 
         private bool _skipChangeTracking;
@@ -109,7 +136,9 @@ namespace Client_App.ViewModels.StoragePoints
 
         #region Commands
 
-        public ICommand SavePassport { get; set; }
+        public ICommand AddLicense { get; set; }
+        public ICommand DeleteLicense { get; set; }
+        public ICommand SaveChanges { get; set; }
 
         #endregion
 

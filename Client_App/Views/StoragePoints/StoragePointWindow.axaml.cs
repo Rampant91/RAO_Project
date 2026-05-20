@@ -113,7 +113,7 @@ public partial class StoragePointWindow : BaseWindow<StoragePointWindowVM>
                 ],
                 ContentTitle = "Сохранение изменений",
                 ContentHeader = "Уведомление",
-                ContentMessage = $"Сохранить паспорт на упаковку твердых радиоактивных отходов?",
+                ContentMessage = $"Сохранить пункт хранения?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
