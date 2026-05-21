@@ -219,10 +219,50 @@
                                 </MenuItem.CommandParameter>
                             </MenuItem>
 						</MenuItem>
-						<MenuItem Header="Непарные операции 41 (формы 1.1 / 1.5)"
-                                  Command="{Binding MainWindowVM.ExcelExportCheckPairingOfCode41, Mode=OneWay}"
-                                  IsVisible="{Binding SelectedReports, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}"
-                                  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+						<MenuItem Header="Аналитика"
+                                  IsVisible="{Binding SelectedReports, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}">
+                            <MenuItem Command="{Binding MainWindowVM.ExcelExportAll, Mode=OneWay}"
+                                      CommandParameter="SelectedOrg"
+                                      Header="Все формы"/>
+                            <MenuItem Header="Формы 2">
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.1"
+                                          Header="Форма 2.1"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.2"
+                                          Header="Форма 2.2"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.3"
+                                          Header="Форма 2.3"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.4"
+                                          Header="Форма 2.4"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.5"
+                                          Header="Форма 2.5"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.6"
+                                          Header="Форма 2.6"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.7"
+                                          Header="Форма 2.7"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.8"
+                                          Header="Форма 2.8"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.9"
+                                          Header="Форма 2.9"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.10"
+                                          Header="Форма 2.10"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.11"
+                                          Header="Форма 2.11"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.12"
+                                          Header="Форма 2.12"/>
+                            </MenuItem>
+                        </MenuItem>
 						<MenuItem Header="Проверить все отчёты организации"
 								  Command="{Binding MainWindowVM.ExcelExportCheckAllForms, Mode=OneWay}"
                                   IsVisible="{Binding SelectedReports, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}"

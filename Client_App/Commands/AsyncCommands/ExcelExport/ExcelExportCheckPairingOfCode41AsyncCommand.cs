@@ -24,12 +24,18 @@ using static Client_App.Resources.StaticStringMethods;
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 /// <summary>
-/// Выгрузка в .xlsx операций с кодом 41 без парной записи между формами 1.1 и 1.5.
+/// Выгрузка в .xlsx операций с кодом 41 без парной записи между формами 1.1 и 1.5
+/// (сравнение по ключевым полям; при пустых паспорте и зав. номере — по сумме количества).
 /// </summary>
 public class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBaseAllAsyncCommand
 {
     private const string OperationCode = "41";
-    private static readonly Operation41PairingKeyComparer PairingKeyComparer = new();
+
+    /// <summary>
+    /// Ограничение Firebird для списка IN (...); берём запас ниже лимита 1500.
+    /// </summary>
+    private const int FirebirdInListMaxCount = 1000;
+
     private readonly MainWindowVM _mainWindowVM;
 
     public ExcelExportCheckPairingOfCode41AsyncCommand(MainWindowVM mainWindowVM)
@@ -160,7 +166,13 @@ public class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBaseAllAsy
                     PasNum = form.PassportNumber_DB,
                     FacNum = form.FactoryNumber_DB,
                     Type = form.Type_DB,
-                    Radionuclids = form.Radionuclids_DB
+                    Radionuclids = form.Radionuclids_DB,
+                    CreationDate = form.CreationDate_DB,
+                    DocumentVid = form.DocumentVid_DB,
+                    DocumentNumber = form.DocumentNumber_DB,
+                    DocumentDate = form.DocumentDate_DB,
+                    PackNumber = form.PackNumber_DB,
+                    Quantity = form.Quantity_DB
                 })
                 .ToListAsync(cancellationToken),
 
@@ -180,7 +192,13 @@ public class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBaseAllAsy
                     PasNum = form.PassportNumber_DB,
                     FacNum = form.FactoryNumber_DB,
                     Type = form.Type_DB,
-                    Radionuclids = form.Radionuclids_DB
+                    Radionuclids = form.Radionuclids_DB,
+                    CreationDate = form.CreationDate_DB,
+                    DocumentVid = form.DocumentVid_DB,
+                    DocumentNumber = form.DocumentNumber_DB,
+                    DocumentDate = form.DocumentDate_DB,
+                    PackNumber = form.PackNumber_DB,
+                    Quantity = form.Quantity_DB
                 })
                 .ToListAsync(cancellationToken),
 
@@ -194,20 +212,23 @@ public class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBaseAllAsy
 
     private static List<Operation41PairingDto> GetUnpairedOperations(
         List<Operation41PairingDto> source,
-        List<Operation41PairingDto> reference)
-    {
-        var referenceKeys = new HashSet<(string PasNum, string FacNum, string Radionuclids, string Type, string OpDate)>(
-            reference.Select(ToPairingKey),
-            PairingKeyComparer);
+        List<Operation41PairingDto> reference) =>
+        Operation41PairingMatcher.FindUnpaired(source, reference, ToPairingKey);
 
-        return source
-            .Where(operation => !referenceKeys.Contains(ToPairingKey(operation)))
-            .ToList();
-    }
-
-    private static (string PasNum, string FacNum, string Radionuclids, string Type, string OpDate) ToPairingKey(
-        Operation41PairingDto dto) =>
-        (dto.PasNum, dto.FacNum, dto.Radionuclids, dto.Type, dto.OpDate);
+    private static Operation41PairingKey ToPairingKey(Operation41PairingDto dto) =>
+        new(
+            dto.OpCode,
+            dto.OpDate,
+            dto.PasNum,
+            dto.FacNum,
+            dto.Type,
+            dto.Radionuclids,
+            dto.CreationDate,
+            Operation41PairingKeyComparer.NormalizeDocumentVid(dto.DocumentVid),
+            dto.DocumentNumber,
+            dto.DocumentDate,
+            dto.PackNumber,
+            dto.Quantity);
 
     /// <summary>
     /// Загрузка отчётов с непарными строчками для выгрузки в Excel.
@@ -239,19 +260,13 @@ public class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBaseAllAsy
             return result;
         }
 
-        var reports = await db.ReportCollectionDbSet
-            .AsNoTracking()
-            .Where(rep => reportIds.Contains(rep.Id))
-            .ToListAsync(cancellationToken);
+        var reports = await LoadReportsByIdsAsync(db, reportIds, cancellationToken);
 
         switch (formNum)
         {
             case "1.1":
             {
-                var forms = await db.form_11
-                    .AsNoTracking()
-                    .Where(form => formIds.Contains(form.Id))
-                    .ToListAsync(cancellationToken);
+                var forms = await LoadForm11ByIdsAsync(db, formIds, cancellationToken);
 
                 var formsByReportId = forms
                     .GroupBy(form => form.ReportId ?? 0)
@@ -280,10 +295,7 @@ public class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBaseAllAsy
 
             case "1.5":
             {
-                var forms = await db.form_15
-                    .AsNoTracking()
-                    .Where(form => formIds.Contains(form.Id))
-                    .ToListAsync(cancellationToken);
+                var forms = await LoadForm15ByIdsAsync(db, formIds, cancellationToken);
 
                 var formsByReportId = forms
                     .GroupBy(form => form.ReportId ?? 0)
@@ -315,6 +327,68 @@ public class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBaseAllAsy
         }
 
         return result;
+    }
+
+    private static async Task<List<Report>> LoadReportsByIdsAsync(
+        DBModel db,
+        IReadOnlyList<int> reportIds,
+        CancellationToken cancellationToken)
+    {
+        var reports = new List<Report>();
+        foreach (var idChunk in ChunkIds(reportIds))
+        {
+            var batch = await db.ReportCollectionDbSet
+                .AsNoTracking()
+                .Where(rep => idChunk.Contains(rep.Id))
+                .ToListAsync(cancellationToken);
+            reports.AddRange(batch);
+        }
+
+        return reports;
+    }
+
+    private static async Task<List<Form11>> LoadForm11ByIdsAsync(
+        DBModel db,
+        IReadOnlyList<int> formIds,
+        CancellationToken cancellationToken)
+    {
+        var forms = new List<Form11>();
+        foreach (var idChunk in ChunkIds(formIds))
+        {
+            var batch = await db.form_11
+                .AsNoTracking()
+                .Where(form => idChunk.Contains(form.Id))
+                .ToListAsync(cancellationToken);
+            forms.AddRange(batch);
+        }
+
+        return forms;
+    }
+
+    private static async Task<List<Form15>> LoadForm15ByIdsAsync(
+        DBModel db,
+        IReadOnlyList<int> formIds,
+        CancellationToken cancellationToken)
+    {
+        var forms = new List<Form15>();
+        foreach (var idChunk in ChunkIds(formIds))
+        {
+            var batch = await db.form_15
+                .AsNoTracking()
+                .Where(form => idChunk.Contains(form.Id))
+                .ToListAsync(cancellationToken);
+            forms.AddRange(batch);
+        }
+
+        return forms;
+    }
+
+    private static IEnumerable<List<int>> ChunkIds(IReadOnlyList<int> ids)
+    {
+        for (var offset = 0; offset < ids.Count; offset += FirebirdInListMaxCount)
+        {
+            yield return ids.Skip(offset).Take(FirebirdInListMaxCount).ToList();
+        }
     }
 
     private static IEnumerable<Report> OrderReportsForExport(List<Report> reports) =>
@@ -710,7 +784,7 @@ public class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBaseAllAsy
     #region DTO
 
     /// <summary>
-    /// Минимальный набор полей для поиска непарных операций 41.
+    /// Ключевые поля операции 41 для сопоставления (фаза 1 — узкий запрос к БД).
     /// </summary>
     private sealed class Operation41PairingDto
     {
@@ -722,6 +796,12 @@ public class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBaseAllAsy
         public string FacNum { get; init; } = string.Empty;
         public string Type { get; init; } = string.Empty;
         public string Radionuclids { get; init; } = string.Empty;
+        public string CreationDate { get; init; } = string.Empty;
+        public byte? DocumentVid { get; init; }
+        public string DocumentNumber { get; init; } = string.Empty;
+        public string DocumentDate { get; init; } = string.Empty;
+        public string PackNumber { get; init; } = string.Empty;
+        public int? Quantity { get; init; }
     }
 
     #endregion
