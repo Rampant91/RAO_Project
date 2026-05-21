@@ -332,6 +332,8 @@
                       IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
                 <MenuItem Header="Конвертер из Excel в .RAODB"
                           Command="{Binding ConvertExcelToRaodb, Mode=OneWay}"/>
+                <MenuItem Header="Групповая выгрузка отчётов"
+                          Command="{Binding GroupBulkExportReports, Mode=OneWay}"/>
             </MenuItem>
 
         </Menu>
