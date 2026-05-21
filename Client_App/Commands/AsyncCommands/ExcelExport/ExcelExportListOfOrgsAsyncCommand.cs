@@ -65,10 +65,10 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         await FillExcelHeaders(excelPackage, parameter);
 
         progressBarVM.SetProgressBar(20, "Получение списка организаций");
-        var repsList = await GetReportsList(db, cts);
+        var (repsList, formCountsByReportsId) = await GetReportsList(db, cts);
 
         progressBarVM.SetProgressBar(30, "Заполнение строчек в .xlsx");
-        await FillExcel(repsList, parameter, progressBarVM);
+        await FillExcel(repsList, formCountsByReportsId, parameter, progressBarVM);
 
         progressBarVM.SetProgressBar(95, "Сохранение");
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
@@ -93,9 +93,14 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
     /// Выгружает в .xlsx требуемые значения.
     /// </summary>
     /// <param name="repsList">Список организаций.</param>
+    /// <param name="formCountsByReportsId">Количество отчётов по номерам форм для каждой организации.</param>
     /// <param name="parameter">Параметр команды (full - выгрузка с дополнительными полями)</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
-    private Task FillExcel(IReadOnlyCollection<Reports> repsList, object? parameter, AnyTaskProgressBarVM progressBarVM)
+    private Task FillExcel(
+        IReadOnlyCollection<Reports> repsList,
+        IReadOnlyDictionary<int, Dictionary<string, int>> formCountsByReportsId,
+        object? parameter,
+        AnyTaskProgressBarVM progressBarVM)
     {
         var checkedLst = new List<Reports>();
         var row = 2;
@@ -117,67 +122,67 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
 
                     Worksheet.Cells[row, 8].Value =
                         (int)Worksheet.Cells[row, 8].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.1"));
+                        + GetFormCount(reps, "1.1", formCountsByReportsId);
                     Worksheet.Cells[row, 9].Value =
                         (int)Worksheet.Cells[row, 9].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.2"));
+                        + GetFormCount(reps, "1.2", formCountsByReportsId);
                     Worksheet.Cells[row, 10].Value =
                         (int)Worksheet.Cells[row, 10].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.3"));
+                        + GetFormCount(reps, "1.3", formCountsByReportsId);
                     Worksheet.Cells[row, 11].Value =
                         (int)Worksheet.Cells[row, 11].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.4"));
+                        + GetFormCount(reps, "1.4", formCountsByReportsId);
                     Worksheet.Cells[row, 12].Value =
                         (int)Worksheet.Cells[row, 12].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.5"));
+                        + GetFormCount(reps, "1.5", formCountsByReportsId);
                     Worksheet.Cells[row, 13].Value =
                         (int)Worksheet.Cells[row, 13].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.6"));
+                        + GetFormCount(reps, "1.6", formCountsByReportsId);
                     Worksheet.Cells[row, 14].Value =
                         (int)Worksheet.Cells[row, 14].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.7"));
+                        + GetFormCount(reps, "1.7", formCountsByReportsId);
                     Worksheet.Cells[row, 15].Value =
                         (int)Worksheet.Cells[row, 15].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.8"));
+                        + GetFormCount(reps, "1.8", formCountsByReportsId);
                     Worksheet.Cells[row, 16].Value =
                         (int)Worksheet.Cells[row, 16].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.9"));
+                        + GetFormCount(reps, "1.9", formCountsByReportsId);
                     Worksheet.Cells[row, 17].Value =
                         (int)Worksheet.Cells[row, 17].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.1"));
+                        + GetFormCount(reps, "2.1", formCountsByReportsId);
                     Worksheet.Cells[row, 18].Value =
                         (int)Worksheet.Cells[row, 18].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.2"));
+                        + GetFormCount(reps, "2.2", formCountsByReportsId);
                     Worksheet.Cells[row, 19].Value =
                         (int)Worksheet.Cells[row, 19].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.3"));
+                        + GetFormCount(reps, "2.3", formCountsByReportsId);
                     Worksheet.Cells[row, 20].Value =
                         (int)Worksheet.Cells[row, 20].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.4"));
+                        + GetFormCount(reps, "2.4", formCountsByReportsId);
                     Worksheet.Cells[row, 21].Value =
                         (int)Worksheet.Cells[row, 21].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.5"));
+                        + GetFormCount(reps, "2.5", formCountsByReportsId);
                     Worksheet.Cells[row, 22].Value =
                         (int)Worksheet.Cells[row, 22].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.6"));
+                        + GetFormCount(reps, "2.6", formCountsByReportsId);
                     Worksheet.Cells[row, 23].Value =
                         (int)Worksheet.Cells[row, 23].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.7"));
+                        + GetFormCount(reps, "2.7", formCountsByReportsId);
                     Worksheet.Cells[row, 24].Value =
                         (int)Worksheet.Cells[row, 24].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.8"));
+                        + GetFormCount(reps, "2.8", formCountsByReportsId);
                     Worksheet.Cells[row, 25].Value =
                         (int)Worksheet.Cells[row, 25].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.9"));
+                        + GetFormCount(reps, "2.9", formCountsByReportsId);
                     Worksheet.Cells[row, 26].Value =
                         (int)Worksheet.Cells[row, 26].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.10"));
+                        + GetFormCount(reps, "2.10", formCountsByReportsId);
                     Worksheet.Cells[row, 27].Value =
                         (int)Worksheet.Cells[row, 27].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.11"));
+                        + GetFormCount(reps, "2.11", formCountsByReportsId);
                     Worksheet.Cells[row, 28].Value =
                         (int)Worksheet.Cells[row, 28].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.12"));
+                        + GetFormCount(reps, "2.12", formCountsByReportsId);
 
                     #endregion
                 }
@@ -187,67 +192,67 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
 
                     Worksheet.Cells[row, 42].Value =
                         (int)Worksheet.Cells[row, 42].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.1"));
+                        + GetFormCount(reps, "1.1", formCountsByReportsId);
                     Worksheet.Cells[row, 43].Value =
                         (int)Worksheet.Cells[row, 43].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.2"));
+                        + GetFormCount(reps, "1.2", formCountsByReportsId);
                     Worksheet.Cells[row, 44].Value =
                         (int)Worksheet.Cells[row, 44].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.3"));
+                        + GetFormCount(reps, "1.3", formCountsByReportsId);
                     Worksheet.Cells[row, 45].Value =
                         (int)Worksheet.Cells[row, 45].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.4"));
+                        + GetFormCount(reps, "1.4", formCountsByReportsId);
                     Worksheet.Cells[row, 46].Value =
                         (int)Worksheet.Cells[row, 46].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.5"));
+                        + GetFormCount(reps, "1.5", formCountsByReportsId);
                     Worksheet.Cells[row, 47].Value =
                         (int)Worksheet.Cells[row, 47].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.6"));
+                        + GetFormCount(reps, "1.6", formCountsByReportsId);
                     Worksheet.Cells[row, 48].Value =
                         (int)Worksheet.Cells[row, 48].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.7"));
+                        + GetFormCount(reps, "1.7", formCountsByReportsId);
                     Worksheet.Cells[row, 49].Value =
                         (int)Worksheet.Cells[row, 49].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.8"));
+                        + GetFormCount(reps, "1.8", formCountsByReportsId);
                     Worksheet.Cells[row, 50].Value =
                         (int)Worksheet.Cells[row, 50].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.9"));
+                        + GetFormCount(reps, "1.9", formCountsByReportsId);
                     Worksheet.Cells[row, 51].Value =
                         (int)Worksheet.Cells[row, 51].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.1"));
+                        + GetFormCount(reps, "2.1", formCountsByReportsId);
                     Worksheet.Cells[row, 52].Value =
                         (int)Worksheet.Cells[row, 52].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.2"));
+                        + GetFormCount(reps, "2.2", formCountsByReportsId);
                     Worksheet.Cells[row, 53].Value =
                         (int)Worksheet.Cells[row, 53].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.3"));
+                        + GetFormCount(reps, "2.3", formCountsByReportsId);
                     Worksheet.Cells[row, 54].Value =
                         (int)Worksheet.Cells[row, 54].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.4"));
+                        + GetFormCount(reps, "2.4", formCountsByReportsId);
                     Worksheet.Cells[row, 55].Value =
                         (int)Worksheet.Cells[row, 55].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.5"));
+                        + GetFormCount(reps, "2.5", formCountsByReportsId);
                     Worksheet.Cells[row, 56].Value =
                         (int)Worksheet.Cells[row, 56].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.6"));
+                        + GetFormCount(reps, "2.6", formCountsByReportsId);
                     Worksheet.Cells[row, 57].Value =
                         (int)Worksheet.Cells[row, 57].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.7"));
+                        + GetFormCount(reps, "2.7", formCountsByReportsId);
                     Worksheet.Cells[row, 58].Value =
                         (int)Worksheet.Cells[row, 58].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.8"));
+                        + GetFormCount(reps, "2.8", formCountsByReportsId);
                     Worksheet.Cells[row, 59].Value =
                         (int)Worksheet.Cells[row, 59].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.9"));
+                        + GetFormCount(reps, "2.9", formCountsByReportsId);
                     Worksheet.Cells[row, 60].Value =
                         (int)Worksheet.Cells[row, 60].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.10"));
+                        + GetFormCount(reps, "2.10", formCountsByReportsId);
                     Worksheet.Cells[row, 61].Value =
                         (int)Worksheet.Cells[row, 61].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.11"));
+                        + GetFormCount(reps, "2.11", formCountsByReportsId);
                     Worksheet.Cells[row, 62].Value =
                         (int)Worksheet.Cells[row, 62].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.12"));
+                        + GetFormCount(reps, "2.12", formCountsByReportsId);
 
                     #endregion
                 }
@@ -305,48 +310,27 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
                             : reps.Master.Rows20[1].Inn_DB;
                 if (parameter?.ToString() != "full")
                 {
-                    Worksheet.Cells[row, 8].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.1"));
-                    Worksheet.Cells[row, 9].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.2"));
-                    Worksheet.Cells[row, 10].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.3"));
-                    Worksheet.Cells[row, 11].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.4"));
-                    Worksheet.Cells[row, 12].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.5"));
-                    Worksheet.Cells[row, 13].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.6"));
-                    Worksheet.Cells[row, 14].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.7"));
-                    Worksheet.Cells[row, 15].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.8"));
-                    Worksheet.Cells[row, 16].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.9"));
-                    Worksheet.Cells[row, 17].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.1"));
-                    Worksheet.Cells[row, 18].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.2"));
-                    Worksheet.Cells[row, 19].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.3"));
-                    Worksheet.Cells[row, 20].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.4"));
-                    Worksheet.Cells[row, 21].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.5"));
-                    Worksheet.Cells[row, 22].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.6"));
-                    Worksheet.Cells[row, 23].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.7"));
-                    Worksheet.Cells[row, 24].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.8"));
-                    Worksheet.Cells[row, 25].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.9"));
-                    Worksheet.Cells[row, 26].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.10"));
-                    Worksheet.Cells[row, 27].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.11"));
-                    Worksheet.Cells[row, 28].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.12"));
+                    Worksheet.Cells[row, 8].Value = GetFormCount(reps, "1.1", formCountsByReportsId);
+                    Worksheet.Cells[row, 9].Value = GetFormCount(reps, "1.2", formCountsByReportsId);
+                    Worksheet.Cells[row, 10].Value = GetFormCount(reps, "1.3", formCountsByReportsId);
+                    Worksheet.Cells[row, 11].Value = GetFormCount(reps, "1.4", formCountsByReportsId);
+                    Worksheet.Cells[row, 12].Value = GetFormCount(reps, "1.5", formCountsByReportsId);
+                    Worksheet.Cells[row, 13].Value = GetFormCount(reps, "1.6", formCountsByReportsId);
+                    Worksheet.Cells[row, 14].Value = GetFormCount(reps, "1.7", formCountsByReportsId);
+                    Worksheet.Cells[row, 15].Value = GetFormCount(reps, "1.8", formCountsByReportsId);
+                    Worksheet.Cells[row, 16].Value = GetFormCount(reps, "1.9", formCountsByReportsId);
+                    Worksheet.Cells[row, 17].Value = GetFormCount(reps, "2.1", formCountsByReportsId);
+                    Worksheet.Cells[row, 18].Value = GetFormCount(reps, "2.2", formCountsByReportsId);
+                    Worksheet.Cells[row, 19].Value = GetFormCount(reps, "2.3", formCountsByReportsId);
+                    Worksheet.Cells[row, 20].Value = GetFormCount(reps, "2.4", formCountsByReportsId);
+                    Worksheet.Cells[row, 21].Value = GetFormCount(reps, "2.5", formCountsByReportsId);
+                    Worksheet.Cells[row, 22].Value = GetFormCount(reps, "2.6", formCountsByReportsId);
+                    Worksheet.Cells[row, 23].Value = GetFormCount(reps, "2.7", formCountsByReportsId);
+                    Worksheet.Cells[row, 24].Value = GetFormCount(reps, "2.8", formCountsByReportsId);
+                    Worksheet.Cells[row, 25].Value = GetFormCount(reps, "2.9", formCountsByReportsId);
+                    Worksheet.Cells[row, 26].Value = GetFormCount(reps, "2.10", formCountsByReportsId);
+                    Worksheet.Cells[row, 27].Value = GetFormCount(reps, "2.11", formCountsByReportsId);
+                    Worksheet.Cells[row, 28].Value = GetFormCount(reps, "2.12", formCountsByReportsId);
                 }
                 else
                 {
@@ -452,48 +436,27 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
                     Worksheet.Cells[row, 41].Value = reps.Master.FormNum_DB == "1.0"
                         ? reps.Master.Rows10[1].Okfs_DB
                         : reps.Master.Rows20[1].Okfs_DB;
-                    Worksheet.Cells[row, 42].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.1"));
-                    Worksheet.Cells[row, 43].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.2"));
-                    Worksheet.Cells[row, 44].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.3"));
-                    Worksheet.Cells[row, 45].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.4"));
-                    Worksheet.Cells[row, 46].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.5"));
-                    Worksheet.Cells[row, 47].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.6"));
-                    Worksheet.Cells[row, 48].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.7"));
-                    Worksheet.Cells[row, 49].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.8"));
-                    Worksheet.Cells[row, 50].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.9"));
-                    Worksheet.Cells[row, 51].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.1"));
-                    Worksheet.Cells[row, 52].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.2"));
-                    Worksheet.Cells[row, 53].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.3"));
-                    Worksheet.Cells[row, 54].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.4"));
-                    Worksheet.Cells[row, 55].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.5"));
-                    Worksheet.Cells[row, 56].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.6"));
-                    Worksheet.Cells[row, 57].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.7"));
-                    Worksheet.Cells[row, 58].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.8"));
-                    Worksheet.Cells[row, 59].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.9"));
-                    Worksheet.Cells[row, 60].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.10"));
-                    Worksheet.Cells[row, 61].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.11"));
-                    Worksheet.Cells[row, 62].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.12"));
+                    Worksheet.Cells[row, 42].Value = GetFormCount(reps, "1.1", formCountsByReportsId);
+                    Worksheet.Cells[row, 43].Value = GetFormCount(reps, "1.2", formCountsByReportsId);
+                    Worksheet.Cells[row, 44].Value = GetFormCount(reps, "1.3", formCountsByReportsId);
+                    Worksheet.Cells[row, 45].Value = GetFormCount(reps, "1.4", formCountsByReportsId);
+                    Worksheet.Cells[row, 46].Value = GetFormCount(reps, "1.5", formCountsByReportsId);
+                    Worksheet.Cells[row, 47].Value = GetFormCount(reps, "1.6", formCountsByReportsId);
+                    Worksheet.Cells[row, 48].Value = GetFormCount(reps, "1.7", formCountsByReportsId);
+                    Worksheet.Cells[row, 49].Value = GetFormCount(reps, "1.8", formCountsByReportsId);
+                    Worksheet.Cells[row, 50].Value = GetFormCount(reps, "1.9", formCountsByReportsId);
+                    Worksheet.Cells[row, 51].Value = GetFormCount(reps, "2.1", formCountsByReportsId);
+                    Worksheet.Cells[row, 52].Value = GetFormCount(reps, "2.2", formCountsByReportsId);
+                    Worksheet.Cells[row, 53].Value = GetFormCount(reps, "2.3", formCountsByReportsId);
+                    Worksheet.Cells[row, 54].Value = GetFormCount(reps, "2.4", formCountsByReportsId);
+                    Worksheet.Cells[row, 55].Value = GetFormCount(reps, "2.5", formCountsByReportsId);
+                    Worksheet.Cells[row, 56].Value = GetFormCount(reps, "2.6", formCountsByReportsId);
+                    Worksheet.Cells[row, 57].Value = GetFormCount(reps, "2.7", formCountsByReportsId);
+                    Worksheet.Cells[row, 58].Value = GetFormCount(reps, "2.8", formCountsByReportsId);
+                    Worksheet.Cells[row, 59].Value = GetFormCount(reps, "2.9", formCountsByReportsId);
+                    Worksheet.Cells[row, 60].Value = GetFormCount(reps, "2.10", formCountsByReportsId);
+                    Worksheet.Cells[row, 61].Value = GetFormCount(reps, "2.11", formCountsByReportsId);
+                    Worksheet.Cells[row, 62].Value = GetFormCount(reps, "2.12", formCountsByReportsId);
                 }
 
                 #endregion
@@ -649,25 +612,74 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
 
     #region GetReportsList
 
+    private static readonly string[] ListOfOrgsFormNums =
+    [
+        "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9",
+        "2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "2.8", "2.9", "2.10", "2.11", "2.12"
+    ];
+
     /// <summary>
-    /// Получение списка организаций.
+    /// Получение списка организаций и агрегированных счётчиков форм отчётности.
     /// </summary>
     /// <param name="db">Модель БД.</param>
     /// <param name="cts">Токен.</param>
-    /// <returns>Коллекция организаций.</returns>
-    private static async Task<IReadOnlyCollection<Reports>> GetReportsList(DBModel db, CancellationTokenSource cts)
+    /// <returns>Коллекция организаций и счётчики форм по Id организации.</returns>
+    private static async Task<(IReadOnlyCollection<Reports> Reports, Dictionary<int, Dictionary<string, int>> FormCounts)>
+        GetReportsList(DBModel db, CancellationTokenSource cts)
     {
-        return await db.ReportsCollectionDbSet
+        var repsList = await db.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
-            .AsQueryable()
-            .Include(reps => reps.DBObservable)
             .Include(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
             .Include(reps => reps.Master_DB).ThenInclude(x => x.Rows20)
-            .Include(reps => reps.Report_Collection)
-            .Where(reps => reps.DBObservable != null)
+            .Where(reps => reps.DBObservableId != null
+                           && reps.Master_DB != null
+                           && (reps.Master_DB.FormNum_DB.StartsWith("1")
+                               || reps.Master_DB.FormNum_DB.StartsWith("2")))
             .ToListAsync(cts.Token);
+
+        var formCounts = await GetFormCountsByReportsId(db, repsList.Select(x => x.Id).ToList(), cts.Token);
+        return (repsList, formCounts);
     }
+
+    /// <summary>
+    /// Подсчёт количества отчётов по номерам форм для списка организаций (без загрузки Report_Collection).
+    /// </summary>
+    private static async Task<Dictionary<int, Dictionary<string, int>>> GetFormCountsByReportsId(
+        DBModel db,
+        IReadOnlyList<int> reportsIds,
+        CancellationToken cancellationToken)
+    {
+        if (reportsIds.Count == 0)
+        {
+            return new Dictionary<int, Dictionary<string, int>>();
+        }
+
+        var aggregates = await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .Where(reps => reportsIds.Contains(reps.Id))
+            .SelectMany(reps => reps.Report_Collection
+                .Where(r => ListOfOrgsFormNums.Contains(r.FormNum_DB))
+                .Select(r => new { ReportsId = reps.Id, r.FormNum_DB }))
+            .GroupBy(x => new { x.ReportsId, x.FormNum_DB })
+            .Select(g => new { g.Key.ReportsId, g.Key.FormNum_DB, Count = g.Count() })
+            .ToListAsync(cancellationToken);
+
+        return aggregates
+            .GroupBy(x => x.ReportsId)
+            .ToDictionary(
+                g => g.Key,
+                g => g.ToDictionary(x => x.FormNum_DB, x => x.Count));
+    }
+
+    private static int GetFormCount(
+        Reports reps,
+        string formNum,
+        IReadOnlyDictionary<int, Dictionary<string, int>> formCountsByReportsId) =>
+        formCountsByReportsId.TryGetValue(reps.Id, out var counts)
+        && counts.TryGetValue(formNum, out var count)
+            ? count
+            : 0;
 
     #endregion
 
@@ -683,10 +695,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
     {
         var countReports = await db.ReportsCollectionDbSet
             .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.DBObservable)
-            .Where(x => x.DBObservable != null)
+            .Where(x => x.DBObservableId != null)
             .CountAsync(cts.Token);
 
         if (countReports == 0)
