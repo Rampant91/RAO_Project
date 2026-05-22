@@ -26,7 +26,7 @@ using OfficeOpenXml;
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
 /// <summary>
-/// Групповая выгрузка отчётов форм 1.1–1.9 по списку организаций из .xlsx в отдельные файлы .RAODB.
+/// Групповая выгрузка отчётов форм 1.1–1.9 и 2.1–2.12 по списку организаций из .xlsx в отдельные файлы .RAODB.
 /// </summary>
 public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 {
@@ -77,19 +77,29 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
 
         try
         {
-            var orgLookup2 = await LoadForm10OrganizationsAsync(dbReadOnly, cts.Token);
+            var orgLookup2Form10 = await LoadOrganizationsAsync(dbReadOnly, "1.0", cts.Token);
+            var orgLookup2Form20 = await LoadOrganizationsAsync(dbReadOnly, "2.0", cts.Token);
         }
         catch (Exception ex)
         {
 
         }
 
-        var organizations = await LoadForm10OrganizationsAsync(dbReadOnly, cts.Token);
+        var organizationsForm10 = await LoadOrganizationsAsync(dbReadOnly, "1.0", cts.Token);
+        var organizationsForm20 = await LoadOrganizationsAsync(dbReadOnly, "2.0", cts.Token);
 
         var orgIds = new HashSet<int>();
         foreach (var (regNo, okpo) in orgPairs)
         {
-            foreach (var org in organizations)
+            foreach (var org in organizationsForm10)
+            {
+                if (OrganizationMatchesRegOkpo(org, regNo, okpo))
+                {
+                    orgIds.Add(org.Id);
+                }
+            }
+
+            foreach (var org in organizationsForm20)
             {
                 if (OrganizationMatchesRegOkpo(org, regNo, okpo))
                 {
@@ -110,22 +120,51 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         var formNumbers = dialogResult.FormNumbers.ToArray();
+        var form1Numbers = formNumbers.Where(f => f.StartsWith("1.")).ToArray();
+        var form2Numbers = formNumbers.Where(f => f.StartsWith("2.")).ToArray();
         var periodStart = dialogResult.PeriodStart;
         var periodEnd = dialogResult.PeriodEnd;
 
-        var reportCandidates = await dbReadOnly.ReportCollectionDbSet
-            .AsNoTracking()
-            .Where(rep => rep.Reports != null && orgIds.Contains(rep.Reports.Id))
-            .Where(rep => formNumbers.Contains(rep.FormNum_DB))
-            .Select(rep => new { rep.Id, OrgId = rep.Reports.Id, rep.FormNum_DB, rep.StartPeriod_DB, rep.EndPeriod_DB })
-            .ToListAsync(cancellationToken: cts.Token);
+        var orgIdsForm10 = organizationsForm10
+            .Where(o => orgIds.Contains(o.Id))
+            .Select(o => o.Id)
+            .ToHashSet();
+        var orgIdsForm20 = organizationsForm20
+            .Where(o => orgIds.Contains(o.Id))
+            .Select(o => o.Id)
+            .ToHashSet();
+
+        var reportCandidates = new List<(int Id, int OrgId, string FormNum_DB, string? StartPeriod_DB, string? EndPeriod_DB, string? Year_DB)>();
+
+        if (form1Numbers.Length > 0 && orgIdsForm10.Count > 0)
+        {
+            var reportsForm1 = await dbReadOnly.ReportCollectionDbSet
+                .AsNoTracking()
+                .Where(rep => rep.Reports != null && orgIdsForm10.Contains(rep.Reports.Id))
+                .Where(rep => form1Numbers.Contains(rep.FormNum_DB))
+                .Select(rep => new { rep.Id, OrgId = rep.Reports!.Id, rep.FormNum_DB, rep.StartPeriod_DB, rep.EndPeriod_DB, rep.Year_DB })
+                .ToListAsync(cancellationToken: cts.Token);
+            reportCandidates.AddRange(reportsForm1.Select(r =>
+                (r.Id, r.OrgId, r.FormNum_DB, r.StartPeriod_DB, r.EndPeriod_DB, r.Year_DB)));
+        }
+
+        if (form2Numbers.Length > 0 && orgIdsForm20.Count > 0)
+        {
+            var reportsForm2 = await dbReadOnly.ReportCollectionDbSet
+                .AsNoTracking()
+                .Where(rep => rep.Reports != null && orgIdsForm20.Contains(rep.Reports.Id))
+                .Where(rep => form2Numbers.Contains(rep.FormNum_DB))
+                .Select(rep => new { rep.Id, OrgId = rep.Reports!.Id, rep.FormNum_DB, rep.StartPeriod_DB, rep.EndPeriod_DB, rep.Year_DB })
+                .ToListAsync(cancellationToken: cts.Token);
+            reportCandidates.AddRange(reportsForm2.Select(r =>
+                (r.Id, r.OrgId, r.FormNum_DB, r.StartPeriod_DB, r.EndPeriod_DB, r.Year_DB)));
+        }
 
         var reportIdArray = reportCandidates
-            .Where(rep => ReportOverlapsPeriod(rep.StartPeriod_DB, rep.EndPeriod_DB, periodStart, periodEnd))
+            .Where(rep => ReportMatchesPeriod(rep.FormNum_DB, rep.StartPeriod_DB, rep.EndPeriod_DB, rep.Year_DB, periodStart, periodEnd))
             .Select(rep => rep.Id)
             .ToArray();
 
-        var reportsIdToOrgId = reportCandidates.ToDictionary(x => x.Id, x => x.OrgId);
         var reportsIdToFormNum = reportCandidates.ToDictionary(x => x.Id, x => x.FormNum_DB);
 
         if (reportIdArray.Length == 0)
@@ -138,7 +177,7 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
         var folderPath = dialogResult.OutputFolderPath;
         var countReport = reportIdArray.Length;
         var countExportedReport = 0;
-        var exportedOrgIds = new HashSet<int>();
+        var exportedOrgPairs = new HashSet<(string RegNo, string Okpo)>();
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 20, CancellationToken = cts.Token };
 
@@ -156,14 +195,27 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
                     var dt = DateTime.Now;
                     var fileNameTmp = $"Report_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}_{dt.Millisecond}_{dt.Microsecond}";
                     var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}.RAODB");
-                    var filename =
-                        StaticStringMethods.RemoveForbiddenChars(repFull.Reports.Master.RegNoRep.Value) +
-                        $"_{StaticStringMethods.RemoveForbiddenChars(repFull.Reports.Master.OkpoRep.Value)}" +
-                        $"_{repFull.FormNum_DB}" +
-                        $"_{StaticStringMethods.RemoveForbiddenChars(repFull.StartPeriod_DB)}" +
-                        $"_{StaticStringMethods.RemoveForbiddenChars(repFull.EndPeriod_DB)}" +
-                        $"_{repFull.CorrectionNumber_DB}" +
-                        $"_{Assembly.GetExecutingAssembly().GetName().Version}";
+                    var filename = repFull.Reports.Master_DB.FormNum_DB switch
+                    {
+                        "1.0" =>
+                            StaticStringMethods.RemoveForbiddenChars(repFull.Reports.Master.RegNoRep.Value) +
+                            $"_{StaticStringMethods.RemoveForbiddenChars(repFull.Reports.Master.OkpoRep.Value)}" +
+                            $"_{repFull.FormNum_DB}" +
+                            $"_{StaticStringMethods.RemoveForbiddenChars(repFull.StartPeriod_DB)}" +
+                            $"_{StaticStringMethods.RemoveForbiddenChars(repFull.EndPeriod_DB)}" +
+                            $"_{repFull.CorrectionNumber_DB}" +
+                            $"_{Assembly.GetExecutingAssembly().GetName().Version}",
+
+                        "2.0" =>
+                            StaticStringMethods.RemoveForbiddenChars(repFull.Reports.Master.RegNoRep.Value) +
+                            $"_{StaticStringMethods.RemoveForbiddenChars(repFull.Reports.Master.OkpoRep.Value)}" +
+                            $"_{repFull.FormNum_DB}" +
+                            $"_{StaticStringMethods.RemoveForbiddenChars(repFull.Year_DB)}" +
+                            $"_{repFull.CorrectionNumber_DB}" +
+                            $"_{Assembly.GetExecutingAssembly().GetName().Version}",
+
+                        _ => $"{repFull.FormNum_DB}_{repFull.Id}"
+                    };
 
                     var fullPath = Path.Combine(folderPath, $"{filename}.RAODB");
 
@@ -211,11 +263,13 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
                     }
 
                     countExportedReport++;
-                    if (reportsIdToOrgId.TryGetValue(repsId, out var orgId))
+                    var regNo = repFull.Reports.Master.RegNoRep.Value?.Trim() ?? "";
+                    var okpo = repFull.Reports.Master.OkpoRep.Value?.Trim() ?? "";
+                    if (!string.IsNullOrEmpty(regNo) && !string.IsNullOrEmpty(okpo))
                     {
-                        lock (exportedOrgIds)
+                        lock (exportedOrgPairs)
                         {
-                            exportedOrgIds.Add(orgId);
+                            exportedOrgPairs.Add((regNo, okpo));
                         }
                     }
 
@@ -239,7 +293,7 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
 
         if (!cts.IsCancellationRequested)
         {
-            var exportedOrgCount = exportedOrgIds.Count;
+            var exportedOrgCount = exportedOrgPairs.Count;
             var orgSuffix = exportedOrgCount.ToString() is [.., '1'] && !exportedOrgCount.ToString().EndsWith("11")
                 ? "а"
                 : "ий";
@@ -273,20 +327,35 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
         await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 
-    private static async Task<List<Reports>> LoadForm10OrganizationsAsync(DBModel db, CancellationToken ct)
+    private static async Task<List<Reports>> LoadOrganizationsAsync(DBModel db, string masterFormNum, CancellationToken ct)
     {
-        return await db.ReportsCollectionDbSet
+        var query = db.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
-            .Where(x => x.Master_DB.FormNum_DB == "1.0")
-            .Include(x => x.Master_DB).ThenInclude(m => m.Rows10.OrderBy(r => r.NumberInOrder_DB))
-            .ToListAsync(ct);
+            .Where(x => x.Master_DB.FormNum_DB == masterFormNum);
+
+        query = masterFormNum switch
+        {
+            "1.0" => query.Include(x => x.Master_DB).ThenInclude(m => m.Rows10.OrderBy(r => r.NumberInOrder_DB)),
+            "2.0" => query.Include(x => x.Master_DB).ThenInclude(m => m.Rows20.OrderBy(r => r.NumberInOrder_DB)),
+            _ => query
+        };
+
+        return await query.ToListAsync(ct);
     }
 
     /// <summary>
-    /// Рег. № и ОКПО отчитывающейся организации формы 1.0 (как RegNoRep / OkpoRep в Report).
-    /// ОКПО: сначала Rows10[1], если Okpo_DB пустой или «-», то Rows10[0].
+    /// Рег. № и ОКПО отчитывающейся организации (логика RegNoRep / OkpoRep).
+    /// ОКПО: сначала строка [1], если Okpo_DB пустой или «-», то строка [0].
     /// </summary>
+    private static (string RegNo, string Okpo) GetReportingRegNoOkpo(Report master) =>
+        master.FormNum_DB switch
+        {
+            "1.0" => GetForm10ReportingRegNoOkpo(master),
+            "2.0" => GetForm20ReportingRegNoOkpo(master),
+            _ => ("", "")
+        };
+
     private static (string RegNo, string Okpo) GetForm10ReportingRegNoOkpo(Report master)
     {
         var rows = master.Rows10.OrderBy(r => r.NumberInOrder_DB).ToArray();
@@ -294,32 +363,58 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
 
         var row0 = rows[0];
         var row1 = rows[1];
-
         var okpo = row1.Okpo_DB is "" or "-"
-            ? GetRowOkpo(row0)
-            : GetRowOkpo(row1);
-
-        var regNo = (GetRowRegNo(row1) != "" || row1.Okpo_DB == "-") && GetRowOkpo(row1) != ""
-            ? GetRowRegNo(row1)
-            : GetRowRegNo(row0);
-
+            ? GetForm10RowOkpo(row0)
+            : GetForm10RowOkpo(row1);
+        var regNo = (GetForm10RowRegNo(row1) != "" || row1.Okpo_DB == "-") && GetForm10RowOkpo(row1) != ""
+            ? GetForm10RowRegNo(row1)
+            : GetForm10RowRegNo(row0);
         return (regNo, okpo);
     }
 
-    private static string GetRowOkpo(Models.Forms.Form1.Form10 row) =>
+    private static (string RegNo, string Okpo) GetForm20ReportingRegNoOkpo(Report master)
+    {
+        var rows = master.Rows20.OrderBy(r => r.NumberInOrder_DB).ToArray();
+        if (rows.Length < 2) return ("", "");
+
+        var row0 = rows[0];
+        var row1 = rows[1];
+        var okpo = row1.Okpo_DB is "" or "-"
+            ? GetForm20RowOkpo(row0)
+            : GetForm20RowOkpo(row1);
+        var regNo = (GetForm20RowRegNo(row1) != "" || row1.Okpo_DB == "-") && GetForm20RowOkpo(row1) != ""
+            ? GetForm20RowRegNo(row1)
+            : GetForm20RowRegNo(row0);
+        return (regNo, okpo);
+    }
+
+    private static string GetForm10RowOkpo(Models.Forms.Form1.Form10 row) =>
         string.IsNullOrWhiteSpace(row.Okpo_DB) ? (row.Okpo?.Value ?? "").Trim() : row.Okpo_DB.Trim();
 
-    private static string GetRowRegNo(Models.Forms.Form1.Form10 row) =>
+    private static string GetForm10RowRegNo(Models.Forms.Form1.Form10 row) =>
+        string.IsNullOrWhiteSpace(row.RegNo_DB) ? (row.RegNo?.Value ?? "").Trim() : row.RegNo_DB.Trim();
+
+    private static string GetForm20RowOkpo(Models.Forms.Form2.Form20 row) =>
+        string.IsNullOrWhiteSpace(row.Okpo_DB) ? (row.Okpo?.Value ?? "").Trim() : row.Okpo_DB.Trim();
+
+    private static string GetForm20RowRegNo(Models.Forms.Form2.Form20 row) =>
         string.IsNullOrWhiteSpace(row.RegNo_DB) ? (row.RegNo?.Value ?? "").Trim() : row.RegNo_DB.Trim();
 
     private static bool OrganizationMatchesRegOkpo(Reports org, string regNo, string okpo)
     {
-        if (org.Master_DB is not { FormNum_DB: "1.0" } master || master.Rows10.Count < 2)
+        if (org.Master_DB is not { } master
+            || (master.FormNum_DB != "1.0" && master.FormNum_DB != "2.0"))
         {
             return false;
         }
 
-        var (orgRegNo, orgOkpo) = GetForm10ReportingRegNoOkpo(master);
+        if (master.FormNum_DB == "1.0" && master.Rows10.Count < 2
+            || master.FormNum_DB == "2.0" && master.Rows20.Count < 2)
+        {
+            return false;
+        }
+
+        var (orgRegNo, orgOkpo) = GetReportingRegNoOkpo(master);
         if (string.IsNullOrEmpty(orgRegNo) || string.IsNullOrEmpty(orgOkpo))
         {
             return false;
@@ -354,6 +449,19 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
         return pairs;
     }
 
+    private static bool ReportMatchesPeriod(
+        string formNum, string? startDb, string? endDb, string? yearDb, DateOnly periodStart, DateOnly periodEnd)
+    {
+        if (formNum.StartsWith("2.", StringComparison.Ordinal))
+        {
+            return int.TryParse(yearDb, out var year)
+                   && periodStart.Year <= year
+                   && year <= periodEnd.Year;
+        }
+
+        return ReportOverlapsPeriod(startDb, endDb, periodStart, periodEnd);
+    }
+
     private static bool ReportOverlapsPeriod(string? startDb, string? endDb, DateOnly periodStart, DateOnly periodEnd)
     {
         var hasStart = DateOnly.TryParse(startDb, out var repStart);
@@ -377,8 +485,24 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
     {
         IQueryable<Report> query = db.ReportCollectionDbSet
             .AsNoTracking()
-            .AsSplitQuery()
-            .Include(rep => rep.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10.OrderBy(r => r.NumberInOrder_DB));
+            .AsSplitQuery();
+
+        if (formNum.StartsWith("1.", StringComparison.Ordinal))
+        {
+            query = query.Include(rep => rep.Reports)
+                .ThenInclude(x => x.Master_DB)
+                .ThenInclude(x => x.Rows10.OrderBy(r => r.NumberInOrder_DB));
+        }
+        else if (formNum.StartsWith("2.", StringComparison.Ordinal))
+        {
+            query = query.Include(rep => rep.Reports)
+                .ThenInclude(x => x.Master_DB)
+                .ThenInclude(x => x.Rows20.OrderBy(r => r.NumberInOrder_DB));
+        }
+        else
+        {
+            query = query.Include(rep => rep.Reports).ThenInclude(x => x.Master_DB);
+        }
 
         query = formNum switch
         {
@@ -391,12 +515,27 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
             "1.7" => query.Include(x => x.Rows17.OrderBy(r => r.NumberInOrder_DB)),
             "1.8" => query.Include(x => x.Rows18.OrderBy(r => r.NumberInOrder_DB)),
             "1.9" => query.Include(x => x.Rows19.OrderBy(r => r.NumberInOrder_DB)),
+            "2.1" => query.Include(x => x.Rows21.OrderBy(r => r.NumberInOrder_DB)),
+            "2.2" => query.Include(x => x.Rows22.OrderBy(r => r.NumberInOrder_DB)),
+            "2.3" => query.Include(x => x.Rows23.OrderBy(r => r.NumberInOrder_DB)),
+            "2.4" => query.Include(x => x.Rows24.OrderBy(r => r.NumberInOrder_DB)),
+            "2.5" => query.Include(x => x.Rows25.OrderBy(r => r.NumberInOrder_DB)),
+            "2.6" => query.Include(x => x.Rows26.OrderBy(r => r.NumberInOrder_DB)),
+            "2.7" => query.Include(x => x.Rows27.OrderBy(r => r.NumberInOrder_DB)),
+            "2.8" => query.Include(x => x.Rows28.OrderBy(r => r.NumberInOrder_DB)),
+            "2.9" => query.Include(x => x.Rows29.OrderBy(r => r.NumberInOrder_DB)),
+            "2.10" => query.Include(x => x.Rows210.OrderBy(r => r.NumberInOrder_DB)),
+            "2.11" => query.Include(x => x.Rows211.OrderBy(r => r.NumberInOrder_DB)),
+            "2.12" => query.Include(x => x.Rows212.OrderBy(r => r.NumberInOrder_DB)),
             _ => query
         };
 
-        return await query
-            .Include(x => x.Notes.OrderBy(n => n.Order))
-            .FirstAsync(x => x.Id == reportId, cancellationToken: ct);
+        if (formNum.StartsWith("1.", StringComparison.Ordinal))
+        {
+            query = query.Include(x => x.Notes.OrderBy(n => n.Order));
+        }
+
+        return await query.FirstAsync(x => x.Id == reportId, cancellationToken: ct);
     }
 
     private static async Task ShowErrorMessage(string message, string? details)

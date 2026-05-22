@@ -95,26 +95,6 @@ public class GroupBulkExportReportsMessageWindow : BaseWindow<GroupBulkExportRep
         Close(null);
     }
 
-    private void AllFormsCheckBox_Checked(object? sender, RoutedEventArgs e)
-    {
-        Vm.SetAllFormsChecked(true);
-    }
-
-    private void AllFormsCheckBox_Unchecked(object? sender, RoutedEventArgs e)
-    {
-        Vm.SetAllFormsChecked(false);
-    }
-
-    private void AnyFormCheckBox_Clicked(object? sender, RoutedEventArgs e)
-    {
-        Vm.UpdateCheckAllFormsState();
-        var allCheckBox = (sender as Control)?.FindNameScope().Find("AllForms") as CheckBox;
-        if (allCheckBox != null)
-        {
-            allCheckBox.IsThreeState = true;
-        }
-    }
-
     private async System.Threading.Tasks.Task ShowValidationMessageAsync(string message)
     {
         await MessageBox.Avalonia.MessageBoxManager

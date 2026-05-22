@@ -9,8 +9,8 @@
         x:CompileBindings="True"
         x:DataType="vm:GroupBulkExportReportsMessageVM"
         Title="Групповая выгрузка отчётов"
-        MinWidth="520" MinHeight="560"
-        d:DesignWidth="520" d:DesignHeight="560"
+        MinWidth="520" MinHeight="720"
+        d:DesignWidth="520" d:DesignHeight="720"
         behaviors:WindowScreenSizeBehavior.WidthRatio="0.35" behaviors:WindowScreenSizeBehavior.HeightRatio="0.65"
         WindowStartupLocation="Manual"
         CanResize="True">
@@ -26,7 +26,7 @@
             <TextBlock Grid.Row="0"
                        TextWrapping="Wrap"
                        Margin="0,0,0,10"
-                       Text="Укажите файл .xlsx со списком организаций: в 1-й колонке — рег. №, во 2-й — ОКПО. Выберите формы 1.1–1.9, период выгрузки и папку для сохранения файлов .RAODB."/>
+                       Text="Укажите файл .xlsx со списком организаций: в 1-й колонке — рег. №, во 2-й — ОКПО. Выберите формы 1.1–1.9 и 2.1–2.12, период выгрузки и папку для сохранения файлов .RAODB."/>
 
             <Border Grid.Row="1"
                     Margin="0,0,0,8"
@@ -59,23 +59,36 @@
                 <StackPanel Spacing="8">
                     <TextBlock Text="Формы для выгрузки:" FontWeight="SemiBold"/>
                     <Grid ColumnDefinitions="*,*"
-                          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+                          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
                         <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Margin="0,0,8,4" Text="Выбрать все:"/>
                         <CheckBox Grid.Row="0" Grid.Column="1" Name="AllForms"
                                   IsThreeState="True"
-                                  Checked="AllFormsCheckBox_Checked"
-                                  Unchecked="AllFormsCheckBox_Unchecked"
                                   IsChecked="{Binding CheckAllForms, Mode=TwoWay}"/>
 
-                        <CheckBox Grid.Row="1" Grid.Column="0" Click="AnyFormCheckBox_Clicked" Content="1.1" IsChecked="{Binding CheckForm11, Mode=TwoWay}"/>
-                        <CheckBox Grid.Row="1" Grid.Column="1" Click="AnyFormCheckBox_Clicked" Content="1.2" IsChecked="{Binding CheckForm12, Mode=TwoWay}"/>
-                        <CheckBox Grid.Row="2" Grid.Column="0" Click="AnyFormCheckBox_Clicked" Content="1.3" IsChecked="{Binding CheckForm13, Mode=TwoWay}"/>
-                        <CheckBox Grid.Row="2" Grid.Column="1" Click="AnyFormCheckBox_Clicked" Content="1.4" IsChecked="{Binding CheckForm14, Mode=TwoWay}"/>
-                        <CheckBox Grid.Row="3" Grid.Column="0" Click="AnyFormCheckBox_Clicked" Content="1.5" IsChecked="{Binding CheckForm15, Mode=TwoWay}"/>
-                        <CheckBox Grid.Row="3" Grid.Column="1" Click="AnyFormCheckBox_Clicked" Content="1.6" IsChecked="{Binding CheckForm16, Mode=TwoWay}"/>
-                        <CheckBox Grid.Row="4" Grid.Column="0" Click="AnyFormCheckBox_Clicked" Content="1.7" IsChecked="{Binding CheckForm17, Mode=TwoWay}"/>
-                        <CheckBox Grid.Row="4" Grid.Column="1" Click="AnyFormCheckBox_Clicked" Content="1.8" IsChecked="{Binding CheckForm18, Mode=TwoWay}"/>
-                        <CheckBox Grid.Row="5" Grid.Column="0" Click="AnyFormCheckBox_Clicked" Content="1.9" IsChecked="{Binding CheckForm19, Mode=TwoWay}"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" FontWeight="SemiBold" Margin="0,4,0,2" Text="Формы 1.x"/>
+                        <CheckBox Grid.Row="2" Grid.Column="0" Content="1.1" IsChecked="{Binding CheckForm11, Mode=TwoWay}"/>
+                        <CheckBox Grid.Row="2" Grid.Column="1" Content="1.2" IsChecked="{Binding CheckForm12, Mode=TwoWay}"/>
+                        <CheckBox Grid.Row="3" Grid.Column="0" Content="1.3" IsChecked="{Binding CheckForm13, Mode=TwoWay}"/>
+                        <CheckBox Grid.Row="3" Grid.Column="1" Content="1.4" IsChecked="{Binding CheckForm14, Mode=TwoWay}"/>
+                        <CheckBox Grid.Row="4" Grid.Column="0" Content="1.5" IsChecked="{Binding CheckForm15, Mode=TwoWay}"/>
+                        <CheckBox Grid.Row="4" Grid.Column="1" Content="1.6" IsChecked="{Binding CheckForm16, Mode=TwoWay}"/>
+                        <CheckBox Grid.Row="5" Grid.Column="0" Content="1.7" IsChecked="{Binding CheckForm17, Mode=TwoWay}"/>
+                        <CheckBox Grid.Row="5" Grid.Column="1" Content="1.8" IsChecked="{Binding CheckForm18, Mode=TwoWay}"/>
+                        <CheckBox Grid.Row="6" Grid.Column="0" Content="1.9" IsChecked="{Binding CheckForm19, Mode=TwoWay}"/>
+
+                        <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" FontWeight="SemiBold" Margin="0,8,0,2" Text="Формы 2.x"/>
+                        <CheckBox Grid.Row="8" Grid.Column="0" Content="2.1" IsChecked="{Binding CheckForm21, Mode=TwoWay}"/>
+                        <CheckBox Grid.Row="8" Grid.Column="1" Content="2.2" IsChecked="{Binding CheckForm22, Mode=TwoWay}"/>
+                        <CheckBox Grid.Row="9" Grid.Column="0" Content="2.3" IsChecked="{Binding CheckForm23, Mode=TwoWay}"/>
+                        <CheckBox Grid.Row="9" Grid.Column="1" Content="2.4" IsChecked="{Binding CheckForm24, Mode=TwoWay}"/>
+                        <CheckBox Grid.Row="10" Grid.Column="0" Content="2.5" IsChecked="{Binding CheckForm25, Mode=TwoWay}"/>
+                        <CheckBox Grid.Row="10" Grid.Column="1" Content="2.6" IsChecked="{Binding CheckForm26, Mode=TwoWay}"/>
+                        <CheckBox Grid.Row="11" Grid.Column="0" Content="2.7" IsChecked="{Binding CheckForm27, Mode=TwoWay}"/>
+                        <CheckBox Grid.Row="11" Grid.Column="1" Content="2.8" IsChecked="{Binding CheckForm28, Mode=TwoWay}"/>
+                        <CheckBox Grid.Row="12" Grid.Column="0" Content="2.9" IsChecked="{Binding CheckForm29, Mode=TwoWay}"/>
+                        <CheckBox Grid.Row="12" Grid.Column="1" Content="2.10" IsChecked="{Binding CheckForm210, Mode=TwoWay}"/>
+                        <CheckBox Grid.Row="13" Grid.Column="0" Content="2.11" IsChecked="{Binding CheckForm211, Mode=TwoWay}"/>
+                        <CheckBox Grid.Row="13" Grid.Column="1" Content="2.12" IsChecked="{Binding CheckForm212, Mode=TwoWay}"/>
                     </Grid>
                 </StackPanel>
             </Border>
@@ -87,11 +100,11 @@
                     BorderThickness="1"
                     CornerRadius="5">
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Период выгрузки (даты начала и окончания отчёта):" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                    <TextBlock Text="Период выгрузки:" FontWeight="SemiBold" TextWrapping="Wrap"/>
                     <TextBlock TextWrapping="Wrap"
                                FontSize="11"
                                Opacity="0.85"
-                               Text="Если оставить поля пустыми, выгрузка будет выполнена без ограничения по периоду. Отчёт включается, если его период хотя бы частично пересекается с указанным."/>
+                               Text="Для форм 1.x — по датам начала/окончания отчёта; для форм 2.x — по году отчёта. Пустые поля — без ограничения по периоду."/>
                     <Grid ColumnDefinitions="*,Auto,*">
                         <CalendarDatePicker Grid.Column="0"
                                             Watermark="дд.мм.гг"
