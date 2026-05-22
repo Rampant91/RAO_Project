@@ -75,16 +75,6 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
         var dbReadOnlyPath = CreateTempDataBase();
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
 
-        try
-        {
-            var orgLookup2Form10 = await LoadOrganizationsAsync(dbReadOnly, "1.0", cts.Token);
-            var orgLookup2Form20 = await LoadOrganizationsAsync(dbReadOnly, "2.0", cts.Token);
-        }
-        catch (Exception ex)
-        {
-
-        }
-
         var organizationsForm10 = await LoadOrganizationsAsync(dbReadOnly, "1.0", cts.Token);
         var organizationsForm20 = await LoadOrganizationsAsync(dbReadOnly, "2.0", cts.Token);
 

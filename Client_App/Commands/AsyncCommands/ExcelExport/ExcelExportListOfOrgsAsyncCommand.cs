@@ -627,6 +627,25 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
     private static async Task<(IReadOnlyCollection<Reports> Reports, Dictionary<int, Dictionary<string, int>> FormCounts)>
         GetReportsList(DBModel db, CancellationTokenSource cts)
     {
+
+        try
+        {
+            var repsList2 = await db.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .Include(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
+                .Include(reps => reps.Master_DB).ThenInclude(x => x.Rows20)
+                .Where(reps => reps.DBObservableId != null
+                               && reps.Master_DB != null
+                               && (reps.Master_DB.FormNum_DB.StartsWith("1")
+                                   || reps.Master_DB.FormNum_DB.StartsWith("2")))
+                .ToListAsync(cts.Token);
+        }
+        catch (Exception ex)
+        {
+
+        }
+
         var repsList = await db.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
