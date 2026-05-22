@@ -15,7 +15,8 @@
 	</Design.DataContext>
 	<Window.Resources>
 		<converter:DoubleToExponentionalFormatConverter x:Key="ExpontionalFormatConverter"/>
-		<converter:DateToStringConverter x:Key="DateToStringConverter"/>
+		<converter:DateOnlyToStringConverter x:Key="DateOnlyToStringConverter"/>
+		<converter:DateOnlyToDateTimeConverter x:Key="DateOnlyToDateTimeConverter"/>
 		<converter:LogicalNotConverter x:Key="LogicalNotConverter"/>
 	</Window.Resources>
 
@@ -158,7 +159,7 @@
 				</DataGridTemplateColumn>
 
 
-				<DataGridTemplateColumn>
+				<DataGridTemplateColumn Width="92">
 					<DataGridTemplateColumn.HeaderTemplate>
 						<DataTemplate>
 							<Border Classes="headerTemplate">
@@ -168,15 +169,20 @@
 							</Border>
 						</DataTemplate>
 					</DataGridTemplateColumn.HeaderTemplate>
-					<DataGridTemplateColumn.CellTemplate >
+					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate x:DataType="models:LicenseInfo">
-							<TextBox Text="{Binding StartPeriod, Mode=TwoWay, Converter={StaticResource DateToStringConverter}}"/>
+							<Grid ColumnDefinitions="*,Auto">
+								<TextBox Grid.Column="0" Text="{Binding StartPeriod, Mode=TwoWay, Converter={StaticResource DateOnlyToStringConverter}}" />
+								<CalendarDatePicker Grid.Column="1"
+													Classes="buttonOnly"
+													SelectedDate="{Binding StartPeriod, Mode=TwoWay, Converter={StaticResource DateOnlyToDateTimeConverter}}" />
+							</Grid>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
 
 
-				<DataGridTemplateColumn>
+				<DataGridTemplateColumn Width="92">
 					<DataGridTemplateColumn.HeaderTemplate>
 						<DataTemplate>
 							<Border Classes="headerTemplate">
@@ -186,9 +192,14 @@
 							</Border>
 						</DataTemplate>
 					</DataGridTemplateColumn.HeaderTemplate>
-					<DataGridTemplateColumn.CellTemplate >
+					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate x:DataType="models:LicenseInfo">
-							<TextBox Text="{Binding EndPeriod, Mode=TwoWay, Converter={StaticResource DateToStringConverter}}"/>
+							<Grid ColumnDefinitions="*,Auto">
+								<TextBox Grid.Column="0" Text="{Binding EndPeriod, Mode=TwoWay, Converter={StaticResource DateOnlyToStringConverter}}" />
+								<CalendarDatePicker Grid.Column="1"
+													Classes="buttonOnly"
+													SelectedDate="{Binding EndPeriod, Mode=TwoWay, Converter={StaticResource DateOnlyToDateTimeConverter}}" />
+							</Grid>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
@@ -302,7 +313,7 @@
 				</DataGridTemplateColumn>
 
 
-				<DataGridTemplateColumn>
+				<DataGridTemplateColumn Width="92">
 					<DataGridTemplateColumn.HeaderTemplate>
 						<DataTemplate>
 							<Border Classes="headerTemplate">
@@ -312,15 +323,20 @@
 							</Border>
 						</DataTemplate>
 					</DataGridTemplateColumn.HeaderTemplate>
-					<DataGridTemplateColumn.CellTemplate >
+					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate x:DataType="models:LicenseInfo">
-							<TextBox Text="{Binding DocumentDate, Mode=TwoWay, Converter={StaticResource DateToStringConverter}}"/>
+							<Grid ColumnDefinitions="*,Auto">
+								<TextBox Grid.Column="0" Text="{Binding DocumentDate, Mode=TwoWay, Converter={StaticResource DateOnlyToStringConverter}}" />
+								<CalendarDatePicker Grid.Column="1"
+													Classes="buttonOnly"
+													SelectedDate="{Binding DocumentDate, Mode=TwoWay, Converter={StaticResource DateOnlyToDateTimeConverter}}" />
+							</Grid>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
 
 
-				<DataGridTemplateColumn>
+				<DataGridTemplateColumn Width="92">
 					<DataGridTemplateColumn.HeaderTemplate>
 						<DataTemplate>
 							<Border Classes="headerTemplate">
@@ -330,13 +346,18 @@
 							</Border>
 						</DataTemplate>
 					</DataGridTemplateColumn.HeaderTemplate>
-					<DataGridTemplateColumn.CellTemplate >
+					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate x:DataType="models:LicenseInfo">
-							<TextBox Text="{Binding ExpirationDate, Mode=TwoWay, Converter={StaticResource DateToStringConverter}}"/>
+							<Grid ColumnDefinitions="*,Auto">
+								<TextBox Grid.Column="0" Text="{Binding ExpirationDate, Mode=TwoWay, Converter={StaticResource DateOnlyToStringConverter}}" />
+								<CalendarDatePicker Grid.Column="1"
+													Classes="buttonOnly"
+													SelectedDate="{Binding ExpirationDate, Mode=TwoWay, Converter={StaticResource DateOnlyToDateTimeConverter}}" />
+							</Grid>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
-
+				
 
 				<DataGridTemplateColumn>
 					<DataGridTemplateColumn.HeaderTemplate>

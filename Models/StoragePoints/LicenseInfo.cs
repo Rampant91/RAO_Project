@@ -61,8 +61,11 @@ namespace Models.StoragePoints
             get => _licenseName;
             set
             {
-                _licenseName = value;
-                LastUpdate = DateTime.Now;
+                if (_licenseName != value)
+                {
+                    _licenseName = value;
+                    LastUpdate = DateTime.Now;
+                }
                 OnPropertyChanged();
             }
         }
@@ -76,9 +79,12 @@ namespace Models.StoragePoints
             get => _startPeriod;
             set
             {
-                _startPeriod = value;
-                LastUpdate = DateTime.Now;
-                OnPropertyChanged();
+                if (_startPeriod != value)
+                {
+                    _startPeriod = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
             }
         }
         #endregion
@@ -91,9 +97,12 @@ namespace Models.StoragePoints
             get => _endPeriod;
             set
             {
-                _endPeriod = value;
-                LastUpdate = DateTime.Now;
-                OnPropertyChanged();
+                if (_endPeriod != value)
+                {
+                    _endPeriod = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
             }
         }
         #endregion
@@ -107,9 +116,12 @@ namespace Models.StoragePoints
             get => _codeRAO;
             set
             {
-                _codeRAO = value;
-                LastUpdate = DateTime.Now;
-                OnPropertyChanged();
+                if (_codeRAO != value)
+                {
+                    _codeRAO = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
             }
         }
         #endregion
@@ -122,9 +134,12 @@ namespace Models.StoragePoints
             get => _volume;
             set
             {
-                _volume = value;
-                LastUpdate = DateTime.Now;
-                OnPropertyChanged();
+                if (_volume != value)
+                {
+                    _volume = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
             }
         }
         #endregion
@@ -137,9 +152,12 @@ namespace Models.StoragePoints
             get => _mass;
             set
             {
-                _mass = value;
-                LastUpdate = DateTime.Now;
-                OnPropertyChanged();
+                if (_mass != value)
+                {
+                    _mass = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
             }
         }
         #endregion
@@ -152,9 +170,12 @@ namespace Models.StoragePoints
             get => _quantityOZIII;
             set
             {
-                _quantityOZIII = value;
-                LastUpdate = DateTime.Now;
-                OnPropertyChanged();
+                if (_quantityOZIII != value)
+                {
+                    _quantityOZIII = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
             }
         }
         #endregion
@@ -167,9 +188,12 @@ namespace Models.StoragePoints
             get => _summaryActivity;
             set
             {
-                _summaryActivity = value;
-                LastUpdate = DateTime.Now;
-                OnPropertyChanged();
+                if (_summaryActivity != value)
+                {
+                    _summaryActivity = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
             }
         }
         #endregion
@@ -183,9 +207,12 @@ namespace Models.StoragePoints
             get => _documentNumber;
             set
             {
-                _documentNumber = value;
-                LastUpdate = DateTime.Now;
-                OnPropertyChanged();
+                if (_documentNumber != value)
+                {
+                    _documentNumber = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
             }
         }
         #endregion
@@ -198,9 +225,12 @@ namespace Models.StoragePoints
             get => _documentDate;
             set
             {
-                _documentDate = value;
-                LastUpdate = DateTime.Now;
-                OnPropertyChanged();
+                if (_documentDate != value)
+                {
+                    _documentDate = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
             }
         }
         #endregion
@@ -213,9 +243,12 @@ namespace Models.StoragePoints
             get => _expirationDate;
             set
             {
-                _expirationDate = value;
-                LastUpdate = DateTime.Now;
-                OnPropertyChanged();
+                if (_expirationDate != value)
+                {
+                    _expirationDate = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
             }
         }
         #endregion
@@ -229,9 +262,12 @@ namespace Models.StoragePoints
             get => _documentName;
             set
             {
-                _documentName = value;
-                LastUpdate = DateTime.Now;
-                OnPropertyChanged();
+                if (_documentName != value)
+                {
+                    _documentName = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
             }
         }
         #endregion
@@ -244,6 +280,7 @@ namespace Models.StoragePoints
             get => _lastUpdate;
             private set
             {
+
                 _lastUpdate = value;
                 OnPropertyChanged();
             }

@@ -5,6 +5,7 @@ using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.Passports;
 using Models.StoragePoints;
@@ -36,6 +37,7 @@ namespace Client_App.ViewModels.StoragePoints
 
             InitializeCommands();
             _storagePoint = StaticConfiguration.DBModel.storage_point
+                .Include(sp => sp.LicenseInfoList)
                 .FirstOrDefault(sp => sp.Id == storagePointId);
         }
 
