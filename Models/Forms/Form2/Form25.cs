@@ -719,4 +719,20 @@ public partial class Form25 : Form2
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form25 formToCompare) return false;
+
+        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
+               && StoragePlaceName_DB == formToCompare.StoragePlaceName_DB
+               && StoragePlaceCode_DB == formToCompare.StoragePlaceCode_DB
+               && CodeOYAT_DB == formToCompare.CodeOYAT_DB
+               && FcpNumber_DB == formToCompare.FcpNumber_DB
+               && FuelMass_DB == formToCompare.FuelMass_DB
+               && CellMass_DB == formToCompare.CellMass_DB
+               && Quantity_DB == formToCompare.Quantity_DB
+               && AlphaActivity_DB == formToCompare.AlphaActivity_DB
+               && BetaGammaActivity_DB == formToCompare.BetaGammaActivity_DB;
+    }
 }

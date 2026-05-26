@@ -755,4 +755,21 @@ public partial class Form210 : Form2
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form210 formToCompare) return false;
+
+        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
+               && IndicatorName_DB == formToCompare.IndicatorName_DB
+               && PlotName_DB == formToCompare.PlotName_DB
+               && PlotKadastrNumber_DB == formToCompare.PlotKadastrNumber_DB
+               && PlotCode_DB == formToCompare.PlotCode_DB
+               && InfectedArea_DB == formToCompare.InfectedArea_DB
+               && AvgGammaRaysDosePower_DB == formToCompare.AvgGammaRaysDosePower_DB
+               && MaxGammaRaysDosePower_DB == formToCompare.MaxGammaRaysDosePower_DB
+               && WasteDensityAlpha_DB == formToCompare.WasteDensityAlpha_DB
+               && WasteDensityBeta_DB == formToCompare.WasteDensityBeta_DB
+               && FcpNumber_DB == formToCompare.FcpNumber_DB;
+    }
 }

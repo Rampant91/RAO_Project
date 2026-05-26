@@ -680,4 +680,21 @@ public partial class Form50 : Form
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form50 formToCompare) return false;
+
+        return ExecutiveAuthority_DB == formToCompare.ExecutiveAuthority_DB
+               && Rosatom_DB == formToCompare.Rosatom_DB
+               && MinObr_DB == formToCompare.MinObr_DB
+               && Name_DB == formToCompare.Name_DB
+               && ShortName_DB == formToCompare.ShortName_DB
+               && Address_DB == formToCompare.Address_DB
+               && GradeFioDirector_DB == formToCompare.GradeFioDirector_DB
+               && GradeFioExecutor_DB == formToCompare.GradeFioExecutor_DB
+               && Telephone_DB == formToCompare.Telephone_DB
+               && Fax_DB == formToCompare.Fax_DB
+               && Email_DB == formToCompare.Email_DB;
+    }
 }

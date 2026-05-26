@@ -2160,4 +2160,38 @@ public partial class Form16 : Form1
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form16 formToCompare) return false;
+
+        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
+               && OperationCode_DB == formToCompare.OperationCode_DB
+               && OperationDate_DB == formToCompare.OperationDate_DB
+               && CodeRAO_DB == formToCompare.CodeRAO_DB
+               && StatusRAO_DB == formToCompare.StatusRAO_DB
+               && Volume_DB == formToCompare.Volume_DB
+               && Mass_DB == formToCompare.Mass_DB
+               && QuantityOZIII_DB == formToCompare.QuantityOZIII_DB
+               && MainRadionuclids_DB == formToCompare.MainRadionuclids_DB
+               && TritiumActivity_DB == formToCompare.TritiumActivity_DB
+               && BetaGammaActivity_DB == formToCompare.BetaGammaActivity_DB
+               && AlphaActivity_DB == formToCompare.AlphaActivity_DB
+               && TransuraniumActivity_DB == formToCompare.TransuraniumActivity_DB
+               && ActivityMeasurementDate_DB == formToCompare.ActivityMeasurementDate_DB
+               && DocumentVid_DB == formToCompare.DocumentVid_DB
+               && DocumentNumber_DB == formToCompare.DocumentNumber_DB
+               && DocumentDate_DB == formToCompare.DocumentDate_DB
+               && ProviderOrRecieverOKPO_DB == formToCompare.ProviderOrRecieverOKPO_DB
+               && TransporterOKPO_DB == formToCompare.TransporterOKPO_DB
+               && StoragePlaceName_DB == formToCompare.StoragePlaceName_DB
+               && StoragePlaceCode_DB == formToCompare.StoragePlaceCode_DB
+               && RefineOrSortRAOCode_DB == formToCompare.RefineOrSortRAOCode_DB
+               && PackName_DB == formToCompare.PackName_DB
+               && PackType_DB == formToCompare.PackType_DB
+               && PackNumber_DB == formToCompare.PackNumber_DB
+               && Subsidy_DB == formToCompare.Subsidy_DB
+               && FcpNumber_DB == formToCompare.FcpNumber_DB
+               && ContractNumber_DB == formToCompare.ContractNumber_DB;
+    }
 }

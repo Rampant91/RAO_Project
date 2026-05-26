@@ -1049,4 +1049,23 @@ public partial class Form23 : Form2
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form23 formToCompare) return false;
+
+        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
+               && StoragePlaceName_DB == formToCompare.StoragePlaceName_DB
+               && StoragePlaceCode_DB == formToCompare.StoragePlaceCode_DB
+               && ProjectVolume_DB == formToCompare.ProjectVolume_DB
+               && CodeRAO_DB == formToCompare.CodeRAO_DB
+               && Volume_DB == formToCompare.Volume_DB
+               && Mass_DB == formToCompare.Mass_DB
+               && QuantityOZIII_DB == formToCompare.QuantityOZIII_DB
+               && SummaryActivity_DB == formToCompare.SummaryActivity_DB
+               && DocumentNumber_DB == formToCompare.DocumentNumber_DB
+               && DocumentDate_DB == formToCompare.DocumentDate_DB
+               && ExpirationDate_DB == formToCompare.ExpirationDate_DB
+               && DocumentName_DB == formToCompare.DocumentName_DB;
+    }
 }

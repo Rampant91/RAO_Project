@@ -1281,4 +1281,27 @@ public partial class Form24 : Form2
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form24 formToCompare) return false;
+
+        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
+               && CodeOYAT_DB == formToCompare.CodeOYAT_DB
+               && FcpNumber_DB == formToCompare.FcpNumber_DB
+               && MassCreated_DB == formToCompare.MassCreated_DB
+               && QuantityCreated_DB == formToCompare.QuantityCreated_DB
+               && MassFromAnothers_DB == formToCompare.MassFromAnothers_DB
+               && QuantityFromAnothers_DB == formToCompare.QuantityFromAnothers_DB
+               && MassFromAnothersImported_DB == formToCompare.MassFromAnothersImported_DB
+               && QuantityFromAnothersImported_DB == formToCompare.QuantityFromAnothersImported_DB
+               && MassAnotherReasons_DB == formToCompare.MassAnotherReasons_DB
+               && QuantityAnotherReasons_DB == formToCompare.QuantityAnotherReasons_DB
+               && MassTransferredToAnother_DB == formToCompare.MassTransferredToAnother_DB
+               && QuantityTransferredToAnother_DB == formToCompare.QuantityTransferredToAnother_DB
+               && MassRefined_DB == formToCompare.MassRefined_DB
+               && QuantityRefined_DB == formToCompare.QuantityRefined_DB
+               && MassRemovedFromAccount_DB == formToCompare.MassRemovedFromAccount_DB
+               && QuantityRemovedFromAccount_DB == formToCompare.QuantityRemovedFromAccount_DB;
+    }
 }

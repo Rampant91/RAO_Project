@@ -520,4 +520,17 @@ public class Form28 : Form2
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form28 formToCompare) return false;
+
+        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
+               && WasteSourceName_DB == formToCompare.WasteSourceName_DB
+               && WasteRecieverName_DB == formToCompare.WasteRecieverName_DB
+               && RecieverTypeCode_DB == formToCompare.RecieverTypeCode_DB
+               && PoolDistrictName_DB == formToCompare.PoolDistrictName_DB
+               && AllowedWasteRemovalVolume_DB == formToCompare.AllowedWasteRemovalVolume_DB
+               && RemovedWasteVolume_DB == formToCompare.RemovedWasteVolume_DB;
+    }
 }

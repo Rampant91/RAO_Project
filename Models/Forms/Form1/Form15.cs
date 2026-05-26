@@ -1912,4 +1912,35 @@ public partial class Form15 : Form1
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form15 formToCompare) return false;
+
+        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
+               && OperationCode_DB == formToCompare.OperationCode_DB
+               && OperationDate_DB == formToCompare.OperationDate_DB
+               && PassportNumber_DB == formToCompare.PassportNumber_DB
+               && Type_DB == formToCompare.Type_DB
+               && Radionuclids_DB == formToCompare.Radionuclids_DB
+               && FactoryNumber_DB == formToCompare.FactoryNumber_DB
+               && Quantity_DB == formToCompare.Quantity_DB
+               && Activity_DB == formToCompare.Activity_DB
+               && CreationDate_DB == formToCompare.CreationDate_DB
+               && StatusRAO_DB == formToCompare.StatusRAO_DB
+               && DocumentVid_DB == formToCompare.DocumentVid_DB
+               && DocumentNumber_DB == formToCompare.DocumentNumber_DB
+               && DocumentDate_DB == formToCompare.DocumentDate_DB
+               && ProviderOrRecieverOKPO_DB == formToCompare.ProviderOrRecieverOKPO_DB
+               && TransporterOKPO_DB == formToCompare.TransporterOKPO_DB
+               && PackName_DB == formToCompare.PackName_DB
+               && PackType_DB == formToCompare.PackType_DB
+               && PackNumber_DB == formToCompare.PackNumber_DB
+               && StoragePlaceName_DB == formToCompare.StoragePlaceName_DB
+               && StoragePlaceCode_DB == formToCompare.StoragePlaceCode_DB
+               && RefineOrSortRAOCode_DB == formToCompare.RefineOrSortRAOCode_DB
+               && Subsidy_DB == formToCompare.Subsidy_DB
+               && FcpNumber_DB == formToCompare.FcpNumber_DB
+               && ContractNumber_DB == formToCompare.ContractNumber_DB;
+    }
 }

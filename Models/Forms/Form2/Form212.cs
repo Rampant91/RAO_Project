@@ -467,4 +467,16 @@ public class Form212 : Form2
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form212 formToCompare) return false;
+
+        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
+               && OperationCode_DB == formToCompare.OperationCode_DB
+               && ObjectTypeCode_DB == formToCompare.ObjectTypeCode_DB
+               && Radionuclids_DB == formToCompare.Radionuclids_DB
+               && Activity_DB == formToCompare.Activity_DB
+               && ProviderOrRecieverOKPO_DB == formToCompare.ProviderOrRecieverOKPO_DB;
+    }
 }

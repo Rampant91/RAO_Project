@@ -1051,4 +1051,28 @@ public partial class Form40 : Form
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form40 formToCompare) return false;
+
+        return CodeSubjectRF_DB == formToCompare.CodeSubjectRF_DB
+               && SubjectRF_DB == formToCompare.SubjectRF_DB
+               && NameOrganUprav_DB == formToCompare.NameOrganUprav_DB
+               && ShortNameOrganUprav_DB == formToCompare.ShortNameOrganUprav_DB
+               && AddressOrganUprav_DB == formToCompare.AddressOrganUprav_DB
+               && GradeFioDirectorOrganUprav_DB == formToCompare.GradeFioDirectorOrganUprav_DB
+               && GradeFioExecutorOrganUprav_DB == formToCompare.GradeFioExecutorOrganUprav_DB
+               && TelephoneOrganUprav_DB == formToCompare.TelephoneOrganUprav_DB
+               && FaxOrganUprav_DB == formToCompare.FaxOrganUprav_DB
+               && EmailOrganUprav_DB == formToCompare.EmailOrganUprav_DB
+               && NameRiac_DB == formToCompare.NameRiac_DB
+               && ShortNameRiac_DB == formToCompare.ShortNameRiac_DB
+               && AddressRiac_DB == formToCompare.AddressRiac_DB
+               && GradeFioDirectorRiac_DB == formToCompare.GradeFioDirectorRiac_DB
+               && GradeFioExecutorRiac_DB == formToCompare.GradeFioExecutorRiac_DB
+               && TelephoneRiac_DB == formToCompare.TelephoneRiac_DB
+               && FaxRiac_DB == formToCompare.FaxRiac_DB
+               && EmailRiac_DB == formToCompare.EmailRiac_DB;
+    }
 }

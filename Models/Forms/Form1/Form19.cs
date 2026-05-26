@@ -459,4 +459,19 @@ public class Form19 : Form1
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form19 formToCompare) return false;
+
+        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
+               && OperationCode_DB == formToCompare.OperationCode_DB
+               && OperationDate_DB == formToCompare.OperationDate_DB
+               && DocumentVid_DB == formToCompare.DocumentVid_DB
+               && DocumentNumber_DB == formToCompare.DocumentNumber_DB
+               && DocumentDate_DB == formToCompare.DocumentDate_DB
+               && CodeTypeAccObject_DB == formToCompare.CodeTypeAccObject_DB
+               && Radionuclids_DB == formToCompare.Radionuclids_DB
+               && Activity_DB == formToCompare.Activity_DB;
+    }
 }

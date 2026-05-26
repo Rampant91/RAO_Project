@@ -70,6 +70,37 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         ? DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")
         : "\t\t";
 
+    /// <summary>
+    /// Сравнивает содержимое двух отчётов (строки данных и примечания).
+    /// </summary>
+    private static bool AreReportContentEqual(Report baseRep, Report impRep)
+    {
+        if (baseRep.Rows.Count != impRep.Rows.Count)
+            return false;
+        if (baseRep.Notes.Count != impRep.Notes.Count)
+            return false;
+        var baseRows = baseRep.Rows.ToList<Form>().OrderBy(x => x.NumberInOrder_DB).ToList();
+        var impRows = impRep.Rows.ToList<Form>().OrderBy(x => x.NumberInOrder_DB).ToList();
+        for (var i = 0; i < baseRows.Count; i++)
+        {
+            if (!baseRows[i].IsContentEqual(impRows[i]))
+                return false;
+        }
+        for (var i = 0; i < baseRep.Notes.Count; i++)
+        {
+            if (!AreNotesEqual(baseRep.Notes[i], impRep.Notes[i]))
+                return false;
+        }
+        return true;
+    }
+
+    private static bool AreNotesEqual(Note a, Note b)
+    {
+        return a.RowNumber_DB == b.RowNumber_DB
+               && a.GraphNumber_DB == b.GraphNumber_DB
+               && a.Comment_DB == b.Comment_DB;
+    }
+
     #region CheckAnswer
 
     /// <summary>
@@ -851,6 +882,24 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                     if (ImpRepCorNum == BaseRepCorNum)
                     {
+                        if (AreReportContentEqual(baseRep, impRep))
+                        {
+                            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                                {
+                                    ContentTitle = "Импорт из .raodb/.xlsx/.json",
+                                    ContentHeader = "Уведомление",
+                                    ContentMessage =
+                                        $"Отчёт по форме {ImpRepFormNum} за период {ImpRepStartPeriod} - {ImpRepEndPeriod}" +
+                                        $"{Environment.NewLine}уже имеется в базе в виде полной копии." +
+                                        $"{Environment.NewLine}Импорт не требуется.",
+                                    MinWidth = 400,
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                })
+                                .ShowDialog(Desktop.MainWindow));
+                            break;
+                        }
+
                         #region MessageImportReportHasSamePeriodCorrectionNumberAndExportDate
 
                         res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
@@ -1192,6 +1241,26 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                 if (ImpRepCorNum == BaseRepCorNum)
                 {
+                    baseRep = await FillReportWithForms(baseReps, baseRep);
+
+                    if (AreReportContentEqual(baseRep, impRep))
+                    {
+                        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                            {
+                                ContentTitle = "Импорт из .raodb/.xlsx/.json",
+                                ContentHeader = "Уведомление",
+                                ContentMessage =
+                                    $"Отчёт по форме {ImpRepFormNum} за {ImpRepYear} год" +
+                                    $"{Environment.NewLine}уже имеется в базе в виде полной копии." +
+                                    $"{Environment.NewLine}Импорт не требуется.",
+                                MinWidth = 400,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(Desktop.MainWindow));
+                        break;
+                    }
+
                     #region MessageImportReportHasSameYearCorrectionNumberAndExportDate
 
                     res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
@@ -1227,10 +1296,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                     #endregion
 
-                    if (res is "Дополнить" or "Заменить")
-                    {
-                        baseRep = await FillReportWithForms(baseReps, baseRep);
-                    }
                     await CheckAnswer(res, baseReps, impReps, baseRep, impRep);
                     break;
                 }
@@ -1505,6 +1570,26 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                 if (ImpRepCorNum == BaseRepCorNum)
                 {
+                    baseRep = await FillReportWithForms(baseReps, baseRep);
+
+                    if (AreReportContentEqual(baseRep, impRep))
+                    {
+                        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                            {
+                                ContentTitle = "Импорт из .raodb/.xlsx/.json",
+                                ContentHeader = "Уведомление",
+                                ContentMessage =
+                                    $"Отчёт по форме {ImpRepFormNum} за {ImpRepYear} год" +
+                                    $"{Environment.NewLine}уже имеется в базе в виде полной копии." +
+                                    $"{Environment.NewLine}Импорт не требуется.",
+                                MinWidth = 400,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(Desktop.MainWindow));
+                        break;
+                    }
+
                     #region MessageImportReportHasSameYearCorrectionNumberAndExportDate
 
                     res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
@@ -1538,10 +1623,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                     #endregion
 
-                    if (res is "Дополнить" or "Заменить")
-                    {
-                        baseRep = await FillReportWithForms(baseReps, baseRep);
-                    }
                     await CheckAnswer(res, baseReps, impReps, baseRep, impRep);
                     break;
                 }
@@ -1817,6 +1898,26 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                 if (ImpRepCorNum == BaseRepCorNum)
                 {
+                    baseRep = await FillReportWithForms(baseReps, baseRep);
+
+                    if (AreReportContentEqual(baseRep, impRep))
+                    {
+                        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                            {
+                                ContentTitle = "Импорт из .raodb/.xlsx/.json",
+                                ContentHeader = "Уведомление",
+                                ContentMessage =
+                                    $"Отчёт по форме {ImpRepFormNum} за {ImpRepYear} год" +
+                                    $"{Environment.NewLine}уже имеется в базе в виде полной копии." +
+                                    $"{Environment.NewLine}Импорт не требуется.",
+                                MinWidth = 400,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(Desktop.MainWindow));
+                        break;
+                    }
+
                     #region MessageImportReportHasSameYearCorrectionNumberAndExportDate
 
                     res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
@@ -1850,10 +1951,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                     #endregion
 
-                    if (res is "Дополнить" or "Заменить")
-                    {
-                        baseRep = await FillReportWithForms(baseReps, baseRep);
-                    }
                     await CheckAnswer(res, baseReps, impReps, baseRep, impRep);
                     break;
                 }
