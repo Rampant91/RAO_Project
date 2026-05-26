@@ -325,7 +325,8 @@
             </MenuItem>
 			
 			<MenuItem Name="Passports"
-								  Header="Паспорта">
+					  IsVisible="False"
+					  Header="Паспорта">
 				<MenuItem Command="{Binding OpenPassportMenu}"
 						  Header="Открыть меню паспортов"/>
 			</MenuItem>
