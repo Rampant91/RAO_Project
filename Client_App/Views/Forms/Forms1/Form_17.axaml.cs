@@ -271,8 +271,17 @@ public partial class Form_17 : BaseWindow<Form_17VM>
                         ServiceExtension.LoggerManager.Error(msg);
                     }
 
-                    await dbm.SaveChangesAsync();
-                    await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+                    try
+                    {
+                        await dbm.SaveChangesAsync();
+                        await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+                    }
+                    catch (Exception ex)
+                    {
+                        var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                                  $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                        ServiceExtension.LoggerManager.Error(msg);
+                    }
 
                     if (desktop.Windows.Count == 1)
                     {

@@ -80,130 +80,130 @@ namespace Client_App.Commands.AsyncCommands.Generate
             // Список строк, для которых не будет создан паспорт, т.к. их код операции не предполагает создания паспорта
             List<int> rowNumbers = new();
 
-            foreach (var form in selectedForm17List)
+            List<List<Form17>> parsedForm17 = new List<List<Form17>>();
+
+            foreach (var form17 in selectedForm17List)
             {
-                if (form is not Form17 form17) continue;
+                if (codeOperationRegex.IsMatch(form17.OperationCode_DB))
+                    parsedForm17.Add(new List<Form17>());
 
-                //В формах 1.7 Одна зпись может состоять из нескольких строк
-                //после одной полностью заполненой строки могут идти несколько других строк,
-                //в которых заполнено только информация о радионуклиде
+                parsedForm17.Last().Add(form17);
 
-                //Проверка строки новая ли это запись или продолжение старой 
-                //Если новая то создаем новый паспорт и добавляем радионуклид
-                //Если продолжение старой то только добавляем радионуклид 
-                if (codeOperationRegex.IsMatch(form17.OperationCode_DB)) 
+            }
+
+            
+
+            foreach (var operation in parsedForm17)
+            {
+                if (!(operation.Count > 0
+                    && operation[0].OperationCode_DB
+                    is "01" or "11" or "12" or "14"
+                    or "16" or "18" or "55")) 
+                    continue;
+
+
+                var passport = new PackagePassport();
+                passport.ContentCharacteristics.Add(new CharacteristicPrimaryPackage(passport));
+                var characteristic = passport.ContentCharacteristics[0];
+
+                var passportMatch = FindPassportMatch(operation[0]);
+
+                if (passportMatch == null && operation[0].OperationCode_DB == "18")
+                    passport.CorrectionNumber = 1;
+                else if (passportMatch != null && operation[0].OperationCode_DB == "18")
+                    passport.CorrectionNumber = (byte)(passportMatch.CorrectionNumber + 1);
+                else if (passportMatch == null && operation[0].OperationCode_DB != "18")
+                    passport.CorrectionNumber = 0;
+                else if (passportMatch != null && operation[0].OperationCode_DB != "18")
+                    continue;
+
+                passport.PackageType = operation[0].PackType_DB;
+
+                char classRaoChar = ' ';
+                if (operation[0].CodeRAO.Value.Length > 8)
+                    classRaoChar = operation[0].CodeRAO.Value[7];
+
+                if (classRaoChar is '1' or '2' or '3' or '4' or '6')
                 {
-                    var passportMatch = FindPassportMatch(form17);
-
-                    if (form17.OperationCode_DB != "01"
-                        && form17.OperationCode_DB != "11"
-                        && form17.OperationCode_DB != "12"
-                        && form17.OperationCode_DB != "14"
-                        && form17.OperationCode_DB != "16"
-                        && form17.OperationCode_DB != "18"
-                        && form17.OperationCode_DB != "55")
+                    passport.ClassRao = byte.Parse(classRaoChar.ToString());
+                }
+                else
+                {
+                    #region WrongClassRaoErrorMessage
+                    Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                     {
-                        rowNumbers.Add(form17.NumberInOrder_DB);
-                        radionuclidList = null;
-                        continue;
-                    }
+                        ButtonDefinitions =
+                        [
+                            new ButtonDefinition { Name = "Ок" },
+                        ],
+                        CanResize = true,
+                        ContentTitle = "Формирование паспорта на упаковку",
+                        ContentMessage = "Предупреждение:\n" +
+                        $"Определился неправильный класс РАО (8 символ кода РАО) - {classRaoChar}\n" +
+                        $"Допустимые значения - 1, 2, 3, 4, 6",
+                        MinWidth = 300,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(owner));
+                    #endregion
 
-
-                    var passport = new PackagePassport();
-                    passport.ContentCharacteristics.Add(new CharacteristicPrimaryPackage(passport));
-                    var characteristic = passport.ContentCharacteristics[0];
-
-
-                    if (passportMatch == null && form17.OperationCode_DB == "18")
-                        passport.CorrectionNumber = 1;
-                    else if (passportMatch != null && form17.OperationCode_DB == "18")
-                        passport.CorrectionNumber = (byte)(passportMatch.CorrectionNumber + 1);
-                    else if (passportMatch == null && form17.OperationCode_DB != "18")
-                        passport.CorrectionNumber = 0;
-                    else if (passportMatch != null && form17.OperationCode_DB != "18")
-                    {
-                        radionuclidList = null;
-                        continue;
-                    }
-
-                    // записываем ссылку на новый список радионуклидов
-                    radionuclidList = passport.ContentCharacteristics[0].RadionuclidsList;
-
-                    passport.PackageType = form17.PackType_DB;
-
-                    char classRaoChar = ' ';
-                    if (form17.CodeRAO.Value.Length > 8)
-                        classRaoChar = form17.CodeRAO.Value[7];
-
-                    if (classRaoChar is '1' or '2' or '3' or '4' or '6')
-                    {
-                        passport.ClassRao = byte.Parse(classRaoChar.ToString()); 
-                    }
-                    else
-                    {
-                        #region WrongClassRaoErrorMessage
-                        Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                        {
-                            ButtonDefinitions =
-                            [
-                                new ButtonDefinition { Name = "Ок" },
-                            ],
-                            CanResize = true,
-                            ContentTitle = "Формирование паспорта на упаковку",
-                            ContentMessage = "Предупреждение:\n" +
-                            $"Определился неправильный класс РАО (8 символ кода РАО) - {classRaoChar}\n" +
-                            $"Допустимые значения - 1, 2, 3, 4, 6",
-                            MinWidth = 300,
-                            MinHeight = 150,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(owner));
-                        #endregion
-
-                        return;
-                    }
-
-                    passport.PackageIdCode = form17.PackNumber_DB;
-                    passport.ContainerFactoryNum = form17.PackFactoryNumber_DB;
-                    passport.ManufactureDate = DateOnly.TryParse(form17.FormingDate_DB, out var date) ? date : DateOnly.MinValue;
-                    passport.PassportNum = form17.PassportNumber_DB;
-                    passport.PackageVolume = double.TryParse(form17.Volume_DB, out var value) ? value : 0;
-                    passport.PackageMass = double.TryParse(form17.Mass_DB, out value) ? value * 1000 : 0;
-                    passport.StatusRaoCode = form17.StatusRAO_DB;
-                    characteristic.ClassRao = passport.ClassRao;
-                    characteristic.CodeRao = form17.CodeRAO_DB;
-                    passport.RaoVolume = double.TryParse(form17.VolumeOutOfPack_DB, out value) ? value : 0;
-                    passport.RaoMass = double.TryParse(form17.MassOutOfPack_DB, out value) ? value * 1000 : 0;
-
-                    if((form17.CodeRAO_DB.Length >7) 
-                        && (form17.CodeRAO_DB[6] is'2' or'3' or '4' or '9'))
-                    {
-                        passport.DisposalMethod = "налив";
-                    }
-                    else
-                        passport.DisposalMethod = "навал";
-
-                    StaticConfiguration.DBModel.package_passport.Add(passport);
+                    return;
                 }
 
-                //Добавляем радионуклид в текущий список
-                if (radionuclidList is not null
-                    && !string.IsNullOrWhiteSpace(form17.Radionuclids_DB))
+                passport.PackageIdCode = operation[0].PackNumber_DB;
+                passport.ContainerFactoryNum = operation[0].PackFactoryNumber_DB;
+                passport.ManufactureDate = DateOnly.TryParse(operation[0].FormingDate_DB, out var date) ? date : DateOnly.MinValue;
+                passport.PassportNum = operation[0].PassportNumber_DB;
+                passport.PackageVolume = double.TryParse(operation[0].Volume_DB, out var value) ? value : 0;
+                passport.PackageMass = double.TryParse(operation[0].Mass_DB, out value) ? value * 1000 : 0;
+                characteristic.ClassRao = passport.ClassRao;
+
+                if ((operation[0].CodeRAO_DB.Length > 7)
+                    && (operation[0].CodeRAO_DB[6] is '2' or '3' or '4' or '9'))
+                {
+                    passport.DisposalMethod = "налив";
+                }
+                else
+                    passport.DisposalMethod = "навал";
+
+                foreach (var form17 in operation)
                 {
                     var radName = form17.Radionuclids_DB;
-
                     //Ищем в справочнике латинское наименование радионуклида
                     if (Spravochniks.SprRadionuclids.Any(rad => rad.rusName == form17.Radionuclids_DB))
                         radName = Spravochniks.SprRadionuclids.FirstOrDefault(rad => rad.rusName == form17.Radionuclids_DB).latinName;
 
-
-                    radionuclidList.Add(new Radionuclid()
+                    characteristic.RadionuclidsList.Add(new Radionuclid()
                     {
                         Name = radName,
-                        Activity = double.TryParse(form17.SpecificActivity_DB, out var value) ? value : 0
+                        Activity = double.TryParse(form17.SpecificActivity_DB, out value) ? value : 0
                     });
+
+                    if (!string.IsNullOrWhiteSpace(form17.StatusRAO_DB)
+                        && form17.StatusRAO_DB != "-"
+                        && !form17.StatusRAO_DB.StartsWith("прим"))
+                    {
+                        if (!string.IsNullOrWhiteSpace(passport.StatusRaoCode))
+                            passport.StatusRaoCode += "; ";
+                        passport.StatusRaoCode += form17.StatusRAO_DB;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(form17.CodeRAO_DB)
+                        && form17.CodeRAO_DB.Length == 11)
+                    {
+                        if (!string.IsNullOrWhiteSpace(characteristic.CodeRao))
+                            characteristic.CodeRao += "; ";
+                        characteristic.CodeRao += form17.CodeRAO_DB;
+                    }
+
+                    passport.RaoVolume += double.TryParse(form17.VolumeOutOfPack_DB, out value) ? value : 0;
+                    passport.RaoMass += double.TryParse(form17.MassOutOfPack_DB, out value) ? value * 1000 : 0;
                 }
+
+                StaticConfiguration.DBModel.package_passport.Add(passport);
+
 
             }
             if (rowNumbers.Count > 0)
