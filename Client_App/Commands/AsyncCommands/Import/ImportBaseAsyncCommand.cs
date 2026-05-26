@@ -33,7 +33,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     private protected bool SkipNewOrg;              // Пропустить уведомления о добавлении новой организации
     private protected bool SkipInter;               // Пропускать уведомления и отменять импорт при пересечении дат
     private protected bool SkipLess;                // Пропускать уведомления о том, что номер корректировки у импортируемого отчета меньше
-    private protected bool SkipNew;                 // Пропускать уведомления о добавлении новой формы для уже имеющейся в базе организации
     private protected bool SkipReplace;             // Пропускать уведомления о замене форм
     private protected bool HasMultipleReport;       // Имеет множество форм
     private protected bool AtLeastOneImportDone;    // Не отменена хотя бы одна операция импорта файлов/организаций/форм
@@ -1079,90 +1078,9 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
             if (impInBase) continue;
 
-            #region AddNewForm
-
             res = "Да";
-            if (!SkipNew)
-            {
-                if (HasMultipleReport)
-                {
-                    #region MessageNewReport
 
-                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                        {
-                            ButtonDefinitions =
-                            [
-                                new ButtonDefinition { Name = "Да", IsDefault = true },
-                                new ButtonDefinition { Name = "Да для всех" },
-                                new ButtonDefinition { Name = "Нет", IsCancel = true }
-                            ],
-                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
-                            ContentHeader = "Уведомление",
-                            ContentMessage =
-                                "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
-                                $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
-                                $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
-                                $"{Environment.NewLine}Начало отчетного периода - {ImpRepStartPeriod}" +
-                                $"{Environment.NewLine}Конец отчетного периода - {ImpRepEndPeriod}" +
-                                $"{Environment.NewLine}Дата выгрузки - {ImpRepExpDate}" +
-                                $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
-                                $"{Environment.NewLine}Количество строк - {ImpRepFormCount}{InventoryCheck(impRep)}" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений импортировать" +
-                                $"{Environment.NewLine}все новые формы для уже имеющихся в базе организаций.",
-                            MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(Desktop.MainWindow));
-
-                    #endregion
-
-                    if (res is "Да для всех") SkipNew = true;
-                }
-                else
-                {
-                    #region MessageNewReport
-
-                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                        {
-                            ButtonDefinitions =
-                            [
-                                new ButtonDefinition { Name = "Да", IsDefault = true },
-                                new ButtonDefinition { Name = "Нет", IsCancel = true }
-                            ],
-                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
-                            ContentHeader = "Уведомление",
-                            ContentMessage =
-                                "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
-                                $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
-                                $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
-                                $"{Environment.NewLine}Начало отчетного периода - {ImpRepStartPeriod}" +
-                                $"{Environment.NewLine}Конец отчетного периода - {ImpRepEndPeriod}" +
-                                $"{Environment.NewLine}Дата выгрузки - {ImpRepExpDate}" +
-                                $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
-                                $"{Environment.NewLine}Количество строк - {ImpRepFormCount}{InventoryCheck(impRep)}",
-                            MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(Desktop.MainWindow));
-
-                    #endregion
-                }
-            }
-
-            await CheckAnswer(res, baseReps, impReps, null, impRep);
-
-            #endregion
+            await CheckAnswer(res, baseReps, impReps, null, impRep); //AddNewForm
         }
 
         await baseReps.SortAsync().ConfigureAwait(false);
@@ -1461,88 +1379,11 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
             if (impInBase) continue;
 
-            #region AddNewForm
-
+            
             res = "Да";
-            if (!SkipNew)
-            {
-                if (HasMultipleReport)
-                {
-                    #region MessageNewReport
 
-                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                        {
-                            ButtonDefinitions =
-                            [
-                                new ButtonDefinition { Name = "Да", IsDefault = true },
-                                new ButtonDefinition { Name = "Да для всех" },
-                                new ButtonDefinition { Name = "Нет", IsCancel = true }
-                            ],
-                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
-                            ContentHeader = "Уведомление",
-                            ContentMessage =
-                                "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
-                                $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
-                                $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
-                                $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
-                                $"{Environment.NewLine}Дата выгрузки - {ImpRepExpDate}" +
-                                $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
-                                $"{Environment.NewLine}Количество строк - {ImpRepFormCount}" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений импортировать" +
-                                $"{Environment.NewLine}все новые формы для уже имеющихся в базе организаций.",
-                            MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(Desktop.MainWindow));
+            await CheckAnswer(res, baseReps, impReps, null, impRep); //AddNewForm
 
-                    #endregion
-
-                    if (res == "Да для всех") SkipNew = true;
-                }
-                else
-                {
-                    #region MessageNewReport
-
-                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                        {
-                            ButtonDefinitions =
-                            [
-                                new ButtonDefinition { Name = "Да", IsDefault = true },
-                                new ButtonDefinition { Name = "Нет", IsCancel = true }
-                            ],
-                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
-                            ContentHeader = "Уведомление",
-                            ContentMessage =
-                                "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
-                                $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
-                                $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
-                                $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
-                                $"{Environment.NewLine}Дата выгрузки - {ImpRepExpDate}" +
-                                $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
-                                $"{Environment.NewLine}Количество строк - {ImpRepFormCount}",
-                            MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(Desktop.MainWindow));
-
-                    #endregion
-                }
-            }
-
-            await CheckAnswer(res, baseReps, impReps, null, impRep);
-
-            #endregion
         }
 
         await baseReps.SortAsync().ConfigureAwait(false);
@@ -1852,84 +1693,9 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
             if (impInBase) continue;
 
-            #region AddNewForm
-
             res = "Да";
-            if (!SkipNew)
-            {
-                if (HasMultipleReport)
-                {
-                    #region MessageNewReport
 
-                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                        {
-                            ButtonDefinitions =
-                            [
-                                new ButtonDefinition { Name = "Да", IsDefault = true },
-                                new ButtonDefinition { Name = "Да для всех" },
-                                new ButtonDefinition { Name = "Нет", IsCancel = true }
-                            ],
-                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
-                            ContentHeader = "Уведомление",
-                            ContentMessage =
-                                "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
-                                $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
-                                $"{Environment.NewLine}Дата выгрузки - {ImpRepExpDate}" +
-                                $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
-                                $"{Environment.NewLine}Количество строк - {ImpRepFormCount}" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений импортировать" +
-                                $"{Environment.NewLine}все новые формы для уже имеющихся в базе организаций.",
-                            MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(Desktop.MainWindow));
-
-                    #endregion
-
-                    if (res == "Да для всех") SkipNew = true;
-                }
-                else
-                {
-                    #region MessageNewReport
-
-                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                        {
-                            ButtonDefinitions =
-                            [
-                                new ButtonDefinition { Name = "Да", IsDefault = true },
-                                new ButtonDefinition { Name = "Нет", IsCancel = true }
-                            ],
-                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
-                            ContentHeader = "Уведомление",
-                            ContentMessage =
-                                "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
-                                $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
-                                $"{Environment.NewLine}Дата выгрузки - {ImpRepExpDate}" +
-                                $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
-                                $"{Environment.NewLine}Количество строк - {ImpRepFormCount}",
-                            MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(Desktop.MainWindow));
-
-                    #endregion
-                }
-            }
-
-            await CheckAnswer(res, baseReps, impReps, null, impRep);
-
-            #endregion
+            await CheckAnswer(res, baseReps, impReps, null, impRep);    //AddNewForm
         }
 
         await baseReps.SortAsync().ConfigureAwait(false);
@@ -2239,84 +2005,9 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
             if (impInBase) continue;
 
-            #region AddNewForm
-
             res = "Да";
-            if (!SkipNew)
-            {
-                if (HasMultipleReport)
-                {
-                    #region MessageNewReport
 
-                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                        {
-                            ButtonDefinitions =
-                            [
-                                new ButtonDefinition { Name = "Да", IsDefault = true },
-                                new ButtonDefinition { Name = "Да для всех" },
-                                new ButtonDefinition { Name = "Нет", IsCancel = true }
-                            ],
-                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
-                            ContentHeader = "Уведомление",
-                            ContentMessage =
-                                "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
-                                $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
-                                $"{Environment.NewLine}Дата выгрузки - {ImpRepExpDate}" +
-                                $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
-                                $"{Environment.NewLine}Количество строк - {ImpRepFormCount}" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений импортировать" +
-                                $"{Environment.NewLine}все новые формы для уже имеющихся в базе организаций.",
-                            MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(Desktop.MainWindow));
-
-                    #endregion
-
-                    if (res == "Да для всех") SkipNew = true;
-                }
-                else
-                {
-                    #region MessageNewReport
-
-                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                        {
-                            ButtonDefinitions =
-                            [
-                                new ButtonDefinition { Name = "Да", IsDefault = true },
-                                new ButtonDefinition { Name = "Нет", IsCancel = true }
-                            ],
-                            ContentTitle = "Импорт из .raodb/.xlsx/.json",
-                            ContentHeader = "Уведомление",
-                            ContentMessage =
-                                "Импортировать новый отчет в уже имеющуюся в базе организацию?" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
-                                $"{Environment.NewLine}" +
-                                $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
-                                $"{Environment.NewLine}Отчетный год - {ImpRepYear}" +
-                                $"{Environment.NewLine}Дата выгрузки - {ImpRepExpDate}" +
-                                $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
-                                $"{Environment.NewLine}Количество строк - {ImpRepFormCount}",
-                            MinWidth = 400,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(Desktop.MainWindow));
-
-                    #endregion
-                }
-            }
-
-            await CheckAnswer(res, baseReps, impReps, null, impRep);
-
-            #endregion
+            await CheckAnswer(res, baseReps, impReps, null, impRep);    //AddNewForm
         }
 
         await baseReps.SortAsync().ConfigureAwait(false);

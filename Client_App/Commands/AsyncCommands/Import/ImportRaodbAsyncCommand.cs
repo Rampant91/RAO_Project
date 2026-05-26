@@ -62,7 +62,6 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         SkipNewOrg = false;
         SkipInter = false;
         SkipLess = false;
-        SkipNew = false;
         SkipReplace = false;
         HasMultipleReport = false;
         AtLeastOneImportDone = false;
@@ -202,7 +201,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 }
 
 
-                    FillEmptyRegNo(ref baseReps11);
+                FillEmptyRegNo(ref baseReps11);
                 FillEmptyRegNo(ref baseReps21);
                 impReps.CleanIds();
                 ProcessIfNoteOrder0(impReps);

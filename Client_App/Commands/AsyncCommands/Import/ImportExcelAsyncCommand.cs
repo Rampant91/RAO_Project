@@ -70,7 +70,6 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         SkipNewOrg = false;
         SkipInter = false;
         SkipLess = false;
-        SkipNew = false;
         SkipReplace = false;
         HasMultipleReport = false;
         AtLeastOneImportDone = false;
