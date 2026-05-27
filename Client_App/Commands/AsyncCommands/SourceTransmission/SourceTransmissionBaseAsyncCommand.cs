@@ -1,4 +1,7 @@
-﻿using Client_App.ViewModels.Forms;
+﻿using Client_App.Resources;
+using Client_App.ViewModels;
+using Client_App.ViewModels.Forms;
+using Client_App.Views;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -13,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.SourceTransmission;
 
-public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
+public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 {
     private protected Reports SelectedReports => FormVM.Reports;
 
@@ -350,6 +353,16 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     #region CreateReportAndAddNewForm
 
+    private protected async Task BindReportToSelectedOrganizationAsync(DBModel db, Report report)
+    {
+        var organization = await db.ReportsCollectionDbSet
+            .FirstOrDefaultAsync(x => x.Id == SelectedReports.Id);
+        if (organization is not null)
+        {
+            report.Reports = organization;
+        }
+    }
+
     private protected async Task<Report> CreateReportAndAddNewForm(DBModel db, Form1 form, DateOnly opDate)
     {
         var repId = 0;
@@ -362,6 +375,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
             {
                 var form11 = (Form11)form;
                 var newRep15 = GetNewReport(opDate, form11.FormNum_DB);
+                await BindReportToSelectedOrganizationAsync(db, newRep15);
                 var entityEntry = db.ReportCollectionDbSet.Add(newRep15);
                 await db.SaveChangesAsync();
                 repId = entityEntry.Entity.Id;    //id обновляется после сохранения БД.
@@ -417,6 +431,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
             {
                 var form12 = (Form12)form;
                 var newRep16 = GetNewReport(opDate, form12.FormNum_DB);
+                await BindReportToSelectedOrganizationAsync(db, newRep16);
                 var entityEntry = db.ReportCollectionDbSet.Add(newRep16);
                 await db.SaveChangesAsync();
                 repId = entityEntry.Entity.Id;    //id обновляется после сохранения БД.
@@ -498,6 +513,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 R_Populate_From_File();
                 var form13 = (Form13)form;
                 var newRep16 = GetNewReport(opDate, form13.FormNum_DB);
+                await BindReportToSelectedOrganizationAsync(db, newRep16);
                 var entityEntry = db.ReportCollectionDbSet.Add(newRep16);
                 await db.SaveChangesAsync();
                 repId = entityEntry.Entity.Id;    //id обновляется после сохранения БД.
@@ -568,6 +584,7 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 R_Populate_From_File();
                 var form14 = (Form14)form;
                 var newRep16 = GetNewReport(opDate, form14.FormNum_DB);
+                await BindReportToSelectedOrganizationAsync(db, newRep16);
                 var entityEntry = db.ReportCollectionDbSet.Add(newRep16);
                 await db.SaveChangesAsync();
                 repId = entityEntry.Entity.Id;    //id обновляется после сохранения БД.
@@ -1075,6 +1092,59 @@ public abstract class NewSourceTransmissionBaseAsyncCommand : BaseAsyncCommand
             });
             i++;
         }
+    }
+
+    #endregion
+
+    #region CloseWindowAndOpenNew
+
+    private protected async Task CloseWindowAndOpenNew(Report rep)
+    {
+        rep.Reports ??= FormVM.Reports;
+        var window = Desktop.Windows.First(x => x.Name is "1.1" or "1.2" or "1.3" or "1.4");
+        var vm = (BaseFormVM)window.DataContext;
+        vm.SkipChangeTacking = true;
+        var windowParam = new FormParameter
+        {
+            Parameter = rep,
+            Window = window
+        };
+        await new ChangeFormAsyncCommand(windowParam).AsyncExecute(null).ConfigureAwait(false);
+        EnsureReportVisibleInMainWindow(rep);
+        RefreshMainWindowReportList();
+    }
+
+    private protected void EnsureReportVisibleInMainWindow(Report report)
+    {
+        if (Desktop.MainWindow is not MainWindow mainWindow
+            || mainWindow.DataContext is not MainWindowVM mainWindowVM)
+        {
+            return;
+        }
+
+        var orgInMainWindow = mainWindowVM.Forms1TabControlVM.SelectedReports;
+        if (orgInMainWindow is null || orgInMainWindow.Id != SelectedReports.Id)
+        {
+            return;
+        }
+
+        if (orgInMainWindow.Report_Collection.All(r => r.Id != report.Id))
+        {
+            orgInMainWindow.Report_Collection.Add(report);
+        }
+    }
+
+    private protected static void RefreshMainWindowReportList()
+    {
+        if (Desktop.MainWindow is not MainWindow mainWindow
+            || mainWindow.DataContext is not MainWindowVM mainWindowVM)
+        {
+            return;
+        }
+
+        mainWindowVM.UpdateReportCollection();
+        mainWindowVM.UpdateFormsPageInfo();
+        mainWindowVM.UpdateTotalReportCount();
     }
 
     #endregion

@@ -71,6 +71,12 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
     {
         if (parameter is not Report report) return;
 
+        if (report.Reports is null)
+        {
+            report.Reports = ReportsStorage.LocalReports.Reports_Collection
+                .FirstOrDefault(r => r.Report_Collection.Any(x => x.Id == report.Id));
+        }
+
         var db = StaticConfiguration.DBModel;
         var modifiedEntities = db.ChangeTracker.Entries()
             .Where(x => x.State != EntityState.Unchanged);

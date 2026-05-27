@@ -6,7 +6,7 @@ namespace Client_App.Resources.CustomComparers.SnkComparers;
 public static class Operation41PairingKeyMapping
 {
     /// <summary>
-    /// Основные радионуклиды в 1.6 при переводе из 1.2 (константа в NewSourceTransmissionBaseAsyncCommand).
+    /// Основные радионуклиды в 1.6 при переводе из 1.2 (константа в SourceTransmissionBaseAsyncCommand).
     /// </summary>
     public const string Form12To16MainRadionuclids =
         "уран-238; торий-234; протактиний-234м; уран-234";

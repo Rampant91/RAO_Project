@@ -162,7 +162,7 @@ public class Form_14VM : BaseFormVM
 
     #region Commands
 
-    public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);
+    public ICommand SourceTransmission => new SourceTransmissionAsyncCommand(this);
 
     #endregion
 }

@@ -2,16 +2,12 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
-using Client_App.Resources;
 using Client_App.ViewModels.Forms;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
-using Models.Collections;
 using Models.DBRealization;
 using Models.Forms.Form1;
-using Models.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Client_App.Commands.AsyncCommands.Save;
@@ -19,11 +15,11 @@ using Client_App.Commands.AsyncCommands.Save;
 namespace Client_App.Commands.AsyncCommands.SourceTransmission;
 
 // Перевод источника из РВ в РАО
-public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncCommand
+public class SourceTransmissionAsyncCommand : SourceTransmissionBaseAsyncCommand
 {
     #region Constructor
 
-    public NewSourceTransmissionAsyncCommand(BaseFormVM formVM)
+    public SourceTransmissionAsyncCommand(BaseFormVM formVM)
     {
         FormVM = formVM;
     }
@@ -213,6 +209,7 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
                 }
 
                 var report = await ReportsStorage.GetReportAsync(rep.Id);
+                report.Reports ??= SelectedReports;
                 if (report.ExportDate_DB != "")
                 {
                     var appropriateFormNum = form.FormNum_DB is "1.1"
@@ -254,28 +251,15 @@ public class NewSourceTransmissionAsyncCommand : NewSourceTransmissionBaseAsyncC
             {
                 var rep = await CreateReportAndAddNewForm(db, form, opDate);
                 await db.SaveChangesAsync();
-                var report = await ReportsStorage.Api.GetAsync(rep.Id);
-                SelectedReports.Report_Collection.Add(report);
+                var report = await ReportsStorage.GetReportAsync(rep.Id);
+                report.Reports ??= SelectedReports;
+                if (!SelectedReports.Report_Collection.Contains(report))
+                {
+                    SelectedReports.Report_Collection.Add(report);
+                }
                 await CloseWindowAndOpenNew(report);
                 break;
             }
         }
     }
-
-    #region CloseWindowAndOpenNew
-
-    private static async Task CloseWindowAndOpenNew(Report rep)
-    {
-        var window = Desktop.Windows.First(x => x.Name is "1.1" or "1.2" or "1.3" or "1.4");
-        var vm = (BaseFormVM)window.DataContext;
-        vm.SkipChangeTacking = true;
-        var windowParam = new FormParameter
-        {
-            Parameter = new ObservableCollectionWithItemPropertyChanged<IKey>(new List<Report> { rep } ),
-            Window = window
-        };
-        await new ChangeFormAsyncCommand(windowParam).AsyncExecute(null).ConfigureAwait(false);
-    }
-
-    #endregion
 }

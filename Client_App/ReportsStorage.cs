@@ -54,10 +54,24 @@ public static class ReportsStorage
             db.Set<Report>().Attach(newRep); //добавляем новый отчет в отслеживание
             //db.Entry(newRep).State = EntityState.Modified; //устанавливаем флаг, что этот отчет был изменен и требует перезаписи в БД
             //await db.SaveChangesAsync();
-            reps.Report_Collection.Replace(checkedRep, newRep); //заменяем отчет в локальном хранилище на тот, в котором загружены формы
+            reps?.Report_Collection.Replace(checkedRep, newRep); //заменяем отчет в локальном хранилище на тот, в котором загружены формы
         }
         else
             newRep = checkedRep;
+
+        if (newRep is null)
+        {
+            newRep = await Api.GetAsync(Convert.ToInt32(id));
+            if (newRep is not null)
+            {
+                db.Set<Report>().Attach(newRep);
+            }
+        }
+
+        if (newRep is not null && reps is not null && newRep.Reports is null)
+        {
+            newRep.Reports = reps;
+        }
 
         if (newRep != null && viewModel != null)
         {

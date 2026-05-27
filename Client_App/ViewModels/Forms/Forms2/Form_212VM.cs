@@ -43,7 +43,7 @@ public class Form_212VM : BaseFormVM
     public ICommand CopyPasName => new CopyPasNameAsyncCommand();
     public ICommand ExcelExportSourceMovementHistory => new ExcelExportSourceMovementHistoryAsyncCommand();
     public ICommand OpenPas => new OpenPasAsyncCommand();
-    public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);
+    public ICommand SourceTransmission => new SourceTransmissionAsyncCommand(this);
 
     #endregion
 }
