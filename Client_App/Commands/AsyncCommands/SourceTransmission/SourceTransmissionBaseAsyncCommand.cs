@@ -104,7 +104,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .CountAsync() + 1;
 
                 var massTmp = (form12.Mass_DB ?? "")
-                    .Replace(".", ",")
+                    .Replace('.', ',')
                     .Replace("(", "")
                     .Replace(")", "");
 
@@ -114,18 +114,21 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     out var massDoubleValue)
                     ? $"{massDoubleValue / 1000:0.######################################################e+00}"
                     : "";
+
                 var betaGammaActivity = double.TryParse(massTon,
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent,
                     new CultureInfo("ru-RU", useUserOverride: false),
                     out var betaActivityDoubleValue)
                     ? $"{betaActivityDoubleValue * 25_000_000_000:0.######################################################e+00}"
                     : "";
+
                 var alphaActivity = double.TryParse(massTon,
                     NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent,
                     new CultureInfo("ru-RU", useUserOverride: false),
                     out var alphaActivityDoubleValue)
                     ? $"{alphaActivityDoubleValue * 16_100_000_000:0.######################################################e+00}"
                     : "";
+
                 var newForm16 = new Form16
                 {
                     #region BindingData
@@ -794,7 +797,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
             _ => "-"
         };
         activityTmp = activityTmp
-            .Replace(".", ",")
+            .Replace('.', ',')
             .Replace("(", "")
             .Replace(")", "");
 

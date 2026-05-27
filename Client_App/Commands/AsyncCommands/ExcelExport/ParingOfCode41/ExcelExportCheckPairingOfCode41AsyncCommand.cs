@@ -55,11 +55,15 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
             return;
         }
 
-        var pairing11To15Params = await AskPairing11To15ParamsAsync();
-        if (pairing11To15Params is null)
+        var pairingParams = await AskPairingParamsAsync();
+        if (pairingParams is null)
         {
             return;
         }
+        var pairing11To15Params = pairingParams.Pairing11To15;
+        var pairing12To16Params = pairingParams.Pairing12To16;
+        var pairing13To16Params = pairingParams.Pairing13To16;
+        var pairing14To16Params = pairingParams.Pairing14To16;
 
         var cts = new CancellationTokenSource();
         ExportType = "Непарные_операции_41";
@@ -97,12 +101,13 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
         _form11ClosestMatchHighlights = BuildClosestMatchHighlights(unpairedForm11, form15Operations, pairing11To15Params);
         _form15ClosestMatchHighlights = BuildClosestMatchHighlights(unpairedForm15, form11Operations, pairing11To15Params);
 
-        var unpairedForm12 = GetUnpairedOperations(
-            form12Operations, form16Operations, Operation41PairingProfile.Form12To16, ToPairingKey12, ToPairingKey16For12);
-        var unpairedForm13 = GetUnpairedOperations(
-            form13Operations, form16Operations, Operation41PairingProfile.Form13To16, ToPairingKey13, ToPairingKey16For13);
-        var unpairedForm14 = GetUnpairedOperations(
-            form14Operations, form16Operations, Operation41PairingProfile.Form14To16, ToPairingKey14, ToPairingKey16For14);
+        var unpairedForm12 = GetUnpairedOperations12To16(form12Operations, form16Operations, pairing12To16Params);
+        var unpairedForm13 = GetUnpairedOperations13To16(form13Operations, form16Operations, pairing13To16Params);
+        var unpairedForm14 = GetUnpairedOperations14To16(form14Operations, form16Operations, pairing14To16Params);
+
+        _form12ClosestMatchHighlights = BuildClosestMatchHighlights12To16(unpairedForm12, form16Operations, pairing12To16Params);
+        _form13ClosestMatchHighlights = BuildClosestMatchHighlights13To16(unpairedForm13, form16Operations, pairing13To16Params);
+        _form14ClosestMatchHighlights = BuildClosestMatchHighlights14To16(unpairedForm14, form16Operations, pairing14To16Params);
 
         var unpairedForm16 = Operation41PairingMatcher.FindUnpairedForm16(
             form16Operations,
@@ -187,7 +192,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
 
     #region Parameters dialog
 
-    private static async Task<Pairing11To15Params?> AskPairing11To15ParamsAsync()
+    private static async Task<PairingParamsSet?> AskPairingParamsAsync()
     {
         GetPairingCode41Params? dialog = null;
         await Dispatcher.UIThread.InvokeAsync(async () =>
@@ -201,24 +206,73 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
             return null;
         }
 
-        return new Pairing11To15Params(
-            dialog.Vm.CheckOperationDate,
-            dialog.Vm.CheckPassportNumber,
-            dialog.Vm.CheckType,
-            dialog.Vm.CheckRadionuclids,
-            dialog.Vm.CheckFactoryNumber,
-            dialog.Vm.CheckActivity,
-            dialog.Vm.CheckQuantity,
-            dialog.Vm.CheckCreationDate,
-            dialog.Vm.CheckDocumentVid,
-            dialog.Vm.CheckDocumentNumber,
-            dialog.Vm.CheckDocumentDate,
-            dialog.Vm.CheckProviderOrRecieverOkpo,
-            dialog.Vm.CheckTransporterOkpo,
-            dialog.Vm.CheckPackName,
-            dialog.Vm.CheckPackType,
-            dialog.Vm.CheckPackNumber);
+        return new PairingParamsSet(
+            new Pairing11To15Params(
+                dialog.Vm.CheckOperationDate,
+                dialog.Vm.CheckPassportNumber,
+                dialog.Vm.CheckType,
+                dialog.Vm.CheckRadionuclids,
+                dialog.Vm.CheckFactoryNumber,
+                dialog.Vm.CheckActivity,
+                dialog.Vm.CheckQuantity,
+                dialog.Vm.CheckCreationDate,
+                dialog.Vm.CheckDocumentVid,
+                dialog.Vm.CheckDocumentNumber,
+                dialog.Vm.CheckDocumentDate,
+                dialog.Vm.CheckProviderOrRecieverOkpo,
+                dialog.Vm.CheckTransporterOkpo,
+                dialog.Vm.CheckPackName,
+                dialog.Vm.CheckPackType,
+                dialog.Vm.CheckPackNumber),
+            new Pairing12To16Params(
+                dialog.Vm.CheckOperationDate12To16,
+                dialog.Vm.CheckMass12To16,
+                dialog.Vm.CheckBetaGammaActivity12To16,
+                dialog.Vm.CheckAlphaActivity12To16,
+                dialog.Vm.CheckActivityMeasurementDate12To16,
+                dialog.Vm.CheckDocumentVid12To16,
+                dialog.Vm.CheckDocumentNumber12To16,
+                dialog.Vm.CheckDocumentDate12To16,
+                dialog.Vm.CheckPackName12To16,
+                dialog.Vm.CheckPackType12To16,
+                dialog.Vm.CheckPackNumber12To16),
+            new Pairing13To16Params(
+                dialog.Vm.CheckOperationDate13To16,
+                dialog.Vm.CheckMainRadionuclids13To16,
+                dialog.Vm.CheckTritiumActivity13To16,
+                dialog.Vm.CheckBetaGammaActivity13To16,
+                dialog.Vm.CheckAlphaActivity13To16,
+                dialog.Vm.CheckTransuraniumActivity13To16,
+                dialog.Vm.CheckActivityMeasurementDate13To16,
+                dialog.Vm.CheckDocumentVid13To16,
+                dialog.Vm.CheckDocumentNumber13To16,
+                dialog.Vm.CheckDocumentDate13To16,
+                dialog.Vm.CheckPackName13To16,
+                dialog.Vm.CheckPackType13To16,
+                dialog.Vm.CheckPackNumber13To16),
+            new Pairing14To16Params(
+                dialog.Vm.CheckOperationDate14To16,
+                dialog.Vm.CheckVolume14To16,
+                dialog.Vm.CheckMass14To16,
+                dialog.Vm.CheckMainRadionuclids14To16,
+                dialog.Vm.CheckTritiumActivity14To16,
+                dialog.Vm.CheckBetaGammaActivity14To16,
+                dialog.Vm.CheckAlphaActivity14To16,
+                dialog.Vm.CheckTransuraniumActivity14To16,
+                dialog.Vm.CheckActivityMeasurementDate14To16,
+                dialog.Vm.CheckDocumentVid14To16,
+                dialog.Vm.CheckDocumentNumber14To16,
+                dialog.Vm.CheckDocumentDate14To16,
+                dialog.Vm.CheckPackName14To16,
+                dialog.Vm.CheckPackType14To16,
+                dialog.Vm.CheckPackNumber14To16));
     }
+
+    internal sealed record PairingParamsSet(
+        Pairing11To15Params Pairing11To15,
+        Pairing12To16Params Pairing12To16,
+        Pairing13To16Params Pairing13To16,
+        Pairing14To16Params Pairing14To16);
 
     internal sealed record Pairing11To15Params(
         bool CheckOperationDate,
@@ -237,6 +291,51 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
         bool CheckPackName,
         bool CheckPackType,
         bool CheckPackNumber);
+
+    internal sealed record Pairing12To16Params(
+        bool CheckOperationDate = true,
+        bool CheckMass = true,
+        bool CheckBetaGammaActivity = true,
+        bool CheckAlphaActivity = true,
+        bool CheckActivityMeasurementDate = true,
+        bool CheckDocumentVid = true,
+        bool CheckDocumentNumber = true,
+        bool CheckDocumentDate = true,
+        bool CheckPackName = true,
+        bool CheckPackType = true,
+        bool CheckPackNumber = true);
+
+    internal sealed record Pairing13To16Params(
+        bool CheckOperationDate = true,
+        bool CheckMainRadionuclids = true,
+        bool CheckTritiumActivity = true,
+        bool CheckBetaGammaActivity = true,
+        bool CheckAlphaActivity = true,
+        bool CheckTransuraniumActivity = true,
+        bool CheckActivityMeasurementDate = true,
+        bool CheckDocumentVid = true,
+        bool CheckDocumentNumber = true,
+        bool CheckDocumentDate = true,
+        bool CheckPackName = true,
+        bool CheckPackType = true,
+        bool CheckPackNumber = true);
+
+    internal sealed record Pairing14To16Params(
+        bool CheckOperationDate = true,
+        bool CheckVolume = true,
+        bool CheckMass = true,
+        bool CheckMainRadionuclids = true,
+        bool CheckTritiumActivity = true,
+        bool CheckBetaGammaActivity = true,
+        bool CheckAlphaActivity = true,
+        bool CheckTransuraniumActivity = true,
+        bool CheckActivityMeasurementDate = true,
+        bool CheckDocumentVid = true,
+        bool CheckDocumentNumber = true,
+        bool CheckDocumentDate = true,
+        bool CheckPackName = true,
+        bool CheckPackType = true,
+        bool CheckPackNumber = true);
 
     #endregion
 

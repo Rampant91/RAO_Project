@@ -374,6 +374,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelString(repForm.PackName_DB);
                 Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelString(repForm.PackType_DB);
                 Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelString(repForm.PackNumber_DB);
+                ApplyForm12ClosestMatchHighlight(repForm.Id);
                 CurrentRow++;
             }
         }
@@ -406,6 +407,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelString(repForm.PackName_DB);
                 Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelString(repForm.PackType_DB);
                 Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelString(repForm.PackNumber_DB);
+                ApplyForm13ClosestMatchHighlight(repForm.Id);
                 CurrentRow++;
             }
         }
@@ -439,6 +441,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelString(repForm.PackName_DB);
                 Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelString(repForm.PackType_DB);
                 Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelString(repForm.PackNumber_DB);
+                ApplyForm14ClosestMatchHighlight(repForm.Id);
                 CurrentRow++;
             }
         }
@@ -621,4 +624,72 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             Pairing11To15Field.PackNumber => 25,
             _ => null
         };
+
+    private void ApplyForm12ClosestMatchHighlight(int formId)
+    {
+        if (!_form12ClosestMatchHighlights.TryGetValue(formId, out var map)) return;
+        foreach (var (field, matched) in map)
+        {
+            var col = field switch
+            {
+                Pairing12To16Field.OperationDate => 9,
+                Pairing12To16Field.Mass => 13,
+                Pairing12To16Field.ActivityMeasurementDate => 15,
+                Pairing12To16Field.DocumentVid => 19,
+                Pairing12To16Field.DocumentNumber => 20,
+                Pairing12To16Field.DocumentDate => 21,
+                Pairing12To16Field.PackName => 24,
+                Pairing12To16Field.PackType => 25,
+                Pairing12To16Field.PackNumber => 26,
+                _ => -1
+            };
+            if (col > 0) ApplyPairingComparisonCellFill(CurrentRow, col, matched);
+        }
+    }
+
+    private void ApplyForm13ClosestMatchHighlight(int formId)
+    {
+        if (!_form13ClosestMatchHighlights.TryGetValue(formId, out var map)) return;
+        foreach (var (field, matched) in map)
+        {
+            var col = field switch
+            {
+                Pairing13To16Field.OperationDate => 9,
+                Pairing13To16Field.MainRadionuclids => 12,
+                Pairing13To16Field.ActivityMeasurementDate => 16,
+                Pairing13To16Field.DocumentVid => 20,
+                Pairing13To16Field.DocumentNumber => 21,
+                Pairing13To16Field.DocumentDate => 22,
+                Pairing13To16Field.PackName => 25,
+                Pairing13To16Field.PackType => 26,
+                Pairing13To16Field.PackNumber => 27,
+                _ => -1
+            };
+            if (col > 0) ApplyPairingComparisonCellFill(CurrentRow, col, matched);
+        }
+    }
+
+    private void ApplyForm14ClosestMatchHighlight(int formId)
+    {
+        if (!_form14ClosestMatchHighlights.TryGetValue(formId, out var map)) return;
+        foreach (var (field, matched) in map)
+        {
+            var col = field switch
+            {
+                Pairing14To16Field.OperationDate => 9,
+                Pairing14To16Field.Volume => 16,
+                Pairing14To16Field.Mass => 17,
+                Pairing14To16Field.MainRadionuclids => 13,
+                Pairing14To16Field.ActivityMeasurementDate => 15,
+                Pairing14To16Field.DocumentVid => 21,
+                Pairing14To16Field.DocumentNumber => 22,
+                Pairing14To16Field.DocumentDate => 23,
+                Pairing14To16Field.PackName => 26,
+                Pairing14To16Field.PackType => 27,
+                Pairing14To16Field.PackNumber => 28,
+                _ => -1
+            };
+            if (col > 0) ApplyPairingComparisonCellFill(CurrentRow, col, matched);
+        }
+    }
 }
