@@ -24,20 +24,6 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     protected BaseFormVM FormVM = null!;
 
-    //private protected Reports Reports
-    //{
-    //    get => Report.Reports;
-    //    set => Report.Reports = value;
-    //}
-
-    //private protected Report Report
-    //{
-    //    get => VM.CurrentReport;
-    //    set => VM.CurrentReport = value;
-    //}
-
-    //private protected dynamic VM = null!;
-
     #region AddNewFormToExistingReport
 
     private protected async Task<bool> AddNewFormToExistingReport(Report rep, Form1 form, DBModel db)
