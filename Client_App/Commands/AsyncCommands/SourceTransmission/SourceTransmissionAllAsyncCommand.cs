@@ -156,6 +156,10 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
             {
                 #region MessageSourceTransmissionFailed
 
+                var formNumInMessage = f.FormNum_DB is "1.1" 
+                    ? "1.5" 
+                    : "1.6";
+
                 await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
@@ -163,7 +167,7 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
                         ContentTitle = "Перевод источника в РАО",
                         ContentHeader = "Ошибка",
                         ContentMessage =
-                            "У выбранной организации присутствуют отчёты по форме 1.5 с пересекающимися периодами. " +
+                            $"У выбранной организации присутствуют отчёты по форме {formNumInMessage} с пересекающимися периодами. " +
                             $"{Environment.NewLine}Устраните данное несоответствие перед операцией перевода источника в РАО.",
                         MinWidth = 400,
                         MinHeight = 150,
