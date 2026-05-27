@@ -94,6 +94,9 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
         var unpairedForm11 = GetUnpairedOperations11To15(form11Operations, form15Operations, pairing11To15Params);
         var unpairedForm15 = GetUnpairedOperations11To15(form15Operations, form11Operations, pairing11To15Params);
 
+        _form11ClosestMatchHighlights = BuildClosestMatchHighlights(unpairedForm11, form15Operations, pairing11To15Params);
+        _form15ClosestMatchHighlights = BuildClosestMatchHighlights(unpairedForm15, form11Operations, pairing11To15Params);
+
         var unpairedForm12 = GetUnpairedOperations(
             form12Operations, form16Operations, Operation41PairingProfile.Form12To16, ToPairingKey12, ToPairingKey16For12);
         var unpairedForm13 = GetUnpairedOperations(

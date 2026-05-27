@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Models.Collections;
 using Models.Forms.Form1;
@@ -12,6 +13,9 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.ParingOfCode41;
 
 public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 {
+    private static readonly Color PairingFieldMatchFill = Color.FromArgb(198, 239, 206);
+    private static readonly Color PairingFieldMismatchFill = Color.FromArgb(255, 205, 210);
+
     private void FillPairingExcel(
         ExcelPackage excelPackage,
         Reports reportsForForm11,
@@ -338,6 +342,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelString(repForm.PackName_DB);
                 Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelString(repForm.PackType_DB);
                 Worksheet.Cells[CurrentRow, 29].Value = ConvertToExcelString(repForm.PackNumber_DB);
+                ApplyForm11ClosestMatchHighlight(repForm.Id);
                 CurrentRow++;
             }
         }
@@ -471,6 +476,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 Worksheet.Cells[CurrentRow, 30].Value = ConvertToExcelString(repForm.FcpNumber_DB);
                 Worksheet.Cells[CurrentRow, 31].Value = ConvertToExcelString(repForm.ContractNumber_DB);
                 Worksheet.Cells[CurrentRow, 32].Value = StatusRaoToDescription(repForm.StatusRAO_DB);
+                ApplyForm15ClosestMatchHighlight(repForm.Id);
                 CurrentRow++;
             }
         }
@@ -529,4 +535,90 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             _ => "вновь образованные"
         };
     }
+
+    private void ApplyForm11ClosestMatchHighlight(int formId)
+    {
+        if (!_form11ClosestMatchHighlights.TryGetValue(formId, out var highlight))
+        {
+            return;
+        }
+
+        foreach (var (field, matches) in highlight.FieldMatches)
+        {
+            if (GetForm11Column(field) is int column)
+            {
+                ApplyPairingComparisonCellFill(CurrentRow, column, matches);
+            }
+        }
+    }
+
+    private void ApplyForm15ClosestMatchHighlight(int formId)
+    {
+        if (!_form15ClosestMatchHighlights.TryGetValue(formId, out var highlight))
+        {
+            return;
+        }
+
+        foreach (var (field, matches) in highlight.FieldMatches)
+        {
+            if (GetForm15Column(field) is int column)
+            {
+                ApplyPairingComparisonCellFill(CurrentRow, column, matches);
+            }
+        }
+    }
+
+    private static void ApplyPairingComparisonCellFill(ExcelWorksheet worksheet, int row, int column, bool matches)
+    {
+        worksheet.Cells[row, column].Style.Fill.SetBackground(
+            matches ? PairingFieldMatchFill : PairingFieldMismatchFill,
+            ExcelFillStyle.Solid);
+    }
+
+    private void ApplyPairingComparisonCellFill(int row, int column, bool matches) =>
+        ApplyPairingComparisonCellFill(Worksheet, row, column, matches);
+
+    private static int? GetForm11Column(Pairing11To15Field field) =>
+        field switch
+        {
+            Pairing11To15Field.OperationDate => 9,
+            Pairing11To15Field.PassportNumber => 10,
+            Pairing11To15Field.Type => 11,
+            Pairing11To15Field.Radionuclids => 12,
+            Pairing11To15Field.FactoryNumber => 13,
+            Pairing11To15Field.Quantity => 14,
+            Pairing11To15Field.Activity => 15,
+            Pairing11To15Field.CreationDate => 17,
+            Pairing11To15Field.DocumentVid => 22,
+            Pairing11To15Field.DocumentNumber => 23,
+            Pairing11To15Field.DocumentDate => 24,
+            Pairing11To15Field.ProviderOrRecieverOkpo => 25,
+            Pairing11To15Field.TransporterOkpo => 26,
+            Pairing11To15Field.PackName => 27,
+            Pairing11To15Field.PackType => 28,
+            Pairing11To15Field.PackNumber => 29,
+            _ => null
+        };
+
+    private static int? GetForm15Column(Pairing11To15Field field) =>
+        field switch
+        {
+            Pairing11To15Field.OperationDate => 9,
+            Pairing11To15Field.PassportNumber => 10,
+            Pairing11To15Field.Type => 11,
+            Pairing11To15Field.Radionuclids => 12,
+            Pairing11To15Field.FactoryNumber => 13,
+            Pairing11To15Field.Quantity => 14,
+            Pairing11To15Field.Activity => 15,
+            Pairing11To15Field.CreationDate => 16,
+            Pairing11To15Field.DocumentVid => 18,
+            Pairing11To15Field.DocumentNumber => 19,
+            Pairing11To15Field.DocumentDate => 20,
+            Pairing11To15Field.ProviderOrRecieverOkpo => 21,
+            Pairing11To15Field.TransporterOkpo => 22,
+            Pairing11To15Field.PackName => 23,
+            Pairing11To15Field.PackType => 24,
+            Pairing11To15Field.PackNumber => 25,
+            _ => null
+        };
 }
