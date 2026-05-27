@@ -1,0 +1,83 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Client_App.ViewModels.Messages"
+        xmlns:behaviors="clr-namespace:Client_App.Behaviors"
+        mc:Ignorable="d"
+        x:Class="Client_App.Views.Messages.GetPairingCode41Params"
+        x:CompileBindings="True"
+        x:DataType="vm:GetPairingCode41ParamsVM"
+        Title="Параметры сопоставления 1.1 ↔ 1.5"
+        MinWidth="520" MinHeight="620"
+        d:DesignWidth="560" d:DesignHeight="700"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.33" behaviors:WindowScreenSizeBehavior.HeightRatio="0.65"
+        WindowStartupLocation="Manual"
+        CanResize="True">
+
+    <Design.DataContext>
+        <vm:GetPairingCode41ParamsVM/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,*,Auto" Margin="10">
+        <TextBlock Grid.Row="0"
+                   Margin="0,0,0,10"
+                   TextWrapping="Wrap"
+                   Text="Выберите поля, по которым искать парные строки операции 41 между формами 1.1 и 1.5. По умолчанию выбраны все поля. Для активности используется допуск ±10%."/>
+
+        <Border Grid.Row="1"
+                BorderBrush="Black"
+                BorderThickness="1"
+                CornerRadius="5"
+                Padding="8">
+            <ScrollViewer>
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                    <CheckBox Grid.Row="0" Grid.Column="0" IsThreeState="True" IsChecked="{Binding CheckAll, Mode=TwoWay}" Margin="0,0,8,0"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Text="Выбрать все"/>
+
+                    <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding CheckOperationDate, Mode=TwoWay}" Margin="0,2,8,2"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Text="Дата операции"/>
+                    <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding CheckPassportNumber, Mode=TwoWay}" Margin="0,2,8,2"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Text="Номер паспорта"/>
+                    <CheckBox Grid.Row="3" Grid.Column="0" IsChecked="{Binding CheckType, Mode=TwoWay}" Margin="0,2,8,2"/>
+                    <TextBlock Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Text="Тип"/>
+                    <CheckBox Grid.Row="4" Grid.Column="0" IsChecked="{Binding CheckRadionuclids, Mode=TwoWay}" Margin="0,2,8,2"/>
+                    <TextBlock Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Text="Радионуклиды"/>
+                    <CheckBox Grid.Row="5" Grid.Column="0" IsChecked="{Binding CheckFactoryNumber, Mode=TwoWay}" Margin="0,2,8,2"/>
+                    <TextBlock Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Text="Заводской номер"/>
+                    <CheckBox Grid.Row="6" Grid.Column="0" IsChecked="{Binding CheckActivity, Mode=TwoWay}" Margin="0,2,8,2"/>
+                    <TextBlock Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Text="Суммарная активность (±10%)"/>
+                    <CheckBox Grid.Row="7" Grid.Column="0" IsChecked="{Binding CheckQuantity, Mode=TwoWay}" Margin="0,2,8,2"/>
+                    <TextBlock Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" Text="Количество"/>
+                    <CheckBox Grid.Row="8" Grid.Column="0" IsChecked="{Binding CheckCreationDate, Mode=TwoWay}" Margin="0,2,8,2"/>
+                    <TextBlock Grid.Row="8" Grid.Column="1" VerticalAlignment="Center" Text="Дата выпуска"/>
+                    <CheckBox Grid.Row="9" Grid.Column="0" IsChecked="{Binding CheckDocumentVid, Mode=TwoWay}" Margin="0,2,8,2"/>
+                    <TextBlock Grid.Row="9" Grid.Column="1" VerticalAlignment="Center" Text="Вид документа"/>
+                    <CheckBox Grid.Row="10" Grid.Column="0" IsChecked="{Binding CheckDocumentNumber, Mode=TwoWay}" Margin="0,2,8,2"/>
+                    <TextBlock Grid.Row="10" Grid.Column="1" VerticalAlignment="Center" Text="Номер документа"/>
+                    <CheckBox Grid.Row="11" Grid.Column="0" IsChecked="{Binding CheckDocumentDate, Mode=TwoWay}" Margin="0,2,8,2"/>
+                    <TextBlock Grid.Row="11" Grid.Column="1" VerticalAlignment="Center" Text="Дата документа"/>
+                    <CheckBox Grid.Row="12" Grid.Column="0" IsChecked="{Binding CheckProviderOrRecieverOkpo, Mode=TwoWay}" Margin="0,2,8,2"/>
+                    <TextBlock Grid.Row="12" Grid.Column="1" VerticalAlignment="Center" Text="ОКПО поставщика/получателя"/>
+                    <CheckBox Grid.Row="13" Grid.Column="0" IsChecked="{Binding CheckTransporterOkpo, Mode=TwoWay}" Margin="0,2,8,2"/>
+                    <TextBlock Grid.Row="13" Grid.Column="1" VerticalAlignment="Center" Text="ОКПО перевозчика"/>
+                    <CheckBox Grid.Row="14" Grid.Column="0" IsChecked="{Binding CheckPackName, Mode=TwoWay}" Margin="0,2,8,2"/>
+                    <TextBlock Grid.Row="14" Grid.Column="1" VerticalAlignment="Center" Text="Наименование упаковки"/>
+                    <CheckBox Grid.Row="15" Grid.Column="0" IsChecked="{Binding CheckPackType, Mode=TwoWay}" Margin="0,2,8,2"/>
+                    <TextBlock Grid.Row="15" Grid.Column="1" VerticalAlignment="Center" Text="Тип УКТ"/>
+                    <CheckBox Grid.Row="16" Grid.Column="0" IsChecked="{Binding CheckPackNumber, Mode=TwoWay}" Margin="0,2,8,2"/>
+                    <TextBlock Grid.Row="16" Grid.Column="1" VerticalAlignment="Center" Text="Номер УКТ"/>
+                </Grid>
+            </ScrollViewer>
+        </Border>
+
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Spacing="16"
+                    Margin="0,12,0,0">
+            <Button Content="Ок" Width="100" IsDefault="True" Click="OnOkButtonClicked"/>
+            <Button Content="Отмена" Width="100" IsCancel="True" Click="OnCancelButtonClicked"/>
+        </StackPanel>
+    </Grid>
+</Window>

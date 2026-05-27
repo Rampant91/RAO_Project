@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Resources.CustomComparers.SnkComparers;
 using Client_App.ViewModels;
+using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
@@ -54,6 +55,12 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
             return;
         }
 
+        var pairing11To15Params = await AskPairing11To15ParamsAsync();
+        if (pairing11To15Params is null)
+        {
+            return;
+        }
+
         var cts = new CancellationTokenSource();
         ExportType = "Непарные_операции_41";
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
@@ -71,7 +78,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
         await using var db = new DBModel(tmpDbPath);
 
         progressBarVM.SetProgressBar(18, "Загрузка операций 41 формы 1.1");
-        var form11Operations = await LoadOperation41ListAsync(db, selectedReports.Id, "1.1", cts.Token);
+        var form11Operations = await LoadOperation41ListAsync(db, selectedReports.Id, "1.1", cts.Token, pairing11To15Params);
         progressBarVM.SetProgressBar(21, "Загрузка операций 41 формы 1.2");
         var form12Operations = await LoadOperation41ListAsync(db, selectedReports.Id, "1.2", cts.Token);
         progressBarVM.SetProgressBar(24, "Загрузка операций 41 формы 1.3");
@@ -79,15 +86,13 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
         progressBarVM.SetProgressBar(27, "Загрузка операций 41 формы 1.4");
         var form14Operations = await LoadOperation41ListAsync(db, selectedReports.Id, "1.4", cts.Token);
         progressBarVM.SetProgressBar(30, "Загрузка операций 41 формы 1.5");
-        var form15Operations = await LoadOperation41ListAsync(db, selectedReports.Id, "1.5", cts.Token);
+        var form15Operations = await LoadOperation41ListAsync(db, selectedReports.Id, "1.5", cts.Token, pairing11To15Params);
         progressBarVM.SetProgressBar(33, "Загрузка операций 41 формы 1.6");
         var form16Operations = await LoadOperation41ListAsync(db, selectedReports.Id, "1.6", cts.Token);
 
         progressBarVM.SetProgressBar(35, "Сопоставление операций");
-        var unpairedForm11 = GetUnpairedOperations(
-            form11Operations, form15Operations, Operation41PairingProfile.Form11To15, ToPairingKey11, ToPairingKey15);
-        var unpairedForm15 = GetUnpairedOperations(
-            form15Operations, form11Operations, Operation41PairingProfile.Form11To15, ToPairingKey15, ToPairingKey11);
+        var unpairedForm11 = GetUnpairedOperations11To15(form11Operations, form15Operations, pairing11To15Params);
+        var unpairedForm15 = GetUnpairedOperations11To15(form15Operations, form11Operations, pairing11To15Params);
 
         var unpairedForm12 = GetUnpairedOperations(
             form12Operations, form16Operations, Operation41PairingProfile.Form12To16, ToPairingKey12, ToPairingKey16For12);
@@ -174,6 +179,61 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
                 return false;
         }
     }
+
+    #endregion
+
+    #region Parameters dialog
+
+    private static async Task<Pairing11To15Params?> AskPairing11To15ParamsAsync()
+    {
+        GetPairingCode41Params? dialog = null;
+        await Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            dialog = new GetPairingCode41Params();
+            await dialog.ShowDialog(Desktop.MainWindow);
+        });
+
+        if (dialog is null || !dialog.Vm.Ok)
+        {
+            return null;
+        }
+
+        return new Pairing11To15Params(
+            dialog.Vm.CheckOperationDate,
+            dialog.Vm.CheckPassportNumber,
+            dialog.Vm.CheckType,
+            dialog.Vm.CheckRadionuclids,
+            dialog.Vm.CheckFactoryNumber,
+            dialog.Vm.CheckActivity,
+            dialog.Vm.CheckQuantity,
+            dialog.Vm.CheckCreationDate,
+            dialog.Vm.CheckDocumentVid,
+            dialog.Vm.CheckDocumentNumber,
+            dialog.Vm.CheckDocumentDate,
+            dialog.Vm.CheckProviderOrRecieverOkpo,
+            dialog.Vm.CheckTransporterOkpo,
+            dialog.Vm.CheckPackName,
+            dialog.Vm.CheckPackType,
+            dialog.Vm.CheckPackNumber);
+    }
+
+    internal sealed record Pairing11To15Params(
+        bool CheckOperationDate,
+        bool CheckPassportNumber,
+        bool CheckType,
+        bool CheckRadionuclids,
+        bool CheckFactoryNumber,
+        bool CheckActivity,
+        bool CheckQuantity,
+        bool CheckCreationDate,
+        bool CheckDocumentVid,
+        bool CheckDocumentNumber,
+        bool CheckDocumentDate,
+        bool CheckProviderOrRecieverOkpo,
+        bool CheckTransporterOkpo,
+        bool CheckPackName,
+        bool CheckPackType,
+        bool CheckPackNumber);
 
     #endregion
 

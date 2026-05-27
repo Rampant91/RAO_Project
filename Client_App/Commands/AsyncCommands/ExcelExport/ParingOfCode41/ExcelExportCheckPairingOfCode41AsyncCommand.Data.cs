@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Client_App.Resources.CustomComparers.SnkComparers;
@@ -13,6 +15,227 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.ParingOfCode41;
 
 public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 {
+    private static readonly SnkNumberEqualityComparer NumberComparer = new();
+
+    private static List<Operation41PairingDto> GetUnpairedOperations11To15(
+        List<Operation41PairingDto> source,
+        List<Operation41PairingDto> reference,
+        Pairing11To15Params options)
+    {
+        var sourceWithSerial = source.Where(item => !Operation41PairingKeyComparer.SerialNumbersIsEmpty(item.PasNum, item.FacNum)).ToList();
+        var sourceWithoutSerial = source.Where(item => Operation41PairingKeyComparer.SerialNumbersIsEmpty(item.PasNum, item.FacNum)).ToList();
+        var referenceWithSerial = reference.Where(item => !Operation41PairingKeyComparer.SerialNumbersIsEmpty(item.PasNum, item.FacNum)).ToList();
+        var referenceWithoutSerial = reference.Where(item => Operation41PairingKeyComparer.SerialNumbersIsEmpty(item.PasNum, item.FacNum)).ToList();
+
+        var unpaired = new List<Operation41PairingDto>();
+        unpaired.AddRange(FindUnpairedWithSerial(sourceWithSerial, referenceWithSerial, options));
+        unpaired.AddRange(FindUnpairedWithoutSerial(sourceWithoutSerial, referenceWithoutSerial, options));
+        return unpaired;
+    }
+
+    private static List<Operation41PairingDto> FindUnpairedWithSerial(
+        List<Operation41PairingDto> source,
+        List<Operation41PairingDto> reference,
+        Pairing11To15Params options)
+    {
+        var referenceByKey = reference
+            .GroupBy(item => BuildPairingKey(item, options, includeSerial: true, includeQuantity: options.CheckQuantity))
+            .ToDictionary(group => group.Key, group => group.ToList(), StringComparer.Ordinal);
+
+        var unpaired = new List<Operation41PairingDto>();
+        foreach (var sourceItem in source)
+        {
+            var key = BuildPairingKey(sourceItem, options, includeSerial: true, includeQuantity: options.CheckQuantity);
+            if (!referenceByKey.TryGetValue(key, out var candidates) || candidates.Count == 0)
+            {
+                unpaired.Add(sourceItem);
+                continue;
+            }
+
+            var matchIndex = candidates.FindIndex(candidate => ActivityMatches(sourceItem, candidate, options.CheckActivity));
+            if (matchIndex < 0)
+            {
+                unpaired.Add(sourceItem);
+                continue;
+            }
+
+            candidates.RemoveAt(matchIndex);
+        }
+
+        return unpaired;
+    }
+
+    private static List<Operation41PairingDto> FindUnpairedWithoutSerial(
+        List<Operation41PairingDto> source,
+        List<Operation41PairingDto> reference,
+        Pairing11To15Params options)
+    {
+        var sourceByKey = source
+            .GroupBy(item => BuildPairingKey(item, options, includeSerial: false, includeQuantity: false))
+            .ToDictionary(group => group.Key, group => group.ToList(), StringComparer.Ordinal);
+        var referenceByKey = reference
+            .GroupBy(item => BuildPairingKey(item, options, includeSerial: false, includeQuantity: false))
+            .ToDictionary(group => group.Key, group => group.ToList(), StringComparer.Ordinal);
+
+        var unpaired = new List<Operation41PairingDto>();
+        foreach (var sourceGroup in sourceByKey)
+        {
+            if (!referenceByKey.TryGetValue(sourceGroup.Key, out var refRows))
+            {
+                unpaired.AddRange(sourceGroup.Value);
+                continue;
+            }
+
+            var refStates = refRows
+                .Select(row => new RemainingRowState(row, GetQuantityForComparison(row, options.CheckQuantity)))
+                .ToList();
+
+            foreach (var sourceRow in sourceGroup.Value)
+            {
+                var remainingSourceQty = GetQuantityForComparison(sourceRow, options.CheckQuantity);
+                for (var i = 0; i < refStates.Count && remainingSourceQty > 0; i++)
+                {
+                    if (refStates[i].RemainingQuantity <= 0)
+                    {
+                        continue;
+                    }
+
+                    if (!ActivityMatches(sourceRow, refStates[i].Row, options.CheckActivity))
+                    {
+                        continue;
+                    }
+
+                    var matchedQty = Math.Min(remainingSourceQty, refStates[i].RemainingQuantity);
+                    remainingSourceQty -= matchedQty;
+                    refStates[i].RemainingQuantity -= matchedQty;
+                }
+
+                if (remainingSourceQty > 0)
+                {
+                    unpaired.Add(sourceRow);
+                }
+            }
+        }
+
+        return unpaired;
+    }
+
+    private static int GetQuantityForComparison(Operation41PairingDto row, bool checkQuantity) =>
+        checkQuantity ? row.Quantity is > 0 ? row.Quantity.Value : 1 : 1;
+
+    private static bool ActivityMatches(Operation41PairingDto left, Operation41PairingDto right, bool checkActivity)
+    {
+        if (!checkActivity)
+        {
+            return true;
+        }
+
+        if (!TryParseActivity(left.Activity, out var leftActivity) || !TryParseActivity(right.Activity, out var rightActivity))
+        {
+            return NumberComparer.Equals(left.Activity, right.Activity);
+        }
+
+        var scale = Math.Max(Math.Abs(leftActivity), Math.Abs(rightActivity));
+        if (scale <= double.Epsilon)
+        {
+            return true;
+        }
+
+        return Math.Abs(leftActivity - rightActivity) <= scale * 0.10;
+    }
+
+    private static bool TryParseActivity(string? value, out double activity)
+    {
+        activity = 0;
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return false;
+        }
+
+        var normalized = value.Trim().Replace(" ", string.Empty).Replace(',', '.');
+        return double.TryParse(normalized, NumberStyles.Float, CultureInfo.InvariantCulture, out activity);
+    }
+
+    private static string BuildPairingKey(
+        Operation41PairingDto row,
+        Pairing11To15Params options,
+        bool includeSerial,
+        bool includeQuantity)
+    {
+        var parts = new List<string>(16);
+        if (options.CheckOperationDate) parts.Add(NormalizeDate(row.OpDate));
+        if (includeSerial && options.CheckPassportNumber) parts.Add(NormalizeNumber(row.PasNum));
+        if (options.CheckType) parts.Add(NormalizeNumber(row.Type));
+        if (options.CheckRadionuclids) parts.Add(NormalizeRads(row.Radionuclids));
+        if (includeSerial && options.CheckFactoryNumber) parts.Add(NormalizeNumber(row.FacNum));
+        if (options.CheckCreationDate) parts.Add(NormalizeDate(row.CreationDate));
+        if (options.CheckDocumentVid) parts.Add(NormalizeNumber(Operation41PairingKeyComparer.NormalizeDocumentVid(row.DocumentVid)));
+        if (options.CheckDocumentNumber) parts.Add(NormalizeNumber(row.DocumentNumber));
+        if (options.CheckDocumentDate) parts.Add(NormalizeDate(row.DocumentDate));
+        if (options.CheckProviderOrRecieverOkpo) parts.Add(NormalizeNumber(row.ProviderOrRecieverOkpo));
+        if (options.CheckTransporterOkpo) parts.Add(NormalizeNumber(row.TransporterOkpo));
+        if (options.CheckPackName) parts.Add(NormalizeNumber(row.PackName));
+        if (options.CheckPackType) parts.Add(NormalizeNumber(row.PackType));
+        if (options.CheckPackNumber) parts.Add(NormalizeNumber(row.PackNumber));
+        if (includeQuantity && options.CheckQuantity) parts.Add(GetQuantityForComparison(row, true).ToString(CultureInfo.InvariantCulture));
+        return string.Join('|', parts);
+    }
+
+    private static string NormalizeDate(string? value) =>
+        DateOnly.TryParse(value, out var date)
+            ? date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
+            : NormalizeNumber(value);
+
+    private static string NormalizeNumber(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value == "-")
+        {
+            return string.Empty;
+        }
+
+        var normalized = Regex.Replace(value.ToLowerInvariant(), @"[\\/:*?""<>|.,_\-;:\s+]", string.Empty);
+        return normalized.TrimStart('0');
+    }
+
+    private static string NormalizeRads(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        var normalizedSet = value.Split([',', ';'])
+            .Select(x => SnkRadionuclidsEqualityComparer.SnkRegex().Replace(x, "").ToLowerInvariant())
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .Select(x => x
+                .Replace('а', 'a')
+                .Replace('б', 'b')
+                .Replace('в', 'b')
+                .Replace('г', 'r')
+                .Replace('е', 'e')
+                .Replace('ё', 'e')
+                .Replace('з', '3')
+                .Replace('к', 'k')
+                .Replace('м', 'm')
+                .Replace('н', 'h')
+                .Replace('о', 'o')
+                .Replace('0', 'o')
+                .Replace('р', 'p')
+                .Replace('с', 'c')
+                .Replace('т', 't')
+                .Replace('у', 'y')
+                .Replace('х', 'x'))
+            .OrderBy(x => x);
+
+        return string.Join("|", normalizedSet);
+    }
+
+    private sealed class RemainingRowState(Operation41PairingDto row, int remainingQuantity)
+    {
+        public Operation41PairingDto Row { get; } = row;
+        public int RemainingQuantity { get; set; } = remainingQuantity;
+    }
+
     private static List<Operation41PairingDto> GetUnpairedOperations(
         List<Operation41PairingDto> source,
         List<Operation41PairingDto> reference,
@@ -122,15 +345,15 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             dto.PackNumber);
 
     private static async Task<List<Operation41PairingDto>> LoadOperation41ListAsync(
-        DBModel db, int repsId, string formNum, CancellationToken cancellationToken)
+        DBModel db, int repsId, string formNum, CancellationToken cancellationToken, Pairing11To15Params? pairing11To15Params = null)
     {
         var operations = formNum switch
         {
-            "1.1" => await LoadForm11OperationsAsync(db, repsId, cancellationToken),
+            "1.1" => await LoadForm11OperationsAsync(db, repsId, cancellationToken, pairing11To15Params),
             "1.2" => await LoadForm12OperationsAsync(db, repsId, cancellationToken),
             "1.3" => await LoadForm13OperationsAsync(db, repsId, cancellationToken),
             "1.4" => await LoadForm14OperationsAsync(db, repsId, cancellationToken),
-            "1.5" => await LoadForm15OperationsAsync(db, repsId, cancellationToken),
+            "1.5" => await LoadForm15OperationsAsync(db, repsId, cancellationToken, pairing11To15Params),
             "1.6" => await LoadForm16OperationsAsync(db, repsId, cancellationToken),
             _ => throw new ArgumentOutOfRangeException(nameof(formNum), formNum, null)
         };
@@ -141,7 +364,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     }
 
     private static Task<List<Operation41PairingDto>> LoadForm11OperationsAsync(
-        DBModel db, int repsId, CancellationToken cancellationToken) =>
+        DBModel db, int repsId, CancellationToken cancellationToken, Pairing11To15Params? options = null) =>
         db.ReportsCollectionDbSet
             .AsNoTracking()
             .Where(reps => reps.Id == repsId)
@@ -154,17 +377,22 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 Id = form.Id,
                 ReportId = form.ReportId ?? 0,
                 OpCode = form.OperationCode_DB,
-                OpDate = form.OperationDate_DB,
-                PasNum = form.PassportNumber_DB,
-                FacNum = form.FactoryNumber_DB,
-                Type = form.Type_DB,
-                Radionuclids = form.Radionuclids_DB,
-                CreationDate = form.CreationDate_DB,
-                DocumentVid = form.DocumentVid_DB,
-                DocumentNumber = form.DocumentNumber_DB,
-                DocumentDate = form.DocumentDate_DB,
-                PackNumber = form.PackNumber_DB,
-                Quantity = form.Quantity_DB
+                OpDate = options == null || options.CheckOperationDate ? form.OperationDate_DB : string.Empty,
+                PasNum = options == null || options.CheckPassportNumber ? form.PassportNumber_DB : string.Empty,
+                FacNum = options == null || options.CheckFactoryNumber ? form.FactoryNumber_DB : string.Empty,
+                Type = options == null || options.CheckType ? form.Type_DB : string.Empty,
+                Radionuclids = options == null || options.CheckRadionuclids ? form.Radionuclids_DB : string.Empty,
+                CreationDate = options == null || options.CheckCreationDate ? form.CreationDate_DB : string.Empty,
+                DocumentVid = options == null || options.CheckDocumentVid ? form.DocumentVid_DB : null,
+                DocumentNumber = options == null || options.CheckDocumentNumber ? form.DocumentNumber_DB : string.Empty,
+                DocumentDate = options == null || options.CheckDocumentDate ? form.DocumentDate_DB : string.Empty,
+                ProviderOrRecieverOkpo = options == null || options.CheckProviderOrRecieverOkpo ? form.ProviderOrRecieverOKPO_DB : string.Empty,
+                TransporterOkpo = options == null || options.CheckTransporterOkpo ? form.TransporterOKPO_DB : string.Empty,
+                PackName = options == null || options.CheckPackName ? form.PackName_DB : string.Empty,
+                PackType = options == null || options.CheckPackType ? form.PackType_DB : string.Empty,
+                PackNumber = options == null || options.CheckPackNumber ? form.PackNumber_DB : string.Empty,
+                Activity = options == null || options.CheckActivity ? form.Activity_DB : string.Empty,
+                Quantity = options == null || options.CheckQuantity ? form.Quantity_DB : null
             })
             .ToListAsync(cancellationToken);
 
@@ -253,7 +481,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             .ToListAsync(cancellationToken);
 
     private static Task<List<Operation41PairingDto>> LoadForm15OperationsAsync(
-        DBModel db, int repsId, CancellationToken cancellationToken) =>
+        DBModel db, int repsId, CancellationToken cancellationToken, Pairing11To15Params? options = null) =>
         db.ReportsCollectionDbSet
             .AsNoTracking()
             .Where(reps => reps.Id == repsId)
@@ -266,17 +494,22 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 Id = form.Id,
                 ReportId = form.ReportId ?? 0,
                 OpCode = form.OperationCode_DB,
-                OpDate = form.OperationDate_DB,
-                PasNum = form.PassportNumber_DB,
-                FacNum = form.FactoryNumber_DB,
-                Type = form.Type_DB,
-                Radionuclids = form.Radionuclids_DB,
-                CreationDate = form.CreationDate_DB,
-                DocumentVid = form.DocumentVid_DB,
-                DocumentNumber = form.DocumentNumber_DB,
-                DocumentDate = form.DocumentDate_DB,
-                PackNumber = form.PackNumber_DB,
-                Quantity = form.Quantity_DB
+                OpDate = options == null || options.CheckOperationDate ? form.OperationDate_DB : string.Empty,
+                PasNum = options == null || options.CheckPassportNumber ? form.PassportNumber_DB : string.Empty,
+                FacNum = options == null || options.CheckFactoryNumber ? form.FactoryNumber_DB : string.Empty,
+                Type = options == null || options.CheckType ? form.Type_DB : string.Empty,
+                Radionuclids = options == null || options.CheckRadionuclids ? form.Radionuclids_DB : string.Empty,
+                CreationDate = options == null || options.CheckCreationDate ? form.CreationDate_DB : string.Empty,
+                DocumentVid = options == null || options.CheckDocumentVid ? form.DocumentVid_DB : null,
+                DocumentNumber = options == null || options.CheckDocumentNumber ? form.DocumentNumber_DB : string.Empty,
+                DocumentDate = options == null || options.CheckDocumentDate ? form.DocumentDate_DB : string.Empty,
+                ProviderOrRecieverOkpo = options == null || options.CheckProviderOrRecieverOkpo ? form.ProviderOrRecieverOKPO_DB : string.Empty,
+                TransporterOkpo = options == null || options.CheckTransporterOkpo ? form.TransporterOKPO_DB : string.Empty,
+                PackName = options == null || options.CheckPackName ? form.PackName_DB : string.Empty,
+                PackType = options == null || options.CheckPackType ? form.PackType_DB : string.Empty,
+                PackNumber = options == null || options.CheckPackNumber ? form.PackNumber_DB : string.Empty,
+                Activity = options == null || options.CheckActivity ? form.Activity_DB : string.Empty,
+                Quantity = options == null || options.CheckQuantity ? form.Quantity_DB : null
             })
             .ToListAsync(cancellationToken);
 
@@ -517,9 +750,12 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         public byte? DocumentVid { get; init; }
         public string DocumentNumber { get; init; } = string.Empty;
         public string DocumentDate { get; init; } = string.Empty;
+        public string ProviderOrRecieverOkpo { get; init; } = string.Empty;
+        public string TransporterOkpo { get; init; } = string.Empty;
         public string PackNumber { get; init; } = string.Empty;
         public string PackName { get; init; } = string.Empty;
         public string PackType { get; init; } = string.Empty;
+        public string Activity { get; init; } = string.Empty;
         public string MainRadionuclids { get; init; } = string.Empty;
         public string Mass { get; init; } = string.Empty;
         public string Volume { get; init; } = string.Empty;
