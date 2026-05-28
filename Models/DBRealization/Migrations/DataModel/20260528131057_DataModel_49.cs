@@ -4,7 +4,7 @@
 
 namespace Models.DBRealization.Migrations.DataModel
 {
-    public partial class DataModel_48 : Migration
+    public partial class DataModel_49 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
