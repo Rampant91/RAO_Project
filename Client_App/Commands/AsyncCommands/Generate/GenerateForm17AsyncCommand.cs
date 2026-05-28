@@ -13,7 +13,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
 namespace Client_App.Commands.AsyncCommands.Generate
 {
     public class GenerateForm17AsyncCommand(BaseFormVM formVM) : BaseAsyncCommand

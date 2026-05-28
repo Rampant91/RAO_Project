@@ -5,13 +5,13 @@ using System.Globalization;
 
 namespace Client_App.VisualRealization.Converters
 {
-    public class DateToStringConverter : IValueConverter
+    public class DateOnlyToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is DateOnly dateTime && dateTime != DateOnly.MinValue)
+            if (value is DateOnly dateOnly && dateOnly != DateOnly.MinValue)
             {
-                return dateTime.ToString("dd.MM.yyyy");
+                return dateOnly.ToString("dd.MM.yyyy");
             }
             return "";
 

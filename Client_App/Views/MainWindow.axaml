@@ -325,9 +325,17 @@
             </MenuItem>
 			
 			<MenuItem Name="Passports"
-								  Header="Паспорта">
+					  IsVisible="True"
+					  Header="Паспорта">
 				<MenuItem Command="{Binding OpenPassportMenu}"
 						  Header="Открыть меню паспортов"/>
+			</MenuItem>
+
+			<MenuItem Name="StoragePoints"
+					  IsVisible="False"
+								  Header="Пункты хранения">
+				<MenuItem Command="{Binding OpenStoragePointMenu}"
+						  Header="Открыть меню пунктов хранения"/>
 			</MenuItem>
 			
             <MenuItem Header="Дополнительно"

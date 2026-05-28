@@ -130,7 +130,7 @@ namespace Models.Passports
 
         [NotMapped]
         private string _statusRaoCode;
-        [MaxLength(16)]
+        [MaxLength(128)]
         public string StatusRaoCode
         {
             get => _statusRaoCode;

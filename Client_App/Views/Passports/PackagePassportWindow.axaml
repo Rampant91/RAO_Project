@@ -16,7 +16,7 @@
 
 	<Window.Resources>
 		<converter:DoubleToExponentionalFormatConverter x:Key="ExpontionalFormatConverter"/>
-		<converter:DateToStringConverter x:Key="DateToStringConverter"/>
+		<converter:DateOnlyToStringConverter x:Key="DateOnlyToStringConverter"/>
 		<converter:LogicalNotConverter x:Key="LogicalNotConverter"/>
 	</Window.Resources>
 
