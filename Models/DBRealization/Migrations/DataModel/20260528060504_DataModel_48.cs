@@ -10,8 +10,6 @@ namespace Models.DBRealization.Migrations.DataModel
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-           
-
             migrationBuilder.CreateTable(
                 name: "storage_point",
                 columns: table => new
@@ -25,6 +23,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     EgrnNameLastUpdate = table.Column<DateTime>(type: "TIMESTAMP", nullable: false),
                     CadastreNum = table.Column<string>(type: "VARCHAR(64)", maxLength: 64, nullable: true),
                     CadastreNumLastUpdate = table.Column<DateTime>(type: "TIMESTAMP", nullable: false),
+                    ProjectVolume = table.Column<double>(type: "DOUBLE PRECISION", nullable: false),
                     IsRaoPlaced = table.Column<bool>(type: "BOOLEAN", nullable: false)
                 },
                 constraints: table =>
@@ -42,7 +41,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     LicenseName = table.Column<string>(type: "VARCHAR(64)", maxLength: 64, nullable: true),
                     StartPeriod = table.Column<DateOnly>(type: "DATE", nullable: false),
                     EndPeriod = table.Column<DateOnly>(type: "DATE", nullable: false),
-                    ProjectVolume = table.Column<double>(type: "DOUBLE PRECISION", nullable: false),
                     CodeRAO = table.Column<string>(type: "VARCHAR(64)", maxLength: 64, nullable: true),
                     Volume = table.Column<double>(type: "DOUBLE PRECISION", nullable: false),
                     Mass = table.Column<double>(type: "DOUBLE PRECISION", nullable: false),
@@ -78,8 +76,6 @@ namespace Models.DBRealization.Migrations.DataModel
 
             migrationBuilder.DropTable(
                 name: "storage_point");
-
-           
         }
     }
 }

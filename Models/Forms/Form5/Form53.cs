@@ -33,6 +33,8 @@ namespace Models.Forms.Form5
 
         #region OperationCode (2)
 
+        [MaxLength(2)]
+        [Column(TypeName = "varchar(2)")]
         public string OperationCode_DB { get; set; } = "";
 
 
@@ -86,7 +88,7 @@ namespace Models.Forms.Form5
 
         #region TypeORI (3)
 
-        public string TypeORI_DB { get; set; } = "";
+        public string TypeORI_DB { get; set; }
 
 
         [NotMapped]

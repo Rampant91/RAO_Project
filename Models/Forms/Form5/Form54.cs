@@ -33,7 +33,7 @@ namespace Models.Forms.Form5
 
         #region TypeORI (2)
 
-        public string TypeORI_DB { get; set; } = "";
+        public string TypeORI_DB { get; set; }
 
 
         [NotMapped]
