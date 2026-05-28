@@ -3,6 +3,7 @@ using System;
 using FirebirdSql.EntityFrameworkCore.Firebird.Metadata;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models.DBRealization;
 
@@ -11,9 +12,10 @@ using Models.DBRealization;
 namespace Models.DBRealization.Migrations.DataModel
 {
     [DbContext(typeof(DBModel))]
-    partial class DBModelModelSnapshot : ModelSnapshot
+    [Migration("20260525135357_DataModel_48")]
+    partial class DataModel_48
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3071,111 +3073,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.ToTable("radionuclid", (string)null);
                 });
 
-            modelBuilder.Entity("Models.StoragePoints.LicenseInfo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CodeRAO")
-                        .HasMaxLength(64)
-                        .HasColumnType("VARCHAR(64)");
-
-                    b.Property<DateOnly>("DocumentDate")
-                        .HasColumnType("DATE");
-
-                    b.Property<string>("DocumentName")
-                        .HasMaxLength(64)
-                        .HasColumnType("VARCHAR(64)");
-
-                    b.Property<string>("DocumentNumber")
-                        .HasMaxLength(64)
-                        .HasColumnType("VARCHAR(64)");
-
-                    b.Property<DateOnly>("EndPeriod")
-                        .HasColumnType("DATE");
-
-                    b.Property<DateOnly>("ExpirationDate")
-                        .HasColumnType("DATE");
-
-                    b.Property<DateTime>("LastUpdate")
-                        .HasColumnType("TIMESTAMP");
-
-                    b.Property<string>("LicenseName")
-                        .HasMaxLength(64)
-                        .HasColumnType("VARCHAR(64)");
-
-                    b.Property<double>("Mass")
-                        .HasColumnType("DOUBLE PRECISION");
-
-                    b.Property<int>("QuantityOZIII")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateOnly>("StartPeriod")
-                        .HasColumnType("DATE");
-
-                    b.Property<int?>("StorageId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<double>("SummaryActivity")
-                        .HasColumnType("DOUBLE PRECISION");
-
-                    b.Property<double>("Volume")
-                        .HasColumnType("DOUBLE PRECISION");
-
-                    b.HasKey("Id")
-                        .HasName("PK_license_info");
-
-                    b.HasIndex("StorageId");
-
-                    b.ToTable("license_info", (string)null);
-                });
-
-            modelBuilder.Entity("Models.StoragePoints.StoragePoint", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CadastreNum")
-                        .HasMaxLength(64)
-                        .HasColumnType("VARCHAR(64)");
-
-                    b.Property<DateTime>("CadastreNumLastUpdate")
-                        .HasColumnType("TIMESTAMP");
-
-                    b.Property<string>("Code")
-                        .HasMaxLength(64)
-                        .HasColumnType("VARCHAR(64)");
-
-                    b.Property<string>("EgrnName")
-                        .HasMaxLength(64)
-                        .HasColumnType("VARCHAR(64)");
-
-                    b.Property<DateTime>("EgrnNameLastUpdate")
-                        .HasColumnType("TIMESTAMP");
-
-                    b.Property<bool>("IsRaoPlaced")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<double>("ProjectVolume")
-                        .HasColumnType("DOUBLE PRECISION");
-
-                    b.Property<string>("SgukName")
-                        .HasMaxLength(64)
-                        .HasColumnType("VARCHAR(64)");
-
-                    b.Property<DateTime>("SgukNameLastUpdate")
-                        .HasColumnType("TIMESTAMP");
-
-                    b.HasKey("Id")
-                        .HasName("PK_storage_point");
-
-                    b.ToTable("storage_point", (string)null);
-                });
-
             modelBuilder.Entity("Models.Collections.Report", b =>
                 {
                     b.HasOne("Models.Collections.Reports", "Reports")
@@ -3565,16 +3462,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Navigation("Characteristic");
                 });
 
-            modelBuilder.Entity("Models.StoragePoints.LicenseInfo", b =>
-                {
-                    b.HasOne("Models.StoragePoints.StoragePoint", "Storage")
-                        .WithMany("LicenseInfoList")
-                        .HasForeignKey("StorageId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Storage");
-                });
-
             modelBuilder.Entity("Models.Collections.DBObservable", b =>
                 {
                     b.Navigation("Reports_Collection");
@@ -3664,11 +3551,6 @@ namespace Models.DBRealization.Migrations.DataModel
             modelBuilder.Entity("Models.Passports.PackagePassport", b =>
                 {
                     b.Navigation("ContentCharacteristics");
-                });
-
-            modelBuilder.Entity("Models.StoragePoints.StoragePoint", b =>
-                {
-                    b.Navigation("LicenseInfoList");
                 });
 #pragma warning restore 612, 618
         }

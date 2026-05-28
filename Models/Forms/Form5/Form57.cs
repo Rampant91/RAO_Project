@@ -136,6 +136,7 @@ namespace Models.Forms.Form5
         #endregion
 
         #region Name (4)
+
         [MaxLength(64)]
         [Column(TypeName = "varchar(64)")]
         public string Name_DB { get; set; } = "";

@@ -188,7 +188,7 @@ namespace Models.Passports
         private string _codeRao;
 
         //В коде РАО могут записываться несколько кодов РАО, длиной 11 символов
-        //Пока ничем не разделены
+        //Разделяются ';'
         [MaxLength(128)] 
         public string CodeRao
         {
@@ -200,7 +200,6 @@ namespace Models.Passports
             }
         }
         #endregion
-
 
         #region PrimaryPackageQuantity
         [NotMapped]

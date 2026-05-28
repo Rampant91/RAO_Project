@@ -32,6 +32,7 @@ namespace Models.Forms.Form5
         #region Properties
 
         #region Name (2)
+
         [MaxLength(64)]
         [Column(TypeName = "varchar(64)")]
         public string Name_DB { get; set; } = "";

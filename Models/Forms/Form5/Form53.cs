@@ -88,8 +88,12 @@ namespace Models.Forms.Form5
 
         #region TypeORI (3)
 
-        public string TypeORI_DB { get; set; }
+        [MaxLength(64)]
+        [Column(TypeName = "varchar(64)")]
+        public string TypeORI_DB { get; set; } = "";
 
+        [MaxLength(64)]
+        [Column(TypeName = "varchar(64)")]
 
         [NotMapped]
         public RamAccess<string> TypeORI
