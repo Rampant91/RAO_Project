@@ -72,7 +72,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
 
         var regNum = RemoveForbiddenChars(selectedReports.Master_DB.RegNoRep.Value);
         var okpo = RemoveForbiddenChars(selectedReports.Master_DB.OkpoRep.Value);
-        var fileName = $"{regNum}_{okpo}_не_парные_операции_41";
+        var fileName = $"{regNum}_{okpo}_непарные_операции_41";
 
         progressBarVM.SetProgressBar(5, "Запрос пути сохранения", ExportType, "Выгрузка в .xlsx");
         var (fullPath, openTemp) = await ExcelGetFullPathWithUniqueIndex(fileName, cts, progressBar);
