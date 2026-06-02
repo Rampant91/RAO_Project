@@ -205,7 +205,7 @@ public partial class Form_17 : BaseWindow<Form_17VM>
             var db = StaticConfiguration.DBModel;
 
             var modifiedEntities = db.ChangeTracker.Entries()
-                .Where(x => x.State != EntityState.Unchanged);
+                .Where(x => x.State != EntityState.Unchanged).ToList();
 
             if (modifiedEntities.All(x => x.Entity is Report rep && rep.FormNum_DB != vm.FormType)
                 || !db.ChangeTracker.HasChanges() || vm.SkipChangeTracking)
@@ -292,7 +292,7 @@ public partial class Form_17 : BaseWindow<Form_17VM>
 
                     args.Cancel = false;
 
-                    return;
+                    break;
                 }
             case "Нет":
                 {

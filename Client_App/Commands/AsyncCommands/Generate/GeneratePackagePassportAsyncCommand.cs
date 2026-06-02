@@ -55,7 +55,7 @@ namespace Client_App.Commands.AsyncCommands.Generate
             var firstIndex = Rows17.IndexOf(first);
 
             while (firstIndex > 0
-                && !codeOperationRegex.IsMatch(first.OperationCode_DB))
+                && !codeOperationRegex.IsMatch(first.OperationCode_DB ?? ""))
             {
                 selectedForm17List.Insert(0, Rows17[firstIndex - 1]);
                 first = Rows17[firstIndex - 1];
@@ -66,7 +66,7 @@ namespace Client_App.Commands.AsyncCommands.Generate
             var last = selectedForm17List.Last();
             var lastIndex = Rows17.IndexOf(last);
             while (lastIndex < Rows17.Count-1
-                && !codeOperationRegex.IsMatch(Rows17[lastIndex + 1].OperationCode_DB))
+                && !codeOperationRegex.IsMatch(Rows17[lastIndex + 1].OperationCode_DB ?? ""))
             {
                 selectedForm17List.Add(Rows17[lastIndex + 1]); 
                 last = Rows17[lastIndex + 1];
@@ -77,29 +77,32 @@ namespace Client_App.Commands.AsyncCommands.Generate
             //ссылка на нужный список радионуклидов
             ObservableCollection<Radionuclid>? radionuclidList = null;
 
-            // Список строк, для которых не будет создан паспорт, т.к. их код операции не предполагает создания паспорта
-            List<int> rowNumbers = new();
+            
 
             List<List<Form17>> parsedForm17 = new List<List<Form17>>();
 
             foreach (var form17 in selectedForm17List)
             {
-                if (codeOperationRegex.IsMatch(form17.OperationCode_DB))
+                if (codeOperationRegex.IsMatch(form17.OperationCode_DB ?? ""))
                     parsedForm17.Add(new List<Form17>());
 
                 parsedForm17.Last().Add(form17);
 
             }
 
-            
+            // Список строк, для которых не будет создан паспорт, т.к. их код операции не предполагает создания паспорта
+            var skipedOperations = new Dictionary<int, string>();
 
             foreach (var operation in parsedForm17)
             {
                 if (!(operation.Count > 0
                     && operation[0].OperationCode_DB
                     is "01" or "11" or "12" or "14"
-                    or "16" or "18" or "55")) 
+                    or "16" or "18" or "55"))
+                {
+                    skipedOperations.Add(operation[0].NumberInOrder_DB, operation[0].OperationCode_DB);
                     continue;
+                }
 
 
                 var passport = new PackagePassport();
@@ -206,17 +209,15 @@ namespace Client_App.Commands.AsyncCommands.Generate
 
 
             }
-            if (rowNumbers.Count > 0)
+            if (skipedOperations.Count > 0)
             {
                 var msg = $"Не удалось создать паспорт на основе данных строк:\n" +
                     $"№";
-                for(int i =0; i < rowNumbers.Count; i++)
+                foreach (var operation in skipedOperations)
                 {
-                    if (i != rowNumbers.Count - 1)
-                        msg += $" {rowNumbers[i]}, ";
-                    else
-                        msg += $" {rowNumbers[i]}\n";
+                    msg += $"Номер строки - {operation.Key}, Код операции - {operation.Value}\n";
                 }
+
                 msg += "Так как их код операции не равен 01, 11, 12, 14, 16, 18, 55";
 
                 await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
