@@ -88,17 +88,10 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         }
         for (var i = 0; i < baseRep.Notes.Count; i++)
         {
-            if (!AreNotesEqual(baseRep.Notes[i], impRep.Notes[i]))
+            if (!baseRep.Notes[i].IsContentEqual(impRep.Notes[i]))
                 return false;
         }
         return true;
-    }
-
-    private static bool AreNotesEqual(Note a, Note b)
-    {
-        return a.RowNumber_DB == b.RowNumber_DB
-               && a.GraphNumber_DB == b.GraphNumber_DB
-               && a.Comment_DB == b.Comment_DB;
     }
 
     #region CheckAnswer

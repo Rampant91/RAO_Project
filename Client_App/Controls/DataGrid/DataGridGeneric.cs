@@ -16,6 +16,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Client_App.Controls.DataGrid.DataGrids;
+using Client_App.Services.AutoReplace;
 using Client_App.VisualRealization.Converters;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -899,6 +900,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     #endregion
 
     public IKeyCollection? ItemsWithSearch;
+    private readonly Form1AutoReplaceUiService _form1AutoReplaceUiService = new();
 
     #region SearchText
     public static readonly DirectProperty<DataGrid<T>, string> SearchTextProperty =
@@ -2008,6 +2010,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             ((TextBox)textBox).TextWrapping = TextWrapping.Wrap;
                             ((TextBox)textBox).AcceptsReturn = true;
                         }
+
+                        ((TextBox)textBox).LostFocus += (_, _) =>
+                        {
+                            _form1AutoReplaceUiService.RunIfNeeded(cell.DataContext, item.Binding);
+                        };
                     }
                 }
 

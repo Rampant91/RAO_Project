@@ -287,4 +287,11 @@ public class Note : IKey, IDataGridColumn
     }
 
     #endregion
+
+    public bool IsContentEqual(Note noteToCompare)
+    {
+        return RowNumber_DB == noteToCompare.RowNumber_DB
+               && GraphNumber_DB == noteToCompare.GraphNumber_DB
+               && Comment_DB == noteToCompare.Comment_DB;
+    }
 }
