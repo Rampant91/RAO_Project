@@ -7,8 +7,7 @@ public sealed class Form1AutoReplaceUiService
 {
     public void RunIfNeeded(object? rowItem, string? columnBinding)
     {
-        if (rowItem is not Form1 form1
-            || form1.Report is not { AutoReplace: true })
+        if (rowItem is not Form1 { Report.AutoReplace: true } form1)
         {
             return;
         }

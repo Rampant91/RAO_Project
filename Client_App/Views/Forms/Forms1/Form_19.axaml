@@ -368,6 +368,7 @@
                         <local:DataGridDeselectOnEmptyAreaClickBehavior />
                         <local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
                         <local:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
+                        <local:DataGridForm1AutoReplaceBehavior />
                     </interactivity:Interaction.Behaviors>
 
                     <DataGrid.Columns>
