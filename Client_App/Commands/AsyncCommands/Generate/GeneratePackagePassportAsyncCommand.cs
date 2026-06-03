@@ -211,8 +211,7 @@ namespace Client_App.Commands.AsyncCommands.Generate
             }
             if (skipedOperations.Count > 0)
             {
-                var msg = $"Не удалось создать паспорт на основе данных строк:\n" +
-                    $"№";
+                var msg = $"Не удалось создать паспорт на основе данных строк:\n";
                 foreach (var operation in skipedOperations)
                 {
                     msg += $"Номер строки - {operation.Key}, Код операции - {operation.Value}\n";
