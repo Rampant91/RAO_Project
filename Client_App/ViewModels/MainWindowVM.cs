@@ -415,6 +415,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     /// </summary>
     public ICommand ExcelExportSnk => new ExcelExportSnkAsyncCommand(this);
 
+    public ICommand CountForm11InStockTotal => new CountForm11InStockTotalAsyncCommand();
+
     /// <summary>
     /// Excel -> Выбранная организация -> Проверка инвентаризаций
     /// </summary>

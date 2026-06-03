@@ -258,6 +258,8 @@
                         <MenuItem Command="{Binding  ExcelExportSnk, Mode=OneWay}"
                                   CommandParameter="1.3"
                                   Header="Форма 1.3"/>
+                        <MenuItem Command="{Binding CountForm11InStockTotal, Mode=OneWay}"
+                                  Header="Количество источников в наличии (1.1, вся БД)"/>
                     </MenuItem>
                     <MenuItem Header="Проверка инвентаризации">
                         <MenuItem Command="{Binding  ExcelExportCheckInventories, Mode=OneWay}"
