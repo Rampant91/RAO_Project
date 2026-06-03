@@ -193,6 +193,7 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
 
             if (OperatingSystem.IsWindows()) Worksheet.Column(col).AutoFit();
         }
+        Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
         Worksheet.View.FreezePanes(2, 1);
 
         return Task.CompletedTask;

@@ -314,7 +314,9 @@ public abstract class CheckF41 : CheckBase
                     Okpo = form41.Okpo_DB,
                     Value = $"{form41.NumOfFormsWithoutInventarizationInfo_DB}",
                     DbValue = $"{count}",
-                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" не совпадает количество отчётов 1.1 - 1.4 без инвентаризации:" +
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\"\n" +
+                    $"Наименование -\"{form41.OrganizationName_DB}\"\n" +
+                    $"Не совпадает количество отчётов 1.1 - 1.4 без инвентаризации:" +
                               $"{Environment.NewLine}Указано: {form41.NumOfFormsWithoutInventarizationInfo_DB}," +
                               $"{Environment.NewLine}Найдено в базе данных: {count}"
                 };
@@ -388,8 +390,9 @@ public abstract class CheckF41 : CheckBase
                     Okpo = form41.Okpo_DB,
                     Value = $"{form41.NumOfFormsWithInventarizationInfo_DB}",
                     DbValue = $"{count}",
-                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" " +
-                              $"не совпадает количество инвентаризационных отчётов 1.1-1.4:" + 
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" \n" +
+                              $"Наименование -\"{form41.OrganizationName_DB}\"\n" +
+                              $"Не совпадает количество инвентаризационных отчётов 1.1-1.4:" + 
                               $"{Environment.NewLine}Указано: {form41.NumOfFormsWithInventarizationInfo_DB}," + 
                               $"{Environment.NewLine}Найдено в базе данных: {count}"
                 };
@@ -450,7 +453,9 @@ public abstract class CheckF41 : CheckBase
                     Okpo = form41.Okpo_DB,
                     Value = $"{form41.NumOfForms212_DB}",
                     DbValue = $"{count}",
-                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" не совпадает количество отчётов 2.12:" +
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\"\n" +
+                    $"Наименование -\"{form41.OrganizationName_DB}\"\n" +
+                    $"Не совпадает количество отчётов 2.12:" +
                               $"{Environment.NewLine}Указано: {form41.NumOfForms212_DB}," +
                               $"{Environment.NewLine}Найдено в базе данных: {count}"
                 };
@@ -521,8 +526,9 @@ public abstract class CheckF41 : CheckBase
                     Okpo = form41.Okpo_DB,
                     Column = "-",
                     Value = "-",
-                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" должен быть отчет " +
-                              $"по форме 2.12, потому что у нее есть отчет по форме 1.9"
+                    Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" \n" +
+                    $"Наименование -\"{form41.OrganizationName_DB}\"\n" +
+                    $"Должен быть отчет по форме 2.12, потому что у нее есть отчет по форме 1.9"
                 };
 
         if ((organization20 != null) && organization20.Report_Collection.Any(report => 
@@ -657,8 +663,9 @@ public abstract class CheckF41 : CheckBase
                 RegNo = form41.RegNo_DB,
                 Okpo = form41.Okpo_DB,
                 DbValue = $"{quantityBalance}",
-                Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" " +
-                          $"на балансе присутствуют ЗРИ. " +
+                Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" \n" +
+                          $"Наименование -\"{form41.OrganizationName_DB}\"\n" +
+                          $"На балансе присутствуют ЗРИ. " +
                           $"Необходимо предоставить сведения об инвентаризации по форме 1.1" +
                           $"{Environment.NewLine}Баланс: {quantityBalance}"
             };
@@ -771,7 +778,9 @@ public abstract class CheckF41 : CheckBase
                 RegNo = form41.RegNo_DB,
                 Okpo = form41.Okpo_DB,
                 DbValue = $"{balance}",
-                Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют ИОУ. " +
+                Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\"\n" +
+                          $"Наименование -\"{form41.OrganizationName_DB}\"\n" +
+                          $"На балансе присутствуют ИОУ. " +
                           $"Необходимо предоставить сведения об инвентаризации по форме 1.2" +
                           $"{Environment.NewLine}Баланс: {balance}"
             };
@@ -882,7 +891,9 @@ public abstract class CheckF41 : CheckBase
                 RegNo = form41.RegNo_DB,
                 Okpo = form41.Okpo_DB,
                 DbValue = $"{balance}",
-                Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют ОРИ. " +
+                Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\"\n" +
+                          $"Наименование -\"{form41.OrganizationName_DB}\"\n" +
+                          $"На балансе присутствуют ОРИ. " +
                           $"Необходимо предоставить сведения об инвентаризации по форме 1.3\n" +
                           $"Баланс: {balance}"
             };
@@ -1040,7 +1051,9 @@ public abstract class CheckF41 : CheckBase
                 DbValue = $"{massBalanceLiquid}" +
                           $"{Environment.NewLine}{massBalanceSolid}" +
                           $"{Environment.NewLine}{massBalanceGas}",
-                Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\" на балансе присутствуют радионуклиды. " +
+                Message = $"У организации Рег№-\"{form41.RegNo_DB}\" ОКПО-\"{form41.Okpo_DB}\"\n" +
+                          $"Наименование -\"{form41.OrganizationName_DB}\"\n" +
+                          $"На балансе присутствуют радионуклиды. " +
                           $"Необходимо проинвентаризировать по форме 1.4" +
                           $"{Environment.NewLine}Баланс жидких РВ: {massBalanceLiquid}" +
                           $"{Environment.NewLine}Баланс твердых РВ: {massBalanceSolid}" +

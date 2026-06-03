@@ -626,4 +626,19 @@ public partial class Form211 : Form2
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form211 formToCompare) return false;
+
+        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
+               && PlotName_DB == formToCompare.PlotName_DB
+               && PlotKadastrNumber_DB == formToCompare.PlotKadastrNumber_DB
+               && PlotCode_DB == formToCompare.PlotCode_DB
+               && InfectedArea_DB == formToCompare.InfectedArea_DB
+               && Radionuclids_DB == formToCompare.Radionuclids_DB
+               && SpecificActivityOfPlot_DB == formToCompare.SpecificActivityOfPlot_DB
+               && SpecificActivityOfLiquidPart_DB == formToCompare.SpecificActivityOfLiquidPart_DB
+               && SpecificActivityOfDensePart_DB == formToCompare.SpecificActivityOfDensePart_DB;
+    }
 }

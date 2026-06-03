@@ -1,4 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands.Add;
+using Client_App.Commands.AsyncCommands.Delete;
+using Client_App.Commands.AsyncCommands.ExcelExport;
+using Client_App.Commands.AsyncCommands.RaodbExport;
+using Client_App.Resources.CustomComparers;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using System;
@@ -9,11 +15,47 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Client_App.ViewModels.MainWindowTabs;
 
 public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 {
+    #region Commands
+
+    /// <summary>
+    /// Создать и открыть новое окно с отчётом по форме 1.x, 4.1 и 5.x для выбранной организации.
+    /// Для 2.x используется старая команда, пока не обновим там интерфейс.
+    /// </summary>
+    public ICommand AddReport { get; private set; }
+
+    /// <summary>
+    /// Редактировать выбранный отчёт
+    /// </summary>
+    public ICommand NewChangeReport => new NewChangeReportAsyncCommand(this);
+
+    /// <summary>
+    /// Редактировать выбранный отчёт
+    /// </summary>
+    public ICommand NewChangeReports => new NewChangeReportsAsyncCommand(this);
+
+    /// <summary>
+    /// Удалить выбранный отчёт
+    /// </summary>
+    public ICommand DeleteReport => new NewDeleteFormAsyncCommand(this);
+
+    /// <summary>
+    /// Выбранная форма -> Выгрузка Excel -> Для печати
+    /// </summary>
+    public ICommand ExcelExportFormPrint => new ExcelExportFormPrintAsyncCommand(this);
+
+    /// <summary>
+    /// Экспорт отчёта в файл .RAODB
+    /// </summary>
+    public ICommand ExportReport => new ExportReportAsyncCommand(this); 
+    
+    #endregion
+
     #region Constructor
 
     protected FormsTabControlBaseVM()
@@ -23,6 +65,8 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 
     protected FormsTabControlBaseVM(MainWindowVM mainWindowVM)
     {
+        AddReport = new AddReportAsyncCommand();
+
         MainWindowVM = mainWindowVM;
     }
 
@@ -69,6 +113,7 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
             _currentPageForms = value;
             OnPropertyChanged();
             UpdateReportCollection();
+            OnPropertyChanged(nameof(TotalReportCount));
         }
     }
 
@@ -77,7 +122,7 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
     #region CurrentPageOrgs
 
     private int _currentPageOrgs = 1;
-    private protected int CurrentPageOrgs
+    public int CurrentPageOrgs
     {
         get
         {
@@ -90,6 +135,7 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
             _currentPageOrgs = value;
             OnPropertyChanged(nameof(ReportsCollection));
             OnPropertyChanged();
+            OnPropertyChanged(nameof(TotalReportCount));
         }
     }
 
@@ -244,6 +290,9 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 
             OnPropertyChanged();
 
+            // Проверяем и сбрасываем фильтр если нет отчётов для текущего фильтра
+            CheckAndResetFilterIfNeeded();
+
             // UpdateReportCollection выполняется в CurrentPageForms
             // Чтобы не вызывать метод дважды используется if else
             if (CurrentPageForms != 1)
@@ -252,18 +301,58 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
                 UpdateReportCollection();
 
             UpdateFormsPageInfo();
+
+
         }
     }
 
     #endregion
 
-    public int TotalReportCount => ReportsCollection?
-        .AsEnumerable()
-        .Sum(org => org.Report_Collection
-            .Count(rep => rep.FormNum_DB.StartsWith($"{MainWindowVM.SelectedReportType}")
-                          && !rep.FormNum_DB.EndsWith(".0"))) ?? 0;
+    public int TotalReportCount
+    {
+        get
+        {
+            var allOrgs = StaticConfiguration.DBModel.ReportsCollectionDbSet
+                .AsEnumerable()
+                .Where(x => x.DBObservable != null)
+                .Where(reps => reps.Master_DB.FormNum_DB == FormNum + ".0");
 
-    private protected int TotalRowsOrgs => StaticConfiguration.DBModel.ReportsCollectionDbSet
+            if (!string.IsNullOrEmpty(SearchText))
+            {
+                var search = SearchText.ToLower().Trim();
+                allOrgs = allOrgs.Where(reps => 
+                    reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
+                    || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
+                    || GetAdditionalSearchConditions(reps, search));
+            }
+
+            return allOrgs
+                .Sum(org => org.Report_Collection
+                    .Count(rep => rep.FormNum_DB.StartsWith($"{MainWindowVM.SelectedReportType}")
+                                  && !rep.FormNum_DB.EndsWith(".0")));
+        }
+    }
+
+    /// <summary>
+    /// Всего организаций с учётом фильтра.
+    /// </summary>
+    private protected abstract int FilteredRowsOrgs { get; }
+
+    /// <summary>
+    /// Дополнительные условия поиска для переопределения в дочерних классах.
+    /// </summary>
+    protected virtual bool GetAdditionalSearchConditions(Reports reps, string search) => false;
+
+    /// <summary>
+    /// Проверяет и сбрасывает фильтр если при переключении организации нет отчётов для текущего фильтра.
+    /// Переопределяется в дочерних классах.
+    /// </summary>
+    protected virtual void CheckAndResetFilterIfNeeded() { }
+
+    /// <summary>
+    /// Всего организаций.
+    /// </summary>
+    public int TotalRowsOrgs => StaticConfiguration.DBModel.ReportsCollectionDbSet
         .Where(x => x.DBObservable != null)
         .Count(reps => reps.Master_DB.FormNum_DB == FormNum + ".0");
 
@@ -347,9 +436,78 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
         OnPropertyChanged(nameof(ReportsCollection));
     }
 
+    /// <summary>
+    /// Обновляет содержимое коллекции организаций без пересоздания объекта.
+    /// Сохраняет выбранную организацию.
+    /// </summary>
+    public void UpdateReportsCollectionWithoutReCreation()
+    {
+        // Получаем текущую коллекцию (не создаем новую)
+        var currentCollection = ReportsCollection;
+        if (currentCollection == null) return;
+
+        // Сохраняем ID выбранной организации
+        var selectedId = SelectedReports?.Master_DB?.Id;
+
+        // Получаем новые данные
+        var comparator = new CustomReportsComparer();
+        IEnumerable<Reports> newItems;
+
+        if (!string.IsNullOrEmpty(SearchText))
+        {
+            var search = SearchText.ToLower().Trim();
+            newItems = StaticConfiguration.DBModel.ReportsCollectionDbSet
+                .AsEnumerable()
+                .Where(x => x.DBObservable != null)
+                .Where(reps => reps.Master_DB.FormNum_DB == FormNum + ".0")
+                .Where(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
+                               || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
+                               || GetAdditionalSearchConditions(reps, search))
+                .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
+                .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
+                .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
+                .Take(RowsCountOrgs);
+        }
+        else
+        {
+            newItems = StaticConfiguration.DBModel.ReportsCollectionDbSet
+                .AsEnumerable()
+                .Where(x => x.DBObservable != null)
+                .Where(reps => reps.Master_DB.FormNum_DB == FormNum + ".0")
+                .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
+                .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
+                .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
+                .Take(RowsCountOrgs);
+        }
+
+        // Обновляем содержимое существующей коллекции
+        currentCollection.Clear();
+        foreach (var item in newItems)
+        {
+            currentCollection.Add(item);
+        }
+
+        // Восстанавливаем выбор по ID
+        if (selectedId.HasValue)
+        {
+            var restored = currentCollection.FirstOrDefault(r => r.Master_DB?.Id == selectedId.Value);
+            if (restored != null)
+            {
+                // Используем поле напрямую, чтобы не вызвать сеттер
+                _selectedReports = restored;
+                OnPropertyChanged(nameof(SelectedReports));
+            }
+        }
+    }
+
     public void UpdateTotalReportCount()
     {
         OnPropertyChanged(nameof(TotalReportCount));
+    }
+
+    public void UpdateTotalReportsCount()
+    {
+        OnPropertyChanged(nameof(FilteredRowsOrgs));
     }
 
     #endregion

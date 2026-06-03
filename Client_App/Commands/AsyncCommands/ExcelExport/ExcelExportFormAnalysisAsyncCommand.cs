@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using Avalonia.Threading;
+﻿using Avalonia.Threading;
+using Client_App.ViewModels;
+using Client_App.ViewModels.MainWindowTabs;
 using Client_App.Views.ProgressBar;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
@@ -16,6 +10,13 @@ using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Models.Interfaces;
 using OfficeOpenXml;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
@@ -25,7 +26,22 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 /// </summary>
 public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
 {
-    public override bool CanExecute(object? parameter) => true;
+    private readonly FormsTabControlBaseVM _formsTabControlVM;
+
+    public ExcelExportFormAnalysisAsyncCommand(FormsTabControlBaseVM formsTabControlVM)
+    {
+        _formsTabControlVM = formsTabControlVM;
+
+        formsTabControlVM.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName == nameof(FormsTabControlBaseVM.SelectedReport))
+            {
+                OnCanExecuteChanged();
+            }
+        };
+    }
+
+    public override bool CanExecute(object? parameter) => _formsTabControlVM.SelectedReport is not null;
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -196,6 +212,7 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
             WorksheetPrim.Cells.AutoFitColumns();
         }
         Worksheet.View.FreezePanes(2, 1);
+        Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
         WorksheetPrim.View.FreezePanes(2, 1);
 
         return Task.FromResult(masterHeaderLength);

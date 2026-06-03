@@ -84,28 +84,6 @@ public partial class Form15 : Form1
         return true;
     }
 
-    protected override bool OperationCode_Validation(RamAccess<string> value)//OK
-    {
-        value.ClearErrors();
-        if (value.Value == null)
-        {
-            value.AddError("Поле не заполнено");
-            return false;
-        }
-        if (!Spravochniks.SprOpCodes.Contains(value.Value))
-        {
-            value.AddError("Недопустимое значение");
-            return false;
-        }
-        if (value.Value is "15" or "17" or "46" or "47" or "53" or "54" or "58" or "61"
-            or "62" or "65" or "66" or "67" or "81" or "82" or "83" or "85" or "86" or "87")
-        {
-            value.AddError("Код операции не может быть использован для РАО");
-            return false;
-        }
-        return true;
-    }
-
     #endregion
 
     #region Properties
@@ -223,9 +201,45 @@ public partial class Form15 : Form1
 
             #endregion
 
-            #region 21, 23, 24, 25, 26, 27, 28, 29, 31, 33, 34, 35, 36, 37, 38, 39, 84, 88
+            #region 21, 25, 26, 27, 28, 29, 31, 35, 36, 37, 38, 39
 
-            case "21" or "23" or "24" or "25" or "26" or "27" or "28" or "29" or "31" or "33" or "34" or "35" or "36" or "37" or "38" or "39" or "84" or "88":
+            case "21" or "25" or "26" or "27" or "28" or "29" or "31" or "35" or "36" or "37" or "38" or "39":
+            {
+                #region ProviderOrRecieverOKPO (15)
+
+                if (ProviderOrRecieverOKPO_DB is not "")
+                {
+                    ProviderOrRecieverOKPO.Value = string.Empty;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (16)
+
+                if (TransporterOKPO_DB is not "")
+                {
+                    TransporterOKPO.Value = string.Empty;
+                }
+
+                #endregion
+
+                #region RefineOrSortRAOCode (22)
+
+                if (RefineOrSortRAOCode_DB != dash)
+                {
+                    RefineOrSortRAOCode.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 84, 88
+
+            case "84" or "88":
             {
                 #region RefineOrSortRAOCode (22)
 
@@ -269,9 +283,46 @@ public partial class Form15 : Form1
 
             #endregion
 
-            #region 44, 49, 55, 56, 59, 99
+            #region 44
 
-            case "44" or "49" or "55" or "56" or "59" or "99":
+            case "44" :
+            {
+                #region ProviderOrRecieverOKPO (15)
+
+                if (!string.IsNullOrWhiteSpace(masterOkpo)
+                    && ProviderOrRecieverOKPO_DB != masterOkpo)
+                {
+                    ProviderOrRecieverOKPO.Value = masterOkpo;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (16)
+
+                if (TransporterOKPO_DB != dash)
+                {
+                    TransporterOKPO.Value = dash;
+                }
+
+                #endregion
+
+                #region RefineOrSortRAOCode (22)
+
+                if (RefineOrSortRAOCode_DB is not "")
+                {
+                    RefineOrSortRAOCode.Value = string.Empty;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 49, 55, 56, 59, 99
+
+            case "49" or "55" or "56" or "59" or "99":
             {
                 #region ProviderOrRecieverOKPO (15)
 
@@ -302,6 +353,28 @@ public partial class Form15 : Form1
     }
 
     #endregion
+
+    protected override bool OperationCode_Validation(RamAccess<string> value)//OK
+    {
+        value.ClearErrors();
+        if (value.Value == null)
+        {
+            value.AddError("Поле не заполнено");
+            return false;
+        }
+        if (!Spravochniks.SprOpCodes.Contains(value.Value))
+        {
+            value.AddError("Недопустимое значение");
+            return false;
+        }
+        if (value.Value is "15" or "17" or "46" or "47" or "53" or "54" or "58" or "61"
+            or "62" or "65" or "66" or "67" or "81" or "82" or "83" or "85" or "86" or "87")
+        {
+            value.AddError("Код операции не может быть использован для РАО");
+            return false;
+        }
+        return true;
+    }
 
     #endregion
 
@@ -1839,4 +1912,35 @@ public partial class Form15 : Form1
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form15 formToCompare) return false;
+
+        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
+               && OperationCode_DB == formToCompare.OperationCode_DB
+               && OperationDate_DB == formToCompare.OperationDate_DB
+               && PassportNumber_DB == formToCompare.PassportNumber_DB
+               && Type_DB == formToCompare.Type_DB
+               && Radionuclids_DB == formToCompare.Radionuclids_DB
+               && FactoryNumber_DB == formToCompare.FactoryNumber_DB
+               && Quantity_DB == formToCompare.Quantity_DB
+               && Activity_DB == formToCompare.Activity_DB
+               && CreationDate_DB == formToCompare.CreationDate_DB
+               && StatusRAO_DB == formToCompare.StatusRAO_DB
+               && DocumentVid_DB == formToCompare.DocumentVid_DB
+               && DocumentNumber_DB == formToCompare.DocumentNumber_DB
+               && DocumentDate_DB == formToCompare.DocumentDate_DB
+               && ProviderOrRecieverOKPO_DB == formToCompare.ProviderOrRecieverOKPO_DB
+               && TransporterOKPO_DB == formToCompare.TransporterOKPO_DB
+               && PackName_DB == formToCompare.PackName_DB
+               && PackType_DB == formToCompare.PackType_DB
+               && PackNumber_DB == formToCompare.PackNumber_DB
+               && StoragePlaceName_DB == formToCompare.StoragePlaceName_DB
+               && StoragePlaceCode_DB == formToCompare.StoragePlaceCode_DB
+               && RefineOrSortRAOCode_DB == formToCompare.RefineOrSortRAOCode_DB
+               && Subsidy_DB == formToCompare.Subsidy_DB
+               && FcpNumber_DB == formToCompare.FcpNumber_DB
+               && ContractNumber_DB == formToCompare.ContractNumber_DB;
+    }
 }

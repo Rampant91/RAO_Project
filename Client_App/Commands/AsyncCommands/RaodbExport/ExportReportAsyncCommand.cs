@@ -4,6 +4,7 @@ using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Properties;
 using Client_App.Resources;
 using Client_App.ViewModels;
+using Client_App.ViewModels.MainWindowTabs;
 using Client_App.Views.ProgressBar;
 using DynamicData;
 using FirebirdSql.Data.FirebirdClient;
@@ -31,8 +32,25 @@ namespace Client_App.Commands.AsyncCommands.RaodbExport;
 /// <summary>
 /// Экспорт отчёта в .RAODB
 /// </summary>
-public class ExportFormAsyncCommand : ExportRaodbBaseAsyncCommand
+public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
 {
+    private readonly FormsTabControlBaseVM _formsTabControlVM;
+
+    public ExportReportAsyncCommand(FormsTabControlBaseVM formsTabControlVM)
+    {
+        _formsTabControlVM = formsTabControlVM;
+
+        formsTabControlVM.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName == nameof(FormsTabControlBaseVM.SelectedReport))
+            {
+                OnCanExecuteChanged();
+            }
+        };
+    }
+
+    public override bool CanExecute(object? parameter) => _formsTabControlVM.SelectedReport is not null;
+
     public override async Task AsyncExecute(object? parameter)
     {
         int repId;

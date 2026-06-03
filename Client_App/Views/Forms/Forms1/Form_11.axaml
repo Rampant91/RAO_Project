@@ -1,6 +1,7 @@
 ﻿<Window x:Class="Client_App.Views.Forms.Forms1.Form_11"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:appControls="clr-namespace:Client_App.Controls"
         xmlns:controls="clr-namespace:Client_App.Views.Controls"
         xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,8 +9,9 @@
         xmlns:forms1="clr-namespace:Models.Forms.Form1;assembly=Models"
         xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
         xmlns:local="using:Client_App.Behaviors"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
+        xmlns:items="clr-namespace:Client_App.ViewModels.Forms.Forms1.Items"
         x:Name="1.1"
         Title="{Binding WindowTitle}"
         MinWidth="800"
@@ -52,10 +54,9 @@
                 <!--#region Отчёт-->
 
                 <Border Classes="borderContainer">
-                    <controls:SelectReportPopup
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        DataContext="{Binding SelectReportPopupVM}"/>
+                    <controls:SelectReportPopup HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                DataContext="{Binding SelectReportPopupVM}"/>
                 </Border>
 
                 <Border Classes="borderContainer">
@@ -129,7 +130,6 @@
                         <StackPanel Grid.Row="1" Orientation="Horizontal">
                             <TextBlock Margin="5" Text="Автозаполнение:" />
                             <CheckBox Margin="5" IsChecked="{Binding IsAutoReplaceEnabled}" />
-
                         </StackPanel>
 
                         <Button Grid.Row="2"
@@ -137,6 +137,26 @@
                                 Command="{Binding SetDefaultColumnWidth}"
                                 CommandParameter="{Binding ElementName=dataGrid}"
                                 Content="Выставить ширину колонок по умолчанию" />
+
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="Заморозить колонок:" />
+                            <Button Margin="2,5"
+                                    Width="26"
+                                    Content="−"
+                                    IsEnabled="{Binding CanDecreaseFrozen}"
+                                    Command="{Binding DecreaseFrozenColumnCountCommand}" />
+                            <TextBlock Margin="4,5"
+                                       Width="16"
+                                       VerticalAlignment="Center"
+                                       TextAlignment="Center"
+                                       Text="{Binding FrozenColumnCount}" />
+                            <Button Margin="2,5"
+                                    Width="26"
+                                    Content="+"
+                                    IsEnabled="{Binding CanIncreaseFrozen}"
+                                    Command="{Binding IncreaseFrozenColumnCountCommand}" />
+                        </StackPanel>
+
                     </Grid>
                 </Border>
 
@@ -149,9 +169,9 @@
 
         <!--#region Таблица-->
 
-        <ScrollViewer Grid.Row="1" Classes="tableScrollViewer">
+        <ScrollViewer Grid.Row="1" Classes="tableScrollViewer" HorizontalScrollBarVisibility="Disabled">
             <Grid x:Name="Table"
-                  ColumnDefinitions="Auto"
+                  ColumnDefinitions="*"
                   RowDefinitions="Auto,*">
 
                 <!--#region Контекстное меню-->
@@ -238,132 +258,264 @@
 
                 <!--#region Заголовки таблицы-->
 
+                <!--
+                    Шапка разделена на две части:
+                    - Скроллируемая (Col 1, в XAML первой — рисуется снизу): колонки начиная с 1.
+                      Смещается через Margin.Left на внутреннем Grid (поллинг DispatcherTimer 16мс).
+                    - Фиксированная (Col 0, в XAML второй — рисуется поверх): колонка "№ п/п" — всегда видна.
+                      IsVisible = IsFrozenHeaderVisible (скрыта при FrozenColumnCount=0).
+                -->
                 <Grid Grid.Row="0"
-                      Width="{Binding ElementName=dataGrid.Width}"
+                      Width="{Binding Bounds.Width, ElementName=dataGrid}"
                       Classes="tableHeader"
-                      ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
-                      RowDefinitions="Auto,Auto">
+                      ColumnDefinitions="Auto,*"
+                      Grid.IsSharedSizeScope="True">
 
-                    <interactivity:Interaction.Behaviors>
-                        <local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}" />
-                    </interactivity:Interaction.Behaviors>
+                    <!--#region Скроллируемые колонки — Panel с ClipToBounds, смещение через Margin на внутреннем Grid-->
 
-                    <!--#region Первый уровень заголовков-->
+                    <Panel Grid.Column="1"
+                           ClipToBounds="True">
 
-                    <Border Grid.Row="0"
-                            Grid.RowSpan="2"
-                            Grid.Column="0"
-                            BorderThickness="1,1,1,0">
-                        <TextBlock>№ п/п</TextBlock>
-                    </Border>
-                    <Border Grid.Row="0"
-                            Grid.Column="1"
-                            Grid.ColumnSpan="2">
-                        <TextBlock>Сведения об операции</TextBlock>
-                    </Border>
-                    <Border Grid.Row="0"
-                            Grid.Column="3"
-                            Grid.ColumnSpan="10">
-                        <TextBlock Text="Сведения из паспорта (сертификата) на закрытый радионуклидный источник"/>
-                    </Border>
-                    <Border Grid.Row="0"
-                            Grid.Column="13"
-                            Grid.ColumnSpan="2">
-                        <TextBlock Text="Право собственности на ЗРИ"/>
-                    </Border>
-                    <Border Grid.Row="0"
-                            Grid.Column="15"
-                            Grid.ColumnSpan="3">
-                        <TextBlock Text="Документ"/>
-                    </Border>
-                    <Border Grid.Row="0"
-                            Grid.Column="18"
-                            Grid.ColumnSpan="2">
-                        <TextBlock Text="Код ОКПО"/>
-                    </Border>
-                    <Border Grid.Row="0"
-                            Grid.Column="20"
-                            Grid.ColumnSpan="3">
-                        <TextBlock Text="Прибор (установка), УКТ или иная упаковка"/>
-                    </Border>
+                        <interactivity:Interaction.Behaviors>
+                            <local:FrozenHeaderScrollSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                                                  FixedGroupHeaderBorder="{Binding ElementName=fixedOperationDetailsBorder}"
+                                                                  NppScrollableHeaderGrid="{Binding ElementName=nppScrollableHeader}"/>
+                        </interactivity:Interaction.Behaviors>
 
-                    <!--#endregion Первый уровень заголовков-->
+                        <Grid>
 
-                    <!--#region Второй уровень заголовков-->
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" SharedSizeGroup="HdrRow0"/>
+                                <RowDefinition Height="Auto" SharedSizeGroup="HdrRow1"/>
+                            </Grid.RowDefinitions>
 
-                    <Border Grid.Row="1"
-                            Grid.Column="0"
-                            BorderThickness="1,0,1,1">
-                        <TextBlock />
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="1">
-                        <TextBlock Text="код"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="2">
-                        <TextBlock Text="дата"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="3">
-                        <TextBlock Text="номер паспорта (сертификата)"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="4">
-                        <TextBlock Text="тип"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="5">
-                        <TextBlock Text="радионуклиды"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="6">
-                        <TextBlock Text="номер"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="7">
-                        <TextBlock Text="количество, шт"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="8">
-                        <TextBlock Text="суммарная активность, Бк"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="9">
-                        <TextBlock Text="код ОКПО изготовителя"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="10">
-                        <TextBlock Text="дата выпуска"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="11">
-                        <TextBlock Text="категория"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="12">
-                        <TextBlock Text="НСС, мес"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="13">
-                        <TextBlock Text="код формы собственности"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="14">
-                        <TextBlock Text="код ОКПО правообладателя"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="15">
-                        <TextBlock Text="вид"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="16">
-                        <TextBlock Text="номер"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="17">
-                        <TextBlock Text="дата"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="18">
-                        <TextBlock Text="поставщика или получателя"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="19">
-                        <TextBlock Text="перевозчика"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="20">
-                        <TextBlock Text="наименование"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="21">
-                        <TextBlock Text="тип"/>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="22">
-                        <TextBlock Text="номер"/>
-                    </Border>
+                            <interactivity:Interaction.Behaviors>
+                                <local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                                               StartColumnIndex="1"/>
+                            </interactivity:Interaction.Behaviors>
 
-                    <!--#endregion Второй уровень заголовков-->
+                            <!--#region Первый уровень заголовков (индексы сдвинуты на -1)-->
+
+                            <!--
+                                FrozenCount=1: spanning-border виден полностью.
+                                FrozenCount>=2: col 0 ("код") уходит в фикс. область — spanning-border
+                                заменяется одиночным border для col 1 без левой границы и с полным текстом,
+                                чтобы не было обрезанного "ции" и лишней вертикальной линии слева.
+                                FrozenCount=3: col 1 ("дата") тоже в фикс. области — одиночный border
+                                сдвигается вместе с ним за левый край Panel и не виден.
+                            -->
+                            <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                                    IsVisible="{Binding IsScrollableGroupHeaderFull}">
+                                <TextBlock>Сведения об операции</TextBlock>
+                            </Border>
+                            <!--
+                                FrozenCount=2: "дата" — первая видимая скролл. колонка.
+                                Ячейка Row 0 пустая (без текста), нет левой границы —
+                                визуально продолжает "Сведения об операции" из фиксированной части.
+                                FrozenCount=3: ячейка скрыта за фиксированной областью (не видна пользователю).
+                            -->
+                            <Border Grid.Row="0" Grid.Column="1"
+                                    BorderThickness="0,1,1,1"
+                                    Margin="0"
+                                    IsVisible="{Binding IsFrozenCol1Visible}"/>
+                            <Border Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="10">
+                                <TextBlock Text="Сведения из паспорта (сертификата) на закрытый радионуклидный источник"/>
+                            </Border>
+                            <Border Grid.Row="0" Grid.Column="12" Grid.ColumnSpan="2">
+                                <TextBlock Text="Право собственности на ЗРИ"/>
+                            </Border>
+                            <Border Grid.Row="0" Grid.Column="14" Grid.ColumnSpan="3">
+                                <TextBlock Text="Документ"/>
+                            </Border>
+                            <Border Grid.Row="0" Grid.Column="17" Grid.ColumnSpan="2">
+                                <TextBlock Text="Код ОКПО"/>
+                            </Border>
+                            <Border Grid.Row="0" Grid.Column="19" Grid.ColumnSpan="3">
+                                <TextBlock Text="Прибор (установка), УКТ или иная упаковка"/>
+                            </Border>
+
+                            <!--#endregion-->
+
+                            <!--#region Второй уровень заголовков (индексы сдвинуты на -1)-->
+
+                            <Border Grid.Row="1" Grid.Column="0">
+                                <TextBlock Text="код"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="1">
+                                <TextBlock Text="дата"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="2">
+                                <TextBlock Text="номер паспорта (сертификата)"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="3">
+                                <TextBlock Text="тип"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="4">
+                                <TextBlock Text="радионуклиды"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="5">
+                                <TextBlock Text="номер"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="6">
+                                <TextBlock Text="количество, шт"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="7">
+                                <TextBlock Text="суммарная активность, Бк"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="8">
+                                <TextBlock Text="код ОКПО изготовителя"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="9">
+                                <TextBlock Text="дата выпуска"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="10">
+                                <TextBlock Text="категория"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="11">
+                                <TextBlock Text="НСС, мес"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="12">
+                                <TextBlock Text="код формы собственности"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="13">
+                                <TextBlock Text="код ОКПО правообладателя"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="14">
+                                <TextBlock Text="вид"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="15">
+                                <TextBlock Text="номер"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="16">
+                                <TextBlock Text="дата"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="17">
+                                <TextBlock Text="поставщика или получателя"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="18">
+                                <TextBlock Text="перевозчика"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="19">
+                                <TextBlock Text="наименование"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="20">
+                                <TextBlock Text="тип"/>
+                            </Border>
+                            <Border Grid.Row="1" Grid.Column="21">
+                                <TextBlock Text="номер"/>
+                            </Border>
+
+                            <!--#endregion-->
+
+                        </Grid>
+
+                    </Panel>
+
+                    <!--#endregion Скроллируемые колонки-->
+
+                    <!--
+                        FrozenCount=0: "№ п/п" скроллируется вместе с остальной шапкой.
+                        Размещён ВНЕ Panel (в том же Grid.Column="1" внешней шапки), чтобы
+                        его левая граница не обрезалась ClipToBounds Panel.
+                        Ширина и TranslateTransform.X = -scrollOffset задаются поведением.
+                        RowDefinitions с теми же SharedSizeGroup сохраняют высоту строк.
+                    -->
+                    <Grid x:Name="nppScrollableHeader"
+                          Grid.Column="1"
+                          IsVisible="{Binding IsZeroFrozenMode}"
+                          HorizontalAlignment="Left">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" SharedSizeGroup="HdrRow0"/>
+                            <RowDefinition Height="Auto" SharedSizeGroup="HdrRow1"/>
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="0" Grid.RowSpan="2" BorderThickness="1">
+                            <TextBlock>№ п/п</TextBlock>
+                        </Border>
+                    </Grid>
+
+                    <!--#region Фиксированные колонки (0..FrozenColumnCount-1) — поверх скроллируемых-->
+
+                    <!--
+                        Размещены ПОСЛЕ Panel в XAML, чтобы отрисовываться поверх скроллируемой шапки.
+                        RowDefinitions="Auto,Auto" — две строки заголовка как в скроллируемой части.
+                        ColumnCount привязан к FrozenColumnCount: 1, 2 или 3 колонки.
+
+                        Колонка 0 (№ п/п): всегда видна, Grid.RowSpan=2 (нет подгруппы).
+                        Колонка 1 (код):   видна при FrozenColumnCount >= 2.
+                           Строка 0: "Сведения об операции" (ColumnSpan зависит от FrozenColumnCount).
+                           Строка 1: "код".
+                        Колонка 2 (дата):  видна при FrozenColumnCount >= 3.
+                           Строка 0: (пустая — "Сведения об операции" уже занята col 1 + ColumnSpan=2).
+                           Строка 1: "дата".
+                    -->
+                    <Grid Grid.Column="0"
+                          IsVisible="{Binding IsFrozenHeaderVisible}">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" SharedSizeGroup="HdrRow0"/>
+                            <RowDefinition Height="Auto" SharedSizeGroup="HdrRow1"/>
+                        </Grid.RowDefinitions>
+
+                        <interactivity:Interaction.Behaviors>
+                            <local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                                           StartColumnIndex="0"
+                                                           ColumnCount="{Binding FrozenColumnCount, Mode=OneWay}"/>
+                        </interactivity:Interaction.Behaviors>
+
+                        <!--#region Колонка 0: № п/п (RowSpan=2 — занимает полную высоту шапки)-->
+                        <!--
+                            SharedSizeGroup гарантирует что Row 1 в этом Grid имеет ту же высоту
+                            что Row 1 в скроллируемом Grid, даже когда здесь нет контента в Row 1.
+                            Это нужно для правильного RowSpan=2 и непрерывной вертикальной границы.
+                        -->
+                        <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="2">
+                            <TextBlock>№ п/п</TextBlock>
+                        </Border>
+                        <!--#endregion-->
+
+                        <!--#region Колонка 1: "код" (FrozenColumnCount >= 2)-->
+
+                        <!--
+                            FrozenCount=2: только col 1 заморожена.
+                            FrozenHeaderScrollSyncBehavior динамически управляет шириной и выравниванием:
+                            • пока "дата" частично или полностью видна — Border расширяется, покрывая
+                              оба столбца ("код" + видимую часть "дата"); текст центрируется по этой ширине;
+                            • когда "дата" ушла — Border возвращается к ширине "код", граница отделяет группу.
+                        -->
+                        <Border x:Name="fixedOperationDetailsBorder"
+                                Grid.Row="0" Grid.Column="1"
+                                BorderThickness="1,1,0,1"
+                                IsVisible="{Binding IsFrozenCol1OnlyVisible}">
+                            <TextBlock Text="Сведения об операции"/>
+                        </Border>
+
+                        <!--
+                            FrozenCount=3: col 1 и col 2 заморожены.
+                            ColumnSpan=2 безопасен: ColumnWidthSyncBehavior не удаляет ColumnDefinitions,
+                            а только обнуляет Width у лишних — Col 2 всегда существует.
+                            Текст центрируется по ширине обеих колонок.
+                        -->
+                        <Border Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
+                                IsVisible="{Binding IsFrozenCol2Visible}">
+                            <TextBlock Text="Сведения об операции"/>
+                        </Border>
+
+                        <Border Grid.Row="1" Grid.Column="1"
+                                IsVisible="{Binding IsFrozenCol1Visible}">
+                            <TextBlock Text="код"/>
+                        </Border>
+                        <!--#endregion-->
+
+                        <!--#region Колонка 2: "дата" (FrozenColumnCount >= 3)-->
+                        <Border Grid.Row="1" Grid.Column="2"
+                                IsVisible="{Binding IsFrozenCol2Visible}">
+                            <TextBlock Text="дата"/>
+                        </Border>
+                        <!--#endregion-->
+
+                    </Grid>
+
+                    <!--#endregion Фиксированные колонки-->
 
                 </Grid>
 
@@ -373,40 +525,47 @@
 
                 <DataGrid x:Name="dataGrid"
                           Grid.Row="1"
-                          x:CompileBindings="True"
-                          CanUserReorderColumns="False"
-                          CanUserSortColumns="True"
+                          x:CompileBindings="False"
                           Classes="table"
                           ColumnWidth="125"
+                          FrozenColumnCount="{Binding FrozenColumnCount, Mode=OneWay}"
                           Items="{Binding FormList}"
+                          Margin="8,-5,0,0"
                           SelectedItem="{Binding SelectedForm}">
 
                     <interactivity:Interaction.Behaviors>
                         <local:DataGridColumnWidthLoadBehavior FormNum="1.1" />
                         <local:DataGridPointerBehavior />
                         <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
-                        <local:DeselectDataGridOnClickOutsideBehavior />
+                        <local:DataGridDeselectOnEmptyAreaClickBehavior />
                         <local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
                         <local:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
                     </interactivity:Interaction.Behaviors>
 
 					<DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding NumberInOrder.Value}"
-											Width="40"
-											IsReadOnly="True"
-											x:DataType="forms1:Form11">
-							<DataGridTextColumn.HeaderTemplate>
-								<DataTemplate>
-									<Border Classes="headerTemplate">
-										<Grid ColumnDefinitions="*,Auto">
-											<TextBlock Grid.Column="0" Text="1"/>
-										</Grid>
-									</Border>
-								</DataTemplate>
-							</DataGridTextColumn.HeaderTemplate>
-						</DataGridTextColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="30"
+                                                IsReadOnly="True">
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <Border Classes="headerTemplate">
+                                        <Grid ColumnDefinitions="*,Auto"
+                                              HorizontalAlignment="Center">
+                                            <TextBlock Grid.Column="0" Text="1"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="forms1:Form11">
+                                    <TextBlock Text="{Binding NumberInOrder.Value}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Width="59">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -418,12 +577,46 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding OperationCode.Value, Mode=TwoWay}" />
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <AutoCompleteBox Grid.Column="0"
+                                                         Height="26"
+                                                         Items="{Binding  VM.OperationCodes, ElementName=1.1}"
+                                                         Text="{Binding OperationCode.Value, Mode=TwoWay}"
+                                                         HorizontalAlignment="Stretch"
+                                                         MinimumPrefixLength="0"
+                                                         IsTextCompletionEnabled="False">
+
+                                            <interactivity:Interaction.Behaviors>
+                                                <local:AutoCompleteBoxValidationBehavior 
+                                                    InputPattern="{Binding VM.OperationCodePattern, ElementName=1.1}"
+                                                    MaxInputLength="2"
+                                                    ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.1}" />
+                                                <local:AutoCompleteBoxSelectionChangedBehavior />
+                                            </interactivity:Interaction.Behaviors>
+
+                                            <AutoCompleteBox.ItemTemplate>
+                                                <DataTemplate x:DataType="items:OperationCodeItem">
+                                                    <Grid ColumnDefinitions="Auto,*">
+                                                        <TextBlock Grid.Column="0" 
+                                                                   Text="{Binding Code}" 
+                                                                   Margin="0,0,10,0" 
+                                                                   FontWeight="Bold"/>
+                                                        <TextBlock Grid.Column="1" 
+                                                                   Text="{Binding Description}" 
+                                                                   Foreground="Gray" 
+                                                                   TextWrapping="Wrap" 
+                                                                   MaxWidth="500"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </AutoCompleteBox.ItemTemplate>
+                                        </AutoCompleteBox>
+                                        <appControls:DropDownButton Grid.Column="1" />
+                                    </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="92">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -445,7 +638,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="80">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -462,7 +655,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="76">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -479,7 +672,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="115">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -491,12 +684,12 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding Radionuclids.Value, Mode=TwoWay}" />
+                                    <appControls:RadionuclidsSelector Text="{Binding Radionuclids.Value, Mode=TwoWay}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="52">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -514,7 +707,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="70">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -531,7 +724,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="68">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -548,7 +741,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="77">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -565,7 +758,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="91">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -578,7 +771,8 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
                                     <Grid ColumnDefinitions="*,Auto">
-                                        <TextBox Grid.Column="0" Text="{Binding CreationDate.Value, Mode=TwoWay}" />
+                                        <TextBox Grid.Column="0" 
+                                                 Text="{Binding CreationDate.Value, Mode=TwoWay}" />
                                         <CalendarDatePicker Grid.Column="1"
                                                             Classes="buttonOnly"
                                                             SelectedDate="{Binding CreationDate.Value, Mode=TwoWay, Converter={StaticResource DateConverter}}" />
@@ -587,7 +781,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="58">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -599,12 +793,45 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding Category.Value, Mode=TwoWay}" />
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <AutoCompleteBox Height="26"
+                                                         Items="{Binding VM.CategoryCodes, ElementName=1.1}"
+                                                         Text="{Binding Category.Value, Converter={StaticResource ShortNullableToStringConverter}, Mode=TwoWay}"
+                                                         HorizontalAlignment="Stretch"
+                                                         MinimumPrefixLength="0"
+                                                         IsTextCompletionEnabled="False">
+
+                                            <interactivity:Interaction.Behaviors>
+                                                <local:AutoCompleteBoxValidationBehavior 
+                                                    InputPattern="{Binding VM.CategoryCodePattern, ElementName=1.1}"
+                                                    MaxInputLength="1"
+                                                    ValidValues="{Binding VM.ValidCategories, ElementName=1.1}"/>
+                                                <local:AutoCompleteBoxSelectionChangedBehavior />
+                                            </interactivity:Interaction.Behaviors>
+                                            
+                                            <AutoCompleteBox.ItemTemplate>
+                                                <DataTemplate x:DataType="items:CategoryItem">
+                                                    <Grid ColumnDefinitions="Auto,*">
+                                                        <TextBlock Grid.Column="0" 
+                                                                   Text="{Binding Code}" 
+                                                                   Margin="0,0,10,0" 
+                                                                   FontWeight="Bold"/>
+                                                        <TextBlock Grid.Column="1" 
+                                                                   Text="{Binding Description}" 
+                                                                   Foreground="Gray" 
+                                                                   TextWrapping="Wrap" 
+                                                                   MaxWidth="400"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </AutoCompleteBox.ItemTemplate>
+                                        </AutoCompleteBox>
+                                        <appControls:DropDownButton Grid.Column="1" />
+                                    </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="55">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -621,7 +848,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="84">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -633,12 +860,45 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding PropertyCode.Value, Mode=TwoWay}" />
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <AutoCompleteBox Height="26"
+                                                         Items="{Binding VM.OwnershipForms, ElementName=1.1}"
+                                                         Text="{Binding PropertyCode.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}"
+                                                         HorizontalAlignment="Stretch"
+                                                         MinimumPrefixLength="0"
+                                                         IsTextCompletionEnabled="False">
+
+                                            <interactivity:Interaction.Behaviors>
+                                                <local:AutoCompleteBoxValidationBehavior 
+                                                    InputPattern="{Binding VM.OwnershipCodePattern, ElementName=1.1}"
+                                                    MaxInputLength="1"
+                                                    ValidCodes="{Binding VM.ValidOwnershipForms, ElementName=1.1}"/>
+                                                <local:AutoCompleteBoxSelectionChangedBehavior />
+                                            </interactivity:Interaction.Behaviors>
+
+                                            <AutoCompleteBox.ItemTemplate>
+                                                <DataTemplate x:DataType="items:OwnershipItem">
+                                                    <Grid ColumnDefinitions="Auto,*">
+                                                        <TextBlock Grid.Column="0" 
+                                                                   Text="{Binding Code}" 
+                                                                   Margin="0,0,10,0" 
+                                                                   FontWeight="Bold"/>
+                                                        <TextBlock Grid.Column="1" 
+                                                                   Text="{Binding Description}" 
+                                                                   Foreground="Gray" 
+                                                                   TextWrapping="Wrap" 
+                                                                   MaxWidth="400"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </AutoCompleteBox.ItemTemplate>
+                                        </AutoCompleteBox>
+                                        <appControls:DropDownButton Grid.Column="1" />
+                                    </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="100">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -655,7 +915,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="45">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -667,12 +927,46 @@
                             </DataGridTemplateColumn.HeaderTemplate>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding DocumentVid.Value, Mode=TwoWay}" />
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <AutoCompleteBox Grid.Column="0"
+                                                         Height="26"
+                                                         Items="{Binding VM.DocumentVids, ElementName=1.1}"
+                                                         Text="{Binding DocumentVid.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}"
+                                                         HorizontalAlignment="Stretch"
+                                                         MinimumPrefixLength="0"
+                                                         IsTextCompletionEnabled="False">
+
+                                            <interactivity:Interaction.Behaviors>
+                                                <local:AutoCompleteBoxValidationBehavior
+                                                    InputPattern="{Binding VM.DocumentVidPattern, ElementName=1.1}"
+                                                    MaxInputLength="2"
+                                                    ValidCodes="{Binding VM.ValidDocumentVids, ElementName=1.1}" />
+                                                <local:AutoCompleteBoxSelectionChangedBehavior />
+                                            </interactivity:Interaction.Behaviors>
+
+                                            <AutoCompleteBox.ItemTemplate>
+                                                <DataTemplate x:DataType="items:DocumentVidItem">
+                                                    <Grid ColumnDefinitions="Auto,*">
+                                                        <TextBlock Grid.Column="0" 
+                                                                   Text="{Binding Code}" 
+                                                                   Margin="0,0,10,0" 
+                                                                   FontWeight="Bold"/>
+                                                        <TextBlock Grid.Column="1" 
+                                                                   Text="{Binding Description}" 
+                                                                   Foreground="Gray" 
+                                                                   TextWrapping="Wrap" 
+                                                                   MaxWidth="350"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </AutoCompleteBox.ItemTemplate>
+                                        </AutoCompleteBox>
+                                        <appControls:DropDownButton Grid.Column="1" />
+                                    </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="60">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -689,7 +983,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="92">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -711,7 +1005,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="77">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -728,7 +1022,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="77">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -745,7 +1039,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="88">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -762,7 +1056,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="70">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -779,7 +1073,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="60">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <Border Classes="headerTemplate">
@@ -836,7 +1130,6 @@
                                            Margin="5"
                                            Minimum="1"
                                            Value="{Binding RowCount}" />
-
                 <TextBlock Grid.Row="1"
                            Grid.Column="2"
                            Margin="5"
@@ -876,7 +1169,7 @@
                     <TextBlock Grid.Row="0"
                                Margin="5"
                                Text="Примечания" />
-                    <DataGrid x:Name="notesTable"
+                    <DataGrid x:Name="notesDataGrid"
                               Grid.Row="1"
                               x:CompileBindings="True"
                               Classes="notesTable"
@@ -888,11 +1181,12 @@
                             <local:DataGridPointerBehavior />
                             <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
 							<local:DataGridSwitchToNotesBehavior SourceDataGrid="{Binding #dataGrid}"/>
+                            <local:DataGridDeselectOnEmptyAreaClickBehavior />
                         </interactivity:Interaction.Behaviors>
 
                         <DataGrid.Columns>
 
-                            <DataGridTemplateColumn Width="80" Header="№ строки">
+                            <DataGridTemplateColumn Width="100" Header="№ строки">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:DataType="forms:Note">
                                         <TextBox Text="{Binding RowNumber.Value, Mode=TwoWay}" />
@@ -900,7 +1194,7 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Width="80" Header="№ графы">
+                            <DataGridTemplateColumn Width="100" Header="№ графы">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:DataType="forms:Note">
                                         <TextBox Text="{Binding GraphNumber.Value, Mode=TwoWay}" />
@@ -908,7 +1202,7 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTemplateColumn Width="250" Header="Пояснения">
+                            <DataGridTemplateColumn Width="1000" Header="Пояснения">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate x:DataType="forms:Note">
                                         <TextBox Text="{Binding Comment.Value, Mode=TwoWay}" />

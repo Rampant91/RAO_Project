@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
@@ -18,6 +17,24 @@ namespace Client_App.Commands.AsyncCommands.RaodbExport;
 /// </summary>
 public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncCommand
 {
+    private readonly MainWindowVM _mainWindowVM;
+
+    public ExportReportsWithDateRangeAsyncCommand(MainWindowVM mainWindowVM)
+    {
+        _mainWindowVM = mainWindowVM;
+
+        // Подписываемся на изменение SelectedReports для обновления CanExecute
+        mainWindowVM.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName == nameof(MainWindowVM.SelectedReports))
+            {
+                OnCanExecuteChanged();
+            }
+        };
+    }
+
+    public override bool CanExecute(object? parameter) => _mainWindowVM.SelectedReports is not null;
+
     public override async Task AsyncExecute(object? parameter)
     {
         Reports reports;
@@ -122,7 +139,7 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
         Reports exportOrg = new() { Master = org.Master, Id = org.Id };
         exportOrg.Report_Collection.AddRangeNoChange(repInRange);
 
-        ICommand ExportReports = new ExportReportsAsyncCommand();
+        ICommand ExportReports = new ExportReportsAsyncCommand(_mainWindowVM);
         if (ExportReports.CanExecute(null))
         {
             ExportReports.Execute(exportOrg);

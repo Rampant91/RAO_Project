@@ -513,4 +513,7 @@ public abstract partial class Form : IKey, IDataGridColumn
     public abstract string ConvertToTSVstring();
 
     #endregion
+
+    //Абстрактный метод для сравнения форм по содержанию
+    public abstract bool IsContentEqual(Form other);
 }

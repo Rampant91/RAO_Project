@@ -57,6 +57,8 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
 
     private Task Execute(Window? window = null)
     {
+        if (window is null) return Task.CompletedTask;
+
         window.Closed += WindowClosed;
         window.Close();
 
@@ -71,6 +73,12 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
     {
         if (parameter is not Report report) return;
 
+        if (report.Reports is null)
+        {
+            report.Reports = ReportsStorage.LocalReports.Reports_Collection
+                .FirstOrDefault(r => r.Report_Collection.Any(x => x.Id == report.Id));
+        }
+
         var db = StaticConfiguration.DBModel;
         var modifiedEntities = db.ChangeTracker.Entries()
             .Where(x => x.State != EntityState.Unchanged);
@@ -84,11 +92,6 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
 
         switch (numForm)
         {
-            case "1.1":
-                {
-                    Form1_Visual.tmpVM = changeOrCreateVM;
-                    break;
-                }
             case "2.1":
                 {
                     Form2_Visual.tmpVM = changeOrCreateVM;

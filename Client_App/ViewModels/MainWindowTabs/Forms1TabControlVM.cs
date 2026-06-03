@@ -1,4 +1,7 @@
-﻿using Client_App.Resources.CustomComparers;
+﻿using Client_App.Commands.AsyncCommands.CheckForm;
+using Client_App.Commands.AsyncCommands.ExcelExport;
+using Client_App.Commands.AsyncCommands.Import;
+using Client_App.Resources.CustomComparers;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -6,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 
 namespace Client_App.ViewModels.MainWindowTabs;
 
@@ -21,17 +25,58 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
 
     #endregion
 
+    #region Commands
+
+    /// <summary>
+    /// Проверить выбранный отчёт из главного окна
+    /// </summary>
+    public ICommand CheckReportFromMain { get; private set; }
+
+    /// <summary>
+    /// Выбранная форма -> Выгрузка Excel -> Для анализа
+    /// </summary>
+    public ICommand ExcelExportFormAnalysis { get; private set; }
+
+    /// <summary>
+    /// Выбранная организация -> Импортировать отчёт в организацию -> Из Excel
+    /// </summary>
+    public ICommand ImportExcel { get; private set; }
+
+    /// <summary>
+    /// Выбранная организация -> Импортировать отчёт в организацию -> Из Raodb
+    /// </summary>
+    public ICommand ImportRaodb { get; private set; }
+    
+    #endregion
+
     #region Constructor
 
-    public Forms1TabControlVM() { }
+    public Forms1TabControlVM()
+    {
+        InitializeCommands();
+    }
 
-    public Forms1TabControlVM(MainWindowVM mainWindowVM) : base(mainWindowVM) { }
+    public Forms1TabControlVM(MainWindowVM mainWindowVM) : base(mainWindowVM)
+    {
+        InitializeCommands();
+    }
+
+    private void InitializeCommands()
+    {
+        CheckReportFromMain = new CheckReportFromMainAsyncCommand(this);
+        ExcelExportFormAnalysis = new ExcelExportFormAnalysisAsyncCommand(this);
+        ImportExcel = new ImportExcelAsyncCommand(this);
+        ImportRaodb = new ImportRaodbAsyncCommand(this);
+    }
 
     #endregion
 
     #region Properties
 
-    private int FilteredRowsOrgs
+    /// <summary>
+    /// Всего организаций с учётом фильтра.
+    /// </summary>
+    private protected override int FilteredRowsOrgs
     {
         get
         {
@@ -44,10 +89,32 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
                     .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
                     .Count(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
                                    || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
-                                   || reps.Master_DB.Rows10[0].ShortJurLico_DB.ToLower().Contains(search)
-                                   || reps.Master_DB.Rows10[1].ShortJurLico_DB.ToLower().Contains(search));
+                                   || GetAdditionalSearchConditions(reps, search));
             }
             return TotalRowsOrgs;
+        }
+    }
+
+    protected override bool GetAdditionalSearchConditions(Reports reps, string search)
+    {
+        return reps.Master_DB.Rows10[0].ShortJurLico_DB.Contains(search, StringComparison.CurrentCultureIgnoreCase)
+               || reps.Master_DB.Rows10[1].ShortJurLico_DB.Contains(search, StringComparison.CurrentCultureIgnoreCase);
+    }
+
+    protected override void CheckAndResetFilterIfNeeded()
+    {
+        // Если фильтр установлен и выбрана новая организация
+        if (!string.IsNullOrEmpty(FormNumWhiteList) && SelectedReports != null)
+        {
+            // Проверяем, есть ли отчёты для текущего фильтра в новой организации
+            var hasMatchingReports = SelectedReports.Report_Collection
+                .Any(rep => rep.FormNum_DB == FormNumWhiteList);
+
+            // Если нет отчётов для текущего фильтра, сбрасываем фильтр
+            if (!hasMatchingReports)
+            {
+                FormNumWhiteList = string.Empty;
+            }
         }
     }
 
@@ -127,6 +194,7 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
                     .Take(RowsCountOrgs));
             }
             else
+            {
                 return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
                     .AsEnumerable()
                     .Where(x => x.DBObservable != null)
@@ -135,6 +203,7 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
                     .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
                     .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
                     .Take(RowsCountOrgs));
+            }
         }
     }
 
@@ -196,7 +265,7 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
 
     #region Functions
 
-    public void GoToFormNum(string formNum)
+    public void SetWhiteList(string formNum)
     {
         FormNumWhiteList = FormNumWhiteList != formNum 
             ? formNum 
@@ -218,6 +287,8 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
     {
         OnPropertyChanged(nameof(TotalRowsOrgs));
         OnPropertyChanged(nameof(TotalPagesOrgs));
+        UpdateTotalReportCount();
+        UpdateTotalReportsCount();
     }
 
     #endregion

@@ -234,6 +234,7 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
         {
             if (OperatingSystem.IsWindows()) worksheet.Column(col).AutoFit();
         }
+        worksheet.Cells[worksheet.Dimension.Address].AutoFilter = true;
         worksheet.View.FreezePanes(2, 1);
         return Task.CompletedTask;
     }

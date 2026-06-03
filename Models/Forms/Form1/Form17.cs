@@ -299,9 +299,45 @@ public partial class Form17 : Form1
 
             #endregion
 
-            #region 21, 22, 25, 26, 27, 28, 29, 31, 32, 35, 36, 37, 38, 39
-            
-            case "21" or "22" or "25" or "26" or "27" or "28" or "29" or "31" or "32" or "35" or "36" or "37" or "38" or "39":
+            #region 21, 26, 27
+
+            case "21" or "26" or "27":
+            {
+                #region ProviderOrRecieverOKPO (17)
+
+                if (ProviderOrRecieverOKPO_DB is not "")
+                {
+                    ProviderOrRecieverOKPO.Value = string.Empty;
+                }
+
+                #endregion
+
+                #region TransporterOKPO (18)
+
+                if (TransporterOKPO_DB is not "")
+                {
+                    TransporterOKPO.Value = string.Empty;
+                }
+
+                #endregion
+
+                #region RefineOrSortRAOCode (30)
+
+                if (RefineOrSortRAOCode_DB != dash)
+                {
+                    RefineOrSortRAOCode.Value = dash;
+                }
+
+                #endregion
+
+                break;
+            }
+
+            #endregion
+
+            #region 22, 25, 28, 29, 31, 32, 35, 36, 37, 38, 39
+
+            case "22" or "25" or "28" or "29" or "31" or "32" or "35" or "36" or "37" or "38" or "39":
             {
                 #region RefineOrSortRAOCode (30)
 
@@ -2657,4 +2693,44 @@ public partial class Form17 : Form1
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form17 formToCompare) return false;
+
+        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
+               && OperationCode_DB == formToCompare.OperationCode_DB
+               && OperationDate_DB == formToCompare.OperationDate_DB
+               && DocumentVid_DB == formToCompare.DocumentVid_DB
+               && DocumentNumber_DB == formToCompare.DocumentNumber_DB
+               && DocumentDate_DB == formToCompare.DocumentDate_DB
+               && Sum_DB == formToCompare.Sum_DB
+               && PackName_DB == formToCompare.PackName_DB
+               && PackType_DB == formToCompare.PackType_DB
+               && PackFactoryNumber_DB == formToCompare.PackFactoryNumber_DB
+               && PackNumber_DB == formToCompare.PackNumber_DB
+               && FormingDate_DB == formToCompare.FormingDate_DB
+               && PassportNumber_DB == formToCompare.PassportNumber_DB
+               && Volume_DB == formToCompare.Volume_DB
+               && Mass_DB == formToCompare.Mass_DB
+               && Radionuclids_DB == formToCompare.Radionuclids_DB
+               && SpecificActivity_DB == formToCompare.SpecificActivity_DB
+               && ProviderOrRecieverOKPO_DB == formToCompare.ProviderOrRecieverOKPO_DB
+               && TransporterOKPO_DB == formToCompare.TransporterOKPO_DB
+               && StoragePlaceName_DB == formToCompare.StoragePlaceName_DB
+               && StoragePlaceCode_DB == formToCompare.StoragePlaceCode_DB
+               && CodeRAO_DB == formToCompare.CodeRAO_DB
+               && StatusRAO_DB == formToCompare.StatusRAO_DB
+               && VolumeOutOfPack_DB == formToCompare.VolumeOutOfPack_DB
+               && MassOutOfPack_DB == formToCompare.MassOutOfPack_DB
+               && Quantity_DB == formToCompare.Quantity_DB
+               && TritiumActivity_DB == formToCompare.TritiumActivity_DB
+               && BetaGammaActivity_DB == formToCompare.BetaGammaActivity_DB
+               && AlphaActivity_DB == formToCompare.AlphaActivity_DB
+               && TransuraniumActivity_DB == formToCompare.TransuraniumActivity_DB
+               && RefineOrSortRAOCode_DB == formToCompare.RefineOrSortRAOCode_DB
+               && Subsidy_DB == formToCompare.Subsidy_DB
+               && FcpNumber_DB == formToCompare.FcpNumber_DB
+               && ContractNumber_DB == formToCompare.ContractNumber_DB;
+    }
 }

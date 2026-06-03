@@ -2236,4 +2236,40 @@ public partial class Form18 : Form1
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form18 formToCompare) return false;
+
+        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
+               && OperationCode_DB == formToCompare.OperationCode_DB
+               && OperationDate_DB == formToCompare.OperationDate_DB
+               && DocumentVid_DB == formToCompare.DocumentVid_DB
+               && DocumentNumber_DB == formToCompare.DocumentNumber_DB
+               && DocumentDate_DB == formToCompare.DocumentDate_DB
+               && Sum_DB == formToCompare.Sum_DB
+               && IndividualNumberZHRO_DB == formToCompare.IndividualNumberZHRO_DB
+               && PassportNumber_DB == formToCompare.PassportNumber_DB
+               && Volume6_DB == formToCompare.Volume6_DB
+               && Mass7_DB == formToCompare.Mass7_DB
+               && SaltConcentration_DB == formToCompare.SaltConcentration_DB
+               && Radionuclids_DB == formToCompare.Radionuclids_DB
+               && SpecificActivity_DB == formToCompare.SpecificActivity_DB
+               && ProviderOrRecieverOKPO_DB == formToCompare.ProviderOrRecieverOKPO_DB
+               && TransporterOKPO_DB == formToCompare.TransporterOKPO_DB
+               && StoragePlaceName_DB == formToCompare.StoragePlaceName_DB
+               && StoragePlaceCode_DB == formToCompare.StoragePlaceCode_DB
+               && CodeRAO_DB == formToCompare.CodeRAO_DB
+               && StatusRAO_DB == formToCompare.StatusRAO_DB
+               && Volume20_DB == formToCompare.Volume20_DB
+               && Mass21_DB == formToCompare.Mass21_DB
+               && TritiumActivity_DB == formToCompare.TritiumActivity_DB
+               && BetaGammaActivity_DB == formToCompare.BetaGammaActivity_DB
+               && AlphaActivity_DB == formToCompare.AlphaActivity_DB
+               && TransuraniumActivity_DB == formToCompare.TransuraniumActivity_DB
+               && RefineOrSortRAOCode_DB == formToCompare.RefineOrSortRAOCode_DB
+               && Subsidy_DB == formToCompare.Subsidy_DB
+               && FcpNumber_DB == formToCompare.FcpNumber_DB
+               && ContractNumber_DB == formToCompare.ContractNumber_DB;
+    }
 }

@@ -285,5 +285,15 @@ namespace Models.Forms.Form5
         }
 
         #endregion
+
+        public override bool IsContentEqual(Form otherForm)
+        {
+            if (otherForm is not Form56 formToCompare) return false;
+
+            return NumberInOrder_DB == formToCompare.NumberInOrder_DB
+                   && Name_DB == formToCompare.Name_DB
+                   && Quantity_DB == formToCompare.Quantity_DB
+                   && Mass_DB == formToCompare.Mass_DB;
+        }
     }
 }

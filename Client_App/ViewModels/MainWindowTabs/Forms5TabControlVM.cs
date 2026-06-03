@@ -30,6 +30,41 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
 
     #region Properties
 
+    private protected override int FilteredRowsOrgs
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(SearchText))
+            {
+                var search = SearchText.ToLower().Trim();
+                return StaticConfiguration.DBModel.ReportsCollectionDbSet
+                    .AsEnumerable()
+                    .Where(x => x.DBObservable != null)
+                    .Where(reps => reps.Master_DB.FormNum_DB == "5.0")
+                    .Count(reps => !string.IsNullOrEmpty(reps.Master_DB.Rows50[0].ShortName_DB)
+                                   && reps.Master_DB.Rows50[0].ShortName_DB.ToLower().Contains(search));
+            }
+            return TotalRowsOrgs;
+        }
+    }
+
+    protected override void CheckAndResetFilterIfNeeded()
+    {
+        // Если фильтр установлен и выбрана новая организация
+        if (!string.IsNullOrEmpty(FormNumWhiteList) && SelectedReports != null)
+        {
+            // Проверяем, есть ли отчёты для текущего фильтра в новой организации
+            var hasMatchingReports = SelectedReports.Report_Collection
+                .Any(rep => rep.FormNum_DB == FormNumWhiteList);
+
+            // Если нет отчётов для текущего фильтра, сбрасываем фильтр
+            if (!hasMatchingReports)
+            {
+                FormNumWhiteList = string.Empty;
+            }
+        }
+    }
+
     #region FormNumWhiteList
 
     private string _formNumWhiteList = "";
@@ -167,7 +202,7 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
 
     #region Functions
 
-    public void GoToFormNum(string formNum)
+    public void SetWhiteList(string formNum)
     {
         if (FormNumWhiteList != formNum)
             FormNumWhiteList = formNum;

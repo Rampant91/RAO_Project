@@ -23,6 +23,23 @@ namespace Client_App.Commands.AsyncCommands.Delete;
 /// </summary>
 public class DeleteReportsAsyncCommand : BaseAsyncCommand
 {
+    private readonly MainWindowVM _mainWindowVM;
+
+    public DeleteReportsAsyncCommand(MainWindowVM mainWindowVM)
+    {
+        _mainWindowVM = mainWindowVM;
+
+        mainWindowVM.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName == nameof(MainWindowVM.SelectedReports))
+            {
+                OnCanExecuteChanged();
+            }
+        };
+    }
+
+    public override bool CanExecute(object? parameter) => _mainWindowVM.SelectedReports is not null;
+
     public override async Task AsyncExecute(object? parameter)
     {
         #region MessageDeleteReports
@@ -46,8 +63,6 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
         #endregion
 
         if (answer is not "Да") return;
-
-        
 
         try
         {
@@ -73,7 +88,6 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
             db.ReportCollectionDbSet.Remove(masterRep);
             
-
             db.ReportsCollectionDbSet.Remove(reps);
             await db.SaveChangesAsync();
 
@@ -83,6 +97,8 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
             var mainWindowVM = (mainWindow.DataContext as MainWindowVM)!;
             mainWindowVM.UpdateReportsCollection();
             mainWindowVM.UpdateOrgsPageInfo();
+            mainWindowVM.UpdateTotalReportCount();
+            mainWindowVM.UpdateTotalReportsCount();
         }
         catch (Exception ex)
         {
@@ -95,7 +111,7 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
     
     }
 
-    public static async Task ProcessDataBaseFillEmpty(DataContext dbm)
+    private static async Task ProcessDataBaseFillEmpty(DataContext dbm)
     {
         if (!dbm.DBObservableDbSet.Any()) dbm.DBObservableDbSet.Add(new DBObservable());
         foreach (var item in dbm.DBObservableDbSet)

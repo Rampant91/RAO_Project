@@ -3,18 +3,45 @@ using Avalonia.Controls;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Reactive.Linq;
 
 namespace Client_App.Behaviors;
 
+/// <summary>
+/// Ширины кастомной шапки относительно DataGrid.
+/// </summary>
+internal static class TableHeaderColumnWidth
+{
+    public static double FromDataGridDisplayWidth(
+        double displayValue,
+        TableHeaderLayoutMetrics metrics,
+        int columnIndex)
+    {
+        if (displayValue <= 0) return displayValue;
+        if (metrics.HasHorizontalScroll) return displayValue;
+        if (!ShouldApplyBorderCompensation(metrics, columnIndex)) return displayValue;
+        return displayValue - metrics.BorderCompensation;
+    }
+
+    private static bool ShouldApplyBorderCompensation(TableHeaderLayoutMetrics metrics, int columnIndex)
+    {
+        if (columnIndex == 0) return true;
+        if (metrics.FrozenColumnCount >= 2) return false;
+        return true;
+    }
+}
+
 public class ColumnWidthSyncBehavior : Behavior<Grid>
 {
-    private DataGrid? _dataGrid;
-    private readonly Dictionary<int, IDisposable> _subscriptions = new();
-    private IDisposable? _layoutSubscription;
+    private IDisposable? _boundsSubscription;
+    private IDisposable? _startIndexSub;
+    private IDisposable? _columnCountSub;
+    private double[] _lastAppliedWidths = Array.Empty<double>();
+    private double _lastBoundsWidth = double.NaN;
+    private bool? _lastHasHorizontalScroll;
+    private int _lastFrozenColumnCount = -1;
 
     public static readonly AttachedProperty<DataGrid?> SourceDataGridProperty =
         AvaloniaProperty.RegisterAttached<ColumnWidthSyncBehavior, Grid, DataGrid?>("SourceDataGrid");
@@ -25,103 +52,143 @@ public class ColumnWidthSyncBehavior : Behavior<Grid>
         set => SetValue(SourceDataGridProperty, value);
     }
 
+    public static readonly AttachedProperty<int> StartColumnIndexProperty =
+        AvaloniaProperty.RegisterAttached<ColumnWidthSyncBehavior, Grid, int>("StartColumnIndex", 0);
+
+    public int StartColumnIndex
+    {
+        get => GetValue(StartColumnIndexProperty);
+        set => SetValue(StartColumnIndexProperty, value);
+    }
+
+    public static readonly AttachedProperty<int> ColumnCountProperty =
+        AvaloniaProperty.RegisterAttached<ColumnWidthSyncBehavior, Grid, int>("ColumnCount", 0);
+
+    public int ColumnCount
+    {
+        get => GetValue(ColumnCountProperty);
+        set => SetValue(ColumnCountProperty, value);
+    }
+
     protected override void OnAttached()
     {
         base.OnAttached();
         AssociatedObject.AttachedToVisualTree += OnAttachedToVisualTree;
+
+        _startIndexSub = StartColumnIndexProperty.Changed
+            .Where(e => ReferenceEquals(e.Sender, this))
+            .Subscribe(_ =>
+            {
+                if (SourceDataGrid is not null)
+                    TableHeaderDataGridSync.RequestSync(SourceDataGrid, force: true);
+            });
+        _columnCountSub = ColumnCountProperty.Changed
+            .Where(e => ReferenceEquals(e.Sender, this))
+            .Subscribe(_ =>
+            {
+                if (SourceDataGrid is not null)
+                    TableHeaderDataGridSync.RequestSync(SourceDataGrid, force: true);
+            });
     }
 
     private void OnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
-        // Используем поиск через визуальное дерево
         SourceDataGrid ??= AssociatedObject.GetVisualAncestors()
             .OfType<DataGrid>()
             .FirstOrDefault();
 
         if (SourceDataGrid != null)
-        {
             Initialize();
-        }
     }
 
     private void Initialize()
     {
         if (AssociatedObject == null || SourceDataGrid == null) return;
 
-        // Подписываемся на изменения коллекции колонок
         ((INotifyCollectionChanged)SourceDataGrid.Columns).CollectionChanged += OnColumnsChanged;
 
-        // Инициализация существующих колонок
-        SyncColumns();
+        EnsureColumnDefinitions();
+        TableHeaderDataGridSync.RegisterWidthBehavior(SourceDataGrid, this);
 
-        // Подписываемся на изменение размера DataGrid
-        _layoutSubscription = SourceDataGrid.GetObservable(Visual.BoundsProperty)
-            .Subscribe(_ => UpdateWidths());
+        _boundsSubscription = SourceDataGrid.GetObservable(Visual.BoundsProperty)
+            .Subscribe(rect =>
+            {
+                if (Math.Abs(rect.Width - _lastBoundsWidth) < 0.5) return;
+                _lastBoundsWidth = rect.Width;
+                TableHeaderDataGridSync.RequestSync(SourceDataGrid, force: true);
+            });
     }
 
     private void OnColumnsChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        SyncColumns();
+        EnsureColumnDefinitions();
+        if (SourceDataGrid is not null)
+            TableHeaderDataGridSync.RequestSync(SourceDataGrid, force: true);
     }
 
-    private void SyncColumns()
+    /// <summary>Вызывается координатором TableHeaderDataGridSync.</summary>
+    internal void SyncWidths(TableHeaderLayoutMetrics metrics, bool force = false)
     {
         if (AssociatedObject == null || SourceDataGrid == null) return;
 
-        // Очищаем предыдущие подписки
-        ClearSubscriptions();
+        EnsureColumnDefinitions();
 
-        // Создаем колонки по количеству в DataGrid
-        AssociatedObject.ColumnDefinitions.Clear();
-        for (var i = 0; i < SourceDataGrid.Columns.Count; i++)
+        var start = StartColumnIndex;
+        var end = ColumnCount > 0
+            ? Math.Min(start + ColumnCount, SourceDataGrid.Columns.Count)
+            : SourceDataGrid.Columns.Count;
+
+        var neededCount = end - start;
+        EnsureLastAppliedCache(neededCount);
+
+        if (force
+            || _lastHasHorizontalScroll != metrics.HasHorizontalScroll
+            || _lastFrozenColumnCount != metrics.FrozenColumnCount)
         {
-            var columnDefinition = new ColumnDefinition { Width = GridLength.Auto };
-            AssociatedObject.ColumnDefinitions.Add(columnDefinition);
-            // Подписываемся на изменение фактической ширины
-            var subscription = Observable.FromEventPattern<EventHandler, EventArgs>(
-                    handler => SourceDataGrid!.LayoutUpdated += handler,
-                    handler => SourceDataGrid!.LayoutUpdated -= handler)
-                .Subscribe(_ => UpdateColumnWidth(i));
-            _subscriptions[i] = subscription;
+            _lastHasHorizontalScroll = metrics.HasHorizontalScroll;
+            _lastFrozenColumnCount = metrics.FrozenColumnCount;
+            Array.Fill(_lastAppliedWidths, double.NaN);
+        }
+
+        for (var i = start; i < end; i++)
+        {
+            var gridIndex = i - start;
+            var displayWidth = SourceDataGrid.Columns[i].Width.DisplayValue;
+            if (displayWidth <= 0) continue;
+
+            var headerWidth = TableHeaderColumnWidth.FromDataGridDisplayWidth(displayWidth, metrics, i);
+
+            if (!force && Math.Abs(_lastAppliedWidths[gridIndex] - headerWidth) < 0.05)
+                continue;
+
+            _lastAppliedWidths[gridIndex] = headerWidth;
+            AssociatedObject.ColumnDefinitions[gridIndex].Width = new GridLength(headerWidth);
         }
     }
 
-    private void UpdateColumnWidth(int columnIndex)
+    private void EnsureColumnDefinitions()
     {
-        if (SourceDataGrid == null ||
-            columnIndex >= SourceDataGrid.Columns.Count ||
-            columnIndex >= AssociatedObject?.ColumnDefinitions.Count)
-            return;
+        if (AssociatedObject == null || SourceDataGrid == null) return;
 
-        var column = SourceDataGrid.Columns[columnIndex];
+        var start = StartColumnIndex;
+        var end = ColumnCount > 0
+            ? Math.Min(start + ColumnCount, SourceDataGrid.Columns.Count)
+            : SourceDataGrid.Columns.Count;
 
-        // Используем рефлексию для получения ActualWidth
-        var actualWidth = column.Width.DisplayValue;
+        var neededCount = end - start;
 
-        if (actualWidth > 0)
-        {
-            //вычитаем 1 пиксель, иначе шапка таблицы съезжает
-            AssociatedObject.ColumnDefinitions[columnIndex].Width = new GridLength(actualWidth - 1);
-        }
+        while (AssociatedObject.ColumnDefinitions.Count < neededCount)
+            AssociatedObject.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+        for (var i = neededCount; i < AssociatedObject.ColumnDefinitions.Count; i++)
+            AssociatedObject.ColumnDefinitions[i].Width = new GridLength(0);
     }
 
-    private void UpdateWidths()
+    private void EnsureLastAppliedCache(int neededCount)
     {
-        if (SourceDataGrid == null) return;
-
-        for (var i = 0; i < SourceDataGrid.Columns.Count; i++)
-        {
-            UpdateColumnWidth(i);
-        }
-    }
-
-    private void ClearSubscriptions()
-    {
-        foreach (var subscription in _subscriptions.Values)
-        {
-            subscription.Dispose();
-        }
-        _subscriptions.Clear();
+        if (_lastAppliedWidths.Length == neededCount) return;
+        _lastAppliedWidths = new double[neededCount];
+        Array.Fill(_lastAppliedWidths, double.NaN);
     }
 
     protected override void OnDetaching()
@@ -129,10 +196,12 @@ public class ColumnWidthSyncBehavior : Behavior<Grid>
         if (SourceDataGrid != null)
         {
             ((INotifyCollectionChanged)SourceDataGrid.Columns).CollectionChanged -= OnColumnsChanged;
+            TableHeaderDataGridSync.UnregisterWidthBehavior(SourceDataGrid, this);
         }
 
-        ClearSubscriptions();
-        _layoutSubscription?.Dispose();
+        _boundsSubscription?.Dispose();
+        _startIndexSub?.Dispose();
+        _columnCountSub?.Dispose();
         AssociatedObject.AttachedToVisualTree -= OnAttachedToVisualTree;
 
         base.OnDetaching();

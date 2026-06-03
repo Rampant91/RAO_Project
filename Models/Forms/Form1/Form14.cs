@@ -1737,4 +1737,32 @@ public class Form14 : Form1
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form14 formToCompare) return false;
+
+        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
+               && OperationCode_DB == formToCompare.OperationCode_DB
+               && OperationDate_DB == formToCompare.OperationDate_DB
+               && PassportNumber_DB == formToCompare.PassportNumber_DB
+               && Name_DB == formToCompare.Name_DB
+               && Sort_DB == formToCompare.Sort_DB
+               && Radionuclids_DB == formToCompare.Radionuclids_DB
+               && Activity_DB == formToCompare.Activity_DB
+               && ActivityMeasurementDate_DB == formToCompare.ActivityMeasurementDate_DB
+               && Volume_DB == formToCompare.Volume_DB
+               && Mass_DB == formToCompare.Mass_DB
+               && AggregateState_DB == formToCompare.AggregateState_DB
+               && PropertyCode_DB == formToCompare.PropertyCode_DB
+               && Owner_DB == formToCompare.Owner_DB
+               && DocumentVid_DB == formToCompare.DocumentVid_DB
+               && DocumentNumber_DB == formToCompare.DocumentNumber_DB
+               && DocumentDate_DB == formToCompare.DocumentDate_DB
+               && ProviderOrRecieverOKPO_DB == formToCompare.ProviderOrRecieverOKPO_DB
+               && TransporterOKPO_DB == formToCompare.TransporterOKPO_DB
+               && PackName_DB == formToCompare.PackName_DB
+               && PackType_DB == formToCompare.PackType_DB
+               && PackNumber_DB == formToCompare.PackNumber_DB;
+    }
 }

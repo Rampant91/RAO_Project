@@ -3,26 +3,22 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.Logger;
-using Client_App.Resources;
 using Client_App.ViewModels.Forms;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.DBRealization;
-using Models.Forms;
 using Models.Forms.Form1;
-using Models.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.SourceTransmission;
 
 // Перевод всех источников в форме из РВ в РАО
-public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsyncCommand
+public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncCommand
 {
-    public NewSourceTransmissionAllAsyncCommand(BaseFormVM formVM)
+    public SourceTransmissionAllAsyncCommand(BaseFormVM formVM)
     {
         FormVM = formVM;
     }
@@ -160,6 +156,10 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
             {
                 #region MessageSourceTransmissionFailed
 
+                var formNumInMessage = f.FormNum_DB is "1.1" 
+                    ? "1.5" 
+                    : "1.6";
+
                 await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
@@ -167,7 +167,7 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
                         ContentTitle = "Перевод источника в РАО",
                         ContentHeader = "Ошибка",
                         ContentMessage =
-                            "У выбранной организации присутствуют отчёты по форме 1.5 с пересекающимися периодами. " +
+                            $"У выбранной организации присутствуют отчёты по форме {formNumInMessage} с пересекающимися периодами. " +
                             $"{Environment.NewLine}Устраните данное несоответствие перед операцией перевода источника в РАО.",
                         MinWidth = 400,
                         MinHeight = 150,
@@ -210,6 +210,7 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
                 case 1:   // Если есть подходящий отчет, то добавляем форму в него
                 {
                     var rep = await ReportsStorage.GetReportAsync(repInRange.First().Id);
+                    rep.Reports ??= SelectedReports;
                     var formIsAdded = await AddNewFormToExistingReport(rep, form, db);
                     if (formIsAdded) countAddedForm++;
                     await db.SaveChangesAsync();
@@ -226,8 +227,12 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
                     var rep = await CreateReportAndAddNewForm(db, form, opDate);
                     countAddedForm++;
                     await db.SaveChangesAsync();
-                    var report = await ReportsStorage.Api.GetAsync(rep.Id);
-                    SelectedReports.Report_Collection.Add(report);
+                    var report = await ReportsStorage.GetReportAsync(rep.Id);
+                    report.Reports ??= SelectedReports;
+                    if (!SelectedReports.Report_Collection.Contains(report))
+                    {
+                        SelectedReports.Report_Collection.Add(report);
+                    }
                     if (DateOnly.TryParse(report.StartPeriod_DB, out var date)
                         && DateOnly.TryParse(repToOpen.StartPeriod_DB, out var maxDate)
                         && date > maxDate)
@@ -270,24 +275,8 @@ public class NewSourceTransmissionAllAsyncCommand : NewSourceTransmissionBaseAsy
 
         if (countAddedForm > 0)
         {
+            repToOpen.Reports ??= SelectedReports;
             await CloseWindowAndOpenNew(repToOpen).ConfigureAwait(false);
         }
     }
-
-    #region CloseWindowAndOpenNew
-
-    private static async Task CloseWindowAndOpenNew(Report rep)
-    {
-        var window = Desktop.Windows.First(x => x.Name is "1.1" or "1.2" or "1.3" or "1.4");
-        var vm = (BaseFormVM)window.DataContext;
-        vm.SkipChangeTacking = true;
-        var windowParam = new FormParameter()
-        {
-            Parameter = new ObservableCollectionWithItemPropertyChanged<IKey>(new List<Report> { rep }),
-            Window = window
-        };
-        await new ChangeFormAsyncCommand(windowParam).AsyncExecute(null).ConfigureAwait(false);
-    }
-
-    #endregion
 }

@@ -3,15 +3,18 @@ using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels;
+using Client_App.ViewModels.MainWindowTabs;
 using Client_App.Views.Messages;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Models.Forms.Form4;
+using Models.Forms.Form5;
 using OfficeOpenXml;
 using Spravochniki;
 using System;
@@ -20,16 +23,40 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using static Client_App.ViewModels.Messages.SelectReportsMessageWindowVM;
-using Microsoft.EntityFrameworkCore;
-using Models.Forms.Form5;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
 /// <summary>
 /// Импорт -> Из Excel.
 /// </summary>
-internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAsyncCommand
+public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 {
+    private readonly FormsTabControlBaseVM _formsTabControlBaseVM;
+
+    public ImportExcelAsyncCommand() { }
+
+    public ImportExcelAsyncCommand(FormsTabControlBaseVM formsTabControlBaseVM)
+    {
+        _formsTabControlBaseVM = formsTabControlBaseVM;
+
+        formsTabControlBaseVM.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName == nameof(FormsTabControlBaseVM.SelectedReports))
+            {
+                OnCanExecuteChanged();
+            }
+        };
+    }
+
+    public override bool CanExecute(object? parameter) =>
+        parameter switch
+        {
+            Reports => true,
+            "Selected" => _formsTabControlBaseVM.SelectedReports is not null,
+            "Auto" or "FromList" => true,
+            _ => false
+        };
+
     public override async Task AsyncExecute(object? parameter)
     {
         RepsWhereTitleFormCheckIsCancel.Clear();
@@ -43,7 +70,6 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
         SkipNewOrg = false;
         SkipInter = false;
         SkipLess = false;
-        SkipNew = false;
         SkipReplace = false;
         HasMultipleReport = false;
         AtLeastOneImportDone = false;
@@ -160,7 +186,14 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
             {
                 case "1.0" or "2.0":
                 {
-                    switch (parameter)
+                    var executeMode = parameter switch
+                    {
+                        Reports => "Selected",
+                        string mode => mode,
+                        _ => null
+                    };
+
+                    switch (executeMode)
                     {
                         case "Auto":
                         {
@@ -169,7 +202,7 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                         }
                         case "Selected":
                         {
-                            var selectedReports = mainWindowVM.SelectedReports;
+                            var selectedReports = parameter as Reports ?? _formsTabControlBaseVM.SelectedReports;
                             if (selectedReports is null) return;
                             var selectedReportsInfo = new OrganizationInfo
                             {
@@ -590,6 +623,8 @@ internal class ImportExcelAsyncCommand(MainWindowVM mainWindowVM) : ImportBaseAs
                 .ShowDialog(Desktop.MainWindow));
 
             #endregion
+
+            var mainWindowVM = Desktop.MainWindow.DataContext as MainWindowVM;
 
             mainWindowVM.UpdateReportsCollection();
         }

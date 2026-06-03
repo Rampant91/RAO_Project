@@ -9,6 +9,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:models="clr-namespace:Models.Collections;assembly=Models"
              xmlns:vm="using:Client_App.ViewModels.MainWindowTabs"
+             xmlns:customConverters="clr-namespace:Client_App.Resources.CustomConverters"
              d:DesignHeight="450"
              d:DesignWidth="800"
              x:DataType="vm:Forms4TabControlVM"
@@ -16,6 +17,9 @@
 
     <UserControl.Resources>
         <converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue" />
+        <customConverters:NullToBoolConverter x:Key="NullToBoolConverter" />
+        <customConverters:NullToTooltipConverter x:Key="NullToTooltipConverter"/>
+        <customConverters:NotNullToBoolConverter x:Key="NotNullToBoolConverter"/>
     </UserControl.Resources>
 
     <Design.DataContext>
@@ -26,12 +30,18 @@
         <Grid ColumnDefinitions="5*,3*" RowDefinitions="*,*">
             <Grid Grid.Row="0"
                   Grid.Column="0"
-                  RowDefinitions="Auto,*,Auto">
-                <TextBox Grid.Row="0"
+                  RowDefinitions="Auto,Auto,*,Auto">
+                <TextBlock Grid.Row="0"
+                           Margin="5,5,5,0"
+                           FontWeight="SemiBold"
+                           Text="Список РИАЦ:"
+                           TextWrapping="Wrap" />
+                <TextBox Grid.Row="1"
                          Margin="5"
                          Text="{Binding SearchText, Mode=OneWayToSource}"
                          Watermark="Поиск..." />
-                <DataGrid Grid.Row="1"
+                <DataGrid x:Name="ReportsDataGrid"
+                          Grid.Row="2"
                           Margin="5"
                           AlternatingRowBackground="White"
                           CanUserSortColumns="False"
@@ -44,28 +54,29 @@
 
                     <interactivity:Interaction.Behaviors>
                         <local:DataGridDoubleClickOpenFormBehavior />
+                        <local:DataGridDeselectOnEmptyAreaClickBehavior />
                     </interactivity:Interaction.Behaviors>
 
                     <DataGrid.ContextMenu>
                         <ContextMenu>
                             <MenuItem Command="{Binding MainWindowVM.AddReports, Mode=OneWay}" 
                                       Header="Добавить форму" />
-                            <MenuItem Command="{Binding MainWindowVM.NewChangeReports, Mode=OneWay}" 
+                            <MenuItem Command="{Binding NewChangeReports, Mode=OneWay}" 
                                       Header="Редактировать форму" />
                             <MenuItem Command="{Binding MainWindowVM.DeleteReports, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReports, Mode=OneWay}"
                                       Header="Удалить форму" />
                             <MenuItem Command="{Binding MainWindowVM.ExportReports, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReports, Mode=OneWay}"
-                                      Header="Выгрузить организацию" />
+                                      Header="Выгрузить отчет РИАЦ" />
                             <MenuItem Command="{Binding MainWindowVM.ExportReportsWithDateRange, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReports, Mode=OneWay}"
-                                      Header="Выгрузить организацию с указанием диапазона дат" />
+                                      Header="Выгрузить отчет РИАЦ с указанием диапазона дат" />
                             <MenuItem Command="{Binding MainWindowVM.ExportAllReportsOneFile, Mode=OneWay}" 
-                                      Header="Выгрузить все организации в один файл" />
+                                      Header="Выгрузить все отчеты РИАЦ в один файл" />
                             <MenuItem Command="{Binding MainWindowVM.ExportAllReports, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReports, Mode=OneWay}"
-                                      Header="Выгрузить все организации в отдельные файлы" />
+                                      Header="Выгрузить все отчеты в отдельные файлы" />
                         </ContextMenu>
                     </DataGrid.ContextMenu>
 
@@ -131,7 +142,7 @@
 
                     </DataGrid.Columns>
                 </DataGrid>
-                <Border Grid.Row="2" Classes="pageControlContainer">
+                <Border Grid.Row="3" Classes="pageControlContainer">
                     <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
                         <TextBlock Grid.Row="0"
                                    Grid.Column="0"
@@ -186,18 +197,53 @@
                     </Grid>
                 </Border>
             </Grid>
-            <StackPanel Grid.Row="0"
-                        Grid.Column="1"
-                        Margin="5">
-                <Button Command="{Binding MainWindowVM.NewAddForm}"
-                        CommandParameter="4.1"
-                        Content="Форма 4.1" />
-            </StackPanel>
+            <Grid Grid.Row="0"
+                  Grid.Column="1"
+                  Margin="5">
+                <StackPanel>
+                    <TextBlock Margin="0,0,0,8"
+                               FontWeight="SemiBold"
+                               Text="Создать отчёт по форме:"
+                               TextWrapping="Wrap" />
+                    <Button Command="{Binding AddReport, Mode=OneWay}"
+                            CommandParameter="4.1"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+                            IsEnabled="{Binding SelectedReports, 
+                                    Converter={StaticResource NotNullToBoolConverter}, 
+                                    Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="4.1: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Перечень организаций, зарегистрированных в СГУК РВ и РАО на региональном уровне" />
+                        </Grid>
+                    </Button>
+                </StackPanel>
+                <!-- Прозрачный слой поверх: наведение на отключённую кнопку не доходит до StackPanel -->
+                <Border ZIndex="1"
+                        Background="Transparent"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        IsVisible="{Binding SelectedReports, Converter={StaticResource NullToBoolConverter}}"
+                        ToolTip.Tip="{Binding SelectedReports, Converter={StaticResource NullToTooltipConverter}, ConverterParameter='Для создания отчёта выберите свой центр из списка РИАЦ. Если РИАЦ в списке отсутствуют, сначала добавьте свой центр в список.'}" />
+            </Grid>
             <Grid Grid.Row="1"
                   Grid.Column="0"
                   Grid.ColumnSpan="2"
-                  RowDefinitions="*,Auto">
-                <DataGrid Grid.Row="0"
+                  RowDefinitions="Auto,*,Auto">
+                <TextBlock Grid.Row="0"
+                           Margin="5,5,5,0"
+                           FontWeight="SemiBold"
+                           Text="Список отчётов:"
+                           TextWrapping="Wrap" />
+                <DataGrid x:Name="ReportDataGrid"
+                          Grid.Row="1"
                           Margin="5"
                           AlternatingRowBackground="White"
                           CanUserSortColumns="False"
@@ -205,24 +251,26 @@
                           Items="{Binding ReportCollection}"
                           RowBackground="White"
                           RowHeight="25"
-                          SelectedItem="{Binding SelectedReport}">
+                          SelectedItem="{Binding SelectedReport}"
+                          SelectionMode="Single">
 
                     <interactivity:Interaction.Behaviors>
                         <local:DataGridDoubleClickOpenFormBehavior />
+                        <local:DataGridDeselectOnEmptyAreaClickBehavior />
                     </interactivity:Interaction.Behaviors>
 
                     <DataGrid.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Command="{Binding MainWindowVM.NewChangeForm}"
+                            <MenuItem Command="{Binding NewChangeReport, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReport}"
                                       Header="Редактировать форму" />
-                            <MenuItem Command="{Binding MainWindowVM.NewDeleteForm}"
+                            <MenuItem Command="{Binding DeleteReport, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReport}"
                                       Header="Удалить форму" />
-                            <MenuItem Command="{Binding MainWindowVM.ExcelExportFormPrint}"
+                            <MenuItem Command="{Binding ExcelExportFormPrint, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReport}"
                                       Header="Выгрузить форму в Excel" />
-                            <MenuItem Command="{Binding MainWindowVM.ExportForm}"
+                            <MenuItem Command="{Binding ExportReport, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReport}"
                                       Header="Выгрузить" />
                         </ContextMenu>
@@ -306,7 +354,7 @@
                         </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
-                <Border Grid.Row="1" Classes="pageControlContainer">
+                <Border Grid.Row="2" Classes="pageControlContainer">
                     <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
                         <TextBlock Grid.Row="0"
                                    Grid.Column="0"

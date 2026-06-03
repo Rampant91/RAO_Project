@@ -30,7 +30,7 @@ public class Forms4TabControlVM : FormsTabControlBaseVM
 
     #region Properties
 
-    public int FilteredRowsOrgs
+    private protected override int FilteredRowsOrgs
     {
         get
         {

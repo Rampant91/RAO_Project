@@ -11,63 +11,49 @@ public partial class SnkNumberEqualityComparer : IEqualityComparer<string>
 
         if (x is null || y is null) return false;
 
-        var stringsIsEmpty = CheckForEmptyStrings(x, y);
-        if (stringsIsEmpty) return true;
-
-        x = SpecialSymbolsRegex()
-            .Replace(x.TrimStart(' ', '0'), "")
-            .ToLower()
-            .Replace('а', 'a')
-            .Replace('б', 'b')
-            .Replace('в', 'b')
-            .Replace('г', 'r')
-            .Replace('е', 'e')
-            .Replace('ё', 'e')
-            .Replace('з', '3')
-            .Replace('к', 'k')
-            .Replace('м', 'm')
-            .Replace('н', 'h')
-            .Replace('о', 'o')
-            .Replace('0', 'o')
-            .Replace('р', 'p')
-            .Replace('с', 'c')
-            .Replace('т', 't')
-            .Replace('у', 'y')
-            .Replace('х', 'x');
-
-        y = SpecialSymbolsRegex()
-            .Replace(y.TrimStart(' ', '0'), "")
-            .ToLower()
-            .Replace('а', 'a')
-            .Replace('б', 'b')
-            .Replace('в', 'b')
-            .Replace('г', 'r')
-            .Replace('е', 'e')
-            .Replace('ё', 'e')
-            .Replace('з', '3')
-            .Replace('к', 'k')
-            .Replace('м', 'm')
-            .Replace('н', 'h')
-            .Replace('о', 'o')
-            .Replace('0', 'o')
-            .Replace('р', 'p')
-            .Replace('с', 'c')
-            .Replace('т', 't')
-            .Replace('у', 'y')
-            .Replace('х', 'x');
-
-        return x.Equals(y);
+        return Normalize(x).Equals(Normalize(y));
     }
 
-    private static bool CheckForEmptyStrings(string? str1, string? str2)
-    {
-        str1 = (str1 ?? string.Empty).ToLower();
-        str1 = DashesRegex().Replace(str1, "");
-        str1 = SpecialSymbolsRegex().Replace(str1, "");
+    public int GetHashCode(string obj) => Normalize(obj).GetHashCode();
 
-        str2 = (str2 ?? string.Empty).ToLower();
-        str2 = DashesRegex().Replace(str2, "");
-        str2 = SpecialSymbolsRegex().Replace(str2, "");
+    private static string Normalize(string value)
+    {
+        if (CheckForEmptyString(value))
+        {
+            return string.Empty;
+        }
+
+        return ReplaceSimilarSymbols(
+            SpecialSymbolsRegex().Replace(value.TrimStart(' ', '0'), "").ToLower());
+    }
+
+    private static string ReplaceSimilarSymbols(string value)
+    {
+        return value
+            .Replace('а', 'a')
+            .Replace('б', 'b')
+            .Replace('в', 'b')
+            .Replace('г', 'r')
+            .Replace('е', 'e')
+            .Replace('ё', 'e')
+            .Replace('з', '3')
+            .Replace('к', 'k')
+            .Replace('м', 'm')
+            .Replace('н', 'h')
+            .Replace('о', 'o')
+            .Replace('0', 'o')
+            .Replace('р', 'p')
+            .Replace('с', 'c')
+            .Replace('т', 't')
+            .Replace('у', 'y')
+            .Replace('х', 'x');
+    }
+
+    private static bool CheckForEmptyString(string? value)
+    {
+        var normalized = (value ?? string.Empty).ToLower();
+        normalized = DashesRegex().Replace(normalized, "");
+        normalized = SpecialSymbolsRegex().Replace(normalized, "");
 
         List<string> validStrings =
         [
@@ -80,10 +66,8 @@ public partial class SnkNumberEqualityComparer : IEqualityComparer<string>
             "прим",
             "примечание"
         ];
-        return validStrings.Contains(str1) && validStrings.Contains(str2);
+        return validStrings.Contains(normalized);
     }
-
-    public int GetHashCode(string obj) => obj.GetHashCode();
 
     [GeneratedRegex("[-᠆‐‑‒–—―⸺⸻－﹘﹣－]")]
     private static partial Regex DashesRegex();

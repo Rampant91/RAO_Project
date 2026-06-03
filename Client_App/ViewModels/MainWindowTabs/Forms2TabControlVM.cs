@@ -1,4 +1,7 @@
-﻿using Client_App.Resources.CustomComparers;
+﻿using Client_App.Commands.AsyncCommands.CheckForm;
+using Client_App.Commands.AsyncCommands.ExcelExport;
+using Client_App.Commands.AsyncCommands.Import;
+using Client_App.Resources.CustomComparers;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -7,7 +10,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
+using System.Windows.Input;
+using Client_App.Commands.AsyncCommands.Add;
 
 namespace Client_App.ViewModels.MainWindowTabs;
 
@@ -23,17 +27,62 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
 
     #endregion
 
+    #region Commands
+
+    /// <summary>
+    /// Создать и открыть новое окно с отчётом по форме x.x для выбранной организации (использует старую команду).
+    /// </summary>
+    public ICommand OldAddReport { get; private set; }
+
+    /// <summary>
+    /// Проверить выбранный отчёт из главного окна
+    /// </summary>
+    public ICommand CheckReportFromMain { get; private set; }
+
+    /// <summary>
+    /// Выбранная форма -> Выгрузка Excel -> Для анализа
+    /// </summary>
+    public ICommand ExcelExportFormAnalysis { get; private set; }
+
+    /// <summary>
+    /// Выбранная организация -> Импортировать отчёт в организацию -> Из Excel
+    /// </summary>
+    public ICommand ImportExcel { get; private set; }
+
+    /// <summary>
+    /// Выбранная организация -> Импортировать отчёт в организацию -> Из Raodb
+    /// </summary>
+    public ICommand ImportRaodb { get; private set; } 
+    
+    #endregion
+
     #region Constructor
 
-    public Forms2TabControlVM() { }
+    public Forms2TabControlVM()
+    {
+        InitializeCommands();
+    }
 
-    public Forms2TabControlVM(MainWindowVM mainWindowVM) : base(mainWindowVM) { }
+    public Forms2TabControlVM(MainWindowVM mainWindowVM) : base(mainWindowVM)
+    {
+        InitializeCommands();
+    }
+
+    private void InitializeCommands()
+    {
+        OldAddReport = new OldAddReportAsyncCommand();
+
+        CheckReportFromMain = new CheckReportFromMainAsyncCommand(this);
+        ExcelExportFormAnalysis = new ExcelExportFormAnalysisAsyncCommand(this);
+        ImportExcel = new ImportExcelAsyncCommand(this);
+        ImportRaodb = new ImportRaodbAsyncCommand(this);
+    }
 
     #endregion
 
     #region Properties
 
-    public int FilteredRowsOrgs
+    private protected override int FilteredRowsOrgs
     {
         get
         {
@@ -46,10 +95,32 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
                     .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
                     .Count(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
                                    || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
-                                   || reps.Master_DB.Rows20[0].ShortJurLico_DB.ToLower().Contains(search)
-                                   || reps.Master_DB.Rows20[1].ShortJurLico_DB.ToLower().Contains(search));
+                                   || GetAdditionalSearchConditions(reps, search));
             }
             return TotalRowsOrgs;
+        }
+    }
+
+    protected override bool GetAdditionalSearchConditions(Reports reps, string search)
+    {
+        return reps.Master_DB.Rows20[0].ShortJurLico_DB.ToLower().Contains(search, StringComparison.CurrentCultureIgnoreCase)
+               || reps.Master_DB.Rows20[1].ShortJurLico_DB.ToLower().Contains(search, StringComparison.CurrentCultureIgnoreCase);
+    }
+
+    protected override void CheckAndResetFilterIfNeeded()
+    {
+        // Если фильтр установлен и выбрана новая организация
+        if (!string.IsNullOrEmpty(FormNumWhiteList) && SelectedReports != null)
+        {
+            // Проверяем, есть ли отчёты для текущего фильтра в новой организации
+            var hasMatchingReports = SelectedReports.Report_Collection
+                .Any(rep => rep.FormNum_DB == FormNumWhiteList);
+
+            // Если нет отчётов для текущего фильтра, сбрасываем фильтр
+            if (!hasMatchingReports)
+            {
+                FormNumWhiteList = string.Empty;
+            }
         }
     }
 
@@ -271,7 +342,7 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
         return result;
     }
 
-    public void GoToFormNum(string formNum)
+    public void SetWhiteList(string formNum)
     {
         FormNumWhiteList = FormNumWhiteList != formNum
             ? formNum
@@ -292,6 +363,8 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
     {
         OnPropertyChanged(nameof(TotalRowsOrgs));
         OnPropertyChanged(nameof(TotalPagesOrgs));
+        UpdateTotalReportCount();
+        UpdateTotalReportsCount();
     }
 
     #endregion

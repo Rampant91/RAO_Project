@@ -2160,4 +2160,36 @@ public partial class Form21 : Form2, IBaseColor
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form21 formToCompare) return false;
+
+        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
+               && CorrectionNumber_DB == formToCompare.CorrectionNumber_DB
+               && Sum_DB == formToCompare.Sum_DB
+               && SumGroup_DB == formToCompare.SumGroup_DB
+               && NumberInOrderSum_DB == formToCompare.NumberInOrderSum_DB
+               && RefineMachineName_DB == formToCompare.RefineMachineName_DB
+               && MachinePower_DB == formToCompare.MachinePower_DB
+               && NumberOfHoursPerYear_DB == formToCompare.NumberOfHoursPerYear_DB
+               && CodeRAOIn_DB == formToCompare.CodeRAOIn_DB
+               && StatusRAOIn_DB == formToCompare.StatusRAOIn_DB
+               && VolumeIn_DB == formToCompare.VolumeIn_DB
+               && MassIn_DB == formToCompare.MassIn_DB
+               && QuantityIn_DB == formToCompare.QuantityIn_DB
+               && TritiumActivityIn_DB == formToCompare.TritiumActivityIn_DB
+               && BetaGammaActivityIn_DB == formToCompare.BetaGammaActivityIn_DB
+               && AlphaActivityIn_DB == formToCompare.AlphaActivityIn_DB
+               && TransuraniumActivityIn_DB == formToCompare.TransuraniumActivityIn_DB
+               && CodeRAOout_DB == formToCompare.CodeRAOout_DB
+               && StatusRAOout_DB == formToCompare.StatusRAOout_DB
+               && VolumeOut_DB == formToCompare.VolumeOut_DB
+               && MassOut_DB == formToCompare.MassOut_DB
+               && QuantityOZIIIout_DB == formToCompare.QuantityOZIIIout_DB
+               && TritiumActivityOut_DB == formToCompare.TritiumActivityOut_DB
+               && BetaGammaActivityOut_DB == formToCompare.BetaGammaActivityOut_DB
+               && AlphaActivityOut_DB == formToCompare.AlphaActivityOut_DB
+               && TransuraniumActivityOut_DB == formToCompare.TransuraniumActivityOut_DB;
+    }
 }

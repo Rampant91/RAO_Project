@@ -1186,7 +1186,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
                         errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.InventoriedUnitReceived, firstPlusMinusOperation));
                     }
 
-                    foreach (var form in allOperationsWithoutMutuallyExclusive.Where(x => x.OpDate <= inventoryDate))
+                    foreach (var form in allOperations.Where(x => x.OpDate <= inventoryDate))
                     {
                         if (IsZeroOperation(form, formNum)
                             && !inStock

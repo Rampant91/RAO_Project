@@ -580,4 +580,19 @@ public partial class Form41 : Form
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form41 formToCompare) return false;
+
+        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
+               && RegNo_DB == formToCompare.RegNo_DB
+               && Okpo_DB == formToCompare.Okpo_DB
+               && OrganizationName_DB == formToCompare.OrganizationName_DB
+               && LicenseOrRegistrationInfo_DB == formToCompare.LicenseOrRegistrationInfo_DB
+               && NumOfFormsWithInventarizationInfo_DB == formToCompare.NumOfFormsWithInventarizationInfo_DB
+               && NumOfFormsWithoutInventarizationInfo_DB == formToCompare.NumOfFormsWithoutInventarizationInfo_DB
+               && NumOfForms212_DB == formToCompare.NumOfForms212_DB
+               && Note_DB == formToCompare.Note_DB;
+    }
 }

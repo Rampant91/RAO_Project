@@ -1144,4 +1144,29 @@ public partial class Form20 : Form
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form20 formToCompare) return false;
+
+        return RegNo_DB == formToCompare.RegNo_DB
+               && OrganUprav_DB == formToCompare.OrganUprav_DB
+               && SubjectRF_DB == formToCompare.SubjectRF_DB
+               && JurLico_DB == formToCompare.JurLico_DB
+               && ShortJurLico_DB == formToCompare.ShortJurLico_DB
+               && JurLicoAddress_DB == formToCompare.JurLicoAddress_DB
+               && JurLicoFactAddress_DB == formToCompare.JurLicoFactAddress_DB
+               && GradeFIO_DB == formToCompare.GradeFIO_DB
+               && Telephone_DB == formToCompare.Telephone_DB
+               && Fax_DB == formToCompare.Fax_DB
+               && Email_DB == formToCompare.Email_DB
+               && Okpo_DB == formToCompare.Okpo_DB
+               && Okved_DB == formToCompare.Okved_DB
+               && Okogu_DB == formToCompare.Okogu_DB
+               && Oktmo_DB == formToCompare.Oktmo_DB
+               && Inn_DB == formToCompare.Inn_DB
+               && Kpp_DB == formToCompare.Kpp_DB
+               && Okopf_DB == formToCompare.Okopf_DB
+               && Okfs_DB == formToCompare.Okfs_DB;
+    }
 }

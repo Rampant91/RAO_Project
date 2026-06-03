@@ -560,4 +560,18 @@ public class Form26 : Form2
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form26 formToCompare) return false;
+
+        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
+               && ObservedSourceNumber_DB == formToCompare.ObservedSourceNumber_DB
+               && ControlledAreaName_DB == formToCompare.ControlledAreaName_DB
+               && SupposedWasteSource_DB == formToCompare.SupposedWasteSource_DB
+               && DistanceToWasteSource_DB == formToCompare.DistanceToWasteSource_DB
+               && TestDepth_DB == formToCompare.TestDepth_DB
+               && RadionuclidName_DB == formToCompare.RadionuclidName_DB
+               && AverageYearConcentration_DB == formToCompare.AverageYearConcentration_DB;
+    }
 }

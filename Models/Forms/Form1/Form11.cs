@@ -1101,7 +1101,7 @@ public class Form11 : Form1
         set
         {
             Category_DB = value.Value;
-            OnPropertyChanged(nameof(Category));
+            OnPropertyChanged();
         }
     }
 
@@ -2106,4 +2106,33 @@ public class Form11 : Form1
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form11 formToCompare) return false;
+
+        return NumberInOrder_DB == formToCompare.NumberInOrder_DB 
+               && OperationCode_DB == formToCompare.OperationCode_DB
+               && OperationDate_DB == formToCompare.OperationDate_DB
+               && PassportNumber_DB == formToCompare.PassportNumber_DB
+               && Type_DB == formToCompare.Type_DB
+               && Radionuclids_DB == formToCompare.Radionuclids_DB
+               && FactoryNumber_DB == formToCompare.FactoryNumber_DB
+               && Quantity_DB == formToCompare.Quantity_DB
+               && Activity_DB == formToCompare.Activity_DB
+               && CreatorOKPO_DB == formToCompare.CreatorOKPO_DB
+               && CreationDate_DB == formToCompare.CreationDate_DB
+               && Category_DB == formToCompare.Category_DB
+               && SignedServicePeriod_DB == formToCompare.SignedServicePeriod_DB
+               && PropertyCode_DB == formToCompare.PropertyCode_DB
+               && Owner_DB == formToCompare.Owner_DB
+               && DocumentVid_DB == formToCompare.DocumentVid_DB
+               && DocumentNumber_DB == formToCompare.DocumentNumber_DB
+               && DocumentDate_DB == formToCompare.DocumentDate_DB
+               && ProviderOrRecieverOKPO_DB == formToCompare.ProviderOrRecieverOKPO_DB
+               && TransporterOKPO_DB == formToCompare.TransporterOKPO_DB
+               && PackName_DB == formToCompare.PackName_DB
+               && PackType_DB == formToCompare.PackType_DB
+               && PackNumber_DB == formToCompare.PackNumber_DB;
+    }
 }

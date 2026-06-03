@@ -1,7 +1,10 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
+using Client_App.ViewModels;
+using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Forms.Forms1;
+using Client_App.ViewModels.MainWindowTabs;
 using DynamicData;
 using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
@@ -14,8 +17,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Client_App.ViewModels;
-using Client_App.ViewModels.Forms;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -23,8 +24,25 @@ namespace Client_App.Commands.AsyncCommands.CheckForm;
 /// Проверяет отчёт из главного окна, не открывая его.
 /// </summary>
 /// <returns>Открывает окно с отчётом об ошибках.</returns>
-public class CheckFormFromMainAsyncCommand : BaseAsyncCommand
+public class CheckReportFromMainAsyncCommand : BaseAsyncCommand
 {
+    private readonly FormsTabControlBaseVM _formsTabControlVM;
+
+    public CheckReportFromMainAsyncCommand(FormsTabControlBaseVM formsTabControlVM)
+    {
+        _formsTabControlVM = formsTabControlVM;
+
+        formsTabControlVM.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName == nameof(FormsTabControlBaseVM.SelectedReport))
+            {
+                OnCanExecuteChanged();
+            }
+        };
+    }
+
+    public override bool CanExecute(object? parameter) => _formsTabControlVM.SelectedReport is not null;
+
     public override async void Execute(object? parameter)
     {
         IsExecute = true;
