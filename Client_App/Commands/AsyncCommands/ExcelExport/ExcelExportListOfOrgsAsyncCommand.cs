@@ -15,6 +15,8 @@ using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
+using Models.Forms.Form1;
+using Models.Forms.Form2;
 using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
@@ -61,6 +63,12 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
 
     private int CountFormReports(IEnumerable<Report> collection, string formNum) =>
         collection.Count(x => x.FormNum_DB.Equals(formNum) && MatchesExportPeriodFilter(x));
+
+    private static readonly string[] ExportFormNumbers =
+    [
+        "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9",
+        "2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "2.8", "2.9", "2.10", "2.11", "2.12"
+    ];
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -142,369 +150,34 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     private Task FillExcel(IReadOnlyCollection<Reports> repsList, object? parameter, AnyTaskProgressBarVM progressBarVM)
     {
+        var isFullExport = parameter?.ToString() == "full";
+        var formCountsStartColumn = isFullExport ? 42 : 8;
         var checkedLst = new List<Reports>();
         var row = 2;
         double progressBarDoubleValue = progressBarVM.ValueBar;
 
         foreach (var reps in repsList
-                     .Where(reps => reps.Master.FormNum_DB[0] is '1' or '2')
+                     .Where(reps => reps.Master.FormNum_DB is "1.0" or "2.0")
                      .OrderBy(x => x.Master_DB.RegNoRep?.Value)
                      .ThenBy(x => x.Master_DB.OkpoRep?.Value))
         {
-            if (checkedLst.Any(x => x.Master_DB.RegNoRep == reps.Master_DB.RegNoRep
-                                    && x.Master_DB.OkpoRep == reps.Master_DB.OkpoRep))
+            var isDuplicate = checkedLst.Any(x => x.Master_DB.RegNoRep == reps.Master_DB.RegNoRep
+                                                  && x.Master_DB.OkpoRep == reps.Master_DB.OkpoRep);
+
+            if (isDuplicate)
             {
                 row--;
-
-                if (parameter?.ToString() != "full")
-                {
-                    #region BindingCells
-
-                    Worksheet.Cells[row, 8].Value =
-                        (int)Worksheet.Cells[row, 8].Value
-                        + CountFormReports(reps.Report_Collection, "1.1");
-                    Worksheet.Cells[row, 9].Value =
-                        (int)Worksheet.Cells[row, 9].Value
-                        + CountFormReports(reps.Report_Collection, "1.2");
-                    Worksheet.Cells[row, 10].Value =
-                        (int)Worksheet.Cells[row, 10].Value
-                        + CountFormReports(reps.Report_Collection, "1.3");
-                    Worksheet.Cells[row, 11].Value =
-                        (int)Worksheet.Cells[row, 11].Value
-                        + CountFormReports(reps.Report_Collection, "1.4");
-                    Worksheet.Cells[row, 12].Value =
-                        (int)Worksheet.Cells[row, 12].Value
-                        + CountFormReports(reps.Report_Collection, "1.5");
-                    Worksheet.Cells[row, 13].Value =
-                        (int)Worksheet.Cells[row, 13].Value
-                        + CountFormReports(reps.Report_Collection, "1.6");
-                    Worksheet.Cells[row, 14].Value =
-                        (int)Worksheet.Cells[row, 14].Value
-                        + CountFormReports(reps.Report_Collection, "1.7");
-                    Worksheet.Cells[row, 15].Value =
-                        (int)Worksheet.Cells[row, 15].Value
-                        + CountFormReports(reps.Report_Collection, "1.8");
-                    Worksheet.Cells[row, 16].Value =
-                        (int)Worksheet.Cells[row, 16].Value
-                        + CountFormReports(reps.Report_Collection, "1.9");
-                    Worksheet.Cells[row, 17].Value =
-                        (int)Worksheet.Cells[row, 17].Value
-                        + CountFormReports(reps.Report_Collection, "2.1");
-                    Worksheet.Cells[row, 18].Value =
-                        (int)Worksheet.Cells[row, 18].Value
-                        + CountFormReports(reps.Report_Collection, "2.2");
-                    Worksheet.Cells[row, 19].Value =
-                        (int)Worksheet.Cells[row, 19].Value
-                        + CountFormReports(reps.Report_Collection, "2.3");
-                    Worksheet.Cells[row, 20].Value =
-                        (int)Worksheet.Cells[row, 20].Value
-                        + CountFormReports(reps.Report_Collection, "2.4");
-                    Worksheet.Cells[row, 21].Value =
-                        (int)Worksheet.Cells[row, 21].Value
-                        + CountFormReports(reps.Report_Collection, "2.5");
-                    Worksheet.Cells[row, 22].Value =
-                        (int)Worksheet.Cells[row, 22].Value
-                        + CountFormReports(reps.Report_Collection, "2.6");
-                    Worksheet.Cells[row, 23].Value =
-                        (int)Worksheet.Cells[row, 23].Value
-                        + CountFormReports(reps.Report_Collection, "2.7");
-                    Worksheet.Cells[row, 24].Value =
-                        (int)Worksheet.Cells[row, 24].Value
-                        + CountFormReports(reps.Report_Collection, "2.8");
-                    Worksheet.Cells[row, 25].Value =
-                        (int)Worksheet.Cells[row, 25].Value
-                        + CountFormReports(reps.Report_Collection, "2.9");
-                    Worksheet.Cells[row, 26].Value =
-                        (int)Worksheet.Cells[row, 26].Value
-                        + CountFormReports(reps.Report_Collection, "2.10");
-                    Worksheet.Cells[row, 27].Value =
-                        (int)Worksheet.Cells[row, 27].Value
-                        + CountFormReports(reps.Report_Collection, "2.11");
-                    Worksheet.Cells[row, 28].Value =
-                        (int)Worksheet.Cells[row, 28].Value
-                        + CountFormReports(reps.Report_Collection, "2.12");
-
-                    #endregion
-                }
-                else
-                {
-                    #region BindingCells
-
-                    Worksheet.Cells[row, 42].Value =
-                        (int)Worksheet.Cells[row, 42].Value
-                        + CountFormReports(reps.Report_Collection, "1.1");
-                    Worksheet.Cells[row, 43].Value =
-                        (int)Worksheet.Cells[row, 43].Value
-                        + CountFormReports(reps.Report_Collection, "1.2");
-                    Worksheet.Cells[row, 44].Value =
-                        (int)Worksheet.Cells[row, 44].Value
-                        + CountFormReports(reps.Report_Collection, "1.3");
-                    Worksheet.Cells[row, 45].Value =
-                        (int)Worksheet.Cells[row, 45].Value
-                        + CountFormReports(reps.Report_Collection, "1.4");
-                    Worksheet.Cells[row, 46].Value =
-                        (int)Worksheet.Cells[row, 46].Value
-                        + CountFormReports(reps.Report_Collection, "1.5");
-                    Worksheet.Cells[row, 47].Value =
-                        (int)Worksheet.Cells[row, 47].Value
-                        + CountFormReports(reps.Report_Collection, "1.6");
-                    Worksheet.Cells[row, 48].Value =
-                        (int)Worksheet.Cells[row, 48].Value
-                        + CountFormReports(reps.Report_Collection, "1.7");
-                    Worksheet.Cells[row, 49].Value =
-                        (int)Worksheet.Cells[row, 49].Value
-                        + CountFormReports(reps.Report_Collection, "1.8");
-                    Worksheet.Cells[row, 50].Value =
-                        (int)Worksheet.Cells[row, 50].Value
-                        + CountFormReports(reps.Report_Collection, "1.9");
-                    Worksheet.Cells[row, 51].Value =
-                        (int)Worksheet.Cells[row, 51].Value
-                        + CountFormReports(reps.Report_Collection, "2.1");
-                    Worksheet.Cells[row, 52].Value =
-                        (int)Worksheet.Cells[row, 52].Value
-                        + CountFormReports(reps.Report_Collection, "2.2");
-                    Worksheet.Cells[row, 53].Value =
-                        (int)Worksheet.Cells[row, 53].Value
-                        + CountFormReports(reps.Report_Collection, "2.3");
-                    Worksheet.Cells[row, 54].Value =
-                        (int)Worksheet.Cells[row, 54].Value
-                        + CountFormReports(reps.Report_Collection, "2.4");
-                    Worksheet.Cells[row, 55].Value =
-                        (int)Worksheet.Cells[row, 55].Value
-                        + CountFormReports(reps.Report_Collection, "2.5");
-                    Worksheet.Cells[row, 56].Value =
-                        (int)Worksheet.Cells[row, 56].Value
-                        + CountFormReports(reps.Report_Collection, "2.6");
-                    Worksheet.Cells[row, 57].Value =
-                        (int)Worksheet.Cells[row, 57].Value
-                        + CountFormReports(reps.Report_Collection, "2.7");
-                    Worksheet.Cells[row, 58].Value =
-                        (int)Worksheet.Cells[row, 58].Value
-                        + CountFormReports(reps.Report_Collection, "2.8");
-                    Worksheet.Cells[row, 59].Value =
-                        (int)Worksheet.Cells[row, 59].Value
-                        + CountFormReports(reps.Report_Collection, "2.9");
-                    Worksheet.Cells[row, 60].Value =
-                        (int)Worksheet.Cells[row, 60].Value
-                        + CountFormReports(reps.Report_Collection, "2.10");
-                    Worksheet.Cells[row, 61].Value =
-                        (int)Worksheet.Cells[row, 61].Value
-                        + CountFormReports(reps.Report_Collection, "2.11");
-                    Worksheet.Cells[row, 62].Value =
-                        (int)Worksheet.Cells[row, 62].Value
-                        + CountFormReports(reps.Report_Collection, "2.12");
-
-                    #endregion
-                }
-
+                AccumulateFormCounts(row, formCountsStartColumn, reps);
                 row++;
             }
             else
             {
-                #region BindingCells
-
-                Worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
-                Worksheet.Cells[row, 2].Value = reps.Master.RegNoRep.Value.Length >= 2
-                    ? reps.Master.RegNoRep.Value[..2]
-                    : reps.Master.RegNoRep.Value;
-                Worksheet.Cells[row, 3].Value = !string.IsNullOrEmpty(reps.Master.Rows10[0]?.OrganUprav_DB)
-                    ? reps.Master.Rows10[0].OrganUprav_DB
-                    : !string.IsNullOrEmpty(reps.Master.Rows10[1]?.OrganUprav_DB)
-                        ? reps.Master.Rows10[1].OrganUprav_DB
-                        : !string.IsNullOrEmpty(reps.Master.Rows20[0]?.OrganUprav_DB)
-                            ? reps.Master.Rows20[0]?.OrganUprav_DB
-                            : !string.IsNullOrEmpty(reps.Master.Rows20[1]?.OrganUprav_DB)
-                                ? reps.Master.Rows20[1]?.OrganUprav_DB
-                                : string.Empty;
-                Worksheet.Cells[row, 4].Value = reps.Master.OkpoRep.Value;
-                Worksheet.Cells[row, 5].Value = reps.Master.ShortJurLicoRep.Value;
-                Worksheet.Cells[row, 6].Value =
-                    !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoFactAddress_DB) &&
-                    !reps.Master.Rows10[1].JurLicoFactAddress_DB.Equals("-")
-                        ? reps.Master.Rows10[1].JurLicoFactAddress_DB
-                        : !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoFactAddress_DB) &&
-                          !reps.Master.Rows20[1].JurLicoFactAddress_DB.Equals("-")
-                            ? reps.Master.Rows20[1].JurLicoFactAddress_DB
-                            : !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoAddress_DB) &&
-                              !reps.Master.Rows10[1].JurLicoAddress_DB.Equals("-")
-                                ? reps.Master.Rows10[1].JurLicoAddress_DB
-                                : !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoAddress_DB) &&
-                                  !reps.Master.Rows20[1].JurLicoAddress_DB.Equals("-")
-                                    ? reps.Master.Rows20[1].JurLicoAddress_DB
-                                    : !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoFactAddress_DB) &&
-                                      !reps.Master.Rows10[0].JurLicoFactAddress_DB.Equals("-")
-                                        ? reps.Master.Rows10[0].JurLicoFactAddress_DB
-                                        : !string.IsNullOrEmpty(reps.Master.Rows20[0].JurLicoFactAddress_DB) &&
-                                          !reps.Master.Rows20[0].JurLicoFactAddress_DB.Equals("-")
-                                            ? reps.Master.Rows20[0].JurLicoFactAddress_DB
-                                            : !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoAddress_DB) &&
-                                              !reps.Master.Rows10[0].JurLicoAddress_DB.Equals("-")
-                                                ? reps.Master.Rows10[0].JurLicoAddress_DB
-                                                : reps.Master.Rows20[0].JurLicoAddress_DB;
-                Worksheet.Cells[row, 7].Value = !string.IsNullOrEmpty(reps.Master.Rows10[0].Inn_DB)
-                    ? reps.Master.Rows10[0].Inn_DB
-                    : !string.IsNullOrEmpty(reps.Master.Rows10[1].Inn_DB)
-                        ? reps.Master.Rows10[1].Inn_DB
-                        : !string.IsNullOrEmpty(reps.Master.Rows20[0].Inn_DB)
-                            ? reps.Master.Rows20[0].Inn_DB
-                            : reps.Master.Rows20[1].Inn_DB;
-                if (parameter?.ToString() != "full")
-                {
-                    Worksheet.Cells[row, 8].Value = CountFormReports(reps.Report_Collection, "1.1");
-                    Worksheet.Cells[row, 9].Value = CountFormReports(reps.Report_Collection, "1.2");
-                    Worksheet.Cells[row, 10].Value = CountFormReports(reps.Report_Collection, "1.3");
-                    Worksheet.Cells[row, 11].Value = CountFormReports(reps.Report_Collection, "1.4");
-                    Worksheet.Cells[row, 12].Value = CountFormReports(reps.Report_Collection, "1.5");
-                    Worksheet.Cells[row, 13].Value = CountFormReports(reps.Report_Collection, "1.6");
-                    Worksheet.Cells[row, 14].Value = CountFormReports(reps.Report_Collection, "1.7");
-                    Worksheet.Cells[row, 15].Value = CountFormReports(reps.Report_Collection, "1.8");
-                    Worksheet.Cells[row, 16].Value = CountFormReports(reps.Report_Collection, "1.9");
-                    Worksheet.Cells[row, 17].Value = CountFormReports(reps.Report_Collection, "2.1");
-                    Worksheet.Cells[row, 18].Value = CountFormReports(reps.Report_Collection, "2.2");
-                    Worksheet.Cells[row, 19].Value = CountFormReports(reps.Report_Collection, "2.3");
-                    Worksheet.Cells[row, 20].Value = CountFormReports(reps.Report_Collection, "2.4");
-                    Worksheet.Cells[row, 21].Value = CountFormReports(reps.Report_Collection, "2.5");
-                    Worksheet.Cells[row, 22].Value = CountFormReports(reps.Report_Collection, "2.6");
-                    Worksheet.Cells[row, 23].Value = CountFormReports(reps.Report_Collection, "2.7");
-                    Worksheet.Cells[row, 24].Value = CountFormReports(reps.Report_Collection, "2.8");
-                    Worksheet.Cells[row, 25].Value = CountFormReports(reps.Report_Collection, "2.9");
-                    Worksheet.Cells[row, 26].Value = CountFormReports(reps.Report_Collection, "2.10");
-                    Worksheet.Cells[row, 27].Value = CountFormReports(reps.Report_Collection, "2.11");
-                    Worksheet.Cells[row, 28].Value = CountFormReports(reps.Report_Collection, "2.12");
-                }
-                else
-                {
-                    Worksheet.Cells[row, 8].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].SubjectRF_DB
-                        : reps.Master.Rows20[0].SubjectRF_DB;
-                    Worksheet.Cells[row, 9].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].JurLico_DB
-                        : reps.Master.Rows20[0].JurLico_DB;
-                    Worksheet.Cells[row, 10].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].ShortJurLico_DB
-                        : reps.Master.Rows20[0].ShortJurLico_DB;
-                    Worksheet.Cells[row, 11].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].JurLicoAddress_DB
-                        : reps.Master.Rows20[0].JurLicoAddress_DB;
-                    Worksheet.Cells[row, 12].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].JurLicoFactAddress_DB
-                        : reps.Master.Rows20[0].JurLicoFactAddress_DB;
-                    Worksheet.Cells[row, 13].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].GradeFIO_DB
-                        : reps.Master.Rows20[0].GradeFIO_DB;
-                    Worksheet.Cells[row, 14].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Telephone_DB
-                        : reps.Master.Rows20[0].Telephone_DB;
-                    Worksheet.Cells[row, 15].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Fax_DB
-                        : reps.Master.Rows20[0].Fax_DB;
-                    Worksheet.Cells[row, 16].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Email_DB
-                        : reps.Master.Rows20[0].Email_DB;
-                    Worksheet.Cells[row, 17].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Okpo_DB
-                        : reps.Master.Rows20[0].Okpo_DB;
-                    Worksheet.Cells[row, 18].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Okved_DB
-                        : reps.Master.Rows20[0].Okved_DB;
-                    Worksheet.Cells[row, 19].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Okogu_DB
-                        : reps.Master.Rows20[0].Okogu_DB;
-                    Worksheet.Cells[row, 20].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Oktmo_DB
-                        : reps.Master.Rows20[0].Oktmo_DB;
-                    Worksheet.Cells[row, 21].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Inn_DB
-                        : reps.Master.Rows20[0].Inn_DB;
-                    Worksheet.Cells[row, 22].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Kpp_DB
-                        : reps.Master.Rows20[0].Kpp_DB;
-                    Worksheet.Cells[row, 23].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Okopf_DB
-                        : reps.Master.Rows20[0].Okopf_DB;
-                    Worksheet.Cells[row, 24].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Okfs_DB
-                        : reps.Master.Rows20[0].Okfs_DB;
-                    Worksheet.Cells[row, 25].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].SubjectRF_DB
-                        : reps.Master.Rows20[1].SubjectRF_DB;
-                    Worksheet.Cells[row, 26].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].JurLico_DB
-                        : reps.Master.Rows20[1].JurLico_DB;
-                    Worksheet.Cells[row, 27].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].ShortJurLico_DB
-                        : reps.Master.Rows20[1].ShortJurLico_DB;
-                    Worksheet.Cells[row, 28].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].JurLicoAddress_DB
-                        : reps.Master.Rows20[1].JurLicoAddress_DB;
-                    Worksheet.Cells[row, 29].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].JurLicoFactAddress_DB
-                        : reps.Master.Rows20[1].JurLicoFactAddress_DB;
-                    Worksheet.Cells[row, 30].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].GradeFIO_DB
-                        : reps.Master.Rows20[1].GradeFIO_DB;
-                    Worksheet.Cells[row, 31].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Telephone_DB
-                        : reps.Master.Rows20[1].Telephone_DB;
-                    Worksheet.Cells[row, 32].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Fax_DB
-                        : reps.Master.Rows20[1].Fax_DB;
-                    Worksheet.Cells[row, 33].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Email_DB
-                        : reps.Master.Rows20[1].Email_DB;
-                    Worksheet.Cells[row, 34].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Okpo_DB
-                        : reps.Master.Rows20[1].Okpo_DB;
-                    Worksheet.Cells[row, 35].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Okved_DB
-                        : reps.Master.Rows20[1].Okved_DB;
-                    Worksheet.Cells[row, 36].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Okogu_DB
-                        : reps.Master.Rows20[1].Okogu_DB;
-                    Worksheet.Cells[row, 37].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Oktmo_DB
-                        : reps.Master.Rows20[1].Oktmo_DB;
-                    Worksheet.Cells[row, 38].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Inn_DB
-                        : reps.Master.Rows20[1].Inn_DB;
-                    Worksheet.Cells[row, 39].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Kpp_DB
-                        : reps.Master.Rows20[1].Kpp_DB;
-                    Worksheet.Cells[row, 40].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Okopf_DB
-                        : reps.Master.Rows20[1].Okopf_DB;
-                    Worksheet.Cells[row, 41].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Okfs_DB
-                        : reps.Master.Rows20[1].Okfs_DB;
-                    Worksheet.Cells[row, 42].Value = CountFormReports(reps.Report_Collection, "1.1");
-                    Worksheet.Cells[row, 43].Value = CountFormReports(reps.Report_Collection, "1.2");
-                    Worksheet.Cells[row, 44].Value = CountFormReports(reps.Report_Collection, "1.3");
-                    Worksheet.Cells[row, 45].Value = CountFormReports(reps.Report_Collection, "1.4");
-                    Worksheet.Cells[row, 46].Value = CountFormReports(reps.Report_Collection, "1.5");
-                    Worksheet.Cells[row, 47].Value = CountFormReports(reps.Report_Collection, "1.6");
-                    Worksheet.Cells[row, 48].Value = CountFormReports(reps.Report_Collection, "1.7");
-                    Worksheet.Cells[row, 49].Value = CountFormReports(reps.Report_Collection, "1.8");
-                    Worksheet.Cells[row, 50].Value = CountFormReports(reps.Report_Collection, "1.9");
-                    Worksheet.Cells[row, 51].Value = CountFormReports(reps.Report_Collection, "2.1");
-                    Worksheet.Cells[row, 52].Value = CountFormReports(reps.Report_Collection, "2.2");
-                    Worksheet.Cells[row, 53].Value = CountFormReports(reps.Report_Collection, "2.3");
-                    Worksheet.Cells[row, 54].Value = CountFormReports(reps.Report_Collection, "2.4");
-                    Worksheet.Cells[row, 55].Value = CountFormReports(reps.Report_Collection, "2.5");
-                    Worksheet.Cells[row, 56].Value = CountFormReports(reps.Report_Collection, "2.6");
-                    Worksheet.Cells[row, 57].Value = CountFormReports(reps.Report_Collection, "2.7");
-                    Worksheet.Cells[row, 58].Value = CountFormReports(reps.Report_Collection, "2.8");
-                    Worksheet.Cells[row, 59].Value = CountFormReports(reps.Report_Collection, "2.9");
-                    Worksheet.Cells[row, 60].Value = CountFormReports(reps.Report_Collection, "2.10");
-                    Worksheet.Cells[row, 61].Value = CountFormReports(reps.Report_Collection, "2.11");
-                    Worksheet.Cells[row, 62].Value = CountFormReports(reps.Report_Collection, "2.12");
-                }
-
-                #endregion
-
+                WriteOrgRow(row, reps, isFullExport);
                 row++;
                 checkedLst.Add(reps);
             }
-            progressBarDoubleValue += (double)65 / (repsList.Count);
+
+            progressBarDoubleValue += (double)65 / repsList.Count;
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
                 $"Выгрузка {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value}");
         }
@@ -522,6 +195,152 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
 
         return Task.CompletedTask;
     }
+
+    private void WriteOrgRow(int row, Reports reps, bool isFullExport)
+    {
+        var master = reps.Master;
+        var regNo = master.RegNoRep.Value;
+
+        Worksheet.Cells[row, 1].Value = regNo;
+        Worksheet.Cells[row, 2].Value = regNo.Length >= 2 ? regNo[..2] : regNo;
+        Worksheet.Cells[row, 3].Value = GetOrganUprav(master);
+        Worksheet.Cells[row, 4].Value = master.OkpoRep.Value;
+        Worksheet.Cells[row, 5].Value = master.ShortJurLicoRep.Value;
+        Worksheet.Cells[row, 6].Value = GetJurAddress(master);
+        Worksheet.Cells[row, 7].Value = GetInn(master);
+
+        if (isFullExport)
+        {
+            WriteTitleRowFields(row, master, startColumn: 8, rowIndex: 0);
+            WriteTitleRowFields(row, master, startColumn: 25, rowIndex: 1);
+        }
+
+        SetFormCounts(row, isFullExport ? 42 : 8, reps);
+    }
+
+    private void WriteTitleRowFields(int row, Report master, int startColumn, int rowIndex)
+    {
+        Worksheet.Cells[row, startColumn].Value = GetTitleField(master, rowIndex, r => r.SubjectRF_DB, r => r.SubjectRF_DB);
+        Worksheet.Cells[row, startColumn + 1].Value = GetTitleField(master, rowIndex, r => r.JurLico_DB, r => r.JurLico_DB);
+        Worksheet.Cells[row, startColumn + 2].Value = GetTitleField(master, rowIndex, r => r.ShortJurLico_DB, r => r.ShortJurLico_DB);
+        Worksheet.Cells[row, startColumn + 3].Value = GetTitleField(master, rowIndex, r => r.JurLicoAddress_DB, r => r.JurLicoAddress_DB);
+        Worksheet.Cells[row, startColumn + 4].Value = GetTitleField(master, rowIndex, r => r.JurLicoFactAddress_DB, r => r.JurLicoFactAddress_DB);
+        Worksheet.Cells[row, startColumn + 5].Value = GetTitleField(master, rowIndex, r => r.GradeFIO_DB, r => r.GradeFIO_DB);
+        Worksheet.Cells[row, startColumn + 6].Value = GetTitleField(master, rowIndex, r => r.Telephone_DB, r => r.Telephone_DB);
+        Worksheet.Cells[row, startColumn + 7].Value = GetTitleField(master, rowIndex, r => r.Fax_DB, r => r.Fax_DB);
+        Worksheet.Cells[row, startColumn + 8].Value = GetTitleField(master, rowIndex, r => r.Email_DB, r => r.Email_DB);
+        Worksheet.Cells[row, startColumn + 9].Value = GetTitleField(master, rowIndex, r => r.Okpo_DB, r => r.Okpo_DB);
+        Worksheet.Cells[row, startColumn + 10].Value = GetTitleField(master, rowIndex, r => r.Okved_DB, r => r.Okved_DB);
+        Worksheet.Cells[row, startColumn + 11].Value = GetTitleField(master, rowIndex, r => r.Okogu_DB, r => r.Okogu_DB);
+        Worksheet.Cells[row, startColumn + 12].Value = GetTitleField(master, rowIndex, r => r.Oktmo_DB, r => r.Oktmo_DB);
+        Worksheet.Cells[row, startColumn + 13].Value = GetTitleField(master, rowIndex, r => r.Inn_DB, r => r.Inn_DB);
+        Worksheet.Cells[row, startColumn + 14].Value = GetTitleField(master, rowIndex, r => r.Kpp_DB, r => r.Kpp_DB);
+        Worksheet.Cells[row, startColumn + 15].Value = GetTitleField(master, rowIndex, r => r.Okopf_DB, r => r.Okopf_DB);
+        Worksheet.Cells[row, startColumn + 16].Value = GetTitleField(master, rowIndex, r => r.Okfs_DB, r => r.Okfs_DB);
+    }
+
+    private void SetFormCounts(int row, int startColumn, Reports reps)
+    {
+        for (var i = 0; i < ExportFormNumbers.Length; i++)
+        {
+            Worksheet.Cells[row, startColumn + i].Value =
+                CountFormReports(reps.Report_Collection, ExportFormNumbers[i]);
+        }
+    }
+
+    private void AccumulateFormCounts(int row, int startColumn, Reports reps)
+    {
+        for (var i = 0; i < ExportFormNumbers.Length; i++)
+        {
+            var column = startColumn + i;
+            Worksheet.Cells[row, column].Value = (int)Worksheet.Cells[row, column].Value
+                                                   + CountFormReports(reps.Report_Collection, ExportFormNumbers[i]);
+        }
+    }
+
+    private static Form10? GetForm10Row(Report master, int index) =>
+        master.Rows10.OrderBy(r => r.NumberInOrder_DB).ElementAtOrDefault(index);
+
+    private static Form20? GetForm20Row(Report master, int index) =>
+        master.Rows20.OrderBy(r => r.NumberInOrder_DB).ElementAtOrDefault(index);
+
+    private static string GetOrganUprav(Report master) => master.FormNum_DB switch
+    {
+        "1.0" => master.Rows10
+            .OrderBy(r => r.NumberInOrder_DB)
+            .Select(r => r.OrganUprav_DB)
+            .FirstOrDefault(v => !string.IsNullOrEmpty(v)) ?? string.Empty,
+        "2.0" => master.Rows20
+            .OrderBy(r => r.NumberInOrder_DB)
+            .Select(r => r.OrganUprav_DB)
+            .FirstOrDefault(v => !string.IsNullOrEmpty(v)) ?? string.Empty,
+        _ => string.Empty
+    };
+
+    private static string GetInn(Report master) => master.FormNum_DB switch
+    {
+        "1.0" => master.Rows10
+            .OrderBy(r => r.NumberInOrder_DB)
+            .Select(r => r.Inn_DB)
+            .FirstOrDefault(v => !string.IsNullOrEmpty(v)) ?? string.Empty,
+        "2.0" => master.Rows20
+            .OrderBy(r => r.NumberInOrder_DB)
+            .Select(r => r.Inn_DB)
+            .FirstOrDefault(v => !string.IsNullOrEmpty(v)) ?? string.Empty,
+        _ => string.Empty
+    };
+
+    private static string GetJurAddress(Report master) => master.FormNum_DB switch
+    {
+        "1.0" => GetJurAddress(
+            GetForm10Row(master, 1),
+            GetForm10Row(master, 0),
+            r => r.JurLicoFactAddress_DB,
+            r => r.JurLicoAddress_DB),
+        "2.0" => GetJurAddress(
+            GetForm20Row(master, 1),
+            GetForm20Row(master, 0),
+            r => r.JurLicoFactAddress_DB,
+            r => r.JurLicoAddress_DB),
+        _ => string.Empty
+    };
+
+    private static string GetJurAddress<T>(
+        T? branch,
+        T? head,
+        Func<T, string?> factAddress,
+        Func<T, string?> jurAddress)
+    {
+        if (branch is not null)
+        {
+            if (IsValidAddress(factAddress(branch))) return factAddress(branch)!;
+            if (IsValidAddress(jurAddress(branch))) return jurAddress(branch)!;
+        }
+
+        if (head is not null)
+        {
+            if (IsValidAddress(factAddress(head))) return factAddress(head)!;
+            if (IsValidAddress(jurAddress(head))) return jurAddress(head)!;
+            return jurAddress(head) ?? string.Empty;
+        }
+
+        return string.Empty;
+    }
+
+    private static bool IsValidAddress(string? value) =>
+        !string.IsNullOrEmpty(value) && !value.Equals("-");
+
+    private static string GetTitleField(
+        Report master,
+        int rowIndex,
+        Func<Form10, string?> form10Selector,
+        Func<Form20, string?> form20Selector) =>
+        master.FormNum_DB switch
+        {
+            "1.0" when GetForm10Row(master, rowIndex) is { } row => form10Selector(row) ?? string.Empty,
+            "2.0" when GetForm20Row(master, rowIndex) is { } row => form20Selector(row) ?? string.Empty,
+            _ => string.Empty
+        };
 
     #endregion
 
