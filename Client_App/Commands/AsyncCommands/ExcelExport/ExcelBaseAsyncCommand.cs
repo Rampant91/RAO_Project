@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -21,6 +22,7 @@ using Models.Forms.Form2;
 using Models.Forms.Form4;
 using Models.Forms.Form5;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -964,6 +966,148 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
         return Task.FromResult(excelPackage);
+    }
+
+    #endregion
+
+    #region ExcelHeaderStyle
+
+    /// <summary>
+    /// Заливка строки заголовков (стиль Excel Table Medium — синий акцент).
+    /// </summary>
+    private protected static readonly Color ExcelHeaderFillColor = Color.FromArgb(68, 114, 196);
+
+    /// <summary>
+    /// Цвет шрифта заголовков.
+    /// </summary>
+    private protected static readonly Color ExcelHeaderFontColor = Color.White;
+
+    /// <summary>
+    /// Цвет нижней границы строки заголовков.
+    /// </summary>
+    private protected static readonly Color ExcelHeaderBorderColor = Color.FromArgb(47, 84, 150);
+
+    /// <summary>
+    /// Минимальная высота строки заголовков (в пунктах).
+    /// </summary>
+    private protected const double ExcelHeaderRowMinHeight = 36;
+
+    /// <summary>
+    /// Размер шрифта заголовков.
+    /// </summary>
+    private protected const float ExcelHeaderFontSize = 11f;
+
+    /// <summary>
+    /// Дополнительный запас по высоте для стрелки AutoFilter в узких колонках (в пунктах).
+    /// </summary>
+    private const double ExcelHeaderFilterClearance = 10;
+
+    /// <summary>
+    /// Оформляет строку заголовков по распространённому стилю Excel-таблиц:
+    /// синяя заливка, белый жирный шрифт, выравнивание по центру, перенос текста,
+    /// увеличенная высота строки (чтобы стрелка фильтра не перекрывала подпись).
+    /// Вызывать после заполнения данных и подбора ширины колонок.
+    /// </summary>
+    /// <param name="lastColumn">Номер последней колонки заголовка.</param>
+    /// <param name="enableAutoFilter">Включить автофильтр по диапазону листа.</param>
+    /// <param name="headerRow">Номер строки заголовков.</param>
+    /// <param name="headerRowHeight">Фиксированная высота строки заголовков (в пунктах); null — автооценка.</param>
+    private protected void ApplyExcelHeaderRowStyle(
+        int lastColumn,
+        bool enableAutoFilter = true,
+        int headerRow = 1,
+        double? headerRowHeight = null)
+    {
+        if (lastColumn < 1)
+            return;
+
+        var headerRange = Worksheet.Cells[headerRow, 1, headerRow, lastColumn];
+
+        headerRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
+        headerRange.Style.Fill.BackgroundColor.SetColor(ExcelHeaderFillColor);
+        headerRange.Style.Font.Bold = true;
+        headerRange.Style.Font.Size = ExcelHeaderFontSize;
+        headerRange.Style.Font.Color.SetColor(ExcelHeaderFontColor);
+        headerRange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        headerRange.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        headerRange.Style.WrapText = true;
+
+        var border = headerRange.Style.Border;
+        border.Bottom.Style = ExcelBorderStyle.Thin;
+        border.Bottom.Color.SetColor(ExcelHeaderBorderColor);
+        border.Top.Style = ExcelBorderStyle.Thin;
+        border.Top.Color.SetColor(ExcelHeaderBorderColor);
+
+        Worksheet.Row(headerRow).CustomHeight = true;
+        Worksheet.Row(headerRow).Height = headerRowHeight
+            ?? CalculateExcelHeaderRowHeight(Worksheet, headerRow, lastColumn);
+
+        if (enableAutoFilter && Worksheet.Dimension is not null)
+            Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
+
+        Worksheet.View.FreezePanes(headerRow + 1, 1);
+    }
+
+    /// <summary>
+    /// Оценивает необходимую высоту строки заголовков с учётом переноса текста и стрелок фильтра.
+    /// </summary>
+    private static double CalculateExcelHeaderRowHeight(ExcelWorksheet worksheet, int headerRow, int lastColumn)
+    {
+        var maxHeight = ExcelHeaderRowMinHeight;
+
+        for (var col = 1; col <= lastColumn; col++)
+        {
+            var text = worksheet.Cells[headerRow, col].Value?.ToString();
+            if (string.IsNullOrEmpty(text))
+                continue;
+
+            var columnWidth = worksheet.Column(col).Width;
+            if (columnWidth <= 0)
+                columnWidth = 8;
+
+            var approxCharsPerLine = Math.Max(2, (int)Math.Floor(columnWidth * 0.85));
+            var lineCount = EstimateWrappedLineCount(text, approxCharsPerLine);
+            var cellHeight = lineCount * 15.0 + (lineCount == 1 ? ExcelHeaderFilterClearance : 4);
+            maxHeight = Math.Max(maxHeight, cellHeight);
+        }
+
+        return maxHeight;
+    }
+
+    /// <summary>
+    /// Оценивает число строк при переносе текста по словам.
+    /// </summary>
+    private static int EstimateWrappedLineCount(string text, int approxCharsPerLine)
+    {
+        if (text.Length <= approxCharsPerLine)
+            return 1;
+
+        if (!text.Contains(' '))
+            return (int)Math.Ceiling((double)text.Length / approxCharsPerLine);
+
+        var lineCount = 1;
+        var currentLineLength = 0;
+        foreach (var word in text.Split(' '))
+        {
+            var wordLength = word.Length;
+            if (currentLineLength == 0)
+            {
+                currentLineLength = wordLength;
+                continue;
+            }
+
+            if (currentLineLength + 1 + wordLength > approxCharsPerLine)
+            {
+                lineCount++;
+                currentLineLength = wordLength;
+            }
+            else
+            {
+                currentLineLength += 1 + wordLength;
+            }
+        }
+
+        return lineCount;
     }
 
     #endregion
