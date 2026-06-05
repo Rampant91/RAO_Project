@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -18,6 +19,7 @@ using Models.DBRealization;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -31,37 +33,40 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
     private int _form2YearStart = int.MinValue;
     private int _form2YearEnd = int.MaxValue;
 
-    private bool MatchesExportPeriodFilter(Report report)
+    private bool MatchesExportPeriodFilter(FormReportCountInfo report) =>
+        MatchesExportPeriodFilter(report.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, report.Year_DB);
+
+    private bool MatchesExportPeriodFilter(string formNum, string? startPeriod, string? endPeriod, string? year)
     {
-        if (string.IsNullOrEmpty(report.FormNum_DB))
+        if (string.IsNullOrEmpty(formNum))
             return false;
 
-        if (report.FormNum_DB.StartsWith("1.", StringComparison.Ordinal))
+        if (formNum.StartsWith("1.", StringComparison.Ordinal))
         {
             if (_form1Start == DateOnly.MinValue && _form1End == DateOnly.MaxValue)
                 return true;
 
-            if (!DateOnly.TryParse(report.EndPeriod_DB, out var repEnd))
+            if (!DateOnly.TryParse(endPeriod, out var repEnd))
                 return false;
 
-            var repStart = DateOnly.TryParse(report.StartPeriod_DB, out var rs) ? rs : DateOnly.MinValue;
+            var repStart = DateOnly.TryParse(startPeriod, out var rs) ? rs : DateOnly.MinValue;
             return _form1Start <= repEnd && _form1End >= repStart;
         }
 
-        if (report.FormNum_DB.StartsWith("2.", StringComparison.Ordinal))
+        if (formNum.StartsWith("2.", StringComparison.Ordinal))
         {
             if (_form2YearStart == int.MinValue && _form2YearEnd == int.MaxValue)
                 return true;
 
-            return int.TryParse(report.Year_DB, out var year)
-                   && year >= _form2YearStart
-                   && year <= _form2YearEnd;
+            return int.TryParse(year, out var reportYear)
+                   && reportYear >= _form2YearStart
+                   && reportYear <= _form2YearEnd;
         }
 
         return true;
     }
 
-    private int CountFormReports(IEnumerable<Report> collection, string formNum) =>
+    private int CountFormReports(IReadOnlyList<FormReportCountInfo> collection, string formNum) =>
         collection.Count(x => x.FormNum_DB.Equals(formNum) && MatchesExportPeriodFilter(x));
 
     private static readonly string[] ExportFormNumbers =
@@ -69,6 +74,26 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9",
         "2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "2.8", "2.9", "2.10", "2.11", "2.12"
     ];
+
+    /// <summary>
+    /// Firebird ограничивает список значений в IN (...) ~1500 элементами.
+    /// </summary>
+    private const int FirebirdInClauseBatchSize = 1000;
+
+    /// <summary>
+    /// Максимальная ширина колонки после AutoFit (в символах стандартного шрифта Excel).
+    /// </summary>
+    private const double MaxAutoFitColumnWidth = 35;
+
+    // Доли прогрессбара: загрузка из БД ~30 с, запись в Excel ~10 с (соотношение 3:1).
+    private const int ProgressDbLoadStart = 18;
+    private const int ProgressForm10Loaded = 28;
+    private const int ProgressForm20Loaded = 38;
+    private const int ProgressFormReportsLoadEnd = 72;
+    private const int ProgressDbLoadEnd = 74;
+    private const int ProgressExcelFillEnd = 92;
+
+    private static readonly Color AlternatingRowFill = Color.FromArgb(221, 235, 247); // #DDEBF7 — светло-голубой Excel
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -117,10 +142,10 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         progressBarVM.SetProgressBar(18, "Заполнение заголовков");
         await FillExcelHeaders(excelPackage, parameter);
 
-        progressBarVM.SetProgressBar(20, "Получение списка организаций");
-        var repsList = await GetReportsList(db, cts);
+        progressBarVM.SetProgressBar(ProgressDbLoadStart, "Получение списка организаций");
+        var repsList = await GetReportsList(db, progressBarVM, cts);
 
-        progressBarVM.SetProgressBar(30, "Заполнение строчек в .xlsx");
+        progressBarVM.SetProgressBar(ProgressDbLoadEnd, "Заполнение строчек в .xlsx");
         await FillExcel(repsList, parameter, progressBarVM);
 
         progressBarVM.SetProgressBar(95, "Сохранение");
@@ -148,57 +173,58 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="repsList">Список организаций.</param>
     /// <param name="parameter">Параметр команды (full - выгрузка с дополнительными полями)</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
-    private Task FillExcel(IReadOnlyCollection<Reports> repsList, object? parameter, AnyTaskProgressBarVM progressBarVM)
+    private Task FillExcel(IReadOnlyCollection<OrgExportData> repsList, object? parameter, AnyTaskProgressBarVM progressBarVM)
     {
         var isFullExport = parameter?.ToString() == "full";
         var formCountsStartColumn = isFullExport ? 42 : 8;
-        var checkedLst = new List<Reports>();
+        var checkedLst = new List<OrgExportData>();
         var row = 2;
-        double progressBarDoubleValue = progressBarVM.ValueBar;
+        var firstDataRow = row;
+        var excelFillRange = ProgressExcelFillEnd - ProgressDbLoadEnd;
+        double progressBarDoubleValue = ProgressDbLoadEnd;
 
-        foreach (var reps in repsList
-                     .Where(reps => reps.Master.FormNum_DB is "1.0" or "2.0")
-                     .OrderBy(x => x.Master_DB.RegNoRep?.Value)
-                     .ThenBy(x => x.Master_DB.OkpoRep?.Value))
+        foreach (var org in repsList
+                     .OrderBy(x => x.Reps.Master_DB.RegNoRep?.Value)
+                     .ThenBy(x => x.Reps.Master_DB.OkpoRep?.Value))
         {
-            var isDuplicate = checkedLst.Any(x => x.Master_DB.RegNoRep == reps.Master_DB.RegNoRep
-                                                  && x.Master_DB.OkpoRep == reps.Master_DB.OkpoRep);
+            var isDuplicate = checkedLst.Any(x => x.Reps.Master_DB.RegNoRep == org.Reps.Master_DB.RegNoRep
+                                                  && x.Reps.Master_DB.OkpoRep == org.Reps.Master_DB.OkpoRep);
 
             if (isDuplicate)
             {
                 row--;
-                AccumulateFormCounts(row, formCountsStartColumn, reps);
+                AccumulateFormCounts(row, formCountsStartColumn, org);
                 row++;
             }
             else
             {
-                WriteOrgRow(row, reps, isFullExport);
+                WriteOrgRow(row, org, isFullExport);
                 row++;
-                checkedLst.Add(reps);
+                checkedLst.Add(org);
             }
 
-            progressBarDoubleValue += (double)65 / repsList.Count;
-            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-                $"Выгрузка {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value}");
-        }
-
-        for (var col = 1; col <= Worksheet.Dimension.End.Column; col++)
-        {
-            if (Worksheet.Cells[1, col].Value is "Сокращенное наименование" or "Адрес" or "Орган управления") continue;
-            if (OperatingSystem.IsWindows()) // Под Astra Linux эта команда крашит программу без GDI дров
+            if (repsList.Count > 0)
             {
-                Worksheet.Column(col).AutoFit();
+                progressBarDoubleValue += (double)excelFillRange / repsList.Count;
+                progressBarVM.SetProgressBar(
+                    Math.Min(ProgressExcelFillEnd, (int)Math.Floor(progressBarDoubleValue)),
+                    $"Запись в Excel: {org.Reps.Master_DB.RegNoRep.Value}_{org.Reps.Master_DB.OkpoRep.Value}");
             }
         }
+
+        if (row > firstDataRow)
+            ApplyAlternatingRowColors(firstDataRow, row - 1);
+
+        ApplyColumnWidths();
         Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
         Worksheet.View.FreezePanes(2, 1);
 
         return Task.CompletedTask;
     }
 
-    private void WriteOrgRow(int row, Reports reps, bool isFullExport)
+    private void WriteOrgRow(int row, OrgExportData org, bool isFullExport)
     {
-        var master = reps.Master;
+        var master = org.Reps.Master;
         var regNo = master.RegNoRep.Value;
 
         Worksheet.Cells[row, 1].Value = regNo;
@@ -215,7 +241,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
             WriteTitleRowFields(row, master, startColumn: 25, rowIndex: 1);
         }
 
-        SetFormCounts(row, isFullExport ? 42 : 8, reps);
+        SetFormCounts(row, isFullExport ? 42 : 8, org);
     }
 
     private void WriteTitleRowFields(int row, Report master, int startColumn, int rowIndex)
@@ -239,22 +265,22 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         Worksheet.Cells[row, startColumn + 16].Value = GetTitleField(master, rowIndex, r => r.Okfs_DB, r => r.Okfs_DB);
     }
 
-    private void SetFormCounts(int row, int startColumn, Reports reps)
+    private void SetFormCounts(int row, int startColumn, OrgExportData org)
     {
         for (var i = 0; i < ExportFormNumbers.Length; i++)
         {
             Worksheet.Cells[row, startColumn + i].Value =
-                CountFormReports(reps.Report_Collection, ExportFormNumbers[i]);
+                CountFormReports(org.FormReports, ExportFormNumbers[i]);
         }
     }
 
-    private void AccumulateFormCounts(int row, int startColumn, Reports reps)
+    private void AccumulateFormCounts(int row, int startColumn, OrgExportData org)
     {
         for (var i = 0; i < ExportFormNumbers.Length; i++)
         {
             var column = startColumn + i;
             Worksheet.Cells[row, column].Value = (int)Worksheet.Cells[row, column].Value
-                                                   + CountFormReports(reps.Report_Collection, ExportFormNumbers[i]);
+                                                   + CountFormReports(org.FormReports, ExportFormNumbers[i]);
         }
     }
 
@@ -456,15 +482,56 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
 
         #endregion
 
-        if (OperatingSystem.IsWindows())    // Под Astra Linux эта команда крашит программу без GDI дров
-        {
-            Worksheet.Column(3).AutoFit();
-            Worksheet.Column(5).AutoFit();
-            Worksheet.Column(6).AutoFit();
-        }
         Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
 
         return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Чередует белый и светло-голубой фон строк данных.
+    /// </summary>
+    private void ApplyAlternatingRowColors(int firstRow, int lastRow)
+    {
+        var lastColumn = Worksheet.Dimension.End.Column;
+
+        for (var row = firstRow; row <= lastRow; row++)
+        {
+            if ((row - firstRow) % 2 != 0)
+            {
+                Worksheet.Cells[row, 1, row, lastColumn].Style.Fill.SetBackground(
+                    AlternatingRowFill,
+                    ExcelFillStyle.Solid);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Подбирает ширину колонок по содержимому с ограничением сверху; для текстовых колонок включает перенос строк.
+    /// </summary>
+    private void ApplyColumnWidths()
+    {
+        if (!OperatingSystem.IsWindows()) // Под Astra Linux AutoFit крашит программу без GDI дров
+            return;
+
+        for (var col = 1; col <= Worksheet.Dimension.End.Column; col++)
+        {
+            var column = Worksheet.Column(col);
+            column.AutoFit();
+            if (column.Width > MaxAutoFitColumnWidth)
+                column.Width = MaxAutoFitColumnWidth;
+
+            if (IsTextColumn(col))
+                column.Style.WrapText = true;
+        }
+    }
+
+    private bool IsTextColumn(int column)
+    {
+        var header = Worksheet.Cells[1, column].Value?.ToString();
+        if (string.IsNullOrEmpty(header))
+            return false;
+
+        return !header.StartsWith("Форма ", StringComparison.Ordinal);
     }
 
     #endregion
@@ -472,24 +539,138 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
     #region GetReportsList
 
     /// <summary>
-    /// Получение списка организаций.
+    /// Получение списка организаций: титульные данные и облегчённый набор полей дочерних отчётов для подсчёта форм.
     /// </summary>
-    /// <param name="db">Модель БД.</param>
-    /// <param name="cts">Токен.</param>
-    /// <returns>Коллекция организаций.</returns>
-    private static async Task<IReadOnlyCollection<Reports>> GetReportsList(DBModel db, CancellationTokenSource cts)
+    private async Task<IReadOnlyCollection<OrgExportData>> GetReportsList(
+        DBModel db,
+        AnyTaskProgressBarVM progressBarVM,
+        CancellationTokenSource cts)
     {
-        return await db.ReportsCollectionDbSet
+        var token = cts.Token;
+
+        progressBarVM.SetProgressBar(ProgressDbLoadStart, "Загрузка организаций по форме 1");
+        var form10Orgs = await db.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
-            .AsQueryable()
-            .Include(reps => reps.DBObservable)
-            .Include(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
-            .Include(reps => reps.Master_DB).ThenInclude(x => x.Rows20)
-            .Include(reps => reps.Report_Collection)
-            .Where(reps => reps.DBObservable != null)
-            .ToListAsync(cts.Token);
+            .Where(reps => reps.DBObservableId != null)
+            .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
+            .Include(reps => reps.Master_DB)
+                .ThenInclude(x => x.Rows10)
+            .ToListAsync(token);
+
+        progressBarVM.SetProgressBar(ProgressForm10Loaded, "Загрузка организаций по форме 2");
+        var form20Orgs = await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Where(reps => reps.DBObservableId != null)
+            .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
+            .Include(reps => reps.Master_DB)
+                .ThenInclude(x => x.Rows20)
+            .ToListAsync(token);
+
+        progressBarVM.SetProgressBar(ProgressForm20Loaded, "Загрузка отчётов форм 1 и 2 для подсчёта");
+
+        var orgIds = new HashSet<int>(form10Orgs.Count + form20Orgs.Count);
+        foreach (var org in form10Orgs)
+            orgIds.Add(org.Id);
+        foreach (var org in form20Orgs)
+            orgIds.Add(org.Id);
+
+        var formReportsByOrgId = await LoadFormReportsForCount(db, orgIds, progressBarVM, token);
+
+        progressBarVM.SetProgressBar(ProgressFormReportsLoadEnd, "Подготовка списка организаций");
+        var result = new List<OrgExportData>(form10Orgs.Count + form20Orgs.Count);
+        foreach (var org in form10Orgs)
+        {
+            formReportsByOrgId.TryGetValue(org.Id, out var formReports);
+            result.Add(new OrgExportData(org, formReports ?? []));
+        }
+
+        foreach (var org in form20Orgs)
+        {
+            formReportsByOrgId.TryGetValue(org.Id, out var formReports);
+            result.Add(new OrgExportData(org, formReports ?? []));
+        }
+
+        return result;
     }
+
+    /// <summary>
+    /// Загружает только поля, необходимые для подсчёта количества форм по организации.
+    /// Запрос выполняется пакетами из-за ограничения Firebird на размер IN (...).
+    /// </summary>
+    private static async Task<Dictionary<int, List<FormReportCountInfo>>> LoadFormReportsForCount(
+        DBModel db,
+        HashSet<int> orgIds,
+        AnyTaskProgressBarVM progressBarVM,
+        CancellationToken token)
+    {
+        if (orgIds.Count == 0)
+            return [];
+
+        var orgIdList = orgIds.ToList();
+        var batchCount = (orgIdList.Count + FirebirdInClauseBatchSize - 1) / FirebirdInClauseBatchSize;
+        var result = new Dictionary<int, List<FormReportCountInfo>>(orgIds.Count);
+
+        for (var batchIndex = 0; batchIndex < batchCount; batchIndex++)
+        {
+            var batch = orgIdList
+                .Skip(batchIndex * FirebirdInClauseBatchSize)
+                .Take(FirebirdInClauseBatchSize)
+                .ToList();
+
+            var status = batchCount == 1
+                ? "Загрузка отчётов форм 1 и 2 для подсчёта"
+                : $"Загрузка отчётов форм 1 и 2 для подсчёта (пакет {batchIndex + 1}/{batchCount})";
+            var batchRange = ProgressFormReportsLoadEnd - ProgressForm20Loaded;
+            var percent = ProgressForm20Loaded
+                            + (int)Math.Floor(batchRange * (batchIndex + 1) / (double)batchCount);
+            progressBarVM.SetProgressBar(percent, status);
+
+            var rows = await db.ReportCollectionDbSet
+                .AsNoTracking()
+                .Where(r => r.Reports != null && batch.Contains(r.Reports.Id))
+                .Where(r => ExportFormNumbers.Contains(r.FormNum_DB))
+                .Select(r => new FormReportCountInfo(
+                    r.Reports!.Id,
+                    r.FormNum_DB,
+                    r.StartPeriod_DB,
+                    r.EndPeriod_DB,
+                    r.Year_DB))
+                .ToListAsync(token);
+
+            foreach (var row in rows)
+            {
+                if (!result.TryGetValue(row.OrgId, out var list))
+                {
+                    list = [];
+                    result[row.OrgId] = list;
+                }
+
+                list.Add(row);
+            }
+        }
+
+        return result;
+    }
+
+    #endregion
+
+    #region ExportData
+
+    private sealed class OrgExportData(Reports reps, IReadOnlyList<FormReportCountInfo> formReports)
+    {
+        public Reports Reps { get; } = reps;
+
+        public IReadOnlyList<FormReportCountInfo> FormReports { get; } = formReports;
+    }
+
+    private readonly record struct FormReportCountInfo(
+        int OrgId,
+        string FormNum_DB,
+        string? StartPeriod_DB,
+        string? EndPeriod_DB,
+        string? Year_DB);
 
     #endregion
 
@@ -505,10 +686,8 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
     {
         var countReports = await db.ReportsCollectionDbSet
             .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.DBObservable)
-            .Where(x => x.DBObservable != null)
+            .Where(x => x.DBObservableId != null)
+            .Where(x => x.Master_DB.FormNum_DB == "1.0" || x.Master_DB.FormNum_DB == "2.0")
             .CountAsync(cts.Token);
 
         if (countReports == 0)
