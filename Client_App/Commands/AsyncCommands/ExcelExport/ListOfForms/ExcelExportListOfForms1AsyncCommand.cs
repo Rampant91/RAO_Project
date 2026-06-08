@@ -45,11 +45,7 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelExportListOfFormsBaseAsy
             ? await ExcelGetFullPath(fileName, cts, progressBar)
             : (Path.Combine(folderPath, $"{fileName}.xlsx"), true);
 
-        var count = 0;
-        while (File.Exists(fullPath))
-        {
-            fullPath = Path.Combine(folderPath, fileName + $"_{++count}.xlsx");
-        }
+        fullPath = ResolveUniqueFilePath(fullPath, isBackgroundCommand ? folderPath : null);
 
         progressBarVM.SetProgressBar(13, "Запрос периода");
 
@@ -63,22 +59,24 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelExportListOfFormsBaseAsy
         progressBarVM.SetProgressBar(18, "Заполнение заголовков");
         var worksheet = FillExcelHeaders(excelPackage);
 
-        progressBarVM.SetProgressBar(20, "Получение списка организаций");
-        var orgsList = await GetReportsList(db, "1.0", cts);
+        var orgsList = await GetReportsList(db, "1.0", progressBarVM, cts);
 
-        progressBarVM.SetProgressBar(22, "Подготовка списка отчётов");
         var prepared = PrepareForm1Export(orgsList, startDate, endDate);
 
-        progressBarVM.SetProgressBar(23, "Загрузка списков форм");
         var rowCounts = await LoadForm1RowCounts(db, prepared.ReportIdsByForm, progressBarVM, cts);
 
-        progressBarVM.SetProgressBar(90, "Заполнение строк");
-        FillExcel(prepared.Orgs, rowCounts, worksheet);
+        FillExcel(
+            prepared.Orgs,
+            rowCounts,
+            worksheet,
+            progressBarVM,
+            ProgressRowCountsEndForm1,
+            ProgressExcelFillEnd);
 
-        progressBarVM.SetProgressBar(95, "Сохранение");
+        progressBarVM.SetProgressBar(ProgressSaveStart, "Сохранение");
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
 
-        progressBarVM.SetProgressBar(98, "Очистка временных данных");
+        progressBarVM.SetProgressBar(ProgressCleanup, "Очистка временных данных");
         try
         {
             File.Delete(tmpDbPath);
@@ -100,9 +98,20 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelExportListOfFormsBaseAsy
     private static void FillExcel(
         List<FormListOrgExportData> orgsList,
         Dictionary<int, (int RowCount, int Code10Count)> rowCounts,
-        ExcelWorksheet worksheet)
+        ExcelWorksheet worksheet,
+        AnyTaskProgressBarVM progressBarVM,
+        int progressExcelStart,
+        int progressExcelEnd)
     {
-        var row = 2;
+        var totalRows = CountExportRows(orgsList);
+        var excelFillRange = progressExcelEnd - progressExcelStart;
+        double progressValue = progressExcelStart;
+        var rowsWritten = 0;
+
+        progressBarVM.SetProgressBar(progressExcelStart, "Запись в Excel");
+
+        const int firstDataRow = 2;
+        var row = firstDataRow;
         foreach (var org in orgsList
                      .OrderBy(x => x.RegNo)
                      .ThenBy(x => x.Okpo))
@@ -120,10 +129,25 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelExportListOfFormsBaseAsy
                 worksheet.Cells[row, 8].Value = counts.RowCount;
                 worksheet.Cells[row, 9].Value = InventoryCheck(repRowsCount: counts.RowCount, countCode10: counts.Code10Count).TrimStart();
                 row++;
+
+                if (totalRows <= 0)
+                    continue;
+
+                progressValue += (double)excelFillRange / totalRows;
+                rowsWritten++;
+                if (rowsWritten % ProgressUpdateRowInterval == 0 || rowsWritten == totalRows)
+                {
+                    progressBarVM.SetProgressBar(
+                        Math.Min(progressExcelEnd, (int)Math.Floor(progressValue)),
+                        $"Запись в Excel: {org.RegNo}_{org.Okpo}");
+                }
             }
         }
 
-        ApplyFormListColumnWidths(worksheet);
+        if (row > firstDataRow)
+            ApplyAlternatingRowColors(worksheet, firstDataRow, row - 1);
+
+        ApplyFormListExcelStyle(worksheet, HeaderRowHeightForm1);
     }
 
     #endregion
@@ -137,17 +161,15 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelExportListOfFormsBaseAsy
     {
         var worksheet = excelPackage.Workbook.Worksheets.Add("Список всех форм 1");
 
-        worksheet.Cells[1, 1].Value = "Рег №";
+        worksheet.Cells[1, 1].Value = "Рег. №";
         worksheet.Cells[1, 2].Value = "ОКПО";
         worksheet.Cells[1, 3].Value = "Сокращенное наименование";
         worksheet.Cells[1, 4].Value = "Форма";
-        worksheet.Cells[1, 5].Value = "Дата начала";
-        worksheet.Cells[1, 6].Value = "Дата конца";
-        worksheet.Cells[1, 7].Value = "Номер кор";
-        worksheet.Cells[1, 8].Value = "Количество строк";
+        worksheet.Cells[1, 5].Value = "Дата начала периода" + HeaderFilterLineBreak;
+        worksheet.Cells[1, 6].Value = "Дата конца периода" + HeaderFilterLineBreak;
+        worksheet.Cells[1, 7].Value = "Номер корректировки" + HeaderFilterLineBreak;
+        worksheet.Cells[1, 8].Value = "Количество строк" + HeaderFilterLineBreak;
         worksheet.Cells[1, 9].Value = "Инвентаризация";
-
-        worksheet.Cells[worksheet.Dimension.Address].AutoFilter = true;
 
         return worksheet;
     }
@@ -167,11 +189,17 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelExportListOfFormsBaseAsy
     {
         var token = cts.Token;
         var result = new Dictionary<int, (int RowCount, int Code10Count)>();
+        var formCount = Form1ChildFormNumbers.Length;
 
-        foreach (var formNum in Form1ChildFormNumbers)
+        for (var formIndex = 0; formIndex < formCount; formIndex++)
         {
-            var progressBarValue = progressBarVM.ValueBar;
-            progressBarVM.SetProgressBar(progressBarValue + 7, $"Загрузка списка форм {formNum}");
+            var formNum = Form1ChildFormNumbers[formIndex];
+            SetRowCountsProgress(
+                progressBarVM,
+                formIndex + 1,
+                formCount,
+                ProgressRowCountsEndForm1,
+                formNum);
 
             if (!reportIdsByForm.TryGetValue(formNum, out var reportIds) || reportIds.Count == 0)
                 continue;

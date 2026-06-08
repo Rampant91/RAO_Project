@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +14,7 @@ using Models.DBRealization;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
 
@@ -31,6 +34,26 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
     private const double CorrectionColumnWidth = 8;
     private const double RowCountColumnWidth = 14;
 
+    /// <summary>
+    /// Высота строки заголовков для списка форм 1 (в пунктах).
+    /// </summary>
+    private protected const double HeaderRowHeightForm1 = 55;
+
+    /// <summary>
+    /// Высота строки заголовков для списка форм 2 (в пунктах).
+    /// </summary>
+    private protected const double HeaderRowHeightForm2 = 45;
+
+    /// <summary>
+    /// Суффикс переноса строки в заголовке узкой колонки — стрелка AutoFilter остаётся на пустой строке.
+    /// </summary>
+    private protected const string HeaderFilterLineBreak = "\n";
+
+    /// <summary>
+    /// Цвет фона чередующихся строк данных.
+    /// </summary>
+    private protected static readonly Color AlternatingRowFill = Color.FromArgb(221, 235, 247); // #DDEBF7
+
     private protected static readonly string[] Form1ChildFormNumbers =
         ["1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9"];
 
@@ -38,6 +61,56 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
     [
         "2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "2.8", "2.9", "2.10", "2.11", "2.12"
     ];
+
+    /// <summary>
+    /// Интервал обновления прогрессбара при записи строк в Excel (в строках).
+    /// </summary>
+    private protected const int ProgressUpdateRowInterval = 50;
+
+    /// <summary>
+    /// Прогрессбар в начале загрузки данных из БД.
+    /// </summary>
+    private protected const int ProgressDbLoadStart = 20;
+
+    /// <summary>
+    /// Прогрессбар после загрузки титульных данных организаций.
+    /// </summary>
+    private protected const int ProgressTitlesLoaded = 21;
+
+    /// <summary>
+    /// Прогрессбар после загрузки списка организаций и дочерних отчётов.
+    /// </summary>
+    private protected const int ProgressReportsListEnd = 22;
+
+    /// <summary>
+    /// Прогрессбар в начале подсчёта строк форм в БД.
+    /// </summary>
+    private protected const int ProgressRowCountsStart = 23;
+
+    /// <summary>
+    /// Прогрессбар после подсчёта строк форм 1 в БД.
+    /// </summary>
+    private protected const int ProgressRowCountsEndForm1 = 74;
+
+    /// <summary>
+    /// Прогрессбар после подсчёта строк форм 2 в БД.
+    /// </summary>
+    private protected const int ProgressRowCountsEndForm2 = 83;
+
+    /// <summary>
+    /// Прогрессбар после записи данных в Excel.
+    /// </summary>
+    private protected const int ProgressExcelFillEnd = 92;
+
+    /// <summary>
+    /// Прогрессбар перед сохранением файла.
+    /// </summary>
+    private protected const int ProgressSaveStart = 95;
+
+    /// <summary>
+    /// Прогрессбар перед очисткой временных данных.
+    /// </summary>
+    private protected const int ProgressCleanup = 98;
 
     #region ExportData
 
@@ -78,6 +151,31 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
 
     #endregion
 
+    #region Progress
+
+    /// <summary>
+    /// Подсчитывает количество строк, которое будет записано в Excel.
+    /// </summary>
+    private protected static int CountExportRows(IEnumerable<FormListOrgExportData> orgs) =>
+        orgs.Sum(o => o.Reports.Count);
+
+    /// <summary>
+    /// Обновляет прогрессбар при загрузке счётчиков строк по номеру формы.
+    /// </summary>
+    private protected static void SetRowCountsProgress(
+        AnyTaskProgressBarVM progressBarVM,
+        int formIndex,
+        int formCount,
+        int progressEnd,
+        string formNum)
+    {
+        var percent = ProgressRowCountsStart
+                      + (int)Math.Floor((progressEnd - ProgressRowCountsStart) * formIndex / (double)formCount);
+        progressBarVM.SetProgressBar(percent, $"Загрузка списка форм {formNum}");
+    }
+
+    #endregion
+
     #region GetReportsList
 
     /// <summary>
@@ -86,6 +184,7 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
     private protected static async Task<List<FormListOrgExportData>> GetReportsList(
         DBModel db,
         string masterFormNum,
+        AnyTaskProgressBarVM progressBarVM,
         CancellationTokenSource cts)
     {
         var token = cts.Token;
@@ -95,6 +194,8 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
             "2.0" => Form2ChildFormNumbers,
             _ => throw new ArgumentOutOfRangeException(nameof(masterFormNum), masterFormNum, null)
         };
+
+        progressBarVM.SetProgressBar(ProgressDbLoadStart, "Загрузка списка организаций");
 
         var orgRows = await db.ReportsCollectionDbSet
             .AsNoTracking()
@@ -111,6 +212,8 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
             .Distinct()
             .ToList();
 
+        progressBarVM.SetProgressBar(ProgressTitlesLoaded, "Загрузка титульных данных");
+
         var titleByMasterId = masterFormNum switch
         {
             "1.0" => await LoadTitleRowsForm10Async(db, masterReportIds, token),
@@ -119,7 +222,8 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
         };
 
         var orgIds = orgRows.Select(o => o.Id).ToHashSet();
-        var reportsByOrgId = await LoadFormReportsForList(db, orgIds, childFormNumbers, token);
+        var reportsByOrgId = await LoadFormReportsForList(
+            db, orgIds, childFormNumbers, progressBarVM, token);
 
         var result = new List<FormListOrgExportData>(orgRows.Count);
         foreach (var org in orgRows)
@@ -140,6 +244,7 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
                 reports ?? []));
         }
 
+        progressBarVM.SetProgressBar(ProgressReportsListEnd, "Список организаций загружен");
         return result;
     }
 
@@ -232,6 +337,7 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
         DBModel db,
         HashSet<int> orgIds,
         string[] childFormNumbers,
+        AnyTaskProgressBarVM progressBarVM,
         CancellationToken token)
     {
         if (orgIds.Count == 0)
@@ -240,6 +346,7 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
         var orgIdList = orgIds.ToList();
         var batchCount = (orgIdList.Count + FirebirdInClauseBatchSize - 1) / FirebirdInClauseBatchSize;
         var result = new Dictionary<int, List<FormReportListInfo>>(orgIds.Count);
+        var reportsLoadRange = ProgressReportsListEnd - ProgressTitlesLoaded;
 
         for (var batchIndex = 0; batchIndex < batchCount; batchIndex++)
         {
@@ -247,6 +354,15 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
                 .Skip(batchIndex * FirebirdInClauseBatchSize)
                 .Take(FirebirdInClauseBatchSize)
                 .ToList();
+
+            var status = batchCount == 1
+                ? "Загрузка списка отчётов"
+                : $"Загрузка списка отчётов (пакет {batchIndex + 1}/{batchCount})";
+            var percent = ProgressTitlesLoaded
+                            + (batchCount == 1
+                                ? reportsLoadRange
+                                : (int)Math.Floor(reportsLoadRange * (batchIndex + 1) / (double)batchCount));
+            progressBarVM.SetProgressBar(percent, status);
 
             var rows = await db.ReportCollectionDbSet
                 .AsNoTracking()
@@ -521,6 +637,39 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
     #region ExcelColumnWidths
 
     /// <summary>
+    /// Чередует белый и светло-голубой фон строк данных.
+    /// </summary>
+    private protected static void ApplyAlternatingRowColors(ExcelWorksheet worksheet, int firstRow, int lastRow)
+    {
+        if (lastRow < firstRow || worksheet.Dimension is null)
+            return;
+
+        var lastColumn = worksheet.Dimension.End.Column;
+
+        for (var row = firstRow; row <= lastRow; row++)
+        {
+            if ((row - firstRow) % 2 != 0)
+            {
+                worksheet.Cells[row, 1, row, lastColumn].Style.Fill.SetBackground(
+                    AlternatingRowFill,
+                    ExcelFillStyle.Solid);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Подбирает ширину колонок и оформляет строку заголовков.
+    /// </summary>
+    private protected static void ApplyFormListExcelStyle(ExcelWorksheet worksheet, double headerRowHeight)
+    {
+        ApplyFormListColumnWidths(worksheet);
+        ApplyExcelHeaderRowStyle(
+            worksheet,
+            worksheet.Dimension.End.Column,
+            headerRowHeight: headerRowHeight);
+    }
+
+    /// <summary>
     /// Фиксированные ширины колонок без AutoFit по данным (как в выгрузках организаций/исполнителей).
     /// </summary>
     private protected static void ApplyFormListColumnWidths(ExcelWorksheet worksheet)
@@ -544,8 +693,6 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
                 column.Style.WrapText = true;
             }
         }
-
-        worksheet.View.FreezePanes(2, 1);
     }
 
     private static string NormalizeHeaderText(string? header) =>
@@ -555,7 +702,7 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
     {
         switch (header)
         {
-            case "Рег №":
+            case "Рег. №":
                 width = RegNoColumnWidth;
                 return true;
             case "ОКПО":
@@ -564,14 +711,14 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
             case "Форма":
                 width = FormNumColumnWidth;
                 return true;
-            case "Дата начала":
-            case "Дата конца":
+            case "Дата начала периода":
+            case "Дата конца периода":
                 width = DateColumnWidth;
                 return true;
             case "Отчетный год":
                 width = YearColumnWidth;
                 return true;
-            case "Номер кор":
+            case "Номер корректировки":
                 width = CorrectionColumnWidth;
                 return true;
             case "Количество строк":

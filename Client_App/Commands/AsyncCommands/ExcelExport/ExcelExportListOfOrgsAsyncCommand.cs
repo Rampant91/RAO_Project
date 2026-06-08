@@ -728,39 +728,6 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         _ => int.TryParse(value.ToString(), out var n) ? n : 0
     };
 
-    #region FilePath
-
-    /// <summary>
-    /// Возвращает путь к файлу, не совпадающий с уже существующим в каталоге.
-    /// </summary>
-    /// <param name="fullPath">Исходный путь к файлу.</param>
-    /// <param name="fallbackDirectory">Каталог по умолчанию, если в пути не указан.</param>
-    private static string ResolveUniqueFilePath(string fullPath, string? fallbackDirectory)
-    {
-        if (!File.Exists(fullPath))
-            return fullPath;
-
-        var directory = Path.GetDirectoryName(fullPath);
-        if (string.IsNullOrEmpty(directory))
-            directory = string.IsNullOrEmpty(fallbackDirectory) ? Environment.CurrentDirectory : fallbackDirectory;
-
-        var baseName = Path.GetFileNameWithoutExtension(fullPath);
-        var extension = Path.GetExtension(fullPath);
-        if (string.IsNullOrEmpty(extension))
-            extension = ".xlsx";
-
-        var count = 0;
-        var resolvedPath = fullPath;
-        while (File.Exists(resolvedPath))
-        {
-            resolvedPath = Path.Combine(directory, $"{baseName}_{++count}{extension}");
-        }
-
-        return resolvedPath;
-    }
-
-    #endregion
-
     #region MasterTitleFields
 
     /// <summary>

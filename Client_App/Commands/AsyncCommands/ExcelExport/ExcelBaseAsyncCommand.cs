@@ -854,6 +854,39 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     #endregion
 
+    #region FilePath
+
+    /// <summary>
+    /// Возвращает путь к файлу, не совпадающий с уже существующим в каталоге.
+    /// </summary>
+    /// <param name="fullPath">Исходный путь к файлу.</param>
+    /// <param name="fallbackDirectory">Каталог по умолчанию, если в пути не указан.</param>
+    private protected static string ResolveUniqueFilePath(string fullPath, string? fallbackDirectory)
+    {
+        if (!File.Exists(fullPath))
+            return fullPath;
+
+        var directory = Path.GetDirectoryName(fullPath);
+        if (string.IsNullOrEmpty(directory))
+            directory = string.IsNullOrEmpty(fallbackDirectory) ? Environment.CurrentDirectory : fallbackDirectory;
+
+        var baseName = Path.GetFileNameWithoutExtension(fullPath);
+        var extension = Path.GetExtension(fullPath);
+        if (string.IsNullOrEmpty(extension))
+            extension = ".xlsx";
+
+        var count = 0;
+        var resolvedPath = fullPath;
+        while (File.Exists(resolvedPath))
+        {
+            resolvedPath = Path.Combine(directory, $"{baseName}_{++count}{extension}");
+        }
+
+        return resolvedPath;
+    }
+
+    #endregion
+
     #region CreateTempDataBase
 
     /// <summary>
@@ -1016,12 +1049,23 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         int lastColumn,
         bool enableAutoFilter = true,
         int headerRow = 1,
+        double? headerRowHeight = null) =>
+        ApplyExcelHeaderRowStyle(Worksheet, lastColumn, enableAutoFilter, headerRow, headerRowHeight);
+
+    /// <summary>
+    /// Оформляет строку заголовков на указанном листе Excel.
+    /// </summary>
+    private protected static void ApplyExcelHeaderRowStyle(
+        ExcelWorksheet worksheet,
+        int lastColumn,
+        bool enableAutoFilter = true,
+        int headerRow = 1,
         double? headerRowHeight = null)
     {
         if (lastColumn < 1)
             return;
 
-        var headerRange = Worksheet.Cells[headerRow, 1, headerRow, lastColumn];
+        var headerRange = worksheet.Cells[headerRow, 1, headerRow, lastColumn];
 
         headerRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
         headerRange.Style.Fill.BackgroundColor.SetColor(ExcelHeaderFillColor);
@@ -1038,14 +1082,14 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         border.Top.Style = ExcelBorderStyle.Thin;
         border.Top.Color.SetColor(ExcelHeaderBorderColor);
 
-        Worksheet.Row(headerRow).CustomHeight = true;
-        Worksheet.Row(headerRow).Height = headerRowHeight
-            ?? CalculateExcelHeaderRowHeight(Worksheet, headerRow, lastColumn);
+        worksheet.Row(headerRow).CustomHeight = true;
+        worksheet.Row(headerRow).Height = headerRowHeight
+                                            ?? CalculateExcelHeaderRowHeight(worksheet, headerRow, lastColumn);
 
-        if (enableAutoFilter && Worksheet.Dimension is not null)
-            Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
+        if (enableAutoFilter && worksheet.Dimension is not null)
+            worksheet.Cells[worksheet.Dimension.Address].AutoFilter = true;
 
-        Worksheet.View.FreezePanes(headerRow + 1, 1);
+        worksheet.View.FreezePanes(headerRow + 1, 1);
     }
 
     /// <summary>
