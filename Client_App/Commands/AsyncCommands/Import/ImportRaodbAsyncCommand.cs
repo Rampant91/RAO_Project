@@ -58,6 +58,10 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         string[] extensions = ["raodb", "RAODB"];
         var answer = await GetSelectedFilesFromDialog("RAODB", extensions);
         if (answer is null) return;
+        SkippedIdenticalReports.Clear();
+        var countReadFiles = 0;
+        try
+        {
         SkipNewOrg = false;
         SkipInter = false;
         SkipLess = false;
@@ -65,7 +69,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         HasMultipleReport = false;
         AtLeastOneImportDone = false;
 
-        var countReadFiles = answer.Length;
+        countReadFiles = answer.Length;
 
         var impReportsList = new List<Reports>();
         foreach (var path in answer) // Для каждого импортируемого файла
@@ -422,6 +426,11 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
             return;
         }
+        }
+        finally
+        {
+            await ShowSkippedIdenticalReportsMessageIfAnyAsync();
+        }
 
         //try
         //{
@@ -432,7 +441,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         //}
         //catch {}
 
-        var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
+        var suffix = answer.Length.ToString() is [.., '1'] && !answer.Length.ToString().EndsWith("11")
                 ? "а"
                 : "ов";
 

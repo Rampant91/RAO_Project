@@ -66,7 +66,9 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         string[] extensions = ["xlsx", "XLSX"];
         var answer = await GetSelectedFilesFromDialog("Excel", extensions);
         if (answer is null) return;
-
+        SkippedIdenticalReports.Clear();
+        try
+        {
         SkipNewOrg = false;
         SkipInter = false;
         SkipLess = false;
@@ -595,6 +597,11 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             #endregion
 
             return;
+        }
+        }
+        finally
+        {
+            await ShowSkippedIdenticalReportsMessageIfAnyAsync();
         }
 
         //if (impReportsList.All(x => x.Master_DB.FormNum_DB is "1.0" or "2.0"))

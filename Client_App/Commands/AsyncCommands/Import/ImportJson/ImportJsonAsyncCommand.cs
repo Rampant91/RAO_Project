@@ -34,8 +34,13 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
         string[] extensions = ["json", "JSON"];
         var answer = await GetSelectedFilesFromDialog("JSON", extensions);
         if (answer is null) return;
-        var countReadFiles = answer.Length;
+        SkippedIdenticalReports.Clear();
+        var countReadFiles = 0;
         var countNewReps = 0;
+        try
+        {
+        countReadFiles = answer.Length;
+        countNewReps = 0;
         SkipNewOrg = false;
         SkipInter = false;
         SkipLess = false;
@@ -533,6 +538,11 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
             #endregion
 
             return;
+        }
+        }
+        finally
+        {
+            await ShowSkippedIdenticalReportsMessageIfAnyAsync();
         }
 
         #region Suffix

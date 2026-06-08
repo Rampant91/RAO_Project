@@ -4,6 +4,8 @@ using Client_App.Interfaces.Logger;
 using Client_App.Logging;
 using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels;
+using Client_App.ViewModels.Messages;
+using Client_App.Views.Messages;
 using DynamicData;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
@@ -44,6 +46,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     public string Act = "\t\t\t";                   // Действие с формой для логгера
 
     protected readonly List<(string, string)> RepsWhereTitleFormCheckIsCancel = [];
+    private protected readonly List<SkippedIdenticalReportInfo> SkippedIdenticalReports = [];
     public string BaseRepsOkpo = "";
     public string BaseRepsRegNum = "";
     public string BaseRepsShortName = "";
@@ -877,19 +880,14 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     {
                         if (AreReportContentEqual(baseRep, impRep))
                         {
-                            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                                {
-                                    ContentTitle = "Импорт из .raodb/.xlsx/.json",
-                                    ContentHeader = "Уведомление",
-                                    ContentMessage =
-                                        $"Отчёт по форме {ImpRepFormNum} за период {ImpRepStartPeriod} - {ImpRepEndPeriod}" +
-                                        $"{Environment.NewLine}уже имеется в базе в виде полной копии." +
-                                        $"{Environment.NewLine}Импорт не требуется.",
-                                    MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                })
-                                .ShowDialog(Desktop.MainWindow));
+                            SkippedIdenticalReports.Add(new SkippedIdenticalReportInfo
+                            {
+                                RegNum = BaseRepsRegNum,
+                                Okpo = BaseRepsOkpo,
+                                FormNum = ImpRepFormNum,
+                                StartPeriod = ImpRepStartPeriod,
+                                EndPeriod = ImpRepEndPeriod
+                            });
 
                             break;
                         }
@@ -1042,6 +1040,20 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         }
 
         await baseReps.SortAsync().ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Показывает сводное уведомление об отчётах, не импортированных как полные копии, и очищает список.
+    /// </summary>
+    private protected Task ShowSkippedIdenticalReportsMessageIfAnyAsync()
+    {
+        if (SkippedIdenticalReports.Count == 0)
+            return Task.CompletedTask;
+
+        var skippedReports = SkippedIdenticalReports.ToList();
+        SkippedIdenticalReports.Clear();
+        return Dispatcher.UIThread.InvokeAsync(() =>
+            new SkippedIdenticalReportsMessageWindow(skippedReports).ShowDialog(Desktop.MainWindow));
     }
 
     #endregion
