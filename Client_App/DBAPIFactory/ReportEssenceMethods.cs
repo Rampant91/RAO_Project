@@ -69,7 +69,7 @@ public static partial class EssenceMethods
                 .Include(x => x.Rows17.OrderBy(x => x.NumberInOrder_DB))
                 .Include(x => x.Rows18.OrderBy(x => x.NumberInOrder_DB))
                 .Include(x => x.Rows19.OrderBy(x => x.NumberInOrder_DB))
-                .Include(x => x.Rows20.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows20)
                 .Include(x => x.Rows21.OrderBy(x => x.NumberInOrder_DB))
                 .Include(x => x.Rows22.OrderBy(x => x.NumberInOrder_DB))
                 .Include(x => x.Rows23.OrderBy(x => x.NumberInOrder_DB))
@@ -82,6 +82,16 @@ public static partial class EssenceMethods
                 .Include(x => x.Rows210.OrderBy(x => x.NumberInOrder_DB))
                 .Include(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
                 .Include(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows40)
+                .Include(x => x.Rows41.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows50)
+                .Include(x => x.Rows51.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows52.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows53.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows54.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows55.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows56.OrderBy(x => x.NumberInOrder_DB))
+                .Include(x => x.Rows57.OrderBy(x => x.NumberInOrder_DB))
                 .Include(x => x.Notes.OrderBy(x => x.Order))
                 .FirstOrDefault() as T;
         }
@@ -167,7 +177,7 @@ public static partial class EssenceMethods
                     .Include(x => x.Rows17.OrderBy(x => x.NumberInOrder_DB))
                     .Include(x => x.Rows18.OrderBy(x => x.NumberInOrder_DB))
                     .Include(x => x.Rows19.OrderBy(x => x.NumberInOrder_DB))
-                    .Include(x => x.Rows20.OrderBy(x => x.NumberInOrder_DB))
+                    .Include(x => x.Rows20)
                     .Include(x => x.Rows21.OrderBy(x => x.NumberInOrder_DB))
                     .Include(x => x.Rows22.OrderBy(x => x.NumberInOrder_DB))
                     .Include(x => x.Rows23.OrderBy(x => x.NumberInOrder_DB))
@@ -180,6 +190,16 @@ public static partial class EssenceMethods
                     .Include(x => x.Rows210.OrderBy(x => x.NumberInOrder_DB))
                     .Include(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
                     .Include(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
+                    .Include(x => x.Rows40)
+                    .Include(x => x.Rows41.OrderBy(x => x.NumberInOrder_DB))
+                    .Include(x => x.Rows50)
+                    .Include(x => x.Rows51.OrderBy(x => x.NumberInOrder_DB))
+                    .Include(x => x.Rows52.OrderBy(x => x.NumberInOrder_DB))
+                    .Include(x => x.Rows53.OrderBy(x => x.NumberInOrder_DB))
+                    .Include(x => x.Rows54.OrderBy(x => x.NumberInOrder_DB))
+                    .Include(x => x.Rows55.OrderBy(x => x.NumberInOrder_DB))
+                    .Include(x => x.Rows56.OrderBy(x => x.NumberInOrder_DB))
+                    .Include(x => x.Rows57.OrderBy(x => x.NumberInOrder_DB))
                     .Include(x => x.Notes.OrderBy(x => x.Order))
                     .FirstOrDefaultAsync(ReportsStorage.cancellationToken) as T;
             }
@@ -516,6 +536,144 @@ public static partial class EssenceMethods
                             .Where(x => x.FormNum_DB.Equals(param))
                             .Include(x => x.Rows20)
                             .Include(x => x.Rows212)
+                            .Select(x => x as T)
+                            .ToListAsync(ReportsStorage.cancellationToken);
+                        break;
+
+                    #endregion
+
+                    #region 4
+
+                    case "4":
+                        tmp = await ((IQueryable<Report>)db.ReportCollectionDbSet)
+                            .Where(x => x.Rows40.Count != 0 || x.Rows40.Count != null)
+                            .Include(x => x.Rows40)
+                            .Include(x => x.Rows41)
+                            .Select(x => x as T)
+                            .ToListAsync(ReportsStorage.cancellationToken);
+                        break;
+
+                    #endregion
+
+                    #region 4.1
+
+                    case "4.1":
+                        tmp = await ((IQueryable<Report>)db.ReportCollectionDbSet)
+                            .Where(x => x.FormNum_DB.Equals(param))
+                            .Include(x => x.Rows40)
+                            .Include(x => x.Rows41)
+                            .Include(x => x.Notes)
+                            .Select(x => x as T)
+                            .ToListAsync(ReportsStorage.cancellationToken);
+                        break;
+
+                    #endregion
+
+                    #region 5
+
+                    case "5":
+                        tmp = await ((IQueryable<Report>)db.ReportCollectionDbSet)
+                            .Where(x => x.Rows50.Count != 0 || x.Rows50.Count != null)
+                            .Include(x => x.Rows50)
+                            .Include(x => x.Rows51)
+                            .Include(x => x.Rows52)
+                            .Include(x => x.Rows53)
+                            .Include(x => x.Rows54)
+                            .Include(x => x.Rows55)
+                            .Include(x => x.Rows56)
+                            .Include(x => x.Rows57)
+                            .Select(x => x as T)
+                            .ToListAsync(ReportsStorage.cancellationToken);
+                        break;
+
+                    #endregion
+
+                    #region 5.1
+
+                    case "5.1":
+                        tmp = await ((IQueryable<Report>)db.ReportCollectionDbSet)
+                            .Where(x => x.FormNum_DB.Equals(param))
+                            .Include(x => x.Rows50)
+                            .Include(x => x.Rows51)
+                            .Include(x => x.Notes)
+                            .Select(x => x as T)
+                            .ToListAsync(ReportsStorage.cancellationToken);
+                        break;
+
+                    #endregion
+
+                    #region 5.2
+
+                    case "5.2":
+                        tmp = await ((IQueryable<Report>)db.ReportCollectionDbSet)
+                            .Where(x => x.FormNum_DB.Equals(param))
+                            .Include(x => x.Rows50)
+                            .Include(x => x.Rows52)
+                            .Select(x => x as T)
+                            .ToListAsync(ReportsStorage.cancellationToken);
+                        break;
+
+                    #endregion
+
+                    #region 5.3
+
+                    case "5.3":
+                        tmp = await ((IQueryable<Report>)db.ReportCollectionDbSet)
+                            .Where(x => x.FormNum_DB.Equals(param))
+                            .Include(x => x.Rows50)
+                            .Include(x => x.Rows53)
+                            .Select(x => x as T)
+                            .ToListAsync(ReportsStorage.cancellationToken);
+                        break;
+
+                    #endregion
+
+                    #region 5.4
+
+                    case "5.4":
+                        tmp = await ((IQueryable<Report>)db.ReportCollectionDbSet)
+                            .Where(x => x.FormNum_DB.Equals(param))
+                            .Include(x => x.Rows50)
+                            .Include(x => x.Rows54)
+                            .Select(x => x as T)
+                            .ToListAsync(ReportsStorage.cancellationToken);
+                        break;
+
+                    #endregion
+
+                    #region 5.5
+
+                    case "5.5":
+                        tmp = await ((IQueryable<Report>)db.ReportCollectionDbSet)
+                            .Where(x => x.FormNum_DB.Equals(param))
+                            .Include(x => x.Rows50)
+                            .Include(x => x.Rows55)
+                            .Select(x => x as T)
+                            .ToListAsync(ReportsStorage.cancellationToken);
+                        break;
+
+                    #endregion
+
+                    #region 5.6
+
+                    case "5.6":
+                        tmp = await ((IQueryable<Report>)db.ReportCollectionDbSet)
+                            .Where(x => x.FormNum_DB.Equals(param))
+                            .Include(x => x.Rows50)
+                            .Include(x => x.Rows56)
+                            .Select(x => x as T)
+                            .ToListAsync(ReportsStorage.cancellationToken);
+                        break;
+
+                    #endregion
+
+                    #region 5.7
+
+                    case "5.7":
+                        tmp = await ((IQueryable<Report>)db.ReportCollectionDbSet)
+                            .Where(x => x.FormNum_DB.Equals(param))
+                            .Include(x => x.Rows50)
+                            .Include(x => x.Rows57)
                             .Select(x => x as T)
                             .ToListAsync(ReportsStorage.cancellationToken);
                         break;

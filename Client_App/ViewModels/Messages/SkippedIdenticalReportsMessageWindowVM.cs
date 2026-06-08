@@ -7,32 +7,43 @@ namespace Client_App.ViewModels.Messages;
 
 public sealed class SkippedIdenticalReportsMessageWindowVM
 {
-    public const string Form1HeaderTitle = "Импорт отчётов по форме 1.x";
+    public static string GetHeaderTitle(ImportSummaryFormGroup formGroup) => formGroup switch
+    {
+        ImportSummaryFormGroup.Form1 => "Импорт отчётов по форме 1.x",
+        ImportSummaryFormGroup.Form2 => "Импорт отчётов по форме 2.x",
+        ImportSummaryFormGroup.Form4 => "Импорт отчётов по форме 4.x",
+        ImportSummaryFormGroup.Form5 => "Импорт отчётов по форме 5.x",
+        _ => "Импорт отчётов"
+    };
 
     public SkippedIdenticalReportsMessageWindowVM()
     {
-        HeaderTitle = Form1HeaderTitle;
-        ImportedReports = new ObservableCollection<SkippedIdenticalReportInfo>();
-        SkippedReports = new ObservableCollection<SkippedIdenticalReportInfo>();
+        FormGroup = ImportSummaryFormGroup.Form1;
+        HeaderTitle = GetHeaderTitle(FormGroup);
+        ImportedReports = new ObservableCollection<ImportReportSummaryInfo>();
+        SkippedReports = new ObservableCollection<ImportReportSummaryInfo>();
     }
 
     public SkippedIdenticalReportsMessageWindowVM(
-        IReadOnlyList<SkippedIdenticalReportInfo> importedReports,
-        IReadOnlyList<SkippedIdenticalReportInfo> skippedReports,
-        string headerTitle = Form1HeaderTitle)
+        IReadOnlyList<ImportReportSummaryInfo> importedReports,
+        IReadOnlyList<ImportReportSummaryInfo> skippedReports,
+        ImportSummaryFormGroup formGroup)
     {
-        HeaderTitle = headerTitle;
-        ImportedReports = new ObservableCollection<SkippedIdenticalReportInfo>(SortReports(importedReports));
-        SkippedReports = new ObservableCollection<SkippedIdenticalReportInfo>(SortReports(skippedReports));
+        FormGroup = formGroup;
+        HeaderTitle = GetHeaderTitle(formGroup);
+        ImportedReports = new ObservableCollection<ImportReportSummaryInfo>(SortReports(importedReports, formGroup));
+        SkippedReports = new ObservableCollection<ImportReportSummaryInfo>(SortReports(skippedReports, formGroup));
         ImportedCount = importedReports.Count;
         SkippedCount = skippedReports.Count;
     }
 
+    public ImportSummaryFormGroup FormGroup { get; }
+
     public string HeaderTitle { get; }
 
-    public ObservableCollection<SkippedIdenticalReportInfo> ImportedReports { get; }
+    public ObservableCollection<ImportReportSummaryInfo> ImportedReports { get; }
 
-    public ObservableCollection<SkippedIdenticalReportInfo> SkippedReports { get; }
+    public ObservableCollection<ImportReportSummaryInfo> SkippedReports { get; }
 
     public int ImportedCount { get; }
 
@@ -46,16 +57,38 @@ public sealed class SkippedIdenticalReportsMessageWindowVM
 
     public string SkippedSummaryMessage => GetSkippedSummaryMessage(SkippedCount);
 
-    private static IEnumerable<SkippedIdenticalReportInfo> SortReports(IEnumerable<SkippedIdenticalReportInfo> reports) =>
-        reports
-            .OrderBy(r => r.RegNum)
-            .ThenBy(r => r.Okpo)
-            .ThenBy(r => r.FormNum)
-            .ThenByDescending(r => ParsePeriod(r.StartPeriod))
-            .ThenByDescending(r => ParsePeriod(r.EndPeriod));
+    private static IEnumerable<ImportReportSummaryInfo> SortReports(
+        IEnumerable<ImportReportSummaryInfo> reports,
+        ImportSummaryFormGroup formGroup) =>
+        formGroup switch
+        {
+            ImportSummaryFormGroup.Form1 => reports
+                .OrderBy(r => r.OrgColumn1)
+                .ThenBy(r => r.OrgColumn2)
+                .ThenBy(r => r.FormNum)
+                .ThenByDescending(r => ParsePeriod(r.StartPeriod))
+                .ThenByDescending(r => ParsePeriod(r.EndPeriod)),
+            ImportSummaryFormGroup.Form2 => reports
+                .OrderBy(r => r.OrgColumn1)
+                .ThenBy(r => r.OrgColumn2)
+                .ThenBy(r => r.FormNum)
+                .ThenByDescending(r => ParseYear(r.Year)),
+            ImportSummaryFormGroup.Form4 => reports
+                .OrderBy(r => r.OrgColumn1)
+                .ThenBy(r => r.FormNum)
+                .ThenByDescending(r => ParseYear(r.Year)),
+            ImportSummaryFormGroup.Form5 => reports
+                .OrderBy(r => r.OrgColumn1)
+                .ThenBy(r => r.FormNum)
+                .ThenByDescending(r => ParseYear(r.Year)),
+            _ => reports
+        };
 
     private static DateOnly ParsePeriod(string period) =>
         DateOnly.TryParse(period, out var date) ? date : DateOnly.MinValue;
+
+    private static int ParseYear(string year) =>
+        int.TryParse(year, out var value) ? value : int.MinValue;
 
     private static string GetImportedSummaryMessage(int count) => count switch
     {
@@ -67,9 +100,9 @@ public sealed class SkippedIdenticalReportsMessageWindowVM
 
     private static string GetSkippedSummaryMessage(int count) => count switch
     {
-        1 => "1 отчёт уже имелся в базе в виде полной копии и не был импортирован:",
+        1 => "1 отчёт не был импортирован:",
         var n when n % 10 is >= 2 and <= 4 && n % 100 is not (>= 12 and <= 14)
-            => $"{n} отчёта уже имелись в базе в виде полной копии и не были импортированы:",
-        _ => $"{count} отчётов уже имелись в базе в виде полной копии и не были импортированы:"
+            => $"{n} отчёта не были импортированы:",
+        _ => $"{count} отчётов не были импортированы:"
     };
 }

@@ -237,8 +237,44 @@ public static class ReportsStorage
                 .SelectMany(x => x.Rows212)
                 .CountAsync(),
 
+            "4.0" => await query.Include(x => x.Rows40)
+                .SelectMany(x => x.Rows40)
+                .CountAsync(),
+
             "4.1" => await query.Include(x => x.Rows41)
                 .SelectMany(x => x.Rows41)
+                .CountAsync(),
+
+            "5.0" => await query.Include(x => x.Rows50)
+                .SelectMany(x => x.Rows50)
+                .CountAsync(),
+
+            "5.1" => await query.Include(x => x.Rows51)
+                .SelectMany(x => x.Rows51)
+                .CountAsync(),
+
+            "5.2" => await query.Include(x => x.Rows52)
+                .SelectMany(x => x.Rows52)
+                .CountAsync(),
+
+            "5.3" => await query.Include(x => x.Rows53)
+                .SelectMany(x => x.Rows53)
+                .CountAsync(),
+
+            "5.4" => await query.Include(x => x.Rows54)
+                .SelectMany(x => x.Rows54)
+                .CountAsync(),
+
+            "5.5" => await query.Include(x => x.Rows55)
+                .SelectMany(x => x.Rows55)
+                .CountAsync(),
+
+            "5.6" => await query.Include(x => x.Rows56)
+                .SelectMany(x => x.Rows56)
+                .CountAsync(),
+
+            "5.7" => await query.Include(x => x.Rows57)
+                .SelectMany(x => x.Rows57)
                 .CountAsync(),
 
             _ => 0

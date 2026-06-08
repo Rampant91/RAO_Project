@@ -34,8 +34,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
         string[] extensions = ["json", "JSON"];
         var answer = await GetSelectedFilesFromDialog("JSON", extensions);
         if (answer is null) return;
-        ImportedReports.Clear();
-        SkippedIdenticalReports.Clear();
+        ClearImportSummaryReports();
         var countReadFiles = 0;
         var countNewReps = 0;
         var importSummaryShown = false;
@@ -45,7 +44,6 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
         countNewReps = 0;
         SkipNewOrg = false;
         SkipInter = false;
-        SkipLess = false;
         SkipReplace = false;
         HasMultipleReport = false;
         AtLeastOneImportDone = false;
@@ -477,7 +475,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                                     Year = ImpRepYear
                                 };
                                 ServiceExtension.LoggerManager.Import(LoggerImportDTO);
-                                RecordImportedReport();
+                                RecordImportedReport(impReps);
                                 IsFirstLogLine = false;
                                 CurrentLogLine++;
                             }

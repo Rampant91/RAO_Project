@@ -66,14 +66,12 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         string[] extensions = ["xlsx", "XLSX"];
         var answer = await GetSelectedFilesFromDialog("Excel", extensions);
         if (answer is null) return;
-        ImportedReports.Clear();
-        SkippedIdenticalReports.Clear();
+        ClearImportSummaryReports();
         var importSummaryShown = false;
         try
         {
         SkipNewOrg = false;
         SkipInter = false;
-        SkipLess = false;
         SkipReplace = false;
         HasMultipleReport = false;
         AtLeastOneImportDone = false;

@@ -58,15 +58,13 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         string[] extensions = ["raodb", "RAODB"];
         var answer = await GetSelectedFilesFromDialog("RAODB", extensions);
         if (answer is null) return;
-        ImportedReports.Clear();
-        SkippedIdenticalReports.Clear();
+        ClearImportSummaryReports();
         var countReadFiles = 0;
         var importSummaryShown = false;
         try
         {
         SkipNewOrg = false;
         SkipInter = false;
-        SkipLess = false;
         SkipReplace = false;
         HasMultipleReport = false;
         AtLeastOneImportDone = false;
@@ -340,7 +338,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                 ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
                             };
                             ServiceExtension.LoggerManager.Import(LoggerImportDTO);
-                            RecordImportedReport();
+                            RecordImportedReport(impReps);
                             IsFirstLogLine = false;
                             CurrentLogLine++;
                         }

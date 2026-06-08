@@ -34,38 +34,21 @@
                         CornerRadius="5"
                         Padding="8">
                     <StackPanel Spacing="6">
-                    <TextBlock Text="{Binding ImportedSummaryMessage}"
-                               TextWrapping="Wrap"
-                               FontWeight="SemiBold"/>
-                    <DataGrid Items="{Binding ImportedReports}"
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              CanUserReorderColumns="False"
-                              CanUserResizeColumns="True"
-                              CanUserSortColumns="False"
-                              GridLinesVisibility="All"
-                              HeadersVisibility="Column"
-                              RowBackground="White"
-                              AlternatingRowBackground="#DDEBF7"
-                              MaxHeight="250">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Рег. №"
-                                                Binding="{Binding RegNum}"
-                                                Width="120"/>
-                            <DataGridTextColumn Header="ОКПО"
-                                                Binding="{Binding Okpo}"
-                                                Width="100"/>
-                            <DataGridTextColumn Header="Номер формы"
-                                                Binding="{Binding FormNum}"
-                                                Width="110"/>
-                            <DataGridTextColumn Header="Начало периода"
-                                                Binding="{Binding StartPeriod}"
-                                                Width="*"/>
-                            <DataGridTextColumn Header="Конец периода"
-                                                Binding="{Binding EndPeriod}"
-                                                Width="*"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                        <TextBlock Text="{Binding ImportedSummaryMessage}"
+                                   TextWrapping="Wrap"
+                                   FontWeight="SemiBold"/>
+                        <DataGrid x:Name="ImportedReportsGrid"
+                                  Items="{Binding ImportedReports}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  CanUserReorderColumns="False"
+                                  CanUserResizeColumns="True"
+                                  CanUserSortColumns="False"
+                                  GridLinesVisibility="All"
+                                  HeadersVisibility="Column"
+                                  RowBackground="White"
+                                  AlternatingRowBackground="#DDEBF7"
+                                  MaxHeight="250"/>
                     </StackPanel>
                 </Border>
 
@@ -75,38 +58,21 @@
                         CornerRadius="5"
                         Padding="8">
                     <StackPanel Spacing="6">
-                    <TextBlock Text="{Binding SkippedSummaryMessage}"
-                               TextWrapping="Wrap"
-                               FontWeight="SemiBold"/>
-                    <DataGrid Items="{Binding SkippedReports}"
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              CanUserReorderColumns="False"
-                              CanUserResizeColumns="True"
-                              CanUserSortColumns="False"
-                              GridLinesVisibility="All"
-                              HeadersVisibility="Column"
-                              RowBackground="White"
-                              AlternatingRowBackground="#DDEBF7"
-                              MaxHeight="250">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Рег. №"
-                                                Binding="{Binding RegNum}"
-                                                Width="120"/>
-                            <DataGridTextColumn Header="ОКПО"
-                                                Binding="{Binding Okpo}"
-                                                Width="100"/>
-                            <DataGridTextColumn Header="Номер формы"
-                                                Binding="{Binding FormNum}"
-                                                Width="110"/>
-                            <DataGridTextColumn Header="Начало периода"
-                                                Binding="{Binding StartPeriod}"
-                                                Width="*"/>
-                            <DataGridTextColumn Header="Конец периода"
-                                                Binding="{Binding EndPeriod}"
-                                                Width="*"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                        <TextBlock Text="{Binding SkippedSummaryMessage}"
+                                   TextWrapping="Wrap"
+                                   FontWeight="SemiBold"/>
+                        <DataGrid x:Name="SkippedReportsGrid"
+                                  Items="{Binding SkippedReports}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  CanUserReorderColumns="False"
+                                  CanUserResizeColumns="True"
+                                  CanUserSortColumns="False"
+                                  GridLinesVisibility="All"
+                                  HeadersVisibility="Column"
+                                  RowBackground="White"
+                                  AlternatingRowBackground="#DDEBF7"
+                                  MaxHeight="250"/>
                     </StackPanel>
                 </Border>
 
