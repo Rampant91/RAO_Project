@@ -890,6 +890,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                                 })
                                 .ShowDialog(Desktop.MainWindow));
+
                             break;
                         }
 
@@ -938,91 +939,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     #region HigherCorrectionNumber
 
                     res = "Заменить";
-                    if (!SkipReplace)
-                    {
-                        if (HasMultipleReport)
-                        {
-                            #region MessageImportReportHasHigherCorrectionNumber
-
-                            res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                                {
-                                    ButtonDefinitions =
-                                    [
-                                        new ButtonDefinition { Name = "Заменить", IsDefault = true },
-                                        new ButtonDefinition { Name = "Заменять все формы" },
-                                        new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
-                                    ],
-                                    ContentTitle = "Импорт из .raodb/.xlsx/.json",
-                                    ContentHeader = "Уведомление",
-                                    ContentMessage =
-                                        "Импортируемый отчет имеет больший номер корректировки, чем имеющийся в базе." +
-                                        $"{Environment.NewLine}Форма с предыдущим номером корректировки будет безвозвратно удалена." +
-                                        $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
-                                        $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
-                                        $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
-                                        $"{Environment.NewLine}Начало отчетного периода - {ImpRepStartPeriod}" +
-                                        $"{Environment.NewLine}Конец отчетного периода - {ImpRepEndPeriod}" +
-                                        $"{Environment.NewLine}Дата выгрузки отчета в базе - {BaseRepExpDate}" +
-                                        $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {ImpRepExpDate}" +
-                                        $"{Environment.NewLine}Номер корректировки отчета в базе - {BaseRepCorNum}" +
-                                        $"{Environment.NewLine}Номер корректировки импортируемого отчета - {ImpRepCorNum}" +
-                                        $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}{InventoryCheck(baseRep)}" +
-                                        $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}{InventoryCheck(impRep)}" +
-                                        $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Кнопка \"Заменять все формы\" заменит без уведомлений" +
-                                        $"{Environment.NewLine}все формы с меньшим номером корректировки.",
-                                    MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                })
-                                .ShowDialog(Desktop.MainWindow));
-
-                            #endregion
-
-                            if (res is "Заменять все формы") SkipReplace = true;
-                        }
-                        else
-                        {
-                            #region MessageImportReportHasHigherCorrectionNumber
-
-                            res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                                {
-                                    ButtonDefinitions =
-                                    [
-                                        new ButtonDefinition { Name = "Заменить", IsDefault = true },
-                                        new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
-                                    ],
-                                    ContentTitle = "Импорт из .raodb/.xlsx/.json",
-                                    ContentHeader = "Уведомление",
-                                    ContentMessage =
-                                        "Импортируемый отчет имеет больший номер корректировки чем имеющийся в базе." +
-                                        $"{Environment.NewLine}Форма с предыдущим номером корректировки будет безвозвратно удалена." +
-                                        $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
-                                        $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
-                                        $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
-                                        $"{Environment.NewLine}Начало отчетного периода - {ImpRepStartPeriod}" +
-                                        $"{Environment.NewLine}Конец отчетного периода - {ImpRepEndPeriod}" +
-                                        $"{Environment.NewLine}Дата выгрузки отчета в базе - {BaseRepExpDate}" +
-                                        $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {ImpRepExpDate}" +
-                                        $"{Environment.NewLine}Номер корректировки отчета в базе - {BaseRepCorNum}" +
-                                        $"{Environment.NewLine}Номер корректировки импортируемого отчета - {ImpRepCorNum}" +
-                                        $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}{InventoryCheck(baseRep)}" +
-                                        $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}{InventoryCheck(impRep)}",
-                                    MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                })
-                                .ShowDialog(Desktop.MainWindow));
-
-                            #endregion
-                        }
-                    }
                     await CheckAnswer(res, baseReps, impReps, baseRep, impRep);
                     break;
 
@@ -2104,7 +2020,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     }
 
     #endregion
-
 
     #region ProcessIfNoteOrder0
 
