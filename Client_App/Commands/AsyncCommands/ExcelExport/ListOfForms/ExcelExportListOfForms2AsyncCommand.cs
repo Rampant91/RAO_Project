@@ -1,19 +1,17 @@
-﻿using Avalonia.Threading;
-using Client_App.ViewModels;
-using Client_App.ViewModels.ProgressBar;
-using Client_App.Views.Messages;
-using Client_App.Views.ProgressBar;
-using Microsoft.EntityFrameworkCore;
-using Models.Collections;
-using Models.DBRealization;
-using OfficeOpenXml;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Threading;
+using Client_App.ViewModels;
+using Client_App.ViewModels.ProgressBar;
+using Client_App.Views.Messages;
+using Client_App.Views.ProgressBar;
+using Models.DBRealization;
+using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
 
@@ -55,36 +53,25 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelExportListOfFormsBaseAsy
         progressBarVM.SetProgressBar(13, "Запрос периода");
         var (minYear, maxYear) = !isBackgroundCommand
             ? await InputDateRange(progressBar, cts)
-            : (0, 9999);    //default value
+            : (0, 9999);
 
         progressBarVM.SetProgressBar(15, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath);
 
         progressBarVM.SetProgressBar(18, "Заполнение заголовков");
-        var worksheet = await FillExcelHeaders(excelPackage);
+        var worksheet = FillExcelHeaders(excelPackage);
 
         progressBarVM.SetProgressBar(20, "Получение списка организаций");
-        var repsList = await GetReportsList(db, "2.0", cts);
+        var orgsList = await GetReportsList(db, "2.0", cts);
+
+        progressBarVM.SetProgressBar(22, "Подготовка списка отчётов");
+        var prepared = PrepareForm2Export(orgsList, minYear, maxYear);
 
         progressBarVM.SetProgressBar(23, "Загрузка списков форм");
-        List<List<Tuple<int, int>>> tuplesList =
-        [
-            await GetTuple(db, "2.1", progressBarVM, cts),
-            await GetTuple(db, "2.2", progressBarVM, cts),
-            await GetTuple(db, "2.3", progressBarVM, cts),
-            await GetTuple(db, "2.4", progressBarVM, cts),
-            await GetTuple(db, "2.5", progressBarVM, cts),
-            await GetTuple(db, "2.6", progressBarVM, cts),
-            await GetTuple(db, "2.7", progressBarVM, cts),
-            await GetTuple(db, "2.8", progressBarVM, cts),
-            await GetTuple(db, "2.9", progressBarVM, cts),
-            await GetTuple(db, "2.10", progressBarVM, cts),
-            await GetTuple(db, "2.11", progressBarVM, cts),
-            await GetTuple(db, "2.12", progressBarVM, cts)
-        ];
+        var rowCounts = await LoadForm2RowCounts(db, prepared.ReportIdsByForm, progressBarVM, cts);
 
         progressBarVM.SetProgressBar(85, "Заполнение строк");
-        await FillExcel(repsList, minYear, maxYear, tuplesList, worksheet);
+        FillExcel(prepared.Orgs, rowCounts, worksheet);
 
         progressBarVM.SetProgressBar(95, "Сохранение");
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
@@ -108,80 +95,32 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelExportListOfFormsBaseAsy
     /// <summary>
     /// Для каждого отчёта каждой организации заполняет количество строк в .xlsx.
     /// </summary>
-    /// <param name="repsList">Список организаций.</param>
-    /// <param name="minYear">Минимальное значение года, задающее период выгрузки.</param>
-    /// <param name="maxYear">Максимальное значение года, задающее период выгрузки.</param>
-    /// <param name="tupleLists">Список списков кортежей.</param>
-    /// <param name="worksheet">Excel страница.</param>
-    /// /// <returns>CompletedTask.</returns>
-    private static async Task FillExcel(List<Reports> repsList, int minYear, int maxYear, List<List<Tuple<int, int>>> tupleLists,
+    private static void FillExcel(
+        List<FormListOrgExportData> orgsList,
+        Dictionary<int, int> rowCounts,
         ExcelWorksheet worksheet)
     {
         var row = 2;
-        foreach (var reps in repsList
-                     .OrderBy(x => x.Master_DB.RegNoRep.Value)
-                     .ThenBy(x => x.Master_DB.OkpoRep.Value))
+        foreach (var org in orgsList
+                     .OrderBy(x => x.RegNo)
+                     .ThenBy(x => x.Okpo))
         {
-            var repList = reps.Report_Collection
-                .Where(x =>
-                {
-                    if (minYear == 0 && maxYear == 9999) return true;
-                    if (x.Year_DB?.Length != 4 || !int.TryParse(x.Year_DB, out var currentRepsYear)) return false;
-                    return currentRepsYear >= minYear && currentRepsYear <= maxYear;
-                })
-                .OrderBy(x => byte.TryParse(x.FormNum_DB[2..], out var formNum) ? formNum : byte.MaxValue)
-                .ThenBy(x => x.Year_DB)
-                .ThenBy(x => x.CorrectionNumber_DB)
-                .ToList();
-            foreach (var rep in repList)
+            foreach (var rep in OrderForm2Reports(org.Reports))
             {
-                var tupleList = rep.FormNum_DB switch
-                {
-                    "2.1" => tupleLists[0],
-                    "2.2" => tupleLists[1],
-                    "2.3" => tupleLists[2],
-                    "2.4" => tupleLists[3],
-                    "2.5" => tupleLists[4],
-                    "2.6" => tupleLists[5],
-                    "2.7" => tupleLists[6],
-                    "2.8" => tupleLists[7],
-                    "2.9" => tupleLists[8],
-                    "2.10" => tupleLists[9],
-                    "2.11" => tupleLists[10],
-                    "2.12" => tupleLists[11],
-                    _ => throw new ArgumentOutOfRangeException()
-                };
-                var tuple = tupleList.Find(x => x.Item1 == rep.Id) ?? new Tuple<int, int>(rep.Id, 0);
-                worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
-                worksheet.Cells[row, 2].Value = reps.Master.OkpoRep.Value;
-                worksheet.Cells[row, 3].Value = reps.Master.ShortJurLicoRep.Value;
+                rowCounts.TryGetValue(rep.ReportId, out var rowCount);
+                worksheet.Cells[row, 1].Value = org.RegNo;
+                worksheet.Cells[row, 2].Value = org.Okpo;
+                worksheet.Cells[row, 3].Value = org.ShortJurLico;
                 worksheet.Cells[row, 4].Value = rep.FormNum_DB;
                 worksheet.Cells[row, 5].Value = rep.Year_DB;
                 worksheet.Cells[row, 6].Value = rep.CorrectionNumber_DB;
-                worksheet.Cells[row, 7].Value = tuple.Item2;
+                worksheet.Cells[row, 7].Value = rowCount;
                 row++;
             }
         }
-        await AutoFitColumns(worksheet);
+
+        ApplyFormListColumnWidths(worksheet);
     }
-
-    #region AutoFitColumns
-
-    /// <summary>
-    /// Для текущей страницы Excel пакета подбирает ширину колонок и замораживает первую строчку.
-    /// </summary>
-    private static Task AutoFitColumns(ExcelWorksheet worksheet)
-    {
-        for (var col = 1; col <= worksheet.Dimension.End.Column; col++)
-        {
-            if (OperatingSystem.IsWindows() && col != 3) worksheet.Column(col).AutoFit();
-        }
-        worksheet.View.FreezePanes(2, 1);
-
-        return Task.CompletedTask;
-    }
-
-    #endregion
 
     #endregion
 
@@ -190,13 +129,9 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelExportListOfFormsBaseAsy
     /// <summary>
     /// Заполнение заголовков в .xlsx.
     /// </summary>
-    /// <param name="excelPackage">Excel пакет.</param>
-    /// <returns>Excel лист.</returns>
-    private static Task<ExcelWorksheet> FillExcelHeaders(ExcelPackage excelPackage)
+    private static ExcelWorksheet FillExcelHeaders(ExcelPackage excelPackage)
     {
         var worksheet = excelPackage.Workbook.Worksheets.Add("Список всех форм 2");
-
-        #region Headers
 
         worksheet.Cells[1, 1].Value = "Рег №";
         worksheet.Cells[1, 2].Value = "ОКПО";
@@ -206,157 +141,77 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelExportListOfFormsBaseAsy
         worksheet.Cells[1, 6].Value = "Номер кор";
         worksheet.Cells[1, 7].Value = "Количество строк";
 
-        #endregion
-
         worksheet.Cells[worksheet.Dimension.Address].AutoFilter = true;
-        worksheet.Column(3).AutoFit();
 
-
-        return Task.FromResult(worksheet);
+        return worksheet;
     }
 
     #endregion
 
-    #region GetTuple
+    #region LoadForm2RowCounts
 
     /// <summary>
-    /// Получение кортежа из id и количества строчек для форм 2.
+    /// Загружает количество строк для отчётов выгрузки.
     /// </summary>
-    /// <param name="db">Модель БД.</param>
-    /// <param name="formNum">Номер формы.</param>
-    /// <param name="progressBarVM">ViewModel прогрессбара.</param>
-    /// <param name="cts">Токен.</param>
-    /// <returns>Кортеж из id и количества строчек для форм 2.</returns>
-    private static async Task<List<Tuple<int, int>>> GetTuple(DBModel db, string formNum, 
-        AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
+    private static async Task<Dictionary<int, int>> LoadForm2RowCounts(
+        DBModel db,
+        IReadOnlyDictionary<string, List<int>> reportIdsByForm,
+        AnyTaskProgressBarVM progressBarVM,
+        CancellationTokenSource cts)
     {
-        var progressBarValue = progressBarVM.ValueBar;
-        progressBarVM.SetProgressBar(progressBarValue + 5, $"Загрузка списка форм {formNum}");
+        var token = cts.Token;
+        var result = new Dictionary<int, int>();
 
-        return formNum switch
+        foreach (var formNum in Form2ChildFormNumbers)
         {
-            "2.1" => await db.ReportCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                .Include(x => x.Rows21)
-                .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == formNum)
-                .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows21.Count))
-                .ToListAsync(cts.Token),
+            var progressBarValue = progressBarVM.ValueBar;
+            progressBarVM.SetProgressBar(progressBarValue + 5, $"Загрузка списка форм {formNum}");
 
-            "2.2" => await db.ReportCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                .Include(x => x.Rows22)
-                .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == formNum)
-                .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows22.Count))
-                .ToListAsync(cts.Token),
+            if (!reportIdsByForm.TryGetValue(formNum, out var reportIds) || reportIds.Count == 0)
+                continue;
 
-            "2.3" => await db.ReportCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                .Include(x => x.Rows23)
-                .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == formNum)
-                .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows23.Count))
-                .ToListAsync(cts.Token),
+            switch (formNum)
+            {
+                case "2.1":
+                    await AppendForm2RowCountsAsync(db.form_21, reportIds, result, token);
+                    break;
+                case "2.2":
+                    await AppendForm2RowCountsAsync(db.form_22, reportIds, result, token);
+                    break;
+                case "2.3":
+                    await AppendForm2RowCountsAsync(db.form_23, reportIds, result, token);
+                    break;
+                case "2.4":
+                    await AppendForm2RowCountsAsync(db.form_24, reportIds, result, token);
+                    break;
+                case "2.5":
+                    await AppendForm2RowCountsAsync(db.form_25, reportIds, result, token);
+                    break;
+                case "2.6":
+                    await AppendForm2RowCountsAsync(db.form_26, reportIds, result, token);
+                    break;
+                case "2.7":
+                    await AppendForm2RowCountsAsync(db.form_27, reportIds, result, token);
+                    break;
+                case "2.8":
+                    await AppendForm2RowCountsAsync(db.form_28, reportIds, result, token);
+                    break;
+                case "2.9":
+                    await AppendForm2RowCountsAsync(db.form_29, reportIds, result, token);
+                    break;
+                case "2.10":
+                    await AppendForm2RowCountsAsync(db.form_210, reportIds, result, token);
+                    break;
+                case "2.11":
+                    await AppendForm2RowCountsAsync(db.form_211, reportIds, result, token);
+                    break;
+                case "2.12":
+                    await AppendForm2RowCountsAsync(db.form_212, reportIds, result, token);
+                    break;
+            }
+        }
 
-            "2.4" => await db.ReportCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                .Include(x => x.Rows24)
-                .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == formNum)
-                .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows24.Count))
-                .ToListAsync(cts.Token),
-
-            "2.5" => await db.ReportCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                .Include(x => x.Rows25)
-                .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == formNum)
-                .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows25.Count))
-                .ToListAsync(cts.Token),
-
-            "2.6" => await db.ReportCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                .Include(x => x.Rows26)
-                .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == formNum)
-                .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows26.Count))
-                .ToListAsync(cts.Token),
-
-            "2.7" => await db.ReportCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                .Include(x => x.Rows27)
-                .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == formNum)
-                .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows27.Count))
-                .ToListAsync(cts.Token),
-
-            "2.8" => await db.ReportCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                .Include(x => x.Rows28)
-                .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == formNum)
-                .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows28.Count))
-                .ToListAsync(cts.Token),
-
-            "2.9" => await db.ReportCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                .Include(x => x.Rows29)
-                .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == formNum)
-                .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows29.Count))
-                .ToListAsync(cts.Token),
-
-            "2.10" => await db.ReportCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                .Include(x => x.Rows210)
-                .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == formNum)
-                .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows210.Count))
-                .ToListAsync(cts.Token),
-
-            "2.11" => await db.ReportCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                .Include(x => x.Rows211)
-                .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == formNum)
-                .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows211.Count))
-                .ToListAsync(cts.Token),
-
-            "2.12" => await db.ReportCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                .Include(x => x.Rows212)
-                .Where(x => x.Reports != null && x.Reports.DBObservable != null && x.FormNum_DB == formNum)
-                .Select(rep => new Tuple<int, int>(rep.Id, rep.Rows212.Count))
-                .ToListAsync(cts.Token),
-
-            _ => throw new ArgumentOutOfRangeException(nameof(formNum), formNum, null)
-        };
+        return result;
     }
 
     #endregion
@@ -366,9 +221,6 @@ public class ExcelExportListOfForms2AsyncCommand : ExcelExportListOfFormsBaseAsy
     /// <summary>
     /// Запрос у пользователя периода, за который необходимо выполнить выборку.
     /// </summary>
-    /// <param name="progressBar">Окно прогрессбара.</param>
-    /// <param name="cts">Токен.</param>
-    /// <returns>Кортеж из года начала периода и года его окончания.</returns>
     private static async Task<(int minYear, int maxYear)> InputDateRange(AnyTaskProgressBar? progressBar, CancellationTokenSource cts)
     {
         var res = await Dispatcher.UIThread.InvokeAsync(() =>
