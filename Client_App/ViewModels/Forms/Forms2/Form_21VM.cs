@@ -4,6 +4,7 @@ using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.ViewModels.Controls;
+using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -27,7 +28,10 @@ public class Form_21VM : BaseFormVM
 
     public Form_21VM() { }
 
-    public Form_21VM(Report report) : base(report) { }
+    public Form_21VM(Report report) : base(report) 
+    {
+        SumMode = report.Rows21.Any(row21 => row21.IsSumRow);
+    }
 
     public Form_21VM(in Reports reps)
     {
@@ -46,31 +50,6 @@ public class Form_21VM : BaseFormVM
     #endregion
 
     #region Properties
-    private int _sumRowsTotalPages = 0;
-    public override int TotalPages
-    {
-        get
-        {
-            if (SumMode)
-                return _sumRowsTotalPages;
-
-            return base.TotalPages;
-        }
-
-    }
-
-    private int _sumRowsTotalRows = 0;
-    public override int TotalRows
-    {
-        get
-        {
-            if (SumMode)
-                return _sumRowsTotalRows;
-
-            return base.TotalRows;
-        }
-
-    }
 
     #region SumMode
     private bool _sumMode;
@@ -82,8 +61,16 @@ public class Form_21VM : BaseFormVM
         }
         set
         {
+            if (_sumMode == value) return;
+                
+
             _sumMode = value;
             OnPropertyChanged();
+            if (value == true)
+                SumUpFormList();
+            else
+                UndoSumUpFormList();
+
             UpdateFormList();
             UpdatePageInfo();
         }
@@ -94,24 +81,12 @@ public class Form_21VM : BaseFormVM
 
     #region Functions
 
-    #region UpdateFormList
-    public override void UpdateFormList()
-    {
-        if (SumMode)
-            SumUpFormList();
-        else
-            base.UpdateFormList();
-
-    }
-
-    #endregion
 
     #region SumUpFormList
     public void SumUpFormList()
     {
-        var rows21 = StaticConfiguration.DBModel.form_21
-            .Where(row21 => row21.ReportId == Report.Id)
-            .AsNoTracking()
+        var rows21 = Report.Rows21.ToList()
+            .Where(row22 => row22.IsSumRow == false)
             .AsEnumerable()
             .OrderBy(row21 => row21.RefineMachineName_DB)
             .ThenBy(row21 => row21.MachineCode_DB)
@@ -144,7 +119,13 @@ public class Form_21VM : BaseFormVM
             row21.StatusRAOout_DB
             )).ToList();
 
-            if (leftRaoGroups.Count > 1 || rightRaoGroups.Count > 1)
+            if (leftRaoGroups.Count <= 1 && rightRaoGroups.Count <= 1)
+            {
+                var ordinaryRow = refineMachineGroup.ToList()[0];
+                
+                resultRows21.Add(ordinaryRow);
+            }
+            else
             {
                 var firstElement = refineMachineGroup.ToList()[0];
                 var titleIndex = rows21.IndexOf(firstElement);
@@ -170,14 +151,15 @@ public class Form_21VM : BaseFormVM
                     BetaGammaActivityOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.BetaGammaActivityOut_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
                     AlphaActivityOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.AlphaActivityOut_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
                     TransuraniumActivityOut_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.TransuraniumActivityOut_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
-                    RowColor = Color.FromArgb(75, 204, 102, 0),
+
+                    IsSumRow = true,
                 };
 
 
 
                 resultRows21.Add(titleRow);
 
-                for(int i= 0; i< leftRaoGroups.Count || i< rightRaoGroups.Count; i++) 
+                for (int i = 0; i < leftRaoGroups.Count || i < rightRaoGroups.Count; i++)
                 {
                     List<Form21>? leftRaoGroup = null;
                     if (i < leftRaoGroups.Count)
@@ -189,7 +171,7 @@ public class Form_21VM : BaseFormVM
 
 
 
-                    
+
                     var raoInfoRow = new Form21()
                     {
                         //RowColor = Color.FromArgb(50, 204, 204, 0),
@@ -206,7 +188,7 @@ public class Form_21VM : BaseFormVM
 
                         raoInfoRow.CodeRAOIn_DB = firstLeftRaoGroupElement.CodeRAOIn_DB; //6
                         raoInfoRow.StatusRAOIn_DB = firstLeftRaoGroupElement.StatusRAOIn_DB; //7
-                        //SumUp LeftGroup
+                                                                                             //SumUp LeftGroup
                         raoInfoRow.VolumeIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.VolumeIn_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3");
                         raoInfoRow.MassIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.MassIn_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3");
                         raoInfoRow.QuantityIn_DB = leftRaoGroup.Sum(row21 => int.TryParse(row21.QuantityIn_DB?.Replace('.', ','), out var value) ? value : 0).ToString();
@@ -216,13 +198,13 @@ public class Form_21VM : BaseFormVM
                         raoInfoRow.TransuraniumActivityIn_DB = leftRaoGroup.Sum(row21 => double.TryParse(row21.TransuraniumActivityIn_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3");
                     }
 
-                    if(rightRaoGroup != null)
+                    if (rightRaoGroup != null)
                     {
                         var firstRightRaoGroupElement = rightRaoGroup[0];
 
                         raoInfoRow.CodeRAOout_DB = firstRightRaoGroupElement.CodeRAOout_DB; //15
                         raoInfoRow.StatusRAOout_DB = firstRightRaoGroupElement.StatusRAOout_DB; //16
-                        //SumUp RightGroup
+                                                                                                //SumUp RightGroup
                         raoInfoRow.VolumeOut_DB = rightRaoGroup.Sum(row21 => double.TryParse(row21.VolumeOut_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3");
                         raoInfoRow.MassOut_DB = rightRaoGroup.Sum(row21 => double.TryParse(row21.MassOut_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3");
                         raoInfoRow.QuantityOZIIIout_DB = rightRaoGroup.Sum(row21 => int.TryParse(row21.QuantityOZIIIout_DB?.Replace('.', ','), out var value) ? value : 0).ToString();
@@ -237,17 +219,17 @@ public class Form_21VM : BaseFormVM
                     var totalLength = int.Max(
                         leftRaoGroup?.Count ?? 0, rightRaoGroup?.Count ?? 0);
 
-                    for (int j =0; j< totalLength; j++)
+                    for (int j = 0; j < totalLength; j++)
                     {
                         Form21? leftRao = null;
-                        if (leftRaoGroup!= null &&j < leftRaoGroup.Count)
+                        if (leftRaoGroup != null && j < leftRaoGroup.Count)
                             leftRao = leftRaoGroup[j];
 
                         Form21? rightRao = null;
                         if (rightRaoGroup != null && j < rightRaoGroup.Count)
                             rightRao = rightRaoGroup[j];
 
-                        
+
                     }
                 }
             }
@@ -258,19 +240,24 @@ public class Form_21VM : BaseFormVM
             resultRows21[i].NumberInOrder_DB = i + 1;
         }
 
-        FormList = new ObservableCollection<Form>(
-           resultRows21.Skip((CurrentPage - 1) * RowCount)
-               .Take(RowCount)); //Нужна оптимизация
-
-        _sumRowsTotalRows = resultRows21.Count;
-
-        _sumRowsTotalPages = resultRows21.Count / RowCount;
-        if (resultRows21.Count % RowCount != 0)
-            _sumRowsTotalPages++;
-
+        this.Report.Rows21 = new(resultRows21);
     }
     #endregion
 
+    #region UndoSumUpFormList
+    public void UndoSumUpFormList()
+    {
+        var rows21 = this.Report.Rows21;
+        rows21.RemoveMany(rows21.Where(row => row.IsSumRow));
+
+        for (int i = 0; i < rows21.Count; i++)
+        {
+            rows21[i].NumberInOrder_DB = i + 1;
+        }
+
+
+    }
+    #endregion
     public void ReplaceZeroValueOnDashSignInRow21(Form21 row21)
     {
         if (row21.VolumeIn_DB == 0.ToString("e3"))

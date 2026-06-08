@@ -1574,23 +1574,39 @@ public partial class Form21 : Form2, IBaseColor
 
     private bool TransuraniumActivityOut_Validation(RamAccess<string> value) => ExponentialString_Validation(value);
 
+    #endregion
+
+    #region IsSumRow
+
+
+    private bool _isSumRow = false;
+
+    public bool IsSumRow
+    {
+        get
+        {
+            return _isSumRow;
+        }
+        set
+        {
+            _isSumRow = value;
+            OnPropertyChanged();
+        }
+    }
     #endregion 
 
     #region RowColor
 
 
-    private Color _rowColor;
     [NotMapped]
     public Color RowColor
     {
         get
         {
-            return _rowColor;
-        }
-        set
-        {
-            _rowColor = value;
-            OnPropertyChanged();
+            if (IsSumRow)
+                return Color.FromArgb(75, 204, 102, 0);
+            else
+                return Color.Transparent;
         }
     }
     #endregion 

@@ -23,35 +23,10 @@ public class Form_22VM : BaseFormVM
     public override string FormType => "2.2";
 
     #region Properties
-    private int _sumRowsTotalPages = 0;
-    public override int TotalPages
-    {
-        get
-        {
-            if (SumMode)
-                return _sumRowsTotalPages;
-
-            return base.TotalPages;
-        }
-
-    }
-
-    private int _sumRowsTotalRows = 0;
-    public override int TotalRows
-    {
-        get
-        {
-            if (SumMode)
-                return _sumRowsTotalRows;
-
-            return base.TotalRows;
-        }
-
-    }
 
     #region SumMode
-    private bool _sumMode;
-    public bool SumMode 
+    private bool _sumMode ;
+    public bool SumMode
     {
         get
         {
@@ -59,8 +34,15 @@ public class Form_22VM : BaseFormVM
         }
         set
         {
+            if (_sumMode == value) return; 
+
             _sumMode = value;
             OnPropertyChanged();
+            if (value == true)
+                SumUpFormList();
+            else
+                UndoSumUpFormList();
+
             UpdateFormList();
             UpdatePageInfo();
         }
@@ -73,7 +55,10 @@ public class Form_22VM : BaseFormVM
 
     public Form_22VM() { }
 
-    public Form_22VM(Report report) : base(report) { }
+    public Form_22VM(Report report) : base(report)
+    {
+        SumMode = report.Rows22.Any(row22 => row22.IsSumRow);
+    }
 
     public Form_22VM(in Reports reps)
     {
@@ -93,24 +78,11 @@ public class Form_22VM : BaseFormVM
 
     #region Functions
 
-    #region UpdateFormList
-    public override void UpdateFormList()
-    {
-        if (SumMode)
-            SumUpFormList();
-        else
-            base.UpdateFormList();
-        
-    }
-
-    #endregion
-
     #region SumUpFormList
     public void SumUpFormList()
     {
-        var rows22 = StaticConfiguration.DBModel.form_22
-            .Where(row22 => row22.ReportId == Report.Id)
-            .AsNoTracking()
+        var rows22 = Report.Rows22.ToList()
+            .Where(row22 => row22.IsSumRow == false)
             .AsEnumerable()
             .OrderBy(row22 => row22.StoragePlaceCode_DB)
             .ThenBy(row22 => row22.StoragePlaceName_DB)
@@ -154,7 +126,9 @@ public class Form_22VM : BaseFormVM
                     AlphaActivity_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.AlphaActivity_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
                     TransuraniumActivity_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.TransuraniumActivity_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
                     MainRadionuclids_DB = "-",//18
-                    RowColor = Color.FromArgb(75, 204, 102, 0),
+
+
+                    IsSumRow = true,
                 };
 
                 ReplaceZeroValueOnDashSignInRow22(titleRow);
@@ -228,18 +202,29 @@ public class Form_22VM : BaseFormVM
             rows22[i].NumberInOrder_DB = i + 1;
         }
 
-        FormList = new ObservableCollection<Form>(
-           rows22.Skip((CurrentPage - 1) * RowCount)
-               .Take(RowCount)); //Нужна оптимизация
-
-        _sumRowsTotalRows = rows22.Count;
-
-        _sumRowsTotalPages = rows22.Count / RowCount;
-        if (rows22.Count % RowCount != 0)
-            _sumRowsTotalPages++;
-
+        this.Report.Rows22 = new(rows22);
     }
+    #region UndoSumUpFormList
+    public void UndoSumUpFormList()
+    {
+        this.Report.Rows22 = new(Report.Rows22.ToList()
+            .Where(row22 => row22.IsSumRow == false)
+           .AsEnumerable()
+           .OrderBy(row22 => row22.StoragePlaceCode_DB)
+           .ThenBy(row22 => row22.StoragePlaceName_DB)
+           .ThenBy(row22 => row22.PackName_DB)
+           .ThenBy(row22 => row22.PackType_DB)
+           .ThenBy(row22 => row22.CodeRAO_DB)
+           .ThenBy(row22 => row22.StatusRAO_DB));
 
+        for (int i = 0; i < this.Report.Rows22.Count; i++)
+        {
+            this.Report.Rows22[i].NumberInOrder_DB = i + 1;
+        }
+
+        
+    }
+    #endregion
     public void ReplaceZeroValueOnDashSignInRow22(Form22 row22)
     {
         if (row22.PackQuantity_DB == 0.ToString())
@@ -275,6 +260,7 @@ public class Form_22VM : BaseFormVM
 
     #endregion
 
+    
     #endregion
 
 

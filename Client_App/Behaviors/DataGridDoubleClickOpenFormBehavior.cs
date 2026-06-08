@@ -62,7 +62,7 @@ public class DataGridDoubleClickOpenFormBehavior : Behavior<DataGrid>
                 if (report.FormNum_DB.Split('.')[0] is "1")
                     command = new NewChangeReportAsyncCommand(mainWindowVM.Forms1TabControlVM);
                 else if (report.FormNum_DB.Split('.')[0] is "2")
-                    command = new ChangeFormAsyncCommand();
+                    command = new NewChangeReportAsyncCommand(mainWindowVM.Forms2TabControlVM);
                 else if (report.FormNum_DB.Split('.')[0] is "4")
                     command = new NewChangeReportAsyncCommand(mainWindowVM.Forms4TabControlVM);
                 else if (report.FormNum_DB.Split('.')[0] is "5")

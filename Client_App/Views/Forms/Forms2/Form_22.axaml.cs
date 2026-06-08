@@ -13,16 +13,16 @@ using Client_App.ViewModels.Forms.Forms2;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
+using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
+using Models.Forms.Form2;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Models.Collections;
-using Models.Forms.Form2;
 
 namespace Client_App.Views.Forms.Forms2;
 
@@ -150,105 +150,105 @@ public partial class Form_22 : BaseWindow<Form_22VM>
             }
 
         }
-        
+
         //Отдельно остальные хоткеи
         switch (e.Key)
         {
             case Key.LeftCtrl:
             case Key.RightCtrl:
-            {
-                _isCtrlPressed = false;
-                break;
-            }
+                {
+                    _isCtrlPressed = false;
+                    break;
+                }
             case Key.T: // Add Row
-            {
-                vm.AddRow.Execute(null);
-                e.Handled = true;
+                {
+                    vm.AddRow.Execute(null);
+                    e.Handled = true;
 
-                break;
-            }
+                    break;
+                }
             case Key.N: // Add N Rows
-            {
-                vm.AddRows.Execute(null);
-                e.Handled = true;
+                {
+                    vm.AddRows.Execute(null);
+                    e.Handled = true;
 
-                break;
-            }
+                    break;
+                }
             case Key.I: // Add N Rows Before
-            {
-                if (selectedForms is { Count: > 0 })
                 {
-                    vm.AddRowsIn.Execute(selectedForms);
-                    e.Handled = true;
-                }
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.AddRowsIn.Execute(selectedForms);
+                        e.Handled = true;
+                    }
 
-                break;
-            }
+                    break;
+                }
             case Key.D: // Delete Selected Rows
-            {
-                if (selectedForms is { Count: > 0 })
                 {
-                    vm.DeleteRows.Execute(selectedForms);
-                    e.Handled = true;
-                }
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.DeleteRows.Execute(selectedForms);
+                        e.Handled = true;
+                    }
 
-                break;
-            }
+                    break;
+                }
             case Key.O: // Set Number Order
-            {
-                vm.SetNumberOrder.Execute(null);
-                e.Handled = true;
+                {
+                    vm.SetNumberOrder.Execute(null);
+                    e.Handled = true;
 
-                break;
-            }
+                    break;
+                }
             case Key.K: // Copy Pas Name
-            {
-                vm.CopyPasName.Execute(selectedForms);
-                e.Handled = true;
+                {
+                    vm.CopyPasName.Execute(selectedForms);
+                    e.Handled = true;
 
-                break;
-            }
+                    break;
+                }
             case Key.P: // Open Pas
-            {
-                vm.OpenPas.Execute(selectedForms);
-                e.Handled = true;
+                {
+                    vm.OpenPas.Execute(selectedForms);
+                    e.Handled = true;
 
-                break;
-            }
+                    break;
+                }
             case Key.E: // Export Movement History
-            {
-                vm.ExcelExportSourceMovementHistory.Execute(selectedForms);
-                e.Handled = true;
+                {
+                    vm.ExcelExportSourceMovementHistory.Execute(selectedForms);
+                    e.Handled = true;
 
-                break;
-            }
+                    break;
+                }
             case Key.Y: // Calculate Category
-            {
-                vm.CategoryCalculationFromReport.Execute(selectedForms);
-                e.Handled = true;
+                {
+                    vm.CategoryCalculationFromReport.Execute(selectedForms);
+                    e.Handled = true;
 
-                break;
-            }
+                    break;
+                }
             case Key.U: // Clear Rows
-            {
-                if (selectedForms is { Count: > 0 })
                 {
-                    vm.DeleteDataInRows.Execute(selectedForms);
-                    e.Handled = true;
-                }
+                    if (selectedForms is { Count: > 0 })
+                    {
+                        vm.DeleteDataInRows.Execute(selectedForms);
+                        e.Handled = true;
+                    }
 
-                break;
-            }
+                    break;
+                }
             case Key.J: // Source Transmission to RAO
-            {
-                if (vm.SelectedForm is not null)
                 {
-                    vm.SourceTransmission.Execute(vm.SelectedForm);
-                    e.Handled = true;
-                }
+                    if (vm.SelectedForm is not null)
+                    {
+                        vm.SourceTransmission.Execute(vm.SelectedForm);
+                        e.Handled = true;
+                    }
 
-                break;
-            }
+                    break;
+                }
         }
     }
 
@@ -283,10 +283,10 @@ public partial class Form_22 : BaseWindow<Form_22VM>
             var db = StaticConfiguration.DBModel;
 
             var modifiedEntities = db.ChangeTracker.Entries()
-                .Where(x => x.State != EntityState.Unchanged);
-
+                .Where(x => x.State != EntityState.Unchanged).ToList();
+ 
             if (modifiedEntities.All(x => x.Entity is Report rep && rep.FormNum_DB != vm.FormType)
-                || !db.ChangeTracker.HasChanges() || vm.SkipChangeTacking)
+            || !db.ChangeTracker.HasChanges() || vm.SkipChangeTacking)
             {
                 if (vm.SkipChangeTacking) vm.SkipChangeTacking = false;
                 desktop.MainWindow.WindowState = OwnerPrevState;
@@ -334,86 +334,86 @@ public partial class Form_22 : BaseWindow<Form_22VM>
         switch (res)
         {
             case "Да":
-            {
-                _isCloseConfirmed = true;
-
-                //Перед тем как сохранить данные пользователю предлагают удалить пустые строчки
-                try
                 {
-                    await RemoveEmptyForms(vm);
+                    _isCloseConfirmed = true;
+
+                    //Перед тем как сохранить данные пользователю предлагают удалить пустые строчки
+                    try
+                    {
+                        await RemoveEmptyForms(vm);
+                    }
+                    catch (Exception ex)
+                    {
+                        var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                                  $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                        ServiceExtension.LoggerManager.Error(msg);
+                    }
+
+                    await dbm.SaveChangesAsync();
+                    await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+
+                    if (desktop.Windows.Count == 1)
+                    {
+                        desktop.MainWindow.WindowState = OwnerPrevState;
+
+                        break;
+                    }
+
+                    args.Cancel = false;
+
+                    break;
                 }
-                catch (Exception ex)
-                {
-                    var msg = $"{Environment.NewLine}Message: {ex.Message}" +
-                              $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-                    ServiceExtension.LoggerManager.Error(msg);
-                }
-
-                await dbm.SaveChangesAsync();
-                await new SaveReportAsyncCommand(vm).AsyncExecute(null);
-
-                if (desktop.Windows.Count == 1)
-                {
-                    desktop.MainWindow.WindowState = OwnerPrevState;
-               
-                    break; 
-                }
-
-                args.Cancel = false;
-
-                break;
-            }
             case "Нет":
-            {
-                _isCloseConfirmed = true;
-                dbm.Restore();
-                new NewSortFormSyncCommand(vm).Execute(null);
-                await dbm.SaveChangesAsync();
+                {
+                    _isCloseConfirmed = true;
+                    dbm.Restore();
+                    new NewSortFormSyncCommand(vm).Execute(null);
+                    await dbm.SaveChangesAsync();
 
-                var lst = vm.Report[vm.FormType];
+                    var lst = vm.Report[vm.FormType];
 
-                foreach (var key in lst)
-                {
-                
-                    var item = (Form)key;
-                    if (item.Id == 0)
+                    foreach (var key in lst)
                     {
-                        vm.Report[vm.Report.FormNum_DB].Remove(item);
-                    }
-                }
 
-                var lstNote = vm.Report.Notes.ToList<Note>();
-                foreach (var item in lstNote.Where(item => item.Id == 0))
-                {
-                    vm.Report.Notes.Remove(item);
-                }
-                if (vm.FormType is not "1.0" and not "2.0")
-                {
-                    if (vm.FormType.Split('.')[0] == "1")
-                    {
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.StartPeriod));
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.EndPeriod));
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
+                        var item = (Form)key;
+                        if (item.Id == 0)
+                        {
+                            vm.Report[vm.Report.FormNum_DB].Remove(item);
+                        }
                     }
-                    else if (vm.FormType.Split('.')[0] == "2")
+
+                    var lstNote = vm.Report.Notes.ToList<Note>();
+                    foreach (var item in lstNote.Where(item => item.Id == 0))
                     {
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.Year));
-                        vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
+                        vm.Report.Notes.Remove(item);
                     }
+                    if (vm.FormType is not "1.0" and not "2.0")
+                    {
+                        if (vm.FormType.Split('.')[0] == "1")
+                        {
+                            vm.Report.OnPropertyChanged(nameof(vm.Report.StartPeriod));
+                            vm.Report.OnPropertyChanged(nameof(vm.Report.EndPeriod));
+                            vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
+                        }
+                        else if (vm.FormType.Split('.')[0] == "2")
+                        {
+                            vm.Report.OnPropertyChanged(nameof(vm.Report.Year));
+                            vm.Report.OnPropertyChanged(nameof(vm.Report.CorrectionNumber));
+                        }
+                    }
+                    else
+                    {
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.RegNoRep));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.ShortJurLicoRep));
+                        vm.Report.OnPropertyChanged(nameof(vm.Report.OkpoRep));
+                    }
+                    break;
                 }
-                else
-                {
-                    vm.Report.OnPropertyChanged(nameof(vm.Report.RegNoRep));
-                    vm.Report.OnPropertyChanged(nameof(vm.Report.ShortJurLicoRep));
-                    vm.Report.OnPropertyChanged(nameof(vm.Report.OkpoRep));
-                }
-                break;
-            }
             case "Отмена" or null:
-            {
-                _isCloseConfirmed = false;
-                return;
-            }
+                {
+                    _isCloseConfirmed = false;
+                    return;
+                }
         }
         desktop.MainWindow.WindowState = OwnerPrevState;
 
@@ -509,7 +509,7 @@ public partial class Form_22 : BaseWindow<Form_22VM>
                 && string.IsNullOrWhiteSpace(form.MainRadionuclids_DB)
                 && string.IsNullOrWhiteSpace(form.Subsidy_DB)
                 && string.IsNullOrWhiteSpace(form.FcpNumber_DB))
-            { 
+            {
                 formToDeleteList.Add(form);
             }
         }

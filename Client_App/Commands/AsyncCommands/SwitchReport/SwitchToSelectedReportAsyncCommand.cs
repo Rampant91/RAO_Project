@@ -32,22 +32,25 @@ public class SwitchToSelectedReportAsyncCommand(BaseFormVM formVM) : BaseAsyncCo
 
         var window = Desktop.Windows.First(x => x.Name == formVM.FormType);
 
-        if (selectedReport.FormNum.Value == "4.1")
+        switch(formVM.FormType[0])
         {
-            var form41 = window as Form_41;
-            await new NewChangeReportAsyncCommand(mainWindowVM.Forms4TabControlVM).AsyncExecute(selectedReport).ConfigureAwait(false);
-            form41.Close();
-        }
-        else
-        {
-            var windowParam = new FormParameter()
-            {
-                Parameter = selectedReport,
-                Window = window
-            };
-
-            await new ChangeFormAsyncCommand(windowParam).AsyncExecute(null).ConfigureAwait(false);
-        }
+            case '1':
+                await new NewChangeReportAsyncCommand(mainWindowVM.Forms1TabControlVM).AsyncExecute(selectedReport).ConfigureAwait(false);
+                break;
+            case '2':
+                await new NewChangeReportAsyncCommand(mainWindowVM.Forms2TabControlVM).AsyncExecute(selectedReport).ConfigureAwait(false);
+                break;
+            //case '3':
+            //    await new NewChangeReportAsyncCommand(mainWindowVM.Forms3TabControlVM).AsyncExecute(selectedReport).ConfigureAwait(false);
+            //    break;
+            case '4':
+                await new NewChangeReportAsyncCommand(mainWindowVM.Forms4TabControlVM).AsyncExecute(selectedReport).ConfigureAwait(false);
+                break;
+            case '5':
+                await new NewChangeReportAsyncCommand(mainWindowVM.Forms5TabControlVM).AsyncExecute(selectedReport).ConfigureAwait(false);
+                break;
+        }    
+        window.Close();
 
     }
 }
