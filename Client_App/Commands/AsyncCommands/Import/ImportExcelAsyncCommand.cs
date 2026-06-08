@@ -66,7 +66,9 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         string[] extensions = ["xlsx", "XLSX"];
         var answer = await GetSelectedFilesFromDialog("Excel", extensions);
         if (answer is null) return;
+        ImportedReports.Clear();
         SkippedIdenticalReports.Clear();
+        var importSummaryShown = false;
         try
         {
         SkipNewOrg = false;
@@ -601,7 +603,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         }
         finally
         {
-            await ShowSkippedIdenticalReportsMessageIfAnyAsync();
+            importSummaryShown = await ShowImportSummaryMessageIfAnyAsync();
         }
 
         //if (impReportsList.All(x => x.Master_DB.FormNum_DB is "1.0" or "2.0"))
@@ -609,35 +611,18 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         //    await SetDataGridPage(impReportsList);
         //}
 
-        var suffix = answer.Length.ToString() is [.., '1'] && !answer.Length.ToString().EndsWith("11")
-                ? "а"
-                : "ов";
         if (AtLeastOneImportDone && readAnyExcel)
         {
-            #region MessageImportDone
-
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Импорт из .xlsx",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = $"Импорт из файл{suffix} .xlsx успешно завершен.",
-                    MinWidth = 400,
-                    MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
-
-            #endregion
-
             var mainWindowVM = Desktop.MainWindow.DataContext as MainWindowVM;
-
             mainWindowVM.UpdateReportsCollection();
         }
-        else
+        else if (!importSummaryShown && readAnyExcel)
         {
             #region MessageImportCancel
+
+            var suffix = answer.Length.ToString() is [.., '1'] && !answer.Length.ToString().EndsWith("11")
+                ? "а"
+                : "ов";
 
             await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams

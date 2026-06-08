@@ -14,10 +14,13 @@ public partial class SkippedIdenticalReportsMessageWindow : BaseWindow<BaseVM>
         DataContext = new SkippedIdenticalReportsMessageWindowVM();
     }
 
-    public SkippedIdenticalReportsMessageWindow(IReadOnlyList<SkippedIdenticalReportInfo> reports)
+    public SkippedIdenticalReportsMessageWindow(
+        IReadOnlyList<SkippedIdenticalReportInfo> importedReports,
+        IReadOnlyList<SkippedIdenticalReportInfo> skippedReports,
+        string headerTitle = SkippedIdenticalReportsMessageWindowVM.Form1HeaderTitle)
     {
         AvaloniaXamlLoader.Load(this);
-        DataContext = new SkippedIdenticalReportsMessageWindowVM(reports);
+        DataContext = new SkippedIdenticalReportsMessageWindowVM(importedReports, skippedReports, headerTitle);
     }
 
     private void OnOkClicked(object? sender, RoutedEventArgs e) => Close();

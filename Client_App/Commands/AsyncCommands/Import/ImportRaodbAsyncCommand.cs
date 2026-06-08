@@ -58,8 +58,10 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         string[] extensions = ["raodb", "RAODB"];
         var answer = await GetSelectedFilesFromDialog("RAODB", extensions);
         if (answer is null) return;
+        ImportedReports.Clear();
         SkippedIdenticalReports.Clear();
         var countReadFiles = 0;
+        var importSummaryShown = false;
         try
         {
         SkipNewOrg = false;
@@ -338,6 +340,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                 ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
                             };
                             ServiceExtension.LoggerManager.Import(LoggerImportDTO);
+                            RecordImportedReport();
                             IsFirstLogLine = false;
                             CurrentLogLine++;
                         }
@@ -429,7 +432,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         }
         finally
         {
-            await ShowSkippedIdenticalReportsMessageIfAnyAsync();
+            importSummaryShown = await ShowImportSummaryMessageIfAnyAsync();
         }
 
         //try
@@ -441,37 +444,20 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         //}
         //catch {}
 
-        var suffix = answer.Length.ToString() is [.., '1'] && !answer.Length.ToString().EndsWith("11")
-                ? "а"
-                : "ов";
-
         if (AtLeastOneImportDone)
         {
-            #region MessageImportDone
-            
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = ButtonEnum.Ok,
-                    ContentTitle = "Импорт из .raodb",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = $"Импорт {countReadFiles} из {answer.Length} файл{suffix} .raodb успешно завершен.",
-                    MinWidth = 400,
-                    MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
-
-            #endregion
-
             var mainWindowVM = Desktop.MainWindow.DataContext as MainWindowVM;
             mainWindowVM.UpdateReportsCollection();
             mainWindowVM.UpdateOrgsPageInfo();
             mainWindowVM.UpdateTotalReportCount();
         }
-        else
+        else if (!importSummaryShown)
         {
             #region MessageImportCancel
+
+            var suffix = answer.Length.ToString() is [.., '1'] && !answer.Length.ToString().EndsWith("11")
+                ? "а"
+                : "ов";
 
             await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams

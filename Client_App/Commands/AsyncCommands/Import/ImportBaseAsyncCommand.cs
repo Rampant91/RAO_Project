@@ -46,6 +46,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     public string Act = "\t\t\t";                   // Действие с формой для логгера
 
     protected readonly List<(string, string)> RepsWhereTitleFormCheckIsCancel = [];
+    private protected readonly List<SkippedIdenticalReportInfo> ImportedReports = [];
     private protected readonly List<SkippedIdenticalReportInfo> SkippedIdenticalReports = [];
     public string BaseRepsOkpo = "";
     public string BaseRepsRegNum = "";
@@ -126,6 +127,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     newReport.Id = 0;
                     baseReps.Report_Collection.Add(newReport);
                     AtLeastOneImportDone = true;
+                    RecordImportedReport();
                 }
                 Act = "\t\t\t";
                 LoggerImportDTO = new LoggerImportDTO
@@ -162,6 +164,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 {
                     baseReps.Report_Collection.Add(newReport);
                     AtLeastOneImportDone = true;
+                    RecordImportedReport();
                 }
                 Act = "Сохранены оба (пересечение)";
                 LoggerImportDTO = new LoggerImportDTO
@@ -198,6 +201,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 StaticConfiguration.DBModel.Remove(oldReport!);
                 await ReportDeletionLogger.LogDeletionAsync(oldReport!);
                 AtLeastOneImportDone = true;
+                RecordImportedReport();
                 Act = "Замена (пересечение)\t";
                 LoggerImportDTO = new LoggerImportDTO
                 {
@@ -235,6 +239,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 StaticConfiguration.DBModel.Remove(oldReport);
                 await ReportDeletionLogger.LogDeletionAsync(oldReport);
                 AtLeastOneImportDone = true;
+                RecordImportedReport();
                 Act = "Дополнение (совпадение)\t";
                 LoggerImportDTO = new LoggerImportDTO
                 {
@@ -880,14 +885,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     {
                         if (AreReportContentEqual(baseRep, impRep))
                         {
-                            SkippedIdenticalReports.Add(new SkippedIdenticalReportInfo
-                            {
-                                RegNum = BaseRepsRegNum,
-                                Okpo = BaseRepsOkpo,
-                                FormNum = ImpRepFormNum,
-                                StartPeriod = ImpRepStartPeriod,
-                                EndPeriod = ImpRepEndPeriod
-                            });
+                            RecordSkippedIdenticalReport();
 
                             break;
                         }
@@ -1042,18 +1040,38 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         await baseReps.SortAsync().ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Показывает сводное уведомление об отчётах, не импортированных как полные копии, и очищает список.
-    /// </summary>
-    private protected Task ShowSkippedIdenticalReportsMessageIfAnyAsync()
+    private protected SkippedIdenticalReportInfo CreateCurrentReportSummaryInfo() => new()
     {
-        if (SkippedIdenticalReports.Count == 0)
-            return Task.CompletedTask;
+        RegNum = BaseRepsRegNum,
+        Okpo = BaseRepsOkpo,
+        FormNum = ImpRepFormNum,
+        StartPeriod = ImpRepStartPeriod,
+        EndPeriod = ImpRepEndPeriod
+    };
 
+    private protected void RecordImportedReport() =>
+        ImportedReports.Add(CreateCurrentReportSummaryInfo());
+
+    private protected void RecordSkippedIdenticalReport() =>
+        SkippedIdenticalReports.Add(CreateCurrentReportSummaryInfo());
+
+    /// <summary>
+    /// Показывает сводное уведомление об итогах импорта и очищает списки.
+    /// </summary>
+    /// <returns>True, если окно было показано.</returns>
+    private protected async Task<bool> ShowImportSummaryMessageIfAnyAsync()
+    {
+        if (ImportedReports.Count == 0 && SkippedIdenticalReports.Count == 0)
+            return false;
+
+        var importedReports = ImportedReports.ToList();
         var skippedReports = SkippedIdenticalReports.ToList();
+        ImportedReports.Clear();
         SkippedIdenticalReports.Clear();
-        return Dispatcher.UIThread.InvokeAsync(() =>
-            new SkippedIdenticalReportsMessageWindow(skippedReports).ShowDialog(Desktop.MainWindow));
+        await Dispatcher.UIThread.InvokeAsync(() =>
+            new SkippedIdenticalReportsMessageWindow(importedReports, skippedReports)
+                .ShowDialog(Desktop.MainWindow));
+        return true;
     }
 
     #endregion
