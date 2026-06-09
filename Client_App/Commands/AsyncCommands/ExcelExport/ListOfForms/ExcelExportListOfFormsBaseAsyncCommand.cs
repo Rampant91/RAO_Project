@@ -11,8 +11,10 @@ using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
+using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
+using Models.Forms.Form4;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 
@@ -31,7 +33,7 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
     private const double FormNumColumnWidth = 8;
     private const double DateColumnWidth = 13;
     private const double YearColumnWidth = 8;
-    private const double CorrectionColumnWidth = 14;
+    private const double CorrectionColumnWidth = 15;
     private const double RowCountColumnWidth = 14;
 
     /// <summary>
@@ -43,6 +45,15 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
     /// Высота строки заголовков для списка форм 2 (в пунктах).
     /// </summary>
     private protected const double HeaderRowHeightForm2 = 45;
+
+    /// <summary>
+    /// Высота строки заголовков для списка форм 4 (в пунктах).
+    /// </summary>
+    private protected const double HeaderRowHeightForm4 = 45;
+
+    private const double CodeSubjectRfColumnWidth = 14;
+    private const double FormNumberColumnWidth = 10;
+    private const double ShortNameRiacColumnWidth = 45;
 
     /// <summary>
     /// Суффикс переноса строки в заголовке узкой колонки — стрелка AutoFilter остаётся на пустой строке.
@@ -61,6 +72,8 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
     [
         "2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "2.8", "2.9", "2.10", "2.11", "2.12"
     ];
+
+    private protected static readonly string[] Form4ChildFormNumbers = ["4.1"];
 
     /// <summary>
     /// Интервал обновления прогрессбара при записи строк в Excel (в строках).
@@ -96,6 +109,11 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
     /// Прогрессбар после подсчёта строк форм 2 в БД.
     /// </summary>
     private protected const int ProgressRowCountsEndForm2 = 83;
+
+    /// <summary>
+    /// Прогрессбар после подсчёта строк форм 4 в БД.
+    /// </summary>
+    private protected const int ProgressRowCountsEndForm4 = 74;
 
     /// <summary>
     /// Прогрессбар после записи данных в Excel.
@@ -149,6 +167,12 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
         string? Okpo_DB,
         string? ShortJurLico_DB);
 
+    private readonly record struct Form40TitleRowInfo(
+        int MasterReportId,
+        string? CodeSubjectRF_DB,
+        string? ShortNameRiac_DB,
+        string? NameRiac_DB);
+
     #endregion
 
     #region Progress
@@ -192,6 +216,7 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
         {
             "1.0" => Form1ChildFormNumbers,
             "2.0" => Form2ChildFormNumbers,
+            "4.0" => Form4ChildFormNumbers,
             _ => throw new ArgumentOutOfRangeException(nameof(masterFormNum), masterFormNum, null)
         };
 
@@ -214,12 +239,23 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
 
         progressBarVM.SetProgressBar(ProgressTitlesLoaded, "Загрузка титульных данных");
 
-        var titleByMasterId = masterFormNum switch
+        Dictionary<int, List<TitleRowInfo>>? titleByMasterId = null;
+        Dictionary<int, Form40TitleRowInfo>? titleByMasterIdForm40 = null;
+
+        switch (masterFormNum)
         {
-            "1.0" => await LoadTitleRowsForm10Async(db, masterReportIds, token),
-            "2.0" => await LoadTitleRowsForm20Async(db, masterReportIds, token),
-            _ => throw new ArgumentOutOfRangeException(nameof(masterFormNum), masterFormNum, null)
-        };
+            case "1.0":
+                titleByMasterId = await LoadTitleRowsForm10Async(db, masterReportIds, token);
+                break;
+            case "2.0":
+                titleByMasterId = await LoadTitleRowsForm20Async(db, masterReportIds, token);
+                break;
+            case "4.0":
+                titleByMasterIdForm40 = await LoadTitleRowsForm40Async(db, masterReportIds, token);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(masterFormNum), masterFormNum, null);
+        }
 
         var orgIds = orgRows.Select(o => o.Id).ToHashSet();
         var reportsByOrgId = await LoadFormReportsForList(
@@ -228,11 +264,18 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
         var result = new List<FormListOrgExportData>(orgRows.Count);
         foreach (var org in orgRows)
         {
-            titleByMasterId.TryGetValue(org.MasterReportId!.Value, out var titleRows);
             var (regNo, okpo, shortJurLico) = masterFormNum switch
             {
-                "1.0" => BuildTitleFields(titleRows, ResolveTitleForm10, ResolveShortJurLicoForm10),
-                "2.0" => BuildTitleFields(titleRows, ResolveTitleForm20, ResolveShortJurLicoForm20),
+                "1.0" => BuildTitleFields(
+                    titleByMasterId!.GetValueOrDefault(org.MasterReportId!.Value),
+                    ResolveTitleForm10,
+                    ResolveShortJurLicoForm10),
+                "2.0" => BuildTitleFields(
+                    titleByMasterId!.GetValueOrDefault(org.MasterReportId!.Value),
+                    ResolveTitleForm20,
+                    ResolveShortJurLicoForm20),
+                "4.0" => ResolveTitleForm40(
+                    titleByMasterIdForm40!.GetValueOrDefault(org.MasterReportId!.Value)),
                 _ => (string.Empty, string.Empty, string.Empty)
             };
 
@@ -277,6 +320,40 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
                 .ToListAsync(token);
 
             AppendTitleRows(result, rows);
+        }
+
+        return result;
+    }
+
+    private static async Task<Dictionary<int, Form40TitleRowInfo>> LoadTitleRowsForm40Async(
+        DBModel db,
+        List<int> masterReportIds,
+        CancellationToken token)
+    {
+        var result = new Dictionary<int, Form40TitleRowInfo>(masterReportIds.Count);
+        if (masterReportIds.Count == 0)
+            return result;
+
+        var batchCount = (masterReportIds.Count + FirebirdInClauseBatchSize - 1) / FirebirdInClauseBatchSize;
+        for (var batchIndex = 0; batchIndex < batchCount; batchIndex++)
+        {
+            var batch = masterReportIds
+                .Skip(batchIndex * FirebirdInClauseBatchSize)
+                .Take(FirebirdInClauseBatchSize)
+                .ToList();
+
+            var rows = await db.form_40
+                .AsNoTracking()
+                .Where(f => f.ReportId != null && batch.Contains(f.ReportId.Value))
+                .Select(f => new Form40TitleRowInfo(
+                    f.ReportId!.Value,
+                    f.CodeSubjectRF_DB,
+                    f.ShortNameRiac_DB,
+                    f.NameRiac_DB))
+                .ToListAsync(token);
+
+            foreach (var row in rows)
+                result[row.MasterReportId] = row;
         }
 
         return result;
@@ -423,6 +500,32 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
         return new FormListExportPreparedData(preparedOrgs, reportIdsByForm);
     }
 
+    private protected static FormListExportPreparedData PrepareForm4Export(
+        List<FormListOrgExportData> orgs,
+        int minYear,
+        int maxYear)
+    {
+        var reportIdsByForm = Form4ChildFormNumbers.ToDictionary(f => f, _ => new List<int>());
+        var preparedOrgs = new List<FormListOrgExportData>(orgs.Count);
+
+        foreach (var org in orgs)
+        {
+            var filtered = new List<FormReportListInfo>();
+            foreach (var rep in org.Reports)
+            {
+                if (!IsForm2ReportInYearRange(rep, minYear, maxYear))
+                    continue;
+
+                filtered.Add(rep);
+                reportIdsByForm[rep.FormNum_DB].Add(rep.ReportId);
+            }
+
+            preparedOrgs.Add(new FormListOrgExportData(org.RegNo, org.Okpo, org.ShortJurLico, filtered));
+        }
+
+        return new FormListExportPreparedData(preparedOrgs, reportIdsByForm);
+    }
+
     private protected static FormListExportPreparedData PrepareForm2Export(
         List<FormListOrgExportData> orgs,
         int minYear,
@@ -478,6 +581,13 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
     private protected static List<FormReportListInfo> OrderForm2Reports(IReadOnlyList<FormReportListInfo> reports) =>
         reports
             .OrderBy(x => byte.TryParse(x.FormNum_DB[2..], out var formNum) ? formNum : byte.MaxValue)
+            .ThenByDescending(x => int.TryParse(x.Year_DB, out var year) ? year : int.MinValue)
+            .ThenByDescending(x => x.CorrectionNumber_DB)
+            .ToList();
+
+    private protected static List<FormReportListInfo> OrderForm4Reports(IReadOnlyList<FormReportListInfo> reports) =>
+        reports
+            .OrderBy(x => x.FormNum_DB)
             .ThenByDescending(x => int.TryParse(x.Year_DB, out var year) ? year : int.MinValue)
             .ThenByDescending(x => x.CorrectionNumber_DB)
             .ToList();
@@ -559,6 +669,24 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
     private static string GetForm20RowRegNo(TitleRowInfo row) => GetForm10RowRegNo(row);
     private static string GetForm20ShortJurLico(TitleRowInfo row) => GetForm10ShortJurLico(row);
 
+    private static (string CodeSubjectRf, string _, string ShortNameRiac) ResolveTitleForm40(Form40TitleRowInfo row)
+    {
+        if (row.MasterReportId == 0)
+            return (string.Empty, string.Empty, string.Empty);
+
+        var codeSubjectRf = string.IsNullOrWhiteSpace(row.CodeSubjectRF_DB)
+            ? string.Empty
+            : row.CodeSubjectRF_DB.Trim();
+
+        var shortNameRiac = !string.IsNullOrWhiteSpace(row.ShortNameRiac_DB)
+            ? row.ShortNameRiac_DB.Trim()
+            : string.IsNullOrWhiteSpace(row.NameRiac_DB)
+                ? string.Empty
+                : row.NameRiac_DB.Trim();
+
+        return (codeSubjectRf, string.Empty, shortNameRiac);
+    }
+
     #endregion
 
     #region RowCounts
@@ -601,13 +729,13 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
     }
 
     /// <summary>
-    /// Подсчёт строк формы 2 по пакетам reportId через таблицу form_XX.
+    /// Подсчёт строк формы по пакетам reportId через таблицу form_XX.
     /// </summary>
-    private protected static async Task AppendForm2RowCountsAsync<TForm>(
+    private protected static async Task AppendFormRowCountsAsync<TForm>(
         DbSet<TForm> formDbSet,
         IReadOnlyList<int> reportIds,
         Dictionary<int, int> result,
-        CancellationToken token) where TForm : Form2
+        CancellationToken token) where TForm : Form
     {
         if (reportIds.Count == 0)
             return;
@@ -631,6 +759,16 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
                 result[row.ReportId] = row.Total;
         }
     }
+
+    /// <summary>
+    /// Подсчёт строк формы 2 по пакетам reportId через таблицу form_XX.
+    /// </summary>
+    private protected static Task AppendForm2RowCountsAsync<TForm>(
+        DbSet<TForm> formDbSet,
+        IReadOnlyList<int> reportIds,
+        Dictionary<int, int> result,
+        CancellationToken token) where TForm : Form2 =>
+        AppendFormRowCountsAsync(formDbSet, reportIds, result, token);
 
     #endregion
 
@@ -662,11 +800,26 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
     /// </summary>
     private protected static void ApplyFormListExcelStyle(ExcelWorksheet worksheet, double headerRowHeight)
     {
-        ApplyFormListColumnWidths(worksheet);
         ApplyExcelHeaderRowStyle(
             worksheet,
             worksheet.Dimension.End.Column,
             headerRowHeight: headerRowHeight);
+        // Ширины — после автофильтра: иначе Excel/EPPlus может сузить колонки по данным.
+        ApplyFormListColumnWidths(worksheet);
+    }
+
+    /// <summary>
+    /// Фиксированные ширины колонок списка форм 4 (по индексу, без привязки к тексту заголовка).
+    /// </summary>
+    private protected static void ApplyForm4ListColumnWidths(ExcelWorksheet worksheet)
+    {
+        worksheet.Column(1).Width = CodeSubjectRfColumnWidth;
+        worksheet.Column(2).Width = ShortNameRiacColumnWidth;
+        worksheet.Column(2).Style.WrapText = true;
+        worksheet.Column(3).Width = FormNumberColumnWidth;
+        worksheet.Column(4).Width = YearColumnWidth;
+        worksheet.Column(5).Width = CorrectionColumnWidth;
+        worksheet.Column(6).Width = RowCountColumnWidth;
     }
 
     /// <summary>
@@ -728,14 +881,32 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
             case "Инвентаризация":
                 width = MaxTextColumnWidth;
                 return true;
+            case "Код субъекта РФ":
+                width = CodeSubjectRfColumnWidth;
+                return true;
+            case "Номер формы":
+                width = FormNumberColumnWidth;
+                return true;
+            case "Год":
+                width = YearColumnWidth;
+                return true;
             default:
+                if (header.StartsWith("Сокращенное наименование", StringComparison.Ordinal))
+                {
+                    width = header.Contains("РИАЦ", StringComparison.Ordinal)
+                        ? ShortNameRiacColumnWidth
+                        : MaxTextColumnWidth;
+                    return true;
+                }
+
                 width = 0;
                 return false;
         }
     }
 
     private static bool IsFormListTextColumn(string header) =>
-        header is "Сокращенное наименование" or "Инвентаризация";
+        header is "Сокращенное наименование" or "Инвентаризация"
+        || header.StartsWith("Сокращенное наименование", StringComparison.Ordinal);
 
     #endregion
 

@@ -100,10 +100,14 @@
                           CommandParameter="Executors"
                           Header="Список исполнителей"
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
-                <MenuItem Command="{Binding ExcelExportListOfForms1, Mode=OneWay}" 
-                          Header="Список форм 1"/>
-                <MenuItem Command="{Binding ExcelExportListOfForms2, Mode=OneWay}" 
-                          Header="Список форм 2"/>
+                <MenuItem Header="Список форм">
+                    <MenuItem Command="{Binding ExcelExportListOfForms1, Mode=OneWay}"
+                              Header="Список форм 1"/>
+                    <MenuItem Command="{Binding ExcelExportListOfForms2, Mode=OneWay}"
+                              Header="Список форм 2"/>
+                    <MenuItem Command="{Binding ExcelExportListOfForms4, Mode=OneWay}"
+                              Header="Список форм 4"/>
+                </MenuItem>
                 <Separator/>
                 <MenuItem Command="{Binding ExcelExportAll, Mode=OneWay}"
                           CommandParameter="AllReps"
