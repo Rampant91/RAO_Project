@@ -32,26 +32,25 @@ public class ExcelExportListOfForms1AsyncCommand : ExcelExportListOfFormsBaseAsy
         var folderPath = await CheckAppParameter();
         var isBackgroundCommand = folderPath != string.Empty;
 
-        progressBarVM.SetProgressBar(5, "Создание временной БД");
+        progressBarVM.SetProgressBar(5, "Запрос периода");
+        var (startDate, endDate) = !isBackgroundCommand
+            ? await InputDateRange(progressBar, cts)
+            : (DateOnly.MinValue, DateOnly.MaxValue);
+
+        progressBarVM.SetProgressBar(8, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
         await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(9, "Подсчёт количества организаций");
+        progressBarVM.SetProgressBar(10, "Подсчёт количества организаций");
         await ReportsCountCheck(db, "1.0", progressBar, cts);
 
-        progressBarVM.SetProgressBar(11, "Запрос пути сохранения", "Выгрузка в .xlsx", ExportType);
+        progressBarVM.SetProgressBar(13, "Запрос пути сохранения", "Выгрузка в .xlsx", ExportType);
         var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
         var (fullPath, openTemp) = !isBackgroundCommand
             ? await ExcelGetFullPath(fileName, cts, progressBar)
             : (Path.Combine(folderPath, $"{fileName}.xlsx"), true);
 
         fullPath = ResolveUniqueFilePath(fullPath, isBackgroundCommand ? folderPath : null);
-
-        progressBarVM.SetProgressBar(13, "Запрос периода");
-
-        var (startDate, endDate) = !isBackgroundCommand
-            ? await InputDateRange(progressBar, cts)
-            : (DateOnly.MinValue, DateOnly.MaxValue);
 
         progressBarVM.SetProgressBar(15, "Инициализация Excel пакета");
         using var excelPackage = await InitializeExcelPackage(fullPath);

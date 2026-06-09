@@ -29,9 +29,9 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
     private const double RegNoColumnWidth = 14;
     private const double OkpoColumnWidth = 12;
     private const double FormNumColumnWidth = 8;
-    private const double DateColumnWidth = 10;
+    private const double DateColumnWidth = 13;
     private const double YearColumnWidth = 8;
-    private const double CorrectionColumnWidth = 8;
+    private const double CorrectionColumnWidth = 14;
     private const double RowCountColumnWidth = 14;
 
     /// <summary>
@@ -470,16 +470,16 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
     private protected static List<FormReportListInfo> OrderForm1Reports(IReadOnlyList<FormReportListInfo> reports) =>
         reports
             .OrderBy(x => x.FormNum_DB)
-            .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDateOnly) ? stDateOnly : DateOnly.MaxValue)
-            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDateOnly) ? endDateOnly : DateOnly.MaxValue)
-            .ThenBy(x => x.CorrectionNumber_DB)
+            .ThenByDescending(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDateOnly) ? stDateOnly : DateOnly.MaxValue)
+            .ThenByDescending(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDateOnly) ? endDateOnly : DateOnly.MaxValue)
+            .ThenByDescending(x => x.CorrectionNumber_DB)
             .ToList();
 
     private protected static List<FormReportListInfo> OrderForm2Reports(IReadOnlyList<FormReportListInfo> reports) =>
         reports
             .OrderBy(x => byte.TryParse(x.FormNum_DB[2..], out var formNum) ? formNum : byte.MaxValue)
-            .ThenBy(x => x.Year_DB)
-            .ThenBy(x => x.CorrectionNumber_DB)
+            .ThenByDescending(x => int.TryParse(x.Year_DB, out var year) ? year : int.MinValue)
+            .ThenByDescending(x => x.CorrectionNumber_DB)
             .ToList();
 
     #endregion

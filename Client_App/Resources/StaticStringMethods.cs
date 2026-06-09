@@ -107,7 +107,7 @@ public static partial class StaticStringMethods
 
     #region ConvertToExcel
     
-    public static object ConvertToExcelDate(string value, ExcelWorksheet worksheet, int row, int column)
+    public static object ConvertToExcelDate(string? value, ExcelWorksheet worksheet, int row, int column)
     {
         if (DateOnly.TryParse(value, out var dateOnly))
         {
@@ -120,7 +120,7 @@ public static partial class StaticStringMethods
                 : value;
     }
 
-    public static object ConvertToExcelDouble(string value)
+    public static object ConvertToExcelDouble(string? value)
     {
         return value is null or "" or "-"
             ? "-"
@@ -129,7 +129,7 @@ public static partial class StaticStringMethods
                 : value;
     }
 
-    public static object ConvertToExcelInt(string value)
+    public static object ConvertToExcelInt(string? value)
     {
         return value is null or "" or "-"
             ? "-"
@@ -138,7 +138,7 @@ public static partial class StaticStringMethods
                 : value;
     }
 
-    public static object ConvertToExcelShort(string value)
+    public static object ConvertToExcelShort(string? value)
     {
         return value is null or "" or "-"
             ? "-"
@@ -147,7 +147,7 @@ public static partial class StaticStringMethods
                 : value;
     }
 
-    public static object ConvertToExcelString(string value)
+    public static object ConvertToExcelString(string? value)
     {
         return value is null or "" or "-"
             ? "-"
@@ -156,8 +156,8 @@ public static partial class StaticStringMethods
 
     private static string ReplaceE(string numberE)
     {
-        return numberE.Replace("е", "E").Replace("Е", "E").Replace("e", "E")
-            .Replace("(", "").Replace(")", "").Replace(".", ",");
+        return numberE.Replace('е', 'E').Replace('Е', 'E').Replace('e', 'E')
+            .Replace("(", "").Replace(")", "").Replace('.', ',');
     }
 
     #endregion
