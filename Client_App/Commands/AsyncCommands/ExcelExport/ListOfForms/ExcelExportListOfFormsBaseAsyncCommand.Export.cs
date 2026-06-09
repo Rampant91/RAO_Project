@@ -5,11 +5,14 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Properties;
 using Client_App.ViewModels;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
+using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using OfficeOpenXml;
@@ -43,13 +46,14 @@ public abstract partial class ExcelExportListOfFormsBaseAsyncCommand
     int RowCountsEnd,
     int ExcelEnd);
 
-  private static readonly FormListExportGroup[] AllFormListExportGroups =
-  [
-    FormListExportGroup.Forms1,
-    FormListExportGroup.Forms2,
-    FormListExportGroup.Forms4,
-    FormListExportGroup.Forms5
-  ];
+  private static IEnumerable<FormListExportGroup> EnumerateFormListExportGroupsForAllExport()
+  {
+    yield return FormListExportGroup.Forms1;
+    yield return FormListExportGroup.Forms2;
+    yield return FormListExportGroup.Forms4;
+    if (Settings.Default.AppLaunchedInNorao)
+      yield return FormListExportGroup.Forms5;
+  }
 
   #region Orchestration
 
@@ -58,6 +62,9 @@ public abstract partial class ExcelExportListOfFormsBaseAsyncCommand
   /// </summary>
   private protected async Task ExportSingleFormListAsync(FormListExportGroup group)
   {
+    if (!IsFormListExportGroupAvailable(group))
+      return;
+
     var cts = new CancellationTokenSource();
     ExportType = GetExportTypeName(group);
     var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
@@ -108,7 +115,7 @@ public abstract partial class ExcelExportListOfFormsBaseAsyncCommand
   }
 
   /// <summary>
-  /// Выгрузка списков форм 1, 2, 4 и 5 на отдельные листы одного файла .xlsx.
+  /// Выгрузка списков форм, присутствующих в базе, на отдельные листы одного файла .xlsx.
   /// </summary>
   private protected async Task ExportAllFormListsAsync()
   {
@@ -136,18 +143,26 @@ public abstract partial class ExcelExportListOfFormsBaseAsyncCommand
 
     fullPath = ResolveUniqueFilePath(fullPath, isBackgroundCommand ? folderPath : null);
 
+    progressBarVM.SetProgressBar(10, "Проверка наличия отчётности");
+    var groupsToExport = await GetFormListExportGroupsPresentInDbAsync(db, cts.Token);
+    if (groupsToExport.Length == 0)
+    {
+      await NotifyNoFormListReportsFoundAsync(progressBar, cts);
+      return;
+    }
+
     progressBarVM.SetProgressBar(15, "Инициализация Excel пакета");
     using var excelPackage = await InitializeExcelPackage(fullPath);
 
     const int sheetProgressStart = 18;
     const int sheetProgressEnd = 91;
-    var sheetProgressStep = (sheetProgressEnd - sheetProgressStart) / AllFormListExportGroups.Length;
+    var sheetProgressStep = (sheetProgressEnd - sheetProgressStart) / groupsToExport.Length;
 
-    for (var i = 0; i < AllFormListExportGroups.Length; i++)
+    for (var i = 0; i < groupsToExport.Length; i++)
     {
-      var group = AllFormListExportGroups[i];
+      var group = groupsToExport[i];
       var sheetProgressFrom = sheetProgressStart + sheetProgressStep * i;
-      var sheetProgressTo = i == AllFormListExportGroups.Length - 1
+      var sheetProgressTo = i == groupsToExport.Length - 1
         ? sheetProgressEnd
         : sheetProgressStart + sheetProgressStep * (i + 1);
 
@@ -156,21 +171,14 @@ public abstract partial class ExcelExportListOfFormsBaseAsyncCommand
       var worksheet = excelPackage.Workbook.Worksheets.Add(GetSheetName(group));
       WriteFormListHeaders(worksheet, group);
 
-      if (await HasReportsForMasterFormAsync(db, GetMasterFormNum(group), cts.Token))
-      {
-        await FillFormListSheetAsync(
-          db,
-          worksheet,
-          group,
-          filters,
-          progressBarVM,
-          CreateAllFormsSheetProgressSegment(sheetProgressFrom, sheetProgressTo),
-          cts);
-      }
-      else
-      {
-        ApplyFormListSheetStyle(worksheet, group);
-      }
+      await FillFormListSheetAsync(
+        db,
+        worksheet,
+        group,
+        filters,
+        progressBarVM,
+        CreateAllFormsSheetProgressSegment(sheetProgressFrom, sheetProgressTo),
+        cts);
     }
 
     progressBarVM.SetProgressBar(ProgressSaveStart, "Сохранение");
@@ -740,6 +748,46 @@ public abstract partial class ExcelExportListOfFormsBaseAsyncCommand
       await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
 
     return new FormListExportFilters(DateOnly.MinValue, DateOnly.MaxValue, res.initialYear, res.residualYear);
+  }
+
+  private static bool IsFormListExportGroupAvailable(FormListExportGroup group) =>
+    group != FormListExportGroup.Forms5 || Settings.Default.AppLaunchedInNorao;
+
+  private static async Task<FormListExportGroup[]> GetFormListExportGroupsPresentInDbAsync(
+    DBModel db,
+    CancellationToken token)
+  {
+    var result = new List<FormListExportGroup>();
+    foreach (var group in EnumerateFormListExportGroupsForAllExport())
+    {
+      if (await HasReportsForMasterFormAsync(db, GetMasterFormNum(group), token))
+        result.Add(group);
+    }
+
+    return result.ToArray();
+  }
+
+  private static async Task NotifyNoFormListReportsFoundAsync(
+    AnyTaskProgressBar progressBar,
+    CancellationTokenSource cts)
+  {
+    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+      .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+      {
+        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+        CanResize = true,
+        ContentTitle = "Выгрузка в .xlsx",
+        ContentHeader = "Уведомление",
+        ContentMessage =
+          "Не удалось совершить выгрузку списков форм," +
+          $"{Environment.NewLine}поскольку в текущей базе отсутствует отчётность по доступным формам.",
+        MinWidth = 400,
+        MinHeight = 150,
+        WindowStartupLocation = WindowStartupLocation.CenterOwner
+      })
+      .ShowDialog(progressBar ?? Desktop.MainWindow));
+
+    await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
   }
 
   private static async Task<bool> HasReportsForMasterFormAsync(

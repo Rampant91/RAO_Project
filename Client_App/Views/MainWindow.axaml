@@ -108,7 +108,8 @@
                     <MenuItem Command="{Binding ExcelExportListOfForms4, Mode=OneWay}"
                               Header="Список форм 4"/>
                     <MenuItem Command="{Binding ExcelExportListOfForms5, Mode=OneWay}"
-                              Header="Список форм 5"/>
+                              Header="Список форм 5"
+                              IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
                     <Separator/>
                     <MenuItem Command="{Binding ExcelExportListOfFormsAll, Mode=OneWay}"
                               Header="Все списки форм"/>
