@@ -270,6 +270,16 @@ public class SetDefaultColumnWidthAsyncCommand : BaseAsyncCommand
 
                 break;
             }
+            case "4.1":
+            {
+                columns[0].Width = new DataGridLength(40);
+                for (var i = 1; i < columns.Count; i++)
+                {
+                    columns[i].Width = new DataGridLength(125);
+                }
+
+                break;
+            }
             default:
             {
                 columns[0].Width = new DataGridLength(40);

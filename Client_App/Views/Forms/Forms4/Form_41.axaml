@@ -178,6 +178,7 @@
                           Classes="table"
                           x:CompileBindings="True"
                           x:Name="dataGrid"
+                          ColumnWidth="125"
                           Items="{Binding FormList}"
                           SelectedItem="{Binding SelectedForm}">
 
@@ -244,7 +245,7 @@
 							</DataGridTextColumn.HeaderTemplate>
 						</DataGridTextColumn>
 
-						<DataGridTemplateColumn>
+						<DataGridTemplateColumn Width="125">
 							<DataGridTemplateColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
@@ -267,7 +268,7 @@
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 
-						<DataGridTemplateColumn >
+						<DataGridTemplateColumn Width="125">
 							<DataGridTemplateColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
@@ -285,7 +286,7 @@
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 
-						<DataGridTemplateColumn>
+						<DataGridTemplateColumn Width="125">
 							<DataGridTemplateColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
@@ -304,7 +305,7 @@
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 
-						<DataGridTemplateColumn>
+						<DataGridTemplateColumn Width="125">
 							<DataGridTemplateColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
@@ -323,7 +324,7 @@
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 
-						<DataGridTemplateColumn >
+						<DataGridTemplateColumn Width="125">
 							<DataGridTemplateColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
@@ -342,7 +343,7 @@
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 
-						<DataGridTemplateColumn >
+						<DataGridTemplateColumn Width="125">
 							<DataGridTemplateColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
@@ -361,7 +362,7 @@
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 
-						<DataGridTemplateColumn >
+						<DataGridTemplateColumn Width="125">
 							<DataGridTemplateColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
@@ -380,7 +381,7 @@
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 
-						<DataGridTemplateColumn>
+						<DataGridTemplateColumn Width="125">
 							<DataGridTemplateColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
