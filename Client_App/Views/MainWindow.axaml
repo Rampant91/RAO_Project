@@ -107,6 +107,11 @@
                               Header="Список форм 2"/>
                     <MenuItem Command="{Binding ExcelExportListOfForms4, Mode=OneWay}"
                               Header="Список форм 4"/>
+                    <MenuItem Command="{Binding ExcelExportListOfForms5, Mode=OneWay}"
+                              Header="Список форм 5"/>
+                    <Separator/>
+                    <MenuItem Command="{Binding ExcelExportListOfFormsAll, Mode=OneWay}"
+                              Header="Все списки форм"/>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Command="{Binding ExcelExportAll, Mode=OneWay}"

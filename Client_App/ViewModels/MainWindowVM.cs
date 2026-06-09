@@ -396,6 +396,16 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand ExcelExportListOfForms4 => new ExcelExportListOfForms4AsyncCommand();
 
     /// <summary>
+    /// Excel -> Список форм 5
+    /// </summary>
+    public ICommand ExcelExportListOfForms5 => new ExcelExportListOfForms5AsyncCommand();
+
+    /// <summary>
+    /// Excel -> Списки форм 1, 2, 4 и 5 в одном файле
+    /// </summary>
+    public ICommand ExcelExportListOfFormsAll => new ExcelExportListOfFormsAllAsyncCommand();
+
+    /// <summary>
     /// Excel -> Список организаций
     /// </summary>
     public ICommand ExcelExportListOfOrgs => new ExcelExportListOfOrgsAsyncCommand();

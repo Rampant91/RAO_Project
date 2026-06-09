@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 namespace Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
 
 /// <summary>
-/// Excel -> Список форм 4.
+/// Excel -> Список форм 5.
 /// </summary>
-public class ExcelExportListOfForms4AsyncCommand : ExcelExportListOfFormsBaseAsyncCommand
+public class ExcelExportListOfForms5AsyncCommand : ExcelExportListOfFormsBaseAsyncCommand
 {
   public override Task AsyncExecute(object? parameter) =>
-    ExportSingleFormListAsync(FormListExportGroup.Forms4);
+    ExportSingleFormListAsync(FormListExportGroup.Forms5);
 }
