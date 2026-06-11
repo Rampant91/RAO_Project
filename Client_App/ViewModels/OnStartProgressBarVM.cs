@@ -12,6 +12,7 @@ using Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
 using Client_App.Interfaces.BackgroundLoader;
 using Client_App.Interfaces.Logger;
 using Client_App.Properties;
+using Models.DBRealization;
 
 namespace Client_App.ViewModels;
 
@@ -35,7 +36,13 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
         }, () =>
         {
             MainTask = new Task(async () => await Start().ConfigureAwait(false));
-            MainTask.GetAwaiter().OnCompleted(async () => await ShowDialog.Handle(MainWindowVM));
+            MainTask.GetAwaiter().OnCompleted(async () =>
+            {
+                if (MainTask.IsFaulted || StaticConfiguration.DBModel is null)
+                    return;
+
+                await ShowDialog.Handle(MainWindowVM);
+            });
             MainTask.Start();
         });
     }
