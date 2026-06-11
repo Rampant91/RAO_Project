@@ -440,6 +440,10 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
     /// Создание файла БД, либо чтение имеющегося
     /// </summary>
     /// <returns></returns>
+    /// <summary>
+    /// Возвращает файлы .RAODB из указанной папки без обхода вложенных каталогов.
+    /// </summary>
+    /// <param name="dirInfo">Папка RAO.</param>
     private static IEnumerable<FileInfo> GetRaodbFiles(DirectoryInfo dirInfo) =>
         dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly)
             .Where(x => x.Name.EndsWith(".raodb", StringComparison.OrdinalIgnoreCase));

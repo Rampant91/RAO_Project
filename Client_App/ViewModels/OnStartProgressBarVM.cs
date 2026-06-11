@@ -12,7 +12,7 @@ using Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
 using Client_App.Interfaces.BackgroundLoader;
 using Client_App.Interfaces.Logger;
 using Client_App.Properties;
-using Models.DBRealization;
+using Avalonia.Threading;
 
 namespace Client_App.ViewModels;
 
@@ -35,15 +35,21 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
             ServiceExtension.LoggerManager.CreateFile("Crash.log");
         }, () =>
         {
-            MainTask = new Task(async () => await Start().ConfigureAwait(false));
-            MainTask.GetAwaiter().OnCompleted(async () =>
+            // Task.Run дожидается полного завершения Start(); иначе главное окно открывалось бы до инициализации БД.
+            MainTask = Task.Run(async () => await Start().ConfigureAwait(false));
+            _ = MainTask.ContinueWith(t =>
             {
-                if (MainTask.IsFaulted || StaticConfiguration.DBModel is null)
-                    return;
+                Dispatcher.UIThread.InvokeAsync(async () =>
+                {
+                    if (t.IsFaulted)
+                    {
+                        Environment.Exit(1);
+                        return;
+                    }
 
-                await ShowDialog.Handle(MainWindowVM);
-            });
-            MainTask.Start();
+                    await ShowDialog.Handle(MainWindowVM);
+                });
+            }, TaskContinuationOptions.None);
         });
     }
 

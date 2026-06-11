@@ -7,8 +7,12 @@ using System.Runtime.CompilerServices;
 
 namespace Client_App.ViewModels.Messages;
 
+/// <summary>
+/// ViewModel окна выбора файла .RAODB, если в папке RAO найдено несколько баз данных.
+/// </summary>
 public sealed class MultipleRaodbFilesMessageWindowVM : INotifyPropertyChanged
 {
+    /// <summary>Текст сообщения над списком файлов.</summary>
     public const string MessageText =
         "В папке RAO обнаружено более одного файла базы данных (.RAODB)." +
         "\nРекомендуется хранить в этой папке не более одного файла, остальные файлы .RAODB перенести в другие папки." +
@@ -16,11 +20,16 @@ public sealed class MultipleRaodbFilesMessageWindowVM : INotifyPropertyChanged
 
     private RaodbFileListItem? _selectedFile;
 
+    /// <summary>Конструктор для дизайнера.</summary>
     public MultipleRaodbFilesMessageWindowVM()
     {
         Files = new ObservableCollection<RaodbFileListItem>();
     }
 
+    /// <summary>
+    /// Создаёт ViewModel со списком файлов, отсортированных по дате изменения (сначала новые).
+    /// </summary>
+    /// <param name="files">Файлы .RAODB из папки RAO.</param>
     public MultipleRaodbFilesMessageWindowVM(IEnumerable<FileInfo> files)
     {
         Files = new ObservableCollection<RaodbFileListItem>(
@@ -29,8 +38,10 @@ public sealed class MultipleRaodbFilesMessageWindowVM : INotifyPropertyChanged
                 .Select(f => new RaodbFileListItem(f)));
     }
 
+    /// <summary>Файлы базы данных для отображения в таблице.</summary>
     public ObservableCollection<RaodbFileListItem> Files { get; }
 
+    /// <summary>Выбранный пользователем файл базы данных.</summary>
     public RaodbFileListItem? SelectedFile
     {
         get => _selectedFile;
