@@ -546,6 +546,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
                 }
             }
         }
+        Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
 
         if (row > firstDataRow)
             ApplyAlternatingRowColors(firstDataRow, row - 1);

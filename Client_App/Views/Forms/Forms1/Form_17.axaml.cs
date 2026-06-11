@@ -205,7 +205,7 @@ public partial class Form_17 : BaseWindow<Form_17VM>
             var db = StaticConfiguration.DBModel;
 
             var modifiedEntities = db.ChangeTracker.Entries()
-                .Where(x => x.State != EntityState.Unchanged);
+                .Where(x => x.State != EntityState.Unchanged).ToList();
 
             if (modifiedEntities.All(x => x.Entity is Report rep && rep.FormNum_DB != vm.FormType)
                 || !db.ChangeTracker.HasChanges() || vm.SkipChangeTacking)
@@ -271,8 +271,17 @@ public partial class Form_17 : BaseWindow<Form_17VM>
                         ServiceExtension.LoggerManager.Error(msg);
                     }
 
-                    await dbm.SaveChangesAsync();
-                    await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+                    try
+                    {
+                        await dbm.SaveChangesAsync();
+                        await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+                    }
+                    catch (Exception ex)
+                    {
+                        var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                                  $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                        ServiceExtension.LoggerManager.Error(msg);
+                    }
 
                     if (desktop.Windows.Count == 1)
                     {
@@ -283,7 +292,7 @@ public partial class Form_17 : BaseWindow<Form_17VM>
 
                     args.Cancel = false;
 
-                    return;
+                    break;
                 }
             case "Нет":
                 {

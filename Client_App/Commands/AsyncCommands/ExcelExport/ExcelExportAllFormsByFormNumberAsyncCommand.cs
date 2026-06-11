@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.OpenGL.Surfaces;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels.MainWindowTabs;
 using MessageBox.Avalonia.DTO;
@@ -52,7 +53,7 @@ public class ExcelExportAllFormsByFormNumberAsyncCommand : BaseAsyncCommand
         };
     }
     
-    public override bool CanExecute(object? parameter) =>
+    public override bool CanExecute(object? parameter) => 
         parameter switch
         {
             ExportByFormCommandParameter p => p.SelectedReports is not null,

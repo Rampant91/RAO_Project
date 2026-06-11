@@ -7,7 +7,6 @@ using Client_App.ViewModels.MainWindowTabs;
 using Client_App.Views.Messages;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
-using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
@@ -23,6 +22,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using static Client_App.ViewModels.Messages.SelectReportsMessageWindowVM;
+using static Client_App.ViewModels.Messages.SelectReportsMessageWindowVM;
+using Microsoft.EntityFrameworkCore;
+using Models.Forms.Form5;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 

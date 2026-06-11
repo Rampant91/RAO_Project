@@ -1,0 +1,398 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:models="clr-namespace:Models.StoragePoints;assembly=Models"
+        xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+		xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Client_App.StoragePointWindow"
+		xmlns:vm="using:Client_App.ViewModels.StoragePoints"
+        x:DataType="vm:StoragePointWindowVM"
+        Title="StoragePointWindow">
+	<Design.DataContext>
+		<vm:StoragePointWindowVM/>
+	</Design.DataContext>
+	<Window.Resources>
+		<converter:DoubleToExponentionalFormatConverter x:Key="ExpontionalFormatConverter"/>
+		<converter:DateOnlyToStringConverter x:Key="DateOnlyToStringConverter"/>
+		<converter:DateOnlyToDateTimeConverter x:Key="DateOnlyToDateTimeConverter"/>
+		<converter:LogicalNotConverter x:Key="LogicalNotConverter"/>
+	</Window.Resources>
+
+
+	<Grid ColumnDefinitions="*"
+		  RowDefinitions="Auto, Auto, *">
+		<Menu Grid.Row="0"
+			  x:Name="SubMenuBorder"
+			  BorderBrush="#FF959595"
+			  BorderThickness="1"
+			  Background="WhiteSmoke"
+			  Height="25"
+			  DockPanel.Dock="Top">
+
+			<Menu.Styles>
+				<Style Selector="Separator">
+					<Setter Property="Background" Value="LightGray"/>
+					<Setter Property="Margin" Value="0,5"/>
+					<Setter Property="Height" Value="3"/>
+				</Style>
+				<Style Selector="MenuItem">
+					<Setter Property="Background" Value="WhiteSmoke"/>
+					<Setter Property="FontSize" Value="14"/>
+				</Style>
+			</Menu.Styles>
+			<MenuItem Header="Файл">
+				<MenuItem Header="Сохранить"
+						  Command="{Binding SaveChanges}"/>
+			</MenuItem>
+		</Menu>
+		
+		<Grid Grid.Row="1"
+			MaxWidth="800" 
+			ColumnDefinitions="*,2*,*" 
+			  RowDefinitions=
+			  "Auto, Auto, Auto, Auto, Auto,
+			  Auto, Auto, Auto, Auto, Auto,
+			  Auto, Auto, Auto, Auto, Auto,
+			  Auto, Auto">
+	
+			<TextBlock Grid.Column="0" Grid.Row="0"
+					   Margin="5"
+					   HorizontalAlignment="Right"
+					   VerticalAlignment="Center"
+				Text="Наименование (СГУК РВ и РАО)"/>
+			<TextBox Grid.Column="1" Grid.Row="0"
+				Text="{Binding StoragePoint.SgukName}"/>
+			<TextBlock Grid.Column="2" Grid.Row="0"
+					   Margin="5"
+					   HorizontalAlignment="Left"
+					   VerticalAlignment="Center"
+				Text="{Binding StoragePoint.SgukNameLastUpdate}"/>
+	
+			<TextBlock Grid.Column="0" Grid.Row="1"
+					   Margin="5"
+					   HorizontalAlignment="Right"
+					   VerticalAlignment="Center"
+				Text="Код"/>
+			<TextBox Grid.Column="1" Grid.Row="1"
+				Text="{Binding StoragePoint.Code}"/>
+		
+			<TextBlock Grid.Column="0" Grid.Row="2"
+					   Margin="5"
+					   HorizontalAlignment="Right"
+					   VerticalAlignment="Center"
+				Text="Наименование (ЕГРН)"/>
+			<TextBox Grid.Column="1" Grid.Row="2"
+				Text="{Binding StoragePoint.EgrnName}"/>
+			<TextBlock Grid.Column="2" Grid.Row="2"
+					   Margin="5"
+					   HorizontalAlignment="Left"
+					   VerticalAlignment="Center"
+				Text="{Binding StoragePoint.EgrnNameLastUpdate}"/>
+
+			<TextBlock Grid.Column="0" Grid.Row="3"
+					   Margin="5"
+					   HorizontalAlignment="Right"
+					   VerticalAlignment="Center"
+				Text="Кадастровый номер"/>
+			<TextBox Grid.Column="1" Grid.Row="3"
+				Text="{Binding StoragePoint.CadastreNum}"/>
+			<TextBlock Grid.Column="2" Grid.Row="3"
+					   Margin="5"
+					   HorizontalAlignment="Left"
+					   VerticalAlignment="Center"
+				Text="{Binding StoragePoint.CadastreNumLastUpdate}"/>
+
+			<TextBlock Grid.Column="0" Grid.Row="4"
+					   Margin="5"
+					   HorizontalAlignment="Right"
+					   VerticalAlignment="Center"
+				Text="Проектный объем, куб. м"/>
+			<TextBox Grid.Column="1" Grid.Row="4"
+				Text="{Binding StoragePoint.ProjectVolume, Converter={StaticResource ExpontionalFormatConverter}}"/>
+
+			<TextBlock Grid.Column="0" Grid.Row="5"
+					   Margin="5"
+					   HorizontalAlignment="Right"
+					   VerticalAlignment="Center"
+				Text="Размещены РАО"/>
+			<CheckBox Grid.Column="1" Grid.Row="5"
+				IsChecked="{Binding StoragePoint.IsRaoPlaced}"/>
+		</Grid>
+		
+		<DataGrid Grid.Row="2"
+					Margin="5,40,5,5"
+					CanUserResizeColumns="True"
+					x:CompileBindings="True"
+					SelectionMode="Single"
+					Items="{Binding StoragePoint.LicenseInfoList}"
+					SelectedItem="{Binding SelectedLicense}"
+					ColumnWidth="125">
+
+			<DataGrid.ContextMenu>
+				<ContextMenu>
+					<MenuItem Header="Добавить лицензию"
+							  Command="{Binding AddLicense}"/>
+					<MenuItem Header="Удалить лицензию"
+							  Command="{Binding DeleteLicense}"
+							  CommandParameter="{Binding SelectedLicense}"/>
+				</ContextMenu>
+			</DataGrid.ContextMenu>
+			
+			<DataGrid.Columns>
+				<DataGridTemplateColumn>
+					<DataGridTemplateColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto">
+									<TextBlock Grid.Column="0" Text="Наименование лицензии" />
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTemplateColumn.HeaderTemplate>
+					<DataGridTemplateColumn.CellTemplate >
+						<DataTemplate x:DataType="models:LicenseInfo">
+							<TextBox Text="{Binding LicenseName, Mode=TwoWay}"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+
+				<DataGridTemplateColumn Width="92">
+					<DataGridTemplateColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto">
+									<TextBlock Grid.Column="0" Text="Начало периода" />
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTemplateColumn.HeaderTemplate>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate x:DataType="models:LicenseInfo">
+							<Grid ColumnDefinitions="*,Auto">
+								<TextBox Grid.Column="0" Text="{Binding StartPeriod, Mode=TwoWay, Converter={StaticResource DateOnlyToStringConverter}}" />
+								<CalendarDatePicker Grid.Column="1"
+													Classes="buttonOnly"
+													SelectedDate="{Binding StartPeriod, Mode=TwoWay, Converter={StaticResource DateOnlyToDateTimeConverter}}" />
+							</Grid>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+
+				<DataGridTemplateColumn Width="92">
+					<DataGridTemplateColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto">
+									<TextBlock Grid.Column="0" Text="Конец периода" />
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTemplateColumn.HeaderTemplate>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate x:DataType="models:LicenseInfo">
+							<Grid ColumnDefinitions="*,Auto">
+								<TextBox Grid.Column="0" Text="{Binding EndPeriod, Mode=TwoWay, Converter={StaticResource DateOnlyToStringConverter}}" />
+								<CalendarDatePicker Grid.Column="1"
+													Classes="buttonOnly"
+													SelectedDate="{Binding EndPeriod, Mode=TwoWay, Converter={StaticResource DateOnlyToDateTimeConverter}}" />
+							</Grid>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+
+				<DataGridTemplateColumn>
+					<DataGridTemplateColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto">
+									<TextBlock Grid.Column="0" Text="Код РАО" />
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTemplateColumn.HeaderTemplate>
+					<DataGridTemplateColumn.CellTemplate >
+						<DataTemplate x:DataType="models:LicenseInfo">
+							<TextBox Text="{Binding CodeRAO, Mode=TwoWay}"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+
+				<DataGridTemplateColumn>
+					<DataGridTemplateColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto">
+									<TextBlock Grid.Column="0" Text="Объем, куб. м" />
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTemplateColumn.HeaderTemplate>
+					<DataGridTemplateColumn.CellTemplate >
+						<DataTemplate x:DataType="models:LicenseInfo">
+							<TextBox Text="{Binding Volume, Mode=TwoWay}"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+
+				<DataGridTemplateColumn>
+					<DataGridTemplateColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto">
+									<TextBlock Grid.Column="0" Text="Масса, т" />
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTemplateColumn.HeaderTemplate>
+					<DataGridTemplateColumn.CellTemplate >
+						<DataTemplate x:DataType="models:LicenseInfo">
+							<TextBox Text="{Binding Mass, Mode=TwoWay}"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+
+				<DataGridTemplateColumn>
+					<DataGridTemplateColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto">
+									<TextBlock Grid.Column="0" Text="Количество ОЗИИИ, шт" />
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTemplateColumn.HeaderTemplate>
+					<DataGridTemplateColumn.CellTemplate >
+						<DataTemplate x:DataType="models:LicenseInfo">
+							<TextBox Text="{Binding QuantityOZIII, Mode=TwoWay}"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+
+				<DataGridTemplateColumn>
+					<DataGridTemplateColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto">
+									<TextBlock Grid.Column="0" Text="Суммарная активность, Бк" />
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTemplateColumn.HeaderTemplate>
+					<DataGridTemplateColumn.CellTemplate >
+						<DataTemplate x:DataType="models:LicenseInfo">
+							<TextBox Text="{Binding SummaryActivity, Mode=TwoWay}"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+
+				<DataGridTemplateColumn>
+					<DataGridTemplateColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto">
+									<TextBlock Grid.Column="0" Text="Номер документа" />
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTemplateColumn.HeaderTemplate>
+					<DataGridTemplateColumn.CellTemplate >
+						<DataTemplate x:DataType="models:LicenseInfo">
+							<TextBox Text="{Binding DocumentNumber, Mode=TwoWay}"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+
+				<DataGridTemplateColumn Width="92">
+					<DataGridTemplateColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto">
+									<TextBlock Grid.Column="0" Text="Дата документа" />
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTemplateColumn.HeaderTemplate>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate x:DataType="models:LicenseInfo">
+							<Grid ColumnDefinitions="*,Auto">
+								<TextBox Grid.Column="0" Text="{Binding DocumentDate, Mode=TwoWay, Converter={StaticResource DateOnlyToStringConverter}}" />
+								<CalendarDatePicker Grid.Column="1"
+													Classes="buttonOnly"
+													SelectedDate="{Binding DocumentDate, Mode=TwoWay, Converter={StaticResource DateOnlyToDateTimeConverter}}" />
+							</Grid>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+
+				<DataGridTemplateColumn Width="92">
+					<DataGridTemplateColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto">
+									<TextBlock Grid.Column="0" Text="Срок действия документа" />
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTemplateColumn.HeaderTemplate>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate x:DataType="models:LicenseInfo">
+							<Grid ColumnDefinitions="*,Auto">
+								<TextBox Grid.Column="0" Text="{Binding ExpirationDate, Mode=TwoWay, Converter={StaticResource DateOnlyToStringConverter}}" />
+								<CalendarDatePicker Grid.Column="1"
+													Classes="buttonOnly"
+													SelectedDate="{Binding ExpirationDate, Mode=TwoWay, Converter={StaticResource DateOnlyToDateTimeConverter}}" />
+							</Grid>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				
+
+				<DataGridTemplateColumn>
+					<DataGridTemplateColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto">
+									<TextBlock Grid.Column="0" Text="Наименование документа" />
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTemplateColumn.HeaderTemplate>
+					<DataGridTemplateColumn.CellTemplate >
+						<DataTemplate x:DataType="models:LicenseInfo">
+							<TextBox Text="{Binding DocumentName, Mode=TwoWay}"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTextColumn
+					x:DataType="models:LicenseInfo"
+			
+					IsReadOnly="True"
+					Binding="{Binding LastUpdate}">
+					<DataGridTextColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto" Margin="3">
+									<TextBlock Grid.Column="0" Text="Дата последнего изменения"/>
+									<!--<Button Grid.Column="1"/>-->
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTextColumn.HeaderTemplate>
+				</DataGridTextColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+</Window>

@@ -98,6 +98,18 @@
 		<Style Selector="TextBox">
 			<Setter Property="behaviors:TextBoxAutoTrim.IsEnabled" Value="True"/>
 		</Style>
+		<Style Selector="Button">
+			<Setter Property="IsTabStop" Value="False"/>
+		</Style>
+
+		<Style Selector="Expander ToggleButton">
+			<Setter Property="IsTabStop" Value="False"/>
+			<Setter Property="Focusable" Value="False"/>
+		</Style>
+		
+		<Style Selector="TextBox">
+			<Setter Property="behaviors:TextBoxAutoTrim.IsEnabled" Value="True"/>
+		</Style>
         <!--Стили для окон редактирования форм-->
         <!--Header-->
         <Style Selector="CheckBox.hideButton">

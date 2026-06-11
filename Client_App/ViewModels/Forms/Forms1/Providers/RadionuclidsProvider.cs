@@ -16,7 +16,7 @@ public static class RadionuclidsProvider
     /// </summary>
     public static ObservableCollection<RadionuclidItem> AllRadionuclids { get; } =
         new(Spravochniki.Spravochniks.SprRadionuclids
-            .Select(r => new RadionuclidItem { Name = r.name })
+            .Select(r => new RadionuclidItem { Name = r.rusName })
             .OrderBy(r => r.Name));
 
     /// <summary>

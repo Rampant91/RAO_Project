@@ -33,6 +33,8 @@ namespace Models.Forms.Form5
 
         #region TypeORI (2)
 
+        [MaxLength(64)]
+        [Column(TypeName = "varchar(64)")]
         public string TypeORI_DB { get; set; } = "";
 
 

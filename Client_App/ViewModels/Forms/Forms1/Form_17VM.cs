@@ -1,5 +1,8 @@
-﻿using Client_App.ViewModels.Controls;
+﻿using Client_App.Commands.AsyncCommands.Generate;
+using Client_App.ViewModels.Controls;
 using CommunityToolkit.Mvvm.Input;
+using Client_App.ViewModels.Forms.Forms1.Items;
+using Client_App.ViewModels.Forms.Forms1.Providers;
 using Models.Collections;
 using System;
 using System.Collections.Generic;
@@ -45,6 +48,11 @@ public class Form_17VM : BaseFormVM
 
     public string DocumentVidPattern => "^(-|[1-9]|1[0-5]|19)?$";
 
+    #endregion
+
+    #region Commands
+    public ICommand GenerateForm17 => new GenerateForm17AsyncCommand(this);
+    public ICommand GeneratePackagePassport => new GeneratePackagePassportAsyncCommand(this);
     #endregion
 
     #region RefineOrSortRAOCodes

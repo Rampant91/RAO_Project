@@ -13,7 +13,7 @@
 					  Content="❮" />
 		<TextBox Grid.Column="1" Text="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}}">
 			<interactivity:Interaction.Behaviors>
-				<local:TextBoxDigitValidationBehavior/>
+				<local:TextBoxWhiteListValidationBehavior WhiteListRegex="^[0-9]+$"/>
 			</interactivity:Interaction.Behaviors>
 		</TextBox>
 		<Button Grid.Column="2" 

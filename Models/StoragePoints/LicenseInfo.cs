@@ -1,0 +1,344 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Models.StoragePoints
+{
+    [Serializable]
+    [Table(name: "license_info")]
+    public class LicenseInfo : INotifyPropertyChanged, INotifyDataErrorInfo
+    {
+        #region Constructor
+        public LicenseInfo() 
+        {
+            Storage = new StoragePoint();
+        }
+        public LicenseInfo(StoragePoint storage)
+        {
+            Storage = storage;
+        }
+        #endregion 
+
+
+        #region Properties
+        [Key]
+        public int Id { get; set; }
+
+        #region StoragePoint
+
+        [ForeignKey(nameof(Storage))]
+        public int? StorageId { get; set; }
+
+        private StoragePoint _storage;
+
+        public StoragePoint Storage
+        {
+            get => _storage;
+            set
+            {
+                _storage = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+
+        #endregion
+
+        #region LicenseName
+        private string _licenseName;
+
+        [MaxLength(64)]
+        public string LicenseName
+        {
+            get => _licenseName;
+            set
+            {
+                if (_licenseName != value)
+                {
+                    _licenseName = value;
+                    LastUpdate = DateTime.Now;
+                }
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region StartPeriod
+        private DateOnly _startPeriod;
+
+        public DateOnly StartPeriod
+        {
+            get => _startPeriod;
+            set
+            {
+                if (_startPeriod != value)
+                {
+                    _startPeriod = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        #endregion
+
+        #region EndPeriod
+        private DateOnly _endPeriod;
+
+        public DateOnly EndPeriod
+        {
+            get => _endPeriod;
+            set
+            {
+                if (_endPeriod != value)
+                {
+                    _endPeriod = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        #endregion
+
+        #region CodeRAO (5)
+        private string _codeRAO;
+
+        [MaxLength(64)]
+        public string CodeRAO
+        {
+            get => _codeRAO;
+            set
+            {
+                if (_codeRAO != value)
+                {
+                    _codeRAO = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        #endregion
+
+        #region Volume (6)
+        private double _volume;
+
+        public double Volume
+        {
+            get => _volume;
+            set
+            {
+                if (_volume != value)
+                {
+                    _volume = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        #endregion
+
+        #region Mass (7)
+        private double _mass;
+
+        public double Mass
+        {
+            get => _mass;
+            set
+            {
+                if (_mass != value)
+                {
+                    _mass = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        #endregion
+
+        #region QuantityOZIII (8)
+        private int _quantityOZIII;
+
+        public int QuantityOZIII
+        {
+            get => _quantityOZIII;
+            set
+            {
+                if (_quantityOZIII != value)
+                {
+                    _quantityOZIII = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        #endregion
+
+        #region SummaryActivity (9)
+        private double _summaryActivity;
+
+        public double SummaryActivity
+        {
+            get => _summaryActivity;
+            set
+            {
+                if (_summaryActivity != value)
+                {
+                    _summaryActivity = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        #endregion
+
+        #region DocumentNumber (10)
+        private string _documentNumber;
+
+        [MaxLength(64)]
+        public string DocumentNumber
+        {
+            get => _documentNumber;
+            set
+            {
+                if (_documentNumber != value)
+                {
+                    _documentNumber = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        #endregion
+
+        #region DocumentDate (11)
+        private DateOnly _documentDate;
+
+        public DateOnly DocumentDate
+        {
+            get => _documentDate;
+            set
+            {
+                if (_documentDate != value)
+                {
+                    _documentDate = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        #endregion
+
+        #region ExpirationDate (12)
+        private DateOnly _expirationDate;
+
+        public DateOnly ExpirationDate
+        {
+            get => _expirationDate;
+            set
+            {
+                if (_expirationDate != value)
+                {
+                    _expirationDate = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        #endregion
+
+        #region DocumentName (13)
+        private string _documentName;
+
+        [MaxLength(64)]
+        public string DocumentName
+        {
+            get => _documentName;
+            set
+            {
+                if (_documentName != value)
+                {
+                    _documentName = value;
+                    LastUpdate = DateTime.Now;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        #endregion
+
+        #region LastUpdate
+        private DateTime _lastUpdate;
+
+        public DateTime LastUpdate
+        {
+            get => _lastUpdate;
+            private set
+            {
+
+                _lastUpdate = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+        #endregion
+
+
+        #region NotifyDataError
+
+
+        private readonly Dictionary<string, List<string>> _errors = new();
+
+        // Добавление ошибки
+        private void AddError(string propertyName, string error)
+        {
+            if (!_errors.ContainsKey(propertyName))
+                _errors[propertyName] = new List<string>();
+
+            if (!_errors[propertyName].Contains(error))
+            {
+                _errors[propertyName].Add(error);
+                OnErrorsChanged(propertyName);
+            }
+        }
+
+        // Очистка ошибок свойства
+        private void ClearErrors(string propertyName)
+        {
+            if (_errors.Remove(propertyName))
+                OnErrorsChanged(propertyName);
+        }
+
+        // INotifyDataErrorInfo
+        public bool HasErrors => _errors.Any();
+
+        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
+
+        protected virtual void OnErrorsChanged(string propertyName)
+        {
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        }
+
+        public IEnumerable GetErrors(string? propertyName)
+        {
+            if (string.IsNullOrEmpty(propertyName))
+                return _errors.SelectMany(x => x.Value);
+
+            return _errors.TryGetValue(propertyName, out var errors) ? errors : Enumerable.Empty<string>();
+        }
+        #endregion
+
+        #region OnPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
+    }
+}

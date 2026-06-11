@@ -174,7 +174,7 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
         // При возвращении фокуса из dropdown _isEditing уже true, поэтому не перезаписываем.
         if (!_isEditing)
         {
-            _originalValue = AssociatedObject?.Text;
+        _originalValue = AssociatedObject?.Text;
             _isEditing = true;
         }
         _valueSelectedFromDropDown = false;

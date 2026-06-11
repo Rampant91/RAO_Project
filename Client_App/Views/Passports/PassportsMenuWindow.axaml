@@ -1,0 +1,150 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:vm="using:Client_App.ViewModels.Passports"
+	    xmlns:models="clr-namespace:Models.Passports;assembly=Models"
+		xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+		xmlns:behaviors="using:Avalonia.Xaml.Interactions.Core"
+		xmlns:local="using:Client_App.Behaviors"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Client_App.PassportsMenuWindow"
+        x:DataType="vm:PassportsMenuWindowVM"
+		x:Name="PassportMenu"
+        Title="PassportsMenuWindow">
+
+
+	<Design.DataContext>
+		<vm:PassportsMenuWindowVM/>
+	</Design.DataContext>
+
+	<Grid ColumnDefinitions="*"
+		RowDefinitions="Auto, *">
+		<Menu Grid.Row="0"
+			x:Name="SubMenuBorder"
+			BorderBrush="#FF959595"
+			BorderThickness="1"
+			Background="WhiteSmoke"
+			Height="25"
+			DockPanel.Dock="Top">
+
+			<Menu.Styles>
+				<Style Selector="Separator">
+					<Setter Property="Background" Value="LightGray"/>
+					<Setter Property="Margin" Value="0,5"/>
+					<Setter Property="Height" Value="3"/>
+				</Style>
+				<Style Selector="MenuItem">
+					<Setter Property="Background" Value="WhiteSmoke"/>
+					<Setter Property="FontSize" Value="14"/>
+				</Style>
+			</Menu.Styles>
+			<MenuItem Header="Импорт паспорта">
+				<MenuItem Header="Импорт из Excel"
+					Command="{Binding ImportExcelPackagePassport}"/>
+			</MenuItem>
+		</Menu>
+		<DataGrid
+			Grid.Row="1" 
+			Items="{Binding Passports}"
+			SelectionMode="Single"
+			MaxWidth="900"
+			SelectedItem="{Binding SelectedPassport}"
+			RowHeight="25"
+			GridLinesVisibility="All"
+			AlternatingRowBackground="White"
+			RowBackground="White"
+			CanUserSortColumns="False">
+			
+			<interactivity:Interaction.Behaviors>
+				<local:DataGridDoubleClickOpenFormBehavior />
+			</interactivity:Interaction.Behaviors>
+
+			<DataGrid.ContextMenu>
+				<ContextMenu>
+					<MenuItem Command="{Binding AddPackagePassport}"
+							  Header="Добавить паспорт"/>
+					<MenuItem Command="{Binding ChangePackagePassport}"
+							  CommandParameter="{Binding SelectedPassport.Id}"
+							  Header="Редактировать паспорт"/>
+					<MenuItem Command="{Binding ExcelExportPackagePassport}"
+							  CommandParameter="{Binding SelectedPassport.Id}"
+							  Header="Выгрузить паспорт в Excel"/>
+					<MenuItem Command="{Binding DeletePackagePassport}"
+							  CommandParameter="{Binding SelectedPassport}"
+							  Header="Удалить паспорт"/>
+				</ContextMenu>
+			</DataGrid.ContextMenu>
+
+			<DataGrid.Columns>
+				<DataGridTextColumn
+					x:DataType="models:PackagePassport"
+					Width="*"
+					IsReadOnly="True"
+					Binding="{Binding PassportNum}">
+					<DataGridTextColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto" Margin="3">
+									<TextBlock Grid.Column="0" Text="№ паспорта"/>
+									<!--<Button Grid.Column="1"/>-->
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTextColumn.HeaderTemplate>
+				</DataGridTextColumn>
+				
+				<DataGridTextColumn
+					x:DataType="models:PackagePassport"
+					Width="*"
+					IsReadOnly="True"
+					Binding="{Binding PassportDate}">
+					<DataGridTextColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto" Margin="3">
+									<TextBlock Grid.Column="0" Text="Дата выдачи паспорта"/>
+									<!--<Button Grid.Column="1"/>-->
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTextColumn.HeaderTemplate>
+				</DataGridTextColumn>
+				
+				<DataGridTextColumn
+					x:DataType="models:PackagePassport"
+					Width="*"
+					IsReadOnly="True"
+					Binding="{Binding PackageType}">
+					<DataGridTextColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto" Margin="3">
+									<TextBlock Grid.Column="0" Text="Наименование"/>
+									<!--<Button Grid.Column="1"/>-->
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTextColumn.HeaderTemplate>
+				</DataGridTextColumn>
+				
+				<DataGridTextColumn
+					x:DataType="models:PackagePassport"
+					Width="*"
+					IsReadOnly="True"
+					Binding="{Binding CorrectionNumber}">
+					<DataGridTextColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto" Margin="3">
+									<TextBlock Grid.Column="0" Text="Номер корректировки"/>
+									<!--<Button Grid.Column="1"/>-->
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTextColumn.HeaderTemplate>
+				</DataGridTextColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+</Window>

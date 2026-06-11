@@ -2568,7 +2568,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("TypeORI_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
 
                     b.Property<short?>("VarietyORI_DB")
                         .HasColumnType("SMALLINT");
@@ -2622,7 +2623,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("TypeORI_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
 
                     b.Property<short?>("VarietyORI_DB")
                         .HasColumnType("SMALLINT");
@@ -2796,6 +2798,376 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.HasIndex("ReportId");
 
                     b.ToTable("notes", (string)null);
+                });
+
+            modelBuilder.Entity("Models.Passports.CharacteristicPrimaryPackage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<short>("ClassRao")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<string>("CodeRao")
+                        .HasMaxLength(128)
+                        .HasColumnType("VARCHAR(128)");
+
+                    b.Property<string>("Flammability")
+                        .HasMaxLength(256)
+                        .HasColumnType("VARCHAR(256)");
+
+                    b.Property<string>("MorphologicalComposition")
+                        .HasMaxLength(1024)
+                        .HasColumnType("VARCHAR(1024)");
+
+                    b.Property<string>("NuclearHazardousFissileNuclides")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR(64)");
+
+                    b.Property<string>("PackageNum")
+                        .HasMaxLength(16)
+                        .HasColumnType("VARCHAR(16)");
+
+                    b.Property<string>("PackageType")
+                        .HasMaxLength(16)
+                        .HasColumnType("VARCHAR(16)");
+
+                    b.Property<int?>("PassportId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("PhysicochemicalForm")
+                        .HasMaxLength(1024)
+                        .HasColumnType("VARCHAR(1024)");
+
+                    b.Property<double>("PrimaryPackageMass")
+                        .HasColumnType("DOUBLE PRECISION");
+
+                    b.Property<long>("PrimaryPackageQuantity")
+                        .HasColumnType("BIGINT");
+
+                    b.Property<double>("PrimaryPackageVolume")
+                        .HasColumnType("DOUBLE PRECISION");
+
+                    b.Property<string>("RadionuclidsActivity")
+                        .HasMaxLength(256)
+                        .HasColumnType("VARCHAR(256)");
+
+                    b.Property<string>("RadionuclidsComposition")
+                        .HasMaxLength(256)
+                        .HasColumnType("VARCHAR(256)");
+
+                    b.HasKey("Id")
+                        .HasName("PK_characteristic_package");
+
+                    b.HasIndex("PassportId");
+
+                    b.ToTable("characteristic_package", (string)null);
+                });
+
+            modelBuilder.Entity("Models.Passports.PackagePassport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateOnly>("CertificateConformityEndPeriod")
+                        .HasColumnType("DATE");
+
+                    b.Property<string>("CertificateConformityNum")
+                        .HasMaxLength(32)
+                        .HasColumnType("VARCHAR(32)");
+
+                    b.Property<DateOnly>("CertificateConformityStartPeriod")
+                        .HasColumnType("DATE");
+
+                    b.Property<short>("ClassRao")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<string>("ContainerFactoryNum")
+                        .HasMaxLength(16)
+                        .HasColumnType("VARCHAR(16)");
+
+                    b.Property<short>("CorrectionNumber")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<long?>("Diameter")
+                        .HasColumnType("BIGINT");
+
+                    b.Property<string>("DisposalMethod")
+                        .HasMaxLength(8)
+                        .HasColumnType("VARCHAR(8)");
+
+                    b.Property<DateOnly>("FillingWasteDate")
+                        .HasColumnType("DATE");
+
+                    b.Property<string>("FioAuthorizedPersonReception")
+                        .HasMaxLength(256)
+                        .HasColumnType("VARCHAR(256)");
+
+                    b.Property<string>("FioAuthorizedPersonTransfer")
+                        .HasMaxLength(256)
+                        .HasColumnType("VARCHAR(256)");
+
+                    b.Property<string>("GradeAuthorizedPersonReception")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR(64)");
+
+                    b.Property<string>("GradeAuthorizedPersonTransfer")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR(64)");
+
+                    b.Property<double?>("HeatOutput")
+                        .HasColumnType("DOUBLE PRECISION");
+
+                    b.Property<long?>("Height")
+                        .HasColumnType("BIGINT");
+
+                    b.Property<long?>("Length")
+                        .HasColumnType("BIGINT");
+
+                    b.Property<double?>("LevelNonFixedPollutionAlpha")
+                        .HasColumnType("DOUBLE PRECISION");
+
+                    b.Property<double?>("LevelNonFixedPollutionBetaGamma")
+                        .HasColumnType("DOUBLE PRECISION");
+
+                    b.Property<DateOnly>("ManufactureDate")
+                        .HasColumnType("DATE");
+
+                    b.Property<string>("Manufacturer")
+                        .HasMaxLength(256)
+                        .HasColumnType("VARCHAR(256)");
+
+                    b.Property<string>("ManufacturerOkpo")
+                        .HasMaxLength(14)
+                        .HasColumnType("VARCHAR(14)");
+
+                    b.Property<string>("MatrixMaterialType")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR(64)");
+
+                    b.Property<string>("NameRao")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR(64)");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(2048)
+                        .HasColumnType("VARCHAR(2048)");
+
+                    b.Property<string>("Owner")
+                        .HasMaxLength(256)
+                        .HasColumnType("VARCHAR(256)");
+
+                    b.Property<string>("OwnerOkpo")
+                        .HasMaxLength(14)
+                        .HasColumnType("VARCHAR(14)");
+
+                    b.Property<string>("PackageIdCode")
+                        .HasMaxLength(32)
+                        .HasColumnType("VARCHAR(32)");
+
+                    b.Property<double>("PackageMass")
+                        .HasColumnType("DOUBLE PRECISION");
+
+                    b.Property<string>("PackageType")
+                        .HasMaxLength(128)
+                        .HasColumnType("VARCHAR(128)");
+
+                    b.Property<double>("PackageVolume")
+                        .HasColumnType("DOUBLE PRECISION");
+
+                    b.Property<DateOnly>("PassportDate")
+                        .HasColumnType("DATE");
+
+                    b.Property<string>("PassportNum")
+                        .HasMaxLength(32)
+                        .HasColumnType("VARCHAR(32)");
+
+                    b.Property<double>("RadiationDoseRate10cm")
+                        .HasColumnType("DOUBLE PRECISION");
+
+                    b.Property<double>("RadiationDoseRate1m")
+                        .HasColumnType("DOUBLE PRECISION");
+
+                    b.Property<DateOnly?>("RaoDisposalDate")
+                        .HasColumnType("DATE");
+
+                    b.Property<string>("RaoDisposalNum")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR(64)");
+
+                    b.Property<double>("RaoMass")
+                        .HasColumnType("DOUBLE PRECISION");
+
+                    b.Property<double>("RaoVolume")
+                        .HasColumnType("DOUBLE PRECISION");
+
+                    b.Property<string>("ResponsibleReception")
+                        .HasMaxLength(256)
+                        .HasColumnType("VARCHAR(256)");
+
+                    b.Property<string>("ResponsibleTransfer")
+                        .HasMaxLength(256)
+                        .HasColumnType("VARCHAR(256)");
+
+                    b.Property<long>("ServiceLife")
+                        .HasColumnType("BIGINT");
+
+                    b.Property<string>("StatusRaoCode")
+                        .HasMaxLength(128)
+                        .HasColumnType("VARCHAR(128)");
+
+                    b.Property<string>("TechSpecification")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR(64)");
+
+                    b.Property<DateOnly?>("TransferDate")
+                        .HasColumnType("DATE");
+
+                    b.Property<string>("TypeAndIdPuod")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR(64)");
+
+                    b.Property<long?>("Width")
+                        .HasColumnType("BIGINT");
+
+                    b.HasKey("Id")
+                        .HasName("PK_package_passport");
+
+                    b.ToTable("package_passport", (string)null);
+                });
+
+            modelBuilder.Entity("Models.Passports.Radionuclid", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("Activity")
+                        .HasColumnType("DOUBLE PRECISION");
+
+                    b.Property<int?>("CharacteristicId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(8)
+                        .HasColumnType("VARCHAR(8)");
+
+                    b.HasKey("Id")
+                        .HasName("PK_radionuclid");
+
+                    b.HasIndex("CharacteristicId");
+
+                    b.ToTable("radionuclid", (string)null);
+                });
+
+            modelBuilder.Entity("Models.StoragePoints.LicenseInfo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CodeRAO")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR(64)");
+
+                    b.Property<DateOnly>("DocumentDate")
+                        .HasColumnType("DATE");
+
+                    b.Property<string>("DocumentName")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR(64)");
+
+                    b.Property<string>("DocumentNumber")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR(64)");
+
+                    b.Property<DateOnly>("EndPeriod")
+                        .HasColumnType("DATE");
+
+                    b.Property<DateOnly>("ExpirationDate")
+                        .HasColumnType("DATE");
+
+                    b.Property<DateTime>("LastUpdate")
+                        .HasColumnType("TIMESTAMP");
+
+                    b.Property<string>("LicenseName")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR(64)");
+
+                    b.Property<double>("Mass")
+                        .HasColumnType("DOUBLE PRECISION");
+
+                    b.Property<int>("QuantityOZIII")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateOnly>("StartPeriod")
+                        .HasColumnType("DATE");
+
+                    b.Property<int?>("StorageId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("SummaryActivity")
+                        .HasColumnType("DOUBLE PRECISION");
+
+                    b.Property<double>("Volume")
+                        .HasColumnType("DOUBLE PRECISION");
+
+                    b.HasKey("Id")
+                        .HasName("PK_license_info");
+
+                    b.HasIndex("StorageId");
+
+                    b.ToTable("license_info", (string)null);
+                });
+
+            modelBuilder.Entity("Models.StoragePoints.StoragePoint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CadastreNum")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR(64)");
+
+                    b.Property<DateTime>("CadastreNumLastUpdate")
+                        .HasColumnType("TIMESTAMP");
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR(64)");
+
+                    b.Property<string>("EgrnName")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR(64)");
+
+                    b.Property<DateTime>("EgrnNameLastUpdate")
+                        .HasColumnType("TIMESTAMP");
+
+                    b.Property<bool>("IsRaoPlaced")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<double>("ProjectVolume")
+                        .HasColumnType("DOUBLE PRECISION");
+
+                    b.Property<string>("SgukName")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR(64)");
+
+                    b.Property<DateTime>("SgukNameLastUpdate")
+                        .HasColumnType("TIMESTAMP");
+
+                    b.HasKey("Id")
+                        .HasName("PK_storage_point");
+
+                    b.ToTable("storage_point", (string)null);
                 });
 
             modelBuilder.Entity("Models.Collections.Report", b =>
@@ -3167,6 +3539,36 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Navigation("Report");
                 });
 
+            modelBuilder.Entity("Models.Passports.CharacteristicPrimaryPackage", b =>
+                {
+                    b.HasOne("Models.Passports.PackagePassport", "Passport")
+                        .WithMany("ContentCharacteristics")
+                        .HasForeignKey("PassportId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Passport");
+                });
+
+            modelBuilder.Entity("Models.Passports.Radionuclid", b =>
+                {
+                    b.HasOne("Models.Passports.CharacteristicPrimaryPackage", "Characteristic")
+                        .WithMany("RadionuclidsList")
+                        .HasForeignKey("CharacteristicId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Characteristic");
+                });
+
+            modelBuilder.Entity("Models.StoragePoints.LicenseInfo", b =>
+                {
+                    b.HasOne("Models.StoragePoints.StoragePoint", "Storage")
+                        .WithMany("LicenseInfoList")
+                        .HasForeignKey("StorageId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Storage");
+                });
+
             modelBuilder.Entity("Models.Collections.DBObservable", b =>
                 {
                     b.Navigation("Reports_Collection");
@@ -3246,6 +3648,21 @@ namespace Models.DBRealization.Migrations.DataModel
             modelBuilder.Entity("Models.Collections.Reports", b =>
                 {
                     b.Navigation("Report_Collection");
+                });
+
+            modelBuilder.Entity("Models.Passports.CharacteristicPrimaryPackage", b =>
+                {
+                    b.Navigation("RadionuclidsList");
+                });
+
+            modelBuilder.Entity("Models.Passports.PackagePassport", b =>
+                {
+                    b.Navigation("ContentCharacteristics");
+                });
+
+            modelBuilder.Entity("Models.StoragePoints.StoragePoint", b =>
+                {
+                    b.Navigation("LicenseInfoList");
                 });
 #pragma warning restore 612, 618
         }
