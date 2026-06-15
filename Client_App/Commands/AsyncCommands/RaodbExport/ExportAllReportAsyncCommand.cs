@@ -44,7 +44,7 @@ public partial class ExportAllReportAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #endregion
 
-        var dbReadOnlyPath = CreateTempDataBase();
+        var dbReadOnlyPath = await CreateTempDataBase(progressBar, cts);
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
         var countReport = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()

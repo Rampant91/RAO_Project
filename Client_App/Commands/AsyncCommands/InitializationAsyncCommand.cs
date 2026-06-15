@@ -151,11 +151,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
     {
         try
         {
-            SystemDirectory = Settings.Default.SystemFolderDefaultPath is "default"
-                ? OperatingSystem.IsWindows()
-                    ? Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System))!
-                    : SystemDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
-                : Settings.Default.SystemFolderDefaultPath;
+            SystemDirectory = GetSystemDirectoryPath();
         }
         catch (Exception ex)
         {
@@ -437,17 +433,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
     #region ProcessDataBaseCreate
 
     /// <summary>
-    /// Создание файла БД, либо чтение имеющегося
+    /// Создание файла БД, либо чтение имеющегося.
     /// </summary>
-    /// <returns></returns>
-    /// <summary>
-    /// Возвращает файлы .RAODB из указанной папки без обхода вложенных каталогов.
-    /// </summary>
-    /// <param name="dirInfo">Папка RAO.</param>
-    private static IEnumerable<FileInfo> GetRaodbFiles(DirectoryInfo dirInfo) =>
-        dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly)
-            .Where(x => x.Name.EndsWith(".raodb", StringComparison.OrdinalIgnoreCase));
-
     private async Task ProcessDataBaseCreate()
     {
         var i = 0;
@@ -458,7 +445,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         var raodbFiles = GetRaodbFiles(dirInfo).OrderByDescending(x => x.LastWriteTime).ToList();
 
         IEnumerable<FileInfo> filesToTry;
-        if (Settings.Default.AppLaunchedInNorao && raodbFiles.Count > 1)
+        if (raodbFiles.Count > 1)
         {
             var selectedFile = await Dispatcher.UIThread.InvokeAsync(() =>
             {

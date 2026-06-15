@@ -6,17 +6,17 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Client_App.ViewModels.Messages;
-
 /// <summary>
-/// ViewModel окна выбора файла .RAODB, если в папке RAO найдено несколько баз данных.
+/// ViewModel окна выбора файла .RAODB при запуске, если в папке RAO найдено несколько баз данных.
 /// </summary>
 public sealed class MultipleRaodbFilesMessageWindowVM : INotifyPropertyChanged
 {
     /// <summary>Текст сообщения над списком файлов.</summary>
-    public const string MessageText =
-        "В папке RAO обнаружено более одного файла базы данных (.RAODB)." +
-        "\nРекомендуется хранить в этой папке не более одного файла, остальные файлы .RAODB перенести в другие папки." +
-        "\nВыберите файл для открытия:";
+    public const string messageText =
+        "В папке RAO обнаружено более одного файла базы данных .RAODB." +
+        "\nРекомендуется хранить в этой папке не более одного файла базы данных. " +
+        "\nДля этого откройте папку RAO, переместите лишние файлы в другое место и заново откройте программу." +
+        "\nЕсли вы не хотите перемещать файлы и уверены в том, какой файл БД нужно открыть, то выберите его из списка:";
 
     private RaodbFileListItem? _selectedFile;
 
@@ -53,6 +53,23 @@ public sealed class MultipleRaodbFilesMessageWindowVM : INotifyPropertyChanged
             _selectedFile = value;
             OnPropertyChanged();
         }
+    }
+
+    /// <summary>
+    /// Перечитывает файлы .RAODB из папки RAO и обновляет таблицу.
+    /// </summary>
+    public void RefreshFilesFromRaoDirectory()
+    {
+        var items = BaseVM.GetRaodbFiles(new DirectoryInfo(BaseVM.RaoDirectory))
+            .OrderByDescending(f => f.LastWriteTime)
+            .Select(f => new RaodbFileListItem(f))
+            .ToList();
+
+        Files.Clear();
+        foreach (var item in items)
+            Files.Add(item);
+
+        SelectedFile = null;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

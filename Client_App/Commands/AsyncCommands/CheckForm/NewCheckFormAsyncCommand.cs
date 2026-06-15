@@ -199,9 +199,9 @@ public class NewCheckFormAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         }
         else
         {
-            if (Desktop.Windows.Any(x => x.Name == "FormCheckerWindow"))
+            if (Desktop.Windows.FirstOrDefault(x => x.Name == "FormCheckerWindow") is { } checkerWindow)
             {
-                Desktop.Windows.First(x => x.Name == "FormCheckerWindow").Close();
+                await Dispatcher.UIThread.InvokeAsync(checkerWindow.Close);
             }
             switch (rep.FormNum_DB)
             {

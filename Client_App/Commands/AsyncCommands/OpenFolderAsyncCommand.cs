@@ -1,11 +1,11 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
+using Client_App.ViewModels;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using Client_App.Properties;
 using MessageBox.Avalonia.DTO;
 
 namespace Client_App.Commands.AsyncCommands;
@@ -14,35 +14,9 @@ public class OpenFolderAsyncCommand : BaseAsyncCommand
 {
     public override async Task AsyncExecute(object? parameter)
     {
-        var folderPath = "";
-        switch (parameter)
-        {
-            case "app":
-            {
-                folderPath = AppContext.BaseDirectory.TrimEnd(Path.AltDirectorySeparatorChar).TrimEnd(Path.DirectorySeparatorChar);
-                break;
-            }
-            case "excel":
-            {
-#if DEBUG
-                folderPath = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Excel");
-#else
-                folderPath = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Excel");
-#endif
-                break;
-            }
-            case "rao":
-            {
-                var systemDirectory = Settings.Default.SystemFolderDefaultPath is "default"
-                    ? OperatingSystem.IsWindows()
-                        ? Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System))!
-                        : Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
-                    : Settings.Default.SystemFolderDefaultPath;
-                folderPath = Path.Combine(systemDirectory, "RAO");
-
-                break;
-            }
-        }
+        var folderPath = ResolveFolderPath(parameter);
+        if (string.IsNullOrEmpty(folderPath))
+            return;
 
         try
         {
@@ -72,4 +46,18 @@ public class OpenFolderAsyncCommand : BaseAsyncCommand
             #endregion
         }
     }
+
+    private static string? ResolveFolderPath(object? parameter) => parameter switch
+    {
+        "app" => AppContext.BaseDirectory.TrimEnd(Path.AltDirectorySeparatorChar).TrimEnd(Path.DirectorySeparatorChar),
+        "excel" =>
+#if DEBUG
+            Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Excel"),
+#else
+            Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Excel"),
+#endif
+        "rao" => BaseVM.GetRaoDirectoryPath(),
+        string path when Directory.Exists(path) => path,
+        _ => null
+    };
 }

@@ -24,7 +24,7 @@
     <Grid RowDefinitions="Auto,*,Auto" Margin="10">
 
         <TextBlock Grid.Row="0"
-                   Text="{x:Static vm:MultipleRaodbFilesMessageWindowVM.MessageText}"
+                   Text="{x:Static vm:MultipleRaodbFilesMessageWindowVM.messageText}"
                    TextWrapping="Wrap"
                    Margin="0,0,0,10"/>
 
@@ -71,6 +71,9 @@
                     IsEnabled="{Binding SelectedFile, Converter={StaticResource NotNullToBoolConverter}}"
                     Click="OnOpenClicked"
                     MinWidth="110"/>
+            <Button Content="Открыть папку RAO"
+                    Click="OnOpenRaoFolderClicked"
+                    MinWidth="140"/>
             <Button Content="Выход"
                     IsCancel="True"
                     Click="OnExitClicked"
