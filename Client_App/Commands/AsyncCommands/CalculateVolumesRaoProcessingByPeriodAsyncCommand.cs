@@ -262,10 +262,14 @@ namespace Client_App.Commands.AsyncCommands
                     }
                     else
                     {
+                        var raoOwner = StaticConfiguration.DBModel.form_10.First(row10 => row10.Okpo_DB == row16.StatusRAO_DB);
+
+                        var raoOwnerName = !string.IsNullOrEmpty(raoOwner.ShortJurLico_DB) ? raoOwner.ShortJurLico_DB : raoOwner.JurLico_DB;
                         result.Add(new()
                         {
                             name = companyName,
                             status = row16.StatusRAO_DB,
+                            ownerRao = raoOwnerName,
                             liquid = IsLiquid ? volume : 0,
                             solid = IsSolid ? volume : 0,
                             reportIdList = new List<int>()
@@ -304,32 +308,35 @@ namespace Client_App.Commands.AsyncCommands
             {
                 throw ex;
             }
-            Worksheet.Cells["A1:E1"].Merge = true;
-            Worksheet.Cells["A3:E3"].Merge = true;
+            Worksheet.Cells["A1:F1"].Merge = true;
+            Worksheet.Cells["A3:F3"].Merge = true;
 
-            Worksheet.Cells["A1:E1"].Value = "Справка";
-            Worksheet.Cells["A3:E3"].Value = $"Сведения о переработке РАО предприятиями ГК \"Росатом\" за период {startPeriod}-{endPeriod}, " +
+            Worksheet.Cells["A1:F1"].Value = "Справка";
+            Worksheet.Cells["A3:F3"].Value = $"Сведения о переработке РАО предприятиями ГК \"Росатом\" за период {startPeriod}-{endPeriod}, " +
                 $"имеющиеся в БД ЦИАЦ СГУК РВ и РАО на {DateTime.Today.ToString("dd.MM.yyyy")} ";
 
             Worksheet.Cells["A5"].Value = "Название организации";
             Worksheet.Cells["B5"].Value = "Статус";
-            Worksheet.Cells["C5"].Value = "ЖРО";
-            Worksheet.Cells["D5"].Value = "ТРО";
-            Worksheet.Cells["E5"].Value = "Всего";
+            Worksheet.Cells["C5"].Value = "Наименование владельца РАО";
+            Worksheet.Cells["D5"].Value = "ЖРО";
+            Worksheet.Cells["E5"].Value = "ТРО";
+            Worksheet.Cells["F5"].Value = "Всего";
 
             for (int i=0; i<result.Count; i++)
             {
                 Worksheet.Cells[$"A{6 + i}"].Value = result[i].name;
                 Worksheet.Cells[$"B{6 + i}"].Value = result[i].status;
-                Worksheet.Cells[$"C{6 + i}"].Value = result[i].liquid;
-                Worksheet.Cells[$"D{6 + i}"].Value = result[i].solid;
-                Worksheet.Cells[$"E{6 + i}"].Value = result[i].liquid + result[i].solid;
+                Worksheet.Cells[$"C{6 + i}"].Value = result[i].ownerRao;
+                Worksheet.Cells[$"D{6 + i}"].Value = result[i].liquid;
+                Worksheet.Cells[$"E{6 + i}"].Value = result[i].solid;
+                Worksheet.Cells[$"F{6 + i}"].Value = result[i].liquid + result[i].solid;
             }
             Worksheet.Cells[$"A{6 + result.Count}"].Value = "Всего";
             Worksheet.Cells[$"B{6 + result.Count}"].Value = "";
-            Worksheet.Cells[$"C{6 + result.Count}"].Value = result.Sum(row => row.liquid);
-            Worksheet.Cells[$"D{6 + result.Count}"].Value = result.Sum(row => row.solid);
-            Worksheet.Cells[$"E{6 + result.Count}"].Value = result.Sum(row => row.liquid + row.solid);
+            Worksheet.Cells[$"C{6 + result.Count}"].Value = "";
+            Worksheet.Cells[$"D{6 + result.Count}"].Value = result.Sum(row => row.liquid);
+            Worksheet.Cells[$"E{6 + result.Count}"].Value = result.Sum(row => row.solid);
+            Worksheet.Cells[$"F{6 + result.Count}"].Value = result.Sum(row => row.liquid + row.solid);
 
             SetWorksheetStyle(result.Count);
 
@@ -345,25 +352,25 @@ namespace Client_App.Commands.AsyncCommands
                 Worksheet.Columns[1].Width = 35;
                 Worksheet.Rows[3].Height = 30;
 
-                Worksheet.Cells["A1:E1"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                Worksheet.Cells["A1:E1"].Style.Font.Bold = true;
+                Worksheet.Cells["A1:F1"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                Worksheet.Cells["A1:F1"].Style.Font.Bold = true;
 
 
-                Worksheet.Cells["A3:E3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                Worksheet.Cells["A3:E3"].Style.Font.Bold = true;
-                Worksheet.Cells["A3:E3"].Style.WrapText = true;
+                Worksheet.Cells["A3:F3"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                Worksheet.Cells["A3:F3"].Style.Font.Bold = true;
+                Worksheet.Cells["A3:F3"].Style.WrapText = true;
 
-                Worksheet.Cells["A5:E5"].Style.Font.Bold = true;
+                Worksheet.Cells["A5:F5"].Style.Font.Bold = true;
 
                 Worksheet.Cells[$"A6:A{6 + tableLength}"].Style.WrapText = true;
 
-                Worksheet.Cells[$"A5:E{6 + tableLength}"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                Worksheet.Cells[$"A5:E{6 + tableLength}"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                Worksheet.Cells[$"A5:E{6 + tableLength}"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                Worksheet.Cells[$"A5:E{6 + tableLength}"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                Worksheet.Cells[$"A5:F{6 + tableLength}"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                Worksheet.Cells[$"A5:F{6 + tableLength}"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                Worksheet.Cells[$"A5:F{6 + tableLength}"].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                Worksheet.Cells[$"A5:F{6 + tableLength}"].Style.Border.Left.Style = ExcelBorderStyle.Thin;
 
 
-                Worksheet.Cells[$"A{6 + tableLength}:E{6 + tableLength}"].Style.Font.Bold = true;
+                Worksheet.Cells[$"A{6 + tableLength}:F{6 + tableLength}"].Style.Font.Bold = true;
             }
             catch (Exception ex)
             {
@@ -398,6 +405,7 @@ namespace Client_App.Commands.AsyncCommands
     {
         public string name;
         public string status;
+        public string ownerRao;
         public double liquid;
         public double solid;
         public List<int> reportIdList;
