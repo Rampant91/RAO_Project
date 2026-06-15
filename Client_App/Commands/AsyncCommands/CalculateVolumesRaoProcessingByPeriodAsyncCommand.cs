@@ -350,6 +350,8 @@ namespace Client_App.Commands.AsyncCommands
             try 
             {
                 Worksheet.Columns[1].Width = 35;
+                Worksheet.Columns[3].Width = 35;
+
                 Worksheet.Rows[3].Height = 30;
 
                 Worksheet.Cells["A1:F1"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -363,6 +365,7 @@ namespace Client_App.Commands.AsyncCommands
                 Worksheet.Cells["A5:F5"].Style.Font.Bold = true;
 
                 Worksheet.Cells[$"A6:A{6 + tableLength}"].Style.WrapText = true;
+                Worksheet.Cells[$"C6:C{6 + tableLength}"].Style.WrapText = true;
 
                 Worksheet.Cells[$"A5:F{6 + tableLength}"].Style.Border.Top.Style = ExcelBorderStyle.Thin;
                 Worksheet.Cells[$"A5:F{6 + tableLength}"].Style.Border.Right.Style = ExcelBorderStyle.Thin;
