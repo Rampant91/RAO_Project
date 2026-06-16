@@ -228,7 +228,8 @@ public partial class Form_41 : BaseWindow<Form_41VM>
                 ContentHeader = "Уведомление",
                 ContentMessage = $"Сохранить форму {vm.FormType}?",
                 MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(desktop.MainWindow));
 
@@ -361,7 +362,8 @@ public partial class Form_41 : BaseWindow<Form_41VM>
                                              $"{rep.StartPeriod_DB}-{rep.EndPeriod_DB}.",
                             MinWidth = 450,
                             MinHeight = 170,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(desktop.MainWindow));
 
@@ -419,7 +421,8 @@ public partial class Form_41 : BaseWindow<Form_41VM>
                     ContentMessage = $"В форме {vm.FormType} присутствуют пустые строчки." +
                                      $"{Environment.NewLine}Вы хотите их удалить?",
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(desktop.MainWindow));
 

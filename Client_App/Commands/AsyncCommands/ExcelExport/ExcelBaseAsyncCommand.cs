@@ -122,7 +122,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 ContentHeader = "Уведомление",
                 ContentMessage = "Что бы вы хотели сделать с данной выгрузкой?",
                 MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(Desktop.MainWindow));
 
@@ -181,7 +182,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                                     $"{Environment.NewLine}и используется другим процессом.",
                                 MinWidth = 400,
                                 MinHeight = 150,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                Topmost = true,
                             })
                             .ShowDialog(Desktop.MainWindow));
 
@@ -804,7 +806,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                                      $"{Environment.NewLine}{fullPath}",
                     MinWidth = 400,
                     MinHeight = 175,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -839,7 +842,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                     ContentMessage = "Выгрузка сохранена по пути:" +
                                      $"{Environment.NewLine}{fullPath}",
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -927,7 +931,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                                          $"{Environment.NewLine}Операция выгрузки принудительно завершена.",
                         MinHeight = 150,
                         MinWidth = 250,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(progressBar ?? Desktop.MainWindow));
 
@@ -971,7 +976,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                                      $"{Environment.NewLine}{pasFolderDirectory.FullName}",
                     MinWidth = 400,
                     MinHeight = 170,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(progressBar ?? Desktop.MainWindow));
 

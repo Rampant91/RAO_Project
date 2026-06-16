@@ -81,7 +81,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     "Вы уверены, что хотите продолжить?",
                     MinWidth = 300,
                     MinHeight = 125,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(owner));
 
@@ -154,7 +155,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                        $"{ex.Message}",
                        MinWidth = 300,
                        MinHeight = 125,
-                       WindowStartupLocation = WindowStartupLocation.CenterOwner
+                       WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                       Topmost = true,
                    })
                    .ShowDialog(owner));
                 return new List<int>();

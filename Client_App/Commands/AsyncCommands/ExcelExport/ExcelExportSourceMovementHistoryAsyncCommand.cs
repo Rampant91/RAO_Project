@@ -130,7 +130,8 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
                                      $"{Environment.NewLine}- номер источника.",
                     MinHeight = 100,
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(progressBar ?? Desktop.MainWindow));
 

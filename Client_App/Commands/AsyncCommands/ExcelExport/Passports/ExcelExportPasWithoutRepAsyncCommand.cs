@@ -266,7 +266,8 @@ public partial class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncComman
                 ContentMessage = "Введите через запятую номера категорий " +
                                  $"{Environment.NewLine}(допускается несколько значений)",
                 MinWidth = 600,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(progressBar ?? Desktop.MainWindow));
 
@@ -299,7 +300,8 @@ public partial class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncComman
                         $"{Environment.NewLine}Выгрузка будет осуществлена по всем категориям (1-5).",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(progressBar ?? Desktop.MainWindow));
 

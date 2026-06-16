@@ -117,7 +117,8 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                     ContentMessage = "Выгрузка не выполнена, поскольку не выбран ни один номер формы.",
                     MinWidth = 400,
                     MinHeight = 115,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -138,7 +139,8 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                     ContentMessage = "Выгрузка не выполнена, поскольку не выбран ни один из параметров, для определения учётной единицы.",
                     MinWidth = 400,
                     MinHeight = 115,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -208,7 +210,8 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                     ContentMessage = "Не удалось совершить выгрузку, поскольку в БД отсутствуют организации с указанным регионом.",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -248,7 +251,8 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                     ContentMessage = $"Не удалось совершить выгрузку, поскольку в БД отсутствуют отчёты по формам {string.Join(", ", formNums)}.",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 

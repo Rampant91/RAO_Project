@@ -146,7 +146,8 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
                     ContentMessage = $"Выгрузка не выполнена, поскольку у организации отсутствуют формы {formNum} с кодом операции 10.",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 

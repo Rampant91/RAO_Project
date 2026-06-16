@@ -131,7 +131,8 @@ public class ExcelExportSnkAsyncCommand(MainWindowVM mainWindowVM) : ExcelExport
                     ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = $"На {endSnkDate.ToShortDateString()} учётные единицы в наличии отсутствуют.",
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 

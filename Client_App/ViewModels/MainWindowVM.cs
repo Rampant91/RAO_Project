@@ -493,7 +493,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand OpenPassportMenu { get; set; }
     public ICommand OpenStoragePointMenu { get; set; }
     public ICommand SetWhiteList { get; set; }
-    
+
+    public ICommand CalculateVolumesRaoProcessingByPeriod { get; set; }
+
     #endregion
 
     #region Constructor
@@ -521,6 +523,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         OpenPassportMenu = new OpenPassportMenuWindowAsyncCommand();
         OpenStoragePointMenu = new OpenStoragePointMenuWindowAsyncCommand();
         SetWhiteList = new SetWhiteListNumAsyncCommand(this);
+        CalculateVolumesRaoProcessingByPeriod = new CalculateVolumesRaoProcessingByPeriodAsyncCommand();
 
         Forms1TabControlVM = new Forms1TabControlVM(this);
         Forms2TabControlVM = new Forms2TabControlVM(this);

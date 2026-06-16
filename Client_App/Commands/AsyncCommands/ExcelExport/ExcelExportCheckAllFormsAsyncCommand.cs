@@ -112,7 +112,8 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
                     $"{Environment.NewLine}Проверено {countCheckedRep} из {reps.Report_Collection.Count} отчётов.",
                 MinWidth = 400,
                 MinHeight = 170,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .Show(progressBar ?? Desktop.MainWindow)
         );
@@ -188,7 +189,8 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
                             $"возникла непредвиденная ошибка.",
                         MinWidth = 400,
                         MinHeight = 170,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .Show(Desktop.MainWindow));
 

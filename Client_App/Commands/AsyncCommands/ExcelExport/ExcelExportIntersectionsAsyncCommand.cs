@@ -330,7 +330,8 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
                         $"{Environment.NewLine}поскольку в текущей базе отсутствуют отчеты по форме 1.",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(progressBar ?? Desktop.MainWindow));
 

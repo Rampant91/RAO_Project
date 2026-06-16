@@ -69,7 +69,8 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
                     "Введите дату начала периода. Если оставить поле пустым," +
                     $"{Environment.NewLine}то при выгрузке форм организации не будет ограничения по дате начала периода.",
                 MinWidth = 600,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(Desktop.MainWindow));
         
@@ -92,7 +93,8 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
                     "Введите дату конца периода. Если оставить поле пустым," +
                     $"{Environment.NewLine}то при выгрузке форм организации не будет ограничения по дате конца периода.",
                 MinWidth = 600,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(Desktop.MainWindow));
         
@@ -118,7 +120,8 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
                     ContentMessage = "Экспорт не будет выполнен, поскольку период дат введён некорректно.",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 }).ShowDialog(Desktop.MainWindow));
 
             #endregion

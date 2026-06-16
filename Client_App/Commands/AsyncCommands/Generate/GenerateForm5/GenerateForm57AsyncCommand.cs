@@ -187,7 +187,8 @@ public class GenerateForm57AsyncCommand(BaseFormVM formVM) : BaseGenerateForm5
                 ContentMessage = "Вы хотите сформировать отчет на основе другого отчета?",
                 MinWidth = 300,
                 MinHeight = 125,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(owner));
 
@@ -265,7 +266,8 @@ public class GenerateForm57AsyncCommand(BaseFormVM formVM) : BaseGenerateForm5
                    "Не удалось открыть базу данных",
                    MinWidth = 300,
                    MinHeight = 125,
-                   WindowStartupLocation = WindowStartupLocation.CenterOwner
+                   WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                   Topmost = true,
                })
                .ShowDialog(owner));
             return new List<Reports>();
@@ -313,7 +315,8 @@ public class GenerateForm57AsyncCommand(BaseFormVM formVM) : BaseGenerateForm5
                    "Не удалось открыть базу данных",
                    MinWidth = 300,
                    MinHeight = 125,
-                   WindowStartupLocation = WindowStartupLocation.CenterOwner
+                   WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                   Topmost = true,
                })
                .ShowDialog(owner));
             return new List<Reports>();

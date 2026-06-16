@@ -161,7 +161,8 @@ public class CheckF22 : CheckBase
                                      $"{Environment.NewLine}или операция проверки формы будет отменена.",
                     MinWidth = 400,
                     MinHeight = 200,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(desktop.MainWindow));
 
@@ -265,7 +266,8 @@ public class CheckF22 : CheckBase
                                          $"{Environment.NewLine}Пожалуйста, выберите нужную организацию по коду ОКПО.",
                     MinWidth = 400,
                     MinHeight = 200,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 };
 
                 var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
@@ -331,7 +333,8 @@ public class CheckF22 : CheckBase
                     ContentMessage = $"Не удалось проверить форму, поскольку в выбранном файле БД отсутствуют записи для организации {form20RegNo}_{form20Okpo}.",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -1333,7 +1336,8 @@ public class CheckF22 : CheckBase
                         $"Не удалось получить строку",
                         MinWidth = 400,
                         MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow));
 
@@ -1391,7 +1395,8 @@ public class CheckF22 : CheckBase
                     $"{ex.Message}\n",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -2061,7 +2066,8 @@ public class CheckF22 : CheckBase
                 ContentHeader = "Уведомление",
                 ContentMessage = "Что бы вы хотели сделать с данной выгрузкой?",
                 MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(Desktop.MainWindow));
 
@@ -2120,7 +2126,8 @@ public class CheckF22 : CheckBase
                                     $"{Environment.NewLine}и используется другим процессом.",
                                 MinWidth = 400,
                                 MinHeight = 150,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                Topmost = true,
                             })
                             .ShowDialog(Desktop.MainWindow));
 
@@ -2181,7 +2188,8 @@ public class CheckF22 : CheckBase
                                      $"{Environment.NewLine}{fullPath}",
                     MinWidth = 400,
                     MinHeight = 175,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -2216,7 +2224,8 @@ public class CheckF22 : CheckBase
                     ContentMessage = "Выгрузка сохранена по пути:" +
                                      $"{Environment.NewLine}{fullPath}",
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 

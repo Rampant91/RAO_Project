@@ -55,7 +55,8 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
                     ContentMessage = "Ваша организация является юридическим лицом или территориальным обособленным подразделением?",
                     MinWidth = 300,
                     MinHeight = 125,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(mainWindow));
 

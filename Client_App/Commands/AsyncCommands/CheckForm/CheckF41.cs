@@ -67,21 +67,26 @@ public abstract class CheckF41 : CheckBase
             foreach (var reports in reportsQuery)
             {
                 cts.Token.ThrowIfCancellationRequested();
-                    
-
                 if (formList.Any(form41 =>
-                        form41.RegNo_DB == reports.Master_DB.Rows10[0].RegNo_DB
-                        && (form41.Okpo_DB == reports.Master_DB.Rows10[0].Okpo_DB
-                            || form41.Okpo_DB == reports.Master_DB.Rows10[1].Okpo_DB)))
+                    (form41.RegNo_DB == reports.Master_DB.Rows10[0].RegNo_DB
+                    || form41.RegNo_DB == reports.Master_DB.Rows10[1].RegNo_DB )
+                    && (form41.Okpo_DB == reports.Master_DB.Rows10[0].Okpo_DB
+                    || form41.Okpo_DB == reports.Master_DB.Rows10[1].Okpo_DB)))
                 {
-                    var okpo = reports.Master_DB.Rows10[1].Okpo_DB is "" or "-" or null 
-                        ? reports.Master_DB.Rows10[0].Okpo_DB 
+                    var okpo = reports.Master_DB.Rows10[1].Okpo_DB is "" or "-" or null
+                        ? reports.Master_DB.Rows10[0].Okpo_DB
                         : reports.Master_DB.Rows10[1].Okpo_DB;
+
+                    string regNo;
+                    if ((reports.Master_DB.Rows10[1].RegNo.Value != "" || reports.Master_DB.Rows10[1].Okpo_DB == "-") && reports.Master_DB.Rows10[1].Okpo.Value != "")
+                        regNo = reports.Master_DB.Rows10[1].RegNo_DB;
+                    else
+                        regNo = reports.Master_DB.Rows10[0].RegNo_DB;
 
                     organizations10.Add(new Organization()
                     {
                         Id = reports.Id,
-                        RegNo = reports.Master_DB.Rows10[0].RegNo_DB,
+                        RegNo = regNo,
                         Okpo = okpo,
                     });
                 }
@@ -145,7 +150,8 @@ public abstract class CheckF41 : CheckBase
                                                      $"{Environment.NewLine}Не удалось открыть базу данных с годовыми отчетами",
                                     MinWidth = 300,
                                     MinHeight = 125,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                    Topmost = true,
                                 })
                                 .ShowDialog(owner));
                         }
@@ -158,18 +164,25 @@ public abstract class CheckF41 : CheckBase
                 cts.Token.ThrowIfCancellationRequested();
 
                 if (formList.Any(form41 =>
-                        form41.RegNo_DB == reports.Master_DB.Rows20[0].RegNo_DB
-                        && (form41.Okpo_DB == reports.Master_DB.Rows20[0].Okpo_DB
-                            || form41.Okpo_DB == reports.Master_DB.Rows20[1].Okpo_DB)))
+                     (form41.RegNo_DB == reports.Master_DB.Rows20[0].RegNo_DB
+                     || form41.RegNo_DB == reports.Master_DB.Rows20[1].RegNo_DB)
+                     && (form41.Okpo_DB == reports.Master_DB.Rows20[0].Okpo_DB
+                     || form41.Okpo_DB == reports.Master_DB.Rows20[1].Okpo_DB)))
                 {
-                    var okpo = reports.Master_DB.Rows20[1].Okpo_DB is "" or "-" or null 
-                        ? reports.Master_DB.Rows20[0].Okpo_DB 
+                    var okpo = reports.Master_DB.Rows20[1].Okpo_DB is "" or "-" or null
+                        ? reports.Master_DB.Rows20[0].Okpo_DB
                         : reports.Master_DB.Rows20[1].Okpo_DB;
+
+                    string regNo;
+                    if ((reports.Master_DB.Rows20[1].RegNo.Value != "" || reports.Master_DB.Rows20[1].Okpo_DB == "-") && reports.Master_DB.Rows20[1].Okpo.Value != "")
+                        regNo = reports.Master_DB.Rows20[1].RegNo_DB;
+                    else
+                        regNo = reports.Master_DB.Rows20[0].RegNo_DB;
 
                     organizations20.Add(new Organization()
                     {
                         Id = reports.Id,
-                        RegNo = reports.Master_DB.Rows20[0].RegNo_DB,
+                        RegNo = regNo,
                         Okpo = okpo,
                     });
                 }
@@ -554,6 +567,7 @@ public abstract class CheckF41 : CheckBase
         cts.Token.ThrowIfCancellationRequested();
 
         if (!int.TryParse(form41.Report.Year_DB, out var year)) return null;
+
 
         var organization = organizations10.FirstOrDefault(org => 
             org.RegNo == form41.RegNo_DB && org.Okpo == form41.Okpo_DB);
@@ -1045,7 +1059,7 @@ public abstract class CheckF41 : CheckBase
         if (!inventoryFlag && (massBalanceLiquid > 0 || massBalanceSolid > 0 || massBalanceGas > 0))
             return new CheckError
             {
-                Row = "{form41.NumberInOrder_DB}",
+                Row = $"{form41.NumberInOrder_DB}",
                 RegNo = form41.RegNo_DB,
                 Okpo = form41.Okpo_DB,
                 DbValue = $"{massBalanceLiquid}" +
@@ -1083,7 +1097,8 @@ public abstract class CheckF41 : CheckBase
                 ContentMessage = "Хотите указать путь к базе данных с годовыми отчетами по форме 2.12?",
                 MinWidth = 300,
                 MinHeight = 125,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(owner));
 

@@ -252,7 +252,8 @@ public class ExcelExportExecutorsAsyncCommand : ExcelExportListOfFormsBaseAsyncC
                     ContentMessage = "Выгрузка не выполнена, поскольку в базе отсутствуют формы отчетности организаций.",
                     MinHeight = 150,
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(progressBar ?? Desktop.MainWindow));
 

@@ -84,7 +84,8 @@ public class CheckF21 : CheckBase
                                      $"{Environment.NewLine}или операция проверки формы будет отменена.",
                     MinWidth = 400,
                     MinHeight = 200,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(desktop.MainWindow));
 
@@ -147,7 +148,8 @@ public class CheckF21 : CheckBase
                     ContentMessage = $"Не удалось проверить форму, поскольку в выбранном файле БД отсутствуют записи для организации {form20RegNo}_{form20Okpo}.",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 

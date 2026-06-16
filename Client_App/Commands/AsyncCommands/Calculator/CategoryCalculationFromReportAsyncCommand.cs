@@ -107,7 +107,8 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                         ContentMessage = msg,
                         MinWidth = 450,
                         MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow));
 
@@ -135,7 +136,8 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                         ContentMessage = msg,
                         MinWidth = 450,
                         MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow));
 
@@ -163,7 +165,8 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                     ContentMessage = "Не удалось выполнить расчёт категории. Введено некорректное значение количества.",
                     MinWidth = 450,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -181,7 +184,8 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                     ContentMessage = "Не удалось выполнить расчёт категории. Поле радионуклиды не заполнено.",
                     MinWidth = 450,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -205,7 +209,8 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                     ContentMessage = "Не удалось выполнить расчёт категории. Некорректно заполнена графа активности радионуклида.",
                     MinWidth = 450,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -226,7 +231,8 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                                      "В графе радионуклидов присутствует нуклид, отсутствующий в справочнике.",
                     MinWidth = 450,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -246,7 +252,8 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                     ContentMessage = "Категория ЗРИ - 5. Опасность для человека очень маловероятна (A/D < 0,01).",
                     MinWidth = 450,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -282,7 +289,8 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                                          "Некорректное значение нормализующего фактора (D-величина) в справочнике.",
                         MinWidth = 450,
                         MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow));
 
@@ -303,7 +311,8 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                         ContentMessage = "Не удалось выполнить расчёт категории. Некорректное значение МЗА в справочнике.",
                         MinWidth = 450,
                         MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow));
 
@@ -324,7 +333,8 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                             ContentMessage = $"Нерадиоактивный, активность ниже МЗА ({nuclidFromR.Mza}).",
                             MinWidth = 450,
                             MinHeight = 150,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(Desktop.MainWindow));
 
@@ -388,7 +398,8 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                     ContentMessage = msg,
                     MinWidth = 450,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
         }
@@ -403,7 +414,8 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                     ContentMessage = $"Возможна категория опасности ЗРИ от {minCategory.ToString()} до {maxCategory.ToString()}.",
                     MinWidth = 450,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
