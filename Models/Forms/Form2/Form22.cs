@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -8,6 +8,7 @@ using Models.Collections;
 using Models.Forms.DataAccess;
 using Models.Interfaces;
 using OfficeOpenXml;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form2;
 
@@ -2160,29 +2161,24 @@ public partial class Form22 : Form2, IBaseColor
     {
         if (otherForm is not Form22 formToCompare) return false;
 
-        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
-               && CorrectionNumber_DB == formToCompare.CorrectionNumber_DB
-               && Sum_DB == formToCompare.Sum_DB
-               && SumGroup_DB == formToCompare.SumGroup_DB
-               && NumberInOrderSum_DB == formToCompare.NumberInOrderSum_DB
-               && StoragePlaceName_DB == formToCompare.StoragePlaceName_DB
-               && StoragePlaceCode_DB == formToCompare.StoragePlaceCode_DB
-               && PackName_DB == formToCompare.PackName_DB
-               && PackType_DB == formToCompare.PackType_DB
-               && PackQuantity_DB == formToCompare.PackQuantity_DB
-               && CodeRAO_DB == formToCompare.CodeRAO_DB
-               && StatusRAO_DB == formToCompare.StatusRAO_DB
-               && VolumeOutOfPack_DB == formToCompare.VolumeOutOfPack_DB
-               && VolumeInPack_DB == formToCompare.VolumeInPack_DB
-               && MassOutOfPack_DB == formToCompare.MassOutOfPack_DB
-               && MassInPack_DB == formToCompare.MassInPack_DB
-               && QuantityOZIII_DB == formToCompare.QuantityOZIII_DB
-               && TritiumActivity_DB == formToCompare.TritiumActivity_DB
-               && BetaGammaActivity_DB == formToCompare.BetaGammaActivity_DB
-               && AlphaActivity_DB == formToCompare.AlphaActivity_DB
-               && TransuraniumActivity_DB == formToCompare.TransuraniumActivity_DB
-               && MainRadionuclids_DB == formToCompare.MainRadionuclids_DB
-               && Subsidy_DB == formToCompare.Subsidy_DB
-               && FcpNumber_DB == formToCompare.FcpNumber_DB;
+        return FormTextEquality.Equals(StoragePlaceName_DB, formToCompare.StoragePlaceName_DB)
+               && FormTextEquality.Equals(StoragePlaceCode_DB, formToCompare.StoragePlaceCode_DB)
+               && FormTextEquality.Equals(PackName_DB, formToCompare.PackName_DB)
+               && FormTextEquality.Equals(PackType_DB, formToCompare.PackType_DB)
+               && FormTextEquality.Equals(PackQuantity_DB, formToCompare.PackQuantity_DB)
+               && FormTextEquality.Equals(CodeRAO_DB, formToCompare.CodeRAO_DB)
+               && FormTextEquality.Equals(StatusRAO_DB, formToCompare.StatusRAO_DB)
+               && FormExponentialEquality.Equals(VolumeOutOfPack_DB, formToCompare.VolumeOutOfPack_DB)
+               && FormExponentialEquality.Equals(VolumeInPack_DB, formToCompare.VolumeInPack_DB)
+               && FormExponentialEquality.Equals(MassOutOfPack_DB, formToCompare.MassOutOfPack_DB)
+               && FormExponentialEquality.Equals(MassInPack_DB, formToCompare.MassInPack_DB)
+               && FormTextEquality.Equals(QuantityOZIII_DB, formToCompare.QuantityOZIII_DB)
+               && FormExponentialEquality.Equals(TritiumActivity_DB, formToCompare.TritiumActivity_DB)
+               && FormExponentialEquality.Equals(BetaGammaActivity_DB, formToCompare.BetaGammaActivity_DB)
+               && FormExponentialEquality.Equals(AlphaActivity_DB, formToCompare.AlphaActivity_DB)
+               && FormExponentialEquality.Equals(TransuraniumActivity_DB, formToCompare.TransuraniumActivity_DB)
+               && FormRadionuclidsEquality.Equals(MainRadionuclids_DB, formToCompare.MainRadionuclids_DB)
+               && FormTextEquality.Equals(Subsidy_DB, formToCompare.Subsidy_DB)
+               && FormTextEquality.Equals(FcpNumber_DB, formToCompare.FcpNumber_DB);
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -7,6 +7,7 @@ using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form2;
 
@@ -1054,18 +1055,17 @@ public partial class Form23 : Form2
     {
         if (otherForm is not Form23 formToCompare) return false;
 
-        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
-               && StoragePlaceName_DB == formToCompare.StoragePlaceName_DB
-               && StoragePlaceCode_DB == formToCompare.StoragePlaceCode_DB
-               && ProjectVolume_DB == formToCompare.ProjectVolume_DB
-               && CodeRAO_DB == formToCompare.CodeRAO_DB
-               && Volume_DB == formToCompare.Volume_DB
-               && Mass_DB == formToCompare.Mass_DB
-               && QuantityOZIII_DB == formToCompare.QuantityOZIII_DB
-               && SummaryActivity_DB == formToCompare.SummaryActivity_DB
-               && DocumentNumber_DB == formToCompare.DocumentNumber_DB
-               && DocumentDate_DB == formToCompare.DocumentDate_DB
-               && ExpirationDate_DB == formToCompare.ExpirationDate_DB
-               && DocumentName_DB == formToCompare.DocumentName_DB;
+        return FormTextEquality.Equals(StoragePlaceName_DB, formToCompare.StoragePlaceName_DB)
+               && FormTextEquality.Equals(StoragePlaceCode_DB, formToCompare.StoragePlaceCode_DB)
+               && FormExponentialEquality.Equals(ProjectVolume_DB, formToCompare.ProjectVolume_DB)
+               && FormTextEquality.Equals(CodeRAO_DB, formToCompare.CodeRAO_DB)
+               && FormExponentialEquality.Equals(Volume_DB, formToCompare.Volume_DB)
+               && FormExponentialEquality.Equals(Mass_DB, formToCompare.Mass_DB)
+               && FormTextEquality.Equals(QuantityOZIII_DB, formToCompare.QuantityOZIII_DB)
+               && FormExponentialEquality.Equals(SummaryActivity_DB, formToCompare.SummaryActivity_DB)
+               && FormTextEquality.Equals(DocumentNumber_DB, formToCompare.DocumentNumber_DB)
+               && FormDateEquality.Equals(DocumentDate_DB, formToCompare.DocumentDate_DB)
+               && FormDateEquality.Equals(ExpirationDate_DB, formToCompare.ExpirationDate_DB)
+               && FormTextEquality.Equals(DocumentName_DB, formToCompare.DocumentName_DB);
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,6 +9,7 @@ using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
 using Spravochniki;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form1;
 
@@ -1667,30 +1668,29 @@ public partial class Form15 : Form1
     {
         if (otherForm is not Form15 formToCompare) return false;
 
-        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
-               && OperationCode_DB == formToCompare.OperationCode_DB
-               && OperationDate_DB == formToCompare.OperationDate_DB
-               && PassportNumber_DB == formToCompare.PassportNumber_DB
-               && Type_DB == formToCompare.Type_DB
-               && Radionuclids_DB == formToCompare.Radionuclids_DB
-               && FactoryNumber_DB == formToCompare.FactoryNumber_DB
+        return FormTextEquality.Equals(OperationCode_DB, formToCompare.OperationCode_DB)
+               && FormDateEquality.Equals(OperationDate_DB, formToCompare.OperationDate_DB)
+               && FormTextEquality.Equals(PassportNumber_DB, formToCompare.PassportNumber_DB)
+               && FormTextEquality.Equals(Type_DB, formToCompare.Type_DB)
+               && FormRadionuclidsEquality.Equals(Radionuclids_DB, formToCompare.Radionuclids_DB)
+               && FormTextEquality.Equals(FactoryNumber_DB, formToCompare.FactoryNumber_DB)
                && Quantity_DB == formToCompare.Quantity_DB
-               && Activity_DB == formToCompare.Activity_DB
-               && CreationDate_DB == formToCompare.CreationDate_DB
-               && StatusRAO_DB == formToCompare.StatusRAO_DB
+               && FormExponentialEquality.Equals(Activity_DB, formToCompare.Activity_DB)
+               && FormDateEquality.Equals(CreationDate_DB, formToCompare.CreationDate_DB)
+               && FormTextEquality.Equals(StatusRAO_DB, formToCompare.StatusRAO_DB)
                && DocumentVid_DB == formToCompare.DocumentVid_DB
-               && DocumentNumber_DB == formToCompare.DocumentNumber_DB
-               && DocumentDate_DB == formToCompare.DocumentDate_DB
-               && ProviderOrRecieverOKPO_DB == formToCompare.ProviderOrRecieverOKPO_DB
-               && TransporterOKPO_DB == formToCompare.TransporterOKPO_DB
-               && PackName_DB == formToCompare.PackName_DB
-               && PackType_DB == formToCompare.PackType_DB
-               && PackNumber_DB == formToCompare.PackNumber_DB
-               && StoragePlaceName_DB == formToCompare.StoragePlaceName_DB
-               && StoragePlaceCode_DB == formToCompare.StoragePlaceCode_DB
-               && RefineOrSortRAOCode_DB == formToCompare.RefineOrSortRAOCode_DB
-               && Subsidy_DB == formToCompare.Subsidy_DB
-               && FcpNumber_DB == formToCompare.FcpNumber_DB
-               && ContractNumber_DB == formToCompare.ContractNumber_DB;
+               && FormTextEquality.Equals(DocumentNumber_DB, formToCompare.DocumentNumber_DB)
+               && FormDateEquality.Equals(DocumentDate_DB, formToCompare.DocumentDate_DB)
+               && FormTextEquality.Equals(ProviderOrRecieverOKPO_DB, formToCompare.ProviderOrRecieverOKPO_DB)
+               && FormTextEquality.Equals(TransporterOKPO_DB, formToCompare.TransporterOKPO_DB)
+               && FormTextEquality.Equals(PackName_DB, formToCompare.PackName_DB)
+               && FormTextEquality.Equals(PackType_DB, formToCompare.PackType_DB)
+               && FormTextEquality.Equals(PackNumber_DB, formToCompare.PackNumber_DB)
+               && FormTextEquality.Equals(StoragePlaceName_DB, formToCompare.StoragePlaceName_DB)
+               && FormTextEquality.Equals(StoragePlaceCode_DB, formToCompare.StoragePlaceCode_DB)
+               && FormTextEquality.Equals(RefineOrSortRAOCode_DB, formToCompare.RefineOrSortRAOCode_DB)
+               && FormTextEquality.Equals(Subsidy_DB, formToCompare.Subsidy_DB)
+               && FormTextEquality.Equals(FcpNumber_DB, formToCompare.FcpNumber_DB)
+               && FormTextEquality.Equals(ContractNumber_DB, formToCompare.ContractNumber_DB);
     }
 }

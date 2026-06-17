@@ -1,4 +1,4 @@
-﻿using Models.Attributes;
+using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Drawing;
 using System.Linq;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form4;
 
@@ -585,14 +586,13 @@ public partial class Form41 : Form
     {
         if (otherForm is not Form41 formToCompare) return false;
 
-        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
-               && RegNo_DB == formToCompare.RegNo_DB
-               && Okpo_DB == formToCompare.Okpo_DB
-               && OrganizationName_DB == formToCompare.OrganizationName_DB
-               && LicenseOrRegistrationInfo_DB == formToCompare.LicenseOrRegistrationInfo_DB
+        return FormTextEquality.Equals(RegNo_DB, formToCompare.RegNo_DB)
+               && FormTextEquality.Equals(Okpo_DB, formToCompare.Okpo_DB)
+               && FormTextEquality.Equals(OrganizationName_DB, formToCompare.OrganizationName_DB)
+               && FormTextEquality.Equals(LicenseOrRegistrationInfo_DB, formToCompare.LicenseOrRegistrationInfo_DB)
                && NumOfFormsWithInventarizationInfo_DB == formToCompare.NumOfFormsWithInventarizationInfo_DB
                && NumOfFormsWithoutInventarizationInfo_DB == formToCompare.NumOfFormsWithoutInventarizationInfo_DB
                && NumOfForms212_DB == formToCompare.NumOfForms212_DB
-               && Note_DB == formToCompare.Note_DB;
+               && FormTextEquality.Equals(Note_DB, formToCompare.Note_DB);
     }
 }

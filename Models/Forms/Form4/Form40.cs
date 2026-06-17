@@ -1,4 +1,4 @@
-﻿using Models.Attributes;
+using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
@@ -7,11 +7,10 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
-using System.Drawing;
-using System.Linq;
-using System.Text.RegularExpressions;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form4;
+
 [Serializable]
 [Form_Class(name: "Форма 4.0: Титульный лист организации")]
 [Table(name: "form_40")]
@@ -1056,23 +1055,23 @@ public partial class Form40 : Form
     {
         if (otherForm is not Form40 formToCompare) return false;
 
-        return CodeSubjectRF_DB == formToCompare.CodeSubjectRF_DB
-               && SubjectRF_DB == formToCompare.SubjectRF_DB
-               && NameOrganUprav_DB == formToCompare.NameOrganUprav_DB
-               && ShortNameOrganUprav_DB == formToCompare.ShortNameOrganUprav_DB
-               && AddressOrganUprav_DB == formToCompare.AddressOrganUprav_DB
-               && GradeFioDirectorOrganUprav_DB == formToCompare.GradeFioDirectorOrganUprav_DB
-               && GradeFioExecutorOrganUprav_DB == formToCompare.GradeFioExecutorOrganUprav_DB
-               && TelephoneOrganUprav_DB == formToCompare.TelephoneOrganUprav_DB
-               && FaxOrganUprav_DB == formToCompare.FaxOrganUprav_DB
-               && EmailOrganUprav_DB == formToCompare.EmailOrganUprav_DB
-               && NameRiac_DB == formToCompare.NameRiac_DB
-               && ShortNameRiac_DB == formToCompare.ShortNameRiac_DB
-               && AddressRiac_DB == formToCompare.AddressRiac_DB
-               && GradeFioDirectorRiac_DB == formToCompare.GradeFioDirectorRiac_DB
-               && GradeFioExecutorRiac_DB == formToCompare.GradeFioExecutorRiac_DB
-               && TelephoneRiac_DB == formToCompare.TelephoneRiac_DB
-               && FaxRiac_DB == formToCompare.FaxRiac_DB
-               && EmailRiac_DB == formToCompare.EmailRiac_DB;
+        return FormTextEquality.Equals(CodeSubjectRF_DB, formToCompare.CodeSubjectRF_DB)
+               && FormTextEquality.Equals(SubjectRF_DB, formToCompare.SubjectRF_DB)
+               && FormTextEquality.Equals(NameOrganUprav_DB, formToCompare.NameOrganUprav_DB)
+               && FormTextEquality.Equals(ShortNameOrganUprav_DB, formToCompare.ShortNameOrganUprav_DB)
+               && FormTextEquality.Equals(AddressOrganUprav_DB, formToCompare.AddressOrganUprav_DB)
+               && FormTextEquality.Equals(GradeFioDirectorOrganUprav_DB, formToCompare.GradeFioDirectorOrganUprav_DB)
+               && FormTextEquality.Equals(GradeFioExecutorOrganUprav_DB, formToCompare.GradeFioExecutorOrganUprav_DB)
+               && FormTextEquality.Equals(TelephoneOrganUprav_DB, formToCompare.TelephoneOrganUprav_DB)
+               && FormTextEquality.Equals(FaxOrganUprav_DB, formToCompare.FaxOrganUprav_DB)
+               && FormTextEquality.Equals(EmailOrganUprav_DB, formToCompare.EmailOrganUprav_DB)
+               && FormTextEquality.Equals(NameRiac_DB, formToCompare.NameRiac_DB)
+               && FormTextEquality.Equals(ShortNameRiac_DB, formToCompare.ShortNameRiac_DB)
+               && FormTextEquality.Equals(AddressRiac_DB, formToCompare.AddressRiac_DB)
+               && FormTextEquality.Equals(GradeFioDirectorRiac_DB, formToCompare.GradeFioDirectorRiac_DB)
+               && FormTextEquality.Equals(GradeFioExecutorRiac_DB, formToCompare.GradeFioExecutorRiac_DB)
+               && FormTextEquality.Equals(TelephoneRiac_DB, formToCompare.TelephoneRiac_DB)
+               && FormTextEquality.Equals(FaxRiac_DB, formToCompare.FaxRiac_DB)
+               && FormTextEquality.Equals(EmailRiac_DB, formToCompare.EmailRiac_DB);
     }
 }

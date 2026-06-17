@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -6,6 +6,7 @@ using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form2;
 
@@ -367,10 +368,9 @@ public class Form29 : Form2
     {
         if (otherForm is not Form29 formToCompare) return false;
 
-        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
-               && WasteSourceName_DB == formToCompare.WasteSourceName_DB
-               && RadionuclidName_DB == formToCompare.RadionuclidName_DB
-               && AllowedActivity_DB == formToCompare.AllowedActivity_DB
-               && FactedActivity_DB == formToCompare.FactedActivity_DB;
+        return FormTextEquality.Equals(WasteSourceName_DB, formToCompare.WasteSourceName_DB)
+               && FormRadionuclidsEquality.Equals(RadionuclidName_DB, formToCompare.RadionuclidName_DB)
+               && FormExponentialEquality.Equals(AllowedActivity_DB, formToCompare.AllowedActivity_DB)
+               && FormExponentialEquality.Equals(FactedActivity_DB, formToCompare.FactedActivity_DB);
     }
 }

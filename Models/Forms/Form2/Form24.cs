@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -7,6 +7,7 @@ using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form2;
 
@@ -1286,22 +1287,21 @@ public partial class Form24 : Form2
     {
         if (otherForm is not Form24 formToCompare) return false;
 
-        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
-               && CodeOYAT_DB == formToCompare.CodeOYAT_DB
-               && FcpNumber_DB == formToCompare.FcpNumber_DB
-               && MassCreated_DB == formToCompare.MassCreated_DB
-               && QuantityCreated_DB == formToCompare.QuantityCreated_DB
-               && MassFromAnothers_DB == formToCompare.MassFromAnothers_DB
-               && QuantityFromAnothers_DB == formToCompare.QuantityFromAnothers_DB
-               && MassFromAnothersImported_DB == formToCompare.MassFromAnothersImported_DB
-               && QuantityFromAnothersImported_DB == formToCompare.QuantityFromAnothersImported_DB
-               && MassAnotherReasons_DB == formToCompare.MassAnotherReasons_DB
-               && QuantityAnotherReasons_DB == formToCompare.QuantityAnotherReasons_DB
-               && MassTransferredToAnother_DB == formToCompare.MassTransferredToAnother_DB
-               && QuantityTransferredToAnother_DB == formToCompare.QuantityTransferredToAnother_DB
-               && MassRefined_DB == formToCompare.MassRefined_DB
-               && QuantityRefined_DB == formToCompare.QuantityRefined_DB
-               && MassRemovedFromAccount_DB == formToCompare.MassRemovedFromAccount_DB
-               && QuantityRemovedFromAccount_DB == formToCompare.QuantityRemovedFromAccount_DB;
+        return FormTextEquality.Equals(CodeOYAT_DB, formToCompare.CodeOYAT_DB)
+               && FormTextEquality.Equals(FcpNumber_DB, formToCompare.FcpNumber_DB)
+               && FormExponentialEquality.Equals(MassCreated_DB, formToCompare.MassCreated_DB)
+               && FormTextEquality.Equals(QuantityCreated_DB, formToCompare.QuantityCreated_DB)
+               && FormExponentialEquality.Equals(MassFromAnothers_DB, formToCompare.MassFromAnothers_DB)
+               && FormTextEquality.Equals(QuantityFromAnothers_DB, formToCompare.QuantityFromAnothers_DB)
+               && FormExponentialEquality.Equals(MassFromAnothersImported_DB, formToCompare.MassFromAnothersImported_DB)
+               && FormTextEquality.Equals(QuantityFromAnothersImported_DB, formToCompare.QuantityFromAnothersImported_DB)
+               && FormExponentialEquality.Equals(MassAnotherReasons_DB, formToCompare.MassAnotherReasons_DB)
+               && FormTextEquality.Equals(QuantityAnotherReasons_DB, formToCompare.QuantityAnotherReasons_DB)
+               && FormExponentialEquality.Equals(MassTransferredToAnother_DB, formToCompare.MassTransferredToAnother_DB)
+               && FormTextEquality.Equals(QuantityTransferredToAnother_DB, formToCompare.QuantityTransferredToAnother_DB)
+               && FormExponentialEquality.Equals(MassRefined_DB, formToCompare.MassRefined_DB)
+               && FormTextEquality.Equals(QuantityRefined_DB, formToCompare.QuantityRefined_DB)
+               && FormExponentialEquality.Equals(MassRemovedFromAccount_DB, formToCompare.MassRemovedFromAccount_DB)
+               && FormTextEquality.Equals(QuantityRemovedFromAccount_DB, formToCompare.QuantityRemovedFromAccount_DB);
     }
 }

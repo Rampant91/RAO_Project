@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,6 +9,7 @@ using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
 using Spravochniki;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form1;
 
@@ -2512,39 +2513,37 @@ public partial class Form17 : Form1
     {
         if (otherForm is not Form17 formToCompare) return false;
 
-        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
-               && OperationCode_DB == formToCompare.OperationCode_DB
-               && OperationDate_DB == formToCompare.OperationDate_DB
+        return FormTextEquality.Equals(OperationCode_DB, formToCompare.OperationCode_DB)
+               && FormDateEquality.Equals(OperationDate_DB, formToCompare.OperationDate_DB)
                && DocumentVid_DB == formToCompare.DocumentVid_DB
-               && DocumentNumber_DB == formToCompare.DocumentNumber_DB
-               && DocumentDate_DB == formToCompare.DocumentDate_DB
-               && Sum_DB == formToCompare.Sum_DB
-               && PackName_DB == formToCompare.PackName_DB
-               && PackType_DB == formToCompare.PackType_DB
-               && PackFactoryNumber_DB == formToCompare.PackFactoryNumber_DB
-               && PackNumber_DB == formToCompare.PackNumber_DB
-               && FormingDate_DB == formToCompare.FormingDate_DB
-               && PassportNumber_DB == formToCompare.PassportNumber_DB
-               && Volume_DB == formToCompare.Volume_DB
-               && Mass_DB == formToCompare.Mass_DB
-               && Radionuclids_DB == formToCompare.Radionuclids_DB
-               && SpecificActivity_DB == formToCompare.SpecificActivity_DB
-               && ProviderOrRecieverOKPO_DB == formToCompare.ProviderOrRecieverOKPO_DB
-               && TransporterOKPO_DB == formToCompare.TransporterOKPO_DB
-               && StoragePlaceName_DB == formToCompare.StoragePlaceName_DB
-               && StoragePlaceCode_DB == formToCompare.StoragePlaceCode_DB
-               && CodeRAO_DB == formToCompare.CodeRAO_DB
-               && StatusRAO_DB == formToCompare.StatusRAO_DB
-               && VolumeOutOfPack_DB == formToCompare.VolumeOutOfPack_DB
-               && MassOutOfPack_DB == formToCompare.MassOutOfPack_DB
-               && Quantity_DB == formToCompare.Quantity_DB
-               && TritiumActivity_DB == formToCompare.TritiumActivity_DB
-               && BetaGammaActivity_DB == formToCompare.BetaGammaActivity_DB
-               && AlphaActivity_DB == formToCompare.AlphaActivity_DB
-               && TransuraniumActivity_DB == formToCompare.TransuraniumActivity_DB
-               && RefineOrSortRAOCode_DB == formToCompare.RefineOrSortRAOCode_DB
-               && Subsidy_DB == formToCompare.Subsidy_DB
-               && FcpNumber_DB == formToCompare.FcpNumber_DB
-               && ContractNumber_DB == formToCompare.ContractNumber_DB;
+               && FormTextEquality.Equals(DocumentNumber_DB, formToCompare.DocumentNumber_DB)
+               && FormDateEquality.Equals(DocumentDate_DB, formToCompare.DocumentDate_DB)
+               && FormTextEquality.Equals(PackName_DB, formToCompare.PackName_DB)
+               && FormTextEquality.Equals(PackType_DB, formToCompare.PackType_DB)
+               && FormTextEquality.Equals(PackFactoryNumber_DB, formToCompare.PackFactoryNumber_DB)
+               && FormTextEquality.Equals(PackNumber_DB, formToCompare.PackNumber_DB)
+               && FormDateEquality.Equals(FormingDate_DB, formToCompare.FormingDate_DB)
+               && FormTextEquality.Equals(PassportNumber_DB, formToCompare.PassportNumber_DB)
+               && FormExponentialEquality.Equals(Volume_DB, formToCompare.Volume_DB)
+               && FormExponentialEquality.Equals(Mass_DB, formToCompare.Mass_DB)
+               && FormRadionuclidsEquality.Equals(Radionuclids_DB, formToCompare.Radionuclids_DB)
+               && FormExponentialEquality.Equals(SpecificActivity_DB, formToCompare.SpecificActivity_DB)
+               && FormTextEquality.Equals(ProviderOrRecieverOKPO_DB, formToCompare.ProviderOrRecieverOKPO_DB)
+               && FormTextEquality.Equals(TransporterOKPO_DB, formToCompare.TransporterOKPO_DB)
+               && FormTextEquality.Equals(StoragePlaceName_DB, formToCompare.StoragePlaceName_DB)
+               && FormTextEquality.Equals(StoragePlaceCode_DB, formToCompare.StoragePlaceCode_DB)
+               && FormTextEquality.Equals(CodeRAO_DB, formToCompare.CodeRAO_DB)
+               && FormTextEquality.Equals(StatusRAO_DB, formToCompare.StatusRAO_DB)
+               && FormExponentialEquality.Equals(VolumeOutOfPack_DB, formToCompare.VolumeOutOfPack_DB)
+               && FormExponentialEquality.Equals(MassOutOfPack_DB, formToCompare.MassOutOfPack_DB)
+               && FormTextEquality.Equals(Quantity_DB, formToCompare.Quantity_DB)
+               && FormExponentialEquality.Equals(TritiumActivity_DB, formToCompare.TritiumActivity_DB)
+               && FormExponentialEquality.Equals(BetaGammaActivity_DB, formToCompare.BetaGammaActivity_DB)
+               && FormExponentialEquality.Equals(AlphaActivity_DB, formToCompare.AlphaActivity_DB)
+               && FormExponentialEquality.Equals(TransuraniumActivity_DB, formToCompare.TransuraniumActivity_DB)
+               && FormTextEquality.Equals(RefineOrSortRAOCode_DB, formToCompare.RefineOrSortRAOCode_DB)
+               && FormTextEquality.Equals(Subsidy_DB, formToCompare.Subsidy_DB)
+               && FormTextEquality.Equals(FcpNumber_DB, formToCompare.FcpNumber_DB)
+               && FormTextEquality.Equals(ContractNumber_DB, formToCompare.ContractNumber_DB);
     }
 }

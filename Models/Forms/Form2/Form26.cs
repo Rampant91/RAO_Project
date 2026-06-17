@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -6,6 +6,7 @@ using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form2;
 
@@ -565,13 +566,12 @@ public class Form26 : Form2
     {
         if (otherForm is not Form26 formToCompare) return false;
 
-        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
-               && ObservedSourceNumber_DB == formToCompare.ObservedSourceNumber_DB
-               && ControlledAreaName_DB == formToCompare.ControlledAreaName_DB
-               && SupposedWasteSource_DB == formToCompare.SupposedWasteSource_DB
-               && DistanceToWasteSource_DB == formToCompare.DistanceToWasteSource_DB
-               && TestDepth_DB == formToCompare.TestDepth_DB
-               && RadionuclidName_DB == formToCompare.RadionuclidName_DB
-               && AverageYearConcentration_DB == formToCompare.AverageYearConcentration_DB;
+        return FormTextEquality.Equals(ObservedSourceNumber_DB, formToCompare.ObservedSourceNumber_DB)
+               && FormTextEquality.Equals(ControlledAreaName_DB, formToCompare.ControlledAreaName_DB)
+               && FormTextEquality.Equals(SupposedWasteSource_DB, formToCompare.SupposedWasteSource_DB)
+               && FormExponentialEquality.Equals(DistanceToWasteSource_DB, formToCompare.DistanceToWasteSource_DB)
+               && FormExponentialEquality.Equals(TestDepth_DB, formToCompare.TestDepth_DB)
+               && FormRadionuclidsEquality.Equals(RadionuclidName_DB, formToCompare.RadionuclidName_DB)
+               && FormExponentialEquality.Equals(AverageYearConcentration_DB, formToCompare.AverageYearConcentration_DB);
     }
 }

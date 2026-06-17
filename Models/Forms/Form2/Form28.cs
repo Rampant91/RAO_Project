@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -7,6 +7,7 @@ using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
 using Spravochniki;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form2;
 
@@ -525,12 +526,11 @@ public class Form28 : Form2
     {
         if (otherForm is not Form28 formToCompare) return false;
 
-        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
-               && WasteSourceName_DB == formToCompare.WasteSourceName_DB
-               && WasteRecieverName_DB == formToCompare.WasteRecieverName_DB
-               && RecieverTypeCode_DB == formToCompare.RecieverTypeCode_DB
-               && PoolDistrictName_DB == formToCompare.PoolDistrictName_DB
-               && AllowedWasteRemovalVolume_DB == formToCompare.AllowedWasteRemovalVolume_DB
-               && RemovedWasteVolume_DB == formToCompare.RemovedWasteVolume_DB;
+        return FormTextEquality.Equals(WasteSourceName_DB, formToCompare.WasteSourceName_DB)
+               && FormTextEquality.Equals(WasteRecieverName_DB, formToCompare.WasteRecieverName_DB)
+               && FormTextEquality.Equals(RecieverTypeCode_DB, formToCompare.RecieverTypeCode_DB)
+               && FormTextEquality.Equals(PoolDistrictName_DB, formToCompare.PoolDistrictName_DB)
+               && FormExponentialEquality.Equals(AllowedWasteRemovalVolume_DB, formToCompare.AllowedWasteRemovalVolume_DB)
+               && FormExponentialEquality.Equals(RemovedWasteVolume_DB, formToCompare.RemovedWasteVolume_DB);
     }
 }

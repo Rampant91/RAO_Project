@@ -1,5 +1,6 @@
 ﻿using Models.CheckForm;
 using Models.Collections;
+using Models.Comparers.FormContent;
 using Models.Forms;
 using Models.Forms.Form1;
 using System;
@@ -2798,43 +2799,13 @@ public abstract partial class CheckF11 : CheckBase
 
         var tmp1 = snkRegex
             .Replace(str1, "")
-            .ToLower()
-            .Replace('а', 'a')
-            .Replace('б', 'b')
-            .Replace('в', 'b')
-            .Replace('г', 'r')
-            .Replace('е', 'e')
-            .Replace('ё', 'e')
-            .Replace('к', 'k')
-            .Replace('м', 'm')
-            .Replace('н', 'h')
-            .Replace('о', 'o')
-            .Replace('0', 'o')
-            .Replace('р', 'p')
-            .Replace('с', 'c')
-            .Replace('т', 't')
-            .Replace('у', 'y')
-            .Replace('х', 'x');
+            .ToLower();
+        tmp1 = LookalikeCharMapper.ReplaceRuEnLookalikes(tmp1);
 
         var tmp2 = snkRegex
             .Replace(str2, "")
-            .ToLower()
-            .Replace('а', 'a')
-            .Replace('б', 'b')
-            .Replace('в', 'b')
-            .Replace('г', 'r')
-            .Replace('е', 'e')
-            .Replace('ё', 'e')
-            .Replace('к', 'k')
-            .Replace('м', 'm')
-            .Replace('н', 'h')
-            .Replace('о', 'o')
-            .Replace('0', 'o')
-            .Replace('р', 'p')
-            .Replace('с', 'c')
-            .Replace('т', 't')
-            .Replace('у', 'y')
-            .Replace('х', 'x');
+            .ToLower();
+        tmp2 = LookalikeCharMapper.ReplaceRuEnLookalikes(tmp2);
         
         if (tmp1 == string.Empty || tmp2 == string.Empty)
         {

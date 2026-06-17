@@ -8,6 +8,7 @@ using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
+using Models.Comparers.FormContent;
 using Models.DBRealization;
 using System;
 using System.Collections.Generic;
@@ -1973,35 +1974,10 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
     private static string AutoReplaceSimilarChars(string? str)
     {
-        return SpecialSymbolsRegex()
+        var cleaned = SpecialSymbolsRegex()
             .Replace(str ?? string.Empty, "")
-            .Replace('А', 'A')
-            .Replace('а', 'a')
-            .Replace('б', 'b')
-            .Replace('В', 'B')
-            .Replace('г', 'r')
-            .Replace('Е', 'E')
-            .Replace('е', 'e')
-            .Replace('Ё', 'E')
-            .Replace('ё', 'e')
-            .Replace('К', 'K')
-            .Replace('к', 'k')
-            .Replace('М', 'M')
-            .Replace('м', 'm')
-            .Replace('Н', 'H')
-            .Replace('О', 'O')
-            .Replace('о', 'o')
-            .Replace('0', 'O')
-            .Replace('Р', 'P')
-            .Replace('р', 'p')
-            .Replace('С', 'C')
-            .Replace('с', 'c')
-            .Replace('Т', 'T')
-            .Replace('У', 'Y')
-            .Replace('у', 'y')
-            .Replace('Х', 'X')
-            .Replace('х', 'x')
             .ToLower();
+        return LookalikeCharMapper.ReplaceRuEnLookalikes(cleaned);
     }
 
     #endregion
