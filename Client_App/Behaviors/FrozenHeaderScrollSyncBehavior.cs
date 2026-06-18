@@ -183,7 +183,19 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
         _lastFixedBorderWidth = targetWidth;
         FixedGroupHeaderBorder.Width = targetWidth;
         FixedGroupHeaderBorder.HorizontalAlignment = alignment;
-        FixedGroupHeaderBorder.BorderThickness = new Thickness(1);
+        SetUniformBorderThickness(FixedGroupHeaderBorder, 1);
+    }
+
+    private static void SetUniformBorderThickness(Border border, double thickness)
+    {
+        var current = border.BorderThickness;
+        if (Math.Abs(current.Left - thickness) < 0.01
+            && Math.Abs(current.Top - thickness) < 0.01
+            && Math.Abs(current.Right - thickness) < 0.01
+            && Math.Abs(current.Bottom - thickness) < 0.01)
+            return;
+
+        border.BorderThickness = new Thickness(thickness);
     }
 
     private void ResetFixedGroupHeaderBorderIfNeeded()
@@ -194,7 +206,7 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
         _lastFixedBorderWidth = double.NaN;
         FixedGroupHeaderBorder.Width = double.NaN;
         FixedGroupHeaderBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
-        FixedGroupHeaderBorder.BorderThickness = new Thickness(1);
+        SetUniformBorderThickness(FixedGroupHeaderBorder, 1);
     }
 
     private double ComputeExtraFrozenOffset(TableHeaderLayoutMetrics metrics)

@@ -35,11 +35,9 @@ internal static class TableHeaderColumnWidth
 
 public class ColumnWidthSyncBehavior : Behavior<Grid>
 {
-    private IDisposable? _boundsSubscription;
     private IDisposable? _startIndexSub;
     private IDisposable? _columnCountSub;
     private double[] _lastAppliedWidths = Array.Empty<double>();
-    private double _lastBoundsWidth = double.NaN;
     private bool? _lastHasHorizontalScroll;
     private int _lastFrozenColumnCount = -1;
 
@@ -109,14 +107,6 @@ public class ColumnWidthSyncBehavior : Behavior<Grid>
 
         EnsureColumnDefinitions();
         TableHeaderDataGridSync.RegisterWidthBehavior(SourceDataGrid, this);
-
-        _boundsSubscription = SourceDataGrid.GetObservable(Visual.BoundsProperty)
-            .Subscribe(rect =>
-            {
-                if (Math.Abs(rect.Width - _lastBoundsWidth) < 0.5) return;
-                _lastBoundsWidth = rect.Width;
-                TableHeaderDataGridSync.RequestSync(SourceDataGrid, force: true);
-            });
     }
 
     private void OnColumnsChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -127,7 +117,7 @@ public class ColumnWidthSyncBehavior : Behavior<Grid>
     }
 
     /// <summary>Вызывается координатором TableHeaderDataGridSync.</summary>
-    internal void SyncWidths(TableHeaderLayoutMetrics metrics, bool force = false)
+    internal void SyncWidths(TableHeaderLayoutMetrics metrics, bool force = false, int changedColumnIndex = -1)
     {
         if (AssociatedObject == null || SourceDataGrid == null) return;
 
@@ -152,6 +142,9 @@ public class ColumnWidthSyncBehavior : Behavior<Grid>
 
         for (var i = start; i < end; i++)
         {
+            if (changedColumnIndex >= 0 && i != changedColumnIndex)
+                continue;
+
             var gridIndex = i - start;
             var displayWidth = SourceDataGrid.Columns[i].Width.DisplayValue;
             if (displayWidth <= 0) continue;
@@ -199,7 +192,6 @@ public class ColumnWidthSyncBehavior : Behavior<Grid>
             TableHeaderDataGridSync.UnregisterWidthBehavior(SourceDataGrid, this);
         }
 
-        _boundsSubscription?.Dispose();
         _startIndexSub?.Dispose();
         _columnCountSub?.Dispose();
         AssociatedObject.AttachedToVisualTree -= OnAttachedToVisualTree;

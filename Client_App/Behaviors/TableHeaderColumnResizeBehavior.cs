@@ -18,6 +18,7 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
     // ±3 px от линии (≈6 px всего).
     private const double HorizontalResizeHitThreshold = 6.0;
     private const double VerticalResizeHitThreshold = 5.0;
+    private const double LiveResizeWidthThreshold = 1.0;
 
     public static readonly AttachedProperty<DataGrid?> SourceDataGridProperty =
         AvaloniaProperty.RegisterAttached<TableHeaderColumnResizeBehavior, Grid, DataGrid?>("SourceDataGrid");
@@ -88,8 +89,7 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
         }
 
         RemoveHitOverlay();
-        _draggingDataGridColumnIndex = -1;
-        _capturedPointer = null;
+        FinishResize();
         base.OnDetaching();
     }
 
@@ -164,7 +164,12 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
             // иначе локальный X «плывёт» под курсором — особенно на границе № п/п.
             var delta = e.GetPosition(reference).X - _dragStartX;
             var targetWidth = ClampToColumnLimits(SourceDataGrid, _dragStartWidth + delta);
+            var currentWidth = SourceDataGrid.Columns[_draggingDataGridColumnIndex].Width.DisplayValue;
+            if (Math.Abs(targetWidth - currentWidth) < LiveResizeWidthThreshold)
+                return;
+
             SourceDataGrid.Columns[_draggingDataGridColumnIndex].Width = new DataGridLength(targetWidth);
+            TableHeaderDataGridSync.SyncLiveColumnWidth(SourceDataGrid, _draggingDataGridColumnIndex, targetWidth);
             return;
         }
 
@@ -191,22 +196,26 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
         _dragStartWidth = SourceDataGrid.Columns[columnIndex].Width.DisplayValue;
         _capturedPointer = e.Pointer;
         _capturedPointer.Capture(_hitOverlay);
+        TableHeaderDataGridSync.BeginLiveColumnResize(SourceDataGrid);
         e.Handled = true;
     }
 
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
+        => FinishResize();
+
+    private void OnPointerCaptureLost(object? sender, PointerCaptureLostEventArgs e)
+        => FinishResize();
+
+    private void FinishResize()
     {
         if (_draggingDataGridColumnIndex < 0) return;
 
         _capturedPointer?.Capture(null);
         _draggingDataGridColumnIndex = -1;
         _capturedPointer = null;
-    }
 
-    private void OnPointerCaptureLost(object? sender, PointerCaptureLostEventArgs e)
-    {
-        _draggingDataGridColumnIndex = -1;
-        _capturedPointer = null;
+        if (SourceDataGrid is not null)
+            TableHeaderDataGridSync.EndLiveColumnResize(SourceDataGrid);
     }
 
     private int FindResizeTargetColumnIndex(Point pointer)
@@ -259,8 +268,8 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
             if (!border.IsVisible) continue;
 
             var row = Grid.GetRow(border);
-            if (row == 0 && border.Child is null)
-                continue;
+            if (row != 0) continue;
+            if (border.Child is null) continue;
 
             var col = Grid.GetColumn(border);
             var colSpan = Math.Max(1, Grid.GetColumnSpan(border));

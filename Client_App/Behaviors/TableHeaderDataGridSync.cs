@@ -34,9 +34,12 @@ internal static class TableHeaderDataGridSync
         public ScrollBar? HScrollBar;
         public bool LayoutHandlerAttached;
         public bool WidthSyncPosted;
+        public int LiveResizeCount;
         public double[] ColumnWidths = Array.Empty<double>();
         public bool HasHorizontalScroll;
         public double BorderCompensation = 1.0;
+        public double CachedPixelDensity = 1.0;
+        public bool PixelDensityResolved;
         public int CachedFrozenCount = -1;
         public double LastGridWidth = double.NaN;
         public EventHandler<ScrollEventArgs>? ScrollHandler;
@@ -44,6 +47,8 @@ internal static class TableHeaderDataGridSync
 
         public readonly HashSet<ColumnWidthSyncBehavior> WidthBehaviors = new();
         public readonly HashSet<FrozenHeaderScrollSyncBehavior> ScrollBehaviors = new();
+
+        public bool IsLiveResizing => LiveResizeCount > 0;
     }
 
     private static readonly ConditionalWeakTable<DataGrid, State> States = new();
@@ -91,11 +96,44 @@ internal static class TableHeaderDataGridSync
         ScheduleWidthSync(dataGrid, state, force);
     }
 
+    public static void BeginLiveColumnResize(DataGrid dataGrid)
+    {
+        GetOrCreateState(dataGrid).LiveResizeCount++;
+    }
+
+    public static void EndLiveColumnResize(DataGrid dataGrid)
+    {
+        if (!States.TryGetValue(dataGrid, out var state)) return;
+
+        state.LiveResizeCount = Math.Max(0, state.LiveResizeCount - 1);
+        if (!state.IsLiveResizing)
+            RequestSync(dataGrid);
+    }
+
+    /// <summary>
+    /// Синхронная точечная синхронизация шапки во время drag-resize (без очереди Render).
+    /// </summary>
+    public static void SyncLiveColumnWidth(DataGrid dataGrid, int columnIndex, double width)
+    {
+        if (!States.TryGetValue(dataGrid, out var state)) return;
+
+        TryFindScrollBar(dataGrid, state);
+        RefreshScrollMode(dataGrid, state);
+        UpdateColumnWidthCache(state, dataGrid.Columns.Count, columnIndex, width);
+
+        var metrics = BuildMetrics(state);
+        foreach (var behavior in state.WidthBehaviors)
+            behavior.SyncWidths(metrics, changedColumnIndex: columnIndex);
+
+        NotifyScrollChanged(dataGrid, state);
+    }
+
     /// <summary>Мгновенная синхронизация скролла шапки (без coalesce).</summary>
     public static void NotifyScrollChanged(DataGrid dataGrid)
     {
         if (!States.TryGetValue(dataGrid, out var state)) return;
         TryFindScrollBar(dataGrid, state);
+        RefreshScrollMode(dataGrid, state);
         NotifyScrollChanged(dataGrid, state);
     }
 
@@ -132,6 +170,12 @@ internal static class TableHeaderDataGridSync
 
         var state = GetOrCreateState(dataGrid);
         TryFindScrollBar(dataGrid, state);
+
+        if (state.IsLiveResizing)
+        {
+            ColumnWidthsChanged(dataGrid, state);
+            return;
+        }
 
         if (!HasRelevantLayoutChange(dataGrid, state))
         {
@@ -192,7 +236,14 @@ internal static class TableHeaderDataGridSync
     {
         state.HasHorizontalScroll = state.HScrollBar?.IsVisible == true;
         state.CachedFrozenCount = dataGrid.FrozenColumnCount;
-        state.BorderCompensation = 1.0 / ResolvePixelDensityScale(dataGrid);
+
+        if (!state.PixelDensityResolved)
+        {
+            state.CachedPixelDensity = ResolvePixelDensityScale(dataGrid);
+            state.PixelDensityResolved = true;
+        }
+
+        state.BorderCompensation = 1.0 / state.CachedPixelDensity;
     }
 
     private static void CaptureColumnWidths(DataGrid dataGrid, State state)
@@ -213,6 +264,13 @@ internal static class TableHeaderDataGridSync
     {
         ResizeWidthCache(state, count);
         Array.Fill(state.ColumnWidths, double.NaN);
+    }
+
+    private static void UpdateColumnWidthCache(State state, int count, int columnIndex, double width)
+    {
+        ResizeWidthCache(state, count);
+        if (columnIndex >= 0 && columnIndex < state.ColumnWidths.Length)
+            state.ColumnWidths[columnIndex] = width;
     }
 
     private static void ScheduleWidthSync(DataGrid dataGrid, State state, bool force = false)
@@ -244,11 +302,10 @@ internal static class TableHeaderDataGridSync
 
     private static void NotifyScrollChanged(DataGrid dataGrid, State state)
     {
-        RefreshScrollMode(dataGrid, state);
         var metrics = BuildMetrics(state);
         var scrollOffset = state.HScrollBar?.Value ?? 0;
 
-        foreach (var behavior in state.ScrollBehaviors.ToArray())
+        foreach (var behavior in state.ScrollBehaviors)
             behavior.SyncScroll(metrics, scrollOffset);
     }
 
