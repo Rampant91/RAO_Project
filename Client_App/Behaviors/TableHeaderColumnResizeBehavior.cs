@@ -11,18 +11,34 @@ using System.Linq;
 namespace Client_App.Behaviors;
 
 /// <summary>
-/// Позволяет менять ширину колонок DataGrid через кастомную шапку таблицы.
+/// Изменение ширины колонок <see cref="DataGrid"/> перетаскиванием границ кастомной шапки.
+/// <para>
+/// Вешается на <see cref="Grid"/> шапки (на Form_11 — отдельные экземпляры для scroll / fixed / npp).
+/// Ширина пишется в DataGrid.Columns[i].Width; синхронизация шапки — через
+/// <see cref="TableHeaderDataGridSync.SyncLiveColumnWidth"/>.
+/// </para>
 /// </summary>
 public class TableHeaderColumnResizeBehavior : Behavior<Grid>
 {
-    // ±3 px от линии (≈6 px всего).
+    #region Константы
+
+    /// <summary>Ширина зоны захвата по горизонтали: ±3 px от линии (≈6 px всего).</summary>
     private const double HorizontalResizeHitThreshold = 6.0;
+
+    /// <summary>Допуск по вертикали при hit-test границ в многоуровневой шапке.</summary>
     private const double VerticalResizeHitThreshold = 5.0;
+
+    /// <summary>Минимальное изменение ширины (px) для записи в DataGrid и sync шапки.</summary>
     private const double LiveResizeWidthThreshold = 1.0;
+
+    #endregion
+
+    #region Attached properties
 
     public static readonly AttachedProperty<DataGrid?> SourceDataGridProperty =
         AvaloniaProperty.RegisterAttached<TableHeaderColumnResizeBehavior, Grid, DataGrid?>("SourceDataGrid");
 
+    /// <summary>DataGrid, колонки которого меняются при drag.</summary>
     public DataGrid? SourceDataGrid
     {
         get => GetValue(SourceDataGridProperty);
@@ -32,6 +48,10 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
     public static readonly AttachedProperty<int> StartColumnIndexProperty =
         AvaloniaProperty.RegisterAttached<TableHeaderColumnResizeBehavior, Grid, int>("StartColumnIndex", 0);
 
+    /// <summary>
+    /// Индекс первой колонки DataGrid, отображаемой в этом Grid шапки
+    /// (0 — № п/п, 1 — первая скроллируемая на Form_11 и т.д.).
+    /// </summary>
     public int StartColumnIndex
     {
         get => GetValue(StartColumnIndexProperty);
@@ -41,6 +61,9 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
     public static readonly AttachedProperty<int> ColumnCountProperty =
         AvaloniaProperty.RegisterAttached<TableHeaderColumnResizeBehavior, Grid, int>("ColumnCount", 0);
 
+    /// <summary>
+    /// Число колонок шапки в этом Grid. 0 — все колонки от <see cref="StartColumnIndex"/> до конца.
+    /// </summary>
     public int ColumnCount
     {
         get => GetValue(ColumnCountProperty);
@@ -50,6 +73,10 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
     public static readonly AttachedProperty<bool> IncludeTrailingBoundaryProperty =
         AvaloniaProperty.RegisterAttached<TableHeaderColumnResizeBehavior, Grid, bool>("IncludeTrailingBoundary", false);
 
+    /// <summary>
+    /// Разрешить resize по правой границе последней колонки секции
+    /// (нужно для единственной колонки «№ п/п» в nppScrollableHeader).
+    /// </summary>
     public bool IncludeTrailingBoundary
     {
         get => GetValue(IncludeTrailingBoundaryProperty);
@@ -59,21 +86,34 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
     public static readonly AttachedProperty<bool> IncludeLeadingBoundaryProperty =
         AvaloniaProperty.RegisterAttached<TableHeaderColumnResizeBehavior, Grid, bool>("IncludeLeadingBoundary", false);
 
+    /// <summary>
+    /// Разрешить resize по левой границе первой колонки секции
+    /// (граница с предыдущей frozen-колонкой, напр. № п/п | код).
+    /// </summary>
     public bool IncludeLeadingBoundary
     {
         get => GetValue(IncludeLeadingBoundaryProperty);
         set => SetValue(IncludeLeadingBoundaryProperty, value);
     }
 
+    #endregion
+
+    #region Поля
+
     private Border? _hitOverlay;
     private int _draggingDataGridColumnIndex = -1;
     private double _dragStartX;
     private double _dragStartWidth;
     private IPointer? _capturedPointer;
+
     private double[]? _cachedColumnOffsets;
     private List<(int Row, double Top, double Bottom)>? _cachedRowBands;
     private int _cachedOffsetsColumnCount = -1;
     private int _cachedRowBandsVisibleCount = -1;
+
+    #endregion
+
+    #region Жизненный цикл Behavior
 
     protected override void OnAttached()
     {
@@ -111,6 +151,13 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
     private void OnHeaderLayoutUpdated(object? sender, EventArgs e)
         => InvalidateHitTestCache();
 
+    #endregion
+
+    #region Hit-overlay
+
+    /// <summary>
+    /// Прозрачный слой поверх ячеек шапки для pointer events без перехвата кликов по контенту.
+    /// </summary>
     private void EnsureHitOverlay()
     {
         if (AssociatedObject is null || _hitOverlay is not null) return;
@@ -124,7 +171,7 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
             IsHitTestVisible = true,
             ZIndex = 1000,
             // Не наследовать Grid.tableHeader Border (1px) — иначе при frozen=2 видна
-            // вертикальная линия на стыке "код | дата" через "Сведения об операции".
+            // вертикальная линия на стыке «код | дата» через «Сведения об операции».
             BorderThickness = new Thickness(0),
             Margin = new Thickness(0)
         };
@@ -155,6 +202,14 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
         _hitOverlay = null;
     }
 
+    #endregion
+
+    #region Обработка указателя
+
+    /// <summary>
+    /// Система координат для delta при drag: DataGrid, а не локальный Grid шапки
+    /// (шапка сдвигается при frozen/scroll, иначе курсор «упирается»).
+    /// </summary>
     private Visual? DragReferenceVisual =>
         SourceDataGrid as Visual ?? AssociatedObject?.GetVisualRoot() as Visual;
 
@@ -166,19 +221,7 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
 
         if (_draggingDataGridColumnIndex >= 0 && SourceDataGrid is not null)
         {
-            var reference = DragReferenceVisual;
-            if (reference is null) return;
-
-            // Координаты относительно DataGrid: шапка сдвигается при resize (frozen/scroll),
-            // иначе локальный X «плывёт» под курсором — особенно на границе № п/п.
-            var delta = e.GetPosition(reference).X - _dragStartX;
-            var targetWidth = ClampToColumnLimits(SourceDataGrid, _dragStartWidth + delta);
-            var currentWidth = SourceDataGrid.Columns[_draggingDataGridColumnIndex].Width.DisplayValue;
-            if (Math.Abs(targetWidth - currentWidth) < LiveResizeWidthThreshold)
-                return;
-
-            SourceDataGrid.Columns[_draggingDataGridColumnIndex].Width = new DataGridLength(targetWidth);
-            TableHeaderDataGridSync.SyncLiveColumnWidth(SourceDataGrid, _draggingDataGridColumnIndex, targetWidth);
+            ApplyLiveResize(e);
             return;
         }
 
@@ -215,6 +258,24 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
     private void OnPointerCaptureLost(object? sender, PointerCaptureLostEventArgs e)
         => FinishResize();
 
+    private void ApplyLiveResize(PointerEventArgs e)
+    {
+        if (SourceDataGrid is null) return;
+
+        var reference = DragReferenceVisual;
+        if (reference is null) return;
+
+        var delta = e.GetPosition(reference).X - _dragStartX;
+        var targetWidth = ClampToColumnLimits(SourceDataGrid, _dragStartWidth + delta);
+        var currentWidth = SourceDataGrid.Columns[_draggingDataGridColumnIndex].Width.DisplayValue;
+
+        if (Math.Abs(targetWidth - currentWidth) < LiveResizeWidthThreshold)
+            return;
+
+        SourceDataGrid.Columns[_draggingDataGridColumnIndex].Width = new DataGridLength(targetWidth);
+        TableHeaderDataGridSync.SyncLiveColumnWidth(SourceDataGrid, _draggingDataGridColumnIndex, targetWidth);
+    }
+
     private void FinishResize()
     {
         if (_draggingDataGridColumnIndex < 0) return;
@@ -227,12 +288,16 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
             TableHeaderDataGridSync.EndLiveColumnResize(SourceDataGrid);
     }
 
+    #endregion
+
+    #region Hit-test
+
+    /// <summary>
+    /// Индекс колонки DataGrid для resize по позиции курсора, или -1.
+    /// </summary>
     private int FindResizeTargetColumnIndex(Point pointer)
     {
         if (AssociatedObject is null || SourceDataGrid is null) return -1;
-
-        var pointerX = pointer.X;
-        var pointerY = pointer.Y;
 
         var start = Math.Max(0, StartColumnIndex);
         var end = ColumnCount > 0
@@ -246,8 +311,8 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
         var bestDistance = double.MaxValue;
         var bestColumnIndex = -1;
 
-        ConsiderBorderBoundaries(pointerX, pointerY, start, visibleCount, ref bestDistance, ref bestTop, ref bestColumnIndex);
-        ConsiderColumnGridBoundaries(pointerX, pointerY, start, visibleCount, ref bestDistance, ref bestTop, ref bestColumnIndex);
+        ConsiderBorderBoundaries(pointer.X, pointer.Y, start, visibleCount, ref bestDistance, ref bestTop, ref bestColumnIndex);
+        ConsiderColumnGridBoundaries(pointer.X, pointer.Y, start, visibleCount, ref bestDistance, ref bestTop, ref bestColumnIndex);
 
         return bestColumnIndex;
     }
@@ -263,6 +328,10 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
         }
     }
 
+    /// <summary>
+    /// Границы из <see cref="Border"/> row 0 (групповые заголовки с ColumnSpan).
+    /// Row 1 обрабатывается через <see cref="ConsiderColumnGridBoundaries"/>.
+    /// </summary>
     private void ConsiderBorderBoundaries(
         double pointerX,
         double pointerY,
@@ -295,6 +364,7 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
             var rightX = leftX + border.Bounds.Width;
             var top = origin.Value.Y;
             var bottom = top + border.Bounds.Height;
+
             if (pointerY < top - VerticalResizeHitThreshold || pointerY > bottom + VerticalResizeHitThreshold)
                 continue;
 
@@ -329,6 +399,9 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
         }
     }
 
+    /// <summary>
+    /// Вертикальные границы по <see cref="Grid.ColumnDefinitions"/> (row 1 — подзаголовки с номерами колонок).
+    /// </summary>
     private void ConsiderColumnGridBoundaries(
         double pointerX,
         double pointerY,
@@ -395,6 +468,33 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
                 ref bestColumnIndex);
         }
     }
+
+    /// <summary>
+    /// Выбор ближайшей границы; при равной дистанции приоритет у более нижней строки шапки.
+    /// </summary>
+    private static void ConsiderCandidate(
+        double distance,
+        double top,
+        int columnIndex,
+        ref double bestDistance,
+        ref double bestTop,
+        ref int bestColumnIndex)
+    {
+        if (distance > HorizontalResizeHitThreshold) return;
+        if (columnIndex < 0) return;
+
+        if (distance < bestDistance - 0.05
+            || (Math.Abs(distance - bestDistance) < 0.05 && top > bestTop))
+        {
+            bestDistance = distance;
+            bestTop = top;
+            bestColumnIndex = columnIndex;
+        }
+    }
+
+    #endregion
+
+    #region Кэш геометрии hit-test
 
     private void InvalidateHitTestCache()
     {
@@ -484,25 +584,9 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
         return offsets;
     }
 
-    private static void ConsiderCandidate(
-        double distance,
-        double top,
-        int columnIndex,
-        ref double bestDistance,
-        ref double bestTop,
-        ref int bestColumnIndex)
-    {
-        if (distance > HorizontalResizeHitThreshold) return;
-        if (columnIndex < 0) return;
+    #endregion
 
-        if (distance < bestDistance - 0.05
-            || (Math.Abs(distance - bestDistance) < 0.05 && top > bestTop))
-        {
-            bestDistance = distance;
-            bestTop = top;
-            bestColumnIndex = columnIndex;
-        }
-    }
+    #region Утилиты
 
     private static double ClampToColumnLimits(DataGrid dataGrid, double width)
     {
@@ -514,4 +598,6 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
 
         return Math.Clamp(width, min, max);
     }
+
+    #endregion
 }
