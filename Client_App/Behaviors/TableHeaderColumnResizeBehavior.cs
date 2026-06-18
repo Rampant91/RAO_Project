@@ -329,8 +329,9 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
     }
 
     /// <summary>
-    /// Границы из <see cref="Border"/> row 0 (групповые заголовки с ColumnSpan).
-    /// Row 1 обрабатывается через <see cref="ConsiderColumnGridBoundaries"/>.
+    /// Границы из <see cref="Border"/> на всех уровнях, кроме последней строки
+    /// (групповые заголовки с ColumnSpan; на Form_17 — row 0 и row 1).
+    /// Последняя строка — через <see cref="ConsiderColumnGridBoundaries"/>.
     /// </summary>
     private void ConsiderBorderBoundaries(
         double pointerX,
@@ -341,12 +342,16 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
         ref double bestTop,
         ref int bestColumnIndex)
     {
+        if (AssociatedObject is null) return;
+
+        var lastResizeRow = Math.Max(0, AssociatedObject.RowDefinitions.Count - 1);
+
         foreach (var border in GetHeaderBorders())
         {
             if (!border.IsVisible) continue;
 
             var row = Grid.GetRow(border);
-            if (row != 0) continue;
+            if (row >= lastResizeRow) continue;
             if (border.Child is null) continue;
 
             var col = Grid.GetColumn(border);
@@ -400,7 +405,8 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
     }
 
     /// <summary>
-    /// Вертикальные границы по <see cref="Grid.ColumnDefinitions"/> (row 1 — подзаголовки с номерами колонок).
+    /// Вертикальные границы по <see cref="Grid.ColumnDefinitions"/> (нижняя строка шапки и,
+    /// при трёх уровнях, предпоследняя — для подгрупп вроде «Радионуклидный состав»).
     /// </summary>
     private void ConsiderColumnGridBoundaries(
         double pointerX,
@@ -418,13 +424,15 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
 
         var offsets = GetColumnOffsets(columnCount);
         var rowBands = GetRowBands(visibleCount);
+        var resizeRow = Math.Max(0, AssociatedObject.RowDefinitions.Count - 1);
+        var hasPenultimateRow = AssociatedObject.RowDefinitions.Count > 2;
 
         foreach (var (row, top, bottom) in rowBands)
         {
             if (pointerY < top - VerticalResizeHitThreshold || pointerY > bottom + VerticalResizeHitThreshold)
                 continue;
 
-            if (row == 1)
+            if (row == resizeRow || (hasPenultimateRow && row == resizeRow - 1))
             {
                 for (var localIndex = 0; localIndex < columnCount - 1; localIndex++)
                 {
@@ -439,7 +447,8 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
             }
         }
 
-        if (!TryGetRowBand(rowBands, 1, out var rowTop, out var rowBottom)
+        if (!TryGetRowBand(rowBands, resizeRow, out var rowTop, out var rowBottom)
+            && (resizeRow <= 0 || !TryGetRowBand(rowBands, resizeRow - 1, out rowTop, out rowBottom))
             && !TryGetRowBand(rowBands, 0, out rowTop, out rowBottom))
             return;
 
