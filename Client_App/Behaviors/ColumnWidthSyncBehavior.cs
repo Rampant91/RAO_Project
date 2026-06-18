@@ -25,6 +25,11 @@ internal static class TableHeaderColumnWidth
         return displayValue - metrics.BorderCompensation;
     }
 
+    /// <summary>
+    /// Шапка рисует границы через Border (1px). Без компенсации col 0 чуть шире DataGrid.
+    /// При frozen≥2 скроллируемая шапка начинается с col 1 — компенсация только у col 0,
+    /// иначе на стыке frozen/scroll накапливается рассинхрон.
+    /// </summary>
     private static bool ShouldApplyBorderCompensation(TableHeaderLayoutMetrics metrics, int columnIndex)
     {
         if (columnIndex == 0) return true;

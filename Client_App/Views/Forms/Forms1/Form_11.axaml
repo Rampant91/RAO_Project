@@ -261,7 +261,7 @@
                 <!--
                     Шапка разделена на две части:
                     - Скроллируемая (Col 1, в XAML первой — рисуется снизу): колонки начиная с 1.
-                      Смещается через Margin.Left на внутреннем Grid (поллинг DispatcherTimer 16мс).
+                      Смещается через TranslateTransform (FrozenHeaderScrollSyncBehavior).
                     - Фиксированная (Col 0, в XAML второй — рисуется поверх): колонка "№ п/п" — всегда видна.
                       IsVisible = IsFrozenHeaderVisible (скрыта при FrozenColumnCount=0).
                 -->

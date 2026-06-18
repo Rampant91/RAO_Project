@@ -70,6 +70,10 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
     private double _dragStartX;
     private double _dragStartWidth;
     private IPointer? _capturedPointer;
+    private double[]? _cachedColumnOffsets;
+    private List<(int Row, double Top, double Bottom)>? _cachedRowBands;
+    private int _cachedOffsetsColumnCount = -1;
+    private int _cachedRowBandsVisibleCount = -1;
 
     protected override void OnAttached()
     {
@@ -78,6 +82,7 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
 
         AssociatedObject.AttachedToVisualTree += OnAttachedToVisualTree;
         AssociatedObject.DetachedFromVisualTree += OnDetachedFromVisualTree;
+        AssociatedObject.LayoutUpdated += OnHeaderLayoutUpdated;
     }
 
     protected override void OnDetaching()
@@ -86,6 +91,7 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
         {
             AssociatedObject.AttachedToVisualTree -= OnAttachedToVisualTree;
             AssociatedObject.DetachedFromVisualTree -= OnDetachedFromVisualTree;
+            AssociatedObject.LayoutUpdated -= OnHeaderLayoutUpdated;
         }
 
         RemoveHitOverlay();
@@ -101,6 +107,9 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
 
     private void OnDetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
         => RemoveHitOverlay();
+
+    private void OnHeaderLayoutUpdated(object? sender, EventArgs e)
+        => InvalidateHitTestCache();
 
     private void EnsureHitOverlay()
     {
@@ -196,7 +205,7 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
         _dragStartWidth = SourceDataGrid.Columns[columnIndex].Width.DisplayValue;
         _capturedPointer = e.Pointer;
         _capturedPointer.Capture(_hitOverlay);
-        TableHeaderDataGridSync.BeginLiveColumnResize(SourceDataGrid);
+        TableHeaderDataGridSync.BeginLiveColumnResize(SourceDataGrid, columnIndex);
         e.Handled = true;
     }
 
@@ -334,8 +343,8 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
         var columnCount = Math.Min(visibleCount, AssociatedObject.ColumnDefinitions.Count);
         if (columnCount <= 0) return;
 
-        var offsets = BuildColumnOffsets(columnCount);
-        var rowBands = BuildRowBands(visibleCount);
+        var offsets = GetColumnOffsets(columnCount);
+        var rowBands = GetRowBands(visibleCount);
 
         foreach (var (row, top, bottom) in rowBands)
         {
@@ -385,6 +394,36 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
                 ref bestTop,
                 ref bestColumnIndex);
         }
+    }
+
+    private void InvalidateHitTestCache()
+    {
+        _cachedColumnOffsets = null;
+        _cachedRowBands = null;
+        _cachedOffsetsColumnCount = -1;
+        _cachedRowBandsVisibleCount = -1;
+    }
+
+    private double[] GetColumnOffsets(int columnCount)
+    {
+        if (_cachedColumnOffsets is not null
+            && _cachedOffsetsColumnCount == columnCount
+            && _cachedColumnOffsets.Length == columnCount + 1)
+            return _cachedColumnOffsets;
+
+        _cachedColumnOffsets = BuildColumnOffsets(columnCount);
+        _cachedOffsetsColumnCount = columnCount;
+        return _cachedColumnOffsets;
+    }
+
+    private List<(int Row, double Top, double Bottom)> GetRowBands(int visibleCount)
+    {
+        if (_cachedRowBands is not null && _cachedRowBandsVisibleCount == visibleCount)
+            return _cachedRowBands;
+
+        _cachedRowBands = BuildRowBands(visibleCount);
+        _cachedRowBandsVisibleCount = visibleCount;
+        return _cachedRowBands;
     }
 
     private List<(int Row, double Top, double Bottom)> BuildRowBands(int visibleCount)

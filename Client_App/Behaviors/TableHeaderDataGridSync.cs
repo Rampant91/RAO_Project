@@ -7,7 +7,6 @@ using Avalonia.VisualTree;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Client_App.Behaviors;
@@ -35,6 +34,7 @@ internal static class TableHeaderDataGridSync
         public bool LayoutHandlerAttached;
         public bool WidthSyncPosted;
         public int LiveResizeCount;
+        public int LiveResizeColumnIndex = -1;
         public double[] ColumnWidths = Array.Empty<double>();
         public bool HasHorizontalScroll;
         public double BorderCompensation = 1.0;
@@ -96,9 +96,11 @@ internal static class TableHeaderDataGridSync
         ScheduleWidthSync(dataGrid, state, force);
     }
 
-    public static void BeginLiveColumnResize(DataGrid dataGrid)
+    public static void BeginLiveColumnResize(DataGrid dataGrid, int columnIndex)
     {
-        GetOrCreateState(dataGrid).LiveResizeCount++;
+        var state = GetOrCreateState(dataGrid);
+        state.LiveResizeCount++;
+        state.LiveResizeColumnIndex = columnIndex;
     }
 
     public static void EndLiveColumnResize(DataGrid dataGrid)
@@ -107,7 +109,10 @@ internal static class TableHeaderDataGridSync
 
         state.LiveResizeCount = Math.Max(0, state.LiveResizeCount - 1);
         if (!state.IsLiveResizing)
+        {
+            state.LiveResizeColumnIndex = -1;
             RequestSync(dataGrid);
+        }
     }
 
     /// <summary>
@@ -117,6 +122,7 @@ internal static class TableHeaderDataGridSync
     {
         if (!States.TryGetValue(dataGrid, out var state)) return;
 
+        state.LiveResizeColumnIndex = columnIndex;
         TryFindScrollBar(dataGrid, state);
         RefreshScrollMode(dataGrid, state);
         UpdateColumnWidthCache(state, dataGrid.Columns.Count, columnIndex, width);
@@ -125,7 +131,20 @@ internal static class TableHeaderDataGridSync
         foreach (var behavior in state.WidthBehaviors)
             behavior.SyncWidths(metrics, changedColumnIndex: columnIndex);
 
-        NotifyScrollChanged(dataGrid, state);
+        if (ShouldSyncScrollDuringLiveResize(columnIndex, metrics))
+            NotifyScrollChanged(dataGrid, state);
+    }
+
+    private static bool ShouldSyncScrollDuringLiveResize(int columnIndex, TableHeaderLayoutMetrics metrics)
+    {
+        if (columnIndex == 0)
+            return true;
+
+        var frozen = metrics.FrozenColumnCount;
+        if (frozen == 2 && (columnIndex == 1 || columnIndex == 2))
+            return true;
+
+        return frozen > 1 && columnIndex >= 1 && columnIndex < frozen;
     }
 
     /// <summary>Мгновенная синхронизация скролла шапки (без coalesce).</summary>
@@ -172,10 +191,7 @@ internal static class TableHeaderDataGridSync
         TryFindScrollBar(dataGrid, state);
 
         if (state.IsLiveResizing)
-        {
-            ColumnWidthsChanged(dataGrid, state);
             return;
-        }
 
         if (!HasRelevantLayoutChange(dataGrid, state))
         {
