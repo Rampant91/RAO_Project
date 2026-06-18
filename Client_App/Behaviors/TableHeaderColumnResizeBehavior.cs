@@ -113,7 +113,11 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
         {
             Background = Brushes.Transparent,
             IsHitTestVisible = true,
-            ZIndex = 1000
+            ZIndex = 1000,
+            // Не наследовать Grid.tableHeader Border (1px) — иначе при frozen=2 видна
+            // вертикальная линия на стыке "код | дата" через "Сведения об операции".
+            BorderThickness = new Thickness(0),
+            Margin = new Thickness(0)
         };
 
         Grid.SetRow(_hitOverlay, 0);
