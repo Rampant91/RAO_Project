@@ -19,6 +19,7 @@
         <visualConverters:ShortNullableToStringConverter x:Key="ShortNullableToStringConverter"/>
         <visualConverters:ByteNullableToStringConverter x:Key="ByteNullableToStringConverter"/>
         <visualConverters:ByteNullableOrDashToStringConverter x:Key="ByteNullableOrDashToStringConverter"/>
+        <visualConverters:FrozenOperationHeaderColSpanConverter x:Key="FrozenOperationHeaderColSpanConverter"/>
         <!--
         <ResourceDictionary>
             <DataTemplate DataType="{x:Type vm:CheckFormVM}">
@@ -141,6 +142,9 @@
             <Setter Property="TextAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+        </Style>
+        <Style Selector="Grid.tableHeader Border.frozenOperationHeader TextBlock">
+            <Setter Property="TextWrapping" Value="NoWrap"/>
         </Style>
         <!--Table-->
         <Style Selector="DataGrid.table">

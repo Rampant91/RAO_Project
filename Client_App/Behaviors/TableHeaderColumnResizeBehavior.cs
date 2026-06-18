@@ -20,7 +20,7 @@ namespace Client_App.Behaviors;
 /// </summary>
 public class TableHeaderColumnResizeBehavior : Behavior<Grid>
 {
-    #region Константы
+    #region Constants
 
     /// <summary>Ширина зоны захвата по горизонтали: ±3 px от линии (≈6 px всего).</summary>
     private const double HorizontalResizeHitThreshold = 6.0;
@@ -98,7 +98,7 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
 
     #endregion
 
-    #region Поля
+    #region Fields
 
     private Border? _hitOverlay;
     private int _draggingDataGridColumnIndex = -1;
@@ -113,7 +113,7 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
 
     #endregion
 
-    #region Жизненный цикл Behavior
+    #region Behavior lifecycle
 
     protected override void OnAttached()
     {
@@ -204,7 +204,7 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
 
     #endregion
 
-    #region Обработка указателя
+    #region Pointer handling
 
     /// <summary>
     /// Система координат для delta при drag: DataGrid, а не локальный Grid шапки
@@ -494,7 +494,7 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
 
     #endregion
 
-    #region Кэш геометрии hit-test
+    #region Hit-test geometry cache
 
     private void InvalidateHitTestCache()
     {
@@ -586,7 +586,7 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
 
     #endregion
 
-    #region Утилиты
+    #region Utilities
 
     private static double ClampToColumnLimits(DataGrid dataGrid, double width)
     {

@@ -400,13 +400,10 @@
 
                         <Border x:Name="fixedOperationDetailsBorder"
                                 Grid.Row="0" Grid.Column="1"
+                                Grid.ColumnSpan="{Binding FrozenColumnCount, Converter={StaticResource FrozenOperationHeaderColSpanConverter}}"
+                                Classes="frozenOperationHeader"
                                 BorderThickness="1,1,0,1"
-                                IsVisible="{Binding IsFrozenCol1OnlyVisible}">
-                            <TextBlock Text="Сведения об операции"/>
-                        </Border>
-
-                        <Border Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
-                                IsVisible="{Binding IsFrozenCol2Visible}">
+                                IsVisible="{Binding IsFrozenCol1Visible}">
                             <TextBlock Text="Сведения об операции"/>
                         </Border>
 

@@ -490,27 +490,18 @@
                         <!--#region Колонка 1: "код" (FrozenColumnCount >= 2)-->
 
                         <!--
-                            FrozenCount=2: только col 1 заморожена.
-                            FrozenHeaderScrollSyncBehavior динамически управляет шириной и выравниванием:
+                            FrozenCount>=2: ColumnSpan=1 при frozen=2, ColumnSpan=2 при frozen=3.
+                            FrozenHeaderScrollSyncBehavior при frozen=2 динамически управляет шириной:
                             • пока "дата" частично или полностью видна — Border расширяется, покрывая
                               оба столбца ("код" + видимую часть "дата"); текст центрируется по этой ширине;
                             • когда "дата" ушла — Border возвращается к ширине "код", граница отделяет группу.
                         -->
                         <Border x:Name="fixedOperationDetailsBorder"
                                 Grid.Row="0" Grid.Column="1"
+                                Grid.ColumnSpan="{Binding FrozenColumnCount, Converter={StaticResource FrozenOperationHeaderColSpanConverter}}"
+                                Classes="frozenOperationHeader"
                                 BorderThickness="1,1,0,1"
-                                IsVisible="{Binding IsFrozenCol1OnlyVisible}">
-                            <TextBlock Text="Сведения об операции"/>
-                        </Border>
-
-                        <!--
-                            FrozenCount=3: col 1 и col 2 заморожены.
-                            ColumnSpan=2 безопасен: ColumnWidthSyncBehavior не удаляет ColumnDefinitions,
-                            а только обнуляет Width у лишних — Col 2 всегда существует.
-                            Текст центрируется по ширине обеих колонок.
-                        -->
-                        <Border Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
-                                IsVisible="{Binding IsFrozenCol2Visible}">
+                                IsVisible="{Binding IsFrozenCol1Visible}">
                             <TextBlock Text="Сведения об операции"/>
                         </Border>
 

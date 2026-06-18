@@ -7,7 +7,6 @@ using Avalonia.VisualTree;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Client_App.Behaviors;
@@ -41,14 +40,14 @@ internal readonly struct TableHeaderLayoutMetrics
 /// </summary>
 internal static class TableHeaderDataGridSync
 {
-    #region Константы
+    #region Constants
 
     /// <summary>Имя горизонтального скроллбара в визуальном дереве Avalonia DataGrid.</summary>
     internal const string HScrollBarName = "PART_HorizontalScrollbar";
 
     #endregion
 
-    #region Состояние (на DataGrid)
+    #region State
 
     private sealed class State
     {
@@ -82,7 +81,7 @@ internal static class TableHeaderDataGridSync
 
     #endregion
 
-    #region Регистрация behaviors
+    #region Behavior registration
 
     /// <summary>Подключает синхронизацию ширин колонок шапки к DataGrid.</summary>
     public static void RegisterWidthBehavior(DataGrid dataGrid, ColumnWidthSyncBehavior behavior)
@@ -121,7 +120,7 @@ internal static class TableHeaderDataGridSync
 
     #endregion
 
-    #region Публичный API синхронизации
+    #region Public sync API
 
     /// <summary>
     /// Запланировать полную синхронизацию ширин и скролла шапки (с coalesce через Render).
@@ -221,7 +220,7 @@ internal static class TableHeaderDataGridSync
 
     #endregion
 
-    #region LayoutUpdated и планирование sync
+    #region LayoutUpdated and sync scheduling
 
     private static State GetOrCreateState(DataGrid dataGrid)
         => States.GetValue(dataGrid, _ => new State());
@@ -349,7 +348,7 @@ internal static class TableHeaderDataGridSync
 
     #endregion
 
-    #region Синхронизация скролла
+    #region Scroll sync
 
     private static void DispatchScrollSync(DataGrid dataGrid, State state)
     {
@@ -384,7 +383,7 @@ internal static class TableHeaderDataGridSync
 
     #endregion
 
-    #region Метрики и кэш ширин
+    #region Metrics and width cache
 
     private static void RefreshScrollMode(DataGrid dataGrid, State state)
     {

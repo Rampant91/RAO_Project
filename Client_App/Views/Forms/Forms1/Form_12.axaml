@@ -258,6 +258,9 @@
                             <interactivity:Interaction.Behaviors>
                                 <local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
                                                                StartColumnIndex="1"/>
+                                <local:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                                                       StartColumnIndex="1"
+                                                                       IncludeLeadingBoundary="True"/>
                             </interactivity:Interaction.Behaviors>
 
                             <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
@@ -348,7 +351,14 @@
                     <Grid x:Name="nppScrollableHeader"
                           Grid.Column="1"
                           IsVisible="{Binding IsZeroFrozenMode}"
+                          ColumnDefinitions="*"
                           HorizontalAlignment="Left">
+                        <interactivity:Interaction.Behaviors>
+                            <local:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                                                   StartColumnIndex="0"
+                                                                   ColumnCount="1"
+                                                                   IncludeTrailingBoundary="True"/>
+                        </interactivity:Interaction.Behaviors>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" SharedSizeGroup="HdrRow0"/>
                             <RowDefinition Height="Auto" SharedSizeGroup="HdrRow1"/>
@@ -369,6 +379,10 @@
                             <local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
                                                            StartColumnIndex="0"
                                                            ColumnCount="{Binding FrozenColumnCount, Mode=OneWay}"/>
+                            <local:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                                                   StartColumnIndex="0"
+                                                                   ColumnCount="{Binding FrozenColumnCount, Mode=OneWay}"
+                                                                   IncludeTrailingBoundary="True"/>
                         </interactivity:Interaction.Behaviors>
 
                         <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="2">
@@ -377,13 +391,10 @@
 
                         <Border x:Name="fixedOperationDetailsBorder"
                                 Grid.Row="0" Grid.Column="1"
+                                Grid.ColumnSpan="{Binding FrozenColumnCount, Converter={StaticResource FrozenOperationHeaderColSpanConverter}}"
+                                Classes="frozenOperationHeader"
                                 BorderThickness="1,1,0,1"
-                                IsVisible="{Binding IsFrozenCol1OnlyVisible}">
-                            <TextBlock Text="Сведения об операции"/>
-                        </Border>
-
-                        <Border Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
-                                IsVisible="{Binding IsFrozenCol2Visible}">
+                                IsVisible="{Binding IsFrozenCol1Visible}">
                             <TextBlock Text="Сведения об операции"/>
                         </Border>
 
