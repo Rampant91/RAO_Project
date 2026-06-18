@@ -292,6 +292,9 @@
                             <interactivity:Interaction.Behaviors>
                                 <local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
                                                                StartColumnIndex="1"/>
+                                <local:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                                                       StartColumnIndex="1"
+                                                                       IncludeLeadingBoundary="True"/>
                             </interactivity:Interaction.Behaviors>
 
                             <!--#region Первый уровень заголовков (индексы сдвинуты на -1)-->
@@ -310,12 +313,12 @@
                             </Border>
                             <!--
                                 FrozenCount=2: "дата" — первая видимая скролл. колонка.
-                                Ячейка Row 0 пустая (без текста), нет левой границы —
+                                Ячейка Row 0 пустая (без текста), без боковых границ —
                                 визуально продолжает "Сведения об операции" из фиксированной части.
                                 FrozenCount=3: ячейка скрыта за фиксированной областью (не видна пользователю).
                             -->
                             <Border Grid.Row="0" Grid.Column="1"
-                                    BorderThickness="0,1,1,1"
+                                    BorderThickness="0,1,0,1"
                                     Margin="0"
                                     IsVisible="{Binding IsFrozenCol1Visible}"/>
                             <Border Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="10">
@@ -423,7 +426,14 @@
                     <Grid x:Name="nppScrollableHeader"
                           Grid.Column="1"
                           IsVisible="{Binding IsZeroFrozenMode}"
+                          ColumnDefinitions="*"
                           HorizontalAlignment="Left">
+                        <interactivity:Interaction.Behaviors>
+                            <local:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                                                   StartColumnIndex="0"
+                                                                   ColumnCount="1"
+                                                                   IncludeTrailingBoundary="True"/>
+                        </interactivity:Interaction.Behaviors>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" SharedSizeGroup="HdrRow0"/>
                             <RowDefinition Height="Auto" SharedSizeGroup="HdrRow1"/>
@@ -460,6 +470,10 @@
                             <local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
                                                            StartColumnIndex="0"
                                                            ColumnCount="{Binding FrozenColumnCount, Mode=OneWay}"/>
+                            <local:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                                                   StartColumnIndex="0"
+                                                                   ColumnCount="{Binding FrozenColumnCount, Mode=OneWay}"
+                                                                   IncludeTrailingBoundary="True"/>
                         </interactivity:Interaction.Behaviors>
 
                         <!--#region Колонка 0: № п/п (RowSpan=2 — занимает полную высоту шапки)-->

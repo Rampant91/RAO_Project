@@ -977,6 +977,7 @@ public partial class Form17 : Form1
         if (string.IsNullOrEmpty(value.Value) 
             || value.Value.Equals("прим.") 
             || value.Value.Equals("Минобороны") 
+            || value.Value is "-"
             || Spravochniks.OKSM.Contains(value.Value.ToUpper()))
         {
             return true;
