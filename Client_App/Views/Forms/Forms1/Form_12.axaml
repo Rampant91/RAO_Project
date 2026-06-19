@@ -431,7 +431,7 @@
                         <local:DataGridColumnWidthLoadBehavior FormNum="1.2" />
                         <local:DataGridPointerBehavior />
                         <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
-                        <local:DataGridDeselectOnEmptyAreaClickBehavior />
+                        <local:DataGridClearSelectionOnEmptyAreaClickBehavior />
                         <local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
                         <local:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
                         <local:DataGridForm1AutoReplaceBehavior />
@@ -994,7 +994,7 @@
                             <local:DataGridPointerBehavior />
                             <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
 							<local:DataGridSwitchToNotesBehavior SourceDataGrid="{Binding #dataGrid}"/>
-                            <local:DataGridDeselectOnEmptyAreaClickBehavior />
+                            <local:DataGridClearSelectionOnEmptyAreaClickBehavior />
                         </interactivity:Interaction.Behaviors>
 
                         <DataGrid.Columns>

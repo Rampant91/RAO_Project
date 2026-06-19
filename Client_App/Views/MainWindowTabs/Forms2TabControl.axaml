@@ -55,7 +55,7 @@
 
 					<interactivity:Interaction.Behaviors>
 						<local:DataGridDoubleClickOpenFormBehavior />
-                        <local:DataGridDeselectOnEmptyAreaClickBehavior />
+                        <local:DataGridClearSelectionOnEmptyAreaClickBehavior />
 					</interactivity:Interaction.Behaviors>
 
 					<DataGrid.ContextMenu>
@@ -644,7 +644,7 @@
 					
 					<interactivity:Interaction.Behaviors>
 						<local:DataGridDoubleClickOpenFormBehavior />
-                        <local:DataGridDeselectOnEmptyAreaClickBehavior />
+                        <local:DataGridClearSelectionOnEmptyAreaClickBehavior />
 					</interactivity:Interaction.Behaviors>
 					
 					<DataGrid.ContextMenu>
