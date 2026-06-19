@@ -4,7 +4,7 @@ using Avalonia.Input;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
 
-namespace Client_App.Behaviors;
+namespace Client_App.Behaviors.DataGridBehaviors;
 
 /// <summary>
 /// Сбрасывает выделение DataGrid при клике вне грида (в пределах окна).

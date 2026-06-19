@@ -6,7 +6,7 @@ using Avalonia.Xaml.Interactivity;
 using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.MainWindowTabs;
 
-namespace Client_App.Behaviors;
+namespace Client_App.Behaviors.DataGridBehaviors;
 
 /// <summary>
 /// Сбрасывает выделение DataGrid при клике внутри грида, но мимо строки.
