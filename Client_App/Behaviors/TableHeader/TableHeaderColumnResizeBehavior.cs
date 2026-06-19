@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Client_App.Behaviors;
+namespace Client_App.Behaviors.TableHeader;
 
 /// <summary>
 /// Изменение ширины колонок <see cref="DataGrid"/> перетаскиванием границ кастомной шапки.

@@ -9,7 +9,7 @@ using Avalonia.Xaml.Interactivity;
 using System;
 using System.Linq;
 
-namespace Client_App.Behaviors;
+namespace Client_App.Behaviors.TableHeader;
 
 /// <summary>
 /// Синхронизирует горизонтальный скролл кастомной шапки с DataGrid.

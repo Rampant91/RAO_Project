@@ -10,6 +10,7 @@
         xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
         xmlns:items="clr-namespace:Client_App.ViewModels.Forms.Forms1.Items"
         xmlns:local="using:Client_App.Behaviors"
+        xmlns:headerBehaviors="using:Client_App.Behaviors.TableHeader"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
         x:Name="1.6"
@@ -228,7 +229,7 @@
                            ClipToBounds="True">
 
                         <interactivity:Interaction.Behaviors>
-                            <local:FrozenHeaderScrollSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                            <headerBehaviors:FrozenHeaderScrollSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
                                                                   FixedGroupHeaderBorder="{Binding ElementName=fixedOperationDetailsBorder}"
                                                                   NppScrollableHeaderGrid="{Binding ElementName=nppScrollableHeader}"/>
                         </interactivity:Interaction.Behaviors>
@@ -240,9 +241,9 @@
                             </Grid.RowDefinitions>
 
                             <interactivity:Interaction.Behaviors>
-                                <local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                <headerBehaviors:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
                                                                StartColumnIndex="1"/>
-                                <local:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                <headerBehaviors:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
                                                                        StartColumnIndex="1"
                                                                        IncludeLeadingBoundary="True"/>
                             </interactivity:Interaction.Behaviors>
@@ -396,7 +397,7 @@
                           ColumnDefinitions="*"
                           HorizontalAlignment="Left">
                         <interactivity:Interaction.Behaviors>
-                            <local:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                            <headerBehaviors:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
                                                                    StartColumnIndex="0"
                                                                    ColumnCount="1"
                                                                    IncludeTrailingBoundary="True"/>
@@ -418,10 +419,10 @@
                         </Grid.RowDefinitions>
 
                         <interactivity:Interaction.Behaviors>
-                            <local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                            <headerBehaviors:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
                                                            StartColumnIndex="0"
                                                            ColumnCount="{Binding FrozenColumnCount, Mode=OneWay}"/>
-                            <local:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                            <headerBehaviors:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
                                                                    StartColumnIndex="0"
                                                                    ColumnCount="{Binding FrozenColumnCount, Mode=OneWay}"
                                                                    IncludeTrailingBoundary="True"/>

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace Client_App.Behaviors;
+namespace Client_App.Behaviors.TableHeader;
 
 /// <summary>
 /// Снимок метрик layout DataGrid на один проход синхронизации кастомной шапки.
