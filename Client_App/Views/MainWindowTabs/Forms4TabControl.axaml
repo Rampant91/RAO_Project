@@ -54,7 +54,7 @@
                           SelectionMode="Single">
 
                     <interactivity:Interaction.Behaviors>
-                        <local:DataGridDoubleClickOpenFormBehavior />
+                        <dgBehaviors:DataGridDoubleClickOpenFormBehavior />
                         <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
                     </interactivity:Interaction.Behaviors>
 
@@ -256,7 +256,7 @@
                           SelectionMode="Single">
 
                     <interactivity:Interaction.Behaviors>
-                        <local:DataGridDoubleClickOpenFormBehavior />
+                        <dgBehaviors:DataGridDoubleClickOpenFormBehavior />
                         <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
                     </interactivity:Interaction.Behaviors>
 

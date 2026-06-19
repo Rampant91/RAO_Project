@@ -541,7 +541,7 @@
                           SelectedItem="{Binding SelectedForm}">
 
                     <interactivity:Interaction.Behaviors>
-                        <local:DataGridColumnWidthLoadBehavior FormNum="1.1" />
+                        <dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="1.1" />
                         <dgBehaviors:DataGridPointerBehavior />
                         <dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
                         <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
@@ -1185,10 +1185,10 @@
                               SelectedItem="{Binding SelectedNote}">
 
                         <interactivity:Interaction.Behaviors>
-                            <local:DataGridColumnWidthLoadBehavior FormNum="notes" />
+                            <dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="notes" />
                             <dgBehaviors:DataGridPointerBehavior />
                             <dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
-							<local:DataGridSwitchToNotesBehavior SourceDataGrid="{Binding #dataGrid}"/>
+							<dgBehaviors:DataGridSwitchToNotesBehavior SourceDataGrid="{Binding #dataGrid}"/>
                             <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
                         </interactivity:Interaction.Behaviors>
 

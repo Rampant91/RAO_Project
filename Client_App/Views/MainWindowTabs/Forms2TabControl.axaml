@@ -55,7 +55,7 @@
                           CanUserSortColumns="False">
 
 					<interactivity:Interaction.Behaviors>
-						<local:DataGridDoubleClickOpenFormBehavior />
+						<dgBehaviors:DataGridDoubleClickOpenFormBehavior />
                         <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
 					</interactivity:Interaction.Behaviors>
 
@@ -644,7 +644,7 @@
                           CanUserSortColumns="False">
 					
 					<interactivity:Interaction.Behaviors>
-						<local:DataGridDoubleClickOpenFormBehavior />
+						<dgBehaviors:DataGridDoubleClickOpenFormBehavior />
                         <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
 					</interactivity:Interaction.Behaviors>
 					
