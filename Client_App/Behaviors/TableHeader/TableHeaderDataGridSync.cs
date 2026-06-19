@@ -30,7 +30,7 @@ internal readonly struct TableHeaderLayoutMetrics
 /// Координатор синхронизации между <see cref="DataGrid"/> и кастомной шапкой таблицы.
 /// <para>
 /// На каждый DataGrid вешается один LayoutUpdated; зарегистрированные
-/// <see cref="ColumnWidthSyncBehavior"/> и <see cref="FrozenHeaderScrollSyncBehavior"/>
+/// <see cref="TableHeaderColumnWidthSyncBehavior"/> и <see cref="FrozenHeaderScrollSyncBehavior"/>
 /// получают обновления через единый кэш и coalesce (без дублирования подписок на шапке).
 /// </para>
 /// <para>
@@ -71,7 +71,7 @@ internal static class TableHeaderDataGridSync
         public EventHandler<ScrollEventArgs>? ScrollHandler;
         public IDisposable? ScrollValueSubscription;
 
-        public readonly HashSet<ColumnWidthSyncBehavior> WidthBehaviors = new();
+        public readonly HashSet<TableHeaderColumnWidthSyncBehavior> WidthBehaviors = new();
         public readonly HashSet<FrozenHeaderScrollSyncBehavior> ScrollBehaviors = new();
 
         public bool IsLiveResizing => LiveResizeCount > 0;
@@ -84,7 +84,7 @@ internal static class TableHeaderDataGridSync
     #region Behavior registration
 
     /// <summary>Подключает синхронизацию ширин колонок шапки к DataGrid.</summary>
-    public static void RegisterWidthBehavior(DataGrid dataGrid, ColumnWidthSyncBehavior behavior)
+    public static void RegisterWidthBehavior(DataGrid dataGrid, TableHeaderColumnWidthSyncBehavior behavior)
     {
         var state = GetOrCreateState(dataGrid);
         state.WidthBehaviors.Add(behavior);
@@ -92,8 +92,8 @@ internal static class TableHeaderDataGridSync
         RequestSync(dataGrid, force: true);
     }
 
-    /// <summary>Отключает <see cref="ColumnWidthSyncBehavior"/> и снимает подписки, если behaviors не осталось.</summary>
-    public static void UnregisterWidthBehavior(DataGrid dataGrid, ColumnWidthSyncBehavior behavior)
+    /// <summary>Отключает <see cref="TableHeaderColumnWidthSyncBehavior"/> и снимает подписки, если behaviors не осталось.</summary>
+    public static void UnregisterWidthBehavior(DataGrid dataGrid, TableHeaderColumnWidthSyncBehavior behavior)
     {
         if (!States.TryGetValue(dataGrid, out var state)) return;
         state.WidthBehaviors.Remove(behavior);

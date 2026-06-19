@@ -258,7 +258,7 @@
                             </Grid.RowDefinitions>
 
                             <interactivity:Interaction.Behaviors>
-                                <headerBehaviors:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                <headerBehaviors:TableHeaderColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
                                                                StartColumnIndex="1"/>
                                 <headerBehaviors:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
                                                                        StartColumnIndex="1"
@@ -381,7 +381,7 @@
                         </Grid.RowDefinitions>
 
                         <interactivity:Interaction.Behaviors>
-                            <headerBehaviors:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                            <headerBehaviors:TableHeaderColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
                                                            StartColumnIndex="0"
                                                            ColumnCount="{Binding FrozenColumnCount, Mode=OneWay}"/>
                             <headerBehaviors:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"

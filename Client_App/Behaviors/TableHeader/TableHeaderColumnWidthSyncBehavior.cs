@@ -12,7 +12,7 @@ namespace Client_App.Behaviors.TableHeader;
 /// <summary>
 /// Ширины кастомной шапки относительно DataGrid.
 /// </summary>
-public class ColumnWidthSyncBehavior : Behavior<Grid>
+public class TableHeaderColumnWidthSyncBehavior : Behavior<Grid>
 {
     private IDisposable? _startIndexSub;
     private IDisposable? _columnCountSub;
@@ -21,7 +21,7 @@ public class ColumnWidthSyncBehavior : Behavior<Grid>
     private int _lastFrozenColumnCount = -1;
 
     public static readonly AttachedProperty<DataGrid?> SourceDataGridProperty =
-        AvaloniaProperty.RegisterAttached<ColumnWidthSyncBehavior, Grid, DataGrid?>("SourceDataGrid");
+        AvaloniaProperty.RegisterAttached<TableHeaderColumnWidthSyncBehavior, Grid, DataGrid?>("SourceDataGrid");
 
     public DataGrid? SourceDataGrid
     {
@@ -30,7 +30,7 @@ public class ColumnWidthSyncBehavior : Behavior<Grid>
     }
 
     public static readonly AttachedProperty<int> StartColumnIndexProperty =
-        AvaloniaProperty.RegisterAttached<ColumnWidthSyncBehavior, Grid, int>("StartColumnIndex", 0);
+        AvaloniaProperty.RegisterAttached<TableHeaderColumnWidthSyncBehavior, Grid, int>("StartColumnIndex", 0);
 
     public int StartColumnIndex
     {
@@ -39,7 +39,7 @@ public class ColumnWidthSyncBehavior : Behavior<Grid>
     }
 
     public static readonly AttachedProperty<int> ColumnCountProperty =
-        AvaloniaProperty.RegisterAttached<ColumnWidthSyncBehavior, Grid, int>("ColumnCount", 0);
+        AvaloniaProperty.RegisterAttached<TableHeaderColumnWidthSyncBehavior, Grid, int>("ColumnCount", 0);
 
     public int ColumnCount
     {
