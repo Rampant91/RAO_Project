@@ -12,6 +12,7 @@
         xmlns:local="using:Client_App.Behaviors"
         xmlns:dgBehaviors="using:Client_App.Behaviors.DataGridBehaviors"
         xmlns:headerBehaviors="using:Client_App.Behaviors.TableHeader"
+        xmlns:inputBehaviors="using:Client_App.Behaviors.Input"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
         x:Name="1.5"
@@ -503,13 +504,13 @@
                                                          Text="{Binding OperationCode.Value, Mode=TwoWay}">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior
+                                                <inputBehaviors:AutoCompleteBoxValidationBehavior
                                                     InputPattern="{Binding VM.OperationCodePattern, ElementName=1.5}"
                                                     MaxInputLength="2"
                                                     ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.5}"
                                                     ProhibitedValue="41"
                                                     ProhibitedMessage="Ввод кода операции &quot;41&quot; вручную в формах 1.5 и 1.6 запрещен.&#x0a;Операцию перевода РВ в РАО необходимо осуществлять посредством кнопки&#x0a;&quot;Перевести РВ в РАО&quot; (правый щелчок мыши по нужной строчке в форме 1.1)." />
-                                                <local:AutoCompleteBoxSelectionChangedBehavior />
+                                                <inputBehaviors:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
                                             <AutoCompleteBox.ItemTemplate>
@@ -723,11 +724,11 @@
                                                          Text="{Binding DocumentVid.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior
+                                                <inputBehaviors:AutoCompleteBoxValidationBehavior
                                                     InputPattern="{Binding VM.DocumentVidPattern, ElementName=1.5}"
                                                     MaxInputLength="2"
                                                     ValidCodes="{Binding VM.ValidDocumentVids, ElementName=1.5}" />
-                                                <local:AutoCompleteBoxSelectionChangedBehavior />
+                                                <inputBehaviors:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
                                             <AutoCompleteBox.ItemTemplate>
@@ -933,11 +934,11 @@
                                                          Text="{Binding RefineOrSortRAOCode.Value, Mode=TwoWay}">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior 
+                                                <inputBehaviors:AutoCompleteBoxValidationBehavior 
                                                     InputPattern="{Binding VM.RefineOrSortRAOCodePattern, ElementName=1.5}"
                                                     MaxInputLength="2"
                                                     ValidCodes="{Binding VM.ValidRefineOrSortRAOCodes, ElementName=1.5}" />
-                                                <local:AutoCompleteBoxSelectionChangedBehavior />
+                                                <inputBehaviors:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
                                             <AutoCompleteBox.ItemTemplate>

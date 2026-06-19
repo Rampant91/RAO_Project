@@ -11,6 +11,7 @@
         xmlns:local="using:Client_App.Behaviors"
         xmlns:dgBehaviors="using:Client_App.Behaviors.DataGridBehaviors"
         xmlns:headerBehaviors="using:Client_App.Behaviors.TableHeader"
+        xmlns:inputBehaviors="using:Client_App.Behaviors.Input"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
         xmlns:items="clr-namespace:Client_App.ViewModels.Forms.Forms1.Items"
@@ -595,11 +596,11 @@
                                                          IsTextCompletionEnabled="False">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior 
+                                                <inputBehaviors:AutoCompleteBoxValidationBehavior 
                                                     InputPattern="{Binding VM.OperationCodePattern, ElementName=1.1}"
                                                     MaxInputLength="2"
                                                     ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.1}" />
-                                                <local:AutoCompleteBoxSelectionChangedBehavior />
+                                                <inputBehaviors:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
                                             <AutoCompleteBox.ItemTemplate>
@@ -810,11 +811,11 @@
                                                          IsTextCompletionEnabled="False">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior 
+                                                <inputBehaviors:AutoCompleteBoxValidationBehavior 
                                                     InputPattern="{Binding VM.CategoryCodePattern, ElementName=1.1}"
                                                     MaxInputLength="1"
                                                     ValidValues="{Binding VM.ValidCategories, ElementName=1.1}"/>
-                                                <local:AutoCompleteBoxSelectionChangedBehavior />
+                                                <inputBehaviors:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
                                             
                                             <AutoCompleteBox.ItemTemplate>
@@ -877,11 +878,11 @@
                                                          IsTextCompletionEnabled="False">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior 
+                                                <inputBehaviors:AutoCompleteBoxValidationBehavior 
                                                     InputPattern="{Binding VM.OwnershipCodePattern, ElementName=1.1}"
                                                     MaxInputLength="1"
                                                     ValidCodes="{Binding VM.ValidOwnershipForms, ElementName=1.1}"/>
-                                                <local:AutoCompleteBoxSelectionChangedBehavior />
+                                                <inputBehaviors:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
                                             <AutoCompleteBox.ItemTemplate>
@@ -945,11 +946,11 @@
                                                          IsTextCompletionEnabled="False">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior
+                                                <inputBehaviors:AutoCompleteBoxValidationBehavior
                                                     InputPattern="{Binding VM.DocumentVidPattern, ElementName=1.1}"
                                                     MaxInputLength="2"
                                                     ValidCodes="{Binding VM.ValidDocumentVids, ElementName=1.1}" />
-                                                <local:AutoCompleteBoxSelectionChangedBehavior />
+                                                <inputBehaviors:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
                                             <AutoCompleteBox.ItemTemplate>
