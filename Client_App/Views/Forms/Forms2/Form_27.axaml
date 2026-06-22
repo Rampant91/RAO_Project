@@ -311,20 +311,26 @@
                     </interactivity:Interaction.Behaviors>
 
 					<DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding NumberInOrder.Value}"
-											Width="40"
-											IsReadOnly="True"
-											x:DataType="forms2:Form27">
-							<DataGridTextColumn.HeaderTemplate>
-								<DataTemplate>
-									<Border Classes="headerTemplate">
-										<Grid ColumnDefinitions="*,Auto">
-											<TextBlock Grid.Column="0" Text="1"/>
-										</Grid>
-									</Border>
-								</DataTemplate>
-							</DataGridTextColumn.HeaderTemplate>
-						</DataGridTextColumn>
+                        <DataGridTemplateColumn Width="40"
+                                                IsReadOnly="True">
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <Border Classes="headerTemplate">
+                                        <Grid ColumnDefinitions="*,Auto"
+                                              HorizontalAlignment="Center">
+                                            <TextBlock Grid.Column="0" Text="1"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="forms2:Form27">
+                                    <TextBlock Text="{Binding NumberInOrder.Value}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
 						<DataGridTemplateColumn>
 							<DataGridTemplateColumn.HeaderTemplate>

@@ -8,7 +8,8 @@
     xmlns:forms="clr-namespace:Models.Forms;assembly=Models"
     xmlns:forms5="clr-namespace:Models.Forms.Form5;assembly=Models"
     xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-    xmlns:local="using:Client_App.Behaviors"
+    xmlns:headerBehaviors="using:Client_App.Behaviors.TableHeader"
+    xmlns:dgBehaviors="using:Client_App.Behaviors.DataGridBehaviors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms5"
     x:Name="5.3"
@@ -121,9 +122,9 @@
             </WrapPanel>
         </Expander>
 
-		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1">
+		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
 
-            <Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="Auto">
+            <Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="*">
                 <Grid.ContextMenu>
                     <ContextMenu
                         x:CompileBindings="True"
@@ -188,13 +189,15 @@
 
                 <Grid
                     Grid.Row="0"
-                    Width="{Binding ElementName=dataGrid.Width}"
+                    Width="{Binding Bounds.Width, ElementName=dataGrid}"
                     Classes="tableHeader"
                     ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
-                    RowDefinitions="Auto,Auto">
+                    RowDefinitions="Auto">
 
                     <interactivity:Interaction.Behaviors>
-                        <local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}" />
+                        <headerBehaviors:TableHeaderColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}" />
+                        <headerBehaviors:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                                                       IncludeTrailingBoundary="True" />
                     </interactivity:Interaction.Behaviors>
 
 					<!--#region Первый уровень заголовков-->
@@ -271,32 +274,39 @@
 					CanUserReorderColumns="False"
 					Items="{Binding FormList}"
 					SelectedItem="{Binding SelectedForm}"
+                    Margin="8,-5,0,0"
 					ColumnWidth="125">
 
                     <interactivity:Interaction.Behaviors>
-                        <local:DataGridColumnWidthLoadBehavior FormNum="5.3" />
-                        <local:DataGridPointerBehavior />
-                        <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
-                        <local:DeselectDataGridOnClickOutsideBehavior />
-                        <local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
-                        <local:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
+                        <dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="5.3" />
+                        <dgBehaviors:DataGridPointerBehavior />
+                        <dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
+                        <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
+                        <dgBehaviors:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
+                        <dgBehaviors:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
                     </interactivity:Interaction.Behaviors>
 
 					<DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding NumberInOrder.Value}"
-											Width="40"
-											IsReadOnly="True"
-											x:DataType="forms5:Form53">
-							<DataGridTextColumn.HeaderTemplate>
-								<DataTemplate>
-									<Border Classes="headerTemplate">
-										<Grid ColumnDefinitions="*,Auto">
-											<TextBlock Grid.Column="0" Text="1"/>
-										</Grid>
-									</Border>
-								</DataTemplate>
-							</DataGridTextColumn.HeaderTemplate>
-						</DataGridTextColumn>
+                        <DataGridTemplateColumn Width="40"
+                                                IsReadOnly="True">
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <Border Classes="headerTemplate">
+                                        <Grid ColumnDefinitions="*,Auto"
+                                              HorizontalAlignment="Center">
+                                            <TextBlock Grid.Column="0" Text="1"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="forms5:Form53">
+                                    <TextBlock Text="{Binding NumberInOrder.Value}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
 						<DataGridTemplateColumn>
 							<DataGridTemplateColumn.HeaderTemplate>
@@ -567,10 +577,10 @@
                         SelectedItem="{Binding SelectedNote}">
 
 						<interactivity:Interaction.Behaviors>
-							<local:DataGridColumnWidthLoadBehavior FormNum="notes" />
-							<local:DataGridPointerBehavior />
-							<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
-							<local:DataGridSwitchToNotesBehavior SourceDataGrid="{Binding #dataGrid}"/>
+							<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="notes" />
+							<dgBehaviors:DataGridPointerBehavior />
+							<dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
+							<dgBehaviors:DataGridSwitchToNotesBehavior SourceDataGrid="{Binding #dataGrid}"/>
 						</interactivity:Interaction.Behaviors>
 
 						<DataGrid.Columns>
