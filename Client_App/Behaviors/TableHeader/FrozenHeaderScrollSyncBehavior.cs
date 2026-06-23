@@ -45,6 +45,19 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
         set => SetValue(NppScrollableHeaderGridProperty, value);
     }
 
+    /// <summary>
+    /// Формы 2.x/4.x/5.x: одна шапка на все колонки (без frozen-разделения как в 1.x).
+    /// Сдвиг = -scrollOffset без компенсации ширины «№ п/п».
+    /// </summary>
+    public static readonly StyledProperty<bool> ScrollEntireHeaderProperty =
+        AvaloniaProperty.Register<FrozenHeaderScrollSyncBehavior, bool>(nameof(ScrollEntireHeader));
+
+    public bool ScrollEntireHeader
+    {
+        get => GetValue(ScrollEntireHeaderProperty);
+        set => SetValue(ScrollEntireHeaderProperty, value);
+    }
+
     private TranslateTransform? _transform;
     private TranslateTransform? _nppTransform;
     private double _lastAppliedTotal = double.NaN;
@@ -74,7 +87,7 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
 
         base.OnDetaching();
     }
-
+    
     private void TrySubscribe()
     {
         SourceDataGrid ??= AssociatedObject?
@@ -211,7 +224,7 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
 
     private double ComputeExtraFrozenOffset(TableHeaderLayoutMetrics metrics)
     {
-        if (SourceDataGrid is null) return 0;
+        if (ScrollEntireHeader || SourceDataGrid is null) return 0;
 
         var frozenCount = metrics.FrozenColumnCount;
 

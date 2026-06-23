@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls.ApplicationLifetimes;
+using Client_App.Commands.AsyncCommands;
 using Client_App.Resources;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms;
@@ -37,6 +38,11 @@ public class SwitchToSelectedReportAsyncCommand(BaseFormVM formVM) : BaseAsyncCo
             var form41 = window as Form_41;
             await new NewChangeReportAsyncCommand(mainWindowVM.Forms4TabControlVM).AsyncExecute(selectedReport).ConfigureAwait(false);
             form41.Close();
+        }
+        else if (Form2InterfaceFlags.IsEnabledFor(selectedReport.FormNum.Value))
+        {
+            await new NewChangeReportAsyncCommand(mainWindowVM.Forms2TabControlVM).AsyncExecute(selectedReport).ConfigureAwait(false);
+            window.Close();
         }
         else
         {

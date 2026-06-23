@@ -9,6 +9,8 @@
     xmlns:forms2="clr-namespace:Models.Forms.Form2;assembly=Models"
     xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
     xmlns:local="using:Client_App.Behaviors"
+    xmlns:headerBehaviors="using:Client_App.Behaviors.TableHeader"
+    xmlns:dgBehaviors="using:Client_App.Behaviors.DataGridBehaviors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms2"
     x:Name="2.7"
@@ -133,9 +135,9 @@
             </WrapPanel>
         </Expander>
 
-		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1">
+		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
 
-            <Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="Auto">
+            <Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="*">
                 <Grid.ContextMenu>
                     <ContextMenu
                         x:CompileBindings="True"
@@ -235,7 +237,7 @@
 
                 <Grid
                     Grid.Row="0"
-                    Width="{Binding ElementName=dataGrid.Width}"
+                    Width="{Binding Bounds.Width, ElementName=dataGrid}"
                     Classes="tableHeader"
                     ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
                     RowDefinitions="Auto,Auto,Auto">
@@ -302,12 +304,12 @@
 					ColumnWidth="125">
 
                     <interactivity:Interaction.Behaviors>
-                        <local:DataGridColumnWidthLoadBehavior FormNum="2.7" />
-                        <local:DataGridPointerBehavior />
-                        <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
-                        <local:DeselectDataGridOnClickOutsideBehavior />
-                        <local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
-                        <local:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
+                        <dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="2.7" />
+                        <dgBehaviors:DataGridPointerBehavior />
+                        <dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
+                        <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
+                        <dgBehaviors:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
+                        <dgBehaviors:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
                     </interactivity:Interaction.Behaviors>
 
 					<DataGrid.Columns>
@@ -517,9 +519,9 @@
                         SelectedItem="{Binding SelectedNote}">
 
                         <interactivity:Interaction.Behaviors>
-                            <local:DataGridColumnWidthLoadBehavior FormNum="notes" />
-                            <local:DataGridPointerBehavior />
-                            <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
+                            <dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="notes" />
+                            <dgBehaviors:DataGridPointerBehavior />
+                            <dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
                         </interactivity:Interaction.Behaviors>
 
                         <DataGrid.Columns>

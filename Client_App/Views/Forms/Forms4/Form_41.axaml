@@ -136,10 +136,15 @@
                                       HotKey="Ctrl+L"/> -->
 					</ContextMenu>
 				</Grid.ContextMenu>
-				<Grid Classes="tableHeader" Grid.Row="0"
+				<Grid Grid.Row="0"
 					  Width="{Binding Bounds.Width, ElementName=dataGrid}"
-					  RowDefinitions="Auto">
-
+					  Classes="tableHeader">
+					<Panel ClipToBounds="True">
+					<interactivity:Interaction.Behaviors>
+						<headerBehaviors:FrozenHeaderScrollSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+						                                                ScrollEntireHeader="True"/>
+					</interactivity:Interaction.Behaviors>
+					<Grid RowDefinitions="Auto">
 					<interactivity:Interaction.Behaviors>
 						<headerBehaviors:TableHeaderColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"/>
 						<headerBehaviors:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
@@ -175,6 +180,8 @@
 					<Border Grid.Column="8" Grid.Row="0">
 						<TextBlock Text="Примечание"/>
 					</Border>
+					</Grid>
+					</Panel>
 				</Grid>
 
 				<DataGrid Grid.Row="1"

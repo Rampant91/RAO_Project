@@ -185,13 +185,16 @@
 
                 <!--#region Заголовки таблицы-->
 
-                <Grid
-                    Grid.Row="0"
-                    Width="{Binding Bounds.Width, ElementName=dataGrid}"
-                    Classes="tableHeader"
-                    ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
-                    RowDefinitions="Auto">
-
+                <Grid Grid.Row="0"
+                      Width="{Binding Bounds.Width, ElementName=dataGrid}"
+                      Classes="tableHeader">
+                    <Panel ClipToBounds="True">
+                    <interactivity:Interaction.Behaviors>
+                        <headerBehaviors:FrozenHeaderScrollSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                                                        ScrollEntireHeader="True"/>
+                    </interactivity:Interaction.Behaviors>
+                    <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
+                          RowDefinitions="Auto">
                     <interactivity:Interaction.Behaviors>
                         <headerBehaviors:TableHeaderColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}" />
                         <headerBehaviors:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
@@ -222,6 +225,8 @@
 						<TextBlock>Масса, кг</TextBlock>
 					</Border>
 
+                </Grid>
+                    </Panel>
                 </Grid>
 
                 <!--#endregion Заголовки таблицы-->
