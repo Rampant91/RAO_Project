@@ -343,6 +343,8 @@
                 <MenuItem Command="{Binding OpenFile, Mode=OneWay}"
                           CommandParameter="changelog"
                           Header="Список изменений"/>
+                <MenuItem Command="{Binding CheckForUpdates, Mode=OneWay}"
+                          Header="Проверить обновления"/>
                     
             </MenuItem> 
 
