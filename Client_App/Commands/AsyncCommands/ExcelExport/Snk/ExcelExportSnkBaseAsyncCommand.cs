@@ -474,6 +474,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 currentQuantity = inventoryForm.Quantity;
             }
 
+            var isFirstDateForUnit = true;
+
             foreach (var (date, formsList) in formsByDateDictionary)
             {
                 List<ShortFormDTO> newOperationOrderList = [];
@@ -484,7 +486,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 if (formsList.Any(x => x.OpCode is "10"))
                 {
                     //Если это первая операция с учётной единицей, то операции инвентаризации идут в начале
-                    if (newOperationOrderList.Count == 0)
+                    if (isFirstDateForUnit)
                     {
                         editedFormsList = editedFormsList
                             .OrderBy(x => x.OpCode is not "10")
@@ -671,6 +673,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
                     uniqueUnitWithAllOrderedOperationDictionary[uniqUnit].AddRange(newOperationOrderList);
                 }
+
+                isFirstDateForUnit = false;
             }
         }
 
