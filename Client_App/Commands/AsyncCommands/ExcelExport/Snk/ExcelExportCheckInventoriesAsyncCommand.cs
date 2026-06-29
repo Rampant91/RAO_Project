@@ -26,7 +26,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 /// <summary>
 /// Excel -> Проверка инвентаризаций.
 /// </summary>
-public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) : ExcelExportSnkBaseAsyncCommand
+public partial class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) : ExcelExportSnkBaseAsyncCommand
 {
     public override bool CanExecute(object? parameter) => true;
 
@@ -281,7 +281,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
             {
                 worksheet.Cells[1, 13, 1, 24].Merge = true;
                 worksheet.Cells[1, 13, 1, 24].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells[1, 13].Value = $"Инвентаризация на {date.ToShortDateString()}";
+                worksheet.Cells[1, 13].Value = $"Инвентаризация на {date:d}";
 
                 worksheet.Cells[2, 13].Value = "№ п/п";
                 worksheet.Cells[2, 14].Value = "Номер паспорта (сертификата)";
@@ -301,7 +301,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
             {
                 worksheet.Cells[1, 11, 1, 20].Merge = true;
                 worksheet.Cells[1, 11, 1, 20].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells[1, 11].Value = $"Инвентаризация на {date.ToShortDateString()}";
+                worksheet.Cells[1, 11].Value = $"Инвентаризация на {date:d}";
 
                 worksheet.Cells[2, 11].Value = "№ п/п";
                 worksheet.Cells[2, 12].Value = "Номер паспорта (сертификата)";
@@ -337,7 +337,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
             {
                 worksheet.Cells[1, 1, 1, 12].Merge = true;
                 worksheet.Cells[1, 1, 1, 12].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells[1, 1].Value = $"СНК на {date.ToShortDateString()}";
+                worksheet.Cells[1, 1].Value = $"СНК на {date:d}";
 
                 worksheet.Cells[2, 1].Value = "№ п/п";
                 worksheet.Cells[2, 2].Value = "Номер паспорта (сертификата)";
@@ -357,7 +357,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
             {
                 worksheet.Cells[1, 1, 1, 10].Merge = true;
                 worksheet.Cells[1, 1, 1, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells[1, 1].Value = $"СНК на {date.ToShortDateString()}";
+                worksheet.Cells[1, 1].Value = $"СНК на {date:d}";
 
                 worksheet.Cells[2, 1].Value = "№ п/п";
                 worksheet.Cells[2, 2].Value = "Номер паспорта (сертификата)";
@@ -1403,7 +1403,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
             _ => throw new ArgumentOutOfRangeException(nameof(formNum), formNum, null)
         };
 
-        return zeroOperationDtoList
+        return [.. zeroOperationDtoList
             .Where(x => DateTime.TryParse(x.OpDate, out var opDateTime)
                         && DateOnly.TryParse(x.StDate, out _)
                         && DateOnly.TryParse(x.EndDate, out _)
@@ -1426,8 +1426,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
             .Union(rechargeFormsDtoList)
             .OrderBy(x => x.OpDate)
             .ThenBy(x => x.RepDto.StartPeriod)
-            .ThenBy(x => x.RepDto.EndPeriod)
-            .ToList();
+            .ThenBy(x => x.RepDto.EndPeriod)];
     }
 
     #endregion
