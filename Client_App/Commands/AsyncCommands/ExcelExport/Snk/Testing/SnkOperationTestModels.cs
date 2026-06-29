@@ -112,6 +112,42 @@ public sealed class SnkTestCase
 
     public required IReadOnlyDictionary<DateOnly, IReadOnlyList<SnkStockSnapshot>> ExpectedInventoryStockByDate { get; init; }
 
+
+
+    /// <summary>
+
+    /// Необязательно. Единицы, для которых на указанную дату допустимо расхождение между
+
+    /// таблицей инвентаризации (строки op.10) и расчётным СНК. Типичный пример —
+
+    /// ЗРИ проинвентаризировали и в тот же день передали (op.28): он есть в инвентаризации,
+
+    /// но его уже нет в наличии на конец дня. Такое расхождение не считается ошибкой.
+
+    /// По умолчанию пусто: любое расхождение «есть в инвентаризации, нет в СНК» считается ошибкой.
+
+    /// </summary>
+
+    public IReadOnlyDictionary<DateOnly, IReadOnlyList<SnkStockSnapshot>> AllowedInventoryVsSnkDifferenceByDate { get; init; }
+
+        = new Dictionary<DateOnly, IReadOnlyList<SnkStockSnapshot>>();
+
+
+
+    /// <summary>
+
+    /// Сценарий содержит намеренные логические ошибки пользователя (передача отсутствующего ЗРИ,
+
+    /// инвентаризация ранее снятого с учёта и т.п.). Списки СНК и инвентаризации всё равно проверяются,
+
+    /// но проверка «инвентаризация vs СНК» (допустимость расхождения) пропускается, т.к. сами ошибки
+
+    /// будут отлавливаться отдельно. По умолчанию false.
+
+    /// </summary>
+
+    public bool HasIntentionalInventoryErrors { get; init; }
+
 }
 
 

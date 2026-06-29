@@ -18,6 +18,11 @@ public static class SnkOperationScenarioRunner
         SnkTestCase testCase) =>
         ExcelExportCheckInventoriesAsyncCommand.InventoriesTestHarness.Instance.RunCheckInventoriesAsync(testCase);
 
+    /// <summary>Список проинвентаризированных единиц (строки op.10) на каждую дату проверки.</summary>
+    public static Task<IReadOnlyDictionary<DateOnly, IReadOnlyList<SnkStockSnapshot>>> RunCheckInventoriesInventoriedAsync(
+        SnkTestCase testCase) =>
+        ExcelExportCheckInventoriesAsyncCommand.InventoriesTestHarness.Instance.RunCheckInventoriesInventoriedAsync(testCase);
+
     public static Task<SnkScenarioResult> RunAsync(SnkTestScenario scenario) =>
         ExcelExportSnkTestHarness.Instance.RunScenarioAsync(scenario);
 }

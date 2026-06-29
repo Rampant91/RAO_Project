@@ -31,7 +31,7 @@ public partial class ExcelExportCheckInventoriesAsyncCommand
                 .Where(x => x.OpDate <= testCase.EndDate)
                 .ToList();
 
-            var (inventoryList, plusMinusList, rechargeList) =
+            var (inventoryList, plusMinusList, rechargeList, zeroList) =
                 SnkTestOperationSplitter.Split(testCase.FormNum, operations);
 
             var firstInventoryDate = inventoryList.Count == 0
@@ -43,7 +43,7 @@ public partial class ExcelExportCheckInventoriesAsyncCommand
                 inventoryList,
                 plusMinusList,
                 rechargeList,
-                []);
+                zeroList);
 
             var inventoryDatesList = await GetInventoryDatesList(inventoryList, testCase.EndDate);
 
@@ -57,6 +57,30 @@ public partial class ExcelExportCheckInventoriesAsyncCommand
             return unitInStockByDateDictionary.ToDictionary(
                 pair => pair.Key,
                 pair => (IReadOnlyList<SnkStockSnapshot>)pair.Value
+                    .Select(SnkTestOperationSplitter.ToSnapshot)
+                    .ToList());
+        }
+
+        /// <summary>
+        /// Список проинвентаризированных единиц (строки операций инвентаризации, код 10)
+        /// на каждую дату проверки. На дату <see cref="SnkTestCase.EndDate"/> без инвентаризации
+        /// список пуст. Это «таблица инвентаризации» из отчёта, без расчёта наличия.
+        /// </summary>
+        public async Task<IReadOnlyDictionary<DateOnly, IReadOnlyList<SnkStockSnapshot>>> RunCheckInventoriesInventoriedAsync(
+            SnkTestCase testCase)
+        {
+            var operations = testCase.Operations
+                .Where(x => x.OpDate <= testCase.EndDate)
+                .ToList();
+
+            var (inventoryList, _, _, _) = SnkTestOperationSplitter.Split(testCase.FormNum, operations);
+
+            var inventoryDatesList = await GetInventoryDatesList(inventoryList, testCase.EndDate);
+
+            return inventoryDatesList.ToDictionary(
+                date => date,
+                date => (IReadOnlyList<SnkStockSnapshot>)inventoryList
+                    .Where(x => x.OpDate == date)
                     .Select(SnkTestOperationSplitter.ToSnapshot)
                     .ToList());
         }

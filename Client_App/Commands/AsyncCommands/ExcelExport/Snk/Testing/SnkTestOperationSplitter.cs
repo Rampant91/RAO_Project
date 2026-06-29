@@ -9,17 +9,25 @@ internal static class SnkTestOperationSplitter
     public static (
         List<ShortFormDTO> Inventory,
         List<ShortFormDTO> PlusMinus,
-        List<ShortFormDTO> Recharge)
+        List<ShortFormDTO> Recharge,
+        List<ShortFormDTO> Zero)
         Split(string formNum, IReadOnlyList<SnkTestOperationSpec> operations)
     {
         List<ShortFormDTO> inventory = [];
         List<ShortFormDTO> plusMinus = [];
         List<ShortFormDTO> recharge = [];
+        List<ShortFormDTO> zero = [];
 
-        var id = 1;
-        foreach (var spec in operations.OrderBy(x => x.OpDate).ThenBy(x => x.OpCode))
+        var orderedOperations = operations
+            .Select((spec, index) => new { Spec = spec, InitialIndex = index })
+            .OrderBy(x => x.Spec.OpDate)
+            .ThenBy(x => x.InitialIndex)
+            .ToList();
+
+        foreach (var operation in orderedOperations)
         {
-            var dto = ToShortFormDto(spec, id++);
+            var spec = operation.Spec;
+            var dto = ToShortFormDto(spec, operation.InitialIndex + 1);
 
             if (ExcelExportSnkTestHarness.IsInventoryOperation(spec.OpCode))
             {
@@ -33,9 +41,15 @@ internal static class SnkTestOperationSplitter
             {
                 plusMinus.Add(dto);
             }
+            else
+            {
+                // Любой прочий код (не инвентаризация/перезарядка/приём-передача) — нулевая операция.
+                // На СНК влияния не оказывает, но участвует в проверке инвентаризаций (как в проде).
+                zero.Add(dto);
+            }
         }
 
-        return (inventory, plusMinus, recharge);
+        return (inventory, plusMinus, recharge, zero);
     }
 
     public static SnkStockSnapshot ToSnapshot(ShortFormDTO dto) =>

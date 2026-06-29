@@ -62,7 +62,7 @@ internal sealed class ExcelExportSnkTestHarness : ExcelExportSnkBaseAsyncCommand
 
 
 
-        var (inventoryList, plusMinusList, rechargeList) =
+        var (inventoryList, plusMinusList, rechargeList, _) =
 
             SnkTestOperationSplitter.Split(testCase.FormNum, operations);
 
@@ -112,7 +112,7 @@ internal sealed class ExcelExportSnkTestHarness : ExcelExportSnkBaseAsyncCommand
 
     {
 
-        var (inventoryList, plusMinusList, rechargeList) =
+        var (inventoryList, plusMinusList, rechargeList, zeroSplit) =
 
             SnkTestOperationSplitter.Split(scenario.FormNum, scenario.Operations);
 
@@ -128,7 +128,7 @@ internal sealed class ExcelExportSnkTestHarness : ExcelExportSnkBaseAsyncCommand
 
         List<ShortFormDTO>? zeroList = scenario.UnionMode == SnkInventoryUnionMode.CheckInventories
 
-            ? []
+            ? zeroSplit
 
             : null;
 
