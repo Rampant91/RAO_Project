@@ -6,8 +6,6 @@ namespace Test.Snk;
 
 /// <summary>
 /// Группа V — корректные сценарии без ошибок пользователя.
-/// Проверяют базовое наличие, перезарядки, передачи и накопление количества,
-/// а также ключевую развилку алгоритма: была единица в первой инвентаризации или нет.
 /// </summary>
 internal static partial class SnkTestCases
 {
@@ -27,15 +25,14 @@ internal static partial class SnkTestCases
         yield return Valid12_AlternativePlusMinusCodes_Equivalent();
     }
 
-    /// <summary>
-    /// V01. Единица стоит на учёте с первой инвентаризации и не двигается. Базовый случай.
-    /// </summary>
+    /// <summary>V01. Только якорь с первой инвентаризации, без движений.</summary>
     private static SnkTestCase Valid01_InFirstInventory_SingleUnit_NoMovement() => new()
     {
         Name = "V01. В первой инвентаризации, без движения.",
         EndDate = FinalDate,
         Operations =
         [
+            // 19.01.2022 | op.10 | якорь 999/001
             Anchor(FirstInventoryDate),
         ],
         ExpectedSnkStock = [AnchorStock()],
@@ -44,17 +41,17 @@ internal static partial class SnkTestCases
             On(FinalDate, AnchorStock()))
     };
 
-    /// <summary>
-    /// V02. Единица получена после первой инвентаризации и остаётся в наличии (без передачи).
-    /// </summary>
+    /// <summary>V02. 510 получена после первой инв., остаётся (510 не была в первой инв.).</summary>
     private static SnkTestCase Valid02_NotInFirstInventory_ReceivedLater_Stays() => new()
     {
         Name = "V02. Не в первой инвентаризации, получена позже, остаётся.",
         EndDate = FinalDate,
         Operations =
         [
+            // 19.01.2022 | op.10 | якорь (510 ещё нет на учёте)
             Anchor(FirstInventoryDate),
-            Operation("38", ReceiveDay, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
+            // 10.11.2023 | op.38 | приём 510/083 УКТ=52
+            Receive(ReceiveDay, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
         ],
         ExpectedSnkStock =
         [
@@ -66,20 +63,21 @@ internal static partial class SnkTestCases
             On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52")))
     };
 
-    /// <summary>
-    /// V03. Единица в первой инвентаризации; позже перезарядка и повторная инвентаризация в один день.
-    /// </summary>
+    /// <summary>V03. 510 в первой инв.; позже перезарядка 52→52-1 и полная инв. в один день.</summary>
     private static SnkTestCase Valid03_InFirstInventory_RechargeAndReinventory_SameDay() => new()
     {
         Name = "V03. В первой инвентаризации, перезарядка и инвентаризация в один день.",
         EndDate = FinalDate,
         Operations =
         [
-            Anchor(FirstInventoryDate),
-            Operation("10", FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
-            Operation("53", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Anchor(RechargeDay),
-            Operation("10", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            // 19.01.2022 | полная инв.: якорь + 510 УКТ=52
+            ..FullInventoryOn(FirstInventoryDate,
+                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52")),
+            // 29.11.2023 | op.53 | перезарядка 510 → УКТ=52-1
+            Recharge(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            // 29.11.2023 | полная инв.: якорь + 510 УКТ=52-1
+            ..FullInventoryOn(RechargeDay,
+                Inv(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
         ],
         ExpectedSnkStock =
         [
@@ -92,20 +90,22 @@ internal static partial class SnkTestCases
             On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")))
     };
 
-    /// <summary>
-    /// V04. Не в первой инвентаризации: получение раньше, затем перезарядка и инвентаризация в один день. Остаётся.
-    /// </summary>
+    /// <summary>V04. 510 не в первой инв.: приём → перезарядка → полная инв. в один день.</summary>
     private static SnkTestCase Valid04_NotInFirstInventory_ReceiveThenRechargeInventory_Stays() => new()
     {
         Name = "V04. Не в первой инвентаризации, получение, затем перезарядка и инвентаризация. Остаётся.",
         EndDate = FinalDate,
         Operations =
         [
+            // 19.01.2022 | op.10 | только якорь
             Anchor(FirstInventoryDate),
-            Operation("38", ReceiveDay, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
-            Operation("53", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Anchor(RechargeDay),
-            Operation("10", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            // 10.11.2023 | op.38 | приём 510 УКТ=52
+            Receive(ReceiveDay, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
+            // 29.11.2023 | op.53 | перезарядка → УКТ=52-1
+            Recharge(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            // 29.11.2023 | полная инв.: якорь + 510 УКТ=52-1
+            ..FullInventoryOn(RechargeDay,
+                Inv(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
         ],
         ExpectedSnkStock =
         [
@@ -118,9 +118,7 @@ internal static partial class SnkTestCases
             On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")))
     };
 
-    /// <summary>
-    /// V05. Не в первой инвентаризации: получение, перезарядка и инвентаризация в один день, передача позже.
-    /// </summary>
+    /// <summary>V05. Цепочка приём→перезарядка→инв. в один день; передача позже.</summary>
     private static SnkTestCase Valid05_NotInFirstInventory_ChainSameDay_TransferLater() => new()
     {
         Name = "V05. Не в первой инвентаризации, цепочка в один день, передача позже.",
@@ -128,11 +126,13 @@ internal static partial class SnkTestCases
         Operations =
         [
             Anchor(FirstInventoryDate),
-            Operation("38", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
-            Operation("53", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Anchor(RechargeDay),
-            Operation("10", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Operation("28", LaterTransferDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            // 29.11.2023 | приём → перезарядка → полная инв.
+            Receive(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
+            Recharge(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            ..FullInventoryOn(RechargeDay,
+                Inv(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+            // 29.01.2024 | op.28 | передача 510 УКТ=52-1
+            Transfer(LaterTransferDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
         ],
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
@@ -142,8 +142,8 @@ internal static partial class SnkTestCases
     };
 
     /// <summary>
-    /// V06. Не в первой инвентаризации: получение, перезарядка, инвентаризация и передача в один день.
-    /// В день инвентаризации ЗРИ есть в формах, но уже снят с учёта — допустимое расхождение.
+    /// V06. Как V05, но передача в тот же день, что цепочка.
+    /// 510 есть в формах инв., но на конец дня уже снят — допустимое расхождение.
     /// </summary>
     private static SnkTestCase Valid06_NotInFirstInventory_ChainAndTransfer_SameDay() => new()
     {
@@ -152,11 +152,12 @@ internal static partial class SnkTestCases
         Operations =
         [
             Anchor(FirstInventoryDate),
-            Operation("38", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
-            Operation("53", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Anchor(RechargeDay),
-            Operation("10", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Operation("28", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            // 29.11.2023
+            Receive(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
+            Recharge(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            ..FullInventoryOn(RechargeDay,
+                Inv(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+            Transfer(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
         ],
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
@@ -167,22 +168,23 @@ internal static partial class SnkTestCases
             On(RechargeDay, Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")))
     };
 
-    /// <summary>
-    /// V07. Единица появилась в день первой инвентаризации (получение, перезарядка, инвентаризация); передача позже.
-    /// </summary>
+    /// <summary>V07. 510 появляется в день первой инв. (приём→перезарядка→инв.); передача позже.</summary>
     private static SnkTestCase Valid07_InFirstInventoryDay_Chain_TransferLater() => new()
     {
         Name = "V07. Цепочка в день первой инвентаризации, передача позже.",
         EndDate = FinalDate,
         Operations =
         [
+            // 19.01.2022
             Anchor(FirstInventoryDate),
-            Operation("38", FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
-            Operation("54", FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Operation("10", FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Anchor(SecondInventoryDate),
-            Operation("10", SecondInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Operation("28", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Receive(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
+            Recharge(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1", opCode: "54"),
+            Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            // 01.01.2023 | полная инв.
+            ..FullInventoryOn(SecondInventoryDate,
+                Inv(SecondInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+            // 29.11.2023 | передача
+            Transfer(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
         ],
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
@@ -191,21 +193,20 @@ internal static partial class SnkTestCases
             On(FinalDate, AnchorStock()))
     };
 
-    /// <summary>
-    /// V08. Получение, перезарядка, инвентаризация и передача в день первой инвентаризации.
-    /// В этот день ЗРИ есть в формах, но уже снят с учёта — допустимое расхождение.
-    /// </summary>
+    /// <summary>V08. Как V07, но передача в день первой инв. Допустимое расхождение инв. vs СНК.</summary>
     private static SnkTestCase Valid08_InFirstInventoryDay_ChainAndTransfer_SameDay() => new()
     {
         Name = "V08. Цепочка и передача в день первой инвентаризации.",
         EndDate = FinalDate,
         Operations =
         [
+            // 19.01.2022
             Anchor(FirstInventoryDate),
-            Operation("38", FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
-            Operation("54", FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Operation("10", FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Operation("28", FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Receive(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
+            Recharge(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1", opCode: "54"),
+            Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Transfer(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            // 01.01.2023 | только якорь (510 уже передана)
             Anchor(SecondInventoryDate),
         ],
         ExpectedSnkStock = [AnchorStock()],
@@ -217,23 +218,21 @@ internal static partial class SnkTestCases
             On(FirstInventoryDate, Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")))
     };
 
-    /// <summary>
-    /// V09. Две перезарядки в разные дни (52 → 52-1 → 52-2). Подряд идущие перезарядки не рассматриваются.
-    /// </summary>
+    /// <summary>V09. Две перезарядки в разные дни: 52 → 52-1 → 52-2.</summary>
     private static SnkTestCase Valid09_TwoRecharges_OnSeparateDays() => new()
     {
         Name = "V09. Две перезарядки в разные дни.",
         EndDate = FinalDate,
         Operations =
         [
-            Anchor(FirstInventoryDate),
-            Operation("10", FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
-            Operation("53", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Anchor(RechargeDay),
-            Operation("10", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Operation("54", ThirdRechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-2"),
-            Anchor(ThirdRechargeDay),
-            Operation("10", ThirdRechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-2"),
+            ..FullInventoryOn(FirstInventoryDate,
+                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52")),
+            Recharge(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            ..FullInventoryOn(RechargeDay,
+                Inv(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+            Recharge(ThirdRechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-2", opCode: "54"),
+            ..FullInventoryOn(ThirdRechargeDay,
+                Inv(ThirdRechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-2")),
         ],
         ExpectedSnkStock =
         [
@@ -247,21 +246,20 @@ internal static partial class SnkTestCases
             On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-2")))
     };
 
-    /// <summary>
-    /// V10. Две пары приём/передача с одним и тем же УКТ в один день: наличие не меняется (взаимокомпенсация).
-    /// </summary>
+    /// <summary>V10. Две пары приём/передача 510 в один день — взаимокомпенсация, в наличии остаётся.</summary>
     private static SnkTestCase Valid10_TwoReceiveTransferPairs_SameDay_NetInStock() => new()
     {
         Name = "V10. Две пары приём/передача в один день, наличие не меняется.",
         EndDate = FinalDate,
         Operations =
         [
-            Anchor(FirstInventoryDate),
-            Operation("10", FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Operation("28", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Operation("38", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Operation("28", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Operation("38", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            ..FullInventoryOn(FirstInventoryDate,
+                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+            // 29.11.2023 | две пары ± (инв. в этот день нет — только движения)
+            Transfer(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Receive(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Transfer(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Receive(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
         ],
         ExpectedSnkStock =
         [
@@ -273,19 +271,19 @@ internal static partial class SnkTestCases
             On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")))
     };
 
-    /// <summary>
-    /// V11. Единица с пустыми зав.№/№ паспорта (учёт по количеству): инв. 2, приём 3, передача 1 → 4.
-    /// </summary>
+    /// <summary>V11. Пустые зав.№/паспорт: инв.2 + приём3 − передача1 = 4 (в разные дни).</summary>
     private static SnkTestCase Valid11_EmptySerial_QuantityAccumulation() => new()
     {
         Name = "V11. Пустые зав.№/паспорт: накопление количества (2 + 3 − 1 = 4).",
         EndDate = FinalDate,
         Operations =
         [
-            Anchor(FirstInventoryDate),
-            Operation("10", FirstInventoryDate, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 2),
-            Operation("38", new DateOnly(2023, 3, 1), "", "", "ОСГИ-3", "кобальт-60", "", quantity: 3),
-            Operation("28", new DateOnly(2023, 4, 1), "", "", "ОСГИ-3", "кобальт-60", "", quantity: 1),
+            ..FullInventoryOn(FirstInventoryDate,
+                Inv(FirstInventoryDate, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
+            // 01.03.2023 | op.38 | приём ОСГИ-3 qty=3
+            Receive(new DateOnly(2023, 3, 1), "", "", "ОСГИ-3", "кобальт-60", "", quantity: 3),
+            // 01.04.2023 | op.28 | передача ОСГИ-3 qty=1
+            Transfer(new DateOnly(2023, 4, 1), "", "", "ОСГИ-3", "кобальт-60", "", quantity: 1),
         ],
         ExpectedSnkStock =
         [
@@ -297,12 +295,7 @@ internal static partial class SnkTestCases
             On(FinalDate, AnchorStock(), Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 4)))
     };
 
-    /// <summary>
-    /// V12. Те же действия, что в V02 (получение и хранение), но другими кодами операций:
-    /// получение «11» и (для проверки снятия) передача «21» вместо 38/28. Алгоритм ветвится
-    /// по спискам кодов формы, поэтому результат должен совпадать с поведением для 38/28.
-    /// 510 получена и осталась; 700 получена и передана теми же альтернативными кодами.
-    /// </summary>
+    /// <summary>V12. Как V02, но коды приёма/передачи 11/21 вместо 38/28.</summary>
     private static SnkTestCase Valid12_AlternativePlusMinusCodes_Equivalent() => new()
     {
         Name = "V12. Альтернативные коды приёма/передачи (11/21).",

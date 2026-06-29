@@ -7,22 +7,26 @@ namespace Test.Snk;
 
 /// <summary>
 /// Наборы тестовых сценариев СНК и проверки инвентаризаций.
-/// Сгруппированы по смыслу (каждая группа — в отдельном файле-партиале):
+/// <para>Группы: V — корректные; E — ошибки пользователя; N — нормализация полей;
+/// M — несколько единиц; Z — нулевые операции; X — длинные цепочки; O — порядок строк в один день.</para>
+/// <para>
+/// Общие даты (см. также имена полей ниже):
 /// <list type="bullet">
-/// <item><b>V##</b> — корректные сценарии без ошибок пользователя (<see cref="ValidCases"/>).</item>
-/// <item><b>E##</b> — сценарии с логическими ошибками пользователя (<see cref="ErrorCases"/>).</item>
-/// <item><b>N##</b> — распознавание единиц при разном написании: кириллица/латиница,
-/// регистр, спецсимволы, ведущие нули, порядок радионуклидов (<see cref="NormalizationCases"/>).</item>
-/// <item><b>M##</b> — несколько единиц одновременно в списках (<see cref="MultiUnitCases"/>).</item>
-/// <item><b>Z##</b> — нулевые операции (<see cref="ZeroOperationCases"/>).</item>
-/// <item><b>X##</b> — длинные смешанные сценарии (<see cref="MixedCases"/>).</item>
-/// <item><b>O##</b> — те же логические сценарии с разным порядком строк операций
-/// в один день; эталон наличия должен совпадать (<see cref="OrderCases"/>).</item>
+/// <item><b>19.01.2022</b> — <see cref="FirstInventoryDate"/>, первая инвентаризация</item>
+/// <item><b>01.01.2023</b> — <see cref="SecondInventoryDate"/></item>
+/// <item><b>10.11.2023</b> — <see cref="ReceiveDay"/>, приём «между» инвентаризациями</item>
+/// <item><b>29.11.2023</b> — <see cref="RechargeDay"/>, типичный «горячий» день (цепочки, пары ±)</item>
+/// <item><b>29.01.2024</b> — <see cref="LaterTransferDay"/>, передача после цепочки</item>
+/// <item><b>01.06.2024</b> — <see cref="ThirdRechargeDay"/>, вторая перезарядка</item>
+/// <item><b>01.01.2026</b> — <see cref="FinalDate"/>, конец периода (EndDate), не день инвентаризации</item>
 /// </list>
-/// Префикс и номер в имени сохранены, чтобы быстро находить кейс по упавшему тесту.
-/// Во всех сценариях присутствует «якорная» единица 999/001, которая стоит на учёте с первой
-/// инвентаризации и никогда не двигается — она фиксирует дату первой инвентаризации и служит
-/// постоянным элементом полного наличия на каждую дату инвентаризации.
+/// </para>
+/// <para>
+/// <b>Якорь 999/001</b> — учётная единица, стоящая на учёте с первой инвентаризации и не двигающаяся.
+/// Нужен, чтобы задать дату первой инвентаризации и имитировать «полное наличие» в отчёте.
+/// Если в какую-то дату инвентаризируется хотя бы одна единица, в этот день инвентаризируется
+/// <b>всё</b> наличие — см. <see cref="FullInventoryOn"/>.
+/// </para>
 /// </summary>
 internal static partial class SnkTestCases
 {
@@ -33,11 +37,7 @@ internal static partial class SnkTestCases
     private static readonly DateOnly ThirdRechargeDay = new(2024, 6, 1);
     private static readonly DateOnly LaterTransferDay = new(2024, 1, 29);
 
-    /// <summary>
-    /// Дата окончания периода (EndDate) для всех кейсов. Фиксированная (а не DateTime.Today),
-    /// чтобы прогон тестов был детерминированным и не зависел от системной даты.
-    /// Заведомо позже всех операций в кейсах и не совпадает ни с одной датой инвентаризации.
-    /// </summary>
+    /// <summary>Конец периода (EndDate). Фиксированная дата, позже всех операций.</summary>
     private static readonly DateOnly FinalDate = new(2026, 1, 1);
 
     public static IEnumerable<object[]> All() =>
@@ -50,20 +50,26 @@ internal static partial class SnkTestCases
             .Concat(OrderCases())
             .Select(testCase => new object[] { testCase.Name, testCase });
 
-    /// <summary>Операция инвентаризации (код 10) якорной единицы 999/001 на заданную дату.</summary>
+    /// <summary>op.10 — инвентаризация якоря 999/001 (всегда в наличии с первой инв.).</summary>
     private static SnkTestOperationSpec Anchor(DateOnly date) =>
         Operation("10", date, "999", "001", "Тип-A", "кобальт-60", "1");
 
-    /// <summary>Строка СНК для якорной единицы 999/001.</summary>
+    /// <summary>Ожидаемая строка СНК для якоря 999/001.</summary>
     private static SnkStockSnapshot AnchorStock() =>
         Stock("999", "001", "Тип-A", "кобальт-60", "1");
 
-    /// <summary>Пара «дата → ожидаемое наличие» для словарей результатов.</summary>
+    /// <summary>
+    /// Полная инвентаризация на дату: якорь + перечисленные единицы (каждая — op.10).
+    /// Правило отчёта: если инвентаризируем день, в форме op.10 должны быть все единицы в наличии.
+    /// </summary>
+    private static SnkTestOperationSpec[] FullInventoryOn(
+        DateOnly date, params SnkTestOperationSpec[] unitInventoryLines) =>
+        [Anchor(date), ..unitInventoryLines];
+
     private static KeyValuePair<DateOnly, IReadOnlyList<SnkStockSnapshot>> On(
         DateOnly date, params SnkStockSnapshot[] stock) =>
         new(date, stock);
 
-    /// <summary>Собирает словарь «дата → наличие» из пар <see cref="On"/>.</summary>
     private static Dictionary<DateOnly, IReadOnlyList<SnkStockSnapshot>> ByDate(
         params KeyValuePair<DateOnly, IReadOnlyList<SnkStockSnapshot>>[] entries) =>
         entries.ToDictionary(entry => entry.Key, entry => entry.Value);
@@ -87,44 +93,37 @@ internal static partial class SnkTestCases
             PackNumber: packNumber,
             Quantity: quantity);
 
-    /// <summary>Операция инвентаризации (код 10) произвольной единицы.</summary>
+    /// <summary>op.10 — инвентаризация учётной единицы.</summary>
     private static SnkTestOperationSpec Inv(
         DateOnly date, string pasNum, string facNum, string type, string radionuclids,
         string packNumber, int quantity = 1) =>
         Operation("10", date, pasNum, facNum, type, radionuclids, packNumber, quantity);
 
-    /// <summary>Операция получения (плюсовая). Код по умолчанию 38, можно задать другой плюсовой код формы.</summary>
+    /// <summary>op.38 (или другой плюсовой код) — приём.</summary>
     private static SnkTestOperationSpec Receive(
         DateOnly date, string pasNum, string facNum, string type, string radionuclids,
         string packNumber, int quantity = 1, string opCode = "38") =>
         Operation(opCode, date, pasNum, facNum, type, radionuclids, packNumber, quantity);
 
-    /// <summary>Операция передачи (минусовая). Код по умолчанию 28, можно задать другой минусовой код формы.</summary>
+    /// <summary>op.28 (или другой минусовой код) — передача.</summary>
     private static SnkTestOperationSpec Transfer(
         DateOnly date, string pasNum, string facNum, string type, string radionuclids,
         string packNumber, int quantity = 1, string opCode = "28") =>
         Operation(opCode, date, pasNum, facNum, type, radionuclids, packNumber, quantity);
 
-    /// <summary>Операция перезарядки. Код по умолчанию 53, допустимо 54.</summary>
+    /// <summary>op.53/54 — перезарядка.</summary>
     private static SnkTestOperationSpec Recharge(
         DateOnly date, string pasNum, string facNum, string type, string radionuclids,
         string packNumber, int quantity = 1, string opCode = "53") =>
         Operation(opCode, date, pasNum, facNum, type, radionuclids, packNumber, quantity);
 
-    /// <summary>
-    /// Нулевая операция (не влияет на наличие). Код по умолчанию 64 — нейтральный,
-    /// не помечается ошибкой 8 даже для отсутствующего ЗРИ. Для «ошибочной» нулевой
-    /// операции у несуществующего ЗРИ задайте иной код (например, 99).
-    /// </summary>
+    /// <summary>Нулевая операция (по умолчанию op.64, на СНК не влияет).</summary>
     private static SnkTestOperationSpec Zero(
         DateOnly date, string pasNum, string facNum, string type, string radionuclids,
         string packNumber, int quantity = 1, string opCode = "64") =>
         Operation(opCode, date, pasNum, facNum, type, radionuclids, packNumber, quantity);
 
-    /// <summary>
-    /// Вариант сценария с тем же эталоном, но другим порядком операций в массиве
-    /// (порядок строк в отчёте в один день). Имя: «O##. … — порядок: …».
-    /// </summary>
+    /// <summary>Вариант O-группы: тот же эталон, другой порядок строк в <see cref="SnkTestCase.Operations"/>.</summary>
     private static SnkTestCase OrderVariant(
         string id,
         string orderLabel,
@@ -140,10 +139,6 @@ internal static partial class SnkTestCases
         HasIntentionalInventoryErrors = template.HasIntentionalInventoryErrors,
     };
 
-    private static List<SnkTestOperationSpec> Ops(params SnkTestOperationSpec[] operations) =>
-        [.. operations];
-
-    /// <summary>Ожидаемая строка СНК: только ключевые поля (форма 1.1).</summary>
     private static SnkStockSnapshot Stock(
         string pasNum,
         string facNum,

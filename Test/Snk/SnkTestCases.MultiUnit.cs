@@ -4,11 +4,7 @@ using Client_App.Commands.AsyncCommands.ExcelExport.Snk.Testing;
 
 namespace Test.Snk;
 
-/// <summary>
-/// Группа M — несколько учётных единиц одновременно в списках.
-/// Проверяют, что единицы не «склеиваются» и не теряются, когда у них разные судьбы
-/// (часть остаётся, часть передаётся, часть с пустыми зав.№ и учётом по количеству).
-/// </summary>
+/// <summary>Группа M — несколько учётных единиц в одних списках.</summary>
 internal static partial class SnkTestCases
 {
     private static IEnumerable<SnkTestCase> MultiUnitCases()
@@ -18,19 +14,17 @@ internal static partial class SnkTestCases
         yield return Multi03_MixedFirstInventoryAndReceivedLater();
     }
 
-    /// <summary>
-    /// M01. Две единицы в первой инвентаризации, одна позже передана. В СНК остаётся вторая.
-    /// </summary>
+    /// <summary>M01. 510 и 700 в первой инв.; 700 передана на 29.11.2023.</summary>
     private static SnkTestCase Multi01_TwoUnitsInFirstInventory_OneTransferred() => new()
     {
         Name = "M01. Две единицы в первой инвентаризации, одна передана.",
         EndDate = FinalDate,
         Operations =
         [
-            Anchor(FirstInventoryDate),
-            Operation("10", FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Operation("10", FirstInventoryDate, "700", "070", "ГИК-5-3", "кобальт-60", "70"),
-            Operation("28", RechargeDay, "700", "070", "ГИК-5-3", "кобальт-60", "70"),
+            ..FullInventoryOn(FirstInventoryDate,
+                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+                Inv(FirstInventoryDate, "700", "070", "ГИК-5-3", "кобальт-60", "70")),
+            Transfer(RechargeDay, "700", "070", "ГИК-5-3", "кобальт-60", "70"),
         ],
         ExpectedSnkStock =
         [
@@ -45,19 +39,17 @@ internal static partial class SnkTestCases
             On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")))
     };
 
-    /// <summary>
-    /// M02. Серийная единица и единица с пустыми зав.№ (учёт по количеству) одновременно. Обе остаются.
-    /// </summary>
+    /// <summary>M02. 510 (серийная) + ОСГИ-3 (пустые зав.№, qty).</summary>
     private static SnkTestCase Multi02_SerialAndEmptySerial_BothStay() => new()
     {
         Name = "M02. Серийная и пустые зав.№ единицы вместе.",
         EndDate = FinalDate,
         Operations =
         [
-            Anchor(FirstInventoryDate),
-            Operation("10", FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Operation("10", FirstInventoryDate, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 2),
-            Operation("38", new DateOnly(2023, 3, 1), "", "", "ОСГИ-3", "кобальт-60", "", quantity: 1),
+            ..FullInventoryOn(FirstInventoryDate,
+                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+                Inv(FirstInventoryDate, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
+            Receive(new DateOnly(2023, 3, 1), "", "", "ОСГИ-3", "кобальт-60", "", quantity: 1),
         ],
         ExpectedSnkStock =
         [
@@ -76,20 +68,17 @@ internal static partial class SnkTestCases
                 Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 3)))
     };
 
-    /// <summary>
-    /// M03. Смешанные судьбы: одна единица в первой инвентаризации (позже передана),
-    /// другая получена после первой инвентаризации (остаётся).
-    /// </summary>
+    /// <summary>M03. 700 в первой инв. (передана); 510 получена позже.</summary>
     private static SnkTestCase Multi03_MixedFirstInventoryAndReceivedLater() => new()
     {
         Name = "M03. Одна в первой инвентаризации (передана), другая получена позже (остаётся).",
         EndDate = FinalDate,
         Operations =
         [
-            Anchor(FirstInventoryDate),
-            Operation("10", FirstInventoryDate, "700", "070", "ГИК-5-3", "кобальт-60", "70"),
-            Operation("38", ReceiveDay, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
-            Operation("28", RechargeDay, "700", "070", "ГИК-5-3", "кобальт-60", "70"),
+            ..FullInventoryOn(FirstInventoryDate,
+                Inv(FirstInventoryDate, "700", "070", "ГИК-5-3", "кобальт-60", "70")),
+            Receive(ReceiveDay, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
+            Transfer(RechargeDay, "700", "070", "ГИК-5-3", "кобальт-60", "70"),
         ],
         ExpectedSnkStock =
         [

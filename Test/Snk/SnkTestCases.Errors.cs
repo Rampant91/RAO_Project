@@ -4,12 +4,7 @@ using Client_App.Commands.AsyncCommands.ExcelExport.Snk.Testing;
 
 namespace Test.Snk;
 
-/// <summary>
-/// Группа E — сценарии с логическими ошибками пользователя.
-/// Сейчас проверяются только итоговые списки СНК и инвентаризаций (наличие/количество).
-/// Сами ошибки (их типы) будут отлавливаться отдельно, поэтому для кейсов с расхождением
-/// «есть в инвентаризации, но нет в СНК» выставлен флаг <see cref="SnkTestCase.HasIntentionalInventoryErrors"/>.
-/// </summary>
+/// <summary>Группа E — ошибки пользователя (проверяется итоговое наличие, не типы ошибок).</summary>
 internal static partial class SnkTestCases
 {
     private static IEnumerable<SnkTestCase> ErrorCases()
@@ -20,17 +15,17 @@ internal static partial class SnkTestCases
         yield return Error04_InventoryOfAlreadyTransferredUnit();
     }
 
-    /// <summary>
-    /// E01. Передача ЗРИ, которого не было в наличии (нет инвентаризации и получения). В СНК он не появляется.
-    /// </summary>
+    /// <summary>E01. Передача 510, которой не было в наличии.</summary>
     private static SnkTestCase Error01_TransferOfNeverOwnedUnit() => new()
     {
         Name = "E01. Передача отсутствующего ЗРИ.",
         EndDate = FinalDate,
         Operations =
         [
+            // 19.01.2022 | только якорь
             Anchor(FirstInventoryDate),
-            Operation("28", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            // 29.11.2023 | op.28 | передача 510 (не получали)
+            Transfer(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
         ],
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
@@ -39,15 +34,7 @@ internal static partial class SnkTestCases
     };
 
     /// <summary>
-    /// E02. Пустые зав.№/паспорт: передано больше, чем было (инв. 2, передача 5).
-    /// <para>
-    /// Семантика СНК (намеренная): количество не уходит в минус — <c>Math.Max(0, qty)</c>,
-    /// единица снимается с учёта (в СНК только якорь). Игнорировать передачу нельзя:
-    /// иначе в наличии останется 2, хотя пользователь указал списание 5.
-    /// Отдельно при проверке инвентаризаций должна фиксироваться ошибка типа 9
-    /// (QuantityGivenExceedsAvailable) — это будет в тестах ошибок позже.
-    /// </para>
-    /// Группа O05 проверяет, что при перестановке строк тот же эталон (обнуление) сохраняется.
+    /// E02. ОСГИ-3 (пустые зав.№): инв. qty=2, передача qty=5 → СНК 0 (Math.Max). См. O05.
     /// </summary>
     private static SnkTestCase Error02_EmptySerial_TransferMoreThanAvailable() => new()
     {
@@ -55,9 +42,10 @@ internal static partial class SnkTestCases
         EndDate = FinalDate,
         Operations =
         [
-            Anchor(FirstInventoryDate),
-            Operation("10", FirstInventoryDate, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 2),
-            Operation("28", RechargeDay, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 5),
+            ..FullInventoryOn(FirstInventoryDate,
+                Inv(FirstInventoryDate, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
+            // 29.11.2023 | op.28 | передача qty=5 при наличии 2
+            Transfer(RechargeDay, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 5),
         ],
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
@@ -65,19 +53,17 @@ internal static partial class SnkTestCases
             On(FinalDate, AnchorStock()))
     };
 
-    /// <summary>
-    /// E03. Повторная передача уже снятого с учёта ЗРИ. После первой передачи его нет, вторая — ошибка.
-    /// </summary>
+    /// <summary>E03. Две передачи 510 — вторая ошибочна.</summary>
     private static SnkTestCase Error03_DoubleTransfer_Serial() => new()
     {
         Name = "E03. Повторная передача уже снятого ЗРИ.",
         EndDate = FinalDate,
         Operations =
         [
-            Anchor(FirstInventoryDate),
-            Operation("10", FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Operation("28", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Operation("28", LaterTransferDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            ..FullInventoryOn(FirstInventoryDate,
+                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+            Transfer(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Transfer(LaterTransferDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
         ],
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
@@ -86,8 +72,7 @@ internal static partial class SnkTestCases
     };
 
     /// <summary>
-    /// E04. Инвентаризация ранее снятого с учёта ЗРИ: единица получена и передана, а позже ошибочно
-    /// внесена в инвентаризацию. В СНК её нет, но в формах инвентаризации она есть — это и есть ошибка.
+    /// E04. 510 передана; на 29.11.2023 ошибочно в op.10 (в формах есть, в СНК нет).
     /// </summary>
     private static SnkTestCase Error04_InventoryOfAlreadyTransferredUnit() => new()
     {
@@ -97,10 +82,11 @@ internal static partial class SnkTestCases
         Operations =
         [
             Anchor(FirstInventoryDate),
-            Operation("38", ReceiveDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Operation("28", new DateOnly(2023, 11, 20), "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Receive(ReceiveDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Transfer(new DateOnly(2023, 11, 20), "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            // 29.11.2023 | якорь корректно; 510 — ошибочная строка инв.
             Anchor(RechargeDay),
-            Operation("10", RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Inv(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
         ],
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
