@@ -42,6 +42,7 @@ internal static partial class SnkTestCases
 
     public static IEnumerable<object[]> All() =>
         ValidCases()
+            .Concat(Form13Cases())
             .Concat(ErrorCases())
             .Concat(NormalizationCases())
             .Concat(MultiUnitCases())

@@ -167,3 +167,10 @@ public sealed class SnkScenarioResult
 
     public DateOnly FirstInventoryDate { get; init; }
 }
+
+/// <summary>
+/// Результат расчёта СНК для проверки последней инвентаризации (как в <c>CheckSnk</c>).
+/// </summary>
+public sealed record LastInventorySnkResult(
+    IReadOnlyList<SnkStockSnapshot> Stock,
+    int CountUnits);

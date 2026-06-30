@@ -56,11 +56,13 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
         progressBarVM.SetProgressBar(15, "Загрузка списка организаций");
         var repsDtoList = await GetReportsDtoList(db, region, formNums, cts);
 
+        var asOfDate = DateOnly.FromDateTime(DateTime.Now);
+
         progressBarVM.SetProgressBar(20, "Проверка даты инвентаризации");
-        var filteredRepsDtoList = await CheckRepsInventoryDate(tmpDbPath, repsDtoList, formNums, progressBarVM, cts);
+        var filteredRepsDtoList = await CheckRepsInventoryDate(tmpDbPath, repsDtoList, formNums, asOfDate, progressBarVM, cts);
 
         progressBarVM.SetProgressBar(40, "Проверка наличия СНК");
-        var repsWithUnitsDtoList = await CheckSnk(tmpDbPath, filteredRepsDtoList, progressBarVM, cts, snkParams);
+        var repsWithUnitsDtoList = await CheckSnk(tmpDbPath, filteredRepsDtoList, asOfDate, progressBarVM, cts, snkParams);
 
         progressBarVM.SetProgressBar(90, "Заполнение строчек в .xlsx");
         await FillExcel(repsWithUnitsDtoList);
@@ -271,11 +273,12 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
     /// <param name="tmpDbPath">Полный путь к временному файлу БД.</param>
     /// <param name="repsDtoList">Список DTO организаций.</param>
     /// <param name="formNums">Номера форм.</param>
+    /// <param name="asOfDate">Дата, относительно которой проверяется просрочка.</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Список DTO организаций с просроченной инвентаризацией.</returns>
     private static async Task<List<ShortReportsDto>> CheckRepsInventoryDate(string tmpDbPath, List<ShortReportsDto> repsDtoList,
-        List<string> formNums, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
+        List<string> formNums, DateOnly asOfDate, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts)
     {
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentRepNum = 0;
@@ -354,22 +357,19 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                     inventoryForms11DtoList.AddRange(currentInventoryFormsStringDateList);
                 }
 
-                if (inventoryForms11DtoList.Count == 0)
-                {
-                    repsWithExpiredInventory.Add(repsDto11);
-                }
-                else
-                {
-                    var lastInventoryDate11 = inventoryForms11DtoList
-                        .Where(x => DateOnly.TryParse(x, out _))
-                        .Select(DateOnly.Parse)
-                        .Max();
+                var inventoryDates11 = inventoryForms11DtoList
+                    .Where(x => DateOnly.TryParse(x, out _))
+                    .Select(DateOnly.Parse)
+                    .ToList();
 
-                    if (DateOnly.FromDateTime(DateTime.Now).DayNumber - lastInventoryDate11.DayNumber > 365 + 14)
+                var lastInventoryDate11 = GetLastInventoryDate(inventoryDates11);
+                if (IsInventoryExpired(asOfDate, inventoryDates11))
+                {
+                    if (lastInventoryDate11.HasValue)
                     {
-                        repsDto11.LastInventoryDate = lastInventoryDate11;
-                        repsWithExpiredInventory.Add(repsDto11);
+                        repsDto11.LastInventoryDate = lastInventoryDate11.Value;
                     }
+                    repsWithExpiredInventory.Add(repsDto11);
                 }
             }
 
@@ -418,22 +418,19 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                     inventoryForms13DtoList.AddRange(currentInventoryFormsStringDateList);
                 }
 
-                if (inventoryForms13DtoList.Count == 0)
-                {
-                    repsWithExpiredInventory.Add(repsDto13);
-                }
-                else
-                {
-                    var lastInventoryDate13 = inventoryForms13DtoList
-                        .Where(x => DateOnly.TryParse(x, out _))
-                        .Select(DateOnly.Parse)
-                        .Max();
+                var inventoryDates13 = inventoryForms13DtoList
+                    .Where(x => DateOnly.TryParse(x, out _))
+                    .Select(DateOnly.Parse)
+                    .ToList();
 
-                    if (DateOnly.FromDateTime(DateTime.Now).DayNumber - lastInventoryDate13.DayNumber > 365 + 14)
+                var lastInventoryDate13 = GetLastInventoryDate(inventoryDates13);
+                if (IsInventoryExpired(asOfDate, inventoryDates13))
+                {
+                    if (lastInventoryDate13.HasValue)
                     {
-                        repsDto13.LastInventoryDate = lastInventoryDate13;
-                        repsWithExpiredInventory.Add(repsDto13);
+                        repsDto13.LastInventoryDate = lastInventoryDate13.Value;
                     }
+                    repsWithExpiredInventory.Add(repsDto13);
                 }
             }
 
@@ -458,15 +455,14 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
     /// </summary>
     /// <param name="tmpDbPath">Путь к временному файлу БД.</param>
     /// <param name="repsDtoList">Список DTO организаций.</param>
+    /// <param name="asOfDate">Дата, на которую рассчитывается СНК.</param>
     /// <param name="progressBarVM">ViewModel прогрессбара.</param>
     /// <param name="cts">Токен.</param>
     /// <param name="snkParams">DTO состоящий из bool флагов, показывающих, по каким параметрам необходимо выполнять поиск учётной единицы.</param>
     /// <returns>Список DTO организаций, у которых есть учётные единицы в наличии.</returns>
     private static async Task<List<ShortReportsDto>> CheckSnk(string tmpDbPath, List<ShortReportsDto> repsDtoList,
-        AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts, SnkParamsDto snkParams)
+        DateOnly asOfDate, AnyTaskProgressBarVM progressBarVM, CancellationTokenSource cts, SnkParamsDto snkParams)
     {
-        var currentDate = DateOnly.FromDateTime(DateTime.Now);
-
         double progressBarDoubleValue = progressBarVM.ValueBar;
         var currentRepsNum = 0;
 
@@ -534,16 +530,16 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
         {
             currentRepsNum++;
 
-            var inventoryReportDtoList = await GetInventoryReportDtoList(db, dto.Id, dto.FormNum, currentDate, cts);
+            var inventoryReportDtoList = await GetInventoryReportDtoList(db, dto.Id, dto.FormNum, asOfDate, cts);
 
             var (firstSnkDate, inventoryFormsDtoList, _) = 
-                await GetInventoryFormsDtoList(db, inventoryReportDtoList, dto.FormNum, currentDate, cts, snkParams);
+                await GetInventoryFormsDtoList(db, inventoryReportDtoList, dto.FormNum, asOfDate, cts, snkParams);
 
             var reportIds = await GetReportIds(db, dto.Id, dto.FormNum, cts);
 
-            var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, reportIds, dto.FormNum, firstSnkDate, currentDate, cts, snkParams);
+            var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, reportIds, dto.FormNum, firstSnkDate, asOfDate, cts, snkParams);
 
-            var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, dto.Id, dto.FormNum, firstSnkDate, currentDate, cts, snkParams);
+            var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, dto.Id, dto.FormNum, firstSnkDate, asOfDate, cts, snkParams);
 
             var uniqueUnitWithAllOperationDictionary = 
                 await GetDictionary_UniqueUnitsWithOperations(dto.FormNum, inventoryFormsDtoList, plusMinusFormsDtoList, rechargeFormsDtoList);
@@ -557,7 +553,7 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                 "Проверка последней инвентаризации");
         }
         return repsDtoList
-            .Where(x => x.CountUnits != 0)
+            .Where(x => IncludeInDebtorsList(x.CountUnits))
             .OrderBy(x => x.RegNum)
             .ThenBy(x => x.Okpo)
             .ThenBy(x => x.FormNum)
@@ -698,6 +694,28 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
 
         public string RegNum { get; set; }
     }
+
+    #endregion
+
+    #region LastInventoryHelpers
+
+    private const int InventoryExpiryThresholdDays = 365 + 14;
+
+    private static bool IsInventoryExpired(DateOnly asOfDate, IReadOnlyList<DateOnly> inventoryDates)
+    {
+        if (inventoryDates.Count == 0)
+        {
+            return true;
+        }
+
+        var lastInventoryDate = inventoryDates.Max();
+        return asOfDate.DayNumber - lastInventoryDate.DayNumber > InventoryExpiryThresholdDays;
+    }
+
+    private static DateOnly? GetLastInventoryDate(IReadOnlyList<DateOnly> inventoryDates) =>
+        inventoryDates.Count == 0 ? null : inventoryDates.Max();
+
+    private static bool IncludeInDebtorsList(int countUnits) => countUnits != 0;
 
     #endregion
 

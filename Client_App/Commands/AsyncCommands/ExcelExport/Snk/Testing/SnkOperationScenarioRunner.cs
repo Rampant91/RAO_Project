@@ -28,6 +28,12 @@ public static class SnkOperationScenarioRunner
         SnkTestCase testCase) =>
         ExcelExportCheckInventoriesAsyncCommand.InventoriesTestHarness.Instance.RunCheckInventoriesErrorsAsync(testCase);
 
+    /// <summary>
+    /// СНК на дату для проверки последней инвентаризации (как <c>CheckSnk</c> в команде ExcelExportCheckLastInventoryDateAsyncCommand).
+    /// </summary>
+    public static Task<LastInventorySnkResult> RunLastInventorySnkAsync(SnkTestCase testCase, DateOnly asOfDate) =>
+        ExcelExportCheckLastInventoryDateAsyncCommand.LastInventoryTestHarness.Instance.RunComputeSnkAsync(testCase, asOfDate);
+
     public static Task<SnkScenarioResult> RunAsync(SnkTestScenario scenario) =>
         ExcelExportSnkTestHarness.Instance.RunScenarioAsync(scenario);
 }

@@ -1954,9 +1954,12 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
             if (formNum is "1.3" || SerialNumbersIsEmpty(unit.PasNum, unit.FacNum))
             {
+                // Для 1.3 и для 1.1 с пустыми зав./паспорт на первую дату инвентаризации
+                // количество должно задаваться суммой всех строк op.10 на эту дату.
+                // Иначе сценарии "N строк по 1" и "1 строка с N" дают разный результат.
                 var quantity = operations
-                    .FirstOrDefault(x => x.OpCode == "10" && x.OpDate == firstInventoryDate)
-                    ?.Quantity ?? 0;
+                    .Where(x => x.OpCode == "10" && x.OpDate == firstInventoryDate)
+                    .Sum(x => x.Quantity);
 
                 var inStockOnFirstInventoryDate = operations.Any(x => x.OpCode == "10" && x.OpDate == firstInventoryDate);
                 var operationsWithoutDuplicates = await GetOperationsWithoutDuplicates(operations, formNum);
