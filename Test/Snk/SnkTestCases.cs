@@ -50,6 +50,11 @@ internal static partial class SnkTestCases
             .Concat(OrderCases())
             .Select(testCase => new object[] { testCase.Name, testCase });
 
+    public static IEnumerable<object[]> WithExpectedInventoryErrors() =>
+        ErrorCases()
+            .Where(testCase => testCase.ExpectedInventoryErrorsByDate.Count > 0)
+            .Select(testCase => new object[] { testCase.Name, testCase });
+
     /// <summary>op.10 — инвентаризация якоря 999/001 (всегда в наличии с первой инв.).</summary>
     private static SnkTestOperationSpec Anchor(DateOnly date) =>
         Operation("10", date, "999", "001", "Тип-A", "кобальт-60", "1");
@@ -137,7 +142,27 @@ internal static partial class SnkTestCases
         ExpectedInventoryStockByDate = template.ExpectedInventoryStockByDate,
         AllowedInventoryVsSnkDifferenceByDate = template.AllowedInventoryVsSnkDifferenceByDate,
         HasIntentionalInventoryErrors = template.HasIntentionalInventoryErrors,
+        ExpectedInventoryErrorsByDate = template.ExpectedInventoryErrorsByDate,
     };
+
+    private static Dictionary<DateOnly, IReadOnlyList<SnkExpectedInventoryError>> ErrorsByDate(
+        params KeyValuePair<DateOnly, IReadOnlyList<SnkExpectedInventoryError>>[] entries) =>
+        entries.ToDictionary(entry => entry.Key, entry => entry.Value);
+
+    private static KeyValuePair<DateOnly, IReadOnlyList<SnkExpectedInventoryError>> ErrOn(
+        DateOnly date, params SnkExpectedInventoryError[] errors) =>
+        new(date, errors);
+
+    private static SnkExpectedInventoryError Err(
+        SnkInventoryErrorType errorType,
+        string pasNum,
+        string facNum,
+        string type,
+        string radionuclids,
+        string packNumber,
+        string? opCode = null,
+        DateOnly? opDate = null) =>
+        new(errorType, pasNum, facNum, type, radionuclids, packNumber, opCode, opDate);
 
     private static SnkStockSnapshot Stock(
         string pasNum,

@@ -27,38 +27,15 @@ public partial class ExcelExportCheckInventoriesAsyncCommand
         public async Task<IReadOnlyDictionary<DateOnly, IReadOnlyList<SnkStockSnapshot>>> RunCheckInventoriesAsync(
             SnkTestCase testCase)
         {
-            var operations = testCase.Operations
-                .Where(x => x.OpDate <= testCase.EndDate)
-                .ToList();
+            var (stockByDate, _) = await RunCheckInventoriesCoreAsync(testCase);
+            return stockByDate;
+        }
 
-            var (inventoryList, plusMinusList, rechargeList, zeroList) =
-                SnkTestOperationSplitter.Split(testCase.FormNum, operations);
-
-            var firstInventoryDate = inventoryList.Count == 0
-                ? DateOnly.MinValue
-                : inventoryList.Min(x => x.OpDate);
-
-            var dictionary = await GetDictionary_UniqueUnitsWithOperations(
-                testCase.FormNum,
-                inventoryList,
-                plusMinusList,
-                rechargeList,
-                zeroList);
-
-            var inventoryDatesList = await GetInventoryDatesList(inventoryList, testCase.EndDate);
-
-            var (unitInStockByDateDictionary, _) = await GetInventoryErrorsAndSnk(
-                dictionary,
-                inventoryDatesList,
-                [],
-                firstInventoryDate,
-                testCase.FormNum);
-
-            return unitInStockByDateDictionary.ToDictionary(
-                pair => pair.Key,
-                pair => (IReadOnlyList<SnkStockSnapshot>)pair.Value
-                    .Select(SnkTestOperationSplitter.ToSnapshot)
-                    .ToList());
+        public async Task<IReadOnlyDictionary<DateOnly, IReadOnlyList<SnkActualInventoryError>>> RunCheckInventoriesErrorsAsync(
+            SnkTestCase testCase)
+        {
+            var (_, errorsByDate) = await RunCheckInventoriesCoreAsync(testCase);
+            return errorsByDate;
         }
 
         /// <summary>
@@ -84,5 +61,63 @@ public partial class ExcelExportCheckInventoriesAsyncCommand
                     .Select(SnkTestOperationSplitter.ToSnapshot)
                     .ToList());
         }
+
+        private async Task<(
+            IReadOnlyDictionary<DateOnly, IReadOnlyList<SnkStockSnapshot>>,
+            IReadOnlyDictionary<DateOnly, IReadOnlyList<SnkActualInventoryError>>)>
+            RunCheckInventoriesCoreAsync(SnkTestCase testCase)
+        {
+            var operations = testCase.Operations
+                .Where(x => x.OpDate <= testCase.EndDate)
+                .ToList();
+
+            var (inventoryList, plusMinusList, rechargeList, zeroList) =
+                SnkTestOperationSplitter.Split(testCase.FormNum, operations);
+
+            var firstInventoryDate = inventoryList.Count == 0
+                ? DateOnly.MinValue
+                : inventoryList.Min(x => x.OpDate);
+
+            var dictionary = await GetDictionary_UniqueUnitsWithOperations(
+                testCase.FormNum,
+                inventoryList,
+                plusMinusList,
+                rechargeList,
+                zeroList);
+
+            var inventoryDatesList = await GetInventoryDatesList(inventoryList, testCase.EndDate);
+
+            var (unitInStockByDateDictionary, inventoryErrorsByDateDictionary) = await GetInventoryErrorsAndSnk(
+                dictionary,
+                inventoryDatesList,
+                [],
+                firstInventoryDate,
+                testCase.FormNum);
+
+            var stockByDate = unitInStockByDateDictionary.ToDictionary(
+                pair => pair.Key,
+                pair => (IReadOnlyList<SnkStockSnapshot>)pair.Value
+                    .Select(SnkTestOperationSplitter.ToSnapshot)
+                    .ToList());
+
+            var errorsByDate = inventoryErrorsByDateDictionary.ToDictionary(
+                pair => pair.Key,
+                pair => (IReadOnlyList<SnkActualInventoryError>)pair.Value
+                    .Select(ToActualInventoryError)
+                    .ToList());
+
+            return (stockByDate, errorsByDate);
+        }
+
+        private static SnkActualInventoryError ToActualInventoryError(InventoryErrorsShortDto error) =>
+            new(
+                (SnkInventoryErrorType)(int)error.ErrorTypeEnum,
+                error.Dto.PasNum,
+                error.Dto.FacNum,
+                error.Dto.Type,
+                error.Dto.Radionuclids,
+                error.Dto.PackNumber,
+                error.Dto.OpCode,
+                error.Dto.OpDate);
     }
 }

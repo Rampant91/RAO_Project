@@ -146,4 +146,15 @@ public class ExcelExportSnkScenarioTests
             SnkStockAssertions.InventoryDifferenceIsAllowed(inventoryDate, inventoried, snk, allowed);
         }
     }
+
+    /// <summary>
+    /// Проверяет типы и учётные единицы ошибок проверки инвентаризаций (группа E и др.).
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(SnkTestCases.WithExpectedInventoryErrors), MemberType = typeof(SnkTestCases))]
+    public async Task CheckInventories_MatchesExpectedInventoryErrors(string name, SnkTestCase testCase)
+    {
+        var actualErrors = await SnkOperationScenarioRunner.RunCheckInventoriesErrorsAsync(testCase);
+        SnkStockAssertions.InventoryErrorsEqual(testCase.ExpectedInventoryErrorsByDate, actualErrors);
+    }
 }

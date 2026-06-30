@@ -4,7 +4,7 @@ using Client_App.Commands.AsyncCommands.ExcelExport.Snk.Testing;
 
 namespace Test.Snk;
 
-/// <summary>Группа E — ошибки пользователя (проверяется итоговое наличие, не типы ошибок).</summary>
+/// <summary>Группа E — ошибки пользователя: итоговое наличие и типы ошибок проверки инвентаризаций.</summary>
 internal static partial class SnkTestCases
 {
     private static IEnumerable<SnkTestCase> ErrorCases()
@@ -30,7 +30,12 @@ internal static partial class SnkTestCases
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
             On(FirstInventoryDate, AnchorStock()),
-            On(FinalDate, AnchorStock()))
+            On(FinalDate, AnchorStock())),
+        ExpectedInventoryErrorsByDate = ErrorsByDate(
+            ErrOn(FinalDate,
+                Err(SnkInventoryErrorType.UnInventoriedUnitGivenAway,
+                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    opCode: "28", opDate: RechargeDay)))
     };
 
     /// <summary>
@@ -50,7 +55,12 @@ internal static partial class SnkTestCases
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
             On(FirstInventoryDate, AnchorStock(), Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
-            On(FinalDate, AnchorStock()))
+            On(FinalDate, AnchorStock())),
+        ExpectedInventoryErrorsByDate = ErrorsByDate(
+            ErrOn(FinalDate,
+                Err(SnkInventoryErrorType.QuantityGivenExceedsAvailable,
+                    "", "", "ОСГИ-3", "кобальт-60", "",
+                    opCode: "28", opDate: RechargeDay)))
     };
 
     /// <summary>E03. Две передачи 510 — вторая ошибочна.</summary>
@@ -68,7 +78,12 @@ internal static partial class SnkTestCases
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
             On(FirstInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(FinalDate, AnchorStock()))
+            On(FinalDate, AnchorStock())),
+        ExpectedInventoryErrorsByDate = ErrorsByDate(
+            ErrOn(FinalDate,
+                Err(SnkInventoryErrorType.ReDeRegistration,
+                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    opCode: "28", opDate: LaterTransferDay)))
     };
 
     /// <summary>
@@ -92,6 +107,11 @@ internal static partial class SnkTestCases
         ExpectedInventoryStockByDate = ByDate(
             On(FirstInventoryDate, AnchorStock()),
             On(RechargeDay, AnchorStock()),
-            On(FinalDate, AnchorStock()))
+            On(FinalDate, AnchorStock())),
+        ExpectedInventoryErrorsByDate = ErrorsByDate(
+            ErrOn(RechargeDay,
+                Err(SnkInventoryErrorType.GivenUnitIsInventoried,
+                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    opCode: "10", opDate: RechargeDay)))
     };
 }

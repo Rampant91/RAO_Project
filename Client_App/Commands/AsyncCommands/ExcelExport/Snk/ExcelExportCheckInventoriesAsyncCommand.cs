@@ -965,8 +965,9 @@ public partial class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWi
                             x.OpCode == "10" && x.OpDate == inventoryDate))
                     .Select(unit => unit.Value.First()));
 
-                // Добавляем в словарь СНК текущую дату инвентаризации и СНК на эту дату.
-                unitInStockByDateDictionary.Add(inventoryDate, [.. unitInStockDtoList]);
+                // СНК на дату берём из общего расчёта (как в выгрузке СНК).
+                unitInStockByDateDictionary.Add(inventoryDate,
+                    await ComputeStockAsOfDate(uniqueUnitWithAllOperationDictionary, formNum, primaryInventoryDate, inventoryDate));
 
                 // Добавляем в словарь ошибок текущую дату и список ошибок на эту дату.
                 inventoryErrorsByDateDictionary.Add(inventoryDate, [.. errorsDtoList]);
@@ -1058,6 +1059,7 @@ public partial class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWi
                             else if (quantity < operation.Quantity)
                             {
                                 errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.QuantityGivenExceedsAvailable, operation));
+                                quantity = 0;
                             }
                             else
                             {
@@ -1201,9 +1203,8 @@ public partial class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWi
                         else if (minusOperationArray.Contains(form.OpCode)) inStock = false;
                     }
 
-                    var lastOperationWithUnit = operationsWithoutMutuallyExclusive
-                        .OrderBy(x => x.OpDate)
-                        .LastOrDefault();
+                    var lastOperationWithUnit = SelectStockRepresentativeOperation(
+                        operationsWithoutMutuallyExclusive, formNum);
 
                     if (lastOperationWithUnit == null) continue;
 
@@ -1241,8 +1242,10 @@ public partial class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWi
                 #endregion
             }
 
-            // Добавляем в словарь СНК текущую дату инвентаризации и СНК на эту дату.
-            unitInStockByDateDictionary.Add(inventoryDate, [.. unitInStockDtoList]);
+            // СНК на дату берём из общего расчёта (как в выгрузке СНК), чтобы проверка
+            // инвентаризаций давала идентичный выгрузке результат.
+            unitInStockByDateDictionary.Add(inventoryDate,
+                await ComputeStockAsOfDate(uniqueUnitWithAllOperationDictionary, formNum, primaryInventoryDate, inventoryDate));
 
             // Добавляем в словарь ошибок текущую дату и список ошибок на эту дату.
             inventoryErrorsByDateDictionary.Add(inventoryDate, [.. errorsDtoList]);
@@ -1251,53 +1254,6 @@ public partial class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWi
         }
 
         return (unitInStockByDateDictionary, inventoryErrorsByDateDictionary);
-    }
-
-    #endregion
-
-    #region GetOperationsWithoutDuplicates
-
-    private static Task<List<ShortFormDTO>> GetOperationsWithoutDuplicates(List<ShortFormDTO> operationList, string formNum)
-    {
-        var plusOperationArray = GetPlusOperationsArray(formNum);
-        var minusOperationArray = GetMinusOperationsArray(formNum);
-
-        List<ShortFormDTO> operationsWithoutDuplicates = [];
-        foreach (var group in operationList.GroupBy(x => x.OpDate))
-        {
-            var countPlus = group
-                .Where(x => plusOperationArray.Contains(x.OpCode))
-                .Sum(x => x.Quantity);
-
-            var countMinus = group
-                .Where(x => minusOperationArray.Contains(x.OpCode))
-                .Sum(x => x.Quantity);
-
-            var givenReceivedPerDayAmount = countPlus - countMinus;
-
-            switch (givenReceivedPerDayAmount)
-            {
-                case > 0:
-                {
-                    var lastOp = group.Last(x => plusOperationArray.Contains(x.OpCode));
-                    lastOp.Quantity = givenReceivedPerDayAmount;
-                    operationsWithoutDuplicates.Add(lastOp);
-                    break;
-                }
-                case 0:
-                {
-                    break;
-                }
-                case < 0:
-                {
-                    var lastOp = group.Last(x => minusOperationArray.Contains(x.OpCode));
-                    lastOp.Quantity = int.Abs(givenReceivedPerDayAmount);
-                    operationsWithoutDuplicates.Add(lastOp);
-                    break;
-                }
-            }
-        }
-        return Task.FromResult(operationsWithoutDuplicates);
     }
 
     #endregion
@@ -1504,7 +1460,7 @@ public partial class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWi
 
     #endregion
 
-    private class InventoryErrorsShortDto(InventoryErrorTypeEnum errorTypeEnum, ShortFormDTO dto)
+    internal class InventoryErrorsShortDto(InventoryErrorTypeEnum errorTypeEnum, ShortFormDTO dto)
     {
         public readonly InventoryErrorTypeEnum ErrorTypeEnum = errorTypeEnum;
 
@@ -1518,7 +1474,7 @@ public partial class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWi
     /// <summary>
     /// Перечисление типов ошибок.
     /// </summary>
-    private enum InventoryErrorTypeEnum
+    internal enum InventoryErrorTypeEnum
     {
         /// <summary>
         /// 0. Для заполненного зав.№ и № паспорта, повторная операция инвентаризации.

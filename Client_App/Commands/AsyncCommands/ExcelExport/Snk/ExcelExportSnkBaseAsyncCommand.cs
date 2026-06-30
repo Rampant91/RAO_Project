@@ -148,8 +148,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
             if (!_moveCounts.TryGetValue(form.Id, out var value))
             {
-                value = 1;
-                _moveCounts[form.Id] = value;
+                _moveCounts[form.Id] = 1;
                 return true;
             }
 
@@ -185,10 +184,10 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             onMoveSuccess?.Invoke();
             return true;
         }
+
         else
         {
-            // Достигнут лимит перемещений - добавляем в целевой список
-            targetList.Add(form);
+            sourceList.RemoveAt(currentIndex);
             onMoveFailure?.Invoke();
             return false;
         }
@@ -505,8 +504,10 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 //IsPairedList(editedFormsList, inStock, currentPackNumber, formNum);
 
                 var moveTracker = new MoveTracker();
+                var reorderGuard = 0;
+                var reorderGuardLimit = Math.Max(editedFormsList.Count * (editedFormsList.Count + 1), 1);
 
-                for (var i = 0; i < editedFormsList.Count; i++)
+                for (var i = 0; i < editedFormsList.Count && reorderGuard++ < reorderGuardLimit; i++)
                 {
                     var form = editedFormsList[i];
 
@@ -547,10 +548,12 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                             var countInventoryAndPlusOperation = subsequentElementsList.Count(x => 
                                 x.OpCode is "10" || GetPlusOperationsArray(formNum).Contains(x.OpCode));
 
-                            if (TryMoveOperation(form, i, editedFormsList, newOperationOrderList, 
-                                    moveTracker, i + countInventoryAndPlusOperation))
+                            if (TryMoveOperation(form, i, editedFormsList, newOperationOrderList,
+                                    moveTracker, i + countInventoryAndPlusOperation,
+                                    onMoveFailure: () =>
+                                        AddOperation(form, newOperationOrderList, formNum, ref inStock, ref currentPackNumber)))
                             {
-                                i--; // Уменьшаем счетчик, только если операция была перемещена
+                                i--;
                             }
                         }
 
@@ -571,8 +574,10 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                                     || (!inStock && GetPlusOperationsArray(formNum).Contains(x.OpCode) 
                                                  && !numberComparer.Equals(x.PackNumber, currentPackNumber)));
 
-                            if (TryMoveOperation(form, i, editedFormsList, newOperationOrderList, 
-                                    moveTracker, i + countOperationWithSamePackNumber))
+                            if (TryMoveOperation(form, i, editedFormsList, newOperationOrderList,
+                                    moveTracker, i + countOperationWithSamePackNumber,
+                                    onMoveFailure: () =>
+                                        AddOperation(form, newOperationOrderList, formNum, ref inStock, ref currentPackNumber)))
                             {
                                 i--;
                             }
@@ -599,7 +604,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                         //Перемещаем эту операцию получения в конец списка
                         else
                         {
-                            if (!TryMoveToEnd(form, i, editedFormsList, newOperationOrderList, moveTracker,
+                            if (TryMoveToEnd(form, i, editedFormsList, newOperationOrderList, moveTracker,
                                     (f) =>
                                     {
                                         AddOperation(f, newOperationOrderList, formNum, ref inStock, ref currentPackNumber);
@@ -628,7 +633,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                         //Перемещаем эту операцию передачи в конец списка
                         else
                         {
-                            if (!TryMoveToEnd(form, i, editedFormsList, newOperationOrderList, moveTracker,
+                            if (TryMoveToEnd(form, i, editedFormsList, newOperationOrderList, moveTracker,
                                     (f) =>
                                     {
                                         AddOperation(f, newOperationOrderList, formNum, ref inStock, ref currentPackNumber);
@@ -686,6 +691,24 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         Dictionary<UniqueUnitDto, List<ShortFormDTO>> uniqueUnitWithAllOperationDictionary = [];
         foreach (var group in orderedOperationList)
         {
+            if (group.Count == 0) continue;
+
+            // Для серийной единицы (1.1 с непустыми зав.№) УКТ — полноценный идентификатор,
+            // но он может меняться перезарядкой (53/54), причём в строке указывается только новый
+            // УКТ. Поэтому разносим операции серийника по экземплярам так, что переход между УКТ
+            // допускается ТОЛЬКО через перезарядку. Это разделяет параллельные единицы с одинаковым
+            // серийником, но разным УКТ, и одновременно не рвёт цепочку перезарядок одной единицы.
+            // Алгоритм порядко-независим относительно того, идёт ли op.10 раньше связывающей перезарядки.
+            var sampleForm = group[0];
+            if (formNum is not "1.3" && !SerialNumbersIsEmpty(sampleForm.PasNum, sampleForm.FacNum))
+            {
+                foreach (var (instanceKey, instanceOps) in SplitSerialGroupIntoInstances(group, formNum))
+                {
+                    uniqueUnitWithAllOperationDictionary.Add(instanceKey, instanceOps);
+                }
+                continue;
+            }
+
             foreach (var form in group)
             {
                 var dto = new UniqueUnitDto(form.FacNum, form.PasNum, form.Radionuclids, form.Type, form.Quantity, form.PackNumber);
@@ -813,6 +836,124 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
 
         return await Task.FromResult(uniqueUnitWithAllOperationDictionary);
+    }
+
+    /// <summary>
+    /// Экземпляр серийной учётной единицы при разнесении операций по УКТ.
+    /// </summary>
+    private sealed class SerialUnitInstance
+    {
+        public string CurrentPackNumber { get; set; } = "";
+        public List<(int Index, ShortFormDTO Form)> Operations { get; } = [];
+    }
+
+    /// <summary>
+    /// Разносит операции одного серийника (1.1 с непустыми зав.№) по отдельным учётным единицам.
+    /// Переход между УКТ допускается только через операцию перезарядки (53/54): обычная операция
+    /// (приём/передача/инвентаризация/нулевая) присоединяется к экземпляру с тем же УКТ, а если
+    /// такого нет — образует новый экземпляр (параллельная единица). Перезарядка меняет УКТ
+    /// последнего активного экземпляра с иным УКТ.
+    /// <para>
+    /// После разнесения экземпляры с одинаковым итоговым УКТ объединяются: две записи с совпадающими
+    /// серийником и УКТ — это одна и та же учётная единица (все идентифицирующие параметры равны).
+    /// Это «склеивает» цепочку перезарядки, если op.10 с новым УКТ оказался в списке раньше
+    /// связывающей перезарядки, но НЕ объединяет параллельные единицы с разным итоговым УКТ.
+    /// </para>
+    /// </summary>
+    /// <param name="serialOperations">Операции одного серийника (упорядоченные в проходе 1).</param>
+    /// <param name="formNum">Номер формы.</param>
+    /// <returns>Пары «ключ учётной единицы — список её операций» (порядок операций сохранён).</returns>
+    private static List<(UniqueUnitDto Key, List<ShortFormDTO> Operations)> SplitSerialGroupIntoInstances(
+        List<ShortFormDTO> serialOperations, string formNum)
+    {
+        var numberComparer = new SnkNumberEqualityComparer();
+        var plusOperationsArray = GetPlusOperationsArray(formNum);
+        var minusOperationsArray = GetMinusOperationsArray(formNum);
+        List<SerialUnitInstance> instances = [];
+
+        // Назначение операций по экземплярам делаем порядко-независимым: внутри одной даты
+        // обрабатываем операции в канонической последовательности «приём → перезарядка → передача →
+        // инвентаризация». Так приём успевает создать экземпляр до связывающей перезарядки, даже если
+        // в исходных данных строки идут в произвольном порядке. Исходный порядок (для хранимого
+        // списка операций) сохраняется через индекс и восстанавливается ниже.
+        int CategoryPriority(ShortFormDTO f) =>
+            f.OpCode switch
+            {
+                "53" or "54" => 1,
+                "10" => 3,
+                _ when plusOperationsArray.Contains(f.OpCode) => 0,
+                _ when minusOperationsArray.Contains(f.OpCode) => 2,
+                _ => 4
+            };
+
+        var assignmentOrder = serialOperations
+            .Select((form, index) => (form, index))
+            .OrderBy(x => x.form.OpDate)
+            .ThenBy(x => CategoryPriority(x.form))
+            .ThenBy(x => x.index)
+            .ToList();
+
+        foreach (var (form, index) in assignmentOrder)
+        {
+            if (form.OpCode is "53" or "54")
+            {
+                // Перезарядка переводит экземпляр на новый УКТ. Применяем к последнему экземпляру
+                // с иным УКТ; если такого нет — к экземпляру с тем же УКТ; иначе создаём новый.
+                var target = instances.LastOrDefault(x => !numberComparer.Equals(x.CurrentPackNumber, form.PackNumber))
+                             ?? instances.LastOrDefault(x => numberComparer.Equals(x.CurrentPackNumber, form.PackNumber));
+
+                if (target is null)
+                {
+                    var created = new SerialUnitInstance { CurrentPackNumber = form.PackNumber };
+                    created.Operations.Add((index, form));
+                    instances.Add(created);
+                }
+                else
+                {
+                    target.Operations.Add((index, form));
+                    target.CurrentPackNumber = form.PackNumber;
+                }
+            }
+            else
+            {
+                // Обычная операция присоединяется к экземпляру с совпадающим УКТ; если такого нет —
+                // это другая параллельная единица (тот же серийник, другой УКТ).
+                var target = instances.LastOrDefault(x => numberComparer.Equals(x.CurrentPackNumber, form.PackNumber));
+
+                if (target is null)
+                {
+                    var created = new SerialUnitInstance { CurrentPackNumber = form.PackNumber };
+                    created.Operations.Add((index, form));
+                    instances.Add(created);
+                }
+                else
+                {
+                    target.Operations.Add((index, form));
+                }
+            }
+        }
+
+        // Объединяем экземпляры с одинаковым итоговым УКТ (одна и та же учётная единица).
+        List<(UniqueUnitDto, List<ShortFormDTO>)> result = [];
+        foreach (var samePackGroup in instances.GroupBy(x => x.CurrentPackNumber, numberComparer))
+        {
+            var mergedOperations = samePackGroup
+                .SelectMany(x => x.Operations)
+                .OrderBy(x => x.Index)
+                .Select(x => x.Form)
+                .ToList();
+
+            var representative = SelectStockRepresentativeOperation(mergedOperations, formNum)
+                                 ?? mergedOperations[^1];
+
+            var key = new UniqueUnitDto(
+                representative.FacNum, representative.PasNum, representative.Radionuclids,
+                representative.Type, representative.Quantity, samePackGroup.Key);
+
+            result.Add((key, mergedOperations));
+        }
+
+        return result;
     }
 
     // Вспомогательный метод для добавления операции
@@ -1728,6 +1869,38 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     #region GetUnitInStockDtoList
 
     /// <summary>
+    /// Выбирает представительную операцию для строки СНК: при нескольких операциях в последний день
+    /// предпочитает последнюю не минусовую (op.10 не учитывается при выборе).
+    /// </summary>
+    private protected static ShortFormDTO? SelectStockRepresentativeOperation(
+        IReadOnlyList<ShortFormDTO> operations, string formNum)
+    {
+        if (operations.Count == 0)
+        {
+            return null;
+        }
+
+        var minusOperationArray = GetMinusOperationsArray(formNum);
+        var ordered = operations.OrderBy(x => x.OpDate).ToList();
+        var lastDate = ordered[^1].OpDate;
+        var onLastDate = ordered
+            .Where(x => x.OpDate == lastDate && x.OpCode != "10")
+            .ToList();
+
+        if (onLastDate.Count > 1)
+        {
+            return onLastDate
+                .Where(x => !minusOperationArray.Contains(x.OpCode))
+                .OrderByDescending(x => x.RepDto.StartPeriod)
+                .ThenByDescending(x => x.NumberInOrder)
+                .FirstOrDefault()
+                   ?? ordered.LastOrDefault();
+        }
+
+        return ordered.LastOrDefault();
+    }
+
+    /// <summary>
     /// Для каждой учётной единицы из словаря проверяется её наличие и выводится в общий список наличного количества (СНК).
     /// </summary>
     /// <param name="uniqueUnitWithAllOperationDictionary">Словарь из уникальной учётной единицы и списка всех операций с ней.</param>
@@ -1739,16 +1912,44 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         Dictionary<UniqueUnitDto, List<ShortFormDTO>> uniqueUnitWithAllOperationDictionary, string formNum,
         DateOnly firstInventoryDate, AnyTaskProgressBarVM progressBarVM)
     {
+        var unitInStockList = await ComputeStockAsOfDate(
+            uniqueUnitWithAllOperationDictionary, formNum, firstInventoryDate, DateOnly.MaxValue);
+
+        progressBarVM.SetProgressBar(
+            (int)Math.Floor((double)progressBarVM.ValueBar + 10),
+            $"Проверено {unitInStockList.Count} единиц",
+            "Проверка наличия");
+
+        return unitInStockList;
+    }
+
+    /// <summary>
+    /// Расчёт СНК (наличия) на указанную дату по словарю операций. Общий для выгрузки СНК
+    /// и проверки инвентаризаций, чтобы обе функции давали идентичный результат.
+    /// </summary>
+    /// <param name="uniqueUnitWithAllOperationDictionary">Словарь из уникальной учётной единицы и списка всех операций с ней.</param>
+    /// <param name="formNum">Номер формы.</param>
+    /// <param name="firstInventoryDate">Дата первой инвентаризации.</param>
+    /// <param name="asOfDate">Дата, на которую формируется наличие (учитываются операции с OpDate ≤ asOfDate).</param>
+    /// <returns>Список DTO учётных единиц в наличии (СНК) на дату.</returns>
+    private protected static async Task<List<ShortFormDTO>> ComputeStockAsOfDate(
+        Dictionary<UniqueUnitDto, List<ShortFormDTO>> uniqueUnitWithAllOperationDictionary, string formNum,
+        DateOnly firstInventoryDate, DateOnly asOfDate)
+    {
         var plusOperationArray = GetPlusOperationsArray(formNum);
         var minusOperationArray = GetMinusOperationsArray(formNum);
 
         List<ShortFormDTO> unitInStockList = [];
-        double progressBarDoubleValue = progressBarVM.ValueBar;
-        var currentUnitNum = 1;
         var comparer = new SnkNumberEqualityComparer();
         var radsComparer = new SnkRadionuclidsEqualityComparer();
-        foreach (var (unit, operations) in uniqueUnitWithAllOperationDictionary)
+        foreach (var (unit, allUnitOperations) in uniqueUnitWithAllOperationDictionary)
         {
+            var operations = allUnitOperations
+                .Where(x => x.OpDate <= asOfDate)
+                .ToList();
+
+            if (operations.Count == 0) continue;
+
             #region 1.3 || (1.1 && SerialNumEmpty)
 
             if (formNum is "1.3" || SerialNumbersIsEmpty(unit.PasNum, unit.FacNum))
@@ -1812,9 +2013,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 }
                 if (inStock)
                 {
-                    var lastOperationWithUnit = currentOperationsWithoutMutuallyExclusive
-                        .OrderBy(x => x.OpDate)
-                        .LastOrDefault();
+                    var lastOperationWithUnit = SelectStockRepresentativeOperation(
+                        currentOperationsWithoutMutuallyExclusive, formNum);
 
                     if (lastOperationWithUnit != null)
                     {
@@ -1825,12 +2025,6 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             }
 
             #endregion
-
-            progressBarDoubleValue += (double)10 / uniqueUnitWithAllOperationDictionary.Count;
-            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-                $"Проверено {currentUnitNum} единиц из {uniqueUnitWithAllOperationDictionary.Count}",
-                "Проверка наличия");
-            currentUnitNum++;
         }
         return unitInStockList;
     }
@@ -1901,38 +2095,58 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         var plusOperationsArray = GetPlusOperationsArray(formNum);
         var minusOperationsArray = GetMinusOperationsArray(formNum);
 
-        var operationsGroupedByDate = operationList
-            .OrderBy(x => x.OpDate)
-            .Where(x =>
-                !plusOperationsArray.Contains(x.OpCode) && !minusOperationsArray.Contains(x.OpCode)
-                || plusOperationsArray.Contains(x.OpCode) || minusOperationsArray.Contains(x.OpCode))
-            .GroupBy(x => x.OpDate)
-            .ToList();
-
-        var operationWithoutMutuallyExclusive = new List<ShortFormDTO>();
-        foreach (var group in operationsGroupedByDate)
+        List<ShortFormDTO> operationWithoutMutuallyExclusive = [];
+        foreach (var group in operationList
+                     .Select((form, index) => new { form, index })
+                     .GroupBy(x => x.form.OpDate)
+                     .OrderBy(x => x.Key))
         {
-            var formsList = group.ToList();
-            foreach (var form in formsList)
+            var orderedForms = group.OrderBy(x => x.index).Select(x => x.form).ToList();
+            var pendingNet = 0;
+            ShortFormDTO? pendingPlusTemplate = null;
+            ShortFormDTO? pendingMinusTemplate = null;
+
+            void FlushPendingNet()
             {
-                var currentFormIsPlus = plusOperationsArray.Contains(form.OpCode);
-                var currentFormIsMinus = minusOperationsArray.Contains(form.OpCode);
-
-                var duplicate = operationWithoutMutuallyExclusive.FirstOrDefault(x =>
-                    x.OpDate == form.OpDate
-                    && ((currentFormIsMinus && plusOperationsArray.Contains(x.OpCode))
-                        || (currentFormIsPlus && minusOperationsArray.Contains(x.OpCode))));
-
-                if (duplicate is not null)
+                switch (pendingNet)
                 {
-                    operationWithoutMutuallyExclusive.Remove(duplicate);
+                    case > 0 when pendingPlusTemplate is not null:
+                        pendingPlusTemplate.Quantity = pendingNet;
+                        operationWithoutMutuallyExclusive.Add(pendingPlusTemplate);
+                        break;
+                    case < 0 when pendingMinusTemplate is not null:
+                        pendingMinusTemplate.Quantity = int.Abs(pendingNet);
+                        operationWithoutMutuallyExclusive.Add(pendingMinusTemplate);
+                        break;
+                }
+
+                pendingNet = 0;
+                pendingPlusTemplate = null;
+                pendingMinusTemplate = null;
+            }
+
+            foreach (var form in orderedForms)
+            {
+                if (plusOperationsArray.Contains(form.OpCode))
+                {
+                    pendingNet += form.Quantity;
+                    pendingPlusTemplate = form;
+                }
+                else if (minusOperationsArray.Contains(form.OpCode))
+                {
+                    pendingNet -= form.Quantity;
+                    pendingMinusTemplate = form;
                 }
                 else
                 {
+                    FlushPendingNet();
                     operationWithoutMutuallyExclusive.Add(form);
                 }
             }
+
+            FlushPendingNet();
         }
+
         return Task.FromResult(operationWithoutMutuallyExclusive);
     }
 
