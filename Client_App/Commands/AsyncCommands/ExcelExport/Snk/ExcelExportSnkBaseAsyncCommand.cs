@@ -520,7 +520,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                     //Если в этот день только одна операция, то добавляем без изменений и переходим к следующему дню.
                     if (editedFormsList.Count is 1)
                     {
-                        AddOperation(form, newOperationOrderList, formNum, ref inStock, ref currentPackNumber);
+                        AddOperation(form, newOperationOrderList, formNum, ref inStock, out currentPackNumber);
                         continue;
                     }
 
@@ -551,7 +551,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                             if (TryMoveOperation(form, i, editedFormsList, newOperationOrderList,
                                     moveTracker, i + countInventoryAndPlusOperation,
                                     onMoveFailure: () =>
-                                        AddOperation(form, newOperationOrderList, formNum, ref inStock, ref currentPackNumber)))
+                                        AddOperation(form, newOperationOrderList, formNum, ref inStock, out currentPackNumber)))
                             {
                                 i--;
                             }
@@ -577,14 +577,14 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                             if (TryMoveOperation(form, i, editedFormsList, newOperationOrderList,
                                     moveTracker, i + countOperationWithSamePackNumber,
                                     onMoveFailure: () =>
-                                        AddOperation(form, newOperationOrderList, formNum, ref inStock, ref currentPackNumber)))
+                                        AddOperation(form, newOperationOrderList, formNum, ref inStock, out currentPackNumber)))
                             {
                                 i--;
                             }
                         }
                         else
                         {
-                            AddOperation(form, newOperationOrderList, formNum, ref inStock, ref currentPackNumber);
+                            AddOperation(form, newOperationOrderList, formNum, ref inStock, out currentPackNumber);
                         }
                     }
 
@@ -599,7 +599,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                         if (!inStock || subsequentElementsList.All(x => 
                                 GetPlusOperationsArray(formNum).Contains(x.OpCode)))
                         {
-                            AddOperation(form, newOperationOrderList, formNum, ref inStock, ref currentPackNumber);
+                            AddOperation(form, newOperationOrderList, formNum, ref inStock, out currentPackNumber);
                         }
                         //Перемещаем эту операцию получения в конец списка
                         else
@@ -607,7 +607,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                             if (TryMoveToEnd(form, i, editedFormsList, newOperationOrderList, moveTracker,
                                     (f) =>
                                     {
-                                        AddOperation(f, newOperationOrderList, formNum, ref inStock, ref currentPackNumber);
+                                        AddOperation(f, newOperationOrderList, formNum, ref inStock, out currentPackNumber);
                                     }))
                             {
                                 i--;
@@ -628,7 +628,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                             || subsequentElementsList.All(x => 
                                 GetMinusOperationsArray(formNum).Contains(x.OpCode)))
                         {
-                            AddOperation(form, newOperationOrderList, formNum, ref inStock, ref currentPackNumber);
+                            AddOperation(form, newOperationOrderList, formNum, ref inStock, out currentPackNumber);
                         }
                         //Перемещаем эту операцию передачи в конец списка
                         else
@@ -636,7 +636,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                             if (TryMoveToEnd(form, i, editedFormsList, newOperationOrderList, moveTracker,
                                     (f) =>
                                     {
-                                        AddOperation(f, newOperationOrderList, formNum, ref inStock, ref currentPackNumber);
+                                        AddOperation(f, newOperationOrderList, formNum, ref inStock, out currentPackNumber);
                                     }))
                             {
                                 i--;
@@ -651,7 +651,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                     //Если нулевая операция
                     else
                     {
-                        AddOperation(form, newOperationOrderList, formNum, ref inStock, ref currentPackNumber);
+                        AddOperation(form, newOperationOrderList, formNum, ref inStock, out currentPackNumber);
                     }
 
                     #endregion
@@ -958,7 +958,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
     // Вспомогательный метод для добавления операции
     private static void AddOperation(ShortFormDTO form, List<ShortFormDTO> newOperationOrderList, string formNum,
-        ref bool inStock, ref string currentPackNumber)
+        ref bool inStock, out string currentPackNumber)
     {
         newOperationOrderList.Add(form);
         currentPackNumber = form.PackNumber;
