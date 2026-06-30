@@ -1089,8 +1089,9 @@ public partial class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWi
 
                     if (quantity > 0)
                     {
-                        lastOperationWithUnit.Quantity = quantity;
-                        unitInStockDtoList.Add(lastOperationWithUnit);
+                        var stockUnit = lastOperationWithUnit.Clone();
+                        stockUnit.Quantity = quantity;
+                        unitInStockDtoList.Add(stockUnit);
                     }
                 }
 

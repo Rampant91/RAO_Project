@@ -356,7 +356,12 @@ internal static partial class SnkTestCases
         ExpectedInventoryStockByDate = ByDate(
             On(FirstInventoryDate, AnchorStock(), Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
             On(RechargeDay, AnchorStock()),
-            On(FinalDate, AnchorStock()))
+            On(FinalDate, AnchorStock())),
+        // На 29.11.2023 ОСГИ передали сверх наличия (5 при 2), поэтому в СНК количество опускается до 0
+        // и единицы там нет, хотя в формах инвентаризации она присутствует. Это допустимое расхождение
+        // (отдельная ошибка «передано больше, чем в наличии» будет проверяться в тестах на ошибки).
+        AllowedInventoryVsSnkDifferenceByDate = ByDate(
+            On(RechargeDay, Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)))
     };
 
   #endregion

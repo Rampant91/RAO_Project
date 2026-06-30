@@ -1992,8 +1992,9 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
                 if (quantity > 0)
                 {
-                    lastOperationWithUnit.Quantity = quantity;
-                    unitInStockList.Add(lastOperationWithUnit);
+                    var stockUnit = lastOperationWithUnit.Clone();
+                    stockUnit.Quantity = quantity;
+                    unitInStockList.Add(stockUnit);
                 }
             }
 
@@ -2003,7 +2004,13 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             
             else
             {
-                var inStock = operations.Any(x => x.OpCode == "10" && x.OpDate == firstInventoryDate);
+                // Засев «открывающего» наличия: единица учтена в первой инвентаризации (op.10 в дату
+                // первой инвентаризации). Но если в эту же дату есть приходная операция, единица не была
+                // в наличии ДО первой инвентаризации — она поступила в этот день, и её наличие полностью
+                // определяется её +/- операциями (иначе взаимокомпенсация прихода с передачей скрыла бы
+                // передачу, и единица ошибочно осталась бы в наличии).
+                var inStock = operations.Any(x => x.OpCode == "10" && x.OpDate == firstInventoryDate)
+                              && !operations.Any(x => plusOperationArray.Contains(x.OpCode) && x.OpDate == firstInventoryDate);
 
                 var currentOperationsWithoutMutuallyExclusive = await GetOperationsWithoutMutuallyCompensating(operations, formNum);
                 foreach (var form in currentOperationsWithoutMutuallyExclusive)
@@ -2018,7 +2025,25 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
                     if (lastOperationWithUnit != null)
                     {
-                        unitInStockList.Add(lastOperationWithUnit);
+                        // УКТ в строке СНК должен соответствовать состоянию на asOfDate: берём УКТ из
+                        // последней перезарядки (53/54) с датой ≤ asOfDate. Это нужно, когда в последний
+                        // день несколько операций и представителем выбирается приём со старым УКТ (52),
+                        // хотя в тот же день была перезарядка (52-1). Если перезарядок ещё не было —
+                        // оставляем УКТ выбранной операции (исходный УКТ до перезарядки).
+                        var stockUnit = lastOperationWithUnit.Clone();
+                        var currentPackNumber = operations
+                            .Where(x => x.OpCode is "53" or "54")
+                            .OrderByDescending(x => x.OpDate)
+                            .ThenByDescending(x => x.RepDto.StartPeriod)
+                            .ThenByDescending(x => x.NumberInOrder)
+                            .FirstOrDefault()?.PackNumber;
+
+                        if (currentPackNumber != null)
+                        {
+                            stockUnit.PackNumber = currentPackNumber;
+                        }
+
+                        unitInStockList.Add(stockUnit);
                     }
                 }
 
@@ -2059,7 +2084,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
             {
                 case > 0:
                     {
-                        var lastOp = group.Last(x => plusOperationsArray.Contains(x.OpCode));
+                        var lastOp = group.Last(x => plusOperationsArray.Contains(x.OpCode)).Clone();
                         lastOp.Quantity = givenReceivedPerDayAmount;
                         operationsWithoutDuplicates.Add(lastOp);
                         break;
@@ -2070,7 +2095,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                     }
                 case < 0:
                     {
-                        var lastOp = group.Last(x => minusOperationsArray.Contains(x.OpCode));
+                        var lastOp = group.Last(x => minusOperationsArray.Contains(x.OpCode)).Clone();
                         lastOp.Quantity = int.Abs(givenReceivedPerDayAmount);
                         operationsWithoutDuplicates.Add(lastOp);
                         break;
@@ -2111,13 +2136,19 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
                 switch (pendingNet)
                 {
                     case > 0 when pendingPlusTemplate is not null:
-                        pendingPlusTemplate.Quantity = pendingNet;
-                        operationWithoutMutuallyExclusive.Add(pendingPlusTemplate);
-                        break;
+                        {
+                            var plus = pendingPlusTemplate.Clone();
+                            plus.Quantity = pendingNet;
+                            operationWithoutMutuallyExclusive.Add(plus);
+                            break;
+                        }
                     case < 0 when pendingMinusTemplate is not null:
-                        pendingMinusTemplate.Quantity = int.Abs(pendingNet);
-                        operationWithoutMutuallyExclusive.Add(pendingMinusTemplate);
-                        break;
+                        {
+                            var minus = pendingMinusTemplate.Clone();
+                            minus.Quantity = int.Abs(pendingNet);
+                            operationWithoutMutuallyExclusive.Add(minus);
+                            break;
+                        }
                 }
 
                 pendingNet = 0;
@@ -2269,6 +2300,27 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         public string PackNumber { get; set; }
 
         public Status Status { get; set; }
+
+        /// <summary>
+        /// Создаёт поверхностную копию DTO. Используется в расчётах СНК, чтобы агрегация количества
+        /// (свёртка +/- операций за день) не мутировала исходные объекты в общем словаре операций:
+        /// <see cref="ComputeStockAsOfDate"/> вызывается многократно для разных дат по одному словарю.
+        /// </summary>
+        public ShortFormDTO Clone() => new()
+        {
+            Id = Id,
+            NumberInOrder = NumberInOrder,
+            RepDto = RepDto,
+            OpCode = OpCode,
+            OpDate = OpDate,
+            PasNum = PasNum,
+            Type = Type,
+            Radionuclids = Radionuclids,
+            FacNum = FacNum,
+            Quantity = Quantity,
+            PackNumber = PackNumber,
+            Status = Status
+        };
     }
 
     public enum Status
