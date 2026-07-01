@@ -1077,7 +1077,9 @@ public partial class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWi
                     //3. Есть во второй инвентаризации, но отсутствует в СНК на дату второй инвентаризации.
                     if (secondInventoryOperation is not null
                         && currentUnitInStock is null 
-                        && quantity <= 0)
+                        && quantity <= 0
+                        && !currentOperations.Any(x =>
+                            minusOperationArray.Contains(x.OpCode) && x.OpDate == inventoryDate))
                     {
                         errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.GivenUnitIsInventoried, secondInventoryOperation));
                     }
@@ -1184,7 +1186,9 @@ public partial class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWi
                     if (inStockOnPreviousInventoryDate
                         && firstPlusMinusOperation is not null 
                         && firstPlusMinusOperation.OpDate != primaryInventoryDate
-                        && plusOperationArray.Contains(firstPlusMinusOperation.OpCode))
+                        && plusOperationArray.Contains(firstPlusMinusOperation.OpCode)
+                        && !currentOperations.Any(x =>
+                            x.OpCode == "10" && x.OpDate == firstPlusMinusOperation.OpDate))
                     {
                         errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.InventoriedUnitReceived, firstPlusMinusOperation));
                     }
@@ -1220,7 +1224,9 @@ public partial class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWi
                         && x.Quantity == unit.Quantity);
 
                     //3. Есть во второй инвентаризации, но отсутствует в СНК на дату второй инвентаризации.
-                    if (secondInventoryOperation is not null && !inStock)
+                    if (secondInventoryOperation is not null && !inStock
+                        && !currentOperations.Any(x =>
+                            minusOperationArray.Contains(x.OpCode) && x.OpDate == inventoryDate))
                     {
                         errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.GivenUnitIsInventoried, secondInventoryOperation));
                     }

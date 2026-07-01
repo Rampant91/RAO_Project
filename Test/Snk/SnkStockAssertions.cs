@@ -74,6 +74,25 @@ internal static class SnkStockAssertions
             stock.Select(x => $"- {FormatUnitKey(x)}, количество={x.Quantity}, op={x.OpCode}, дата={x.OpDate:dd.MM.yyyy}"));
 
     /// <summary>
+    /// Проверяет, что на все даты проверки инвентаризаций список ошибок пуст.
+    /// </summary>
+    public static void InventoryErrorsAreEmpty(
+        IReadOnlyDictionary<DateOnly, IReadOnlyList<SnkActualInventoryError>> actualByDate)
+    {
+        var nonEmpty = actualByDate
+            .Where(pair => pair.Value.Count > 0)
+            .ToList();
+
+        Assert.True(
+            nonEmpty.Count == 0,
+            "На «чистом» сценарии не должно быть ошибок проверки инвентаризаций, но они обнаружены:" +
+            string.Join(
+                Environment.NewLine,
+                nonEmpty.Select(pair =>
+                    $"- {pair.Key:dd.MM.yyyy}:{Environment.NewLine}{FormatActualErrors(pair.Value)}")));
+    }
+
+    /// <summary>
     /// Сравнивает ожидаемые и фактические ошибки проверки инвентаризаций по датам.
     /// </summary>
     public static void InventoryErrorsEqual(

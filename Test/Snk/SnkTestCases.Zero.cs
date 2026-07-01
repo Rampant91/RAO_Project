@@ -33,7 +33,9 @@ internal static partial class SnkTestCases
             On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")))
     };
 
-    /// <summary>Z02. op.99 над отсутствующим 510.</summary>
+    /// <summary>
+    /// Z02. op.99 над отсутствующим 510 — без эффекта на СНК; ошибка типа 8 (см. также E09).
+    /// </summary>
     private static SnkTestCase Zero02_OnNeverOwnedUnit_NotInStock() => new()
     {
         Name = "Z02. Нулевая операция над отсутствующим ЗРИ.",
@@ -47,6 +49,11 @@ internal static partial class SnkTestCases
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
             On(FirstInventoryDate, AnchorStock()),
-            On(FinalDate, AnchorStock()))
+            On(FinalDate, AnchorStock())),
+        ExpectedInventoryErrorsByDate = ErrorsByDate(
+            ErrOn(FinalDate,
+                Err(SnkInventoryErrorType.ZeroOperationWithUnInventoriedUnit,
+                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    opCode: "99", opDate: RechargeDay)))
     };
 }

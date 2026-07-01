@@ -7,15 +7,15 @@ namespace Test.Snk;
 /// <summary>Группа X — длинные цепочки в разные дни (см. V05–V08 и O## для «всё в один день»).</summary>
 internal static partial class SnkTestCases
 {
-    private static IEnumerable<SnkTestCase> MixedCases()
+    private static IEnumerable<SnkTestCase> XCases()
     {
-        yield return Mixed01_LongSingleUnitLifecycle();
-        yield return Mixed02_MultiUnit_MultiInventoryDate();
-        yield return Mixed03_RepeatedReceiveTransferCycles();
+        yield return X01_LongSingleUnitLifecycle();
+        yield return X02_MultiUnit_MultiInventoryDate();
+        yield return X03_RepeatedReceiveTransferCycles();
     }
 
     /// <summary>X01. 510: 52 → 52-1 → 52-2 → передача. Полная инв. на каждую дату op.10.</summary>
-    private static SnkTestCase Mixed01_LongSingleUnitLifecycle()
+    private static SnkTestCase X01_LongSingleUnitLifecycle()
     {
         var d2 = new DateOnly(2022, 7, 1);
         var d3 = new DateOnly(2023, 1, 1);
@@ -55,7 +55,7 @@ internal static partial class SnkTestCases
     }
 
     /// <summary>X02. Три единицы, полная инв. на 19.01.2022 и 01.01.2023.</summary>
-    private static SnkTestCase Mixed02_MultiUnit_MultiInventoryDate()
+    private static SnkTestCase X02_MultiUnit_MultiInventoryDate()
     {
         var receiveB = new DateOnly(2022, 9, 1);
         var transferA = new DateOnly(2023, 6, 1);
@@ -101,7 +101,7 @@ internal static partial class SnkTestCases
     }
 
     /// <summary>X03. 510: циклы приём/передача в разные дни; в конце в наличии.</summary>
-    private static SnkTestCase Mixed03_RepeatedReceiveTransferCycles()
+    private static SnkTestCase X03_RepeatedReceiveTransferCycles()
     {
         var inventoryB = new DateOnly(2023, 6, 1);
 

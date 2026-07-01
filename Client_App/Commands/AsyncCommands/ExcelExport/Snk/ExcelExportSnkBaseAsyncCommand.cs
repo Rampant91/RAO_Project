@@ -1315,7 +1315,7 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
     /// <param name="inventoryFormsDtoList">Список DTO операций инвентаризации.</param>
     /// <param name="formNum">Номер формы.</param>
     /// <returns>Список DTO операций инвентаризации, просуммированный по количеству для первой даты.</returns>
-    private static Task<(List<ShortFormDTO>, List<ShortFormDTO>)> GetSummedInventoryDtoList(List<ShortFormDTO> inventoryFormsDtoList, string formNum)
+    private protected static Task<(List<ShortFormDTO>, List<ShortFormDTO>)> GetSummedInventoryDtoList(List<ShortFormDTO> inventoryFormsDtoList, string formNum)
     {
         List<ShortFormDTO> newInventoryFormsDtoList = [];
         List<ShortFormDTO> inventoryDuplicateErrors = [];

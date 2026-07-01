@@ -8,7 +8,8 @@ namespace Test.Snk;
 /// <summary>
 /// Наборы тестовых сценариев СНК и проверки инвентаризаций.
 /// <para>Группы: V — корректные; E — ошибки пользователя; N — нормализация полей;
-/// M — несколько единиц; Z — нулевые операции; X — длинные цепочки; O — порядок строк в один день.</para>
+/// M — несколько единиц; Z — нулевые операции; X — длинные цепочки; O — порядок строк в один день;
+/// F13 — форма 1.3.</para>
 /// <para>
 /// Общие даты (см. также имена полей ниже):
 /// <list type="bullet">
@@ -47,13 +48,25 @@ internal static partial class SnkTestCases
             .Concat(NormalizationCases())
             .Concat(MultiUnitCases())
             .Concat(ZeroOperationCases())
-            .Concat(MixedCases())
+            .Concat(XCases())
             .Concat(OrderCases())
             .Select(testCase => new object[] { testCase.Name, testCase });
 
     public static IEnumerable<object[]> WithExpectedInventoryErrors() =>
-        ErrorCases()
+        All()
+            .Select(item => (SnkTestCase)item[1])
             .Where(testCase => testCase.ExpectedInventoryErrorsByDate.Count > 0)
+            .Select(testCase => new object[] { testCase.Name, testCase });
+
+    /// <summary>
+    /// Кейсы без намеренных ошибок проверки инвентаризаций (negative control для ложных срабатываний).
+    /// </summary>
+    public static IEnumerable<object[]> WithoutExpectedInventoryErrors() =>
+        All()
+            .Select(item => (SnkTestCase)item[1])
+            .Where(testCase =>
+                !testCase.HasIntentionalInventoryErrors
+                && testCase.ExpectedInventoryErrorsByDate.Count == 0)
             .Select(testCase => new object[] { testCase.Name, testCase });
 
     /// <summary>op.10 — инвентаризация якоря 999/001 (всегда в наличии с первой инв.).</summary>

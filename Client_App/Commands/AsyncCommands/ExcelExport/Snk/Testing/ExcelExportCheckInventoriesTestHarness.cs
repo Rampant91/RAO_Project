@@ -74,23 +74,26 @@ public partial class ExcelExportCheckInventoriesAsyncCommand
             var (inventoryList, plusMinusList, rechargeList, zeroList) =
                 SnkTestOperationSplitter.Split(testCase.FormNum, operations);
 
-            var firstInventoryDate = inventoryList.Count == 0
+            var (summedInventoryList, inventoryDuplicateErrors) =
+                await GetSummedInventoryDtoList(inventoryList, testCase.FormNum);
+
+            var firstInventoryDate = summedInventoryList.Count == 0
                 ? DateOnly.MinValue
-                : inventoryList.Min(x => x.OpDate);
+                : summedInventoryList.Min(x => x.OpDate);
 
             var dictionary = await GetDictionary_UniqueUnitsWithOperations(
                 testCase.FormNum,
-                inventoryList,
+                summedInventoryList,
                 plusMinusList,
                 rechargeList,
                 zeroList);
 
-            var inventoryDatesList = await GetInventoryDatesList(inventoryList, testCase.EndDate);
+            var inventoryDatesList = await GetInventoryDatesList(summedInventoryList, testCase.EndDate);
 
             var (unitInStockByDateDictionary, inventoryErrorsByDateDictionary) = await GetInventoryErrorsAndSnk(
                 dictionary,
                 inventoryDatesList,
-                [],
+                inventoryDuplicateErrors,
                 firstInventoryDate,
                 testCase.FormNum);
 

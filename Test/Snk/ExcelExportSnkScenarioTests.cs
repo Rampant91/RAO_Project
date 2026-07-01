@@ -148,7 +148,7 @@ public class ExcelExportSnkScenarioTests
     }
 
     /// <summary>
-    /// Проверяет типы и учётные единицы ошибок проверки инвентаризаций (группа E и др.).
+    /// Проверяет типы и учётные единицы ошибок проверки инвентаризаций (все кейсы с явными ожиданиями).
     /// </summary>
     [Theory]
     [MemberData(nameof(SnkTestCases.WithExpectedInventoryErrors), MemberType = typeof(SnkTestCases))]
@@ -156,5 +156,16 @@ public class ExcelExportSnkScenarioTests
     {
         var actualErrors = await SnkOperationScenarioRunner.RunCheckInventoriesErrorsAsync(testCase);
         SnkStockAssertions.InventoryErrorsEqual(testCase.ExpectedInventoryErrorsByDate, actualErrors);
+    }
+
+    /// <summary>
+    /// Negative control: на корректных сценариях ошибки проверки инвентаризаций не формируются.
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(SnkTestCases.WithoutExpectedInventoryErrors), MemberType = typeof(SnkTestCases))]
+    public async Task CheckInventories_HasNoErrorsOnAnyCheckDate(string name, SnkTestCase testCase)
+    {
+        var actualErrors = await SnkOperationScenarioRunner.RunCheckInventoriesErrorsAsync(testCase);
+        SnkStockAssertions.InventoryErrorsAreEmpty(actualErrors);
     }
 }

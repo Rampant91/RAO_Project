@@ -306,9 +306,10 @@ internal static partial class SnkTestCases
 
   #endregion
 
-  #region O05 — пустые зав.№: передача сверх наличия (как E02)
+  #region O05 — пустые зав.№: передача сверх наличия (логика E02, но инв. в тот же день)
 
-    // ОСГИ-3 qty=2; на 29.11.2023 передача qty=5 → эталон: только якорь.
+    // ОСГИ-3 qty=2; на 29.11.2023 передача qty=5 → СНК 0. При инв. в тот же день алгоритм
+    // фиксирует тип 4 (а не 9, как в E02 без op.10 на дату передачи).
 
     private static IEnumerable<SnkTestCase> Order05_EmptySerial_OverTransferSameDay()
     {
@@ -351,17 +352,25 @@ internal static partial class SnkTestCases
     {
         Name = "O05-ref",
         EndDate = FinalDate,
+        HasIntentionalInventoryErrors = true,
         Operations = [],
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
             On(FirstInventoryDate, AnchorStock(), Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
             On(RechargeDay, AnchorStock()),
             On(FinalDate, AnchorStock())),
-        // На 29.11.2023 ОСГИ передали сверх наличия (5 при 2), поэтому в СНК количество опускается до 0
-        // и единицы там нет, хотя в формах инвентаризации она присутствует. Это допустимое расхождение
-        // (отдельная ошибка «передано больше, чем в наличии» будет проверяться в тестах на ошибки).
+        // На 29.11.2023 ОСГИ передали сверх наличия (5 при 2): в СНК qty=0, в формах инв. qty=2 — допустимое расхождение.
         AllowedInventoryVsSnkDifferenceByDate = ByDate(
-            On(RechargeDay, Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)))
+            On(RechargeDay, Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 2))),
+        ExpectedInventoryErrorsByDate = ErrorsByDate(
+            ErrOn(RechargeDay,
+                Err(SnkInventoryErrorType.QuantityGivenExceedsAvailable,
+                    "", "", "ОСГИ-3", "кобальт-60", "",
+                    opCode: "28", opDate: RechargeDay)),
+            ErrOn(FinalDate,
+                Err(SnkInventoryErrorType.UnInventoriedUnitGivenAway,
+                    "", "", "ОСГИ-3", "кобальт-60", "",
+                    opCode: "28", opDate: RechargeDay)))
     };
 
   #endregion
@@ -440,7 +449,6 @@ internal static partial class SnkTestCases
   #region O07 — длинная цепочка в один день + дубль инв.
 
     // 510 в первой инв. На 29.11.2023: пары ±, перезарядка, два op.10 для 510 (дубль), якорь.
-    // HasIntentionalInventoryErrors: дубль инв. — отдельная проверка ошибок позже.
 
     private static IEnumerable<SnkTestCase> Order07_LongChain_ManyOpsSameDay()
     {
@@ -498,7 +506,12 @@ internal static partial class SnkTestCases
         ExpectedInventoryStockByDate = ByDate(
             On(FirstInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
             On(RechargeDay, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")))
+            On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"))),
+        ExpectedInventoryErrorsByDate = ErrorsByDate(
+            ErrOn(RechargeDay,
+                Err(SnkInventoryErrorType.InventoryDuplicate,
+                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    opCode: "10", opDate: RechargeDay)))
     };
 
   #endregion
