@@ -1000,6 +1000,8 @@ public abstract class CheckF41 : CheckBase
                     else if (double.TryParse(report.Rows14[j].Mass_DB, out var mass)
                              && Spravochniks.SignsOperation["1.4"].ContainsKey($"{report.Rows14[j].OperationCode_DB}"))
                     {
+                        
+
                         switch (Spravochniks.SignsOperation["1.4"][$"{report.Rows14[j].OperationCode_DB}"])
                         {
                             case '+':
@@ -1055,6 +1057,9 @@ public abstract class CheckF41 : CheckBase
         {
             throw ex;
         }
+        massBalanceLiquid = Math.Round(massBalanceLiquid, 10);
+        massBalanceSolid = Math.Round(massBalanceSolid, 10);
+        massBalanceGas = Math.Round(massBalanceGas, 10);
 
         if (!inventoryFlag && (massBalanceLiquid > 0 || massBalanceSolid > 0 || massBalanceGas > 0))
             return new CheckError
