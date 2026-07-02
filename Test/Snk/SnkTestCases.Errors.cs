@@ -41,58 +41,58 @@ internal static partial class SnkTestCases
         Operations =
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
             Anchor(RechargeDay),
-            Inv(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Inv(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Inv(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
+            Inv(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(RechargeDay, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"))),
+            On(FirstInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            On(RechargeDay, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            On(FinalDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"))),
         ExpectedInventoryErrorsByDate = ErrorsByDate(
             ErrOn(RechargeDay,
                 Err(SnkInventoryErrorType.InventoryDuplicate,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "10", opDate: RechargeDay)))
     };
 
     /// <summary>
-    /// E00b. После перезарядки УКТ 52→52-1 — дубль op.10; ошибка привязана к строке с УКТ 52-1.
+    /// E00b. После перезарядки УКТ 52→УКТ-11 — дубль op.10; ошибка привязана к строке с УКТ УКТ-11.
     /// </summary>
     private static SnkTestCase Error00b_DuplicateInventory_AfterRecharge_Ukt() => new()
     {
-        Name = "E00b. Дубль op.10 после перезарядки: УКТ 52-1 в ошибке.",
+        Name = "E00b. Дубль op.10 после перезарядки: УКТ УКТ-11 в ошибке.",
         EndDate = FinalDate,
         HasIntentionalInventoryErrors = true,
         Operations =
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            Receive(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
-            Recharge(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            Receive(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10"),
+            Recharge(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
             Anchor(RechargeDay),
-            Inv(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Inv(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Inv(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
+            Inv(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(RechargeDay, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"))),
+            On(FirstInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            On(RechargeDay, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            On(FinalDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"))),
         ExpectedInventoryErrorsByDate = ErrorsByDate(
             ErrOn(RechargeDay,
                 Err(SnkInventoryErrorType.InventoryDuplicate,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "10", opDate: RechargeDay)))
     };
     private static SnkTestCase Error01_TransferOfNeverOwnedUnit() => new()
@@ -104,7 +104,7 @@ internal static partial class SnkTestCases
             // 19.01.2022 | только якорь
             Anchor(FirstInventoryDate),
             // 29.11.2023 | op.28 | передача 510 (не получали)
-            Transfer(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Transfer(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
@@ -113,12 +113,12 @@ internal static partial class SnkTestCases
         ExpectedInventoryErrorsByDate = ErrorsByDate(
             ErrOn(FinalDate,
                 Err(SnkInventoryErrorType.UnInventoriedUnitGivenAway,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "28", opDate: RechargeDay)))
     };
 
     /// <summary>
-    /// E02. ОСГИ-3 (пустые зав.№): инв. qty=2, передача qty=5 → СНК 0 (Math.Max). См. O05.
+    /// E02. Тип-Кол (пустые зав.№): инв. qty=2, передача qty=5 → СНК 0 (Math.Max). См. O05.
     /// </summary>
     private static SnkTestCase Error02_EmptySerial_TransferMoreThanAvailable() => new()
     {
@@ -127,18 +127,18 @@ internal static partial class SnkTestCases
         Operations =
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
+                Inv(FirstInventoryDate, "", "", "Тип-Кол", "кобальт-60", "", quantity: 2)),
             // 29.11.2023 | op.28 | передача qty=5 при наличии 2
-            Transfer(RechargeDay, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 5),
+            Transfer(RechargeDay, "", "", "Тип-Кол", "кобальт-60", "", quantity: 5),
         ],
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
+            On(FirstInventoryDate, AnchorStock(), Stock("", "", "Тип-Кол", "кобальт-60", "", quantity: 2)),
             On(FinalDate, AnchorStock())),
         ExpectedInventoryErrorsByDate = ErrorsByDate(
             ErrOn(FinalDate,
                 Err(SnkInventoryErrorType.QuantityGivenExceedsAvailable,
-                    "", "", "ОСГИ-3", "кобальт-60", "",
+                    "", "", "Тип-Кол", "кобальт-60", "",
                     opCode: "28", opDate: RechargeDay)))
     };
 
@@ -150,18 +150,18 @@ internal static partial class SnkTestCases
         Operations =
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            Transfer(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Transfer(LaterTransferDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            Transfer(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
+            Transfer(LaterTransferDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+            On(FirstInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
             On(FinalDate, AnchorStock())),
         ExpectedInventoryErrorsByDate = ErrorsByDate(
             ErrOn(FinalDate,
                 Err(SnkInventoryErrorType.ReDeRegistration,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "28", opDate: LaterTransferDay)))
     };
 
@@ -176,11 +176,11 @@ internal static partial class SnkTestCases
         Operations =
         [
             Anchor(FirstInventoryDate),
-            Receive(ReceiveDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Transfer(new DateOnly(2023, 11, 20), "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Receive(ReceiveDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
+            Transfer(new DateOnly(2023, 11, 20), "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
             // 29.11.2023 | якорь корректно; 510 — ошибочная строка инв.
             Anchor(RechargeDay),
-            Inv(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Inv(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
@@ -190,7 +190,7 @@ internal static partial class SnkTestCases
         ExpectedInventoryErrorsByDate = ErrorsByDate(
             ErrOn(RechargeDay,
                 Err(SnkInventoryErrorType.GivenUnitIsInventoried,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "10", opDate: RechargeDay)))
     };
 
@@ -202,22 +202,22 @@ internal static partial class SnkTestCases
         Operations =
         [
             Anchor(FirstInventoryDate),
-            Receive(MidPeriodReceiveDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Receive(MidPeriodReceiveDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
             Anchor(SecondInventoryDate),
         ],
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedInventoryStockByDate = ByDate(
             On(FirstInventoryDate, AnchorStock()),
-            On(SecondInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"))),
+            On(SecondInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            On(FinalDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"))),
         ExpectedInventoryErrorsByDate = ErrorsByDate(
             ErrOn(SecondInventoryDate,
                 Err(SnkInventoryErrorType.RegisteredAndNotInventoriedUnit,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "38", opDate: MidPeriodReceiveDay)))
     };
 
@@ -229,22 +229,22 @@ internal static partial class SnkTestCases
         Operations =
         [
             Anchor(FirstInventoryDate),
-            Receive(MidPeriodReceiveDay, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
+            Receive(MidPeriodReceiveDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10"),
             Anchor(SecondInventoryDate),
         ],
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52"),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10"),
         ],
         ExpectedInventoryStockByDate = ByDate(
             On(FirstInventoryDate, AnchorStock()),
-            On(SecondInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52")),
-            On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52"))),
+            On(SecondInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10")),
+            On(FinalDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10"))),
         ExpectedInventoryErrorsByDate = ErrorsByDate(
             ErrOn(SecondInventoryDate,
                 Err(SnkInventoryErrorType.RegisteredAndNotInventoriedUnit,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10",
                     opCode: "38", opDate: MidPeriodReceiveDay)))
     };
 
@@ -256,22 +256,22 @@ internal static partial class SnkTestCases
         Operations =
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
             Anchor(SecondInventoryDate),
         ],
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(SecondInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"))),
+            On(FirstInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            On(SecondInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            On(FinalDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"))),
         ExpectedInventoryErrorsByDate = ErrorsByDate(
             ErrOn(SecondInventoryDate,
                 Err(SnkInventoryErrorType.MissingFromInventoryUnit,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "10", opDate: FirstInventoryDate)))
     };
 
@@ -286,36 +286,36 @@ internal static partial class SnkTestCases
         Operations =
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            Receive(MidPeriodReceiveDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            Receive(MidPeriodReceiveDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
             Anchor(SecondInventoryDate),
         ],
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(SecondInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"))),
+            On(FirstInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            On(SecondInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            On(FinalDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"))),
         ExpectedInventoryErrorsByDate = ErrorsByDate(
             ErrOn(SecondInventoryDate,
                 Err(SnkInventoryErrorType.RegisteredAndNotInventoriedUnit,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "38", opDate: MidPeriodReceiveDay),
                 Err(SnkInventoryErrorType.MissingFromInventoryUnit,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "38", opDate: MidPeriodReceiveDay),
                 Err(SnkInventoryErrorType.InventoriedUnitReceived,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "38", opDate: MidPeriodReceiveDay)))
     };
 
     /// <summary>
-    /// E07b. Ошибки 1+2: УКТ привязан к операции приёма (52), не к инв. (52-1).
+    /// E07b. Ошибки 1+2: УКТ привязан к операции приёма (52), не к инв. (УКТ-11).
     /// В ExpectedSnkStock две строки 510: приём с УКТ=52 создаёт отдельную учётную единицу
-    /// (52) параллельно ранее проинвентаризированной (52-1) — так отражает расчёт СНК.
+    /// (52) параллельно ранее проинвентаризированной (УКТ-11) — так отражает расчёт СНК.
     /// </summary>
     private static SnkTestCase Error07b_RegisteredAndMissing_UktOnReceive() => new()
     {
@@ -324,33 +324,33 @@ internal static partial class SnkTestCases
         Operations =
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            Receive(MidPeriodReceiveDay, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            Receive(MidPeriodReceiveDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10"),
             Anchor(SecondInventoryDate),
         ],
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52"),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10"),
         ],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+            On(FirstInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
             On(SecondInventoryDate,
                 AnchorStock(),
-                Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-                Stock("510", "083", "ГИК-5-3", "кобальт-60", "52")),
+                Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
+                Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10")),
             On(FinalDate,
                 AnchorStock(),
-                Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-                Stock("510", "083", "ГИК-5-3", "кобальт-60", "52"))),
+                Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
+                Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10"))),
         ExpectedInventoryErrorsByDate = ErrorsByDate(
             ErrOn(SecondInventoryDate,
                 Err(SnkInventoryErrorType.MissingFromInventoryUnit,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "10", opDate: FirstInventoryDate),
                 Err(SnkInventoryErrorType.RegisteredAndNotInventoriedUnit,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10",
                     opCode: "38", opDate: MidPeriodReceiveDay)))
     };
 
@@ -362,24 +362,24 @@ internal static partial class SnkTestCases
         Operations =
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            Receive(MidPeriodReceiveDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            Receive(MidPeriodReceiveDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
             ..FullInventoryOn(SecondInventoryDate,
-                Inv(SecondInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+                Inv(SecondInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
         ],
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(SecondInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"))),
+            On(FirstInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            On(SecondInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            On(FinalDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"))),
         ExpectedInventoryErrorsByDate = ErrorsByDate(
             ErrOn(SecondInventoryDate,
                 Err(SnkInventoryErrorType.InventoriedUnitReceived,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "38", opDate: MidPeriodReceiveDay)))
     };
 
@@ -394,33 +394,33 @@ internal static partial class SnkTestCases
         Operations =
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            Receive(MidPeriodReceiveDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Receive(MidPeriodSecondReceiveDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            Receive(MidPeriodReceiveDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
+            Receive(MidPeriodSecondReceiveDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
             Anchor(SecondInventoryDate),
         ],
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(SecondInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"))),
+            On(FirstInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            On(SecondInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            On(FinalDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"))),
         ExpectedInventoryErrorsByDate = ErrorsByDate(
             ErrOn(SecondInventoryDate,
                 Err(SnkInventoryErrorType.RegisteredAndNotInventoriedUnit,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "38", opDate: MidPeriodSecondReceiveDay),
                 Err(SnkInventoryErrorType.ReRegistration,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "38", opDate: MidPeriodSecondReceiveDay),
                 Err(SnkInventoryErrorType.MissingFromInventoryUnit,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "38", opDate: MidPeriodSecondReceiveDay),
                 Err(SnkInventoryErrorType.InventoriedUnitReceived,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "38", opDate: MidPeriodReceiveDay)))
     };
 
@@ -432,26 +432,26 @@ internal static partial class SnkTestCases
         Operations =
         [
             Anchor(FirstInventoryDate),
-            Receive(MidPeriodReceiveDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Receive(MidPeriodSecondReceiveDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Receive(MidPeriodReceiveDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
+            Receive(MidPeriodSecondReceiveDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
             Anchor(SecondInventoryDate),
         ],
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedInventoryStockByDate = ByDate(
             On(FirstInventoryDate, AnchorStock()),
-            On(SecondInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"))),
+            On(SecondInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            On(FinalDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"))),
         ExpectedInventoryErrorsByDate = ErrorsByDate(
             ErrOn(SecondInventoryDate,
                 Err(SnkInventoryErrorType.RegisteredAndNotInventoriedUnit,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "38", opDate: MidPeriodSecondReceiveDay),
                 Err(SnkInventoryErrorType.ReRegistration,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "38", opDate: MidPeriodSecondReceiveDay)))
     };
 
@@ -464,7 +464,7 @@ internal static partial class SnkTestCases
         Operations =
         [
             Anchor(FirstInventoryDate),
-            Zero(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1", opCode: "99"),
+            Zero(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11", opCode: "99"),
         ],
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
@@ -473,7 +473,7 @@ internal static partial class SnkTestCases
         ExpectedInventoryErrorsByDate = ErrorsByDate(
             ErrOn(FinalDate,
                 Err(SnkInventoryErrorType.ZeroOperationWithUnInventoriedUnit,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "99", opDate: RechargeDay)))
     };
 }

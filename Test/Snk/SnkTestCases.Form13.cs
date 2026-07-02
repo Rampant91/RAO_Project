@@ -34,7 +34,7 @@ internal static partial class SnkTestCases
     };
 
     /// <summary>
-    /// F13-02. Пустые зав./паспорт в 1.3 представлены множеством строк qty=1.
+    /// F13-02. Пустые зав.№/паспорт в 1.3 представлены множеством строк qty=1.
     /// Ожидаем тот же принцип суммирования, что и в 1.1 для пустых номеров.
     /// </summary>
     private static SnkTestCase Form13_02_EmptySerial_MultiRows_QuantityAggregation() => new()
@@ -45,18 +45,18 @@ internal static partial class SnkTestCases
         Operations =
         [
             Anchor(FirstInventoryDate),
-            Inv(FirstInventoryDate, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 1),
-            Inv(FirstInventoryDate, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 1),
-            Receive(new DateOnly(2023, 3, 1), "", "", "ОСГИ-3", "кобальт-60", "", quantity: 1),
-            Transfer(new DateOnly(2023, 4, 1), "", "", "ОСГИ-3", "кобальт-60", "", quantity: 1),
+            Inv(FirstInventoryDate, "", "", "Тип-Кол", "кобальт-60", "", quantity: 1),
+            Inv(FirstInventoryDate, "", "", "Тип-Кол", "кобальт-60", "", quantity: 1),
+            Receive(new DateOnly(2023, 3, 1), "", "", "Тип-Кол", "кобальт-60", "", quantity: 1),
+            Transfer(new DateOnly(2023, 4, 1), "", "", "Тип-Кол", "кобальт-60", "", quantity: 1),
         ],
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 2),
+            Stock("", "", "Тип-Кол", "кобальт-60", "", quantity: 2),
         ],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
-            On(FinalDate, AnchorStock(), Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)))
+            On(FirstInventoryDate, AnchorStock(), Stock("", "", "Тип-Кол", "кобальт-60", "", quantity: 2)),
+            On(FinalDate, AnchorStock(), Stock("", "", "Тип-Кол", "кобальт-60", "", quantity: 2)))
     };
 }

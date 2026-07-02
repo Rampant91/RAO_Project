@@ -50,18 +50,18 @@ internal static partial class SnkTestCases
   #region O01 — приём + перезарядка + инв. (как V04/V05 без передачи)
 
     // До 29.11.2023: только якорь на первой инв. (510 ещё нет).
-    // На 29.11.2023: op.38 приём 510 УКТ=52 → op.53 перезарядка УКТ=52-1 → полная инв. (якорь + 510).
-    // Эталон: якорь + 510 (52-1).
+    // На 29.11.2023: op.38 приём 510 УКТ=52 → op.53 перезарядка УКТ=УКТ-11 → полная инв. (якорь + 510).
+    // Эталон: якорь + 510 (УКТ-11).
 
     private static IEnumerable<SnkTestCase> Order01_ReceiveRechargeInventory_SameDay()
     {
         var template = O01Template();
 
         // Операции 29.11.2023 (имена для читаемости вариантов):
-        var recv510 = Receive(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52");       // op.38
-        var rech510 = Recharge(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1");  // op.53
+        var recv510 = Receive(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10");       // op.38
+        var rech510 = Recharge(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11");  // op.53
         var invAnchor = Anchor(RechargeDay);                                                     // op.10 якорь
-        var inv510 = Inv(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1");         // op.10 510
+        var inv510 = Inv(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11");         // op.10 510
 
         yield return OrderVariant("O01a", "29.11: приём→перезарядка→якорь→инв.510",
         [
@@ -108,12 +108,12 @@ internal static partial class SnkTestCases
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedInventoryStockByDate = ByDate(
             On(FirstInventoryDate, AnchorStock()),
-            On(RechargeDay, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")))
+            On(RechargeDay, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            On(FinalDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")))
     };
 
   #endregion
@@ -127,11 +127,11 @@ internal static partial class SnkTestCases
     {
         var template = O02Template();
 
-        var recv510 = Receive(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52");
-        var rech510 = Recharge(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1");
+        var recv510 = Receive(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10");
+        var rech510 = Recharge(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11");
         var invAnchor = Anchor(RechargeDay);
-        var inv510 = Inv(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1");
-        var xfer510 = Transfer(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1");
+        var inv510 = Inv(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11");
+        var xfer510 = Transfer(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11");
 
         yield return OrderVariant("O02a", "29.11: приём→перезарядка→якорь→инв→передача",
         [
@@ -175,7 +175,7 @@ internal static partial class SnkTestCases
             On(RechargeDay, AnchorStock()),
             On(FinalDate, AnchorStock())),
         AllowedInventoryVsSnkDifferenceByDate = ByDate(
-            On(RechargeDay, Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")))
+            On(RechargeDay, Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")))
     };
 
   #endregion
@@ -188,43 +188,43 @@ internal static partial class SnkTestCases
     {
         var template = O03Template();
 
-        var t1 = Transfer(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1");
-        var r1 = Receive(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1");
-        var t2 = Transfer(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1");
-        var r2 = Receive(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1");
+        var t1 = Transfer(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11");
+        var r1 = Receive(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11");
+        var t2 = Transfer(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11");
+        var r2 = Receive(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11");
 
         yield return OrderVariant("O03a", "29.11: передача→приём→передача→приём",
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
             t1, r1, t2, r2,
         ], template);
 
         yield return OrderVariant("O03b", "29.11: приём→передача→приём→передача",
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
             r1, t1, r2, t2,
         ], template);
 
         yield return OrderVariant("O03c", "29.11: передача→передача→приём→приём",
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
             t1, t2, r1, r2,
         ], template);
 
         yield return OrderVariant("O03d", "29.11: приём→приём→передача→передача",
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
             r1, r2, t1, t2,
         ], template);
 
         yield return OrderVariant("O03e", "29.11: приём→передача→передача→приём",
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
             r1, t1, t2, r2,
         ], template);
     }
@@ -237,53 +237,53 @@ internal static partial class SnkTestCases
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")))
+            On(FirstInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            On(FinalDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")))
     };
 
   #endregion
 
   #region O04 — пустые зав.№: приём+передача в один день (2+3−1=4)
 
-    // ОСГИ-3: первая инв. qty=2. На 29.11.2023: повторная инв. qty=2, приём 3, передача 1.
+    // Тип-Кол: первая инв. qty=2. На 29.11.2023: повторная инв. qty=2, приём 3, передача 1.
 
     private static IEnumerable<SnkTestCase> Order04_EmptySerial_QuantitySameDay()
     {
         var template = O04Template();
 
-        var invOsgi = Inv(RechargeDay, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 2);
-        var recvOsgi = Receive(RechargeDay, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 3);
-        var xferOsgi = Transfer(RechargeDay, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 1);
+        var invOsgi = Inv(RechargeDay, "", "", "Тип-Кол", "кобальт-60", "", quantity: 2);
+        var recvOsgi = Receive(RechargeDay, "", "", "Тип-Кол", "кобальт-60", "", quantity: 3);
+        var xferOsgi = Transfer(RechargeDay, "", "", "Тип-Кол", "кобальт-60", "", quantity: 1);
         var invAnchor = Anchor(RechargeDay);
 
         yield return OrderVariant("O04a", "29.11: инв→приём→передача→якорь (2+3−1=4)",
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
+                Inv(FirstInventoryDate, "", "", "Тип-Кол", "кобальт-60", "", quantity: 2)),
             invOsgi, recvOsgi, xferOsgi, invAnchor,
         ], template);
 
         yield return OrderVariant("O04b", "29.11: приём→передача→инв→якорь",
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
+                Inv(FirstInventoryDate, "", "", "Тип-Кол", "кобальт-60", "", quantity: 2)),
             recvOsgi, xferOsgi, invOsgi, invAnchor,
         ], template);
 
         yield return OrderVariant("O04c", "29.11: передача→приём→якорь→инв",
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
+                Inv(FirstInventoryDate, "", "", "Тип-Кол", "кобальт-60", "", quantity: 2)),
             xferOsgi, recvOsgi, invAnchor, invOsgi,
         ], template);
 
         yield return OrderVariant("O04d", "29.11: якорь→приём→инв→передача",
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
+                Inv(FirstInventoryDate, "", "", "Тип-Кол", "кобальт-60", "", quantity: 2)),
             invAnchor, recvOsgi, invOsgi, xferOsgi,
         ], template);
     }
@@ -296,54 +296,54 @@ internal static partial class SnkTestCases
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 4),
+            Stock("", "", "Тип-Кол", "кобальт-60", "", quantity: 4),
         ],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
-            On(RechargeDay, AnchorStock(), Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 4)),
-            On(FinalDate, AnchorStock(), Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 4)))
+            On(FirstInventoryDate, AnchorStock(), Stock("", "", "Тип-Кол", "кобальт-60", "", quantity: 2)),
+            On(RechargeDay, AnchorStock(), Stock("", "", "Тип-Кол", "кобальт-60", "", quantity: 4)),
+            On(FinalDate, AnchorStock(), Stock("", "", "Тип-Кол", "кобальт-60", "", quantity: 4)))
     };
 
   #endregion
 
   #region O05 — пустые зав.№: передача сверх наличия (логика E02, но инв. в тот же день)
 
-    // ОСГИ-3 qty=2; на 29.11.2023 передача qty=5 → СНК 0. При инв. в тот же день алгоритм
+    // Тип-Кол qty=2; на 29.11.2023 передача qty=5 → СНК 0. При инв. в тот же день алгоритм
     // фиксирует тип 4 (а не 9, как в E02 без op.10 на дату передачи).
 
     private static IEnumerable<SnkTestCase> Order05_EmptySerial_OverTransferSameDay()
     {
         var template = O05Template();
 
-        var invOsgi = Inv(RechargeDay, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 2);
-        var xferOsgi = Transfer(RechargeDay, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 5);
+        var invOsgi = Inv(RechargeDay, "", "", "Тип-Кол", "кобальт-60", "", quantity: 2);
+        var xferOsgi = Transfer(RechargeDay, "", "", "Тип-Кол", "кобальт-60", "", quantity: 5);
         var invAnchor = Anchor(RechargeDay);
 
         yield return OrderVariant("O05a", "29.11: инв→передача→якорь",
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
+                Inv(FirstInventoryDate, "", "", "Тип-Кол", "кобальт-60", "", quantity: 2)),
             invOsgi, xferOsgi, invAnchor,
         ], template);
 
         yield return OrderVariant("O05b", "29.11: передача→инв→якорь",
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
+                Inv(FirstInventoryDate, "", "", "Тип-Кол", "кобальт-60", "", quantity: 2)),
             xferOsgi, invOsgi, invAnchor,
         ], template);
 
         yield return OrderVariant("O05c", "29.11: якорь→передача→инв",
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
+                Inv(FirstInventoryDate, "", "", "Тип-Кол", "кобальт-60", "", quantity: 2)),
             invAnchor, xferOsgi, invOsgi,
         ], template);
 
         yield return OrderVariant("O05d", "29.11: передача→якорь→инв",
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
+                Inv(FirstInventoryDate, "", "", "Тип-Кол", "кобальт-60", "", quantity: 2)),
             xferOsgi, invAnchor, invOsgi,
         ], template);
     }
@@ -356,20 +356,20 @@ internal static partial class SnkTestCases
         Operations = [],
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
+            On(FirstInventoryDate, AnchorStock(), Stock("", "", "Тип-Кол", "кобальт-60", "", quantity: 2)),
             On(RechargeDay, AnchorStock()),
             On(FinalDate, AnchorStock())),
-        // На 29.11.2023 ОСГИ передали сверх наличия (5 при 2): в СНК qty=0, в формах инв. qty=2 — допустимое расхождение.
+        // На 29.11.2023 Тип-Кол передали сверх наличия (5 при 2): в СНК qty=0, в формах инв. qty=2 — допустимое расхождение.
         AllowedInventoryVsSnkDifferenceByDate = ByDate(
-            On(RechargeDay, Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 2))),
+            On(RechargeDay, Stock("", "", "Тип-Кол", "кобальт-60", "", quantity: 2))),
         ExpectedInventoryErrorsByDate = ErrorsByDate(
             ErrOn(RechargeDay,
                 Err(SnkInventoryErrorType.QuantityGivenExceedsAvailable,
-                    "", "", "ОСГИ-3", "кобальт-60", "",
+                    "", "", "Тип-Кол", "кобальт-60", "",
                     opCode: "28", opDate: RechargeDay)),
             ErrOn(FinalDate,
                 Err(SnkInventoryErrorType.UnInventoriedUnitGivenAway,
-                    "", "", "ОСГИ-3", "кобальт-60", "",
+                    "", "", "Тип-Кол", "кобальт-60", "",
                     opCode: "28", opDate: RechargeDay)))
     };
 
@@ -383,11 +383,11 @@ internal static partial class SnkTestCases
     {
         var template = O06Template();
 
-        var r510 = Receive(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52");
-        var z510 = Recharge(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1");
-        var i510 = Inv(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1");
-        var r700 = Receive(RechargeDay, "700", "070", "ГИК-5-3", "кобальт-60", "70");
-        var i700 = Inv(RechargeDay, "700", "070", "ГИК-5-3", "кобальт-60", "70");
+        var r510 = Receive(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10");
+        var z510 = Recharge(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11");
+        var i510 = Inv(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11");
+        var r700 = Receive(RechargeDay, "P-201", "F-301", "Тип-М1", "кобальт-60", "УКТ-20");
+        var i700 = Inv(RechargeDay, "P-201", "F-301", "Тип-М1", "кобальт-60", "УКТ-20");
         var invAnchor = Anchor(RechargeDay);
 
         yield return OrderVariant("O06a", "29.11: цепочка 510, затем 700, якорь в конце",
@@ -429,19 +429,19 @@ internal static partial class SnkTestCases
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Stock("700", "070", "ГИК-5-3", "кобальт-60", "70"),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
+            Stock("P-201", "F-301", "Тип-М1", "кобальт-60", "УКТ-20"),
         ],
         ExpectedInventoryStockByDate = ByDate(
             On(FirstInventoryDate, AnchorStock()),
             On(RechargeDay,
                 AnchorStock(),
-                Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-                Stock("700", "070", "ГИК-5-3", "кобальт-60", "70")),
+                Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
+                Stock("P-201", "F-301", "Тип-М1", "кобальт-60", "УКТ-20")),
             On(FinalDate,
                 AnchorStock(),
-                Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-                Stock("700", "070", "ГИК-5-3", "кобальт-60", "70")))
+                Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
+                Stock("P-201", "F-301", "Тип-М1", "кобальт-60", "УКТ-20")))
     };
 
   #endregion
@@ -454,40 +454,40 @@ internal static partial class SnkTestCases
     {
         var template = O07Template();
 
-        var t1 = Transfer(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1");
-        var r1 = Receive(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52");
-        var rech = Recharge(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1");
-        var inv1 = Inv(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1");
-        var invDup = Inv(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1");
-        var t2 = Transfer(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1");
-        var r2 = Receive(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1");
+        var t1 = Transfer(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11");
+        var r1 = Receive(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10");
+        var rech = Recharge(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11");
+        var inv1 = Inv(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11");
+        var invDup = Inv(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11");
+        var t2 = Transfer(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11");
+        var r2 = Receive(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11");
         var invAnchor = Anchor(RechargeDay);
 
         yield return OrderVariant("O07a", "29.11: −,+ ,перезарядка,инв×2,−,+ ,якорь",
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
             t1, r1, rech, inv1, invDup, t2, r2, invAnchor,
         ], template);
 
         yield return OrderVariant("O07b", "29.11: обратный порядок всех операций дня",
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
             invAnchor, r2, t2, invDup, inv1, rech, r1, t1,
         ], template);
 
         yield return OrderVariant("O07c", "29.11: сначала инв×2+якорь, затем движения",
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
             inv1, invDup, invAnchor, r1, rech, t1, r2, t2,
         ], template);
 
         yield return OrderVariant("O07d", "29.11: −,+ ,−,+ ,перезарядка,инв,инв,якорь",
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
             t1, r1, t2, r2, rech, inv1, invDup, invAnchor,
         ], template);
     }
@@ -501,16 +501,16 @@ internal static partial class SnkTestCases
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(RechargeDay, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"))),
+            On(FirstInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            On(RechargeDay, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            On(FinalDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"))),
         ExpectedInventoryErrorsByDate = ErrorsByDate(
             ErrOn(RechargeDay,
                 Err(SnkInventoryErrorType.InventoryDuplicate,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "10", opDate: RechargeDay)))
     };
 

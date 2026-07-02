@@ -24,8 +24,8 @@ public class ExcelExportSnkParamsSmokeTests
             EndDate = new DateOnly(2026, 1, 1),
             Operations =
             [
-                Op("10", new DateOnly(2022, 1, 19), "900", "A-01", "Тип-X", "кобальт-60", "P1", 1),
-                Op("10", new DateOnly(2022, 1, 19), "900", "B-02", "Тип-X", "кобальт-60", "P1", 1),
+                Op("10", new DateOnly(2022, 1, 19), "P-901", "F-811", "Тип-Смок", "кобальт-60", "УКТ-51", 1),
+                Op("10", new DateOnly(2022, 1, 19), "P-901", "F-812", "Тип-Смок", "кобальт-60", "УКТ-51", 1),
             ],
             ExpectedSnkStock = [],
             ExpectedInventoryStockByDate = new Dictionary<DateOnly, IReadOnlyList<SnkStockSnapshot>>()
@@ -52,8 +52,8 @@ public class ExcelExportSnkParamsSmokeTests
             EndDate = new DateOnly(2026, 1, 1),
             Operations =
             [
-                Op("10", new DateOnly(2022, 1, 19), "300", "X-01", "Тип-13", "цезий-137", "K1", 1),
-                Op("10", new DateOnly(2022, 1, 19), "300", "Y-02", "Тип-13", "цезий-137", "K1", 1),
+                Op("10", new DateOnly(2022, 1, 19), "P-303", "F-821", "Тип-Смок3", "цезий-137", "УКТ-50", 1),
+                Op("10", new DateOnly(2022, 1, 19), "P-303", "F-822", "Тип-Смок3", "цезий-137", "УКТ-50", 1),
             ],
             ExpectedSnkStock = [],
             ExpectedInventoryStockByDate = new Dictionary<DateOnly, IReadOnlyList<SnkStockSnapshot>>()
@@ -80,11 +80,11 @@ public class ExcelExportSnkParamsSmokeTests
             EndDate = endDate,
             Operations =
             [
-                Op("10", firstInvDate, "999", "001", "Тип-A", "кобальт-60", "1", 1),
-                Op("10", firstInvDate, "", "", "ОСГИ-3", "кобальт-60", "", 1),
-                Op("10", firstInvDate, "", "", "ОСГИ-3", "кобальт-60", "", 1),
-                Op("10", firstInvDate, "", "", "ОСГИ-3", "кобальт-60", "", 1),
-                Op("10", firstInvDate, "", "", "ОСГИ-3", "кобальт-60", "", 1),
+                Op("10", firstInvDate, "P-900", "F-001", "Тип-База", "кобальт-60", "УКТ-0", 1),
+                Op("10", firstInvDate, "", "", "Тип-Кол", "кобальт-60", "", 1),
+                Op("10", firstInvDate, "", "", "Тип-Кол", "кобальт-60", "", 1),
+                Op("10", firstInvDate, "", "", "Тип-Кол", "кобальт-60", "", 1),
+                Op("10", firstInvDate, "", "", "Тип-Кол", "кобальт-60", "", 1),
             ],
             ExpectedSnkStock = [],
             ExpectedInventoryStockByDate = new Dictionary<DateOnly, IReadOnlyList<SnkStockSnapshot>>()
@@ -97,8 +97,8 @@ public class ExcelExportSnkParamsSmokeTests
             EndDate = endDate,
             Operations =
             [
-                Op("10", firstInvDate, "999", "001", "Тип-A", "кобальт-60", "1", 1),
-                Op("10", firstInvDate, "", "", "ОСГИ-3", "кобальт-60", "", 4),
+                Op("10", firstInvDate, "P-900", "F-001", "Тип-База", "кобальт-60", "УКТ-0", 1),
+                Op("10", firstInvDate, "", "", "Тип-Кол", "кобальт-60", "", 4),
             ],
             ExpectedSnkStock = [],
             ExpectedInventoryStockByDate = new Dictionary<DateOnly, IReadOnlyList<SnkStockSnapshot>>()

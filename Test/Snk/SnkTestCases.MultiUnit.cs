@@ -24,24 +24,24 @@ internal static partial class SnkTestCases
         Operations =
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-                Inv(FirstInventoryDate, "700", "070", "ГИК-5-3", "кобальт-60", "70")),
-            Transfer(RechargeDay, "700", "070", "ГИК-5-3", "кобальт-60", "70"),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
+                Inv(FirstInventoryDate, "P-201", "F-301", "Тип-М1", "кобальт-60", "УКТ-20")),
+            Transfer(RechargeDay, "P-201", "F-301", "Тип-М1", "кобальт-60", "УКТ-20"),
         ],
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedInventoryStockByDate = ByDate(
             On(FirstInventoryDate,
                 AnchorStock(),
-                Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-                Stock("700", "070", "ГИК-5-3", "кобальт-60", "70")),
-            On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")))
+                Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
+                Stock("P-201", "F-301", "Тип-М1", "кобальт-60", "УКТ-20")),
+            On(FinalDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")))
     };
 
-    /// <summary>M02. 510 (серийная) + ОСГИ-3 (пустые зав.№, qty).</summary>
+    /// <summary>M02. 510 (серийная) + Тип-Кол (пустые зав.№, qty).</summary>
     private static SnkTestCase Multi02_SerialAndEmptySerial_BothStay() => new()
     {
         Name = "M02. Серийная и пустые зав.№ единицы вместе.",
@@ -49,25 +49,25 @@ internal static partial class SnkTestCases
         Operations =
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-                Inv(FirstInventoryDate, "", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
-            Receive(new DateOnly(2023, 3, 1), "", "", "ОСГИ-3", "кобальт-60", "", quantity: 1),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
+                Inv(FirstInventoryDate, "", "", "Тип-Кол", "кобальт-60", "", quantity: 2)),
+            Receive(new DateOnly(2023, 3, 1), "", "", "Тип-Кол", "кобальт-60", "", quantity: 1),
         ],
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 3),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
+            Stock("", "", "Тип-Кол", "кобальт-60", "", quantity: 3),
         ],
         ExpectedInventoryStockByDate = ByDate(
             On(FirstInventoryDate,
                 AnchorStock(),
-                Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-                Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 2)),
+                Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
+                Stock("", "", "Тип-Кол", "кобальт-60", "", quantity: 2)),
             On(FinalDate,
                 AnchorStock(),
-                Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-                Stock("", "", "ОСГИ-3", "кобальт-60", "", quantity: 3)))
+                Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
+                Stock("", "", "Тип-Кол", "кобальт-60", "", quantity: 3)))
     };
 
     /// <summary>M03. 700 в первой инв. (передана); 510 получена позже.</summary>
@@ -78,25 +78,25 @@ internal static partial class SnkTestCases
         Operations =
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "700", "070", "ГИК-5-3", "кобальт-60", "70")),
-            Receive(ReceiveDay, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
-            Transfer(RechargeDay, "700", "070", "ГИК-5-3", "кобальт-60", "70"),
+                Inv(FirstInventoryDate, "P-201", "F-301", "Тип-М1", "кобальт-60", "УКТ-20")),
+            Receive(ReceiveDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10"),
+            Transfer(RechargeDay, "P-201", "F-301", "Тип-М1", "кобальт-60", "УКТ-20"),
         ],
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52"),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10"),
         ],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("700", "070", "ГИК-5-3", "кобальт-60", "70")),
-            On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52")))
+            On(FirstInventoryDate, AnchorStock(), Stock("P-201", "F-301", "Тип-М1", "кобальт-60", "УКТ-20")),
+            On(FinalDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10")))
     };
 
     /// <summary>
     /// M04. Две РАЗНЫЕ учётные единицы с одинаковыми паспортом/зав.№/типом/РН, но разным УКТ
-    /// (52 и 52-1), обе в наличии с первой инвентаризации. Перезарядки между ними НЕТ — это
+    /// (52 и УКТ-11), обе в наличии с первой инвентаризации. Перезарядки между ними НЕТ — это
     /// два параллельных физических источника в разных контейнерах. Передача с УКТ=52 должна
-    /// затронуть только единицу 52; единица 52-1 остаётся в наличии.
+    /// затронуть только единицу 52; единица УКТ-11 остаётся в наличии.
     /// </summary>
     private static SnkTestCase Multi04_SameSerialDifferentPack_TransferHitsOnlyOne() => new()
     {
@@ -105,27 +105,27 @@ internal static partial class SnkTestCases
         Operations =
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            Transfer(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10"),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            Transfer(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10"),
         ],
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedInventoryStockByDate = ByDate(
             On(FirstInventoryDate,
                 AnchorStock(),
-                Stock("510", "083", "ГИК-5-3", "кобальт-60", "52"),
-                Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+                Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10"),
+                Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
             On(FinalDate,
                 AnchorStock(),
-                Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")))
+                Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")))
     };
 
     /// <summary>
-    /// M05. То же, что M04, но строки инвентаризации идут в обратном порядке (52-1 перед 52).
+    /// M05. То же, что M04, но строки инвентаризации идут в обратном порядке (УКТ-11 перед 52).
     /// Результат не должен зависеть от порядка строк: обе единицы различаются по УКТ,
     /// передача 52 затрагивает только её.
     /// </summary>
@@ -136,22 +136,22 @@ internal static partial class SnkTestCases
         Operations =
         [
             Anchor(FirstInventoryDate),
-            Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
-            Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
-            Transfer(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52"),
+            Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
+            Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10"),
+            Transfer(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10"),
         ],
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedInventoryStockByDate = ByDate(
             On(FirstInventoryDate,
                 AnchorStock(),
-                Stock("510", "083", "ГИК-5-3", "кобальт-60", "52"),
-                Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+                Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-10"),
+                Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
             On(FinalDate,
                 AnchorStock(),
-                Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")))
+                Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")))
     };
 }

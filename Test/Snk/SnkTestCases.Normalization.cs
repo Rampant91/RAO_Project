@@ -15,54 +15,54 @@ internal static partial class SnkTestCases
         yield return Norm05_PassportNumber_Spaces();
     }
 
-    /// <summary>N01. Зав.№ 083 при инв., 83 при передаче.</summary>
+    /// <summary>N01. Зав.№ 00083 при инв., 83 при передаче (ведущие нули).</summary>
     private static SnkTestCase Norm01_FactoryNumber_LeadingZero() => new()
     {
-        Name = "N01. Зав.№: ведущий ноль (083 = 83).",
+        Name = "N01. Зав.№: ведущий ноль (00083 = 83).",
         EndDate = FinalDate,
         Operations =
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            Transfer(RechargeDay, "510", "83", "ГИК-5-3", "кобальт-60", "52-1"),
+                Inv(FirstInventoryDate, "P-101", "00083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            Transfer(RechargeDay, "P-101", "83", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+            On(FirstInventoryDate, AnchorStock(), Stock("P-101", "00083", "Тип-М1", "кобальт-60", "УКТ-11")),
             On(FinalDate, AnchorStock()))
     };
 
-    /// <summary>N02. УКТ 52-1 при инв., 521 при передаче.</summary>
+    /// <summary>N02. УКТ УКТ-A1 при инв., УКТA1 при передаче (дефис игнорируется).</summary>
     private static SnkTestCase Norm02_PackNumber_SpecialCharacters() => new()
     {
-        Name = "N02. УКТ: спецсимволы (52-1 = 521).",
+        Name = "N02. УКТ: спецсимволы (УКТ-A1 = УКТA1).",
         EndDate = FinalDate,
         Operations =
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            Transfer(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "521"),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-A1")),
+            Transfer(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТA1"),
         ],
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+            On(FirstInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-A1")),
             On(FinalDate, AnchorStock()))
     };
 
-    /// <summary>N03. Тип ГИК-5-3 / гик-5-3.</summary>
+    /// <summary>N03. Тип Тип-М1 / тип-м1.</summary>
     private static SnkTestCase Norm03_Type_CaseAndCyrillicLatin() => new()
     {
-        Name = "N03. Тип: регистр и кириллица/латиница (ГИК-5-3 = гик-5-3).",
+        Name = "N03. Тип: регистр и кириллица/латиница (Тип-М1 = тип-м1).",
         EndDate = FinalDate,
         Operations =
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            Transfer(RechargeDay, "510", "083", "гик-5-3", "кобальт-60", "52-1"),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            Transfer(RechargeDay, "P-101", "F-083", "тип-м1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+            On(FirstInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
             On(FinalDate, AnchorStock()))
     };
 
@@ -74,29 +74,29 @@ internal static partial class SnkTestCases
         Operations =
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60, цезий-137", "52-1")),
-            Transfer(RechargeDay, "510", "083", "ГИК-5-3", "цезий-137, кобальт-60", "52-1"),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60, цезий-137", "УКТ-11")),
+            Transfer(RechargeDay, "P-101", "F-083", "Тип-М1", "цезий-137, кобальт-60", "УКТ-11"),
         ],
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60, цезий-137", "52-1")),
+            On(FirstInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60, цезий-137", "УКТ-11")),
             On(FinalDate, AnchorStock()))
     };
 
-    /// <summary>N05. № паспорта 510 / «5 1 0».</summary>
+    /// <summary>N05. № паспорта P-101 / «P 1 0 1».</summary>
     private static SnkTestCase Norm05_PassportNumber_Spaces() => new()
     {
-        Name = "N05. № паспорта: пробелы (510 = 5 1 0).",
+        Name = "N05. № паспорта: пробелы (P-101 = P 1 0 1).",
         EndDate = FinalDate,
         Operations =
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            Transfer(RechargeDay, "5 1 0", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            Transfer(RechargeDay, "P 1 0 1", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
+            On(FirstInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
             On(FinalDate, AnchorStock()))
     };
 }

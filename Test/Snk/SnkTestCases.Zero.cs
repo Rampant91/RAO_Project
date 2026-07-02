@@ -20,17 +20,17 @@ internal static partial class SnkTestCases
         Operations =
         [
             ..FullInventoryOn(FirstInventoryDate,
-                Inv(FirstInventoryDate, "510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            Zero(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+                Inv(FirstInventoryDate, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            Zero(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedSnkStock =
         [
             AnchorStock(),
-            Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1"),
+            Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11"),
         ],
         ExpectedInventoryStockByDate = ByDate(
-            On(FirstInventoryDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")),
-            On(FinalDate, AnchorStock(), Stock("510", "083", "ГИК-5-3", "кобальт-60", "52-1")))
+            On(FirstInventoryDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")),
+            On(FinalDate, AnchorStock(), Stock("P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11")))
     };
 
     /// <summary>
@@ -44,7 +44,7 @@ internal static partial class SnkTestCases
         Operations =
         [
             Anchor(FirstInventoryDate),
-            Zero(RechargeDay, "510", "083", "ГИК-5-3", "кобальт-60", "52-1", opCode: "99"),
+            Zero(RechargeDay, "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11", opCode: "99"),
         ],
         ExpectedSnkStock = [AnchorStock()],
         ExpectedInventoryStockByDate = ByDate(
@@ -53,7 +53,7 @@ internal static partial class SnkTestCases
         ExpectedInventoryErrorsByDate = ErrorsByDate(
             ErrOn(FinalDate,
                 Err(SnkInventoryErrorType.ZeroOperationWithUnInventoriedUnit,
-                    "510", "083", "ГИК-5-3", "кобальт-60", "52-1",
+                    "P-101", "F-083", "Тип-М1", "кобальт-60", "УКТ-11",
                     opCode: "99", opDate: RechargeDay)))
     };
 }
