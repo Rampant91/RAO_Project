@@ -922,7 +922,7 @@ public partial class Form21 : Form2, IBaseColor
     {
         if (args.PropertyName == "Value")
         {
-            QuantityIn_DB = ((RamAccess<string>)value).Value?.Trim();
+            QuantityIn_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value)?.Trim();
         }
     }
 
@@ -1391,7 +1391,7 @@ public partial class Form21 : Form2, IBaseColor
     {
         if (args.PropertyName == "Value")
         {
-            QuantityOZIIIout_DB = ((RamAccess<string>)value).Value;
+            QuantityOZIIIout_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 

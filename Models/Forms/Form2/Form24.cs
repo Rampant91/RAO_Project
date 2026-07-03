@@ -237,7 +237,7 @@ public partial class Form24 : Form2
     {
         if (args.PropertyName == "Value")
         {
-            QuantityCreated_DB = ((RamAccess<string>)value).Value;
+            QuantityCreated_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 
@@ -328,7 +328,7 @@ public partial class Form24 : Form2
     {
         if (args.PropertyName == "Value")
         {
-            QuantityFromAnothers_DB = ((RamAccess<string>)value).Value;
+            QuantityFromAnothers_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 
@@ -418,7 +418,7 @@ public partial class Form24 : Form2
     {
         if (args.PropertyName == "Value")
         {
-            QuantityFromAnothersImported_DB = ((RamAccess<string>)value).Value;
+            QuantityFromAnothersImported_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 
@@ -508,7 +508,7 @@ public partial class Form24 : Form2
     {
         if (args.PropertyName == "Value")
         {
-            QuantityAnotherReasons_DB = ((RamAccess<string>)value).Value;
+            QuantityAnotherReasons_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 
@@ -598,7 +598,7 @@ public partial class Form24 : Form2
     {
         if (args.PropertyName == "Value")
         {
-            QuantityTransferredToAnother_DB = ((RamAccess<string>)value).Value;
+            QuantityTransferredToAnother_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 
@@ -689,7 +689,7 @@ public partial class Form24 : Form2
     {
         if (args.PropertyName == "Value")
         {
-            QuantityRefined_DB = ((RamAccess<string>)value).Value;
+            QuantityRefined_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 
@@ -779,7 +779,7 @@ public partial class Form24 : Form2
     {
         if (args.PropertyName == "Value")
         {
-            QuantityRemovedFromAccount_DB = ((RamAccess<string>)value).Value;
+            QuantityRemovedFromAccount_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 

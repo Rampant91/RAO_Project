@@ -501,7 +501,7 @@ public class Form54 : Form
         if (Volume_DB.Count() > 32)
             Volume_DB = Volume_DB[..32];
 
-        Quantity_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 9].Value), out intValue) ? intValue : 0;
+        Quantity_DB = TryParseExcelIntOrDefault(worksheet.Cells[row, 9].Value);
     }
 
     public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")

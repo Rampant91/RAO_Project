@@ -291,7 +291,7 @@ public class Form52 : Form
         if (Radionuclids_DB.Count() > 1024)
             Radionuclids_DB = Radionuclids_DB[..1024];
 
-        Quantity_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 4].Value), out intValue) ? intValue : 0;
+        Quantity_DB = TryParseExcelIntOrDefault(worksheet.Cells[row, 4].Value);
 
         Activity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 5].Value);
         if (Activity_DB.Count() > 32)

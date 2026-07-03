@@ -232,7 +232,7 @@ public class Form56 : Form
         if (Name_DB.Count() > 64)
             Name_DB = Name_DB[..64];
 
-        Quantity_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 3].Value), out intValue) ? intValue : 0;
+        Quantity_DB = TryParseExcelIntOrDefault(worksheet.Cells[row, 3].Value);
 
         Mass_DB =ConvertFromExcelDouble(worksheet.Cells[row, 4].Value);
         if (Mass_DB.Count() > 32)

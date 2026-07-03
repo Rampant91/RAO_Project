@@ -756,7 +756,7 @@ public partial class Form22 : Form2, IBaseColor
     {
         if (args.PropertyName == "Value")
         {
-            PackQuantity_DB = ((RamAccess<string>)value).Value;
+            PackQuantity_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 
@@ -1233,7 +1233,7 @@ public partial class Form22 : Form2, IBaseColor
     {
         if (args.PropertyName == "Value")
         {
-            QuantityOZIII_DB = ((RamAccess<string>)value).Value;
+            QuantityOZIII_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 

@@ -455,7 +455,7 @@ public partial class Form23 : Form2
     {
         if (args.PropertyName == "Value")
         {
-            QuantityOZIII_DB = ((RamAccess<string>)value).Value;
+            QuantityOZIII_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 

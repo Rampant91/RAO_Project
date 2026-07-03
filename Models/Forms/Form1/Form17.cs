@@ -1475,7 +1475,7 @@ public partial class Form17 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        Quantity_DB = tmp;
+        Quantity_DB = IntegerString_ValueChanged(tmp);
     }
 
     private static bool Quantity_Validation(RamAccess<string> value)//Ready

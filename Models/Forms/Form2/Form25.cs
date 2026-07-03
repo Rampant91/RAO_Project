@@ -475,7 +475,7 @@ public partial class Form25 : Form2
         FcpNumber_DB = Convert.ToString(worksheet.Cells[row, 5].Value);
         FuelMass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 6].Value);
         CellMass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 7].Value);
-        Quantity_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 8].Value), out var intValue) ? intValue : null;
+        Quantity_DB = TryParseExcelNullableInt(worksheet.Cells[row, 8].Value);
         AlphaActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 9].Value);
         BetaGammaActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 10].Value);
     }

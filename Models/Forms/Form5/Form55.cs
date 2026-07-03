@@ -347,7 +347,7 @@ public class Form55 : Form
         if (ProviderOrRecieverOKPO_DB.Count() > 64)
             ProviderOrRecieverOKPO_DB = ProviderOrRecieverOKPO_DB[..64];
 
-        Quantity_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 5].Value), out intValue) ? intValue : 0;
+        Quantity_DB = TryParseExcelIntOrDefault(worksheet.Cells[row, 5].Value);
 
         Mass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 6].Value);
         if (Mass_DB.Count() > 32)
