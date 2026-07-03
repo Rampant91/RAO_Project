@@ -14,16 +14,21 @@ using System.Threading;
 using System.Threading.Tasks;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels.MainWindowTabs;
+using Client_App.ViewModels.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 /// <summary>
-/// Выгрузка всех отчётов указанной формы (1.1-1.9, 2.1-2.12) выбранной организации в отдельные .xlsx файлы.
+/// Выгрузка всех отчётов указанной формы (1.1-1.9, 2.1-2.12) или всех форм группы (all-1, all-2)
+/// выбранной организации в отдельные .xlsx файлы.
 /// </summary>
 public class ExcelExportAllFormsByFormNumberAsyncCommand : BaseAsyncCommand
 {
+    private static readonly string[] Forms1Numbers = ["1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9"];
+    private static readonly string[] Forms2Numbers = ["2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "2.8", "2.9", "2.10", "2.11", "2.12"];
+
     public sealed class ExportByFormCommandParameter
     {
         public ExportByFormCommandParameter(string formNum, Reports selectedReports)
@@ -102,54 +107,58 @@ public class ExcelExportAllFormsByFormNumberAsyncCommand : BaseAsyncCommand
             }
 
             progressBarVM.SetProgressBar(10, "Получение списка отчётов");
-            
-            // Получаем отчёты выбранной организации для указанной формы
-            var reports = await GetReportsByFormNumber(formNum, selectedReports.Id, cts);
-            if (reports.Count == 0)
+
+            var formNumbers = ResolveFormNumbers(formNum);
+            var workItems = await LoadReportsForExport(
+                formNumbers,
+                selectedReports.Id,
+                progressBarVM,
+                cts);
+
+            if (workItems.Count == 0)
             {
                 await ShowNoReportsMessage(formNum);
                 await CancelCommandAndCloseProgressBar(cts, progressBar);
                 return;
             }
 
-            var totalReports = reports.Count;
+            var totalReports = workItems.Count;
             var exportedCount = 0;
+            var printCommands = new Dictionary<char, ExcelExportFormPrintAsyncCommand>();
 
-            FormsTabControlBaseVM formsVM;
-            switch (formNum[0])
+            for (var i = 0; i < workItems.Count; i++)
             {
-                case '1':
-                    formsVM = _mainWindowVM.Forms1TabControlVM;
-                    break;
-                case '2':
-                    formsVM = _mainWindowVM.Forms2TabControlVM;
-                    break;
-                default:
-                    return;
-            }
+                var (currentFormNum, report) = workItems[i];
+                var progressPercent = 10 + (i * 80 / totalReports);
 
-            var printCommand = new ExcelExportFormPrintAsyncCommand(formsVM);
-
-            for (var i = 0; i < reports.Count; i++)
-            {
-                var report = reports[i];
-                var progressPercent = 10 + (i * 80 / totalReports); // 10% - 90% прогресс
-                
                 progressBarVM.SetProgressBar(
-                    progressPercent, 
-                    $"Выгрузка отчёта {i + 1} из {totalReports}");
+                    progressPercent,
+                    formNumbers.Length > 1
+                        ? $"Выгрузка отчёта {i + 1} из {totalReports} (форма {currentFormNum})"
+                        : $"Выгрузка отчёта {i + 1} из {totalReports}");
 
                 try
                 {
-                    // Вызываем команду выгрузки для конкретного отчёта с подавлением диалогов
+                    var formGroup = currentFormNum[0];
+                    if (!printCommands.TryGetValue(formGroup, out var printCommand))
+                    {
+                        FormsTabControlBaseVM formsVM = formGroup switch
+                        {
+                            '1' => _mainWindowVM.Forms1TabControlVM,
+                            '2' => _mainWindowVM.Forms2TabControlVM,
+                            _ => throw new ArgumentOutOfRangeException(nameof(currentFormNum), currentFormNum, null)
+                        };
+                        printCommand = new ExcelExportFormPrintAsyncCommand(formsVM);
+                        printCommands[formGroup] = printCommand;
+                    }
+
                     await printCommand.AsyncExecute(report, destinationFolder, suppressDialogs: true);
                     exportedCount++;
                 }
                 catch (Exception ex)
                 {
-                    // Логируем ошибку но продолжаем с другими отчётами
                     ServiceExtension.LoggerManager.Warning(
-                        $"Ошибка выгрузки отчёта Id={report.Id}: {ex.Message}");
+                        $"Ошибка выгрузки отчёта Id={report.Id}, форма {currentFormNum}: {ex.Message}");
                 }
             }
 
@@ -174,6 +183,13 @@ public class ExcelExportAllFormsByFormNumberAsyncCommand : BaseAsyncCommand
         }
     }
 
+    private static string[] ResolveFormNumbers(string formNum) => formNum switch
+    {
+        "all-1" => Forms1Numbers,
+        "all-2" => Forms2Numbers,
+        _ => [formNum]
+    };
+
     /// <summary>
     /// Запрашивает у пользователя папку для сохранения файлов.
     /// </summary>
@@ -188,132 +204,83 @@ public class ExcelExportAllFormsByFormNumberAsyncCommand : BaseAsyncCommand
         return result;
     }
 
+    private readonly record struct ExportReportListInfo(
+        int ReportId,
+        string FormNum_DB,
+        string? StartPeriod_DB,
+        string? EndPeriod_DB,
+        string? Year_DB,
+        byte CorrectionNumber_DB);
+
     /// <summary>
-    /// Получает отчёты указанной организации для указанной формы.
+    /// Загружает список отчётов для выгрузки: облегчённая проекция полей отчётов
+    /// и титульные данные организации (как в «Список организаций»).
     /// </summary>
-    private static async Task<List<Report>> GetReportsByFormNumber(string formNum, int reportsId, CancellationTokenSource cts)
+    private static async Task<List<(string FormNum, Report Report)>> LoadReportsForExport(
+        string[] formNumbers,
+        int reportsId,
+        AnyTaskProgressBarVM progressBarVM,
+        CancellationTokenSource cts)
     {
         var dbPath = Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB");
         await using var db = new DBModel(dbPath);
+        var token = cts.Token;
 
-        var query = db.ReportsCollectionDbSet
+        progressBarVM.SetProgressBar(11, "Загрузка данных организации");
+
+        var formGroup = formNumbers[0][0];
+        var orgQuery = db.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.DBObservable);
+            .Where(reps => reps.Id == reportsId);
 
-        var reps = formNum switch
+        var org = formGroup switch
         {
-            "1.1" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows11)
-                .FirstAsync(x => x.Id == reportsId, cts.Token),
-
-            "1.2" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows12)
-                .FirstAsync(x => x.Id == reportsId, cts.Token),
-
-            "1.3" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows13)
-                .FirstAsync(x => x.Id == reportsId, cts.Token),
-
-            "1.4" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows14)
-                .FirstAsync(x => x.Id == reportsId, cts.Token),
-
-            "1.5" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows15)
-                .FirstAsync(x => x.Id == reportsId, cts.Token),
-
-            "1.6" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows16)
-                .FirstAsync(x => x.Id == reportsId, cts.Token),
-
-            "1.7" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows17)
-                .FirstAsync(x => x.Id == reportsId, cts.Token),
-
-            "1.8" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows18)
-                .FirstAsync(x => x.Id == reportsId, cts.Token),
-
-            "1.9" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows19)
-                .FirstAsync(x => x.Id == reportsId, cts.Token),
-
-            "2.1" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows21)
-                .FirstAsync(x => x.Id == reportsId, cts.Token),
-
-            "2.2" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows22)
-                .FirstAsync(x => x.Id == reportsId, cts.Token),
-
-            "2.3" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows23)
-                .FirstAsync(x => x.Id == reportsId, cts.Token),
-
-            "2.4" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows24)
-                .FirstAsync(x => x.Id == reportsId, cts.Token),
-
-            "2.5" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows25)
-                .FirstAsync(x => x.Id == reportsId, cts.Token),
-
-            "2.6" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows26)
-                .FirstAsync(x => x.Id == reportsId, cts.Token),
-
-            "2.7" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows27)
-                .FirstAsync(x => x.Id == reportsId, cts.Token),
-
-            "2.8" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows28)
-                .FirstAsync(x => x.Id == reportsId, cts.Token),
-
-            "2.9" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows29)
-                .FirstAsync(x => x.Id == reportsId, cts.Token),
-
-            "2.10" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows210)
-                .FirstAsync(x => x.Id == reportsId),
-
-            "2.11" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows211)
-                .FirstAsync(x => x.Id == reportsId, cts.Token),
-
-            "2.12" => await query
-                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(x => x.Report_Collection.Where(x => x.FormNum_DB == formNum)).ThenInclude(x => x.Rows212)
-                .FirstAsync(x => x.Id == reportsId, cts.Token),
-
-            _ => throw new ArgumentOutOfRangeException(nameof(formNum), formNum, null)
+            '1' => await orgQuery
+                .Include(reps => reps.Master_DB).ThenInclude(m => m.Rows10)
+                .FirstAsync(token),
+            '2' => await orgQuery
+                .Include(reps => reps.Master_DB).ThenInclude(m => m.Rows20)
+                .FirstAsync(token),
+            _ => throw new ArgumentOutOfRangeException(nameof(formNumbers), formNumbers[0], null)
         };
 
-        return reps.Report_Collection.ToList<Report>();
+        progressBarVM.SetProgressBar(12, "Загрузка списка отчётов");
+
+        var reportRows = await db.ReportCollectionDbSet
+            .AsNoTracking()
+            .Where(r => r.Reports != null && r.Reports.Id == reportsId)
+            .Where(r => formNumbers.Contains(r.FormNum_DB))
+            .Select(r => new ExportReportListInfo(
+                r.Id,
+                r.FormNum_DB,
+                r.StartPeriod_DB,
+                r.EndPeriod_DB,
+                r.Year_DB,
+                r.CorrectionNumber_DB))
+            .ToListAsync(token);
+
+        var formOrder = formNumbers
+            .Select((formNum, index) => (formNum, index))
+            .ToDictionary(x => x.formNum, x => x.index);
+
+        return reportRows
+            .OrderBy(r => formOrder.GetValueOrDefault(r.FormNum_DB, int.MaxValue))
+            .ThenBy(r => r.ReportId)
+            .Select(r => (r.FormNum_DB, ToExportReport(r, org)))
+            .ToList();
     }
+
+    private static Report ToExportReport(ExportReportListInfo info, Reports org) => new()
+    {
+        Id = info.ReportId,
+        FormNum_DB = info.FormNum_DB,
+        StartPeriod_DB = info.StartPeriod_DB,
+        EndPeriod_DB = info.EndPeriod_DB,
+        Year_DB = info.Year_DB,
+        CorrectionNumber_DB = info.CorrectionNumber_DB,
+        Reports = org
+    };
 
     /// <summary>
     /// Показывает сообщение о не выбранной организации.
@@ -338,6 +305,13 @@ public class ExcelExportAllFormsByFormNumberAsyncCommand : BaseAsyncCommand
     /// </summary>
     private static async Task ShowNoReportsMessage(string formNum)
     {
+        var message = formNum switch
+        {
+            "all-1" => "Для форм 1.1–1.9 не найдено отчётов у выбранной организации.",
+            "all-2" => "Для форм 2.1–2.12 не найдено отчётов у выбранной организации.",
+            _ => $"Для формы {formNum} не найдено отчётов у выбранной организации."
+        };
+
         await Dispatcher.UIThread.InvokeAsync(() =>
             MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
@@ -345,7 +319,7 @@ public class ExcelExportAllFormsByFormNumberAsyncCommand : BaseAsyncCommand
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                     ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Информация",
-                    ContentMessage = $"Для формы {formNum} не найдено отчётов у выбранной организации.",
+                    ContentMessage = message,
                     MinWidth = 300,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
                 }).ShowDialog(Desktop.MainWindow));

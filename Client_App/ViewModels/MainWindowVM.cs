@@ -451,7 +451,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand GroupBulkExportReports => new GroupBulkExportReportsAsyncCommand();
 
     /// <summary>
-    /// Выгрузка всех отчётов указанной формы (1.1-1.9, 2.1-2.12) организации в отдельные .xlsx файлы
+    /// Выгрузка всех отчётов указанной формы (1.1-1.9, 2.1-2.12) или всех форм группы (all-1, all-2)
+    /// организации в отдельные .xlsx файлы
     /// </summary>
     public ICommand ExcelExportAllFormsByFormNumber => new ExcelExportAllFormsByFormNumberAsyncCommand(this);
 

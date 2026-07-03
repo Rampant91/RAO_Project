@@ -111,6 +111,16 @@
                                     <Binding Path="SelectedReports" Mode="OneWay"/>
                                 </MultiBinding>
                             </MenuItem.IsVisible>
+                            <MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+                                      Header="Все формы 2">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="all-2"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
+                            <Separator/>
 							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
 									  Header="Форма 2.1">
                                 <MenuItem.CommandParameter>
