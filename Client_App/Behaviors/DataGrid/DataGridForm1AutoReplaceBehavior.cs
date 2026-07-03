@@ -22,6 +22,7 @@ public class DataGridForm1AutoReplaceBehavior : Behavior<DataGrid>
     private readonly Form1AutoReplaceUiService _autoReplace = new();
     private Form1? _activeRow;
     private string? _activeColumn;
+    private string? _activeOriginalValue;
     private Control? _activeEditor;
     private Form1? _lastCommittedRow;
     private string? _lastCommittedColumn;
@@ -63,6 +64,7 @@ public class DataGridForm1AutoReplaceBehavior : Behavior<DataGrid>
         FinalizeActiveEdit();
         _activeRow = row;
         _activeColumn = column;
+        _activeOriginalValue = GetColumnValue(row, column);
         _activeEditor = control;
         _lastCommittedRow = null;
         _lastCommittedColumn = null;
@@ -119,7 +121,11 @@ public class DataGridForm1AutoReplaceBehavior : Behavior<DataGrid>
             CommitEditorValue(_activeRow, _activeColumn, _activeEditor);
         }
 
-        _autoReplace.RunIfNeeded(_activeRow, _activeColumn);
+        if (GetColumnValue(_activeRow, _activeColumn) != _activeOriginalValue)
+        {
+            _autoReplace.RunIfNeeded(_activeRow, _activeColumn);
+        }
+
         _lastCommittedRow = _activeRow;
         _lastCommittedColumn = _activeColumn;
         ClearActive();
@@ -129,7 +135,25 @@ public class DataGridForm1AutoReplaceBehavior : Behavior<DataGrid>
     {
         _activeRow = null;
         _activeColumn = null;
+        _activeOriginalValue = null;
         _activeEditor = null;
+    }
+
+    private static string GetColumnValue(Form1 row, string column)
+    {
+        var dbProp = row.GetType().GetProperty($"{column}_DB", BindingFlags.Instance | BindingFlags.Public);
+        if (dbProp is not null)
+        {
+            return dbProp.GetValue(row) as string ?? string.Empty;
+        }
+
+        var prop = row.GetType().GetProperty(column, BindingFlags.Instance | BindingFlags.Public);
+        if (prop?.GetValue(row) is RamAccess<string> ramAccess)
+        {
+            return ramAccess.Value ?? string.Empty;
+        }
+
+        return string.Empty;
     }
 
     private bool TryResolveEditContext(Control control, out Form1 row, out string column)
