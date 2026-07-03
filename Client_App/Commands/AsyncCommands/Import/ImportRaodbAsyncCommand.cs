@@ -63,7 +63,6 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         var importSummaryShown = false;
         try
         {
-            SkipNewOrg = false;
             SkipInter = false;
             SkipReplace = false;
             HasMultipleReport = false;
@@ -242,75 +241,6 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                     }
                     else if (baseReps11 == null && baseReps21 == null && baseReps41 == null && baseReps51 == null)
                     {
-                        #region AddNewOrg
-
-                    var an = "Добавить";
-                    if (!SkipNewOrg)
-                    {
-                        if (answer.Length > 1 || repsList.Count > 1)
-                        {
-                            #region MessageNewOrg
-
-                            an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                                {
-                                    ButtonDefinitions =
-                                    [
-                                        new ButtonDefinition { Name = "Добавить", IsDefault = true },
-                                        new ButtonDefinition { Name = "Да для всех" },
-                                        new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
-                                    ],
-                                    ContentTitle = "Импорт из .raodb",
-                                    ContentHeader = "Уведомление",
-                                    ContentMessage =
-                                        $"Будет добавлена новая организация ({ImpRepFormNum}) содержащая {ImpRepFormCount} форм отчетности." +
-                                        $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
-                                        $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
-                                        $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
-                                        $"{Environment.NewLine}импортировать все новые организации.",
-                                    MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                })
-                                .ShowDialog(Desktop.MainWindow));
-
-                            #endregion
-
-                            if (an is "Да для всех") SkipNewOrg = true;
-                        }
-                        else
-                        {
-                            #region MessageNewOrg
-
-                            an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                                {
-                                    ButtonDefinitions =
-                                    [
-                                        new ButtonDefinition { Name = "Добавить", IsDefault = true },
-                                        new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
-                                    ],
-                                    ContentTitle = "Импорт из .raodb",
-                                    ContentHeader = "Уведомление",
-                                    ContentMessage =
-                                        $"Будет добавлена новая организация ({ImpRepFormNum}) содержащая {ImpRepFormCount} форм отчетности." +
-                                        $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
-                                        $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
-                                    MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                })
-                                .ShowDialog(Desktop.MainWindow));
-
-                            #endregion
-                        }
-                    }
-
-                    if (an is "Добавить" or "Да для всех")
-                    {
                         ReportsStorage.LocalReports.Reports_Collection.Add(impReps);
                         AtLeastOneImportDone = true;
 
@@ -344,9 +274,6 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                         }
 
                         #endregion
-                    }
-
-                    #endregion
                     }
 
                     switch (impReps.Master_DB.FormNum_DB)
