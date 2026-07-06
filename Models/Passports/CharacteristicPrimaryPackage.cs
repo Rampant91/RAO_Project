@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace Models.Passports
 {
     [Serializable]
-    [Table(name: "characteristic_primary_package")]
+    [Table(name: "characteristic_package")]
     public class CharacteristicPrimaryPackage : INotifyPropertyChanged, INotifyDataErrorInfo
     {
 
