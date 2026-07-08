@@ -58,6 +58,15 @@
 									  Command="{Binding MainWindowVM.AddReports, Mode=OneWay}"/>
 							<MenuItem Header="Редактировать форму"
 									  Command="{Binding NewChangeReports, Mode=OneWay}"/>
+							<MenuItem Header="Выгрузить титульный лист"
+                                      IsVisible="{Binding SelectedReports, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}">
+								<MenuItem Header="В Excel"
+                                          Command="{Binding ExcelExportTitleList, Mode=OneWay}"
+                                          CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+								<MenuItem Header="В RAODB"
+                                          Command="{Binding ExportTitleList, Mode=OneWay}"
+                                          CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+							</MenuItem>
 							<MenuItem Header="Выгрузить организацию"
 									  Command="{Binding MainWindowVM.ExportReports, Mode=OneWay}"
 									  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>

@@ -50,6 +50,14 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
     public ICommand ExcelExportFormPrint => new ExcelExportFormPrintAsyncCommand(this);
 
     /// <summary>
+    /// Выгрузить только титульный лист в Excel
+    /// </summary>
+    public ICommand ExcelExportTitleList => new ExcelExportTitleListAsyncCommand(this);
+    /// <summary>
+    /// Выгрузить только титульный лист в RAODB
+    /// </summary>
+    public ICommand ExportTitleList => new ExportTitleListAsyncCommand(this.MainWindowVM);
+    /// <summary>
     /// Экспорт отчёта в файл .RAODB
     /// </summary>
     public ICommand ExportReport => new ExportReportAsyncCommand(this); 

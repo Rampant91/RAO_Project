@@ -83,6 +83,17 @@
                                           Command="{Binding ImportExcel, Mode=OneWay}"
                                           CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 							</MenuItem>
+							
+							<MenuItem Header="Выгрузить титульный лист"
+                                      IsVisible="{Binding SelectedReports, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}">
+								<MenuItem Header="В Excel"
+                                          Command="{Binding ExcelExportTitleList, Mode=OneWay}"
+                                          CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+								<MenuItem Header="В RAODB"
+                                          Command="{Binding ExportTitleList, Mode=OneWay}"
+                                          CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+							</MenuItem>
+							
 							<MenuItem Header="Выгрузить организацию"
                                       IsVisible="{Binding SelectedReports, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}">
 								<MenuItem Header="Все отчёты в один .RAODB файл"

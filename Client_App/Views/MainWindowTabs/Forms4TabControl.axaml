@@ -66,6 +66,15 @@
                             <MenuItem Command="{Binding MainWindowVM.DeleteReports, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReports, Mode=OneWay}"
                                       Header="Удалить форму" />
+							<MenuItem Header="Выгрузить титульный лист"
+                                      IsVisible="{Binding SelectedReports, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}">
+								<MenuItem Header="В Excel"
+                                          Command="{Binding ExcelExportTitleList, Mode=OneWay}"
+                                          CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+								<MenuItem Header="В RAODB"
+                                          Command="{Binding ExportTitleList, Mode=OneWay}"
+                                          CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+							</MenuItem>
                             <MenuItem Command="{Binding MainWindowVM.ExportReports, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReports, Mode=OneWay}"
                                       Header="Выгрузить отчет РИАЦ" />
