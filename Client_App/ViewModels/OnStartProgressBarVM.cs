@@ -94,12 +94,13 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
 
     private static bool AppIsLaunchedInNorao()
     {
+
         var appIsLaunchedInNorao = Settings.Default.AppStartupParameters
             .Trim()
             .Split(',')
             .Any(x => x is "-n");
-
         return appIsLaunchedInNorao || File.Exists(@"Y:\АЧ 2021\Программа\developer.mode");
+
     }
 
     #region BackgroundWork
@@ -136,7 +137,7 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
         await new ExcelExportAllAsyncCommand(MainWindowVM).AsyncExecute(null);
     }
 
-    #endregion 
+    #endregion
     
     #endregion
 
