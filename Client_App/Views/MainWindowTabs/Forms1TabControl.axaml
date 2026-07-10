@@ -91,6 +91,12 @@
                                           CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
                             </MenuItem>
                             <MenuItem Header="Выгрузить все организации">
+                                <MenuItem.IsVisible>
+                                    <MultiBinding Converter="{StaticResource AppLaunchedAndSelectedReportsVisibleConverter}">
+                                        <Binding Path="MainWindowVM.AppLaunchedAtNorao" Mode="OneWay"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.IsVisible>
                                 <MenuItem Header="В один .RAODB файл"
                                           Command="{Binding MainWindowVM.ExportAllReportsOneFile, Mode=OneWay}"/>
                                 <MenuItem Header="Из субъекта РФ в один .RAODB файл"
@@ -99,7 +105,9 @@
                                           Command="{Binding MainWindowVM.ExportAllReports, Mode=OneWay}"/>
                             </MenuItem>
                             <MenuItem Header="Выгрузить все отчеты в отдельные .RAODB файлы"
-									  Command="{Binding MainWindowVM.ExportAllReport, Mode=OneWay}"/>
+									  Command="{Binding MainWindowVM.ExportAllReport, Mode=OneWay}"
+                                      CommandParameter="{Binding SelectedReports}"
+                                      IsVisible="{Binding MainWindowVM.AppLaunchedAtNorao, Mode=OneWay}"/>
                             <MenuItem Header="Выгрузить отчеты организации в отдельные .xlsx файлы">
                                 <MenuItem.IsVisible>
                                     <MultiBinding Converter="{StaticResource AppLaunchedAndSelectedReportsVisibleConverter}">
