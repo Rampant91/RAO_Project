@@ -73,8 +73,6 @@ namespace Client_App.Behaviors
                 && Radionuclid.Activity == 0) return;
 
 
-            Dispatcher.UIThread.InvokeAsync(() =>
-            {
                 Radionuclid.GetGroupCode();
                 Radionuclid.GetIsLongLivingActivity();
                 Radionuclid.Characteristic.UpdateAlphaActivity();
@@ -83,7 +81,6 @@ namespace Client_App.Behaviors
                 Radionuclid.Characteristic.UpdateTransuraniumActivity();
                 Radionuclid.Characteristic.UpdateTritiumActivity();
                 Radionuclid.Characteristic.UpdateTotalActivity();
-            });
 
         }
 

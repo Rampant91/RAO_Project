@@ -12,7 +12,7 @@ using Models.DBRealization;
 namespace Models.DBRealization.Migrations.DataModel
 {
     [DbContext(typeof(DBModel))]
-    [Migration("20260706131029_DataModel_50")]
+    [Migration("20260710082214_DataModel_50")]
     partial class DataModel_50
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -2462,7 +2462,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("OperationCode_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                        .HasMaxLength(2)
+                        .HasColumnType("varchar(2)");
 
                     b.Property<string>("ProviderOrRecieverOKPO_DB")
                         .HasMaxLength(64)
@@ -2553,7 +2554,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("OperationCode_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                        .HasMaxLength(2)
+                        .HasColumnType("varchar(2)");
 
                     b.Property<string>("ProviderOrRecieverOKPO_DB")
                         .HasMaxLength(64)
@@ -2657,7 +2659,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("varchar(32)");
 
                     b.Property<string>("Name_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
 
                     b.Property<int>("NumberInOrder_DB")
                         .HasColumnType("INTEGER");
@@ -2666,7 +2669,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("OperationCode_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                        .HasMaxLength(2)
+                        .HasColumnType("varchar(2)");
 
                     b.Property<string>("ProviderOrRecieverOKPO_DB")
                         .HasMaxLength(64)
@@ -2700,7 +2704,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("varchar(32)");
 
                     b.Property<string>("Name_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
 
                     b.Property<int>("NumberInOrder_DB")
                         .HasColumnType("INTEGER");
@@ -2736,7 +2741,8 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("varchar(256)");
 
                     b.Property<string>("Name_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
 
                     b.Property<string>("Note_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");

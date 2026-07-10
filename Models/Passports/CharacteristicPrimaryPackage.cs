@@ -322,6 +322,7 @@ namespace Models.Passports
         }
         public void UpdateLongLivingActivity()
         {
+            var temp = LongLivingActivity;
             OnPropertyChanged(nameof(LongLivingActivity));
         }
         #endregion
@@ -343,6 +344,7 @@ namespace Models.Passports
 
         public void UpdateTransuraniumActivity()
         {
+            var temp = TransuraniumActivity;
             OnPropertyChanged(nameof(TransuraniumActivity));
         }
         #endregion
@@ -363,6 +365,7 @@ namespace Models.Passports
 
         public void UpdateAlphaActivity()
         {
+            var temp = AlphaActivity;
             OnPropertyChanged(nameof(AlphaActivity));
         }
         #endregion
@@ -383,6 +386,8 @@ namespace Models.Passports
 
         public void UpdateBetaGammaActivity()
         {
+
+            var temp = BetaGammaActivity;
             OnPropertyChanged(nameof(BetaGammaActivity));
         }
         #endregion
@@ -403,6 +408,7 @@ namespace Models.Passports
 
         public void UpdateTritiumActivity()
         {
+            var temp = TritiumActivity;
             OnPropertyChanged(nameof(TritiumActivity));
         }
         #endregion
@@ -425,6 +431,7 @@ namespace Models.Passports
         }
         public void UpdateTotalActivity()
         {
+            var temp = TotalActivity;
             OnPropertyChanged(nameof(TotalActivity));
         }
 
