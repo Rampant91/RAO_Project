@@ -6,6 +6,12 @@ namespace Models.DBRealization.Migrations.DataModel
 {
     public partial class DataModel_50 : Migration
     {
+        //ААААААААААААААААААААААААААААААААААААААААААААААААААААА
+        //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        //Все неправильно надо переписать с нуля связку в дизайнере
+        //И разобраться чтоб нормально мигрировала и сохраняла изменения
+        //У тебя 1 день)
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
