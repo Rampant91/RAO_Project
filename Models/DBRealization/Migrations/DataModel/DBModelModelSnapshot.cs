@@ -2836,9 +2836,6 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasMaxLength(16)
                         .HasColumnType("VARCHAR(16)");
 
-                    b.Property<int?>("PackagePassportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("PackageType")
                         .HasMaxLength(16)
                         .HasColumnType("VARCHAR(16)");
@@ -2869,7 +2866,7 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PackagePassportId");
+                    b.HasIndex("PassportId");
 
                     b.ToTable("characteristic_package");
                 });
@@ -3060,16 +3057,13 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<int?>("CharacteristicId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("CharacteristicPrimaryPackageId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Name")
                         .HasMaxLength(8)
                         .HasColumnType("VARCHAR(8)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CharacteristicPrimaryPackageId");
+                    b.HasIndex("CharacteristicId");
 
                     b.ToTable("radionuclid");
                 });
@@ -3550,16 +3544,20 @@ namespace Models.DBRealization.Migrations.DataModel
 
             modelBuilder.Entity("Models.Passports.CharacteristicPrimaryPackage", b =>
                 {
-                    b.HasOne("Models.Passports.PackagePassport", null)
+                    b.HasOne("Models.Passports.PackagePassport", "Passport")
                         .WithMany("ContentCharacteristics")
-                        .HasForeignKey("PackagePassportId");
+                        .HasForeignKey("PassportId");
+
+                    b.Navigation("Passport");
                 });
 
             modelBuilder.Entity("Models.Passports.Radionuclid", b =>
                 {
-                    b.HasOne("Models.Passports.CharacteristicPrimaryPackage", null)
+                    b.HasOne("Models.Passports.CharacteristicPrimaryPackage", "Characteristic")
                         .WithMany("RadionuclidsList")
-                        .HasForeignKey("CharacteristicPrimaryPackageId");
+                        .HasForeignKey("CharacteristicId");
+
+                    b.Navigation("Characteristic");
                 });
 
             modelBuilder.Entity("Models.StoragePoints.LicenseInfo", b =>

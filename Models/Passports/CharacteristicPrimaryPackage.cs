@@ -71,17 +71,23 @@ namespace Models.Passports
         [Key]
         public int Id { get; set; }
 
-        [ForeignKey(nameof(Passport))]
         public int? PassportId { get; set; }
 
         #region Passport
         [NotMapped]
         private PackagePassport _passport;
+
+        [ForeignKey(nameof(PassportId))]
         public PackagePassport Passport
         {
             get
             {
                 return _passport;
+            }
+            private set
+            {
+                _passport = value;
+                OnPropertyChanged();
             }
         }
         #endregion
