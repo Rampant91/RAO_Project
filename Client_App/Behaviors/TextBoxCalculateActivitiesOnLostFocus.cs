@@ -31,6 +31,7 @@ namespace Client_App.Behaviors
         {
             get; set;
         }
+        private bool _updateRequired;
 
         protected override void OnAttached()
         {
@@ -45,8 +46,13 @@ namespace Client_App.Behaviors
 
         private void AssociatedObject_GotFocus(object? sender, Avalonia.Input.GotFocusEventArgs e)
         {
+            if (PreviousName == Radionuclid.Name
+                && PreviousActivity == Radionuclid.Activity)
+                return;
+
             PreviousName = Radionuclid.Name;
             PreviousActivity = Radionuclid.Activity;
+            _updateRequired = true;
         }
 
         protected override void OnDetaching()
@@ -66,21 +72,23 @@ namespace Client_App.Behaviors
             if (Radionuclid == null) return;
 
             if (PreviousName == Radionuclid.Name
-                && PreviousActivity == Radionuclid.Activity) return;
+                && PreviousActivity == Radionuclid.Activity
+                && !_updateRequired) return;
 
             if (PreviousName != Radionuclid.Name
                 && PreviousActivity == Radionuclid.Activity
                 && Radionuclid.Activity == 0) return;
 
 
-                Radionuclid.GetGroupCode();
-                Radionuclid.GetIsLongLivingActivity();
-                Radionuclid.Characteristic.UpdateAlphaActivity();
-                Radionuclid.Characteristic.UpdateBetaGammaActivity();
-                Radionuclid.Characteristic.UpdateLongLivingActivity();
-                Radionuclid.Characteristic.UpdateTransuraniumActivity();
-                Radionuclid.Characteristic.UpdateTritiumActivity();
-                Radionuclid.Characteristic.UpdateTotalActivity();
+            Radionuclid.GetGroupCode();
+            Radionuclid.GetIsLongLivingActivity();
+            Radionuclid.Characteristic.UpdateAlphaActivity();
+            Radionuclid.Characteristic.UpdateBetaGammaActivity();
+            Radionuclid.Characteristic.UpdateLongLivingActivity();
+            Radionuclid.Characteristic.UpdateTransuraniumActivity();
+            Radionuclid.Characteristic.UpdateTritiumActivity();
+            Radionuclid.Characteristic.UpdateTotalActivity();
+            _updateRequired = false;
 
         }
 
