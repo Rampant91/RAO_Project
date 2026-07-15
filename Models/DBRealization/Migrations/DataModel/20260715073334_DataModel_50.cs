@@ -21,14 +21,15 @@ namespace Models.DBRealization.Migrations.DataModel
                 table: "characteristic_package",
                 column: "PassportId",
                 principalTable: "package_passport",
-                principalColumn: "Id");
+                principalColumn: "Id", onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_radionuclid_characteristic_~",
                 table: "radionuclid",
                 column: "CharacteristicId",
                 principalTable: "characteristic_package",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
