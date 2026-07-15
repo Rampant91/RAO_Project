@@ -1,11 +1,9 @@
 ﻿ using Avalonia.Controls;
-using Client_App.Commands.AsyncCommands.SumRow;
 using Client_App.Resources;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
-using Client_App.VisualRealization.Long_Visual;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -88,54 +86,7 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
 
         var changeOrCreateVM = new ChangeOrCreateVM(numForm, report);
 
-        switch (numForm)
-        {
-            case "2.1":
-                {
-                    Form2_Visual.tmpVM = changeOrCreateVM;
-                    if (changeOrCreateVM.isSum)
-                    {
-                        //var sumRow = frm.Storage.Rows21.Where(x => x.Sum_DB == true);
-                        await new CancelSumRowAsyncCommand(changeOrCreateVM).AsyncExecute(null);
-                        await new SumRowAsyncCommand(changeOrCreateVM).AsyncExecute(null);
-                        //var newSumRow = frm.Storage.Rows21.Where(x => x.Sum_DB == true);
-                    }
-
-                    break;
-                }
-            case "2.2":
-                Form2_Visual.tmpVM = changeOrCreateVM;
-                if (changeOrCreateVM.isSum)
-                {
-                    var sumRow = changeOrCreateVM.Storage.Rows22
-                        .Where(x => x.Sum_DB)
-                        .ToList();
-                    Dictionary<long, List<string>> dic = new();
-                    foreach (var oldR in sumRow)
-                    {
-                        dic[oldR.NumberInOrder_DB] = [oldR.PackQuantity_DB, oldR.VolumeInPack_DB, oldR.MassInPack_DB];
-                    }
-                    await new CancelSumRowAsyncCommand(changeOrCreateVM).AsyncExecute(null);
-                    await new SumRowAsyncCommand(changeOrCreateVM).AsyncExecute(null);
-                    var newSumRow = changeOrCreateVM.Storage.Rows22
-                        .Where(x => x.Sum_DB)
-                        .ToList();
-                    foreach (var newR in newSumRow)
-                    {
-                        var matchDic = dic
-                             .Where(oldR => newR.NumberInOrder_DB == oldR.Key)
-                             .ToList();
-                        foreach (var oldR in matchDic)
-                        {
-                            newR.PackQuantity_DB = oldR.Value[0];
-                            newR.VolumeInPack_DB = oldR.Value[1];
-                            newR.MassInPack_DB = oldR.Value[2];
-                        }
-                    }
-                }
-
-                break;
-        }
+        await Form2NewInterfaceOpener.PrepareSumRowsAsync(changeOrCreateVM, numForm);
 
         switch (numForm)
         {
@@ -217,6 +168,12 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                     var window = new Form_41(form41VM) { OwnerPrevState = mainWindow.WindowState };
                     mainWindow.WindowState = WindowState.Minimized;
                     await window.ShowDialog(mainWindow);
+                    break;
+                }
+            case "2.1" or "2.2" or "2.3" or "2.4" or "2.5" or "2.6" or "2.7" or "2.8" or "2.9" or "2.10" or "2.11" or "2.12"
+                when Form2InterfaceFlags.UseNewInterface:
+                {
+                    await Form2NewInterfaceOpener.ShowDialogAsync(numForm, changeOrCreateVM.Storage, mainWindow);
                     break;
                 }
             default:

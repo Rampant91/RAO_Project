@@ -5,7 +5,7 @@
              xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-             xmlns:local="using:Client_App.Behaviors"
+             xmlns:dgBehaviors="using:Client_App.Behaviors.DataGridBehaviors"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:models="clr-namespace:Models.Collections;assembly=Models"
              xmlns:vm="using:Client_App.ViewModels.MainWindowTabs"
@@ -53,8 +53,8 @@
                           SelectionMode="Single">
 
                     <interactivity:Interaction.Behaviors>
-                        <local:DataGridDoubleClickOpenFormBehavior />
-                        <local:DataGridDeselectOnEmptyAreaClickBehavior />
+                        <dgBehaviors:DataGridDoubleClickOpenFormBehavior />
+                        <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
                     </interactivity:Interaction.Behaviors>
 
                     <DataGrid.ContextMenu>
@@ -255,8 +255,8 @@
                           SelectionMode="Single">
 
                     <interactivity:Interaction.Behaviors>
-                        <local:DataGridDoubleClickOpenFormBehavior />
-                        <local:DataGridDeselectOnEmptyAreaClickBehavior />
+                        <dgBehaviors:DataGridDoubleClickOpenFormBehavior />
+                        <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
                     </interactivity:Interaction.Behaviors>
 
                     <DataGrid.ContextMenu>

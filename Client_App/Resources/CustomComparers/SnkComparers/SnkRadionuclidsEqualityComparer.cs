@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Models.Comparers.FormContent;
 
 namespace Client_App.Resources.CustomComparers.SnkComparers;
 
@@ -33,24 +34,9 @@ public partial class SnkRadionuclidsEqualityComparer : IEqualityComparer<string>
     {
         return SnkRegex()
             .Replace(value, "")
-            .ToLower()
-            .Replace('а', 'a')
-            .Replace('б', 'b')
-            .Replace('в', 'b')
-            .Replace('г', 'r')
-            .Replace('е', 'e')
-            .Replace('ё', 'e')
-            .Replace('з', '3')
-            .Replace('к', 'k')
-            .Replace('м', 'm')
-            .Replace('н', 'h')
-            .Replace('о', 'o')
-            .Replace('0', 'o')
-            .Replace('р', 'p')
-            .Replace('с', 'c')
-            .Replace('т', 't')
-            .Replace('у', 'y')
-            .Replace('х', 'x');
+            .ToLower() is var cleaned
+            ? LookalikeCharMapper.ReplaceRuEnLookalikes(cleaned, includeExtendedSnkSet: true)
+            : string.Empty;
     }
 
     [GeneratedRegex(@"[\\/:*?""<>|.,_\-;:\s+]")]

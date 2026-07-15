@@ -8,7 +8,8 @@
     xmlns:forms="clr-namespace:Models.Forms;assembly=Models"
     xmlns:forms2="clr-namespace:Models.Forms.Form2;assembly=Models"
     xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-    xmlns:local="using:Client_App.Behaviors"
+    xmlns:headerBehaviors="using:Client_App.Behaviors.TableHeader"
+    xmlns:dgBehaviors="using:Client_App.Behaviors.DataGridBehaviors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms2"
     x:Name="2.2"
@@ -118,9 +119,9 @@
             </WrapPanel>
         </Expander>
 
-		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1">
+		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
 
-            <Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="Auto">
+            <Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="*">
                 <Grid.ContextMenu>
                     <ContextMenu
                         x:CompileBindings="True"
@@ -218,15 +219,20 @@
 
                 <!--#region Заголовки таблицы-->
 
-                <Grid
-                    Grid.Row="0"
-                    Width="{Binding ElementName=dataGrid.Width}"
-                    Classes="tableHeader"
-                    ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
-                    RowDefinitions="Auto,Auto,Auto">
-
+                <Grid Grid.Row="0"
+                      Width="{Binding Bounds.Width, ElementName=dataGrid}"
+                      Classes="tableHeader">
+                    <Panel ClipToBounds="True">
                     <interactivity:Interaction.Behaviors>
-                        <local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}" />
+                        <headerBehaviors:FrozenHeaderScrollSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                                                        ScrollEntireHeader="True"/>
+                    </interactivity:Interaction.Behaviors>
+                    <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
+                          RowDefinitions="Auto,Auto,Auto">
+                    <interactivity:Interaction.Behaviors>
+                        <headerBehaviors:TableHeaderColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"/>
+                        <headerBehaviors:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                                                           IncludeTrailingBoundary="True"/>
                     </interactivity:Interaction.Behaviors>
 
                     <!--#region Первый уровень заголовков-->
@@ -330,6 +336,8 @@
 
                     <!--#endregion Второй уровень заголовков-->
 
+                    </Grid>
+                    </Panel>
                 </Grid>
 
                 <!--#endregion Заголовки таблицы-->
@@ -345,32 +353,39 @@
 					CanUserReorderColumns="False"
 					Items="{Binding FormList}"
 					SelectedItem="{Binding SelectedForm}"
-					ColumnWidth="125">
+					ColumnWidth="125"
+					Margin="8,-5,0,0">
 
                     <interactivity:Interaction.Behaviors>
-                        <local:DataGridColumnWidthLoadBehavior FormNum="2.2" />
-                        <local:DataGridPointerBehavior />
-                        <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
-                        <local:DeselectDataGridOnClickOutsideBehavior />
-                        <local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
-                        <local:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
+                        <dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="2.2" />
+                        <dgBehaviors:DataGridPointerBehavior />
+                        <dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
+                        <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
+                        <dgBehaviors:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
+                        <dgBehaviors:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
                     </interactivity:Interaction.Behaviors>
 
 					<DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding NumberInOrder.Value}"
-											Width="40"
-											IsReadOnly="True"
-											x:DataType="forms2:Form22">
-							<DataGridTextColumn.HeaderTemplate>
-								<DataTemplate>
-									<Border Classes="headerTemplate">
-										<Grid ColumnDefinitions="*,Auto">
-											<TextBlock Grid.Column="0" Text="1"/>
-										</Grid>
-									</Border>
-								</DataTemplate>
-							</DataGridTextColumn.HeaderTemplate>
-						</DataGridTextColumn>
+                        <DataGridTemplateColumn Width="40"
+                                                IsReadOnly="True">
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <Border Classes="headerTemplate">
+                                        <Grid ColumnDefinitions="*,Auto"
+                                              HorizontalAlignment="Center">
+                                            <TextBlock Grid.Column="0" Text="1"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="forms2:Form22">
+                                    <TextBlock Text="{Binding NumberInOrder.Value}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
 						<DataGridTemplateColumn>
 							<DataGridTemplateColumn.HeaderTemplate>
@@ -797,9 +812,9 @@
                         SelectedItem="{Binding SelectedNote}">
 
                         <interactivity:Interaction.Behaviors>
-                            <local:DataGridColumnWidthLoadBehavior FormNum="notes" />
-                            <local:DataGridPointerBehavior />
-                            <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
+                            <dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="notes" />
+                            <dgBehaviors:DataGridPointerBehavior />
+                            <dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
                         </interactivity:Interaction.Behaviors>
 
                         <DataGrid.Columns>

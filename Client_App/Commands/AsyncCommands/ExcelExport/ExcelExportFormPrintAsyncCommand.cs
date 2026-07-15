@@ -339,6 +339,10 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 
         ExcelPrintRowsExport(rep.FormNum_DB, worksheetMain, rep);
 
+        var notesExported = worksheetTitle.Name is "1.0" or "2.0" or "Форма 5.0"
+                            && worksheetMain.Name is not "Форма 5.7";
+        ApplyExcelExecutorWrapText(rep.FormNum_DB, worksheetMain, rep, notesExported);
+
         return Task.CompletedTask;
     }
 
@@ -506,7 +510,6 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         var worksheetMain = excelPackage.Workbook.Worksheets[strMain];
 
         worksheetTitle.Cells.Style.ShrinkToFit = true;
-        worksheetMain.Cells.Style.ShrinkToFit = true;
         return Task.FromResult(excelPackage);
     }
 

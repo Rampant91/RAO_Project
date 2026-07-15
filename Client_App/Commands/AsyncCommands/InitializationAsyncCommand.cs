@@ -5,6 +5,7 @@ using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.Properties;
 using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels;
+using Client_App.Views.Messages;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
@@ -150,11 +151,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
     {
         try
         {
-            SystemDirectory = Settings.Default.SystemFolderDefaultPath is "default"
-                ? OperatingSystem.IsWindows()
-                    ? Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System))!
-                    : SystemDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
-                : Settings.Default.SystemFolderDefaultPath;
+            SystemDirectory = GetSystemDirectoryPath();
         }
         catch (Exception ex)
         {
@@ -436,9 +433,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
     #region ProcessDataBaseCreate
 
     /// <summary>
-    /// Создание файла БД, либо чтение имеющегося
+    /// Создание файла БД, либо чтение имеющегося.
     /// </summary>
-    /// <returns></returns>
     private async Task ProcessDataBaseCreate()
     {
         var i = 0;
@@ -446,9 +442,31 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         DBModel dbm;
         DirectoryInfo dirInfo = new(RaoDirectory);
         FileInfo dbFileInfo = null;
-        foreach (var fileInfo in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly)
-                     .Where(x => x.Name.ToLower().EndsWith(".raodb"))
-                     .OrderByDescending(x => x.LastWriteTime))
+        var raodbFiles = GetRaodbFiles(dirInfo).OrderByDescending(x => x.LastWriteTime).ToList();
+
+        IEnumerable<FileInfo> filesToTry;
+        if (raodbFiles.Count > 1)
+        {
+            var selectedFile = await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                var window = new MultipleRaodbFilesMessageWindow(raodbFiles);
+                return window.ShowDialog<FileInfo?>(Desktop.MainWindow);
+            });
+
+            if (selectedFile is null)
+            {
+                Environment.Exit(0);
+                throw new InvalidOperationException("Запуск программы отменён пользователем.");
+            }
+
+            filesToTry = [selectedFile];
+        }
+        else
+        {
+            filesToTry = raodbFiles;
+        }
+
+        foreach (var fileInfo in filesToTry)
         {
             try
             {
@@ -501,9 +519,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             {
                 var lastModifiedFile = true;
                 var actualReserveFileFullPath = string.Empty;
-                foreach (var fileInfo in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly)
-                             .Where(x => x.Name.ToLower().EndsWith(".raodb"))
-                             .OrderByDescending(x => x.LastWriteTime))
+                foreach (var fileInfo in GetRaodbFiles(dirInfo).OrderByDescending(x => x.LastWriteTime))
                 {
                     if (!File.Exists(fileInfo.FullName)) continue;
                     var reserveFileFullPath = Path.Combine(ReserveDirectory, Path.GetFileNameWithoutExtension(fileInfo.Name) + $"_{DateTime.Now.Ticks}.RAODB");

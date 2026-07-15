@@ -9,7 +9,7 @@ using Avalonia.Xaml.Interactivity;
 using System;
 using System.Linq;
 
-namespace Client_App.Behaviors;
+namespace Client_App.Behaviors.TableHeader;
 
 /// <summary>
 /// Синхронизирует горизонтальный скролл кастомной шапки с DataGrid.
@@ -45,6 +45,19 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
         set => SetValue(NppScrollableHeaderGridProperty, value);
     }
 
+    /// <summary>
+    /// Формы 2.x/4.x/5.x: одна шапка на все колонки (без frozen-разделения как в 1.x).
+    /// Сдвиг = -scrollOffset без компенсации ширины «№ п/п».
+    /// </summary>
+    public static readonly StyledProperty<bool> ScrollEntireHeaderProperty =
+        AvaloniaProperty.Register<FrozenHeaderScrollSyncBehavior, bool>(nameof(ScrollEntireHeader));
+
+    public bool ScrollEntireHeader
+    {
+        get => GetValue(ScrollEntireHeaderProperty);
+        set => SetValue(ScrollEntireHeaderProperty, value);
+    }
+
     private TranslateTransform? _transform;
     private TranslateTransform? _nppTransform;
     private double _lastAppliedTotal = double.NaN;
@@ -74,7 +87,7 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
 
         base.OnDetaching();
     }
-
+    
     private void TrySubscribe()
     {
         SourceDataGrid ??= AssociatedObject?
@@ -183,7 +196,19 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
         _lastFixedBorderWidth = targetWidth;
         FixedGroupHeaderBorder.Width = targetWidth;
         FixedGroupHeaderBorder.HorizontalAlignment = alignment;
-        FixedGroupHeaderBorder.BorderThickness = new Thickness(1);
+        SetUniformBorderThickness(FixedGroupHeaderBorder, 1);
+    }
+
+    private static void SetUniformBorderThickness(Border border, double thickness)
+    {
+        var current = border.BorderThickness;
+        if (Math.Abs(current.Left - thickness) < 0.01
+            && Math.Abs(current.Top - thickness) < 0.01
+            && Math.Abs(current.Right - thickness) < 0.01
+            && Math.Abs(current.Bottom - thickness) < 0.01)
+            return;
+
+        border.BorderThickness = new Thickness(thickness);
     }
 
     private void ResetFixedGroupHeaderBorderIfNeeded()
@@ -194,12 +219,12 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
         _lastFixedBorderWidth = double.NaN;
         FixedGroupHeaderBorder.Width = double.NaN;
         FixedGroupHeaderBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
-        FixedGroupHeaderBorder.BorderThickness = new Thickness(1);
+        SetUniformBorderThickness(FixedGroupHeaderBorder, 1);
     }
 
     private double ComputeExtraFrozenOffset(TableHeaderLayoutMetrics metrics)
     {
-        if (SourceDataGrid is null) return 0;
+        if (ScrollEntireHeader || SourceDataGrid is null) return 0;
 
         var frozenCount = metrics.FrozenColumnCount;
 

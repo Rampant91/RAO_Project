@@ -100,7 +100,7 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #endregion
 
-        var dbReadOnlyPath = CreateTempDataBase();
+        var dbReadOnlyPath = await CreateTempDataBase(progressBar, cts);
 
         var dt = DateTime.Now;
         var fileNameTmp = $"Report_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";

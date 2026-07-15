@@ -2,6 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	         xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 			 xmlns:behaviors="using:Client_App.Behaviors"
+			 xmlns:inputBehaviors="using:Client_App.Behaviors.Input"
+			 xmlns:controlBehaviors="using:Client_App.Behaviors.Controls"
              xmlns:local="using:Client_App"
              xmlns:resources="clr-namespace:Client_App.Resources"
              xmlns:converters="clr-namespace:Client_App.Converters"
@@ -19,6 +21,7 @@
         <visualConverters:ShortNullableToStringConverter x:Key="ShortNullableToStringConverter"/>
         <visualConverters:ByteNullableToStringConverter x:Key="ByteNullableToStringConverter"/>
         <visualConverters:ByteNullableOrDashToStringConverter x:Key="ByteNullableOrDashToStringConverter"/>
+        <visualConverters:FrozenOperationHeaderColSpanConverter x:Key="FrozenOperationHeaderColSpanConverter"/>
         <!--
         <ResourceDictionary>
             <DataTemplate DataType="{x:Type vm:CheckFormVM}">
@@ -90,13 +93,13 @@
             <Setter Property="IsVisible" Value="False"/>
         </Style>
 		<Style Selector="CalendarDatePicker.buttonOnly">
-			<Setter Property="behaviors:ScrollBlock.BlockPointerWheel" Value="True"/>
+			<Setter Property="controlBehaviors:ScrollBlock.BlockPointerWheel" Value="True"/>
 		</Style>
 		<Style Selector="Border#Background">
 			<Setter Property="Background" Value="#f0f8ff"/>
         </Style>
 		<Style Selector="TextBox">
-			<Setter Property="behaviors:TextBoxAutoTrim.IsEnabled" Value="True"/>
+			<Setter Property="inputBehaviors:TextBoxAutoTrim.IsEnabled" Value="True"/>
 		</Style>
 		<Style Selector="Button">
 			<Setter Property="IsTabStop" Value="False"/>
@@ -153,6 +156,9 @@
             <Setter Property="TextAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+        </Style>
+        <Style Selector="Grid.tableHeader Border.frozenOperationHeader TextBlock">
+            <Setter Property="TextWrapping" Value="NoWrap"/>
         </Style>
         <!--Table-->
         <Style Selector="DataGrid.table">

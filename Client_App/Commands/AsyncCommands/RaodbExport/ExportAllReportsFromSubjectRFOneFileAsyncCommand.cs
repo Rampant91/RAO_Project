@@ -60,7 +60,7 @@ public partial class ExportAllReportsFromSubjectRFOneFileAsyncCommand : ExportRa
 
         #endregion
 
-        var dbReadOnlyPath = CreateTempDataBase();
+        var dbReadOnlyPath = await CreateTempDataBase(progressBar, cts);
 
         #region Progress = 7
 

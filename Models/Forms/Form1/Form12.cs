@@ -1,4 +1,4 @@
-﻿using Models.Attributes;
+using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form1;
 
@@ -471,7 +472,7 @@ public class Form12 : Form1
     private void SignedServicePeriod_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var tmp = (((RamAccess<string>)value).Value ?? string.Empty).Trim().ToLower();
+        var tmp = RemoveExcelFormulaPrefix(((RamAccess<string>)value).Value).Trim().ToLower();
 
         SignedServicePeriod_DB = tmp;
     }
@@ -926,7 +927,7 @@ public class Form12 : Form1
         Mass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 7].Value);
         CreatorOKPO_DB = Convert.ToString(worksheet.Cells[row, 8].Value);
         CreationDate_DB = ConvertFromExcelDate(worksheet.Cells[row, 9].Text);
-        SignedServicePeriod_DB = Convert.ToString(worksheet.Cells[row, 10].Value);
+        SignedServicePeriod_DB = ConvertFromExcelDouble(worksheet.Cells[row, 10].Value);
         PropertyCode_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 11].Value), out var byteValue) ? byteValue : null;
         Owner_DB = Convert.ToString(worksheet.Cells[row, 12].Value);
         DocumentVid_DB = byte.TryParse(Convert.ToString(worksheet.Cells[row, 13].Value), out byteValue) ? byteValue : null;
@@ -1328,25 +1329,24 @@ public class Form12 : Form1
     {
         if (otherForm is not Form12 formToCompare) return false;
 
-        return NumberInOrder_DB == formToCompare.NumberInOrder_DB
-               && OperationCode_DB == formToCompare.OperationCode_DB
-               && OperationDate_DB == formToCompare.OperationDate_DB
-               && PassportNumber_DB == formToCompare.PassportNumber_DB
-               && NameIOU_DB == formToCompare.NameIOU_DB
-               && FactoryNumber_DB == formToCompare.FactoryNumber_DB
-               && Mass_DB == formToCompare.Mass_DB
-               && CreatorOKPO_DB == formToCompare.CreatorOKPO_DB
-               && CreationDate_DB == formToCompare.CreationDate_DB
-               && SignedServicePeriod_DB == formToCompare.SignedServicePeriod_DB
+        return FormTextEquality.Equals(OperationCode_DB, formToCompare.OperationCode_DB)
+               && FormDateEquality.Equals(OperationDate_DB, formToCompare.OperationDate_DB)
+               && FormTextEquality.Equals(PassportNumber_DB, formToCompare.PassportNumber_DB)
+               && FormTextEquality.Equals(NameIOU_DB, formToCompare.NameIOU_DB)
+               && FormTextEquality.Equals(FactoryNumber_DB, formToCompare.FactoryNumber_DB)
+               && FormExponentialEquality.Equals(Mass_DB, formToCompare.Mass_DB)
+               && FormTextEquality.Equals(CreatorOKPO_DB, formToCompare.CreatorOKPO_DB)
+               && FormDateEquality.Equals(CreationDate_DB, formToCompare.CreationDate_DB)
+               && FormTextEquality.Equals(SignedServicePeriod_DB, formToCompare.SignedServicePeriod_DB)
                && PropertyCode_DB == formToCompare.PropertyCode_DB
-               && Owner_DB == formToCompare.Owner_DB
+               && FormTextEquality.Equals(Owner_DB, formToCompare.Owner_DB)
                && DocumentVid_DB == formToCompare.DocumentVid_DB
-               && DocumentNumber_DB == formToCompare.DocumentNumber_DB
-               && DocumentDate_DB == formToCompare.DocumentDate_DB
-               && ProviderOrRecieverOKPO_DB == formToCompare.ProviderOrRecieverOKPO_DB
-               && TransporterOKPO_DB == formToCompare.TransporterOKPO_DB
-               && PackName_DB == formToCompare.PackName_DB
-               && PackType_DB == formToCompare.PackType_DB
-               && PackNumber_DB == formToCompare.PackNumber_DB;
+               && FormTextEquality.Equals(DocumentNumber_DB, formToCompare.DocumentNumber_DB)
+               && FormDateEquality.Equals(DocumentDate_DB, formToCompare.DocumentDate_DB)
+               && FormTextEquality.Equals(ProviderOrRecieverOKPO_DB, formToCompare.ProviderOrRecieverOKPO_DB)
+               && FormTextEquality.Equals(TransporterOKPO_DB, formToCompare.TransporterOKPO_DB)
+               && FormTextEquality.Equals(PackName_DB, formToCompare.PackName_DB)
+               && FormTextEquality.Equals(PackType_DB, formToCompare.PackType_DB)
+               && FormTextEquality.Equals(PackNumber_DB, formToCompare.PackNumber_DB);
     }
 }

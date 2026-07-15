@@ -37,6 +37,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 
     private static int? ConvertStringToInt(string str)
     {
+        str = Form.RemoveExcelFormulaPrefix(str);
         if (int.TryParse(str, out var result))
         {
             return result;
@@ -56,6 +57,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     }
     private static float? ConvertStringToFloat(string str)
     {
+        str = Form.RemoveExcelFormulaPrefix(str);
         if (float.TryParse(str, out var result))
         {
             return result;

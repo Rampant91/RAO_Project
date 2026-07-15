@@ -1421,9 +1421,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<bool>("CodeRAOout_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
 
-                    b.Property<short>("CorrectionNumber_DB")
-                        .HasColumnType("SMALLINT");
-
                     b.Property<string>("FormNum_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1543,9 +1540,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("AvgGammaRaysDosePower_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<short>("CorrectionNumber_DB")
-                        .HasColumnType("SMALLINT");
-
                     b.Property<string>("FcpNumber_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1598,9 +1592,6 @@ namespace Models.DBRealization.Migrations.DataModel
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<short>("CorrectionNumber_DB")
-                        .HasColumnType("SMALLINT");
 
                     b.Property<string>("FormNum_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1655,9 +1646,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("Activity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<short>("CorrectionNumber_DB")
-                        .HasColumnType("SMALLINT");
-
                     b.Property<string>("FormNum_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1707,9 +1695,6 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<bool>("CodeRAO_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
-
-                    b.Property<short>("CorrectionNumber_DB")
-                        .HasColumnType("SMALLINT");
 
                     b.Property<string>("FcpNumber_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1848,9 +1833,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("CodeRAO_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<short>("CorrectionNumber_DB")
-                        .HasColumnType("SMALLINT");
-
                     b.Property<string>("DocumentDate_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1912,9 +1894,6 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("CodeOYAT_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<short>("CorrectionNumber_DB")
-                        .HasColumnType("SMALLINT");
 
                     b.Property<string>("FcpNumber_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1999,9 +1978,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("CodeOYAT_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<short>("CorrectionNumber_DB")
-                        .HasColumnType("SMALLINT");
-
                     b.Property<string>("FcpNumber_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -2049,9 +2025,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("ControlledAreaName_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<short>("CorrectionNumber_DB")
-                        .HasColumnType("SMALLINT");
-
                     b.Property<string>("DistanceToWasteSource_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -2096,9 +2069,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("AllowedWasteValue_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<short>("CorrectionNumber_DB")
-                        .HasColumnType("SMALLINT");
-
                     b.Property<string>("FactedWasteValue_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -2139,9 +2109,6 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("AllowedWasteRemovalVolume_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<short>("CorrectionNumber_DB")
-                        .HasColumnType("SMALLINT");
 
                     b.Property<string>("FormNum_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -2186,9 +2153,6 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("AllowedActivity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<short>("CorrectionNumber_DB")
-                        .HasColumnType("SMALLINT");
 
                     b.Property<string>("FactedActivity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
