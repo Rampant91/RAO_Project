@@ -1108,7 +1108,7 @@
 							</Border>
 							<Border Grid.Row="0" Grid.Column="18"
 									Grid.RowSpan="2">
-								<TextBlock Text="Содержание ядерно-опасных делящихся нуклидов, г"/>
+								<TextBlock Text="Содержание ядерно-опасных делящихся нуклидов, кБк/кг"/>
 							</Border>
 
 						</Grid>
@@ -1342,7 +1342,6 @@
 
 											<StackPanel >
 												<ListBox
-													IsHitTestVisible="False"
 													MaxHeight="240"
 													Items="{Binding RadionuclidsList}"
 													Background="Transparent"

@@ -39,12 +39,17 @@ namespace Client_App.Commands.AsyncCommands.Generate
         Window owner => (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
                     .FirstOrDefault(w => w.Name == "1.7");
 
+        private Form10 reportingOrganizationInfo;
+
+
         //На вход поступает строки формы 1.7
         public override async Task AsyncExecute(object? parameter)
         {
             if (parameter is not IEnumerable<Form> forms17Collection
                 || forms17Collection.Count()<=0
                 || forms17Collection.Any(f => f is not Form17)) return;
+
+            
 
             var codeOperationRegex = new Regex("^\\d{2}$");
 
@@ -53,6 +58,7 @@ namespace Client_App.Commands.AsyncCommands.Generate
 
             var first = selectedForm17List.First();
             var firstIndex = Rows17.IndexOf(first);
+
 
             while (firstIndex > 0
                 && !codeOperationRegex.IsMatch(first.OperationCode_DB ?? ""))
@@ -72,7 +78,13 @@ namespace Client_App.Commands.AsyncCommands.Generate
                 last = Rows17[lastIndex + 1];
                 lastIndex++;
             }
-
+            //Определяем отчитывающуюся организацию
+            var master = first.Report.Reports.Master_DB;
+            
+            if (master.Rows10[1] is not null)
+                reportingOrganizationInfo = master.Rows10[1];
+            else
+                reportingOrganizationInfo = master.Rows10[0];
 
             //ссылка на нужный список радионуклидов
             ObservableCollection<Radionuclid>? radionuclidList = null;
@@ -156,6 +168,43 @@ namespace Client_App.Commands.AsyncCommands.Generate
                 }
 
                 passport.PackageIdCode = operation[0].PackNumber_DB;
+
+                #region passport.Manufacturer
+                if (operation[0].OperationCode_DB is "11" or "12" or "13" or "14" or "16" or "55")
+                {
+                    passport.Manufacturer = string.IsNullOrWhiteSpace(reportingOrganizationInfo.ShortJurLico_DB)
+                        ? reportingOrganizationInfo.JurLico_DB
+                        : reportingOrganizationInfo.ShortJurLico_DB;
+
+                    passport.ManufacturerOkpo = reportingOrganizationInfo.Okpo_DB;
+                }
+                #endregion
+
+                #region passport.Owner
+                if (operation[0].OperationCode_DB is "11" or "12" or "13" or "14" or "16")
+                {
+                    passport.Owner = string.IsNullOrWhiteSpace(reportingOrganizationInfo.ShortJurLico_DB)
+                        ? reportingOrganizationInfo.JurLico_DB
+                        : reportingOrganizationInfo.ShortJurLico_DB;
+
+                    passport.OwnerOkpo = reportingOrganizationInfo.Okpo_DB;
+                }
+                else if (operation[0].OperationCode_DB is "55")
+                {
+
+                    var ownerOrg = StaticConfiguration.DBModel.form_10
+                        .FirstOrDefault(form10 => form10.Okpo_DB == operation[0].StatusRAO_DB);
+                    if (ownerOrg is not null)
+                    {
+                        passport.Owner = string.IsNullOrWhiteSpace(ownerOrg.ShortJurLico_DB)
+                        ? ownerOrg.JurLico_DB
+                        : ownerOrg.ShortJurLico_DB;
+
+                        passport.OwnerOkpo = ownerOrg.Okpo_DB;
+                    }
+                }
+                #endregion
+
                 passport.ContainerFactoryNum = operation[0].PackFactoryNumber_DB;
                 passport.ManufactureDate = DateOnly.TryParse(operation[0].FormingDate_DB, out var date) ? date : DateOnly.MinValue;
                 passport.PassportNum = operation[0].PassportNumber_DB;
@@ -170,6 +219,8 @@ namespace Client_App.Commands.AsyncCommands.Generate
                 }
                 else
                     passport.DisposalMethod = "навал";
+
+                passport.FillingWasteDate = DateOnly.TryParse(operation[0].FormingDate_DB, out date) ? date : DateOnly.MinValue;
 
                 foreach (var form17 in operation)
                 {
@@ -198,12 +249,45 @@ namespace Client_App.Commands.AsyncCommands.Generate
                     {
                         if (!string.IsNullOrWhiteSpace(characteristic.CodeRao))
                             characteristic.CodeRao += "; ";
+
                         characteristic.CodeRao += form17.CodeRAO_DB;
+
+                        if (form17.CodeRAO_DB[10] is '1')
+                            characteristic.Flammability = "Горючие. Самовозгорающиеся и легковоспламеняющиеся вещества - присутствуют.";
+
+                        string codeTypeRao = "" + form17.CodeRAO_DB[8] + form17.CodeRAO_DB[9];
+                        if (Spravochniks.CodesTypeRao.ContainsKey(codeTypeRao))
+                        {
+                            // Записываем тип РАО с заглавной буквы
+                            var typeRao = Spravochniks.CodesTypeRao[codeTypeRao];
+                            var firstChar = typeRao[0].ToString().ToUpper();
+                            typeRao = typeRao.Remove(0,1);
+                            typeRao = typeRao.Insert(0, firstChar);
+                            // Сохраняем тип РАО в морфологическом составе
+                            characteristic.MorphologicalComposition = typeRao + "\n" + characteristic.MorphologicalComposition;
+                        }
+
                     }
 
                     passport.RaoVolume += double.TryParse(form17.VolumeOutOfPack_DB, out value) ? value : 0;
                     passport.RaoMass += double.TryParse(form17.MassOutOfPack_DB, out value) ? value * 1000 : 0;
                 }
+                var hazardousNuclids = characteristic.RadionuclidsList.Where(rad => rad.Name.StartsWith("Pu-")
+                         || rad.Name is "U-233" or "U-235"
+                         || rad.Name is "Np-237"
+                         || rad.Name is "Am-241" or "Am-243");
+
+                if (hazardousNuclids.Count() >0)
+                {
+                    var sum = hazardousNuclids.Sum(rad => rad.Activity);
+
+                    characteristic.NuclearHazardousFissileNuclides = "Содержит - " + sum.ToString("e5");
+                }
+                else
+                {
+                    characteristic.NuclearHazardousFissileNuclides = "Не содержит";
+                }
+
 
                 StaticConfiguration.DBModel.package_passport.Add(passport);
 

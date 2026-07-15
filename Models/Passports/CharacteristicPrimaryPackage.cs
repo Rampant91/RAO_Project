@@ -127,7 +127,14 @@ namespace Models.Passports
 
         #region PhysicochemicalForm
         [NotMapped]
-        private string _physicochemicalForm;
+        private string _physicochemicalForm = "Твердые, прессованные.\r\n" +
+            " Заполнение упаковки — 89,35 %.\r\n" +
+            "Свободная жидкость  - отсутствует.\r\n" +
+            "Взрывоопасные вещества - отсутствуют.\r\n" +
+            "Материалы, реагирующие с водой с выделением самовоспламеняющихся или воспламеняющихся газов - отсутствуют.\r\n" +
+            "Материалы, реагирующие с водой с выделением тепла и образованием горючих газов - отсутствуют.\r\n" +
+            "Материалы, способные выделять газы, пары, возгоны при взаимодействии с водой, воздухом или другими веществами - отсутствуют.";
+
 
         [MaxLength(1024)]
         public string PhysicochemicalForm
@@ -143,7 +150,11 @@ namespace Models.Passports
 
         #region MorphologicalComposition
         [NotMapped]
-        private string _morphologicalComposition;
+        private string _morphologicalComposition = 
+            "Коррозионно-активные вещества - отсутствуют.\r\n" +
+            "Комплексообразующие вещества - отсутствуют. \r\n" +
+            "Химические токсичные  вещества - отсутствуют.\r\n" +
+            "Инфицирующие (патогенные) вещества - отсутствуют.";
 
         [MaxLength(1024)]
         public string MorphologicalComposition
@@ -159,7 +170,7 @@ namespace Models.Passports
 
         #region Flammability
         [NotMapped]
-        private string _flammability;
+        private string _flammability = "Негорючие. Самовозгорающиеся и легковоспламеняющиеся вещества - отсутствуют.";
 
         [MaxLength(256)]
         public string Flammability
@@ -175,7 +186,7 @@ namespace Models.Passports
 
         #region ClassRao
         [NotMapped]
-        private byte _classRao;
+        private byte _classRao = 4;
 
         
         public byte ClassRao
