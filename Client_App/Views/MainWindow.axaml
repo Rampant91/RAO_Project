@@ -354,6 +354,10 @@
                           Command="{Binding ConvertExcelToRaodb, Mode=OneWay}"/>
                 <MenuItem Header="Групповая выгрузка отчётов"
                           Command="{Binding GroupBulkExportReports, Mode=OneWay}"/>
+				<MenuItem Header="Временные комманды">
+					<MenuItem Header="Выгрузить все отчеты из таблицы отчетов"
+					          Command="{Binding TempExportAllFormsFromList, Mode=OneWay}"/>
+				</MenuItem>
             </MenuItem>
 
         </Menu>

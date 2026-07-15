@@ -12,6 +12,7 @@ using Client_App.Commands.AsyncCommands.Import;
 using Client_App.Commands.AsyncCommands.Import.ImportJson;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.RaodbExport;
+using Client_App.Commands.AsyncCommands.RaodbExport.tempExportCommands;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Properties;
 using Client_App.Services;
@@ -493,7 +494,10 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                                                                             //  Радионуклиды, отсутствующие в справочнике
 
     public ICommand SetWhiteList { get; set; }
-    
+
+    //Временные команды (Разово попросили сделать выгрузку)
+    public ICommand TempExportAllFormsFromList { get; set; }
+
     #endregion
 
     #region Constructor
@@ -519,6 +523,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         OpenFile = new OpenFileAsyncCommand();
         OpenFolder = new OpenFolderAsyncCommand();
         SetWhiteList = new SetWhiteListNumAsyncCommand(this);
+        //Временные команды (Разово попросили сделать выгрузку)
+        TempExportAllFormsFromList = new ExportAllFormsFromListAsyncCommand();
 
         Forms1TabControlVM = new Forms1TabControlVM(this);
         Forms2TabControlVM = new Forms2TabControlVM(this);
