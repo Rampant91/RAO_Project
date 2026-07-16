@@ -33,11 +33,11 @@ namespace Models.Forms.Form5
 
         #region OperationCode (2)
 
+        [MaxLength(2)]
+        [Column(TypeName = "varchar(2)")]
         public string OperationCode_DB { get; set; } = "";
 
 
-        [MaxLength(2)]
-        [Column(TypeName = "varchar(2)")]
         [NotMapped]
         public RamAccess<string> OperationCode
         {

@@ -205,9 +205,9 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
         }
         else
         {
-            if (Desktop.Windows.Any(x => x.Name == "FormCheckerWindow"))
+            if (Desktop.Windows.FirstOrDefault(x => x.Name == "FormCheckerWindow") is { } checkerWindow)
             {
-                Desktop.Windows.First(x => x.Name == "FormCheckerWindow").Close();
+                await Dispatcher.UIThread.InvokeAsync(checkerWindow.Close);
             }
             await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(changeOrCreateViewModel, result));
         }

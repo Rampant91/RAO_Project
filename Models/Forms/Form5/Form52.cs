@@ -1,361 +1,357 @@
-﻿using Models.Attributes;
+using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Models.Comparers.FormContent;
 
-namespace Models.Forms.Form5
+namespace Models.Forms.Form5;
+
+[Serializable]
+[Form_Class(name: "Форма 5.2: Сведения о закрытых радионуклидных источниках, полученных/переданных  подведомственными организациями сторонним организациям переведенных в радиоактивные отходы")]
+[Table(name: "form_52")]
+public class Form52 : Form
 {
-    [Serializable]
-    [Form_Class(name: "Форма 5.2: Сведения о закрытых радионуклидных источниках, полученных/переданных  подведомственными организациями сторонним организациям переведенных в радиоактивные отходы")]
-    [Table(name: "form_52")]
-    public class Form52 : Form
+    #region Constructor
+
+    public Form52()
     {
-        #region Constructor
+        var x = this;
+        FormNum.Value = "5.2";
+    }
 
-        public Form52()
-        {
-            var x = this;
-            FormNum.Value = "5.2";
-        }
+    #endregion
 
-        #endregion
-
-        #region Properties
+    #region Properties
 
         
-        #region Category (2)
+    #region Category (2)
 
-        public short? Category_DB { get; set; }
+    public short? Category_DB { get; set; }
 
-        [NotMapped]
-        public RamAccess<short?> Category
+    [NotMapped]
+    public RamAccess<short?> Category
+    {
+        get
         {
-            get
+            if (Dictionary.TryGetValue(nameof(Category), out var value))
             {
-                if (Dictionary.TryGetValue(nameof(Category), out var value))
-                {
-                    ((RamAccess<short?>)value).Value = Category_DB;
-                    return (RamAccess<short?>)value;
-                }
-                var rm = new RamAccess<short?>(Category_Validation, Category_DB);
-                rm.PropertyChanged += Category_ValueChanged;
-                Dictionary.Add(nameof(Category), rm);
-                return (RamAccess<short?>)Dictionary[nameof(Category)];
-            }//OK
-            set
-            {
-                Category_DB = value.Value;
-                OnPropertyChanged(nameof(Category));
+                ((RamAccess<short?>)value).Value = Category_DB;
+                return (RamAccess<short?>)value;
             }
-        }
-
-        private void Category_ValueChanged(object value, PropertyChangedEventArgs args)
+            var rm = new RamAccess<short?>(Category_Validation, Category_DB);
+            rm.PropertyChanged += Category_ValueChanged;
+            Dictionary.Add(nameof(Category), rm);
+            return (RamAccess<short?>)Dictionary[nameof(Category)];
+        }//OK
+        set
         {
-            if (args.PropertyName != "Value") return;
+            Category_DB = value.Value;
+            OnPropertyChanged(nameof(Category));
+        }
+    }
 
-            var value1 = ((RamAccess<short?>)value).Value;
-            if (Category_DB != value1)
+    private void Category_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName != "Value") return;
+
+        var value1 = ((RamAccess<short?>)value).Value;
+        if (Category_DB != value1)
+        {
+            Category_DB = value1;
+        }
+    }
+
+    private bool Category_Validation(RamAccess<short?> value)//TODO
+    {
+        value.ClearErrors();
+        switch (value.Value)
+        {
+            case null:
+                value.AddError("Поле не заполнено");
+                return false;
+            case < 1 or > 5:
+                value.AddError("Недопустимое значение");
+                return false;
+            default:
+                return true;
+        }
+    }
+    #endregion
+
+    #region Radionuclids (3)
+
+    [MaxLength(1024)]
+    [Column(TypeName = "varchar(1024)")]
+    public string Radionuclids_DB { get; set; } = "";
+
+    [NotMapped]
+    public RamAccess<string> Radionuclids
+    {
+        get
+        {
+            if (Dictionary.TryGetValue(nameof(Radionuclids), out var value))
             {
-                Category_DB = value1;
+                ((RamAccess<string>)value).Value = Radionuclids_DB;
+                return (RamAccess<string>)value;
             }
+            var rm = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
+            rm.PropertyChanged += Radionuclids_ValueChanged;
+            Dictionary.Add(nameof(Radionuclids), rm);
+            return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
+        }
+        set
+        {
+            Radionuclids_DB = ParseInnerText(value.Value);
+            OnPropertyChanged();
+        }
+    }
+
+    private void Radionuclids_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+
+        if (value1 != null)
+        {
+            value1 = value1.Length > 1024
+                ? value1[..1024]
+                : value1;
         }
 
-        private bool Category_Validation(RamAccess<short?> value)//TODO
+        if (Radionuclids_DB != value1)
         {
-            value.ClearErrors();
-            switch (value.Value)
+            Radionuclids_DB = value1;
+        }
+    }
+
+    private bool Radionuclids_Validation(RamAccess<string> value)
+    {
+        value.ClearErrors();
+        return true;
+    }
+
+    #endregion
+
+    #region Quantity (4)
+
+    public int? Quantity_DB { get; set; } = 0;
+
+    [NotMapped]
+    public RamAccess<int?> Quantity
+    {
+        get
+        {
+            if (Dictionary.TryGetValue(nameof(Quantity), out var value))
             {
-                case null:
-                    value.AddError("Поле не заполнено");
-                    return false;
-                case < 1 or > 5:
-                    value.AddError("Недопустимое значение");
-                    return false;
-                default:
-                    return true;
+                ((RamAccess<int?>)value).Value = Quantity_DB;
+                return (RamAccess<int?>)value;
             }
+            var rm = new RamAccess<int?>(Quantity_Validation, Quantity_DB);
+            rm.PropertyChanged += Quantity_ValueChanged;
+            Dictionary.Add(nameof(Quantity), rm);
+            return (RamAccess<int?>)Dictionary[nameof(Quantity)];
         }
-        #endregion
-
-        #region Radionuclids (3)
-
-        [MaxLength(1024)]
-        [Column(TypeName = "varchar(1024)")]
-        public string Radionuclids_DB { get; set; } = "";
-
-        [NotMapped]
-        public RamAccess<string> Radionuclids
+        set
         {
-            get
+            Quantity_DB = value.Value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void Quantity_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<int?>)value).Value;
+        if (Quantity_DB != value1)
+        {
+            Quantity_DB = value1;
+        }
+    }
+
+    private bool Quantity_Validation(RamAccess<int?> value)
+    {
+        value.ClearErrors();
+        return true;
+    }
+
+    #endregion
+
+    #region Activity (5)
+
+    [MaxLength(32)]
+    [Column(TypeName = "varchar(32)")]
+    public string Activity_DB { get; set; } = "";
+
+    [NotMapped]
+    public RamAccess<string> Activity
+    {
+        get
+        {
+            if (Dictionary.TryGetValue(nameof(Activity), out var value))
             {
-                if (Dictionary.TryGetValue(nameof(Radionuclids), out var value))
-                {
-                    ((RamAccess<string>)value).Value = Radionuclids_DB;
-                    return (RamAccess<string>)value;
-                }
-                var rm = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
-                rm.PropertyChanged += Radionuclids_ValueChanged;
-                Dictionary.Add(nameof(Radionuclids), rm);
-                return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
+                ((RamAccess<string>)value).Value = Activity_DB;
+                return (RamAccess<string>)value;
             }
-            set
-            {
-                Radionuclids_DB = ParseInnerText(value.Value);
-                OnPropertyChanged();
-            }
+            var rm = new RamAccess<string>(Activity_Validation, Activity_DB);
+            rm.PropertyChanged += Activity_ValueChanged;
+            Dictionary.Add(nameof(Activity), rm);
+            return (RamAccess<string>)Dictionary[nameof(Activity)];
         }
-
-        private void Radionuclids_ValueChanged(object value, PropertyChangedEventArgs args)
+        set
         {
-            if (args.PropertyName != "Value") return;
-            var value1 = ((RamAccess<string>)value).Value;
-
-            if (value1 != null)
-            {
-                value1 = value1.Length > 1024
-                    ? value1[..1024]
-                    : value1;
-            }
-
-            if (Radionuclids_DB != value1)
-            {
-                Radionuclids_DB = value1;
-            }
+            Activity_DB = value.Value;
+            OnPropertyChanged();
         }
+    }
 
-        private bool Radionuclids_Validation(RamAccess<string> value)
+    private void Activity_ValueChanged(object value, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName != "Value") return;
+        var value1 = ((RamAccess<string>)value).Value;
+        if (Activity_DB != value1)
         {
-            value.ClearErrors();
-            return true;
+            Activity_DB = ExponentialString_ValueChanged(value1);
         }
+    }
 
-        #endregion
+    private bool Activity_Validation(RamAccess<string> value)
+    {
+        value.ClearErrors();
+        return true;
+    }
 
-        #region Quantity (4)
+    #endregion
 
-        public int? Quantity_DB { get; set; } = 0;
+    #region RowColor
 
-        [NotMapped]
-        public RamAccess<int?> Quantity
+    [NotMapped]
+    public Color RowColor
+    {
+        get
         {
-            get
-            {
-                if (Dictionary.TryGetValue(nameof(Quantity), out var value))
-                {
-                    ((RamAccess<int?>)value).Value = Quantity_DB;
-                    return (RamAccess<int?>)value;
-                }
-                var rm = new RamAccess<int?>(Quantity_Validation, Quantity_DB);
-                rm.PropertyChanged += Quantity_ValueChanged;
-                Dictionary.Add(nameof(Quantity), rm);
-                return (RamAccess<int?>)Dictionary[nameof(Quantity)];
-            }
-            set
-            {
-                Quantity_DB = value.Value;
-                OnPropertyChanged();
-            }
+            return Color.FromArgb(0, 255, 255, 255); // Значение по умолчанию
         }
+    }
 
-        private void Quantity_ValueChanged(object value, PropertyChangedEventArgs args)
+    [NotMapped]
+    private string _toolTipText = "";
+
+    [NotMapped]
+    public string ToolTipText
+    {
+        get
         {
-            if (args.PropertyName != "Value") return;
-            var value1 = ((RamAccess<int?>)value).Value;
-            if (Quantity_DB != value1)
-            {
-                Quantity_DB = value1;
-            }
+            return _toolTipText;
         }
-
-        private bool Quantity_Validation(RamAccess<int?> value)
+        set
         {
-            value.ClearErrors();
-            return true;
+            _toolTipText = value;
+            OnPropertyChanged();
         }
+    }
+    #endregion
+    #endregion
 
-        #endregion
+    #region Validation
 
-        #region Activity (5)
+    public override bool Object_Validation()
+    {
+        return !(Category.HasErrors ||
+                 Radionuclids.HasErrors ||
+                 Quantity.HasErrors ||
+                 Activity.HasErrors);
+    }
 
-        [MaxLength(32)]
-        [Column(TypeName = "varchar(32)")]
-        public string Activity_DB { get; set; } = "";
+    #endregion
 
-        [NotMapped]
-        public RamAccess<string> Activity
-        {
-            get
-            {
-                if (Dictionary.TryGetValue(nameof(Activity), out var value))
-                {
-                    ((RamAccess<string>)value).Value = Activity_DB;
-                    return (RamAccess<string>)value;
-                }
-                var rm = new RamAccess<string>(Activity_Validation, Activity_DB);
-                rm.PropertyChanged += Activity_ValueChanged;
-                Dictionary.Add(nameof(Activity), rm);
-                return (RamAccess<string>)Dictionary[nameof(Activity)];
-            }
-            set
-            {
-                Activity_DB = value.Value;
-                OnPropertyChanged();
-            }
-        }
+    #region ParseInnerText
+    private static string ParseInnerText(string text)
+    {
+        return text.Replace("\r", " ").Replace("\n", " ").Replace("\t", " ");
+    }
+    #endregion
 
-        private void Activity_ValueChanged(object value, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName != "Value") return;
-            var value1 = ((RamAccess<string>)value).Value;
-            if (Activity_DB != value1)
-            {
-                Activity_DB = ExponentialString_ValueChanged(value1);
-            }
-        }
+    #region IExcel
 
-        private bool Activity_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors();
-            return true;
-        }
+    public override void ExcelGetRow(ExcelWorksheet worksheet, int row)
+    {
+        NumberInOrder_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 1].Value), out var intValue)
+            ? intValue
+            : 0;
 
-        #endregion
+        Category_DB = short.TryParse(Convert.ToString(worksheet.Cells[row, 2].Value), out var shortValue) ? shortValue : null;
 
-        #region RowColor
+        Radionuclids_DB = Convert.ToString(worksheet.Cells[row, 3].Value).Trim();
+        if (Radionuclids_DB.Count() > 1024)
+            Radionuclids_DB = Radionuclids_DB[..1024];
 
-        [NotMapped]
-        public Color RowColor
-        {
-            get
-            {
-                return Color.FromArgb(0, 255, 255, 255); // Значение по умолчанию
-            }
-        }
+        Quantity_DB = TryParseExcelIntOrDefault(worksheet.Cells[row, 4].Value);
 
-        [NotMapped]
-        private string _toolTipText = "";
+        Activity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 5].Value);
+        if (Activity_DB.Count() > 32)
+            Activity_DB = Activity_DB[..32];
+    }
 
-        [NotMapped]
-        public string ToolTipText
-        {
-            get
-            {
-                return _toolTipText;
-            }
-            set
-            {
-                _toolTipText = value;
-                OnPropertyChanged();
-            }
-        }
-        #endregion
-        #endregion
+    public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
+    {
+        worksheet.Cells[row + 0, column + 0].Value = NumberInOrder_DB;
+        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = Category_DB == 0 ? "" : Category_DB;
+        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelString(Radionuclids_DB);
+        worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = Quantity_DB == 0 ? "" : Quantity_DB;
+        worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ConvertToExcelDouble(Activity_DB);
 
-        #region Validation
+        return 5;
+    }
 
-        public override bool Object_Validation()
-        {
-            return !(Category.HasErrors ||
-                     Radionuclids.HasErrors ||
-                     Quantity.HasErrors ||
-                     Activity.HasErrors);
-        }
+    public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string id = "")
+    {
+        throw new NotImplementedException();
+    }
 
-        #endregion
+    #endregion
 
-        #region ParseInnerText
-        private static string ParseInnerText(string text)
-        {
-            return text.Replace("\r", " ").Replace("\n", " ").Replace("\t", " ");
-        }
-        #endregion
+    #region IDataGridColumn
 
-        #region IExcel
+    // Заглушка
+    public override DataGridColumns GetColumnStructure(string param)
+    {
+        return null;
+    }
 
-        public override void ExcelGetRow(ExcelWorksheet worksheet, int row)
-        {
-            NumberInOrder_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 1].Value), out var intValue)
-                ? intValue
-                : 0;
+    #endregion
 
-            Category_DB = short.TryParse(Convert.ToString(worksheet.Cells[row, 2].Value), out var shortValue) ? shortValue : null;
+    #region ConvertToTSVstring
 
-            Radionuclids_DB = Convert.ToString(worksheet.Cells[row, 3].Value).Trim();
-            if (Radionuclids_DB.Count() > 1024)
-                Radionuclids_DB = Radionuclids_DB[..1024];
+    /// <summary>
+    /// </summary>
+    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+    public override string ConvertToTSVstring()
+    {
+        // Создаем текстовое представление (TSV - tab-separated values)
+        var str =
+            $"{NumberInOrder.Value}\t" +
+            $"{Category.Value}\t" +
+            $"{Radionuclids.Value}\t" +
+            $"{Quantity.Value}\t" +
+            $"{Activity.Value}";
+        return str;
+    }
 
-            Quantity_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 4].Value), out intValue) ? intValue : 0;
+    #endregion
 
-            Activity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 5].Value);
-            if (Activity_DB.Count() > 32)
-                Activity_DB = Activity_DB[..32];
-        }
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form52 formToCompare) return false;
 
-        public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
-        {
-            worksheet.Cells[row + 0, column + 0].Value = NumberInOrder_DB;
-            worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = Category_DB == 0 ? "" : Category_DB;
-            worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ConvertToExcelString(Radionuclids_DB);
-            worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = Quantity_DB == 0 ? "" : Quantity_DB;
-            worksheet.Cells[row + (!transpose ? 4 : 0), column + (transpose ? 4 : 0)].Value = ConvertToExcelDouble(Activity_DB);
-
-            return 5;
-        }
-
-        public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string id = "")
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IDataGridColumn
-
-        // Заглушка
-        public override DataGridColumns GetColumnStructure(string param)
-        {
-            return null;
-        }
-
-        #endregion
-
-        #region ConvertToTSVstring
-
-        /// <summary>
-        /// </summary>
-        /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
-        public override string ConvertToTSVstring()
-        {
-            // Создаем текстовое представление (TSV - tab-separated values)
-            var str =
-                $"{NumberInOrder.Value}\t" +
-                $"{Category.Value}\t" +
-                $"{Radionuclids.Value}\t" +
-                $"{Quantity.Value}\t" +
-                $"{Activity.Value}";
-            return str;
-        }
-
-        #endregion
-
-        public override bool IsContentEqual(Form otherForm)
-        {
-            if (otherForm is not Form52 formToCompare) return false;
-
-            return NumberInOrder_DB == formToCompare.NumberInOrder_DB
-                   && Category_DB == formToCompare.Category_DB
-                   && Radionuclids_DB == formToCompare.Radionuclids_DB
-                   && Quantity_DB == formToCompare.Quantity_DB
-                   && Activity_DB == formToCompare.Activity_DB;
-        }
+        return Category_DB == formToCompare.Category_DB
+               && FormRadionuclidsEquality.Equals(Radionuclids_DB, formToCompare.Radionuclids_DB)
+               && Quantity_DB == formToCompare.Quantity_DB
+               && FormExponentialEquality.Equals(Activity_DB, formToCompare.Activity_DB);
     }
 }

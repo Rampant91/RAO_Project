@@ -63,36 +63,35 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         var importSummaryShown = false;
         try
         {
-        SkipNewOrg = false;
-        SkipInter = false;
-        SkipReplace = false;
-        HasMultipleReport = false;
-        AtLeastOneImportDone = false;
+            SkipInter = false;
+            SkipReplace = false;
+            HasMultipleReport = false;
+            AtLeastOneImportDone = false;
 
-        countReadFiles = answer.Length;
+            countReadFiles = answer.Length;
 
-        var impReportsList = new List<Reports>();
-        foreach (var path in answer) // Для каждого импортируемого файла
-        {
-            if (path == "") continue;
-            TmpImpFilePath = GetRaoFileName();
-            SourceFile = new FileInfo(path);
-            SourceFile.CopyTo(TmpImpFilePath, true);
-
-            var repsList = new List<Reports>();
-            var fileIsCorrupted = false;
-            try
+            var impReportsList = new List<Reports>();
+            foreach (var path in answer) // Для каждого импортируемого файла
             {
-                repsList = await GetReportsFromDataBase(TmpImpFilePath);
-            }
-            catch
-            {
-                fileIsCorrupted = true;
-            }
+                if (path == "") continue;
+                TmpImpFilePath = GetRaoFileName();
+                SourceFile = new FileInfo(path);
+                SourceFile.CopyTo(TmpImpFilePath, true);
 
-            if (fileIsCorrupted || repsList.Count == 0)
-            {
-                #region MessageFailedToReadFile
+                var repsList = new List<Reports>();
+                var fileIsCorrupted = false;
+                try
+                {
+                    repsList = await GetReportsFromDataBase(TmpImpFilePath);
+                }
+                catch
+                {
+                    fileIsCorrupted = true;
+                }
+
+                if (fileIsCorrupted || repsList.Count == 0)
+                {
+                    #region MessageFailedToReadFile
 
                 await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
@@ -110,206 +109,137 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
                 #endregion
 
-                countReadFiles--;
-                continue;
-            }
-            if (!HasMultipleReport)
-            {
-                HasMultipleReport = repsList.Sum(x => x.Report_Collection.Count) > 1 || answer.Length > 1;
-            }
-
-            foreach (var impReps in repsList) // Для каждой импортируемой организации
-            {
-                var dateTime = DateTime.Now;
-
-                impReportsList.Add(impReps);
-                await impReps.SortAsync();
-                await RestoreReportsOrders(impReps);
-                if (impReps.Master.Rows10.Count != 0)
+                    countReadFiles--;
+                    continue;
+                }
+                if (!HasMultipleReport)
                 {
-                    impReps.Master_DB.ReportChangedDate = dateTime;
-                    impReps.Master.Rows10[1].RegNo_DB = impReps.Master.Rows10[0].RegNo_DB;
+                    HasMultipleReport = repsList.Sum(x => x.Report_Collection.Count) > 1 || answer.Length > 1;
                 }
 
-                if (impReps.Master.Rows20.Count != 0)
+                foreach (var impReps in repsList) // Для каждой импортируемой организации
                 {
-                    impReps.Master_DB.ReportChangedDate = dateTime;
-                    impReps.Master.Rows20[1].RegNo_DB = impReps.Master.Rows20[0].RegNo_DB;
-                }
+                    var dateTime = DateTime.Now;
 
-                if (impReps.Master.Rows40.Count != 0
-                    || impReps.Master.Rows50.Count !=0)
-                {
-                    impReps.Master_DB.ReportChangedDate = dateTime;
-                }
-
-                Reports? baseReps11;
-                Reports? baseReps21;
-                Reports? baseReps41;
-                Reports? baseReps51;
-                var executeMode = parameter switch
-                {
-                    Reports => "Selected",
-                    string mode => mode,
-                    _ => null
-                };
-
-                switch (executeMode)
-                {
-                    case "Auto":
+                    impReportsList.Add(impReps);
+                    await impReps.SortAsync();
+                    await RestoreReportsOrders(impReps);
+                    if (impReps.Master.Rows10.Count != 0)
                     {
-                        baseReps11 = GetReports11FromLocalEqual(impReps);
-                        baseReps21 = GetReports21FromLocalEqual(impReps);
-                        baseReps41 = GetReports41FromLocalEqual(impReps);
-                        baseReps51 = GetReports51FromLocalEqual(impReps);
-
-                        break;
+                        impReps.Master_DB.ReportChangedDate = dateTime;
+                        impReps.Master.Rows10[1].RegNo_DB = impReps.Master.Rows10[0].RegNo_DB;
                     }
-                    case "Selected":
+
+                    if (impReps.Master.Rows20.Count != 0)
                     {
-                        var selectedReports = parameter as Reports ?? _formsTabControlBaseVM.SelectedReports;
-                        if (selectedReports is null) return;
-                        var selectedReportsInfo = new OrganizationInfo
+                        impReps.Master_DB.ReportChangedDate = dateTime;
+                        impReps.Master.Rows20[1].RegNo_DB = impReps.Master.Rows20[0].RegNo_DB;
+                    }
+
+                    if (impReps.Master.Rows40.Count != 0
+                        || impReps.Master.Rows50.Count !=0)
+                    {
+                        impReps.Master_DB.ReportChangedDate = dateTime;
+                    }
+
+                    Reports? baseReps11;
+                    Reports? baseReps21;
+                    Reports? baseReps41;
+                    Reports? baseReps51;
+                    var executeMode = parameter switch
+                    {
+                        Reports => "Selected",
+                        string mode => mode,
+                        _ => null
+                    };
+
+                    switch (executeMode)
+                    {
+                        case "Auto":
                         {
-                            RegNum = selectedReports.Master_DB.RegNoRep.Value,
-                            Okpo = selectedReports.Master_DB.OkpoRep.Value
-                        };
+                            baseReps11 = GetReports11FromLocalEqual(impReps);
+                            baseReps21 = GetReports21FromLocalEqual(impReps);
+                            baseReps41 = GetReports41FromLocalEqual(impReps);
+                            baseReps51 = GetReports51FromLocalEqual(impReps);
 
-                        var impRepsFromDb = await GetSelectedReportsFromDB(selectedReportsInfo, impReps.Master_DB.FormNum_DB);
-
-                        baseReps11 = GetReports11FromLocalEqual(impRepsFromDb);
-                        baseReps21 = GetReports21FromLocalEqual(impRepsFromDb);
-                        baseReps41 = GetReports41FromLocalEqual(impRepsFromDb);
-                        baseReps51 = GetReports51FromLocalEqual(impRepsFromDb);
-
-                        break;
-                    }
-                    case "FromList":
-                    {
-                        var localRepsList = await GetReportsListFromDB(impReps.Master_DB.FormNum_DB);
-                        var currentReportIndex = impReportsList.IndexOf(impReps) + 1;
-                        var selectReportsMessageWindow = new SelectReportsMessageWindow(localRepsList, SourceFile!.Name, impReportsList.Count, currentReportIndex, impReps);
-                        var selectedReports = await selectReportsMessageWindow.ShowDialog<OrganizationInfo>(Desktop.MainWindow);
-                        if (selectedReports is null) return;
-                        var impRepsFromDb = await GetSelectedReportsFromDB(selectedReports, impReps.Master_DB.FormNum_DB);
-                        
-                        baseReps11 = GetReports11FromLocalEqual(impRepsFromDb);
-                        baseReps21 = GetReports21FromLocalEqual(impRepsFromDb);
-                        baseReps41 = GetReports41FromLocalEqual(impRepsFromDb);
-                        baseReps51 = GetReports51FromLocalEqual(impRepsFromDb);
-
-                        break;
-                    }
-                    default: return;
-                }
-
-
-                FillEmptyRegNo(ref baseReps11);
-                FillEmptyRegNo(ref baseReps21);
-                impReps.CleanIds();
-                ProcessIfNoteOrder0(impReps);
-
-                ImpRepFormCount = impReps.Report_Collection.Count;
-                ImpRepFormNum = impReps.Master.FormNum_DB;
-                if (impReps.Master.OkpoRep!= null)
-                    BaseRepsOkpo = impReps.Master.OkpoRep.Value;
-                if (impReps.Master.RegNoRep != null)
-                    BaseRepsRegNum = impReps.Master.RegNoRep.Value;
-                if (impReps.Master.ShortJurLicoRep != null)
-                    BaseRepsShortName = impReps.Master.ShortJurLicoRep.Value;
-
-                foreach (var key in impReps.Report_Collection)
-                {
-                    var report = (Report)key;
-                    report.ReportChangedDate = dateTime;
-                }
-                var impRepsReportList = impReps.Report_Collection.ToList();
-                if (baseReps11 != null)
-                {
-                    await ProcessIfHasReports11(baseReps11, impReps, impRepsReportList);
-                }
-                else if (baseReps21 != null)
-                {
-                    await ProcessIfHasReports21(baseReps21, impReps, impRepsReportList);
-                }
-                else if (baseReps41 != null)
-                {
-                    await ProcessIfHasReports41(baseReps41, impReps, impRepsReportList);
-                }
-                else if (baseReps51 != null)
-                {
-                    await ProcessIfHasReports51(baseReps51, impReps, impRepsReportList);
-                }
-                else if (baseReps11 == null && baseReps21 == null && baseReps41 == null && baseReps51 == null)
-                {
-                    #region AddNewOrg
-
-                    var an = "Добавить";
-                    if (!SkipNewOrg)
-                    {
-                        if (answer.Length > 1 || repsList.Count > 1)
-                        {
-                            #region MessageNewOrg
-
-                            an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                                {
-                                    ButtonDefinitions =
-                                    [
-                                        new ButtonDefinition { Name = "Добавить", IsDefault = true },
-                                        new ButtonDefinition { Name = "Да для всех" },
-                                        new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
-                                    ],
-                                    ContentTitle = "Импорт из .raodb",
-                                    ContentHeader = "Уведомление",
-                                    ContentMessage =
-                                        $"Будет добавлена новая организация ({ImpRepFormNum}) содержащая {ImpRepFormCount} форм отчетности." +
-                                        $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
-                                        $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
-                                        $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
-                                        $"{Environment.NewLine}импортировать все новые организации.",
-                                    MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                })
-                                .ShowDialog(Desktop.MainWindow));
-
-                            #endregion
-
-                            if (an is "Да для всех") SkipNewOrg = true;
+                            break;
                         }
-                        else
+                        case "Selected":
                         {
-                            #region MessageNewOrg
+                            var selectedReports = parameter as Reports ?? _formsTabControlBaseVM.SelectedReports;
+                            if (selectedReports is null) return;
+                            var selectedReportsInfo = new OrganizationInfo
+                            {
+                                RegNum = selectedReports.Master_DB.RegNoRep.Value,
+                                Okpo = selectedReports.Master_DB.OkpoRep.Value
+                            };
 
-                            an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                                {
-                                    ButtonDefinitions =
-                                    [
-                                        new ButtonDefinition { Name = "Добавить", IsDefault = true },
-                                        new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
-                                    ],
-                                    ContentTitle = "Импорт из .raodb",
-                                    ContentHeader = "Уведомление",
-                                    ContentMessage =
-                                        $"Будет добавлена новая организация ({ImpRepFormNum}) содержащая {ImpRepFormCount} форм отчетности." +
-                                        $"{Environment.NewLine}" +
-                                        $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
-                                        $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
-                                        $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
-                                    MinWidth = 400,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                })
-                                .ShowDialog(Desktop.MainWindow));
+                            var impRepsFromDb = await GetSelectedReportsFromDB(selectedReportsInfo, impReps.Master_DB.FormNum_DB);
 
-                            #endregion
+                            baseReps11 = GetReports11FromLocalEqual(impRepsFromDb);
+                            baseReps21 = GetReports21FromLocalEqual(impRepsFromDb);
+                            baseReps41 = GetReports41FromLocalEqual(impRepsFromDb);
+                            baseReps51 = GetReports51FromLocalEqual(impRepsFromDb);
+
+                            break;
                         }
+                        case "FromList":
+                        {
+                            var localRepsList = await GetReportsListFromDB(impReps.Master_DB.FormNum_DB);
+                            var currentReportIndex = impReportsList.IndexOf(impReps) + 1;
+                            var selectReportsMessageWindow = new SelectReportsMessageWindow(localRepsList, SourceFile!.Name, impReportsList.Count, currentReportIndex, impReps);
+                            var selectedReports = await selectReportsMessageWindow.ShowDialog<OrganizationInfo>(Desktop.MainWindow);
+                            if (selectedReports is null) return;
+                            var impRepsFromDb = await GetSelectedReportsFromDB(selectedReports, impReps.Master_DB.FormNum_DB);
+                            
+                            baseReps11 = GetReports11FromLocalEqual(impRepsFromDb);
+                            baseReps21 = GetReports21FromLocalEqual(impRepsFromDb);
+                            baseReps41 = GetReports41FromLocalEqual(impRepsFromDb);
+                            baseReps51 = GetReports51FromLocalEqual(impRepsFromDb);
+
+                            break;
+                        }
+                        default: return;
                     }
 
-                    if (an is "Добавить" or "Да для всех")
+
+                    FillEmptyRegNo(ref baseReps11);
+                    FillEmptyRegNo(ref baseReps21);
+                    impReps.CleanIds();
+                    ProcessIfNoteOrder0(impReps);
+
+                    ImpRepFormCount = impReps.Report_Collection.Count;
+                    ImpRepFormNum = impReps.Master.FormNum_DB;
+                    if (impReps.Master.OkpoRep!= null)
+                        BaseRepsOkpo = impReps.Master.OkpoRep.Value;
+                    if (impReps.Master.RegNoRep != null)
+                        BaseRepsRegNum = impReps.Master.RegNoRep.Value;
+                    if (impReps.Master.ShortJurLicoRep != null)
+                        BaseRepsShortName = impReps.Master.ShortJurLicoRep.Value;
+
+                    foreach (var key in impReps.Report_Collection)
+                    {
+                        var report = (Report)key;
+                        report.ReportChangedDate = dateTime;
+                    }
+                    var impRepsReportList = impReps.Report_Collection.ToList();
+                    if (baseReps11 != null)
+                    {
+                        await ProcessIfHasReports11(baseReps11, impReps, impRepsReportList);
+                    }
+                    else if (baseReps21 != null)
+                    {
+                        await ProcessIfHasReports21(baseReps21, impReps, impRepsReportList);
+                    }
+                    else if (baseReps41 != null)
+                    {
+                        await ProcessIfHasReports41(baseReps41, impReps, impRepsReportList);
+                    }
+                    else if (baseReps51 != null)
+                    {
+                        await ProcessIfHasReports51(baseReps51, impReps, impRepsReportList);
+                    }
+                    else if (baseReps11 == null && baseReps21 == null && baseReps41 == null && baseReps51 == null)
                     {
                         ReportsStorage.LocalReports.Reports_Collection.Add(impReps);
                         AtLeastOneImportDone = true;
@@ -346,69 +276,66 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                         #endregion
                     }
 
-                    #endregion
+                    switch (impReps.Master_DB.FormNum_DB)
+                    {
+                        case "1.0":
+                            await impReps.Master_DB.Rows10.QuickSortAsync();
+                            break;
+                        case "2.0":
+                            await impReps.Master_DB.Rows20.QuickSortAsync();
+                            break;
+                        case "4.0":
+                            await impReps.Master_DB.Rows40.QuickSortAsync();
+                            break;
+                        case "5.0":
+                            await impReps.Master_DB.Rows50.QuickSortAsync();
+                            break;
+                    }
                 }
 
-                switch (impReps.Master_DB.FormNum_DB)
+                // Если убрать сохранение, то не перезаписывается базовый отчёт (номер корректировки) и при импорте нескольких файлов одинакового отчёта,
+                // но с разными номерами, в организации появлялись дубли, вместо перезаписи имеющегося отчёта.
+                try
                 {
-                    case "1.0":
-                        await impReps.Master_DB.Rows10.QuickSortAsync();
-                        break;
-                    case "2.0":
-                        await impReps.Master_DB.Rows20.QuickSortAsync();
-                        break;
-                    case "4.0":
-                        await impReps.Master_DB.Rows40.QuickSortAsync();
-                        break;
-                    case "5.0":
-                        await impReps.Master_DB.Rows50.QuickSortAsync();
-                        break;
+                    await StaticConfiguration.DBModel.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+
                 }
             }
 
-            // Если убрать сохранение, то не перезаписывается базовый отчёт (номер корректировки) и при импорте нескольких файлов одинакового отчёта,
-            // но с разными номерами, в организации появлялись дубли, вместо перезаписи имеющегося отчёта.
+            try
+            {
+                var comparator = new CustomReportsComparer();
+                var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+                if (tmpReportsList.All(x => x.Master_DB.RegNoRep != null && x.Master_DB.OkpoRep != null))
+                {
+                    var tmpReportsOrderedEnum = tmpReportsList
+                        .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
+                        .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator);
+
+                    ReportsStorage.LocalReports.Reports_Collection.Clear();
+                    ReportsStorage.LocalReports.Reports_Collection.AddRange(tmpReportsOrderedEnum);
+                }
+            }
+            catch (Exception ex)
+            {
+                var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                          $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                ServiceExtension.LoggerManager.Warning(msg);
+                return;
+            }
+
+            //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
+
             try
             {
                 await StaticConfiguration.DBModel.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-
-            }
-        }
-
-        try
-        {
-            var comparator = new CustomReportsComparer();
-            var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
-            if (tmpReportsList.All(x => x.Master_DB.RegNoRep != null && x.Master_DB.OkpoRep != null))
-            {
-                var tmpReportsOrderedEnum = tmpReportsList
-                    .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
-                    .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator);
-
-                ReportsStorage.LocalReports.Reports_Collection.Clear();
-                ReportsStorage.LocalReports.Reports_Collection.AddRange(tmpReportsOrderedEnum);
-            }
-        }
-        catch (Exception ex)
-        {
-            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
-                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-            ServiceExtension.LoggerManager.Warning(msg);
-            return;
-        }
-
-        //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
-
-        try
-        {
-            await StaticConfiguration.DBModel.SaveChangesAsync();
-        }
-        catch (Exception ex)
-        {
-            #region MessageImportError
+                #region MessageImportError
 
             await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
@@ -425,8 +352,8 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
             #endregion
 
-            return;
-        }
+                return;
+            }
         }
         finally
         {

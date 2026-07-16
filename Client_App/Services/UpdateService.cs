@@ -1,11 +1,13 @@
 using System;
 using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
-using Models.DTO;
 using Client_App.Properties;
 using Client_App.Views.Messages;
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
+using MessageBox.Avalonia.DTO;
+using Models.DTO;
 
 namespace Client_App.Services;
 
@@ -25,52 +27,86 @@ public class UpdateService
     {
         try
         {
-            // Проверяем, нужно ли выполнять проверку
             if (!ShouldCheckForUpdates())
             {
                 return;
             }
-            
-            // Обновляем время последней проверки
-            Settings.Default.LastUpdateCheck = DateTime.Now;
-            Settings.Default.Save();
-            
-            // Получаем информацию об обновлениях
-            var updateInfo = await _updateChecker.CheckForUpdatesAsync();
+
+            var updateInfo = await _updateChecker.CheckForUpdatesAsync().ConfigureAwait(false);
             if (updateInfo == null)
             {
-                return; // Нет обновлений или нет интернета
+                return;
             }
-            
-            // Проверяем, не пропустил ли пользователь эту версию
+
+            MarkUpdateCheckCompleted();
+
             var skippedVersion = GetSkippedVersion();
             if (skippedVersion != null && updateInfo.Version <= skippedVersion)
             {
-                return; // Пользователь пропустил эту версию
+                return;
             }
-            
-            // Сравниваем версии
+
             var currentVersion = UpdateChecker.GetCurrentVersion();
             if (updateInfo.Version > currentVersion)
             {
-                // Показываем уведомление
                 if (isDeveloperMode)
                 {
-                    await ShowAutoUpdateDialog(updateInfo);
+                    await ShowAutoUpdateDialog(updateInfo).ConfigureAwait(false);
                 }
                 else
                 {
-                    await ShowUpdateNotificationDialog(updateInfo);
+                    await ShowUpdateNotificationDialog(updateInfo).ConfigureAwait(false);
                 }
             }
         }
         catch (Exception ex)
         {
-            // Логируем, но не показываем ошибки пользователю
             System.Diagnostics.Debug.WriteLine($"Update service error: {ex.Message}");
         }
     }
-    
+
+    /// <summary>
+    /// Принудительно проверяет обновления (для ручного запуска из меню)
+    /// </summary>
+    /// <param name="isDeveloperMode">Режим разработчика</param>
+    /// <returns>Task</returns>
+    public async Task ManualCheckAndNotifyAsync(bool isDeveloperMode = false)
+    {
+        try
+        {
+            var updateInfo = await _updateChecker.CheckForUpdatesAsync().ConfigureAwait(false);
+            if (updateInfo == null)
+            {
+                await ShowManualCheckFailedDialog().ConfigureAwait(false);
+                return;
+            }
+
+            MarkUpdateCheckCompleted();
+
+            var currentVersion = UpdateChecker.GetCurrentVersion();
+            if (updateInfo.Version > currentVersion)
+            {
+                if (isDeveloperMode)
+                {
+                    await ShowAutoUpdateDialog(updateInfo).ConfigureAwait(false);
+                }
+                else
+                {
+                    await ShowUpdateNotificationDialog(updateInfo).ConfigureAwait(false);
+                }
+            }
+            else
+            {
+                await ShowUpToDateDialog(currentVersion).ConfigureAwait(false);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Manual update check error: {ex.Message}");
+            await ShowManualCheckFailedDialog().ConfigureAwait(false);
+        }
+    }
+
     /// <summary>
     /// Проверяет, нужно ли выполнять проверку обновлений
     /// </summary>
@@ -86,11 +122,17 @@ public class UpdateService
 
         var lastCheck = Settings.Default.LastUpdateCheck;
         var now = DateTime.Now;
-        
+
         // Проверяем не чаще раза в день
         return (now - lastCheck).TotalDays >= 1;
     }
-    
+
+    private static void MarkUpdateCheckCompleted()
+    {
+        Settings.Default.LastUpdateCheck = DateTime.Now;
+        Settings.Default.Save();
+    }
+
     /// <summary>
     /// Показывает диалог уведомления об обновлении
     /// </summary>
@@ -112,7 +154,7 @@ public class UpdateService
             }
         }).ConfigureAwait(false);
     }
-    
+
     /// <summary>
     /// Показывает диалог автообновления (для отдела)
     /// </summary>
@@ -124,7 +166,42 @@ public class UpdateService
         // Пока просто показываем уведомление
         await ShowUpdateNotificationDialog(updateInfo).ConfigureAwait(false);
     }
-    
+
+    private static async Task ShowUpToDateDialog(Version currentVersion)
+    {
+        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            {
+                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                ContentTitle = "Проверка обновлений",
+                ContentMessage = $"У вас установлена последняя версия ПО «МПЗФ» — {currentVersion}.",
+                MinWidth = 400,
+                MinHeight = 120,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(GetMainWindow())).ConfigureAwait(false);
+    }
+
+    private static async Task ShowManualCheckFailedDialog()
+    {
+        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            {
+                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                ContentTitle = "Проверка обновлений",
+                ContentMessage = "Не удалось проверить наличие обновлений. Проверьте подключение к интернету и повторите попытку позже.",
+                MinWidth = 400,
+                MinHeight = 120,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .ShowDialog(GetMainWindow())).ConfigureAwait(false);
+    }
+
+    private static Window? GetMainWindow()
+    {
+        return (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+    }
+
     /// <summary>
     /// Получает пропущенную версию
     /// </summary>
@@ -132,22 +209,16 @@ public class UpdateService
     private static Version? GetSkippedVersion()
     {
         var skipped = Settings.Default.SkippedVersion;
-        return Version.TryParse(skipped, out var version) 
-            ? version 
+        return Version.TryParse(skipped, out var version)
+            ? version
             : null;
     }
-    
+
     /// <summary>
     /// Принудительно проверяет обновления (для ручного запуска)
     /// </summary>
     /// <param name="isDeveloperMode">Режим разработчика</param>
     /// <returns>Task</returns>
-    public async Task ForceCheckUpdatesAsync(bool isDeveloperMode)
-    {
-        // Сбрасываем время последней проверки для принудительной проверки
-        Settings.Default.LastUpdateCheck = DateTime.MinValue;
-        Settings.Default.Save();
-        
-        await CheckAndNotifyAsync(isDeveloperMode).ConfigureAwait(false);
-    }
+    public Task ForceCheckUpdatesAsync(bool isDeveloperMode) =>
+        ManualCheckAndNotifyAsync(isDeveloperMode);
 }

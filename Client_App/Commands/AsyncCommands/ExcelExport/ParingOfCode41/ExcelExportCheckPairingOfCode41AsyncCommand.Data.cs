@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Client_App.Resources.CustomComparers.SnkComparers;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
+using Models.Comparers.FormContent;
 using Models.DBRealization;
 using Models.Forms.Form1;
 
@@ -219,24 +220,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         var normalizedSet = value.Split([',', ';'])
             .Select(x => SnkRadionuclidsEqualityComparer.SnkRegex().Replace(x, "").ToLowerInvariant())
             .Where(x => !string.IsNullOrWhiteSpace(x))
-            .Select(x => x
-                .Replace('а', 'a')
-                .Replace('б', 'b')
-                .Replace('в', 'b')
-                .Replace('г', 'r')
-                .Replace('е', 'e')
-                .Replace('ё', 'e')
-                .Replace('з', '3')
-                .Replace('к', 'k')
-                .Replace('м', 'm')
-                .Replace('н', 'h')
-                .Replace('о', 'o')
-                .Replace('0', 'o')
-                .Replace('р', 'p')
-                .Replace('с', 'c')
-                .Replace('т', 't')
-                .Replace('у', 'y')
-                .Replace('х', 'x'))
+            .Select(x => LookalikeCharMapper.ReplaceRuEnLookalikes(x, includeExtendedSnkSet: true))
             .OrderBy(x => x);
 
         return string.Join("|", normalizedSet);

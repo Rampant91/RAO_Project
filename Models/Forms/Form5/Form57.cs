@@ -137,11 +137,12 @@ namespace Models.Forms.Form5
 
         #region Name (4)
 
-        public string Name_DB { get; set; } = "";
-
 
         [MaxLength(64)]
         [Column(TypeName = "varchar(64)")]
+        public string Name_DB { get; set; } = "";
+
+
         [NotMapped]
         public RamAccess<string> Name
         {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace Client_App.Resources;
+namespace Client_App.Resources.CustomComparers;
 
 internal partial class CustomStringDateComparer : IComparer<string>
 {

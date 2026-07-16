@@ -1,0 +1,83 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Client_App.ViewModels.Messages"
+        xmlns:behaviors="clr-namespace:Client_App.Behaviors"
+        xmlns:customConverters="clr-namespace:Client_App.Resources.CustomConverters"
+        mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="280"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.4" 
+        behaviors:WindowScreenSizeBehavior.HeightRatio="0.33"
+        x:Class="Client_App.Views.Messages.MultipleRaodbFilesMessageWindow"
+        Title="Выбор файла базы данных"
+        WindowStartupLocation="Manual"
+        MinWidth="375" MinHeight="215">
+
+    <Window.Resources>
+        <customConverters:NotNullToBoolConverter x:Key="NotNullToBoolConverter"/>
+    </Window.Resources>
+
+    <Design.DataContext>
+        <vm:MultipleRaodbFilesMessageWindowVM/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,*,Auto" Margin="10">
+
+        <TextBlock Grid.Row="0"
+                   Text="{x:Static vm:MultipleRaodbFilesMessageWindowVM.messageText}"
+                   TextWrapping="Wrap"
+                   Margin="0,0,0,10"/>
+
+        <DataGrid Grid.Row="1"
+                  Items="{Binding Files}"
+                  SelectedItem="{Binding SelectedFile, Mode=TwoWay}"
+                  AutoGenerateColumns="False"
+                  SelectionMode="Single"
+                  IsReadOnly="True"
+                  CanUserReorderColumns="False"
+                  CanUserResizeColumns="True"
+                  CanUserSortColumns="False"
+                  GridLinesVisibility="All"
+                  HeadersVisibility="Column"
+                  RowBackground="White"
+                  AlternatingRowBackground="White">
+            <DataGrid.Styles>
+                <Style Selector="DataGridColumnHeader">
+                    <Setter Property="Padding" Value="8,4,4,4"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                </Style>
+            </DataGrid.Styles>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Имя файла БД"
+                                    Binding="{Binding FileName}"
+                                    Width="*"
+                                    MinWidth="120"/>
+                <DataGridTextColumn Header="Дата изменения"
+                                    Binding="{Binding LastModified}"
+                                    Width="150"/>
+                <DataGridTextColumn Header="Размер, Мб"
+                                    Binding="{Binding SizeMb}"
+                                    Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,10,0,0"
+                    Spacing="10">
+            <Button Content="Открыть БД"
+                    IsDefault="True"
+                    IsEnabled="{Binding SelectedFile, Converter={StaticResource NotNullToBoolConverter}}"
+                    Click="OnOpenClicked"
+                    MinWidth="110"/>
+            <Button Content="Открыть папку RAO"
+                    Click="OnOpenRaoFolderClicked"
+                    MinWidth="140"/>
+            <Button Content="Выход"
+                    IsCancel="True"
+                    Click="OnExitClicked"
+                    MinWidth="90"/>
+        </StackPanel>
+    </Grid>
+</Window>

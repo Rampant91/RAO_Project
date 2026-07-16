@@ -26,7 +26,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 /// <summary>
 /// Excel -> Проверка инвентаризаций.
 /// </summary>
-public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) : ExcelExportSnkBaseAsyncCommand
+public partial class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) : ExcelExportSnkBaseAsyncCommand
 {
     public override bool CanExecute(object? parameter) => true;
 
@@ -282,7 +282,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
             {
                 worksheet.Cells[1, 13, 1, 24].Merge = true;
                 worksheet.Cells[1, 13, 1, 24].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells[1, 13].Value = $"Инвентаризация на {date.ToShortDateString()}";
+                worksheet.Cells[1, 13].Value = $"Инвентаризация на {date:d}";
 
                 worksheet.Cells[2, 13].Value = "№ п/п";
                 worksheet.Cells[2, 14].Value = "Номер паспорта (сертификата)";
@@ -302,7 +302,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
             {
                 worksheet.Cells[1, 11, 1, 20].Merge = true;
                 worksheet.Cells[1, 11, 1, 20].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells[1, 11].Value = $"Инвентаризация на {date.ToShortDateString()}";
+                worksheet.Cells[1, 11].Value = $"Инвентаризация на {date:d}";
 
                 worksheet.Cells[2, 11].Value = "№ п/п";
                 worksheet.Cells[2, 12].Value = "Номер паспорта (сертификата)";
@@ -338,7 +338,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
             {
                 worksheet.Cells[1, 1, 1, 12].Merge = true;
                 worksheet.Cells[1, 1, 1, 12].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells[1, 1].Value = $"СНК на {date.ToShortDateString()}";
+                worksheet.Cells[1, 1].Value = $"СНК на {date:d}";
 
                 worksheet.Cells[2, 1].Value = "№ п/п";
                 worksheet.Cells[2, 2].Value = "Номер паспорта (сертификата)";
@@ -358,7 +358,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
             {
                 worksheet.Cells[1, 1, 1, 10].Merge = true;
                 worksheet.Cells[1, 1, 1, 10].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                worksheet.Cells[1, 1].Value = $"СНК на {date.ToShortDateString()}";
+                worksheet.Cells[1, 1].Value = $"СНК на {date:d}";
 
                 worksheet.Cells[2, 1].Value = "№ п/п";
                 worksheet.Cells[2, 2].Value = "Номер паспорта (сертификата)";
@@ -966,8 +966,9 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
                             x.OpCode == "10" && x.OpDate == inventoryDate))
                     .Select(unit => unit.Value.First()));
 
-                // Добавляем в словарь СНК текущую дату инвентаризации и СНК на эту дату.
-                unitInStockByDateDictionary.Add(inventoryDate, [.. unitInStockDtoList]);
+                // СНК на дату берём из общего расчёта (как в выгрузке СНК).
+                unitInStockByDateDictionary.Add(inventoryDate,
+                    await ComputeStockAsOfDate(uniqueUnitWithAllOperationDictionary, formNum, primaryInventoryDate, inventoryDate));
 
                 // Добавляем в словарь ошибок текущую дату и список ошибок на эту дату.
                 inventoryErrorsByDateDictionary.Add(inventoryDate, [.. errorsDtoList]);
@@ -1059,6 +1060,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
                             else if (quantity < operation.Quantity)
                             {
                                 errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.QuantityGivenExceedsAvailable, operation));
+                                quantity = 0;
                             }
                             else
                             {
@@ -1076,7 +1078,9 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
                     //3. Есть во второй инвентаризации, но отсутствует в СНК на дату второй инвентаризации.
                     if (secondInventoryOperation is not null
                         && currentUnitInStock is null 
-                        && quantity <= 0)
+                        && quantity <= 0
+                        && !currentOperations.Any(x =>
+                            minusOperationArray.Contains(x.OpCode) && x.OpDate == inventoryDate))
                     {
                         errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.GivenUnitIsInventoried, secondInventoryOperation));
                     }
@@ -1088,8 +1092,9 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
 
                     if (quantity > 0)
                     {
-                        lastOperationWithUnit.Quantity = quantity;
-                        unitInStockDtoList.Add(lastOperationWithUnit);
+                        var stockUnit = lastOperationWithUnit.Clone();
+                        stockUnit.Quantity = quantity;
+                        unitInStockDtoList.Add(stockUnit);
                     }
                 }
 
@@ -1182,7 +1187,9 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
                     if (inStockOnPreviousInventoryDate
                         && firstPlusMinusOperation is not null 
                         && firstPlusMinusOperation.OpDate != primaryInventoryDate
-                        && plusOperationArray.Contains(firstPlusMinusOperation.OpCode))
+                        && plusOperationArray.Contains(firstPlusMinusOperation.OpCode)
+                        && !currentOperations.Any(x =>
+                            x.OpCode == "10" && x.OpDate == firstPlusMinusOperation.OpDate))
                     {
                         errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.InventoriedUnitReceived, firstPlusMinusOperation));
                     }
@@ -1202,9 +1209,8 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
                         else if (minusOperationArray.Contains(form.OpCode)) inStock = false;
                     }
 
-                    var lastOperationWithUnit = operationsWithoutMutuallyExclusive
-                        .OrderBy(x => x.OpDate)
-                        .LastOrDefault();
+                    var lastOperationWithUnit = SelectStockRepresentativeOperation(
+                        operationsWithoutMutuallyExclusive, formNum);
 
                     if (lastOperationWithUnit == null) continue;
 
@@ -1219,7 +1225,9 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
                         && x.Quantity == unit.Quantity);
 
                     //3. Есть во второй инвентаризации, но отсутствует в СНК на дату второй инвентаризации.
-                    if (secondInventoryOperation is not null && !inStock)
+                    if (secondInventoryOperation is not null && !inStock
+                        && !currentOperations.Any(x =>
+                            minusOperationArray.Contains(x.OpCode) && x.OpDate == inventoryDate))
                     {
                         errorsDtoList.Add(new InventoryErrorsShortDto(InventoryErrorTypeEnum.GivenUnitIsInventoried, secondInventoryOperation));
                     }
@@ -1242,8 +1250,10 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
                 #endregion
             }
 
-            // Добавляем в словарь СНК текущую дату инвентаризации и СНК на эту дату.
-            unitInStockByDateDictionary.Add(inventoryDate, [.. unitInStockDtoList]);
+            // СНК на дату берём из общего расчёта (как в выгрузке СНК), чтобы проверка
+            // инвентаризаций давала идентичный выгрузке результат.
+            unitInStockByDateDictionary.Add(inventoryDate,
+                await ComputeStockAsOfDate(uniqueUnitWithAllOperationDictionary, formNum, primaryInventoryDate, inventoryDate));
 
             // Добавляем в словарь ошибок текущую дату и список ошибок на эту дату.
             inventoryErrorsByDateDictionary.Add(inventoryDate, [.. errorsDtoList]);
@@ -1252,53 +1262,6 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
         }
 
         return (unitInStockByDateDictionary, inventoryErrorsByDateDictionary);
-    }
-
-    #endregion
-
-    #region GetOperationsWithoutDuplicates
-
-    private static Task<List<ShortFormDTO>> GetOperationsWithoutDuplicates(List<ShortFormDTO> operationList, string formNum)
-    {
-        var plusOperationArray = GetPlusOperationsArray(formNum);
-        var minusOperationArray = GetMinusOperationsArray(formNum);
-
-        List<ShortFormDTO> operationsWithoutDuplicates = [];
-        foreach (var group in operationList.GroupBy(x => x.OpDate))
-        {
-            var countPlus = group
-                .Where(x => plusOperationArray.Contains(x.OpCode))
-                .Sum(x => x.Quantity);
-
-            var countMinus = group
-                .Where(x => minusOperationArray.Contains(x.OpCode))
-                .Sum(x => x.Quantity);
-
-            var givenReceivedPerDayAmount = countPlus - countMinus;
-
-            switch (givenReceivedPerDayAmount)
-            {
-                case > 0:
-                {
-                    var lastOp = group.Last(x => plusOperationArray.Contains(x.OpCode));
-                    lastOp.Quantity = givenReceivedPerDayAmount;
-                    operationsWithoutDuplicates.Add(lastOp);
-                    break;
-                }
-                case 0:
-                {
-                    break;
-                }
-                case < 0:
-                {
-                    var lastOp = group.Last(x => minusOperationArray.Contains(x.OpCode));
-                    lastOp.Quantity = int.Abs(givenReceivedPerDayAmount);
-                    operationsWithoutDuplicates.Add(lastOp);
-                    break;
-                }
-            }
-        }
-        return Task.FromResult(operationsWithoutDuplicates);
     }
 
     #endregion
@@ -1404,7 +1367,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
             _ => throw new ArgumentOutOfRangeException(nameof(formNum), formNum, null)
         };
 
-        return zeroOperationDtoList
+        return [.. zeroOperationDtoList
             .Where(x => DateTime.TryParse(x.OpDate, out var opDateTime)
                         && DateOnly.TryParse(x.StDate, out _)
                         && DateOnly.TryParse(x.EndDate, out _)
@@ -1427,8 +1390,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
             .Union(rechargeFormsDtoList)
             .OrderBy(x => x.OpDate)
             .ThenBy(x => x.RepDto.StartPeriod)
-            .ThenBy(x => x.RepDto.EndPeriod)
-            .ToList();
+            .ThenBy(x => x.RepDto.EndPeriod)];
     }
 
     #endregion
@@ -1506,7 +1468,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
 
     #endregion
 
-    private class InventoryErrorsShortDto(InventoryErrorTypeEnum errorTypeEnum, ShortFormDTO dto)
+    internal class InventoryErrorsShortDto(InventoryErrorTypeEnum errorTypeEnum, ShortFormDTO dto)
     {
         public readonly InventoryErrorTypeEnum ErrorTypeEnum = errorTypeEnum;
 
@@ -1520,7 +1482,7 @@ public class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWindowVM) 
     /// <summary>
     /// Перечисление типов ошибок.
     /// </summary>
-    private enum InventoryErrorTypeEnum
+    internal enum InventoryErrorTypeEnum
     {
         /// <summary>
         /// 0. Для заполненного зав.№ и № паспорта, повторная операция инвентаризации.

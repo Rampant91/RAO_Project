@@ -304,9 +304,32 @@ public abstract partial class Form : IKey, IDataGridColumn
 
     #region ValueChanged
 
+    /// <summary>
+    /// Удаляет ведущий '=' из значения Excel-формулы (после пробелов и переносов строк).
+    /// </summary>
+    public static string RemoveExcelFormulaPrefix(string? value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return value ?? string.Empty;
+
+        var i = 0;
+        while (i < value.Length && char.IsWhiteSpace(value[i]))
+            i++;
+
+        return i < value.Length && value[i] == '='
+            ? value[(i + 1)..]
+            : value;
+    }
+
+    /// <summary>
+    /// Нормализация целочисленных полей (количество и т.п.) при вводе/вставке.
+    /// </summary>
+    private protected static string IntegerString_ValueChanged(string? value) =>
+        RemoveExcelFormulaPrefix(value).Trim();
+
     private protected static string ExponentialString_ValueChanged(string value)
     {
-        var tmp = (value ?? string.Empty)
+        var tmp = RemoveExcelFormulaPrefix(value)
             .Trim()
             .ToLower()
             .Replace('е', 'e');
@@ -418,7 +441,7 @@ public abstract partial class Form : IKey, IDataGridColumn
 
     private protected static string ConvertFromExcelDouble(object value)
     {
-        var strValue = Convert.ToString(value);
+        var strValue = RemoveExcelFormulaPrefix(Convert.ToString(value));
         return double.TryParse(strValue, out var doubleValue)
             ? doubleValue.ToString("0.00######################################################e+00", new CultureInfo("ru-RU", useUserOverride: false))
             : strValue;
@@ -426,10 +449,22 @@ public abstract partial class Form : IKey, IDataGridColumn
 
     private protected static string ConvertFromExcelInt(object value)
     {
-        var strValue = Convert.ToString(value);
+        var strValue = RemoveExcelFormulaPrefix(Convert.ToString(value));
         return int.TryParse(strValue, out var intValue)
             ? intValue.ToString()
             : strValue;
+    }
+
+    private protected static int? TryParseExcelNullableInt(object? value)
+    {
+        var strValue = RemoveExcelFormulaPrefix(Convert.ToString(value));
+        return int.TryParse(strValue, out var intValue) ? intValue : null;
+    }
+
+    private protected static int TryParseExcelIntOrDefault(object? value, int defaultValue = 0)
+    {
+        var strValue = RemoveExcelFormulaPrefix(Convert.ToString(value));
+        return int.TryParse(strValue, out var intValue) ? intValue : defaultValue;
     }
 
     #endregion

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Models.Comparers.FormContent;
 
 namespace Client_App.Resources.CustomComparers.SnkComparers;
 
@@ -23,30 +24,8 @@ public partial class SnkNumberEqualityComparer : IEqualityComparer<string>
             return string.Empty;
         }
 
-        return ReplaceSimilarSymbols(
-            SpecialSymbolsRegex().Replace(value.TrimStart(' ', '0'), "").ToLower());
-    }
-
-    private static string ReplaceSimilarSymbols(string value)
-    {
-        return value
-            .Replace('а', 'a')
-            .Replace('б', 'b')
-            .Replace('в', 'b')
-            .Replace('г', 'r')
-            .Replace('е', 'e')
-            .Replace('ё', 'e')
-            .Replace('з', '3')
-            .Replace('к', 'k')
-            .Replace('м', 'm')
-            .Replace('н', 'h')
-            .Replace('о', 'o')
-            .Replace('0', 'o')
-            .Replace('р', 'p')
-            .Replace('с', 'c')
-            .Replace('т', 't')
-            .Replace('у', 'y')
-            .Replace('х', 'x');
+        var cleaned = SpecialSymbolsRegex().Replace(value.TrimStart(' ', '0'), "").ToLower();
+        return LookalikeCharMapper.ReplaceRuEnLookalikes(cleaned, includeExtendedSnkSet: true);
     }
 
     private static bool CheckForEmptyString(string? value)

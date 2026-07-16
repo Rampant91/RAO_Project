@@ -10,6 +10,7 @@
 			 xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
 			 xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 			 xmlns:local="using:Client_App.Behaviors"
+			 xmlns:dgBehaviors="using:Client_App.Behaviors.DataGridBehaviors"
 			 xmlns:vm="using:Client_App.ViewModels.MainWindowTabs"
 			 xmlns:customConverters="clr-namespace:Client_App.Resources.CustomConverters"
 			 x:DataType="vm:Forms2TabControlVM"
@@ -54,8 +55,8 @@
                           CanUserSortColumns="False">
 
 					<interactivity:Interaction.Behaviors>
-						<local:DataGridDoubleClickOpenFormBehavior />
-                        <local:DataGridDeselectOnEmptyAreaClickBehavior />
+						<dgBehaviors:DataGridDoubleClickOpenFormBehavior />
+                        <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
 					</interactivity:Interaction.Behaviors>
 
 					<DataGrid.ContextMenu>
@@ -94,6 +95,12 @@
                                           CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
                             </MenuItem>
                             <MenuItem Header="Выгрузить все организации">
+                                <MenuItem.IsVisible>
+                                    <MultiBinding Converter="{StaticResource AppLaunchedAndSelectedReportsVisibleConverter}">
+                                        <Binding Path="MainWindowVM.AppLaunchedAtNorao" Mode="OneWay"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.IsVisible>
                                 <MenuItem Header="В один .RAODB файл"
                                           Command="{Binding MainWindowVM.ExportAllReportsOneFile, Mode=OneWay}"/>
                                 <MenuItem Header="Из субъекта РФ в один .RAODB файл"
@@ -102,7 +109,9 @@
                                           Command="{Binding MainWindowVM.ExportAllReports, Mode=OneWay}"/>
                             </MenuItem>
                             <MenuItem Header="Выгрузить все отчеты в отдельные .RAODB файлы"
-                                      Command="{Binding MainWindowVM.ExportAllReport, Mode=OneWay}"/>
+                                      Command="{Binding MainWindowVM.ExportAllReport, Mode=OneWay}"
+                                      CommandParameter="{Binding SelectedReports}"
+                                      IsVisible="{Binding MainWindowVM.AppLaunchedAtNorao, Mode=OneWay}"/>
                             <MenuItem Header="Выгрузить отчеты организации в отдельные .xlsx файлы">
                             <MenuItem.IsVisible>
                                 <MultiBinding Converter="{StaticResource AppLaunchedAndSelectedReportsVisibleConverter}">
@@ -110,6 +119,16 @@
                                     <Binding Path="SelectedReports" Mode="OneWay"/>
                                 </MultiBinding>
                             </MenuItem.IsVisible>
+                            <MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+                                      Header="Все формы 2">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="all-2"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
+                            <Separator/>
 							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
 									  Header="Форма 2.1">
                                 <MenuItem.CommandParameter>
@@ -643,8 +662,8 @@
                           CanUserSortColumns="False">
 					
 					<interactivity:Interaction.Behaviors>
-						<local:DataGridDoubleClickOpenFormBehavior />
-                        <local:DataGridDeselectOnEmptyAreaClickBehavior />
+						<dgBehaviors:DataGridDoubleClickOpenFormBehavior />
+                        <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
 					</interactivity:Interaction.Behaviors>
 					
 					<DataGrid.ContextMenu>

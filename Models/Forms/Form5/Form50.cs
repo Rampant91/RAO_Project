@@ -1,4 +1,4 @@
-﻿using Models.Attributes;
+using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
@@ -7,11 +7,10 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
-using System.Drawing;
-using System.Linq;
-using System.Text.RegularExpressions;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form5;
+
 [Serializable]
 [Form_Class(name: "Форма 5.0: Титульный лист организации")]
 [Table(name: "form_50")]
@@ -685,16 +684,16 @@ public partial class Form50 : Form
     {
         if (otherForm is not Form50 formToCompare) return false;
 
-        return ExecutiveAuthority_DB == formToCompare.ExecutiveAuthority_DB
+        return FormTextEquality.Equals(ExecutiveAuthority_DB, formToCompare.ExecutiveAuthority_DB)
                && Rosatom_DB == formToCompare.Rosatom_DB
                && MinObr_DB == formToCompare.MinObr_DB
-               && Name_DB == formToCompare.Name_DB
-               && ShortName_DB == formToCompare.ShortName_DB
-               && Address_DB == formToCompare.Address_DB
-               && GradeFioDirector_DB == formToCompare.GradeFioDirector_DB
-               && GradeFioExecutor_DB == formToCompare.GradeFioExecutor_DB
-               && Telephone_DB == formToCompare.Telephone_DB
-               && Fax_DB == formToCompare.Fax_DB
-               && Email_DB == formToCompare.Email_DB;
+               && FormTextEquality.Equals(Name_DB, formToCompare.Name_DB)
+               && FormTextEquality.Equals(ShortName_DB, formToCompare.ShortName_DB)
+               && FormTextEquality.Equals(Address_DB, formToCompare.Address_DB)
+               && FormTextEquality.Equals(GradeFioDirector_DB, formToCompare.GradeFioDirector_DB)
+               && FormTextEquality.Equals(GradeFioExecutor_DB, formToCompare.GradeFioExecutor_DB)
+               && FormTextEquality.Equals(Telephone_DB, formToCompare.Telephone_DB)
+               && FormTextEquality.Equals(Fax_DB, formToCompare.Fax_DB)
+               && FormTextEquality.Equals(Email_DB, formToCompare.Email_DB);
     }
 }

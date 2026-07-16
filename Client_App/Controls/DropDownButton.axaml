@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Client_App.Behaviors"
+             xmlns:controlBehaviors="using:Client_App.Behaviors.Controls"
              x:Class="Client_App.Controls.DropDownButton">
 
     <Button Width="16"
@@ -15,7 +16,7 @@
             ToolTip.Tip="Открыть список">
 
         <Interaction.Behaviors>
-            <local:DropDownButtonBehavior />
+            <controlBehaviors:DropDownButtonBehavior />
         </Interaction.Behaviors>
 
         <Path Data="M 0 0 L 4 4 L 8 0"

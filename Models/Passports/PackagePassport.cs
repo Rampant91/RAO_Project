@@ -721,11 +721,13 @@ namespace Models.Passports
             }
         }
         #endregion
+
         #endregion
 
         #region Характеристика радиоактивного содержимого упаковки РАО
 
         private ObservableCollection<CharacteristicPrimaryPackage> _contentCharacteristics;
+
         public ObservableCollection<CharacteristicPrimaryPackage> ContentCharacteristics
         {
             get => _contentCharacteristics;

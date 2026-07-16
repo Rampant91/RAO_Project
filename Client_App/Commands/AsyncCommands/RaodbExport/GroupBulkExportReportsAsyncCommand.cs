@@ -72,7 +72,7 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
 
         #endregion
 
-        var dbReadOnlyPath = CreateTempDataBase();
+        var dbReadOnlyPath = await CreateTempDataBase(progressBar, cts);
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
 
         var organizationsForm10 = await LoadOrganizationsAsync(dbReadOnly, "1.0", cts.Token);
