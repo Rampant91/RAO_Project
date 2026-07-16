@@ -24,6 +24,7 @@ public abstract partial class CheckF11 : CheckBase
         errorList.AddRange(Check_002(rep));
         errorList.AddRange(Check_003(formsList, rep));
         errorList.AddRange(Check_004(formsList));
+        errorList.AddRange(Check_073(formsList));
         foreach (var key in rep.Rows11)
         {
             var form = (Form11)key;
@@ -2813,8 +2814,151 @@ public abstract partial class CheckF11 : CheckBase
         }
 
         return tmp1.Contains(tmp2);
-    } 
+    }
 
+    #endregion
+
+    #region Check073
+    //Напоминалка для некоторых операций необходимо приложить определенные документы
+    private static List<CheckError> Check_073(List<Form11> forms)
+    {
+        List<CheckError> result = new();
+
+
+        #region OperationCode == 66
+        if (forms.Any(row11 => row11.OperationCode_DB == "66"))
+        {
+            var line = forms.First(row11 => row11.OperationCode_DB == "66").NumberInOrder_DB;
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line).ToString(),
+                Column = "OperationCode_DB",
+                Value = "66",
+                Message = "При продлении НСС в отчете необходимо представить сведения о НСС с учетом его продления.\n" +
+                "При использовании операции необходимо к отчету приложить скан-копию документа о продлении НСС."
+            });
+        }
+        #endregion
+
+        #region OperationCode == 68
+        if (forms.Any(row11 => row11.OperationCode_DB == "68"))
+        {
+            var line = forms.First(row11 => row11.OperationCode_DB == "68").NumberInOrder_DB;
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line).ToString(),
+                Column = "OperationCode_DB",
+                Value = "68",
+                Message = "При использовании данной операции необходимо представить, копию документа, отражающего результаты проденных измерений."
+            });
+        }
+        #endregion
+
+        #region OperationCode == 71
+        if (forms.Any(row11 => row11.OperationCode_DB == "71"))
+        {
+            var line = forms.First(row11 => row11.OperationCode_DB == "71").NumberInOrder_DB;
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line).ToString(),
+                Column = "OperationCode_DB",
+                Value = "71",
+                Message = "В этом случае необходимо представить копию документа (например, протокола, акта), " +
+                "характеризующего обстаятельства установления факта утери."
+            });
+        }
+        #endregion
+
+        #region OperationCode == 72
+        if (forms.Any(row11 => row11.OperationCode_DB == "72"))
+        {
+            var line = forms.First(row11 => row11.OperationCode_DB == "72").NumberInOrder_DB;
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line).ToString(),
+                Column = "OperationCode_DB",
+                Value = "72",
+                Message = "В этом случае необходимо представить копию документа (например, протокола, акта), " +
+                "характеризующего обстоятельства установления факта утери контроля над учетной единицей."
+                
+            });
+        }
+        #endregion
+
+        #region OperationCode == 73
+        if (forms.Any(row11 => row11.OperationCode_DB == "73"))
+        {
+            var line = forms.First(row11 => row11.OperationCode_DB == "73").NumberInOrder_DB;
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line).ToString(),
+                Column = "OperationCode_DB",
+                Value = "73",
+                Message = "В этом случае необходимо представить копию документа (например, протокола, акта), " +
+                "характеризующего обстоятельства обнаружения учетной единицы."
+                
+            });
+        }
+        #endregion
+
+        #region OperationCode == 74
+        if (forms.Any(row11 => row11.OperationCode_DB == "74"))
+        {
+            var line = forms.First(row11 => row11.OperationCode_DB == "74").NumberInOrder_DB;
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line).ToString(),
+                Column = "OperationCode_DB",
+                Value = "74",
+                Message = "В этом случае необходимо представить копию документа, " +
+                "характеризующего обстоятельства обнаружения учетной единицы."
+                
+            });
+        }
+        #endregion
+
+        #region OperationCode == 75
+        if (forms.Any(row11 => row11.OperationCode_DB == "75"))
+        {
+            var line = forms.First(row11 => row11.OperationCode_DB == "75").NumberInOrder_DB;
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line).ToString(),
+                Column = "OperationCode_DB",
+                Value = "75",
+                Message = "В этом случае необходимо представить копию документа, " +
+                "характеризующего обстоятельства обнаружения учетной единицы."
+                
+            });
+        }
+        #endregion
+
+        #region OperationCode == 76
+        if (forms.Any(row11 => row11.OperationCode_DB == "76"))
+        {
+            var line = forms.First(row11 => row11.OperationCode_DB == "76").NumberInOrder_DB;
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line).ToString(),
+                Column = "OperationCode_DB",
+                Value = "76",
+                Message = "В этом случае необходимо представить копию документа, " + 
+                "характеризующего обстоятельства изъятия РАО"
+                
+            });
+        }
+        #endregion
+
+        return result;
+    }
     #endregion
 
     #endregion
