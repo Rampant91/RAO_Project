@@ -360,13 +360,15 @@
             </MenuItem>
 
 			<MenuItem Name="PackagePassports"
-								  Header="Паспорта">
+					  IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"
+					  Header="Паспорта">
 				<MenuItem Command="{Binding OpenPassportMenu}"
 						  Header="Открыть меню паспортов"/>
 			</MenuItem>
 
 			<MenuItem Name="StoragePoints"
-								  Header="Пункты хранения">
+					  IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"
+					  Header="Пункты хранения">
 				<MenuItem Command="{Binding OpenStoragePointMenu}"
 						  Header="Открыть меню пунктов хранения"/>
 			</MenuItem>
