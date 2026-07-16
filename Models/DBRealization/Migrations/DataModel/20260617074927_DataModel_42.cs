@@ -4,7 +4,7 @@
 
 namespace Models.DBRealization.Migrations.DataModel;
 
-public partial class DataModel_42 : Migration
+public partial class RemoveCorrectionNumFromForms2 : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)
     {
