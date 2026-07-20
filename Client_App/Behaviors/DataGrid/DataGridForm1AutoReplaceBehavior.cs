@@ -22,6 +22,7 @@ public class DataGridForm1AutoReplaceBehavior : Behavior<DataGrid>
     private readonly Form1AutoReplaceUiService _autoReplace = new();
     private Form1? _activeRow;
     private string? _activeColumn;
+    private string? _activeOriginalDbValue;
     private Control? _activeEditor;
     private Form1? _lastCommittedRow;
     private string? _lastCommittedColumn;
@@ -50,7 +51,9 @@ public class DataGridForm1AutoReplaceBehavior : Behavior<DataGrid>
 
     private void OnCellPointerPressed(object? sender, DataGridCellPointerPressedEventArgs e)
     {
-        FinalizeActiveEdit();
+        // Откладываем финализацию: при клике по dropdown AutoCompleteBox-а
+        // SelectionChanged должен отработать первым и записать значение в модель.
+        Dispatcher.UIThread.Post(FinalizeActiveEdit, DispatcherPriority.Background);
     }
 
     private void OnGotFocus(object? sender, GotFocusEventArgs e)
@@ -63,6 +66,7 @@ public class DataGridForm1AutoReplaceBehavior : Behavior<DataGrid>
         FinalizeActiveEdit();
         _activeRow = row;
         _activeColumn = column;
+        _activeOriginalDbValue = GetColumnDbValue(row, column);
         _activeEditor = control;
         _lastCommittedRow = null;
         _lastCommittedColumn = null;
@@ -79,7 +83,8 @@ public class DataGridForm1AutoReplaceBehavior : Behavior<DataGrid>
             return;
         }
 
-        FinalizeActiveEdit();
+        // Откладываем и здесь, чтобы binding успел записать значение.
+        Dispatcher.UIThread.Post(FinalizeActiveEdit, DispatcherPriority.Background);
     }
 
     private void FinalizeIfFocusLeftEditor()
@@ -114,12 +119,16 @@ public class DataGridForm1AutoReplaceBehavior : Behavior<DataGrid>
             return;
         }
 
-        if (_activeEditor is not null)
+        // Не коммитим из редактора вручную — к этому моменту binding
+        // (TwoWay на OperationCode.Value) уже записал значение в модель.
+        // Читаем актуальное значение из _DB-поля.
+        var currentDbValue = GetColumnDbValue(_activeRow, _activeColumn);
+
+        if (currentDbValue != _activeOriginalDbValue)
         {
-            CommitEditorValue(_activeRow, _activeColumn, _activeEditor);
+            _autoReplace.RunIfNeeded(_activeRow, _activeColumn);
         }
 
-        _autoReplace.RunIfNeeded(_activeRow, _activeColumn);
         _lastCommittedRow = _activeRow;
         _lastCommittedColumn = _activeColumn;
         ClearActive();
@@ -129,7 +138,25 @@ public class DataGridForm1AutoReplaceBehavior : Behavior<DataGrid>
     {
         _activeRow = null;
         _activeColumn = null;
+        _activeOriginalDbValue = null;
         _activeEditor = null;
+    }
+
+    private static string GetColumnDbValue(Form1 row, string column)
+    {
+        var dbProp = row.GetType().GetProperty($"{column}_DB", BindingFlags.Instance | BindingFlags.Public);
+        if (dbProp is not null)
+        {
+            return dbProp.GetValue(row) as string ?? string.Empty;
+        }
+
+        var prop = row.GetType().GetProperty(column, BindingFlags.Instance | BindingFlags.Public);
+        if (prop?.GetValue(row) is RamAccess<string> ramAccess)
+        {
+            return ramAccess.Value ?? string.Empty;
+        }
+
+        return string.Empty;
     }
 
     private bool TryResolveEditContext(Control control, out Form1 row, out string column)
@@ -167,34 +194,5 @@ public class DataGridForm1AutoReplaceBehavior : Behavior<DataGrid>
 
         var cells = row.GetVisualDescendants().OfType<DataGridCell>().ToList();
         return cells.IndexOf(cell);
-    }
-
-    private static void CommitEditorValue(Form1 row, string column, Control editor)
-    {
-        var text = editor switch
-        {
-            TextBox tb => tb.Text ?? string.Empty,
-            AutoCompleteBox acb => acb.Text ?? string.Empty,
-            _ => null
-        };
-        if (text is null) return;
-
-        if (column is nameof(Form1.OperationCode))
-        {
-            row.OperationCode.Value = text;
-            return;
-        }
-
-        if (column is nameof(Form1.OperationDate))
-        {
-            row.OperationDate.Value = text;
-            return;
-        }
-
-        var prop = row.GetType().GetProperty(column, BindingFlags.Instance | BindingFlags.Public);
-        if (prop?.GetValue(row) is RamAccess<string> ramAccess)
-        {
-            ramAccess.Value = text;
-        }
     }
 }
