@@ -6,8 +6,12 @@ using Avalonia.Xaml.Interactivity;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Resources;
 using Client_App.ViewModels;
+using Client_App.ViewModels.Passports;
+using Client_App.ViewModels.StoragePoints;
 using Client_App.Views;
 using Models.Collections;
+using Models.Passports;
+using Models.StoragePoints;
 
 namespace Client_App.Behaviors.DataGridBehaviors;
 
@@ -73,6 +77,22 @@ public class DataGridDoubleClickOpenFormBehavior : Behavior<DataGrid>
                 else return;
 
                 command.Execute(report);
+            }
+            else if (AssociatedObject?.SelectedItem is PackagePassport passport)
+            {
+                var packagePassportWindowVM = new PackagePassportWindowVM(passport.Id);
+
+                var packagePassportWindow = new PackagePassportWindow(packagePassportWindowVM);
+                packagePassportWindow.ShowDialog(mainWindow);
+
+            }
+            else if (AssociatedObject?.SelectedItem is StoragePoint storage)
+            {
+                var storagePointWindowVM = new StoragePointWindowVM(storage.Id);
+
+                var storagePointWindow = new StoragePointWindow(storagePointWindowVM);
+                storagePointWindow.ShowDialog(mainWindow);
+
             }
         }
 

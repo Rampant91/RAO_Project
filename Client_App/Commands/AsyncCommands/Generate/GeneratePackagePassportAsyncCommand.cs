@@ -110,7 +110,7 @@ namespace Client_App.Commands.AsyncCommands.Generate
                 if (!(operation.Count > 0
                     && operation[0].OperationCode_DB
                     is "01" or "11" or "12" or "14"
-                    or "16" or "18" or "55"))
+                    or "16" or "18" or "35" or "55"))
                 {
                     skipedOperations.Add(operation[0].NumberInOrder_DB, operation[0].OperationCode_DB);
                     continue;

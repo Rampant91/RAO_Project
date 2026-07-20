@@ -159,6 +159,10 @@
                     </Grid>
                 </Border>
 
+				<Border Classes="borderContainer">
+					<controls:PackagePassportPanelControl DataContext="{Binding PackagePassportPanelControlVM}"/>
+				</Border>
+
                 <!--#endregion Дополнительные функции-->
 
             </WrapPanel>
