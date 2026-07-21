@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App;
 using Client_App.Interfaces.Logger;
 using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels;
@@ -7,6 +8,7 @@ using Client_App.ViewModels.MainWindowTabs;
 using Client_App.Views.Messages;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
@@ -14,17 +16,18 @@ using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Models.Forms.Form4;
 using Models.Forms.Form5;
+using Models.Forms.Form5;
 using OfficeOpenXml;
 using Spravochniki;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using static Client_App.ViewModels.Messages.SelectReportsMessageWindowVM;
 using static Client_App.ViewModels.Messages.SelectReportsMessageWindowVM;
-using Microsoft.EntityFrameworkCore;
-using Models.Forms.Form5;
 
 namespace Client_App.Commands.AsyncCommands.Import;
 
@@ -81,8 +84,8 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             var impReportsList = new List<Reports>();
             foreach (var res in answer) // Для каждого импортируемого файла
             {
-                var impDateTime = DateTime.Now;
 
+                #region CheckExcelFile
                 ExcelImportNewReps = false;
                 if (res is "") continue;
                 SourceFile = new FileInfo(res);
@@ -109,9 +112,12 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     .ShowDialog(Desktop.MainWindow));
                     return;
                 }
+                #endregion
+
                 ExcelPackage excelPackage = new(SourceFile);
                 var worksheet0 = excelPackage.Workbook.Worksheets[0];
-                var worksheet1 = excelPackage.Workbook.Worksheets[1];
+
+                #region CheckFileIsValid
                 // Проверка формата формы, записанного в Excel
                 var patternIsValid =
                     (worksheet0.Name == "1.0" && Convert.ToString(worksheet0.Cells["A3"].Value)
@@ -159,7 +165,9 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     continue;
                 }
                 readAnyExcel = true;
+                #endregion
 
+                #region TimeCreate
                 var timeCreate = new List<string>
             {
                 excelPackage.File.CreationTime.Day.ToString(),
@@ -175,223 +183,119 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 {
                     timeCreate[1] = $"0{timeCreate[1]}";
                 }
+                #endregion
 
-                Reports? baseReps = null;
-                var codeSubjectRF = "";
+                #region GetImportReps
 
                 //Импортируем данные из титульника
                 var impReps = GetImportReps(worksheet0);
+
+                #endregion
+
+                ExcelWorksheet? worksheet1 = null;
+
+                if (excelPackage.Workbook.Worksheets.Count > 1)
+                    worksheet1 = excelPackage.Workbook.Worksheets[1];
+
+                var impRep = GetReportFromExcel(worksheet0, worksheet1, timeCreate);
+                if (impRep is not null)
+                {
+                    ImpRepCorNum = impRep.CorrectionNumber_DB;
+                    ImpRepEndPeriod = impRep.EndPeriod_DB;
+                    ImpRepFormCount = impRep.Rows.Count;
+                    ImpRepFormNum = impRep.FormNum_DB;
+                    ImpRepStartPeriod = impRep.StartPeriod_DB;
+                    ImpRepYear = impRep.Year_DB ?? "";
+
+                    impReps.Report_Collection.Add(impRep);
+                }
+
+
+                HasMultipleReport = answer.Length > 1;
+
+
+                #region FindBaseReports
+
+                Reports? baseReps = null;
+
+
+                var titleListNum = worksheet0.Name;
+                // В некоторых шаблонах в наименовании листа Excel перед номером формы добавляется слово "Форма". Например "Форма 4.0"
+                // а в других просто пишется номер формы. Например "1.0"
+                if (titleListNum.ToLower().StartsWith("форма "))
+                    titleListNum = titleListNum.Split(' ')[1];
 
                 // В первую очередь записываем основные данные титульного листа (1.0, 2.0, 4.0, 5.0)
                 // Для 1.0 и 2.0 основные данные - это рег.Номер и ОКПО
                 // Для 4.0 основные данные - это код субъекта
                 // У Формы 5.0 - полное наименование
-                switch (worksheet0.Name)
+                //switch (titleListNum)
+                //{
+                //    case "1.0" or "2.0":
+                //        {
+                //            #region 1.0 or 2.0
+
+                var executeMode = parameter switch
                 {
-                    case "1.0" or "2.0":
-                        {
-                            var executeMode = parameter switch
-                            {
-                                Reports => "Selected",
-                                string mode => mode,
-                                _ => null
-                            };
-
-                            switch (executeMode)
-                            {
-                                case "Auto":
-                                    {
-                                        baseReps = GetBaseReps(worksheet0);
-                                        break;
-                                    }
-                                case "Selected":
-                                    {
-                                        var selectedReports = parameter as Reports ?? _formsTabControlBaseVM.SelectedReports;
-                                        if (selectedReports is null) return;
-                                        var selectedReportsInfo = new OrganizationInfo
-                                        {
-                                            RegNum = selectedReports.Master_DB.RegNoRep.Value,
-                                            Okpo = selectedReports.Master_DB.OkpoRep.Value
-                                        };
-
-                                        var impRepsFromDb = await GetSelectedReportsFromDB(selectedReportsInfo, impReps.Master_DB.FormNum_DB);
-                                        baseReps = impReps.Master_DB.FormNum_DB switch
-                                        {
-                                            "1.0" => GetReports11FromLocalEqual(impRepsFromDb),
-                                            "2.0" => GetReports21FromLocalEqual(impRepsFromDb),
-                                            _ => baseReps
-                                        };
-                                        break;
-                                    }
-                                case "FromList":
-                                    {
-                                        var localRepsList = await GetReportsListFromDB(impReps.Master_DB.FormNum_DB);
-                                        var currentReportIndex = impReportsList.IndexOf(impReps) + 1;
-                                        var selectReportsMessageWindow = new SelectReportsMessageWindow(localRepsList, SourceFile!.Name, impReportsList.Count, currentReportIndex, impReps);
-                                        var selectedReports = await selectReportsMessageWindow.ShowDialog<OrganizationInfo>(Desktop.MainWindow);
-                                        if (selectedReports is null) return;
-
-                                        var impRepsFromDb = await GetSelectedReportsFromDB(selectedReports, impReps.Master_DB.FormNum_DB);
-                                        baseReps = impReps.Master_DB.FormNum_DB switch
-                                        {
-                                            "1.0" => GetReports11FromLocalEqual(impRepsFromDb),
-                                            "2.0" => GetReports21FromLocalEqual(impRepsFromDb),
-                                            _ => baseReps
-                                        };
-                                        break;
-                                    }
-                                default: return;
-                            }
-
-                            break;
-                        }
-                    case "Форма 4.0":
-                        {
-                            codeSubjectRF = Convert.ToString(worksheet0.Cells["B8"].Value);
-                            var subjectRF = Convert.ToString(worksheet0.Cells["B9"].Value);
-
-                            //Автоматическое определение кода субъекта РФ
-                            if (Spravochniks.DictionaryOfSubjectRF.ContainsValue(subjectRF))
-                            {
-                                codeSubjectRF = Spravochniks.DictionaryOfSubjectRF.FirstOrDefault(x => x.Value == subjectRF).Key.ToString();
-                                if (codeSubjectRF.Length == 1)
-                                    codeSubjectRF = "0" + codeSubjectRF;
-                            }
-
-                            //Продолжение автоматического определения кода субъекта
-                            if (codeSubjectRF is "" or null)
-                            {
-                                if (worksheet1?.Cells["B9"].Value is string str
-                                    && !string.IsNullOrEmpty(str))
-                                {
-                                    codeSubjectRF = str[..2];
-                                }
-                            }
-
-                            baseReps = ReportsStorage.LocalReports.Reports_Collection40
-                                .FirstOrDefault(reports => reports.Master_DB.Rows40[0].CodeSubjectRF_DB == codeSubjectRF);
-                            break;
-                        }
-                    case "Форма 5.0":
-                        {
-                            var name = Convert.ToString(worksheet0.Cells["B20"].Value);
-                            try
-                            {
-                                baseReps = StaticConfiguration.DBModel.ReportsCollectionDbSet
-                                    .Include(reps => reps.Report_Collection)
-                                    .Include(reps => reps.Master_DB)
-                                    .ThenInclude(reps => reps.Rows50)
-                                    .AsEnumerable()
-                                    .FirstOrDefault(reports => reports.Master_DB.Rows50[0].Name_DB == name);
-                            }
-                            catch (Exception ex)
-                            {
-                                throw ex;
-                            }
-
-                            break;
-                        }
-                }
-
-                if ((impReps.Master_DB.FormNum_DB == "4.0") &&
-                    codeSubjectRF is not ("" or null))
-                {
-                    impReps.Master_DB.Rows40[0].CodeSubjectRF_DB = codeSubjectRF;
-                }
-                impReportsList.Add(impReps);
-                if (baseReps is null)
-                {
-                    ExcelImportNewReps = true;
-                    baseReps = impReps;
-                }
-                baseReps.Master_DB.ReportChangedDate = impDateTime;
-
-                if (worksheet0.Name is "1.0" or "2.0")
-                {
-                    BaseRepsOkpo = baseReps.Master.OkpoRep.Value;
-                    BaseRepsRegNum = baseReps.Master.RegNoRep.Value;
-                    BaseRepsShortName = baseReps.Master.ShortJurLicoRep.Value;
-                }
-
-                var repNumber = worksheet0.Name;
-                // В некоторых шаблонах в наименовании листа Excel перед номером формы добавляется слово "Форма". Например "Форма 4.0"
-                // а в других просто пишется номер формы. Например "1.0"
-                if (repNumber.ToLower().StartsWith("форма "))
-                    repNumber = repNumber.Split(' ')[1];
-
-                var formNumber = worksheet1.Name;
-                // В некоторых шаблонах в наименовании листа Excel перед номером формы добавляется слово "Форма". Например "Форма 4.1"
-                // а в других просто пишется номер формы. Например "1.1"
-                if (formNumber.ToLower().StartsWith("форма "))
-                    formNumber = formNumber.Split(' ')[1];
-
-                //Импортируем отчет
-                var impRep = GetReportWithDataFromExcel(worksheet0, worksheet1, formNumber, timeCreate);
-                impRep.ReportChangedDate = impDateTime;
-
-                var start = formNumber switch
-                {
-                    "2.8" => 14,
-                    "4.1" => 9,
-                    "5.1" or "5.2" or "5.3" or "5.4" or "5.5" or "5.6" or "5.7" => 12,
-                    _ => 11
+                    Reports => "Selected",
+                    string mode => mode,
+                    _ => null
                 };
 
-                var end = $"A{start}";
-                var value = worksheet1.Cells[end].Value;
-
-                while (value != null
-                       && Convert.ToString(value)?.ToLower() is not ("примечание:" or "примечания:" or "должность исполнителя"))
+                switch (executeMode)
                 {
-                    GetDataFromRow(formNumber, worksheet1, start, impRep);
-                    start++;
-                    end = $"A{start}";
-                    value = worksheet1.Cells[end].Value;
-                }
-
-                NumberInOrder = 1;
-
-                while (value is null)
-                {
-                    start += 1;
-                    end = $"A{start}";
-                    value = worksheet1.Cells[end].Value;
-                }
-
-                // Импортируем примечания
-                // У форм 4.X нет примечаний
-                if (repNumber is "1.0" or "2.0" or "5.0" && formNumber is not "5.7")
-                {
-                    if (Convert.ToString(value)?.ToLower() is "примечание:" or "примечания:")
-                    {
-                        start += 2;
-
-                        while (worksheet1.Cells[$"A{start}"].Value != null ||
-                               worksheet1.Cells[$"B{start}"].Value != null ||
-                               worksheet1.Cells[$"C{start}"].Value != null)
+                    case "Auto":
                         {
-                            Note newNote = new();
-                            newNote.ExcelGetRow(worksheet1, start);
-                            impRep.Notes.Add(newNote);
-                            start++;
+                            baseReps = GetBaseReps(worksheet0);
+                            break;
                         }
-                    }
+                    case "Selected":
+                        {
+                            var selectedReports = parameter as Reports ?? _formsTabControlBaseVM.SelectedReports;
+                            if (selectedReports is null) return;
+                            
+                            baseReps = selectedReports;
+                            break;
+                        }
+                    //case "FromList":
+                    //    {
+                    //        var localRepsList = await GetReportsListFromDB(impReps.Master_DB.FormNum_DB);
+                    //        var currentReportIndex = impReportsList.IndexOf(impReps) + 1;
+                    //        var selectReportsMessageWindow = new SelectReportsMessageWindow(localRepsList, SourceFile!.Name, impReportsList.Count, currentReportIndex, impReps);
+                    //        var selectedReports = await selectReportsMessageWindow.ShowDialog<OrganizationInfo>(Desktop.MainWindow);
+                    //        if (selectedReports is null) return;
+
+                    //        baseReps = selectedReports;
+                    //        break;
+                    //    }
+                    default: return;
                 }
 
-                ImpRepCorNum = impRep.CorrectionNumber_DB;
-                ImpRepEndPeriod = impRep.EndPeriod_DB;
-                ImpRepFormCount = impRep.Rows.Count;
-                ImpRepFormNum = impRep.FormNum_DB;
-                ImpRepStartPeriod = impRep.StartPeriod_DB;
-                ImpRepYear = impRep.Year_DB ?? "";
+                #endregion
 
-                //SkipNewOrg = SkipInter = SkipLess = SkipNew = SkipReplace = AtLeastOneImportDone = false;
-                HasMultipleReport = answer.Length > 1;
+                #region FindBaseReport
+
+                Report? baseRep = null;
+                if (baseReps != null)
+                {
+                    baseRep = StaticConfiguration.DBModel.ReportCollectionDbSet
+                        .Where(rep => rep.Reports.Id == baseReps.Id)
+                        .FirstOrDefault(rep => rep.FormNum_DB == impRep.FormNum_DB
+                        && (( rep.FormNum_DB[0] == '1'
+                        && rep.StartPeriod_DB == impRep.StartPeriod_DB
+                        && rep.EndPeriod_DB == impRep.EndPeriod_DB)
+                        || (rep.FormNum_DB[0] != '1'
+                        && rep.Year_DB == impRep.Year_DB)));
+                }
+
+                #endregion
+
 
                 // Проверяем есть ли в БД, импортируемые отчеты
                 var impRepList = new List<Report> { impRep };
                 if (baseReps.Report_Collection.Count != 0)
                 {
+                    #region CheckPresenceReportInDB
                     switch (worksheet0.Name.ToLower())
                     {
                         case "1.0":
@@ -416,6 +320,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                             }
 
                     }
+                    #endregion
                 }
                 else
                 {
@@ -441,7 +346,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                         ContentTitle = "Импорт из .xlsx",
                                         ContentHeader = "Уведомление",
                                         ContentMessage =
-                                            $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {ImpRepFormNum}." +
+                                            $"Будет добавлена новая организация (), содержащая отчет по форме {ImpRepFormNum}." +
                                             $"{Environment.NewLine}" +
                                             $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
                                             $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
@@ -472,7 +377,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                         ContentTitle = "Импорт из .xlsx",
                                         ContentHeader = "Уведомление",
                                         ContentMessage =
-                                            $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {ImpRepFormNum}." +
+                                            $"Будет добавлена новая организация (), содержащая отчет по форме {ImpRepFormNum}." +
                                             $"{Environment.NewLine}" +
                                             $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
                                             $"{Environment.NewLine}" +
@@ -504,7 +409,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                         ],
                                         ContentTitle = "Импорт из .xlsx",
                                         ContentHeader = "Уведомление",
-                                        ContentMessage = $"Будет добавлена новая организация ({repNumber})." +
+                                        ContentMessage = $"Будет добавлена новая организация ()." +
                                                          $"{Environment.NewLine}" +
                                                          $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
                                                          $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
@@ -531,7 +436,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                         ContentTitle = "Импорт из .xlsx",
                                         ContentHeader = "Уведомление",
                                         ContentMessage =
-                                            $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {ImpRepFormNum}." +
+                                            $"Будет добавлена новая организация (), содержащая отчет по форме {ImpRepFormNum}." +
                                             $"{Environment.NewLine}" +
                                             $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
                                             $"{Environment.NewLine}",
@@ -551,6 +456,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 }
             }
 
+            
             try
             {
                 var comparator = new CustomReportsComparer();
@@ -573,8 +479,8 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 return;
             }
 
-            //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
 
+            #region SaveDbChanges
             try
             {
                 await StaticConfiguration.DBModel.SaveChangesAsync();
@@ -600,6 +506,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
                 return;
             }
+            #endregion
         }
         finally
         {
@@ -648,18 +555,20 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
     /// </summary>
     /// <param name="worksheet">Лист Excel.</param>
     /// <returns></returns>
-    private static Reports? GetBaseReps(ExcelWorksheet worksheet)
+    private static Reports? GetBaseReps(ExcelWorksheet worksheet0)
     {
-        // Для форм 1.0, 2.0 (Старое)
-
-        var excelOkpo0 = Convert.ToString(worksheet.Cells["B36"].Value);
-        var excelOkpo1 = Convert.ToString(worksheet.Cells["B37"].Value);
-        var excelRegNo = Convert.ToString(worksheet.Cells["F6"].Value);
-
-        return worksheet.Name switch
+        var dbm = StaticConfiguration.DBModel;
+        switch(worksheet0.Name)
         {
-            "1.0" => ReportsStorage.LocalReports.Reports_Collection10
-                         .FirstOrDefault(t =>
+            case "1.0":
+                {
+                    var excelOkpo0 = Convert.ToString(worksheet0.Cells["B36"].Value);
+                    var excelOkpo1 = Convert.ToString(worksheet0.Cells["B37"].Value);
+                    var excelRegNo = Convert.ToString(worksheet0.Cells["F6"].Value);
+
+                    return dbm.ReportsCollectionDbSet
+                        .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
+                        .FirstOrDefault(t =>
 
                              // обособленные пусты и в базе и в импорте, то сверяем головное
                              excelOkpo0 == t.Master.Rows10[0].Okpo_DB
@@ -683,11 +592,9 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                              && excelRegNo == t.Master.Rows10[0].RegNo_DB
                              && excelOkpo1 != ""
                              && t.Master.Rows10[1].RegNo_DB == "")
-
-                     ?? ReportsStorage.LocalReports
-                         .Reports_Collection10 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
-                         .FirstOrDefault(t =>
-
+                        ?? dbm.ReportsCollectionDbSet
+                        .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
+                        .FirstOrDefault(t =>
                              // юр лицо в базе совпадает с обособленным в импорте
                              excelOkpo1 != ""
                              && t.Master.Rows10[1].Okpo_DB == ""
@@ -698,9 +605,18 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                              || excelOkpo1 == ""
                              && t.Master.Rows10[1].Okpo_DB != ""
                              && excelOkpo0 == t.Master.Rows10[1].Okpo_DB
-                             && excelRegNo == t.Master.Rows10[1].RegNo_DB),
+                             && excelRegNo == t.Master.Rows10[1].RegNo_DB);
+                    break;
+                }
 
-            "2.0" => ReportsStorage.LocalReports.Reports_Collection20
+            case "2.0":
+                {
+                    var excelOkpo0 = Convert.ToString(worksheet0.Cells["B36"].Value);
+                    var excelOkpo1 = Convert.ToString(worksheet0.Cells["B37"].Value);
+                    var excelRegNo = Convert.ToString(worksheet0.Cells["F6"].Value);
+
+                    return dbm.ReportsCollectionDbSet
+                       .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
                        .FirstOrDefault(t =>
 
                            // обособленные пусты и в базе и в импорте, то сверяем головное
@@ -726,7 +642,8 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                            && excelOkpo1 != ""
                            && t.Master.Rows20[1].RegNo_DB == "")
 
-                   ?? ReportsStorage.LocalReports.Reports_Collection20 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
+                   ?? dbm.ReportsCollectionDbSet
+                       .Where(reps => reps.Master_DB.FormNum_DB == "2.0") // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
                        .FirstOrDefault(t =>
 
                            // юр лицо в базе совпадает с обособленным в импорте
@@ -739,10 +656,29 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                            || excelOkpo1 == ""
                            && t.Master.Rows20[1].Okpo_DB != ""
                            && excelOkpo0 == t.Master.Rows20[1].Okpo_DB
-                           && excelRegNo == t.Master.Rows20[1].RegNo_DB),
-
-            _ => null
-        };
+                           && excelRegNo == t.Master.Rows20[1].RegNo_DB);
+                    break;
+                }
+            case "4.0":
+                {
+                    var codeSubjectRF = Convert.ToString(worksheet0.Cells["B8"].Value);
+                    var subjectRF = Convert.ToString(worksheet0.Cells["B9"].Value);
+                    return dbm.ReportsCollectionDbSet
+                       .Where(reps => reps.Master_DB.FormNum_DB == "4.0") 
+                       .FirstOrDefault(t => t.Master_DB.Rows40[0].CodeSubjectRF_DB == codeSubjectRF
+                       || t.Master_DB.Rows40[0].SubjectRF_DB == subjectRF);
+                    break;
+                }
+            case "5.0":
+                {
+                    var name = Convert.ToString(worksheet0.Cells["B20"].Value);
+                    return dbm.ReportsCollectionDbSet
+                       .Where(reps => reps.Master_DB.FormNum_DB == "5.0")
+                       .FirstOrDefault(t => t.Master_DB.Rows50[0].Name_DB == name);
+                    break;
+                }
+            default: return null;
+        }
     }
 
     #endregion
@@ -910,29 +846,101 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
     #endregion
 
+    private Report? GetReportFromExcel(ExcelWorksheet worksheet0, ExcelWorksheet worksheet1, List<string> timeCreate)
+    {
+
+        #region GetReportFromExcelFile
+        if (worksheet1 is null) return null;
+
+        
+
+        var formNumber = worksheet1.Name;
+        // В некоторых шаблонах в наименовании листа Excel перед номером формы добавляется слово "Форма". Например "Форма 4.1"
+        // а в других просто пишется номер формы. Например "1.1"
+        if (formNumber.ToLower().StartsWith("форма "))
+            formNumber = formNumber.Split(' ')[1];
+
+        //Импортируем отчет
+        var impRep = GetReportWithDataFromExcel(worksheet0, worksheet1, formNumber, timeCreate);
+        impRep.ReportChangedDate = DateTime.Now;
+
+        var start = formNumber switch
+        {
+            "2.8" => 14,
+            "4.1" => 9,
+            "5.1" or "5.2" or "5.3" or "5.4" or "5.5" or "5.6" or "5.7" => 12,
+            _ => 11
+        };
+
+        var end = $"A{start}";
+        var value = worksheet1.Cells[end].Value;
+
+        while (value != null
+               && Convert.ToString(value)?.ToLower() is not ("примечание:" or "примечания:" or "должность исполнителя"))
+        {
+            GetDataFromRow(formNumber, worksheet1, start, impRep);
+            start++;
+            end = $"A{start}";
+            value = worksheet1.Cells[end].Value;
+        }
+
+        NumberInOrder = 1;
+
+        while (value is null)
+        {
+            start += 1;
+            end = $"A{start}";
+            value = worksheet1.Cells[end].Value;
+        }
+
+        // Импортируем примечания
+        // У форм 4.X нет примечаний
+
+        if (formNumber[0] is '1' or '2' or '5' && formNumber is not "5.7")
+        {
+            if (Convert.ToString(value)?.ToLower() is "примечание:" or "примечания:")
+            {
+                start += 2;
+
+                while (worksheet1.Cells[$"A{start}"].Value != null ||
+                       worksheet1.Cells[$"B{start}"].Value != null ||
+                       worksheet1.Cells[$"C{start}"].Value != null)
+                {
+                    Note newNote = new();
+                    newNote.ExcelGetRow(worksheet1, start);
+                    impRep.Notes.Add(newNote);
+                    start++;
+                }
+            }
+        }
+        return impRep;
+        #endregion
+
+    }
+
     #region GetImportReps
 
     private static Reports GetImportReps(ExcelWorksheet worksheet)
     {
-        var name = worksheet.Name;
-        if (name.ToLower().StartsWith("форма "))
+        var formNum = worksheet.Name;
+        if (formNum.ToLower().StartsWith("форма "))
         {
-            name = name.Split(' ')[1];
+            formNum = formNum.Split(' ')[1];
         }
         var newRepsFromExcel = new Reports
         {
             Master_DB = new Report
             {
-                FormNum_DB = name
+                FormNum_DB = formNum
             }
         };
-        switch (name)
+        switch (formNum)
         {
             case "1.0":
                 {
-                    var ty1 = (Form10)FormCreator.Create(name);
+                    var ty1 = (Form10)FormCreator.Create(formNum);
                     ty1.NumberInOrder_DB = 1;
-                    var ty2 = (Form10)FormCreator.Create(name);
+                    var ty2 = (Form10)FormCreator.Create(formNum);
                     ty2.NumberInOrder_DB = 2;
                     newRepsFromExcel.Master_DB.Rows10.Add(ty1);
                     newRepsFromExcel.Master_DB.Rows10.Add(ty2);
@@ -940,9 +948,9 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 }
             case "2.0":
                 {
-                    var ty1 = (Form20)FormCreator.Create(name);
+                    var ty1 = (Form20)FormCreator.Create(formNum);
                     ty1.NumberInOrder_DB = 1;
-                    var ty2 = (Form20)FormCreator.Create(name);
+                    var ty2 = (Form20)FormCreator.Create(formNum);
                     ty2.NumberInOrder_DB = 2;
                     newRepsFromExcel.Master_DB.Rows20.Add(ty1);
                     newRepsFromExcel.Master_DB.Rows20.Add(ty2);
@@ -950,7 +958,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 }
             case "4.0":
                 {
-                    var row40 = (Form40)FormCreator.Create(name);
+                    var row40 = (Form40)FormCreator.Create(formNum);
                     row40.NumberInOrder_DB = 1;
 
                     newRepsFromExcel.Master_DB.Rows40.Add(row40);
@@ -958,7 +966,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 }
             case "5.0":
                 {
-                    var row50 = (Form50)FormCreator.Create(name);
+                    var row50 = (Form50)FormCreator.Create(formNum);
                     row50.NumberInOrder_DB = 1;
 
                     newRepsFromExcel.Master_DB.Rows50.Add(row50);
@@ -985,9 +993,13 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
     #endregion
 
-    #region GetReportDataFromExcel
 
-    private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet, ExcelWorksheet worksheet1, string formNumber, List<string> timeCreate)
+   
+
+
+#region GetReportDataFromExcel
+
+private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, ExcelWorksheet worksheet1, string formNumber, List<string> timeCreate)
     {
         var impRep = new Report
         {
@@ -1014,7 +1026,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
                         impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
                         impRep.SourcesQuantity26_DB = Convert.ToInt32(worksheet1.Cells["G5"].Value);
-                        impRep.Year_DB = Convert.ToString(worksheet.Cells["G10"].Value);
+                        impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
 
                         #endregion
 
@@ -1030,7 +1042,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                         impRep.ValidBegin27_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
                         impRep.ValidThru27_DB = Convert.ToString(worksheet1.Cells["J5"].Value);
                         impRep.PermissionDocumentName27_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
-                        impRep.Year_DB = Convert.ToString(worksheet.Cells["G10"].Value);
+                        impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
 
                         #endregion
 
@@ -1063,7 +1075,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                         impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells["F21"].Value);
                         impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells["I21"].Value);
                         impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells["K21"].Value);
-                        impRep.Year_DB = Convert.ToString(worksheet.Cells["G10"].Value);
+                        impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
 
                         #endregion
 
@@ -1074,7 +1086,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                         #region BindData_2.x
 
                         impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
-                        impRep.Year_DB = Convert.ToString(worksheet.Cells["G10"].Text);
+                        impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Text);
 
                         #endregion
 
@@ -1085,7 +1097,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         else if (formNumber.Split('.')[0] == "4")
         {
             impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B1"].Value);
-            impRep.Year_DB = Convert.ToString(worksheet.Cells["B15"].Text).Trim();
+            impRep.Year_DB = Convert.ToString(worksheet0.Cells["B15"].Text).Trim();
             //Отсекаем мусор из ячейки
             if (!impRep.Year_DB.All(c => char.IsDigit(c)))
             {
@@ -1101,7 +1113,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         else if (formNumber.Split('.')[0] == "5")
         {
             impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B7"].Value);
-            impRep.Year_DB = Convert.ToString(worksheet.Cells["B16"].Text).Trim();
+            impRep.Year_DB = Convert.ToString(worksheet0.Cells["B16"].Text).Trim();
             //Отсекаем мусор из ячейки
             if (!impRep.Year_DB.All(c => char.IsDigit(c)))
             {

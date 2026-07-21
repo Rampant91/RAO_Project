@@ -424,50 +424,57 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
     /// <returns>Отчёт вместе со строчками.</returns>
     private static async Task<Report> GetReportWithRows(int repId, string dbPath, CancellationTokenSource cts)
     {
-        await using var db = new DBModel(dbPath);
-        var rep = await db.ReportCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(rep => rep.Reports).ThenInclude(reps => reps.DBObservable)
-                .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
-                .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows40)
-                .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows50)
-                .Include(rep => rep.Rows11.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows12.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows13.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows14.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows15.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows16.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows17.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows18.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows19.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows21.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows22.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows23.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows24.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows25.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows26.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows27.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows28.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows29.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows210.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows211.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows212.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows41.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows51.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows52.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows53.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows54.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows55.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows56.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows57.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Notes.OrderBy(note => note.Order))
-                .Where(rep => rep.Reports != null && rep.Reports.DBObservable != null)
-                .FirstAsync(rep => rep.Id == repId, cts.Token);
-        await rep.SortAsync();
-        return rep;
+        try
+        {
+            await using var db = new DBModel(dbPath);
+            var rep = await db.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .AsQueryable()
+                    .Include(rep => rep.Reports).ThenInclude(reps => reps.DBObservable)
+                    .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
+                    .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows20)
+                    .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows40)
+                    .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows50)
+                    .Include(rep => rep.Rows11.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows12.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows13.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows14.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows15.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows16.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows17.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows18.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows19.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows21.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows22.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows23.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows24.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows25.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows26.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows27.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows28.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows29.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows210.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows211.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows212.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows41.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows51.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows52.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows53.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows54.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows55.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows56.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Rows57.OrderBy(form => form.NumberInOrder_DB))
+                    .Include(rep => rep.Notes.OrderBy(note => note.Order))
+                    .Where(rep => rep.Reports != null && rep.Reports.DBObservable != null)
+                    .FirstAsync(rep => rep.Id == repId, cts.Token);
+            await rep.SortAsync();
+            return rep;
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
     }
         
 

@@ -472,6 +472,26 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "2.0")
                 .ToListAsync(),
 
+            "4.0" => await db.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.DBObservable)
+                .Include(x => x.Master_DB)
+                .ThenInclude(x => x.Rows40)
+                .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "4.0")
+                .ToListAsync(),
+
+            "5.0" => await db.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.DBObservable)
+                .Include(x => x.Master_DB)
+                .ThenInclude(x => x.Rows50)
+                .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "5.0")
+                .ToListAsync(),
+
             _ => []
         };
     }
