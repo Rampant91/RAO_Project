@@ -22,7 +22,8 @@ namespace Client_App.Commands.AsyncCommands.Change
             {
                 
                 var owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
-                        .FirstOrDefault(w => w.Name == "PassportMenu");
+                        .FirstOrDefault(w => w.Name == "PassportMenu" 
+                            || w.Name == "1.7");
 
                 var passportVM = new PackagePassportWindowVM(passportId);
 

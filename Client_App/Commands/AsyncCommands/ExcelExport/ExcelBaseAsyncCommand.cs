@@ -486,6 +486,106 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         }
     }
 
+    /// <summary>
+    /// Включает перенос текста для ячеек блока исполнителя (должность, ФИО, телефон, e-mail).
+    /// Вызывать после вставки строк примечаний и таблицы, чтобы адреса и высота строк были корректны.
+    /// </summary>
+    private protected static void ApplyExcelExecutorWrapText(
+        string formNum,
+        ExcelWorksheet worksheet,
+        Report rep,
+        bool notesExported)
+    {
+        var cells = GetExecutorCellAddresses(formNum, worksheet, rep, notesExported);
+        ApplyExcelCellsWrapText(worksheet, ExcelVerticalAlignment.Bottom, resizeOnlyWhenWrapped: true, cells);
+    }
+
+    /// <summary>
+    /// Возвращает адреса ячеек блока исполнителя с учётом сдвига после вставки строк.
+    /// </summary>
+    private static string[] GetExecutorCellAddresses(
+        string formNum,
+        ExcelWorksheet worksheet,
+        Report rep,
+        bool notesExported)
+    {
+        var notesStart = formNum switch
+        {
+            "2.8" => 18,
+            _ when formNum is "5.1" or "5.2" or "5.3" or "5.4" or "5.5" or "5.6" or "5.7" => 17,
+            _ => 15
+        };
+
+        var tableStart = formNum switch
+        {
+            "2.8" => 14,
+            "4.1" => 9,
+            _ when formNum.Split('.')[0] == "5" => 12,
+            _ => 11
+        };
+
+        var notesShift = notesExported && rep.Notes.Count > 0 ? rep.Notes.Count - 1 : 0;
+        var tableShift = rep[formNum].Count > 0 ? rep[formNum].Count - 1 : 0;
+
+        int ShiftRow(int baseRow)
+        {
+            var row = baseRow;
+            if (notesExported && notesShift > 0 && row >= notesStart + 1)
+                row += notesShift;
+            if (tableShift > 0 && row >= tableStart + 1)
+                row += tableShift;
+            return row;
+        }
+
+        string Cell(int row, int col) => worksheet.Cells[row, col].Address;
+
+        return formNum switch
+        {
+            "2.8" =>
+            [
+                Cell(ShiftRow(21), 4),
+                Cell(ShiftRow(21), 6),
+                Cell(ShiftRow(21), 9),
+                Cell(ShiftRow(21), 11)
+            ],
+            "5.7" =>
+            [
+                Cell(ShiftRow(16), 2),
+                Cell(ShiftRow(17), 2),
+                Cell(ShiftRow(18), 2),
+                Cell(ShiftRow(19), 2)
+            ],
+            _ when formNum.Split('.')[0] == "4" =>
+            [
+                Cell(ShiftRow(12), 2),
+                Cell(ShiftRow(13), 2),
+                Cell(ShiftRow(14), 2),
+                Cell(ShiftRow(15), 2)
+            ],
+            _ when formNum.Split('.')[0] == "5" =>
+            [
+                Cell(ShiftRow(21), 2),
+                Cell(ShiftRow(22), 2),
+                Cell(ShiftRow(23), 2),
+                Cell(ShiftRow(24), 2)
+            ],
+            _ when formNum.Split('.')[0] is "1" or "2" =>
+            [
+                Cell(ShiftRow(18), 4),
+                Cell(ShiftRow(18), 6),
+                Cell(ShiftRow(18), 9),
+                Cell(ShiftRow(18), 11)
+            ],
+            _ =>
+            [
+                Cell(ShiftRow(18), 4),
+                Cell(ShiftRow(18), 6),
+                Cell(ShiftRow(18), 9),
+                Cell(ShiftRow(18), 11)
+            ]
+        };
+    }
+
     #endregion
 
     #region ExcelPrintNotesExport
@@ -563,6 +663,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             note.ExcelRow(worksheet, count, 1);
             count++;
         }
+
+        if (count > start && worksheet.Dimension is not null)
+            ApplyExcelDataRowsWrapText(worksheet, start, count - 1, worksheet.Dimension.End.Column);
     }
 
     #endregion
@@ -768,6 +871,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 count++;
             }
         }
+
+        if (count > start && worksheet.Dimension is not null)
+            ApplyExcelDataRowsWrapText(worksheet, start, count - 1, worksheet.Dimension.End.Column);
     }
 
     #endregion
@@ -1162,6 +1268,164 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         }
 
         return lineCount;
+    }
+
+    /// <summary>
+    /// Минимальная высота строки данных (в пунктах).
+    /// </summary>
+    private const double ExcelDataRowMinHeight = 15;
+
+    /// <summary>
+    /// Включает перенос текста для указанных ячеек и при необходимости подбирает высоту их строк.
+    /// </summary>
+    /// <param name="resizeOnlyWhenWrapped">Увеличивать высоту строки только при многострочном тексте.</param>
+    private protected static void ApplyExcelCellsWrapText(
+        ExcelWorksheet worksheet,
+        ExcelVerticalAlignment verticalAlignment,
+        bool resizeOnlyWhenWrapped,
+        params string[] cellAddresses)
+    {
+        if (cellAddresses.Length == 0)
+            return;
+
+        var rowsToResize = new HashSet<int>();
+        foreach (var address in cellAddresses)
+        {
+            var cell = worksheet.Cells[address];
+            cell.Style.WrapText = true;
+            cell.Style.ShrinkToFit = false;
+            cell.Style.VerticalAlignment = verticalAlignment;
+            rowsToResize.Add(cell.Start.Row);
+        }
+
+        foreach (var row in rowsToResize)
+        {
+            var rowCells = cellAddresses
+                .Where(address => worksheet.Cells[address].Start.Row == row)
+                .ToArray();
+            var requiredHeight = TryCalculateExcelCellsRowHeight(worksheet, row, rowCells);
+            if (requiredHeight is null)
+                continue;
+
+            var currentHeight = worksheet.Row(row).Height;
+            if (requiredHeight.Value > currentHeight + 0.5)
+            {
+                worksheet.Row(row).CustomHeight = true;
+                worksheet.Row(row).Height = requiredHeight.Value;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Оценивает необходимую высоту строки по указанным ячейкам; null — перенос не требует увеличения высоты.
+    /// </summary>
+    private static double? TryCalculateExcelCellsRowHeight(
+        ExcelWorksheet worksheet,
+        int row,
+        IEnumerable<string> cellAddresses)
+    {
+        double? maxHeight = null;
+
+        foreach (var address in cellAddresses)
+        {
+            var cell = worksheet.Cells[address];
+            if (cell.Start.Row != row)
+                continue;
+
+            var text = cell.Value?.ToString();
+            if (string.IsNullOrEmpty(text))
+                continue;
+
+            var wrapWidth = GetEffectiveWrapWidth(worksheet, cell.Start.Row, cell.Start.Column);
+            var approxCharsPerLine = Math.Max(2, (int)Math.Floor(wrapWidth * 0.85));
+            var lineCount = EstimateWrappedLineCount(text, approxCharsPerLine);
+            if (lineCount <= 1)
+                continue;
+
+            var cellHeight = lineCount * 15.0 + 2;
+            maxHeight = Math.Max(maxHeight ?? ExcelDataRowMinHeight, cellHeight);
+        }
+
+        return maxHeight;
+    }
+
+    /// <summary>
+    /// Включает перенос текста по ширине колонки для строк данных (без заголовков формы).
+    /// </summary>
+    private protected static void ApplyExcelDataRowsWrapText(
+        ExcelWorksheet worksheet,
+        int firstRow,
+        int lastRow,
+        int lastColumn)
+    {
+        if (firstRow < 1 || lastRow < firstRow || lastColumn < 1)
+            return;
+
+        for (var row = firstRow; row <= lastRow; row++)
+        {
+            for (var col = 1; col <= lastColumn; col++)
+            {
+                var cell = worksheet.Cells[row, col];
+                cell.Style.WrapText = true;
+                cell.Style.ShrinkToFit = false;
+                cell.Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+            }
+
+            worksheet.Row(row).CustomHeight = true;
+            worksheet.Row(row).Height = CalculateExcelDataRowHeight(worksheet, row, lastColumn);
+        }
+    }
+
+    /// <summary>
+    /// Оценивает необходимую высоту строки данных с учётом переноса текста.
+    /// </summary>
+    private static double CalculateExcelDataRowHeight(ExcelWorksheet worksheet, int row, int lastColumn)
+    {
+        var maxHeight = ExcelDataRowMinHeight;
+
+        for (var col = 1; col <= lastColumn; col++)
+        {
+            var text = worksheet.Cells[row, col].Value?.ToString();
+            if (string.IsNullOrEmpty(text))
+                continue;
+
+            var wrapWidth = GetEffectiveWrapWidth(worksheet, row, col);
+            var approxCharsPerLine = Math.Max(2, (int)Math.Floor(wrapWidth * 0.85));
+            var lineCount = EstimateWrappedLineCount(text, approxCharsPerLine);
+            var cellHeight = lineCount * 15.0 + 4;
+            maxHeight = Math.Max(maxHeight, cellHeight);
+        }
+
+        return maxHeight;
+    }
+
+    /// <summary>
+    /// Возвращает эффективную ширину ячейки с учётом объединённых диапазонов.
+    /// </summary>
+    private static double GetEffectiveWrapWidth(ExcelWorksheet worksheet, int row, int col)
+    {
+        if (worksheet.MergedCells is not null)
+        {
+            foreach (var mergedRange in worksheet.MergedCells)
+            {
+                var range = worksheet.Cells[mergedRange];
+                if (row < range.Start.Row || row > range.End.Row
+                    || col < range.Start.Column || col > range.End.Column)
+                    continue;
+
+                var totalWidth = 0.0;
+                for (var c = range.Start.Column; c <= range.End.Column; c++)
+                {
+                    var width = worksheet.Column(c).Width;
+                    totalWidth += width > 0 ? width : 8;
+                }
+
+                return totalWidth;
+            }
+        }
+
+        var columnWidth = worksheet.Column(col).Width;
+        return columnWidth > 0 ? columnWidth : 8;
     }
 
     #endregion

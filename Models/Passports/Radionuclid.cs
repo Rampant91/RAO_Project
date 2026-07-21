@@ -37,11 +37,17 @@ namespace Models.Passports
 
         [NotMapped]
         private CharacteristicPrimaryPackage _characteristic;
+
         public CharacteristicPrimaryPackage Characteristic
         {
             get
             {
                 return _characteristic;
+            }
+            private set
+            {
+                _characteristic = value;
+                OnPropertyChanged();
             }
         }
 

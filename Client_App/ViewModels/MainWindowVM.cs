@@ -451,7 +451,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand GroupBulkExportReports => new GroupBulkExportReportsAsyncCommand();
 
     /// <summary>
-    /// Выгрузка всех отчётов указанной формы (1.1-1.9, 2.1-2.12) организации в отдельные .xlsx файлы
+    /// Выгрузка всех отчётов указанной формы (1.1-1.9, 2.1-2.12) или всех форм группы (all-1, all-2)
+    /// организации в отдельные .xlsx файлы
     /// </summary>
     public ICommand ExcelExportAllFormsByFormNumber => new ExcelExportAllFormsByFormNumberAsyncCommand(this);
 
@@ -484,6 +485,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand ImportRaodb { get; set; }                               //  Импорт -> Из RAODB
     public ICommand MaxGraphsLength { get; set; }                           //  Excel -> Максимальное число символов в каждой колонке
     public ICommand OpenCalculator { get; set; }                            //  Открыть калькулятор пересчёта активности
+    public ICommand CheckForUpdates { get; set; }                           //  Сервис -> Проверить обновления
     public ICommand OpenFile { get; set; }                                  //  Открыть файл
     public ICommand OpenFolder { get; set; }                                //  Открыть папку
     public ICommand SaveReports { get; set; }                               //  Сохраняет текущую базу, используется только для сохранения комментария формы
@@ -503,8 +505,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public MainWindowVM()
     {
         _updateService = new UpdateService();
-        
-        
+        CheckForUpdates = new CheckForUpdatesAsyncCommand(_updateService, () => AppLaunchedAtNorao);
+
         AddReports = new AddReportsAsyncCommand();
         ChangeForm = new ChangeFormAsyncCommand();
         ChangePasFolder = new ChangePasFolderAsyncCommand();

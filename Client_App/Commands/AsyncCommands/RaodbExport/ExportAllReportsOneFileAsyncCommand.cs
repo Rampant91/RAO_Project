@@ -41,7 +41,7 @@ public partial class ExportAllReportsOneFileAsyncCommand : ExportRaodbBaseAsyncC
 
         #endregion
 
-        var dbReadOnlyPath = CreateTempDataBase();
+        var dbReadOnlyPath = await CreateTempDataBase(progressBar, cts);
 
         #region Progress = 7
 

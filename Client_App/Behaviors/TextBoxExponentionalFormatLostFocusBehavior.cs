@@ -48,7 +48,10 @@ namespace Client_App.Behaviors
                 }
                 else
                 {
-                    var length = int.Min(6, doubleValue.ToString().Length - 1); // Максимум 6 знаков после запятой
+                    var valueBuffer = doubleValue;
+                    while (valueBuffer % 10 == 0 && valueBuffer>1)
+                        valueBuffer /= 10;
+                    var length = int.Min(6, valueBuffer.ToString().Length - 1); // Максимум 6 знаков после запятой
 
                     textBox.Text = doubleValue.ToString($"e{length}");
                 }

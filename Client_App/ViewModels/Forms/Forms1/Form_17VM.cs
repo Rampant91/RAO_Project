@@ -1,24 +1,42 @@
-﻿using Client_App.Commands.AsyncCommands.Generate;
+﻿using Avalonia.Threading;
+using Client_App.Commands.AsyncCommands.Generate;
 using Client_App.ViewModels.Controls;
-using CommunityToolkit.Mvvm.Input;
+using Client_App.ViewModels.Forms.Forms1.Items;
 using Client_App.ViewModels.Forms.Forms1.Items;
 using Client_App.ViewModels.Forms.Forms1.Providers;
+using Client_App.ViewModels.Forms.Forms1.Providers;
+using CommunityToolkit.Mvvm.Input;
 using Models.Collections;
+using Models.Forms;
+using Models.Forms.Form1;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
-using Client_App.ViewModels.Forms.Forms1.Items;
-using Client_App.ViewModels.Forms.Forms1.Providers;
 
 namespace Client_App.ViewModels.Forms.Forms1;
 
 public class Form_17VM : BaseFormVM
 {
     #region Properties
-    
+
+    private PackagePassportPanelControlVM _packagePassportPanelControlVM = new();
+    public PackagePassportPanelControlVM PackagePassportPanelControlVM
+    {
+        get
+        {
+            return _packagePassportPanelControlVM;
+        }
+        set
+        {
+            _packagePassportPanelControlVM = value;
+        }
+    }
+
     public override string FormType => "1.7";
+
+    
 
     #region OpCodes
 
@@ -53,6 +71,40 @@ public class Form_17VM : BaseFormVM
     #region Commands
     public ICommand GenerateForm17 => new GenerateForm17AsyncCommand(this);
     public ICommand GeneratePackagePassport => new GeneratePackagePassportAsyncCommand(this);
+    #endregion
+
+    #region Events
+    private void SelectedForms_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            List<Form17> selectedForms17 = e.NewItems.Cast<Form17>().ToList();
+            if (selectedForms17 is null || selectedForms17.Count <= 0) return;
+
+            Form17 form17 = selectedForms17.FirstOrDefault(f17 =>
+                !string.IsNullOrWhiteSpace(f17.OperationCode_DB)
+                && f17.OperationCode_DB is not "-");
+
+            if (form17 is null)
+            {
+                var formsList = Report.Rows17.ToList();
+                var index = formsList.IndexOf(selectedForms17.MinBy(f17 => f17.NumberInOrder_DB));
+
+                for (int i= index; i>=0; i--)
+                {
+                    if (!string.IsNullOrWhiteSpace(formsList[i].OperationCode_DB)
+                        && formsList[i].OperationCode_DB is not "-")
+                    {
+                        form17 = formsList[i];
+                        break;
+                    }
+                }
+            }
+
+            PackagePassportPanelControlVM.SelectPassport(form17.PassportNumber_DB, form17.PackType_DB);
+        });
+    }
+
     #endregion
 
     #region RefineOrSortRAOCodes
@@ -120,12 +172,19 @@ public class Form_17VM : BaseFormVM
 
     #region Constructors
 
-    public Form_17VM() { }
+    public Form_17VM() 
+    {
+        SelectedForms.CollectionChanged += SelectedForms_CollectionChanged;
+    }
 
-    public Form_17VM(Report report) : base(report) { }
+    public Form_17VM(Report report) : base(report) 
+    {
+        SelectedForms.CollectionChanged += SelectedForms_CollectionChanged;
+    }
 
     public Form_17VM(in Reports reps)
     {
+        SelectedForms.CollectionChanged += SelectedForms_CollectionChanged;
         var formNum = FormType;
         Report = new Report
         {
@@ -147,5 +206,13 @@ public class Form_17VM : BaseFormVM
         SelectReportPopupVM = new SelectReportPopupVM(this);
     }
 
+    #endregion
+
+    #region Deconstructor
+
+    ~Form_17VM()
+    {
+        SelectedForms.CollectionChanged -= SelectedForms_CollectionChanged;
+    }
     #endregion
 }

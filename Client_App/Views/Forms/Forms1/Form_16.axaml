@@ -10,6 +10,9 @@
         xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
         xmlns:items="clr-namespace:Client_App.ViewModels.Forms.Forms1.Items"
         xmlns:local="using:Client_App.Behaviors"
+        xmlns:dgBehaviors="using:Client_App.Behaviors.DataGridBehaviors"
+        xmlns:headerBehaviors="using:Client_App.Behaviors.TableHeader"
+        xmlns:inputBehaviors="using:Client_App.Behaviors.Input"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
         x:Name="1.6"
@@ -228,7 +231,7 @@
                            ClipToBounds="True">
 
                         <interactivity:Interaction.Behaviors>
-                            <local:FrozenHeaderScrollSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                            <headerBehaviors:FrozenHeaderScrollSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
                                                                   FixedGroupHeaderBorder="{Binding ElementName=fixedOperationDetailsBorder}"
                                                                   NppScrollableHeaderGrid="{Binding ElementName=nppScrollableHeader}"/>
                         </interactivity:Interaction.Behaviors>
@@ -240,8 +243,11 @@
                             </Grid.RowDefinitions>
 
                             <interactivity:Interaction.Behaviors>
-                                <local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                <headerBehaviors:TableHeaderColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
                                                                StartColumnIndex="1"/>
+                                <headerBehaviors:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                                                       StartColumnIndex="1"
+                                                                       IncludeLeadingBoundary="True"/>
                             </interactivity:Interaction.Behaviors>
 
                             <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
@@ -390,7 +396,14 @@
                     <Grid x:Name="nppScrollableHeader"
                           Grid.Column="1"
                           IsVisible="{Binding IsZeroFrozenMode}"
+                          ColumnDefinitions="*"
                           HorizontalAlignment="Left">
+                        <interactivity:Interaction.Behaviors>
+                            <headerBehaviors:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                                                   StartColumnIndex="0"
+                                                                   ColumnCount="1"
+                                                                   IncludeTrailingBoundary="True"/>
+                        </interactivity:Interaction.Behaviors>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" SharedSizeGroup="HdrRow0"/>
                             <RowDefinition Height="Auto" SharedSizeGroup="HdrRow1"/>
@@ -408,9 +421,13 @@
                         </Grid.RowDefinitions>
 
                         <interactivity:Interaction.Behaviors>
-                            <local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                            <headerBehaviors:TableHeaderColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
                                                            StartColumnIndex="0"
                                                            ColumnCount="{Binding FrozenColumnCount, Mode=OneWay}"/>
+                            <headerBehaviors:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                                                   StartColumnIndex="0"
+                                                                   ColumnCount="{Binding FrozenColumnCount, Mode=OneWay}"
+                                                                   IncludeTrailingBoundary="True"/>
                         </interactivity:Interaction.Behaviors>
 
                         <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="2">
@@ -419,13 +436,10 @@
 
                         <Border x:Name="fixedOperationDetailsBorder"
                                 Grid.Row="0" Grid.Column="1"
+                                Grid.ColumnSpan="{Binding FrozenColumnCount, Converter={StaticResource FrozenOperationHeaderColSpanConverter}}"
+                                Classes="frozenOperationHeader"
                                 BorderThickness="1,1,0,1"
-                                IsVisible="{Binding IsFrozenCol1OnlyVisible}">
-                            <TextBlock Text="Сведения об операции"/>
-                        </Border>
-
-                        <Border Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
-                                IsVisible="{Binding IsFrozenCol2Visible}">
+                                IsVisible="{Binding IsFrozenCol1Visible}">
                             <TextBlock Text="Сведения об операции"/>
                         </Border>
 
@@ -458,13 +472,13 @@
                           SelectedItem="{Binding SelectedForm}">
 
                     <interactivity:Interaction.Behaviors>
-                        <local:DataGridColumnWidthLoadBehavior FormNum="1.6" />
-                        <local:DataGridPointerBehavior />
-                        <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
-                        <local:DataGridDeselectOnEmptyAreaClickBehavior />
-                        <local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
-                        <local:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
-                        <local:DataGridForm1AutoReplaceBehavior />
+                        <dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="1.6" />
+                        <dgBehaviors:DataGridPointerBehavior />
+                        <dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
+                        <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
+                        <dgBehaviors:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
+                        <dgBehaviors:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
+                        <dgBehaviors:DataGridForm1AutoReplaceBehavior />
                     </interactivity:Interaction.Behaviors>
 
                     <DataGrid.Columns>
@@ -513,13 +527,13 @@
                                                          Text="{Binding OperationCode.Value, Mode=TwoWay}">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior 
+                                                <inputBehaviors:AutoCompleteBoxValidationBehavior 
                                                     InputPattern="{Binding VM.OperationCodePattern, ElementName=1.6}"
                                                     MaxInputLength="2"
                                                     ValidCodes="{Binding VM.ValidOperationCodes, ElementName=1.6}"
                                                     ProhibitedValue="41"
                                                     ProhibitedMessage="Ввод кода операции &quot;41&quot; вручную в формах 1.5 и 1.6 запрещен.&#x0a;Операцию перевода РВ в РАО необходимо осуществлять посредством кнопки&#x0a;&quot;Перевести РВ в РАО&quot; (правый щелчок мыши по нужной строчке в форме 1.2/1.3/1.4)." />
-                                                <local:AutoCompleteBoxSelectionChangedBehavior />
+                                                <inputBehaviors:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
                                             <AutoCompleteBox.ItemTemplate>
@@ -782,11 +796,11 @@
                                                          Text="{Binding DocumentVid.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior 
+                                                <inputBehaviors:AutoCompleteBoxValidationBehavior 
                                                     InputPattern="{Binding VM.DocumentVidPattern, ElementName=1.6}"
                                                     MaxInputLength="2"
                                                     ValidCodes="{Binding VM.ValidDocumentVids, ElementName=1.6}" />
-                                                <local:AutoCompleteBoxSelectionChangedBehavior />
+                                                <inputBehaviors:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
                                             <AutoCompleteBox.ItemTemplate>
@@ -941,11 +955,11 @@
                                                          Text="{Binding RefineOrSortRAOCode.Value, Mode=TwoWay}">
 
                                             <interactivity:Interaction.Behaviors>
-                                                <local:AutoCompleteBoxValidationBehavior 
+                                                <inputBehaviors:AutoCompleteBoxValidationBehavior 
                                                     InputPattern="{Binding VM.RefineOrSortRAOCodePattern, ElementName=1.6}"
                                                     MaxInputLength="2"
                                                     ValidCodes="{Binding VM.ValidRefineOrSortRAOCodes, ElementName=1.6}" />
-                                                <local:AutoCompleteBoxSelectionChangedBehavior />
+                                                <inputBehaviors:AutoCompleteBoxSelectionChangedBehavior />
                                             </interactivity:Interaction.Behaviors>
 
                                             <AutoCompleteBox.ItemTemplate>
@@ -1161,11 +1175,11 @@
                               SelectedItem="{Binding SelectedNote}">
 
                         <interactivity:Interaction.Behaviors>
-                            <local:DataGridColumnWidthLoadBehavior FormNum="notes" />
-                            <local:DataGridPointerBehavior />
-                            <local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
-                            <local:DataGridSwitchToNotesBehavior SourceDataGrid="{Binding #dataGrid}" />
-                            <local:DataGridDeselectOnEmptyAreaClickBehavior />
+                            <dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="notes" />
+                            <dgBehaviors:DataGridPointerBehavior />
+                            <dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
+                            <dgBehaviors:DataGridSwitchToNotesBehavior SourceDataGrid="{Binding #dataGrid}" />
+                            <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
                         </interactivity:Interaction.Behaviors>
 
                         <DataGrid.Columns>

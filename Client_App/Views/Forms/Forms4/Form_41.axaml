@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms4"
         xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
-        xmlns:local="using:Client_App.Behaviors"
+        xmlns:headerBehaviors="using:Client_App.Behaviors.TableHeader"
+        xmlns:dgBehaviors="using:Client_App.Behaviors.DataGridBehaviors"
         xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
         xmlns:forms4="clr-namespace:Models.Forms.Form4;assembly=Models"
         xmlns:controls="clr-namespace:Client_App.Views.Controls"
@@ -92,8 +93,8 @@
 			</WrapPanel>
 		</Expander>
 
-		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1">
-			<Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="Auto">
+		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+			<Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="*">
 				<Grid.ContextMenu>
 					<ContextMenu x:CompileBindings="True"
                                  x:DataType="vm:Form_41VM"
@@ -135,43 +136,52 @@
                                       HotKey="Ctrl+L"/> -->
 					</ContextMenu>
 				</Grid.ContextMenu>
-				<Grid Classes="tableHeader" Grid.Row="0"
-					  Width="{Binding ElementName=dataGrid.Width}"
-					  RowDefinitions="Auto,Auto">
-
+				<Grid Grid.Row="0"
+					  Width="{Binding Bounds.Width, ElementName=dataGrid}"
+					  Classes="tableHeader">
+					<Panel ClipToBounds="True">
 					<interactivity:Interaction.Behaviors>
-						<local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"/>
+						<headerBehaviors:FrozenHeaderScrollSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+						                                                ScrollEntireHeader="True"/>
+					</interactivity:Interaction.Behaviors>
+					<Grid RowDefinitions="Auto">
+					<interactivity:Interaction.Behaviors>
+						<headerBehaviors:TableHeaderColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"/>
+						<headerBehaviors:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+						                                               IncludeTrailingBoundary="True"/>
 					</interactivity:Interaction.Behaviors>
 
 					<!--Первый уровень заголовков-->
 
-					<Border Grid.Column="0" Grid.Row="1">
+					<Border Grid.Column="0" Grid.Row="0">
 						<TextBlock Text="№ п/п"/>
 					</Border>
-					<Border Grid.Column="1" Grid.Row="1">
+					<Border Grid.Column="1" Grid.Row="0">
 						<TextBlock Text="Регистрационный номер организации в СГУК РВ в РАО"/>
 					</Border>
-					<Border Grid.Column="2" Grid.Row="1">
+					<Border Grid.Column="2" Grid.Row="0">
 						<TextBlock Text="Код ОКПО организации"/>
 					</Border>
-					<Border Grid.Column="3" Grid.Row="1">
+					<Border Grid.Column="3" Grid.Row="0">
 						<TextBlock Text="Наименование организации (сокращенное наименование при наличии)"/>
 					</Border>
-					<Border Grid.Column="4" Grid.Row="1">
+					<Border Grid.Column="4" Grid.Row="0">
 						<TextBlock Text="Сведения о лицензии (лицензиях) и/или решении о регистрации"/>
 					</Border>
-					<Border Grid.Column="5" Grid.Row="1">
+					<Border Grid.Column="5" Grid.Row="0">
 						<TextBlock Text="Количество отчетных форм 1.1-1.4, содержащих сведения об инвентаризации"/>
 					</Border>
-					<Border Grid.Column="6" Grid.Row="1">
+					<Border Grid.Column="6" Grid.Row="0">
 						<TextBlock Text="Количество отчетов по формам 1.1-1.4, за исключением форм со сведениями по инвентаризации"/>
 					</Border>
-					<Border Grid.Column="7" Grid.Row="1">
+					<Border Grid.Column="7" Grid.Row="0">
 						<TextBlock Text="Количество отчетов по форме 2.12"/>
 					</Border>
-					<Border Grid.Column="8" Grid.Row="1">
+					<Border Grid.Column="8" Grid.Row="0">
 						<TextBlock Text="Примечание"/>
 					</Border>
+					</Grid>
+					</Panel>
 				</Grid>
 
 				<DataGrid Grid.Row="1"
@@ -179,6 +189,7 @@
                           x:CompileBindings="True"
                           x:Name="dataGrid"
                           ColumnWidth="125"
+                          Margin="8,-5,0,0"
                           Items="{Binding FormList}"
                           SelectedItem="{Binding SelectedForm}">
 
@@ -219,31 +230,36 @@
 					</DataGrid.Styles>
 					
 					<interactivity:Interaction.Behaviors>
-						<local:DataGridColumnWidthLoadBehavior FormNum="4.1"/>
-						<local:DataGridPointerBehavior/>
-						<local:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
-						<local:DeselectDataGridOnClickOutsideBehavior/>
-						<local:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}"/>
-						<local:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}"/>
+						<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="4.1"/>
+						<dgBehaviors:DataGridPointerBehavior/>
+						<dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedForms, Mode=TwoWay}" />
+						<dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
+						<dgBehaviors:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}"/>
+						<dgBehaviors:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}"/>
 					</interactivity:Interaction.Behaviors>
 
 					<DataGrid.Columns>
 
-						<DataGridTextColumn Binding="{Binding NumberInOrder.Value}"
-											Width="40"
-											IsReadOnly="True"
-											x:DataType="forms4:Form41">
-							<DataGridTextColumn.HeaderTemplate>
+						<DataGridTemplateColumn Width="40"
+												IsReadOnly="True">
+							<DataGridTemplateColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
-										<Grid ColumnDefinitions="*,Auto">
+										<Grid ColumnDefinitions="*,Auto"
+											  HorizontalAlignment="Center">
 											<TextBlock Grid.Column="0" Text="1"/>
-											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>
 								</DataTemplate>
-							</DataGridTextColumn.HeaderTemplate>
-						</DataGridTextColumn>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms4:Form41">
+									<TextBlock Text="{Binding NumberInOrder.Value}"
+											   HorizontalAlignment="Center"
+											   VerticalAlignment="Center"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
 						<DataGridTemplateColumn Width="125">
 							<DataGridTemplateColumn.HeaderTemplate>

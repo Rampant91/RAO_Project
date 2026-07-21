@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Models.Comparers.FormContent;
 using OfficeOpenXml;
 
 namespace Client_App.Resources;
@@ -23,39 +24,8 @@ public static partial class StaticStringMethods
             return nameDb == null && namePas == null;
         }
 
-        nameDb = RestrictedSymbolsRegex().Replace(nameDb, string.Empty)
-            .Replace('а', 'a')
-            .Replace('б', 'b')
-            .Replace('в', 'b')
-            .Replace('г', 'r')
-            .Replace('е', 'e')
-            .Replace('ё', 'e')
-            .Replace('к', 'k')
-            .Replace('м', 'm')
-            .Replace('о', '0')
-            .Replace('о', '0')
-            .Replace('р', 'p')
-            .Replace('с', 'c')
-            .Replace('т', 't')
-            .Replace('у', 'y')
-            .Replace('х', 'x');
-
-        namePas = RestrictedSymbolsRegex().Replace(namePas, string.Empty)
-            .Replace('а', 'a')
-            .Replace('б', 'b')
-            .Replace('в', 'b')
-            .Replace('г', 'r')
-            .Replace('е', 'e')
-            .Replace('ё', 'e')
-            .Replace('к', 'k')
-            .Replace('м', 'm')
-            .Replace('о', '0')
-            .Replace('о', '0')
-            .Replace('р', 'p')
-            .Replace('с', 'c')
-            .Replace('т', 't')
-            .Replace('у', 'y')
-            .Replace('х', 'x');
+        nameDb = LookalikeCharMapper.ReplaceRuEnLookalikes(RestrictedSymbolsRegex().Replace(nameDb, string.Empty));
+        namePas = LookalikeCharMapper.ReplaceRuEnLookalikes(RestrictedSymbolsRegex().Replace(namePas, string.Empty));
 
         return nameDb.Equals(namePas, StringComparison.OrdinalIgnoreCase);
     }

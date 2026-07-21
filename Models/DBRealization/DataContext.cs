@@ -135,6 +135,12 @@ public class DataContext : DbContext
         form_56.Load();
         form_57.Load();
 
+        package_passport.Load();
+        characteristic_package.Load();
+        radionuclid.Load();
+
+        storage_point.Load();
+
         ReportCollectionDbSet.Load();
         ReportsCollectionDbSet.Load();
         DBObservableDbSet.Load();
@@ -188,7 +194,13 @@ public class DataContext : DbContext
             await form_54.LoadAsync();
             await form_55.LoadAsync();
             await form_56.LoadAsync();
-            await form_57.LoadAsync();
+            await form_57.LoadAsync(); 
+            
+            package_passport.LoadAsync();
+            characteristic_package.LoadAsync();
+            radionuclid.LoadAsync();
+
+            storage_point.LoadAsync();
 
             await ReportCollectionDbSet.LoadAsync();
             await ReportsCollectionDbSet.LoadAsync();

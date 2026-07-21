@@ -97,7 +97,7 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #endregion
 
-        var dbReadOnlyPath = CreateTempDataBase();
+        var dbReadOnlyPath = await CreateTempDataBase(progressBar, cts);
 
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
 
