@@ -24,10 +24,10 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         List<Operation41PairingDto> reference,
         Pairing11To15Params options)
     {
-        var sourceWithSerial = source.Where(item => !Operation41PairingKeyComparer.SerialNumbersIsEmpty(item.PasNum, item.FacNum)).ToList();
-        var sourceWithoutSerial = source.Where(item => Operation41PairingKeyComparer.SerialNumbersIsEmpty(item.PasNum, item.FacNum)).ToList();
-        var referenceWithSerial = reference.Where(item => !Operation41PairingKeyComparer.SerialNumbersIsEmpty(item.PasNum, item.FacNum)).ToList();
-        var referenceWithoutSerial = reference.Where(item => Operation41PairingKeyComparer.SerialNumbersIsEmpty(item.PasNum, item.FacNum)).ToList();
+        var sourceWithSerial = source.Where(item => !SerialNumbersAreEmpty(item)).ToList();
+        var sourceWithoutSerial = source.Where(SerialNumbersAreEmpty).ToList();
+        var referenceWithSerial = reference.Where(item => !SerialNumbersAreEmpty(item)).ToList();
+        var referenceWithoutSerial = reference.Where(SerialNumbersAreEmpty).ToList();
 
         var unpaired = new List<Operation41PairingDto>();
         unpaired.AddRange(FindUnpairedWithSerial(sourceWithSerial, referenceWithSerial, options));
@@ -177,10 +177,10 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     {
         var parts = new List<string>(16);
         if (options.CheckOperationDate) parts.Add(NormalizeDate(row.OpDate));
-        if (includeSerial && options.CheckPassportNumber) parts.Add(NormalizeNumber(row.PasNum));
+        if (includeSerial && options.CheckPassportNumber) parts.Add(NormalizeSerialNumber(row.PasNum));
         if (options.CheckType) parts.Add(NormalizeNumber(row.Type));
         if (options.CheckRadionuclids) parts.Add(NormalizeRads(row.Radionuclids));
-        if (includeSerial && options.CheckFactoryNumber) parts.Add(NormalizeNumber(row.FacNum));
+        if (includeSerial && options.CheckFactoryNumber) parts.Add(NormalizeSerialNumber(row.FacNum));
         if (options.CheckCreationDate) parts.Add(NormalizeDate(row.CreationDate));
         if (options.CheckDocumentVid) parts.Add(NormalizeNumber(Operation41PairingKeyComparer.NormalizeDocumentVid(row.DocumentVid)));
         if (options.CheckDocumentNumber) parts.Add(NormalizeNumber(row.DocumentNumber));
@@ -199,6 +199,15 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             ? date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
             : NormalizeNumber(value);
 
+    private static bool SerialNumbersAreEmpty(Operation41PairingDto item) =>
+        Operation41PairingKeyComparer.SerialNumbersIsEmpty(item.PasNum, item.FacNum);
+
+    /// <summary>
+    /// Паспорт / зав. №: пустая строка, «-», «б.н.», «без номера» и т.п. → одна пустая каноническая форма.
+    /// </summary>
+    private static string NormalizeSerialNumber(string? value) =>
+        Operation41PairingKeyComparer.IsEmptySerial(value) ? string.Empty : NormalizeNumber(value);
+
     private static string NormalizeNumber(string? value)
     {
         if (string.IsNullOrWhiteSpace(value) || value == "-")
@@ -206,8 +215,10 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             return string.Empty;
         }
 
-        var normalized = Regex.Replace(value.ToLowerInvariant(), @"[\\/:*?""<>|.,_\-;:\s+]", string.Empty);
-        return normalized.TrimStart('0');
+        // Как в SnkNumberEqualityComparer: спецсимволы, регистр, ведущие нули, схожие RU/EN буквы.
+        var normalized = Regex.Replace(value.ToLowerInvariant(), @"[\\/:*?""<>|.,_\-;:\s+]", string.Empty)
+            .TrimStart('0');
+        return LookalikeCharMapper.ReplaceRuEnLookalikes(normalized, includeExtendedSnkSet: true);
     }
 
     private static string NormalizeRads(string? value)
@@ -232,64 +243,105 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         public int RemainingQuantity { get; set; } = remainingQuantity;
     }
 
-    private static List<Operation41PairingDto> GetUnpairedOperations(
-        List<Operation41PairingDto> source,
-        List<Operation41PairingDto> reference,
-        Operation41PairingProfile profile,
-        Func<Operation41PairingDto, Operation41PairingKey> toSourceKey,
-        Func<Operation41PairingDto, Operation41PairingKey> toReferenceKey) =>
-        Operation41PairingMatcher.FindUnpaired(source, reference, profile, toSourceKey, toReferenceKey);
-
     private static List<Operation41PairingDto> GetUnpairedOperations12To16(
         List<Operation41PairingDto> source, List<Operation41PairingDto> reference, Pairing12To16Params options) =>
-        GetUnpairedByPredicate(source, reference, (left, right) =>
-            (!options.CheckOperationDate || NormalizeDate(left.OpDate) == NormalizeDate(right.OpDate))
-            && (!options.CheckMass || NumericWithTolerance(left.Mass, right.Mass))
-            && (!options.CheckBetaGammaActivity || NumericWithTolerance(left.BetaGammaActivity, right.BetaGammaActivity))
-            && (!options.CheckAlphaActivity || NumericWithTolerance(left.AlphaActivity, right.AlphaActivity))
-            && (!options.CheckActivityMeasurementDate || NormalizeDate(left.ActivityMeasurementDate) == NormalizeDate(right.ActivityMeasurementDate))
-            && (!options.CheckDocumentVid || NormalizeNumber(Operation41PairingKeyComparer.NormalizeDocumentVid(left.DocumentVid)) == NormalizeNumber(Operation41PairingKeyComparer.NormalizeDocumentVid(right.DocumentVid)))
-            && (!options.CheckDocumentNumber || NormalizeNumber(left.DocumentNumber) == NormalizeNumber(right.DocumentNumber))
-            && (!options.CheckDocumentDate || NormalizeDate(left.DocumentDate) == NormalizeDate(right.DocumentDate))
-            && (!options.CheckPackName || NormalizeNumber(left.PackName) == NormalizeNumber(right.PackName))
-            && (!options.CheckPackType || NormalizeNumber(left.PackType) == NormalizeNumber(right.PackType))
-            && (!options.CheckPackNumber || NormalizeNumber(left.PackNumber) == NormalizeNumber(right.PackNumber)));
+        GetUnpairedByPredicate(source, reference, (left, right) => Matches12To16(left, right, options));
 
     private static List<Operation41PairingDto> GetUnpairedOperations13To16(
         List<Operation41PairingDto> source, List<Operation41PairingDto> reference, Pairing13To16Params options) =>
-        GetUnpairedByPredicate(source, reference, (left, right) =>
-            (!options.CheckOperationDate || NormalizeDate(left.OpDate) == NormalizeDate(right.OpDate))
-            && (!options.CheckMainRadionuclids || NormalizeRads(left.MainRadionuclids) == NormalizeRads(right.MainRadionuclids))
-            && (!options.CheckTritiumActivity || NumericWithTolerance(left.TritiumActivity, right.TritiumActivity))
-            && (!options.CheckBetaGammaActivity || NumericWithTolerance(left.BetaGammaActivity, right.BetaGammaActivity))
-            && (!options.CheckAlphaActivity || NumericWithTolerance(left.AlphaActivity, right.AlphaActivity))
-            && (!options.CheckTransuraniumActivity || NumericWithTolerance(left.TransuraniumActivity, right.TransuraniumActivity))
-            && (!options.CheckActivityMeasurementDate || NormalizeDate(left.ActivityMeasurementDate) == NormalizeDate(right.ActivityMeasurementDate))
-            && (!options.CheckDocumentVid || NormalizeNumber(Operation41PairingKeyComparer.NormalizeDocumentVid(left.DocumentVid)) == NormalizeNumber(Operation41PairingKeyComparer.NormalizeDocumentVid(right.DocumentVid)))
-            && (!options.CheckDocumentNumber || NormalizeNumber(left.DocumentNumber) == NormalizeNumber(right.DocumentNumber))
-            && (!options.CheckDocumentDate || NormalizeDate(left.DocumentDate) == NormalizeDate(right.DocumentDate))
-            && (!options.CheckPackName || NormalizeNumber(left.PackName) == NormalizeNumber(right.PackName))
-            && (!options.CheckPackType || NormalizeNumber(left.PackType) == NormalizeNumber(right.PackType))
-            && (!options.CheckPackNumber || NormalizeNumber(left.PackNumber) == NormalizeNumber(right.PackNumber)));
+        GetUnpairedByPredicate(source, reference, (left, right) => Matches13To16(left, right, options));
 
     private static List<Operation41PairingDto> GetUnpairedOperations14To16(
         List<Operation41PairingDto> source, List<Operation41PairingDto> reference, Pairing14To16Params options) =>
-        GetUnpairedByPredicate(source, reference, (left, right) =>
-            (!options.CheckOperationDate || NormalizeDate(left.OpDate) == NormalizeDate(right.OpDate))
-            && (!options.CheckVolume || NumericWithTolerance(left.Volume, right.Volume))
-            && (!options.CheckMass || NumericWithTolerance(left.Mass, right.Mass))
-            && (!options.CheckMainRadionuclids || NormalizeRads(left.MainRadionuclids) == NormalizeRads(right.MainRadionuclids))
-            && (!options.CheckTritiumActivity || NumericWithTolerance(left.TritiumActivity, right.TritiumActivity))
-            && (!options.CheckBetaGammaActivity || NumericWithTolerance(left.BetaGammaActivity, right.BetaGammaActivity))
-            && (!options.CheckAlphaActivity || NumericWithTolerance(left.AlphaActivity, right.AlphaActivity))
-            && (!options.CheckTransuraniumActivity || NumericWithTolerance(left.TransuraniumActivity, right.TransuraniumActivity))
-            && (!options.CheckActivityMeasurementDate || NormalizeDate(left.ActivityMeasurementDate) == NormalizeDate(right.ActivityMeasurementDate))
-            && (!options.CheckDocumentVid || NormalizeNumber(Operation41PairingKeyComparer.NormalizeDocumentVid(left.DocumentVid)) == NormalizeNumber(Operation41PairingKeyComparer.NormalizeDocumentVid(right.DocumentVid)))
-            && (!options.CheckDocumentNumber || NormalizeNumber(left.DocumentNumber) == NormalizeNumber(right.DocumentNumber))
-            && (!options.CheckDocumentDate || NormalizeDate(left.DocumentDate) == NormalizeDate(right.DocumentDate))
-            && (!options.CheckPackName || NormalizeNumber(left.PackName) == NormalizeNumber(right.PackName))
-            && (!options.CheckPackType || NormalizeNumber(left.PackType) == NormalizeNumber(right.PackType))
-            && (!options.CheckPackNumber || NormalizeNumber(left.PackNumber) == NormalizeNumber(right.PackNumber)));
+        GetUnpairedByPredicate(source, reference, (left, right) => Matches14To16(left, right, options));
+
+    private static List<Operation41PairingDto> GetUnpairedForm16(
+        List<Operation41PairingDto> form16Operations,
+        List<Operation41PairingDto> form12Operations,
+        List<Operation41PairingDto> form13Operations,
+        List<Operation41PairingDto> form14Operations,
+        Pairing12To16Params pairing12To16Params,
+        Pairing13To16Params pairing13To16Params,
+        Pairing14To16Params pairing14To16Params)
+    {
+        var refs12 = new List<Operation41PairingDto>(form12Operations);
+        var refs13 = new List<Operation41PairingDto>(form13Operations);
+        var refs14 = new List<Operation41PairingDto>(form14Operations);
+        var unpaired = new List<Operation41PairingDto>();
+
+        foreach (var form16 in form16Operations)
+        {
+            var idx12 = refs12.FindIndex(rv => Matches12To16(rv, form16, pairing12To16Params));
+            if (idx12 >= 0)
+            {
+                refs12.RemoveAt(idx12);
+                continue;
+            }
+
+            var idx13 = refs13.FindIndex(rv => Matches13To16(rv, form16, pairing13To16Params));
+            if (idx13 >= 0)
+            {
+                refs13.RemoveAt(idx13);
+                continue;
+            }
+
+            var idx14 = refs14.FindIndex(rv => Matches14To16(rv, form16, pairing14To16Params));
+            if (idx14 >= 0)
+            {
+                refs14.RemoveAt(idx14);
+                continue;
+            }
+
+            unpaired.Add(form16);
+        }
+
+        return unpaired;
+    }
+
+    private static bool Matches12To16(Operation41PairingDto rv, Operation41PairingDto rao, Pairing12To16Params options) =>
+        (!options.CheckOperationDate || NormalizeDate(rv.OpDate) == NormalizeDate(rao.OpDate))
+        && (!options.CheckMass || NumericWithTolerance(rv.Mass, rao.Mass))
+        && (!options.CheckBetaGammaActivity || NumericWithTolerance(rv.BetaGammaActivity, rao.BetaGammaActivity))
+        && (!options.CheckAlphaActivity || NumericWithTolerance(rv.AlphaActivity, rao.AlphaActivity))
+        && (!options.CheckActivityMeasurementDate || NormalizeDate(rv.ActivityMeasurementDate) == NormalizeDate(rao.ActivityMeasurementDate))
+        && (!options.CheckDocumentVid || NormalizeNumber(Operation41PairingKeyComparer.NormalizeDocumentVid(rv.DocumentVid)) == NormalizeNumber(Operation41PairingKeyComparer.NormalizeDocumentVid(rao.DocumentVid)))
+        && (!options.CheckDocumentNumber || NormalizeNumber(rv.DocumentNumber) == NormalizeNumber(rao.DocumentNumber))
+        && (!options.CheckDocumentDate || NormalizeDate(rv.DocumentDate) == NormalizeDate(rao.DocumentDate))
+        && (!options.CheckPackName || NormalizeNumber(rv.PackName) == NormalizeNumber(rao.PackName))
+        && (!options.CheckPackType || NormalizeNumber(rv.PackType) == NormalizeNumber(rao.PackType))
+        && (!options.CheckPackNumber || NormalizeNumber(rv.PackNumber) == NormalizeNumber(rao.PackNumber));
+
+    private static bool Matches13To16(Operation41PairingDto rv, Operation41PairingDto rao, Pairing13To16Params options) =>
+        (!options.CheckOperationDate || NormalizeDate(rv.OpDate) == NormalizeDate(rao.OpDate))
+        && (!options.CheckMainRadionuclids || NormalizeRads(rv.MainRadionuclids) == NormalizeRads(rao.MainRadionuclids))
+        && (!options.CheckTritiumActivity || NumericWithTolerance(rv.TritiumActivity, rao.TritiumActivity))
+        && (!options.CheckBetaGammaActivity || NumericWithTolerance(rv.BetaGammaActivity, rao.BetaGammaActivity))
+        && (!options.CheckAlphaActivity || NumericWithTolerance(rv.AlphaActivity, rao.AlphaActivity))
+        && (!options.CheckTransuraniumActivity || NumericWithTolerance(rv.TransuraniumActivity, rao.TransuraniumActivity))
+        && (!options.CheckActivityMeasurementDate || NormalizeDate(rv.ActivityMeasurementDate) == NormalizeDate(rao.ActivityMeasurementDate))
+        && (!options.CheckDocumentVid || NormalizeNumber(Operation41PairingKeyComparer.NormalizeDocumentVid(rv.DocumentVid)) == NormalizeNumber(Operation41PairingKeyComparer.NormalizeDocumentVid(rao.DocumentVid)))
+        && (!options.CheckDocumentNumber || NormalizeNumber(rv.DocumentNumber) == NormalizeNumber(rao.DocumentNumber))
+        && (!options.CheckDocumentDate || NormalizeDate(rv.DocumentDate) == NormalizeDate(rao.DocumentDate))
+        && (!options.CheckPackName || NormalizeNumber(rv.PackName) == NormalizeNumber(rao.PackName))
+        && (!options.CheckPackType || NormalizeNumber(rv.PackType) == NormalizeNumber(rao.PackType))
+        && (!options.CheckPackNumber || NormalizeNumber(rv.PackNumber) == NormalizeNumber(rao.PackNumber));
+
+    private static bool Matches14To16(Operation41PairingDto rv, Operation41PairingDto rao, Pairing14To16Params options) =>
+        (!options.CheckOperationDate || NormalizeDate(rv.OpDate) == NormalizeDate(rao.OpDate))
+        && (!options.CheckVolume || NumericWithTolerance(rv.Volume, rao.Volume))
+        && (!options.CheckMass || NumericWithTolerance(rv.Mass, rao.Mass))
+        && (!options.CheckMainRadionuclids || NormalizeRads(rv.MainRadionuclids) == NormalizeRads(rao.MainRadionuclids))
+        && (!options.CheckTritiumActivity || NumericWithTolerance(rv.TritiumActivity, rao.TritiumActivity))
+        && (!options.CheckBetaGammaActivity || NumericWithTolerance(rv.BetaGammaActivity, rao.BetaGammaActivity))
+        && (!options.CheckAlphaActivity || NumericWithTolerance(rv.AlphaActivity, rao.AlphaActivity))
+        && (!options.CheckTransuraniumActivity || NumericWithTolerance(rv.TransuraniumActivity, rao.TransuraniumActivity))
+        && (!options.CheckActivityMeasurementDate || NormalizeDate(rv.ActivityMeasurementDate) == NormalizeDate(rao.ActivityMeasurementDate))
+        && (!options.CheckDocumentVid || NormalizeNumber(Operation41PairingKeyComparer.NormalizeDocumentVid(rv.DocumentVid)) == NormalizeNumber(Operation41PairingKeyComparer.NormalizeDocumentVid(rao.DocumentVid)))
+        && (!options.CheckDocumentNumber || NormalizeNumber(rv.DocumentNumber) == NormalizeNumber(rao.DocumentNumber))
+        && (!options.CheckDocumentDate || NormalizeDate(rv.DocumentDate) == NormalizeDate(rao.DocumentDate))
+        && (!options.CheckPackName || NormalizeNumber(rv.PackName) == NormalizeNumber(rao.PackName))
+        && (!options.CheckPackType || NormalizeNumber(rv.PackType) == NormalizeNumber(rao.PackType))
+        && (!options.CheckPackNumber || NormalizeNumber(rv.PackNumber) == NormalizeNumber(rao.PackNumber));
 
     private static List<Operation41PairingDto> GetUnpairedByPredicate(
         List<Operation41PairingDto> source,
@@ -307,108 +359,11 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         return unpaired;
     }
 
-    private static Operation41PairingKey ToPairingKey11(Operation41PairingDto dto) =>
-        Operation41PairingKeyMapping.FromForm11(
-            dto.OpCode,
-            dto.OpDate,
-            dto.PasNum,
-            dto.FacNum,
-            dto.Type,
-            dto.Radionuclids,
-            dto.CreationDate,
-            dto.DocumentVid,
-            dto.DocumentNumber,
-            dto.DocumentDate,
-            dto.PackNumber,
-            dto.Quantity);
-
-    private static Operation41PairingKey ToPairingKey15(Operation41PairingDto dto) =>
-        ToPairingKey11(dto);
-
-    private static Operation41PairingKey ToPairingKey12(Operation41PairingDto dto) =>
-        Operation41PairingKeyMapping.FromForm12(
-            dto.OpCode,
-            dto.OpDate,
-            dto.PasNum,
-            dto.FacNum,
-            dto.DocumentVid,
-            dto.DocumentNumber,
-            dto.DocumentDate,
-            dto.PackName,
-            dto.PackType,
-            dto.PackNumber);
-
-    private static Operation41PairingKey ToPairingKey13(Operation41PairingDto dto) =>
-        Operation41PairingKeyMapping.FromForm13(
-            dto.OpCode,
-            dto.OpDate,
-            dto.PasNum,
-            dto.FacNum,
-            dto.Type,
-            dto.Radionuclids,
-            dto.CreationDate,
-            dto.DocumentVid,
-            dto.DocumentNumber,
-            dto.DocumentDate,
-            dto.PackName,
-            dto.PackType,
-            dto.PackNumber);
-
-    private static Operation41PairingKey ToPairingKey14(Operation41PairingDto dto) =>
-        Operation41PairingKeyMapping.FromForm14(
-            dto.OpCode,
-            dto.OpDate,
-            dto.PasNum,
-            dto.Radionuclids,
-            dto.ActivityMeasurementDate,
-            dto.DocumentVid,
-            dto.DocumentNumber,
-            dto.DocumentDate,
-            dto.PackName,
-            dto.PackType,
-            dto.PackNumber);
-
-    private static Operation41PairingKey ToPairingKey16For12(Operation41PairingDto dto) =>
-        Operation41PairingKeyMapping.FromForm16For12(
-            dto.OpCode,
-            dto.OpDate,
-            dto.MainRadionuclids,
-            dto.DocumentVid,
-            dto.DocumentNumber,
-            dto.DocumentDate,
-            dto.PackName,
-            dto.PackType,
-            dto.PackNumber,
-            dto.ActivityMeasurementDate);
-
-    private static Operation41PairingKey ToPairingKey16For13(Operation41PairingDto dto) =>
-        Operation41PairingKeyMapping.FromForm16For13(
-            dto.OpCode,
-            dto.OpDate,
-            dto.MainRadionuclids,
-            dto.ActivityMeasurementDate,
-            dto.DocumentVid,
-            dto.DocumentNumber,
-            dto.DocumentDate,
-            dto.PackName,
-            dto.PackType,
-            dto.PackNumber);
-
-    private static Operation41PairingKey ToPairingKey16For14(Operation41PairingDto dto) =>
-        Operation41PairingKeyMapping.FromForm16For14(
-            dto.OpCode,
-            dto.OpDate,
-            dto.MainRadionuclids,
-            dto.ActivityMeasurementDate,
-            dto.DocumentVid,
-            dto.DocumentNumber,
-            dto.DocumentDate,
-            dto.PackName,
-            dto.PackType,
-            dto.PackNumber);
-
+    /// <summary>
+    /// Загрузка операций 41 для формы. <paramref name="repsId"/> = null — все организации (для whole-DB).
+    /// </summary>
     private static async Task<List<Operation41PairingDto>> LoadOperation41ListAsync(
-        DBModel db, int repsId, string formNum, CancellationToken cancellationToken, Pairing11To15Params? pairing11To15Params = null)
+        DBModel db, int? repsId, string formNum, CancellationToken cancellationToken, Pairing11To15Params? pairing11To15Params = null)
     {
         var operations = formNum switch
         {
@@ -426,11 +381,23 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             .ToList();
     }
 
+    private static IQueryable<Reports> ScopedReports(DBModel db, int? repsId)
+    {
+        var query = db.ReportsCollectionDbSet.AsNoTracking();
+        if (repsId is int id)
+        {
+            query = query.Where(reps => reps.Id == id);
+        }
+
+        return query;
+    }
+
     private static Task<List<Operation41PairingDto>> LoadForm11OperationsAsync(
-        DBModel db, int repsId, CancellationToken cancellationToken, Pairing11To15Params? options = null) =>
-        db.ReportsCollectionDbSet
-            .AsNoTracking()
-            .Where(reps => reps.Id == repsId)
+        DBModel db, int? repsId, CancellationToken cancellationToken, Pairing11To15Params? options = null)
+    {
+        // Firebird: нельзя проецировать reps.Id внутри вложенного SelectMany (EF → APPLY).
+        var effectiveRepsId = repsId ?? 0;
+        return ScopedReports(db, repsId)
             .SelectMany(reps => reps.Report_Collection
                 .Where(rep => rep.FormNum_DB == "1.1")
                 .SelectMany(rep => rep.Rows11))
@@ -438,6 +405,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             .Select(form => new Operation41PairingDto
             {
                 Id = form.Id,
+                RepsId = effectiveRepsId,
                 ReportId = form.ReportId ?? 0,
                 OpCode = form.OperationCode_DB,
                 OpDate = options == null || options.CheckOperationDate ? form.OperationDate_DB : string.Empty,
@@ -458,116 +426,131 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 Quantity = options == null || options.CheckQuantity ? form.Quantity_DB : null
             })
             .ToListAsync(cancellationToken);
+    }
 
     private static async Task<List<Operation41PairingDto>> LoadForm12OperationsAsync(
-        DBModel db, int repsId, CancellationToken cancellationToken)
+        DBModel db, int? repsId, CancellationToken cancellationToken)
     {
-        var forms = await db.ReportsCollectionDbSet
-            .AsNoTracking()
-            .Where(reps => reps.Id == repsId)
+        var effectiveRepsId = repsId ?? 0;
+        var rows = await ScopedReports(db, repsId)
             .SelectMany(reps => reps.Report_Collection
                 .Where(rep => rep.FormNum_DB == "1.2")
                 .SelectMany(rep => rep.Rows12))
             .Where(form => form.OperationCode_DB == OperationCode)
-            .ToListAsync(cancellationToken);
-
-        return forms.Select(form =>
-        {
-            var massTon = ToMassTon(form.Mass_DB);
-            return new Operation41PairingDto
+            .Select(form => new
             {
-                Id = form.Id,
+                form.Id,
                 ReportId = form.ReportId ?? 0,
                 OpCode = form.OperationCode_DB,
                 OpDate = form.OperationDate_DB,
-                PasNum = form.PassportNumber_DB,
-                FacNum = form.FactoryNumber_DB,
-                Mass = massTon,
-                BetaGammaActivity = ComputeFromMass(massTon, 25_000_000_000d),
-                AlphaActivity = ComputeFromMass(massTon, 16_100_000_000d),
-                ActivityMeasurementDate = form.OperationDate_DB,
+                Mass = form.Mass_DB,
                 DocumentVid = form.DocumentVid_DB,
                 DocumentNumber = form.DocumentNumber_DB,
                 DocumentDate = form.DocumentDate_DB,
                 PackName = form.PackName_DB,
                 PackType = form.PackType_DB,
                 PackNumber = form.PackNumber_DB
+            })
+            .ToListAsync(cancellationToken);
+
+        return rows.Select(row =>
+        {
+            var massTon = ToMassTon(row.Mass);
+            return new Operation41PairingDto
+            {
+                Id = row.Id,
+                RepsId = effectiveRepsId,
+                ReportId = row.ReportId,
+                OpCode = row.OpCode,
+                OpDate = row.OpDate,
+                Mass = massTon,
+                BetaGammaActivity = ComputeFromMass(massTon, 25_000_000_000d),
+                AlphaActivity = ComputeFromMass(massTon, 16_100_000_000d),
+                ActivityMeasurementDate = row.OpDate,
+                DocumentVid = row.DocumentVid,
+                DocumentNumber = row.DocumentNumber,
+                DocumentDate = row.DocumentDate,
+                PackName = row.PackName,
+                PackType = row.PackType,
+                PackNumber = row.PackNumber
             };
         }).ToList();
     }
 
     private static async Task<List<Operation41PairingDto>> LoadForm13OperationsAsync(
-        DBModel db, int repsId, CancellationToken cancellationToken)
+        DBModel db, int? repsId, CancellationToken cancellationToken)
     {
-        var forms = await db.ReportsCollectionDbSet
-            .AsNoTracking()
-            .Where(reps => reps.Id == repsId)
+        var effectiveRepsId = repsId ?? 0;
+        var rows = await ScopedReports(db, repsId)
             .SelectMany(reps => reps.Report_Collection
                 .Where(rep => rep.FormNum_DB == "1.3")
                 .SelectMany(rep => rep.Rows13))
             .Where(form => form.OperationCode_DB == OperationCode)
-            .ToListAsync(cancellationToken);
-
-        return forms.Select(form =>
-        {
-            var activities = GetActivitiesForExport(form.Radionuclids_DB, form.Activity_DB);
-            return new Operation41PairingDto
+            .Select(form => new
             {
-                Id = form.Id,
+                form.Id,
                 ReportId = form.ReportId ?? 0,
                 OpCode = form.OperationCode_DB,
                 OpDate = form.OperationDate_DB,
-                PasNum = form.PassportNumber_DB,
-                FacNum = form.FactoryNumber_DB,
-                Type = form.Type_DB,
                 Radionuclids = form.Radionuclids_DB,
+                Activity = form.Activity_DB,
                 CreationDate = form.CreationDate_DB,
-                MainRadionuclids = form.Radionuclids_DB,
-                TritiumActivity = activities["tritium"],
-                BetaGammaActivity = activities["beta"],
-                AlphaActivity = activities["alpha"],
-                TransuraniumActivity = activities["transuranium"],
-                ActivityMeasurementDate = form.CreationDate_DB,
                 DocumentVid = form.DocumentVid_DB,
                 DocumentNumber = form.DocumentNumber_DB,
                 DocumentDate = form.DocumentDate_DB,
                 PackName = form.PackName_DB,
                 PackType = form.PackType_DB,
                 PackNumber = form.PackNumber_DB
+            })
+            .ToListAsync(cancellationToken);
+
+        return rows.Select(row =>
+        {
+            var activities = GetActivitiesForExport(row.Radionuclids, row.Activity);
+            return new Operation41PairingDto
+            {
+                Id = row.Id,
+                RepsId = effectiveRepsId,
+                ReportId = row.ReportId,
+                OpCode = row.OpCode,
+                OpDate = row.OpDate,
+                Radionuclids = row.Radionuclids,
+                CreationDate = row.CreationDate,
+                MainRadionuclids = row.Radionuclids,
+                TritiumActivity = activities["tritium"],
+                BetaGammaActivity = activities["beta"],
+                AlphaActivity = activities["alpha"],
+                TransuraniumActivity = activities["transuranium"],
+                ActivityMeasurementDate = row.CreationDate,
+                DocumentVid = row.DocumentVid,
+                DocumentNumber = row.DocumentNumber,
+                DocumentDate = row.DocumentDate,
+                PackName = row.PackName,
+                PackType = row.PackType,
+                PackNumber = row.PackNumber
             };
         }).ToList();
     }
 
     private static async Task<List<Operation41PairingDto>> LoadForm14OperationsAsync(
-        DBModel db, int repsId, CancellationToken cancellationToken)
+        DBModel db, int? repsId, CancellationToken cancellationToken)
     {
-        var forms = await db.ReportsCollectionDbSet
-            .AsNoTracking()
-            .Where(reps => reps.Id == repsId)
+        var effectiveRepsId = repsId ?? 0;
+        var rows = await ScopedReports(db, repsId)
             .SelectMany(reps => reps.Report_Collection
                 .Where(rep => rep.FormNum_DB == "1.4")
                 .SelectMany(rep => rep.Rows14))
             .Where(form => form.OperationCode_DB == OperationCode)
-            .ToListAsync(cancellationToken);
-
-        return forms.Select(form =>
-        {
-            var activities = GetActivitiesForExport(form.Radionuclids_DB, form.Activity_DB);
-            return new Operation41PairingDto
+            .Select(form => new
             {
-                Id = form.Id,
+                form.Id,
                 ReportId = form.ReportId ?? 0,
                 OpCode = form.OperationCode_DB,
                 OpDate = form.OperationDate_DB,
-                PasNum = form.PassportNumber_DB,
                 Radionuclids = form.Radionuclids_DB,
-                MainRadionuclids = form.Radionuclids_DB,
+                Activity = form.Activity_DB,
                 Volume = form.Volume_DB,
-                Mass = ToMassTon(form.Mass_DB),
-                TritiumActivity = activities["tritium"],
-                BetaGammaActivity = activities["beta"],
-                AlphaActivity = activities["alpha"],
-                TransuraniumActivity = activities["transuranium"],
+                Mass = form.Mass_DB,
                 ActivityMeasurementDate = form.ActivityMeasurementDate_DB,
                 DocumentVid = form.DocumentVid_DB,
                 DocumentNumber = form.DocumentNumber_DB,
@@ -575,15 +558,43 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 PackName = form.PackName_DB,
                 PackType = form.PackType_DB,
                 PackNumber = form.PackNumber_DB
+            })
+            .ToListAsync(cancellationToken);
+
+        return rows.Select(row =>
+        {
+            var activities = GetActivitiesForExport(row.Radionuclids, row.Activity);
+            return new Operation41PairingDto
+            {
+                Id = row.Id,
+                RepsId = effectiveRepsId,
+                ReportId = row.ReportId,
+                OpCode = row.OpCode,
+                OpDate = row.OpDate,
+                Radionuclids = row.Radionuclids,
+                MainRadionuclids = row.Radionuclids,
+                Volume = row.Volume,
+                Mass = ToMassTon(row.Mass),
+                TritiumActivity = activities["tritium"],
+                BetaGammaActivity = activities["beta"],
+                AlphaActivity = activities["alpha"],
+                TransuraniumActivity = activities["transuranium"],
+                ActivityMeasurementDate = row.ActivityMeasurementDate,
+                DocumentVid = row.DocumentVid,
+                DocumentNumber = row.DocumentNumber,
+                DocumentDate = row.DocumentDate,
+                PackName = row.PackName,
+                PackType = row.PackType,
+                PackNumber = row.PackNumber
             };
         }).ToList();
     }
 
     private static Task<List<Operation41PairingDto>> LoadForm15OperationsAsync(
-        DBModel db, int repsId, CancellationToken cancellationToken, Pairing11To15Params? options = null) =>
-        db.ReportsCollectionDbSet
-            .AsNoTracking()
-            .Where(reps => reps.Id == repsId)
+        DBModel db, int? repsId, CancellationToken cancellationToken, Pairing11To15Params? options = null)
+    {
+        var effectiveRepsId = repsId ?? 0;
+        return ScopedReports(db, repsId)
             .SelectMany(reps => reps.Report_Collection
                 .Where(rep => rep.FormNum_DB == "1.5")
                 .SelectMany(rep => rep.Rows15))
@@ -591,6 +602,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             .Select(form => new Operation41PairingDto
             {
                 Id = form.Id,
+                RepsId = effectiveRepsId,
                 ReportId = form.ReportId ?? 0,
                 OpCode = form.OperationCode_DB,
                 OpDate = options == null || options.CheckOperationDate ? form.OperationDate_DB : string.Empty,
@@ -611,12 +623,13 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 Quantity = options == null || options.CheckQuantity ? form.Quantity_DB : null
             })
             .ToListAsync(cancellationToken);
+    }
 
     private static Task<List<Operation41PairingDto>> LoadForm16OperationsAsync(
-        DBModel db, int repsId, CancellationToken cancellationToken) =>
-        db.ReportsCollectionDbSet
-            .AsNoTracking()
-            .Where(reps => reps.Id == repsId)
+        DBModel db, int? repsId, CancellationToken cancellationToken)
+    {
+        var effectiveRepsId = repsId ?? 0;
+        return ScopedReports(db, repsId)
             .SelectMany(reps => reps.Report_Collection
                 .Where(rep => rep.FormNum_DB == "1.6")
                 .SelectMany(rep => rep.Rows16))
@@ -624,6 +637,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             .Select(form => new Operation41PairingDto
             {
                 Id = form.Id,
+                RepsId = effectiveRepsId,
                 ReportId = form.ReportId ?? 0,
                 OpCode = form.OperationCode_DB,
                 OpDate = form.OperationDate_DB,
@@ -643,6 +657,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 PackNumber = form.PackNumber_DB
             })
             .ToListAsync(cancellationToken);
+    }
 
     private static async Task<Reports> BuildReportsForExportAsync(
         DBModel db,
@@ -841,28 +856,92 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
     private static readonly List<Dictionary<string, string>> R = [];
 
-    private static void EnsureRDictionaryLoaded()
+    /// <summary>name → code из R.xlsx; строится при загрузке справочника.</summary>
+    private static Dictionary<string, string> RCodeByName { get; set; } = new(StringComparer.Ordinal);
+
+    /// <summary>
+    /// Загружает справочник радионуклидов R.xlsx. Возвращает false, если файл не найден или не удалось прочитать.
+    /// </summary>
+    private static bool TryLoadRDictionary(out string errorMessage)
     {
-        if (R.Count != 0) return;
+        errorMessage = string.Empty;
+        if (R.Count != 0)
+        {
+            return true;
+        }
+
         var filePath = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "R.xlsx");
         if (!File.Exists(filePath))
         {
             filePath = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", "R.xlsx");
         }
-        if (!File.Exists(filePath)) return;
 
-        OfficeOpenXml.ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-        using var xls = new OfficeOpenXml.ExcelPackage(new FileInfo(filePath));
-        var ws = xls.Workbook.Worksheets["Лист1"];
-        if (ws is null) return;
-        for (var i = 2; ws.Cells[i, 1].Text != string.Empty; i++)
+        if (!File.Exists(filePath))
         {
-            R.Add(new Dictionary<string, string>
-            {
-                { "name", ws.Cells[i, 1].Text },
-                { "code", ws.Cells[i, 8].Text }
-            });
+            errorMessage =
+                "Не удалось найти справочник радионуклидов R.xlsx (папка data\\Spravochniki)." +
+                $"{Environment.NewLine}Выгрузка непарных операций 41 прервана.";
+            return false;
         }
+
+        try
+        {
+            OfficeOpenXml.ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+            using var xls = new OfficeOpenXml.ExcelPackage(new FileInfo(filePath));
+            var ws = xls.Workbook.Worksheets["Лист1"];
+            if (ws is null)
+            {
+                errorMessage =
+                    "Не удалось прочитать справочник радионуклидов R.xlsx: в файле отсутствует лист «Лист1»." +
+                    $"{Environment.NewLine}Закройте файл, если он открыт в другой программе, и повторите выгрузку.";
+                return false;
+            }
+
+            for (var i = 2; ws.Cells[i, 1].Text != string.Empty; i++)
+            {
+                R.Add(new Dictionary<string, string>
+                {
+                    { "name", ws.Cells[i, 1].Text },
+                    { "code", ws.Cells[i, 8].Text }
+                });
+            }
+
+            if (R.Count == 0)
+            {
+                errorMessage =
+                    "Справочник радионуклидов R.xlsx пуст или не содержит данных." +
+                    $"{Environment.NewLine}Выгрузка непарных операций 41 прервана.";
+                return false;
+            }
+
+            RebuildRCodeByName();
+            return true;
+        }
+        catch (IOException)
+        {
+            errorMessage =
+                "Не удалось прочитать справочник радионуклидов R.xlsx." +
+                $"{Environment.NewLine}Закройте файл, если он открыт в другой программе, и повторите выгрузку.";
+            return false;
+        }
+        catch (Exception)
+        {
+            errorMessage =
+                "Не удалось прочитать справочник радионуклидов R.xlsx." +
+                $"{Environment.NewLine}Закройте файл, если он открыт в другой программе, и повторите выгрузку.";
+            return false;
+        }
+    }
+
+    private static void RebuildRCodeByName()
+    {
+        var map = new Dictionary<string, string>(R.Count, StringComparer.Ordinal);
+        foreach (var row in R)
+        {
+            map[row["name"]] = row["code"];
+        }
+
+        RCodeByName = map;
     }
 
     private static string ToMassTon(string? mass)
@@ -882,9 +961,26 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
     private static Dictionary<string, string> GetActivitiesForExport(string? radionuclids, string? activityRaw)
     {
-        EnsureRDictionaryLoaded();
+        if (R.Count == 0)
+        {
+            throw new InvalidOperationException("Справочник радионуклидов R.xlsx не загружен.");
+        }
+
+        if (RCodeByName.Count == 0)
+        {
+            RebuildRCodeByName();
+        }
+
         var nuclids = (radionuclids ?? "").Replace(" ", string.Empty).ToLower().Replace(',', ';').Split(';', StringSplitOptions.RemoveEmptyEntries);
-        var nuclidTypes = R.Where(x => nuclids.Contains(x["name"])).Select(x => x["code"]).ToArray();
+        var nuclidTypes = new List<string>(nuclids.Length);
+        foreach (var name in nuclids)
+        {
+            if (RCodeByName.TryGetValue(name, out var code))
+            {
+                nuclidTypes.Add(code);
+            }
+        }
+
         var activityTmp = (activityRaw ?? "").Replace(".", ",").Replace("(", "").Replace(")", "");
         var activity = double.TryParse(activityTmp, NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
             new CultureInfo("ru-RU", useUserOverride: false), out var activityDoubleValue)
@@ -895,8 +991,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         {
             { "alpha", "-" }, { "beta", "-" }, { "tritium", "-" }, { "transuranium", "-" }
         };
-        if (nuclidTypes.Length == 0) return result;
-        if (nuclidTypes.Length == 1 || nuclidTypes.Skip(1).All(x => string.Equals(nuclidTypes[0], x, StringComparison.Ordinal)))
+        if (nuclidTypes.Count == 0) return result;
+        if (nuclidTypes.Count == 1 || nuclidTypes.Skip(1).All(x => string.Equals(nuclidTypes[0], x, StringComparison.Ordinal)))
         {
             switch (nuclidTypes[0])
             {
@@ -909,9 +1005,30 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         return result;
     }
 
+    private static Dictionary<string, string> ActivitiesFromDto(Operation41PairingDto dto) => new()
+    {
+        ["tritium"] = string.IsNullOrEmpty(dto.TritiumActivity) ? "-" : dto.TritiumActivity,
+        ["beta"] = string.IsNullOrEmpty(dto.BetaGammaActivity) ? "-" : dto.BetaGammaActivity,
+        ["alpha"] = string.IsNullOrEmpty(dto.AlphaActivity) ? "-" : dto.AlphaActivity,
+        ["transuranium"] = string.IsNullOrEmpty(dto.TransuraniumActivity) ? "-" : dto.TransuraniumActivity
+    };
+
+    private void SetExportActivitiesCache(IEnumerable<Operation41PairingDto> form13, IEnumerable<Operation41PairingDto> form14)
+    {
+        _exportActivitiesByFormId = form13.Concat(form14)
+            .GroupBy(dto => dto.Id)
+            .ToDictionary(group => group.Key, group => ActivitiesFromDto(group.First()));
+    }
+
+    private Dictionary<string, string> ResolveActivitiesForExport(int formId, string? radionuclids, string? activityRaw) =>
+        _exportActivitiesByFormId.TryGetValue(formId, out var cached)
+            ? cached
+            : GetActivitiesForExport(radionuclids, activityRaw);
+
     private sealed class Operation41PairingDto
     {
         public int Id { get; init; }
+        public int RepsId { get; init; }
         public int ReportId { get; init; }
         public string OpCode { get; init; } = string.Empty;
         public string OpDate { get; init; } = string.Empty;
