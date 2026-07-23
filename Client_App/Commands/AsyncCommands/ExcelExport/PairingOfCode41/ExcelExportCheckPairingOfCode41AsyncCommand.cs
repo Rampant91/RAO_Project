@@ -1,23 +1,19 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using Client_App.Resources.CustomComparers.SnkComparers;
 using Client_App.ViewModels;
 using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
-using Microsoft.EntityFrameworkCore;
 using Models.Collections;
-using Models.DBRealization;
 using Models.Interfaces;
-using static Client_App.Resources.StaticStringMethods;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.ParingOfCode41;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41;
 
 /// <summary>
 /// Выгрузка в .xlsx операций с кодом 41 без парной записи при переводе РВ → РАО
@@ -46,128 +42,42 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
         };
     }
 
-    public override bool CanExecute(object? parameter) => _mainWindowVM.SelectedReports is not null;
+    public override bool CanExecute(object? parameter) =>
+        IsWholeDbMode(parameter)
+        || parameter is Reports
+        || parameter is IKeyCollection
+        || _mainWindowVM.SelectedReports is not null;
 
     public override async Task AsyncExecute(object? parameter)
     {
-        if (!TryGetReports(parameter, out var selectedReports))
-        {
-            return;
-        }
-
         var pairingParams = await AskPairingParamsAsync();
         if (pairingParams is null)
         {
             return;
         }
-        var pairing11To15Params = pairingParams.Pairing11To15;
-        var pairing12To16Params = pairingParams.Pairing12To16;
-        var pairing13To16Params = pairingParams.Pairing13To16;
-        var pairing14To16Params = pairingParams.Pairing14To16;
 
         var cts = new CancellationTokenSource();
         ExportType = "Непарные_операции_41";
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
-        var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
-        var regNum = RemoveForbiddenChars(selectedReports.Master_DB.RegNoRep.Value);
-        var okpo = RemoveForbiddenChars(selectedReports.Master_DB.OkpoRep.Value);
-        var fileName = $"{regNum}_{okpo}_непарные_операции_41";
-
-        progressBarVM.SetProgressBar(5, "Запрос пути сохранения", ExportType, "Выгрузка в .xlsx");
-        var (fullPath, openTemp) = await ExcelGetFullPathWithUniqueIndex(fileName, cts, progressBar);
-
-        progressBarVM.SetProgressBar(10, "Создание временной БД", ExportType, "Выгрузка в .xlsx");
-        var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-        await using var db = new DBModel(tmpDbPath);
-
-        progressBarVM.SetProgressBar(18, "Загрузка операций 41 формы 1.1");
-        var form11Operations = await LoadOperation41ListAsync(db, selectedReports.Id, "1.1", cts.Token, pairing11To15Params);
-        progressBarVM.SetProgressBar(21, "Загрузка операций 41 формы 1.2");
-        var form12Operations = await LoadOperation41ListAsync(db, selectedReports.Id, "1.2", cts.Token);
-        progressBarVM.SetProgressBar(24, "Загрузка операций 41 формы 1.3");
-        var form13Operations = await LoadOperation41ListAsync(db, selectedReports.Id, "1.3", cts.Token);
-        progressBarVM.SetProgressBar(27, "Загрузка операций 41 формы 1.4");
-        var form14Operations = await LoadOperation41ListAsync(db, selectedReports.Id, "1.4", cts.Token);
-        progressBarVM.SetProgressBar(30, "Загрузка операций 41 формы 1.5");
-        var form15Operations = await LoadOperation41ListAsync(db, selectedReports.Id, "1.5", cts.Token, pairing11To15Params);
-        progressBarVM.SetProgressBar(33, "Загрузка операций 41 формы 1.6");
-        var form16Operations = await LoadOperation41ListAsync(db, selectedReports.Id, "1.6", cts.Token);
-
-        progressBarVM.SetProgressBar(35, "Сопоставление операций");
-        var unpairedForm11 = GetUnpairedOperations11To15(form11Operations, form15Operations, pairing11To15Params);
-        var unpairedForm15 = GetUnpairedOperations11To15(form15Operations, form11Operations, pairing11To15Params);
-
-        _form11ClosestMatchHighlights = BuildClosestMatchHighlights(unpairedForm11, form15Operations, pairing11To15Params);
-        _form15ClosestMatchHighlights = BuildClosestMatchHighlights(unpairedForm15, form11Operations, pairing11To15Params);
-
-        var unpairedForm12 = GetUnpairedOperations12To16(form12Operations, form16Operations, pairing12To16Params);
-        var unpairedForm13 = GetUnpairedOperations13To16(form13Operations, form16Operations, pairing13To16Params);
-        var unpairedForm14 = GetUnpairedOperations14To16(form14Operations, form16Operations, pairing14To16Params);
-
-        _form12ClosestMatchHighlights = BuildClosestMatchHighlights12To16(unpairedForm12, form16Operations, pairing12To16Params);
-        _form13ClosestMatchHighlights = BuildClosestMatchHighlights13To16(unpairedForm13, form16Operations, pairing13To16Params);
-        _form14ClosestMatchHighlights = BuildClosestMatchHighlights14To16(unpairedForm14, form16Operations, pairing14To16Params);
-
-        var unpairedForm16 = Operation41PairingMatcher.FindUnpairedForm16(
-            form16Operations,
-            form12Operations,
-            form13Operations,
-            form14Operations,
-            ToPairingKey16For12,
-            ToPairingKey16For13,
-            ToPairingKey16For14,
-            ToPairingKey12,
-            ToPairingKey13,
-            ToPairingKey14);
-
-        if (unpairedForm11.Count == 0 && unpairedForm15.Count == 0
-            && unpairedForm12.Count == 0 && unpairedForm13.Count == 0
-            && unpairedForm14.Count == 0 && unpairedForm16.Count == 0)
+        if (IsWholeDbMode(parameter))
         {
-            await ShowNoUnpairedOperationsMessage(progressBar);
-            await CleanupAndClose(progressBar, tmpDbPath);
+            await ExecuteForWholeDatabaseAsync(pairingParams, progressBar, cts);
             return;
         }
 
-        progressBarVM.SetProgressBar(45, "Загрузка организации");
-        var masterReports = await db.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .Include(reps => reps.Master_DB)
-            .ThenInclude(master => master.Rows10)
-            .FirstAsync(reps => reps.Id == selectedReports.Id, cts.Token);
+        if (!TryGetReports(parameter, out var selectedReports))
+        {
+            if (_mainWindowVM.SelectedReports is null)
+            {
+                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                return;
+            }
 
-        progressBarVM.SetProgressBar(51, "Загрузка непарных строчек 1.1");
-        var reportsForForm11 = await BuildReportsForExportAsync(db, masterReports, unpairedForm11, "1.1", cts.Token);
-        progressBarVM.SetProgressBar(55, "Загрузка непарных строчек 1.2");
-        var reportsForForm12 = await BuildReportsForExportAsync(db, masterReports, unpairedForm12, "1.2", cts.Token);
-        progressBarVM.SetProgressBar(59, "Загрузка непарных строчек 1.3");
-        var reportsForForm13 = await BuildReportsForExportAsync(db, masterReports, unpairedForm13, "1.3", cts.Token);
-        progressBarVM.SetProgressBar(63, "Загрузка непарных строчек 1.4");
-        var reportsForForm14 = await BuildReportsForExportAsync(db, masterReports, unpairedForm14, "1.4", cts.Token);
-        progressBarVM.SetProgressBar(67, "Загрузка непарных строчек 1.5");
-        var reportsForForm15 = await BuildReportsForExportAsync(db, masterReports, unpairedForm15, "1.5", cts.Token);
-        progressBarVM.SetProgressBar(71, "Загрузка непарных строчек 1.6");
-        var reportsForForm16 = await BuildReportsForExportAsync(db, masterReports, unpairedForm16, "1.6", cts.Token);
+            selectedReports = _mainWindowVM.SelectedReports;
+        }
 
-        progressBarVM.SetProgressBar(75, "Инициализация Excel пакета");
-        using var excelPackage = await InitializeExcelPackage(fullPath);
-
-        progressBarVM.SetProgressBar(80, "Заполнение листов");
-        FillPairingExcel(
-            excelPackage,
-            reportsForForm11,
-            reportsForForm12,
-            reportsForForm13,
-            reportsForForm14,
-            reportsForForm15,
-            reportsForForm16);
-
-        progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
-
-        await CleanupAndClose(progressBar, tmpDbPath);
+        await ExecuteForSelectedOrganizationAsync(selectedReports, pairingParams, progressBar, cts);
     }
 
     #region Reports parameter
@@ -268,31 +178,31 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
                 dialog.Vm.CheckPackNumber14To16));
     }
 
-    internal sealed record PairingParamsSet(
+    public sealed record PairingParamsSet(
         Pairing11To15Params Pairing11To15,
         Pairing12To16Params Pairing12To16,
         Pairing13To16Params Pairing13To16,
         Pairing14To16Params Pairing14To16);
 
-    internal sealed record Pairing11To15Params(
-        bool CheckOperationDate,
-        bool CheckPassportNumber,
-        bool CheckType,
-        bool CheckRadionuclids,
-        bool CheckFactoryNumber,
-        bool CheckActivity,
-        bool CheckQuantity,
-        bool CheckCreationDate,
-        bool CheckDocumentVid,
-        bool CheckDocumentNumber,
-        bool CheckDocumentDate,
-        bool CheckProviderOrRecieverOkpo,
-        bool CheckTransporterOkpo,
-        bool CheckPackName,
-        bool CheckPackType,
-        bool CheckPackNumber);
+    public sealed record Pairing11To15Params(
+        bool CheckOperationDate = true,
+        bool CheckPassportNumber = true,
+        bool CheckType = true,
+        bool CheckRadionuclids = true,
+        bool CheckFactoryNumber = true,
+        bool CheckActivity = true,
+        bool CheckQuantity = true,
+        bool CheckCreationDate = true,
+        bool CheckDocumentVid = true,
+        bool CheckDocumentNumber = true,
+        bool CheckDocumentDate = true,
+        bool CheckProviderOrRecieverOkpo = true,
+        bool CheckTransporterOkpo = true,
+        bool CheckPackName = true,
+        bool CheckPackType = true,
+        bool CheckPackNumber = true);
 
-    internal sealed record Pairing12To16Params(
+    public sealed record Pairing12To16Params(
         bool CheckOperationDate = true,
         bool CheckMass = true,
         bool CheckBetaGammaActivity = true,
@@ -305,7 +215,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
         bool CheckPackType = true,
         bool CheckPackNumber = true);
 
-    internal sealed record Pairing13To16Params(
+    public sealed record Pairing13To16Params(
         bool CheckOperationDate = true,
         bool CheckMainRadionuclids = true,
         bool CheckTritiumActivity = true,
@@ -320,7 +230,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
         bool CheckPackType = true,
         bool CheckPackNumber = true);
 
-    internal sealed record Pairing14To16Params(
+    public sealed record Pairing14To16Params(
         bool CheckOperationDate = true,
         bool CheckVolume = true,
         bool CheckMass = true,
@@ -378,6 +288,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
                 if (string.IsNullOrEmpty(selectedPath))
                 {
                     await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                    return (string.Empty, false);
                 }
 
                 if (!selectedPath.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
@@ -427,6 +338,22 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
                 ContentHeader = "Уведомление",
                 ContentMessage = "Операции с кодом 41 без парных записей при переводе РВ → РАО (1.1↔1.5, 1.2↔1.6, 1.3↔1.6, 1.4↔1.6) не обнаружены.",
                 MinWidth = 400,
+                MinHeight = 150,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .Show(progressBar ?? Desktop.MainWindow));
+    }
+
+    private static async Task ShowRDictionaryLoadErrorMessage(AnyTaskProgressBar progressBar, string message)
+    {
+        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            {
+                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                ContentTitle = "Выгрузка в .xlsx",
+                ContentHeader = "Ошибка",
+                ContentMessage = message,
+                MinWidth = 450,
                 MinHeight = 150,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
