@@ -143,7 +143,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     }
 
     private ObservableCollection<Form> _selectedForms = [];
-    public ObservableCollection<Form> SelectedForms
+    public virtual ObservableCollection<Form> SelectedForms
     {
         get => _selectedForms;
         set
@@ -428,7 +428,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     /// Обновление списка выделенных строчек.
     /// </summary>
     /// <param name="collection"></param>
-    private void SubscribeSelectedForms(ObservableCollection<Form> collection)
+    protected void SubscribeSelectedForms(ObservableCollection<Form> collection)
     {
         if (collection is INotifyCollectionChanged notify)
         {
@@ -436,7 +436,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    private void UnsubscribeSelectedForms(ObservableCollection<Form> collection)
+    protected void UnsubscribeSelectedForms(ObservableCollection<Form> collection)
     {
         if (collection is INotifyCollectionChanged notify)
         {
@@ -444,7 +444,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    private void SelectedForms_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    protected virtual void SelectedForms_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
         OnPropertyChanged(nameof(AnyRowSelected));
         OnPropertyChanged(nameof(OnlyOneRowSelected));

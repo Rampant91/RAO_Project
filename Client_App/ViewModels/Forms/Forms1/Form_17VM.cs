@@ -12,6 +12,7 @@ using Models.Forms.Form1;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Input;
 
@@ -36,7 +37,16 @@ public class Form_17VM : BaseFormVM
 
     public override string FormType => "1.7";
 
-    
+    public override ObservableCollection<Form> SelectedForms
+    {
+        get => base.SelectedForms;
+        set
+        {
+            base.SelectedForms = value;
+            var form17 = value.OrderBy(f17 => f17.NumberInOrder_DB).FirstOrDefault() as Form17;
+            PackagePassportPanelControlVM.SelectPassport(form17.PassportNumber_DB, form17.PackType_DB);
+        }
+    }
 
     #region OpCodes
 
@@ -74,11 +84,14 @@ public class Form_17VM : BaseFormVM
     #endregion
 
     #region Events
-    private void SelectedForms_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    protected override void SelectedForms_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+
     {
+        base.SelectedForms_CollectionChanged(sender, e);
+
         Dispatcher.UIThread.InvokeAsync(() =>
         {
-            List<Form17> selectedForms17 = e.NewItems.Cast<Form17>().ToList();
+            List<Form17> selectedForms17 = e.NewItems.Cast<Form17>().OrderBy(f17 => f17.NumberInOrder_DB).ToList();
             if (selectedForms17 is null || selectedForms17.Count <= 0) return;
 
             Form17 form17 = selectedForms17.FirstOrDefault(f17 =>
@@ -172,14 +185,14 @@ public class Form_17VM : BaseFormVM
 
     #region Constructors
 
-    public Form_17VM() 
+    public Form_17VM() : base()
     {
-        SelectedForms.CollectionChanged += SelectedForms_CollectionChanged;
+        //SubscribeSelectedForms(SelectedForms);
     }
 
-    public Form_17VM(Report report) : base(report) 
+    public Form_17VM(Report report) : base(report)
     {
-        SelectedForms.CollectionChanged += SelectedForms_CollectionChanged;
+        //SubscribeSelectedForms(SelectedForms);
     }
 
     public Form_17VM(in Reports reps)
@@ -210,9 +223,9 @@ public class Form_17VM : BaseFormVM
 
     #region Deconstructor
 
-    ~Form_17VM()
-    {
-        SelectedForms.CollectionChanged -= SelectedForms_CollectionChanged;
-    }
+    //~Form_17VM()
+    //{
+    //    UnsubscribeSelectedForms(SelectedForms);
+    //}
     #endregion
 }

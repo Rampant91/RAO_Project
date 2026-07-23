@@ -224,10 +224,10 @@ namespace Client_App.Commands.AsyncCommands.Generate
 
                 foreach (var form17 in operation)
                 {
-                    var radName = form17.Radionuclids_DB;
+                    var radName = form17.Radionuclids_DB.ToLower();
                     //Ищем в справочнике латинское наименование радионуклида
-                    if (Spravochniks.SprRadionuclids.Any(rad => rad.rusName == form17.Radionuclids_DB))
-                        radName = Spravochniks.SprRadionuclids.FirstOrDefault(rad => rad.rusName == form17.Radionuclids_DB).latinName;
+                    if (Spravochniks.SprRadionuclids.Any(rad => rad.rusName.ToLower() == radName))
+                        radName = Spravochniks.SprRadionuclids.FirstOrDefault(rad => rad.rusName.ToLower() == radName).latinName;
 
                     characteristic.RadionuclidsList.Add(new Radionuclid()
                     {
@@ -323,7 +323,7 @@ namespace Client_App.Commands.AsyncCommands.Generate
             #region DBModel.SaveChanges
             try
             {
-                StaticConfiguration.DBModel.SaveChangesAsync();
+                await StaticConfiguration.DBModel.SaveChangesAsync();
             }
             catch (Exception ex)
             {
