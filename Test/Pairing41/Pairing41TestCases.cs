@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Client_App.Commands.AsyncCommands.ExcelExport.ParingOfCode41.Testing;
+using Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.Testing;
 
 namespace Test.Pairing41;
 
@@ -29,6 +29,8 @@ namespace Test.Pairing41;
 /// <see cref="Form12OpDate"/> (1.2), <see cref="Form13OpDate"/> (1.3),
 /// <see cref="Form14OpDate"/> (1.4). Id строк вымышленные (1 / 101, 2 / 202, …).
 /// Код РАО в ключ парности не входит.
+/// Для 1.1↔1.5 пустые паспорт+зав.№ и заглушки («б.н.», «без номера», «-»)
+/// идут в ветку суммирования количества.
 /// </para>
 /// </summary>
 internal static partial class Pairing41TestCases
@@ -101,6 +103,12 @@ internal static partial class Pairing41TestCases
     /// Строка 1.2 уже в единицах сопоставления (масса в тоннах, активности посчитаны),
     /// как после LoadForm12OperationsAsync.
     /// </summary>
+    internal static Pairing41Row CreateRow12ForScale(int id, string massTon) =>
+        Row12(id, massTon: massTon);
+
+    internal static Pairing41Row CreateRow16From12ForScale(int id, string massTon) =>
+        Row16From12(id, massTon: massTon);
+
     private static Pairing41Row Row12(
         int id,
         string massTon = "1",

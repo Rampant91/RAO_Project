@@ -10,56 +10,100 @@ using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
 using static Client_App.Resources.StaticStringMethods;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.ParingOfCode41;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41;
 
 public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 {
+    #region Workbook structure
+
     private static readonly Color PairingFieldMatchFill = Color.FromArgb(198, 239, 206);
     private static readonly Color PairingFieldMismatchFill = Color.FromArgb(255, 205, 210);
 
-    private void FillPairingExcel(
-        ExcelPackage excelPackage,
-        Reports reportsForForm11,
-        Reports reportsForForm12,
-        Reports reportsForForm13,
-        Reports reportsForForm14,
-        Reports reportsForForm15,
-        Reports reportsForForm16,
-        AnyTaskProgressBarVM progressBarVM)
+    /// <summary>
+    /// Создаёт 6 листов с заголовками (без данных и без Excel-таблиц).
+    /// </summary>
+    private void InitializePairingWorkbook(ExcelPackage excelPackage)
     {
-        progressBarVM.SetProgressBar(72, "Заполнение листа «Форма 1.1»");
-        AddPairingSheet(excelPackage, "Форма 1.1", "1.1", reportsForForm11, 29, "tbl_Pair41_Form11", WriteForm11Rows);
-        progressBarVM.SetProgressBar(76, "Заполнение листа «Форма 1.2»");
-        AddPairingSheet(excelPackage, "Форма 1.2", "1.2", reportsForForm12, 30, "tbl_Pair41_Form12", WriteForm12Rows);
-        progressBarVM.SetProgressBar(80, "Заполнение листа «Форма 1.3»");
-        AddPairingSheet(excelPackage, "Форма 1.3", "1.3", reportsForForm13, 31, "tbl_Pair41_Form13", WriteForm13Rows);
-        progressBarVM.SetProgressBar(84, "Заполнение листа «Форма 1.4»");
-        AddPairingSheet(excelPackage, "Форма 1.4", "1.4", reportsForForm14, 33, "tbl_Pair41_Form14", WriteForm14Rows);
-        progressBarVM.SetProgressBar(88, "Заполнение листа «Форма 1.5»");
-        AddPairingSheet(excelPackage, "Форма 1.5", "1.5", reportsForForm15, 32, "tbl_Pair41_Form15", WriteForm15Rows);
-        progressBarVM.SetProgressBar(92, "Заполнение листа «Форма 1.6»");
-        AddPairingSheet(excelPackage, "Форма 1.6", "1.6", reportsForForm16, 30, "tbl_Pair41_Form16", WriteForm16Rows);
+        CreateEmptyPairingSheet(excelPackage, "Форма 1.1", "1.1");
+        CreateEmptyPairingSheet(excelPackage, "Форма 1.2", "1.2");
+        CreateEmptyPairingSheet(excelPackage, "Форма 1.3", "1.3");
+        CreateEmptyPairingSheet(excelPackage, "Форма 1.4", "1.4");
+        CreateEmptyPairingSheet(excelPackage, "Форма 1.5", "1.5");
+        CreateEmptyPairingSheet(excelPackage, "Форма 1.6", "1.6");
     }
 
-    private void AddPairingSheet(
-        ExcelPackage excelPackage,
-        string sheetName,
-        string formNum,
-        Reports reports,
-        int columnCount,
-        string tableName,
-        Action writeRows)
+    private void CreateEmptyPairingSheet(ExcelPackage excelPackage, string sheetName, string formNum)
     {
         Worksheet = excelPackage.Workbook.Worksheets.Add(sheetName);
         SetupHeaders(formNum);
+    }
+
+    /// <summary>
+    /// Дописывает непарные строки одной организации на уже созданные листы.
+    /// Подсветка closest-match берётся из полей экземпляра (пересобраны для этой org).
+    /// </summary>
+    private void AppendOrganizationToPairingWorkbook(
+        ExcelPackage excelPackage,
+        OrganizationPairingExport export,
+        AnyTaskProgressBarVM? progressBarVM,
+        int percentBase = 0,
+        int percentSpan = 0)
+    {
+        SetExportActivitiesCache(export.UnpairedForm13, export.UnpairedForm14);
+
+        void Progress(int step, string sheetTitle)
+        {
+            if (progressBarVM is null || percentSpan <= 0)
+            {
+                return;
+            }
+
+            var percent = percentBase + percentSpan * step / 6;
+            progressBarVM.SetProgressBar(percent, $"Заполнение листа «{sheetTitle}»");
+        }
+
+        Progress(0, "Форма 1.1");
+        AppendToPairingSheet(excelPackage, "Форма 1.1", export.Form11, WriteForm11Rows);
+        Progress(1, "Форма 1.2");
+        AppendToPairingSheet(excelPackage, "Форма 1.2", export.Form12, WriteForm12Rows);
+        Progress(2, "Форма 1.3");
+        AppendToPairingSheet(excelPackage, "Форма 1.3", export.Form13, WriteForm13Rows);
+        Progress(3, "Форма 1.4");
+        AppendToPairingSheet(excelPackage, "Форма 1.4", export.Form14, WriteForm14Rows);
+        Progress(4, "Форма 1.5");
+        AppendToPairingSheet(excelPackage, "Форма 1.5", export.Form15, WriteForm15Rows);
+        Progress(5, "Форма 1.6");
+        AppendToPairingSheet(excelPackage, "Форма 1.6", export.Form16, WriteForm16Rows);
+    }
+
+    private void AppendToPairingSheet(
+        ExcelPackage excelPackage,
+        string sheetName,
+        Reports reports,
+        Action writeRows)
+    {
+        Worksheet = excelPackage.Workbook.Worksheets[sheetName];
         CurrentReports = reports;
         CurrentRow = Worksheet.Dimension!.End.Row + 1;
         writeRows();
-        AddPairingExcelTable(Worksheet, CurrentRow - 1, columnCount, tableName);
     }
 
-    private static void AddPairingExcelTable(ExcelWorksheet sheet, int lastRow, int columnCount, string tableName)
+    /// <summary>
+    /// Создаёт Excel-таблицы по фактическому диапазону данных после всех org.
+    /// </summary>
+    private static void FinalizePairingWorkbookTables(ExcelPackage excelPackage)
     {
+        AddPairingExcelTable(excelPackage.Workbook.Worksheets["Форма 1.1"], 29, "tbl_Pair41_Form11");
+        AddPairingExcelTable(excelPackage.Workbook.Worksheets["Форма 1.2"], 30, "tbl_Pair41_Form12");
+        AddPairingExcelTable(excelPackage.Workbook.Worksheets["Форма 1.3"], 31, "tbl_Pair41_Form13");
+        AddPairingExcelTable(excelPackage.Workbook.Worksheets["Форма 1.4"], 33, "tbl_Pair41_Form14");
+        AddPairingExcelTable(excelPackage.Workbook.Worksheets["Форма 1.5"], 32, "tbl_Pair41_Form15");
+        AddPairingExcelTable(excelPackage.Workbook.Worksheets["Форма 1.6"], 30, "tbl_Pair41_Form16");
+    }
+
+    private static void AddPairingExcelTable(ExcelWorksheet sheet, int columnCount, string tableName)
+    {
+        var lastRow = sheet.Dimension?.End.Row ?? 1;
         if (lastRow < 2)
         {
             return;
@@ -69,6 +113,10 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         table.TableStyle = TableStyles.Medium2;
         table.ShowRowStripes = true;
     }
+
+    #endregion
+
+    #region Headers / column sizing
 
     private void SetupHeaders(string formNum)
     {
@@ -332,6 +380,10 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         }
     }
 
+    #endregion
+
+    #region Write form rows
+
     private void WriteOrgReportColumns(Report rep, int rowOffset)
     {
         Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.RegNoRep.Value;
@@ -590,6 +642,10 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         };
     }
 
+    #endregion
+
+    #region Closest-match cell highlight
+
     private void ApplyForm11ClosestMatchHighlight(int formId)
     {
         if (!_form11ClosestMatchHighlights.TryGetValue(formId, out var highlight))
@@ -837,4 +893,6 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 break;
         }
     }
+
+    #endregion
 }

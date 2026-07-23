@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using Client_App.Resources.CustomComparers.SnkComparers;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.ParingOfCode41;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41;
 
 public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 {
+    #region Closest-match state
+
     private Dictionary<int, ClosestMatchHighlight> _form11ClosestMatchHighlights = new();
     private Dictionary<int, ClosestMatchHighlight> _form15ClosestMatchHighlights = new();
     private Dictionary<int, Dictionary<Pairing12To16Field, bool>> _form12ClosestMatchHighlights = new();
@@ -14,6 +16,13 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     private Dictionary<int, Form16ClosestMatchHighlight> _form16ClosestMatchHighlights = new();
     private Dictionary<int, Dictionary<string, string>> _exportActivitiesByFormId = new();
 
+    #endregion
+
+    #region Closest 1.1 ↔ 1.5
+
+    /// <summary>
+    /// Карта closest-match для непарных 1.1/1.5. Пустой reference или нет включённых полей → без подсветки.
+    /// </summary>
     private static Dictionary<int, ClosestMatchHighlight> BuildClosestMatchHighlights(
         List<Operation41PairingDto> unpaired,
         List<Operation41PairingDto> reference,
@@ -53,6 +62,10 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 {
                     bestScore = score;
                     Array.Copy(scratchFlags, bestFlags, fieldCount);
+                    if (bestScore == fieldCount)
+                    {
+                        break;
+                    }
                 }
             }
 
@@ -142,6 +155,10 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         PackNumber
     }
 
+    #endregion
+
+    #region Closest 1.2–1.4 ↔ 1.6
+
     private static Dictionary<int, Dictionary<Pairing12To16Field, bool>> BuildClosestMatchHighlights12To16(
         List<Operation41PairingDto> unpaired, List<Operation41PairingDto> reference, Pairing12To16Params options) =>
         BuildClosest(unpaired, reference, GetEnabledFields12To16(options), FieldMatches12To16);
@@ -194,6 +211,10 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 {
                     bestScore = score;
                     Array.Copy(scratchFlags, bestFlags, fieldCount);
+                    if (bestScore == fieldCount)
+                    {
+                        break;
+                    }
                 }
             }
 
@@ -325,6 +346,14 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         return l;
     }
 
+    #endregion
+
+    #region Closest сторона 1.6
+
+    /// <summary>
+    /// Closest для непарной 1.6: лучший профиль среди 1.2 / 1.3 / 1.4 (при равенстве — приоритет 1.2).
+    /// Нет кандидатов ни в одном пуле → строка без подсветки.
+    /// </summary>
     private static Dictionary<int, Form16ClosestMatchHighlight> BuildClosestMatchHighlights16(
         List<Operation41PairingDto> unpaired,
         List<Operation41PairingDto> form12,
@@ -416,6 +445,10 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             {
                 bestScore = score;
                 Array.Copy(scratchFlags, bestFlags, fieldCount);
+                if (bestScore == fieldCount)
+                {
+                    break;
+                }
             }
         }
 
@@ -432,6 +465,10 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
         return (bestScore, map);
     }
+
+    #endregion
+
+    #region Closest-match types
 
     public enum Form16MatchProfile
     {
@@ -455,6 +492,10 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     public enum Pairing12To16Field { OperationDate, Mass, BetaGammaActivity, AlphaActivity, ActivityMeasurementDate, DocumentVid, DocumentNumber, DocumentDate, PackName, PackType, PackNumber }
     public enum Pairing13To16Field { OperationDate, MainRadionuclids, TritiumActivity, BetaGammaActivity, AlphaActivity, TransuraniumActivity, ActivityMeasurementDate, DocumentVid, DocumentNumber, DocumentDate, PackName, PackType, PackNumber }
     public enum Pairing14To16Field { OperationDate, Volume, Mass, MainRadionuclids, TritiumActivity, BetaGammaActivity, AlphaActivity, TransuraniumActivity, ActivityMeasurementDate, DocumentVid, DocumentNumber, DocumentDate, PackName, PackType, PackNumber }
+
+    #endregion
+
+    #region PairingNorm
 
     /// <summary>
     /// Пренормализованные поля строки для closest-match (нормализация один раз на DTO).
@@ -558,4 +599,6 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
         return NumberComparer.Equals(left.Raw, right.Raw);
     }
+
+    #endregion
 }

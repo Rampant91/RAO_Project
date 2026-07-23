@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -10,13 +10,10 @@ using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
-using Microsoft.EntityFrameworkCore;
 using Models.Collections;
-using Models.DBRealization;
 using Models.Interfaces;
-using static Client_App.Resources.StaticStringMethods;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.ParingOfCode41;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41;
 
 /// <summary>
 /// Выгрузка в .xlsx операций с кодом 41 без парной записи при переводе РВ → РАО
@@ -45,147 +42,42 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
         };
     }
 
-    public override bool CanExecute(object? parameter) => _mainWindowVM.SelectedReports is not null;
+    public override bool CanExecute(object? parameter) =>
+        IsWholeDbMode(parameter)
+        || parameter is Reports
+        || parameter is IKeyCollection
+        || _mainWindowVM.SelectedReports is not null;
 
     public override async Task AsyncExecute(object? parameter)
     {
-        if (!TryGetReports(parameter, out var selectedReports))
-        {
-            return;
-        }
-
         var pairingParams = await AskPairingParamsAsync();
         if (pairingParams is null)
         {
             return;
         }
-        var pairing11To15Params = pairingParams.Pairing11To15;
-        var pairing12To16Params = pairingParams.Pairing12To16;
-        var pairing13To16Params = pairingParams.Pairing13To16;
-        var pairing14To16Params = pairingParams.Pairing14To16;
 
         var cts = new CancellationTokenSource();
         ExportType = "Непарные_операции_41";
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
-        var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
-        var regNum = RemoveForbiddenChars(selectedReports.Master_DB.RegNoRep.Value);
-        var okpo = RemoveForbiddenChars(selectedReports.Master_DB.OkpoRep.Value);
-        var fileName = $"{regNum}_{okpo}_непарные_операции_41";
-
-        progressBarVM.SetProgressBar(5, "Запрос пути сохранения", ExportType, "Выгрузка в .xlsx");
-        var (fullPath, openTemp) = await ExcelGetFullPathWithUniqueIndex(fileName, cts, progressBar);
-
-        progressBarVM.SetProgressBar(8, "Загрузка справочника радионуклидов", ExportType, "Выгрузка в .xlsx");
-        if (!TryLoadRDictionary(out var rDictionaryError))
+        if (IsWholeDbMode(parameter))
         {
-            await ShowRDictionaryLoadErrorMessage(progressBar, rDictionaryError);
-            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+            await ExecuteForWholeDatabaseAsync(pairingParams, progressBar, cts);
             return;
         }
 
-        progressBarVM.SetProgressBar(10, "Создание временной БД", ExportType, "Выгрузка в .xlsx");
-        var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-        await using var db = new DBModel(tmpDbPath);
-
-        progressBarVM.SetProgressBar(18, "Загрузка операций 41 формы 1.1");
-        var form11Operations = await LoadOperation41ListAsync(db, selectedReports.Id, "1.1", cts.Token, pairing11To15Params);
-        progressBarVM.SetProgressBar(21, "Загрузка операций 41 формы 1.2");
-        var form12Operations = await LoadOperation41ListAsync(db, selectedReports.Id, "1.2", cts.Token);
-        progressBarVM.SetProgressBar(24, "Загрузка операций 41 формы 1.3");
-        var form13Operations = await LoadOperation41ListAsync(db, selectedReports.Id, "1.3", cts.Token);
-        progressBarVM.SetProgressBar(27, "Загрузка операций 41 формы 1.4");
-        var form14Operations = await LoadOperation41ListAsync(db, selectedReports.Id, "1.4", cts.Token);
-        progressBarVM.SetProgressBar(30, "Загрузка операций 41 формы 1.5");
-        var form15Operations = await LoadOperation41ListAsync(db, selectedReports.Id, "1.5", cts.Token, pairing11To15Params);
-        progressBarVM.SetProgressBar(33, "Загрузка операций 41 формы 1.6");
-        var form16Operations = await LoadOperation41ListAsync(db, selectedReports.Id, "1.6", cts.Token);
-
-        progressBarVM.SetProgressBar(35, "Сопоставление 1.1↔1.5");
-        var unpairedForm11 = GetUnpairedOperations11To15(form11Operations, form15Operations, pairing11To15Params);
-        var unpairedForm15 = GetUnpairedOperations11To15(form15Operations, form11Operations, pairing11To15Params);
-
-        _form11ClosestMatchHighlights = BuildClosestMatchHighlights(unpairedForm11, form15Operations, pairing11To15Params);
-        _form15ClosestMatchHighlights = BuildClosestMatchHighlights(unpairedForm15, form11Operations, pairing11To15Params);
-
-        progressBarVM.SetProgressBar(38, "Сопоставление 1.2↔1.6");
-        var unpairedForm12 = GetUnpairedOperations12To16(form12Operations, form16Operations, pairing12To16Params);
-        _form12ClosestMatchHighlights = BuildClosestMatchHighlights12To16(unpairedForm12, form16Operations, pairing12To16Params);
-
-        progressBarVM.SetProgressBar(41, "Сопоставление 1.3↔1.6");
-        var unpairedForm13 = GetUnpairedOperations13To16(form13Operations, form16Operations, pairing13To16Params);
-        _form13ClosestMatchHighlights = BuildClosestMatchHighlights13To16(unpairedForm13, form16Operations, pairing13To16Params);
-
-        progressBarVM.SetProgressBar(44, "Сопоставление 1.4↔1.6");
-        var unpairedForm14 = GetUnpairedOperations14To16(form14Operations, form16Operations, pairing14To16Params);
-        _form14ClosestMatchHighlights = BuildClosestMatchHighlights14To16(unpairedForm14, form16Operations, pairing14To16Params);
-
-        progressBarVM.SetProgressBar(47, "Сопоставление стороны 1.6");
-        var unpairedForm16 = GetUnpairedForm16(
-            form16Operations,
-            form12Operations,
-            form13Operations,
-            form14Operations,
-            pairing12To16Params,
-            pairing13To16Params,
-            pairing14To16Params);
-        _form16ClosestMatchHighlights = BuildClosestMatchHighlights16(
-            unpairedForm16,
-            form12Operations,
-            form13Operations,
-            form14Operations,
-            pairing12To16Params,
-            pairing13To16Params,
-            pairing14To16Params);
-
-        if (unpairedForm11.Count == 0 && unpairedForm15.Count == 0
-            && unpairedForm12.Count == 0 && unpairedForm13.Count == 0
-            && unpairedForm14.Count == 0 && unpairedForm16.Count == 0)
+        if (!TryGetReports(parameter, out var selectedReports))
         {
-            await ShowNoUnpairedOperationsMessage(progressBar);
-            await CleanupAndClose(progressBar, tmpDbPath);
-            return;
+            if (_mainWindowVM.SelectedReports is null)
+            {
+                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                return;
+            }
+
+            selectedReports = _mainWindowVM.SelectedReports;
         }
 
-        progressBarVM.SetProgressBar(50, "Загрузка организации");
-        var masterReports = await db.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .Include(reps => reps.Master_DB)
-            .ThenInclude(master => master.Rows10)
-            .FirstAsync(reps => reps.Id == selectedReports.Id, cts.Token);
-
-        progressBarVM.SetProgressBar(52, "Загрузка непарных строчек 1.1");
-        var reportsForForm11 = await BuildReportsForExportAsync(db, masterReports, unpairedForm11, "1.1", cts.Token);
-        progressBarVM.SetProgressBar(55, "Загрузка непарных строчек 1.2");
-        var reportsForForm12 = await BuildReportsForExportAsync(db, masterReports, unpairedForm12, "1.2", cts.Token);
-        progressBarVM.SetProgressBar(58, "Загрузка непарных строчек 1.3");
-        var reportsForForm13 = await BuildReportsForExportAsync(db, masterReports, unpairedForm13, "1.3", cts.Token);
-        progressBarVM.SetProgressBar(61, "Загрузка непарных строчек 1.4");
-        var reportsForForm14 = await BuildReportsForExportAsync(db, masterReports, unpairedForm14, "1.4", cts.Token);
-        progressBarVM.SetProgressBar(64, "Загрузка непарных строчек 1.5");
-        var reportsForForm15 = await BuildReportsForExportAsync(db, masterReports, unpairedForm15, "1.5", cts.Token);
-        progressBarVM.SetProgressBar(67, "Загрузка непарных строчек 1.6");
-        var reportsForForm16 = await BuildReportsForExportAsync(db, masterReports, unpairedForm16, "1.6", cts.Token);
-
-        progressBarVM.SetProgressBar(70, "Инициализация Excel пакета");
-        using var excelPackage = await InitializeExcelPackage(fullPath);
-
-        SetExportActivitiesCache(unpairedForm13, unpairedForm14);
-        FillPairingExcel(
-            excelPackage,
-            reportsForForm11,
-            reportsForForm12,
-            reportsForForm13,
-            reportsForForm14,
-            reportsForForm15,
-            reportsForForm16,
-            progressBarVM);
-
-        progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
-
-        await CleanupAndClose(progressBar, tmpDbPath);
+        await ExecuteForSelectedOrganizationAsync(selectedReports, pairingParams, progressBar, cts);
     }
 
     #region Reports parameter

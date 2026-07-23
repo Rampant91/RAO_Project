@@ -1,4 +1,4 @@
-﻿using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.Calculator;
 using Client_App.Commands.AsyncCommands.CheckForm;
@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using ExcelExportCheckPairingOfCode41AsyncCommand = Client_App.Commands.AsyncCommands.ExcelExport.ParingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
+using ExcelExportCheckPairingOfCode41AsyncCommand = Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
 
 namespace Client_App.ViewModels;
 
@@ -351,7 +351,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand ChangePasFolder { get; set; }                   //  Excel -> Паспорта -> Изменить расположение паспортов по умолчанию
     public ICommand ConvertExcelToRaodb { get; set; }               //  Дополнительно -> Конвертер из Excel в .RAODB
     public ICommand ExcelExportCheckAllForms { get; set; }          //  Проверить все формы у организации
-    public ICommand ExcelExportCheckPairingOfCode41 { get; set; }   //  Непарные операции 41 (формы 1.1–1.6)
+    public ICommand ExcelExportCheckPairingOfCode41 { get; set; }   //  Непарные операции 41 (org / вся БД, формы 1.1–1.6)
     public ICommand DeleteReports { get; set; }                     //  Удалить выбранную организацию (1.0, 2.0, 4.0)
 
     /// <summary>

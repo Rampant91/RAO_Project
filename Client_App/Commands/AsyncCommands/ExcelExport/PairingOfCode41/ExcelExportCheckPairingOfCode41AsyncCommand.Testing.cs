@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
-using Client_App.Commands.AsyncCommands.ExcelExport.ParingOfCode41.Testing;
+using Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.Testing;
 using Client_App.Resources.CustomComparers.SnkComparers;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.ParingOfCode41;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41;
 
 public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 {
+    #region Test access
+
     /// <summary>
     /// Доступ к private-логике сопоставления для unit-тестов (без БД/UI/Excel).
     /// </summary>
@@ -80,21 +82,28 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
         public static Pairing41ScenarioResult RunScenario(Pairing41TestCase testCase)
         {
-            var unpaired11 = GetUnpaired11To15Ids(testCase.Form11, testCase.Form15, testCase.Params11To15);
-            var unpaired15 = GetUnpaired11To15Ids(testCase.Form15, testCase.Form11, testCase.Params11To15);
-            var unpaired12 = GetUnpaired12To16Ids(testCase.Form12, testCase.Form16, testCase.Params12To16);
-            var unpaired13 = GetUnpairedOperations13To16(
-                    ToDtoList(testCase.Form13), ToDtoList(testCase.Form16), testCase.Params13To16)
-                .Select(row => row.Id).OrderBy(id => id).ToList();
-            var unpaired14 = GetUnpairedOperations14To16(
-                    ToDtoList(testCase.Form14), ToDtoList(testCase.Form16), testCase.Params14To16)
-                .Select(row => row.Id).OrderBy(id => id).ToList();
-            var unpaired16 = GetUnpairedForm16Ids(
-                testCase.Form16, testCase.Form12, testCase.Form13, testCase.Form14,
-                testCase.Params12To16, testCase.Params13To16, testCase.Params14To16);
+            var form11 = ToDtoList(testCase.Form11);
+            var form12 = ToDtoList(testCase.Form12);
+            var form13 = ToDtoList(testCase.Form13);
+            var form14 = ToDtoList(testCase.Form14);
+            var form15 = ToDtoList(testCase.Form15);
+            var form16 = ToDtoList(testCase.Form16);
+
+            var unpaired = ComputeOrganizationUnpaired(
+                form11, form12, form13, form14, form15, form16,
+                new PairingParamsSet(
+                    testCase.Params11To15,
+                    testCase.Params12To16,
+                    testCase.Params13To16,
+                    testCase.Params14To16));
 
             return new Pairing41ScenarioResult(
-                unpaired11, unpaired12, unpaired13, unpaired14, unpaired15, unpaired16);
+                unpaired.Form11.Select(row => row.Id).OrderBy(id => id).ToList(),
+                unpaired.Form12.Select(row => row.Id).OrderBy(id => id).ToList(),
+                unpaired.Form13.Select(row => row.Id).OrderBy(id => id).ToList(),
+                unpaired.Form14.Select(row => row.Id).OrderBy(id => id).ToList(),
+                unpaired.Form15.Select(row => row.Id).OrderBy(id => id).ToList(),
+                unpaired.Form16.Select(row => row.Id).OrderBy(id => id).ToList());
         }
 
         public static Pairing41ClosestMatchResult RunClosestMatches(Pairing41TestCase testCase)
@@ -106,27 +115,26 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             var form15 = ToDtoList(testCase.Form15);
             var form16 = ToDtoList(testCase.Form16);
 
-            var unpaired11 = GetUnpairedOperations11To15(form11, form15, testCase.Params11To15);
-            var unpaired15 = GetUnpairedOperations11To15(form15, form11, testCase.Params11To15);
-            var unpaired12 = GetUnpairedOperations12To16(form12, form16, testCase.Params12To16);
-            var unpaired13 = GetUnpairedOperations13To16(form13, form16, testCase.Params13To16);
-            var unpaired14 = GetUnpairedOperations14To16(form14, form16, testCase.Params14To16);
-            var unpaired16 = GetUnpairedForm16(
-                form16, form12, form13, form14,
-                testCase.Params12To16, testCase.Params13To16, testCase.Params14To16);
+            var unpaired = ComputeOrganizationUnpaired(
+                form11, form12, form13, form14, form15, form16,
+                new PairingParamsSet(
+                    testCase.Params11To15,
+                    testCase.Params12To16,
+                    testCase.Params13To16,
+                    testCase.Params14To16));
 
-            var closest11 = BuildClosestMatchHighlights(unpaired11, form15, testCase.Params11To15)
+            var closest11 = BuildClosestMatchHighlights(unpaired.Form11, form15, testCase.Params11To15)
                 .ToDictionary(kv => kv.Key, kv => (IReadOnlyDictionary<Pairing11To15Field, bool>)kv.Value.FieldMatches);
-            var closest15 = BuildClosestMatchHighlights(unpaired15, form11, testCase.Params11To15)
+            var closest15 = BuildClosestMatchHighlights(unpaired.Form15, form11, testCase.Params11To15)
                 .ToDictionary(kv => kv.Key, kv => (IReadOnlyDictionary<Pairing11To15Field, bool>)kv.Value.FieldMatches);
-            var closest12 = BuildClosestMatchHighlights12To16(unpaired12, form16, testCase.Params12To16)
+            var closest12 = BuildClosestMatchHighlights12To16(unpaired.Form12, form16, testCase.Params12To16)
                 .ToDictionary(kv => kv.Key, kv => (IReadOnlyDictionary<Pairing12To16Field, bool>)kv.Value);
-            var closest13 = BuildClosestMatchHighlights13To16(unpaired13, form16, testCase.Params13To16)
+            var closest13 = BuildClosestMatchHighlights13To16(unpaired.Form13, form16, testCase.Params13To16)
                 .ToDictionary(kv => kv.Key, kv => (IReadOnlyDictionary<Pairing13To16Field, bool>)kv.Value);
-            var closest14 = BuildClosestMatchHighlights14To16(unpaired14, form16, testCase.Params14To16)
+            var closest14 = BuildClosestMatchHighlights14To16(unpaired.Form14, form16, testCase.Params14To16)
                 .ToDictionary(kv => kv.Key, kv => (IReadOnlyDictionary<Pairing14To16Field, bool>)kv.Value);
             var closest16 = BuildClosestMatchHighlights16(
-                unpaired16, form12, form13, form14,
+                unpaired.Form16, form12, form13, form14,
                 testCase.Params12To16, testCase.Params13To16, testCase.Params14To16);
 
             return new Pairing41ClosestMatchResult(
@@ -168,4 +176,6 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             Quantity = row.Quantity
         };
     }
+
+    #endregion
 }

@@ -295,6 +295,9 @@
                 </MenuItem>
                 <MenuItem Command="{Binding  ExcelExportCheckLastInventoryDate, Mode=OneWay}"
                           Header="Проверка последней инвентаризации"/>
+                <MenuItem Command="{Binding ExcelExportCheckPairingOfCode41, Mode=OneWay}"
+                          CommandParameter="All"
+                          Header="Непарные операции 41 (вся БД)"/>
                 <MenuItem Header="Проблемные источники по региону"
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
                     <MenuItem Command="{Binding  ExcelExportLostAndExtraUnitsByRegion, Mode=OneWay}"

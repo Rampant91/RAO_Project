@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using Client_App.Commands.AsyncCommands.ExcelExport.ParingOfCode41.Testing;
-using static Client_App.Commands.AsyncCommands.ExcelExport.ParingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
+using Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.Testing;
+using static Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
 
 namespace Test.Pairing41;
 
