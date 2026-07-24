@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Client_App.ViewModels.Forms;
+using Client_App.ViewModels.Forms.Forms1;
 using Client_App.Views;
 using DynamicData;
 using MessageBox.Avalonia.DTO;
@@ -41,10 +42,11 @@ namespace Client_App.Commands.AsyncCommands.Generate
 
         private Form10 reportingOrganizationInfo;
 
-
         //На вход поступает строки формы 1.7
         public override async Task AsyncExecute(object? parameter)
         {
+            List<(int rowNum, string num, string type)> generatedPassports = new();
+
             if (parameter is not IEnumerable<Form> forms17Collection
                 || forms17Collection.Count()<=0
                 || forms17Collection.Any(f => f is not Form17)) return;
@@ -98,7 +100,8 @@ namespace Client_App.Commands.AsyncCommands.Generate
                 if (codeOperationRegex.IsMatch(form17.OperationCode_DB ?? ""))
                     parsedForm17.Add(new List<Form17>());
 
-                parsedForm17.Last().Add(form17);
+                if( parsedForm17.Count >0) 
+                    parsedForm17.Last().Add(form17);
 
             }
 
@@ -290,6 +293,7 @@ namespace Client_App.Commands.AsyncCommands.Generate
 
 
                 StaticConfiguration.DBModel.package_passport.Add(passport);
+                generatedPassports.Add((operation[0].NumberInOrder_DB,passport.PassportNum, passport.PackageType));
 
 
             }
@@ -349,23 +353,44 @@ namespace Client_App.Commands.AsyncCommands.Generate
             }
             #endregion
 
-            #region CommandCompletedMessage
-            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            if (generatedPassports.Count>0)
             {
-                ButtonDefinitions =
-                [
-                    new ButtonDefinition { Name = "Ок" },
-                ],
-                CanResize = true,
-                ContentTitle = "Формирование паспорта на упаковку",
-                ContentMessage = "Формирование завершено\n",
-                MinWidth = 300,
-                MinHeight = 125,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(owner));
-            #endregion
+                var msg = "Формирование завершено\n" +
+                    "Были сформированы следующие паспорта:\n" ;
+                foreach (var passport in generatedPassports)
+                {
+
+                    msg += new string('-', 60) + "\n";
+                    msg += $"№ строки - {passport.rowNum}\n" +
+                        $"Номер - {passport.num}\n" +
+                        $"Тип - {passport.type}\n";
+
+                }
+
+                #region CommandCompletedMessage
+                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions =
+                    [
+                        new ButtonDefinition { Name = "Ок" },
+                    ],
+                    CanResize = true,
+                    ContentTitle = "Формирование паспорта на упаковку",
+                    ContentMessage = msg,
+                    MinWidth = 300,
+                    MinHeight = 125,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(owner));
+                #endregion
+
+                //
+                if (formVM is Form_17VM form17VM)
+                {
+                    form17VM.UpdatePassportSelection();
+                }
+            }
         }
         private PackagePassport? FindPassportMatch(Form17 form17)
         {

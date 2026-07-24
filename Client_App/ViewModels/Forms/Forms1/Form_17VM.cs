@@ -78,48 +78,6 @@ public class Form_17VM : BaseFormVM
 
     #endregion
 
-    #region Commands
-    public ICommand GenerateForm17 => new GenerateForm17AsyncCommand(this);
-    public ICommand GeneratePackagePassport => new GeneratePackagePassportAsyncCommand(this);
-    #endregion
-
-    #region Events
-    protected override void SelectedForms_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-
-    {
-        base.SelectedForms_CollectionChanged(sender, e);
-
-        Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            List<Form17> selectedForms17 = e.NewItems.Cast<Form17>().OrderBy(f17 => f17.NumberInOrder_DB).ToList();
-            if (selectedForms17 is null || selectedForms17.Count <= 0) return;
-
-            Form17 form17 = selectedForms17.FirstOrDefault(f17 =>
-                !string.IsNullOrWhiteSpace(f17.OperationCode_DB)
-                && f17.OperationCode_DB is not "-");
-
-            if (form17 is null)
-            {
-                var formsList = Report.Rows17.ToList();
-                var index = formsList.IndexOf(selectedForms17.MinBy(f17 => f17.NumberInOrder_DB));
-
-                for (int i= index; i>=0; i--)
-                {
-                    if (!string.IsNullOrWhiteSpace(formsList[i].OperationCode_DB)
-                        && formsList[i].OperationCode_DB is not "-")
-                    {
-                        form17 = formsList[i];
-                        break;
-                    }
-                }
-            }
-
-            PackagePassportPanelControlVM.SelectPassport(form17.PassportNumber_DB, form17.PackType_DB);
-        });
-    }
-
-    #endregion
-
     #region RefineOrSortRAOCodes
 
     /// <summary>
@@ -182,6 +140,59 @@ public class Form_17VM : BaseFormVM
         _increaseFrozenCommand ??= new RelayCommand(() => FrozenColumnCount++);
 
     #endregion
+
+    #region Functions
+    public void UpdatePassportSelection()
+    {
+        var form17 = SelectedForms.OrderBy(f17 => f17.NumberInOrder_DB).FirstOrDefault() as Form17;
+        PackagePassportPanelControlVM.SelectPassport(form17.PassportNumber_DB, form17.PackType_DB);
+    }
+    #endregion
+
+    #region Commands
+    public ICommand GenerateForm17 => new GenerateForm17AsyncCommand(this);
+    public ICommand GeneratePackagePassport => new GeneratePackagePassportAsyncCommand(this);
+    #endregion
+
+    #region Events
+    protected override void SelectedForms_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+
+    {
+        base.SelectedForms_CollectionChanged(sender, e);
+
+
+        Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            List<Form17> selectedForms17 = SelectedForms.Cast<Form17>().ToList();
+            if (selectedForms17 is null || selectedForms17.Count <= 0) return;
+
+            var x = selectedForms17.Select(f17 => f17.OperationCode_DB).ToList();
+            Form17 form17 = selectedForms17.FirstOrDefault(f17 =>
+                !string.IsNullOrWhiteSpace(f17.OperationCode_DB)
+                && f17.OperationCode_DB is not "-");
+
+            if (form17 is null)
+            {
+                var formsList = Report.Rows17.ToList();
+                var index = formsList.IndexOf(selectedForms17.MinBy(f17 => f17.NumberInOrder_DB));
+
+                for (int i = index; i >= 0; i--)
+                {
+                    if (!string.IsNullOrWhiteSpace(formsList[i].OperationCode_DB)
+                        && formsList[i].OperationCode_DB is not "-")
+                    {
+                        form17 = formsList[i];
+                        break;
+                    }
+                }
+            }
+            
+            PackagePassportPanelControlVM.SelectPassport(form17?.PassportNumber_DB, form17?.PackType_DB);
+        });
+    }
+
+    #endregion
+
 
     #region Constructors
 

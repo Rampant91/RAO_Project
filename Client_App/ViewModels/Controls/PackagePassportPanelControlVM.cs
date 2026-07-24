@@ -61,11 +61,18 @@ namespace Client_App.ViewModels.Controls
         #endregion
 
         #region Functions
-        public void SelectPassport(string num, string type)
+        public void SelectPassport(string? num, string? type)
         {
-            SelectedPassport = PassportsMenuWindowVM.Passports.FirstOrDefault(p =>
-            p.PassportNum == num 
-            && p.PackageType == type);
+            if (num is null && type is null)
+                SelectedPassport = null;
+            else
+            {
+                SelectedPassport = PassportsMenuWindowVM.Passports
+                    .Where(p => 
+                    p.PassportNum == num
+                    && p.PackageType == type)
+                    .MaxBy(p => p.CorrectionNumber);
+            }
         }
         #endregion
 
