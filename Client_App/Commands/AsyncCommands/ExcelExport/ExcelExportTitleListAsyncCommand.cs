@@ -324,10 +324,13 @@ public class ExcelExportTitleListAsyncCommand : ExcelBaseAsyncCommand
     private async Task<string> GetFileName(Reports reps, AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
         string formNum;
+
         string regNum = "";
         string okpo = "";
 
         formNum = RemoveForbiddenChars(reps.Master.FormNum_DB);
+
+        string fileName = $"_{formNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
 
         if (reps.Master.RegNoRep != null)
             regNum = RemoveForbiddenChars(reps.Master.RegNoRep.Value);
@@ -336,8 +339,14 @@ public class ExcelExportTitleListAsyncCommand : ExcelBaseAsyncCommand
             okpo = RemoveForbiddenChars(reps.Master.OkpoRep.Value);
 
 
-        string fileName = $"{regNum}_{okpo}_{formNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
-        
+        if (formNum[0] is '1' or '2')
+            fileName = $"{regNum}_{okpo}_{formNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
+        else if (formNum[0] is '4')
+        {
+            string codeSubjectRF = reps.Master_DB.Rows40[0].CodeSubjectRF_DB;
+            fileName = $"{codeSubjectRF}_{formNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
+        }
+
         return fileName;
     }
 

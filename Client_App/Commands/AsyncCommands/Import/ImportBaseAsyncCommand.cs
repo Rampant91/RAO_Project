@@ -31,7 +31,8 @@ namespace Client_App.Commands.AsyncCommands.Import;
 public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 {
     private protected LoggerImportDTO? LoggerImportDTO;
-
+    
+    private protected bool SkipNewOrg;
     private protected bool SkipInter;               // Пропускать уведомления и отменять импорт при пересечении дат
     private protected bool SkipReplace;             // Пропускать уведомления о замене форм
     private protected bool HasMultipleReport;       // Имеет множество форм
@@ -196,8 +197,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     await CheckTitleFormAsync(baseReps, impReps, RepsWhereTitleFormCheckIsCancel);
                 }
                 baseReps.Report_Collection.Replace(oldReport, newReport);
-                StaticConfiguration.DBModel.Remove(oldReport!);
-                await ReportDeletionLogger.LogDeletionAsync(oldReport!);
+
+                if (oldReport.Id != 0)
+                {
+                    StaticConfiguration.DBModel.Remove(oldReport!);
+                    await ReportDeletionLogger.LogDeletionAsync(oldReport!);
+                }
                 AtLeastOneImportDone = true;
                 RecordImportedReport(baseReps);
                 Act = "Замена (пересечение)\t";
@@ -262,8 +267,19 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
             #endregion
 
+            #region OnlyTitleList
+            case "Только титульный лист":
+                if (!RepsWhereTitleFormCheckIsCancel.Contains((BaseRepsRegNum, BaseRepsOkpo)))
+                {
+                    await CheckTitleFormAsync(baseReps, impReps, RepsWhereTitleFormCheckIsCancel);
+                }
+                AtLeastOneImportDone = true;
+                RecordImportedReport(baseReps);
+                break;
+            #endregion
+
             #region CancelForAll
-            
+
             case "Отменить для всех пересечений":
                 SkipInter = true;
                 break; 
@@ -1165,6 +1181,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         foreach (var impRep in impRepList) //Для каждой импортируемой формы
         {
             ImpRepFormNum = impRep.FormNum_DB;
+            if (impRep.FormNum_DB == "2.1")
+                ;
             ImpRepCorNum = impRep.CorrectionNumber_DB;
             ImpRepFormCount = impRep.Rows.Count;
             ImpRepExpDate = impRep.ExportDate_DB;

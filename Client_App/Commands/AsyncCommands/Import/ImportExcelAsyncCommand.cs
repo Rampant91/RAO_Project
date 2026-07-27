@@ -208,6 +208,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     ImpRepYear = impRep.Year_DB ?? "";
 
                     impReps.Report_Collection.Add(impRep);
+
                 }
 
 
@@ -253,7 +254,11 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                         {
                             var selectedReports = parameter as Reports ?? _formsTabControlBaseVM.SelectedReports;
                             if (selectedReports is null) return;
-                            
+
+                            if (selectedReports.Master_DB.FormNum_DB[0] != impReps.Master_DB.FormNum_DB[0])
+                                continue;
+
+
                             baseReps = selectedReports;
                             break;
                         }
@@ -275,27 +280,42 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
                 #region FindBaseReport
 
-                Report? baseRep = null;
-                if (baseReps != null)
-                {
-                    baseRep = StaticConfiguration.DBModel.ReportCollectionDbSet
-                        .Where(rep => rep.Reports.Id == baseReps.Id)
-                        .FirstOrDefault(rep => rep.FormNum_DB == impRep.FormNum_DB
-                        && (( rep.FormNum_DB[0] == '1'
-                        && rep.StartPeriod_DB == impRep.StartPeriod_DB
-                        && rep.EndPeriod_DB == impRep.EndPeriod_DB)
-                        || (rep.FormNum_DB[0] != '1'
-                        && rep.Year_DB == impRep.Year_DB)));
-                }
+                //Report? baseRep = null;
+                //if (baseReps != null)
+                //{
+                //    baseRep = StaticConfiguration.DBModel.ReportCollectionDbSet
+                //        .Where(rep => rep.Reports.Id == baseReps.Id)
+                //        .FirstOrDefault(rep => rep.FormNum_DB == impRep.FormNum_DB
+                //        && ((rep.FormNum_DB[0] == '1'
+                //        && rep.StartPeriod_DB == impRep.StartPeriod_DB
+                //        && rep.EndPeriod_DB == impRep.EndPeriod_DB)
+                //        || (rep.FormNum_DB[0] != '1'
+                //        && rep.Year_DB == impRep.Year_DB)));
+                //}
 
                 #endregion
 
 
+
+
+                if (baseReps is null)
+                {
+
+                    baseReps = StaticConfiguration.DBModel.ReportsCollectionDbSet.Add(impReps).Entity;
+                    baseReps.DBObservableId = 1;
+
+                }
+
+                if (impRep is null)
+                {
+                    await CheckAnswer("Только титульный лист", baseReps, impReps, null, impRep);
+                    continue;
+                }
+
                 // Проверяем есть ли в БД, импортируемые отчеты
                 var impRepList = new List<Report> { impRep };
-                if (baseReps.Report_Collection.Count != 0)
+                if (!ExcelImportNewReps && impRepList.Count>0)
                 {
-                    #region CheckPresenceReportInDB
                     switch (worksheet0.Name.ToLower())
                     {
                         case "1.0":
@@ -320,164 +340,36 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                             }
 
                     }
-                    #endregion
                 }
                 else
                 {
-                    #region AddNewOrg
-
-                    var an = "Добавить";
-                    if (!SkipNewOrg)
-                    {
-                        if (answer.Length > 1)
-                        {
-                            if (worksheet0.Name is "1.0" or "2.0")
-                            {
-                                #region MessageNewOrg 1.0 or 2.0
-                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                                    {
-                                        ButtonDefinitions =
-                                        [
-                                            new ButtonDefinition { Name = "Добавить", IsDefault = true },
-                                        new ButtonDefinition { Name = "Да для всех" },
-                                        new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
-                                        ],
-                                        ContentTitle = "Импорт из .xlsx",
-                                        ContentHeader = "Уведомление",
-                                        ContentMessage =
-                                            $"Будет добавлена новая организация (), содержащая отчет по форме {ImpRepFormNum}." +
-                                            $"{Environment.NewLine}" +
-                                            $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
-                                            $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
-                                            $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
-                                            $"{Environment.NewLine}" +
-                                            $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
-                                            $"{Environment.NewLine}импортировать все новые организации.",
-                                        MinWidth = 400,
-                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                    })
-                                    .ShowDialog(Desktop.MainWindow));
-
-                                #endregion
-                            }
-                            else if (worksheet0.Name.ToLower() is "форма 4.0" or "форма 5.0")
-                            {
-                                #region MessageNewOrg 4.0 5.0
-
-                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                                    {
-                                        ButtonDefinitions =
-                                        [
-                                            new ButtonDefinition { Name = "Добавить", IsDefault = true },
-                                        new ButtonDefinition { Name = "Да для всех" },
-                                        new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
-                                        ],
-                                        ContentTitle = "Импорт из .xlsx",
-                                        ContentHeader = "Уведомление",
-                                        ContentMessage =
-                                            $"Будет добавлена новая организация (), содержащая отчет по форме {ImpRepFormNum}." +
-                                            $"{Environment.NewLine}" +
-                                            $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
-                                            $"{Environment.NewLine}" +
-                                            $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
-                                            $"{Environment.NewLine}импортировать все новые организации.",
-                                        MinWidth = 400,
-                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                    })
-                                    .ShowDialog(Desktop.MainWindow));
-
-                                #endregion
-                            }
-
-                            if (an is "Да для всех") SkipNewOrg = true;
-                        }
-                        else
-                        {
-                            if (worksheet0.Name is "1.0" or "2.0")
-                            {
-                                #region MessageNewOrg
-
-                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                                    {
-                                        ButtonDefinitions =
-                                        [
-                                            new ButtonDefinition { Name = "Добавить", IsDefault = true },
-                                        new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
-                                        ],
-                                        ContentTitle = "Импорт из .xlsx",
-                                        ContentHeader = "Уведомление",
-                                        ContentMessage = $"Будет добавлена новая организация ()." +
-                                                         $"{Environment.NewLine}" +
-                                                         $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
-                                                         $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
-                                                         $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
-                                        MinWidth = 400,
-                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                    })
-                                    .ShowDialog(Desktop.MainWindow));
-
-                                #endregion
-                            }
-                            else if (worksheet0.Name.ToLower() is "форма 4.0" or "форма 5.0")
-                            {
-                                #region MessageNewOrg 4.0 5.0
-
-                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
-                                    {
-                                        ButtonDefinitions =
-                                        [
-                                            new ButtonDefinition { Name = "Добавить", IsDefault = true },
-                                        new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
-                                        ],
-                                        ContentTitle = "Импорт из .xlsx",
-                                        ContentHeader = "Уведомление",
-                                        ContentMessage =
-                                            $"Будет добавлена новая организация (), содержащая отчет по форме {ImpRepFormNum}." +
-                                            $"{Environment.NewLine}" +
-                                            $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
-                                            $"{Environment.NewLine}",
-                                        MinWidth = 400,
-                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                    })
-                                    .ShowDialog(Desktop.MainWindow));
-
-                                #endregion
-                            }
-                        }
-                    }
-
-                    await CheckAnswer(an, baseReps, impReps, null, impRep);
-
-                    #endregion
+                    await CheckAnswer("Добавить", baseReps, impReps, null, impRep);
+                    
                 }
             }
 
             
-            try
-            {
-                var comparator = new CustomReportsComparer();
-                var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
-                if (tmpReportsList.All(x => x.Master_DB.RegNoRep != null && x.Master_DB.OkpoRep != null))
-                {
-                    var tmpReportsOrderedEnum = tmpReportsList
-                        .OrderBy(x => x.Master_DB?.RegNoRep?.Value, comparator)
-                        .ThenBy(x => x.Master_DB?.OkpoRep?.Value, comparator);
+            //try
+            //{
+            //    var comparator = new CustomReportsComparer();
+            //    var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+            //    if (tmpReportsList.All(x => x.Master_DB.RegNoRep != null && x.Master_DB.OkpoRep != null))
+            //    {
+            //        var tmpReportsOrderedEnum = tmpReportsList
+            //            .OrderBy(x => x.Master_DB?.RegNoRep?.Value, comparator)
+            //            .ThenBy(x => x.Master_DB?.OkpoRep?.Value, comparator);
 
-                    ReportsStorage.LocalReports.Reports_Collection.Clear();
-                    ReportsStorage.LocalReports.Reports_Collection.AddRange(tmpReportsOrderedEnum);
-                }
-            }
-            catch (Exception ex)
-            {
-                var msg = $"{Environment.NewLine}Message: {ex.Message}" +
-                          $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-                ServiceExtension.LoggerManager.Warning(msg);
-                return;
-            }
+            //        ReportsStorage.LocalReports.Reports_Collection.Clear();
+            //        ReportsStorage.LocalReports.Reports_Collection.AddRange(tmpReportsOrderedEnum);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+            //              $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            //    ServiceExtension.LoggerManager.Warning(msg);
+            //    return;
+            //}
 
 
             #region SaveDbChanges
@@ -487,6 +379,12 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             }
             catch (Exception ex)
             {
+                var list = StaticConfiguration.DBModel.ChangeTracker.Entries<Report>()
+                        .Where(e => e.State == EntityState.Added)
+                        .Select(e => e.Entity)
+                        .Where(rep => rep.FormNum_DB == "2.1")
+                        .ToList();
+
                 #region MessageImportError
 
                 await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
@@ -507,6 +405,10 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 return;
             }
             #endregion
+        }
+        catch (Exception ex)
+        {
+            throw ex;
         }
         finally
         {
@@ -558,7 +460,8 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
     private static Reports? GetBaseReps(ExcelWorksheet worksheet0)
     {
         var dbm = StaticConfiguration.DBModel;
-        switch(worksheet0.Name)
+
+        switch(worksheet0.Name.ToLower())
         {
             case "1.0":
                 {
@@ -566,46 +469,57 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     var excelOkpo1 = Convert.ToString(worksheet0.Cells["B37"].Value);
                     var excelRegNo = Convert.ToString(worksheet0.Cells["F6"].Value);
 
-                    return dbm.ReportsCollectionDbSet
-                        .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
+
+                    //Собираем список из содержимого БД
+                    //Сохраненные отчеты
+                    var form10List = dbm.ReportsCollectionDbSet
+                        .Include(reps => reps.Master_DB).ThenInclude(rep => rep.Rows10)
+                        .Where(reps => reps.Master_DB.FormNum_DB == "1.0").ToList();
+
+                    //Добавленные, но не сохраненные отчеты
+                    form10List.AddRange(StaticConfiguration.DBModel.ChangeTracker.Entries<Reports>()
+                        .Where(e => e.State == EntityState.Added)
+                        .Select(e => e.Entity)
+                        .Where(reps => reps.Master_DB.FormNum_DB == "1.0"));
+
+                    return form10List
                         .FirstOrDefault(t =>
 
                              // обособленные пусты и в базе и в импорте, то сверяем головное
-                             excelOkpo0 == t.Master.Rows10[0].Okpo_DB
-                             && excelRegNo == t.Master.Rows10[0].RegNo_DB
+                             excelOkpo0 == t.Master_DB.Rows10[0].Okpo_DB
+                             && excelRegNo == t.Master_DB.Rows10[0].RegNo_DB
                              && excelOkpo1 == ""
-                             && t.Master.Rows10[1].Okpo_DB == ""
+                             && t.Master_DB.Rows10[1].Okpo_DB == ""
 
                              // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                             || excelOkpo0 == t.Master.Rows10[0].Okpo_DB
-                             && excelRegNo == t.Master.Rows10[1].RegNo_DB
+                             || excelOkpo0 == t.Master_DB.Rows10[0].Okpo_DB
+                             && excelRegNo == t.Master_DB.Rows10[1].RegNo_DB
                              && excelOkpo1 == ""
-                             && t.Master.Rows10[1].Okpo_DB == ""
+                             && t.Master_DB.Rows10[1].Okpo_DB == ""
 
                              // обособленные не пусты, их и сверяем
-                             || excelOkpo1 == t.Master.Rows10[1].Okpo_DB
-                             && excelRegNo == t.Master.Rows10[1].RegNo_DB
+                             || excelOkpo1 == t.Master_DB.Rows10[1].Okpo_DB
+                             && excelRegNo == t.Master_DB.Rows10[1].RegNo_DB
                              && excelOkpo1 != ""
 
                              // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                             || excelOkpo1 == t.Master.Rows10[1].Okpo_DB
-                             && excelRegNo == t.Master.Rows10[0].RegNo_DB
+                             || excelOkpo1 == t.Master_DB.Rows10[1].Okpo_DB
+                             && excelRegNo == t.Master_DB.Rows10[0].RegNo_DB
                              && excelOkpo1 != ""
-                             && t.Master.Rows10[1].RegNo_DB == "")
-                        ?? dbm.ReportsCollectionDbSet
-                        .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
+                             && t.Master_DB.Rows10[1].RegNo_DB == "")
+                        ?? form10List
                         .FirstOrDefault(t =>
                              // юр лицо в базе совпадает с обособленным в импорте
                              excelOkpo1 != ""
-                             && t.Master.Rows10[1].Okpo_DB == ""
-                             && excelOkpo1 == t.Master.Rows10[0].Okpo_DB
-                             && excelRegNo == t.Master.Rows10[0].RegNo_DB
+                             && t.Master_DB.Rows10[1].Okpo_DB == ""
+                             && excelOkpo1 == t.Master_DB.Rows10[0].Okpo_DB
+                             && excelRegNo == t.Master_DB.Rows10[0].RegNo_DB
 
                              // юр лицо в импорте совпадает с обособленным в базе
                              || excelOkpo1 == ""
-                             && t.Master.Rows10[1].Okpo_DB != ""
-                             && excelOkpo0 == t.Master.Rows10[1].Okpo_DB
-                             && excelRegNo == t.Master.Rows10[1].RegNo_DB);
+                             && t.Master_DB.Rows10[1].Okpo_DB != ""
+                             && excelOkpo0 == t.Master_DB.Rows10[1].Okpo_DB
+                             && excelRegNo == t.Master_DB.Rows10[1].RegNo_DB);
                     break;
                 }
 
@@ -615,65 +529,98 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     var excelOkpo1 = Convert.ToString(worksheet0.Cells["B37"].Value);
                     var excelRegNo = Convert.ToString(worksheet0.Cells["F6"].Value);
 
-                    return dbm.ReportsCollectionDbSet
-                       .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
-                       .FirstOrDefault(t =>
+                    //Собираем список из содержимого БД
+                    //Сохраненные отчеты
+                    var form20List = dbm.ReportsCollectionDbSet
+                        .Include(reps => reps.Master_DB).ThenInclude(rep => rep.Rows20)
+                        .Where(reps => reps.Master_DB.FormNum_DB == "2.0").ToList();
+
+                    //Добавленные, но не сохраненные отчеты
+                    form20List.AddRange(StaticConfiguration.DBModel.ChangeTracker.Entries<Reports>()
+                        .Where(e => e.State == EntityState.Added)
+                        .Select(e => e.Entity)
+                        .Where(reps => reps.Master_DB.FormNum_DB == "2.0"));
+
+                    return form20List
+                        .FirstOrDefault(t =>
 
                            // обособленные пусты и в базе и в импорте, то сверяем головное
-                           excelOkpo0 == t.Master.Rows20[0].Okpo_DB
-                           && excelRegNo == t.Master.Rows20[0].RegNo_DB
+                           excelOkpo0 == t.Master_DB.Rows20[0].Okpo_DB
+                           && excelRegNo == t.Master_DB.Rows20[0].RegNo_DB
                            && excelOkpo1 == ""
-                           && t.Master.Rows20[1].Okpo_DB == ""
+                           && t.Master_DB.Rows20[1].Okpo_DB == ""
 
                            // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                           || excelOkpo0 == t.Master.Rows20[0].Okpo_DB
-                           && excelRegNo == t.Master.Rows20[1].RegNo_DB
+                           || excelOkpo0 == t.Master_DB.Rows20[0].Okpo_DB
+                           && excelRegNo == t.Master_DB.Rows20[1].RegNo_DB
                            && excelOkpo1 == ""
-                           && t.Master.Rows20[1].Okpo_DB == ""
+                           && t.Master_DB.Rows20[1].Okpo_DB == ""
 
                            // обособленные не пусты, их и сверяем
-                           || excelOkpo1 == t.Master.Rows20[1].Okpo_DB
-                           && excelRegNo == t.Master.Rows20[1].RegNo_DB
+                           || excelOkpo1 == t.Master_DB.Rows20[1].Okpo_DB
+                           && excelRegNo == t.Master_DB.Rows20[1].RegNo_DB
                            && excelOkpo1 != ""
 
                            // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                           || excelOkpo1 == t.Master.Rows20[1].Okpo_DB
-                           && excelRegNo == t.Master.Rows20[0].RegNo_DB
+                           || excelOkpo1 == t.Master_DB.Rows20[1].Okpo_DB
+                           && excelRegNo == t.Master_DB.Rows20[0].RegNo_DB
                            && excelOkpo1 != ""
-                           && t.Master.Rows20[1].RegNo_DB == "")
+                           && t.Master_DB.Rows20[1].RegNo_DB == "")
 
-                   ?? dbm.ReportsCollectionDbSet
-                       .Where(reps => reps.Master_DB.FormNum_DB == "2.0") // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
+                   ?? form20List
                        .FirstOrDefault(t =>
 
                            // юр лицо в базе совпадает с обособленным в импорте
                            excelOkpo1 != ""
-                           && t.Master.Rows20[1].Okpo_DB == ""
-                           && excelOkpo1 == t.Master.Rows20[0].Okpo_DB
-                           && excelRegNo == t.Master.Rows20[0].RegNo_DB
+                           && t.Master_DB.Rows20[1].Okpo_DB == ""
+                           && excelOkpo1 == t.Master_DB.Rows20[0].Okpo_DB
+                           && excelRegNo == t.Master_DB.Rows20[0].RegNo_DB
 
                            // юр лицо в импорте совпадает с обособленным в базе
                            || excelOkpo1 == ""
-                           && t.Master.Rows20[1].Okpo_DB != ""
-                           && excelOkpo0 == t.Master.Rows20[1].Okpo_DB
-                           && excelRegNo == t.Master.Rows20[1].RegNo_DB);
+                           && t.Master_DB.Rows20[1].Okpo_DB != ""
+                           && excelOkpo0 == t.Master_DB.Rows20[1].Okpo_DB
+                           && excelRegNo == t.Master_DB.Rows20[1].RegNo_DB);
                     break;
                 }
-            case "4.0":
+            case "форма 4.0":
                 {
+                    //Собираем список из содержимого БД
+                    //Сохраненные отчеты
+                    var form40List = dbm.ReportsCollectionDbSet
+                        .Include(reps => reps.Master_DB).ThenInclude(rep => rep.Rows40)
+                        .Where(reps => reps.Master_DB.FormNum_DB == "4.0").ToList();
+
+                    //Добавленные, но не сохраненные отчеты
+                    form40List.AddRange(StaticConfiguration.DBModel.ChangeTracker.Entries<Reports>()
+                        .Where(e => e.State == EntityState.Added)
+                        .Select(e => e.Entity)
+                        .Where(reps => reps.Master_DB.FormNum_DB == "4.0"));
+
                     var codeSubjectRF = Convert.ToString(worksheet0.Cells["B8"].Value);
                     var subjectRF = Convert.ToString(worksheet0.Cells["B9"].Value);
-                    return dbm.ReportsCollectionDbSet
-                       .Where(reps => reps.Master_DB.FormNum_DB == "4.0") 
+                    return form40List
                        .FirstOrDefault(t => t.Master_DB.Rows40[0].CodeSubjectRF_DB == codeSubjectRF
                        || t.Master_DB.Rows40[0].SubjectRF_DB == subjectRF);
                     break;
                 }
-            case "5.0":
+            case "форма 5.0":
                 {
+                    //Собираем список из содержимого БД
+                    //Сохраненные отчеты
+                    var form50List = dbm.ReportsCollectionDbSet
+                        .Include(reps => reps.Master_DB).ThenInclude(rep => rep.Rows50)
+                        .Where(reps => reps.Master_DB.FormNum_DB == "5.0").ToList();
+
+                    //Добавленные, но не сохраненные отчеты
+                    form50List.AddRange(StaticConfiguration.DBModel.ChangeTracker.Entries<Reports>()
+                        .Where(e => e.State == EntityState.Added)
+                        .Select(e => e.Entity)
+                        .Where(reps => reps.Master_DB.FormNum_DB == "5.0"));
+
                     var name = Convert.ToString(worksheet0.Cells["B20"].Value);
-                    return dbm.ReportsCollectionDbSet
-                       .Where(reps => reps.Master_DB.FormNum_DB == "5.0")
+
+                    return form50List
                        .FirstOrDefault(t => t.Master_DB.Rows50[0].Name_DB == name);
                     break;
                 }

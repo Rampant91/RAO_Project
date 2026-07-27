@@ -63,6 +63,15 @@
                                       Header="Добавить форму" />
                             <MenuItem Command="{Binding NewChangeReports, Mode=OneWay}" 
                                       Header="Редактировать форму" />
+							<MenuItem Header="Импортировать отчёт в организацию"
+                                      IsVisible="{Binding SelectedReports, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}">
+								<MenuItem Header="Из RAODB"
+                                          Command="{Binding ImportRaodb, Mode=OneWay}"
+                                          CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+								<MenuItem Header="Из Excel"
+                                          Command="{Binding ImportExcel, Mode=OneWay}"
+                                          CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+							</MenuItem>
                             <MenuItem Command="{Binding MainWindowVM.DeleteReports, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReports, Mode=OneWay}"
                                       Header="Удалить форму" />
