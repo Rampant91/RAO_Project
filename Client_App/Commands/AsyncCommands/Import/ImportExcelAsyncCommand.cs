@@ -262,17 +262,19 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                             baseReps = selectedReports;
                             break;
                         }
-                    //case "FromList":
-                    //    {
-                    //        var localRepsList = await GetReportsListFromDB(impReps.Master_DB.FormNum_DB);
-                    //        var currentReportIndex = impReportsList.IndexOf(impReps) + 1;
-                    //        var selectReportsMessageWindow = new SelectReportsMessageWindow(localRepsList, SourceFile!.Name, impReportsList.Count, currentReportIndex, impReps);
-                    //        var selectedReports = await selectReportsMessageWindow.ShowDialog<OrganizationInfo>(Desktop.MainWindow);
-                    //        if (selectedReports is null) return;
+                    case "FromList":
+                        {
+                            var localRepsList = await GetReportsListFromDB(impReps.Master_DB.FormNum_DB);
+                            var currentReportIndex = impReportsList.IndexOf(impReps) + 1;
+                            var selectReportsMessageWindow = new SelectReportsMessageWindow(localRepsList, SourceFile!.Name, impReportsList.Count, currentReportIndex, impReps);
+                            var selectedReports = await selectReportsMessageWindow.ShowDialog<OrganizationInfo>(Desktop.MainWindow);
+                            if (selectedReports is null) return;
 
-                    //        baseReps = selectedReports;
-                    //        break;
-                    //    }
+                            baseReps = StaticConfiguration.DBModel.ReportsCollectionDbSet
+                                .Include(reps=>reps.Master_DB)
+                                .FirstOrDefault(reps => reps.Id == selectedReports.ReportsId);
+                            break;
+                        }
                     default: return;
                 }
 
