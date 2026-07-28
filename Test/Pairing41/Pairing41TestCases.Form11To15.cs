@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.Testing;
+using static Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
 
 namespace Test.Pairing41;
 
@@ -17,6 +18,9 @@ internal static partial class Pairing41TestCases
         yield return A07_ActivityOutside10Percent_Unpaired();
         yield return A08_EmptySerialPlaceholders_QuantityPaired();
         yield return A09_SerialPlaceholderPassport_MatchesEmptyPassport();
+        yield return A10_Form15Code14_UnpairedOn11_NotOn15();
+        yield return A11_Form15Code14_OpCodeCheckOff_Paired();
+        yield return A12_Form15Code14_Alone_NotExportedAsUnpaired15();
     }
 
     /// <summary>A01. Две пары с заполненными паспорт/зав.№ → непарных нет.</summary>
@@ -128,6 +132,49 @@ internal static partial class Pairing41TestCases
         Name = "A09. Паспорт «б.н.» эквивалентен пустому при том же зав.№.",
         Form11 = [Row11(1, pasNum: "б.н.", facNum: "F-100")],
         Form15 = [Row11(101, pasNum: "", facNum: "F-100")],
+        ExpectedUnpaired11 = [],
+        ExpectedUnpaired15 = []
+    };
+
+    /// <summary>
+    /// A10. 1.1 код 41 ↔ 1.5 код 14 при прочих равных: кандидат находится (closest),
+    /// 1.1 непарная, строка с кодом 14 не попадает в непарные 1.5.
+    /// </summary>
+    private static Pairing41TestCase A10_Form15Code14_UnpairedOn11_NotOn15() => new()
+    {
+        Name = "A10. 1.5 с кодом 14: непарная на 1.1, код 14 не в непарных 1.5.",
+        Form11 = [Row11(1)],
+        Form15 = [Row11(101, opCode: "14")],
+        ExpectedUnpaired11 = [1],
+        ExpectedUnpaired15 = [],
+        ExpectedClosest11 = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, bool>>
+        {
+            [1] = new Dictionary<Pairing11To15Field, bool>
+            {
+                [Pairing11To15Field.OperationCode] = false,
+                [Pairing11To15Field.PassportNumber] = true,
+                [Pairing11To15Field.DocumentNumber] = true,
+                [Pairing11To15Field.Type] = true
+            }
+        }
+    };
+
+    /// <summary>A11. Та же пара 41↔14, но галка «код операции» снята → считаются парными.</summary>
+    private static Pairing41TestCase A11_Form15Code14_OpCodeCheckOff_Paired() => new()
+    {
+        Name = "A11. 1.5 код 14 при выключенном CheckOperationCode — парные.",
+        Params11To15 = new Pairing11To15Params(CheckOperationCode: false),
+        Form11 = [Row11(1)],
+        Form15 = [Row11(101, opCode: "14")],
+        ExpectedUnpaired11 = [],
+        ExpectedUnpaired15 = []
+    };
+
+    /// <summary>A12. Только 1.5 с кодом 14 (без 1.1) — в непарные 1.5 не попадает.</summary>
+    private static Pairing41TestCase A12_Form15Code14_Alone_NotExportedAsUnpaired15() => new()
+    {
+        Name = "A12. Одиночная 1.5 с кодом 14 — не в непарных 1.5.",
+        Form15 = [Row11(101, opCode: "14")],
         ExpectedUnpaired11 = [],
         ExpectedUnpaired15 = []
     };

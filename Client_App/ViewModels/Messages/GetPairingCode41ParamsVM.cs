@@ -69,6 +69,9 @@ public class GetPairingCode41ParamsVM : INotifyPropertyChanged
     private bool _checkPackNumber = true;
     public bool CheckPackNumber { get => _checkPackNumber; set => SetField(ref _checkPackNumber, value, ref _syncingAll11, UpdateCheckAll11To15); }
 
+    private bool _checkOperationCode = true;
+    public bool CheckOperationCode { get => _checkOperationCode; set => SetField(ref _checkOperationCode, value, ref _syncingAll11, UpdateCheckAll11To15); }
+
     private bool _checkOperationDate12To16 = true;
     public bool CheckOperationDate12To16 { get => _checkOperationDate12To16; set => SetField(ref _checkOperationDate12To16, value, ref _syncingAll12, UpdateCheckAll12To16); }
     private bool _checkMass12To16 = true;
@@ -190,6 +193,7 @@ public class GetPairingCode41ParamsVM : INotifyPropertyChanged
         CheckPackName = allChecked;
         CheckPackType = allChecked;
         CheckPackNumber = allChecked;
+        CheckOperationCode = allChecked;
         _syncingAll11 = false;
         UpdateCheckAll11To15();
     }
@@ -211,7 +215,8 @@ public class GetPairingCode41ParamsVM : INotifyPropertyChanged
                   && CheckTransporterOkpo
                   && CheckPackName
                   && CheckPackType
-                  && CheckPackNumber;
+                  && CheckPackNumber
+                  && CheckOperationCode;
 
         var none = !CheckOperationDate
                    && !CheckPassportNumber
@@ -228,7 +233,8 @@ public class GetPairingCode41ParamsVM : INotifyPropertyChanged
                    && !CheckTransporterOkpo
                    && !CheckPackName
                    && !CheckPackType
-                   && !CheckPackNumber;
+                   && !CheckPackNumber
+                   && !CheckOperationCode;
 
         _syncingAll11 = true;
         CheckAll = all ? true : none ? false : null;

@@ -89,13 +89,16 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     private static bool FieldMatches11To15(PairingNorm left, PairingNorm right, Pairing11To15Field field) =>
         field switch
         {
+            Pairing11To15Field.OperationCode => left.OpCode == right.OpCode,
             Pairing11To15Field.OperationDate => left.OpDate == right.OpDate,
             Pairing11To15Field.PassportNumber => left.PasNum == right.PasNum,
             Pairing11To15Field.Type => left.Type == right.Type,
             Pairing11To15Field.Radionuclids => left.Radionuclids == right.Radionuclids,
             Pairing11To15Field.FactoryNumber => left.FacNum == right.FacNum,
             Pairing11To15Field.Activity => NumericTolerance(left.Activity, right.Activity),
-            Pairing11To15Field.Quantity => left.Quantity == right.Quantity,
+            // При пустых серийных qty сводится суммарно: построчное равенство для непарных
+            // вводит в заблуждение (все поля зелёные при остатке по партии).
+            Pairing11To15Field.Quantity => QuantityMatchesForClosest(left, right),
             Pairing11To15Field.CreationDate => left.CreationDate == right.CreationDate,
             Pairing11To15Field.DocumentVid => left.DocumentVid == right.DocumentVid,
             Pairing11To15Field.DocumentNumber => left.DocumentNumber == right.DocumentNumber,
@@ -108,9 +111,27 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             _ => false
         };
 
+    /// <summary>
+    /// Для closest: при пустых паспорт+зав.№ на обеих сторонах количество всегда «не совпало»
+    /// (непарность в этой ветке — остаток суммарного qty, а не построчное сравнение).
+    /// </summary>
+    private static bool QuantityMatchesForClosest(PairingNorm left, PairingNorm right)
+    {
+        if (HasEmptySerials(left) && HasEmptySerials(right))
+        {
+            return false;
+        }
+
+        return left.Quantity == right.Quantity;
+    }
+
+    private static bool HasEmptySerials(PairingNorm norm) =>
+        norm.PasNum.Length == 0 && norm.FacNum.Length == 0;
+
     private static List<Pairing11To15Field> GetEnabledFields(Pairing11To15Params options)
     {
-        var fields = new List<Pairing11To15Field>(16);
+        var fields = new List<Pairing11To15Field>(17);
+        if (options.CheckOperationCode) fields.Add(Pairing11To15Field.OperationCode);
         if (options.CheckOperationDate) fields.Add(Pairing11To15Field.OperationDate);
         if (options.CheckPassportNumber) fields.Add(Pairing11To15Field.PassportNumber);
         if (options.CheckType) fields.Add(Pairing11To15Field.Type);
@@ -137,6 +158,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
     public enum Pairing11To15Field
     {
+        OperationCode,
         OperationDate,
         PassportNumber,
         Type,
@@ -502,6 +524,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     /// </summary>
     private sealed class PairingNorm
     {
+        public required string OpCode { get; init; }
         public required string OpDate { get; init; }
         public required string PasNum { get; init; }
         public required string Type { get; init; }
@@ -555,6 +578,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
     private static PairingNorm CreatePairingNorm(Operation41PairingDto row) => new()
     {
+        OpCode = NormalizeNumber(row.OpCode),
         OpDate = NormalizeDate(row.OpDate),
         PasNum = NormalizeSerialNumber(row.PasNum),
         Type = NormalizeNumber(row.Type),

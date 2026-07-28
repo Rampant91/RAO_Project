@@ -18,18 +18,207 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
     private static readonly Color PairingFieldMatchFill = Color.FromArgb(198, 239, 206);
     private static readonly Color PairingFieldMismatchFill = Color.FromArgb(255, 205, 210);
+    private static readonly Color PairingLegendTitleFill = Color.FromArgb(33, 78, 128);
+    private static readonly Color PairingLegendSectionFill = Color.FromArgb(217, 226, 243);
+    private static readonly Color PairingLegendBorder = Color.FromArgb(180, 180, 180);
 
     /// <summary>
-    /// Создаёт 6 листов с заголовками (без данных и без Excel-таблиц).
+    /// Создаёт лист «Легенда» и 6 листов форм с заголовками (без данных и без Excel-таблиц).
     /// </summary>
     private void InitializePairingWorkbook(ExcelPackage excelPackage)
     {
+        CreatePairingLegendSheet(excelPackage);
         CreateEmptyPairingSheet(excelPackage, "Форма 1.1", "1.1");
         CreateEmptyPairingSheet(excelPackage, "Форма 1.2", "1.2");
         CreateEmptyPairingSheet(excelPackage, "Форма 1.3", "1.3");
         CreateEmptyPairingSheet(excelPackage, "Форма 1.4", "1.4");
         CreateEmptyPairingSheet(excelPackage, "Форма 1.5", "1.5");
         CreateEmptyPairingSheet(excelPackage, "Форма 1.6", "1.6");
+    }
+
+    /// <summary>
+    /// Первый лист книги: пояснения для пользователя (цвета, пары форм, код 14, qty, допуск).
+    /// </summary>
+    private static void CreatePairingLegendSheet(ExcelPackage excelPackage)
+    {
+        var sheet = excelPackage.Workbook.Worksheets.Add("Легенда");
+        excelPackage.Workbook.Worksheets.MoveToStart("Легенда");
+
+        sheet.Cells.Style.Font.Name = "Calibri";
+        sheet.Cells.Style.Font.Size = 11;
+        sheet.Cells.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        sheet.Column(1).Width = 22;
+        sheet.Column(2).Width = 78;
+        sheet.Column(3).Width = 4;
+        sheet.View.ShowGridLines = false;
+
+        var row = 1;
+
+        void Title(string text)
+        {
+            sheet.Cells[row, 1, row, 2].Merge = true;
+            var cell = sheet.Cells[row, 1];
+            cell.Value = text;
+            cell.Style.Font.Size = 16;
+            cell.Style.Font.Bold = true;
+            cell.Style.Font.Color.SetColor(Color.White);
+            cell.Style.Fill.SetBackground(PairingLegendTitleFill, ExcelFillStyle.Solid);
+            cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+            sheet.Row(row).Height = 28;
+            row++;
+        }
+
+        void Subtitle(string text)
+        {
+            sheet.Cells[row, 1, row, 2].Merge = true;
+            var cell = sheet.Cells[row, 1];
+            cell.Value = text;
+            cell.Style.Font.Size = 11;
+            cell.Style.Font.Italic = true;
+            cell.Style.Font.Color.SetColor(Color.FromArgb(70, 70, 70));
+            sheet.Row(row).Height = 20;
+            row++;
+        }
+
+        void Blank()
+        {
+            sheet.Row(row).Height = 8;
+            row++;
+        }
+
+        void Section(string text)
+        {
+            sheet.Cells[row, 1, row, 2].Merge = true;
+            var cell = sheet.Cells[row, 1];
+            cell.Value = text;
+            cell.Style.Font.Size = 12;
+            cell.Style.Font.Bold = true;
+            cell.Style.Fill.SetBackground(PairingLegendSectionFill, ExcelFillStyle.Solid);
+            sheet.Row(row).Height = 22;
+            row++;
+        }
+
+        void Body(string text)
+        {
+            sheet.Cells[row, 1, row, 2].Merge = true;
+            var cell = sheet.Cells[row, 1];
+            cell.Value = text;
+            cell.Style.WrapText = true;
+            cell.Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+            sheet.Row(row).Height = EstimateWrappedRowHeight(text, 100);
+            row++;
+        }
+
+        void Bullet(string text) => Body("•  " + text);
+
+        void ColorRow(Color fill, string label, string explanation)
+        {
+            var sample = sheet.Cells[row, 1];
+            sample.Value = label;
+            sample.Style.Fill.SetBackground(fill, ExcelFillStyle.Solid);
+            sample.Style.Font.Bold = true;
+            sample.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            sample.Style.Border.BorderAround(ExcelBorderStyle.Thin, PairingLegendBorder);
+
+            var text = sheet.Cells[row, 2];
+            text.Value = explanation;
+            text.Style.WrapText = true;
+            sheet.Row(row).Height = EstimateWrappedRowHeight(explanation, 78);
+            row++;
+        }
+
+        void PairRow(string leftForm, string rightForm)
+        {
+            sheet.Cells[row, 1].Value = leftForm;
+            sheet.Cells[row, 1].Style.Font.Bold = true;
+            sheet.Cells[row, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            sheet.Cells[row, 1].Style.Border.BorderAround(ExcelBorderStyle.Thin, PairingLegendBorder);
+            sheet.Cells[row, 2].Value = rightForm;
+            sheet.Cells[row, 2].Style.WrapText = true;
+            sheet.Row(row).Height = 18;
+            row++;
+        }
+
+        Title("Непарные операции с кодом 41 — как читать отчёт");
+        Subtitle("Ниже — кратко о том, что означают строки и цвета на листах форм.");
+        Blank();
+
+        Section("Зачем этот файл");
+        Body("В отчёт попадают строки операций с кодом 41, для которых не нашлась парная запись при переводе сведений из форм учёта РВ в формы учёта РАО. Файл помогает найти расхождения и восстановить картину перевода.");
+        Bullet("Листы «Форма 1.1» … «Форма 1.6» — сами непарные строки.");
+        Bullet("Этот лист «Легенда» — пояснения; данные организаций на нём не выводятся.");
+        Blank();
+
+        Section("Цвета ячеек");
+        Body("На листах форм часть ячеек подкрашена. Цвет показывает сравнение непарной строки с наиболее похожей строкой на другой стороне («ближайшее совпадение»).");
+        ColorRow(
+            PairingFieldMatchFill,
+            "Зелёный",
+            "Значение совпало с ближайшим совпадением на парной форме.");
+        ColorRow(
+            PairingFieldMismatchFill,
+            "Красный",
+            "Значение не совпало с ближайшим совпадением. Это подсказка, где искать расхождение.");
+        Body("Без заливки — сравнение по этому полю не выполнялось. Так бывает в двух случаях:");
+        Bullet("на парной форме у организации нет ни одной операции с кодом 41, с которой можно сравнить строку (для 1.1 парная форма — 1.5; для 1.2, 1.3 и 1.4 — 1.6; для 1.5 — 1.1; для 1.6 — 1.2, 1.3 и 1.4);");
+        Bullet("перед выгрузкой в окне параметров вы сняли галочку с этого поля — оно не участвует в сравнении и не подсвечивается.");
+        Blank();
+
+        Section("Какие формы сравниваются");
+        PairRow("Форма", "С чем сравнивается");
+        sheet.Cells[row - 1, 1].Style.Fill.SetBackground(PairingLegendSectionFill, ExcelFillStyle.Solid);
+        sheet.Cells[row - 1, 2].Style.Fill.SetBackground(PairingLegendSectionFill, ExcelFillStyle.Solid);
+        sheet.Cells[row - 1, 1].Style.Font.Bold = true;
+        sheet.Cells[row - 1, 2].Style.Font.Bold = true;
+        PairRow("1.1", "1.5");
+        PairRow("1.2", "1.6");
+        PairRow("1.3", "1.6");
+        PairRow("1.4", "1.6");
+        PairRow("1.5", "1.1 (только операции с кодом 41)");
+        PairRow("1.6", "1.2, затем 1.3, затем 1.4");
+        Blank();
+
+        Section("Особый случай: код 14 на форме 1.5");
+        Body("Иногда на форме 1.5 вместо кода 41 указывают код 14. Программа учитывает такие строки при поиске пары для формы 1.1 (код 41), но:");
+        Bullet("строка формы 1.5 с кодом 14 в этот отчёт не выводится;");
+        Bullet("если на 1.1 осталась непарная строка, а ближайшее совпадение на 1.5 имеет код 14, ячейка «Код операции» на листе 1.1 будет красной — коды 41 и 14 не совпали.");
+        Blank();
+
+        Section("Пустые паспорт и заводской номер");
+        Body("Если паспорт и заводской номер пустые (или стоят заглушки вроде «-», «б.н.», «без номера»), несколько строк могут описывать одну партию: одна строка с количеством N или несколько строк, сумма количеств которых равна N. Такие записи считаются одной партией.");
+        Bullet("В отчёте подсвечивается красным только неверно указанное количество.");
+        Bullet("Если строка в отчёте из‑за несовпадения по количеству, ячейка «Количество» подсвечивается красным .");
+        Blank();
+
+        Section("Допуск ±10%");
+        Body("Для массы, объёма и активностей допускается расхождение до ±10%.");
+        Blank();
+
+        Section("Параметры сравнения (галочки перед выгрузкой)");
+        Body("Перед сохранением файла открывается окно, где можно выбрать, по каким полям сравнивать строки. Снятая галочка означает: поле не участвует в решении «парная / непарная» и не подкрашивается на листах форм. Само значение поля в Excel всё равно может быть выведено.");
+        Blank();
+
+        Section("Краткий порядок работы");
+        Bullet("Откройте нужный лист формы.");
+        Bullet("Посмотрите красные ячейки — они указывают на расхождения с ближайшим совпадением.");
+        Bullet("Сверьте проблемные ячейки с соответствующей парной строчкой в данном отчёте (если есть) или в программе.");
+        Bullet("При необходимости откройте исходные отчёты организации в программе и исправьте данные, внеся корректировку в отчёт.");
+
+        sheet.View.FreezePanes(3, 1);
+        sheet.PrinterSettings.FitToPage = true;
+        sheet.PrinterSettings.FitToWidth = 1;
+        sheet.PrinterSettings.FitToHeight = 0;
+    }
+
+    private static double EstimateWrappedRowHeight(string text, double approxCharsPerLine)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            return 18;
+        }
+
+        var lines = Math.Max(1, (int)Math.Ceiling(text.Length / Math.Max(1.0, approxCharsPerLine)));
+        return Math.Min(72, 16 + lines * 14);
     }
 
     private void CreateEmptyPairingSheet(ExcelPackage excelPackage, string sheetName, string formNum)
@@ -89,7 +278,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     }
 
     /// <summary>
-    /// Создаёт Excel-таблицы по фактическому диапазону данных после всех org.
+    /// Создаёт Excel-таблицы.
     /// </summary>
     private static void FinalizePairingWorkbookTables(ExcelPackage excelPackage)
     {
@@ -318,7 +507,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 Worksheet.Cells[1, 5].Value = "Дата конца периода";
                 Worksheet.Cells[1, 6].Value = "Номер корректировки";
                 Worksheet.Cells[1, 7].Value = "№ п/п";
-                Worksheet.Cells[1, 8].Value = "Код";
+                Worksheet.Cells[1, 8].Value = "Код операции";
                 Worksheet.Cells[1, 9].Value = "Дата";
                 Worksheet.Cells[1, 10].Value = "Номер паспорта (сертификата) ЗРИ, акта определения характеристик ОЗИИ";
                 Worksheet.Cells[1, 11].Value = "Тип";
@@ -691,6 +880,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     private static int? GetForm11Column(Pairing11To15Field field) =>
         field switch
         {
+            Pairing11To15Field.OperationCode => 8,
             Pairing11To15Field.OperationDate => 9,
             Pairing11To15Field.PassportNumber => 10,
             Pairing11To15Field.Type => 11,
@@ -713,6 +903,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     private static int? GetForm15Column(Pairing11To15Field field) =>
         field switch
         {
+            Pairing11To15Field.OperationCode => 8,
             Pairing11To15Field.OperationDate => 9,
             Pairing11To15Field.PassportNumber => 10,
             Pairing11To15Field.Type => 11,

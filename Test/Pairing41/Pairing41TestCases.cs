@@ -77,10 +77,12 @@ internal static partial class Pairing41TestCases
         string opDate = Form11OpDate,
         string creationDate = "2020-01-01",
         string documentNumber = "DOC-1",
-        string packNumber = "УКТ-1") =>
+        string packNumber = "УКТ-1",
+        string opCode = "41") =>
         new()
         {
             Id = id,
+            OpCode = opCode,
             OpDate = opDate,
             PasNum = pasNum,
             FacNum = facNum,

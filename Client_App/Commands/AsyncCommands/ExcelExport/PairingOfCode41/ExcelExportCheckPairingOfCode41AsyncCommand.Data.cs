@@ -180,7 +180,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         bool includeSerial,
         bool includeQuantity)
     {
-        var parts = new List<string>(16);
+        var parts = new List<string>(17);
+        if (options.CheckOperationCode) parts.Add(NormalizeNumber(row.OpCode));
         if (options.CheckOperationDate) parts.Add(NormalizeDate(row.OpDate));
         if (includeSerial && options.CheckPassportNumber) parts.Add(NormalizeSerialNumber(row.PasNum));
         if (options.CheckType) parts.Add(NormalizeNumber(row.Type));
@@ -550,7 +551,9 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         };
 
         return operations
-            .Where(form => string.Equals(form.OpCode.Trim(), OperationCode, StringComparison.Ordinal))
+            .Where(form => formNum == "1.5"
+                ? IsForm15PairingCandidateOpCode(form.OpCode)
+                : string.Equals(form.OpCode.Trim(), OperationCode, StringComparison.Ordinal))
             // Стабильный порядок для жадного matching (org и whole-DB bulk).
             .OrderBy(form => form.Id)
             .ToList();
@@ -769,11 +772,14 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         DBModel db, int? repsId, CancellationToken cancellationToken, Pairing11To15Params? options = null)
     {
         var effectiveRepsId = repsId ?? 0;
+        // Код 41 (штатный перевод) и код 14 (частая ошибка «получение» вместо перевода).
+        // OpCode всегда читаем — нужен и для ключа, и чтобы отсечь 14 из обратной сверки.
         return ScopedReports(db, repsId)
             .SelectMany(reps => reps.Report_Collection
                 .Where(rep => rep.FormNum_DB == "1.5")
                 .SelectMany(rep => rep.Rows15))
-            .Where(form => form.OperationCode_DB == OperationCode)
+            .Where(form => form.OperationCode_DB == OperationCode
+                           || form.OperationCode_DB == Form15ReceiveMistypeOpCode)
             .Select(form => new Operation41PairingDto
             {
                 Id = form.Id,

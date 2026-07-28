@@ -14,6 +14,11 @@ internal static partial class Pairing41TestCases
         yield return H03_Form16_Prefers12_WhenScoresEqual();
         yield return H04_Form16_Chooses13_WhenBetterScore();
         yield return H05_NoReference_NoClosestMap();
+        yield return A10_Form15Code14_UnpairedOn11_NotOn15();
+        yield return H06_EmptySerial_ExtraRowOn15_QuantityHighlightedFalse();
+        yield return H07_EmptySerial_PartialQtyRemainder_BothUnpairedQtyFalse();
+        yield return H08_EmptySerial_SourceQtyRemainder_QuantityHighlightedFalse();
+        yield return H09_WithSerial_QuantityEqual_StillGreenOnOtherMismatch();
     }
 
     /// <summary>H01. Единственное расхождение — номер документа; closest отмечает его false.</summary>
@@ -191,5 +196,110 @@ internal static partial class Pairing41TestCases
         ExpectedUnpaired12 = [2],
         ExpectedUnpaired16 = [],
         ExpectedClosest12 = new Dictionary<int, IReadOnlyDictionary<Pairing12To16Field, bool>>()
+    };
+
+    /// <summary>
+    /// H06. Пустые серийные: 1×qty=1 на 1.1 и 2×qty=1 на 1.5 → одна непарная на 1.5.
+    /// Qty в closest красный (не зелёный из‑за построчного 1==1).
+    /// </summary>
+    private static Pairing41TestCase H06_EmptySerial_ExtraRowOn15_QuantityHighlightedFalse() => new()
+    {
+        Name = "H06. Пустые серийные: лишняя qty=1 на 1.5 — Quantity в closest false.",
+        Form11 = [Row11(1, pasNum: "", facNum: "", quantity: 1)],
+        Form15 =
+        [
+            Row11(101, pasNum: "", facNum: "", quantity: 1),
+            Row11(102, pasNum: "", facNum: "", quantity: 1)
+        ],
+        ExpectedUnpaired11 = [],
+        ExpectedUnpaired15 = [102],
+        ExpectedClosest15 = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, bool>>
+        {
+            [102] = new Dictionary<Pairing11To15Field, bool>
+            {
+                [Pairing11To15Field.Quantity] = false,
+                [Pairing11To15Field.PassportNumber] = true,
+                [Pairing11To15Field.FactoryNumber] = true,
+                [Pairing11To15Field.DocumentNumber] = true,
+                [Pairing11To15Field.Type] = true
+            }
+        }
+    };
+
+    /// <summary>
+    /// H07. Пустые серийные: 1.1 qty=3; 1.5 qty=3,3,2 → непарные 3 и 2 на 1.5.
+    /// У обеих Quantity в closest false (раньше у qty=3 было зелёным).
+    /// </summary>
+    private static Pairing41TestCase H07_EmptySerial_PartialQtyRemainder_BothUnpairedQtyFalse() => new()
+    {
+        Name = "H07. Пустые серийные: остаток 3 и 2 на 1.5 — Quantity false у обеих.",
+        Form11 = [Row11(1, pasNum: "", facNum: "", quantity: 3)],
+        Form15 =
+        [
+            Row11(101, pasNum: "", facNum: "", quantity: 3),
+            Row11(102, pasNum: "", facNum: "", quantity: 3),
+            Row11(103, pasNum: "", facNum: "", quantity: 2)
+        ],
+        ExpectedUnpaired11 = [],
+        ExpectedUnpaired15 = [102, 103],
+        ExpectedClosest15 = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, bool>>
+        {
+            [102] = new Dictionary<Pairing11To15Field, bool>
+            {
+                [Pairing11To15Field.Quantity] = false,
+                [Pairing11To15Field.DocumentNumber] = true,
+                [Pairing11To15Field.Type] = true
+            },
+            [103] = new Dictionary<Pairing11To15Field, bool>
+            {
+                [Pairing11To15Field.Quantity] = false,
+                [Pairing11To15Field.DocumentNumber] = true,
+                [Pairing11To15Field.Type] = true
+            }
+        }
+    };
+
+    /// <summary>
+    /// H08. Пустые серийные: 1.1 qty=8 vs 1.5 qty=5 → остаток на 1.1, Quantity false.
+    /// </summary>
+    private static Pairing41TestCase H08_EmptySerial_SourceQtyRemainder_QuantityHighlightedFalse() => new()
+    {
+        Name = "H08. Пустые серийные: остаток qty на 1.1 — Quantity в closest false.",
+        Form11 = [Row11(1, pasNum: "", facNum: "", quantity: 8)],
+        Form15 = [Row11(101, pasNum: "", facNum: "", quantity: 5)],
+        ExpectedUnpaired11 = [1],
+        ExpectedUnpaired15 = [],
+        ExpectedClosest11 = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, bool>>
+        {
+            [1] = new Dictionary<Pairing11To15Field, bool>
+            {
+                [Pairing11To15Field.Quantity] = false,
+                [Pairing11To15Field.PassportNumber] = true,
+                [Pairing11To15Field.DocumentNumber] = true,
+                [Pairing11To15Field.Type] = true
+            }
+        }
+    };
+
+    /// <summary>
+    /// H09. С серийными номерами: расхождение только документа; qty одинаковый —
+    /// Quantity остаётся true (ветка агрегации не применяется).
+    /// </summary>
+    private static Pairing41TestCase H09_WithSerial_QuantityEqual_StillGreenOnOtherMismatch() => new()
+    {
+        Name = "H09. С серийными: qty совпал, документ нет — Quantity true.",
+        Form11 = [Row11(1, documentNumber: "DOC-A", quantity: 3)],
+        Form15 = [Row11(101, documentNumber: "DOC-B", quantity: 3)],
+        ExpectedUnpaired11 = [1],
+        ExpectedUnpaired15 = [101],
+        ExpectedClosest11 = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, bool>>
+        {
+            [1] = new Dictionary<Pairing11To15Field, bool>
+            {
+                [Pairing11To15Field.Quantity] = true,
+                [Pairing11To15Field.DocumentNumber] = false,
+                [Pairing11To15Field.PassportNumber] = true
+            }
+        }
     };
 }

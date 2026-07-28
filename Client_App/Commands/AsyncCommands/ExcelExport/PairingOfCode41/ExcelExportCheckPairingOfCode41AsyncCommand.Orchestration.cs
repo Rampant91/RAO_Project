@@ -385,6 +385,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
     /// <summary>
     /// Единое ядро сопоставления для режима одной org и всей БД (и для unit-тестов).
+    /// 1.1 ищет пару среди 1.5 с кодами 41 и 14; обратная сверка 1.5→1.1 — только по коду 41
+    /// (ошибочный код 14 на 1.5 не ищет пару и не попадает в непарные 1.5).
     /// </summary>
     private static OrganizationUnpairedSets ComputeOrganizationUnpaired(
         List<Operation41PairingDto> form11,
@@ -400,13 +402,25 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         var p13 = pairingParams.Pairing13To16;
         var p14 = pairingParams.Pairing14To16;
 
+        // Код 14 на 1.5 — только кандидат для 1.1, не источник обратной сверки.
+        var form15Code41Only = form15.Where(IsForm15Code41).ToList();
+
         return new OrganizationUnpairedSets(
             GetUnpairedOperations11To15(form11, form15, p11),
             GetUnpairedOperations12To16(form12, form16, p12),
             GetUnpairedOperations13To16(form13, form16, p13),
             GetUnpairedOperations14To16(form14, form16, p14),
-            GetUnpairedOperations11To15(form15, form11, p11),
+            GetUnpairedOperations11To15(form15Code41Only, form11, p11),
             GetUnpairedForm16(form16, form12, form13, form14, p12, p13, p14));
+    }
+
+    private static bool IsForm15Code41(Operation41PairingDto row) =>
+        string.Equals(row.OpCode.Trim(), OperationCode, StringComparison.Ordinal);
+
+    private static bool IsForm15PairingCandidateOpCode(string? opCode)
+    {
+        var code = opCode?.Trim() ?? string.Empty;
+        return code == OperationCode || code == Form15ReceiveMistypeOpCode;
     }
 
     private readonly record struct OrganizationUnpairedSets(

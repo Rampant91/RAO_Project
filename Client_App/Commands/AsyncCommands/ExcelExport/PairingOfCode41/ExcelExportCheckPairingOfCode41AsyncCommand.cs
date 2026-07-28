@@ -24,6 +24,13 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
     private const string OperationCode = "41";
 
     /// <summary>
+    /// Частая ошибка на форме 1.5: вместо 41 указывают код получения 14.
+    /// Такие строки загружаются как кандидаты для пары к 1.1, но не ищут себе пару
+    /// и не попадают в непарные на листе 1.5.
+    /// </summary>
+    private const string Form15ReceiveMistypeOpCode = "14";
+
+    /// <summary>
     /// Ограничение Firebird для списка IN (...); берём запас ниже лимита 1500.
     /// </summary>
     private const int FirebirdInListMaxCount = 1000;
@@ -133,7 +140,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
                 dialog.Vm.CheckTransporterOkpo,
                 dialog.Vm.CheckPackName,
                 dialog.Vm.CheckPackType,
-                dialog.Vm.CheckPackNumber),
+                dialog.Vm.CheckPackNumber,
+                dialog.Vm.CheckOperationCode),
             new Pairing12To16Params(
                 dialog.Vm.CheckOperationDate12To16,
                 dialog.Vm.CheckMass12To16,
@@ -200,7 +208,9 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
         bool CheckTransporterOkpo = true,
         bool CheckPackName = true,
         bool CheckPackType = true,
-        bool CheckPackNumber = true);
+        bool CheckPackNumber = true,
+        /// <summary>Код операции (на 1.5 часто ошибочно 14 вместо 41).</summary>
+        bool CheckOperationCode = true);
 
     public sealed record Pairing12To16Params(
         bool CheckOperationDate = true,
