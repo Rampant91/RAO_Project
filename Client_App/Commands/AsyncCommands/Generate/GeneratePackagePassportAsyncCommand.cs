@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using Client_App.ViewModels.Controls;
 using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.Views;
@@ -46,6 +47,7 @@ namespace Client_App.Commands.AsyncCommands.Generate
         public override async Task AsyncExecute(object? parameter)
         {
             List<(int rowNum, string num, string type)> generatedPassports = new();
+            List<(int rowNum, string num, string type)> alreadyExistedPassports = new();
 
             if (parameter is not IEnumerable<Form> forms17Collection
                 || forms17Collection.Count()<=0
@@ -133,7 +135,15 @@ namespace Client_App.Commands.AsyncCommands.Generate
                 else if (passportMatch == null && operation[0].OperationCode_DB != "18")
                     passport.CorrectionNumber = 0;
                 else if (passportMatch != null && operation[0].OperationCode_DB != "18")
+                {
+                    alreadyExistedPassports.Add(new()
+                    {
+                        rowNum = operation[0].NumberInOrder_DB,
+                        num = operation[0].PassportNumber_DB,
+                        type = operation[0].PackType_DB
+                    });
                     continue;
+                }
 
                 passport.PackageType = operation[0].PackType_DB;
 
@@ -352,6 +362,45 @@ namespace Client_App.Commands.AsyncCommands.Generate
                 return;
             }
             #endregion
+
+            if (alreadyExistedPassports.Count >0)
+            {
+                var msg = "УЖЕ СУЩЕСТВУЮЩИЕ ПАСПОРТА\n" +
+                    "Данные паспорта не были добавлены, т.к. они уже существуют:\n";
+                foreach (var passport in alreadyExistedPassports)
+                {
+
+                    msg += new string('-', 60) + "\n";
+                    msg += $"№ строки - {passport.rowNum}\n" +
+                        $"Номер - {passport.num}\n" +
+                        $"Тип - {passport.type}\n";
+
+                }
+
+                #region CommandCompletedMessage
+                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions =
+                    [
+                        new ButtonDefinition { Name = "Ок" },
+                    ],
+                    CanResize = true,
+                    ContentTitle = "Формирование паспорта на упаковку",
+                    ContentMessage = msg,
+                    MinWidth = 300,
+                    MinHeight = 125,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(owner));
+                #endregion
+
+                //
+                if (formVM is Form_17VM form17VM)
+                {
+                    form17VM.UpdatePassportSelection();
+                }
+            }
 
             if (generatedPassports.Count>0)
             {
