@@ -6,6 +6,7 @@ using Client_App.ViewModels.Forms.Forms1.Items;
 using Client_App.ViewModels.Forms.Forms1.Providers;
 using Client_App.ViewModels.Forms.Forms1.Providers;
 using CommunityToolkit.Mvvm.Input;
+using DynamicData;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -144,7 +145,21 @@ public class Form_17VM : BaseFormVM
     #region Functions
     public void UpdatePassportSelection()
     {
-        var form17 = SelectedForms.OrderBy(f17 => f17.NumberInOrder_DB).FirstOrDefault() as Form17;
+        Form17 form17 = null;
+
+        var formsList = Report.Rows17.ToList();
+        var index = formsList.IndexOf(SelectedForms.MinBy(f17 => f17.NumberInOrder_DB));
+
+        for (int i = index; i >= 0; i--)
+        {
+            if (!string.IsNullOrWhiteSpace(formsList[i].OperationCode_DB)
+                && formsList[i].OperationCode_DB is not "-")
+            {
+                form17 = formsList[i];
+                break;
+            }
+        }
+
         PackagePassportPanelControlVM.SelectPassport(form17.PassportNumber_DB, form17.PackType_DB);
     }
     #endregion
