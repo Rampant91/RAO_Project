@@ -66,6 +66,9 @@ public class Form_11VM : BaseFormVM
         new(OperationCodesProvider.AllOperationCodes
             .Where(x => ValidOperationCodes.Contains(x.Code)));
 
+    public ObservableCollection<KeyValuePair<string, string>> OKSM =>
+        new(Spravochniki.Spravochniks.OKSM.AsEnumerable());
+
     /// <summary>
     /// Список допустимых кодов операции для валидации (только коды без описаний)
     /// </summary>
